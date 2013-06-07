@@ -1,0 +1,41 @@
+/* Menu */
+#adminmenu {
+	#menu-posts-job_listing {
+		div.wp-menu-image {
+			background-image: url(../images/briefcase-menu.png);
+			background-size: auto;
+			background-position: -70px -65px;
+		}
+		&.wp-menu-open div.wp-menu-image, &:hover div.wp-menu-image {
+			background-position: -70px -1px;
+		}
+		img {
+			display: none;
+		}
+	}
+}
+#icon-edit.icon32-posts-job_listing {
+	background-image: url(../images/briefcase.png);
+	background-position: -117px -11px;
+	background-size: auto;
+}
+
+@media
+(-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+    #adminmenu {
+		#menu-posts-job_listing {
+			div.wp-menu-image {
+				background-size: 50px 46px;
+				background-position: 7px -26px;
+			}
+			&.wp-menu-open div.wp-menu-image, &:hover div.wp-menu-image {
+				background-position: 7px 6px;
+			}
+		}
+	}
+	#icon-edit.icon32-posts-job_listing {
+		background-size: 75px 27px;
+		background-position: 1px 2px;
+	}
+}

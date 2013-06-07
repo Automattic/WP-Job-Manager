@@ -1,0 +1,117 @@
+jQuery(document).ready(function($) {
+
+	var xhr;
+
+	function update_job_listing_results( page, append, target ) {
+
+		var form    = target.find( '.job_filters' );
+		var showing = target.find( '.showing_jobs' );
+		var results = target.find( '.job_listings' );
+
+		if (xhr) xhr.abort();
+
+		if ( append ) {
+			$( '.load_more_jobs', target ).addClass('loading');
+		} else {
+			$(results).addClass('loading');
+			$('li.job_listing', results).css('visibility', 'hidden');
+		}
+
+		var filter_job_type = new Array();
+
+		$('input[name="filter_job_type[]"]:checked', form).each(function() {
+			filter_job_type.push( $(this).val() );
+		});
+
+		var data = {
+			action: 			'job_manager_get_listings',
+			search_keywords: 	form.find('input[name=search_keywords]').val(),
+			search_location: 	form.find('input[name=search_location]').val(),
+			search_category:    form.find('select[name=search_category]').val(),
+			filter_job_type: 	filter_job_type,
+			per_page: 			form.find('input[name=per_page]').val(),
+			orderby: 			form.find('input[name=orderby]').val(),
+			order: 			    form.find('input[name=order]').val(),
+			page:               page
+		};
+
+		xhr = $.ajax( {
+			type: 		'POST',
+			url: 		job_manager_ajax_filters.ajax_url,
+			data: 		data,
+			success: 	function( response ) {
+				if ( response ) {
+					try {
+
+						var result = $.parseJSON( response );
+
+						if ( result.showing )
+							$(showing).show().find('span').html( result.showing );
+						else
+							$(showing).hide();
+
+						if ( result.rss )
+							$(showing).find('.rss_link').attr('href', result.rss).show();
+						else
+							$(showing).find('.rss_link').hide();
+
+						if ( result.html )
+							if ( append )
+								$(results).append( result.html );
+							else
+								$(results).html( result.html );
+
+						if ( ! result.found_jobs || result.max_num_pages == page )
+							$( '.load_more_jobs', target ).hide();
+						else
+							$( '.load_more_jobs', target ).show().data('page', page);
+
+						$(results).removeClass('loading');
+						$( '.load_more_jobs', target ).removeClass('loading');
+						$('li.job_listing', results).css('visibility', 'visible');
+
+					} catch(err) {
+						console.log(err);
+					}
+				}
+			}
+		} );
+	}
+
+	$( '#search_keywords, #search_location, .job_types input, #search_category' ).change( function() {
+		var target = $(this).closest( 'div.job_listings' );
+
+		update_job_listing_results( 1, false, target );
+	} ).change();
+
+	$( '.showing_jobs .reset' ).click( function() {
+		var target  = $(this).closest( 'div.job_listings' );
+		var form    = $(this).closest( 'form' );
+
+		form.find('input[name=search_keywords]').val('');
+		form.find('input[name=search_location]').val('');
+		$('input[name="filter_job_type[]"]', form).attr('checked', 'checked');
+
+		update_job_listing_results( 1, false, target );
+
+		return false;
+	} );
+
+	$( '.load_more_jobs' ).click(function() {
+		var target = $(this).closest( 'div.job_listings' );
+
+		page = $(this).data( 'page' );
+
+		if ( ! page )
+			page = 1;
+		else
+			page = parseInt( page );
+
+		$(this).data( 'page', ( page + 1 ) );
+
+		update_job_listing_results( page + 1, true, target );
+
+		return false;
+	} );
+
+});

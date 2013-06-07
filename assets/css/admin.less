@@ -1,0 +1,200 @@
+@import "mixins";
+
+.widefat {
+	.column-filled {
+		text-align: center;
+	}
+	.column-company {
+		width: 25%;
+	}
+	td.column-company {
+		padding-left: 50px !important;
+		height: 40px;
+		position: relative;
+		img {
+			width: 32px;
+			height: 32px;
+			position: absolute;
+			left: 7px;
+			top: 4px;
+			.border_radius( 50% );
+			.box_shadow( 0, 1px, 0, 1px, rgba( 0,0,0,0.1 ) );
+			border: 1px solid #fff;
+		}
+		strong {
+			display: block;
+			margin-bottom: .2em;
+		}
+		.tagline {
+			display: block;
+			padding-top: 2px;
+			color: #bbbbbb;
+		}
+		a.company_twitter {
+			float: right;
+			margin-left: 1em;
+		}
+	}
+	.column-job_posted {
+		strong {
+			display: block;
+			margin-bottom: .2em;
+		}
+		span {
+			display: block;
+			padding-top: 2px
+		}
+	}
+	.column-job_listing_type {
+		text-align: center;
+		width: 6em;
+		word-wrap: normal !important;
+		.job-type {
+			color: #fff;
+			padding: 4px 0 3px;
+			line-height: 1em;
+			font-size: 11px;
+			font-weight: bold;
+			.border_radius( 2px );
+			text-shadow: 0 1px 0 rgba( 0, 0, 0, 0.2 );
+			display:block;
+		}
+		.full-time {
+			background-color: @full-time;
+			border-bottom: 2px solid darken( @full-time, 10% );
+		}
+		.part-time {
+			background-color: @part-time;
+			border-bottom: 2px solid darken( @part-time, 10% );
+		}
+		.temporary {
+			background-color: @temporary;
+			border-bottom: 2px solid darken( @temporary, 10% );
+		}
+		.freelance {
+			background-color: @freelance;
+			border-bottom: 2px solid darken( @freelance, 10% );
+		}
+		.internship {
+			background-color: @internship;
+			border-bottom: 2px solid darken( @internship, 10% );
+		}
+	}
+	.column-position {
+		width: 20%;
+		strong {
+			display: block;
+			margin-bottom: .2em;
+		}
+		.location {
+			display: block;
+			padding-top: 2px;
+			color: #bbbbbb;
+		}
+	}
+	.column-job_actions {
+		width:110px;
+		a.button {
+			float:left;
+			margin: 0 4px 2px 0;
+			cursor: pointer;
+			padding:3px 4px;
+			height:auto;
+			img {
+				display: block;
+				width:12px;
+				height:auto;
+			}
+		}
+	}
+}
+.wp_job_manager_meta_data {
+	p {
+		overflow: hidden;
+		margin: 0 0 1em;
+		line-height: 2em;
+	}
+	label {
+		width: 20%;
+		float: left;
+		vertical-align: middle;
+	}
+	input {
+		width: 79%;
+		float: left;
+		vertical-align: middle;
+	}
+	input.checkbox {
+		width: auto;
+		margin: 4px 2px;
+	}
+}
+
+/* TipTip CSS - Version 1.2 */
+#tiptip_holder {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 99999;
+}
+#tiptip_holder.tip_top {
+	padding-bottom: 5px;
+}
+#tiptip_holder.tip_bottom {
+	padding-top: 5px;
+}
+#tiptip_holder.tip_right {
+	padding-left: 5px;
+}
+#tiptip_holder.tip_left {
+	padding-right: 5px;
+}
+#tiptip_content {
+	font-size: 11px;
+	color: #fff;
+	padding: 4px 8px;
+	background:#000;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	box-shadow: 1px 1px 3px rgba(0,0,0,0.10);
+	-webkit-box-shadow: 1px 1px 3px rgba(0,0,0,0.10);
+	-moz-box-shadow: 1px 1px 3px rgba(0,0,0,0.10);
+	text-align: center;
+	code {
+    	background: #999;
+    	padding: 1px;
+    }
+}
+#tiptip_arrow, #tiptip_arrow_inner {
+	position: absolute;
+	border-color: transparent;
+	border-style: solid;
+	border-width: 6px;
+	height: 0;
+	width: 0;
+}
+#tiptip_holder.tip_top #tiptip_arrow_inner {
+	margin-top: -7px;
+	margin-left: -6px;
+	border-top-color: #000;
+}
+
+#tiptip_holder.tip_bottom #tiptip_arrow_inner {
+	margin-top: -5px;
+	margin-left: -6px;
+	border-bottom-color: #000;
+}
+
+#tiptip_holder.tip_right #tiptip_arrow_inner {
+	margin-top: -6px;
+	margin-left: -5px;
+	border-right-color: #000;
+}
+
+#tiptip_holder.tip_left #tiptip_arrow_inner {
+	margin-top: -6px;
+	margin-left: -7px;
+	border-left-color: #000;
+}
