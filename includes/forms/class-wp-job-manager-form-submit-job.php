@@ -15,7 +15,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Init form
 	 */
 	public static function init() {
-		add_action( 'wp', __CLASS__ . '::process' );
+		add_action( 'wp', array( __CLASS__, 'process' ) );
 
 		// Get step/job
 		self::$step   = ! empty( $_REQUEST['step'] ) ? max( absint( $_REQUEST['step'] ), 1 ) : 1;
@@ -24,17 +24,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		self::$steps  = (array) apply_filters( 'submit_job_steps', array(
 			1 => array(
 				'name'    => __( 'Submit Details', 'job_manager' ),
-				'view'    => __CLASS__ . '::submit',
-				'handler' => __CLASS__ . '::submit_handler',
+				'view'    => array( __CLASS__, 'submit' ),
+				'handler' => array( __CLASS__, 'submit_handler' ),
 				),
 			2 => array(
 				'name'    => __( 'Preview', 'job_manager' ),
-				'view'    => __CLASS__ . '::preview',
-				'handler' => __CLASS__ . '::preview_handler',
+				'view'    => array( __CLASS__, 'preview' ),
+				'handler' => array( __CLASS__, 'preview_handler' ),
 			),
 			3 => array(
 				'name'    => __( 'Done', 'job_manager' ),
-				'view'    => __CLASS__ . '::done',
+				'view'    => array( __CLASS__, 'done' ),
 			)
 		) );
 
@@ -298,7 +298,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 		}
 
-		get_job_manager_template( 'job-submit.php', array( 'form' => __CLASS__, 'submit_button_text' => __( 'Preview job listing &rarr;', 'job_manager' ) ) );
+		get_job_manager_template( 'job-submit.php', array(
+			'form'               => self::$form_name,
+			'job_id'             => self::get_job_id(),
+			'action'             => self::get_action(),
+			'job_fields'         => self::get_fields( 'job' ),
+			'company_fields'     => self::get_fields( 'company' ),
+			'submit_button_text' => __( 'Preview job listing &rarr;', 'job_manager' )
+			) );
 	}
 
 	/**
@@ -461,7 +468,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( self::$job_id );
 		}
 
-		get_job_manager_template( 'job-submitted.php', array( 'job' => $job, 'form' => __CLASS__ ) );
+		get_job_manager_template( 'job-submitted.php', array( 'job' => $job ) );
 	}
 
 	/**
@@ -481,11 +488,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( $_FILES[ $field_key ]["type"] != "image/jpeg" && $_FILES[ $field_key ]["type"] != "image/gif" && $_FILES[ $field_key ]["type"] != "image/png" )
     			throw new Exception( __( 'Logo needs to be jpg, gif or png.', 'job_manager' ) );
 
-			add_filter( 'upload_dir',  __CLASS__ . '::upload_dir' );
+			add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
 
 			$upload = wp_handle_upload( $file, array( 'test_form' => false ) );
 
-			remove_filter('upload_dir', __CLASS__ . '::upload_dir' );
+			remove_filter('upload_dir', array( __CLASS__, 'upload_dir' ) );
 
 			if ( ! empty( $upload['error'] ) ) {
 				throw new Exception( $upload['error'] );

@@ -6,13 +6,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 global $job_manager;
 ?>
-<form action="<?php echo $form::get_action() ?>" method="post" id="submit-job-form" class="job-manager-form" enctype="multipart/form-data">
+<form action="<?php echo $action; ?>" method="post" id="submit-job-form" class="job-manager-form" enctype="multipart/form-data">
 
 	<?php if ( apply_filters( 'submit_job_form_show_signin', true ) ) : ?>
 		<?php get_job_manager_template( 'account-signin.php' ); ?>
 	<?php endif; ?>
 
-	<?php foreach ( $form::get_fields( 'job' ) as $key => $field ) : ?>
+	<?php foreach ( $job_fields as $key => $field ) : ?>
 		<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
 			<label for="<?php esc_attr_e( $key ); ?>"><?php echo $field['label'] . ( $field['required'] ? '' : ' <small>' . __( '(optional)', 'job_manager' ) . '</small>' ); ?></label>
 			<div class="field">
@@ -23,7 +23,7 @@ global $job_manager;
 
 	<h2><?php _e( 'Company details' ); ?></h2>
 
-	<?php foreach ( $form::get_fields( 'company' ) as $key => $field ) : ?>
+	<?php foreach ( $company_fields as $key => $field ) : ?>
 		<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
 			<label for="<?php esc_attr_e( $key ); ?>"><?php echo $field['label'] . ( $field['required'] ? '' : ' <small>' . __( '(optional)', 'job_manager' ) . '</small>' ); ?></label>
 			<div class="field">
@@ -34,8 +34,8 @@ global $job_manager;
 
 	<p>
 		<?php wp_nonce_field( 'submit_form_posted' ); ?>
-		<input type="hidden" name="job_manager_form" value="<?php echo $form::$form_name; ?>" />
-		<input type="hidden" name="job_id" value="<?php echo esc_attr( $form::get_job_id() ); ?>" />
+		<input type="hidden" name="job_manager_form" value="<?php echo $form; ?>" />
+		<input type="hidden" name="job_id" value="<?php echo esc_attr( $job_id ); ?>" />
 		<input type="submit" name="submit_job" class="button" value="<?php esc_attr_e( $submit_button_text ); ?>" />
 	</p>
 </form>

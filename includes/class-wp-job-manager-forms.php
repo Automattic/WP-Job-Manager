@@ -59,7 +59,7 @@ class WP_Job_Manager_Forms {
 	public function get_form( $form_name ) {
 		if ( $form = $this->load_form_class( $form_name ) ) {
 			ob_start();
-			$form::output();
+			call_user_func( array( $form, "output" ) );
 			return ob_get_clean();
 		}
 	}
