@@ -328,15 +328,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( ! is_user_logged_in() ) {
 				$create_account = false;
 
-				if ( get_option( 'job_manager_submission_enable_registration' ) && ! empty( $_POST['create_account_email'] ) )
+				if ( job_manager_enable_registration() && ! empty( $_POST['create_account_email'] ) )
 					$create_account = wp_job_manager_create_account( $_POST['create_account_email'] );
 
 				if ( is_wp_error( $create_account ) )
 					throw new Exception( $create_account->get_error_message() );
 			}
 
-			if ( get_option( 'job_manager_submission_requires_account' ) && ! is_user_logged_in() )
-				throw new Exception( __( 'You must be signed in to an account to post a new job listing.' ) );
+			if ( job_manager_user_requires_account() && ! is_user_logged_in() )
+				throw new Exception( __( 'You must be signed in to post a new job listing.' ) );
 
 			// Update the job
 			self::save_job( $values['job']['job_title'], $values['job']['job_description'] );

@@ -59,7 +59,7 @@ class WP_Job_Manager_Settings {
 					__( 'Job Submission', 'job_manager' ),
 					array(
 						array(
-							'name' 		=> 'job_manager_submission_enable_registration',
+							'name' 		=> 'job_manager_enable_registration',
 							'std' 		=> '1',
 							'label' 	=> __( 'Account creation', 'job_manager' ),
 							'cb_label'  => __( 'Allow account creation', 'job_manager' ),
@@ -67,7 +67,7 @@ class WP_Job_Manager_Settings {
 							'type'      => 'checkbox'
 						),
 						array(
-							'name' 		=> 'job_manager_submission_requires_account',
+							'name' 		=> 'job_manager_user_requires_account',
 							'std' 		=> '1',
 							'label' 	=> __( 'Account required', 'job_manager' ),
 							'cb_label'  => __( 'Job submission requires an account', 'job_manager' ),

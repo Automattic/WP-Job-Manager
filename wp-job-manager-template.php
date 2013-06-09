@@ -89,6 +89,33 @@ function get_job_manager_template_part( $slug, $name = '' ) {
 }
 
 /**
+ * True if an the user can post a job. If accounts are required, and reg is enabled, users can post (they signup at the same time).
+ *
+ * @return bool
+ */
+function job_manager_user_can_post_job() {
+	return apply_filters( 'job_manager_user_can_post_job', ( job_manager_user_requires_account() && job_manager_enable_registration() ) ? true : false );
+}
+
+/**
+ * True if registration is enabled.
+ *
+ * @return bool
+ */
+function job_manager_enable_registration() {
+	return apply_filters( 'job_manager_enable_registration', get_option( 'job_manager_enable_registration' ) == 1 ? true : false );
+}
+
+/**
+ * True if an account is required to post a job.
+ *
+ * @return bool
+ */
+function job_manager_user_requires_account() {
+	return apply_filters( 'job_manager_user_requires_account', get_option( 'job_manager_user_requires_account' ) == 1 ? true : false );
+}
+
+/**
  * Outputs the jobs status
  *
  * @return void
