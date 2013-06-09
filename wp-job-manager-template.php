@@ -94,7 +94,15 @@ function get_job_manager_template_part( $slug, $name = '' ) {
  * @return bool
  */
 function job_manager_user_can_post_job() {
-	return apply_filters( 'job_manager_user_can_post_job', ( job_manager_user_requires_account() && job_manager_enable_registration() ) ? true : false );
+	$can_post = true;
+
+	if ( ! is_user_logged_in() ) {
+		if ( job_manager_user_requires_account() && ! job_manager_enable_registration() ) {
+			$can_post = false;
+		}
+	}
+
+	return apply_filters( 'job_manager_user_can_post_job', $can_post );
 }
 
 /**
