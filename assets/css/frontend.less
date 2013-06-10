@@ -33,7 +33,7 @@
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
-	vertical-align: top;
+	vertical-align: middle;
 	font-size: 16px;
 	margin: 0 2px 0 0;
 
@@ -143,6 +143,11 @@
 		.account-sign-in {
 			.button {
 				margin-right: .5em;
+				display: inline-block;
+
+				*overflow: auto;
+				*zoom: 1;
+				*display: inline;
 				&:before {
 					.display-icon;
 					content: '\f427';
@@ -392,9 +397,6 @@ ul.job_listings {
 			line-height: 1em;
 			color: #999;
 		}
-		.job-type {
-			color: #fff;
-		}
 		.full-time {
 			background-color: @full-time;
 		}
@@ -577,7 +579,7 @@ ul.job_listings {
 	}
 }
 .job_listing_preview {
-	padding: 0 1em 1em;
+	padding: 1em;
 	border: 5px solid #eee;
 }
 .job_listing_preview_title, .entry-content .job_listing_preview_title {
