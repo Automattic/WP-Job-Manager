@@ -18,31 +18,43 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'wp', array( __CLASS__, 'process' ) );
 
 		// Get step/job
-		self::$step   = ! empty( $_REQUEST['step'] ) ? max( absint( $_REQUEST['step'] ), 1 ) : 1;
+		self::$step   = ! empty( $_REQUEST['step'] ) ? max( absint( $_REQUEST['step'] ), 0 ) : 0;
 		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
 		self::$steps  = (array) apply_filters( 'submit_job_steps', array(
-			1 => array(
-				'name'    => __( 'Submit Details', 'job_manager' ),
-				'view'    => array( __CLASS__, 'submit' ),
-				'handler' => array( __CLASS__, 'submit_handler' ),
+			'submit' => array(
+				'name'     => __( 'Submit Details', 'job_manager' ),
+				'view'     => array( __CLASS__, 'submit' ),
+				'handler'  => array( __CLASS__, 'submit_handler' ),
+				'priority' => 10
 				),
-			2 => array(
-				'name'    => __( 'Preview', 'job_manager' ),
-				'view'    => array( __CLASS__, 'preview' ),
-				'handler' => array( __CLASS__, 'preview_handler' ),
+			'preview' => array(
+				'name'     => __( 'Preview', 'job_manager' ),
+				'view'     => array( __CLASS__, 'preview' ),
+				'handler'  => array( __CLASS__, 'preview_handler' ),
+				'priority' => 20
 			),
-			3 => array(
-				'name'    => __( 'Done', 'job_manager' ),
-				'view'    => array( __CLASS__, 'done' ),
+			'done' => array(
+				'name'     => __( 'Done', 'job_manager' ),
+				'view'     => array( __CLASS__, 'done' ),
+				'priority' => 30
 			)
 		) );
+
+		usort( self::$steps, array( __CLASS__, 'sort_by_priority' ) );
 
 		// Validate job ID if set
 		if ( self::$job_id && get_post_status( self::$job_id ) !== 'preview' ) {
 			self::$job_id = 0;
-			self::$step   = 1;
+			self::$step   = 0;
 		}
+	}
+
+	/**
+	 * Sort array by priority value
+	 */
+	private function sort_by_priority( $a, $b ) {
+		return $a['priority'] - $b['priority'];
 	}
 
 	/**
@@ -234,25 +246,24 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Process function
+	 * Process function. all processing code if needed - can also change view if step is complete
 	 */
 	public static function process() {
-		// Call processing code if needed - can also change view if step is complete
-		if ( ! empty( self::$steps[ self::$step ] ) && is_callable( self::$steps[ self::$step ]['handler'] ) ) {
-			call_user_func( self::$steps[ self::$step ]['handler'] );
+		$keys = array_keys( self::$steps );
+
+		if ( isset( $keys[ self::$step ] ) && is_callable( self::$steps[ $keys[ self::$step ] ]['handler'] ) ) {
+			call_user_func( self::$steps[ $keys[ self::$step ] ]['handler'] );
 		}
 	}
 
 	/**
-	 * output function.
+	 * output function. Call the view handler.
 	 */
 	public static function output() {
+		$keys = array_keys( self::$steps );
 
-		self::show_errors();
-
-		// Call view
-		if ( ! empty( self::$steps[ self::$step ] ) && is_callable( self::$steps[ self::$step ]['view'] ) ) {
-			call_user_func( self::$steps[ self::$step ]['view'] );
+		if ( isset( $keys[ self::$step ] ) && is_callable( self::$steps[ $keys[ self::$step ] ]['view'] ) ) {
+			call_user_func( self::$steps[ $keys[ self::$step ] ]['view'] );
 		}
 	}
 
@@ -417,7 +428,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			?>
 			<form method="post">
 				<h2 class="job_listing_preview_title">
-					<input type="submit" name="continue" class="button" value="<?php _e( 'Submit Listing &rarr;', 'job_manager' ); ?>" />
+					<input type="submit" name="continue" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'job_manager' ) ); ?>" />
 					<input type="submit" name="edit_job" class="button" value="<?php _e( '&larr; Edit listing', 'job_manager' ); ?>" />
 					<input type="hidden" name="job_id" value="<?php echo esc_attr( self::$job_id ); ?>" />
 					<input type="hidden" name="step" value="<?php echo esc_attr( self::$step ); ?>" />
