@@ -147,7 +147,7 @@ function get_the_job_status( $post = null ) {
 	elseif ( $status == 'expired' )
 		$status = __( 'Expired', 'job_manager' );
 	elseif ( $status == 'pending' )
-		$status = __( 'Pending Approval', 'job_manager' );
+		$status = __( 'Pending Review', 'job_manager' );
 	else
 		$status = __( 'Inactive', 'job_manager' );
 

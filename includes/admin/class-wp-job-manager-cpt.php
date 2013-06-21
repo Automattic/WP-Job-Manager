@@ -186,7 +186,7 @@ class WP_Job_Manager_CPT {
 				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) echo '<span class="na">&ndash;</span>'; else echo $terms;
 			break;
 			case "status" :
-				echo ucwords( $post->post_status );
+				echo get_the_job_status( $post );
 			break;
 			case "filled" :
 				if ( is_position_filled( $post ) ) echo '&#10004;'; else echo '&ndash;';
