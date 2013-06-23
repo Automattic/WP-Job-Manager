@@ -392,8 +392,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  array $values
 	 */
 	protected function update_job_data( $values ) {
+
 		wp_set_object_terms( self::$job_id, array( $values['job']['job_type'] ), 'job_listing_type', false );
-		wp_set_object_terms( self::$job_id, array( $values['job']['job_category'] ), 'job_listing_category', false );
+		if ( get_option( 'job_manager_enable_categories' ) ) {
+			wp_set_object_terms( self::$job_id, array( $values['job']['job_category'] ), 'job_listing_category', false );
+		}
 
 		update_post_meta( self::$job_id, '_application', $values['job']['application'] );
 		update_post_meta( self::$job_id, '_job_location', $values['job']['job_location'] );
