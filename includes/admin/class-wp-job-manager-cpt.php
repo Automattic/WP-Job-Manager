@@ -14,11 +14,13 @@ class WP_Job_Manager_CPT {
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
 		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 1, 2 );
 		add_filter( 'manage_edit-job_listing_columns', array( $this, 'columns' ) );
 		add_action( 'manage_job_listing_posts_custom_column', array( $this, 'custom_columns' ), 2 );
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
+
+		if ( get_option( 'job_manager_enable_categories' ) )
+			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
 
 		foreach ( array( 'post', 'post-new' ) as $hook )
 			add_action( "admin_footer-{$hook}.php", array( $this,'extend_submitdiv_post_status' ) );
@@ -37,7 +39,7 @@ class WP_Job_Manager_CPT {
 	public function jobs_by_category( $show_counts = 1, $hierarchical = 1, $show_uncategorized = 1, $orderby = '' ) {
 		global $typenow, $wp_query;
 
-	    if ( $typenow != 'job_listing' )
+	    if ( $typenow != 'job_listing' || ! taxonomy_exists( 'job_listing_category' ) )
 	    	return;
 
 		include_once( 'class-wp-job-manager-category-walker.php' );
@@ -58,7 +60,8 @@ class WP_Job_Manager_CPT {
 
 		$terms = get_terms( 'job_listing_category', $r );
 
-		if (!$terms) return;
+		if ( ! $terms )
+			return;
 
 		$output  = "<select name='job_listing_category' id='dropdown_job_listing_category'>";
 		$output .= '<option value="" ' .  selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>'.__( 'Select a category', "job_manager" ).'</option>';
