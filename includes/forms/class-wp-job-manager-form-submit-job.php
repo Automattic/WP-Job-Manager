@@ -161,7 +161,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			)
 		) );
 
-		if ( ! get_option( 'job_manager_enable_categories' ) )
+		if ( ! get_option( 'job_manager_enable_categories' ) || wp_count_terms( 'job_listing_category' ) == 0 )
 			unset( self::$fields['job']['job_category'] );
 	}
 
@@ -261,6 +261,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public static function output() {
 		$keys = array_keys( self::$steps );
+
+		self::show_errors();
 
 		if ( isset( $keys[ self::$step ] ) && is_callable( self::$steps[ $keys[ self::$step ] ]['view'] ) ) {
 			call_user_func( self::$steps[ $keys[ self::$step ] ]['view'] );
