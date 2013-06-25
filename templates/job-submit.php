@@ -25,7 +25,7 @@ global $job_manager;
 			</fieldset>
 		<?php endforeach; ?>
 
-		<h2><?php _e( 'Company details' ); ?></h2>
+		<h2><?php _e( 'Company details', 'job_manager' ); ?></h2>
 
 		<?php foreach ( $company_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">

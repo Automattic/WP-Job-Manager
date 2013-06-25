@@ -54,7 +54,7 @@ class WP_Job_Manager {
 		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), 'flush_rewrite_rules', 15 );
 
 		// Actions
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'switch_theme', array( $this->post_types, 'register_post_types' ), 10 );
 		add_action( 'switch_theme', 'flush_rewrite_rules', 15 );
 		add_action( 'widgets_init', create_function( "", "include_once( 'includes/class-wp-job-manager-widgets.php' );" ) );
@@ -68,7 +68,7 @@ class WP_Job_Manager {
 	 * @return void
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( 'job_manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+		load_plugin_textdomain( 'job_manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
 	/**
