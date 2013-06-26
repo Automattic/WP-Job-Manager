@@ -42,7 +42,8 @@ class WP_Job_Manager_Writepanels {
 			),
 			'_company_logo' => array(
 				'label' => __( 'Company logo', 'job_manager' ),
-				'placeholder' => __( 'URL to the company logo', 'job_manager' )
+				'placeholder' => __( 'URL to the company logo', 'job_manager' ),
+				'type'  => 'file'
 			),
 			'_filled' => array(
 				'label' => __( 'Position filled?', 'job_manager' ),
@@ -59,6 +60,66 @@ class WP_Job_Manager_Writepanels {
 	 */
 	public function add_meta_boxes() {
 		add_meta_box( 'job_listing_data', __( 'Job Listing Data', 'job_manager' ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
+	}
+
+	/**
+	 * input_text function.
+	 *
+	 * @access private
+	 * @param mixed $key
+	 * @param mixed $field
+	 * @return void
+	 */
+	private function input_file( $key, $field ) {
+		global $thepostid;
+
+		if ( empty( $field['value'] ) )
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		?>
+		<p class="form-field">
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
+			<input type="text" class="file_url" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?> <button class="button upload_image_button" data-uploader_button_text="<?php _e( 'Use as company logo', 'job_manager' ); ?>"><?php _e( 'Upload company logo', 'job_manager' ); ?></button>
+		</p>
+		<script type="text/javascript">
+			// Uploading files
+			var file_frame;
+			var file_target_input;
+
+			jQuery('.upload_image_button').live('click', function( event ){
+
+			    event.preventDefault();
+
+			    file_target_input = jQuery( this ).closest('.form-field').find('.file_url');
+
+			    // If the media frame already exists, reopen it.
+			    if ( file_frame ) {
+					file_frame.open();
+					return;
+			    }
+
+			    // Create the media frame.
+			    file_frame = wp.media.frames.file_frame = wp.media({
+					title: jQuery( this ).data( 'uploader_title' ),
+					button: {
+						text: jQuery( this ).data( 'uploader_button_text' ),
+					},
+					multiple: false  // Set to true to allow multiple files to be selected
+			    });
+
+			    // When an image is selected, run a callback.
+			    file_frame.on( 'select', function() {
+					// We set multiple to false so only get one image from the uploader
+					attachment = file_frame.state().get('selection').first().toJSON();
+
+					jQuery( file_target_input ).val( attachment.url );
+			    });
+
+			    // Finally, open the modal
+			    file_frame.open();
+			});
+		</script>
+		<?php
 	}
 
 	/**
