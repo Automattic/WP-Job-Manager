@@ -172,7 +172,9 @@ class WP_Job_Manager_CPT {
 			break;
 			case "position" :
 				edit_post_link( $post->post_title, '<strong>', '</strong>', $post->ID );
-				echo '<span class="location">' . get_the_job_location( $post ) . '</span>';
+				echo '<span class="location">';
+				the_job_location( $post );
+				echo '</span>';
 			break;
 			case "company" :
 				the_company_logo();

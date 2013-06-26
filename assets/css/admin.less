@@ -114,16 +114,22 @@
 	p {
 		overflow: hidden;
 		margin: 0 0 1em;
+		padding: 0 0 0 20%;
+		position: relative;
 		line-height: 2em;
 	}
 	label {
 		width: 20%;
-		float: left;
+		position: absolute;
+		left: 0;
 		vertical-align: middle;
 	}
 	input {
-		width: 79%;
-		float: left;
+		width: 100%;
+		margin: 1px 0;
+		-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+		-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+		box-sizing: border-box;         /* Opera/IE 8+ */
 		vertical-align: middle;
 	}
 	input.checkbox {

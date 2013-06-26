@@ -17,7 +17,8 @@ class WP_Job_Manager_Writepanels {
 		$this->job_listing_fields = apply_filters( 'wp_job_manager_job_listing_data_fields', array(
 			'_job_location' => array(
 				'label' => __( 'Job location', 'job_manager' ),
-				'placeholder' => __( 'e.g. "London, UK", "New York", "Anywhere"', 'job_manager' )
+				'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'job_manager' ),
+				'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'job_manager' )
 			),
 			'_application' => array(
 				'label' => __( 'Application email/URL', 'job_manager' ),
@@ -75,8 +76,9 @@ class WP_Job_Manager_Writepanels {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
 		?>
 		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?></label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
 			<input type="text" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
 		</p>
 		<?php
 	}
@@ -98,6 +100,7 @@ class WP_Job_Manager_Writepanels {
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?></label>
 			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $field['value'], 1 ); ?> />
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
 		</p>
 		<?php
 	}

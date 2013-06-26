@@ -86,9 +86,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				),
 				'job_location' => array(
 					'label'       => __( 'Job location', 'job_manager' ),
+					'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'job_manager' ),
 					'type'        => 'text',
-					'required'    => true,
-					'placeholder' => __( 'e.g. "London, UK", "New York", "Anywhere"', 'job_manager' ),
+					'required'    => false,
+					'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'job_manager' ),
 					'priority'    => 2
 				),
 				'job_type' => array(
@@ -396,7 +397,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected function update_job_data( $values ) {
 
 		wp_set_object_terms( self::$job_id, array( $values['job']['job_type'] ), 'job_listing_type', false );
-		if ( get_option( 'job_manager_enable_categories' ) ) {
+
+		if ( get_option( 'job_manager_enable_categories' ) && isset( $values['job']['job_category'] ) ) {
 			wp_set_object_terms( self::$job_id, array( $values['job']['job_category'] ), 'job_listing_category', false );
 		}
 

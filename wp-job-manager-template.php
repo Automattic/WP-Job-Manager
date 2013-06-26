@@ -260,7 +260,12 @@ function get_the_job_type( $post = null ) {
  * @return void
  */
 function the_job_location() {
-	echo get_the_job_location();
+	$location = get_the_job_location();
+
+	if ( $location )
+		echo '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false">' . $location . '</a>';
+	else
+		echo apply_filters( 'the_job_location_anywhere_text', __( 'Anywhere', 'job_manager' ) );
 }
 
 /**
