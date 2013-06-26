@@ -9,7 +9,7 @@
 			</div>
 		</div>
 		<div class="location">
-			<?php the_job_location(); ?>
+			<?php the_job_location( false ); ?>
 		</div>
 		<ul class="meta">
 			<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>"><?php the_job_type(); ?></li>
