@@ -143,6 +143,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'type'        => 'text',
 					'required'    => false,
 					'placeholder' => __( 'Briefly describe your company', 'job_manager' ),
+					'maxlength'   => 64,
 					'priority'    => 3
 				),
 				'company_twitter' => array(
