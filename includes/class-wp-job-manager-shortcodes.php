@@ -165,7 +165,7 @@ class WP_Job_Manager_Shortcodes {
 			'orderby'         => 'date',
 			'order'           => 'desc',
 			'show_filters'    => true,
-			'show_categories' => false
+			'show_categories' => get_option( 'job_manager_enable_categories' )
 		), $atts ) );
 
 		if ( $show_filters ) {
