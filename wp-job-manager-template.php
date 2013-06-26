@@ -255,17 +255,20 @@ function get_the_job_type( $post = null ) {
 
 /**
  * the_job_location function.
- *
- * @access public
- * @return void
+ * @param  boolean $map_link whether or not to link to the map on google maps
+ * @return [type]
  */
-function the_job_location() {
+function the_job_location( $map_link = true ) {
 	$location = get_the_job_location();
 
-	if ( $location )
-		echo '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false">' . $location . '</a>';
-	else
+	if ( $location ) {
+		if ( $map_link )
+			echo '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false">' . $location . '</a>';
+		else
+			echo $location;
+	} else {
 		echo apply_filters( 'the_job_location_anywhere_text', __( 'Anywhere', 'job_manager' ) );
+	}
 }
 
 /**
