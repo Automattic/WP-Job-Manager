@@ -194,7 +194,7 @@ class WP_Job_Manager_Shortcodes {
 					)
 				);
 
-			$jobs = new WP_Query( $args );
+			$jobs = new WP_Query( apply_filters( 'wp_job_manager_output_jobs_args', $args ) );
 
 			if ( $jobs->have_posts() ) : ?>
 
