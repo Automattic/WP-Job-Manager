@@ -16,6 +16,8 @@ global $job_manager;
 
 	<?php if ( job_manager_user_can_post_job() ) : ?>
 
+		<?php do_action( 'submit_job_form_before' ); ?>
+
 		<?php foreach ( $job_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
 				<label for="<?php esc_attr_e( $key ); ?>"><?php echo $field['label'] . ( $field['required'] ? '' : ' <small>' . __( '(optional)', 'job_manager' ) . '</small>' ); ?></label>
@@ -25,7 +27,9 @@ global $job_manager;
 			</fieldset>
 		<?php endforeach; ?>
 
-		<h2><?php _e( 'Company details' ); ?></h2>
+		<?php do_action( 'submit_job_form_after_job' ); ?>
+
+		<h2 class="submit_job_company_details"><?php _e( 'Company details' ); ?></h2>
 
 		<?php foreach ( $company_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
@@ -36,12 +40,16 @@ global $job_manager;
 			</fieldset>
 		<?php endforeach; ?>
 
+		<?php do_action( 'submit_job_form_after_company' ); ?>
+
 		<p>
 			<?php wp_nonce_field( 'submit_form_posted' ); ?>
 			<input type="hidden" name="job_manager_form" value="<?php echo $form; ?>" />
 			<input type="hidden" name="job_id" value="<?php echo esc_attr( $job_id ); ?>" />
 			<input type="submit" name="submit_job" class="button" value="<?php esc_attr_e( $submit_button_text ); ?>" />
 		</p>
+
+		<?php do_action( 'submit_job_form_after' ); ?>
 
 	<?php else : ?>
 
