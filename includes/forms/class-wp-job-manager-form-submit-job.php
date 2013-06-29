@@ -436,7 +436,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			?>
 			<form method="post">
 				<h2 class="job_listing_preview_title">
-					<input type="submit" name="continue" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'job_manager' ) ); ?>" />
+					<input type="submit" name="continue" id="preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'job_manager' ) ); ?>" />
 					<input type="submit" name="edit_job" class="button" value="<?php _e( '&larr; Edit listing', 'job_manager' ); ?>" />
 					<input type="hidden" name="job_id" value="<?php echo esc_attr( self::$job_id ); ?>" />
 					<input type="hidden" name="step" value="<?php echo esc_attr( self::$step ); ?>" />
@@ -465,8 +465,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! empty( $_POST['edit_job'] ) ) {
 			self::$step --;
 		}
-		// Continue = show next screen
+		// Continue = change job status then show next screen
 		if ( ! empty( $_POST['continue'] ) ) {
+
+			$job = get_post( self::$job_id );
+
+			if ( $job->post_status == 'preview' ) {
+				$update_job                = array();
+				$update_job['ID']          = $job->ID;
+				$update_job['post_status'] = get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish';
+				wp_update_post( $update_job );
+			}
+
 			self::$step ++;
 		}
 	}
@@ -475,19 +485,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Done Step
 	 */
 	public static function done() {
-		global $job_manager;
-
-		$job = get_post( self::$job_id );
-
-		if ( $job->post_status == 'preview' ) {
-			$update_job                = array();
-			$update_job['ID']          = $job->ID;
-			$update_job['post_status'] = get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish';
-			wp_update_post( $update_job );
-			$job = get_post( self::$job_id );
-		}
-
-		get_job_manager_template( 'job-submitted.php', array( 'job' => $job ) );
+		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( self::$job_id ) ) );
 	}
 
 	/**

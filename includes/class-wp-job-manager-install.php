@@ -43,7 +43,7 @@ class WP_Job_Manager_Install {
 	 * @return void
 	 */
 	public function default_terms() {
-		if ( get_option( 'wp_job_manager_installed_terms' ) == 1 )
+		if ( get_option( 'job_manager_installed_terms' ) == 1 )
 			return;
 
 		$taxonomies = array(
@@ -64,7 +64,7 @@ class WP_Job_Manager_Install {
 			}
 		}
 
-		update_option( 'wp_job_manager_installed_terms', 1 );
+		update_option( 'job_manager_installed_terms', 1 );
 	}
 
 	/**

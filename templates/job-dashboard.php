@@ -37,12 +37,12 @@
 									}
 
 									$actions['delete'] = array( 'label' => __( 'Delete', 'job_manager' ), 'nonce' => true );
-									$actions           = apply_filters( 'wp_job_manager_my_job_actions', $actions, $job );
+									$actions           = apply_filters( 'job_manager_my_job_actions', $actions, $job );
 
 									foreach ( $actions as $action => $value ) {
 										$action_url = add_query_arg( array( 'action' => $action, 'job_id' => $job->ID ) );
 										if ( $value['nonce'] )
-											$action_url = wp_nonce_url( $action_url, 'wp_job_manager_my_job_actions' );
+											$action_url = wp_nonce_url( $action_url, 'job_manager_my_job_actions' );
 										echo '<li><a href="' . $action_url . '" class="job-dashboard-action-' . $action . '">' . $value['label'] . '</a></li>';
 									}
 								?>

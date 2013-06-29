@@ -59,7 +59,7 @@ function locate_job_manager_template( $template_name, $template_path = '', $defa
 		$template = $default_path . $template_name;
 
 	// Return what we found
-	return apply_filters( 'wp_job_manager_locate_template', $template, $template_name, $template_path );
+	return apply_filters( 'job_manager_locate_template', $template, $template_name, $template_path );
 }
 
 /**

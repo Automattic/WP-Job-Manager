@@ -47,7 +47,7 @@ class WP_Job_Manager_Shortcodes {
 	 * Handles actions on job dashboard
 	 */
 	public function job_dashboard_handler() {
-		if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'wp_job_manager_my_job_actions' ) ) {
+		if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'job_manager_my_job_actions' ) ) {
 
 			$action = sanitize_title( $_REQUEST['action'] );
 			$job_id = absint( $_REQUEST['job_id'] );
@@ -93,7 +93,7 @@ class WP_Job_Manager_Shortcodes {
 						break;
 				}
 
-				do_action( 'wp_job_manager_my_job_do_action', $action, $job_id );
+				do_action( 'job_manager_my_job_do_action', $action, $job_id );
 
 			} catch ( Exception $e ) {
 				$this->job_dashboard_message = '<div class="job-manager-error">' . $e->getMessage() . '</div>';
@@ -194,7 +194,7 @@ class WP_Job_Manager_Shortcodes {
 					)
 				);
 
-			$jobs = new WP_Query( apply_filters( 'wp_job_manager_output_jobs_args', $args ) );
+			$jobs = new WP_Query( apply_filters( 'job_manager_output_jobs_args', $args ) );
 
 			if ( $jobs->have_posts() ) : ?>
 

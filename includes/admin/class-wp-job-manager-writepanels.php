@@ -12,9 +12,9 @@ class WP_Job_Manager_Writepanels {
 	public function __construct() {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ), 1, 2 );
-		add_action( 'wp_job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 1, 2 );
+		add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 1, 2 );
 
-		$this->job_listing_fields = apply_filters( 'wp_job_manager_job_listing_data_fields', array(
+		$this->job_listing_fields = apply_filters( 'job_manager_job_listing_data_fields', array(
 			'_job_location' => array(
 				'label' => __( 'Job location', 'job_manager' ),
 				'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'job_manager' ),
@@ -180,9 +180,9 @@ class WP_Job_Manager_Writepanels {
 
 		echo '<div class="wp_job_manager_meta_data">';
 
-		wp_nonce_field( 'save_meta_data', 'wp_job_manager_nonce' );
+		wp_nonce_field( 'save_meta_data', 'job_manager_nonce' );
 
-		do_action( 'wp_job_manager_job_listing_data_start', $thepostid );
+		do_action( 'job_manager_job_listing_data_start', $thepostid );
 
 		foreach ( $this->job_listing_fields as $key => $field ) {
 			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
@@ -191,7 +191,7 @@ class WP_Job_Manager_Writepanels {
 				call_user_func( array( $this, 'input_' . $type ), $key, $field );
 		}
 
-		do_action( 'wp_job_manager_job_listing_data_end', $thepostid );
+		do_action( 'job_manager_job_listing_data_end', $thepostid );
 
 		echo '</div>';
 	}
@@ -209,11 +209,11 @@ class WP_Job_Manager_Writepanels {
 		if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) return;
 		if ( is_int( wp_is_post_revision( $post ) ) ) return;
 		if ( is_int( wp_is_post_autosave( $post ) ) ) return;
-		if ( empty($_POST['wp_job_manager_nonce']) || ! wp_verify_nonce( $_POST['wp_job_manager_nonce'], 'save_meta_data' ) ) return;
+		if ( empty($_POST['job_manager_nonce']) || ! wp_verify_nonce( $_POST['job_manager_nonce'], 'save_meta_data' ) ) return;
 		if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 		if ( $post->post_type != 'job_listing' ) return;
 
-		do_action( 'wp_job_manager_save_job_listing', $post_id, $post );
+		do_action( 'job_manager_save_job_listing', $post_id, $post );
 	}
 
 	/**

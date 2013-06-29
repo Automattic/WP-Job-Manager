@@ -34,7 +34,7 @@ function get_job_listing_categories() {
 }
 endif;
 
-if ( ! function_exists( 'wp_job_manager_encode_email' ) ) :
+if ( ! function_exists( 'job_manager_encode_email' ) ) :
 /**
  * Munge an email address
  *
@@ -82,7 +82,7 @@ function get_job_listing_rss_link( $args = array() ) {
 }
 endif;
 
-if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
+if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
  * Handle account creation.
  *

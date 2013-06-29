@@ -323,7 +323,7 @@ class WP_Job_Manager_CPT {
 					);
 				}
 
-				$admin_actions = apply_filters( 'wp_job_manager_admin_actions', $admin_actions, $post );
+				$admin_actions = apply_filters( 'job_manager_admin_actions', $admin_actions, $post );
 
 				foreach ( $admin_actions as $action ) {
 					$image = isset( $action['image_url'] ) ? $action['image_url'] : JOB_MANAGER_PLUGIN_URL . '/assets/images/icons/' . $action['action'] . '.png';

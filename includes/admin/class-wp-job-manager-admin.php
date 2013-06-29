@@ -33,10 +33,10 @@ class WP_Job_Manager_Admin {
 	public function admin_enqueue_scripts() {
 		global $job_manager;
 
-		wp_enqueue_style( 'wp_job_manager_admin_menu_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/menu.css' );
-		wp_enqueue_style( 'wp_job_manager_admin_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/admin.css' );
+		wp_enqueue_style( 'job_manager_admin_menu_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/menu.css' );
+		wp_enqueue_style( 'job_manager_admin_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/admin.css' );
 		wp_register_script( 'jquery-tiptip', JOB_MANAGER_PLUGIN_URL. '/assets/js/jquery-tiptip/jquery.tipTip.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
-		wp_enqueue_script( 'wp_job_manager_admin_js', JOB_MANAGER_PLUGIN_URL. '/assets/js/admin.min.js', array( 'jquery', 'jquery-tiptip' ), JOB_MANAGER_VERSION, true );
+		wp_enqueue_script( 'job_manager_admin_js', JOB_MANAGER_PLUGIN_URL. '/assets/js/admin.min.js', array( 'jquery', 'jquery-tiptip' ), JOB_MANAGER_VERSION, true );
 	}
 
 	/**
