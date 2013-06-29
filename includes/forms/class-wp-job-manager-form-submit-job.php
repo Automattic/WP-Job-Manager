@@ -44,10 +44,24 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		usort( self::$steps, array( __CLASS__, 'sort_by_priority' ) );
 
 		// Validate job ID if set
-		if ( self::$job_id && get_post_status( self::$job_id ) !== 'preview' ) {
+		if ( self::$job_id && ! in_array( get_post_status( self::$job_id ), apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ) ) ) {
 			self::$job_id = 0;
 			self::$step   = 0;
 		}
+	}
+
+	/**
+	 * Increase step from outside of the class
+	 */
+	public function next_step() {
+		self::$step ++;
+	}
+
+	/**
+	 * Decrease step from outside of the class
+	 */
+	public function previous_step() {
+		self::$step --;
 	}
 
 	/**
