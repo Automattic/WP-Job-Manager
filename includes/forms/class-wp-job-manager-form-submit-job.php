@@ -448,9 +448,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			setup_postdata( $post );
 
 			?>
-			<form method="post">
+			<form method="post" id="job_preview">
 				<h2 class="job_listing_preview_title">
-					<input type="submit" name="continue" id="preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'job_manager' ) ); ?>" />
+					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'job_manager' ) ); ?>" />
 					<input type="submit" name="edit_job" class="button" value="<?php _e( '&larr; Edit listing', 'job_manager' ); ?>" />
 					<input type="hidden" name="job_id" value="<?php echo esc_attr( self::$job_id ); ?>" />
 					<input type="hidden" name="step" value="<?php echo esc_attr( self::$step ); ?>" />
