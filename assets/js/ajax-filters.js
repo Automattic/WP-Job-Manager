@@ -43,6 +43,13 @@ jQuery(document).ready(function($) {
 				if ( response ) {
 					try {
 
+						// Get the valid JSON only from the returned string
+						if ( response.indexOf("<!--WPJM-->") >= 0 )
+							response = response.split("<!--WPJM-->")[1]; // Strip off before WPJM
+
+						if ( response.indexOf("<!--WPJM_END-->") >= 0 )
+							response = response.split("<!--WPJM_END-->")[0]; // Strip off anything after WPJM_END
+
 						var result = $.parseJSON( response );
 
 						if ( result.showing )

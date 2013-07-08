@@ -163,7 +163,9 @@ class WP_Job_Manager_Ajax {
 
 		$result['max_num_pages'] = $jobs->max_num_pages;
 
+		echo '<!--WPJM-->';
 		echo json_encode( $result );
+		echo '<!--WPJM_END-->';
 
 		die();
 	}
