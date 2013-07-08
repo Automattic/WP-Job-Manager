@@ -16,6 +16,9 @@ global $job_manager;
 
 	<?php if ( job_manager_user_can_post_job() ) : ?>
 
+		<!-- Job Information Fields -->
+		<?php do_action( 'submit_job_form_job_fields_start' ); ?>
+
 		<?php foreach ( $job_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
 				<label for="<?php esc_attr_e( $key ); ?>"><?php echo $field['label'] . ( $field['required'] ? '' : ' <small>' . __( '(optional)', 'job_manager' ) . '</small>' ); ?></label>
@@ -25,7 +28,12 @@ global $job_manager;
 			</fieldset>
 		<?php endforeach; ?>
 
+		<?php do_action( 'submit_job_form_job_fields_end' ); ?>
+
+		<!-- Company Information Fields -->
 		<h2><?php _e( 'Company details', 'job_manager' ); ?></h2>
+
+		<?php do_action( 'submit_job_form_company_fields_start' ); ?>
 
 		<?php foreach ( $company_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
@@ -35,6 +43,8 @@ global $job_manager;
 				</div>
 			</fieldset>
 		<?php endforeach; ?>
+
+		<?php do_action( 'submit_job_form_company_fields_end' ); ?>
 
 		<p>
 			<?php wp_nonce_field( 'submit_form_posted' ); ?>
