@@ -108,5 +108,3 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		}
 	}
 }
-
-WP_Job_Manager_Form_Edit_Job::init();

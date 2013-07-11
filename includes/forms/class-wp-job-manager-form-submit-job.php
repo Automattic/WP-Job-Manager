@@ -544,5 +544,3 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		return $pathdata;
 	}
 }
-
-WP_Job_Manager_Form_Submit_Job::init();
