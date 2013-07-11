@@ -160,7 +160,7 @@ function get_the_job_status( $post = null ) {
  * @param  object $post
  * @return boolean
  */
-function is_position_filled( $post = null  ) {
+function is_position_filled( $post = null ) {
 	$post = get_post( $post );
 
 	return $post->_filled ? true : false;
@@ -172,8 +172,8 @@ function is_position_filled( $post = null  ) {
  * @access public
  * @return void
  */
-function the_job_permalink() {
-	echo get_the_job_permalink();
+function the_job_permalink( $post = null ) {
+	echo get_the_job_permalink( $post );
 }
 
 /**
@@ -195,7 +195,7 @@ function get_the_job_permalink( $post = null ) {
  *
  * @access public
  * @param mixed $post (default: null)
- * @return string
+ * @return object
  */
 function get_the_job_application_method( $post = null ) {
 	$post = get_post( $post );
@@ -225,8 +225,8 @@ function get_the_job_application_method( $post = null ) {
  * @access public
  * @return void
  */
-function the_job_type() {
-	if ( $job_type = get_the_job_type() )
+function the_job_type( $post = null ) {
+	if ( $job_type = get_the_job_type( $post ) )
 		echo $job_type->name;
 }
 
@@ -258,8 +258,8 @@ function get_the_job_type( $post = null ) {
  * @param  boolean $map_link whether or not to link to the map on google maps
  * @return [type]
  */
-function the_job_location( $map_link = true ) {
-	$location = get_the_job_location();
+function the_job_location( $map_link = true, $post = null ) {
+	$location = get_the_job_location( $post );
 
 	if ( $location ) {
 		if ( $map_link )
@@ -294,15 +294,15 @@ function get_the_job_location( $post = null ) {
  * @param mixed $default (default: null)
  * @return void
  */
-function the_company_logo( $size = 'thumbnail', $default = null ) {
+function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) {
 	global $job_manager;
 
-	$logo = get_the_company_logo();
+	$logo = get_the_company_logo( $post );
 	if ( $logo )
 		echo '<img src="' . $logo . '" alt="Logo" />';
 	elseif ( $default )
 		echo '<img src="' . $default . '" alt="Logo" />';
-	elseif ( is_null( $default ) )
+	else
 		echo '<img src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' . '" alt="Logo" />';
 }
 
@@ -328,8 +328,8 @@ function get_the_company_logo( $post = null ) {
  * @param mixed $id (default: null)
  * @return void
  */
-function the_company_name( $before = '', $after = '', $echo = true ) {
-	$company_name = get_the_company_name();
+function the_company_name( $before = '', $after = '', $echo = true, $post = null ) {
+	$company_name = get_the_company_name( $post );
 
 	if ( strlen( $company_name ) == 0 )
 		return;
@@ -380,8 +380,8 @@ function get_the_company_website( $post = null ) {
  * @param mixed $id (default: null)
  * @return void
  */
-function the_company_tagline( $before = '', $after = '', $echo = true ) {
-	$company_tagline = get_the_company_tagline();
+function the_company_tagline( $before = '', $after = '', $echo = true, $post = null ) {
+	$company_tagline = get_the_company_tagline( $post );
 
 	if ( strlen( $company_tagline ) == 0 )
 		return;
@@ -402,8 +402,9 @@ function the_company_tagline( $before = '', $after = '', $echo = true ) {
  * @param int $post (default: 0)
  * @return void
  */
-function get_the_company_tagline( $post = 0 ) {
+function get_the_company_tagline( $post = null ) {
 	$post = get_post( $post );
+
 	if ( $post->post_type !== 'job_listing' )
 		return;
 
@@ -417,8 +418,8 @@ function get_the_company_tagline( $post = 0 ) {
  * @param mixed $id (default: null)
  * @return void
  */
-function the_company_twitter( $before = '', $after = '', $echo = true ) {
-	$company_twitter = get_the_company_twitter();
+function the_company_twitter( $before = '', $after = '', $echo = true, $post = null ) {
+	$company_twitter = get_the_company_twitter( $post );
 
 	if ( strlen( $company_twitter ) == 0 )
 		return;
@@ -439,7 +440,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true ) {
  * @param int $post (default: 0)
  * @return void
  */
-function get_the_company_twitter( $post = 0 ) {
+function get_the_company_twitter( $post = null ) {
 	$post = get_post( $post );
 	if ( $post->post_type !== 'job_listing' )
 		return;
