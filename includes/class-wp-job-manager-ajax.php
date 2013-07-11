@@ -23,10 +23,18 @@ class WP_Job_Manager_Ajax {
 
 		ob_start();
 
-		$search_location  = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
-		$search_keywords  = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
-		$search_category  = isset( $_POST['search_category'] ) ? sanitize_text_field( stripslashes( $_POST['search_category'] ) ) : '';
-		$filter_job_types = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : array();
+		$search_location   = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
+		$search_keywords   = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
+		$search_categories = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
+		$filter_job_types  = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : array();
+
+		if ( is_array( $search_categories ) ) {
+			$search_categories = array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) );
+		} else {
+			$search_categories = array( sanitize_text_field( stripslashes( $search_categories ) ), 0 );
+		}
+
+		$search_categories = array_filter( $search_categories );
 
 		$args = array(
 			'post_type'           => 'job_listing',
@@ -78,11 +86,11 @@ class WP_Job_Manager_Ajax {
 		}
 
 		// Category search
-		if ( $search_category ) {
+		if ( $search_categories ) {
 			$args['tax_query'][] = array(
 				'taxonomy' => 'job_listing_category',
 				'field'    => 'slug',
-				'terms'    => array( $search_category, 0 )
+				'terms'    => $search_categories + array( 0 )
 			);
 		}
 
@@ -110,7 +118,7 @@ class WP_Job_Manager_Ajax {
 		// Generate 'showing' text
 		$types = get_job_listing_types();
 
-		if ( sizeof( $filter_job_types ) > 0 && ( sizeof( $filter_job_types ) !== sizeof( $types ) || $search_keywords || $search_location || $search_category ) ) {
+		if ( sizeof( $filter_job_types ) > 0 && ( sizeof( $filter_job_types ) !== sizeof( $types ) || $search_keywords || $search_location || $search_categories ) ) {
 			$showing_types = array();
 			$unmatched     = false;
 
@@ -131,18 +139,21 @@ class WP_Job_Manager_Ajax {
 				$showing_types .= " &amp; $last ";
 			}
 
-			$showing_category = '';
+			$showing_categories = array();
 
-			if ( $search_category  ) {
-				$category = get_term_by( 'slug', $search_category, 'job_listing_category' );
-				if ( ! is_wp_error( $category ) )
-					$showing_category = $category->name . ' ';
+			if ( $search_categories ) {
+				foreach ( $search_categories as $category ) {
+					$category = get_term_by( 'slug', $category, 'job_listing_category' );
+
+					if ( ! is_wp_error( $category ) )
+						$showing_categories[] = $category->name;
+				}
 			}
 
 			if ( $search_keywords ) {
-				$showing_jobs  = sprintf( __( 'Showing %s&ldquo;%s&rdquo; %sjobs', 'job_manager' ), $showing_types, $search_keywords, $showing_category );
+				$showing_jobs  = sprintf( __( 'Showing %s&ldquo;%s&rdquo; %sjobs', 'job_manager' ), $showing_types, $search_keywords, implode( ', ', $showing_categories ) );
 			} else {
-				$showing_jobs  = sprintf( __( 'Showing all %s%sjobs', 'job_manager' ), $showing_types, $showing_category );
+				$showing_jobs  = sprintf( __( 'Showing all %s%sjobs', 'job_manager' ), $showing_types, implode( ', ', $showing_categories ) . ' ' );
 			}
 
 			$showing_location  = $search_location ? sprintf( ' ' . __( 'located in &ldquo;%s&rdquo;', 'job_manager' ), $search_location ) : '';
@@ -155,10 +166,10 @@ class WP_Job_Manager_Ajax {
 
 		// Generate RSS link
 		$result['rss'] = get_job_listing_rss_link( array(
-			'type'         => implode( ',', $filter_job_types ),
-			'location'     => $search_location,
-			'job_category' => $search_category,
-			's'            => $search_keywords,
+			'type'           => implode( ',', $filter_job_types ),
+			'location'       => $search_location,
+			'job_categories' => implode( ',', $search_categories ),
+			's'              => $search_keywords,
 		) );
 
 		$result['max_num_pages'] = $jobs->max_num_pages;

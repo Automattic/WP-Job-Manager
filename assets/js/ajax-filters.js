@@ -23,11 +23,13 @@ jQuery(document).ready(function($) {
 			filter_job_type.push( $(this).val() );
 		});
 
+		var categories = form.find('select[name^=search_categories], input[name^=search_categories]').map(function () { return $(this).val(); }).get();
+
 		var data = {
 			action: 			'job_manager_get_listings',
 			search_keywords: 	form.find('input[name=search_keywords]').val(),
 			search_location: 	form.find('input[name=search_location]').val(),
-			search_category:    form.find('select[name=search_category]').val(),
+			search_categories:  categories,
 			filter_job_type: 	filter_job_type,
 			per_page: 			form.find('input[name=per_page]').val(),
 			orderby: 			form.find('input[name=orderby]').val(),
@@ -85,7 +87,7 @@ jQuery(document).ready(function($) {
 		} );
 	}
 
-	$( '#search_keywords, #search_location, .job_types input, #search_category' ).change( function() {
+	$( '#search_keywords, #search_location, .job_types input, #search_categories' ).change( function() {
 		var target = $(this).closest( 'div.job_listings' );
 
 		update_job_listing_results( 1, false, target );
@@ -97,6 +99,7 @@ jQuery(document).ready(function($) {
 
 		form.find('input[name=search_keywords]').val('');
 		form.find('input[name=search_location]').val('');
+		form.find('select[name^=search_categories]').val('');
 		$('input[name="filter_job_type[]"]', form).attr('checked', 'checked');
 
 		update_job_listing_results( 1, false, target );

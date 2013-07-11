@@ -257,11 +257,11 @@ class WP_Job_Manager_Post_Types {
 			)
 		);
 
-		if ( $_GET['job_category'] ) {
+		if ( $_GET['job_categories'] ) {
 			$args['tax_query'][] = array(
 				'taxonomy' => 'job_listing_category',
 				'field'    => 'slug',
-				'terms'    => array( sanitize_title( $_GET['job_category'] ), 0 )
+				'terms'    => explode( ',', sanitize_text_field( $_GET['job_categories'] ) ) + array( 0 )
 			);
 		}
 
