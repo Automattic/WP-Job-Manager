@@ -63,7 +63,7 @@ class WP_Job_Manager_Settings {
 							'std' 		=> '1',
 							'label' 	=> __( 'Account creation', 'job_manager' ),
 							'cb_label'  => __( 'Allow account creation', 'job_manager' ),
-							'desc'		=> __( 'If enable, non-logged in users will be able to create an account by entering their email address on the job submission form.', 'job_manager' ),
+							'desc'		=> __( 'If enabled, non-logged in users will be able to create an account by entering their email address on the job submission form.', 'job_manager' ),
 							'type'      => 'checkbox'
 						),
 						array(
