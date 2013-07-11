@@ -13,6 +13,13 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
 		add_action( 'pending_to_publish', array( $this, 'set_expirey' ) );
 		add_action( 'preview_to_publish', array( $this, 'set_expirey' ) );
+
+		add_filter( 'the_job_description', 'wptexturize'        );
+		add_filter( 'the_job_description', 'convert_smilies'    );
+		add_filter( 'the_job_description', 'convert_chars'      );
+		add_filter( 'the_job_description', 'wpautop'            );
+		add_filter( 'the_job_description', 'shortcode_unautop'  );
+		add_filter( 'the_job_description', 'prepend_attachment' );
 	}
 
 	/**

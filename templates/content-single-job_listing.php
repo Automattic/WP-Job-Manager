@@ -29,7 +29,7 @@
 			<?php the_company_tagline( '<p class="tagline">', '</p>' ); ?>
 		</div>
 
-		<?php the_content(); ?>
+		<?php echo apply_filters( 'the_job_description', get_the_content() ); ?>
 
 		<?php if ( ! is_position_filled() && $post->post_status !== 'preview' ) get_job_manager_template( 'job-application.php' ); ?>
 
