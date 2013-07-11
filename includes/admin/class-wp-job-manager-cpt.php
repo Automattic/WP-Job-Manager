@@ -261,7 +261,7 @@ class WP_Job_Manager_CPT {
 					echo '<span class="job-type ' . $type->slug . '">' . $type->name . '</span>';
 			break;
 			case "position" :
-				edit_post_link( $post->post_title, '<strong>', '</strong>', $post->ID );
+				edit_post_link( '#' . $post->ID . ' &ndash; ' . $post->post_title, '<strong>', '</strong>', $post->ID );
 				echo '<span class="location">';
 				the_job_location( $post );
 				echo '</span>';
