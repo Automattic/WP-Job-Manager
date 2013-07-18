@@ -13,8 +13,16 @@ class WP_Job_Manager_Writepanels {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ), 1, 2 );
 		add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 1, 2 );
+	}
 
-		$this->job_listing_fields = apply_filters( 'job_manager_job_listing_data_fields', array(
+	/**
+	 * job_listing_fields function.
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function job_listing_fields() {
+		return apply_filters( 'job_manager_job_listing_data_fields', array(
 			'_job_location' => array(
 				'label' => __( 'Job location', 'job_manager' ),
 				'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'job_manager' ),
@@ -145,6 +153,28 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
+	 * input_text function.
+	 *
+	 * @access private
+	 * @param mixed $key
+	 * @param mixed $field
+	 * @return void
+	 */
+	private function input_textarea( $key, $field ) {
+		global $thepostid;
+
+		if ( empty( $field['value'] ) )
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		?>
+		<p class="form-field">
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
+			<textarea name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>"><?php echo esc_html( $field['value'] ); ?></textarea>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+		</p>
+		<?php
+	}
+
+	/**
 	 * input_checkbox function.
 	 *
 	 * @access private
@@ -184,11 +214,13 @@ class WP_Job_Manager_Writepanels {
 
 		do_action( 'job_manager_job_listing_data_start', $thepostid );
 
-		foreach ( $this->job_listing_fields as $key => $field ) {
+		foreach ( $this->job_listing_fields() as $key => $field ) {
 			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
 
 			if ( method_exists( $this, 'input_' . $type ) )
 				call_user_func( array( $this, 'input_' . $type ), $key, $field );
+			else
+				do_action( 'job_manager_input_' . $type, $key, $field );
 		}
 
 		do_action( 'job_manager_job_listing_data_end', $thepostid );
@@ -227,7 +259,7 @@ class WP_Job_Manager_Writepanels {
 	public function save_job_listing_data( $post_id, $post ) {
 		global $wpdb;
 
-		foreach ( $this->job_listing_fields as $key => $field )
+		foreach ( $this->job_listing_fields() as $key => $field )
 			if ( isset( $_POST[ $key ] ) )
 				update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
 			elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' )
