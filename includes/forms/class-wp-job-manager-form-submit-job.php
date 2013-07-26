@@ -435,7 +435,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			update_user_meta( get_current_user_id(), '_company_logo', $values['company']['company_logo'] );
 		}
 
-		do_action( 'job_manager_update_job_data', $job_id, $values );
+		do_action( 'job_manager_update_job_data', self::$job_id, $values );
 	}
 
 	/**
