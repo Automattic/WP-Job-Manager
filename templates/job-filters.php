@@ -2,6 +2,8 @@
 <form class="job_filters">
 
 	<div class="search_jobs">
+		<?php do_action( 'job_manager_job_filters_search_jobs_start' ); ?>
+
 		<div class="search_keywords">
 			<label for="search_keywords"><?php _e( 'Keywords', 'job_manager' ); ?></label>
 			<input type="text" name="search_keywords" id="search_keywords" placeholder="<?php _e( 'All Jobs', 'job_manager' ); ?>" />
@@ -31,6 +33,8 @@
 		<input type="hidden" name="per_page" value="<?php echo esc_attr( $per_page ) ; ?>" />
 		<input type="hidden" name="orderby" value="<?php echo esc_attr( $orderby ) ; ?>" />
 		<input type="hidden" name="order" value="<?php echo esc_attr( $order ) ; ?>" />
+
+		<?php do_action( 'job_manager_job_filters_search_jobs_end' ); ?>
 	</div>
 
 	<?php if ( ! is_tax( 'job_listing_type' ) ) : ?>
