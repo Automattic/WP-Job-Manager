@@ -41,11 +41,11 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @access public
 	 * @param mixed $key
-	 * @return void
+	 * @return array
 	 */
 	public static function get_fields( $key ) {
 		if ( empty( self::$fields[ $key ] ) )
-			return;
+			return array();
 
 		$fields = self::$fields[ $key ];
 
