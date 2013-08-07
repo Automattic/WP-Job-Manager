@@ -185,6 +185,9 @@
 	}
 
 }
+div.job_listings {
+	margin-bottom: 1em;
+}
 ul.job_listings {
 	padding: 0;
 	margin: 0 !important;
@@ -510,18 +513,25 @@ ul.job_listings {
 			label {
 				display: none;
 			}
-			&.search_keywords {
+			&.search_keywords, &.filter_first {
 				float: left;
 				padding-right: .5em;
 			}
-			&.search_location {
+			&.search_location, &.filter_last {
 				float: right;
 				padding-left: .5em;
 			}
-			&.search_categories {
+			&.search_categories, &.filter_wide {
 				padding-top: .5em;
 				clear: both;
 				width: 100%;
+			}
+			a {
+				padding: .25em;
+			}
+			a.active {
+				background: #ddd;
+				text-decoration: none;
 			}
 		}
 		input, select {

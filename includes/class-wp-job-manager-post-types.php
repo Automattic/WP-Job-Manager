@@ -257,7 +257,7 @@ class WP_Job_Manager_Post_Types {
 			)
 		);
 
-		if ( $_GET['job_categories'] ) {
+		if ( ! empty( $_GET['job_categories'] ) ) {
 			$args['tax_query'][] = array(
 				'taxonomy' => 'job_listing_category',
 				'field'    => 'slug',
@@ -265,7 +265,7 @@ class WP_Job_Manager_Post_Types {
 			);
 		}
 
-		query_posts( $args );
+		query_posts( apply_filters( 'job_feed_args', $args ) );
 
 		do_feed_rss2( false );
 	}

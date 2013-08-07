@@ -160,20 +160,20 @@ class WP_Job_Manager_Shortcodes {
 
 		ob_start();
 
-		extract( shortcode_atts( array(
+		extract( $atts = shortcode_atts( apply_filters( 'job_manager_output_jobs_defaults', array(
 			'per_page'        => get_option( 'job_manager_per_page' ),
 			'orderby'         => 'date',
 			'order'           => 'desc',
 			'show_filters'    => true,
 			'show_categories' => get_option( 'job_manager_enable_categories' ),
 			'categories'      => ''
-		), $atts ) );
+		) ), $atts ) );
 
 		$categories = array_filter( array_map( 'trim', explode( ',', $categories ) ) );
 
 		if ( $show_filters && $show_filters !== 'false' ) {
 
-			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories ) );
+			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'atts' => $atts ) );
 
 			?><ul class="job_listings"></ul><a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'job_manager' ); ?></strong></a><?php
 

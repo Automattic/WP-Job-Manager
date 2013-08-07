@@ -94,7 +94,7 @@ class WP_Job_Manager_Ajax {
 			);
 		}
 
-		$jobs = new WP_Query( $args );
+		$jobs = new WP_Query( apply_filters( 'job_manager_get_listings', $args ) );
 
 		$result = array();
 		$result['found_jobs'] = false;
@@ -118,7 +118,7 @@ class WP_Job_Manager_Ajax {
 		// Generate 'showing' text
 		$types = get_job_listing_types();
 
-		if ( sizeof( $filter_job_types ) > 0 && ( sizeof( $filter_job_types ) !== sizeof( $types ) || $search_keywords || $search_location || $search_categories ) ) {
+		if ( sizeof( $filter_job_types ) > 0 && ( sizeof( $filter_job_types ) !== sizeof( $types ) || $search_keywords || $search_location || $search_categories || apply_filters( 'job_manager_get_listings_custom_filter', false ) ) ) {
 			$showing_types = array();
 			$unmatched     = false;
 
@@ -158,19 +158,19 @@ class WP_Job_Manager_Ajax {
 
 			$showing_location  = $search_location ? sprintf( ' ' . __( 'located in &ldquo;%s&rdquo;', 'job_manager' ), $search_location ) : '';
 
-			$result['showing'] = $showing_jobs . $showing_location;
+			$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $showing_jobs . $showing_location );
 
 		} else {
 			$result['showing'] = '';
 		}
 
 		// Generate RSS link
-		$result['rss'] = get_job_listing_rss_link( array(
+		$result['rss'] = get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
 			'type'           => implode( ',', $filter_job_types ),
 			'location'       => $search_location,
 			'job_categories' => implode( ',', $search_categories ),
 			's'              => $search_keywords,
-		) );
+		) ) );
 
 		$result['max_num_pages'] = $jobs->max_num_pages;
 

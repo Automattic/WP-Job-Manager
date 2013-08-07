@@ -69,6 +69,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			}
 		}
 
+		self::$fields = apply_filters( 'submit_job_form_fields_get_job_data', self::$fields, $job );
+
 		get_job_manager_template( 'job-submit.php', array(
 			'form'               => self::$form_name,
 			'job_id'             => self::get_job_id(),
