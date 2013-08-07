@@ -205,6 +205,9 @@ function get_the_job_application_method( $post = null ) {
 	$method = new stdClass();
 	$apply  = $post->_application;
 
+	if ( empty( $apply ) )
+		return false;
+
 	if ( strstr( $apply, '@' ) && is_email( $apply ) ) {
 		$method->type      = 'email';
 		$method->raw_email = $apply;
