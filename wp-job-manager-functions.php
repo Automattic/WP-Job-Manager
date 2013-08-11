@@ -1,4 +1,93 @@
 <?php
+if ( ! function_exists( 'get_job_listings' ) ) :
+/**
+ * Queries job listings with certain criteria and returns them
+ *
+ * @access public
+ * @return void
+ */
+function get_job_listings( $args = array() ) {
+	global $wpdb;
+
+	$args = wp_parse_args( $args, array(
+		'search_location'   => '',
+		'search_keywords'   => '',
+		'search_categories' => array(),
+		'job_types'         => array(),
+		'offset'            => '',
+		'posts_per_page'    => '-1',
+		'orderby'           => 'date',
+		'order'             => 'DESC'
+	) );
+
+	$query_args = array(
+		'post_type'           => 'job_listing',
+		'post_status'         => 'publish',
+		'ignore_sticky_posts' => 1,
+		'offset'              => absint( $args['offset'] ),
+		'posts_per_page'      => intval( $args['posts_per_page'] ),
+		'orderby'             => $args['orderby'],
+		'order'               => $args['order'],
+		'tax_query'           => array(),
+		'meta_query'          => array()
+	);
+
+	if ( ! empty( $args['job_types'] ) )
+		$query_args['tax_query'][] = array(
+			'taxonomy' => 'job_listing_type',
+			'field'    => 'slug',
+			'terms'    => $args['job_types']
+		);
+
+	if ( ! empty( $args['search_categories'] ) )
+		$query_args['tax_query'][] = array(
+			'taxonomy' => 'job_listing_category',
+			'field'    => 'slug',
+			'terms'    => $args['search_categories']
+		);
+
+	if ( get_option( 'job_manager_hide_filled_positions' ) == 1 )
+		$query_args['meta_query'][] = array(
+			'key'     => '_filled',
+			'value'   => '1',
+			'compare' => '!='
+		);
+
+	if ( $args['search_location'] )
+		$query_args['meta_query'][] = array(
+			'key'     => '_job_location',
+			'value'   => $args['search_location'],
+			'compare' => 'LIKE'
+		);
+
+	// Keyword search - search meta as well as post content
+	if ( $args['search_keywords'] ) {
+		$post_ids = $wpdb->get_col( $wpdb->prepare( "
+		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
+		    WHERE meta_value LIKE '%%%s%%'
+		", $args['search_keywords'] ) );
+
+		$post_ids = $post_ids + $wpdb->get_col( $wpdb->prepare( "
+		    SELECT DISTINCT ID FROM {$wpdb->posts}
+		    WHERE post_title LIKE '%%%s%%'
+		    OR post_content LIKE '%%%s%%'
+		", $args['search_keywords'], $args['search_keywords'] ) );
+
+		$query_args['post__in'] = $post_ids + array( 0 );
+	}
+
+	$query_args = apply_filters( 'job_manager_get_listings', $query_args );
+
+	if ( empty( $query_args['meta_query'] ) )
+		unset( $query_args['meta_query'] );
+
+	if ( empty( $query_args['tax_query'] ) )
+		unset( $query_args['tax_query'] );
+
+	return new WP_Query( $query_args );
+}
+endif;
+
 if ( ! function_exists( 'get_job_listing_types' ) ) :
 /**
  * Outputs a form to submit a new job to the site from the frontend.
