@@ -123,41 +123,6 @@ function get_job_listing_categories() {
 }
 endif;
 
-if ( ! function_exists( 'job_manager_encode_email' ) ) :
-/**
- * Munge an email address
- *
- * @param  string $email
- * @return string
- */
-function wp_job_manager_encode_email( $email ) {
-    $encmail = "";
-    for ( $i = 0; $i < strlen( $email ); $i++ ) {
-    	$char   = substr( $email, $i, 1 );
-
-    	if ( $char == '@' ) {
-    		$encmail .= ' [at] ';
-    	} elseif ( $char == '.' ) {
-    		$encmail .= ' [dot] ';
-    	} else {
-	        $encMod = rand( 0, 2 );
-	        switch ( $encMod ) {
-	        	case 0: // None
-	           		$encmail .= $char;
-	            break;
-	       		case 1: // Decimal
-	            	$encmail .= "&#" . ord( $char ) . ';';
-	            break;
-	        	case 2: // Hexadecimal
-	            	$encmail .= "&#x" . dechex( ord( $char ) ) . ';';
-	            break;
-	        }
-   		}
-    }
-	return $encmail;
-}
-endif;
-
 if ( ! function_exists( 'get_job_listing_rss_link' ) ) :
 /**
  * Get the Job Listing RSS link

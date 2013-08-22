@@ -211,7 +211,7 @@ function get_the_job_application_method( $post = null ) {
 	if ( strstr( $apply, '@' ) && is_email( $apply ) ) {
 		$method->type      = 'email';
 		$method->raw_email = $apply;
-		$method->email     = wp_job_manager_encode_email( $apply );
+		$method->email     = antispambot( $apply );
 		$method->subject   = 'Job Application via "' . $post->post_title . '" listing on ' . home_url();
 	} else {
 		if ( strpos( $apply, 'http' ) !== 0 )
