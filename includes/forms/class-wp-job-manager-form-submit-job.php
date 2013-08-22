@@ -67,7 +67,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	/**
 	 * Sort array by priority value
 	 */
-	private function sort_by_priority( $a, $b ) {
+	private static function sort_by_priority( $a, $b ) {
 		return $a['priority'] - $b['priority'];
 	}
 
@@ -186,7 +186,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @return array of data
 	 */
-	protected function get_posted_fields() {
+	protected static function get_posted_fields() {
 		self::init_fields();
 
 		$values = array();
@@ -222,7 +222,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @return bool on success, WP_ERROR on failure
 	 */
-	protected function validate_fields( $values ) {
+	protected static function validate_fields( $values ) {
 		foreach ( self::$fields as $group_key => $fields ) {
 			foreach ( $fields as $key => $field ) {
 				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) )
@@ -239,7 +239,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @access private
 	 * @return void
 	 */
-	private function job_types() {
+	private static function job_types() {
 		$options = array();
 		$terms   = get_job_listing_types();
 		foreach ( $terms as $term )
@@ -253,7 +253,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @access private
 	 * @return void
 	 */
-	private function job_categories() {
+	private static function job_categories() {
 		$options = array();
 		$terms   = get_job_listing_categories();
 		foreach ( $terms as $term )
@@ -391,7 +391,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  string $post_content
 	 * @param  string $status
 	 */
-	protected function save_job( $post_title, $post_content, $status = 'preview' ) {
+	protected static function save_job( $post_title, $post_content, $status = 'preview' ) {
 		$job_data = array(
 			'post_title'     => $post_title,
 			'post_content'   => $post_content,
@@ -413,7 +413,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @param  array $values
 	 */
-	protected function update_job_data( $values ) {
+	protected static function update_job_data( $values ) {
 
 		wp_set_object_terms( self::$job_id, array( $values['job']['job_type'] ), 'job_listing_type', false );
 
@@ -455,14 +455,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			?>
 			<form method="post" id="job_preview">
-				<h2 class="job_listing_preview_title">
+				<div class="job_listing_preview_title">
 					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'job_manager' ) ); ?>" />
 					<input type="submit" name="edit_job" class="button" value="<?php _e( '&larr; Edit listing', 'job_manager' ); ?>" />
 					<input type="hidden" name="job_id" value="<?php echo esc_attr( self::$job_id ); ?>" />
 					<input type="hidden" name="step" value="<?php echo esc_attr( self::$step ); ?>" />
 					<input type="hidden" name="job_manager_form" value="<?php echo self::$form_name; ?>" />
-					<?php _e( 'Preview', 'job_manager' ); ?>
-				</h2>
+					<h2>
+						<?php _e( 'Preview', 'job_manager' ); ?>
+					</h2>
+				</div>
 				<div class="job_listing_preview single_job_listing">
 					<h1><?php the_title(); ?></h1>
 					<?php get_job_manager_template_part( 'content-single', 'job_listing' ); ?>

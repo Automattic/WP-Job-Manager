@@ -122,6 +122,7 @@
 		margin: 0 0 1em 0;
 		padding: 0 0 1em 0;
 		line-height: 2em;
+		border: 0;
 		border-bottom: 1px solid #eee;
 		.clearfix;
 		label {
@@ -596,12 +597,16 @@ ul.job_listings {
 }
 .job_listing_preview_title, .entry-content .job_listing_preview_title {
 	padding: .5em 1em;
-	margin-bottom: 0;
 	vertical-align: middle;
 	position: relative;
 	background: #eee;
+	h2 {
+		margin: 0;
+		clear: none;
+	}
 	.button {
 		float: right;
+		margin-left: .25em;
 	}
 }
 .job_summary_shortcode {
