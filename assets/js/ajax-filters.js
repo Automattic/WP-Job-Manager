@@ -124,8 +124,7 @@ jQuery(document).ready(function($) {
 
 	$( '.load_more_jobs' ).click(function() {
 		var target = $(this).closest( 'div.job_listings' );
-
-		page = $(this).data( 'page' );
+		var page   = $(this).data( 'page' );
 
 		if ( ! page )
 			page = 1;
