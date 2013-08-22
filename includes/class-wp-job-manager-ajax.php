@@ -116,12 +116,12 @@ class WP_Job_Manager_Ajax {
 		}
 
 		// Generate RSS link
-		$result['rss'] = get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
-			'type'           => implode( ',', $filter_job_types ),
-			'location'       => $search_location,
-			'job_categories' => implode( ',', $search_categories ),
-			's'              => $search_keywords,
-		) ) );
+		$result['showing_links'] = job_manager_get_filtered_links( array(
+			'filter_job_types'  => $filter_job_types,
+			'search_location'   => $search_location,
+			'search_categories' => $search_categories,
+			'search_keywords'   => $search_keywords
+		) );
 
 		$result['max_num_pages'] = $jobs->max_num_pages;
 

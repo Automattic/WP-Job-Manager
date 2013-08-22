@@ -69,14 +69,9 @@ jQuery(document).ready(function($) {
 						var result = $.parseJSON( response );
 
 						if ( result.showing )
-							$(showing).show().find('span').html( result.showing );
+							$(showing).show().html('').append( '<span>' + result.showing + '</span>' + result.showing_links );
 						else
 							$(showing).hide();
-
-						if ( result.rss )
-							$(showing).find('.rss_link').attr('href', result.rss).show();
-						else
-							$(showing).find('.rss_link').hide();
 
 						if ( result.html )
 							if ( append )

@@ -123,6 +123,38 @@ function get_job_listing_categories() {
 }
 endif;
 
+if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
+/**
+ * Shows links after filtering jobs
+ */
+function job_manager_get_filtered_links( $args = array() ) {
+
+	$links = apply_filters( 'job_manager_job_filters_showing_jobs_links', array(
+		'reset' => array(
+			'name' => __( 'Reset', 'job_manager' ),
+			'url'  => '#'
+		),
+		'rss_link' => array(
+			'name' => __( 'RSS', 'job_manager' ),
+			'url'  => get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
+				'type'           => implode( ',', $args['filter_job_types'] ),
+				'location'       => $args['search_location'],
+				'job_categories' => implode( ',', $args['search_categories'] ),
+				's'              => $args['search_keywords'],
+			) ) )
+		)
+	), $args );
+
+	$return = '';
+
+	foreach ( $links as $key => $link ) {
+		$return .= '<a href="' . esc_url( $link['url'] ) . '" class="' . esc_attr( $key ) . '">' . $link['name'] . '</a>';
+	}
+
+	return $return;
+}
+endif;
+
 if ( ! function_exists( 'job_manager_encode_email' ) ) :
 /**
  * Munge an email address

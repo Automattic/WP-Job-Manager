@@ -45,9 +45,5 @@
 		</ul>
 	<?php endif; ?>
 
-	<div class="showing_jobs">
-		<a href="#" class="reset"><?php _e( 'Reset', 'job_manager' ); ?></a>
-		<a href="#" class="rss_link"><?php _e( 'RSS', 'job_manager' ); ?></a>
-		<span></span>
-	</div>
+	<div class="showing_jobs"></div>
 </form>

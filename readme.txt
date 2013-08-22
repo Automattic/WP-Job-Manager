@@ -72,6 +72,15 @@ The manual installation method involves downloading the plugin and uploading it 
 
 == Changelog ==
 
+= 1.0.6 =
+* Tweaked css clearfixes
+* Use built in antispambot for encoding email.
+* job_manager_job_filters_showing_jobs_links filter
+* IE8 Apply filters JS fix
+* Fix spanish locale
+* Fixed strict standards errors
+* Improve 2013 Styles
+
 = 1.0.5 =
 * Added function to get listings by certain criteria.
 * Added ES translation.
