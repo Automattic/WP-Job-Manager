@@ -47,16 +47,17 @@ class WP_Job_Manager_Admin {
 	 */
 	public function admin_menu() {
 		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'job_manager' ), __( 'Settings', 'job_manager' ), 'manage_options', 'job-manager-settings', array( $this->settings_page, 'output' ) );
+
+		if ( apply_filters( 'job_manager_show_addons_page', true ) )
+			add_submenu_page(  'edit.php?post_type=job_listing', __( 'WP Job Manager Add-ons', 'job_manager' ),  __( 'Add-ons', 'job_manager' ) , 'manage_options', 'job-manager-addons', array( $this, 'addons_page' ) );
 	}
 
 	/**
-	 * admin_dashboard function.
-	 *
-	 * @access public
-	 * @return void
+	 * Output addons page
 	 */
-	public function admin_dashboard() {
-		include_once( 'class-dlm-admin-dashboard.php' );
+	public function addons_page() {
+		$addons = include( 'class-wp-job-manager-addons.php' );
+		$addons->output();
 	}
 }
 
