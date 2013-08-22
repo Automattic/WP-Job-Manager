@@ -102,7 +102,7 @@ jQuery(document).ready(function($) {
 		target.trigger( 'update_results', [ 1, false ] );
 	} ).change();
 
-	$( '.showing_jobs .reset' ).click( function() {
+	$( '.job_filters' ).on( 'click', '.reset', function() {
 		var target  = $(this).closest( 'div.job_listings' );
 		var form    = $(this).closest( 'form' );
 
