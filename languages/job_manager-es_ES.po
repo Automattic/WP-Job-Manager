@@ -78,7 +78,7 @@ msgstr "j M, Y @ H:i "
 msgid ""
 "Job listing draft updated. <a target=\"_blank\" href=\"%s\">Preview Job</a>"
 msgstr ""
-"Borrador de oferta laboral actualizada. <a target=\"_blank\" href=\"%2$s"
+"Borrador de oferta laboral actualizada. <a target=\"_blank\" href=\"%s"
 "\">Pre-visualizar oferta</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:143
