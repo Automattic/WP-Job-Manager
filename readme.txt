@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company
 Requires at least: 3.5
 Tested up to: 3.6
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -71,6 +71,10 @@ The manual installation method involves downloading the plugin and uploading it 
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.1.1 =
+* Improved accuracy of job search
+* Fixed category filter dropdown in admin
 
 = 1.1.0 =
 * Tweaked css clearfixes

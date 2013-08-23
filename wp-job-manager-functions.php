@@ -67,11 +67,13 @@ function get_job_listings( $args = array() ) {
 		    WHERE meta_value LIKE '%%%s%%'
 		", $args['search_keywords'] ) );
 
-		$post_ids = $post_ids + $wpdb->get_col( $wpdb->prepare( "
-		    SELECT DISTINCT ID FROM {$wpdb->posts}
+		$post_ids = array_merge( $post_ids, $wpdb->get_col( $wpdb->prepare( "
+		    SELECT ID FROM {$wpdb->posts}
 		    WHERE post_title LIKE '%%%s%%'
 		    OR post_content LIKE '%%%s%%'
-		", $args['search_keywords'], $args['search_keywords'] ) );
+		    AND post_type = 'job_listing'
+		    AND post_status = 'publish'
+		", $args['search_keywords'], $args['search_keywords'] ) ) );
 
 		$query_args['post__in'] = $post_ids + array( 0 );
 	}
