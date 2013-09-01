@@ -76,6 +76,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * job_manager_get_dashboard_jobs_args filter
 * Better handling of submit job steps.
 * Option to store the slug of the submit job page - used by addons.
+* Use :input in JS to support multiple input types if customised.
 
 = 1.1.1 =
 * Improved accuracy of job search

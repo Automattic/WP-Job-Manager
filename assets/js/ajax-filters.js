@@ -20,16 +20,16 @@ jQuery(document).ready(function($) {
 
 		var filter_job_type = new Array();
 
-		$('input[name="filter_job_type[]"]:checked', form).each(function() {
+		$(':input[name="filter_job_type[]"]:checked', form).each(function() {
 			filter_job_type.push( $(this).val() );
 		});
 
-		var categories = form.find('select[name^=search_categories], input[name^=search_categories]').map(function () { return $(this).val(); }).get();
+		var categories = form.find(':input[name^=search_categories], :input[name^=search_categories]').map(function () { return $(this).val(); }).get();
 
 		var keywords  = '';
 		var location  = '';
-		var $keywords = form.find('input[name=search_keywords]');
-		var $location = form.find('input[name=search_location]');
+		var $keywords = form.find(':input[name=search_keywords]');
+		var $location = form.find(':input[name=search_location]');
 
 		// Workaround placeholder scripts
 		if ( $keywords.val() != $keywords.attr( 'placeholder' ) )
@@ -44,9 +44,9 @@ jQuery(document).ready(function($) {
 			search_location: 	location,
 			search_categories:  categories,
 			filter_job_type: 	filter_job_type,
-			per_page: 			form.find('input[name=per_page]').val(),
-			orderby: 			form.find('input[name=orderby]').val(),
-			order: 			    form.find('input[name=order]').val(),
+			per_page: 			form.find(':input[name=per_page]').val(),
+			orderby: 			form.find(':input[name=orderby]').val(),
+			order: 			    form.find(':input[name=order]').val(),
 			page:               page,
 			form_data:          form.serialize()
 		};
@@ -106,10 +106,10 @@ jQuery(document).ready(function($) {
 		var target  = $(this).closest( 'div.job_listings' );
 		var form    = $(this).closest( 'form' );
 
-		form.find('input[name=search_keywords]').val('');
-		form.find('input[name=search_location]').val('');
-		form.find('select[name^=search_categories]').val('');
-		$('input[name="filter_job_type[]"]', form).attr('checked', 'checked');
+		form.find(':input[name=search_keywords]').val('');
+		form.find(':input[name=search_location]').val('');
+		form.find(':input[name^=search_categories]').val('');
+		$(':input[name="filter_job_type[]"]', form).attr('checked', 'checked');
 
 		target.trigger( 'reset' );
 		target.trigger( 'update_results', [ 1, false ] );
