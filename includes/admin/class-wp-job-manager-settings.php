@@ -95,6 +95,13 @@ class WP_Job_Manager_Settings {
 							'desc'       => __( 'How many <strong>days</strong> listings are live before expiring. Can be left blank to never expire.', 'job_manager' ),
 							'attributes' => array()
 						),
+						array(
+							'name' 		=> 'job_manager_submit_page_slug',
+							'std' 		=> '',
+							'label' 	=> __( 'Submit Page Slug', 'job_manager' ),
+							'desc'		=> __( 'Enter the slug of the page where you have placed the [job_submit_form] shortcode. This lets the plugin know where the form is located.', 'job_manager' ),
+							'type'      => 'input'
+						)
 					)
 				),
 			)
