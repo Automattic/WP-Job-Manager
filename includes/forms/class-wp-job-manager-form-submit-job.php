@@ -9,17 +9,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected static $job_id;
 	protected static $preview_job;
 	protected static $steps;
-	protected static $step;
+	protected static $step = 0;
 
 	/**
 	 * Init form
 	 */
 	public static function init() {
 		add_action( 'wp', array( __CLASS__, 'process' ) );
-
-		// Get step/job
-		self::$step   = ! empty( $_REQUEST['step'] ) ? max( absint( $_REQUEST['step'] ), 0 ) : 0;
-		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
 		self::$steps  = (array) apply_filters( 'submit_job_steps', array(
 			'submit' => array(
@@ -41,7 +37,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			)
 		) );
 
-		usort( self::$steps, array( __CLASS__, 'sort_by_priority' ) );
+		uasort( self::$steps, array( __CLASS__, 'sort_by_priority' ) );
+
+		// Get step/job
+		if ( ! empty( $_REQUEST['step'] ) ) {
+			self::$step = is_numeric( $_REQUEST['step'] ) ? max( absint( $_REQUEST['step'] ), 0 ) : array_search( $_REQUEST['step'], array_keys( self::$steps ) );
+		}
+		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
 		// Validate job ID if set
 		if ( self::$job_id && ! in_array( get_post_status( self::$job_id ), apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ) ) ) {
