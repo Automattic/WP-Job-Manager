@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company
 Requires at least: 3.5
 Tested up to: 3.6
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -71,6 +71,10 @@ The manual installation method involves downloading the plugin and uploading it 
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.1.3 =
+* Corrected form field label
+* Added french translation by Remi Corson
 
 = 1.1.2 =
 * job_manager_get_dashboard_jobs_args filter
