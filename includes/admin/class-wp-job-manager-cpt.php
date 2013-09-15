@@ -234,10 +234,11 @@ class WP_Job_Manager_CPT {
 		$columns["position"]             = __( "Position", "job_manager" );
 		$columns["company"]              = __( "Company", "job_manager" );
 		$columns["job_posted"]           = __( "Posted", "job_manager" );
-		$columns["job_expires"]           = __( "Expires", "job_manager" );
+		$columns["job_expires"]          = __( "Expires", "job_manager" );
 		if ( get_option( 'job_manager_enable_categories' ) )
-			$columns["job_listing_category"] = __( "Categories", "job_manager" );
+		$columns["job_listing_category"] = __( "Categories", "job_manager" );
 		$columns['status']               = __( "Job Status", "job_manager" );
+		$columns['featured']             = __( "Featured?", "job_manager" );
 		$columns['filled']               = __( "Filled?", "job_manager" );
 		$columns["job_actions"]          = __( "Actions", "job_manager" );
 
@@ -268,12 +269,13 @@ class WP_Job_Manager_CPT {
 			break;
 			case "company" :
 				the_company_logo();
-				the_company_twitter();
 
 				if ( get_the_company_website() )
 					the_company_name( '<strong><a href="' . get_the_company_website() . '">', '</a></strong>' );
 				else
 					the_company_name( '<strong>', '</strong> ' );
+
+				the_company_twitter( '@' );
 
 				the_company_tagline( '<span class="tagline">', '</span>' );
 			break;
@@ -285,6 +287,9 @@ class WP_Job_Manager_CPT {
 			break;
 			case "filled" :
 				if ( is_position_filled( $post ) ) echo '&#10004;'; else echo '&ndash;';
+			break;
+			case "featured" :
+				if ( is_position_featured( $post ) ) echo '&#10004;'; else echo '&ndash;';
 			break;
 			case "job_posted" :
 				echo '<strong>' . date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) . '</strong><span>';

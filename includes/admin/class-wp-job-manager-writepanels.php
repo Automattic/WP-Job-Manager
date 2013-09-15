@@ -56,6 +56,11 @@ class WP_Job_Manager_Writepanels {
 			'_filled' => array(
 				'label' => __( 'Position filled?', 'job_manager' ),
 				'type'  => 'checkbox'
+			),
+			'_featured' => array(
+				'label' => __( 'Feature this job listing?', 'job_manager' ),
+				'type'  => 'checkbox',
+				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'job_manager' )
 			)
 		) );
 	}

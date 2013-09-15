@@ -86,7 +86,53 @@ function get_job_listings( $args = array() ) {
 	if ( empty( $query_args['tax_query'] ) )
 		unset( $query_args['tax_query'] );
 
-	return new WP_Query( $query_args );
+	if ( $args['orderby'] == 'featured' ) {
+		$query_args['orderby'] = 'meta_key';
+		$query_args['meta_key'] = '_featured';
+		add_filter( 'posts_clauses', 'order_featured_job_listing' );
+	}
+
+	$result = new WP_Query( $query_args );
+
+	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
+
+	return $result;
+}
+endif;
+
+if ( ! function_exists( 'order_featured_job_listing' ) ) :
+	/**
+	 * WP Core doens't let us change the sort direction for invidual orderby params - http://core.trac.wordpress.org/ticket/17065
+	 *
+	 * @access public
+	 * @param array $args
+	 * @return array
+	 */
+	function order_featured_job_listing( $args ) {
+		global $wpdb;
+
+		$args['orderby'] = "$wpdb->postmeta.meta_value+0 DESC, $wpdb->posts.post_date DESC";
+
+		return $args;
+	}
+endif;
+
+if ( ! function_exists( 'get_featured_job_ids' ) ) :
+/**
+ * Gets the ids of featured jobs.
+ *
+ * @access public
+ * @return array
+ */
+function get_featured_job_ids() {
+	return get_posts( array(
+		'posts_per_page' => -1,
+		'post_type'      => 'job_listing',
+		'post_status'    => 'publish',
+		'meta_key'       => '_featured',
+		'meta_value'     => '1',
+		'fields'         => 'ids'
+	) );
 }
 endif;
 
@@ -95,7 +141,7 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
  * Outputs a form to submit a new job to the site from the frontend.
  *
  * @access public
- * @return void
+ * @return array
  */
 function get_job_listing_types() {
 	return get_terms( "job_listing_type", array(

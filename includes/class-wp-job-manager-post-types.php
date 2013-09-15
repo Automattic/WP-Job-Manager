@@ -322,8 +322,12 @@ class WP_Job_Manager_Post_Types {
 		if ( $post->post_type !== 'job_listing' )
 			return;
 
-		// Expires
-		$duration = absint( get_option( 'job_manager_submission_duration' ) );
+		// Get duration from the product if set...
+		$duration = get_post_meta( $post->ID, '_job_duration', true );
+
+		// ...otherwise use the global option
+		if ( ! $duration )
+			$duration = absint( get_option( 'job_manager_submission_duration' ) );
 
 		if ( $duration ) {
 			$expires = date( 'Y-m-d H:i:s', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );

@@ -53,16 +53,23 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Get step from outside of the class
+	 */
+	public static function get_step() {
+		return self::$step;
+	}
+
+	/**
 	 * Increase step from outside of the class
 	 */
-	public function next_step() {
+	public static function next_step() {
 		self::$step ++;
 	}
 
 	/**
 	 * Decrease step from outside of the class
 	 */
-	public function previous_step() {
+	public static function previous_step() {
 		self::$step --;
 	}
 
@@ -431,6 +438,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		update_post_meta( self::$job_id, '_company_twitter', $values['company']['company_twitter'] );
 		update_post_meta( self::$job_id, '_company_logo', $values['company']['company_logo'] );
 		update_post_meta( self::$job_id, '_filled', 0 );
+		update_post_meta( self::$job_id, '_featured', 0 );
 
 		// And user meta to save time in future
 		if ( is_user_logged_in() ) {

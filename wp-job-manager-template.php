@@ -167,6 +167,18 @@ function is_position_filled( $post = null ) {
 }
 
 /**
+ * Return whether or not the position has been featured
+ *
+ * @param  object $post
+ * @return boolean
+ */
+function is_position_featured( $post = null ) {
+	$post = get_post( $post );
+
+	return $post->_featured ? true : false;
+}
+
+/**
  * the_job_permalink function.
  *
  * @access public
@@ -493,6 +505,9 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 
 	if ( is_position_filled( $post ) )
 		$classes[] = 'job_position_filled';
+
+	if ( is_position_featured( $post ) )
+		$classes[] = 'job_position_featured';
 
 	return get_post_class( $classes, $post->ID );
 }

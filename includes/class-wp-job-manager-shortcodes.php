@@ -162,8 +162,8 @@ class WP_Job_Manager_Shortcodes {
 
 		extract( $atts = shortcode_atts( apply_filters( 'job_manager_output_jobs_defaults', array(
 			'per_page'        => get_option( 'job_manager_per_page' ),
-			'orderby'         => 'date',
-			'order'           => 'desc',
+			'orderby'         => 'featured',
+			'order'           => 'DESC',
 			'show_filters'    => true,
 			'show_categories' => get_option( 'job_manager_enable_categories' ),
 			'categories'      => ''
