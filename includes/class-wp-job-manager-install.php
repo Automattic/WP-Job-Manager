@@ -18,6 +18,8 @@ class WP_Job_Manager_Install {
 		$this->default_terms();
 		$this->default_meta();
 		$this->cron();
+		delete_transient( 'wp_job_manager_addons_html' );
+		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );
 	}
 
 	/**

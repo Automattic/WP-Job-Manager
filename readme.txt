@@ -76,6 +76,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Support for featured job listings
 * Support for meta job duration
 * set_expirey when publishing jobs from admin manually
+* Update handler
 
 = 1.1.3 =
 * Corrected form field label
