@@ -72,6 +72,10 @@ The manual installation method involves downloading the plugin and uploading it 
 
 == Changelog ==
 
+= 1.2.1 =
+* Respect other plugin columns in admin
+* Re-arranged admin columns to show less non-useful data
+
 = 1.2.0 =
 * Support for featured job listings
 * Support for meta job duration

@@ -227,20 +227,21 @@ class WP_Job_Manager_CPT {
 	 * @return void
 	 */
 	public function columns( $columns ) {
-		$columns = array();
+		if ( ! is_array( $columns ) )
+			$columns = array();
 
-		$columns["cb"]                   = "<input type=\"checkbox\" />";
+		unset( $columns['title'], $columns['date'] );
+
 		$columns["job_listing_type"]     = __( "Type", "job_manager" );
-		$columns["position"]             = __( "Position", "job_manager" );
-		$columns["company"]              = __( "Company", "job_manager" );
+		$columns["job_position"]         = __( "Position", "job_manager" );
 		$columns["job_posted"]           = __( "Posted", "job_manager" );
 		$columns["job_expires"]          = __( "Expires", "job_manager" );
 		if ( get_option( 'job_manager_enable_categories' ) )
 		$columns["job_listing_category"] = __( "Categories", "job_manager" );
-		$columns['status']               = __( "Job Status", "job_manager" );
-		$columns['featured']             = __( "Featured?", "job_manager" );
+		$columns['featured_job']         = '<img src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/featured_head.png" alt="' . __( "Featured?", "job_manager" ) . '" />';
 		$columns['filled']               = __( "Filled?", "job_manager" );
-		$columns["job_actions"]          = __( "Actions", "job_manager" );
+		$columns['job_status']           = __( "Status", "job_manager" );
+		$columns['job_actions']          = __( "Actions", "job_manager" );
 
 		return $columns;
 	}
@@ -261,47 +262,46 @@ class WP_Job_Manager_CPT {
 				if ( $type )
 					echo '<span class="job-type ' . $type->slug . '">' . $type->name . '</span>';
 			break;
-			case "position" :
-				edit_post_link( '#' . $post->ID . ' &ndash; ' . $post->post_title, '<strong>', '</strong>', $post->ID );
-				echo '<span class="location">';
-				the_job_location( $post );
-				echo '</span>';
-			break;
-			case "company" :
-				the_company_logo();
+			case "job_position" :
+				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'Job ID: %d', 'job_manager' ), $post->ID ) . '">' . $post->post_title . '</a>';
+
+				echo '<div class="location">';
 
 				if ( get_the_company_website() )
-					the_company_name( '<strong><a href="' . get_the_company_website() . '">', '</a></strong>' );
+					the_company_name( '<span class="tips" data-tip="' . esc_attr( get_the_company_tagline() ) . '"><a href="' . get_the_company_website() . '">', '</a></span> &ndash; ' );
 				else
-					the_company_name( '<strong>', '</strong> ' );
+					the_company_name( '<span class="tips" data-tip="' . esc_attr( get_the_company_tagline() ) . '">', '</span> &ndash; ' );
 
-				the_company_twitter( '@' );
+				the_job_location( $post );
 
-				the_company_tagline( '<span class="tagline">', '</span>' );
+				echo '</div>';
+
+				the_company_logo();
 			break;
 			case "job_listing_category" :
 				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) echo '<span class="na">&ndash;</span>'; else echo $terms;
 			break;
-			case "status" :
-				echo get_the_job_status( $post );
-			break;
 			case "filled" :
 				if ( is_position_filled( $post ) ) echo '&#10004;'; else echo '&ndash;';
 			break;
-			case "featured" :
+			case "featured_job" :
 				if ( is_position_featured( $post ) ) echo '&#10004;'; else echo '&ndash;';
 			break;
 			case "job_posted" :
-				echo '<strong>' . date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) . '</strong><span>';
+				echo '<strong>' . date_i18n( __( 'M j, Y', 'job_manager' ), strtotime( $post->post_date ) ) . '</strong><span>';
 				echo ( empty( $post->post_author ) ? __( 'by a guest', 'job_manager' ) : sprintf( __( 'by %s', 'job_manager' ), '<a href="' . get_edit_user_link( $post->post_author ) . '">' . get_the_author() . '</a>' ) ) . '</span>';
 			break;
 			case "job_expires" :
 				if ( $post->_job_expires )
-					echo '<strong>' . date_i18n( get_option( 'date_format' ), strtotime( $post->_job_expires ) ) . '</strong>';
+					echo '<strong>' . date_i18n( __( 'M j, Y', 'job_manager' ), strtotime( $post->_job_expires ) ) . '</strong>';
 				else
 					echo '&ndash;';
 			break;
+			case "job_status" :
+				echo get_the_job_status( $post );
+			break;
 			case "job_actions" :
+				echo '<div class="actions">';
 				$admin_actions           = array();
 				if ( $post->post_status == 'pending' ) {
 					$admin_actions['approve']   = array(
@@ -334,6 +334,8 @@ class WP_Job_Manager_CPT {
 					$image = isset( $action['image_url'] ) ? $action['image_url'] : JOB_MANAGER_PLUGIN_URL . '/assets/images/icons/' . $action['action'] . '.png';
 					printf( '<a class="button tips" href="%s" data-tip="%s"><img src="%s" alt="%s" width="14" /></a>', esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_attr( $image ), esc_attr( $action['name'] ) );
 				}
+
+				echo '</div>';
 
 			break;
 		}

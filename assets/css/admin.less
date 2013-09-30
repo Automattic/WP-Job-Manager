@@ -1,36 +1,18 @@
 @import "mixins";
 
 .widefat {
-	.column-filled, .column-featured {
+	.column-filled {
 		text-align: center;
 	}
-	.column-company {
-		width: 20%;
+	td.column-featured_job {
+		width: 46px;
+		text-align: left;
+		padding-left: 11px;
 	}
-	td.column-company {
-		padding-left: 50px !important;
-		height: 40px;
-		position: relative;
+	th.column-featured_job {
+		width: 46px;
 		img {
-			width: 32px;
-			height: 32px;
-			position: absolute;
-			left: 7px;
-			top: 4px;
-			.border_radius( 50% );
-			.box_shadow( 0, 1px, 0, 1px, rgba( 0,0,0,0.1 ) );
-			border: 1px solid #fff;
-		}
-		strong {
-			padding-right: .5em;
-		}
-		.tagline {
-			display: block;
-			padding-top: 2px;
-			color: #bbbbbb;
-		}
-		a.company_twitter {
-
+			padding-top: 3px !important;
 		}
 	}
 	.column-job_posted {
@@ -80,32 +62,62 @@
 			border-bottom: 2px solid darken( @internship, 10% );
 		}
 	}
-	.column-position {
-		width: 20%;
-		strong {
-			display: block;
-			margin-bottom: .2em;
+	th.column-job_position {
+		width: 30%;
+	}
+	td.column-job_position {
+		width: 30%;
+		padding-right: 50px !important;
+		height: 34px;
+		position: relative;
+		a.job_title {
+			font-weight: bold;
+		}
+		img {
+			width: 32px;
+			height: 32px;
+			position: absolute;
+			right: 7px;
+			top: 4px;
+			.border_radius( 50% );
+			.box_shadow( 0, 1px, 0, 1px, rgba( 0,0,0,0.1 ) );
+			border: 1px solid #fff;
 		}
 		.location {
+			margin-top: .2em;
 			display: block;
 			padding-top: 2px;
 			color: #bbbbbb;
 		}
 	}
 	.column-job_actions {
-		width:120px;
 		text-align: right;
+		width: 104px;
+		strong {
+			display: block;
+			margin-bottom: .2em;
+		}
+		.actions {
+			padding-top: 2px;
+		}
 		a.button {
 			display: inline-block;
-			margin: 0 0 2px 4px;
+			margin: 0 4px 2px 0;
 			cursor: pointer;
-			padding:3px 4px;
+			padding: 3px 4px;
+			text-align: center;
 			height:auto;
+			opacity: 0.25;
 			img {
 				display: block;
 				width:12px;
 				height:auto;
 			}
+		}
+	}
+	tr:hover, tr:focus {
+		.column-job_actions a {
+			opacity: 1;
 		}
 	}
 }
