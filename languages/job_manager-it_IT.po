@@ -1,0 +1,774 @@
+# Copyright (C) 2013 WP Job Manager
+# This file is distributed under the same license as the WP Job Manager package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Job Manager 1.0 Beta 1\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
+"POT-Creation-Date: 2013-06-25 16:39:26+00:00\n"
+"PO-Revision-Date: 2013-09-29 22:21+0100\n"
+"Last-Translator: Daniele Balboni <info@danielebalboni.com>\n"
+"Language-Team: Italian <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: includes/admin/class-wp-job-manager-admin.php:49
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: includes/admin/class-wp-job-manager-cpt.php:67
+msgid "Select a category"
+msgstr "Scegli categoria"
+
+#: includes/admin/class-wp-job-manager-cpt.php:100
+msgid "Job position title"
+msgstr "Titolo dell'offerta "
+
+#: includes/admin/class-wp-job-manager-cpt.php:116
+msgid "Job listing updated. <a href=\"%s\">View Job</a>"
+msgstr "Offerte di lavoro aggiornate. <a href=\"%s\">Visualizza</a>"
+
+#: includes/admin/class-wp-job-manager-cpt.php:117
+msgid "Custom field updated."
+msgstr "Campo personalizzato aggiornato"
+
+#: includes/admin/class-wp-job-manager-cpt.php:118
+msgid "Custom field deleted."
+msgstr "Campo personalizzato cancellato"
+
+#: includes/admin/class-wp-job-manager-cpt.php:119
+msgid "Job listing updated."
+msgstr "Offerta di lavoro aggiornata"
+
+#: includes/admin/class-wp-job-manager-cpt.php:120
+msgid "Job listing restored to revision from %s"
+msgstr "Offerta aggiornata alla revisione del %s"
+
+#: includes/admin/class-wp-job-manager-cpt.php:121
+msgid "Job listing published. <a href=\"%s\">View Job</a>"
+msgstr "Offerta di lavoro pubblicata. <a href=\"%s\">Visualizza offerta</a>"
+
+#: includes/admin/class-wp-job-manager-cpt.php:122
+msgid "Job listing saved."
+msgstr "Offerta di lavoro salvata."
+
+#: includes/admin/class-wp-job-manager-cpt.php:123
+msgid "Job listing submitted. <a target=\"_blank\" href=\"%s\">Preview Job</a>"
+msgstr "Offerta di lavoro confermata. <a target=\"_blank\" href=\"%s\">Anteprima annuncio</a>"
+
+#: includes/admin/class-wp-job-manager-cpt.php:124
+msgid "Job listing scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href=\"%2$s\">Preview Job</a>"
+msgstr "Offerta di lavoro sarà pubblicata: <strong>%1$s</strong>. <a target=\"_blank\" href=\"%2$s\">Anteprima offerta</a>"
+
+#: includes/admin/class-wp-job-manager-cpt.php:125
+msgid "M j, Y @ G:i"
+msgstr "j M Y @ G:i"
+
+#: includes/admin/class-wp-job-manager-cpt.php:126
+msgid "Job listing draft updated. <a target=\"_blank\" href=\"%s\">Preview Job</a>"
+msgstr "Bozza aggiornata. <a target=\"_blank\" href=\"%s\">Anteprima annuncio</a>"
+
+#: includes/admin/class-wp-job-manager-cpt.php:143
+msgid "Type"
+msgstr "Tipo"
+
+#: includes/admin/class-wp-job-manager-cpt.php:144
+msgid "Position"
+msgstr "Posizione "
+
+#: includes/admin/class-wp-job-manager-cpt.php:145
+msgid "Company"
+msgstr "Azienda"
+
+#: includes/admin/class-wp-job-manager-cpt.php:146
+#: templates/content-single-job_listing.php:14
+msgid "Posted"
+msgstr "Pubblicato"
+
+#: includes/admin/class-wp-job-manager-cpt.php:147
+#: templates/job-dashboard.php:9
+msgid "Expires"
+msgstr "Scade"
+
+#: includes/admin/class-wp-job-manager-cpt.php:149
+msgid "Categories"
+msgstr "Categorie"
+
+#: includes/admin/class-wp-job-manager-cpt.php:150
+msgid "Job Status"
+msgstr "Stato dell'offerta"
+
+#: includes/admin/class-wp-job-manager-cpt.php:151
+#: templates/job-dashboard.php:10
+msgid "Filled?"
+msgstr "Compilazione terminata?"
+
+#: includes/admin/class-wp-job-manager-cpt.php:152
+msgid "Actions"
+msgstr "Azioni"
+
+#: includes/admin/class-wp-job-manager-cpt.php:199
+msgid "by a guest"
+msgstr "da utente non registrato"
+
+#: includes/admin/class-wp-job-manager-cpt.php:199
+msgid "by %s"
+msgstr "per %s"
+
+#: includes/admin/class-wp-job-manager-cpt.php:212
+msgid "View"
+msgstr "Visualizza"
+
+#: includes/admin/class-wp-job-manager-cpt.php:217
+#: includes/class-wp-job-manager-post-types.php:149
+#: templates/job-dashboard.php:29
+msgid "Edit"
+msgstr "Modifica"
+
+#: includes/admin/class-wp-job-manager-cpt.php:222
+#: templates/job-dashboard.php:39
+msgid "Delete"
+msgstr "Cancella"
+
+#: includes/admin/class-wp-job-manager-settings.php:31
+#: includes/class-wp-job-manager-post-types.php:125
+msgid "Job Listings"
+msgstr "Offerte di lavoro"
+
+#: includes/admin/class-wp-job-manager-settings.php:37
+msgid "Jobs per page"
+msgstr "Offerte per pagina"
+
+#: includes/admin/class-wp-job-manager-settings.php:38
+msgid "How many jobs should be shown per page by default?"
+msgstr "Numero di offerte da visualizzare per pagina"
+
+#: includes/admin/class-wp-job-manager-settings.php:43
+msgid "Filled positions"
+msgstr "Offerte chiuse"
+
+#: includes/admin/class-wp-job-manager-settings.php:44
+msgid "Hide filled positions"
+msgstr "Non visualizzare le offerte chiuse"
+
+#: includes/admin/class-wp-job-manager-settings.php:45
+msgid "If enabled, filled positions will be hidden from the job list."
+msgstr "Se abilitato, le offerte chiuse non saranno visualizzate "
+
+#: includes/admin/class-wp-job-manager-settings.php:51
+msgid "Job categories"
+msgstr "Categorie"
+
+#: includes/admin/class-wp-job-manager-settings.php:52
+msgid "Enable job categories"
+msgstr "Abilitare le categorie"
+
+#: includes/admin/class-wp-job-manager-settings.php:53
+msgid "Choose whether to enable job categories. Categories must be setup by an admin for users to choose during job submission."
+msgstr "Abilitare le categorie? Amministratore gestisce le categorie  che possono essere utilizzate dal utente nella creazione dell'offerta."
+
+#: includes/admin/class-wp-job-manager-settings.php:59
+msgid "Job Submission"
+msgstr "Invio delle offerte"
+
+#: includes/admin/class-wp-job-manager-settings.php:64
+msgid "Account creation"
+msgstr "Creare profili"
+
+#: includes/admin/class-wp-job-manager-settings.php:65
+msgid "Allow account creation"
+msgstr "Permettere la creazione dei profili"
+
+#: includes/admin/class-wp-job-manager-settings.php:66
+msgid "If enable, non-logged in users will be able to create an account by entering their email address on the job submission form."
+msgstr "Se abilitato  gli utenti non registrati potranno creare un profilo inserendo il proprio indirizzo email nel modulo dell' offerta. "
+
+#: includes/admin/class-wp-job-manager-settings.php:72
+msgid "Account required"
+msgstr "Devi avere un account"
+
+#: includes/admin/class-wp-job-manager-settings.php:73
+msgid "Job submission requires an account"
+msgstr "Per inviare un offerta è necessario avere un profilo"
+
+#: includes/admin/class-wp-job-manager-settings.php:74
+msgid "If disabled, non-logged in users will be able to submit job listings without creating an account."
+msgstr "Se disabilitata gli utenti non registrati potranno inviare la propria offerta di lavoro senza creare un profilo."
+
+#: includes/admin/class-wp-job-manager-settings.php:80
+msgid "Approval Required"
+msgstr "Approvazione richiesta"
+
+#: includes/admin/class-wp-job-manager-settings.php:81
+msgid "New submissions require admin approval"
+msgstr "Le nuove offerte devono essere approvate da un amministratore"
+
+#: includes/admin/class-wp-job-manager-settings.php:82
+msgid "If enabled, new submissions will be inactive, pending admin approval."
+msgstr "Se abilitata le nuove offerte saranno inattive fino ad approvazione di un amministratore"
+
+#: includes/admin/class-wp-job-manager-settings.php:88
+msgid "Listing duration"
+msgstr "Durata offerta"
+
+#: includes/admin/class-wp-job-manager-settings.php:89
+msgid "How many <strong>days</strong> listings are live before expiring. Can be left blank to never expire."
+msgstr "Per quanti <strong>giorni</strong> sarà valida l'offerta? Se non compilato l'offerta non avrà scadenza."
+
+#: includes/admin/class-wp-job-manager-settings.php:141
+msgid "Settings successfully saved"
+msgstr "Impostazioni  salvate corretamente"
+
+#: includes/admin/class-wp-job-manager-settings.php:208
+msgid "Save Changes"
+msgstr "Salvare le modifiche"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:19
+#: includes/forms/class-wp-job-manager-form-submit-job.php:88
+msgid "Job location"
+msgstr "Luogo di lavoro"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:20
+#: includes/forms/class-wp-job-manager-form-submit-job.php:91
+msgid "e.g. \"London, UK\", \"New York\", \"Anywhere\""
+msgstr "es. \"Roma, IT\", \"Milano\", \"Ovunque\""
+
+#: includes/admin/class-wp-job-manager-writepanels.php:23
+#: includes/forms/class-wp-job-manager-form-submit-job.php:118
+msgid "Application email/URL"
+msgstr "Email/URL per le candidature"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:24
+msgid "URL or email which applicants use to apply"
+msgstr "URL o email a cui saranno inviate le candidature"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:27
+#: includes/forms/class-wp-job-manager-form-submit-job.php:127
+msgid "Company name"
+msgstr "Nome dell'azienda"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:31
+msgid "Company website"
+msgstr "Sito web dell'azienda"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:35
+msgid "Company tagline"
+msgstr "Presentazione aziendale"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:36
+msgid "Brief description about the company"
+msgstr "Descrizione breve dell'azienda"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:39
+msgid "Company Twitter"
+msgstr "Twitter dell'azienda"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:43
+msgid "Company logo"
+msgstr "Logo dell'azienda"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:44
+msgid "URL to the company logo"
+msgstr "URL logo aziendale"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:47
+msgid "Position filled?"
+msgstr "Compilazione della posizione terminata?"
+
+#: includes/admin/class-wp-job-manager-writepanels.php:60
+msgid "Job Listing Data"
+msgstr "Descrizione"
+
+#: includes/class-wp-job-manager-ajax.php:104
+msgid "No more jobs found matching your selection."
+msgstr "Non ci sono altre offerte corrispondenti alla tua ricerca"
+
+#: includes/class-wp-job-manager-ajax.php:143
+msgid "Showing %s&ldquo;%s&rdquo; %sjobs"
+msgstr "Visualizzando %s&ldquo;%s&rdquo; %slavori"
+
+#: includes/class-wp-job-manager-ajax.php:145
+msgid "Showing all %s%sjobs"
+msgstr "Visualizza tutte %s%s offerte"
+
+#: includes/class-wp-job-manager-ajax.php:148
+msgid "located in &ldquo;%s&rdquo;"
+msgstr "Si trova a &ldquo;%s&rdquo;"
+
+#: includes/class-wp-job-manager-post-types.php:35
+msgid "Job Category"
+msgstr "Categoria"
+
+#: includes/class-wp-job-manager-post-types.php:36
+msgid "Job Categories"
+msgstr "Categorie"
+
+#: includes/class-wp-job-manager-post-types.php:40
+msgctxt "Job category slug - resave permalinks after changing this"
+msgid "job-category"
+msgstr "Categorie"
+
+#: includes/class-wp-job-manager-post-types.php:57
+#: includes/class-wp-job-manager-post-types.php:100
+#: includes/class-wp-job-manager-post-types.php:154
+msgid "Search %s"
+msgstr "Ricerca"
+
+#: includes/class-wp-job-manager-post-types.php:58
+#: includes/class-wp-job-manager-post-types.php:101
+#: includes/class-wp-job-manager-post-types.php:146
+msgid "All %s"
+msgstr "Tutte"
+
+#: includes/class-wp-job-manager-post-types.php:59
+#: includes/class-wp-job-manager-post-types.php:102
+#: includes/class-wp-job-manager-post-types.php:157
+msgid "Parent %s"
+msgstr "Genitore %s"
+
+#: includes/class-wp-job-manager-post-types.php:60
+#: includes/class-wp-job-manager-post-types.php:103
+msgid "Parent %s:"
+msgstr "Genitore %s:"
+
+#: includes/class-wp-job-manager-post-types.php:61
+#: includes/class-wp-job-manager-post-types.php:104
+#: includes/class-wp-job-manager-post-types.php:150
+msgid "Edit %s"
+msgstr "Modificare %s"
+
+#: includes/class-wp-job-manager-post-types.php:62
+#: includes/class-wp-job-manager-post-types.php:105
+msgid "Update %s"
+msgstr "Aggiornare %s"
+
+#: includes/class-wp-job-manager-post-types.php:63
+#: includes/class-wp-job-manager-post-types.php:106
+msgid "Add New %s"
+msgstr "Aggiungi %s"
+
+#: includes/class-wp-job-manager-post-types.php:64
+#: includes/class-wp-job-manager-post-types.php:107
+msgid "New %s Name"
+msgstr "Nuovo %s nome"
+
+#: includes/class-wp-job-manager-post-types.php:79
+msgid "Job Type"
+msgstr "Tipo di offerta"
+
+#: includes/class-wp-job-manager-post-types.php:80
+msgid "Job Types"
+msgstr "Tipi di offerta"
+
+#: includes/class-wp-job-manager-post-types.php:84
+msgctxt "Job type slug - resave permalinks after changing this"
+msgid "job-type"
+msgstr "Tipo di offerta"
+
+#: includes/class-wp-job-manager-post-types.php:124
+msgid "Job Listing"
+msgstr "Offerta"
+
+#: includes/class-wp-job-manager-post-types.php:128
+msgctxt "Post type archive slug - resave permalinks after changing this"
+msgid "jobs"
+msgstr "Offerte"
+
+#: includes/class-wp-job-manager-post-types.php:134
+msgctxt "Job permalink - resave permalinks after changing this"
+msgid "job"
+msgstr "Offerta"
+
+#: includes/class-wp-job-manager-post-types.php:147
+msgid "Add New"
+msgstr "Aggiungi nuova"
+
+#: includes/class-wp-job-manager-post-types.php:148
+msgid "Add %s"
+msgstr "Aggiungi  %s"
+
+#: includes/class-wp-job-manager-post-types.php:151
+msgid "New %s"
+msgstr "Nuova %s"
+
+#: includes/class-wp-job-manager-post-types.php:152
+#: includes/class-wp-job-manager-post-types.php:153
+msgid "View %s"
+msgstr "Visualizza %s"
+
+#: includes/class-wp-job-manager-post-types.php:155
+msgid "No %s found"
+msgstr "Nessuna %s trovata"
+
+#: includes/class-wp-job-manager-post-types.php:156
+msgid "No %s found in trash"
+msgstr "Nessuna %s trovata nel cestino"
+
+#: includes/class-wp-job-manager-post-types.php:159
+msgid "This is where you can create and manage job listings."
+msgstr "Qui puoi creare e gestire le offerte di lavoro"
+
+#: includes/class-wp-job-manager-post-types.php:194
+msgctxt "job_listing"
+msgid "Expired"
+msgstr "Scaduta"
+
+#: includes/class-wp-job-manager-post-types.php:199
+#: includes/class-wp-job-manager-shortcodes.php:61
+msgid "Invalid Job ID"
+msgstr "ID offerta non valido"
+
+#: includes/class-wp-job-manager-shortcodes.php:67
+msgid "This job is already filled"
+msgstr "Questa offerta è già chiusa"
+
+#: includes/class-wp-job-manager-shortcodes.php:73
+msgid "%s has been filled"
+msgstr "%s  è stata chiusa"
+
+#: includes/class-wp-job-manager-shortcodes.php:78
+msgid "This job is already not filled"
+msgstr "Questa offerta è riaperta"
+
+#: includes/class-wp-job-manager-shortcodes.php:84
+msgid "%s has been marked as not filled"
+msgstr "%s è stata etichettata come riaperta "
+
+#: includes/class-wp-job-manager-shortcodes.php:91
+msgid "%s has been deleted"
+msgstr "%s cancellata"
+
+#: includes/class-wp-job-manager-shortcodes.php:111
+msgid "You need to be signed in to manage your job listings."
+msgstr "Accedi al tuo account per gestire le tue offerte di lavoro."
+
+#: includes/class-wp-job-manager-shortcodes.php:175
+msgid "Load more job listings"
+msgstr "Carica più offerte di lavoro"
+
+#: includes/class-wp-job-manager-widgets.php:139
+msgid "Display a list of the most recent jobs on your site."
+msgstr "Visualizzare le offerte più recenti."
+
+#: includes/class-wp-job-manager-widgets.php:141
+msgid "Recent Job Listings"
+msgstr "Offerte recenti."
+
+#: includes/class-wp-job-manager-widgets.php:145
+msgid "Recent Jobs"
+msgstr "Offerta recente"
+
+#: includes/class-wp-job-manager-widgets.php:146
+msgid "Title"
+msgstr "Titolo"
+
+#: includes/class-wp-job-manager-widgets.php:154
+msgid "Number of jobs to show"
+msgstr "Numero di offerte da visualizzare."
+
+#: includes/forms/class-wp-job-manager-form-edit-job.php:39
+msgid "Invalid job"
+msgstr "Offerta non valida"
+
+#: includes/forms/class-wp-job-manager-form-edit-job.php:78
+msgid "Update job listing"
+msgstr "Aggiorna l'offerta"
+
+#: includes/forms/class-wp-job-manager-form-edit-job.php:103
+msgid "Your changes have been saved."
+msgstr "Aggiornamenti salvati"
+
+#: includes/forms/class-wp-job-manager-form-edit-job.php:103
+msgid "View Job Listing &rarr;"
+msgstr "Visualizza le offerte di lavoro &rarr;"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:26
+msgid "Submit Details"
+msgstr "Conferma dettagli"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:32
+#: includes/forms/class-wp-job-manager-form-submit-job.php:441
+msgid "Preview"
+msgstr "Anteprima"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:38
+msgid "Done"
+msgstr "Fatto"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:81
+msgid "Job title"
+msgstr "Titolo dell'offerta"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:95
+msgid "Job type"
+msgstr "Tipo di offerta"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:103
+msgid "Job category"
+msgstr "Categoria"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:111
+msgid "Description"
+msgstr "Descrizione"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:121
+msgid "Enter an email address or website URL"
+msgstr "Inserisci l'indirizzo email o URL del sito"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:130
+msgid "Enter the name of the company"
+msgstr "Inserisci il nome dell'azienda"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:134
+#: templates/content-single-job_listing.php:25
+msgid "Website"
+msgstr "Sito web"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:137
+msgid "http://"
+msgstr "http://"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:141
+msgid "Tagline"
+msgstr "Presentazione"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:144
+msgid "Briefly describe your company"
+msgstr "Descrizione breve dell'azienda"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:148
+msgid "Twitter username"
+msgstr "Twitter username"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:151
+msgid "@yourcompany"
+msgstr "@tua_azienda"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:155
+msgid "Logo"
+msgstr "Logo"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:213
+msgid "%s is a required field"
+msgstr "%s è un campo obbligatorio"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:320
+msgid "Preview job listing &rarr;"
+msgstr "Anteprima annuncio"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:352
+msgid "You must be signed in to post a new job listing."
+msgstr "Devi accedere al tuo account per pubblicare la nuova offerta di lavoro."
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:436
+msgid "Submit Listing &rarr;"
+msgstr "Invia offerta &rarr;"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:437
+msgid "&larr; Edit listing"
+msgstr "&larr; Modifica offerta"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:505
+msgid "Logo needs to be jpg, gif or png."
+msgstr "Il logo deve essere nel formato jpg, gif o png."
+
+#: templates/account-signin.php:4
+msgid "Your account"
+msgstr "Il tuo profilo"
+
+#: templates/account-signin.php:8
+msgid "You are currently signed in as <strong>%s</strong>."
+msgstr "Sei iscritto come <strong>%s</strong>."
+
+#: templates/account-signin.php:11
+msgid "Sign out"
+msgstr "Esci"
+
+#: templates/account-signin.php:21
+msgid "Have an account?"
+msgstr "Hai un profilo?"
+
+#: templates/account-signin.php:23
+msgid "Sign in"
+msgstr "Iscriviti"
+
+#: templates/account-signin.php:27
+msgid "If you don&lsquo;t have an account you can %screate one below by entering your email address. A password will be automatically emailed to you."
+msgstr "Se non hai un profilo puoi crearlo %s  qui sotto inserendo il tuo indirizzo email. La password ti sarà inviata automaticamente all'indirizzo inserito. "
+
+#: templates/account-signin.php:27
+msgid "optionally"
+msgstr "opzionale"
+
+#: templates/account-signin.php:31
+msgid "You must sign in to create a new job listing."
+msgstr "Devi accedere al tuo profilo per creare una nuova offerta di lavoro."
+
+#: templates/account-signin.php:38
+msgid "Your email"
+msgstr "Il tuo indirizzo email."
+
+#: templates/account-signin.php:38
+#: templates/job-submit.php:21
+#: templates/job-submit.php:32
+msgid "(optional)"
+msgstr "(opzionale)"
+
+#: templates/content-job_listing.php:16
+#: templates/content-single-job_listing.php:14
+#: templates/content-summary-job_listing.php:14
+msgid "ago"
+msgstr "fa"
+
+#: templates/content-single-job_listing.php:5
+msgid "This job listing has expired"
+msgstr "Questa offerta è scaduta."
+
+#: templates/content-single-job_listing.php:17
+msgid "This position has been filled"
+msgstr "Questa offerta è stata chiusa"
+
+#: templates/form-fields/file-field.php:3
+msgid "or"
+msgstr "o"
+
+#: templates/form-fields/file-field.php:10
+msgid "Max. file size: %s. Allowed images: jpg, gif, png."
+msgstr "Dimensione massima del file: %s. Formati immagine accettati: jpg, gif, png."
+
+#: templates/job-application.php:5
+msgid "Apply for job"
+msgstr "Candidati"
+
+#: templates/job-application.php:12
+msgid "To apply for this job <strong>email your details to</strong> <a class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
+msgstr "Per candidarti <strong>invia i tuoi dati al</strong> <a class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
+
+#: templates/job-application.php:14
+msgid "Apply using webmail: "
+msgstr "Candidati tramite webmail:"
+
+#: templates/job-application.php:28
+msgid "To apply for this job please visit the following URL: <a href=\"%1$s\">%1$s &rarr;</a>"
+msgstr "Per candidarti  visita questo URL: <a href=\"%1$s\">%1$s &rarr;</a>"
+
+#: templates/job-dashboard.php:2
+msgid "Your job listings are shown in the table below. Expired listings will be automatically removed after 30 days."
+msgstr "Le tue offerte sono visualizzate nella tabella qui sotto. Le offerte scadute verrano cancellate automaticamente dopo 30 giorni dalla prima pubblicazione."
+
+#: templates/job-dashboard.php:6
+msgid "Job Title"
+msgstr "Titolo dell'offerta"
+
+#: templates/job-dashboard.php:7
+msgid "Date Posted"
+msgstr "Data di pubblicazione"
+
+#: templates/job-dashboard.php:8
+msgid "Status"
+msgstr "Stato"
+
+#: templates/job-dashboard.php:16
+msgid "You do not have any active job listings."
+msgstr "Non hai offerte di lavoro attive"
+
+#: templates/job-dashboard.php:32
+msgid "Mark not filled"
+msgstr "Etichetta riaperta"
+
+#: templates/job-dashboard.php:34
+msgid "Mark filled"
+msgstr "Etichetta chiusa"
+
+#: templates/job-filters.php:6
+msgid "Keywords"
+msgstr "Parole chiavi"
+
+#: templates/job-filters.php:7
+msgid "All Jobs"
+msgstr "Tutte le offerte"
+
+#: templates/job-filters.php:10
+msgid "Location"
+msgstr "Luogo"
+
+#: templates/job-filters.php:11
+msgid "Any Location"
+msgstr "Qualunque luogo"
+
+#: templates/job-filters.php:15
+msgid "Category"
+msgstr "Categoria"
+
+#: templates/job-filters.php:17
+msgid "All Job Categories"
+msgstr "Tutte le categorie"
+
+#: templates/job-filters.php:39
+msgid "Reset"
+msgstr "Azzera"
+
+#: templates/job-filters.php:40
+msgid "RSS"
+msgstr "RSS"
+
+#: templates/job-submit.php:28
+msgid "Company details"
+msgstr "Informazioni sull'azienda"
+
+#: templates/job-submitted.php:3
+msgid "Job listed successfully. To view your job listing <a href=\"%s\">click here</a>."
+msgstr "Offerta pubblicata. Per visualizzarla <a href=\"%s\">clicca qui</a>."
+
+#: templates/job-submitted.php:7
+msgid "Job submitted successfully. Your job listing will be visible once approved."
+msgstr "Offerta inviata e in attesa di approvazione "
+
+#: wp-job-manager-functions.php:101
+msgid "Your email address isn&#8217;t correct."
+msgstr "L'indirizzo email non è corretto."
+
+#: wp-job-manager-functions.php:104
+msgid "This email is already registered, please choose another one."
+msgstr "Questa email è già registrata. Scegli un altro indirizzo email."
+
+#: wp-job-manager-template.php:146
+msgid "Active"
+msgstr "Attivo"
+
+#: wp-job-manager-template.php:148
+msgid "Expired"
+msgstr "Scaduta"
+
+#: wp-job-manager-template.php:150
+msgid "Pending Review"
+msgstr "In attesa di approvazione"
+
+#: wp-job-manager-template.php:152
+msgid "Inactive"
+msgstr "Inattivo"
+
+#: wp-job-manager.php:89
+msgid "Are you sure you want to delete this job?"
+msgstr "Sei sicuro di voler cancellare questa offerta?"
+
+#. Plugin Name of the plugin/theme
+msgid "WP Job Manager"
+msgstr "WP Job Manager"
+
+#. #-#-#-#-#  job_manager.pot (WP Job Manager 1.0 Beta 1)  #-#-#-#-#
+#. Plugin URI of the plugin/theme
+#. #-#-#-#-#  job_manager.pot (WP Job Manager 1.0 Beta 1)  #-#-#-#-#
+#. Author URI of the plugin/theme
+msgid "http://mikejolley.com"
+msgstr "http://mikejolley.com"
+
+#. Description of the plugin/theme
+msgid "Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site."
+msgstr "Gestisci le offerte di lavoro dal pannello di amministrazione di WordPress e permetti agli utenti di inviare le offerte direttamente sul tuo sito."
+
+#. Author of the plugin/theme
+msgid "Mike Jolley"
+msgstr "Mike Jolley"
+
