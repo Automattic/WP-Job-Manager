@@ -401,13 +401,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  string $status
 	 */
 	protected static function save_job( $post_title, $post_content, $status = 'preview' ) {
-		$job_data = array(
+		$job_data = apply_filters( 'submit_job_form_save_job_data', array(
 			'post_title'     => $post_title,
 			'post_content'   => $post_content,
 			'post_status'    => $status,
 			'post_type'      => 'job_listing',
 			'comment_status' => 'closed'
-		);
+		) );
 
 		if ( self::$job_id ) {
 			$job_data['ID'] = self::$job_id;
