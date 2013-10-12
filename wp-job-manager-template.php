@@ -305,17 +305,23 @@ function get_the_job_location( $post = null ) {
  * the_company_logo function.
  *
  * @access public
- * @param string $size (default: 'thumbnail')
+ * @param string $size (default: 'full')
  * @param mixed $default (default: null)
  * @return void
  */
-function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) {
+function the_company_logo( $size = 'full', $default = null, $post = null ) {
 	global $job_manager;
 
 	$logo = get_the_company_logo( $post );
-	if ( $logo )
+
+	if ( $logo ) {
+
+		if ( $size !== 'full' )
+			$logo = job_manager_get_resized_image( $logo, $size );
+
 		echo '<img src="' . $logo . '" alt="Logo" />';
-	elseif ( $default )
+
+	} elseif ( $default )
 		echo '<img src="' . $default . '" alt="Logo" />';
 	else
 		echo '<img src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' . '" alt="Logo" />';
@@ -334,6 +340,44 @@ function get_the_company_logo( $post = null ) {
 		return;
 
 	return apply_filters( 'the_company_logo', $post->_company_logo, $post );
+}
+
+/**
+ * Resize and get url of the image
+ *
+ * @param  string $logo
+ * @param  string $size
+ * @return string
+ */
+function job_manager_get_resized_image( $logo, $size ) {
+	global $_wp_additional_image_sizes;
+
+	if ( $size !== 'full' && isset( $_wp_additional_image_sizes[ $size ] ) ) {
+
+		$img_width  = $_wp_additional_image_sizes[ $size ]['width'];
+		$img_height = $_wp_additional_image_sizes[ $size ]['height'];
+
+		$logo_path         = str_replace( home_url('/'), ABSPATH, $logo );
+		$path_parts        = pathinfo( $logo_path );
+		$resized_logo_path = str_replace( '.' . $path_parts['extension'], '-' . $size . '.' . $path_parts['extension'], $logo_path );
+
+		if ( ! file_exists( $resized_logo_path ) ) {
+			// Generate size
+			$image = wp_get_image_editor( $logo_path );
+
+			if ( ! is_wp_error( $image ) ) {
+			    $image->resize( $_wp_additional_image_sizes[ $size ]['width'], $_wp_additional_image_sizes[ $size ]['height'], $_wp_additional_image_sizes[ $size ]['crop'] );
+
+			    $image->save( $resized_logo_path );
+
+			    $logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
+			}
+		} else {
+			$logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
+		}
+	}
+
+	return $logo;
 }
 
 /**

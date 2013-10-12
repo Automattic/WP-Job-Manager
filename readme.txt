@@ -74,6 +74,7 @@ The manual installation method involves downloading the plugin and uploading it 
 
 * Italian translation
 * Clearfix for meta div
+* Hooked up $size option for company logos
 
 = 1.2.1 =
 * Respect other plugin columns in admin
