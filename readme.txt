@@ -79,8 +79,6 @@ The manual installation method involves downloading the plugin and uploading it 
 * submit_job_form_save_job_data filter
 * Italian translation
 * Brazillian Portuguese translation
-
-= 1.2.1 =
 * Respect other plugin columns in admin
 * Re-arranged admin columns to show less non-useful data
 
