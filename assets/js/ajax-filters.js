@@ -4,12 +4,15 @@ jQuery(document).ready(function($) {
 
 	$( '.job_listings' ).on( 'update_results', function( event, page, append ) {
 
-		var target  = $(this);
-		var form    = target.find( '.job_filters' );
-		var showing = target.find( '.showing_jobs' );
-		var results = target.find( '.job_listings' );
-
 		if (xhr) xhr.abort();
+
+		var target   = $(this);
+		var form     = target.find( '.job_filters' );
+		var showing  = target.find( '.showing_jobs' );
+		var results  = target.find( '.job_listings' );
+		var per_page = target.data('per_page');
+		var orderby  = target.data('orderby');
+		var order    = target.data('order');
 
 		if ( append ) {
 			$( '.load_more_jobs', target ).addClass('loading');
@@ -18,38 +21,52 @@ jQuery(document).ready(function($) {
 			$('li.job_listing', results).css('visibility', 'hidden');
 		}
 
-		var filter_job_type = new Array();
+		if ( target.data('show_filters') ) {
 
-		$(':input[name="filter_job_type[]"]:checked', form).each(function() {
-			filter_job_type.push( $(this).val() );
-		});
+			var filter_job_type = new Array();
 
-		var categories = form.find(':input[name^=search_categories], :input[name^=search_categories]').map(function () { return $(this).val(); }).get();
+			$(':input[name="filter_job_type[]"]:checked', form).each(function() {
+				filter_job_type.push( $(this).val() );
+			});
 
-		var keywords  = '';
-		var location  = '';
-		var $keywords = form.find(':input[name=search_keywords]');
-		var $location = form.find(':input[name=search_location]');
+			var categories = form.find(':input[name^=search_categories], :input[name^=search_categories]').map(function () { return $(this).val(); }).get();
+			var keywords  = '';
+			var location  = '';
+			var $keywords = form.find(':input[name=search_keywords]');
+			var $location = form.find(':input[name=search_location]');
 
-		// Workaround placeholder scripts
-		if ( $keywords.val() != $keywords.attr( 'placeholder' ) )
-			keywords = $keywords.val();
+			// Workaround placeholder scripts
+			if ( $keywords.val() != $keywords.attr( 'placeholder' ) )
+				keywords = $keywords.val();
 
-		if ( $location.val() != $location.attr( 'placeholder' ) )
-			location = $location.val();
+			if ( $location.val() != $location.attr( 'placeholder' ) )
+				location = $location.val();
 
-		var data = {
-			action: 			'job_manager_get_listings',
-			search_keywords: 	keywords,
-			search_location: 	location,
-			search_categories:  categories,
-			filter_job_type: 	filter_job_type,
-			per_page: 			form.find(':input[name=per_page]').val(),
-			orderby: 			form.find(':input[name=orderby]').val(),
-			order: 			    form.find(':input[name=order]').val(),
-			page:               page,
-			form_data:          form.serialize()
-		};
+			var data = {
+				action: 			'job_manager_get_listings',
+				search_keywords: 	keywords,
+				search_location: 	location,
+				search_categories:  categories,
+				filter_job_type: 	filter_job_type,
+				per_page: 			per_page,
+				orderby: 			orderby,
+				order: 			    order,
+				page:               page,
+				form_data:          form.serialize()
+			};
+
+		} else {
+
+			var data = {
+				action: 			'job_manager_get_listings',
+				search_categories:  target.data('categories').split(','),
+				per_page: 			per_page,
+				orderby: 			orderby,
+				order: 			    order,
+				page:               page
+			};
+
+		}
 
 		xhr = $.ajax( {
 			type: 		'POST',
@@ -131,6 +148,6 @@ jQuery(document).ready(function($) {
 		target.trigger( 'update_results', [ page + 1, true ] );
 
 		return false;
-	} );
+	} ).show();
 
 });

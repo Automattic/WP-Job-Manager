@@ -30,10 +30,6 @@
 			</div>
 		<?php endif; ?>
 
-		<input type="hidden" name="per_page" value="<?php echo esc_attr( $per_page ) ; ?>" />
-		<input type="hidden" name="orderby" value="<?php echo esc_attr( $orderby ) ; ?>" />
-		<input type="hidden" name="order" value="<?php echo esc_attr( $order ) ; ?>" />
-
 		<?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
 	</div>
 

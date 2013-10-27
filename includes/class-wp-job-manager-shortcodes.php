@@ -220,12 +220,27 @@ class WP_Job_Manager_Shortcodes {
 
 				</ul>
 
+				<?php if ( $jobs->found_posts > $per_page ) : ?>
+
+					<?php wp_enqueue_script( 'wp-job-manager-ajax-filters' ); ?>
+
+					<a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'job_manager' ); ?></strong></a>
+
+				<?php endif; ?>
+
 			<?php endif;
 
 			wp_reset_postdata();
 		}
 
-		return '<div class="job_listings">' . ob_get_clean() . '</div>';
+		return '<div 
+			class="job_listings" 
+			data-show_filters="' . ( $show_filters && $show_filters !== 'false' ? 1 : 0 ) . '"
+			data-per_page="' . esc_attr( $per_page ) . '"
+			data-orderby="' . esc_attr( $orderby ) . '"
+			data-order="' . esc_attr( $order ) . '"
+			data-categories="' . esc_attr( implode( ',', $categories ) ) . '"
+			>' . ob_get_clean() . '</div>';
 	}
 
 	/**
