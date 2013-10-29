@@ -233,14 +233,7 @@ class WP_Job_Manager_Shortcodes {
 			wp_reset_postdata();
 		}
 
-		return '<div 
-			class="job_listings" 
-			data-show_filters="' . ( $show_filters && $show_filters !== 'false' ? 1 : 0 ) . '"
-			data-per_page="' . esc_attr( $per_page ) . '"
-			data-orderby="' . esc_attr( $orderby ) . '"
-			data-order="' . esc_attr( $order ) . '"
-			data-categories="' . esc_attr( implode( ',', $categories ) ) . '"
-			>' . ob_get_clean() . '</div>';
+		return '<div class="job_listings" data-show_filters="' . ( $show_filters && $show_filters !== 'false' ? 1 : 0 ) . '" data-per_page="' . esc_attr( $per_page ) . '" data-orderby="' . esc_attr( $orderby ) . '" data-order="' . esc_attr( $order ) . '" data-categories="' . esc_attr( implode( ',', $categories ) ) . '">' . ob_get_clean() . '</div>';
 	}
 
 	/**
