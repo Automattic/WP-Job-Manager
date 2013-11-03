@@ -1,5 +1,8 @@
 <?php global $job_manager; ?>
-<div class="single_job_listing">
+
+<div class="single_job_listing" itemscope itemtype="http://schema.org/JobPosting">
+	<meta itemprop="title" content="<?php echo esc_attr( $post->post_title ); ?>" />
+
 	<?php if ( $post->post_status == 'expired' ) : ?>
 
 		<div class="job-manager-info"><?php _e( 'This job listing has expired', 'job_manager' ); ?></div>
@@ -7,15 +10,19 @@
 	<?php else : ?>
 
 		<ul class="meta">
-			<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>"><?php the_job_type(); ?></li>
+			<?php do_action( 'before_single_job_listing_meta' ); ?>
 
-			<li class="location"><?php the_job_location(); ?></li>
+			<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>" itemprop="employmentType"><?php the_job_type(); ?></li>
 
-			<li class="date-posted"><?php _e( 'Posted', 'job_manager' ); ?> <date><?php echo human_time_diff( get_the_time( 'U' ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'job_manager' ); ?></date></li>
+			<li class="location" itemprop="jobLocation"><?php the_job_location(); ?></li>
+
+			<li class="date-posted" itemprop="datePosted"><?php _e( 'Posted', 'job_manager' ); ?> <date><?php echo human_time_diff( get_the_time( 'U' ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'job_manager' ); ?></date></li>
 
 			<?php if ( is_position_filled() ) : ?>
 				<li class="position-filled"><?php _e( 'This position has been filled', 'job_manager' ); ?></li>
 			<?php endif; ?>
+
+			<?php do_action( 'after_single_job_listing_meta' ); ?>
 		</ul>
 
 		<div class="company" itemscope itemtype="http://data-vocabulary.org/Organization">
@@ -29,7 +36,9 @@
 			<?php the_company_tagline( '<p class="tagline">', '</p>' ); ?>
 		</div>
 
-		<?php echo apply_filters( 'the_job_description', get_the_content() ); ?>
+		<div class="job_description" itemprop="description">
+			<?php echo apply_filters( 'the_job_description', get_the_content() ); ?>
+		</div>
 
 		<?php if ( ! is_position_filled() && $post->post_status !== 'preview' ) get_job_manager_template( 'job-application.php' ); ?>
 

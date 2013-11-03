@@ -92,7 +92,14 @@ function get_job_listings( $args = array() ) {
 		add_filter( 'posts_clauses', 'order_featured_job_listing' );
 	}
 
+	// Filter args
+	$query_args = apply_filters( 'get_job_listings_query_args', $query_args );
+
+	do_action( 'before_get_job_listings', $query_args );
+
 	$result = new WP_Query( $query_args );
+
+	do_action( 'after_get_job_listings', $query_args );
 
 	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
 

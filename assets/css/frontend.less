@@ -115,8 +115,6 @@
 	}
 }
 
-
-
 .job-manager-form {
 	fieldset {
 		margin: 0 0 1em 0;
@@ -752,6 +750,42 @@ ul.job_listings {
 		}
 		.filled, .expires {
 			text-align: center;
+		}
+	}
+}
+
+nav.job-manager-pagination, #content nav.job-manager-pagination {
+	text-align: center;
+	ul {
+		display: inline-block;
+		white-space: nowrap;
+		padding:0;
+		clear: both;
+		border: 1px solid #eee;
+		border-right: 0;
+		margin: 1px;
+		li {
+			border-right: 1px solid #eee;
+			padding: 0;
+			margin: 0;
+			float: left;
+			display: inline;
+			overflow: hidden;
+			a, span {
+				margin: 0;
+				text-decoration: none;
+				padding: 0;
+				line-height: 1em;
+				font-size: 1em;
+				font-weight: normal;
+				padding: .5em;
+				min-width: 1em;
+				display: block;
+			}
+			span.current, a:hover, a:focus {
+				background: #eee;
+				color: darken( #eee, 40 );
+			}
 		}
 	}
 }

@@ -61,4 +61,5 @@
 			<?php endif; ?>
 		</tbody>
 	</table>
+	<?php get_job_manager_template( 'pagination.php', array( 'max_num_pages' => $max_num_pages ) ); ?>
 </div>
