@@ -10,7 +10,7 @@
 	<?php else : ?>
 
 		<ul class="meta">
-			<?php do_action( 'before_single_job_listing_meta' ); ?>
+			<?php do_action( 'single_job_listing_meta_start' ); ?>
 
 			<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>" itemprop="employmentType"><?php the_job_type(); ?></li>
 
@@ -22,7 +22,7 @@
 				<li class="position-filled"><?php _e( 'This position has been filled', 'job_manager' ); ?></li>
 			<?php endif; ?>
 
-			<?php do_action( 'after_single_job_listing_meta' ); ?>
+			<?php do_action( 'single_job_listing_meta_end' ); ?>
 		</ul>
 
 		<div class="company" itemscope itemtype="http://data-vocabulary.org/Organization">
