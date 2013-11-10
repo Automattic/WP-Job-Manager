@@ -9,6 +9,7 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
+		add_filter( 'admin_head', array( $this, 'admin_head' ) );
 		add_filter( 'the_content', array( $this, 'job_content' ) );
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
 		add_action( 'pending_to_publish', array( $this, 'set_expirey' ) );
@@ -207,6 +208,25 @@ class WP_Job_Manager_Post_Types {
 			'show_in_admin_status_list' => true,
 			'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'job_manager' ),
 		) );
+	}
+
+	/**
+	 * Change label
+	 */
+	public function admin_head() {
+		global $menu;
+
+		$plural     = __( 'Job Listings', 'job_manager' );
+		$count_jobs = wp_count_posts( 'job_listing', 'readable' );
+
+		foreach ( $menu as $key => $menu_item ) {
+			if ( strpos( $menu_item[0], $plural ) === 0 ) {
+				if ( $order_count = $count_jobs->pending ) {
+					$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-$order_count'><span class='pending-count'>" . number_format_i18n( $count_jobs->pending ) . "</span></span>" ;
+				}
+				break;
+			}
+		}
 	}
 
 	/**

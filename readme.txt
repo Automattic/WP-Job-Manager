@@ -78,6 +78,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Correctly turn off expiration when 'days' is not set
 * Greek should be el_GR
 * Settings: Use key for tabs - fixes issues with locales
+* Show pending count in admin menu
 
 = 1.4.0 =
 * Added pagination to the job dashboard to avoid memory issues
