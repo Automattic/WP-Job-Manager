@@ -143,8 +143,8 @@ class WP_Job_Manager_Settings {
 
 			    <h2 class="nav-tab-wrapper">
 			    	<?php
-			    		foreach ( $this->settings as $section ) {
-			    			echo '<a href="#settings-' . sanitize_title( $section[0] ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
+			    		foreach ( $this->settings as $key => $section ) {
+			    			echo '<a href="#settings-' . sanitize_title( $key ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
 			    		}
 			    	?>
 			    </h2><br/>
@@ -155,9 +155,9 @@ class WP_Job_Manager_Settings {
 						echo '<div class="updated fade"><p>' . __( 'Settings successfully saved', 'job_manager' ) . '</p></div>';
 					}
 
-					foreach ( $this->settings as $section ) {
+					foreach ( $this->settings as $key => $section ) {
 
-						echo '<div id="settings-' . sanitize_title( $section[0] ) . '" class="settings_panel">';
+						echo '<div id="settings-' . sanitize_title( $key ) . '" class="settings_panel">';
 
 						echo '<table class="form-table">';
 

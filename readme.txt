@@ -76,6 +76,8 @@ The manual installation method involves downloading the plugin and uploading it 
 * Settings API: Password field
 * Frontend Forms: Password field
 * Correctly turn off expiration when 'days' is not set
+* Greek should be el_GR
+* Settings: Use key for tabs - fixes issues with locales
 
 = 1.4.0 =
 * Added pagination to the job dashboard to avoid memory issues
