@@ -80,6 +80,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Settings: Use key for tabs - fixes issues with locales
 * Show pending count in admin menu
 * Added job_types argument to jobs shortcode to show jobs of a certain type only
+* Hierarchical dropdown for categories on filter form
 
 = 1.4.0 =
 * Added pagination to the job dashboard to avoid memory issues

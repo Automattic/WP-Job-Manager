@@ -39,12 +39,15 @@ function get_job_listings( $args = array() ) {
 			'terms'    => $args['job_types']
 		);
 
-	if ( ! empty( $args['search_categories'] ) )
+	if ( ! empty( $args['search_categories'] ) ) {
+		$field = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
+		
 		$query_args['tax_query'][] = array(
 			'taxonomy' => 'job_listing_category',
-			'field'    => 'slug',
+			'field'    => $field,
 			'terms'    => $args['search_categories']
 		);
+	}
 
 	if ( get_option( 'job_manager_hide_filled_positions' ) == 1 )
 		$query_args['meta_query'][] = array(

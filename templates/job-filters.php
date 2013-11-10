@@ -21,12 +21,7 @@
 		<?php elseif ( $show_categories && get_option( 'job_manager_enable_categories' ) && ! is_tax( 'job_listing_category' ) ) : ?>
 			<div class="search_categories">
 				<label for="search_categories"><?php _e( 'Category', 'job_manager' ); ?></label>
-				<select name="search_categories" id="search_categories">
-					<option value=""><?php _e( 'All Job Categories', 'job_manager' ); ?></option>
-					<?php foreach ( get_job_listing_categories() as $category ) : ?>
-						<option value="<?php echo $category->slug; ?>"><?php echo $category->name; ?></option>
-					<?php endforeach; ?>
-				</select>
+				<?php wp_dropdown_categories( array( 'taxonomy' => 'job_listing_category', 'hierarchical' => 1, 'show_option_all' => __( 'All Job Categories', 'job_manager' ), 'name' => 'search_categories' ) ); ?>
 			</div>
 		<?php endif; ?>
 
