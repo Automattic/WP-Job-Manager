@@ -75,6 +75,7 @@ The manual installation method involves downloading the plugin and uploading it 
 = 1.5.0 =
 * Settings API: Password field
 * Frontend Forms: Password field
+* Correctly turn off expiration when 'days' is not set
 
 = 1.4.0 =
 * Added pagination to the job dashboard to avoid memory issues

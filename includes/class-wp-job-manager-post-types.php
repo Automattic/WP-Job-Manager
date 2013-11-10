@@ -334,6 +334,8 @@ class WP_Job_Manager_Post_Types {
 		if ( $duration ) {
 			$expires = date( 'Y-m-d H:i:s', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
 			update_post_meta( $post->ID, '_job_expires', $expires );
+		} else {
+			update_post_meta( $post->ID, '_job_expires', '' );
 		}
 	}
 }
