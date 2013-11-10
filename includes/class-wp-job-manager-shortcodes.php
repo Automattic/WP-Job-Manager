@@ -171,14 +171,16 @@ class WP_Job_Manager_Shortcodes {
 			'order'           => 'DESC',
 			'show_filters'    => true,
 			'show_categories' => get_option( 'job_manager_enable_categories' ),
-			'categories'      => ''
+			'categories'      => '',
+			'job_types'       => ''
 		) ), $atts ) );
 
 		$categories = array_filter( array_map( 'trim', explode( ',', $categories ) ) );
+		$job_types  = array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
 
 		if ( $show_filters && $show_filters !== 'false' ) {
 
-			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'atts' => $atts ) );
+			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'job_types' => $job_types, 'atts' => $atts ) );
 
 			?><ul class="job_listings"></ul><a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'job_manager' ); ?></strong></a><?php
 
@@ -199,6 +201,15 @@ class WP_Job_Manager_Shortcodes {
 						'taxonomy' => 'job_listing_category',
 						'field'    => 'slug',
 						'terms'    => $categories
+					)
+				);
+
+			if ( $job_types )
+				$args['tax_query'] = array(
+					array(
+						'taxonomy' => 'job_listing_type',
+						'field'    => 'slug',
+						'terms'    => $job_types
 					)
 				);
 
