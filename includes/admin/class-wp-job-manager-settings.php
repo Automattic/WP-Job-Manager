@@ -204,6 +204,14 @@ class WP_Job_Manager_Settings {
 										echo ' <p class="description">' . $option['desc'] . '</p>';
 
 								break;
+								case "password" :
+
+									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+
+									if ( $option['desc'] )
+										echo ' <p class="description">' . $option['desc'] . '</p>';
+
+								break;
 								default :
 
 									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="text" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php

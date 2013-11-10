@@ -72,6 +72,10 @@ The manual installation method involves downloading the plugin and uploading it 
 
 == Changelog ==
 
+= 1.5.0 =
+* Settings API: Password field
+* Frontend Forms: Password field
+
 = 1.4.0 =
 * Added pagination to the job dashboard to avoid memory issues
 * Schema.org markup for job listings
