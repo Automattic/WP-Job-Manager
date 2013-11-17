@@ -517,6 +517,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Done Step
 	 */
 	public static function done() {
+		do_action( 'job_manager_job_submitted', self::$job_id );
+
 		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( self::$job_id ) ) );
 	}
 

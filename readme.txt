@@ -81,6 +81,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Show pending count in admin menu
 * Added job_types argument to jobs shortcode to show jobs of a certain type only
 * Hierarchical dropdown for categories on filter form
+* job_manager_job_submitted hook in submission form
 
 = 1.4.0 =
 * Added pagination to the job dashboard to avoid memory issues
