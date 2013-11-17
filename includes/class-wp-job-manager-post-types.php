@@ -311,7 +311,7 @@ class WP_Job_Manager_Post_Types {
 			AND postmeta.meta_value < %s
 			AND posts.post_status = 'publish'
 			AND posts.post_type = 'job_listing'
-		", current_time( 'mysql' ) ) );
+		", date( 'Y-m-d', current_time( 'timestamp' ) ) ) );
 
 		if ( $job_ids ) {
 			foreach ( $job_ids as $job_id ) {
@@ -328,7 +328,7 @@ class WP_Job_Manager_Post_Types {
 			WHERE posts.post_type = 'job_listing'
 			AND posts.post_modified < %s
 			AND posts.post_status = 'expired'
-		", date( 'Y-m-d H:i:s', strtotime( '-30 days', current_time( 'timestamp' ) ) ) ) );
+		", date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ) ) );
 
 		if ( $job_ids ) {
 			foreach ( $job_ids as $job_id ) {
@@ -344,6 +344,12 @@ class WP_Job_Manager_Post_Types {
 		if ( $post->post_type !== 'job_listing' )
 			return;
 
+		// See if it is already set
+		$expires  = get_post_meta( $post->ID, '_job_expires', true );
+
+		if ( ! empty( $expires ) )
+			return;
+
 		// Get duration from the product if set...
 		$duration = get_post_meta( $post->ID, '_job_duration', true );
 
@@ -352,8 +358,13 @@ class WP_Job_Manager_Post_Types {
 			$duration = absint( get_option( 'job_manager_submission_duration' ) );
 
 		if ( $duration ) {
-			$expires = date( 'Y-m-d H:i:s', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
+			$expires = date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
 			update_post_meta( $post->ID, '_job_expires', $expires );
+
+			// In case we are saving a post, ensure post data is updated so the field is not overridden
+			if ( isset( $_POST[ '_job_expires' ] ) )
+				$_POST[ '_job_expires' ] = $expires;
+
 		} else {
 			update_post_meta( $post->ID, '_job_expires', '' );
 		}

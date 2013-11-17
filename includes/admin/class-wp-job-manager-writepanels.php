@@ -61,6 +61,10 @@ class WP_Job_Manager_Writepanels {
 				'label' => __( 'Feature this job listing?', 'job_manager' ),
 				'type'  => 'checkbox',
 				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'job_manager' )
+			),
+			'_job_expires' => array(
+				'label'       => __( 'Job Expires', 'job_manager' ),
+				'placeholder' => __( 'yyyy-mm-dd', 'job_manager' )
 			)
 		) );
 	}
@@ -264,11 +268,22 @@ class WP_Job_Manager_Writepanels {
 	public function save_job_listing_data( $post_id, $post ) {
 		global $wpdb;
 
-		foreach ( $this->job_listing_fields() as $key => $field )
-			if ( isset( $_POST[ $key ] ) )
+		foreach ( $this->job_listing_fields() as $key => $field ) {
+			if ( '_job_expires' == $key ) {
+				if ( ! empty( $_POST[ $key ] ) ) {
+					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
+				} else {
+					update_post_meta( $post_id, $key, '' );
+				}
+				continue;
+			}
+
+			if ( isset( $_POST[ $key ] ) ) {
 				update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
-			elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' )
+			} elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' ) {
 				update_post_meta( $post_id, $key, 0 );
+			}
+		}
 	}
 }
 

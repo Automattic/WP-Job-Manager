@@ -6,4 +6,10 @@ jQuery(document).ready(function($) {
 		'fadeOut' : 50,
 		'delay' : 200
 	});
+
+	// Datepicker
+	$( "input#_job_expires" ).datepicker({
+		dateFormat: 'yy-mm-dd',
+		minDate: 0
+	});
 });

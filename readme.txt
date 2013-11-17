@@ -73,6 +73,7 @@ The manual installation method involves downloading the plugin and uploading it 
 == Changelog ==
 
 = 1.5.0 =
+* Ability to edit job expiration date manually via admin
 * Settings API: Password field
 * Frontend Forms: Password field
 * Correctly turn off expiration when 'days' is not set
