@@ -72,6 +72,8 @@ The manual installation method involves downloading the plugin and uploading it 
 
 == Changelog ==
 
+* Changed get_the_time to get_post_time
+
 = 1.5.0 =
 * Ability to edit job expiration date manually via admin
 * Settings API: Password field
