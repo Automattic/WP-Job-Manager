@@ -381,7 +381,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				throw new Exception( __( 'You must be signed in to post a new job listing.' ) );
 
 			// Update the job
-			self::save_job( $values['job']['job_title'], $values['job']['job_description'] );
+			self::save_job( $values['job']['job_title'], $values['job']['job_description'], 'preview', $values );
 			self::update_job_data( $values );
 
 			// Successful, show next step
@@ -400,14 +400,32 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  string $post_content
 	 * @param  string $status
 	 */
-	protected static function save_job( $post_title, $post_content, $status = 'preview' ) {
-		$job_data = apply_filters( 'submit_job_form_save_job_data', array(
+	protected static function save_job( $post_title, $post_content, $status = 'preview', $values = array() ) {
+			
+		$job_slug   = array();
+
+		// Prepend with company name
+		if ( ! empty( $values['company']['company_name'] ) )
+			$job_slug[] = $values['company']['company_name'];
+
+		// Prepend location
+		if ( ! empty( $values['job']['job_location'] ) )
+			$job_slug[] = $values['job']['job_location'];
+
+		// Prepend with job type
+		if ( ! empty( $values['job']['job_type'] ) )
+			$job_slug[] = $values['job']['job_type'];
+
+		$job_slug[] = $post_title;
+
+		$job_data  = apply_filters( 'submit_job_form_save_job_data', array(
 			'post_title'     => $post_title,
+			'post_name'      => sanitize_title( implode( '-', $job_slug ) ),
 			'post_content'   => $post_content,
 			'post_status'    => $status,
 			'post_type'      => 'job_listing',
 			'comment_status' => 'closed'
-		) );
+		), $post_title, $post_content, $status, $values );
 
 		if ( self::$job_id ) {
 			$job_data['ID'] = self::$job_id;
