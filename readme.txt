@@ -73,6 +73,7 @@ The manual installation method involves downloading the plugin and uploading it 
 == Changelog ==
 
 * Changed get_the_time to get_post_time
+* Added textarea and wp-editor to form api
 
 = 1.5.0 =
 * Ability to edit job expiration date manually via admin
