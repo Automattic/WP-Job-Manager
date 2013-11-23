@@ -340,6 +340,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 		}
 
+		wp_enqueue_script( 'wp-job-manager-job-submission' );
+
 		get_job_manager_template( 'job-submit.php', array(
 			'form'               => self::$form_name,
 			'job_id'             => self::get_job_id(),
