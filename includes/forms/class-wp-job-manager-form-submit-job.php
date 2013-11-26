@@ -76,7 +76,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	/**
 	 * Sort array by priority value
 	 */
-	private static function sort_by_priority( $a, $b ) {
+	protected static function sort_by_priority( $a, $b ) {
 		return $a['priority'] - $b['priority'];
 	}
 
@@ -133,7 +133,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				),
 				'job_description' => array(
 					'label'       => __( 'Description', 'job_manager' ),
-					'type'        => 'job-description',
+					'type'        => 'wp-editor',
 					'required'    => true,
 					'placeholder' => '',
 					'priority'    => 5
@@ -196,27 +196,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return array of data
 	 */
 	protected static function get_posted_fields() {
+		
 		self::init_fields();
 
 		$values = array();
 
 		foreach ( self::$fields as $group_key => $fields ) {
 			foreach ( $fields as $key => $field ) {
-				$values[ $group_key ][ $key ] = isset( $_POST[ $key ] ) ? stripslashes( $_POST[ $key ] ) : '';
-
-				switch ( $key ) {
-					case 'job_description' :
-						$values[ $group_key ][ $key ] = wp_kses_post( trim( $values[ $group_key ][ $key ] ) );
-					break;
-					case 'company_logo' :
-						$image_url = self::upload_image( 'company_logo' );
-						if ( $image_url )
-							$values[ $group_key ][ $key ] = $image_url;
-					break;
-					default:
-						$values[ $group_key ][ $key ] = sanitize_text_field( $values[ $group_key ][ $key ] );
-					break;
-				}
+				// Get the value
+				if ( method_exists( __CLASS__, "get_posted_{$field['type']}_field" ) )
+					$values[ $group_key ][ $key ] = call_user_func( __CLASS__ . "::get_posted_{$field['type']}_field", $key, $field );
+				else
+					$values[ $group_key ][ $key ] = self::get_posted_field( $key, $field );
 
 				// Set fields value
 				self::$fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
@@ -224,6 +215,46 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		return $values;
+	}
+
+	/**
+	 * Get the value of a posted field
+	 * @param  string $key
+	 * @param  array $field
+	 * @return string
+	 */
+	protected static function get_posted_field( $key, $field ) {
+		return isset( $_POST[ $key ] ) ? sanitize_text_field( trim( stripslashes( $_POST[ $key ] ) ) ) : '';
+	}
+
+	/**
+	 * Get the value of a posted file field
+	 * @param  string $key
+	 * @param  array $field
+	 * @return string
+	 */
+	protected static function get_posted_file_field( $key, $field ) {
+		return self::upload_image( $key );
+	}
+
+	/**
+	 * Get the value of a posted textarea field
+	 * @param  string $key
+	 * @param  array $field
+	 * @return string
+	 */
+	protected static function get_posted_textarea_field( $key, $field ) {
+		return isset( $_POST[ $key ] ) ? wp_kses_post( trim( stripslashes( $_POST[ $key ] ) ) ) : '';
+	}
+
+	/**
+	 * Get the value of a posted textarea field
+	 * @param  string $key
+	 * @param  array $field
+	 * @return string
+	 */
+	protected static function get_posted_wp_editor_field( $key, $field ) {
+		return self::get_posted_textarea_field( $key, $field );
 	}
 
 	/**
@@ -311,9 +342,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						case 'job_title' :
 							self::$fields[ $group_key ][ $key ]['value'] = $job->post_title;
 						break;
-						case 'job_description' :
-							self::$fields[ $group_key ][ $key ]['value'] = $job->post_content;
-						break;
 						case 'job_type' :
 							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'slugs' ) ) );
 						break;
@@ -357,7 +385,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public static function submit_handler() {
 		try {
-
+				
+			// Init fields
+			self::init_fields();
+			
 			// Get posted values
 			$values = self::get_posted_fields();
 
