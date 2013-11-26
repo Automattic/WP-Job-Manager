@@ -342,6 +342,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						case 'job_title' :
 							self::$fields[ $group_key ][ $key ]['value'] = $job->post_title;
 						break;
+						case 'job_description' :
+							self::$fields[ $group_key ][ $key ]['value'] = $job->post_content;
+						break;
 						case 'job_type' :
 							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'slugs' ) ) );
 						break;
