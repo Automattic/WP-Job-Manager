@@ -230,10 +230,11 @@ if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
  * Handle account creation.
  *
- * @param  [type] $account_email
+ * @param  string $account_email
+ * @param  string $role 
  * @return WP_error | bool was an account created?
  */
-function wp_job_manager_create_account( $account_email ) {
+function wp_job_manager_create_account( $account_email, $role = '' ) {
 	global  $current_user;
 
 	$user_email = apply_filters( 'user_registration_email', sanitize_email( $account_email ) );
@@ -270,9 +271,10 @@ function wp_job_manager_create_account( $account_email ) {
 
 	// Create account
 	$new_user = array(
-    	'user_login' => $username,
-    	'user_pass'  => $password,
-    	'user_email' => $user_email
+		'user_login' => $username,
+		'user_pass'  => $password,
+		'user_email' => $user_email,
+		'role'       => $role
     );
 
     $user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );

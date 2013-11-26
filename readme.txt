@@ -76,6 +76,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Added textarea and wp-editor to form api
 * When using the job submit form, generate a more unqiue slug for the job - company-location-type-job-title
 * Ability to remove image from job submission form
+* Update icon font
 
 = 1.5.0 =
 * Ability to edit job expiration date manually via admin

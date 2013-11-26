@@ -1,9 +1,10 @@
 <?php
 $editor = array(
+	'textarea_name' => isset( $field['name'] ) ? $field['name'] : $key,
 	'media_buttons' => false,
 	'textarea_rows' => 8,
-	'quicktags' => false,
-	'tinymce' => array(
+	'quicktags'     => false,
+	'tinymce'       => array(
 		'plugins' => '',
 		'theme_advanced_buttons1' => 'bold,italic,|,bullist,numlist,|,undo,redo,|,|,code',
 		'theme_advanced_buttons2' => '',

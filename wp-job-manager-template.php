@@ -69,20 +69,25 @@ function locate_job_manager_template( $template_name, $template_path = '', $defa
  * @param string $name (default: '')
  * @return void
  */
-function get_job_manager_template_part( $slug, $name = '' ) {
+function get_job_manager_template_part( $slug, $name = '', $template_path = '', $default_path = '' ) {
+	if ( ! $template_path )
+		$template_path = 'job_manager';
+	if ( ! $default_path )
+		$default_path = JOB_MANAGER_PLUGIN_DIR . '/templates/';
+
 	$template = '';
 
 	// Look in yourtheme/slug-name.php and yourtheme/job_manager/slug-name.php
 	if ( $name )
-		$template = locate_template( array ( "{$slug}-{$name}.php", "job_manager/{$slug}-{$name}.php" ) );
+		$template = locate_template( array ( "{$slug}-{$name}.php", "{$template_path}/{$slug}-{$name}.php" ) );
 
 	// Get default slug-name.php
-	if ( ! $template && $name && file_exists( JOB_MANAGER_PLUGIN_DIR . "/templates/{$slug}-{$name}.php" ) )
-		$template = JOB_MANAGER_PLUGIN_DIR . "/templates/{$slug}-{$name}.php";
+	if ( ! $template && $name && file_exists( $default_path . "{$slug}-{$name}.php" ) )
+		$template = $default_path . "{$slug}-{$name}.php";
 
 	// If template file doesn't exist, look in yourtheme/slug.php and yourtheme/job_manager/slug.php
 	if ( ! $template )
-		$template = locate_template( array ( "{$slug}.php", "job_manager/{$slug}.php" ) );
+		$template = locate_template( array( "{$slug}.php", "{$template_path}/{$slug}.php" ) );
 
 	if ( $template )
 		load_template( $template, false );
