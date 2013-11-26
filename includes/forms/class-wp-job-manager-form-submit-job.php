@@ -40,8 +40,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		uasort( self::$steps, array( __CLASS__, 'sort_by_priority' ) );
 
 		// Get step/job
-		if ( ! empty( $_REQUEST['step'] ) ) {
-			self::$step = is_numeric( $_REQUEST['step'] ) ? max( absint( $_REQUEST['step'] ), 0 ) : array_search( $_REQUEST['step'], array_keys( self::$steps ) );
+		if ( isset( $_POST['step'] ) ) {
+			self::$step = is_numeric( $_POST['step'] ) ? max( absint( $_POST['step'] ), 0 ) : array_search( $_POST['step'], array_keys( self::$steps ) );
+		} elseif ( ! empty( $_GET['step'] ) ) {
+			self::$step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( $_GET['step'], array_keys( self::$steps ) );
 		}
 		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
@@ -417,7 +419,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				throw new Exception( __( 'You must be signed in to post a new job listing.' ) );
 
 			// Update the job
-			self::save_job( $values['job']['job_title'], $values['job']['job_description'], 'preview', $values );
+			self::save_job( $values['job']['job_title'], $values['job']['job_description'], self::$job_id ? '' : 'preview', $values );
 			self::update_job_data( $values );
 
 			// Successful, show next step
@@ -458,10 +460,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'post_title'     => $post_title,
 			'post_name'      => sanitize_title( implode( '-', $job_slug ) ),
 			'post_content'   => $post_content,
-			'post_status'    => $status,
 			'post_type'      => 'job_listing',
 			'comment_status' => 'closed'
 		), $post_title, $post_content, $status, $values );
+
+		if ( $status )
+			$job_data['post_status'] = $status;
 
 		if ( self::$job_id ) {
 			$job_data['ID'] = self::$job_id;

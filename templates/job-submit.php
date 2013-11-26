@@ -50,6 +50,7 @@ global $job_manager;
 			<?php wp_nonce_field( 'submit_form_posted' ); ?>
 			<input type="hidden" name="job_manager_form" value="<?php echo $form; ?>" />
 			<input type="hidden" name="job_id" value="<?php echo esc_attr( $job_id ); ?>" />
+			<input type="hidden" name="step" value="0" />
 			<input type="submit" name="submit_job" class="button" value="<?php esc_attr_e( $submit_button_text ); ?>" />
 		</p>
 
