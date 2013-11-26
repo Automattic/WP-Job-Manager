@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
 
 			var filter_job_type = new Array();
 
-			$(':input[name="filter_job_type[]"]:checked', form).each(function() {
+			$(':input[name="filter_job_type[]"]:checked, :input[name="filter_job_type[]"][type="hidden"]', form).each(function() {
 				filter_job_type.push( $(this).val() );
 			});
 
