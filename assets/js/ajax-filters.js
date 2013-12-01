@@ -125,7 +125,7 @@ jQuery(document).ready(function($) {
 
 		form.find(':input[name=search_keywords]').val('');
 		form.find(':input[name=search_location]').val('');
-		form.find(':input[name^=search_categories]').val('');
+		form.find(':input[name^=search_categories]').val(0);
 		$(':input[name="filter_job_type[]"]', form).attr('checked', 'checked');
 
 		target.trigger( 'reset' );
