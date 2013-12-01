@@ -210,6 +210,32 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
+	 * input_select function.
+	 *
+	 * @access private
+	 * @param mixed $key
+	 * @param mixed $field
+	 * @return void
+	 */
+	private function input_multiselect( $key, $field ) {
+		global $thepostid;
+
+		if ( empty( $field['value'] ) )
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		?>
+		<p class="form-field">
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
+			<select multiple="multiple" name="<?php echo esc_attr( $key ); ?>[]" id="<?php echo esc_attr( $key ); ?>">
+				<?php foreach ( $field['options'] as $key => $value ) : ?>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php if ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) selected( in_array( $key, $field['value'] ), true ); ?>><?php echo esc_html( $value ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+		</p>
+		<?php
+	}
+
+	/**
 	 * input_checkbox function.
 	 *
 	 * @access private
@@ -305,7 +331,11 @@ class WP_Job_Manager_Writepanels {
 			}
 
 			if ( isset( $_POST[ $key ] ) ) {
-				update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
+				if ( is_array( $_POST[ $key ] ) ) {
+					update_post_meta( $post_id, $key, array_map( 'sanitize_text_field', $_POST[ $key ] ) );
+				} else {
+					update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
+				}
 			} elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' ) {
 				update_post_meta( $post_id, $key, 0 );
 			}

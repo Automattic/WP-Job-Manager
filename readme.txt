@@ -81,6 +81,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Fix job_types filters
 * Field_select in admin
 * Fix access control on job editing
+* Job forms multiselect support
 
 = 1.5.0 =
 * Ability to edit job expiration date manually via admin

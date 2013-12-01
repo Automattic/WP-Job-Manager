@@ -230,6 +230,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Get the value of a posted multiselect field
+	 * @param  string $key
+	 * @param  array $field
+	 * @return array
+	 */
+	protected static function get_posted_multiselect_field( $key, $field ) {
+		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field',  $_POST[ $key ] ) : array();
+	}
+
+	/**
 	 * Get the value of a posted file field
 	 * @param  string $key
 	 * @param  array $field
@@ -485,7 +495,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		wp_set_object_terms( self::$job_id, array( $values['job']['job_type'] ), 'job_listing_type', false );
 
 		if ( get_option( 'job_manager_enable_categories' ) && isset( $values['job']['job_category'] ) ) {
-			wp_set_object_terms( self::$job_id, array( $values['job']['job_category'] ), 'job_listing_category', false );
+			wp_set_object_terms( self::$job_id, ( is_array( $values['job']['job_category'] ) ? $values['job']['job_category'] : array( $values['job']['job_category'] ) ), 'job_listing_category', false );
 		}
 
 		update_post_meta( self::$job_id, '_application', $values['job']['application'] );
