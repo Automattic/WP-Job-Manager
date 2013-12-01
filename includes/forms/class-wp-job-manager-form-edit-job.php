@@ -14,6 +14,10 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 */
 	public static function init() {
 		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
+
+		if  ( ! job_manager_user_can_edit_job( self::$job_id ) ) {
+			self::$job_id = 0;
+		}
 	}
 
 	/**
