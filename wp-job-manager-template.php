@@ -283,7 +283,7 @@ function the_job_location( $map_link = true, $post = null ) {
 
 	if ( $location ) {
 		if ( $map_link )
-			echo '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false">' . $location . '</a>';
+			echo apply_filters( 'the_job_location_map_link', '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false">' . $location . '</a>', $location, $post );
 		else
 			echo $location;
 	} else {
