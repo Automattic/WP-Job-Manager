@@ -78,6 +78,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Ability to remove image from job submission form
 * Update icon font
 * Fix job_types filters
+* Field_select in admin
 
 = 1.5.0 =
 * Ability to edit job expiration date manually via admin
