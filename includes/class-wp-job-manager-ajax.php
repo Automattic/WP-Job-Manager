@@ -94,7 +94,7 @@ class WP_Job_Manager_Ajax {
 
 			if ( $search_categories ) {
 				foreach ( $search_categories as $category ) {
-					$category = get_term_by( 'slug', $category, 'job_listing_category' );
+					$category = get_term_by( 'id', $category, 'job_listing_category' );
 
 					if ( ! is_wp_error( $category ) )
 						$showing_categories[] = $category->name;
