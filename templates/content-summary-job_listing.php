@@ -11,7 +11,7 @@
 
 		<h1><?php the_title(); ?></h1>
 
-		<p class="meta"><?php the_job_location( false ); ?> &mdash; <date><?php echo human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'job_manager' ); ?></date></p>
+		<p class="meta"><?php the_job_location( false ); ?> &mdash; <date><?php printf( __( 'Posted %s ago', 'job_manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) ); ?></date></p>
 
 	</div>
 </a>

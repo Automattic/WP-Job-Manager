@@ -13,7 +13,7 @@
 		</div>
 		<ul class="meta">
 			<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>"><?php the_job_type(); ?></li>
-			<li class="date"><date><?php echo human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'job_manager' ); ?></date></li>
+			<li class="date"><date><?php printf( __( 'Posted %s ago', 'job_manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) ); ?></date></li>
 		</ul>
 	</a>
 </li>

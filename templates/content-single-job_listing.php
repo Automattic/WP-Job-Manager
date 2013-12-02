@@ -16,7 +16,7 @@
 
 			<li class="location" itemprop="jobLocation"><?php the_job_location(); ?></li>
 
-			<li class="date-posted" itemprop="datePosted"><?php _e( 'Posted', 'job_manager' ); ?> <date><?php echo human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) . ' ' . __( 'ago', 'job_manager' ); ?></date></li>
+			<li class="date-posted" itemprop="datePosted"><date><?php printf( __( 'Posted %s ago', 'job_manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) ); ?></date></li>
 
 			<?php if ( is_position_filled() ) : ?>
 				<li class="position-filled"><?php _e( 'This position has been filled', 'job_manager' ); ?></li>
