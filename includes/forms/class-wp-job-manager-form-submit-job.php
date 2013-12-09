@@ -206,8 +206,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		foreach ( self::$fields as $group_key => $fields ) {
 			foreach ( $fields as $key => $field ) {
 				// Get the value
-				if ( method_exists( __CLASS__, "get_posted_{$field['type']}_field" ) )
-					$values[ $group_key ][ $key ] = call_user_func( __CLASS__ . "::get_posted_{$field['type']}_field", $key, $field );
+				$field_type = str_replace( '-', '_', $field['type'] );
+				
+				if ( method_exists( __CLASS__, "get_posted_{$field_type}_field" ) )
+					$values[ $group_key ][ $key ] = call_user_func( __CLASS__ . "::get_posted_{$field_type}_field", $key, $field );
 				else
 					$values[ $group_key ][ $key ] = self::get_posted_field( $key, $field );
 

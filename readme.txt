@@ -72,6 +72,9 @@ The manual installation method involves downloading the plugin and uploading it 
 
 == Changelog ==
 
+= 1.5.2 =
+* Fix wp-editor field
+
 = 1.5.1 =
 * Changed get_the_time to get_post_time
 * Added textarea and wp-editor to form api
