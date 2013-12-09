@@ -248,7 +248,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected static function get_posted_file_field( $key, $field ) {
-		return self::upload_image( $key );
+		$file = self::upload_image( $key );
+		
+		if ( ! $file )
+			$file = self::get_posted_field( 'current_' . $key, $field );
+
+		return $file;
 	}
 
 	/**
