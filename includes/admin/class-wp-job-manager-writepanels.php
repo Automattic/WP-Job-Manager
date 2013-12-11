@@ -82,12 +82,10 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * input_text function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_file( $key, $field ) {
+	public function input_file( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -142,12 +140,10 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * input_text function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_text( $key, $field ) {
+	public function input_text( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -164,12 +160,10 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * input_text function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_textarea( $key, $field ) {
+	public function input_textarea( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -186,12 +180,10 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * input_select function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_select( $key, $field ) {
+	public function input_select( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -212,12 +204,10 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * input_select function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_multiselect( $key, $field ) {
+	public function input_multiselect( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
@@ -238,12 +228,10 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * input_checkbox function.
 	 *
-	 * @access private
 	 * @param mixed $key
 	 * @param mixed $field
-	 * @return void
 	 */
-	private function input_checkbox( $key, $field ) {
+	public function input_checkbox( $key, $field ) {
 		global $thepostid;
 
 		if ( empty( $field['value'] ) )
