@@ -77,6 +77,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Removed images previously used in admin.
 * Tweak the_company_logo() to check if logo is valid URL.
 * Replaced Genericons with custom set
+* Only show link to view job on dashboard when published
 
 = 1.5.2 =
 * Fix wp-editor field

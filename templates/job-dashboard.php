@@ -19,7 +19,11 @@
 				<?php foreach ( $jobs as $job ) : ?>
 					<tr>
 						<td class="job_title">
-							<a href="<?php echo get_permalink( $job->ID ); ?>"><?php echo $job->post_title; ?></a>
+							<?php if ( $job->post_status == 'publish' ) : ?>
+								<a href="<?php echo get_permalink( $job->ID ); ?>"><?php echo $job->post_title; ?></a>
+							<?php else : ?>
+								<?php echo $job->post_title; ?>
+							<?php endif; ?>
 							<ul class="job-dashboard-actions">
 								<?php
 									$actions = array();
