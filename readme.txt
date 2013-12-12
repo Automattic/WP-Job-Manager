@@ -1,10 +1,10 @@
 === WP Job Manager ===
 Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
-Tags: job listing, job board, job, jobs, company
-Requires at least: 3.5
-Tested up to: 3.7
-Stable tag: 1.5.2
+Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
+Requires at least: 3.8
+Tested up to: 3.8
+Stable tag: 1.6.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -71,6 +71,12 @@ The manual installation method involves downloading the plugin and uploading it 
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.6.0 = 
+* MP6/WP 3.8 optimised styling. Min version 3.8 for new styling.
+* Removed images previously used in admin.
+* Tweak the_company_logo() to check if logo is valid URL.
+* Replaced Genericons with custom set
 
 = 1.5.2 =
 * Fix wp-editor field

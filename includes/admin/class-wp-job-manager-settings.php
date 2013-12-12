@@ -139,7 +139,6 @@ class WP_Job_Manager_Settings {
 			<form method="post" action="options.php">
 
 				<?php settings_fields( $this->settings_group ); ?>
-				<?php screen_icon(); ?>
 
 			    <h2 class="nav-tab-wrapper">
 			    	<?php

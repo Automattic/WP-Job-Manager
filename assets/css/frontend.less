@@ -1,4 +1,5 @@
 @import "mixins";
+@import "icons";
 
 @primary: 			#999999; 									/* Primary colour for buttons (alt) */
 @primarytext: 		desaturate(lighten(@primary,50%),18%);		/* Text on primary colour bg */
@@ -12,24 +13,13 @@
 @contentbg: 		#fff; 										/* Content BG - Tabs (active state) */
 @subtext: 			#777; 										/* small, breadcrumbs etc */
 
-@font-face {
-    font-family: 'Genericons';
-    src: url('../font/genericons-regular-webfont.eot');
-    src: url('../font/genericons-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../font/genericons-regular-webfont.woff') format('woff'),
-         url('../font/genericons-regular-webfont.ttf') format('truetype'),
-         url('../font/genericons-regular-webfont.svg#genericonsregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
 .display-icon {
 	display: inline-block;
 	width: 16px;
 	height: 16px;
 	-webkit-font-smoothing: antialiased;
 	font-size: 16px;
-	font-family: 'Genericons';
+	font-family: "job-manager" !important;
 	text-decoration: none;
 	font-weight: normal;
 	font-style: normal;
@@ -144,7 +134,7 @@
 				margin-right: .5em;
 				&:before {
 					.display-icon;
-					content: '\f427';
+					content: '\e808';
 				}
 			}
 		}
@@ -391,11 +381,11 @@ ul.job_listings {
 		}
 		.website:before {
 			.display-icon;
-			content: '\f107';
+			content: '\e809';
 		}
 		.company_twitter:before {
 			.display-icon;
-			content: '\f202';
+			content: '\e80a';
 		}
 	}
 	.meta {
@@ -436,15 +426,15 @@ ul.job_listings {
 		}
 		.location:before {
 			.display-icon;
-			content: '\f417';
+			content: '\e80d';
 		}
 		.date-posted:before {
 			.display-icon;
-			content: '\f307';
+			content: '\e80f';
 		}
 		.position-filled:before {
 			.display-icon;
-			content: '\f424';
+			content: '\e80e';
 		}
 	}
 	.application {

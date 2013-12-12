@@ -284,7 +284,7 @@ function the_company_logo( $size = 'full', $default = null, $post = null ) {
 
 	$logo = get_the_company_logo( $post );
 
-	if ( $logo ) {
+	if ( ! empty( $logo ) && ( strstr( $logo, 'http' ) || file_exists( $logo ) ) ) {
 
 		if ( $size !== 'full' )
 			$logo = job_manager_get_resized_image( $logo, $size );

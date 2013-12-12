@@ -238,8 +238,8 @@ class WP_Job_Manager_CPT {
 		$columns["job_expires"]          = __( "Expires", "job_manager" );
 		if ( get_option( 'job_manager_enable_categories' ) )
 		$columns["job_listing_category"] = __( "Categories", "job_manager" );
-		$columns['featured_job']         = '<img src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/featured_head.png" alt="' . __( "Featured?", "job_manager" ) . '" />';
-		$columns['filled']               = __( "Filled?", "job_manager" );
+		$columns['featured_job']         = '<span class="tips" data-tip="' . __( "Featured?", "job_manager" ) . '">' . __( "Featured?", "job_manager" ) . '</span>';
+		$columns['filled']               = '<span class="tips" data-tip="' . __( "Filled?", "job_manager" ) . '">' . __( "Filled?", "job_manager" ) . '</span>';
 		$columns['job_status']           = __( "Status", "job_manager" );
 		$columns['job_actions']          = __( "Actions", "job_manager" );
 
@@ -331,8 +331,7 @@ class WP_Job_Manager_CPT {
 				$admin_actions = apply_filters( 'job_manager_admin_actions', $admin_actions, $post );
 
 				foreach ( $admin_actions as $action ) {
-					$image = isset( $action['image_url'] ) ? $action['image_url'] : JOB_MANAGER_PLUGIN_URL . '/assets/images/icons/' . $action['action'] . '.png';
-					printf( '<a class="button tips" href="%s" data-tip="%s"><img src="%s" alt="%s" width="14" /></a>', esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_attr( $image ), esc_attr( $action['name'] ) );
+					printf( '<a class="button tips icon-%s" href="%s" data-tip="%s">%s</a>', sanitize_title( $action['name'] ), esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_attr( $action['name'] ) );
 				}
 
 				echo '</div>';

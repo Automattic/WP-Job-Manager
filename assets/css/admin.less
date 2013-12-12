@@ -1,18 +1,32 @@
 @import "mixins";
+@import "icons.less";
 
 .widefat {
-	.column-filled {
-		text-align: center;
-	}
-	td.column-featured_job {
+	td.column-featured_job, td.column-filled {
 		width: 46px;
 		text-align: left;
 		padding-left: 11px;
 	}
-	th.column-featured_job {
-		width: 46px;
-		img {
-			padding-top: 3px !important;
+	th.column-featured_job, th.column-filled {
+		width: 1em;
+		span {
+			display: block;
+			width: 1em;
+			height: 1em;
+			line-height: 1em;
+			padding: 1px 0 0 0;
+			overflow: hidden;
+			&:before {
+				content: '\e803';
+				.jm-icon;
+			}
+		}
+	}
+	th.column-filled {
+		span {
+			&:before {
+				content: '\e807';
+			}
 		}
 	}
 	.column-job_posted {
@@ -26,40 +40,32 @@
 		}
 	}
 	.column-job_listing_type {
-		text-align: center;
+		text-align: left;
 		width: 6em;
 		word-wrap: normal !important;
 		.job-type {
 			color: #fff;
-			padding: 4px 0 3px;
-			line-height: 1em;
+			padding: 4px;
 			font-size: 11px;
-			font-weight: bold;
 			.border_radius( 2px );
-			text-shadow: 0 1px 0 rgba( 0, 0, 0, 0.2 );
 			display:block;
 			background-color: @part-time;
-			border-bottom: 2px solid darken( @part-time, 10% );
+			text-align: center;
 		}
 		.full-time {
 			background-color: @full-time;
-			border-bottom: 2px solid darken( @full-time, 10% );
 		}
 		.part-time {
 			background-color: @part-time;
-			border-bottom: 2px solid darken( @part-time, 10% );
 		}
 		.temporary {
 			background-color: @temporary;
-			border-bottom: 2px solid darken( @temporary, 10% );
 		}
 		.freelance {
 			background-color: @freelance;
-			border-bottom: 2px solid darken( @freelance, 10% );
 		}
 		.internship {
 			background-color: @internship;
-			border-bottom: 2px solid darken( @internship, 10% );
 		}
 	}
 	th.column-job_position {
@@ -102,22 +108,32 @@
 		}
 		a.button {
 			display: inline-block;
-			margin: 0 4px 2px 0;
+			margin: 0 0 2px 4px;
 			cursor: pointer;
-			padding: 3px 4px;
-			text-align: center;
-			height:auto;
-			opacity: 0.25;
-			img {
-				display: block;
-				width:12px;
-				height:auto;
+			padding: 0 !important;
+			height: 2em !important;
+			width: 2em !important;
+			font-size: 1em !important;
+			line-height: 2em !important;
+			overflow: hidden;
+			&:before {
+				.jm-icon;
+				float: left;
+				width: 2em !important;
+				line-height: 2em;
 			}
 		}
-	}
-	tr:hover, tr:focus {
-		.column-job_actions a {
-			opacity: 1;
+		.icon-view:before {
+			content: '\e805';
+		}
+		.icon-edit:before {
+			content: '\e804';
+		}
+		.icon-delete:before {
+			content: '\e801';
+		}
+		.icon-approve:before {
+			content: '\e802';
 		}
 	}
 }
