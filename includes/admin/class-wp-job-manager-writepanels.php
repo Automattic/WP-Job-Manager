@@ -94,7 +94,7 @@ class WP_Job_Manager_Writepanels {
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
 			<input type="text" class="file_url" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
-			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?> <button class="button upload_image_button" data-uploader_button_text="<?php _e( 'Use as company logo', 'job_manager' ); ?>"><?php _e( 'Upload company logo', 'job_manager' ); ?></button>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?> <button class="button upload_image_button" data-uploader_button_text="<?php _e( 'Use image', 'job_manager' ); ?>"><?php _e( 'Upload image', 'job_manager' ); ?></button>
 		</p>
 		<script type="text/javascript">
 			// Uploading files
@@ -309,6 +309,7 @@ class WP_Job_Manager_Writepanels {
 		global $wpdb;
 
 		foreach ( $this->job_listing_fields() as $key => $field ) {
+			// Expirey date
 			if ( '_job_expires' == $key ) {
 				if ( ! empty( $_POST[ $key ] ) ) {
 					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
@@ -318,14 +319,44 @@ class WP_Job_Manager_Writepanels {
 				continue;
 			}
 
-			if ( isset( $_POST[ $key ] ) ) {
-				if ( is_array( $_POST[ $key ] ) ) {
-					update_post_meta( $post_id, $key, array_map( 'sanitize_text_field', $_POST[ $key ] ) );
-				} else {
-					update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
+			// Locations
+			elseif ( '_job_location' == $key ) {
+				if ( update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) ) ) {
+					// Location changed
+					delete_post_meta( $post_id, 'geolocation_city' );
+					delete_post_meta( $post_id, 'geolocation_country_long' );
+					delete_post_meta( $post_id, 'geolocation_country_short' );
+					delete_post_meta( $post_id, 'geolocation_formatted_address' );
+					delete_post_meta( $post_id, 'geolocation_lat' );
+					delete_post_meta( $post_id, 'geolocation_long' );
+					delete_post_meta( $post_id, 'geolocation_state_long' );
+					delete_post_meta( $post_id, 'geolocation_state_short' );
+					delete_post_meta( $post_id, 'geolocation_street' );
+					delete_post_meta( $post_id, 'geolocation_zipcode' );
+
+					$address_data = WP_Job_Manager_Geocode::get_location_data( sanitize_text_field( $_POST[ $key ] ) );
+
+					if ( ! is_wp_error( $address_data ) && $address_data ) {
+						foreach ( $address_data as $key => $value ) {
+							if ( $value ) {
+								update_post_meta( $post_id, 'geolocation_' . $key, $value );
+							}
+						}
+					}
 				}
-			} elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' ) {
-				update_post_meta( $post_id, $key, 0 );
+			}
+
+			// Everything else
+			else {
+				if ( isset( $_POST[ $key ] ) ) {
+					if ( is_array( $_POST[ $key ] ) ) {
+						update_post_meta( $post_id, $key, array_map( 'sanitize_text_field', $_POST[ $key ] ) );
+					} else {
+						update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
+					}
+				} elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' ) {
+					update_post_meta( $post_id, $key, 0 );
+				}
 			}
 		}
 	}
