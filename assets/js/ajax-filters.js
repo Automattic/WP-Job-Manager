@@ -60,6 +60,8 @@ jQuery(document).ready(function($) {
 			var data = {
 				action: 			'job_manager_get_listings',
 				search_categories:  target.data('categories').split(','),
+				search_keywords: 	target.data('keywords'),
+				search_location: 	target.data('location'),
 				per_page: 			per_page,
 				orderby: 			orderby,
 				order: 			    order,

@@ -172,7 +172,9 @@ class WP_Job_Manager_Shortcodes {
 			'show_filters'    => true,
 			'show_categories' => get_option( 'job_manager_enable_categories' ),
 			'categories'      => '',
-			'job_types'       => ''
+			'job_types'       => '',
+			'location'        => '', 
+			'keywords'        => ''
 		) ), $atts ) );
 
 		$categories = array_filter( array_map( 'trim', explode( ',', $categories ) ) );
@@ -180,49 +182,21 @@ class WP_Job_Manager_Shortcodes {
 
 		if ( $show_filters && $show_filters !== 'false' ) {
 
-			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'job_types' => $job_types, 'atts' => $atts ) );
+			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords ) );
 
 			?><ul class="job_listings"></ul><a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'job_manager' ); ?></strong></a><?php
 
 		} else {
 
-			$args = array(
-				'post_type'           => 'job_listing',
-				'post_status'         => 'publish',
-				'ignore_sticky_posts' => 1,
-				'posts_per_page'      => $per_page,
-				'orderby'             => $orderby,
-				'order'               => $order,
-			);
-
-			if ( $categories )
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'job_listing_category',
-						'field'    => 'slug',
-						'terms'    => $categories
-					)
-				);
-
-			if ( $job_types )
-				$args['tax_query'] = array(
-					array(
-						'taxonomy' => 'job_listing_type',
-						'field'    => 'slug',
-						'terms'    => $job_types
-					)
-				);
-
-			if ( get_option( 'job_manager_hide_filled_positions' ) == 1 )
-				$args['meta_query'] = array(
-					array(
-						'key'     => '_filled',
-						'value'   => '1',
-						'compare' => '!='
-					)
-				);
-
-			$jobs = new WP_Query( apply_filters( 'job_manager_output_jobs_args', $args ) );
+			$jobs = get_job_listings( apply_filters( 'job_manager_output_jobs_args', array(
+				'search_location'   => $location,
+				'search_keywords'   => $keywords,
+				'search_categories' => $categories,
+				'job_types'         => $job_types,
+				'orderby'           => $orderby,
+				'order'             => $order,
+				'posts_per_page'    => $per_page
+			) ) );
 
 			if ( $jobs->have_posts() ) : ?>
 
@@ -249,7 +223,7 @@ class WP_Job_Manager_Shortcodes {
 			wp_reset_postdata();
 		}
 
-		return '<div class="job_listings" data-show_filters="' . ( $show_filters && $show_filters !== 'false' ? 1 : 0 ) . '" data-per_page="' . esc_attr( $per_page ) . '" data-orderby="' . esc_attr( $orderby ) . '" data-order="' . esc_attr( $order ) . '" data-categories="' . esc_attr( implode( ',', $categories ) ) . '">' . ob_get_clean() . '</div>';
+		return '<div class="job_listings" data-location="' . esc_attr( $location ) . '" data-keywords="' . esc_attr( $keywords ) . '" data-show_filters="' . ( $show_filters && $show_filters !== 'false' ? 1 : 0 ) . '" data-per_page="' . esc_attr( $per_page ) . '" data-orderby="' . esc_attr( $orderby ) . '" data-order="' . esc_attr( $order ) . '" data-categories="' . esc_attr( implode( ',', $categories ) ) . '">' . ob_get_clean() . '</div>';
 	}
 
 	/**

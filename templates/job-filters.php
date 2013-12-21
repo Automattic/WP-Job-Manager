@@ -6,12 +6,12 @@
 
 		<div class="search_keywords">
 			<label for="search_keywords"><?php _e( 'Keywords', 'job_manager' ); ?></label>
-			<input type="text" name="search_keywords" id="search_keywords" placeholder="<?php _e( 'All Jobs', 'job_manager' ); ?>" />
+			<input type="text" name="search_keywords" id="search_keywords" placeholder="<?php _e( 'All Jobs', 'job_manager' ); ?>" value="<?php echo esc_attr( $keywords ); ?>" />
 		</div>
 
 		<div class="search_location">
 			<label for="search_location"><?php _e( 'Location', 'job_manager' ); ?></label>
-			<input type="text" name="search_location" id="search_location" placeholder="<?php _e( 'Any Location', 'job_manager' ); ?>" />
+			<input type="text" name="search_location" id="search_location" placeholder="<?php _e( 'Any Location', 'job_manager' ); ?>" value="<?php echo esc_attr( $location ); ?>" />
 		</div>
 
 		<?php if ( $categories ) : ?>
