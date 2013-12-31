@@ -214,7 +214,7 @@ class WP_Job_Manager_Shortcodes {
 
 					<?php wp_enqueue_script( 'wp-job-manager-ajax-filters' ); ?>
 
-					<a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'job_manager' ); ?></strong></a>
+					<a class="load_more_jobs" href="#"><strong><?php _e( 'Load more job listings', 'job_manager' ); ?></strong></a>
 
 				<?php endif; ?>
 

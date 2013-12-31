@@ -150,6 +150,6 @@ jQuery(document).ready(function($) {
 		target.trigger( 'update_results', [ page + 1, true ] );
 
 		return false;
-	} ).show();
+	} );
 
 });
