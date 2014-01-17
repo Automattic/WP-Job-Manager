@@ -75,6 +75,8 @@ The manual installation method involves downloading the plugin and uploading it 
 = 1.6.1 = 
 * Added geolocation to save location data to meta after posting or saving a job. This will be used by other plugins.
 * Jobs shortcode can now be passed 'location' and 'keywords' to set the default for filters, or show only jobs with those keywords if filters are disabled
+* Html fix in widget
+* Add border around wp editor
 
 = 1.6.0 = 
 * MP6/WP 3.8 optimised styling. Min version 3.8 for new styling.
