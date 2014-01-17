@@ -78,6 +78,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Html fix in widget
 * Add border around wp editor
 * Fix company logo in firefox
+* submit_job_form_wp_editor_args filter
 
 = 1.6.0 = 
 * MP6/WP 3.8 optimised styling. Min version 3.8 for new styling.

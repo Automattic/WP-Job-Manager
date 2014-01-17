@@ -1,5 +1,5 @@
 <?php
-$editor = array(
+$editor = apply_filters( 'submit_job_form_wp_editor_args', array(
 	'textarea_name' => isset( $field['name'] ) ? $field['name'] : $key,
 	'media_buttons' => false,
 	'textarea_rows' => 8,
@@ -11,5 +11,5 @@ $editor = array(
 		'theme_advanced_buttons3' => '',
 		'theme_advanced_buttons4' => ''
 	),
-);
+) );
 wp_editor( isset( $field['value'] ) ? esc_textarea( $field['value'] ) : '', $key, $editor );
