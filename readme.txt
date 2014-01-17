@@ -77,6 +77,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Jobs shortcode can now be passed 'location' and 'keywords' to set the default for filters, or show only jobs with those keywords if filters are disabled
 * Html fix in widget
 * Add border around wp editor
+* Fix company logo in firefox
 
 = 1.6.0 = 
 * MP6/WP 3.8 optimised styling. Min version 3.8 for new styling.

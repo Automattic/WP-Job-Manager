@@ -263,6 +263,7 @@ class WP_Job_Manager_CPT {
 					echo '<span class="job-type ' . $type->slug . '">' . $type->name . '</span>';
 			break;
 			case "job_position" :
+				echo '<div class="job_position">';
 				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'Job ID: %d', 'job_manager' ), $post->ID ) . '">' . $post->post_title . '</a>';
 
 				echo '<div class="location">';
@@ -277,6 +278,7 @@ class WP_Job_Manager_CPT {
 				echo '</div>';
 
 				the_company_logo();
+				echo '</div>';
 			break;
 			case "job_listing_category" :
 				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) echo '<span class="na">&ndash;</span>'; else echo $terms;
