@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 3.8
-Stable tag: 1.6.1
+Stable tag: 1.7.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -72,13 +72,15 @@ The manual installation method involves downloading the plugin and uploading it 
 
 == Changelog ==
 
-= 1.6.1 = 
+= 1.7.0 = 
 * Added geolocation to save location data to meta after posting or saving a job. This will be used by other plugins.
+* Filter job_manager_geolocation_enabled and return false to turn off geolocation features.
 * Jobs shortcode can now be passed 'location' and 'keywords' to set the default for filters, or show only jobs with those keywords if filters are disabled
 * Html fix in widget
 * Add border around wp editor
 * Fix company logo in firefox
 * submit_job_form_wp_editor_args filter
+* "Empty" categories are visible when filtering jobs in admin.
 
 = 1.6.0 = 
 * MP6/WP 3.8 optimised styling. Min version 3.8 for new styling.
