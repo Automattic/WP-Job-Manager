@@ -322,27 +322,9 @@ class WP_Job_Manager_Writepanels {
 			// Locations
 			elseif ( '_job_location' == $key ) {
 				if ( update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) ) ) {
-					// Location changed
-					delete_post_meta( $post_id, 'geolocation_city' );
-					delete_post_meta( $post_id, 'geolocation_country_long' );
-					delete_post_meta( $post_id, 'geolocation_country_short' );
-					delete_post_meta( $post_id, 'geolocation_formatted_address' );
-					delete_post_meta( $post_id, 'geolocation_lat' );
-					delete_post_meta( $post_id, 'geolocation_long' );
-					delete_post_meta( $post_id, 'geolocation_state_long' );
-					delete_post_meta( $post_id, 'geolocation_state_short' );
-					delete_post_meta( $post_id, 'geolocation_street' );
-					delete_post_meta( $post_id, 'geolocation_zipcode' );
-
-					$address_data = WP_Job_Manager_Geocode::get_location_data( sanitize_text_field( $_POST[ $key ] ) );
-
-					if ( ! is_wp_error( $address_data ) && $address_data ) {
-						foreach ( $address_data as $key => $value ) {
-							if ( $value ) {
-								update_post_meta( $post_id, 'geolocation_' . $key, $value );
-							}
-						}
-					}
+					do_action( 'job_manager_job_location_edited', $post_id, sanitize_text_field( $_POST[ $key ] ) );
+				} elseif ( apply_filters( 'job_manager_geolocation_enabled', true ) && ! WP_Job_Manager_Geocode::has_location_data( $post_id ) ) {
+					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
 				}
 			}
 

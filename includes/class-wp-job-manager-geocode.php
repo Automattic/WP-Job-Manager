@@ -14,20 +14,82 @@ class WP_Job_Manager_Geocode {
 	 */
 	public function __construct() {
 		add_action( 'job_manager_update_job_data', array( $this, 'update_location_data' ), 20, 2 );
+		add_action( 'job_manager_job_location_edited', array( $this, 'change_location_data' ), 20, 2 );
 	}
 
 	/**
-	 * Update location data
+	 * Update location data - when submitting a job
 	 */
 	public function update_location_data( $job_id, $values ) {
-		$address_data = self::get_location_data( $values['job']['job_location'] );
+		if ( apply_filters( 'job_manager_geolocation_enabled', true ) ) {
+			$address_data = self::get_location_data( $values['job']['job_location'] );
+			self::save_location_data( $job_id, $address_data );
+		}
+	}
 
+	/**
+	 * Change a jobs location data upon editing
+	 * @param  int $job_id
+	 * @param  string $new_location
+	 */
+	public function change_location_data( $job_id, $new_location ) {
+		if ( apply_filters( 'job_manager_geolocation_enabled', true ) ) {
+			$address_data = self::get_location_data( $new_location );
+			self::clear_location_data( $job_id );
+			self::save_location_data( $job_id, $address_data );
+		}
+	}
+
+	/**
+	 * Checks if a job has location data or not
+	 * @param  int  $job_id
+	 * @return boolean
+	 */
+	public static function has_location_data( $job_id ) {
+		return get_post_meta( $job_id, 'geolocated', true ) == 1;
+	}
+
+	/**
+	 * Called manually to generate location data and save to a post
+	 * @param  int $job_id
+	 * @param  string $location
+	 */
+	public static function generate_location_data( $job_id, $location ) {
+		$address_data = self::get_location_data( $location );
+		self::save_location_data( $job_id, $address_data );
+	}
+
+	/**
+	 * Delete a job's location data
+	 * @param  int $job_id
+	 */
+	public static function clear_location_data( $job_id ) {
+		delete_post_meta( $job_id, 'geolocated' );
+		delete_post_meta( $job_id, 'geolocation_city' );
+		delete_post_meta( $job_id, 'geolocation_country_long' );
+		delete_post_meta( $job_id, 'geolocation_country_short' );
+		delete_post_meta( $job_id, 'geolocation_formatted_address' );
+		delete_post_meta( $job_id, 'geolocation_lat' );
+		delete_post_meta( $job_id, 'geolocation_long' );
+		delete_post_meta( $job_id, 'geolocation_state_long' );
+		delete_post_meta( $job_id, 'geolocation_state_short' );
+		delete_post_meta( $job_id, 'geolocation_street' );
+		delete_post_meta( $job_id, 'geolocation_zipcode' );
+	}
+
+	/**
+	 * Save any returned data to post meta
+	 * @param  int $job_id
+	 * @param  array $address_data
+	 */
+	public static function save_location_data( $job_id, $address_data ) {
 		if ( ! is_wp_error( $address_data ) && $address_data ) {
 			foreach ( $address_data as $key => $value ) {
 				if ( $value ) {
 					update_post_meta( $job_id, 'geolocation_' . $key, $value );
 				}
 			}
+			update_post_meta( $job_id, 'geolocated', 1 );
 		}
 	}
 
@@ -48,24 +110,37 @@ class WP_Job_Manager_Geocode {
 
 		$transient_name = 'jm_geo_' . md5( $raw_address );
 
-		if ( false === ( $result = get_transient( $transient_name ) ) ) {
-			$result = wp_remote_get( "http://maps.googleapis.com/maps/api/geocode/xml?address=" . $raw_address . "&sensor=false" );
-			$result = wp_remote_retrieve_body( $result );
-			$xml    = new SimpleXMLElement( $result );
+		try {
+			if ( false === ( $result = get_transient( $transient_name ) ) ) {
+				$result = wp_remote_get( 
+					"http://maps.googleapis.com/maps/api/geocode/xml?address=" . $raw_address . "&sensor=false", 
+					array(
+						'timeout'     => 20,
+					    'redirection' => 5,
+					    'httpversion' => '1.1',
+					    'user-agent'  => 'WordPress/WP-Job-Manager-' . JOB_MANAGER_VERSION . '; ' . get_bloginfo( 'url' ),
+					    'sslverify'   => false,
+				    )
+				);
+				$result = wp_remote_retrieve_body( $result );
+				$xml    = new SimpleXMLElement( $result );
 
-			switch ( $xml->status ) {
-				case 'ZERO_RESULTS' :
-					return false;
-				break;
-				case 'OVER_QUERY_LIMIT' :
-					return new WP_Error( 'error', __( "Query limit reached", 'job_manager' ) );
-				break;
-				default :
-					set_transient( $transient_name, $result, 24 * HOUR_IN_SECONDS * 365 );
-				break;
+				switch ( $xml->status ) {
+					case 'ZERO_RESULTS' :
+						throw new Exception( __( "No results found", 'job_manager' ) );
+					break;
+					case 'OVER_QUERY_LIMIT' :
+						throw new Exception( __( "Query limit reached", 'job_manager' ) );
+					break;
+					default :
+						set_transient( $transient_name, $result, 24 * HOUR_IN_SECONDS * 365 );
+					break;
+				}
+			} else {
+				$xml    = new SimpleXMLElement( $result );
 			}
-		} else {
-			$xml    = new SimpleXMLElement( $result );
+		} catch ( Exception $e ) {
+			return new WP_Error( 'error', $e->getMessage() );
 		}
 		
 		$address                      = array();
