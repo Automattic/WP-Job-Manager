@@ -137,7 +137,7 @@ class WP_Job_Manager_CPT {
 		$r = array();
 		$r['pad_counts'] 	= 1;
 		$r['hierarchical'] 	= $hierarchical;
-		$r['hide_empty'] 	= 1;
+		$r['hide_empty'] 	= 0;
 		$r['show_count'] 	= $show_counts;
 		$r['selected'] 		= ( isset( $wp_query->query['job_listing_category'] ) ) ? $wp_query->query['job_listing_category'] : '';
 
