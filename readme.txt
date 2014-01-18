@@ -10,12 +10,12 @@ Manage job listings from the WordPress admin panel, and allow users to post jobs
 
 == Description ==
 
-WP Job Manager is a _lightweight_ plugin for adding job-board functionality to your WordPress site.  Being shortcode based, it can work with any theme (given a bit of CSS styling) and is really simple to setup.
+WP Job Manager is a **lightweight** plugin for adding job-board functionality to your WordPress site. Being shortcode based, it can work with any theme (given a bit of CSS styling) and is really simple to setup.
 
 = Features =
 
-* Add, manage and categorise job listings using the familiar WordPress UI.
-* Searchable & filterable ajax powered job listings added through shortcodes.
+* Add, manage, and categorise job listings using the familiar WordPress UI.
+* Searchable & filterable ajax powered job listings added to your pages via shortcodes.
 * Frontend forms for guests and registered users to submit & manage job listings.
 * Allow job listers to preview their listing before it goes live. The preview matches the appearance of a live job listing.
 * Each listing can be tied to an email or website address so that job seekers can apply to the jobs.
@@ -33,7 +33,13 @@ Documentation will be maintained on the [GitHub Wiki here](https://github.com/mi
 
 = Add-ons =
 
-Add-ons, such as __simple paid listings__ can be [found here](http://mikejolley.com/projects/wp-job-manager/add-ons/). Take a look!
+Additonal functionality can be added through add-ons - you can browse these after installing the plugin by going to `Job Listings > Add-ons`.
+
+Some notable add-ons include:
+
+* [Simple Paid Listings](http://mikejolley.com/projects/wp-job-manager/add-ons/simple-paid-listings/) - Charge users a single fee to post a job via Stripe or PayPal.
+* [WooCommerce Paid Lisings](http://mikejolley.com/projects/wp-job-manager/add-ons/woocommerce-paid-listings/) - Charge users to post jobs using WooCommerce to take payment.
+* [Job Alerts](http://mikejolley.com/projects/wp-job-manager/add-ons/job-alerts/) - Add saved search/email alert functionality.
 
 = Contributing and reporting bugs =
 
@@ -60,6 +66,18 @@ The manual installation method involves downloading the plugin and uploading it 
 * Download the plugin file to your computer and unzip it
 * Using an FTP program, or your hosting control panel, upload the unzipped plugin folder to your WordPress installation's `wp-content/plugins/` directory.
 * Activate the plugin from the Plugins menu within the WordPress admin.
+
+= Getting started =
+
+Once installed:
+
+1. Create a page called "jobs" and inside place the `[jobs]` shortcode. This will list your jobs.
+2. Create a page called "submit job" and inside place the `[submit_job_form]` shortcode if you want front-end submissions.
+3. Create a page called "job dashboard" and inside place the `[job_dashboard]` shortcode for logged in users to manage their listings. 
+
+**Note when using shortcodes**, if the content looks blown up/spaced out/poorly styled, edit your page and above the visual editor click on the 'text' tab. Then remove any 'pre' or 'code' tags wrapping your shortcode.
+
+For more information, [read the documentation](https://github.com/mikejolley/wp-job-manager/wiki).
 
 == Screenshots ==
 

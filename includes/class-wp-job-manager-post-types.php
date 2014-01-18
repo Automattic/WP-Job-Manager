@@ -219,12 +219,14 @@ class WP_Job_Manager_Post_Types {
 		$plural     = __( 'Job Listings', 'job_manager' );
 		$count_jobs = wp_count_posts( 'job_listing', 'readable' );
 
-		foreach ( $menu as $key => $menu_item ) {
-			if ( strpos( $menu_item[0], $plural ) === 0 ) {
-				if ( $order_count = $count_jobs->pending ) {
-					$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-$order_count'><span class='pending-count'>" . number_format_i18n( $count_jobs->pending ) . "</span></span>" ;
+		if ( ! empty( $menu ) && is_array( $menu ) ) {
+			foreach ( $menu as $key => $menu_item ) {
+				if ( strpos( $menu_item[0], $plural ) === 0 ) {
+					if ( $order_count = $count_jobs->pending ) {
+						$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-$order_count'><span class='pending-count'>" . number_format_i18n( $count_jobs->pending ) . "</span></span>" ;
+					}
+					break;
 				}
-				break;
 			}
 		}
 	}
