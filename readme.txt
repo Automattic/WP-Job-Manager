@@ -90,6 +90,8 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
+* Additonal filters for ajax responses
+
 = 1.7.0 = 
 * Added geolocation to save location data to meta after posting or saving a job. This will be used by other plugins.
 * Filter job_manager_geolocation_enabled and return false to turn off geolocation features.

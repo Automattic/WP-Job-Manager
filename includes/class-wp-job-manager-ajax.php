@@ -21,8 +21,7 @@ class WP_Job_Manager_Ajax {
 	public function get_listings() {
 		global $job_manager, $wpdb;
 
-		ob_start();
-
+		$result            = array();
 		$search_location   = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
 		$search_keywords   = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
 		$search_categories = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
@@ -34,21 +33,22 @@ class WP_Job_Manager_Ajax {
 			$search_categories = array( sanitize_text_field( stripslashes( $search_categories ) ), 0 );
 		}
 
-		$search_categories = array_filter( $search_categories );
-
-		$jobs = get_job_listings( array(
+		$args = array(
 			'search_location'   => $search_location,
 			'search_keywords'   => $search_keywords,
-			'search_categories' => $search_categories,
+			'search_categories' => array_filter( $search_categories ),
 			'job_types'         => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
 			'orderby'           => sanitize_text_field( $_POST['orderby'] ),
 			'order'             => sanitize_text_field( $_POST['order'] ),
 			'offset'            => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
 			'posts_per_page'    => absint( $_POST['per_page'] )
-		) );
+		);
 
-		$result = array();
+		$jobs = get_job_listings( $args );
+
 		$result['found_jobs'] = false;
+
+		ob_start();
 
 		if ( $jobs->have_posts() ) : $result['found_jobs'] = true; ?>
 
@@ -64,7 +64,7 @@ class WP_Job_Manager_Ajax {
 
 		<?php endif;
 
-		$result['html']    = ob_get_clean();
+		$result['html'] = ob_get_clean();
 
 		// Generate 'showing' text
 		$types = get_job_listing_types();
@@ -126,7 +126,7 @@ class WP_Job_Manager_Ajax {
 		$result['max_num_pages'] = $jobs->max_num_pages;
 
 		echo '<!--WPJM-->';
-		echo json_encode( $result );
+		echo json_encode( apply_filters( 'job_manager_get_listings_result', $result ) );
 		echo '<!--WPJM_END-->';
 
 		die();

@@ -289,12 +289,12 @@ function the_company_logo( $size = 'full', $default = null, $post = null ) {
 		if ( $size !== 'full' )
 			$logo = job_manager_get_resized_image( $logo, $size );
 
-		echo '<img src="' . $logo . '" alt="Logo" />';
+		echo '<img class="company_logo" src="' . $logo . '" alt="Logo" />';
 
 	} elseif ( $default )
-		echo '<img src="' . $default . '" alt="Logo" />';
+		echo '<img class="company_logo" src="' . $default . '" alt="Logo" />';
 	else
-		echo '<img src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' . '" alt="Logo" />';
+		echo '<img class="company_logo" src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' . '" alt="Logo" />';
 }
 
 /**
