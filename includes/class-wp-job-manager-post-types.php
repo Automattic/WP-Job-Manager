@@ -32,7 +32,6 @@ class WP_Job_Manager_Post_Types {
 	 * @return void
 	 */
 	public function register_post_types() {
-
 		if ( post_type_exists( "job_listing" ) )
 			return;
 
@@ -179,7 +178,7 @@ class WP_Job_Manager_Post_Types {
 					'read_private_posts'	=> $admin_capability,
 					'edit_post' 			=> $admin_capability,
 					'delete_post' 			=> $admin_capability,
-					'read_post' 			=> $admin_capability
+					'read_post' 			=> 'read_job_listing'
 				),
 				'publicly_queryable' 	=> true,
 				'exclude_from_search' 	=> false,
