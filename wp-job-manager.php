@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) )
 class WP_Job_Manager {
 
 	/**
-	 * __construct function.
+	 * Constructor - get the plugin hooked in and ready
 	 */
 	public function __construct() {
 		// Define constants
@@ -75,19 +75,13 @@ class WP_Job_Manager {
 
 	/**
 	 * Localisation
-	 *
-	 * @access private
-	 * @return void
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain( 'wp-job-manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
 	/**
-	 * frontend_scripts function.
-	 *
-	 * @access public
-	 * @return void
+	 * Register and enqueue scripts and css
 	 */
 	public function frontend_scripts() {
 		wp_register_script( 'wp-job-manager-ajax-filters', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
