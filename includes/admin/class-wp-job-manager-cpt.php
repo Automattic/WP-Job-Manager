@@ -154,7 +154,7 @@ class WP_Job_Manager_CPT {
 			return;
 
 		$output  = "<select name='job_listing_category' id='dropdown_job_listing_category'>";
-		$output .= '<option value="" ' .  selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>'.__( 'Select a category', "job_manager" ).'</option>';
+		$output .= '<option value="" ' .  selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>'.__( 'Select a category', 'wp-job-manager' ).'</option>';
 		$output .= $this->walk_category_dropdown_tree( $terms, 0, $r );
 		$output .="</select>";
 
@@ -187,7 +187,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function enter_title_here( $text, $post ) {
 		if ( $post->post_type == 'job_listing' )
-			return __( 'Job position title', "job_manager" );
+			return __( 'Job position title', 'wp-job-manager' );
 		return $text;
 	}
 
@@ -203,17 +203,17 @@ class WP_Job_Manager_CPT {
 
 		$messages['job_listing'] = array(
 			0 => '',
-			1 => sprintf( __( 'Job listing updated. <a href="%s">View Job</a>', "job_manager" ), esc_url( get_permalink( $post_ID ) ) ),
-			2 => __( 'Custom field updated.', "job_manager" ),
-			3 => __( 'Custom field deleted.', "job_manager" ),
-			4 => __( 'Job listing updated.', "job_manager" ),
-			5 => isset( $_GET['revision'] ) ? sprintf( __( 'Job listing restored to revision from %s', "job_manager" ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-			6 => sprintf( __( 'Job listing published. <a href="%s">View Job</a>', "job_manager" ), esc_url( get_permalink( $post_ID ) ) ),
-			7 => __('Job listing saved.', "job_manager"),
-			8 => sprintf( __( 'Job listing submitted. <a target="_blank" href="%s">Preview Job</a>', "job_manager" ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-			9 => sprintf( __( 'Job listing scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Job</a>', "job_manager" ),
-			  date_i18n( __( 'M j, Y @ G:i', "job_manager" ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) ) ),
-			10 => sprintf( __( 'Job listing draft updated. <a target="_blank" href="%s">Preview Job</a>', "job_manager" ), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
+			1 => sprintf( __( 'Job listing updated. <a href="%s">View Job</a>', 'wp-job-manager' ), esc_url( get_permalink( $post_ID ) ) ),
+			2 => __( 'Custom field updated.', 'wp-job-manager' ),
+			3 => __( 'Custom field deleted.', 'wp-job-manager' ),
+			4 => __( 'Job listing updated.', 'wp-job-manager' ),
+			5 => isset( $_GET['revision'] ) ? sprintf( __( 'Job listing restored to revision from %s', 'wp-job-manager' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			6 => sprintf( __( 'Job listing published. <a href="%s">View Job</a>', 'wp-job-manager' ), esc_url( get_permalink( $post_ID ) ) ),
+			7 => __('Job listing saved.', 'wp-job-manager' ),
+			8 => sprintf( __( 'Job listing submitted. <a target="_blank" href="%s">Preview Job</a>', 'wp-job-manager' ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+			9 => sprintf( __( 'Job listing scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Job</a>', 'wp-job-manager' ),
+			  date_i18n( __( 'M j, Y @ G:i', 'wp-job-manager' ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) ) ),
+			10 => sprintf( __( 'Job listing draft updated. <a target="_blank" href="%s">Preview Job</a>', 'wp-job-manager' ), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 		);
 
 		return $messages;
@@ -232,16 +232,16 @@ class WP_Job_Manager_CPT {
 
 		unset( $columns['title'], $columns['date'] );
 
-		$columns["job_listing_type"]     = __( "Type", "job_manager" );
-		$columns["job_position"]         = __( "Position", "job_manager" );
-		$columns["job_posted"]           = __( "Posted", "job_manager" );
-		$columns["job_expires"]          = __( "Expires", "job_manager" );
+		$columns["job_listing_type"]     = __( "Type", 'wp-job-manager' );
+		$columns["job_position"]         = __( "Position", 'wp-job-manager' );
+		$columns["job_posted"]           = __( "Posted", 'wp-job-manager' );
+		$columns["job_expires"]          = __( "Expires", 'wp-job-manager' );
 		if ( get_option( 'job_manager_enable_categories' ) )
-		$columns["job_listing_category"] = __( "Categories", "job_manager" );
-		$columns['featured_job']         = '<span class="tips" data-tip="' . __( "Featured?", "job_manager" ) . '">' . __( "Featured?", "job_manager" ) . '</span>';
-		$columns['filled']               = '<span class="tips" data-tip="' . __( "Filled?", "job_manager" ) . '">' . __( "Filled?", "job_manager" ) . '</span>';
-		$columns['job_status']           = __( "Status", "job_manager" );
-		$columns['job_actions']          = __( "Actions", "job_manager" );
+		$columns["job_listing_category"] = __( "Categories", 'wp-job-manager' );
+		$columns['featured_job']         = '<span class="tips" data-tip="' . __( "Featured?", 'wp-job-manager' ) . '">' . __( "Featured?", 'wp-job-manager' ) . '</span>';
+		$columns['filled']               = '<span class="tips" data-tip="' . __( "Filled?", 'wp-job-manager' ) . '">' . __( "Filled?", 'wp-job-manager' ) . '</span>';
+		$columns['job_status']           = __( "Status", 'wp-job-manager' );
+		$columns['job_actions']          = __( "Actions", 'wp-job-manager' );
 
 		return $columns;
 	}
