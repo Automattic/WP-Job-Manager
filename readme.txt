@@ -94,6 +94,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Updated textdomain to wp-job-manager
 * Re-done .pot file 
 * Additonal filters for ajax responses
+* Moved localisations to Transifex https://www.transifex.com/projects/p/wp-job-manager/
 
 = 1.7.0 = 
 * Added geolocation to save location data to meta after posting or saving a job. This will be used by other plugins.
