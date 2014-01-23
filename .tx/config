@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[wp-job-manager.wp-job-managerpot]
+file_filter = languages/wp-job-manager-<lang>.po
+source_file = languages/wp-job-manager.pot
+source_lang = en_GB
+type = PO
