@@ -40,8 +40,8 @@ class WP_Job_Manager_CPT {
 			?>
 			<script type="text/javascript">
 		      jQuery(document).ready(function() {
-		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'job_manager' )?>').appendTo("select[name='action']");
-		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'job_manager' )?>').appendTo("select[name='action2']");
+		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'wp-job-manager' )?>').appendTo("select[name='action']");
+		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'wp-job-manager' )?>').appendTo("select[name='action2']");
 		      });
 		    </script>
 		    <?php
@@ -109,9 +109,9 @@ class WP_Job_Manager_CPT {
 				$titles        = array();
 				foreach ( $approved_jobs as $job_id )
 					$titles[] = get_the_title( $job_id );
-				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'job_manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
+				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
 			} else {
-				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'job_manager' ), '&quot;' . get_the_title( $approved_jobs ) . '&quot;' ) . '</p></div>';
+				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . get_the_title( $approved_jobs ) . '&quot;' ) . '</p></div>';
 			}
 		}
 	}
@@ -264,7 +264,7 @@ class WP_Job_Manager_CPT {
 			break;
 			case "job_position" :
 				echo '<div class="job_position">';
-				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'Job ID: %d', 'job_manager' ), $post->ID ) . '">' . $post->post_title . '</a>';
+				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'Job ID: %d', 'wp-job-manager' ), $post->ID ) . '">' . $post->post_title . '</a>';
 
 				echo '<div class="location">';
 
@@ -290,12 +290,12 @@ class WP_Job_Manager_CPT {
 				if ( is_position_featured( $post ) ) echo '&#10004;'; else echo '&ndash;';
 			break;
 			case "job_posted" :
-				echo '<strong>' . date_i18n( __( 'M j, Y', 'job_manager' ), strtotime( $post->post_date ) ) . '</strong><span>';
-				echo ( empty( $post->post_author ) ? __( 'by a guest', 'job_manager' ) : sprintf( __( 'by %s', 'job_manager' ), '<a href="' . get_edit_user_link( $post->post_author ) . '">' . get_the_author() . '</a>' ) ) . '</span>';
+				echo '<strong>' . date_i18n( __( 'M j, Y', 'wp-job-manager' ), strtotime( $post->post_date ) ) . '</strong><span>';
+				echo ( empty( $post->post_author ) ? __( 'by a guest', 'wp-job-manager' ) : sprintf( __( 'by %s', 'wp-job-manager' ), '<a href="' . get_edit_user_link( $post->post_author ) . '">' . get_the_author() . '</a>' ) ) . '</span>';
 			break;
 			case "job_expires" :
 				if ( $post->_job_expires )
-					echo '<strong>' . date_i18n( __( 'M j, Y', 'job_manager' ), strtotime( $post->_job_expires ) ) . '</strong>';
+					echo '<strong>' . date_i18n( __( 'M j, Y', 'wp-job-manager' ), strtotime( $post->_job_expires ) ) . '</strong>';
 				else
 					echo '&ndash;';
 			break;
@@ -308,24 +308,24 @@ class WP_Job_Manager_CPT {
 				if ( $post->post_status == 'pending' ) {
 					$admin_actions['approve']   = array(
 						'action'  => 'approve',
-						'name'    => __( 'Approve', 'job_manager' ),
+						'name'    => __( 'Approve', 'wp-job-manager' ),
 						'url'     =>  wp_nonce_url( add_query_arg( 'approve_job', $post->ID ), 'approve_job' )
 					);
 				}
 				if ( $post->post_status !== 'trash' ) {
 					$admin_actions['view']   = array(
 						'action'  => 'view',
-						'name'    => __( 'View', 'job_manager' ),
+						'name'    => __( 'View', 'wp-job-manager' ),
 						'url'     => get_permalink( $post->ID )
 					);
 					$admin_actions['edit']   = array(
 						'action'  => 'edit',
-						'name'    => __( 'Edit', 'job_manager' ),
+						'name'    => __( 'Edit', 'wp-job-manager' ),
 						'url'     => get_edit_post_link( $post->ID )
 					);
 					$admin_actions['delete'] = array(
 						'action'  => 'delete',
-						'name'    => __( 'Delete', 'job_manager' ),
+						'name'    => __( 'Delete', 'wp-job-manager' ),
 						'url'     => get_delete_post_link( $post->ID )
 					);
 				}

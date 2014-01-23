@@ -60,7 +60,7 @@ class WP_Job_Manager_Ajax {
 
 		<?php else : ?>
 
-			<li class="no_job_listings_found"><?php _e( 'No more jobs found matching your selection.', 'job_manager' ); ?></li>
+			<li class="no_job_listings_found"><?php _e( 'No more jobs found matching your selection.', 'wp-job-manager' ); ?></li>
 
 		<?php endif;
 
@@ -102,12 +102,12 @@ class WP_Job_Manager_Ajax {
 			}
 
 			if ( $search_keywords ) {
-				$showing_jobs  = sprintf( __( 'Showing %s&ldquo;%s&rdquo; %sjobs', 'job_manager' ), $showing_types, $search_keywords, implode( ', ', $showing_categories ) );
+				$showing_jobs  = sprintf( __( 'Showing %s&ldquo;%s&rdquo; %sjobs', 'wp-job-manager' ), $showing_types, $search_keywords, implode( ', ', $showing_categories ) );
 			} else {
-				$showing_jobs  = sprintf( __( 'Showing all %s%sjobs', 'job_manager' ), $showing_types, implode( ', ', $showing_categories ) . ' ' );
+				$showing_jobs  = sprintf( __( 'Showing all %s%sjobs', 'wp-job-manager' ), $showing_types, implode( ', ', $showing_categories ) . ' ' );
 			}
 
-			$showing_location  = $search_location ? sprintf( ' ' . __( 'located in &ldquo;%s&rdquo;', 'job_manager' ), $search_location ) : '';
+			$showing_location  = $search_location ? sprintf( ' ' . __( 'located in &ldquo;%s&rdquo;', 'wp-job-manager' ), $search_location ) : '';
 
 			$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $showing_jobs . $showing_location );
 

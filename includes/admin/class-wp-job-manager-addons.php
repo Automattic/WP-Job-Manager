@@ -47,7 +47,7 @@ class WP_Job_Manager_Addons {
 		?>
 		<div class="wrap wp_job_manager wp_job_manager_addons_wrap">
 			<div class="icon32 icon32-posts-job_listing" id="icon-edit"><br /></div>
-			<h2><?php _e( 'WP Job Manager Add-ons', 'job_manager' ); ?></h2>
+			<h2><?php _e( 'WP Job Manager Add-ons', 'wp-job-manager' ); ?></h2>
 			<?php echo $addons; ?>
 		</div>
 		<?php

@@ -58,37 +58,37 @@ class WP_Job_Manager_Shortcodes {
 
 				// Check ownership
 				if ( $job->post_author != get_current_user_id() )
-					throw new Exception( __( 'Invalid Job ID', 'job_manager' ) );
+					throw new Exception( __( 'Invalid Job ID', 'wp-job-manager' ) );
 
 				switch ( $action ) {
 					case 'mark_filled' :
 						// Check status
 						if ( $job->_filled == 1 )
-							throw new Exception( __( 'This job is already filled', 'job_manager' ) );
+							throw new Exception( __( 'This job is already filled', 'wp-job-manager' ) );
 
 						// Update
 						update_post_meta( $job_id, '_filled', 1 );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been filled', 'job_manager' ), $job->post_title ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been filled', 'wp-job-manager' ), $job->post_title ) . '</div>';
 						break;
 					case 'mark_not_filled' :
 						// Check status
 						if ( $job->_filled != 1 )
-							throw new Exception( __( 'This job is already not filled', 'job_manager' ) );
+							throw new Exception( __( 'This job is already not filled', 'wp-job-manager' ) );
 
 						// Update
 						update_post_meta( $job_id, '_filled', 0 );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been marked as not filled', 'job_manager' ), $job->post_title ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), $job->post_title ) . '</div>';
 						break;
 					case 'delete' :
 						// Trash it
 						wp_trash_post( $job_id );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been deleted', 'job_manager' ), $job->post_title ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been deleted', 'wp-job-manager' ), $job->post_title ) . '</div>';
 
 						break;
 				}
@@ -108,7 +108,7 @@ class WP_Job_Manager_Shortcodes {
 		global $job_manager;
 
 		if ( ! is_user_logged_in() ) {
-			_e( 'You need to be signed in to manage your job listings.', 'job_manager' );
+			_e( 'You need to be signed in to manage your job listings.', 'wp-job-manager' );
 			return;
 		}
 
@@ -184,7 +184,7 @@ class WP_Job_Manager_Shortcodes {
 
 			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords ) );
 
-			?><ul class="job_listings"></ul><a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'job_manager' ); ?></strong></a><?php
+			?><ul class="job_listings"></ul><a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'wp-job-manager' ); ?></strong></a><?php
 
 		} else {
 
@@ -214,7 +214,7 @@ class WP_Job_Manager_Shortcodes {
 
 					<?php wp_enqueue_script( 'wp-job-manager-ajax-filters' ); ?>
 
-					<a class="load_more_jobs" href="#"><strong><?php _e( 'Load more job listings', 'job_manager' ); ?></strong></a>
+					<a class="load_more_jobs" href="#"><strong><?php _e( 'Load more job listings', 'wp-job-manager' ); ?></strong></a>
 
 				<?php endif; ?>
 

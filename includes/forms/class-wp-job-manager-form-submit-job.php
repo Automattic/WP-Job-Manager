@@ -19,19 +19,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		self::$steps  = (array) apply_filters( 'submit_job_steps', array(
 			'submit' => array(
-				'name'     => __( 'Submit Details', 'job_manager' ),
+				'name'     => __( 'Submit Details', 'wp-job-manager' ),
 				'view'     => array( __CLASS__, 'submit' ),
 				'handler'  => array( __CLASS__, 'submit_handler' ),
 				'priority' => 10
 				),
 			'preview' => array(
-				'name'     => __( 'Preview', 'job_manager' ),
+				'name'     => __( 'Preview', 'wp-job-manager' ),
 				'view'     => array( __CLASS__, 'preview' ),
 				'handler'  => array( __CLASS__, 'preview_handler' ),
 				'priority' => 20
 			),
 			'done' => array(
-				'name'     => __( 'Done', 'job_manager' ),
+				'name'     => __( 'Done', 'wp-job-manager' ),
 				'view'     => array( __CLASS__, 'done' ),
 				'priority' => 30
 			)
@@ -103,22 +103,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		self::$fields = apply_filters( 'submit_job_form_fields', array(
 			'job' => array(
 				'job_title' => array(
-					'label'       => __( 'Job title', 'job_manager' ),
+					'label'       => __( 'Job title', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => true,
 					'placeholder' => '',
 					'priority'    => 1
 				),
 				'job_location' => array(
-					'label'       => __( 'Job location', 'job_manager' ),
-					'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'job_manager' ),
+					'label'       => __( 'Job location', 'wp-job-manager' ),
+					'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => false,
-					'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'job_manager' ),
+					'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'wp-job-manager' ),
 					'priority'    => 2
 				),
 				'job_type' => array(
-					'label'       => __( 'Job type', 'job_manager' ),
+					'label'       => __( 'Job type', 'wp-job-manager' ),
 					'type'        => 'select',
 					'required'    => true,
 					'options'     => self::job_types(),
@@ -126,7 +126,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'priority'    => 3
 				),
 				'job_category' => array(
-					'label'       => __( 'Job category', 'job_manager' ),
+					'label'       => __( 'Job category', 'wp-job-manager' ),
 					'type'        => 'select',
 					'required'    => true,
 					'options'     => self::job_categories(),
@@ -134,52 +134,52 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'priority'    => 4
 				),
 				'job_description' => array(
-					'label'       => __( 'Description', 'job_manager' ),
+					'label'       => __( 'Description', 'wp-job-manager' ),
 					'type'        => 'wp-editor',
 					'required'    => true,
 					'placeholder' => '',
 					'priority'    => 5
 				),
 				'application' => array(
-					'label'       => __( 'Application email/URL', 'job_manager' ),
+					'label'       => __( 'Application email/URL', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => true,
-					'placeholder' => __( 'Enter an email address or website URL', 'job_manager' ),
+					'placeholder' => __( 'Enter an email address or website URL', 'wp-job-manager' ),
 					'priority'    => 6
 				)
 			),
 			'company' => array(
 				'company_name' => array(
-					'label'       => __( 'Company name', 'job_manager' ),
+					'label'       => __( 'Company name', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => true,
-					'placeholder' => __( 'Enter the name of the company', 'job_manager' ),
+					'placeholder' => __( 'Enter the name of the company', 'wp-job-manager' ),
 					'priority'    => 1
 				),
 				'company_website' => array(
-					'label'       => __( 'Website', 'job_manager' ),
+					'label'       => __( 'Website', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => false,
-					'placeholder' => __( 'http://', 'job_manager' ),
+					'placeholder' => __( 'http://', 'wp-job-manager' ),
 					'priority'    => 2
 				),
 				'company_tagline' => array(
-					'label'       => __( 'Tagline', 'job_manager' ),
+					'label'       => __( 'Tagline', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => false,
-					'placeholder' => __( 'Briefly describe your company', 'job_manager' ),
+					'placeholder' => __( 'Briefly describe your company', 'wp-job-manager' ),
 					'maxlength'   => 64,
 					'priority'    => 3
 				),
 				'company_twitter' => array(
-					'label'       => __( 'Twitter username', 'job_manager' ),
+					'label'       => __( 'Twitter username', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => false,
-					'placeholder' => __( '@yourcompany', 'job_manager' ),
+					'placeholder' => __( '@yourcompany', 'wp-job-manager' ),
 					'priority'    => 4
 				),
 				'company_logo' => array(
-					'label'       => __( 'Logo', 'job_manager' ),
+					'label'       => __( 'Logo', 'wp-job-manager' ),
 					'type'        => 'file',
 					'required'    => false,
 					'placeholder' => '',
@@ -285,7 +285,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		foreach ( self::$fields as $group_key => $fields ) {
 			foreach ( $fields as $key => $field ) {
 				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) )
-					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'job_manager' ), $field['label'] ) );
+					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
 			}
 		}
 
@@ -398,7 +398,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'action'             => self::get_action(),
 			'job_fields'         => self::get_fields( 'job' ),
 			'company_fields'     => self::get_fields( 'company' ),
-			'submit_button_text' => __( 'Preview job listing &rarr;', 'job_manager' )
+			'submit_button_text' => __( 'Preview job listing &rarr;', 'wp-job-manager' )
 			) );
 	}
 
@@ -541,13 +541,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			?>
 			<form method="post" id="job_preview">
 				<div class="job_listing_preview_title">
-					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'job_manager' ) ); ?>" />
-					<input type="submit" name="edit_job" class="button" value="<?php _e( '&larr; Edit listing', 'job_manager' ); ?>" />
+					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'wp-job-manager' ) ); ?>" />
+					<input type="submit" name="edit_job" class="button" value="<?php _e( '&larr; Edit listing', 'wp-job-manager' ); ?>" />
 					<input type="hidden" name="job_id" value="<?php echo esc_attr( self::$job_id ); ?>" />
 					<input type="hidden" name="step" value="<?php echo esc_attr( self::$step ); ?>" />
 					<input type="hidden" name="job_manager_form" value="<?php echo self::$form_name; ?>" />
 					<h2>
-						<?php _e( 'Preview', 'job_manager' ); ?>
+						<?php _e( 'Preview', 'wp-job-manager' ); ?>
 					</h2>
 				</div>
 				<div class="job_listing_preview single_job_listing">
@@ -612,7 +612,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$file   = $_FILES[ $field_key ];
 
 			if ( $_FILES[ $field_key ]["type"] != "image/jpeg" && $_FILES[ $field_key ]["type"] != "image/gif" && $_FILES[ $field_key ]["type"] != "image/png" )
-    			throw new Exception( __( 'Logo needs to be jpg, gif or png.', 'job_manager' ) );
+    			throw new Exception( __( 'Logo needs to be jpg, gif or png.', 'wp-job-manager' ) );
 
 			add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
 

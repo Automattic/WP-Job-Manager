@@ -136,14 +136,14 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	 */
 	public function __construct() {
 		$this->widget_cssclass    = 'job_manager widget_recent_jobs';
-		$this->widget_description = __( 'Display a list of the most recent jobs on your site.', 'job_manager' );
+		$this->widget_description = __( 'Display a list of the most recent jobs on your site.', 'wp-job-manager' );
 		$this->widget_id          = 'widget_recent_jobs';
-		$this->widget_name        = __( 'Recent Job Listings', 'job_manager' );
+		$this->widget_name        = __( 'Recent Job Listings', 'wp-job-manager' );
 		$this->settings           = array(
 			'title' => array(
 				'type'  => 'text',
-				'std'   => __( 'Recent Jobs', 'job_manager' ),
-				'label' => __( 'Title', 'job_manager' )
+				'std'   => __( 'Recent Jobs', 'wp-job-manager' ),
+				'label' => __( 'Title', 'wp-job-manager' )
 			),
 			'number' => array(
 				'type'  => 'number',
@@ -151,7 +151,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 				'min'   => 1,
 				'max'   => '',
 				'std'   => 10,
-				'label' => __( 'Number of jobs to show', 'job_manager' )
+				'label' => __( 'Number of jobs to show', 'wp-job-manager' )
 			)
 		);
 		parent::__construct();

@@ -28,78 +28,78 @@ class WP_Job_Manager_Settings {
 		$this->settings = apply_filters( 'job_manager_settings',
 			array(
 				'job_listings' => array(
-					__( 'Job Listings', 'job_manager' ),
+					__( 'Job Listings', 'wp-job-manager' ),
 					array(
 						array(
 							'name'        => 'job_manager_per_page',
 							'std'         => '10',
 							'placeholder' => '',
-							'label'       => __( 'Jobs per page', 'job_manager' ),
-							'desc'        => __( 'How many jobs should be shown per page by default?', 'job_manager' ),
+							'label'       => __( 'Jobs per page', 'wp-job-manager' ),
+							'desc'        => __( 'How many jobs should be shown per page by default?', 'wp-job-manager' ),
 							'attributes'  => array()
 						),
 						array(
 							'name'       => 'job_manager_hide_filled_positions',
 							'std'        => '0',
-							'label'      => __( 'Filled positions', 'job_manager' ),
-							'cb_label'   => __( 'Hide filled positions', 'job_manager' ),
-							'desc'       => __( 'If enabled, filled positions will be hidden from the job list.', 'job_manager' ),
+							'label'      => __( 'Filled positions', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide filled positions', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, filled positions will be hidden from the job list.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
 						array(
 							'name'       => 'job_manager_enable_categories',
 							'std'        => '0',
-							'label'      => __( 'Job categories', 'job_manager' ),
-							'cb_label'   => __( 'Enable job categories', 'job_manager' ),
-							'desc'       => __( 'Choose whether to enable job categories. Categories must be setup by an admin for users to choose during job submission.', 'job_manager' ),
+							'label'      => __( 'Job categories', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable job categories', 'wp-job-manager' ),
+							'desc'       => __( 'Choose whether to enable job categories. Categories must be setup by an admin for users to choose during job submission.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
 					),
 				),
 				'job_submission' => array(
-					__( 'Job Submission', 'job_manager' ),
+					__( 'Job Submission', 'wp-job-manager' ),
 					array(
 						array(
 							'name'       => 'job_manager_enable_registration',
 							'std'        => '1',
-							'label'      => __( 'Account creation', 'job_manager' ),
-							'cb_label'   => __( 'Allow account creation', 'job_manager' ),
-							'desc'       => __( 'If enabled, non-logged in users will be able to create an account by entering their email address on the job submission form.', 'job_manager' ),
+							'label'      => __( 'Account creation', 'wp-job-manager' ),
+							'cb_label'   => __( 'Allow account creation', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, non-logged in users will be able to create an account by entering their email address on the job submission form.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
 						array(
 							'name'       => 'job_manager_user_requires_account',
 							'std'        => '1',
-							'label'      => __( 'Account required', 'job_manager' ),
-							'cb_label'   => __( 'Job submission requires an account', 'job_manager' ),
-							'desc'       => __( 'If disabled, non-logged in users will be able to submit job listings without creating an account.', 'job_manager' ),
+							'label'      => __( 'Account required', 'wp-job-manager' ),
+							'cb_label'   => __( 'Job submission requires an account', 'wp-job-manager' ),
+							'desc'       => __( 'If disabled, non-logged in users will be able to submit job listings without creating an account.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
 						array(
 							'name'       => 'job_manager_submission_requires_approval',
 							'std'        => '1',
-							'label'      => __( 'Approval Required', 'job_manager' ),
-							'cb_label'   => __( 'New submissions require admin approval', 'job_manager' ),
-							'desc'       => __( 'If enabled, new submissions will be inactive, pending admin approval.', 'job_manager' ),
+							'label'      => __( 'Approval Required', 'wp-job-manager' ),
+							'cb_label'   => __( 'New submissions require admin approval', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, new submissions will be inactive, pending admin approval.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
 						array(
 							'name'       => 'job_manager_submission_duration',
 							'std'        => '30',
-							'label'      => __( 'Listing duration', 'job_manager' ),
-							'desc'       => __( 'How many <strong>days</strong> listings are live before expiring. Can be left blank to never expire.', 'job_manager' ),
+							'label'      => __( 'Listing duration', 'wp-job-manager' ),
+							'desc'       => __( 'How many <strong>days</strong> listings are live before expiring. Can be left blank to never expire.', 'wp-job-manager' ),
 							'attributes' => array()
 						),
 						array(
 							'name' 		=> 'job_manager_submit_page_slug',
 							'std' 		=> '',
-							'label' 	=> __( 'Submit Page Slug', 'job_manager' ),
-							'desc'		=> __( 'Enter the slug of the page where you have placed the [submit_job_form] shortcode. This lets the plugin know where the form is located.', 'job_manager' ),
+							'label' 	=> __( 'Submit Page Slug', 'wp-job-manager' ),
+							'desc'		=> __( 'Enter the slug of the page where you have placed the [submit_job_form] shortcode. This lets the plugin know where the form is located.', 'wp-job-manager' ),
 							'type'      => 'input'
 						)
 					)
@@ -151,7 +151,7 @@ class WP_Job_Manager_Settings {
 				<?php
 					if ( ! empty( $_GET['settings-updated'] ) ) {
 						flush_rewrite_rules();
-						echo '<div class="updated fade"><p>' . __( 'Settings successfully saved', 'job_manager' ) . '</p></div>';
+						echo '<div class="updated fade"><p>' . __( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
 					}
 
 					foreach ( $this->settings as $key => $section ) {
@@ -230,7 +230,7 @@ class WP_Job_Manager_Settings {
 					}
 				?>
 				<p class="submit">
-					<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'job_manager' ); ?>" />
+					<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'wp-job-manager' ); ?>" />
 				</p>
 		    </form>
 		</div>

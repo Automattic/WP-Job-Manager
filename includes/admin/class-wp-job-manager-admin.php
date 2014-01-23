@@ -49,10 +49,10 @@ class WP_Job_Manager_Admin {
 	 * @return void
 	 */
 	public function admin_menu() {
-		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'job_manager' ), __( 'Settings', 'job_manager' ), 'manage_options', 'job-manager-settings', array( $this->settings_page, 'output' ) );
+		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'wp-job-manager' ), __( 'Settings', 'wp-job-manager' ), 'manage_options', 'job-manager-settings', array( $this->settings_page, 'output' ) );
 
 		if ( apply_filters( 'job_manager_show_addons_page', true ) )
-			add_submenu_page(  'edit.php?post_type=job_listing', __( 'WP Job Manager Add-ons', 'job_manager' ),  __( 'Add-ons', 'job_manager' ) , 'manage_options', 'job-manager-addons', array( $this, 'addons_page' ) );
+			add_submenu_page(  'edit.php?post_type=job_listing', __( 'WP Job Manager Add-ons', 'wp-job-manager' ),  __( 'Add-ons', 'wp-job-manager' ) , 'manage_options', 'job-manager-addons', array( $this, 'addons_page' ) );
 	}
 
 	/**

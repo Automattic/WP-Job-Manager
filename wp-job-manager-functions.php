@@ -189,11 +189,11 @@ function job_manager_get_filtered_links( $args = array() ) {
 
 	$links = apply_filters( 'job_manager_job_filters_showing_jobs_links', array(
 		'reset' => array(
-			'name' => __( 'Reset', 'job_manager' ),
+			'name' => __( 'Reset', 'wp-job-manager' ),
 			'url'  => '#'
 		),
 		'rss_link' => array(
-			'name' => __( 'RSS', 'job_manager' ),
+			'name' => __( 'RSS', 'wp-job-manager' ),
 			'url'  => get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
 				'type'           => isset( $args['filter_job_types'] ) ? implode( ',', $args['filter_job_types'] ) : '',
 				'location'       => $args['search_location'],
@@ -243,10 +243,10 @@ function wp_job_manager_create_account( $account_email, $role = '' ) {
 		return false;
 
 	if ( ! is_email( $user_email ) )
-		return new WP_Error( 'validation-error', __( 'Your email address isn&#8217;t correct.', 'job_manager' ) );
+		return new WP_Error( 'validation-error', __( 'Your email address isn&#8217;t correct.', 'wp-job-manager' ) );
 
 	if ( email_exists( $user_email ) )
-		return new WP_Error( 'validation-error', __( 'This email is already registered, please choose another one.', 'job_manager' ) );
+		return new WP_Error( 'validation-error', __( 'This email is already registered, please choose another one.', 'wp-job-manager' ) );
 
 	// Email is good to go - use it to create a user name
 	$username = sanitize_user( current( explode( '@', $user_email ) ) );

@@ -1,19 +1,19 @@
 <div id="job-manager-job-dashboard">
-	<p><?php _e( 'Your job listings are shown in the table below. Expired listings will be automatically removed after 30 days.', 'job_manager' ); ?></p>
+	<p><?php _e( 'Your job listings are shown in the table below. Expired listings will be automatically removed after 30 days.', 'wp-job-manager' ); ?></p>
 	<table class="job-manager-jobs">
 		<thead>
 			<tr>
-				<th class="job_title"><?php _e( 'Job Title', 'job_manager' ); ?></th>
-				<th class="date"><?php _e( 'Date Posted', 'job_manager' ); ?></th>
-				<th class="status"><?php _e( 'Status', 'job_manager' ); ?></th>
-				<th class="expires"><?php _e( 'Expires', 'job_manager' ); ?></th>
-				<th class="filled"><?php _e( 'Filled?', 'job_manager' ); ?></th>
+				<th class="job_title"><?php _e( 'Job Title', 'wp-job-manager' ); ?></th>
+				<th class="date"><?php _e( 'Date Posted', 'wp-job-manager' ); ?></th>
+				<th class="status"><?php _e( 'Status', 'wp-job-manager' ); ?></th>
+				<th class="expires"><?php _e( 'Expires', 'wp-job-manager' ); ?></th>
+				<th class="filled"><?php _e( 'Filled?', 'wp-job-manager' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php if ( ! $jobs ) : ?>
 				<tr>
-					<td colspan="6"><?php _e( 'You do not have any active job listings.', 'job_manager' ); ?></td>
+					<td colspan="6"><?php _e( 'You do not have any active job listings.', 'wp-job-manager' ); ?></td>
 				</tr>
 			<?php else : ?>
 				<?php foreach ( $jobs as $job ) : ?>
@@ -30,17 +30,17 @@
 
 									switch ( $job->post_status ) {
 										case 'publish' :
-											$actions['edit'] = array( 'label' => __( 'Edit', 'job_manager' ), 'nonce' => false );
+											$actions['edit'] = array( 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false );
 
 											if ( is_position_filled( $job ) )
-												$actions['mark_not_filled'] = array( 'label' => __( 'Mark not filled', 'job_manager' ), 'nonce' => true );
+												$actions['mark_not_filled'] = array( 'label' => __( 'Mark not filled', 'wp-job-manager' ), 'nonce' => true );
 											else
-												$actions['mark_filled'] = array( 'label' => __( 'Mark filled', 'job_manager' ), 'nonce' => true );
+												$actions['mark_filled'] = array( 'label' => __( 'Mark filled', 'wp-job-manager' ), 'nonce' => true );
 
 											break;
 									}
 
-									$actions['delete'] = array( 'label' => __( 'Delete', 'job_manager' ), 'nonce' => true );
+									$actions['delete'] = array( 'label' => __( 'Delete', 'wp-job-manager' ), 'nonce' => true );
 									$actions           = apply_filters( 'job_manager_my_job_actions', $actions, $job );
 
 									foreach ( $actions as $action => $value ) {

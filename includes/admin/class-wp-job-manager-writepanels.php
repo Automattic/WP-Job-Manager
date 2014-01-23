@@ -24,47 +24,47 @@ class WP_Job_Manager_Writepanels {
 	public function job_listing_fields() {
 		return apply_filters( 'job_manager_job_listing_data_fields', array(
 			'_job_location' => array(
-				'label' => __( 'Job location', 'job_manager' ),
-				'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'job_manager' ),
-				'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'job_manager' )
+				'label' => __( 'Job location', 'wp-job-manager' ),
+				'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'wp-job-manager' ),
+				'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'wp-job-manager' )
 			),
 			'_application' => array(
-				'label' => __( 'Application email/URL', 'job_manager' ),
-				'placeholder' => __( 'URL or email which applicants use to apply', 'job_manager' )
+				'label' => __( 'Application email/URL', 'wp-job-manager' ),
+				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' )
 			),
 			'_company_name' => array(
-				'label' => __( 'Company name', 'job_manager' ),
+				'label' => __( 'Company name', 'wp-job-manager' ),
 				'placeholder' => ''
 			),
 			'_company_website' => array(
-				'label' => __( 'Company website', 'job_manager' ),
+				'label' => __( 'Company website', 'wp-job-manager' ),
 				'placeholder' => ''
 			),
 			'_company_tagline' => array(
-				'label' => __( 'Company tagline', 'job_manager' ),
-				'placeholder' => __( 'Brief description about the company', 'job_manager' )
+				'label' => __( 'Company tagline', 'wp-job-manager' ),
+				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' )
 			),
 			'_company_twitter' => array(
-				'label' => __( 'Company Twitter', 'job_manager' ),
+				'label' => __( 'Company Twitter', 'wp-job-manager' ),
 				'placeholder' => '@yourcompany'
 			),
 			'_company_logo' => array(
-				'label' => __( 'Company logo', 'job_manager' ),
-				'placeholder' => __( 'URL to the company logo', 'job_manager' ),
+				'label' => __( 'Company logo', 'wp-job-manager' ),
+				'placeholder' => __( 'URL to the company logo', 'wp-job-manager' ),
 				'type'  => 'file'
 			),
 			'_filled' => array(
-				'label' => __( 'Position filled?', 'job_manager' ),
+				'label' => __( 'Position filled?', 'wp-job-manager' ),
 				'type'  => 'checkbox'
 			),
 			'_featured' => array(
-				'label' => __( 'Feature this job listing?', 'job_manager' ),
+				'label' => __( 'Feature this job listing?', 'wp-job-manager' ),
 				'type'  => 'checkbox',
-				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'job_manager' )
+				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' )
 			),
 			'_job_expires' => array(
-				'label'       => __( 'Job Expires', 'job_manager' ),
-				'placeholder' => __( 'yyyy-mm-dd', 'job_manager' )
+				'label'       => __( 'Job Expires', 'wp-job-manager' ),
+				'placeholder' => __( 'yyyy-mm-dd', 'wp-job-manager' )
 			)
 		) );
 	}
@@ -76,7 +76,7 @@ class WP_Job_Manager_Writepanels {
 	 * @return void
 	 */
 	public function add_meta_boxes() {
-		add_meta_box( 'job_listing_data', __( 'Job Listing Data', 'job_manager' ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
+		add_meta_box( 'job_listing_data', __( 'Job Listing Data', 'wp-job-manager' ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
 	}
 
 	/**
@@ -94,7 +94,7 @@ class WP_Job_Manager_Writepanels {
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
 			<input type="text" class="file_url" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
-			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?> <button class="button upload_image_button" data-uploader_button_text="<?php _e( 'Use image', 'job_manager' ); ?>"><?php _e( 'Upload image', 'job_manager' ); ?></button>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?> <button class="button upload_image_button" data-uploader_button_text="<?php _e( 'Use image', 'wp-job-manager' ); ?>"><?php _e( 'Upload image', 'wp-job-manager' ); ?></button>
 		</p>
 		<script type="text/javascript">
 			// Uploading files

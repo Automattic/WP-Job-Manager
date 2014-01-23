@@ -127,10 +127,10 @@ class WP_Job_Manager_Geocode {
 
 				switch ( $xml->status ) {
 					case 'ZERO_RESULTS' :
-						throw new Exception( __( "No results found", 'job_manager' ) );
+						throw new Exception( __( "No results found", 'wp-job-manager' ) );
 					break;
 					case 'OVER_QUERY_LIMIT' :
-						throw new Exception( __( "Query limit reached", 'job_manager' ) );
+						throw new Exception( __( "Query limit reached", 'wp-job-manager' ) );
 					break;
 					default :
 						set_transient( $transient_name, $result, 24 * HOUR_IN_SECONDS * 365 );
