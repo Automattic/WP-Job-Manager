@@ -28,15 +28,15 @@ class WP_Job_Manager_Ajax {
 		$filter_job_types  = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
 
 		if ( is_array( $search_categories ) ) {
-			$search_categories = array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) );
+			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
 		} else {
-			$search_categories = array( sanitize_text_field( stripslashes( $search_categories ) ), 0 );
+			$search_categories = array_filter( array( sanitize_text_field( stripslashes( $search_categories ) ) ) );
 		}
 
 		$args = array(
 			'search_location'   => $search_location,
 			'search_keywords'   => $search_keywords,
-			'search_categories' => array_filter( $search_categories ),
+			'search_categories' => $search_categories,
 			'job_types'         => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
 			'orderby'           => sanitize_text_field( $_POST['orderby'] ),
 			'order'             => sanitize_text_field( $_POST['order'] ),

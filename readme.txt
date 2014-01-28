@@ -92,6 +92,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 = 1.7.2 =
 * Preserve line breaks when saving textarea fields in admin
+* Hide 'showing all x' when no filters are chosen.
 
 = 1.7.1 =
 * Updated textdomain to wp-job-manager
