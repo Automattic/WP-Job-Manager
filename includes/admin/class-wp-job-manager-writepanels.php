@@ -330,14 +330,26 @@ class WP_Job_Manager_Writepanels {
 
 			// Everything else
 			else {
-				if ( isset( $_POST[ $key ] ) ) {
-					if ( is_array( $_POST[ $key ] ) ) {
-						update_post_meta( $post_id, $key, array_map( 'sanitize_text_field', $_POST[ $key ] ) );
-					} else {
-						update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
-					}
-				} elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox' ) {
-					update_post_meta( $post_id, $key, 0 );
+				$type = ! empty( $field['type'] ) ? $field['type'] : '';
+
+				switch ( $type ) {
+					case 'textarea' :
+						update_post_meta( $post_id, $key, wp_kses_post( stripslashes( $_POST[ $key ] ) ) );
+					break;
+					case 'checkbox' :
+						if ( isset( $_POST[ $key ] ) ) {
+							update_post_meta( $post_id, $key, 1 );
+						} else {
+							update_post_meta( $post_id, $key, 0 );
+						}
+					break;
+					default : 
+						if ( is_array( $_POST[ $key ] ) ) {
+							update_post_meta( $post_id, $key, array_map( 'sanitize_text_field', $_POST[ $key ] ) );
+						} else {
+							update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
+						}
+					break;
 				}
 			}
 		}
