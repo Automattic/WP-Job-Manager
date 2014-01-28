@@ -90,7 +90,9 @@ class WP_Job_Manager_Install {
 	 */
 	public function cron() {
 		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
+		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
 		wp_schedule_event( time(), 'hourly', 'job_manager_check_for_expired_jobs' );
+		wp_schedule_event( time(), 'daily', 'job_manager_delete_old_previews' );
 	}
 }
 

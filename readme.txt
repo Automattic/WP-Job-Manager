@@ -93,6 +93,8 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 = 1.7.2 =
 * Preserve line breaks when saving textarea fields in admin
 * Hide 'showing all x' when no filters are chosen.
+* Register 'preview' status so that the counts are correct.
+* Delete previews via cron job.
 
 = 1.7.1 =
 * Updated textdomain to wp-job-manager

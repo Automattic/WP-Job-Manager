@@ -12,6 +12,7 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'admin_head', array( $this, 'admin_head' ) );
 		add_filter( 'the_content', array( $this, 'job_content' ) );
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
+		add_action( 'job_manager_delete_old_previews', array( $this, 'delete_old_previews' ) );
 		add_action( 'pending_to_publish', array( $this, 'set_expirey' ) );
 		add_action( 'preview_to_publish', array( $this, 'set_expirey' ) );
 		add_action( 'draft_to_publish', array( $this, 'set_expirey' ) );
@@ -207,6 +208,12 @@ class WP_Job_Manager_Post_Types {
 			'show_in_admin_status_list' => true,
 			'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'wp-job-manager' ),
 		) );
+		register_post_status( 'preview', array(
+			'public'                    => false,
+			'exclude_from_search'       => true,
+			'show_in_admin_all_list'    => false,
+			'show_in_admin_status_list' => false,
+		) );
 	}
 
 	/**
@@ -334,6 +341,27 @@ class WP_Job_Manager_Post_Types {
 		if ( $job_ids ) {
 			foreach ( $job_ids as $job_id ) {
 				wp_trash_post( $job_id );
+			}
+		}
+	}
+
+	/**
+	 * Delete old previewed jobs after 30 days to keep the DB clean
+	 */
+	public function delete_old_previews() {
+		global $wpdb;
+
+		// Delete old expired jobs
+		$job_ids = $wpdb->get_col( $wpdb->prepare( "
+			SELECT posts.ID FROM {$wpdb->posts} as posts
+			WHERE posts.post_type = 'job_listing'
+			AND posts.post_modified < %s
+			AND posts.post_status = 'preview'
+		", date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ) ) );
+
+		if ( $job_ids ) {
+			foreach ( $job_ids as $job_id ) {
+				wp_delete_post( $job_id, true );
 			}
 		}
 	}
