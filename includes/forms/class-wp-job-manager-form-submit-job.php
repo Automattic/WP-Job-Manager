@@ -183,7 +183,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'type'        => 'file',
 					'required'    => false,
 					'placeholder' => '',
-					'priority'    => 5
+					'priority'    => 5,
+					'allowed_mime_types' => array(
+						'jpg' => 'image/jpeg',
+						'gif' => 'image/gif',
+						'png' => 'image/png'
+					)
 				)
 			)
 		) );
@@ -248,7 +253,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected static function get_posted_file_field( $key, $field ) {
-		$file = self::upload_image( $key );
+		$file = self::upload_file( $key, $field );
 		
 		if ( ! $file )
 			$file = self::get_posted_field( 'current_' . $key, $field );
@@ -598,9 +603,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Upload Image
+	 * Upload an image
 	 */
-	public static function upload_image( $field_key ) {
+	public static function upload_image( $field_key, $field = '' ) {
+		return self::upload_file( $field_key, $field );
+	}
+
+	/**
+	 * Upload a file
+	 */
+	public static function upload_file( $field_key, $field ) {
 
 		/** WordPress Administration File API */
 		include_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -611,8 +623,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
 			$file   = $_FILES[ $field_key ];
 
-			if ( $_FILES[ $field_key ]["type"] != "image/jpeg" && $_FILES[ $field_key ]["type"] != "image/gif" && $_FILES[ $field_key ]["type"] != "image/png" )
-    			throw new Exception( __( 'Logo needs to be jpg, gif or png.', 'wp-job-manager' ) );
+			if ( ! empty( $field['allowed_mime_types'] ) ) {
+				$allowed_mime_types = $field['allowed_mime_types'];
+			} else {
+				$allowed_mime_types = get_allowed_mime_types();
+			}
+
+			if ( ! in_array( $_FILES[ $field_key ]["type"], $allowed_mime_types ) )
+    			throw new Exception( sprintf( __( '"%s" needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], implode( ', ', array_keys( $allowed_mime_types ) ) ) );
 
 			add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
 
@@ -632,7 +650,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Filter the upload directory
 	 */
 	public static function upload_dir( $pathdata ) {
-		$subdir             = '/job_listing_images';
+		$subdir             = '/job_listings';
 		$pathdata['path']   = str_replace( $pathdata['subdir'], $subdir, $pathdata['path'] );
 		$pathdata['url']    = str_replace( $pathdata['subdir'], $subdir, $pathdata['url'] );
 		$pathdata['subdir'] = str_replace( $pathdata['subdir'], $subdir, $pathdata['subdir'] );
