@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the WP Job Manager package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.7.2\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-01-28 18:06:04+00:00\n"
+"Project-Id-Version: WP Job Manager 1.7.3\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
+"POT-Creation-Date: 2014-01-29 19:59:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -358,11 +358,11 @@ msgid "Job Listing Data"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:97
-msgid "Use image"
+msgid "Use file"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:97
-msgid "Upload image"
+msgid "Upload"
 msgstr ""
 
 #: includes/class-wp-job-manager-ajax.php:63
@@ -587,7 +587,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
-#: includes/forms/class-wp-job-manager-form-submit-job.php:550
+#: includes/forms/class-wp-job-manager-form-submit-job.php:555
 msgid "Preview"
 msgstr ""
 
@@ -648,28 +648,28 @@ msgstr ""
 msgid "Logo"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:288
+#: includes/forms/class-wp-job-manager-form-submit-job.php:293
 msgid "%s is a required field"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:401
+#: includes/forms/class-wp-job-manager-form-submit-job.php:406
 msgid "Preview job listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:436
+#: includes/forms/class-wp-job-manager-form-submit-job.php:441
 msgid "You must be signed in to post a new job listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:544
+#: includes/forms/class-wp-job-manager-form-submit-job.php:549
 msgid "Submit Listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:545
+#: includes/forms/class-wp-job-manager-form-submit-job.php:550
 msgid "&larr; Edit listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:615
-msgid "Logo needs to be jpg, gif or png."
+#: includes/forms/class-wp-job-manager-form-submit-job.php:633
+msgid "\"%s\" needs to be one of the following file types: %s"
 msgstr ""
 
 #: templates/account-signin.php:4
@@ -729,16 +729,16 @@ msgstr ""
 msgid "This position has been filled"
 msgstr ""
 
-#: templates/form-fields/file-field.php:3
+#: templates/form-fields/file-field.php:6
 msgid "remove"
 msgstr ""
 
-#: templates/form-fields/file-field.php:3
+#: templates/form-fields/file-field.php:6
 msgid "or"
 msgstr ""
 
-#: templates/form-fields/file-field.php:10
-msgid "Max. file size: %s. Allowed images: jpg, gif, png."
+#: templates/form-fields/file-field.php:16
+msgid "Max. file size: %s."
 msgstr ""
 
 #: templates/job-application.php:5
