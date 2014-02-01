@@ -94,6 +94,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Some changes to file uploads to support custom mime types
 * Updated icon file (http://fontello.com/)
 * Fix category rss links
+* When doing a location search, search geolocation data
 
 = 1.7.2 =
 * Preserve line breaks when saving textarea fields in admin

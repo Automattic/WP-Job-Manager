@@ -56,12 +56,16 @@ function get_job_listings( $args = array() ) {
 			'compare' => '!='
 		);
 
-	if ( $args['search_location'] )
-		$query_args['meta_query'][] = array(
-			'key'     => '_job_location',
-			'value'   => $args['search_location'],
-			'compare' => 'LIKE'
-		);
+	// Location search - search geolocation data and location meta
+	if ( $args['search_location'] ) {
+		$post_ids = $wpdb->get_col( $wpdb->prepare( "
+		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
+		    WHERE meta_key IN ( 'geolocation_city', 'geolocation_country_long', 'geolocation_country_short', 'geolocation_formatted_address', 'geolocation_state_long', 'geolocation_state_short', 'geolocation_street', 'geolocation_zipcode', '_job_location' ) 
+		    AND meta_value LIKE '%%%s%%'
+		", $args['search_location'] ) );
+
+		$query_args['post__in'] = $post_ids + array( 0 );
+	}
 
 	// Keyword search - search meta as well as post content
 	if ( $args['search_keywords'] ) {

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.7.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-01-31 17:45:08+00:00\n"
+"POT-Creation-Date: 2014-02-01 15:24:41+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -826,19 +826,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr ""
 
-#: wp-job-manager-functions.php:192
+#: wp-job-manager-functions.php:196
 msgid "Reset"
 msgstr ""
 
-#: wp-job-manager-functions.php:196
+#: wp-job-manager-functions.php:200
 msgid "RSS"
 msgstr ""
 
-#: wp-job-manager-functions.php:246
+#: wp-job-manager-functions.php:250
 msgid "Your email address isn&#8217;t correct."
 msgstr ""
 
-#: wp-job-manager-functions.php:249
+#: wp-job-manager-functions.php:253
 msgid "This email is already registered, please choose another one."
 msgstr ""
 
