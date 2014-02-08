@@ -278,7 +278,7 @@ function wp_job_manager_create_account( $account_email, $role = '' ) {
 		'user_login' => $username,
 		'user_pass'  => $password,
 		'user_email' => $user_email,
-		'role'       => $role
+		'role'       => $role ? $role : get_option( 'default_role' )
     );
 
     $user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
