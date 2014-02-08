@@ -106,7 +106,7 @@ module.exports = function( grunt ){
 					'**',
 					'!Gruntfile.js',
 					'!package.json',
-					'!node_modules'
+					'!node_modules/**'
 				],
 				dest: 'deploy',
 				expand: true
@@ -161,8 +161,8 @@ module.exports = function( grunt ){
 
 	grunt.registerTask( 'deploy', [ 
 		'clean:deploy', 
-		'copy',
-		'wp_deploy:deploy'
+		'copy:deploy',
+		'wp_deploy'
 	]);
 
 };
