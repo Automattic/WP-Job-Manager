@@ -98,6 +98,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Fix notices when removing all company fields
 * Made jslint happy with ajax-filters.js
 * Use get_option( 'default_role' ) when creating a user
+* Grunt for release
 
 = 1.7.2 =
 * Preserve line breaks when saving textarea fields in admin

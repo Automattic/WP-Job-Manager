@@ -1,6 +1,15 @@
+/nbproject/private/
+/node_modules/
+project.xml
+project.properties
 .DS_Store
 Thumbs.db
 .buildpath
 .project
 .settings*
 sftp-config.json
+/deploy/
+
+# Ignore all log files except for .htaccess
+/logs/*
+!/logs/.htaccess
