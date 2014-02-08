@@ -106,6 +106,7 @@ module.exports = function( grunt ){
 					'**',
 					'!Gruntfile.js',
 					'!package.json',
+					'!node_modules'
 				],
 				dest: 'deploy',
 				expand: true
