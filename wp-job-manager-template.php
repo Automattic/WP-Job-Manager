@@ -396,10 +396,17 @@ function get_the_company_name( $post = null ) {
  */
 function get_the_company_website( $post = null ) {
 	$post = get_post( $post );
+
 	if ( $post->post_type !== 'job_listing' )
 		return;
 
-	return apply_filters( 'the_company_website', $post->_company_website, $post );
+	$website = $post->_company_website;
+
+	if ( $website && ! strstr( $website, 'http:' ) && ! strstr( $website, 'https:' ) ) {
+		$website = 'http://' . $website;
+	}
+
+	return apply_filters( 'the_company_website', $website, $post );
 }
 
 /**
