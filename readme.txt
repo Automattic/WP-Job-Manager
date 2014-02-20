@@ -90,6 +90,8 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
+* Use add_post_meta when editing a job to maintain featured status
+
 = 1.7.3 =
 * Some changes to file uploads to support custom mime types
 * Updated icon file (http://fontello.com/)

@@ -517,8 +517,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		update_post_meta( self::$job_id, '_company_tagline', $values['company']['company_tagline'] );
 		update_post_meta( self::$job_id, '_company_twitter', $values['company']['company_twitter'] );
 		update_post_meta( self::$job_id, '_company_logo', $values['company']['company_logo'] );
-		update_post_meta( self::$job_id, '_filled', 0 );
-		update_post_meta( self::$job_id, '_featured', 0 );
+		add_post_meta( self::$job_id, '_filled', 0, true );
+		add_post_meta( self::$job_id, '_featured', 0, true );
 
 		// And user meta to save time in future
 		if ( is_user_logged_in() ) {
