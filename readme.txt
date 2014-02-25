@@ -91,6 +91,8 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 == Changelog ==
 
 * Use add_post_meta when editing a job to maintain featured status
+* Fix category ordering
+* Fix searching for keyword + location at the same time
 
 = 1.7.3 =
 * Some changes to file uploads to support custom mime types
