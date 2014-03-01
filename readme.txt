@@ -95,6 +95,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Fix searching for keyword + location at the same time
 * job_manager_application_email_subject filter
 * Take search/location vars from the querystring if set
+* Option to choose role for registration, and added an 'employer' role.
 
 = 1.7.3 =
 * Some changes to file uploads to support custom mime types

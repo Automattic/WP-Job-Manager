@@ -25,6 +25,17 @@ class WP_Job_Manager_Settings {
 	 * @return void
 	 */
 	protected function init_settings() {
+		// Prepare roles option
+		$roles         = get_editable_roles();
+		$account_roles = array();
+
+		foreach ( $roles as $key => $role ) {
+			if ( $key == 'administrator' ) {
+				continue;
+			}
+			$account_roles[ $key ] = $role['name'];
+		}
+
 		$this->settings = apply_filters( 'job_manager_settings',
 			array(
 				'job_listings' => array(
@@ -69,6 +80,14 @@ class WP_Job_Manager_Settings {
 							'desc'       => __( 'If enabled, non-logged in users will be able to create an account by entering their email address on the job submission form.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
+						),
+						array(
+							'name'       => 'job_manager_registration_role',
+							'std'        => 'employer',
+							'label'      => __( 'Account Role', 'wp-job-manager' ),
+							'desc'       => __( 'If you enable registration on your job submission form, choose a role for the new user.', 'wp-job-manager' ),
+							'type'       => 'select',
+							'options'    => $account_roles
 						),
 						array(
 							'name'       => 'job_manager_user_requires_account',

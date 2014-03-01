@@ -431,7 +431,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$create_account = false;
 
 				if ( job_manager_enable_registration() && ! empty( $_POST['create_account_email'] ) )
-					$create_account = wp_job_manager_create_account( $_POST['create_account_email'] );
+					$create_account = wp_job_manager_create_account( $_POST['create_account_email'], get_option( 'job_manager_registration_role' ) );
 
 				if ( is_wp_error( $create_account ) )
 					throw new Exception( $create_account->get_error_message() );

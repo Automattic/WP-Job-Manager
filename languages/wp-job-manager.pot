@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.7.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-03-01 18:04:39+00:00\n"
+"POT-Creation-Date: 2014-03-01 18:18:19+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -165,115 +165,125 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:31
+#: includes/admin/class-wp-job-manager-settings.php:42
 #: includes/class-wp-job-manager-post-types.php:135
 #: includes/class-wp-job-manager-post-types.php:225
 msgid "Job Listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:37
+#: includes/admin/class-wp-job-manager-settings.php:48
 msgid "Jobs per page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:38
+#: includes/admin/class-wp-job-manager-settings.php:49
 msgid "How many jobs should be shown per page by default?"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:44
+#: includes/admin/class-wp-job-manager-settings.php:55
 msgid "Filled positions"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:45
+#: includes/admin/class-wp-job-manager-settings.php:56
 msgid "Hide filled positions"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:46
+#: includes/admin/class-wp-job-manager-settings.php:57
 msgid "If enabled, filled positions will be hidden from the job list."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:53
+#: includes/admin/class-wp-job-manager-settings.php:64
 msgid "Job categories"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:54
+#: includes/admin/class-wp-job-manager-settings.php:65
 msgid "Enable job categories"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:55
+#: includes/admin/class-wp-job-manager-settings.php:66
 msgid ""
 "Choose whether to enable job categories. Categories must be setup by an "
 "admin for users to choose during job submission."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:62
+#: includes/admin/class-wp-job-manager-settings.php:73
 msgid "Job Submission"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:67
+#: includes/admin/class-wp-job-manager-settings.php:78
 msgid "Account creation"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:68
+#: includes/admin/class-wp-job-manager-settings.php:79
 msgid "Allow account creation"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:69
+#: includes/admin/class-wp-job-manager-settings.php:80
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the job submission form."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:76
+#: includes/admin/class-wp-job-manager-settings.php:87
+msgid "Account Role"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:88
+msgid ""
+"If you enable registration on your job submission form, choose a role for "
+"the new user."
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:95
 msgid "Account required"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:77
+#: includes/admin/class-wp-job-manager-settings.php:96
 msgid "Job submission requires an account"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:78
+#: includes/admin/class-wp-job-manager-settings.php:97
 msgid ""
 "If disabled, non-logged in users will be able to submit job listings without "
 "creating an account."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:85
+#: includes/admin/class-wp-job-manager-settings.php:104
 msgid "Approval Required"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:86
+#: includes/admin/class-wp-job-manager-settings.php:105
 msgid "New submissions require admin approval"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:87
+#: includes/admin/class-wp-job-manager-settings.php:106
 msgid "If enabled, new submissions will be inactive, pending admin approval."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:94
+#: includes/admin/class-wp-job-manager-settings.php:113
 msgid "Listing duration"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:95
+#: includes/admin/class-wp-job-manager-settings.php:114
 msgid ""
 "How many <strong>days</strong> listings are live before expiring. Can be "
 "left blank to never expire."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:101
+#: includes/admin/class-wp-job-manager-settings.php:120
 msgid "Submit Page Slug"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:102
+#: includes/admin/class-wp-job-manager-settings.php:121
 msgid ""
 "Enter the slug of the page where you have placed the [submit_job_form] "
 "shortcode. This lets the plugin know where the form is located."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:154
+#: includes/admin/class-wp-job-manager-settings.php:173
 msgid "Settings successfully saved"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:233
+#: includes/admin/class-wp-job-manager-settings.php:252
 msgid "Save Changes"
 msgstr ""
 
@@ -387,6 +397,10 @@ msgstr ""
 
 #: includes/class-wp-job-manager-geocode.php:133
 msgid "Query limit reached"
+msgstr ""
+
+#: includes/class-wp-job-manager-install.php:40
+msgid "Employer"
 msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:45
