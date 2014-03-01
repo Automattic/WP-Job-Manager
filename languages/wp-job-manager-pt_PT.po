@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-02-01 15:24:41+00:00\n"
+"POT-Creation-Date: 2014-02-25 21:13:41+00:00\n"
 "PO-Revision-Date: 2014-01-31 08:21+0000\n"
 "Last-Translator: mikejolley <mike.jolley@me.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/wp-job-manager/language/pt_PT/)\n"
@@ -714,7 +714,7 @@ msgid "Your email"
 msgstr "O seu email"
 
 #: templates/account-signin.php:38 templates/job-submit.php:24
-#: templates/job-submit.php:40
+#: templates/job-submit.php:41
 msgid "(optional)"
 msgstr "(opcional)"
 
@@ -814,7 +814,7 @@ msgstr "Categoria"
 msgid "All Job Categories"
 msgstr "Todas as categorias"
 
-#: templates/job-submit.php:34
+#: templates/job-submit.php:35
 msgid "Company details"
 msgstr "A sua informação"
 
@@ -829,19 +829,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr "Anúncio registado com sucesso. Ficará visível uma vez aprovado."
 
-#: wp-job-manager-functions.php:196
+#: wp-job-manager-functions.php:203
 msgid "Reset"
 msgstr "Repor"
 
-#: wp-job-manager-functions.php:200
+#: wp-job-manager-functions.php:207
 msgid "RSS"
 msgstr "RSS"
 
-#: wp-job-manager-functions.php:250
+#: wp-job-manager-functions.php:257
 msgid "Your email address isn&#8217;t correct."
 msgstr "O seu email não está correcto."
 
-#: wp-job-manager-functions.php:253
+#: wp-job-manager-functions.php:260
 msgid "This email is already registered, please choose another one."
 msgstr "Esse email já está registado neste site, por favor use outro."
 

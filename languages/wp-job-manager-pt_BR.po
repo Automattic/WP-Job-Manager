@@ -2,13 +2,14 @@
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
 # claudiosmweb <contato@claudiosmweb.com>, 2014
+# vmassuchetto <vmassuchetto@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-02-01 15:24:41+00:00\n"
-"PO-Revision-Date: 2014-02-01 14:28+0000\n"
-"Last-Translator: claudiosmweb <contato@claudiosmweb.com>\n"
+"POT-Creation-Date: 2014-02-25 21:13:41+00:00\n"
+"PO-Revision-Date: 2014-02-09 14:10+0000\n"
+"Last-Translator: vmassuchetto <vmassuchetto@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/wp-job-manager/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -714,7 +715,7 @@ msgid "Your email"
 msgstr "Seu email"
 
 #: templates/account-signin.php:38 templates/job-submit.php:24
-#: templates/job-submit.php:40
+#: templates/job-submit.php:41
 msgid "(optional)"
 msgstr "(opcional)"
 
@@ -746,7 +747,7 @@ msgstr "Tamanho máximo: %s."
 
 #: templates/job-application.php:5
 msgid "Apply for job"
-msgstr "Çandidatar-se à vaga"
+msgstr "Candidatar-se à vaga"
 
 #: templates/job-application.php:12
 msgid ""
@@ -814,7 +815,7 @@ msgstr "Área de atuação"
 msgid "All Job Categories"
 msgstr "Todas as Áreas"
 
-#: templates/job-submit.php:34
+#: templates/job-submit.php:35
 msgid "Company details"
 msgstr "Detalhes da Empresa"
 
@@ -829,19 +830,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr "Vaga enviada com sucesso. Sua vaga será exibida quando for aprovada."
 
-#: wp-job-manager-functions.php:196
+#: wp-job-manager-functions.php:203
 msgid "Reset"
 msgstr "Limpar"
 
-#: wp-job-manager-functions.php:200
+#: wp-job-manager-functions.php:207
 msgid "RSS"
 msgstr "RSS"
 
-#: wp-job-manager-functions.php:250
+#: wp-job-manager-functions.php:257
 msgid "Your email address isn&#8217;t correct."
 msgstr "Seu email não está correto."
 
-#: wp-job-manager-functions.php:253
+#: wp-job-manager-functions.php:260
 msgid "This email is already registered, please choose another one."
 msgstr "Este email já está registrado, por favor, escolha outro."
 

@@ -1,14 +1,14 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
-# Adrian Dimitrov, 2014
+# Adrian Dimitrov <dimitrov.adrian@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-02-01 15:24:41+00:00\n"
-"PO-Revision-Date: 2014-02-05 10:59+0000\n"
-"Last-Translator: Adrian Dimitrov\n"
+"POT-Creation-Date: 2014-02-25 21:13:41+00:00\n"
+"PO-Revision-Date: 2014-02-14 12:03+0000\n"
+"Last-Translator: Adrian Dimitrov <dimitrov.adrian@gmail.com>\n"
 "Language-Team: Bulgarian (http://www.transifex.com/projects/p/wp-job-manager/language/bg/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -264,7 +264,7 @@ msgstr "Колко <strong>дни</strong> обявите се показват 
 
 #: includes/admin/class-wp-job-manager-settings.php:101
 msgid "Submit Page Slug"
-msgstr ""
+msgstr "Кратко име за страницата"
 
 #: includes/admin/class-wp-job-manager-settings.php:102
 msgid ""
@@ -547,11 +547,11 @@ msgstr ""
 #: includes/class-wp-job-manager-shortcodes.php:187
 #: includes/class-wp-job-manager-shortcodes.php:217
 msgid "Load more job listings"
-msgstr ""
+msgstr "Зареждане на още обяви"
 
 #: includes/class-wp-job-manager-widgets.php:139
 msgid "Display a list of the most recent jobs on your site."
-msgstr ""
+msgstr "Покажи списък от последните обяви в сайта."
 
 #: includes/class-wp-job-manager-widgets.php:141
 msgid "Recent Job Listings"
@@ -575,7 +575,7 @@ msgstr "Невалидна обява"
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:86
 msgid "Update job listing"
-msgstr ""
+msgstr "Обновяване"
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:111
 msgid "Your changes have been saved."
@@ -587,7 +587,7 @@ msgstr "Преглед &rarr;"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:22
 msgid "Submit Details"
-msgstr ""
+msgstr "Детайли"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
 #: includes/forms/class-wp-job-manager-form-submit-job.php:555
@@ -657,7 +657,7 @@ msgstr "%s е задължително поле"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:406
 msgid "Preview job listing &rarr;"
-msgstr ""
+msgstr "Преглед &rarr;"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:441
 msgid "You must be signed in to post a new job listing."
@@ -714,7 +714,7 @@ msgid "Your email"
 msgstr "Ваш email"
 
 #: templates/account-signin.php:38 templates/job-submit.php:24
-#: templates/job-submit.php:40
+#: templates/job-submit.php:41
 msgid "(optional)"
 msgstr "(по избор)"
 
@@ -814,7 +814,7 @@ msgstr "Категория"
 msgid "All Job Categories"
 msgstr "Всички категории"
 
-#: templates/job-submit.php:34
+#: templates/job-submit.php:35
 msgid "Company details"
 msgstr "Информация за компанията"
 
@@ -829,19 +829,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr ""
 
-#: wp-job-manager-functions.php:196
+#: wp-job-manager-functions.php:203
 msgid "Reset"
 msgstr "Нулиране"
 
-#: wp-job-manager-functions.php:200
+#: wp-job-manager-functions.php:207
 msgid "RSS"
 msgstr "RSS"
 
-#: wp-job-manager-functions.php:250
+#: wp-job-manager-functions.php:257
 msgid "Your email address isn&#8217;t correct."
 msgstr "Вашият email адрес не е валиден."
 
-#: wp-job-manager-functions.php:253
+#: wp-job-manager-functions.php:260
 msgid "This email is already registered, please choose another one."
 msgstr "Този email адрес е вече регистриран, изберете друг."
 

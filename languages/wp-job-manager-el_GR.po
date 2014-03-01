@@ -1,13 +1,14 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# dpetrop <dpetrop@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-02-01 15:24:41+00:00\n"
-"PO-Revision-Date: 2014-01-31 08:21+0000\n"
-"Last-Translator: mikejolley <mike.jolley@me.com>\n"
+"POT-Creation-Date: 2014-02-25 21:13:41+00:00\n"
+"PO-Revision-Date: 2014-02-08 15:38+0000\n"
+"Last-Translator: dpetrop <dpetrop@gmail.com>\n"
 "Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/wp-job-manager/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +19,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-addons.php:50
 #: includes/admin/class-wp-job-manager-admin.php:55
 msgid "WP Job Manager Add-ons"
-msgstr ""
+msgstr "WP Job Manager Add-ons"
 
 #: includes/admin/class-wp-job-manager-admin.php:52
 msgid "Settings"
@@ -26,7 +27,7 @@ msgstr "Settings"
 
 #: includes/admin/class-wp-job-manager-admin.php:55
 msgid "Add-ons"
-msgstr ""
+msgstr "Πρόσθετα"
 
 #: includes/admin/class-wp-job-manager-cpt.php:43
 #: includes/admin/class-wp-job-manager-cpt.php:44
@@ -36,7 +37,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-cpt.php:112
 #: includes/admin/class-wp-job-manager-cpt.php:114
 msgid "%s approved"
-msgstr ""
+msgstr "%s εγκρίθηκαν"
 
 #: includes/admin/class-wp-job-manager-cpt.php:157
 msgid "Select a category"
@@ -133,12 +134,12 @@ msgstr "Δράσεις"
 
 #: includes/admin/class-wp-job-manager-cpt.php:267
 msgid "Job ID: %d"
-msgstr ""
+msgstr "Κωδ. εργασίας: %d"
 
 #: includes/admin/class-wp-job-manager-cpt.php:293
 #: includes/admin/class-wp-job-manager-cpt.php:298
 msgid "M j, Y"
-msgstr ""
+msgstr "M j, Y"
 
 #: includes/admin/class-wp-job-manager-cpt.php:294
 msgid "by a guest"
@@ -150,7 +151,7 @@ msgstr "από %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:311
 msgid "Approve"
-msgstr ""
+msgstr "Εγκρίνω"
 
 #: includes/admin/class-wp-job-manager-cpt.php:318
 msgid "View"
@@ -223,7 +224,7 @@ msgstr "Επιτρέψτε τη δημιουργία λογαριασμού"
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the job submission form."
-msgstr ""
+msgstr "Εάν ενεργοποιηθεί, οι μη συνδεδεμένοι χρήστες θα μπορούν να δημιουργήσουν λογαριασμό εισάγοντας το email τους στη φόρμα υποβολής εργασίας."
 
 #: includes/admin/class-wp-job-manager-settings.php:76
 msgid "Account required"
@@ -287,13 +288,13 @@ msgstr "Τοποθεσία εργασίας"
 #: includes/admin/class-wp-job-manager-writepanels.php:28
 #: includes/forms/class-wp-job-manager-form-submit-job.php:117
 msgid "e.g. \"London, UK\", \"New York\", \"Houston, TX\""
-msgstr ""
+msgstr "π.χ. \"Αθήνα\", \"Περιστέρι\", \"Μαρούσι\", \"Πάτρα\""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:29
 #: includes/forms/class-wp-job-manager-form-submit-job.php:114
 msgid ""
 "Leave this blank if the job can be done from anywhere (i.e. telecommuting)"
-msgstr ""
+msgstr "Αφήστε το κενό αν η εργασία μπορεί να γίνει από οπουδήποτε (π.χ. τηλεργασία)"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:32
 #: includes/forms/class-wp-job-manager-form-submit-job.php:144
@@ -339,7 +340,7 @@ msgstr "Καλύφθηκε η θέση;"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:61
 msgid "Feature this job listing?"
-msgstr ""
+msgstr "Χαρακτηριστικό της θέσης εργασίας;"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:63
 msgid ""
@@ -349,11 +350,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:66
 msgid "Job Expires"
-msgstr ""
+msgstr "Λήξη εργασίας"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:67
 msgid "yyyy-mm-dd"
-msgstr ""
+msgstr "yyyy-mm-dd"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:79
 msgid "Job Listing Data"
@@ -385,7 +386,7 @@ msgstr "βρίσκεται στο &ldquo;%s&rdquo;"
 
 #: includes/class-wp-job-manager-geocode.php:130
 msgid "No results found"
-msgstr ""
+msgstr "Δεν βρέθηκαν αποτελέσματα"
 
 #: includes/class-wp-job-manager-geocode.php:133
 msgid "Query limit reached"
@@ -640,7 +641,7 @@ msgstr "Περιγράψτε εν συντομία την εταιρεία σα�
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:175
 msgid "Twitter username"
-msgstr "Twitter"
+msgstr "Twitter username"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:178
 msgid "@yourcompany"
@@ -672,7 +673,7 @@ msgstr "&larr; Επεξεργασία αγγελίας"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:633
 msgid "\"%s\" needs to be one of the following file types: %s"
-msgstr ""
+msgstr "\"%s\" πρέπει να είναι ένας από τους ακόλουθους τύπους αρχείων: %s"
 
 #: templates/account-signin.php:4
 msgid "Your account"
@@ -713,7 +714,7 @@ msgid "Your email"
 msgstr "Το email σας"
 
 #: templates/account-signin.php:38 templates/job-submit.php:24
-#: templates/job-submit.php:40
+#: templates/job-submit.php:41
 msgid "(optional)"
 msgstr "(προαιρετικό)"
 
@@ -721,7 +722,7 @@ msgstr "(προαιρετικό)"
 #: templates/content-single-job_listing.php:19
 #: templates/content-summary-job_listing.php:14
 msgid "Posted %s ago"
-msgstr ""
+msgstr "Δημοσιεύτηκε πριν από %s"
 
 #: templates/content-single-job_listing.php:8
 msgid "This job listing has expired"
@@ -733,7 +734,7 @@ msgstr "Αυτή η θέση έχει καλυφθεί"
 
 #: templates/form-fields/file-field.php:6
 msgid "remove"
-msgstr ""
+msgstr "αφαιρώ"
 
 #: templates/form-fields/file-field.php:6
 msgid "or"
@@ -741,7 +742,7 @@ msgstr "ή"
 
 #: templates/form-fields/file-field.php:16
 msgid "Max. file size: %s."
-msgstr ""
+msgstr "Μέγιστο μέγεθος αρχείου: %s"
 
 #: templates/job-application.php:5
 msgid "Apply for job"
@@ -813,7 +814,7 @@ msgstr "Κατηγορία"
 msgid "All Job Categories"
 msgstr "Όλες οι κατηγορίες θέσεων εργασίας"
 
-#: templates/job-submit.php:34
+#: templates/job-submit.php:35
 msgid "Company details"
 msgstr "Στοιχεία της εταιρείας"
 
@@ -828,19 +829,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr "Η αγγελία καταχωρήθηκε με επιτυχία. Η αγγελία σας θα είναι ορατή εφόσον εγκριθεί."
 
-#: wp-job-manager-functions.php:196
+#: wp-job-manager-functions.php:203
 msgid "Reset"
 msgstr "Επαναφορά"
 
-#: wp-job-manager-functions.php:200
+#: wp-job-manager-functions.php:207
 msgid "RSS"
 msgstr "RSS"
 
-#: wp-job-manager-functions.php:250
+#: wp-job-manager-functions.php:257
 msgid "Your email address isn&#8217;t correct."
 msgstr "Η διεύθυνση email σας δεν είναι σωστή."
 
-#: wp-job-manager-functions.php:253
+#: wp-job-manager-functions.php:260
 msgid "This email is already registered, please choose another one."
 msgstr "Το email έχει ήδη εγγραφεί, επιλέξτε ένα άλλο."
 
@@ -862,7 +863,7 @@ msgstr "Ανενεργό"
 
 #: wp-job-manager-template.php:255
 msgid "Anywhere"
-msgstr ""
+msgstr "Οπουδήποτε"
 
 #: wp-job-manager.php:96
 msgid "Are you sure you want to delete this job?"
@@ -874,7 +875,7 @@ msgstr "WP Job Manager"
 
 #. Plugin URI of the plugin/theme
 msgid "http://mikejolley.com/projects/wp-job-manager/"
-msgstr ""
+msgstr "http://mikejolley.com/projects/wp-job-manager/"
 
 #. Description of the plugin/theme
 msgid ""

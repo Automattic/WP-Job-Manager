@@ -1,13 +1,14 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# Nikolay Nakuginkin <translator@mondaystar.ru>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-02-01 15:24:41+00:00\n"
-"PO-Revision-Date: 2014-01-31 08:21+0000\n"
-"Last-Translator: mikejolley <mike.jolley@me.com>\n"
+"POT-Creation-Date: 2014-02-25 21:13:41+00:00\n"
+"PO-Revision-Date: 2014-02-28 09:38+0000\n"
+"Last-Translator: Nikolay Nakuginkin <translator@mondaystar.ru>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/projects/p/wp-job-manager/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,15 +19,15 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-addons.php:50
 #: includes/admin/class-wp-job-manager-admin.php:55
 msgid "WP Job Manager Add-ons"
-msgstr ""
+msgstr "Дополнения WP Job Manager"
 
 #: includes/admin/class-wp-job-manager-admin.php:52
 msgid "Settings"
-msgstr "Установки"
+msgstr "Настройки"
 
 #: includes/admin/class-wp-job-manager-admin.php:55
 msgid "Add-ons"
-msgstr ""
+msgstr "Дополнения"
 
 #: includes/admin/class-wp-job-manager-cpt.php:43
 #: includes/admin/class-wp-job-manager-cpt.php:44
@@ -133,12 +134,12 @@ msgstr "Действия"
 
 #: includes/admin/class-wp-job-manager-cpt.php:267
 msgid "Job ID: %d"
-msgstr ""
+msgstr "Вакансия №:  %d"
 
 #: includes/admin/class-wp-job-manager-cpt.php:293
 #: includes/admin/class-wp-job-manager-cpt.php:298
 msgid "M j, Y"
-msgstr ""
+msgstr "j F Y"
 
 #: includes/admin/class-wp-job-manager-cpt.php:294
 msgid "by a guest"
@@ -349,11 +350,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:66
 msgid "Job Expires"
-msgstr ""
+msgstr "Вакансия истекла"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:67
 msgid "yyyy-mm-dd"
-msgstr ""
+msgstr "dd-mm-yyyy"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:79
 msgid "Job Listing Data"
@@ -385,11 +386,11 @@ msgstr "найдено в &ldquo;%s&rdquo;"
 
 #: includes/class-wp-job-manager-geocode.php:130
 msgid "No results found"
-msgstr ""
+msgstr "Нет результатов"
 
 #: includes/class-wp-job-manager-geocode.php:133
 msgid "Query limit reached"
-msgstr ""
+msgstr "Запрос достиг ограничения"
 
 #: includes/class-wp-job-manager-post-types.php:45
 msgid "Job Category"
@@ -714,7 +715,7 @@ msgid "Your email"
 msgstr "Ваш Email"
 
 #: templates/account-signin.php:38 templates/job-submit.php:24
-#: templates/job-submit.php:40
+#: templates/job-submit.php:41
 msgid "(optional)"
 msgstr "(необязательно)"
 
@@ -722,7 +723,7 @@ msgstr "(необязательно)"
 #: templates/content-single-job_listing.php:19
 #: templates/content-summary-job_listing.php:14
 msgid "Posted %s ago"
-msgstr ""
+msgstr "Опубликовано %s назад"
 
 #: templates/content-single-job_listing.php:8
 msgid "This job listing has expired"
@@ -814,7 +815,7 @@ msgstr "Категория"
 msgid "All Job Categories"
 msgstr "Все категории вакансий"
 
-#: templates/job-submit.php:34
+#: templates/job-submit.php:35
 msgid "Company details"
 msgstr "Описание организации"
 
@@ -829,19 +830,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr "Вакансия успеншно отправлена на модерацию и будет доступна сразу же после одобрения."
 
-#: wp-job-manager-functions.php:196
+#: wp-job-manager-functions.php:203
 msgid "Reset"
 msgstr "Сброс"
 
-#: wp-job-manager-functions.php:200
+#: wp-job-manager-functions.php:207
 msgid "RSS"
 msgstr "RSS"
 
-#: wp-job-manager-functions.php:250
+#: wp-job-manager-functions.php:257
 msgid "Your email address isn&#8217;t correct."
 msgstr "Недопустимый адрес электронной почты."
 
-#: wp-job-manager-functions.php:253
+#: wp-job-manager-functions.php:260
 msgid "This email is already registered, please choose another one."
 msgstr "Учётная запись для этой электронной почты уже существует, пожалуйста, используйте другую электронную почту."
 
@@ -871,7 +872,7 @@ msgstr "Вы уверены, что хотите удалить вакансию
 
 #. Plugin Name of the plugin/theme
 msgid "WP Job Manager"
-msgstr ""
+msgstr "WP Job Manager"
 
 #. Plugin URI of the plugin/theme
 msgid "http://mikejolley.com/projects/wp-job-manager/"
@@ -885,8 +886,8 @@ msgstr ""
 
 #. Author of the plugin/theme
 msgid "Mike Jolley"
-msgstr ""
+msgstr "Майк Джолли"
 
 #. Author URI of the plugin/theme
 msgid "http://mikejolley.com"
-msgstr ""
+msgstr "http://mikejolley.com"
