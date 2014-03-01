@@ -132,7 +132,9 @@ jQuery( document ).ready( function ( $ ) {
 		var target = $( this ).closest( 'div.job_listings' );
 
 		target.trigger( 'update_results', [ 1, false ] );
-	} ).change();
+	} );
+
+	$( '#search_keywords, #search_location, .job_types input, #search_categories' ).eq(0).change();
 
 	$( '.job_filters' ).on( 'click', '.reset', function () {
 		var target = $( this ).closest( 'div.job_listings' );
