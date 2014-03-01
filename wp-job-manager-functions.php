@@ -69,18 +69,29 @@ function get_job_listings( $args = array() ) {
 
 	// Keyword search - search meta as well as post content
 	if ( $args['search_keywords'] ) {
-		$keyword_post_ids = $wpdb->get_col( $wpdb->prepare( "
-		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
-		    WHERE meta_value LIKE '%%%s%%'
-		", $args['search_keywords'] ) );
+		$search_keywords              = array_map( 'trim', explode( ',', $args['search_keywords'] ) );
+		$posts_search_keywords_sql    = array();
+		$postmeta_search_keywords_sql = array();
 
-		$keyword_post_ids = array_merge( $keyword_post_ids, $wpdb->get_col( $wpdb->prepare( "
+		foreach ( $search_keywords as $keyword ) {
+			$postmeta_search_keywords_sql[] = " meta_value LIKE '%" . $wpdb->escape( $keyword ) . "%' ";
+			$posts_search_keywords_sql[]    = " 
+				post_title LIKE '%" . $wpdb->escape( $keyword ) . "%' 
+				OR post_content LIKE '%" . $wpdb->escape( $keyword ) . "%' 
+			";
+		}
+
+		$keyword_post_ids = $wpdb->get_col( "
+		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
+		    WHERE " . implode( ' OR ', $postmeta_search_keywords_sql ) . "
+		" );
+
+		$keyword_post_ids = array_merge( $keyword_post_ids, $wpdb->get_col( "
 		    SELECT ID FROM {$wpdb->posts}
-		    WHERE post_title LIKE '%%%s%%'
-		    OR post_content LIKE '%%%s%%'
+		    WHERE ( " . implode( ' OR ', $posts_search_keywords_sql ) . " )
 		    AND post_type = 'job_listing'
 		    AND post_status = 'publish'
-		", $args['search_keywords'], $args['search_keywords'] ) ), array( 0 ) );
+		" ), array( 0 ) );
 	} else {
 		$keyword_post_ids = array();
 	}
