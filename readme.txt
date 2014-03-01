@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 3.8
-Stable tag: 1.7.3
+Stable tag: 1.8.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -90,13 +90,14 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
-* Use add_post_meta when editing a job to maintain featured status
-* Fix category ordering
-* Fix searching for keyword + location at the same time
-* job_manager_application_email_subject filter
-* Take search/location vars from the querystring if set
-* Option to choose role for registration, and added an 'employer' role.
-* Support for comma separated keywords when searching
+= 1.8.0 =
+* Feature - Take search/location vars from the querystring if set
+* Feature - Option to choose role for registration, and added an 'employer' role.
+* Feature - Support for comma separated keywords when searching
+* Fix - Use add_post_meta when editing a job to maintain featured status
+* Fix - category ordering
+* Fix - searching for keyword + location at the same time
+* Dev - job_manager_application_email_subject filter
 
 = 1.7.3 =
 * Some changes to file uploads to support custom mime types
