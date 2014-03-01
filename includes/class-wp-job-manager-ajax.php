@@ -44,7 +44,7 @@ class WP_Job_Manager_Ajax {
 			'posts_per_page'    => absint( $_POST['per_page'] )
 		);
 
-		$jobs = get_job_listings( $args );
+		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 
 		$result['found_jobs'] = false;
 
