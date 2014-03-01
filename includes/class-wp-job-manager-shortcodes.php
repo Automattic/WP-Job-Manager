@@ -180,6 +180,14 @@ class WP_Job_Manager_Shortcodes {
 		$categories = array_filter( array_map( 'trim', explode( ',', $categories ) ) );
 		$job_types  = array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
 
+		// Get keywords and location from querystring if set
+		if ( ! empty( $_GET['search_keywords'] ) ) {
+			$keywords = sanitize_text_field( $_GET['search_keywords'] );
+		}
+		if ( ! empty( $_GET['search_location'] ) ) {
+			$location = sanitize_text_field( $_GET['search_location'] );
+		}
+
 		if ( $show_filters && $show_filters !== 'false' ) {
 
 			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords ) );

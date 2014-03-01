@@ -94,6 +94,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Fix category ordering
 * Fix searching for keyword + location at the same time
 * job_manager_application_email_subject filter
+* Take search/location vars from the querystring if set
 
 = 1.7.3 =
 * Some changes to file uploads to support custom mime types
