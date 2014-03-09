@@ -97,6 +97,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Fix - Use add_post_meta when editing a job to maintain featured status
 * Fix - category ordering
 * Fix - searching for keyword + location at the same time
+* Fix - Only show categories select box when they exist
 * Dev - job_manager_application_email_subject filter
 
 = 1.7.3 =
