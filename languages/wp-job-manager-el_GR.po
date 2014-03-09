@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-02-25 21:13:41+00:00\n"
-"PO-Revision-Date: 2014-02-08 15:38+0000\n"
-"Last-Translator: dpetrop <dpetrop@gmail.com>\n"
+"POT-Creation-Date: 2014-03-01 18:44:04+00:00\n"
+"PO-Revision-Date: 2014-03-02 08:20+0000\n"
+"Last-Translator: mikejolley <mike.jolley@me.com>\n"
 "Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/wp-job-manager/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -168,115 +168,125 @@ msgstr "Επεξεργασία"
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: includes/admin/class-wp-job-manager-settings.php:31
+#: includes/admin/class-wp-job-manager-settings.php:42
 #: includes/class-wp-job-manager-post-types.php:135
 #: includes/class-wp-job-manager-post-types.php:225
 msgid "Job Listings"
 msgstr "Αγγελίες"
 
-#: includes/admin/class-wp-job-manager-settings.php:37
+#: includes/admin/class-wp-job-manager-settings.php:48
 msgid "Jobs per page"
 msgstr "Αγγελίες ανά σελίδα"
 
-#: includes/admin/class-wp-job-manager-settings.php:38
+#: includes/admin/class-wp-job-manager-settings.php:49
 msgid "How many jobs should be shown per page by default?"
 msgstr "Πόσες θέσεις εργασίας θα πρέπει να εμφανίζονται ανά σελίδα από προεπιλογή;"
 
-#: includes/admin/class-wp-job-manager-settings.php:44
+#: includes/admin/class-wp-job-manager-settings.php:55
 msgid "Filled positions"
 msgstr "Θέσεις που έχουν καλυφθεί"
 
-#: includes/admin/class-wp-job-manager-settings.php:45
+#: includes/admin/class-wp-job-manager-settings.php:56
 msgid "Hide filled positions"
 msgstr "Απόκρυψη θέσεων που έχουν καλυφθεί"
 
-#: includes/admin/class-wp-job-manager-settings.php:46
+#: includes/admin/class-wp-job-manager-settings.php:57
 msgid "If enabled, filled positions will be hidden from the job list."
 msgstr "Ενεργοποιημένο θα αποκρύψει θέσεις που έχουν καλυφθεί από τη λίστα εργασιών."
 
-#: includes/admin/class-wp-job-manager-settings.php:53
+#: includes/admin/class-wp-job-manager-settings.php:64
 msgid "Job categories"
 msgstr "Κατηγορίες Αγγελιών"
 
-#: includes/admin/class-wp-job-manager-settings.php:54
+#: includes/admin/class-wp-job-manager-settings.php:65
 msgid "Enable job categories"
 msgstr "Ενεργοποίηση κατηγοριών θέσεων εργασίας"
 
-#: includes/admin/class-wp-job-manager-settings.php:55
+#: includes/admin/class-wp-job-manager-settings.php:66
 msgid ""
 "Choose whether to enable job categories. Categories must be setup by an "
 "admin for users to choose during job submission."
 msgstr "Επιλέξτε εάν θέλετε να ενεργοποιήσετε κατηγορίες θέσεων εργασίας. Οι κατηγορίες πρέπει να ρυθμιστούν από ένα διαχειριστή ώστε οι χρήστες να επιλέξουν κατά τη διάρκεια της υποβολής της αγγελίας."
 
-#: includes/admin/class-wp-job-manager-settings.php:62
+#: includes/admin/class-wp-job-manager-settings.php:73
 msgid "Job Submission"
 msgstr "Υποβολή Αγγελίας"
 
-#: includes/admin/class-wp-job-manager-settings.php:67
+#: includes/admin/class-wp-job-manager-settings.php:78
 msgid "Account creation"
 msgstr "Δημιουργία λογαριασμού"
 
-#: includes/admin/class-wp-job-manager-settings.php:68
+#: includes/admin/class-wp-job-manager-settings.php:79
 msgid "Allow account creation"
 msgstr "Επιτρέψτε τη δημιουργία λογαριασμού"
 
-#: includes/admin/class-wp-job-manager-settings.php:69
+#: includes/admin/class-wp-job-manager-settings.php:80
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the job submission form."
 msgstr "Εάν ενεργοποιηθεί, οι μη συνδεδεμένοι χρήστες θα μπορούν να δημιουργήσουν λογαριασμό εισάγοντας το email τους στη φόρμα υποβολής εργασίας."
 
-#: includes/admin/class-wp-job-manager-settings.php:76
+#: includes/admin/class-wp-job-manager-settings.php:87
+msgid "Account Role"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:88
+msgid ""
+"If you enable registration on your job submission form, choose a role for "
+"the new user."
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:95
 msgid "Account required"
 msgstr "Απαιτείται λογαριασμός"
 
-#: includes/admin/class-wp-job-manager-settings.php:77
+#: includes/admin/class-wp-job-manager-settings.php:96
 msgid "Job submission requires an account"
 msgstr "Για υποβολή αγγελίας πρέπει να έχετε λογαριασμό"
 
-#: includes/admin/class-wp-job-manager-settings.php:78
+#: includes/admin/class-wp-job-manager-settings.php:97
 msgid ""
 "If disabled, non-logged in users will be able to submit job listings without"
 " creating an account."
 msgstr "Εάν είναι απενεργοποιημένη, μη συνδεδεμένοι χρήστες θα είναι σε θέση να υποβάλουν αγγελίες χωρίς να δημιουργήσουν λογαριασμό."
 
-#: includes/admin/class-wp-job-manager-settings.php:85
+#: includes/admin/class-wp-job-manager-settings.php:104
 msgid "Approval Required"
 msgstr "Απαιτείται έγκριση"
 
-#: includes/admin/class-wp-job-manager-settings.php:86
+#: includes/admin/class-wp-job-manager-settings.php:105
 msgid "New submissions require admin approval"
 msgstr "Νέες αγγελίες απαιτούν την έγκριση του διαχειριστή"
 
-#: includes/admin/class-wp-job-manager-settings.php:87
+#: includes/admin/class-wp-job-manager-settings.php:106
 msgid "If enabled, new submissions will be inactive, pending admin approval."
 msgstr "Εάν είναι ενεργοποιημένη, οι νέες αγγελίες θα είναι ανενεργές, εν αναμονή έγκρισης από διαχειριστή."
 
-#: includes/admin/class-wp-job-manager-settings.php:94
+#: includes/admin/class-wp-job-manager-settings.php:113
 msgid "Listing duration"
 msgstr "Διάρκεια αγγελίας"
 
-#: includes/admin/class-wp-job-manager-settings.php:95
+#: includes/admin/class-wp-job-manager-settings.php:114
 msgid ""
 "How many <strong>days</strong> listings are live before expiring. Can be "
 "left blank to never expire."
 msgstr "Πόσες <strong>μέρες</strong> διαρκούν οι καταχωρίσεις πριν λήξουν; Αφήστε το κενό για να μην λήγουν ποτέ."
 
-#: includes/admin/class-wp-job-manager-settings.php:101
+#: includes/admin/class-wp-job-manager-settings.php:120
 msgid "Submit Page Slug"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:102
+#: includes/admin/class-wp-job-manager-settings.php:121
 msgid ""
 "Enter the slug of the page where you have placed the [submit_job_form] "
 "shortcode. This lets the plugin know where the form is located."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:154
+#: includes/admin/class-wp-job-manager-settings.php:173
 msgid "Settings successfully saved"
 msgstr "Οι ρυθμίσεις αποθηκεύτηκαν με επιτυχία"
 
-#: includes/admin/class-wp-job-manager-settings.php:233
+#: includes/admin/class-wp-job-manager-settings.php:252
 msgid "Save Changes"
 msgstr "Αποθήκευση αλλαγών"
 
@@ -390,6 +400,10 @@ msgstr "Δεν βρέθηκαν αποτελέσματα"
 
 #: includes/class-wp-job-manager-geocode.php:133
 msgid "Query limit reached"
+msgstr ""
+
+#: includes/class-wp-job-manager-install.php:40
+msgid "Employer"
 msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:45
@@ -544,8 +558,8 @@ msgstr "%s έχει διαγραφεί"
 msgid "You need to be signed in to manage your job listings."
 msgstr "Πρέπει να είστε συνδεδεμένοι για να διαχειριστείτε τις αγγελίες σας."
 
-#: includes/class-wp-job-manager-shortcodes.php:187
-#: includes/class-wp-job-manager-shortcodes.php:217
+#: includes/class-wp-job-manager-shortcodes.php:195
+#: includes/class-wp-job-manager-shortcodes.php:225
 msgid "Load more job listings"
 msgstr "Φορτώστε περισσότερες αγγελίες"
 
@@ -829,19 +843,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr "Η αγγελία καταχωρήθηκε με επιτυχία. Η αγγελία σας θα είναι ορατή εφόσον εγκριθεί."
 
-#: wp-job-manager-functions.php:203
+#: wp-job-manager-functions.php:214
 msgid "Reset"
 msgstr "Επαναφορά"
 
-#: wp-job-manager-functions.php:207
+#: wp-job-manager-functions.php:218
 msgid "RSS"
 msgstr "RSS"
 
-#: wp-job-manager-functions.php:257
+#: wp-job-manager-functions.php:268
 msgid "Your email address isn&#8217;t correct."
 msgstr "Η διεύθυνση email σας δεν είναι σωστή."
 
-#: wp-job-manager-functions.php:260
+#: wp-job-manager-functions.php:271
 msgid "This email is already registered, please choose another one."
 msgstr "Το email έχει ήδη εγγραφεί, επιλέξτε ένα άλλο."
 
@@ -860,6 +874,10 @@ msgstr "Εν αναμονή αναθεώρησης"
 #: wp-job-manager-template.php:122
 msgid "Inactive"
 msgstr "Ανενεργό"
+
+#: wp-job-manager-template.php:197
+msgid "Job Application via \"%s\" listing on %s"
+msgstr ""
 
 #: wp-job-manager-template.php:255
 msgid "Anywhere"
