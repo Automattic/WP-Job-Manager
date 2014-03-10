@@ -134,7 +134,9 @@ jQuery( document ).ready( function ( $ ) {
 		target.trigger( 'update_results', [ 1, false ] );
 	} );
 
-	$( '#search_keywords, #search_location, .job_types input, #search_categories' ).eq(0).change();
+	$( '.job_filters' ).each(function() {
+		$( this ).find( '#search_keywords, #search_location, .job_types input, #search_categories' ).eq(0).change();
+	});
 
 	$( '.job_filters' ).on( 'click', '.reset', function () {
 		var target = $( this ).closest( 'div.job_listings' );
