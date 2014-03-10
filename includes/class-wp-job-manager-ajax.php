@@ -94,10 +94,15 @@ class WP_Job_Manager_Ajax {
 
 			if ( $search_categories ) {
 				foreach ( $search_categories as $category ) {
-					$category = get_term_by( 'id', $category, 'job_listing_category' );
-
-					if ( ! is_wp_error( $category ) )
-						$showing_categories[] = $category->name;
+					if ( ! is_numeric( $category ) ) {
+						$category_object = get_term_by( 'slug', $category, 'job_listing_category' );
+					} 
+					if ( is_numeric( $category ) || is_wp_error( $category_object ) || ! $category_object ) {
+						$category_object = get_term_by( 'id', $category, 'job_listing_category' );
+					}
+					if ( ! is_wp_error( $category_object ) ) {
+						$showing_categories[] = $category_object->name;
+					}
 				}
 			}
 

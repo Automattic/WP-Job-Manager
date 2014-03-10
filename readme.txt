@@ -90,6 +90,8 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
+* When showing filters, ensure we check by slug if category is non-numeric
+
 = 1.8.2 =
 * For initial load, target all .job_filters areas. Jobify compat.
 
