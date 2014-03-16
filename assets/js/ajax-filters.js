@@ -8,14 +8,14 @@ jQuery( document ).ready( function ( $ ) {
 			xhr.abort();
 		}
 
-		var data = '';
-		var target = $( this );
-		var form = target.find( '.job_filters' );
-		var showing = target.find( '.showing_jobs' );
-		var results = target.find( '.job_listings' );
+		var data     = '';
+		var target   = $( this );
+		var form     = target.find( '.job_filters' );
+		var showing  = target.find( '.showing_jobs' );
+		var results  = target.find( '.job_listings' );
 		var per_page = target.data( 'per_page' );
-		var orderby = target.data( 'orderby' );
-		var order = target.data( 'order' );
+		var orderby  = target.data( 'orderby' );
+		var order    = target.data( 'order' );
 
 		if ( append ) {
 			$( '.load_more_jobs', target ).addClass( 'loading' );
