@@ -90,6 +90,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
+* Pass $values to edit job save function so permalinks are preserved
 * When showing filters, ensure we check by slug if category is non-numeric
 
 = 1.8.2 =

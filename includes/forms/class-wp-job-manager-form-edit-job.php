@@ -104,7 +104,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 				throw new Exception( $return->get_error_message() );
 
 			// Update the job
-			self::save_job( $values['job']['job_title'], $values['job']['job_description'], 'publish' );
+			self::save_job( $values['job']['job_title'], $values['job']['job_description'], 'publish', $values );
 			self::update_job_data( $values );
 
 			// Successful
