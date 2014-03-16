@@ -60,7 +60,7 @@ class WP_Job_Manager_Ajax {
 
 		<?php else : ?>
 
-			<li class="no_job_listings_found"><?php _e( 'No more jobs found matching your selection.', 'wp-job-manager' ); ?></li>
+			<?php get_job_manager_template_part( 'content', 'no-jobs-found' ); ?>
 
 		<?php endif;
 

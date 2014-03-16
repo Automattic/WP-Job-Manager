@@ -93,6 +93,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Pass $values to edit job save function so permalinks are preserved
 * When showing filters, ensure we check by slug if category is non-numeric
 * Give listings ul a min height so that loading image is visible
+* content-no-jobs-found.php template
 
 = 1.8.2 =
 * For initial load, target all .job_filters areas. Jobify compat.
