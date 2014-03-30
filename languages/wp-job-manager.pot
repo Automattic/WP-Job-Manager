@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.8.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-03-30 10:55:19+00:00\n"
+"POT-Creation-Date: 2014-03-30 10:58:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -704,7 +704,7 @@ msgstr ""
 
 #: templates/account-signin.php:27
 msgid ""
-"If you don&lsquo;t have an account you can %screate one below by entering "
+"If you don&rsquo;t have an account you can %screate one below by entering "
 "your email address. A password will be automatically emailed to you."
 msgstr ""
 
