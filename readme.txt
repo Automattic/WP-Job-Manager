@@ -90,6 +90,8 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
+= 1.9.0 =
+* Template - Split off URL and email application methods and added new hooks. This allows other plugins to manipulate the content.
 * Pass $values to edit job save function so permalinks are preserved
 * When showing filters, ensure we check by slug if category is non-numeric
 * Give listings ul a min height so that loading image is visible
