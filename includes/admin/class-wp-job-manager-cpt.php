@@ -22,6 +22,7 @@ class WP_Job_Manager_CPT {
 		add_action( 'load-edit.php', array( $this, 'do_bulk_actions' ) );
 		add_action( 'admin_init', array( $this, 'approve_job' ) );
 		add_action( 'admin_notices', array( $this, 'approved_notice' ) );
+		add_action( 'admin_notices', array( $this, 'expired_notice' ) );
 
 		if ( get_option( 'job_manager_enable_categories' ) )
 			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
@@ -42,6 +43,9 @@ class WP_Job_Manager_CPT {
 		      jQuery(document).ready(function() {
 		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'wp-job-manager' )?>').appendTo("select[name='action']");
 		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'wp-job-manager' )?>').appendTo("select[name='action2']");
+
+		        jQuery('<option>').val('expire_jobs').text('<?php _e( 'Expire Jobs', 'wp-job-manager' )?>').appendTo("select[name='action']");
+		        jQuery('<option>').val('expire_jobs').text('<?php _e( 'Expire Jobs', 'wp-job-manager' )?>').appendTo("select[name='action2']");
 		      });
 		    </script>
 		    <?php
@@ -72,7 +76,26 @@ class WP_Job_Manager_CPT {
 							$approved_jobs[] = $post_id;
 					}
 
-				wp_redirect( remove_query_arg( 'approve_jobs', add_query_arg( 'approved_jobs', $approved_jobs, admin_url( 'edit.php?post_type=job_listing' ) ) ) );
+				wp_redirect( add_query_arg( 'approve_jobs', $approved_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
+				exit;
+			break;
+			case 'expire_jobs' :
+				check_admin_referer( 'bulk-posts' );
+
+				$post_ids     = array_map( 'absint', array_filter( (array) $_GET['post'] ) );
+				$expired_jobs = array();
+
+				if ( ! empty( $post_ids ) )
+					foreach( $post_ids as $post_id ) {
+						$job_data = array(
+							'ID'          => $post_id,
+							'post_status' => 'expired'
+						);
+						if ( wp_update_post( $job_data ) )
+							$expired_jobs[] = $post_id;
+					}
+
+				wp_redirect( add_query_arg( 'expired_jobs', $expired_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
 				exit;
 			break;
 		}
@@ -112,6 +135,26 @@ class WP_Job_Manager_CPT {
 				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
 			} else {
 				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . get_the_title( $approved_jobs ) . '&quot;' ) . '</p></div>';
+			}
+		}
+	}
+
+	/**
+	 * Show a notice if we did a bulk action or approval
+	 */
+	public function expired_notice() {
+		 global $post_type, $pagenow;
+
+		if ( $pagenow == 'edit.php' && $post_type == 'job_listing' && ! empty( $_REQUEST['expired_jobs'] ) ) {
+			$expired_jobs = $_REQUEST['expired_jobs'];
+			if ( is_array( $expired_jobs ) ) {
+				$expired_jobs = array_map( 'absint', $expired_jobs );
+				$titles        = array();
+				foreach ( $expired_jobs as $job_id )
+					$titles[] = get_the_title( $job_id );
+				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
+			} else {
+				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . get_the_title( $expired_jobs ) . '&quot;' ) . '</p></div>';
 			}
 		}
 	}
