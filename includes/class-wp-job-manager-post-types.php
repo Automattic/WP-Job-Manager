@@ -24,6 +24,9 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_job_description', 'wpautop'            );
 		add_filter( 'the_job_description', 'shortcode_unautop'  );
 		add_filter( 'the_job_description', 'prepend_attachment' );
+
+		add_action( 'job_manager_application_details_email', array( $this, 'application_details_email' ) );
+		add_action( 'job_manager_application_details_url', array( $this, 'application_details_url' ) );
 	}
 
 	/**
@@ -251,7 +254,11 @@ class WP_Job_Manager_Post_Types {
 		if ( $post->post_type == 'job_listing' ) {
 			ob_start();
 
+			do_action( 'job_content_start' );
+
 			get_job_manager_template_part( 'content-single', 'job_listing' );
+
+			do_action( 'job_content_end' );
 
 			$content = ob_get_clean();
 		}
@@ -397,5 +404,19 @@ class WP_Job_Manager_Post_Types {
 		} else {
 			update_post_meta( $post->ID, '_job_expires', '' );
 		}
+	}
+
+	/**
+	 * The application content when the application method is an email
+	 */
+	public function application_details_email( $apply ) {
+		get_job_manager_template( 'job-application-email.php', array( 'apply' => $apply ) );
+	}
+
+	/**
+	 * The application content when the application method is a url
+	 */
+	public function application_details_url() {
+		get_job_manager_template( 'job-application-url.php', array( 'apply' => $apply ) );
 	}
 }
