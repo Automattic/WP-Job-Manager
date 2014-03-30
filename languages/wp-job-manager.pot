@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.8.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-03-30 11:40:25+00:00\n"
+"POT-Creation-Date: 2014-03-30 11:49:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -314,7 +314,7 @@ msgid ""
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:32
-#: includes/forms/class-wp-job-manager-form-submit-job.php:144
+#: includes/forms/class-wp-job-manager-form-submit-job.php:146
 msgid "Application email/URL"
 msgstr ""
 
@@ -323,7 +323,7 @@ msgid "URL or email which applicants use to apply"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:36
-#: includes/forms/class-wp-job-manager-form-submit-job.php:153
+#: includes/forms/class-wp-job-manager-form-submit-job.php:155
 msgid "Company name"
 msgstr ""
 
@@ -607,7 +607,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
-#: includes/forms/class-wp-job-manager-form-submit-job.php:555
+#: includes/forms/class-wp-job-manager-form-submit-job.php:557
 msgid "Preview"
 msgstr ""
 
@@ -623,72 +623,72 @@ msgstr ""
 msgid "Job type"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:129
+#: includes/forms/class-wp-job-manager-form-submit-job.php:130
 msgid "Job category"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:137
+#: includes/forms/class-wp-job-manager-form-submit-job.php:139
 msgid "Description"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:147
+#: includes/forms/class-wp-job-manager-form-submit-job.php:149
 msgid "Enter an email address or website URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:156
+#: includes/forms/class-wp-job-manager-form-submit-job.php:158
 msgid "Enter the name of the company"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:160
+#: includes/forms/class-wp-job-manager-form-submit-job.php:162
 #: templates/content-single-job_listing.php:32
 msgid "Website"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:163
+#: includes/forms/class-wp-job-manager-form-submit-job.php:165
 msgid "http://"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:167
+#: includes/forms/class-wp-job-manager-form-submit-job.php:169
 msgid "Tagline"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:170
+#: includes/forms/class-wp-job-manager-form-submit-job.php:172
 msgid "Briefly describe your company"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:175
+#: includes/forms/class-wp-job-manager-form-submit-job.php:177
 msgid "Twitter username"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:178
+#: includes/forms/class-wp-job-manager-form-submit-job.php:180
 msgid "@yourcompany"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:182
+#: includes/forms/class-wp-job-manager-form-submit-job.php:184
 msgid "Logo"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:293
+#: includes/forms/class-wp-job-manager-form-submit-job.php:295
 msgid "%s is a required field"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:406
+#: includes/forms/class-wp-job-manager-form-submit-job.php:408
 msgid "Preview job listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:441
+#: includes/forms/class-wp-job-manager-form-submit-job.php:443
 msgid "You must be signed in to post a new job listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:549
+#: includes/forms/class-wp-job-manager-form-submit-job.php:551
 msgid "Submit Listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:550
+#: includes/forms/class-wp-job-manager-form-submit-job.php:552
 msgid "&larr; Edit listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:633
+#: includes/forms/class-wp-job-manager-form-submit-job.php:635
 msgid "\"%s\" needs to be one of the following file types: %s"
 msgstr ""
 

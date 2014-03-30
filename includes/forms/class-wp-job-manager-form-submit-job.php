@@ -123,7 +123,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'required'    => true,
 					'options'     => self::job_types(),
 					'placeholder' => '',
-					'priority'    => 3
+					'priority'    => 3,
+					'default'     => 'full-time'
 				),
 				'job_category' => array(
 					'label'       => __( 'Job category', 'wp-job-manager' ),
@@ -131,7 +132,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'required'    => true,
 					'options'     => self::job_categories(),
 					'placeholder' => '',
-					'priority'    => 4
+					'priority'    => 4,
+					'default'     => ''
 				),
 				'job_description' => array(
 					'label'       => __( 'Description', 'wp-job-manager' ),
