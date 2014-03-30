@@ -38,7 +38,7 @@ global $job_manager;
 
 			<?php foreach ( $company_fields as $key => $field ) : ?>
 				<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
-					<label for="<?php esc_attr_e( $key ); ?>"><?php echo $field['label'] . ( $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>' ); ?></label>
+					<label for="<?php esc_attr_e( $key ); ?>"><?php echo $field['label'] . ( $field['required'] ? apply_filters( 'submit_form_field_label' , '' , $field )  : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>' ); ?></label>
 					<div class="field">
 						<?php get_job_manager_template( 'form-fields/' . $field['type'] . '-field.php', array( 'key' => $key, 'field' => $field ) ); ?>
 					</div>
