@@ -516,7 +516,10 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 	if ( $post->post_type !== 'job_listing' )
 		return array();
 
-	$classes = array();
+	if ( is_array( $class ) )
+		$classes = $class;
+	else
+		$classes = array( $class );
 
 	if ( empty( $post ) )
 		return $classes;
