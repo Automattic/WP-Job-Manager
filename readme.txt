@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 3.8
-Stable tag: 1.8.2
+Stable tag: 1.9.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
