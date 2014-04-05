@@ -92,15 +92,17 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 = 1.9.0 =
 * Template - Split off URL and email application methods and added new hooks. This allows other plugins to manipulate the content.
-* Pass $values to edit job save function so permalinks are preserved
-* When showing filters, ensure we check by slug if category is non-numeric
-* Give listings ul a min height so that loading image is visible
-* content-no-jobs-found.php template
-* Fix apostrophe direction in signin template
-* Bulk expire jobs
-* submit_job_form_required_label hook
-* ability to set default state for selects on submit form
-* allow passed in classes in get_job_listing_class function
+* Pass $values to edit job save function so permalinks are preserved.
+* When showing filters, ensure we check by slug if category is non-numeric.
+* Give listings ul a min height so that loading image is visible.
+* content-no-jobs-found.php template.
+* Fix apostrophe direction in signin template.
+* Bulk expire jobs.
+* submit_job_form_required_label hook.
+* ability to set default state for selects on submit form.
+* allow passed in classes in get_job_listing_class function.
+* Hook in the content only if in_the_loop(). Fixes issues with jobify and yoast SEO.
+* Removed .clear mixin to prevent theme conflicts.
 
 = 1.8.2 =
 * For initial load, target all .job_filters areas. Jobify compat.
