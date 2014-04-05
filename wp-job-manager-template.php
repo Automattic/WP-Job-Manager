@@ -515,7 +515,7 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 	$post = get_post( $post_id );
 	if ( $post->post_type !== 'job_listing' )
 		return array();
-
+	
 	$classes = array();
 
 	if ( empty( $post ) )
@@ -529,6 +529,12 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 
 	if ( is_position_featured( $post ) )
 		$classes[] = 'job_position_featured';
+	
+	if ( !empty( $class ) ) {
+		if ( !is_array( $class ) )
+			$class = preg_split( '#\s+#', $class );
+		$classes = array_merge( $classes, $class );
+    	}
 
 	return get_post_class( $classes, $post->ID );
 }
