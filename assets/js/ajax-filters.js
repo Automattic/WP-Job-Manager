@@ -64,11 +64,19 @@ jQuery( document ).ready( function ( $ ) {
 
 		} else {
 
+			var categories = target.data( 'categories' );
+			var keywords   = target.data( 'keywords' );
+			var location   = target.data( 'location' );
+
+			if ( categories ) {
+				categories = categories.split( ',' );
+			}
+
 			data = {
 				action: 'job_manager_get_listings',
-				search_categories: target.data( 'categories' ).split( ',' ),
-				search_keywords: target.data( 'keywords' ),
-				search_location: target.data( 'location' ),
+				search_categories: categories,
+				search_keywords: keywords,
+				search_location: location,
 				per_page: per_page,
 				orderby: orderby,
 				order: order,
