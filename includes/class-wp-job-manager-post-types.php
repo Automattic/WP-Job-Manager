@@ -244,14 +244,15 @@ class WP_Job_Manager_Post_Types {
 	 * Add extra content when showing job content
 	 */
 	public function job_content( $content ) {
-		global $post, $job_manager;
+		global $post;
 
-		if ( ! is_singular( 'job_listing' ) )
+		if ( ! is_singular( 'job_listing' ) || ! in_the_loop() ) {
 			return $content;
+		}
 
 		remove_filter( 'the_content', array( $this, 'job_content' ) );
 
-		if ( $post->post_type == 'job_listing' ) {
+		if ( 'job_listing' === $post->post_type ) {
 			ob_start();
 
 			do_action( 'job_content_start' );
