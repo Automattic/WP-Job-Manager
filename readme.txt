@@ -100,6 +100,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Bulk expire jobs
 * submit_job_form_required_label hook
 * ability to set default state for selects on submit form
+* allow passed in classes in get_job_listing_class function
 
 = 1.8.2 =
 * For initial load, target all .job_filters areas. Jobify compat.

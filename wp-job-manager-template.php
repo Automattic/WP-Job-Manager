@@ -513,28 +513,34 @@ function job_listing_class( $class = '', $post_id = null ) {
  */
 function get_job_listing_class( $class = '', $post_id = null ) {
 	$post = get_post( $post_id );
-	if ( $post->post_type !== 'job_listing' )
+
+	if ( $post->post_type !== 'job_listing' ) {
 		return array();
+	}
 	
 	$classes = array();
 
-	if ( empty( $post ) )
+	if ( empty( $post ) ) {
 		return $classes;
+	}
 
 	$classes[] = 'job_listing';
 	$classes[] = 'job-type-' . sanitize_title( get_the_job_type()->name );
 
-	if ( is_position_filled( $post ) )
+	if ( is_position_filled( $post ) ) {
 		$classes[] = 'job_position_filled';
+	}
 
-	if ( is_position_featured( $post ) )
+	if ( is_position_featured( $post ) ) {
 		$classes[] = 'job_position_featured';
+	}
 	
-	if ( !empty( $class ) ) {
-		if ( !is_array( $class ) )
+	if ( ! empty( $class ) ) {
+		if ( ! is_array( $class ) ) {
 			$class = preg_split( '#\s+#', $class );
+		}
 		$classes = array_merge( $classes, $class );
-    	}
+	}
 
 	return get_post_class( $classes, $post->ID );
 }
