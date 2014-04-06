@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 3.8
-Stable tag: 1.9.1
+Stable tag: 1.9.2
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -89,6 +89,9 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.9.2 = 
+* Fix missing parameter in application_details_url causing URLs to be missing when applying.
 
 = 1.9.1 =
 * Removed resource heavy 'default_meta' function from the installation process.

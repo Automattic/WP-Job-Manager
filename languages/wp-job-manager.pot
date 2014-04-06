@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the WP Job Manager package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.9.1\n"
+"Project-Id-Version: WP Job Manager 1.9.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-04-06 12:39:33+00:00\n"
+"POT-Creation-Date: 2014-04-06 21:38:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -513,7 +513,7 @@ msgstr ""
 msgid "Query limit reached"
 msgstr ""
 
-#: deploy/includes/class-wp-job-manager-install.php:40
+#: deploy/includes/class-wp-job-manager-install.php:39
 #: includes/class-wp-job-manager-install.php:39
 msgid "Employer"
 msgstr ""

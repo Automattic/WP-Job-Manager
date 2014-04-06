@@ -417,7 +417,7 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * The application content when the application method is a url
 	 */
-	public function application_details_url() {
+	public function application_details_url( $apply ) {
 		get_job_manager_template( 'job-application-url.php', array( 'apply' => $apply ) );
 	}
 }
