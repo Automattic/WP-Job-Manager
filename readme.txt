@@ -90,6 +90,8 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
+* Fix email URLs
+
 = 1.9.2 = 
 * Fix missing parameter in application_details_url causing URLs to be missing when applying.
 
