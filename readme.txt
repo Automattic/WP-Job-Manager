@@ -91,9 +91,10 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 == Changelog ==
 
 = 1.9.3 = 
-* Fix email URLs
-* Target blank for application URLs
-* Add posted by (author) setting in backend
+* Fix email URLs.
+* Target blank for application URLs.
+* Add posted by (author) setting in backend.
+* When saving jobs, ensure _featured and _filled are set.
 
 = 1.9.2 = 
 * Fix missing parameter in application_details_url causing URLs to be missing when applying.
