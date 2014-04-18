@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.9.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-04-18 11:36:08+00:00\n"
+"POT-Creation-Date: 2014-04-18 11:44:40+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,17 +15,17 @@ msgstr ""
 #: deploy/includes/admin/class-wp-job-manager-addons.php:50
 #: deploy/includes/admin/class-wp-job-manager-admin.php:55
 #: includes/admin/class-wp-job-manager-addons.php:50
-#: includes/admin/class-wp-job-manager-admin.php:55
+#: includes/admin/class-wp-job-manager-admin.php:59
 msgid "WP Job Manager Add-ons"
 msgstr ""
 
 #: deploy/includes/admin/class-wp-job-manager-admin.php:52
-#: includes/admin/class-wp-job-manager-admin.php:52
+#: includes/admin/class-wp-job-manager-admin.php:56
 msgid "Settings"
 msgstr ""
 
 #: deploy/includes/admin/class-wp-job-manager-admin.php:55
-#: includes/admin/class-wp-job-manager-admin.php:55
+#: includes/admin/class-wp-job-manager-admin.php:59
 msgid "Add-ons"
 msgstr ""
 
