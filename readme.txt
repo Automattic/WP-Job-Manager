@@ -3,8 +3,8 @@ Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
-Tested up to: 3.8
-Stable tag: 1.9.2
+Tested up to: 3.9
+Stable tag: 1.9.3
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -90,7 +90,10 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
+= 1.9.3 = 
 * Fix email URLs
+* Target blank for application URLs
+* Add posted by (author) setting in backend
 
 = 1.9.2 = 
 * Fix missing parameter in application_details_url causing URLs to be missing when applying.
