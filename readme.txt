@@ -95,6 +95,7 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 * Target blank for application URLs.
 * Add posted by (author) setting in backend.
 * When saving jobs, ensure _featured and _filled are set.
+* Load admin scripts conditionally.
 
 = 1.9.2 = 
 * Fix missing parameter in application_details_url causing URLs to be missing when applying.
