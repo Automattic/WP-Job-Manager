@@ -12,7 +12,7 @@ class WP_Job_Manager_Writepanels {
 	public function __construct() {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_post' ), 1, 2 );
-		add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 1, 2 );
+		add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
 	}
 
 	/**
@@ -65,6 +65,10 @@ class WP_Job_Manager_Writepanels {
 			'_job_expires' => array(
 				'label'       => __( 'Job Expires', 'wp-job-manager' ),
 				'placeholder' => __( 'yyyy-mm-dd', 'wp-job-manager' )
+			),
+			'_job_author' => array(
+				'label' => __( 'Posted by', 'wp-job-manager' ),
+				'type'  => 'author'
 			)
 		) );
 	}
@@ -246,6 +250,34 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
+	 * Box to choose who posted the job
+	 *
+	 * @param mixed $key
+	 * @param mixed $field
+	 */
+	public function input_author( $key, $field ) {
+		global $thepostid, $post;
+
+		if ( empty( $field['value'] ) )
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		?>
+		<p class="form-field">
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
+			<?php
+				wp_dropdown_users( array(
+					'who'              => '',
+					'show_option_none' => __( 'Guest user', 'wp-job-manager' ),
+					'name'             => $key,
+					'selected'         => $post->post_author,
+					'include_selected' => true
+				) );
+			?>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+		</p>
+		<?php	
+	}
+
+	/**
 	 * job_listing_data function.
 	 *
 	 * @access public
@@ -310,22 +342,25 @@ class WP_Job_Manager_Writepanels {
 
 		foreach ( $this->job_listing_fields() as $key => $field ) {
 			// Expirey date
-			if ( '_job_expires' == $key ) {
+			if ( '_job_expires' === $key ) {
 				if ( ! empty( $_POST[ $key ] ) ) {
 					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
 				} else {
 					update_post_meta( $post_id, $key, '' );
 				}
-				continue;
 			}
 
 			// Locations
-			elseif ( '_job_location' == $key ) {
+			elseif ( '_job_location' === $key ) {
 				if ( update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) ) ) {
 					do_action( 'job_manager_job_location_edited', $post_id, sanitize_text_field( $_POST[ $key ] ) );
 				} elseif ( apply_filters( 'job_manager_geolocation_enabled', true ) && ! WP_Job_Manager_Geocode::has_location_data( $post_id ) ) {
 					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
 				}
+			}
+
+			elseif( '_job_author' === $key ) {
+				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
 			}
 
 			// Everything else

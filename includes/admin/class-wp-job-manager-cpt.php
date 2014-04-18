@@ -273,7 +273,7 @@ class WP_Job_Manager_CPT {
 		if ( ! is_array( $columns ) )
 			$columns = array();
 
-		unset( $columns['title'], $columns['date'] );
+		unset( $columns['title'], $columns['date'], $columns['author'] );
 
 		$columns["job_listing_type"]     = __( "Type", 'wp-job-manager' );
 		$columns["job_position"]         = __( "Position", 'wp-job-manager' );
