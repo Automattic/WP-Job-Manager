@@ -90,6 +90,9 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 == Changelog ==
 
+= 1.9.4 = 
+* Trigger change on 'enter' when filtering jobs
+
 = 1.9.3 = 
 * Fix email URLs.
 * Target blank for application URLs.

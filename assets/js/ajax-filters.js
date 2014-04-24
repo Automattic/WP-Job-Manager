@@ -21,7 +21,7 @@ jQuery( document ).ready( function ( $ ) {
 			$( '.load_more_jobs', target ).addClass( 'loading' );
 		} else {
 			$( results ).addClass( 'loading' );
-			$( 'li.job_listing', results ).css( 'visibility', 'hidden' );
+			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
 		}
 
 		if ( target.data( 'show_filters' ) ) {
@@ -140,6 +140,12 @@ jQuery( document ).ready( function ( $ ) {
 		var target = $( this ).closest( 'div.job_listings' );
 
 		target.trigger( 'update_results', [ 1, false ] );
+	} )
+
+	.on( "keyup", function(e) {
+	    if ( e.which === 13 ) {
+	        $( this ).trigger( 'change' );
+	    }
 	} );
 
 	$( '.job_filters' ).each(function() {
