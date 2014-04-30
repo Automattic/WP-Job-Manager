@@ -327,7 +327,8 @@ function job_manager_get_resized_image( $logo, $size ) {
 		$img_width  = $_wp_additional_image_sizes[ $size ]['width'];
 		$img_height = $_wp_additional_image_sizes[ $size ]['height'];
 
-		$logo_path         = str_replace( home_url('/'), ABSPATH, $logo );
+		$upload_dir        = wp_upload_dir();
+		$logo_path         = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $logo );
 		$path_parts        = pathinfo( $logo_path );
 		$resized_logo_path = str_replace( '.' . $path_parts['extension'], '-' . $size . '.' . $path_parts['extension'], $logo_path );
 
