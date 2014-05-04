@@ -25,11 +25,11 @@ WP Job Manager is a **lightweight** plugin for adding job-board functionality to
 
 The plugin comes with several shortcodes to output jobs in various formats, and since its built with Custom Post Types you are free to extend it further through themes.
 
-[Read more about WP Job Manager](http://mikejolley.com/projects/wp-job-manager/).
+[Read more about WP Job Manager](https://wpjobmanager.com/).
 
 = Documentation =
 
-Documentation will be maintained on the [GitHub Wiki here](https://github.com/mikejolley/wp-job-manager/wiki).
+Documentation for the core plugin and add-ons can be found [on the docs site here](https://wpjobmanager.com/documentation/).
 
 = Add-ons =
 
@@ -37,9 +37,10 @@ Additonal functionality can be added through add-ons - you can browse these afte
 
 Some notable add-ons include:
 
-* [Simple Paid Listings](http://mikejolley.com/projects/wp-job-manager/add-ons/simple-paid-listings/) - Charge users a single fee to post a job via Stripe or PayPal.
-* [WooCommerce Paid Lisings](http://mikejolley.com/projects/wp-job-manager/add-ons/woocommerce-paid-listings/) - Charge users to post jobs using WooCommerce to take payment.
-* [Job Alerts](http://mikejolley.com/projects/wp-job-manager/add-ons/job-alerts/) - Add saved search/email alert functionality.
+* [Simple Paid Listings](https://wpjobmanager.com/add-ons/simple-paid-listings/) - Charge users a single fee to post a job via Stripe or PayPal.
+* [WooCommerce Paid Lisings](https://wpjobmanager.com/add-ons/wc-paid-listings/) - Charge users to post jobs using WooCommerce to take payment.
+* [Job Alerts](https://wpjobmanager.com/add-ons/job-alerts/) - Add saved search/email alert functionality.
+* [Resume Manager](https://wpjobmanager.com/add-ons/resume-manager/) - Add a resume submission area for employers to browse.
 
 = Contributing and reporting bugs =
 
@@ -49,7 +50,7 @@ You can contribute code to this plugin via GitHub: [https://github.com/mikejolle
 
 Use the WordPress.org forums for community support - I cannot offer support directly for free. If you spot a bug, you can of course log it on [Github](https://github.com/mikejolley/wp-job-manager) instead where I can act upon it more efficiently.
 
-If you want help with a customisation, hire a developer!
+If you want help with a customisation, hire a developer! [http://jobs.wordpress.net/](http://jobs.wordpress.net/) is a good place to start.
 
 == Installation ==
 
@@ -77,7 +78,7 @@ Once installed:
 
 **Note when using shortcodes**, if the content looks blown up/spaced out/poorly styled, edit your page and above the visual editor click on the 'text' tab. Then remove any 'pre' or 'code' tags wrapping your shortcode.
 
-For more information, [read the documentation](https://github.com/mikejolley/wp-job-manager/wiki).
+For more information, [read the documentation](https://wpjobmanager.com/documentation/).
 
 == Screenshots ==
 
@@ -92,6 +93,8 @@ For more information, [read the documentation](https://github.com/mikejolley/wp-
 
 = 1.9.4 = 
 * Trigger change on 'enter' when filtering jobs
+* Updated add-ons page to pull from wpjobmanager.com
+* Updated links 
 
 = 1.9.3 = 
 * Fix email URLs.
