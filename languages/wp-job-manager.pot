@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.9.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-05-04 14:36:30+00:00\n"
+"POT-Creation-Date: 2014-05-04 15:19:05+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -419,15 +419,15 @@ msgstr ""
 msgid "Guest user"
 msgstr ""
 
-#: includes/class-wp-job-manager-ajax.php:110
+#: includes/class-wp-job-manager-ajax.php:111
 msgid "Showing %s&ldquo;%s&rdquo; %sjobs"
 msgstr ""
 
-#: includes/class-wp-job-manager-ajax.php:112
+#: includes/class-wp-job-manager-ajax.php:113
 msgid "Showing all %s%sjobs"
 msgstr ""
 
-#: includes/class-wp-job-manager-ajax.php:115
+#: includes/class-wp-job-manager-ajax.php:116
 msgid "located in &ldquo;%s&rdquo;"
 msgstr ""
 
@@ -595,8 +595,8 @@ msgstr ""
 msgid "You need to be signed in to manage your job listings."
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:195
-#: includes/class-wp-job-manager-shortcodes.php:225
+#: includes/class-wp-job-manager-shortcodes.php:204
+#: includes/class-wp-job-manager-shortcodes.php:235
 msgid "Load more job listings"
 msgstr ""
 
@@ -628,11 +628,11 @@ msgstr ""
 msgid "Update job listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:111
+#: includes/forms/class-wp-job-manager-form-edit-job.php:112
 msgid "Your changes have been saved."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:111
+#: includes/forms/class-wp-job-manager-form-edit-job.php:112
 msgid "View Job Listing &rarr;"
 msgstr ""
 
@@ -909,19 +909,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr ""
 
-#: wp-job-manager-functions.php:214
+#: wp-job-manager-functions.php:224
 msgid "Reset"
 msgstr ""
 
-#: wp-job-manager-functions.php:218
+#: wp-job-manager-functions.php:228
 msgid "RSS"
 msgstr ""
 
-#: wp-job-manager-functions.php:268
+#: wp-job-manager-functions.php:278
 msgid "Your email address isn&#8217;t correct."
 msgstr ""
 
-#: wp-job-manager-functions.php:271
+#: wp-job-manager-functions.php:281
 msgid "This email is already registered, please choose another one."
 msgstr ""
 

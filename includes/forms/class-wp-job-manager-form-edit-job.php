@@ -100,8 +100,9 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			$values = self::get_posted_fields();
 
 			// Validate required
-			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) )
+			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) ) {
 				throw new Exception( $return->get_error_message() );
+			}
 
 			// Update the job
 			self::save_job( $values['job']['job_title'], $values['job']['job_description'], 'publish', $values );

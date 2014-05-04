@@ -10,14 +10,15 @@ function get_job_listings( $args = array() ) {
 	global $wpdb;
 
 	$args = wp_parse_args( $args, array(
-		'search_location'   => '',
-		'search_keywords'   => '',
-		'search_categories' => array(),
-		'job_types'         => array(),
-		'offset'            => '',
-		'posts_per_page'    => '-1',
-		'orderby'           => 'date',
-		'order'             => 'DESC'
+		'search_location'    => '',
+		'search_keywords'    => '',
+		'search_categories'  => array(),
+		'job_types'          => array(),
+		'offset'             => '',
+		'posts_per_page'     => '-1',
+		'orderby'            => 'date',
+		'order'              => 'DESC',
+		'show_featured_only' => false
 	) );
 
 	$query_args = array(
@@ -32,12 +33,13 @@ function get_job_listings( $args = array() ) {
 		'meta_query'          => array()
 	);
 
-	if ( ! empty( $args['job_types'] ) )
+	if ( ! empty( $args['job_types'] ) ) {
 		$query_args['tax_query'][] = array(
 			'taxonomy' => 'job_listing_type',
 			'field'    => 'slug',
 			'terms'    => $args['job_types']
 		);
+	}
 
 	if ( ! empty( $args['search_categories'] ) ) {
 		$field = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
@@ -49,12 +51,20 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
-	if ( get_option( 'job_manager_hide_filled_positions' ) == 1 )
+	if ( get_option( 'job_manager_hide_filled_positions' ) == 1 ) {
 		$query_args['meta_query'][] = array(
 			'key'     => '_filled',
 			'value'   => '1',
 			'compare' => '!='
 		);
+	}
+
+	if ( $args['show_featured_only'] ) {
+		$query_args['meta_query'][] = array(
+			'key'     => '_featured',
+			'value'   => '1'
+		);
+	}
 
 	// Location search - search geolocation data and location meta
 	if ( $args['search_location'] ) {

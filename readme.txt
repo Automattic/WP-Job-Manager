@@ -98,6 +98,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Fixed support for custom upload URLs
 * Choose/limit application method to email, url or either
 * Default application value (if logged in) set to user's email address
+* show_featured_only option for [jobs] shortcode
 
 = 1.9.3 = 
 * Fix email URLs.

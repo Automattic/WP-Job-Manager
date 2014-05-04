@@ -21,11 +21,11 @@ class WP_Job_Manager_Ajax {
 	public function get_listings() {
 		global $job_manager, $wpdb;
 
-		$result            = array();
-		$search_location   = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
-		$search_keywords   = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
-		$search_categories = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
-		$filter_job_types  = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
+		$result             = array();
+		$search_location    = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
+		$search_keywords    = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
+		$search_categories  = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
+		$filter_job_types   = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
 
 		if ( is_array( $search_categories ) ) {
 			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
@@ -34,14 +34,15 @@ class WP_Job_Manager_Ajax {
 		}
 
 		$args = array(
-			'search_location'   => $search_location,
-			'search_keywords'   => $search_keywords,
-			'search_categories' => $search_categories,
-			'job_types'         => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
-			'orderby'           => sanitize_text_field( $_POST['orderby'] ),
-			'order'             => sanitize_text_field( $_POST['order'] ),
-			'offset'            => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
-			'posts_per_page'    => absint( $_POST['per_page'] )
+			'search_location'    => $search_location,
+			'search_keywords'    => $search_keywords,
+			'search_categories'  => $search_categories,
+			'job_types'          => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
+			'orderby'            => sanitize_text_field( $_POST['orderby'] ),
+			'order'              => sanitize_text_field( $_POST['order'] ),
+			'offset'             => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
+			'posts_per_page'     => absint( $_POST['per_page'] ),
+			'show_featured_only' => isset( $_POST['show_featured_only'] ) ? absint( $_POST['show_featured_only'] ) : 0
 		);
 
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );

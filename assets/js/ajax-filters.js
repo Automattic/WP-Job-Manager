@@ -8,14 +8,15 @@ jQuery( document ).ready( function ( $ ) {
 			xhr.abort();
 		}
 
-		var data     = '';
-		var target   = $( this );
-		var form     = target.find( '.job_filters' );
-		var showing  = target.find( '.showing_jobs' );
-		var results  = target.find( '.job_listings' );
-		var per_page = target.data( 'per_page' );
-		var orderby  = target.data( 'orderby' );
-		var order    = target.data( 'order' );
+		var data               = '';
+		var target             = $( this );
+		var form               = target.find( '.job_filters' );
+		var showing            = target.find( '.showing_jobs' );
+		var results            = target.find( '.job_listings' );
+		var per_page           = target.data( 'per_page' );
+		var orderby            = target.data( 'orderby' );
+		var order              = target.data( 'order' );
+		var show_featured_only = target.data( 'show_featured_only' );
 
 		if ( append ) {
 			$( '.load_more_jobs', target ).addClass( 'loading' );
@@ -59,6 +60,7 @@ jQuery( document ).ready( function ( $ ) {
 				orderby: orderby,
 				order: order,
 				page: page,
+				show_featured_only: show_featured_only,
 				form_data: form.serialize()
 			};
 
@@ -80,7 +82,8 @@ jQuery( document ).ready( function ( $ ) {
 				per_page: per_page,
 				orderby: orderby,
 				order: order,
-				page: page
+				page: page,
+				show_featured_only: show_featured_only
 			};
 
 		}
