@@ -95,6 +95,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Trigger change on 'enter' when filtering jobs
 * Updated add-ons page to pull from wpjobmanager.com
 * Updated links 
+* Fixed support for custom upload URLs
+* Choose/limit application method to email, url or either
 
 = 1.9.3 = 
 * Fix email URLs.

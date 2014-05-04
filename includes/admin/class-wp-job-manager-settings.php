@@ -115,6 +115,18 @@ class WP_Job_Manager_Settings {
 							'attributes' => array()
 						),
 						array(
+							'name'       => 'job_manager_allowed_application_method',
+							'std'        => '',
+							'label'      => __( 'Application method', 'wp-job-manager' ),
+							'desc'       => __( 'Choose what employers can use for their job application method.', 'wp-job-manager' ),
+							'type'       => 'select',
+							'options'    => array(
+								''      => __( 'Email address or website URL', 'wp-job-manager' ),
+								'email' => __( 'Email addresses only', 'wp-job-manager' ),
+								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
+							)
+						),
+						array(
 							'name' 		=> 'job_manager_submit_page_slug',
 							'std' 		=> '',
 							'label' 	=> __( 'Submit Page Slug', 'wp-job-manager' ),

@@ -97,8 +97,25 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return void
 	 */
 	public static function init_fields() {
-		if ( self::$fields )
+		if ( self::$fields ) {
 			return;
+		}
+
+		$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
+		switch ( $allowed_application_method ) {
+			case 'email' :
+				$application_method_label       = __( 'Application email', 'wp-job-manager' );
+				$application_method_placeholder = __( 'you@yourdomain.com', 'wp-job-manager' );
+			break;
+			case 'url' :
+				$application_method_label       = __( 'Application URL', 'wp-job-manager' );
+				$application_method_placeholder = __( 'http://', 'wp-job-manager' );
+			break;
+			default :
+				$application_method_label       = __( 'Application email/URL', 'wp-job-manager' );
+				$application_method_placeholder = __( 'Enter an email address or website URL', 'wp-job-manager' );
+			break;
+		}
 
 		self::$fields = apply_filters( 'submit_job_form_fields', array(
 			'job' => array(
@@ -143,10 +160,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'priority'    => 5
 				),
 				'application' => array(
-					'label'       => __( 'Application email/URL', 'wp-job-manager' ),
+					'label'       => $application_method_label,
 					'type'        => 'text',
 					'required'    => true,
-					'placeholder' => __( 'Enter an email address or website URL', 'wp-job-manager' ),
+					'placeholder' => $application_method_placeholder,
 					'priority'    => 6
 				)
 			),
@@ -195,8 +212,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			)
 		) );
 
-		if ( ! get_option( 'job_manager_enable_categories' ) || wp_count_terms( 'job_listing_category' ) == 0 )
+		if ( ! get_option( 'job_manager_enable_categories' ) || wp_count_terms( 'job_listing_category' ) == 0 ) {
 			unset( self::$fields['job']['job_category'] );
+		}
 	}
 
 	/**
@@ -425,8 +443,31 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				return;
 
 			// Validate required
-			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) )
+			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) ) {
 				throw new Exception( $return->get_error_message() );
+			}
+
+			// Validate application field
+			if ( isset( $values['job']['application'] ) ) {
+				$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
+				switch ( $allowed_application_method ) {
+					case 'email' :
+						if ( ! is_email( $values['job']['application'] ) ) {
+							throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
+						}
+					break;
+					case 'url' :
+						if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
+							throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
+						}
+					break;
+					default :
+						if ( ! is_email( $values['job']['application'] ) && ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
+							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
+						}
+					break;
+				}
+			}
 
 			// Account creation
 			if ( ! is_user_logged_in() ) {

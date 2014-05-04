@@ -44,8 +44,9 @@ class WP_Job_Manager {
 		include( 'includes/class-wp-job-manager-forms.php' );
 		include( 'includes/class-wp-job-manager-geocode.php' );
 
-		if ( is_admin() )
+		if ( is_admin() ) {
 			include( 'includes/admin/class-wp-job-manager-admin.php' );
+		}
 
 		// Init classes
 		$this->forms      = new WP_Job_Manager_Forms();
