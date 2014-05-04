@@ -97,6 +97,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Updated links 
 * Fixed support for custom upload URLs
 * Choose/limit application method to email, url or either
+* Default application value (if logged in) set to user's email address
 
 = 1.9.3 = 
 * Fix email URLs.

@@ -233,10 +233,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				// Get the value
 				$field_type = str_replace( '-', '_', $field['type'] );
 				
-				if ( method_exists( __CLASS__, "get_posted_{$field_type}_field" ) )
+				if ( method_exists( __CLASS__, "get_posted_{$field_type}_field" ) ) {
 					$values[ $group_key ][ $key ] = call_user_func( __CLASS__ . "::get_posted_{$field_type}_field", $key, $field );
-				else
+				} else {
 					$values[ $group_key ][ $key ] = self::get_posted_field( $key, $field );
+				}
 
 				// Set fields value
 				self::$fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
@@ -406,13 +407,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Get user meta
 		} elseif ( is_user_logged_in() && empty( $_POST ) ) {
-			if ( is_user_logged_in() && ! empty( self::$fields[ 'company' ] ) ) {
-				foreach ( self::$fields[ 'company' ] as $key => $field ) {
-					self::$fields[ 'company' ][ $key ]['value'] = get_user_meta( get_current_user_id(), '_' . $key, true );
+			if ( ! empty( self::$fields['company'] ) ) {
+				foreach ( self::$fields['company'] as $key => $field ) {
+					self::$fields['company'][ $key ]['value'] = get_user_meta( get_current_user_id(), '_' . $key, true );
 				}
-
-				self::$fields = apply_filters( 'submit_job_form_fields_get_user_data', self::$fields, get_current_user_id() );
 			}
+			if ( ! empty( self::$fields['job']['application'] ) ) {
+				$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
+				if ( $allowed_application_method !== 'url' ) {
+					$current_user = wp_get_current_user();
+					self::$fields['job']['application']['value'] = $current_user->user_email;
+				}
+			}
+			self::$fields = apply_filters( 'submit_job_form_fields_get_user_data', self::$fields, get_current_user_id() );
 		}
 
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
