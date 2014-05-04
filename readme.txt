@@ -100,6 +100,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Default application value (if logged in) set to user's email address
 * show_featured_only option for [jobs] shortcode
 * Add required-field class around required inputs
+* Enable paste as text in wp-editor field
 
 = 1.9.3 = 
 * Fix email URLs.
