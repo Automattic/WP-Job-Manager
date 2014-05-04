@@ -22,7 +22,7 @@ global $job_manager;
 		<?php foreach ( $job_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
 				<label for="<?php esc_attr_e( $key ); ?>"><?php echo $field['label'] . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>
-				<div class="field">
+				<div class="field <?php echo $field['required'] ? 'required-field' : ''; ?>">
 					<?php get_job_manager_template( 'form-fields/' . $field['type'] . '-field.php', array( 'key' => $key, 'field' => $field ) ); ?>
 				</div>
 			</fieldset>
@@ -39,7 +39,7 @@ global $job_manager;
 			<?php foreach ( $company_fields as $key => $field ) : ?>
 				<fieldset class="fieldset-<?php esc_attr_e( $key ); ?>">
 					<label for="<?php esc_attr_e( $key ); ?>"><?php echo $field['label'] . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>
-					<div class="field">
+					<div class="field <?php echo $field['required'] ? 'required-field' : ''; ?>">
 						<?php get_job_manager_template( 'form-fields/' . $field['type'] . '-field.php', array( 'key' => $key, 'field' => $field ) ); ?>
 					</div>
 				</fieldset>

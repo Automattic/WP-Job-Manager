@@ -99,6 +99,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Choose/limit application method to email, url or either
 * Default application value (if logged in) set to user's email address
 * show_featured_only option for [jobs] shortcode
+* Add required-field class around required inputs
 
 = 1.9.3 = 
 * Fix email URLs.
