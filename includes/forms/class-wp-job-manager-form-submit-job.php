@@ -310,8 +310,31 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected static function validate_fields( $values ) {
 		foreach ( self::$fields as $group_key => $fields ) {
 			foreach ( $fields as $key => $field ) {
-				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) )
+				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) ) {
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
+				}
+			}
+		}
+
+		// Application method
+		if ( isset( $values['job']['application'] ) ) {
+			$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
+			switch ( $allowed_application_method ) {
+				case 'email' :
+					if ( ! is_email( $values['job']['application'] ) ) {
+						throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
+					}
+				break;
+				case 'url' :
+					if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
+						throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
+					}
+				break;
+				default :
+					if ( ! is_email( $values['job']['application'] ) && ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
+						throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
+					}
+				break;
 			}
 		}
 
@@ -452,28 +475,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			// Validate required
 			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) ) {
 				throw new Exception( $return->get_error_message() );
-			}
-
-			// Validate application field
-			if ( isset( $values['job']['application'] ) ) {
-				$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
-				switch ( $allowed_application_method ) {
-					case 'email' :
-						if ( ! is_email( $values['job']['application'] ) ) {
-							throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
-						}
-					break;
-					case 'url' :
-						if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-							throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
-						}
-					break;
-					default :
-						if ( ! is_email( $values['job']['application'] ) && ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
-						}
-					break;
-				}
 			}
 
 			// Account creation
