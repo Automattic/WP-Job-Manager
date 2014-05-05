@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-04-06 21:38:27+00:00\n"
-"PO-Revision-Date: 2014-04-13 07:14+0000\n"
+"POT-Creation-Date: 2014-04-24 16:21:36+00:00\n"
+"PO-Revision-Date: 2014-04-24 06:27+0000\n"
 "Last-Translator: tinygiantstudios\n"
 "Language-Team: Afrikaans (http://www.transifex.com/projects/p/wp-job-manager/language/af/)\n"
 "MIME-Version: 1.0\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: deploy/includes/admin/class-wp-job-manager-addons.php:50
-#: deploy/includes/admin/class-wp-job-manager-admin.php:55
+#: deploy/includes/admin/class-wp-job-manager-admin.php:60
 #: includes/admin/class-wp-job-manager-addons.php:50
-#: includes/admin/class-wp-job-manager-admin.php:55
+#: includes/admin/class-wp-job-manager-admin.php:60
 msgid "WP Job Manager Add-ons"
 msgstr "WP Job Manager Ekstras"
 
-#: deploy/includes/admin/class-wp-job-manager-admin.php:52
-#: includes/admin/class-wp-job-manager-admin.php:52
+#: deploy/includes/admin/class-wp-job-manager-admin.php:57
+#: includes/admin/class-wp-job-manager-admin.php:57
 msgid "Settings"
 msgstr "Verstellings"
 
-#: deploy/includes/admin/class-wp-job-manager-admin.php:55
-#: includes/admin/class-wp-job-manager-admin.php:55
+#: deploy/includes/admin/class-wp-job-manager-admin.php:60
+#: includes/admin/class-wp-job-manager-admin.php:60
 msgid "Add-ons"
 msgstr "Aanvullings"
 
@@ -376,7 +376,7 @@ msgstr "Verstellings gestoor"
 #: deploy/includes/admin/class-wp-job-manager-settings.php:252
 #: includes/admin/class-wp-job-manager-settings.php:252
 msgid "Save Changes"
-msgstr "Stoor verstellings"
+msgstr "Stoor Veranderinge"
 
 #: deploy/includes/admin/class-wp-job-manager-writepanels.php:27
 #: deploy/includes/forms/class-wp-job-manager-form-submit-job.php:113
@@ -476,20 +476,30 @@ msgstr "Posbeskrywing Verval"
 msgid "yyyy-mm-dd"
 msgstr "jjjj-mm-dd"
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:79
-#: includes/admin/class-wp-job-manager-writepanels.php:79
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:70
+#: includes/admin/class-wp-job-manager-writepanels.php:70
+msgid "Posted by"
+msgstr "Gepubliseer deur"
+
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:83
+#: includes/admin/class-wp-job-manager-writepanels.php:83
 msgid "Job Listing Data"
 msgstr "Posbeskrywing Data"
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:97
-#: includes/admin/class-wp-job-manager-writepanels.php:97
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:101
+#: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Use file"
 msgstr "Gebruik dokument"
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:97
-#: includes/admin/class-wp-job-manager-writepanels.php:97
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:101
+#: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Upload"
 msgstr "Laai"
+
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:269
+#: includes/admin/class-wp-job-manager-writepanels.php:269
+msgid "Guest user"
+msgstr "Gas gebruiker"
 
 #: deploy/includes/class-wp-job-manager-ajax.php:110
 #: includes/class-wp-job-manager-ajax.php:110
@@ -983,9 +993,9 @@ msgstr "Doen aansoek via webmail:"
 #: deploy/templates/job-application-url.php:1
 #: templates/job-application-url.php:1
 msgid ""
-"To apply for this job please visit the following URL: <a href=\"%1$s\">%1$s "
-"&rarr;</a>"
-msgstr "Besoek asseblief die volgende URL om aansoek te doen: <a href=\"%1$s\">%1$s &rarr;</a>"
+"To apply for this job please visit the following URL: <a href=\"%1$s\" "
+"target=\"_blank\">%1$s &rarr;</a>"
+msgstr "Besoek asseblief die volgende web adres om aansoek te doen vir hierdie pos: <a href=\"%1$s\" target=\"_blank\">%1$s &rarr;</a>"
 
 #: deploy/templates/job-application.php:5 templates/job-application.php:5
 msgid "Apply for job"

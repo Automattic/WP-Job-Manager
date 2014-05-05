@@ -3,13 +3,14 @@
 # Translators:
 # zedejose <jfontainhas@gmail.com>, 2014
 # mikejolley <mike.jolley@me.com>, 2014
+# nalvesrpd <nuno@raulpinadesign.pt>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-04-06 21:38:27+00:00\n"
-"PO-Revision-Date: 2014-03-31 08:20+0000\n"
-"Last-Translator: mikejolley <mike.jolley@me.com>\n"
+"POT-Creation-Date: 2014-04-24 16:21:36+00:00\n"
+"PO-Revision-Date: 2014-04-28 10:30+0000\n"
+"Last-Translator: nalvesrpd <nuno@raulpinadesign.pt>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/wp-job-manager/language/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,19 +19,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: deploy/includes/admin/class-wp-job-manager-addons.php:50
-#: deploy/includes/admin/class-wp-job-manager-admin.php:55
+#: deploy/includes/admin/class-wp-job-manager-admin.php:60
 #: includes/admin/class-wp-job-manager-addons.php:50
-#: includes/admin/class-wp-job-manager-admin.php:55
+#: includes/admin/class-wp-job-manager-admin.php:60
 msgid "WP Job Manager Add-ons"
 msgstr "Módulos adicionais WP Job Manager"
 
-#: deploy/includes/admin/class-wp-job-manager-admin.php:52
-#: includes/admin/class-wp-job-manager-admin.php:52
+#: deploy/includes/admin/class-wp-job-manager-admin.php:57
+#: includes/admin/class-wp-job-manager-admin.php:57
 msgid "Settings"
 msgstr "Opções"
 
-#: deploy/includes/admin/class-wp-job-manager-admin.php:55
-#: includes/admin/class-wp-job-manager-admin.php:55
+#: deploy/includes/admin/class-wp-job-manager-admin.php:60
+#: includes/admin/class-wp-job-manager-admin.php:60
 msgid "Add-ons"
 msgstr "Módulos adicionais"
 
@@ -477,19 +478,29 @@ msgstr "Anúncio expira em"
 msgid "yyyy-mm-dd"
 msgstr "yyyy-mm-dd"
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:79
-#: includes/admin/class-wp-job-manager-writepanels.php:79
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:70
+#: includes/admin/class-wp-job-manager-writepanels.php:70
+msgid "Posted by"
+msgstr ""
+
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:83
+#: includes/admin/class-wp-job-manager-writepanels.php:83
 msgid "Job Listing Data"
 msgstr "Dados do anúncio"
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:97
-#: includes/admin/class-wp-job-manager-writepanels.php:97
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:101
+#: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Use file"
-msgstr ""
+msgstr "Utilizar ficheiro"
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:97
-#: includes/admin/class-wp-job-manager-writepanels.php:97
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:101
+#: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Upload"
+msgstr "Enviar"
+
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:269
+#: includes/admin/class-wp-job-manager-writepanels.php:269
+msgid "Guest user"
 msgstr ""
 
 #: deploy/includes/class-wp-job-manager-ajax.php:110
@@ -520,7 +531,7 @@ msgstr "Limite atingido"
 #: deploy/includes/class-wp-job-manager-install.php:39
 #: includes/class-wp-job-manager-install.php:39
 msgid "Employer"
-msgstr ""
+msgstr "Empregador"
 
 #: deploy/includes/class-wp-job-manager-post-types.php:48
 #: includes/class-wp-job-manager-post-types.php:48
@@ -884,7 +895,7 @@ msgstr "&larr; Editar anúncio"
 #: deploy/includes/forms/class-wp-job-manager-form-submit-job.php:635
 #: includes/forms/class-wp-job-manager-form-submit-job.php:635
 msgid "\"%s\" needs to be one of the following file types: %s"
-msgstr ""
+msgstr "\"%s\" necessita de ser um dos tipos seguintes de ficheiro: %s"
 
 #: deploy/templates/account-signin.php:4 templates/account-signin.php:4
 msgid "Your account"
@@ -967,7 +978,7 @@ msgstr "ou"
 #: deploy/templates/form-fields/file-field.php:16
 #: templates/form-fields/file-field.php:16
 msgid "Max. file size: %s."
-msgstr ""
+msgstr "Tamanho Máx. do ficheiro: %s."
 
 #: deploy/templates/job-application-email.php:1
 #: templates/job-application-email.php:1
@@ -984,9 +995,9 @@ msgstr "Candidatar por webmail:"
 #: deploy/templates/job-application-url.php:1
 #: templates/job-application-url.php:1
 msgid ""
-"To apply for this job please visit the following URL: <a href=\"%1$s\">%1$s "
-"&rarr;</a>"
-msgstr "Envie a sua candidatura a esta posição neste site: <a href=\"%1$s\">%1$s &rarr;</a>"
+"To apply for this job please visit the following URL: <a href=\"%1$s\" "
+"target=\"_blank\">%1$s &rarr;</a>"
+msgstr ""
 
 #: deploy/templates/job-application.php:5 templates/job-application.php:5
 msgid "Apply for job"

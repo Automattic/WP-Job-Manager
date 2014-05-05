@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-04-06 21:38:27+00:00\n"
-"PO-Revision-Date: 2014-03-31 08:20+0000\n"
+"POT-Creation-Date: 2014-04-24 16:21:36+00:00\n"
+"PO-Revision-Date: 2014-04-19 08:20+0000\n"
 "Last-Translator: mikejolley <mike.jolley@me.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/wp-job-manager/language/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: deploy/includes/admin/class-wp-job-manager-addons.php:50
-#: deploy/includes/admin/class-wp-job-manager-admin.php:55
+#: deploy/includes/admin/class-wp-job-manager-admin.php:60
 #: includes/admin/class-wp-job-manager-addons.php:50
-#: includes/admin/class-wp-job-manager-admin.php:55
+#: includes/admin/class-wp-job-manager-admin.php:60
 msgid "WP Job Manager Add-ons"
 msgstr "WP Job Manager アドオン"
 
-#: deploy/includes/admin/class-wp-job-manager-admin.php:52
-#: includes/admin/class-wp-job-manager-admin.php:52
+#: deploy/includes/admin/class-wp-job-manager-admin.php:57
+#: includes/admin/class-wp-job-manager-admin.php:57
 msgid "Settings"
 msgstr "設定"
 
-#: deploy/includes/admin/class-wp-job-manager-admin.php:55
-#: includes/admin/class-wp-job-manager-admin.php:55
+#: deploy/includes/admin/class-wp-job-manager-admin.php:60
+#: includes/admin/class-wp-job-manager-admin.php:60
 msgid "Add-ons"
 msgstr "アドオン"
 
@@ -476,19 +476,29 @@ msgstr ""
 msgid "yyyy-mm-dd"
 msgstr ""
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:79
-#: includes/admin/class-wp-job-manager-writepanels.php:79
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:70
+#: includes/admin/class-wp-job-manager-writepanels.php:70
+msgid "Posted by"
+msgstr ""
+
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:83
+#: includes/admin/class-wp-job-manager-writepanels.php:83
 msgid "Job Listing Data"
 msgstr ""
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:97
-#: includes/admin/class-wp-job-manager-writepanels.php:97
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:101
+#: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Use file"
 msgstr ""
 
-#: deploy/includes/admin/class-wp-job-manager-writepanels.php:97
-#: includes/admin/class-wp-job-manager-writepanels.php:97
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:101
+#: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Upload"
+msgstr ""
+
+#: deploy/includes/admin/class-wp-job-manager-writepanels.php:269
+#: includes/admin/class-wp-job-manager-writepanels.php:269
+msgid "Guest user"
 msgstr ""
 
 #: deploy/includes/class-wp-job-manager-ajax.php:110
@@ -982,8 +992,8 @@ msgstr ""
 #: deploy/templates/job-application-url.php:1
 #: templates/job-application-url.php:1
 msgid ""
-"To apply for this job please visit the following URL: <a href=\"%1$s\">%1$s "
-"&rarr;</a>"
+"To apply for this job please visit the following URL: <a href=\"%1$s\" "
+"target=\"_blank\">%1$s &rarr;</a>"
 msgstr ""
 
 #: deploy/templates/job-application.php:5 templates/job-application.php:5
