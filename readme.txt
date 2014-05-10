@@ -92,6 +92,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 == Changelog ==
 
 * Added extra data inside job_feed
+* Few extra icons in font
+* Additonal hooks in single template
 
 = 1.10.0 = 
 * Trigger change on 'enter' when filtering jobs

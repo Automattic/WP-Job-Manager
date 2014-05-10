@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.10.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-05-04 15:25:11+00:00\n"
+"POT-Creation-Date: 2014-05-10 19:25:07+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -691,7 +691,7 @@ msgid "Enter the name of the company"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:179
-#: templates/content-single-job_listing.php:32
+#: templates/content-single-job_listing.php:36
 msgid "Website"
 msgstr ""
 
@@ -795,7 +795,7 @@ msgid "(optional)"
 msgstr ""
 
 #: templates/content-job_listing.php:16
-#: templates/content-single-job_listing.php:19
+#: templates/content-single-job_listing.php:21
 #: templates/content-summary-job_listing.php:14
 msgid "Posted %s ago"
 msgstr ""
@@ -808,7 +808,7 @@ msgstr ""
 msgid "This job listing has expired"
 msgstr ""
 
-#: templates/content-single-job_listing.php:22
+#: templates/content-single-job_listing.php:24
 msgid "This position has been filled"
 msgstr ""
 

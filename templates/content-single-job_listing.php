@@ -9,6 +9,8 @@
 
 	<?php else : ?>
 
+		<?php do_action( 'single_job_listing_start' ); ?>
+
 		<ul class="meta">
 			<?php do_action( 'single_job_listing_meta_start' ); ?>
 
@@ -24,6 +26,8 @@
 
 			<?php do_action( 'single_job_listing_meta_end' ); ?>
 		</ul>
+
+		<?php do_action( 'single_job_listing_meta_after' ); ?>
 
 		<div class="company" itemscope itemtype="http://data-vocabulary.org/Organization">
 			<?php the_company_logo(); ?>
@@ -41,6 +45,8 @@
 		</div>
 
 		<?php if ( ! is_position_filled() && $post->post_status !== 'preview' ) get_job_manager_template( 'job-application.php' ); ?>
+
+		<?php do_action( 'single_job_listing_end' ); ?>
 
 	<?php endif; ?>
 </div>
