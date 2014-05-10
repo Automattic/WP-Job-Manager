@@ -91,6 +91,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+* Added extra data inside job_feed
+
 = 1.10.0 = 
 * Trigger change on 'enter' when filtering jobs
 * Updated add-ons page to pull from wpjobmanager.com

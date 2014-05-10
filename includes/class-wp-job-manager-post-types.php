@@ -309,7 +309,37 @@ class WP_Job_Manager_Post_Types {
 
 		query_posts( apply_filters( 'job_feed_args', $args ) );
 
+		add_action( 'rss2_ns', array( $this, 'job_feed_namespace' ) );
+		add_action( 'rss2_item', array( $this, 'job_feed_item' ) );
+
 		do_feed_rss2( false );
+	}
+
+	/**
+	 * Add a custom namespace to the job feed
+	 */
+	public function job_feed_namespace() {
+		echo 'xmlns:job_listing="' .  site_url() . '"' . "\n";
+	}
+
+	/**
+	 * Add custom data to the job feed
+	 */
+	public function job_feed_item() {
+		$post_id  = get_the_ID();
+		$location = get_the_job_location( $post_id );
+		$job_type = get_the_job_type( $post_id );
+		$company  = get_the_company_name( $post_id );
+
+		if ( $location ) {
+			echo "<job_listing:location>{$location}</job_listing:location>\n";
+		}
+		if ( $job_type ) {
+			echo "<job_listing:job_type>{$job_type->name}</job_listing:job_type>\n";
+		}
+		if ( $company ) {
+			echo "<job_listing:company>{$company}</job_listing:company>\n";
+		}
 	}
 
 	/**
