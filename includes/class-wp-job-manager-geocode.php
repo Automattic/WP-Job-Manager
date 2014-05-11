@@ -105,51 +105,69 @@ class WP_Job_Manager_Geocode {
 		$invalid_chars = array( " " => "+", "," => "", "?" => "", "&" => "", "=" => "" , "#" => "" );
 		$raw_address   = trim( strtolower( str_replace( array_keys( $invalid_chars ), array_values( $invalid_chars ), $raw_address ) ) );
 
-		if ( empty( $raw_address ) )
+		if ( empty( $raw_address ) ) {
 			return false;
+		}
 
-		$transient_name = 'jm_geo_' . md5( $raw_address );
+		$transient_name   = 'geocode_' . md5( $raw_address );
+		$geocoded_address = get_transient( $transient_name );
+		$jm_geocode_over_query_limit = get_transient( 'jm_geocode_over_query_limit' );
+
+		// Query limit reached - don't geocode for a while
+		if ( $jm_geocode_over_query_limit ) {
+			return false;
+		}
 
 		try {
-			if ( false === ( $result = get_transient( $transient_name ) ) ) {
+			if ( false === $geocoded_address || empty( $geocoded_address->results[0] ) ) {
 				$result = wp_remote_get( 
-					"http://maps.googleapis.com/maps/api/geocode/xml?address=" . $raw_address . "&sensor=false", 
+					"http://maps.googleapis.com/maps/api/geocode/json?address=" . $raw_address . "&sensor=false", 
 					array(
-						'timeout'     => 20,
-					    'redirection' => 5,
+						'timeout'     => 5,
+					    'redirection' => 1,
 					    'httpversion' => '1.1',
 					    'user-agent'  => 'WordPress/WP-Job-Manager-' . JOB_MANAGER_VERSION . '; ' . get_bloginfo( 'url' ),
-					    'sslverify'   => false,
+					    'sslverify'   => false
 				    )
 				);
-				$result = wp_remote_retrieve_body( $result );
-				$xml    = new SimpleXMLElement( $result );
+				$result           = wp_remote_retrieve_body( $result );
+				$geocoded_address = json_decode( $result );
 
-				switch ( $xml->status ) {
-					case 'ZERO_RESULTS' :
-						throw new Exception( __( "No results found", 'wp-job-manager' ) );
-					break;
-					case 'OVER_QUERY_LIMIT' :
-						throw new Exception( __( "Query limit reached", 'wp-job-manager' ) );
-					break;
-					default :
-						set_transient( $transient_name, $result, 24 * HOUR_IN_SECONDS * 365 );
-					break;
+				if ( $geocoded_address->status ) {
+					switch ( $geocoded_address->status ) {
+						case 'ZERO_RESULTS' :
+							throw new Exception( __( "No results found", 'wp-job-manager' ) );
+						break;
+						case 'OVER_QUERY_LIMIT' :
+							set_transient( 'jm_geocode_over_query_limit', 1, HOUR_IN_SECONDS );
+							throw new Exception( __( "Query limit reached", 'wp-job-manager' ) );
+						break;
+						case 'OK' :
+							if ( ! empty( $geocoded_address->results[0] ) ) {
+								set_transient( $transient_name, $geocoded_address, 24 * HOUR_IN_SECONDS * 365 );
+							} else {
+								throw new Exception( __( "Geocoding error", 'wp-job-manager' ) );
+							}
+						break;
+						default :
+							throw new Exception( __( "Geocoding error", 'wp-job-manager' ) );
+						break;
+					}
+				} else {
+					throw new Exception( __( "Geocoding error", 'wp-job-manager' ) );
 				}
-			} else {
-				$xml    = new SimpleXMLElement( $result );
 			}
 		} catch ( Exception $e ) {
 			return new WP_Error( 'error', $e->getMessage() );
 		}
 		
 		$address                      = array();
-		$address['lat']               = sanitize_text_field( $xml->result->geometry->location->lat );
-		$address['long']              = sanitize_text_field( $xml->result->geometry->location->lng );
-		$address['formatted_address'] = sanitize_text_field( $xml->result->formatted_address );
+		$address['lat']               = sanitize_text_field( $geocoded_address->results[0]->geometry->location->lat );
+		$address['long']              = sanitize_text_field( $geocoded_address->results[0]->geometry->location->lng );
+		$address['formatted_address'] = sanitize_text_field( $geocoded_address->results[0]->formatted_address );
 		
-		if ( ! empty( $xml->result->address_component ) ) {
-			$address_data             = $xml->result->address_component;
+		if ( ! empty( $geocoded_address->results[0]->address_components ) ) {
+			$address_data             = $geocoded_address->results[0]->address_components;
 			$street_number            = false;
 			$address['street']        = false;
 			$address['city']          = false;
@@ -160,7 +178,7 @@ class WP_Job_Manager_Geocode {
 			$address['country_long']  = false;
 			
 			foreach ( $address_data as $data ) {
-				switch ( $data->type ) {
+				switch ( $data->types ) {
 					case 'street_number' :
 						$address['street']        = sanitize_text_field( $data->long_name ); 
 					break;
