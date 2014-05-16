@@ -17,6 +17,7 @@ class WP_Job_Manager_Shortcodes {
 	 */
 	public function __construct() {
 		add_action( 'wp', array( $this, 'shortcode_action_handler' ) );
+		add_action( 'job_manager_job_dashboard_content_edit', array( $this, 'edit_job' ) );
 
 		add_shortcode( 'submit_job_form', array( $this, 'submit_job_form' ) );
 		add_shortcode( 'job_dashboard', array( $this, 'job_dashboard' ) );
@@ -57,8 +58,9 @@ class WP_Job_Manager_Shortcodes {
 				$job    = get_post( $job_id );
 
 				// Check ownership
-				if ( $job->post_author != get_current_user_id() )
+				if ( $job->post_author != get_current_user_id() ) {
 					throw new Exception( __( 'Invalid Job ID', 'wp-job-manager' ) );
+				}
 
 				switch ( $action ) {
 					case 'mark_filled' :
@@ -91,6 +93,9 @@ class WP_Job_Manager_Shortcodes {
 						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been deleted', 'wp-job-manager' ), $job->post_title ) . '</div>';
 
 						break;
+					default :
+						do_action( 'job_manager_job_dashboard_do_action_' . $action );
+						break;
 				}
 
 				do_action( 'job_manager_my_job_do_action', $action, $job_id );
@@ -108,8 +113,7 @@ class WP_Job_Manager_Shortcodes {
 		global $job_manager;
 
 		if ( ! is_user_logged_in() ) {
-			_e( 'You need to be signed in to manage your job listings.', 'wp-job-manager' );
-			return;
+			return __( 'You need to be signed in to manage your job listings.', 'wp-job-manager' );
 		}
 
 		extract( shortcode_atts( array(
@@ -118,15 +122,17 @@ class WP_Job_Manager_Shortcodes {
 
 		wp_enqueue_script( 'wp-job-manager-job-dashboard' );
 
+		ob_start();
+
 		// If doing an action, show conditional content if needed....
 		if ( ! empty( $_REQUEST['action'] ) ) {
-
 			$action = sanitize_title( $_REQUEST['action'] );
-			$job_id = absint( $_REQUEST['job_id'] );
 
-			switch ( $action ) {
-				case 'edit' :
-					return $job_manager->forms->get_form( 'edit-job' );
+			// Show alternative content if a plugin wants to
+			if ( has_action( 'job_manager_job_dashboard_content_' . $action ) ) {
+				do_action( 'job_manager_job_dashboard_content_' . $action, $atts );
+
+				return ob_get_clean();
 			}
 		}
 
@@ -144,13 +150,27 @@ class WP_Job_Manager_Shortcodes {
 
 		$jobs = new WP_Query;
 
-		ob_start();
-
 		echo $this->job_dashboard_message;
 
-		get_job_manager_template( 'job-dashboard.php', array( 'jobs' => $jobs->query( $args ), 'max_num_pages' => $jobs->max_num_pages ) );
+		$job_dashboard_columns = apply_filters( 'job_manager_job_dashboard_columns', array(
+			'job_title' => __( 'Job Title', 'wp-job-manager' ),
+			'filled'    => __( 'Filled?', 'wp-job-manager' ),
+			'date'      => __( 'Date Posted', 'wp-job-manager' ),
+			'expires'   => __( 'Date Expires', 'wp-job-manager' )
+		) );
+
+		get_job_manager_template( 'job-dashboard.php', array( 'jobs' => $jobs->query( $args ), 'max_num_pages' => $jobs->max_num_pages, 'job_dashboard_columns' => $job_dashboard_columns ) );
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Edit job form
+	 */
+	public function edit_job() {
+		global $job_manager;
+
+		echo $job_manager->forms->get_form( 'edit-job' );
 	}
 
 	/**
