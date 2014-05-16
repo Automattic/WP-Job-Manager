@@ -17,7 +17,6 @@ class WP_Job_Manager_API {
 	 */
 	public function __construct() {
 		add_filter( 'query_vars', array( $this, 'add_query_vars'), 0 );
-		//add_action( 'init', array( $this, 'add_endpoint'), 0 );
 		add_action( 'parse_request', array( $this, 'api_requests'), 0 );
 	}
 
