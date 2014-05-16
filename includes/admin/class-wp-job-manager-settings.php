@@ -166,7 +166,7 @@ class WP_Job_Manager_Settings {
 	public function output() {
 		$this->init_settings();
 		?>
-		<div class="wrap">
+		<div class="wrap job-manager-settings-wrap">
 			<form method="post" action="options.php">
 
 				<?php settings_fields( $this->settings_group ); ?>
@@ -177,12 +177,12 @@ class WP_Job_Manager_Settings {
 			    			echo '<a href="#settings-' . sanitize_title( $key ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
 			    		}
 			    	?>
-			    </h2><br/>
+			    </h2>
 
 				<?php
 					if ( ! empty( $_GET['settings-updated'] ) ) {
 						flush_rewrite_rules();
-						echo '<div class="updated fade"><p>' . __( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
+						echo '<div class="updated fade job-manager-updated"><p>' . __( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
 					}
 
 					foreach ( $this->settings as $key => $section ) {
