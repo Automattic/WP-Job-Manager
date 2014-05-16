@@ -91,8 +91,9 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * Submit Step is posted
 	 */
 	public static function submit_handler() {
-		if ( empty( $_POST['submit_job'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'submit_form_posted' ) )
+		if ( empty( $_POST['submit_job'] ) ) {
 			return;
+		}
 
 		try {
 

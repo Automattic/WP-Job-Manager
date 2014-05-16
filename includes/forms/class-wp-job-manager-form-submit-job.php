@@ -469,8 +469,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			// Get posted values
 			$values = self::get_posted_fields();
 
-			if ( empty( $_POST['submit_job'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'submit_form_posted' ) )
+			if ( empty( $_POST['submit_job'] ) ) {
 				return;
+			}
 
 			// Validate required
 			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) ) {
