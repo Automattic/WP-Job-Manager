@@ -91,22 +91,23 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
-* Switch geocode to json and improve error checking
-* If query limit is reached, stop making requests for a while
-* Added extra data inside job_feed
-* Few extra icons in font
-* Additonal hooks in single template
+* Switch geocode to json and improve error checking.
+* If query limit is reached, stop making requests for a while.
+* Added extra data inside job_feed.
+* Few extra icons in font.
+* Additonal hooks in single template.
+* Pick up search_category from querystring to set default/selected category.
 
 = 1.10.0 = 
-* Trigger change on 'enter' when filtering jobs
-* Updated add-ons page to pull from wpjobmanager.com
-* Updated links 
-* Fixed support for custom upload URLs
-* Choose/limit application method to email, url or either
-* Default application value (if logged in) set to user's email address
-* show_featured_only option for [jobs] shortcode
-* Add required-field class around required inputs
-* Enable paste as text in wp-editor field
+* Trigger change on 'enter' when filtering jobs.
+* Updated add-ons page to pull from wpjobmanager.com.
+* Updated links.
+* Fixed support for custom upload URLs.
+* Choose/limit application method to email, url or either.
+* Default application value (if logged in) set to user's email address.
+* show_featured_only option for [jobs] shortcode.
+* Add required-field class around required inputs.
+* Enable paste as text in wp-editor field.
 
 = 1.9.3 = 
 * Fix email URLs.

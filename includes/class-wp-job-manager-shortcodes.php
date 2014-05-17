@@ -216,10 +216,15 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $_GET['search_location'] ) ) {
 			$location = sanitize_text_field( $_GET['search_location'] );
 		}
+		if ( ! empty( $_GET['search_category'] ) ) {
+			$selected_category = sanitize_text_field( $_GET['search_category'] );
+		} else {
+			$selected_category = false;
+		}
 
 		if ( $show_filters && $show_filters !== 'false' ) {
 
-			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords ) );
+			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'selected_category' => $selected_category, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords ) );
 
 			?><ul class="job_listings"></ul><a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'wp-job-manager' ); ?></strong></a><?php
 
