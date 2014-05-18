@@ -114,7 +114,7 @@ class WP_Job_Manager_Geocode {
 		$jm_geocode_over_query_limit = get_transient( 'jm_geocode_over_query_limit' );
 
 		// Query limit reached - don't geocode for a while
-		if ( $jm_geocode_over_query_limit ) {
+		if ( $jm_geocode_over_query_limit && false === $geocoded_address ) {
 			return false;
 		}
 
@@ -178,7 +178,7 @@ class WP_Job_Manager_Geocode {
 			$address['country_long']  = false;
 			
 			foreach ( $address_data as $data ) {
-				switch ( $data->types ) {
+				switch ( $data->types[0] ) {
 					case 'street_number' :
 						$address['street']        = sanitize_text_field( $data->long_name ); 
 					break;
