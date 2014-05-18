@@ -25,7 +25,7 @@ jQuery( document ).ready( function ( $ ) {
 			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
 		}
 
-		if ( 'true' == target.data( 'show_filters' ) ) {
+		if ( true == target.data( 'show_filters' ) ) {
 
 			var filter_job_type = [];
 
