@@ -85,10 +85,10 @@ function get_job_listings( $args = array() ) {
 		$postmeta_search_keywords_sql = array();
 
 		foreach ( $search_keywords as $keyword ) {
-			$postmeta_search_keywords_sql[] = " meta_value LIKE '%" . $wpdb->escape( $keyword ) . "%' ";
+			$postmeta_search_keywords_sql[] = " meta_value LIKE '%" . esc_sql( $keyword ) . "%' ";
 			$posts_search_keywords_sql[]    = " 
-				post_title LIKE '%" . $wpdb->escape( $keyword ) . "%' 
-				OR post_content LIKE '%" . $wpdb->escape( $keyword ) . "%' 
+				post_title LIKE '%" . esc_sql( $keyword ) . "%' 
+				OR post_content LIKE '%" . esc_sql( $keyword ) . "%' 
 			";
 		}
 
