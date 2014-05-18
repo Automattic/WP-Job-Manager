@@ -10,15 +10,15 @@ function get_job_listings( $args = array() ) {
 	global $wpdb;
 
 	$args = wp_parse_args( $args, array(
-		'search_location'    => '',
-		'search_keywords'    => '',
-		'search_categories'  => array(),
-		'job_types'          => array(),
-		'offset'             => '',
-		'posts_per_page'     => '-1',
-		'orderby'            => 'date',
-		'order'              => 'DESC',
-		'show_featured_only' => false
+		'search_location'   => '',
+		'search_keywords'   => '',
+		'search_categories' => array(),
+		'job_types'         => array(),
+		'offset'            => '',
+		'posts_per_page'    => '-1',
+		'orderby'           => 'date',
+		'order'             => 'DESC',
+		'featured'          => null
 	) );
 
 	$query_args = array(
@@ -59,10 +59,11 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
-	if ( $args['show_featured_only'] ) {
+	if ( ! is_null( $args['featured'] ) ) {
 		$query_args['meta_query'][] = array(
 			'key'     => '_featured',
-			'value'   => '1'
+			'value'   => '1',
+			'compare' => $args['featured'] ? '=' : '!='
 		);
 	}
 

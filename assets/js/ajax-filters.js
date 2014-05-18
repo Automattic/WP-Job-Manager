@@ -16,7 +16,7 @@ jQuery( document ).ready( function ( $ ) {
 		var per_page           = target.data( 'per_page' );
 		var orderby            = target.data( 'orderby' );
 		var order              = target.data( 'order' );
-		var show_featured_only = target.data( 'show_featured_only' );
+		var featured           = target.data( 'featured' );
 
 		if ( append ) {
 			$( '.load_more_jobs', target ).addClass( 'loading' );
@@ -25,7 +25,7 @@ jQuery( document ).ready( function ( $ ) {
 			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
 		}
 
-		if ( target.data( 'show_filters' ) ) {
+		if ( 'true' == target.data( 'show_filters' ) ) {
 
 			var filter_job_type = [];
 
@@ -60,7 +60,7 @@ jQuery( document ).ready( function ( $ ) {
 				orderby: orderby,
 				order: order,
 				page: page,
-				show_featured_only: show_featured_only,
+				featured: featured,
 				form_data: form.serialize()
 			};
 
@@ -83,7 +83,7 @@ jQuery( document ).ready( function ( $ ) {
 				orderby: orderby,
 				order: order,
 				page: page,
-				show_featured_only: show_featured_only
+				featured: featured
 			};
 
 		}
@@ -121,7 +121,7 @@ jQuery( document ).ready( function ( $ ) {
 							}
 						}
 
-						if ( !result.found_jobs || result.max_num_pages === page ) {
+						if ( ! result.found_jobs || result.max_num_pages === page ) {
 							$( '.load_more_jobs', target ).hide();
 						} else {
 							$( '.load_more_jobs', target ).show().data( 'page', page );

@@ -41,15 +41,18 @@ class WP_Job_Manager_Ajax {
 			'orderby'            => sanitize_text_field( $_POST['orderby'] ),
 			'order'              => sanitize_text_field( $_POST['order'] ),
 			'offset'             => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
-			'posts_per_page'     => absint( $_POST['per_page'] ),
-			'show_featured_only' => isset( $_POST['show_featured_only'] ) ? absint( $_POST['show_featured_only'] ) : 0
+			'posts_per_page'     => absint( $_POST['per_page'] )
 		);
 
+		if ( isset( $_POST['featured'] ) && ( $_POST['featured'] === 'true' || $_POST['featured'] === 'false' ) ) {
+			$args['featured'] = $_POST['featured'] === 'true' ? true : false;
+		}
+
+		ob_start();
+		
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 
 		$result['found_jobs'] = false;
-
-		ob_start();
 
 		if ( $jobs->have_posts() ) : $result['found_jobs'] = true; ?>
 

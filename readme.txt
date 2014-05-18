@@ -98,6 +98,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Additonal hooks in single template.
 * Pick up search_category from querystring to set default/selected category.
 * Ability to define selected_job_types for the jobs shortcode which will set the default job type filters.
+* Took out show_featured_only arg for the [jobs] shortcode and added 'featured' which can be set to true or false to show or hide featured jobs, or left null to show both.
 
 = 1.10.0 = 
 * Trigger change on 'enter' when filtering jobs.
