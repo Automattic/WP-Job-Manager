@@ -285,7 +285,7 @@ class WP_Job_Manager_Shortcodes {
 		$data_attributes_string = '';
 		$data_attributes        = array(
 			'location'     => $location,
-			'$keywords'    => $keywords,
+			'keywords'     => $keywords,
 			'show_filters' => $show_filters ? 'true' : 'false',
 			'per_page'     => $per_page,
 			'orderby'      => $orderby,
