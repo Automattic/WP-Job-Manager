@@ -97,6 +97,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Few extra icons in font.
 * Additonal hooks in single template.
 * Pick up search_category from querystring to set default/selected category.
+* Ability to define selected_job_types for the jobs shortcode which will set the default job type filters.
 
 = 1.10.0 = 
 * Trigger change on 'enter' when filtering jobs.

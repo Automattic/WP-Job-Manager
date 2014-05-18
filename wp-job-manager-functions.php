@@ -185,11 +185,12 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
  * @access public
  * @return array
  */
-function get_job_listing_types() {
+function get_job_listing_types( $fields = 'all' ) {
 	return get_terms( "job_listing_type", array(
-		'orderby'       => 'name',
-	    'order'         => 'ASC',
-	    'hide_empty'    => false,
+		'orderby'    => 'name',
+		'order'      => 'ASC',
+		'hide_empty' => false,
+		'fields'     => $fields
 	) );
 }
 endif;

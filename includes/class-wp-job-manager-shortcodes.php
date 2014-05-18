@@ -192,10 +192,16 @@ class WP_Job_Manager_Shortcodes {
 			'show_featured_only' => false,
 			'show_filters'       => true,
 			'show_categories'    => get_option( 'job_manager_enable_categories' ),
+			
+			// Limit what is shown
 			'categories'         => '',
 			'job_types'          => '',
+			
+			// Default values for filters
 			'location'           => '', 
-			'keywords'           => ''
+			'keywords'           => '',
+			'selected_category'  => '',
+			'selected_job_types' => implode( ',', array_values( get_job_listing_types( 'id=>slug' ) ) ),
 		) ), $atts ) );
 
 		// String to bool
@@ -206,8 +212,9 @@ class WP_Job_Manager_Shortcodes {
 			$show_featured_only = false;
 		}
 
-		$categories = array_filter( array_map( 'trim', explode( ',', $categories ) ) );
-		$job_types  = array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
+		$categories         = array_filter( array_map( 'trim', explode( ',', $categories ) ) );
+		$job_types          = array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
+		$selected_job_types = array_filter( array_map( 'trim', explode( ',', $selected_job_types ) ) );
 
 		// Get keywords and location from querystring if set
 		if ( ! empty( $_GET['search_keywords'] ) ) {
@@ -218,13 +225,11 @@ class WP_Job_Manager_Shortcodes {
 		}
 		if ( ! empty( $_GET['search_category'] ) ) {
 			$selected_category = sanitize_text_field( $_GET['search_category'] );
-		} else {
-			$selected_category = false;
 		}
 
 		if ( $show_filters && $show_filters !== 'false' ) {
 
-			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'selected_category' => $selected_category, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords ) );
+			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'selected_category' => $selected_category, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords, 'selected_job_types' => $selected_job_types ) );
 
 			?><ul class="job_listings"></ul><a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'wp-job-manager' ); ?></strong></a><?php
 

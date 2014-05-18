@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.10.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2014-05-17 20:59:56+00:00\n"
+"POT-Creation-Date: 2014-05-18 09:30:05+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -611,8 +611,8 @@ msgstr ""
 msgid "Date Expires"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:229
-#: includes/class-wp-job-manager-shortcodes.php:260
+#: includes/class-wp-job-manager-shortcodes.php:234
+#: includes/class-wp-job-manager-shortcodes.php:265
 msgid "Load more job listings"
 msgstr ""
 
@@ -917,19 +917,19 @@ msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
 msgstr ""
 
-#: wp-job-manager-functions.php:224
+#: wp-job-manager-functions.php:225
 msgid "Reset"
 msgstr ""
 
-#: wp-job-manager-functions.php:228
+#: wp-job-manager-functions.php:229
 msgid "RSS"
 msgstr ""
 
-#: wp-job-manager-functions.php:278
+#: wp-job-manager-functions.php:279
 msgid "Your email address isn&#8217;t correct."
 msgstr ""
 
-#: wp-job-manager-functions.php:281
+#: wp-job-manager-functions.php:282
 msgid "This email is already registered, please choose another one."
 msgstr ""
 
