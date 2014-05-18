@@ -91,7 +91,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
-= 1.11.0
+= 1.11.0 =
 * Switch geocode to json and improve error checking.
 * If query limit is reached, stop making requests for a while.
 * Added extra data inside job_feed.
