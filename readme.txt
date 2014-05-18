@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 3.9
-Stable tag: 1.11.0
+Stable tag: 1.11.1
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -90,6 +90,12 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.11.1 =
+* Fix ajax filters 'true' for show_filters
+* Fix geocoding for certain address strings
+* Fix keywords typo
+* Remove deprecated $wpdb->escape calls. Replaced with esc_sql
 
 = 1.11.0 =
 * Switch geocode to json and improve error checking.
