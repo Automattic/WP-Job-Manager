@@ -181,7 +181,7 @@ endif;
 
 if ( ! function_exists( 'get_job_listing_types' ) ) :
 /**
- * Outputs a form to submit a new job to the site from the frontend.
+ * Get job listing types
  *
  * @access public
  * @return array
@@ -198,14 +198,15 @@ endif;
 
 if ( ! function_exists( 'get_job_listing_categories' ) ) :
 /**
- * Outputs a form to submit a new job to the site from the frontend.
+ * Get job categories
  *
  * @access public
  * @return array
  */
 function get_job_listing_categories() {
-	if ( ! get_option( 'job_manager_enable_categories' ) )
+	if ( ! get_option( 'job_manager_enable_categories' ) ) {
 		return array();
+	}
 
 	return get_terms( "job_listing_category", array(
 		'orderby'       => 'name',
@@ -297,11 +298,12 @@ function wp_job_manager_create_account( $account_email, $role = '' ) {
 
 	// Final error check
 	$reg_errors = new WP_Error();
-	do_action( 'register_post', $username, $user_email, $reg_errors );
-	$reg_errors = apply_filters( 'registration_errors', $reg_errors, $username, $user_email );
+	do_action( 'job_manager_register_post', $username, $user_email, $reg_errors );
+	$reg_errors = apply_filters( 'job_manager_registration_errors', $reg_errors, $username, $user_email );
 
-	if ( $reg_errors->get_error_code() )
+	if ( $reg_errors->get_error_code() ) {
 		return $reg_errors;
+	}
 
 	// Create account
 	$new_user = array(

@@ -91,6 +91,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+* Use job_manager_ prefixed hooks for registration (register_post/registration_errors/register_form) to prevent issues with Captcha plugins.
+
 = 1.11.1 =
 * Fix ajax filters 'true' for show_filters
 * Fix geocoding for certain address strings

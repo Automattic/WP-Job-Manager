@@ -40,6 +40,7 @@
 				<input type="email" class="input-text" name="create_account_email" id="account_email" placeholder="you@yourdomain.com" value="<?php if ( ! empty( $_POST['create_account_email'] ) ) echo sanitize_text_field( stripslashes( $_POST['create_account_email'] ) ); ?>" />
 			</div>
 		</fieldset>
+		<?php do_action( 'job_manager_register_form' ); ?>
 	<?php endif; ?>
 
 <?php endif; ?>
