@@ -13,9 +13,27 @@
       "src": "fontawesome"
     },
     {
+      "uid": "d73eceadda1f594cec0536087539afbf",
+      "css": "heart",
+      "code": 59425,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "f3dc2d6d8fe9cf9ebff84dc260888cdf",
+      "css": "heart-empty",
+      "code": 59426,
+      "src": "fontawesome"
+    },
+    {
       "uid": "474656633f79ea2f1dad59ff63f6bf07",
       "css": "star",
       "code": 59395,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "d17030afaecc1e1c22349b99f3c4992a",
+      "css": "star-empty",
+      "code": 59424,
       "src": "fontawesome"
     },
     {
@@ -40,6 +58,12 @@
       "uid": "0ddd3e8201ccc7d41f7b7c9d27eca6c1",
       "css": "link",
       "code": 59401,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "0d6ab6194c0eddda2b8c9cedf2ab248e",
+      "css": "attach",
+      "code": 59431,
       "src": "fontawesome"
     },
     {
@@ -73,6 +97,18 @@
       "src": "fontawesome"
     },
     {
+      "uid": "85528017f1e6053b2253785c31047f44",
+      "css": "comment",
+      "code": 59430,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "9c1376672bb4f1ed616fdd78a23667e9",
+      "css": "comment-empty",
+      "code": 59429,
+      "src": "fontawesome"
+    },
+    {
       "uid": "b035c28eba2b35c6ffe92aee8b0df507",
       "css": "attention-circled",
       "code": 59406,
@@ -103,6 +139,12 @@
       "src": "fontawesome"
     },
     {
+      "uid": "559647a6f430b3aeadbecd67194451dd",
+      "css": "menu",
+      "code": 59427,
+      "src": "fontawesome"
+    },
+    {
       "uid": "531bc468eecbb8867d822f1c11f1e039",
       "css": "calendar",
       "code": 59407,
@@ -124,6 +166,12 @@
       "uid": "f2aa28a2548ed3d2be718d087b65ee21",
       "css": "key",
       "code": 59400,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "4109c474ff99cad28fd5a2c38af2ec6f",
+      "css": "filter",
+      "code": 59428,
       "src": "fontawesome"
     },
     {
