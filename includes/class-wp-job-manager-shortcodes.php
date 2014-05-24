@@ -18,6 +18,8 @@ class WP_Job_Manager_Shortcodes {
 	public function __construct() {
 		add_action( 'wp', array( $this, 'shortcode_action_handler' ) );
 		add_action( 'job_manager_job_dashboard_content_edit', array( $this, 'edit_job' ) );
+		add_action( 'job_manager_job_filters_end', array( $this, 'job_filter_job_types' ), 20 );
+		add_action( 'job_manager_job_filters_end', array( $this, 'job_filter_results' ), 30 );
 
 		add_shortcode( 'submit_job_form', array( $this, 'submit_job_form' ) );
 		add_shortcode( 'job_dashboard', array( $this, 'job_dashboard' ) );
@@ -300,6 +302,26 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		return '<div class="job_listings" ' . $data_attributes_string . '>' . ob_get_clean() . '</div>';
+	}
+
+	/**
+	 * Show job types 
+	 * @param  array $atts
+	 */
+	public function job_filter_job_types( $atts ) {
+		extract( $atts );
+
+		$job_types          = array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
+		$selected_job_types = array_filter( array_map( 'trim', explode( ',', $selected_job_types ) ) );
+
+		get_job_manager_template( 'job-filter-job-types.php', array( 'job_types' => $job_types, 'atts' => $atts, 'selected_job_types' => $selected_job_types ) );
+	}
+
+	/**
+	 * Show results div
+	 */
+	public function job_filter_results() {
+		echo '<div class="showing_jobs"></div>';
 	}
 
 	/**
