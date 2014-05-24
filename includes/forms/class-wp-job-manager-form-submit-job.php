@@ -145,9 +145,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				),
 				'job_category' => array(
 					'label'       => __( 'Job category', 'wp-job-manager' ),
-					'type'        => 'select',
+					'type'        => 'job-category',
 					'required'    => true,
-					'options'     => self::job_categories(),
 					'placeholder' => '',
 					'priority'    => 4,
 					'default'     => ''
@@ -356,20 +355,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * job_types function.
-	 *
-	 * @access private
-	 * @return void
-	 */
-	private static function job_categories() {
-		$options = array();
-		$terms   = get_job_listing_categories();
-		foreach ( $terms as $term )
-			$options[ $term->slug ] = $term->name;
-		return $options;
-	}
-
-	/**
 	 * Process function. all processing code if needed - can also change view if step is complete
 	 */
 	public static function process() {
@@ -417,7 +402,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'slugs' ) ) );
 						break;
 						case 'job_category' :
-							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'slugs' ) ) );
+							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) ) );
 						break;
 						default:
 							self::$fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
@@ -559,7 +544,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		wp_set_object_terms( self::$job_id, array( $values['job']['job_type'] ), 'job_listing_type', false );
 
 		if ( get_option( 'job_manager_enable_categories' ) && isset( $values['job']['job_category'] ) ) {
-			wp_set_object_terms( self::$job_id, ( is_array( $values['job']['job_category'] ) ? $values['job']['job_category'] : array( $values['job']['job_category'] ) ), 'job_listing_category', false );
+			$posted_cats = array_map( 'absint', is_array( $values['job']['job_category'] ) ? $values['job']['job_category'] : array( $values['job']['job_category'] ) );
+			wp_set_object_terms( self::$job_id, $posted_cats, 'job_listing_category', false );
 		}
 
 		update_post_meta( self::$job_id, '_application', $values['job']['application'] );

@@ -91,6 +91,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+= 1.12.0 =
+* On the job submission form, display hierarchical categories.
 * Use job_manager_ prefixed hooks for registration (register_post/registration_errors/register_form) to prevent issues with Captcha plugins.
 * Pass $post to job_manager_application_email_subject
 * Additonal hooks in job-filters template, and moved out job types output to separate template file.
