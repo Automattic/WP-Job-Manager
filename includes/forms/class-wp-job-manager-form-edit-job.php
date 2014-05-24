@@ -63,7 +63,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 					break;
 					case 'job_category' :
 						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) )
-							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'slugs' ) ) );
+							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) ) );
 					break;
 					default:
 						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) )
