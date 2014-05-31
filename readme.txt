@@ -96,6 +96,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Use job_manager_ prefixed hooks for registration (register_post/registration_errors/register_form) to prevent issues with Captcha plugins.
 * Pass $post to job_manager_application_email_subject
 * Additonal hooks in job-filters template, and moved out job types output to separate template file.
+* Option to set the job dashboard page slug so plugins know where to look.
 
 = 1.11.1 =
 * Fix ajax filters 'true' for show_filters

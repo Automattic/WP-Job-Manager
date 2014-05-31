@@ -132,6 +132,13 @@ class WP_Job_Manager_Settings {
 							'label' 	=> __( 'Submit Page Slug', 'wp-job-manager' ),
 							'desc'		=> __( 'Enter the slug of the page where you have placed the [submit_job_form] shortcode. This lets the plugin know where the form is located.', 'wp-job-manager' ),
 							'type'      => 'input'
+						),
+						array(
+							'name' 		=> 'job_manager_job_dashboard_page_slug',
+							'std' 		=> '',
+							'label' 	=> __( 'Job Dashboard Page Slug', 'wp-job-manager' ),
+							'desc'		=> __( 'Enter the slug of the page where you have placed the [job_dashboard] shortcode. This lets the plugin know where the dashboard is located.', 'wp-job-manager' ),
+							'type'      => 'input'
 						)
 					)
 				),
