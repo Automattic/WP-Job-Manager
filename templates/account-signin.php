@@ -37,7 +37,7 @@
 		<fieldset>
 			<label><?php _e( 'Your email', 'wp-job-manager' ); ?> <?php if ( ! $account_required ) echo '<small>' . __( '(optional)', 'wp-job-manager' ) . '</small>'; ?></label>
 			<div class="field">
-				<input type="email" class="input-text" name="create_account_email" id="account_email" placeholder="you@yourdomain.com" value="<?php if ( ! empty( $_POST['create_account_email'] ) ) echo sanitize_text_field( stripslashes( $_POST['create_account_email'] ) ); ?>" />
+				<input type="email" class="input-text" name="create_account_email" id="account_email" placeholder="<?php esc_attr_e( 'you@yourdomain.com', 'wp-job-manager' ); ?>" value="<?php if ( ! empty( $_POST['create_account_email'] ) ) echo sanitize_text_field( stripslashes( $_POST['create_account_email'] ) ); ?>" />
 			</div>
 		</fieldset>
 		<?php do_action( 'job_manager_register_form' ); ?>
