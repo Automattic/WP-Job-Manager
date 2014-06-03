@@ -364,8 +364,12 @@ class WP_Job_Manager_Writepanels {
 				}
 			}
 
-			elseif( '_job_author' === $key ) {
+			elseif ( '_job_author' === $key ) {
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
+			}
+
+			elseif ( '_application' === $key ) {
+				update_post_meta( $post_id, $key, sanitize_text_field( urldecode( $_POST[ $key ] ) ) );
 			}
 
 			// Everything else

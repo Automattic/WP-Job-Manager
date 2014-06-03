@@ -253,7 +253,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected static function get_posted_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? sanitize_text_field( trim( stripslashes( $_POST[ $key ] ) ) ) : '';
+		return isset( $_POST[ $key ] ) ? sanitize_text_field( trim( urldecode( stripslashes( $_POST[ $key ] ) ) ) ) : '';
 	}
 
 	/**
