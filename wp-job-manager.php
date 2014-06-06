@@ -17,8 +17,9 @@ Domain Path: /languages
 */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) )
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
 
 /**
  * WP_Job_Manager class.
