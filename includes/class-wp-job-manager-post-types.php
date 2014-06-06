@@ -49,13 +49,15 @@ class WP_Job_Manager_Post_Types {
 			$plural    = __( 'Job Categories', 'wp-job-manager' );
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
-				$rewrite     = array(
+				$rewrite   = array(
 					'slug'         => _x( 'job-category', 'Job category slug - resave permalinks after changing this', 'wp-job-manager' ),
 					'with_front'   => false,
 					'hierarchical' => false
 				);
+				$public    = true;
 			} else {
-				$rewrite = false;
+				$rewrite   = false;
+				$public    = false;
 			}
 
 			register_taxonomy( "job_listing_category",
@@ -77,7 +79,7 @@ class WP_Job_Manager_Post_Types {
 	                    'new_item_name' 	=> sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
 	            	),
 		            'show_ui' 				=> true,
-		            'query_var' 			=> true,
+		            'public' 	     		=> $public,
 		            'capabilities'			=> array(
 		            	'manage_terms' 		=> $admin_capability,
 		            	'edit_terms' 		=> $admin_capability,
@@ -93,13 +95,15 @@ class WP_Job_Manager_Post_Types {
 		$plural    = __( 'Job Types', 'wp-job-manager' );
 
 		if ( current_theme_supports( 'job-manager-templates' ) ) {
-			$rewrite     = array(
+			$rewrite   = array(
 				'slug'         => _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ),
 				'with_front'   => false,
 				'hierarchical' => false
 			);
+			$public    = true;
 		} else {
-			$rewrite = false;
+			$rewrite   = false;
+			$public    = false;
 		}
 
 		register_taxonomy( "job_listing_type",
@@ -120,7 +124,7 @@ class WP_Job_Manager_Post_Types {
                     'new_item_name' 	=> sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
             	),
 	            'show_ui' 				=> true,
-	            'query_var' 			=> true,
+	            'public' 			    => $public,
 	            'capabilities'			=> array(
 	            	'manage_terms' 		=> $admin_capability,
 	            	'edit_terms' 		=> $admin_capability,

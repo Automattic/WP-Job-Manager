@@ -98,6 +98,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Additonal hooks in job-filters template, and moved out job types output to separate template file.
 * Option to set the job dashboard page slug so plugins know where to look.
 * Allow you@yourdomain.com to be translated.
+* Make taxonomies hidden unless current_theme_supports( 'job-manager-templates' )
 
 = 1.11.1 =
 * Fix ajax filters 'true' for show_filters
