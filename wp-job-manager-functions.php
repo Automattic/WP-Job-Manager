@@ -114,7 +114,7 @@ function get_job_listings( $args = array() ) {
 		$query_args['post__in'] = array_merge( $location_post_ids, $keyword_post_ids );
 	}
 
-	$query_args = apply_filters( 'job_manager_get_listings', $query_args );
+	$query_args = apply_filters( 'job_manager_get_listings', $query_args, $args );
 
 	if ( empty( $query_args['meta_query'] ) )
 		unset( $query_args['meta_query'] );
@@ -129,13 +129,13 @@ function get_job_listings( $args = array() ) {
 	}
 
 	// Filter args
-	$query_args = apply_filters( 'get_job_listings_query_args', $query_args );
+	$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
-	do_action( 'before_get_job_listings', $query_args );
+	do_action( 'before_get_job_listings', $query_args, $args );
 
 	$result = new WP_Query( $query_args );
 
-	do_action( 'after_get_job_listings', $query_args );
+	do_action( 'after_get_job_listings', $query_args, $args );
 
 	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
 
