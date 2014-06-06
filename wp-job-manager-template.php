@@ -462,7 +462,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 		return;
 
 	$company_twitter = esc_attr( strip_tags( $company_twitter ) );
-	$company_twitter = $before . '<a href="http://twitter.com/' . $company_twitter . '" class="company_twitter">' . $company_twitter . '</a>' . $after;
+	$company_twitter = $before . '<a href="http://twitter.com/' . $company_twitter . '" class="company_twitter" target="_blank">' . $company_twitter . '</a>' . $after;
 
 	if ( $echo )
 		echo $company_twitter;
