@@ -143,6 +143,25 @@ function get_job_listings( $args = array() ) {
 }
 endif;
 
+if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
+/**
+ * Get post statuses used for jobs
+ *
+ * @access public
+ * @return array
+ */
+function get_job_listing_post_statuses() {
+	return apply_filters( 'job_listing_post_statuses', array(
+		'draft'           => _x( 'Draft', 'post status', 'wp-job-manager' ),
+		'expired'         => _x( 'Expired', 'post status', 'wp-job-manager' ),
+		'preview'         => _x( 'Preview', 'post status', 'wp-job-manager' ),
+		'pending'         => _x( 'Pending approval', 'post status', 'wp-job-manager' ),
+		'pending_payment' => _x( 'Pending payment', 'post status', 'wp-job-manager' ),
+		'publish'         => _x( 'Active', 'post status', 'wp-job-manager' ),
+	) );
+}
+endif;
+
 if ( ! function_exists( 'order_featured_job_listing' ) ) :
 	/**
 	 * WP Core doens't let us change the sort direction for invidual orderby params - http://core.trac.wordpress.org/ticket/17065

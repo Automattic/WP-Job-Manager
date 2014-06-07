@@ -45,12 +45,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		} elseif ( ! empty( $_GET['step'] ) ) {
 			self::$step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( $_GET['step'], array_keys( self::$steps ) );
 		}
+
 		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
-		// Validate job ID if set
-		if ( self::$job_id && ! in_array( get_post_status( self::$job_id ), apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ) ) ) {
-			self::$job_id = 0;
-			self::$step   = 0;
+		if ( self::$job_id ) {
+			$job_status = get_post_status( self::$job_id );
+			if ( 'expired' === $job_status ) {
+				if ( ! job_manager_user_can_edit_job( self::$job_id ) ) {
+					self::$job_id = 0;
+					self::$step   = 0;
+				}
+			} elseif ( ! in_array( $job_status, apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ) ) ) {
+				self::$job_id = 0;
+				self::$step   = 0;
+			}
 		}
 	}
 
@@ -580,7 +588,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			$post = get_post( self::$job_id );
 			setup_postdata( $post );
-
+			$post->post_status = 'preview';
 			?>
 			<form method="post" id="job_preview">
 				<div class="job_listing_preview_title">
@@ -620,10 +628,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			$job = get_post( self::$job_id );
 
-			if ( $job->post_status == 'preview' ) {
-				$update_job                = array();
-				$update_job['ID']          = $job->ID;
-				$update_job['post_status'] = get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish';
+			if ( in_array( $job->post_status, array( 'preview', 'expired' ) ) ) {
+				$update_job                  = array();
+				$update_job['ID']            = $job->ID;
+				$update_job['post_status']   = get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish';
+				$update_job['post_date']     = current_time( 'mysql' );
+				$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
 				wp_update_post( $update_job );
 			}
 

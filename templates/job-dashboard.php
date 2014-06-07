@@ -38,6 +38,11 @@
 														$actions['mark_filled'] = array( 'label' => __( 'Mark filled', 'wp-job-manager' ), 'nonce' => true );
 													}
 													break;
+												case 'expired' :
+													if ( get_option( 'job_manager_submit_page_slug' ) ) {
+														$actions['relist'] = array( 'label' => __( 'Relist', 'wp-job-manager' ), 'nonce' => true );
+													}
+													break;
 											}
 
 											$actions['delete'] = array( 'label' => __( 'Delete', 'wp-job-manager' ), 'nonce' => true );

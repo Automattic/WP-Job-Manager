@@ -95,6 +95,11 @@ class WP_Job_Manager_Shortcodes {
 						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been deleted', 'wp-job-manager' ), $job->post_title ) . '</div>';
 
 						break;
+					case 'relist' :
+						// redirect to post page
+						wp_redirect( add_query_arg( array( 'step' => 'preview', 'job_id' => absint( $job_id ) ), get_permalink( get_page_by_path( get_option( 'job_manager_submit_page_slug' ) )->ID ) ) );
+
+						break;
 					default :
 						do_action( 'job_manager_job_dashboard_do_action_' . $action );
 						break;

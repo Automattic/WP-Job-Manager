@@ -17,6 +17,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'preview_to_publish', array( $this, 'set_expirey' ) );
 		add_action( 'draft_to_publish', array( $this, 'set_expirey' ) );
 		add_action( 'auto-draft_to_publish', array( $this, 'set_expirey' ) );
+		add_action( 'expired_to_publish', array( $this, 'set_expirey' ) );
 
 		add_filter( 'the_job_description', 'wptexturize'        );
 		add_filter( 'the_job_description', 'convert_smilies'    );
@@ -208,7 +209,7 @@ class WP_Job_Manager_Post_Types {
 		 * Post status
 		 */
 		register_post_status( 'expired', array(
-			'label'                     => _x( 'Expired', 'job_listing', 'wp-job-manager' ),
+			'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
 			'public'                    => true,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
@@ -412,14 +413,16 @@ class WP_Job_Manager_Post_Types {
 	 * Set expirey date when job status changes
 	 */
 	public function set_expirey( $post ) {
-		if ( $post->post_type !== 'job_listing' )
+		if ( $post->post_type !== 'job_listing' ) {
 			return;
+		}
 
 		// See if it is already set
 		$expires  = get_post_meta( $post->ID, '_job_expires', true );
 
-		if ( ! empty( $expires ) )
+		if ( ! empty( $expires ) ) {
 			return;
+		}
 
 		// Get duration from the product if set...
 		$duration = get_post_meta( $post->ID, '_job_duration', true );

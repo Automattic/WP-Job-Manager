@@ -24,11 +24,13 @@ class WP_Job_Manager_CPT {
 		add_action( 'admin_notices', array( $this, 'approved_notice' ) );
 		add_action( 'admin_notices', array( $this, 'expired_notice' ) );
 
-		if ( get_option( 'job_manager_enable_categories' ) )
+		if ( get_option( 'job_manager_enable_categories' ) ) {
 			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
+		}
 
-		foreach ( array( 'post', 'post-new' ) as $hook )
+		foreach ( array( 'post', 'post-new' ) as $hook ) {
 			add_action( "admin_footer-{$hook}.php", array( $this,'extend_submitdiv_post_status' ) );
+		}
 	}
 
 	/**
@@ -391,7 +393,7 @@ class WP_Job_Manager_CPT {
 	 * @return void
 	 */
 	public function extend_submitdiv_post_status() {
-		global $wp_post_statuses, $post, $post_type;
+		global $post, $post_type;
 
 		// Abort if we're on the wrong post type, but only if we got a restriction
 		if ( 'job_listing' !== $post_type ) {
@@ -400,35 +402,24 @@ class WP_Job_Manager_CPT {
 
 		// Get all non-builtin post status and add them as <option>
 		$options = $display = '';
-		foreach ( $wp_post_statuses as $status )
-		{
-			if ( ! $status->_builtin ) {
-				// Match against the current posts status
-				$selected = selected( $post->post_status, $status->name, false );
+		foreach ( get_job_listing_post_statuses() as $status => $name ) {
+			$selected = selected( $post->post_status, $status, false );
 
-				// If we one of our custom post status is selected, remember it
-				$selected AND $display = $status->label;
+			// If we one of our custom post status is selected, remember it
+			$selected AND $display = $name;
 
-				// Build the options
-				$options .= "<option{$selected} value='{$status->name}'>{$status->label}</option>";
-			}
+			// Build the options
+			$options .= "<option{$selected} value='{$status}'>{$name}</option>";
 		}
 		?>
 		<script type="text/javascript">
-			jQuery( document ).ready( function($)
-			{
-				<?php
-				// Add the selected post status label to the "Status: [Name] (Edit)"
-				if ( ! empty( $display ) ) :
-				?>
-					$( '#post-status-display' ).html( '<?php echo $display; ?>' )
-				<?php
-				endif;
+			jQuery( document ).ready( function($) {
+				<?php if ( ! empty( $display ) ) : ?>
+					jQuery( '#post-status-display' ).html( '<?php echo $display; ?>' )
+				<?php endif; ?>
 
-				// Add the options to the <select> element
-				?>
-				var select = $( '#post-status-select' ).find( 'select' );
-				$( select ).append( "<?php echo $options; ?>" );
+				var select = jQuery( '#post-status-select' ).find( 'select' );
+				jQuery( select ).html( "<?php echo $options; ?>" );
 			} );
 		</script>
 		<?php

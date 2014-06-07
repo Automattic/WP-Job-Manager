@@ -108,18 +108,15 @@ function the_job_status( $post = null ) {
  * @return string
  */
 function get_the_job_status( $post = null ) {
-	$post = get_post( $post );
+	$post     = get_post( $post );
+	$status   = $post->post_status;
+	$statuses = get_job_listing_post_statuses();
 
-	$status = $post->post_status;
-
-	if ( $status == 'publish' )
-		$status = __( 'Active', 'wp-job-manager' );
-	elseif ( $status == 'expired' )
-		$status = __( 'Expired', 'wp-job-manager' );
-	elseif ( $status == 'pending' )
-		$status = __( 'Pending Review', 'wp-job-manager' );
-	else
+	if ( isset( $statuses[ $status ] ) ) {
+		$status = $statuses[ $status ];
+	} else {
 		$status = __( 'Inactive', 'wp-job-manager' );
+	}
 
 	return apply_filters( 'the_job_status', $status, $post );
 }
