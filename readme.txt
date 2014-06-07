@@ -101,6 +101,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Make taxonomies hidden unless current_theme_supports( 'job-manager-templates' )
 * Adjusted job application area styling and added some additonal filters.
 * Improve backend order status selection.
+* Added some responsive styles for job lists.
 * Allow users to relist a job from the frontend. (Ensure WC Paid Listings and Simple Paid Listings are updated to support this).
 
 = 1.11.1 =

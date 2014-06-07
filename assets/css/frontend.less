@@ -790,3 +790,41 @@ nav.job-manager-pagination, #content nav.job-manager-pagination {
 		}
 	}
 }
+
+/**
+ * Mobile styles
+ */
+@media only screen and (max-width: 767px) {
+	ul.job_listings {
+		li.job_listing, li.no_job_listings_found {
+			a {
+				padding: 1em;
+				img.company_logo {
+					visibility: hidden;
+				}
+				div.position {
+					float: left;
+					width: 60%;
+					padding: 0;
+				}
+				div.location {
+					float: right;
+					width: 40%;
+					line-height: 2em;
+					font-size: .75em;
+					padding: 0 0 0 1em;
+					text-align: right;
+				}
+				.meta {
+					float: right;
+					width: 40%;
+					line-height: 2em;
+					font-size: .75em;
+					li {
+						font-size: 1em;
+					}
+				}
+			}
+		}
+	}
+}
