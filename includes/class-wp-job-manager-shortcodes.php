@@ -117,8 +117,6 @@ class WP_Job_Manager_Shortcodes {
 	 * Shortcode which lists the logged in user's jobs
 	 */
 	public function job_dashboard( $atts ) {
-		global $job_manager;
-
 		if ( ! is_user_logged_in() ) {
 			return __( 'You need to be signed in to manage your job listings.', 'wp-job-manager' );
 		}
@@ -188,8 +186,6 @@ class WP_Job_Manager_Shortcodes {
 	 * @return void
 	 */
 	public function output_jobs( $atts ) {
-		global $job_manager;
-
 		ob_start();
 
 		extract( $atts = shortcode_atts( apply_filters( 'job_manager_output_jobs_defaults', array(
@@ -337,8 +333,6 @@ class WP_Job_Manager_Shortcodes {
 	 * @return string
 	 */
 	public function output_job( $atts ) {
-		global $job_manager;
-
 		extract( shortcode_atts( array(
 			'id' => '',
 		), $atts ) );
@@ -381,8 +375,6 @@ class WP_Job_Manager_Shortcodes {
 	 * @return string
 	 */
 	public function output_job_summary( $atts ) {
-		global $job_manager;
-
 		extract( shortcode_atts( array(
 			'id'    => '',
 			'width' => '250px',

@@ -299,7 +299,7 @@ class WP_Job_Manager_CPT {
 	 * @return void
 	 */
 	public function custom_columns( $column ) {
-		global $post, $job_manager;
+		global $post;
 
 		switch ( $column ) {
 			case "job_listing_type" :

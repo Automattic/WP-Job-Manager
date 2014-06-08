@@ -31,7 +31,7 @@ class WP_Job_Manager_Admin {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts() {
-		global $job_manager, $wp_scripts;
+		global $wp_scripts;
 
 		$screen = get_current_screen();
 
