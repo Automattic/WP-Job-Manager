@@ -35,8 +35,6 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * Submit Step
 	 */
 	public static function submit() {
-		global $job_manager, $post;
-
 		$job = get_post( self::$job_id );
 
 		if ( empty( self::$job_id  ) || $job->post_status !== 'publish' ) {

@@ -5,4 +5,4 @@
 	'name'            => isset( $field['name'] ) ? $field['name'] : $key, 
 	'orderby'         => 'name', 
 	'selected'        => isset( $field['value'] ) ? $field['value'] : $field['default'] 
-) ); ?>
+) );

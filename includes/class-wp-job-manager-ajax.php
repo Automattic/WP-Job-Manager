@@ -19,8 +19,6 @@ class WP_Job_Manager_Ajax {
 	 * Get listings via ajax
 	 */
 	public function get_listings() {
-		global $job_manager, $wpdb;
-
 		$result             = array();
 		$search_location    = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
 		$search_keywords    = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );

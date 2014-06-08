@@ -167,8 +167,6 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	 * @return void
 	 */
 	function widget( $args, $instance ) {
-		global $job_manager;
-
 		if ( $this->get_cached_widget( $args ) )
 			return;
 

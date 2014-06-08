@@ -27,8 +27,6 @@ class WP_Job_Manager_Forms {
 	 * @return string class name on success, false on failure
 	 */
 	private function load_form_class( $form_name ) {
-		global $job_manager;
-
 		// Load the form abtract
 		if ( ! class_exists( 'WP_Job_Manager_Form' ) )
 			include( 'abstracts/abstract-wp-job-manager-form.php' );

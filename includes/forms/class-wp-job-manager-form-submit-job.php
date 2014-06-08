@@ -390,8 +390,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Submit Step
 	 */
 	public static function submit() {
-		global $job_manager, $post;
-
 		self::init_fields();
 
 		// Load data if neccessary
@@ -582,7 +580,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Preview Step
 	 */
 	public static function preview() {
-		global $job_manager, $post;
+		global $post;
 
 		if ( self::$job_id ) {
 

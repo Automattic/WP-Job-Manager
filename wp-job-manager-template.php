@@ -277,8 +277,6 @@ function get_the_job_location( $post = null ) {
  * @return void
  */
 function the_company_logo( $size = 'full', $default = null, $post = null ) {
-	global $job_manager;
-
 	$logo = get_the_company_logo( $post );
 
 	if ( ! empty( $logo ) && ( strstr( $logo, 'http' ) || file_exists( $logo ) ) ) {
