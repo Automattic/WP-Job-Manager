@@ -415,7 +415,7 @@ class WP_Job_Manager_CPT {
 		<script type="text/javascript">
 			jQuery( document ).ready( function($) {
 				<?php if ( ! empty( $display ) ) : ?>
-					jQuery( '#post-status-display' ).html( '<?php echo $display; ?>' )
+					jQuery( '#post-status-display' ).html( '<?php echo $display; ?>' );
 				<?php endif; ?>
 
 				var select = jQuery( '#post-status-select' ).find( 'select' );
