@@ -1,11 +1,11 @@
 jQuery( document ).ready( function ( $ ) {
 
-	var xhr;
+	var xhr = [];
 
 	$( '.job_listings' ).on( 'update_results', function ( event, page, append ) {
 
-		if ( xhr ) {
-			xhr.abort();
+		if ( xhr[ $( this ).index() ] ) {
+			xhr[ $( this ).index() ].abort();
 		}
 
 		var data               = '';
@@ -88,7 +88,7 @@ jQuery( document ).ready( function ( $ ) {
 
 		}
 
-		xhr = $.ajax( {
+		xhr[ $( this ).index() ] = $.ajax( {
 			type: 'POST',
 			url: job_manager_ajax_filters.ajax_url,
 			data: data,
