@@ -3,20 +3,22 @@ jQuery( document ).ready( function ( $ ) {
 	var xhr = [];
 
 	$( '.job_listings' ).on( 'update_results', function ( event, page, append ) {
+		var data     = '';
+		var target   = $( this );
+		var form     = target.find( '.job_filters' );
+		var showing  = target.find( '.showing_jobs' );
+		var results  = target.find( '.job_listings' );
+		var per_page = target.data( 'per_page' );
+		var orderby  = target.data( 'orderby' );
+		var order    = target.data( 'order' );
+		var featured = target.data( 'featured' );
+		var index    = $( 'div.job_listings' ).index(this);
 
-		if ( xhr[ $( this ).index() ] ) {
-			xhr[ $( this ).index() ].abort();
+		alert( index );
+
+		if ( xhr[index] ) {
+			xhr[index].abort();
 		}
-
-		var data               = '';
-		var target             = $( this );
-		var form               = target.find( '.job_filters' );
-		var showing            = target.find( '.showing_jobs' );
-		var results            = target.find( '.job_listings' );
-		var per_page           = target.data( 'per_page' );
-		var orderby            = target.data( 'orderby' );
-		var order              = target.data( 'order' );
-		var featured           = target.data( 'featured' );
 
 		if ( append ) {
 			$( '.load_more_jobs', target ).addClass( 'loading' );
@@ -88,7 +90,7 @@ jQuery( document ).ready( function ( $ ) {
 
 		}
 
-		xhr[ $( this ).index() ] = $.ajax( {
+		xhr[index] = $.ajax( {
 			type: 'POST',
 			url: job_manager_ajax_filters.ajax_url,
 			data: data,
