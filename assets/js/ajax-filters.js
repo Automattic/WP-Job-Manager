@@ -14,8 +14,6 @@ jQuery( document ).ready( function ( $ ) {
 		var featured = target.data( 'featured' );
 		var index    = $( 'div.job_listings' ).index(this);
 
-		alert( index );
-
 		if ( xhr[index] ) {
 			xhr[index].abort();
 		}
