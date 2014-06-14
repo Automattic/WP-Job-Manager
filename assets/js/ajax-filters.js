@@ -131,6 +131,8 @@ jQuery( document ).ready( function ( $ ) {
 						$( '.load_more_jobs', target ).removeClass( 'loading' );
 						$( 'li.job_listing', results ).css( 'visibility', 'visible' );
 
+						target.trigger( 'updated_results', result );
+
 					} catch ( err ) {
 						//console.log( err );
 					}
