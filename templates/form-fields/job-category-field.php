@@ -4,5 +4,6 @@
 	'show_option_all' => false,
 	'name'            => isset( $field['name'] ) ? $field['name'] : $key, 
 	'orderby'         => 'name', 
-	'selected'        => isset( $field['value'] ) ? $field['value'] : $field['default'] 
+	'selected'        => isset( $field['value'] ) ? $field['value'] : $field['default'],
+	'hide_empty'      => false
 ) );
