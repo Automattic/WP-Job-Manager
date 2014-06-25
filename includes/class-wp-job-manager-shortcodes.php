@@ -196,6 +196,7 @@ class WP_Job_Manager_Shortcodes {
 			// Filters + cats
 			'show_filters'       => true,
 			'show_categories'    => true,
+			'show_pagination'    => true,           
 			
 			// Limit what jobs are shown based on category and type
 			'categories'         => '',
@@ -245,7 +246,11 @@ class WP_Job_Manager_Shortcodes {
 
 			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'selected_category' => $selected_category, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords, 'selected_job_types' => $selected_job_types ) );
 
-			?><ul class="job_listings"></ul><a class="load_more_jobs" href="#" style="display:none;"><strong><?php _e( 'Load more job listings', 'wp-job-manager' ); ?></strong></a><?php
+			echo '<ul class="job_listings"></ul>';
+
+			if ( ! $show_pagination ) {
+				echo '<a class="load_more_jobs" href="#" style="display:none;"><strong>' . __( 'Load more job listings', 'wp-job-manager' ) . '</strong></a>';
+			}
 
 		} else {
 
@@ -276,7 +281,11 @@ class WP_Job_Manager_Shortcodes {
 
 					<?php wp_enqueue_script( 'wp-job-manager-ajax-filters' ); ?>
 
-					<a class="load_more_jobs" href="#"><strong><?php _e( 'Load more job listings', 'wp-job-manager' ); ?></strong></a>
+					<?php if ( $show_pagination ) : ?>
+						<?php echo get_job_listing_pagination( $jobs->max_num_pages ); ?>
+					<?php else : ?>
+						<a class="load_more_jobs" href="#"><strong><?php _e( 'Load more job listings', 'wp-job-manager' ); ?></strong></a>
+					<?php endif; ?>
 
 				<?php endif; ?>
 
@@ -287,13 +296,14 @@ class WP_Job_Manager_Shortcodes {
 
 		$data_attributes_string = '';
 		$data_attributes        = array(
-			'location'     => $location,
-			'keywords'     => $keywords,
-			'show_filters' => $show_filters ? 'true' : 'false',
-			'per_page'     => $per_page,
-			'orderby'      => $orderby,
-			'order'        => $order,
-			'categories'   => implode( ',', $categories )
+			'location'        => $location,
+			'keywords'        => $keywords,
+			'show_filters'    => $show_filters ? 'true' : 'false',
+			'show_pagination' => $show_pagination ? 'true' : 'false',
+			'per_page'        => $per_page,
+			'orderby'         => $orderby,
+			'order'           => $order,
+			'categories'      => implode( ',', $categories ),
 		);
 		if ( ! is_null( $featured ) ) {
 			$data_attributes[ 'featured' ] = $featured ? 'true' : 'false';

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.12.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-06-15 09:55:18+00:00\n"
+"POT-Creation-Date: 2014-06-25 18:47:29+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -622,8 +622,8 @@ msgstr ""
 msgid "Date Expires"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:248
-#: includes/class-wp-job-manager-shortcodes.php:279
+#: includes/class-wp-job-manager-shortcodes.php:252
+#: includes/class-wp-job-manager-shortcodes.php:287
 msgid "Load more job listings"
 msgstr ""
 
@@ -974,15 +974,15 @@ msgstr ""
 msgid "This email is already registered, please choose another one."
 msgstr ""
 
-#: wp-job-manager-template.php:118
+#: wp-job-manager-template.php:128
 msgid "Inactive"
 msgstr ""
 
-#: wp-job-manager-template.php:194
+#: wp-job-manager-template.php:204
 msgid "Job Application via \"%s\" listing on %s"
 msgstr ""
 
-#: wp-job-manager-template.php:252
+#: wp-job-manager-template.php:262
 msgid "Anywhere"
 msgstr ""
 

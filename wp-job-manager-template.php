@@ -94,6 +94,16 @@ function get_job_manager_template_part( $slug, $name = '', $template_path = '', 
 }
 
 /**
+ * Get jobs pagination for [jobs] shortcode
+ * @return [type] [description]
+ */
+function get_job_listing_pagination( $max_num_pages, $current_page = 1 ) {
+	ob_start();
+	get_job_manager_template( 'job-pagination.php', array( 'max_num_pages' => $max_num_pages, 'current_page' => absint( $current_page ) ) );
+	return ob_get_clean();
+}
+
+/**
  * Outputs the jobs status
  *
  * @return void

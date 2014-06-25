@@ -130,6 +130,11 @@ class WP_Job_Manager_Ajax {
 			'search_keywords'   => $search_keywords
 		) );
 
+		// Generate pagination
+		if ( isset( $_POST['show_pagination'] ) && $_POST['show_pagination'] === 'true' ) {
+			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_POST['page'] ) );
+		}
+
 		$result['max_num_pages'] = $jobs->max_num_pages;
 
 		echo '<!--WPJM-->';

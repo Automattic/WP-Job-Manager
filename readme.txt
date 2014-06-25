@@ -91,6 +91,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+* Shortcode arg to show numbered pagination instead of 'load more jobs'.
+
 = 1.12.1 =
 * Job submission form categories must not hide empty categories.
 

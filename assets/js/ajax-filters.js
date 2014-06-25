@@ -61,6 +61,7 @@ jQuery( document ).ready( function ( $ ) {
 				order: order,
 				page: page,
 				featured: featured,
+				show_pagination: target.data( 'show_pagination' ),
 				form_data: form.serialize()
 			};
 
@@ -83,7 +84,8 @@ jQuery( document ).ready( function ( $ ) {
 				orderby: orderby,
 				order: order,
 				page: page,
-				featured: featured
+				featured: featured,
+				show_pagination: target.data( 'show_pagination' ),
 			};
 
 		}
@@ -121,16 +123,24 @@ jQuery( document ).ready( function ( $ ) {
 							}
 						}
 
-						if ( ! result.found_jobs || result.max_num_pages === page ) {
-							$( '.load_more_jobs', target ).hide();
+						if ( true == target.data( 'show_pagination' ) ) {
+							target.find('.job-manager-pagination').remove();
+							
+							if ( result.pagination ) {
+								target.append( result.pagination );
+							}
 						} else {
-							$( '.load_more_jobs', target ).show().data( 'page', page );
+							if ( ! result.found_jobs || result.max_num_pages === page ) {
+								$( '.load_more_jobs', target ).hide();
+							} else {
+								$( '.load_more_jobs', target ).show().data( 'page', page );
+							}
+							$( '.load_more_jobs', target ).removeClass( 'loading' );
+							$( 'li.job_listing', results ).css( 'visibility', 'visible' );
 						}
 
 						$( results ).removeClass( 'loading' );
-						$( '.load_more_jobs', target ).removeClass( 'loading' );
-						$( 'li.job_listing', results ).css( 'visibility', 'visible' );
-
+						
 						target.trigger( 'updated_results', result );
 
 					} catch ( err ) {
@@ -185,6 +195,15 @@ jQuery( document ).ready( function ( $ ) {
 		$( this ).data( 'page', ( page + 1 ) );
 
 		target.trigger( 'update_results', [ page + 1, true ] );
+
+		return false;
+	} );
+
+	$( 'div.job_listings' ).on( 'click', '.job-manager-pagination a', function() {
+		var target = $( this ).closest( 'div.job_listings' );
+		var page   = $( this ).data( 'page' );
+
+		target.trigger( 'update_results', [ page, false ] );
 
 		return false;
 	} );
