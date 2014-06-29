@@ -194,7 +194,7 @@ class WP_Job_Manager_Post_Types {
 				'hierarchical' 			=> false,
 				'rewrite' 				=> $rewrite,
 				'query_var' 			=> true,
-				'supports' 				=> array( 'title', 'editor', 'custom-fields' ),
+				'supports' 				=> array( 'title', 'editor', 'custom-fields', 'publicize' ),
 				'has_archive' 			=> $has_archive,
 				'show_in_nav_menus' 	=> false
 			) )
