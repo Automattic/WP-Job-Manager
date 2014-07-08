@@ -294,12 +294,12 @@ function the_company_logo( $size = 'full', $default = null, $post = null ) {
 		if ( $size !== 'full' )
 			$logo = job_manager_get_resized_image( $logo, $size );
 
-		echo '<img class="company_logo" src="' . $logo . '" alt="Logo" />';
+		echo '<img class="company_logo" src="' . $logo . '" alt="' . get_the_company_name( $post ) . '" />';
 
 	} elseif ( $default )
-		echo '<img class="company_logo" src="' . $default . '" alt="Logo" />';
+		echo '<img class="company_logo" src="' . $default . '" alt="' . get_the_company_name( $post ) . '" />';
 	else
-		echo '<img class="company_logo" src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' . '" alt="Logo" />';
+		echo '<img class="company_logo" src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' . '" alt="' . get_the_company_name( $post ) . '" />';
 }
 
 /**
@@ -383,12 +383,13 @@ function the_company_name( $before = '', $after = '', $echo = true, $post = null
  *
  * @access public
  * @param int $post (default: null)
- * @return void
+ * @return string
  */
 function get_the_company_name( $post = null ) {
 	$post = get_post( $post );
-	if ( $post->post_type !== 'job_listing' )
-		return;
+	if ( $post->post_type !== 'job_listing' ) {
+		return '';
+	}
 
 	return apply_filters( 'the_company_name', $post->_company_name, $post );
 }
