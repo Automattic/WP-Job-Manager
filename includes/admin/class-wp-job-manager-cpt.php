@@ -17,6 +17,8 @@ class WP_Job_Manager_CPT {
 		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 1, 2 );
 		add_filter( 'manage_edit-job_listing_columns', array( $this, 'columns' ) );
 		add_action( 'manage_job_listing_posts_custom_column', array( $this, 'custom_columns' ), 2 );
+		add_filter( 'manage_edit-job_listing_sortable_columns', array( $this, 'sortable_columns' ) );
+		add_filter( 'request', array( $this, 'sort_columns' ) );
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_action( 'admin_footer-edit.php', array( $this, 'add_bulk_actions' ) );
 		add_action( 'load-edit.php', array( $this, 'do_bulk_actions' ) );
@@ -385,6 +387,41 @@ class WP_Job_Manager_CPT {
 
 			break;
 		}
+	}
+
+	/**
+	 * sortable_columns function.
+	 *
+	 * @access public
+	 * @param mixed $columns
+	 * @return void
+	 */
+	public function sortable_columns( $columns ) {
+		$custom = array(
+			'job_posted'   => 'date',
+			'job_position' => 'title',
+			'job_expires'  => 'job_expires'
+		);
+		return wp_parse_args( $custom, $columns );
+	}
+
+	/**
+	 * sort_columns function.
+	 *
+	 * @access public
+	 * @param mixed $vars
+	 * @return void
+	 */
+	public function sort_columns( $vars ) {
+		if ( isset( $vars['orderby'] ) ) {
+			if ( 'job_expires' === $vars['orderby'] ) {
+				$vars = array_merge( $vars, array(
+					'meta_key' 	=> '_job_expires',
+					'orderby' 	=> 'meta_value'
+				) );
+			}
+		}
+		return $vars;
 	}
 
     /**

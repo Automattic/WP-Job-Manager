@@ -94,6 +94,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Shortcode arg to show numbered pagination instead of 'load more jobs'.
 * Define support for Jetpack publicize.
 * Show company name alt text for company logo.
+* Sort jobs by title, date, expirey date.
 
 = 1.12.1 =
 * Job submission form categories must not hide empty categories.

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.12.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-06-25 18:47:29+00:00\n"
+"POT-Creation-Date: 2014-07-08 21:46:22+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,150 +31,150 @@ msgstr ""
 msgid "Add-ons"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:46
-#: includes/admin/class-wp-job-manager-cpt.php:47
+#: includes/admin/class-wp-job-manager-cpt.php:48
+#: includes/admin/class-wp-job-manager-cpt.php:49
 msgid "Approve Jobs"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:49
-#: includes/admin/class-wp-job-manager-cpt.php:50
+#: includes/admin/class-wp-job-manager-cpt.php:51
+#: includes/admin/class-wp-job-manager-cpt.php:52
 msgid "Expire Jobs"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:137
 #: includes/admin/class-wp-job-manager-cpt.php:139
+#: includes/admin/class-wp-job-manager-cpt.php:141
 msgid "%s approved"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:157
 #: includes/admin/class-wp-job-manager-cpt.php:159
+#: includes/admin/class-wp-job-manager-cpt.php:161
 msgid "%s expired"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:202
+#: includes/admin/class-wp-job-manager-cpt.php:204
 msgid "Select a category"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:235
+#: includes/admin/class-wp-job-manager-cpt.php:237
 msgid "Job position title"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:251
+#: includes/admin/class-wp-job-manager-cpt.php:253
 msgid "Job listing updated. <a href=\"%s\">View Job</a>"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:252
+#: includes/admin/class-wp-job-manager-cpt.php:254
 msgid "Custom field updated."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:253
+#: includes/admin/class-wp-job-manager-cpt.php:255
 msgid "Custom field deleted."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:254
+#: includes/admin/class-wp-job-manager-cpt.php:256
 msgid "Job listing updated."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:255
+#: includes/admin/class-wp-job-manager-cpt.php:257
 msgid "Job listing restored to revision from %s"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:256
+#: includes/admin/class-wp-job-manager-cpt.php:258
 msgid "Job listing published. <a href=\"%s\">View Job</a>"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:257
+#: includes/admin/class-wp-job-manager-cpt.php:259
 msgid "Job listing saved."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:258
+#: includes/admin/class-wp-job-manager-cpt.php:260
 msgid "Job listing submitted. <a target=\"_blank\" href=\"%s\">Preview Job</a>"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:259
+#: includes/admin/class-wp-job-manager-cpt.php:261
 msgid ""
 "Job listing scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href="
 "\"%2$s\">Preview Job</a>"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:260
+#: includes/admin/class-wp-job-manager-cpt.php:262
 msgid "M j, Y @ G:i"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:261
+#: includes/admin/class-wp-job-manager-cpt.php:263
 msgid ""
 "Job listing draft updated. <a target=\"_blank\" href=\"%s\">Preview Job</a>"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:280
+#: includes/admin/class-wp-job-manager-cpt.php:282
 msgid "Type"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:281
+#: includes/admin/class-wp-job-manager-cpt.php:283
 msgid "Position"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:282
+#: includes/admin/class-wp-job-manager-cpt.php:284
 msgid "Posted"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:283
+#: includes/admin/class-wp-job-manager-cpt.php:285
 msgid "Expires"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:285
+#: includes/admin/class-wp-job-manager-cpt.php:287
 msgid "Categories"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:286
+#: includes/admin/class-wp-job-manager-cpt.php:288
 msgid "Featured?"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:287
+#: includes/admin/class-wp-job-manager-cpt.php:289
 #: includes/class-wp-job-manager-shortcodes.php:162
 msgid "Filled?"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:288
+#: includes/admin/class-wp-job-manager-cpt.php:290
 msgid "Status"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:289
+#: includes/admin/class-wp-job-manager-cpt.php:291
 msgid "Actions"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:312
+#: includes/admin/class-wp-job-manager-cpt.php:314
 msgid "Job ID: %d"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:338
-#: includes/admin/class-wp-job-manager-cpt.php:343
+#: includes/admin/class-wp-job-manager-cpt.php:340
+#: includes/admin/class-wp-job-manager-cpt.php:345
 msgid "M j, Y"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:339
+#: includes/admin/class-wp-job-manager-cpt.php:341
 msgid "by a guest"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:339
+#: includes/admin/class-wp-job-manager-cpt.php:341
 msgid "by %s"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:356
+#: includes/admin/class-wp-job-manager-cpt.php:358
 msgid "Approve"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:363
+#: includes/admin/class-wp-job-manager-cpt.php:365
 msgid "View"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:368
+#: includes/admin/class-wp-job-manager-cpt.php:370
 #: includes/class-wp-job-manager-post-types.php:167
 #: templates/job-dashboard.php:33
 msgid "Edit"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:373
+#: includes/admin/class-wp-job-manager-cpt.php:375
 #: templates/job-dashboard.php:48
 msgid "Delete"
 msgstr ""
