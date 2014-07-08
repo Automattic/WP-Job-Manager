@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.12.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-07-08 21:46:22+00:00\n"
+"POT-Creation-Date: 2014-07-08 21:51:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -916,6 +916,12 @@ msgstr ""
 
 #: templates/job-filters.php:25
 msgid "All Job Categories"
+msgstr ""
+
+#: templates/job-filters.php:34
+msgid ""
+"Your browser does not support JavaScript, or it is disabled. JavaScript must "
+"be enabled in order to view job listings."
 msgstr ""
 
 #: templates/job-submit.php:35

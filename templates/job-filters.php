@@ -31,3 +31,4 @@
 
 	<?php do_action( 'job_manager_job_filters_end', $atts ); ?>
 </form>
+<noscript><?php _e( 'Your browser does not support JavaScript, or it is disabled. JavaScript must be enabled in order to view job listings.', 'wp-job-manager' ); ?></noscript>

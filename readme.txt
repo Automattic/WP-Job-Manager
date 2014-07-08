@@ -95,6 +95,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Define support for Jetpack publicize.
 * Show company name alt text for company logo.
 * Sort jobs by title, date, expirey date.
+* Added noscript element for jobs shortcode.
 
 = 1.12.1 =
 * Job submission form categories must not hide empty categories.
