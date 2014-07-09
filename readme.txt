@@ -96,6 +96,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Show company name alt text for company logo.
 * Sort jobs by title, date, expirey date.
 * Added noscript element for jobs shortcode.
+* filter_var to validate URLs on the job submission form.
 
 = 1.12.1 =
 * Job submission form categories must not hide empty categories.

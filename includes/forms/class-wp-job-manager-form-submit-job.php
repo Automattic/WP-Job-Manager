@@ -333,13 +333,23 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					}
 				break;
 				case 'url' :
+					// Prefix http if needed
 					if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
+						$values['job']['application'] = 'http://' . $values['job']['application'];
+					}
+					if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 						throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
 					}
 				break;
 				default :
-					if ( ! is_email( $values['job']['application'] ) && ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-						throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
+					if ( ! is_email( $values['job']['application'] ) ) {
+						// Prefix http if needed
+						if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
+							$values['job']['application'] = 'http://' . $values['job']['application'];
+						}
+						if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
+						}
 					}
 				break;
 			}

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.12.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-07-08 21:51:52+00:00\n"
+"POT-Creation-Date: 2014-07-09 16:05:57+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -668,7 +668,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
-#: includes/forms/class-wp-job-manager-form-submit-job.php:599
+#: includes/forms/class-wp-job-manager-form-submit-job.php:609
 msgid "Preview"
 msgstr ""
 
@@ -751,31 +751,31 @@ msgstr ""
 msgid "Please enter a valid application email address"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:337
+#: includes/forms/class-wp-job-manager-form-submit-job.php:341
 msgid "Please enter a valid application URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:342
+#: includes/forms/class-wp-job-manager-form-submit-job.php:351
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:447
+#: includes/forms/class-wp-job-manager-form-submit-job.php:457
 msgid "Preview job listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:484
+#: includes/forms/class-wp-job-manager-form-submit-job.php:494
 msgid "You must be signed in to post a new job listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:593
+#: includes/forms/class-wp-job-manager-form-submit-job.php:603
 msgid "Submit Listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:594
+#: includes/forms/class-wp-job-manager-form-submit-job.php:604
 msgid "&larr; Edit listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:679
+#: includes/forms/class-wp-job-manager-form-submit-job.php:689
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
