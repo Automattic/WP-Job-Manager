@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-05-21 13:46+0000\n"
+"PO-Revision-Date: 2014-06-15 16:44+0000\n"
 "Last-Translator: FourLeafed <evert@fourleafed.com>\n"
 "Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/wp-job-manager/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
@@ -94,7 +94,7 @@ msgstr "Vacature opgeslagen."
 
 #: includes/admin/class-wp-job-manager-cpt.php:256
 msgid "Job listing submitted. <a target=\"_blank\" href=\"%s\">Preview Job</a>"
-msgstr "Vacature toegevoegd. <a target=\"_blank\" href=\"%s\">Bekijk vacature</a>"
+msgstr "Vacature toegevoegd. <a target=\"_blank\" href=\"%s\">Bekijk voorvertoning</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:257
 msgid ""

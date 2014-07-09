@@ -1,25 +1,25 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
-# Vedran Linić <toolrijeka@gmail.com>, 2014
+# Eugine Kim <martian36@naver.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-06-28 12:01+0000\n"
+"PO-Revision-Date: 2014-05-12 08:21+0000\n"
 "Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
-"Language-Team: Croatian (http://www.transifex.com/projects/p/wp-job-manager/language/hr/)\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/projects/p/wp-job-manager/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hr\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language: ko_KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: includes/admin/class-wp-job-manager-addons.php:50
 #: includes/admin/class-wp-job-manager-admin.php:60
 msgid "WP Job Manager Add-ons"
-msgstr ""
+msgstr "WP Job Manager Add-ons"
 
 #: includes/admin/class-wp-job-manager-addons.php:51
 msgid ""
@@ -29,16 +29,16 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-admin.php:57
 msgid "Settings"
-msgstr "Postavke"
+msgstr "설정"
 
 #: includes/admin/class-wp-job-manager-admin.php:60
 msgid "Add-ons"
-msgstr "Dodaci"
+msgstr "애드온"
 
 #: includes/admin/class-wp-job-manager-cpt.php:44
 #: includes/admin/class-wp-job-manager-cpt.php:45
 msgid "Approve Jobs"
-msgstr ""
+msgstr "직업 승인"
 
 #: includes/admin/class-wp-job-manager-cpt.php:47
 #: includes/admin/class-wp-job-manager-cpt.php:48
@@ -48,7 +48,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-cpt.php:135
 #: includes/admin/class-wp-job-manager-cpt.php:137
 msgid "%s approved"
-msgstr ""
+msgstr "%s 승인됨"
 
 #: includes/admin/class-wp-job-manager-cpt.php:155
 #: includes/admin/class-wp-job-manager-cpt.php:157
@@ -57,15 +57,15 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:200
 msgid "Select a category"
-msgstr "Odaberi kategoriju"
+msgstr "카테고리 선택"
 
 #: includes/admin/class-wp-job-manager-cpt.php:233
 msgid "Job position title"
-msgstr "Naziv radnog mjesta"
+msgstr "직업 지위 타이틀"
 
 #: includes/admin/class-wp-job-manager-cpt.php:249
 msgid "Job listing updated. <a href=\"%s\">View Job</a>"
-msgstr "Oglas za posao osvježen. <a href=\"%s\">Prikaži posao</a>"
+msgstr "직업 목록 업데이트 됨. <a href=\"%s\">직업 보기</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:250
 msgid "Custom field updated."
@@ -77,7 +77,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:252
 msgid "Job listing updated."
-msgstr "Oglas za posao osvježen"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:253
 msgid "Job listing restored to revision from %s"
@@ -89,7 +89,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:255
 msgid "Job listing saved."
-msgstr "Oglas za posao spremljen."
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:256
 msgid "Job listing submitted. <a target=\"_blank\" href=\"%s\">Preview Job</a>"
@@ -111,24 +111,24 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:278
 msgid "Type"
-msgstr "Vrsta"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:279
 msgid "Position"
-msgstr "Pozicija"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:280
 msgid "Posted"
-msgstr "Objavljeno prije"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:281
 #: templates/job-dashboard.php:9
 msgid "Expires"
-msgstr "Ističe"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:283
 msgid "Categories"
-msgstr "Kategorije"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:284
 msgid "Featured?"
@@ -137,16 +137,16 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-cpt.php:285
 #: templates/job-dashboard.php:10
 msgid "Filled?"
-msgstr "Popunjeno?"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:286
 #: templates/job-dashboard.php:8
 msgid "Status"
-msgstr "Status"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:287
 msgid "Actions"
-msgstr "Akcije"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:310
 msgid "Job ID: %d"
@@ -159,7 +159,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:337
 msgid "by a guest"
-msgstr "gost"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:337
 msgid "by %s"
@@ -171,28 +171,28 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:361
 msgid "View"
-msgstr "Prikaži"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:366
 #: includes/class-wp-job-manager-post-types.php:162
 #: templates/job-dashboard.php:33
 msgid "Edit"
-msgstr "Uredi"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:371
 #: templates/job-dashboard.php:43
 msgid "Delete"
-msgstr "Obriši"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:42
 #: includes/class-wp-job-manager-post-types.php:138
 #: includes/class-wp-job-manager-post-types.php:228
 msgid "Job Listings"
-msgstr "Lista poslova"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:48
 msgid "Jobs per page"
-msgstr "Poslova po stranici"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:49
 msgid "How many jobs should be shown per page by default?"
@@ -324,12 +324,12 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:264
 msgid "Save Changes"
-msgstr "Spremi izmjene"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:27
 #: includes/forms/class-wp-job-manager-form-submit-job.php:130
 msgid "Job location"
-msgstr "Lokacija posla"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:28
 #: includes/forms/class-wp-job-manager-form-submit-job.php:134
@@ -345,44 +345,44 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-writepanels.php:32
 #: includes/forms/class-wp-job-manager-form-submit-job.php:115
 msgid "Application email/URL"
-msgstr "e-mail ili URL za prijavu na posao"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:33
 msgid "URL or email which applicants use to apply"
-msgstr "URL ili e-mail koje kandidati koriste za prijavu na posao"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:36
 #: includes/forms/class-wp-job-manager-form-submit-job.php:172
 msgid "Company name"
-msgstr "Ime tvrtke"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:40
 msgid "Company website"
-msgstr "Webstranica tvrtke"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:44
 msgid "Company tagline"
-msgstr "Opis tvrtke"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:45
 msgid "Brief description about the company"
-msgstr "Kratak opis tvrtke"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:48
 msgid "Company Twitter"
-msgstr "Twitter tvrtke"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:52
 msgid "Company logo"
-msgstr "Logo tvrtke"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:53
 msgid "URL to the company logo"
-msgstr "URL loga tvrtke"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:57
 msgid "Position filled?"
-msgstr "Popunjeno mjesto?"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:61
 msgid "Feature this job listing?"
@@ -454,11 +454,11 @@ msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:48
 msgid "Job Category"
-msgstr "Kategorija posla"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:49
 msgid "Job Categories"
-msgstr "Kategorije posla"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:53
 msgctxt "Job category slug - resave permalinks after changing this"
@@ -524,21 +524,21 @@ msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:137
 msgid "Job Listing"
-msgstr "Oglas za posao"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:141
 msgctxt "Post type archive slug - resave permalinks after changing this"
 msgid "jobs"
-msgstr "poslovi"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:147
 msgctxt "Job permalink - resave permalinks after changing this"
 msgid "job"
-msgstr "posao"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:160
 msgid "Add New"
-msgstr "Dodaj novi"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:161
 msgid "Add %s"
@@ -568,14 +568,12 @@ msgstr ""
 #: includes/class-wp-job-manager-post-types.php:207
 msgctxt "job_listing"
 msgid "Expired"
-msgstr "Istekao"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:212
 msgid "Expired <span class=\"count\">(%s)</span>"
 msgid_plural "Expired <span class=\"count\">(%s)</span>"
 msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
 
 #: includes/class-wp-job-manager-shortcodes.php:61
 msgid "Invalid Job ID"
@@ -583,7 +581,7 @@ msgstr ""
 
 #: includes/class-wp-job-manager-shortcodes.php:67
 msgid "This job is already filled"
-msgstr "Ovo radno mjesto je popunjeno"
+msgstr ""
 
 #: includes/class-wp-job-manager-shortcodes.php:73
 msgid "%s has been filled"
@@ -608,7 +606,7 @@ msgstr ""
 #: includes/class-wp-job-manager-shortcodes.php:204
 #: includes/class-wp-job-manager-shortcodes.php:235
 msgid "Load more job listings"
-msgstr "Prikaži još poslova"
+msgstr ""
 
 #: includes/class-wp-job-manager-widgets.php:139
 msgid "Display a list of the most recent jobs on your site."
@@ -620,31 +618,31 @@ msgstr ""
 
 #: includes/class-wp-job-manager-widgets.php:145
 msgid "Recent Jobs"
-msgstr "Novi poslovi"
+msgstr ""
 
 #: includes/class-wp-job-manager-widgets.php:146
 msgid "Title"
-msgstr "Naziv"
+msgstr ""
 
 #: includes/class-wp-job-manager-widgets.php:154
 msgid "Number of jobs to show"
-msgstr "Broj poslova za prikaz"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:43
 msgid "Invalid job"
-msgstr "Neispravan posao"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:86
 msgid "Update job listing"
-msgstr "Uredi oglas za posao"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:112
 msgid "Your changes have been saved."
-msgstr "Promjene su spremljene."
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:112
 msgid "View Job Listing &rarr;"
-msgstr "Prikaži oglas &rarr;"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:22
 msgid "Submit Details"
@@ -653,11 +651,11 @@ msgstr ""
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
 #: includes/forms/class-wp-job-manager-form-submit-job.php:606
 msgid "Preview"
-msgstr "Pregledaj"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:34
 msgid "Done"
-msgstr "Gotovo"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:107
 msgid "Application email"
@@ -674,60 +672,60 @@ msgstr ""
 #: includes/forms/class-wp-job-manager-form-submit-job.php:112
 #: includes/forms/class-wp-job-manager-form-submit-job.php:182
 msgid "http://"
-msgstr "http://"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:116
 msgid "Enter an email address or website URL"
-msgstr "Unesi e-maili ili URL adresu stranice"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:123
 msgid "Job title"
-msgstr "Naziv oglasa"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:138
 msgid "Job type"
-msgstr "Vrsta posla"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:147
 msgid "Job category"
-msgstr "Kategorija posla"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:156
 msgid "Description"
-msgstr "Opis"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:175
 msgid "Enter the name of the company"
-msgstr "Unesi ime tvrtke"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:179
 #: templates/content-single-job_listing.php:36
 msgid "Website"
-msgstr "Web stranica"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:186
 msgid "Tagline"
-msgstr "Opis"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:189
 msgid "Briefly describe your company"
-msgstr "Ukratko opiši tvrtku"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:194
 msgid "Twitter username"
-msgstr "Twitter "
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:197
 msgid "@yourcompany"
-msgstr "@twitterracun"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:201
 msgid "Logo"
-msgstr "Logo"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:314
 msgid "%s is a required field"
-msgstr "%s je obavezno polje"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:325
 msgid "Please enter a valid application email address"
@@ -743,7 +741,7 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:456
 msgid "Preview job listing &rarr;"
-msgstr "Pregledaj oglas &rarr;"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:492
 msgid "You must be signed in to post a new job listing."
@@ -763,23 +761,23 @@ msgstr ""
 
 #: templates/account-signin.php:4
 msgid "Your account"
-msgstr "Tvoj račun"
+msgstr ""
 
 #: templates/account-signin.php:8
 msgid "You are currently signed in as <strong>%s</strong>."
-msgstr "Trenutno si prijavljen/a kao <strong>%s</strong>."
+msgstr ""
 
 #: templates/account-signin.php:11
 msgid "Sign out"
-msgstr "Odjavi se"
+msgstr ""
 
 #: templates/account-signin.php:21
 msgid "Have an account?"
-msgstr "Imaš li račun?"
+msgstr ""
 
 #: templates/account-signin.php:23
 msgid "Sign in"
-msgstr "Prijavi se"
+msgstr ""
 
 #: templates/account-signin.php:27
 msgid ""
@@ -789,20 +787,20 @@ msgstr ""
 
 #: templates/account-signin.php:27
 msgid "optionally"
-msgstr "opcionalno"
+msgstr ""
 
 #: templates/account-signin.php:31
 msgid "You must sign in to create a new job listing."
-msgstr "Moraš se prijaviti za dodavanje novog posla."
+msgstr ""
 
 #: templates/account-signin.php:38
 msgid "Your email"
-msgstr "Tvoj e-mail"
+msgstr ""
 
 #: templates/account-signin.php:38 templates/job-submit.php:24
 #: templates/job-submit.php:41
 msgid "(optional)"
-msgstr "(opcionalno)"
+msgstr ""
 
 #: templates/content-job_listing.php:16
 #: templates/content-single-job_listing.php:21
@@ -828,7 +826,7 @@ msgstr ""
 
 #: templates/form-fields/file-field.php:6
 msgid "or"
-msgstr "ili"
+msgstr ""
 
 #: templates/form-fields/file-field.php:16
 msgid "Max. file size: %s."
@@ -838,11 +836,11 @@ msgstr ""
 msgid ""
 "To apply for this job <strong>email your details to</strong> <a "
 "class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
-msgstr "Za prijavu na ovaj posao <strong>pošalji e-mailom tražene podatke na</strong> <a class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
+msgstr ""
 
 #: templates/job-application-email.php:4
 msgid "Apply using webmail: "
-msgstr "Prijavi se koristeći: "
+msgstr ""
 
 #: templates/job-application-url.php:1
 msgid ""
@@ -852,7 +850,7 @@ msgstr ""
 
 #: templates/job-application.php:5
 msgid "Apply for job"
-msgstr "Prijavi se"
+msgstr ""
 
 #: templates/job-dashboard.php:2
 msgid ""
@@ -862,11 +860,11 @@ msgstr ""
 
 #: templates/job-dashboard.php:6
 msgid "Job Title"
-msgstr "Naziv posla"
+msgstr ""
 
 #: templates/job-dashboard.php:7
 msgid "Date Posted"
-msgstr "Datum objave"
+msgstr ""
 
 #: templates/job-dashboard.php:16
 msgid "You do not have any active job listings."
@@ -886,46 +884,46 @@ msgstr ""
 
 #: templates/job-filters.php:9
 msgid "All Jobs"
-msgstr "Svi poslovi"
+msgstr ""
 
 #: templates/job-filters.php:13
 msgid "Location"
-msgstr "Lokacija"
+msgstr ""
 
 #: templates/job-filters.php:14
 msgid "Any Location"
-msgstr "Bilo koja lokacija"
+msgstr ""
 
 #: templates/job-filters.php:23
 msgid "Category"
-msgstr "Kategorija"
+msgstr ""
 
 #: templates/job-filters.php:24
 msgid "All Job Categories"
-msgstr "Sve kategorije poslova"
+msgstr ""
 
 #: templates/job-submit.php:35
 msgid "Company details"
-msgstr "Detalji o tvrtki"
+msgstr ""
 
 #: templates/job-submitted.php:4
 msgid ""
 "Job listed successfully. To view your job listing <a href=\"%s\">click "
 "here</a>."
-msgstr "Oglas je uspješno objavljen. Za prikaz oglasa<a href=\"%s\">klikni ovdje</a>."
+msgstr ""
 
 #: templates/job-submitted.php:7
 msgid ""
 "Job submitted successfully. Your job listing will be visible once approved."
-msgstr "Oglas za posao uspješno unesen. Oglas će biti vidljiv nakon odobrenja administratora."
+msgstr ""
 
 #: wp-job-manager-functions.php:224
 msgid "Reset"
-msgstr "Poništi"
+msgstr ""
 
 #: wp-job-manager-functions.php:228
 msgid "RSS"
-msgstr "RSS"
+msgstr ""
 
 #: wp-job-manager-functions.php:278
 msgid "Your email address isn&#8217;t correct."
@@ -937,19 +935,19 @@ msgstr ""
 
 #: wp-job-manager-template.php:116
 msgid "Active"
-msgstr "Aktivan"
+msgstr ""
 
 #: wp-job-manager-template.php:118
 msgid "Expired"
-msgstr "Istekao"
+msgstr ""
 
 #: wp-job-manager-template.php:120
 msgid "Pending Review"
-msgstr "Čeka odobrenje administratora"
+msgstr ""
 
 #: wp-job-manager-template.php:122
 msgid "Inactive"
-msgstr "Neaktivan"
+msgstr ""
 
 #: wp-job-manager-template.php:197
 msgid "Job Application via \"%s\" listing on %s"
