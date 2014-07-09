@@ -196,7 +196,7 @@ class WP_Job_Manager_Shortcodes {
 			// Filters + cats
 			'show_filters'       => true,
 			'show_categories'    => true,
-			'show_pagination'    => true,           
+			'show_pagination'    => false,           
 			
 			// Limit what jobs are shown based on category and type
 			'categories'         => '',
