@@ -1,4 +1,7 @@
 <?php wp_enqueue_script( 'wp-job-manager-ajax-filters' ); ?>
+
+<?php do_action( 'job_manager_job_filters_before', $atts ); ?>
+
 <form class="job_filters">
 	<?php do_action( 'job_manager_job_filters_start', $atts ); ?>
 
@@ -31,4 +34,7 @@
 
 	<?php do_action( 'job_manager_job_filters_end', $atts ); ?>
 </form>
+
+<?php do_action( 'job_manager_job_filters_after', $atts ); ?>
+
 <noscript><?php _e( 'Your browser does not support JavaScript, or it is disabled. JavaScript must be enabled in order to view job listings.', 'wp-job-manager' ); ?></noscript>
