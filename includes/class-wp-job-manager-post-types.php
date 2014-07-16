@@ -8,7 +8,7 @@ class WP_Job_Manager_Post_Types {
 	 * Constructor
 	 */
 	public function __construct() {
-		add_action( 'init', array( $this, 'register_post_types' ) );
+		add_action( 'init', array( $this, 'register_post_types' ), 0 );
 		add_filter( 'admin_head', array( $this, 'admin_head' ) );
 		add_filter( 'the_content', array( $this, 'job_content' ) );
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
