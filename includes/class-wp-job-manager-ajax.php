@@ -47,7 +47,7 @@ class WP_Job_Manager_Ajax {
 		}
 
 		ob_start();
-		
+
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 
 		$result['found_jobs'] = false;
@@ -98,7 +98,7 @@ class WP_Job_Manager_Ajax {
 				foreach ( $search_categories as $category ) {
 					if ( ! is_numeric( $category ) ) {
 						$category_object = get_term_by( 'slug', $category, 'job_listing_category' );
-					} 
+					}
 					if ( is_numeric( $category ) || is_wp_error( $category_object ) || ! $category_object ) {
 						$category_object = get_term_by( 'id', $category, 'job_listing_category' );
 					}
@@ -138,7 +138,7 @@ class WP_Job_Manager_Ajax {
 		$result['max_num_pages'] = $jobs->max_num_pages;
 
 		echo '<!--WPJM-->';
-		echo json_encode( apply_filters( 'job_manager_get_listings_result', $result ) );
+		echo json_encode( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
 		echo '<!--WPJM_END-->';
 
 		die();
