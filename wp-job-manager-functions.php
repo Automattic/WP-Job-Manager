@@ -43,7 +43,7 @@ function get_job_listings( $args = array() ) {
 
 	if ( ! empty( $args['search_categories'] ) ) {
 		$field = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
-		
+
 		$query_args['tax_query'][] = array(
 			'taxonomy' => 'job_listing_category',
 			'field'    => $field,
@@ -69,11 +69,13 @@ function get_job_listings( $args = array() ) {
 
 	// Location search - search geolocation data and location meta
 	if ( $args['search_location'] ) {
-		$location_post_ids = array_merge( $wpdb->get_col( $wpdb->prepare( "
+		$location_post_ids = $wpdb->get_col( apply_filters( 'get_job_listings_location_post_ids_sql', $wpdb->prepare( "
 		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
-		    WHERE meta_key IN ( 'geolocation_city', 'geolocation_country_long', 'geolocation_country_short', 'geolocation_formatted_address', 'geolocation_state_long', 'geolocation_state_short', 'geolocation_street', 'geolocation_zipcode', '_job_location' ) 
+		    WHERE meta_key IN ( 'geolocation_city', 'geolocation_country_long', 'geolocation_country_short', 'geolocation_formatted_address', 'geolocation_state_long', 'geolocation_state_short', 'geolocation_street', 'geolocation_zipcode', '_job_location' )
 		    AND meta_value LIKE '%%%s%%'
-		", $args['search_location'] ) ), array( 0 ) );
+		", $args['search_location'] ) ) );
+
+		$location_post_ids = array_merge( $location_post_ids, array( 0 ) );
 	} else {
 		$location_post_ids = array();
 	}
@@ -86,9 +88,9 @@ function get_job_listings( $args = array() ) {
 
 		foreach ( $search_keywords as $keyword ) {
 			$postmeta_search_keywords_sql[] = " meta_value LIKE '%" . esc_sql( $keyword ) . "%' ";
-			$posts_search_keywords_sql[]    = " 
-				post_title LIKE '%" . esc_sql( $keyword ) . "%' 
-				OR post_content LIKE '%" . esc_sql( $keyword ) . "%' 
+			$posts_search_keywords_sql[]    = "
+				post_title LIKE '%" . esc_sql( $keyword ) . "%'
+				OR post_content LIKE '%" . esc_sql( $keyword ) . "%'
 			";
 		}
 
@@ -285,7 +287,7 @@ if ( ! function_exists( 'job_manager_create_account' ) ) :
  * Handle account creation.
  *
  * @param  string $account_email
- * @param  string $role 
+ * @param  string $role
  * @return WP_error | bool was an account created?
  */
 function wp_job_manager_create_account( $account_email, $role = '' ) {
