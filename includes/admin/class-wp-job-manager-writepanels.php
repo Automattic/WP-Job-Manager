@@ -30,7 +30,8 @@ class WP_Job_Manager_Writepanels {
 			),
 			'_application' => array(
 				'label' => __( 'Application email/URL', 'wp-job-manager' ),
-				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' )
+				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
+				'description' => __( 'This field is required for the "application" area to appear beneath the job listing.', 'wp-job-manager' )
 			),
 			'_company_name' => array(
 				'label' => __( 'Company name', 'wp-job-manager' ),
@@ -241,7 +242,7 @@ class WP_Job_Manager_Writepanels {
 		if ( empty( $field['value'] ) )
 			$field['value'] = get_post_meta( $thepostid, $key, true );
 		?>
-		<p class="form-field">
+		<p class="form-field form-field-checkbox">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?></label>
 			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $field['value'], 1 ); ?> />
 			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
