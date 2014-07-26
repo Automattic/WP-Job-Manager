@@ -19,6 +19,8 @@ class WP_Job_Manager_Ajax {
 	 * Get listings via ajax
 	 */
 	public function get_listings() {
+		global $wp_post_types;
+
 		$result             = array();
 		$search_location    = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
 		$search_keywords    = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
@@ -109,9 +111,9 @@ class WP_Job_Manager_Ajax {
 			}
 
 			if ( $search_keywords ) {
-				$showing_jobs  = sprintf( __( 'Showing %s&ldquo;%s&rdquo; %sjobs', 'wp-job-manager' ), $showing_types, $search_keywords, implode( ', ', $showing_categories ) );
+				$showing_jobs  = sprintf( __( 'Showing %s', 'wp-job-manager' ), $showing_types . '&ldquo;' . $search_keywords . '&rdquo; ' . implode( ', ', $showing_categories ) . $wp_post_types['job_listing']->labels->name );
 			} else {
-				$showing_jobs  = sprintf( __( 'Showing all %s%sjobs', 'wp-job-manager' ), $showing_types, implode( ', ', $showing_categories ) . ' ' );
+				$showing_jobs  = sprintf( __( 'Showing all %s', 'wp-job-manager' ), $showing_types . implode( ', ', $showing_categories ) . ' ' . $wp_post_types['job_listing']->labels->name );
 			}
 
 			$showing_location  = $search_location ? sprintf( ' ' . __( 'located in &ldquo;%s&rdquo;', 'wp-job-manager' ), $search_location ) : '';

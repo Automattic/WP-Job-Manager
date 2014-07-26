@@ -5,7 +5,7 @@
 
 	<?php if ( $post->post_status == 'expired' ) : ?>
 
-		<div class="job-manager-info"><?php _e( 'This job listing has expired', 'wp-job-manager' ); ?></div>
+		<div class="job-manager-info"><?php _e( 'This listing has expired', 'wp-job-manager' ); ?></div>
 
 	<?php else : ?>
 

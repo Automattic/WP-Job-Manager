@@ -46,8 +46,8 @@ class WP_Job_Manager_Post_Types {
 		 * Taxonomies
 		 */
 		if ( get_option( 'job_manager_enable_categories' ) ) {
-			$singular  = __( 'Job Category', 'wp-job-manager' );
-			$plural    = __( 'Job Categories', 'wp-job-manager' );
+			$singular  = __( 'Job category', 'wp-job-manager' );
+			$plural    = __( 'Job categories', 'wp-job-manager' );
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
 				$rewrite   = array(
@@ -92,8 +92,8 @@ class WP_Job_Manager_Post_Types {
 		    );
 		}
 
-	    $singular  = __( 'Job Type', 'wp-job-manager' );
-		$plural    = __( 'Job Types', 'wp-job-manager' );
+	    $singular  = __( 'Job type', 'wp-job-manager' );
+		$plural    = __( 'Job types', 'wp-job-manager' );
 
 		if ( current_theme_supports( 'job-manager-templates' ) ) {
 			$rewrite   = array(
@@ -139,8 +139,8 @@ class WP_Job_Manager_Post_Types {
 	    /**
 		 * Post types
 		 */
-		$singular  = __( 'Job Listing', 'wp-job-manager' );
-		$plural    = __( 'Job Listings', 'wp-job-manager' );
+		$singular  = __( 'Job', 'wp-job-manager' );
+		$plural    = __( 'Jobs', 'wp-job-manager' );
 
 		if ( current_theme_supports( 'job-manager-templates' ) ) {
 			$has_archive = _x( 'jobs', 'Post type archive slug - resave permalinks after changing this', 'wp-job-manager' );
@@ -160,7 +160,7 @@ class WP_Job_Manager_Post_Types {
 				'labels' => array(
 					'name' 					=> $plural,
 					'singular_name' 		=> $singular,
-					'menu_name'             => $plural,
+					'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
 					'all_items'             => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
 					'add_new' 				=> __( 'Add New', 'wp-job-manager' ),
 					'add_new_item' 			=> sprintf( __( 'Add %s', 'wp-job-manager' ), $singular ),
@@ -174,7 +174,7 @@ class WP_Job_Manager_Post_Types {
 					'not_found_in_trash' 	=> sprintf( __( 'No %s found in trash', 'wp-job-manager' ), $plural ),
 					'parent' 				=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular )
 				),
-				'description' => __( 'This is where you can create and manage job listings.', 'wp-job-manager' ),
+				'description' => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
 				'public' 				=> true,
 				'show_ui' 				=> true,
 				'capability_type' 		=> 'post',

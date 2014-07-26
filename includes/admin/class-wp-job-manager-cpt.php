@@ -39,17 +39,17 @@ class WP_Job_Manager_CPT {
 	 * Edit bulk actions
 	 */
 	public function add_bulk_actions() {
-		global $post_type;
+		global $post_type, $wp_post_types;;
 
 		if ( $post_type == 'job_listing' ) {
 			?>
 			<script type="text/javascript">
 		      jQuery(document).ready(function() {
-		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'wp-job-manager' )?>').appendTo("select[name='action']");
-		        jQuery('<option>').val('approve_jobs').text('<?php _e( 'Approve Jobs', 'wp-job-manager' )?>').appendTo("select[name='action2']");
+		        jQuery('<option>').val('approve_jobs').text('<?php printf( __( 'Approve %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ); ?>').appendTo("select[name='action']");
+		        jQuery('<option>').val('approve_jobs').text('<?php printf( __( 'Approve %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ); ?>').appendTo("select[name='action2']");
 
-		        jQuery('<option>').val('expire_jobs').text('<?php _e( 'Expire Jobs', 'wp-job-manager' )?>').appendTo("select[name='action']");
-		        jQuery('<option>').val('expire_jobs').text('<?php _e( 'Expire Jobs', 'wp-job-manager' )?>').appendTo("select[name='action2']");
+		        jQuery('<option>').val('expire_jobs').text('<?php printf( __( 'Expire %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ); ?>').appendTo("select[name='action']");
+		        jQuery('<option>').val('expire_jobs').text('<?php printf( __( 'Expire %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ); ?>').appendTo("select[name='action2']");
 		      });
 		    </script>
 		    <?php
@@ -234,7 +234,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function enter_title_here( $text, $post ) {
 		if ( $post->post_type == 'job_listing' )
-			return __( 'Job position title', 'wp-job-manager' );
+			return __( 'Position', 'wp-job-manager' );
 		return $text;
 	}
 
@@ -246,21 +246,21 @@ class WP_Job_Manager_CPT {
 	 * @return void
 	 */
 	public function post_updated_messages( $messages ) {
-		global $post, $post_ID;
+		global $post, $post_ID, $wp_post_types;
 
 		$messages['job_listing'] = array(
 			0 => '',
-			1 => sprintf( __( 'Job listing updated. <a href="%s">View Job</a>', 'wp-job-manager' ), esc_url( get_permalink( $post_ID ) ) ),
+			1 => sprintf( __( '%s updated. <a href="%s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
 			2 => __( 'Custom field updated.', 'wp-job-manager' ),
 			3 => __( 'Custom field deleted.', 'wp-job-manager' ),
-			4 => __( 'Job listing updated.', 'wp-job-manager' ),
-			5 => isset( $_GET['revision'] ) ? sprintf( __( 'Job listing restored to revision from %s', 'wp-job-manager' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-			6 => sprintf( __( 'Job listing published. <a href="%s">View Job</a>', 'wp-job-manager' ), esc_url( get_permalink( $post_ID ) ) ),
-			7 => __('Job listing saved.', 'wp-job-manager' ),
-			8 => sprintf( __( 'Job listing submitted. <a target="_blank" href="%s">Preview Job</a>', 'wp-job-manager' ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-			9 => sprintf( __( 'Job listing scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Job</a>', 'wp-job-manager' ),
+			4 => sprintf( __( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			5 => isset( $_GET['revision'] ) ? sprintf( __( '%s restored to revision from %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			6 => sprintf( __( '%s published. <a href="%s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
+			7 => sprintf( __( '%s saved.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			8 => sprintf( __( '%s submitted. <a target="_blank" href="%s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+			9 => sprintf( __( '%s scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name,
 			  date_i18n( __( 'M j, Y @ G:i', 'wp-job-manager' ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) ) ),
-			10 => sprintf( __( 'Job listing draft updated. <a target="_blank" href="%s">Preview Job</a>', 'wp-job-manager' ), esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
+			10 => sprintf( __( '%s draft updated. <a target="_blank" href="%s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 		);
 
 		return $messages;
@@ -311,7 +311,7 @@ class WP_Job_Manager_CPT {
 			break;
 			case "job_position" :
 				echo '<div class="job_position">';
-				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'Job ID: %d', 'wp-job-manager' ), $post->ID ) . '">' . $post->post_title . '</a>';
+				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'ID: %d', 'wp-job-manager' ), $post->ID ) . '">' . $post->post_title . '</a>';
 
 				echo '<div class="location">';
 

@@ -201,7 +201,7 @@ function get_the_job_application_method( $post = null ) {
 		$method->type      = 'email';
 		$method->raw_email = $apply;
 		$method->email     = antispambot( $apply );
-		$method->subject   = apply_filters( 'job_manager_application_email_subject', sprintf( __( 'Job Application via "%s" listing on %s', 'wp-job-manager' ), $post->post_title, home_url() ), $post );
+		$method->subject   = apply_filters( 'job_manager_application_email_subject', sprintf( __( 'Application via "%s" listing on %s', 'wp-job-manager' ), $post->post_title, home_url() ), $post );
 	} else {
 		if ( strpos( $apply, 'http' ) !== 0 )
 			$apply = 'http://' . $apply;

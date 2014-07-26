@@ -45,8 +45,8 @@ class WP_Job_Manager_Settings {
 							'name'        => 'job_manager_per_page',
 							'std'         => '10',
 							'placeholder' => '',
-							'label'       => __( 'Jobs per page', 'wp-job-manager' ),
-							'desc'        => __( 'How many jobs should be shown per page by default?', 'wp-job-manager' ),
+							'label'       => __( 'Listings per page', 'wp-job-manager' ),
+							'desc'        => __( 'How many listings should be shown per page by default?', 'wp-job-manager' ),
 							'attributes'  => array()
 						),
 						array(
@@ -54,30 +54,30 @@ class WP_Job_Manager_Settings {
 							'std'        => '0',
 							'label'      => __( 'Filled positions', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide filled positions', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, filled positions will be hidden from the job list.', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, filled positions will be hidden.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
 						array(
 							'name'       => 'job_manager_enable_categories',
 							'std'        => '0',
-							'label'      => __( 'Job categories', 'wp-job-manager' ),
-							'cb_label'   => __( 'Enable job categories', 'wp-job-manager' ),
-							'desc'       => __( 'Choose whether to enable job categories. Categories must be setup by an admin for users to choose during job submission.', 'wp-job-manager' ),
+							'label'      => __( 'Job Categories', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable categories for listings', 'wp-job-manager' ),
+							'desc'       => __( 'Choose whether to enable categories. Categories must be setup by an admin to allow users to choose them during submission.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
 					),
 				),
 				'job_submission' => array(
-					__( 'Job Submission', 'wp-job-manager' ),
+					__( 'Submissions', 'wp-job-manager' ),
 					array(
 						array(
 							'name'       => 'job_manager_enable_registration',
 							'std'        => '1',
 							'label'      => __( 'Account creation', 'wp-job-manager' ),
 							'cb_label'   => __( 'Allow account creation', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, non-logged in users will be able to create an account by entering their email address on the job submission form.', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, non-logged in users will be able to create an account by entering their email address on the submission form.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -85,7 +85,7 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_registration_role',
 							'std'        => 'employer',
 							'label'      => __( 'Account Role', 'wp-job-manager' ),
-							'desc'       => __( 'If you enable registration on your job submission form, choose a role for the new user.', 'wp-job-manager' ),
+							'desc'       => __( 'If you enable registration on your submission form, choose a role for the new user.', 'wp-job-manager' ),
 							'type'       => 'select',
 							'options'    => $account_roles
 						),
@@ -93,8 +93,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_user_requires_account',
 							'std'        => '1',
 							'label'      => __( 'Account required', 'wp-job-manager' ),
-							'cb_label'   => __( 'Job submission requires an account', 'wp-job-manager' ),
-							'desc'       => __( 'If disabled, non-logged in users will be able to submit job listings without creating an account.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Submitting listings requires an account', 'wp-job-manager' ),
+							'desc'       => __( 'If disabled, non-logged in users will be able to submit listings without creating an account.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -118,7 +118,7 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_allowed_application_method',
 							'std'        => '',
 							'label'      => __( 'Application method', 'wp-job-manager' ),
-							'desc'       => __( 'Choose what employers can use for their job application method.', 'wp-job-manager' ),
+							'desc'       => __( 'Choose the contact method for listings.', 'wp-job-manager' ),
 							'type'       => 'select',
 							'options'    => array(
 								''      => __( 'Email address or website URL', 'wp-job-manager' ),
@@ -136,7 +136,7 @@ class WP_Job_Manager_Settings {
 						array(
 							'name' 		=> 'job_manager_job_dashboard_page_slug',
 							'std' 		=> '',
-							'label' 	=> __( 'Job Dashboard Page Slug', 'wp-job-manager' ),
+							'label' 	=> __( 'Dashboard Page Slug', 'wp-job-manager' ),
 							'desc'		=> __( 'Enter the slug of the page where you have placed the [job_dashboard] shortcode. This lets the plugin know where the dashboard is located.', 'wp-job-manager' ),
 							'type'      => 'input'
 						)

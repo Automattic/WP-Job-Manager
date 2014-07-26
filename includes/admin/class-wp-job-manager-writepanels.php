@@ -24,14 +24,14 @@ class WP_Job_Manager_Writepanels {
 	public function job_listing_fields() {
 		return apply_filters( 'job_manager_job_listing_data_fields', array(
 			'_job_location' => array(
-				'label' => __( 'Job location', 'wp-job-manager' ),
-				'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'wp-job-manager' ),
-				'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'wp-job-manager' )
+				'label' => __( 'Location', 'wp-job-manager' ),
+				'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
+				'description' => __( 'Leave this blank if the location is not important', 'wp-job-manager' )
 			),
 			'_application' => array(
 				'label' => __( 'Application email/URL', 'wp-job-manager' ),
 				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
-				'description' => __( 'This field is required for the "application" area to appear beneath the job listing.', 'wp-job-manager' )
+				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' )
 			),
 			'_company_name' => array(
 				'label' => __( 'Company name', 'wp-job-manager' ),
@@ -59,12 +59,12 @@ class WP_Job_Manager_Writepanels {
 				'type'  => 'checkbox'
 			),
 			'_featured' => array(
-				'label' => __( 'Feature this job listing?', 'wp-job-manager' ),
+				'label' => __( 'Feature this listing?', 'wp-job-manager' ),
 				'type'  => 'checkbox',
 				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' )
 			),
 			'_job_expires' => array(
-				'label'       => __( 'Job Expires', 'wp-job-manager' ),
+				'label'       => __( 'Expires', 'wp-job-manager' ),
 				'placeholder' => __( 'yyyy-mm-dd', 'wp-job-manager' )
 			),
 			'_job_author' => array(
@@ -81,7 +81,9 @@ class WP_Job_Manager_Writepanels {
 	 * @return void
 	 */
 	public function add_meta_boxes() {
-		add_meta_box( 'job_listing_data', __( 'Job Listing Data', 'wp-job-manager' ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
+		global $wp_post_types;
+
+		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
 	}
 
 	/**

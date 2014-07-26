@@ -61,14 +61,14 @@ class WP_Job_Manager_Shortcodes {
 
 				// Check ownership
 				if ( $job->post_author != get_current_user_id() ) {
-					throw new Exception( __( 'Invalid Job ID', 'wp-job-manager' ) );
+					throw new Exception( __( 'Invalid ID', 'wp-job-manager' ) );
 				}
 
 				switch ( $action ) {
 					case 'mark_filled' :
 						// Check status
 						if ( $job->_filled == 1 )
-							throw new Exception( __( 'This job is already filled', 'wp-job-manager' ) );
+							throw new Exception( __( 'This position has already been filled', 'wp-job-manager' ) );
 
 						// Update
 						update_post_meta( $job_id, '_filled', 1 );
@@ -78,8 +78,9 @@ class WP_Job_Manager_Shortcodes {
 						break;
 					case 'mark_not_filled' :
 						// Check status
-						if ( $job->_filled != 1 )
-							throw new Exception( __( 'This job is already not filled', 'wp-job-manager' ) );
+						if ( $job->_filled != 1 ) {
+							throw new Exception( __( 'This position is not filled', 'wp-job-manager' ) );
+						}
 
 						// Update
 						update_post_meta( $job_id, '_filled', 0 );
@@ -118,7 +119,7 @@ class WP_Job_Manager_Shortcodes {
 	 */
 	public function job_dashboard( $atts ) {
 		if ( ! is_user_logged_in() ) {
-			return __( 'You need to be signed in to manage your job listings.', 'wp-job-manager' );
+			return __( 'You need to be signed in to manage your listings.', 'wp-job-manager' );
 		}
 
 		extract( shortcode_atts( array(
@@ -158,7 +159,7 @@ class WP_Job_Manager_Shortcodes {
 		echo $this->job_dashboard_message;
 
 		$job_dashboard_columns = apply_filters( 'job_manager_job_dashboard_columns', array(
-			'job_title' => __( 'Job Title', 'wp-job-manager' ),
+			'job_title' => __( 'Title', 'wp-job-manager' ),
 			'filled'    => __( 'Filled?', 'wp-job-manager' ),
 			'date'      => __( 'Date Posted', 'wp-job-manager' ),
 			'expires'   => __( 'Date Expires', 'wp-job-manager' )
@@ -201,7 +202,7 @@ class WP_Job_Manager_Shortcodes {
 			// Limit what jobs are shown based on category and type
 			'categories'         => '',
 			'job_types'          => '',
-			'featured'           => null, // True to show only featured, false to hide featuref, leave null to show both.
+			'featured'           => null, // True to show only featured, false to hide featured, leave null to show both.
 			'show_featured_only' => false, // Deprecated
 			
 			// Default values for filters
@@ -249,7 +250,7 @@ class WP_Job_Manager_Shortcodes {
 			echo '<ul class="job_listings"></ul>';
 
 			if ( ! $show_pagination ) {
-				echo '<a class="load_more_jobs" href="#" style="display:none;"><strong>' . __( 'Load more job listings', 'wp-job-manager' ) . '</strong></a>';
+				echo '<a class="load_more_jobs" href="#" style="display:none;"><strong>' . __( 'Load more listings', 'wp-job-manager' ) . '</strong></a>';
 			}
 
 		} else {
@@ -284,7 +285,7 @@ class WP_Job_Manager_Shortcodes {
 					<?php if ( $show_pagination ) : ?>
 						<?php echo get_job_listing_pagination( $jobs->max_num_pages ); ?>
 					<?php else : ?>
-						<a class="load_more_jobs" href="#"><strong><?php _e( 'Load more job listings', 'wp-job-manager' ); ?></strong></a>
+						<a class="load_more_jobs" href="#"><strong><?php _e( 'Load more listings', 'wp-job-manager' ); ?></strong></a>
 					<?php endif; ?>
 
 				<?php endif; ?>

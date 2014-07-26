@@ -128,18 +128,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		self::$fields = apply_filters( 'submit_job_form_fields', array(
 			'job' => array(
 				'job_title' => array(
-					'label'       => __( 'Job title', 'wp-job-manager' ),
+					'label'       => __( 'Title', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => true,
 					'placeholder' => '',
 					'priority'    => 1
 				),
 				'job_location' => array(
-					'label'       => __( 'Job location', 'wp-job-manager' ),
-					'description' => __( 'Leave this blank if the job can be done from anywhere (i.e. telecommuting)', 'wp-job-manager' ),
+					'label'       => __( 'Location', 'wp-job-manager' ),
+					'description' => __( 'Leave this blank if the location is not important', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => false,
-					'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'wp-job-manager' ),
+					'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
 					'priority'    => 2
 				),
 				'job_type' => array(
@@ -454,7 +454,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'action'             => self::get_action(),
 			'job_fields'         => self::get_fields( 'job' ),
 			'company_fields'     => self::get_fields( 'company' ),
-			'submit_button_text' => __( 'Preview job listing &rarr;', 'wp-job-manager' )
+			'submit_button_text' => __( 'Preview &rarr;', 'wp-job-manager' )
 			) );
 	}
 
@@ -491,7 +491,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 
 			if ( job_manager_user_requires_account() && ! is_user_logged_in() )
-				throw new Exception( __( 'You must be signed in to post a new job listing.' ) );
+				throw new Exception( __( 'You must be signed in to post a new listing.' ) );
 
 			// Update the job
 			self::save_job( $values['job']['job_title'], $values['job']['job_description'], self::$job_id ? '' : 'preview', $values );

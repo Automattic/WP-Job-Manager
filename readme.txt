@@ -91,6 +91,9 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+* Extra filters for the filters template.
+* Changed text strings for easier customisations based on post type labels, and made some strings more generic.
+
 = 1.13.0 =
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.
 * Define support for Jetpack publicize.

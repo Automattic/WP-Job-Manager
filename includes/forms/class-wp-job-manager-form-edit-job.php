@@ -38,7 +38,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		$job = get_post( self::$job_id );
 
 		if ( empty( self::$job_id  ) || $job->post_status !== 'publish' ) {
-			echo wpautop( __( 'Invalid job', 'wp-job-manager' ) );
+			echo wpautop( __( 'Invalid listing', 'wp-job-manager' ) );
 			return;
 		}
 
@@ -81,7 +81,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			'action'             => self::get_action(),
 			'job_fields'         => self::get_fields( 'job' ),
 			'company_fields'     => self::get_fields( 'company' ),
-			'submit_button_text' => __( 'Update job listing', 'wp-job-manager' )
+			'submit_button_text' => __( 'Save changes', 'wp-job-manager' )
 			) );
 	}
 
@@ -108,7 +108,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			self::update_job_data( $values );
 
 			// Successful
-			echo '<div class="job-manager-message">' . __( 'Your changes have been saved.', 'wp-job-manager' ), ' <a href="' . get_permalink( self::$job_id ) . '">' . __( 'View Job Listing &rarr;', 'wp-job-manager' ) . '</a>' . '</div>';
+			echo '<div class="job-manager-message">' . __( 'Your changes have been saved.', 'wp-job-manager' ), ' <a href="' . get_permalink( self::$job_id ) . '">' . __( 'View &rarr;', 'wp-job-manager' ) . '</a>' . '</div>';
 
 		} catch ( Exception $e ) {
 			echo '<div class="job-manager-error">' . $e->getMessage() . '</div>';

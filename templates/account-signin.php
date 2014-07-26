@@ -28,7 +28,7 @@
 
 			<?php elseif ( $account_required ) : ?>
 
-				<?php echo apply_filters( 'submit_job_form_login_required_message',  __('You must sign in to create a new job listing.', 'wp-job-manager' ) ); ?>
+				<?php echo apply_filters( 'submit_job_form_login_required_message',  __('You must sign in to create a new listing.', 'wp-job-manager' ) ); ?>
 
 			<?php endif; ?>
 		</div>
