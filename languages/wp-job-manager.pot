@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.14.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2014-07-26 18:43:05+00:00\n"
+"POT-Creation-Date: 2014-07-26 18:43:38+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -330,7 +330,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:27
 #: includes/forms/class-wp-job-manager-form-submit-job.php:138
-#: templates/job-filters.php:14 templates/job-filters.php:15
+#: templates/job-filters.php:17 templates/job-filters.php:18
 msgid "Location"
 msgstr ""
 
@@ -882,19 +882,19 @@ msgstr ""
 msgid "Relist"
 msgstr ""
 
-#: templates/job-filters.php:9 templates/job-filters.php:10
+#: templates/job-filters.php:12 templates/job-filters.php:13
 msgid "Keywords"
 msgstr ""
 
-#: templates/job-filters.php:24
+#: templates/job-filters.php:27
 msgid "Category"
 msgstr ""
 
-#: templates/job-filters.php:25
+#: templates/job-filters.php:28
 msgid "Any category"
 msgstr ""
 
-#: templates/job-filters.php:34
+#: templates/job-filters.php:40
 msgid ""
 "Your browser does not support JavaScript, or it is disabled. JavaScript must "
 "be enabled in order to view listings."
