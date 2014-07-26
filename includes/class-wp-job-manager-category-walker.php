@@ -38,10 +38,11 @@ class WP_Job_Manager_Category_Walker extends Walker {
 
 		$output .= '>';
 
-		$output .= $pad . __( $cat_name, 'download_monitor' );
+		$output .= $pad . $cat_name;
 
-		if ( ! empty( $args['show_count'] ) )
+		if ( ! empty( $args['show_count'] ) ) {
 			$output .= '&nbsp;(' . $object->count . ')';
+		}
 
 		$output .= "</option>\n";
 	}

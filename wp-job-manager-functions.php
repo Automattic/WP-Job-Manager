@@ -402,3 +402,64 @@ function job_manager_enable_registration() {
 function job_manager_user_requires_account() {
 	return apply_filters( 'job_manager_user_requires_account', get_option( 'job_manager_user_requires_account' ) == 1 ? true : false );
 }
+
+/**
+ * Based on wp_dropdown_categories, with the exception of supporting multiple selected categories.
+ * @see  wp_dropdown_categories
+ */
+function job_manager_dropdown_categories( $args = '' ) {
+	$defaults = array(
+		'orderby'      => 'id', 
+		'order'        => 'ASC',
+		'show_count'   => 0,
+		'hide_empty'   => 1, 
+		'child_of'     => 0,
+		'exclude'      => '', 
+		'echo'         => 1,
+		'selected'     => 0, 
+		'hierarchical' => 0,
+		'name'         => 'cat', 
+		'id'           => '',
+		'class'        => 'job-manager-category-dropdown', 
+		'depth'        => 0,
+		'taxonomy'     => 'job_listing_category',
+		'value'        => 'id'
+	);
+
+	$r = wp_parse_args( $args, $defaults );
+
+	if ( ! isset( $r['pad_counts'] ) && $r['show_count'] && $r['hierarchical'] ) {
+		$r['pad_counts'] = true;
+	}
+
+	extract( $r );
+
+	$categories = get_terms( $taxonomy, $r );
+	$name       = esc_attr( $name );
+	$class      = esc_attr( $class );
+	$id         = $id ? esc_attr( $id ) : $name;
+
+	$output = "<select name='{$name}[]' id='$id' class='$class' multiple='multiple'>\n";
+
+	if ( ! empty( $categories ) ) {
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php' );
+
+		$walker = new WP_Job_Manager_Category_Walker;
+
+		if ( $hierarchical ) {
+			$depth = $r['depth'];  // Walk the full depth.
+		} else {
+			$depth = -1; // Flat.
+		}
+
+		$output .= $walker->walk( $categories, $depth, $r );
+	}
+
+	$output .= "</select>\n";
+
+	if ( $echo ) {
+		echo $output;
+	}
+
+	return $output;
+}

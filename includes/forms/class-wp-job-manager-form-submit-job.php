@@ -144,20 +144,21 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				),
 				'job_type' => array(
 					'label'       => __( 'Job type', 'wp-job-manager' ),
-					'type'        => 'select',
+					'type'        => 'term-select',
 					'required'    => true,
-					'options'     => self::job_types(),
 					'placeholder' => '',
 					'priority'    => 3,
-					'default'     => 'full-time'
+					'default'     => 'full-time',
+					'taxonomy'    => 'job_listing_type'
 				),
 				'job_category' => array(
 					'label'       => __( 'Job category', 'wp-job-manager' ),
-					'type'        => 'job-category',
+					'type'        => 'term-multiselect',
 					'required'    => true,
 					'placeholder' => '',
 					'priority'    => 4,
-					'default'     => ''
+					'default'     => '',
+					'taxonomy'    => 'job_listing_category'
 				),
 				'job_description' => array(
 					'label'       => __( 'Description', 'wp-job-manager' ),
@@ -283,8 +284,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected static function get_posted_file_field( $key, $field ) {
 		$file = self::upload_file( $key, $field );
 		
-		if ( ! $file )
+		if ( ! $file ) {
 			$file = self::get_posted_field( 'current_' . $key, $field );
+		}
 
 		return $file;
 	}
@@ -310,6 +312,41 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Get posted terms for the taxonomy
+	 * @param  string $key
+	 * @param  array $field
+	 * @return array
+	 */
+	protected static function get_posted_term_checklist_field( $key, $field ) {
+		if ( isset( $_POST[ 'tax_input' ] ) && isset( $_POST[ 'tax_input' ][ $field['taxonomy'] ] ) ) {
+			// Ids were posted
+			return array_map( 'absint', $_POST[ 'tax_input' ][ $field['taxonomy'] ] );
+		} else {
+			return array();
+		}
+	}
+
+	/**
+	 * Get posted terms for the taxonomy
+	 * @param  string $key
+	 * @param  array $field
+	 * @return int
+	 */
+	protected static function get_posted_term_multiselect_field( $key, $field ) {
+		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : array();
+	}
+
+	/**
+	 * Get posted terms for the taxonomy
+	 * @param  string $key
+	 * @param  array $field
+	 * @return int
+	 */
+	protected static function get_posted_term_select_field( $key, $field ) {
+		return ! empty( $_POST[ $key ] ) && $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : '';
+	}
+
+	/**
 	 * Validate the posted fields
 	 *
 	 * @return bool on success, WP_ERROR on failure
@@ -319,6 +356,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			foreach ( $fields as $key => $field ) {
 				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) ) {
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
+				}
+				if ( ! empty( $field['taxonomy'] ) && in_array( $field['type'], array( 'term-checklist', 'term-select', 'term-multiselect' ) ) ) {
+					if ( is_array( $values[ $group_key ][ $key ] ) ) {
+						foreach ( $values[ $group_key ][ $key ] as $term ) {
+							if ( ! term_exists( $term, $field['taxonomy'] ) ) {
+								return new WP_Error( 'validation-error', sprintf( __( '%s is invalid', 'wp-job-manager' ), $field['label'] ) );
+							}
+						}
+					} elseif ( ! empty( $values[ $group_key ][ $key ] ) ) {
+						if ( ! term_exists( $values[ $group_key ][ $key ], $field['taxonomy'] ) ) {
+							return new WP_Error( 'validation-error', sprintf( __( '%s is invalid', 'wp-job-manager' ), $field['label'] ) );
+						}
+					}
 				}
 			}
 		}
@@ -415,10 +465,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							self::$fields[ $group_key ][ $key ]['value'] = $job->post_content;
 						break;
 						case 'job_type' :
-							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'slugs' ) ) );
+							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'ids' ) ) );
 						break;
 						case 'job_category' :
-							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) ) );
+							self::$fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) );
 						break;
 						default:
 							self::$fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
@@ -556,23 +606,27 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  array $values
 	 */
 	protected static function update_job_data( $values ) {
-
-		wp_set_object_terms( self::$job_id, array( $values['job']['job_type'] ), 'job_listing_type', false );
-
-		if ( get_option( 'job_manager_enable_categories' ) && isset( $values['job']['job_category'] ) ) {
-			$posted_cats = array_map( 'absint', is_array( $values['job']['job_category'] ) ? $values['job']['job_category'] : array( $values['job']['job_category'] ) );
-			wp_set_object_terms( self::$job_id, $posted_cats, 'job_listing_category', false );
-		}
-
-		update_post_meta( self::$job_id, '_application', $values['job']['application'] );
-		update_post_meta( self::$job_id, '_job_location', $values['job']['job_location'] );
-		update_post_meta( self::$job_id, '_company_name', $values['company']['company_name'] );
-		update_post_meta( self::$job_id, '_company_website', $values['company']['company_website'] );
-		update_post_meta( self::$job_id, '_company_tagline', $values['company']['company_tagline'] );
-		update_post_meta( self::$job_id, '_company_twitter', $values['company']['company_twitter'] );
-		update_post_meta( self::$job_id, '_company_logo', $values['company']['company_logo'] );
+		// Set defaults
 		add_post_meta( self::$job_id, '_filled', 0, true );
 		add_post_meta( self::$job_id, '_featured', 0, true );
+
+		// Loop fields and save meta and term data
+		foreach ( self::$fields as $group_key => $fields ) {
+			foreach ( $fields as $key => $field ) {
+				// Save taxonomies
+				if ( ! empty( $field['taxonomy'] ) ) {
+					if ( is_array( $values[ $group_key ][ $key ] ) ) {
+						wp_set_object_terms( self::$job_id, $values[ $group_key ][ $key ], $field['taxonomy'], false );
+					} else {
+						wp_set_object_terms( self::$job_id, array( $values[ $group_key ][ $key ] ), $field['taxonomy'], false );
+					}
+				
+				// Save meta data
+				} else {
+					update_post_meta( self::$job_id, '_' . $key, $values[ $group_key ][ $key ] );
+				}
+			}
+		}
 
 		// And user meta to save time in future
 		if ( is_user_logged_in() ) {

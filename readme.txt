@@ -91,8 +91,12 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+= 1.14.0 =
 * Extra filters for the filters template.
 * Changed text strings for easier customisations based on post type labels, and made some strings more generic.
+* New field types - term-checklist, term-multiselect, term-select. These save terms only.
+* Added chosen javascript to enhance multiselect boxes when needed.
+* Multiple category support.
 
 = 1.13.0 =
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.

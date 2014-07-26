@@ -164,66 +164,37 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * jobs_by_category function.
-	 *
-	 * @access public
-	 * @param int $show_counts (default: 1)
-	 * @param int $hierarchical (default: 1)
-	 * @param int $show_uncategorized (default: 1)
-	 * @param string $orderby (default: '')
-	 * @return void
+	 * Show category dropdown
 	 */
-	public function jobs_by_category( $show_counts = 1, $hierarchical = 1, $show_uncategorized = 1, $orderby = '' ) {
+	public function jobs_by_category() {
 		global $typenow, $wp_query;
 
-	    if ( $typenow != 'job_listing' || ! taxonomy_exists( 'job_listing_category' ) )
+	    if ( $typenow != 'job_listing' || ! taxonomy_exists( 'job_listing_category' ) ) {
 	    	return;
+	    }
 
-		include_once( 'class-wp-job-manager-category-walker.php' );
+	    include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php' );
 
-		$r = array();
-		$r['pad_counts'] 	= 1;
-		$r['hierarchical'] 	= $hierarchical;
-		$r['hide_empty'] 	= 0;
-		$r['show_count'] 	= $show_counts;
-		$r['selected'] 		= ( isset( $wp_query->query['job_listing_category'] ) ) ? $wp_query->query['job_listing_category'] : '';
+		$r                 = array();
+		$r['pad_counts']   = 1;
+		$r['hierarchical'] = 1;
+		$r['hide_empty']   = 0;
+		$r['show_count']   = 1;
+		$r['selected']     = ( isset( $wp_query->query['job_listing_category'] ) ) ? $wp_query->query['job_listing_category'] : '';
+		$r['menu_order']   = false;
+		$terms             = get_terms( 'job_listing_category', $r );
+		$walker            = new WP_Job_Manager_Category_Walker;
 
-		$r['menu_order'] = false;
-
-		if ( $orderby == 'order' )
-			$r['menu_order'] = 'asc';
-		elseif ( $orderby )
-			$r['orderby'] = $orderby;
-
-		$terms = get_terms( 'job_listing_category', $r );
-
-		if ( ! $terms )
+		if ( ! $terms ) {
 			return;
+		}
 
 		$output  = "<select name='job_listing_category' id='dropdown_job_listing_category'>";
-		$output .= '<option value="" ' .  selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>'.__( 'Select a category', 'wp-job-manager' ).'</option>';
-		$output .= $this->walk_category_dropdown_tree( $terms, 0, $r );
-		$output .="</select>";
+		$output .= '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . __( 'Select category', 'wp-job-manager' ) . '</option>';
+		$output .= $walker->walk( $terms, 0, $r );
+		$output .= "</select>";
 
 		echo $output;
-	}
-
-	/**
-	 * Walk the Product Categories.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	private function walk_category_dropdown_tree() {
-		$args = func_get_args();
-
-		// the user's options are the third parameter
-		if ( empty($args[2]['walker']) || !is_a($args[2]['walker'], 'Walker') )
-			$walker = new WP_Job_Manager_Category_Walker;
-		else
-			$walker = $args[2]['walker'];
-
-		return call_user_func_array( array( $walker, 'walk' ), $args );
 	}
 
 	/**
