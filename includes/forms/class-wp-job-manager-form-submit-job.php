@@ -546,6 +546,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			self::save_job( $values['job']['job_title'], $values['job']['job_description'], self::$job_id ? '' : 'preview', $values );
 			self::update_job_data( $values );
 
+			// Reset expirey
+			delete_post_meta( self::$job_id, '_job_expires' );
+
 			// Successful, show next step
 			self::$step ++;
 
