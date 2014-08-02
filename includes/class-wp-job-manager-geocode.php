@@ -21,7 +21,7 @@ class WP_Job_Manager_Geocode {
 	 * Update location data - when submitting a job
 	 */
 	public function update_location_data( $job_id, $values ) {
-		if ( apply_filters( 'job_manager_geolocation_enabled', true ) ) {
+		if ( apply_filters( 'job_manager_geolocation_enabled', true ) && isset( $values['job']['job_location'] ) ) {
 			$address_data = self::get_location_data( $values['job']['job_location'] );
 			self::save_location_data( $job_id, $address_data );
 		}
