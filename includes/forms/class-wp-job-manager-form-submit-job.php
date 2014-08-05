@@ -546,9 +546,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			self::save_job( $values['job']['job_title'], $values['job']['job_description'], self::$job_id ? '' : 'preview', $values );
 			self::update_job_data( $values );
 
-			// Reset expirey
-			delete_post_meta( self::$job_id, '_job_expires' );
-
 			// Successful, show next step
 			self::$step ++;
 
@@ -693,6 +690,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( self::$job_id );
 
 			if ( in_array( $job->post_status, array( 'preview', 'expired' ) ) ) {
+				// Reset expirey
+				delete_post_meta( $job->ID, '_job_expires' );
+
+				// Update job listing
 				$update_job                  = array();
 				$update_job['ID']            = $job->ID;
 				$update_job['post_status']   = get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish';
