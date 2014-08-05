@@ -327,10 +327,17 @@ function get_the_company_logo( $post = null ) {
 function job_manager_get_resized_image( $logo, $size ) {
 	global $_wp_additional_image_sizes;
 
-	if ( $size !== 'full' && isset( $_wp_additional_image_sizes[ $size ] ) ) {
+	if ( $size !== 'full' && ( isset( $_wp_additional_image_sizes[ $size ] ) || in_array( $size, array( 'thumbnail', 'medium', 'large' ) ) ) ) {
 
-		$img_width  = $_wp_additional_image_sizes[ $size ]['width'];
-		$img_height = $_wp_additional_image_sizes[ $size ]['height'];
+		if ( in_array( $size, array( 'thumbnail', 'medium', 'large' ) ) ) {
+			$img_width  = get_option( $size . '_size_w' );
+			$img_height = get_option( $size . '_size_h' );
+			$img_crop   = get_option( $size . '_size_crop' );
+		} else {
+			$img_width  = $_wp_additional_image_sizes[ $size ]['width'];
+			$img_height = $_wp_additional_image_sizes[ $size ]['height'];
+			$img_crop   = $_wp_additional_image_sizes[ $size ]['crop'];
+		}
 
 		$upload_dir        = wp_upload_dir();
 		$logo_path         = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $logo );
@@ -342,8 +349,7 @@ function job_manager_get_resized_image( $logo, $size ) {
 			$image = wp_get_image_editor( $logo_path );
 
 			if ( ! is_wp_error( $image ) ) {
-			    $image->resize( $_wp_additional_image_sizes[ $size ]['width'], $_wp_additional_image_sizes[ $size ]['height'], $_wp_additional_image_sizes[ $size ]['crop'] );
-
+			    $image->resize( $img_width, $img_height, $img_crop );
 			    $image->save( $resized_logo_path );
 
 			    $logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
