@@ -190,26 +190,27 @@ class WP_Job_Manager_Shortcodes {
 		ob_start();
 
 		extract( $atts = shortcode_atts( apply_filters( 'job_manager_output_jobs_defaults', array(
-			'per_page'           => get_option( 'job_manager_per_page' ),
-			'orderby'            => 'featured',
-			'order'              => 'DESC',
+			'per_page'                  => get_option( 'job_manager_per_page' ),
+			'orderby'                   => 'featured',
+			'order'                     => 'DESC',
 			
 			// Filters + cats
-			'show_filters'       => true,
-			'show_categories'    => true,
-			'show_pagination'    => false,           
+			'show_filters'              => true,
+			'show_categories'           => true,
+			'show_category_multiselect' => get_option( 'job_manager_enable_default_category_multiselect', false ),
+			'show_pagination'           => false,           
 			
 			// Limit what jobs are shown based on category and type
-			'categories'         => '',
-			'job_types'          => '',
-			'featured'           => null, // True to show only featured, false to hide featured, leave null to show both.
-			'show_featured_only' => false, // Deprecated
+			'categories'                => '',
+			'job_types'                 => '',
+			'featured'                  => null, // True to show only featured, false to hide featured, leave null to show both.
+			'show_featured_only'        => false, // Deprecated
 			
 			// Default values for filters
-			'location'           => '', 
-			'keywords'           => '',
-			'selected_category'  => '',
-			'selected_job_types' => implode( ',', array_values( get_job_listing_types( 'id=>slug' ) ) ),
+			'location'                  => '', 
+			'keywords'                  => '',
+			'selected_category'         => '',
+			'selected_job_types'        => implode( ',', array_values( get_job_listing_types( 'id=>slug' ) ) ),
 		) ), $atts ) );
 
 		if ( ! get_option( 'job_manager_enable_categories' ) ) {
@@ -220,6 +221,7 @@ class WP_Job_Manager_Shortcodes {
 		$show_filters       = ( is_bool( $show_filters ) && $show_filters ) || in_array( $show_filters, array( '1', 'true', 'yes' ) ) ? true : false;
 		$show_categories    = ( is_bool( $show_categories ) && $show_categories ) || in_array( $show_categories, array( '1', 'true', 'yes' ) ) ? true : false;
 		$show_featured_only = ( is_bool( $show_featured_only ) && $show_featured_only ) || in_array( $show_featured_only, array( '1', 'true', 'yes' ) ) ? true : false;
+		$show_category_multiselect = ( is_bool( $show_category_multiselect ) && $show_category_multiselect ) || in_array( $show_category_multiselect, array( '1', 'true', 'yes' ) ) ? true : false;
 
 		if ( ! is_null( $featured ) ) {
 			$featured = ( is_bool( $featured ) && $featured ) || in_array( $featured, array( '1', 'true', 'yes' ) ) ? true : false;
@@ -245,7 +247,7 @@ class WP_Job_Manager_Shortcodes {
 
 		if ( $show_filters ) {
 
-			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'selected_category' => $selected_category, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords, 'selected_job_types' => $selected_job_types ) );
+			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'selected_category' => $selected_category, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords, 'selected_job_types' => $selected_job_types, 'show_category_multiselect' => $show_category_multiselect ) );
 
 			echo '<ul class="job_listings"></ul>';
 

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 3.9
-Stable tag: 1.13.0
+Stable tag: 1.14.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -98,6 +98,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Added chosen javascript to enhance multiselect boxes when needed.
 * Multiple category support.
 * Attach Images on Upload to the job posts.
+* Added an option to show a multiselect for categories on the job filters.
+* Enabled chosen() for the job category filter.
 
 = 1.13.0 =
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.

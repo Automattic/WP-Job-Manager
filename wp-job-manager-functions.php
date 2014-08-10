@@ -423,7 +423,8 @@ function job_manager_dropdown_categories( $args = '' ) {
 		'class'        => 'job-manager-category-dropdown', 
 		'depth'        => 0,
 		'taxonomy'     => 'job_listing_category',
-		'value'        => 'id'
+		'value'        => 'id',
+		'placeholder'  => __( 'Choose a category&hellip;', 'wp-job-manager' )
 	);
 
 	$r = wp_parse_args( $args, $defaults );
@@ -439,7 +440,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 	$class      = esc_attr( $class );
 	$id         = $id ? esc_attr( $id ) : $name;
 
-	$output = "<select name='{$name}[]' id='$id' class='$class' multiple='multiple'>\n";
+	$output = "<select name='{$name}[]' id='$id' class='$class' multiple='multiple' data-placeholder='{$placeholder}'>\n";
 
 	if ( ! empty( $categories ) ) {
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php' );

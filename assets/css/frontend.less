@@ -530,7 +530,6 @@ ul.job_listings {
 		padding: 1em;
 		.clearfix;
 		div {
-			width: 50%;
 			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 			-moz-box-sizing: border-box;    /* Firefox, other Gecko */
 			box-sizing: border-box;         /* Opera/IE 8+ */
@@ -541,22 +540,26 @@ ul.job_listings {
 			&.search_keywords, &.filter_first {
 				float: left;
 				padding-right: .5em;
+				width: 50%;
 			}
 			&.search_location, &.filter_last {
 				float: right;
 				padding-left: .5em;
+				width: 50%;
 			}
 			&.search_categories, &.filter_wide {
 				padding-top: .5em;
 				clear: both;
 				width: 100%;
 			}
-			a {
-				padding: .25em;
-			}
-			a.active {
-				background: #ddd;
-				text-decoration: none;
+			.showing_jobs {
+				a {
+					padding: .25em;
+				}
+				a.active {
+					background: #ddd;
+					text-decoration: none;
+				}
 			}
 		}
 		input, select {

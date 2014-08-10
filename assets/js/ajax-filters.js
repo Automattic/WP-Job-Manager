@@ -173,7 +173,7 @@ jQuery( document ).ready( function ( $ ) {
 
 		form.find( ':input[name=search_keywords]' ).val( '' );
 		form.find( ':input[name=search_location]' ).val( '' );
-		form.find( ':input[name^=search_categories]' ).val( 0 );
+		form.find( ':input[name^=search_categories]' ).val( 0 ).trigger( 'chosen:updated' );
 		$( ':input[name="filter_job_type[]"]', form ).attr( 'checked', 'checked' );
 
 		target.trigger( 'reset' );
@@ -208,4 +208,7 @@ jQuery( document ).ready( function ( $ ) {
 		return false;
 	} );
 
+	if ( $.isFunction( $.fn.chosen ) ) {
+		$( 'select[name^=search_categories]' ).chosen();
+	}
 } );

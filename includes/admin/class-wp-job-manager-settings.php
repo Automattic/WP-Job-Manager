@@ -67,6 +67,15 @@ class WP_Job_Manager_Settings {
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
+						array(
+							'name'       => 'job_manager_enable_default_category_multiselect',
+							'std'        => '0',
+							'label'      => __( 'Job Category filter', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable category multiselect by default', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, the category select box will default to a multiselect on the [jobs] shortcode.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
 					),
 				),
 				'job_submission' => array(

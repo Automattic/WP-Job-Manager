@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.14.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-08-10 13:28:54+00:00\n"
+"POT-Creation-Date: 2014-08-10 16:36:32+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -217,114 +217,128 @@ msgid ""
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:73
+msgid "Job Category filter"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:74
+msgid "Enable category multiselect by default"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:75
+msgid ""
+"If enabled, the category select box will default to a multiselect on the "
+"[jobs] shortcode."
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:82
 msgid "Submissions"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:78
+#: includes/admin/class-wp-job-manager-settings.php:87
 msgid "Account creation"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:79
+#: includes/admin/class-wp-job-manager-settings.php:88
 msgid "Allow account creation"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:80
+#: includes/admin/class-wp-job-manager-settings.php:89
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the submission form."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:87
+#: includes/admin/class-wp-job-manager-settings.php:96
 msgid "Account Role"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:88
+#: includes/admin/class-wp-job-manager-settings.php:97
 msgid ""
 "If you enable registration on your submission form, choose a role for the "
 "new user."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:95
+#: includes/admin/class-wp-job-manager-settings.php:104
 msgid "Account required"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:96
+#: includes/admin/class-wp-job-manager-settings.php:105
 msgid "Submitting listings requires an account"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:97
+#: includes/admin/class-wp-job-manager-settings.php:106
 msgid ""
 "If disabled, non-logged in users will be able to submit listings without "
 "creating an account."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:104
+#: includes/admin/class-wp-job-manager-settings.php:113
 msgid "Approval Required"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:105
+#: includes/admin/class-wp-job-manager-settings.php:114
 msgid "New submissions require admin approval"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:106
+#: includes/admin/class-wp-job-manager-settings.php:115
 msgid "If enabled, new submissions will be inactive, pending admin approval."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:113
+#: includes/admin/class-wp-job-manager-settings.php:122
 msgid "Listing duration"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:114
+#: includes/admin/class-wp-job-manager-settings.php:123
 msgid ""
 "How many <strong>days</strong> listings are live before expiring. Can be "
 "left blank to never expire."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:120
+#: includes/admin/class-wp-job-manager-settings.php:129
 msgid "Application method"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:121
+#: includes/admin/class-wp-job-manager-settings.php:130
 msgid "Choose the contact method for listings."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:124
+#: includes/admin/class-wp-job-manager-settings.php:133
 msgid "Email address or website URL"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:125
+#: includes/admin/class-wp-job-manager-settings.php:134
 msgid "Email addresses only"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:126
+#: includes/admin/class-wp-job-manager-settings.php:135
 msgid "Website URLs only"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:132
+#: includes/admin/class-wp-job-manager-settings.php:141
 msgid "Submit Page Slug"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:133
+#: includes/admin/class-wp-job-manager-settings.php:142
 msgid ""
 "Enter the slug of the page where you have placed the [submit_job_form] "
 "shortcode. This lets the plugin know where the form is located."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:139
+#: includes/admin/class-wp-job-manager-settings.php:148
 msgid "Dashboard Page Slug"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:140
+#: includes/admin/class-wp-job-manager-settings.php:149
 msgid ""
 "Enter the slug of the page where you have placed the [job_dashboard] "
 "shortcode. This lets the plugin know where the dashboard is located."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:192
+#: includes/admin/class-wp-job-manager-settings.php:201
 msgid "Settings successfully saved"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:271
+#: includes/admin/class-wp-job-manager-settings.php:280
 msgid "Save Changes"
 msgstr ""
 
@@ -629,8 +643,8 @@ msgstr ""
 msgid "Date Expires"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:253
-#: includes/class-wp-job-manager-shortcodes.php:288
+#: includes/class-wp-job-manager-shortcodes.php:255
+#: includes/class-wp-job-manager-shortcodes.php:290
 msgid "Load more listings"
 msgstr ""
 
@@ -895,11 +909,11 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: templates/job-filters.php:28
+#: templates/job-filters.php:31
 msgid "Any category"
 msgstr ""
 
-#: templates/job-filters.php:40
+#: templates/job-filters.php:44
 msgid ""
 "Your browser does not support JavaScript, or it is disabled. JavaScript must "
 "be enabled in order to view listings."
@@ -957,6 +971,10 @@ msgstr ""
 
 #: wp-job-manager-functions.php:305
 msgid "This email is already registered, please choose another one."
+msgstr ""
+
+#: wp-job-manager-functions.php:427
+msgid "Choose a category&hellip;"
 msgstr ""
 
 #: wp-job-manager-template.php:128
