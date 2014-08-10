@@ -624,6 +624,23 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				} else {
 					update_post_meta( self::$job_id, '_' . $key, $values[ $group_key ][ $key ] );
 				}
+
+				// Handle attachments
+				if ( 'file' === $field['type'] ) {
+					$attachment = array(
+						'post_title'   => get_the_title( self::$job_id ),
+						'post_content' => '',
+						'post_status'  => 'inherit',
+						'post_parent'  => $post_id,
+						'guid'         => $values[ $group_key ][ $key ]
+					);
+
+					if ( $info = wp_check_filetype( $values[ $group_key ][ $key ] ) ) {
+						$attachment['post_mime_type'] = $info['type'];
+					}
+					
+					wp_insert_attachment( $attachment, $values[ $group_key ][ $key ], self::$job_id );
+				}
 			}
 		}
 

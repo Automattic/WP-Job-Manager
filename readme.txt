@@ -97,6 +97,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * New field types - term-checklist, term-multiselect, term-select. These save terms only.
 * Added chosen javascript to enhance multiselect boxes when needed.
 * Multiple category support.
+* Attach Images on Upload to the job posts.
 
 = 1.13.0 =
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.
