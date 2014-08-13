@@ -2,7 +2,7 @@
 // Get selected value
 if ( isset( $field['value'] ) ) {
 	$selected = $field['value'];
-} elseif ( is_int( $field['default'] ) ) {
+} elseif (  ! empty( $field['default'] ) && is_int( $field['default'] ) ) {
 	$selected = $field['default'];
 } elseif ( ! empty( $field['default'] ) && ( $term = get_term_by( 'slug', $field['default'], $field['taxonomy'] ) ) ) {
 	$selected = $term->term_id;
@@ -20,3 +20,5 @@ job_manager_dropdown_categories( array(
 	'selected'     => $selected,
 	'hide_empty'   => false,
 ) );
+
+if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
