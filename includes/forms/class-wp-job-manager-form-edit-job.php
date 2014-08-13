@@ -46,32 +46,19 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 		foreach ( self::$fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
-				switch ( $key ) {
-					case 'job_title' :
-						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) ) {
-							self::$fields[ $group_key ][ $key ]['value'] = $job->post_title;
-						}
-					break;
-					case 'job_description' :
-						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) ) {
-							self::$fields[ $group_key ][ $key ]['value'] = $job->post_content;
-						}
-					break;
-					case 'job_type' :
-						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) ) {
-							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'ids' ) ) );
-						}
-					break;
-					case 'job_category' :
-						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) ) {
-							self::$fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) );
-						}
-					break;
-					default:
-						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) ) {
-							self::$fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
-						}
-					break;
+				if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) ) {
+					if ( 'job_title' === $key ) {
+						self::$fields[ $group_key ][ $key ]['value'] = $job->post_title;
+
+					} elseif ( 'job_description' === $key ) {
+						self::$fields[ $group_key ][ $key ]['value'] = $job->post_content;
+
+					} elseif ( ! empty( $field['taxonomy'] ) ) {
+						self::$fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, $field['taxonomy'], array( 'fields' => 'ids' ) );
+						
+					} else {
+						self::$fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
+					}
 				}
 			}
 		}

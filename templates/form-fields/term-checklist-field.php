@@ -15,7 +15,7 @@
 	);
 
 	// $field['post_id'] needs to be passed via the args so we can get the existing terms
-	wp_terms_checklist( ! empty( $field['post_id'] ) ? $field['post_id'] : '', $args );
+	wp_terms_checklist( 0, $args );
 ?>
 </ul>
 <?php if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
