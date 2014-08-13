@@ -236,8 +236,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		$values = array();
 
-		foreach ( self::$fields as $group_key => $fields ) {
-			foreach ( $fields as $key => $field ) {
+		foreach ( self::$fields as $group_key => $group_fields ) {
+			foreach ( $group_fields as $key => $field ) {
 				// Get the value
 				$field_type = str_replace( '-', '_', $field['type'] );
 				
@@ -352,8 +352,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return bool on success, WP_ERROR on failure
 	 */
 	protected static function validate_fields( $values ) {
-		foreach ( self::$fields as $group_key => $fields ) {
-			foreach ( $fields as $key => $field ) {
+		foreach ( self::$fields as $group_key => $group_fields ) {
+			foreach ( $group_fields as $key => $field ) {
 				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) ) {
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
 				}
@@ -455,8 +455,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Load data if neccessary
 		if ( ! empty( $_POST['edit_job'] ) && self::$job_id ) {
 			$job = get_post( self::$job_id );
-			foreach ( self::$fields as $group_key => $fields ) {
-				foreach ( $fields as $key => $field ) {
+			foreach ( self::$fields as $group_key => $group_fields ) {
+				foreach ( $group_fields as $key => $field ) {
 					switch ( $key ) {
 						case 'job_title' :
 							self::$fields[ $group_key ][ $key ]['value'] = $job->post_title;
@@ -610,8 +610,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_post_meta( self::$job_id, '_featured', 0, true );
 
 		// Loop fields and save meta and term data
-		foreach ( self::$fields as $group_key => $fields ) {
-			foreach ( $fields as $key => $field ) {
+		foreach ( self::$fields as $group_key => $group_fields ) {
+			foreach ( $group_fields as $key => $field ) {
 				// Save taxonomies
 				if ( ! empty( $field['taxonomy'] ) ) {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
@@ -631,7 +631,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'post_title'   => get_the_title( self::$job_id ),
 						'post_content' => '',
 						'post_status'  => 'inherit',
-						'post_parent'  => $post_id,
+						'post_parent'  => self::$job_id,
 						'guid'         => $values[ $group_key ][ $key ]
 					);
 

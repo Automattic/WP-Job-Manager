@@ -44,8 +44,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 		self::init_fields();
 
-		foreach ( self::$fields as $group_key => $fields ) {
-			foreach ( $fields as $key => $field ) {
+		foreach ( self::$fields as $group_key => $group_fields ) {
+			foreach ( $group_fields as $key => $field ) {
 				switch ( $key ) {
 					case 'job_title' :
 						if ( ! isset( self::$fields[ $group_key ][ $key ]['value'] ) ) {
