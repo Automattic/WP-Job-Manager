@@ -616,6 +616,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_post_meta( self::$job_id, '_filled', 0, true );
 		add_post_meta( self::$job_id, '_featured', 0, true );
 
+		$maybe_attach = array();
+
 		// Loop fields and save meta and term data
 		foreach ( self::$fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
@@ -634,19 +636,44 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 				// Handle attachments
 				if ( 'file' === $field['type'] ) {
+					$maybe_attach[] = $values[ $group_key ][ $key ];
+				}
+			}
+		}
+
+		// Handle attachments
+		if ( sizeof( $maybe_attach ) ) {
+			/** WordPress Administration Image API */
+			include_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+			// Get attachments
+			$attachments     = get_posts( 'post_parent=' . self::$job_id . '&post_type=attachment&fields=ids&post_mime_type=image&numberposts=-1' );
+			$attachment_urls = array();
+
+			// Loop attachments already attached to the job
+			foreach ( $attachments as $attachment_key => $attachment ) {
+				$attachment_urls[] = wp_get_attachment_url( $attachment );
+			}
+
+			foreach ( $maybe_attach as $attachment_url ) {
+				if ( ! in_array( $attachment_url, $attachment_urls ) ) {
 					$attachment = array(
 						'post_title'   => get_the_title( self::$job_id ),
 						'post_content' => '',
 						'post_status'  => 'inherit',
 						'post_parent'  => self::$job_id,
-						'guid'         => $values[ $group_key ][ $key ]
+						'guid'         => $attachment_url
 					);
 
-					if ( $info = wp_check_filetype( $values[ $group_key ][ $key ] ) ) {
+					if ( $info = wp_check_filetype( $attachment_url ) ) {
 						$attachment['post_mime_type'] = $info['type'];
 					}
 					
-					wp_insert_attachment( $attachment, $values[ $group_key ][ $key ], self::$job_id );
+					$attachment_id = wp_insert_attachment( $attachment, $attachment_url, self::$job_id );
+
+					if ( ! is_wp_error( $attachment_id ) ) {
+						wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $attachment_url ) );
+					}
 				}
 			}
 		}
@@ -658,6 +685,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			update_user_meta( get_current_user_id(), '_company_tagline', isset( $values['company']['company_name'] ) ? $values['company']['company_tagline'] : '' );
 			update_user_meta( get_current_user_id(), '_company_twitter', isset( $values['company']['company_name'] ) ? $values['company']['company_twitter'] : '' );
 			update_user_meta( get_current_user_id(), '_company_logo', isset( $values['company']['company_name'] ) ? $values['company']['company_logo'] : '' );
+			update_user_meta( get_current_user_id(), '_company_video', isset( $values['company']['company_video'] ) ? $values['company']['company_video'] : '' );
 		}
 
 		do_action( 'job_manager_update_job_data', self::$job_id, $values );
@@ -787,10 +815,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Filter the upload directory
 	 */
 	public static function upload_dir( $pathdata ) {
-		$subdir             = '/job_listings';
-		$pathdata['path']   = str_replace( $pathdata['subdir'], $subdir, $pathdata['path'] );
-		$pathdata['url']    = str_replace( $pathdata['subdir'], $subdir, $pathdata['url'] );
-		$pathdata['subdir'] = str_replace( $pathdata['subdir'], $subdir, $pathdata['subdir'] );
+		if ( empty( $pathdata['subdir'] ) ) {
+			$pathdata['path']   = $pathdata['path'] . '/job_listings';
+			$pathdata['url']    = $pathdata['url']. '/job_listings';
+			$pathdata['subdir'] = '/job_listings';
+		} else {
+			$new_subdir         = '/job_listings' . $pathdata['subdir'];
+			$pathdata['path']   = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['path'] );
+			$pathdata['url']    = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['url'] );
+			$pathdata['subdir'] = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['subdir'] );
+		}
 		return $pathdata;
 	}
 }
