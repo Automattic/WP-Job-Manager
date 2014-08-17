@@ -198,7 +198,8 @@ class WP_Job_Manager_Shortcodes {
 			'show_filters'              => true,
 			'show_categories'           => true,
 			'show_category_multiselect' => get_option( 'job_manager_enable_default_category_multiselect', false ),
-			'show_pagination'           => false,           
+			'show_pagination'           => false, 
+			'show_more'                 => true,         
 			
 			// Limit what jobs are shown based on category and type
 			'categories'                => '',
@@ -218,10 +219,11 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		// String and bool handling
-		$show_filters       = ( is_bool( $show_filters ) && $show_filters ) || in_array( $show_filters, array( '1', 'true', 'yes' ) ) ? true : false;
-		$show_categories    = ( is_bool( $show_categories ) && $show_categories ) || in_array( $show_categories, array( '1', 'true', 'yes' ) ) ? true : false;
-		$show_featured_only = ( is_bool( $show_featured_only ) && $show_featured_only ) || in_array( $show_featured_only, array( '1', 'true', 'yes' ) ) ? true : false;
+		$show_filters              = ( is_bool( $show_filters ) && $show_filters ) || in_array( $show_filters, array( '1', 'true', 'yes' ) ) ? true : false;
+		$show_categories           = ( is_bool( $show_categories ) && $show_categories ) || in_array( $show_categories, array( '1', 'true', 'yes' ) ) ? true : false;
+		$show_featured_only        = ( is_bool( $show_featured_only ) && $show_featured_only ) || in_array( $show_featured_only, array( '1', 'true', 'yes' ) ) ? true : false;
 		$show_category_multiselect = ( is_bool( $show_category_multiselect ) && $show_category_multiselect ) || in_array( $show_category_multiselect, array( '1', 'true', 'yes' ) ) ? true : false;
+		$show_more                 = ( is_bool( $show_more ) && $show_more ) || in_array( $show_more, array( '1', 'true', 'yes' ) ) ? true : false;
 
 		if ( ! is_null( $featured ) ) {
 			$featured = ( is_bool( $featured ) && $featured ) || in_array( $featured, array( '1', 'true', 'yes' ) ) ? true : false;
@@ -251,7 +253,7 @@ class WP_Job_Manager_Shortcodes {
 
 			echo '<ul class="job_listings"></ul>';
 
-			if ( ! $show_pagination ) {
+			if ( ! $show_pagination && $show_more ) {
 				echo '<a class="load_more_jobs" href="#" style="display:none;"><strong>' . __( 'Load more listings', 'wp-job-manager' ) . '</strong></a>';
 			}
 
@@ -271,16 +273,12 @@ class WP_Job_Manager_Shortcodes {
 			if ( $jobs->have_posts() ) : ?>
 
 				<ul class="job_listings">
-
 					<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
-
 						<?php get_job_manager_template_part( 'content', 'job_listing' ); ?>
-
 					<?php endwhile; ?>
-
 				</ul>
 
-				<?php if ( $jobs->found_posts > $per_page ) : ?>
+				<?php if ( $jobs->found_posts > $per_page && $show_more ) : ?>
 
 					<?php wp_enqueue_script( 'wp-job-manager-ajax-filters' ); ?>
 

@@ -104,6 +104,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Added optional company video field to submission form.
 * Video appended to company information box.
 * the_company_video() and get_the_company_video() functions.
+* show_more="false" for jobs shortcode to prevent loading more jobs.
 
 = 1.13.0 =
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.
