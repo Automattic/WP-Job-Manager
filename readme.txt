@@ -100,6 +100,10 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Attach Images on Upload to the job posts.
 * Added an option to show a multiselect for categories on the job filters.
 * Enabled chosen() for the job category filter.
+* Added content-single-job_listing-company.php and content-single-job_listing-meta.php templates. These are hooked in.
+* Added optional company video field to submission form.
+* Video appended to company information box.
+* the_company_video() and get_the_company_video() functions.
 
 = 1.13.0 =
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.

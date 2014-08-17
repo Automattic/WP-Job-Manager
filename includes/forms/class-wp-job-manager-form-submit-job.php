@@ -198,19 +198,26 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'maxlength'   => 64,
 					'priority'    => 3
 				),
+				'company_video' => array(
+					'label'       => __( 'Video', 'wp-job-manager' ),
+					'type'        => 'text',
+					'required'    => false,
+					'placeholder' => __( 'A video about your company', 'wp-job-manager' ),
+					'priority'    => 4
+				),
 				'company_twitter' => array(
 					'label'       => __( 'Twitter username', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => false,
 					'placeholder' => __( '@yourcompany', 'wp-job-manager' ),
-					'priority'    => 4
+					'priority'    => 5
 				),
 				'company_logo' => array(
 					'label'       => __( 'Logo', 'wp-job-manager' ),
 					'type'        => 'file',
 					'required'    => false,
 					'placeholder' => '',
-					'priority'    => 5,
+					'priority'    => 6,
 					'allowed_mime_types' => array(
 						'jpg' => 'image/jpeg',
 						'gif' => 'image/gif',

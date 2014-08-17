@@ -363,6 +363,32 @@ function job_manager_get_resized_image( $logo, $size ) {
 }
 
 /**
+ * Output the company video
+ */
+function the_company_video( $post = null ) {
+	$video       = get_the_company_video( $post );
+	$video_embed = wp_oembed_get( $video );
+
+	if ( $video_embed ) {
+		echo '<div class="company_video">' . $video_embed . '</div>';
+	}
+}
+
+/**
+ * Get the company video URL
+ *
+ * @param mixed $post (default: null)
+ * @return string
+ */
+function get_the_company_video( $post = null ) {
+	$post = get_post( $post );
+	if ( $post->post_type !== 'job_listing' ) {
+		return;
+	}
+	return apply_filters( 'the_company_video', $post->_company_video, $post );
+}
+
+/**
  * Display or retrieve the current company name with optional content.
  *
  * @access public
@@ -557,3 +583,19 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 
 	return get_post_class( $classes, $post->ID );
 }
+
+/**
+ * Displays job meta data on the single job page
+ */
+function job_listing_meta_display() {
+	get_job_manager_template( 'content-single-job_listing-meta.php', array() );
+}
+add_action( 'single_job_listing_start', 'job_listing_meta_display', 20 );
+
+/**
+ * Displays job company data on the single job page
+ */
+function job_listing_company_display() {
+	get_job_manager_template( 'content-single-job_listing-company.php', array() );
+}
+add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
