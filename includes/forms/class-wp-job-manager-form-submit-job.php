@@ -238,7 +238,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return array of data
 	 */
 	protected static function get_posted_fields() {
-		
+
 		self::init_fields();
 
 		$values = array();
@@ -247,7 +247,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			foreach ( $group_fields as $key => $field ) {
 				// Get the value
 				$field_type = str_replace( '-', '_', $field['type'] );
-				
+
 				if ( method_exists( __CLASS__, "get_posted_{$field_type}_field" ) ) {
 					$values[ $group_key ][ $key ] = call_user_func( __CLASS__ . "::get_posted_{$field_type}_field", $key, $field );
 				} else {
@@ -290,7 +290,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	protected static function get_posted_file_field( $key, $field ) {
 		$file = self::upload_file( $key, $field );
-		
+
 		if ( ! $file ) {
 			$file = self::get_posted_field( 'current_' . $key, $field );
 		}
@@ -424,8 +424,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	private static function job_types() {
 		$options = array();
 		$terms   = get_job_listing_types();
-		foreach ( $terms as $term )
+		foreach ( $terms as $term ) {
 			$options[ $term->slug ] = $term->name;
+		}
 		return $options;
 	}
 
@@ -522,7 +523,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		try {
 			// Init fields
 			self::init_fields();
-			
+
 			// Get posted values
 			$values = self::get_posted_fields();
 
@@ -539,15 +540,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( ! is_user_logged_in() ) {
 				$create_account = false;
 
-				if ( job_manager_enable_registration() && ! empty( $_POST['create_account_email'] ) )
+				if ( job_manager_enable_registration() && ! empty( $_POST['create_account_email'] ) ) {
 					$create_account = wp_job_manager_create_account( $_POST['create_account_email'], get_option( 'job_manager_registration_role' ) );
+				}
 
-				if ( is_wp_error( $create_account ) )
+				if ( is_wp_error( $create_account ) ) {
 					throw new Exception( $create_account->get_error_message() );
+				}
 			}
 
-			if ( job_manager_user_requires_account() && ! is_user_logged_in() )
+			if ( job_manager_user_requires_account() && ! is_user_logged_in() ) {
 				throw new Exception( __( 'You must be signed in to post a new listing.' ) );
+			}
 
 			// Update the job
 			self::save_job( $values['job']['job_title'], $values['job']['job_description'], self::$job_id ? '' : 'preview', $values );
@@ -570,20 +574,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  string $status
 	 */
 	protected static function save_job( $post_title, $post_content, $status = 'preview', $values = array() ) {
-			
 		$job_slug   = array();
 
 		// Prepend with company name
-		if ( ! empty( $values['company']['company_name'] ) )
+		if ( ! empty( $values['company']['company_name'] ) ) {
 			$job_slug[] = $values['company']['company_name'];
+		}
 
 		// Prepend location
-		if ( ! empty( $values['job']['job_location'] ) )
+		if ( ! empty( $values['job']['job_location'] ) ) {
 			$job_slug[] = $values['job']['job_location'];
+		}
 
 		// Prepend with job type
-		if ( ! empty( $values['job']['job_type'] ) )
+		if ( ! empty( $values['job']['job_type'] ) ) {
 			$job_slug[] = $values['job']['job_type'];
+		}
 
 		$job_slug[] = $post_title;
 
@@ -595,8 +601,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'comment_status' => 'closed'
 		), $post_title, $post_content, $status, $values );
 
-		if ( $status )
+		if ( $status ) {
 			$job_data['post_status'] = $status;
+		}
 
 		if ( self::$job_id ) {
 			$job_data['ID'] = self::$job_id;
@@ -628,7 +635,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					} else {
 						wp_set_object_terms( self::$job_id, array( $values[ $group_key ][ $key ] ), $field['taxonomy'], false );
 					}
-				
+
 				// Save meta data
 				} else {
 					update_post_meta( self::$job_id, '_' . $key, $values[ $group_key ][ $key ] );
@@ -636,7 +643,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 				// Handle attachments
 				if ( 'file' === $field['type'] ) {
-					$maybe_attach[] = $values[ $group_key ][ $key ];
+					// Must be absolute
+					if ( strstr( $values[ $group_key ][ $key ], WP_CONTENT_URL ) ) {
+						$maybe_attach[] = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $values[ $group_key ][ $key ] );
+					}
 				}
 			}
 		}
@@ -668,7 +678,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					if ( $info = wp_check_filetype( $attachment_url ) ) {
 						$attachment['post_mime_type'] = $info['type'];
 					}
-					
+
 					$attachment_id = wp_insert_attachment( $attachment, $attachment_url, self::$job_id );
 
 					if ( ! is_wp_error( $attachment_id ) ) {
@@ -729,8 +739,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Preview Step Form handler
 	 */
 	public static function preview_handler() {
-		if ( ! $_POST )
+		if ( ! $_POST ) {
 			return;
+		}
 
 		// Edit = show submit form again
 		if ( ! empty( $_POST['edit_job'] ) ) {
