@@ -202,7 +202,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'label'       => __( 'Video', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => false,
-					'placeholder' => __( 'A video about your company', 'wp-job-manager' ),
+					'placeholder' => __( 'A link to a video about your company', 'wp-job-manager' ),
 					'priority'    => 4
 				),
 				'company_twitter' => array(

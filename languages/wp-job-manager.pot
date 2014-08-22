@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.14.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-08-10 16:36:32+00:00\n"
+"POT-Creation-Date: 2014-08-22 17:12:37+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -643,8 +643,8 @@ msgstr ""
 msgid "Date Expires"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:255
-#: includes/class-wp-job-manager-shortcodes.php:290
+#: includes/class-wp-job-manager-shortcodes.php:257
+#: includes/class-wp-job-manager-shortcodes.php:288
 msgid "Load more listings"
 msgstr ""
 
@@ -665,15 +665,15 @@ msgstr ""
 msgid "Invalid listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:89
+#: includes/forms/class-wp-job-manager-form-edit-job.php:76
 msgid "Save changes"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:116
+#: includes/forms/class-wp-job-manager-form-edit-job.php:103
 msgid "Your changes have been saved."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:116
+#: includes/forms/class-wp-job-manager-form-edit-job.php:103
 msgid "View &rarr;"
 msgstr ""
 
@@ -682,7 +682,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
-#: includes/forms/class-wp-job-manager-form-submit-job.php:679
+#: includes/forms/class-wp-job-manager-form-submit-job.php:724
 msgid "Preview"
 msgstr ""
 
@@ -721,7 +721,7 @@ msgid "Enter the name of the company"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:187
-#: templates/content-single-job_listing.php:36
+#: templates/content-single-job_listing-company.php:14
 msgid "Website"
 msgstr ""
 
@@ -734,55 +734,63 @@ msgid "Briefly describe your company"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:202
-msgid "Twitter username"
+msgid "Video"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:205
-msgid "@yourcompany"
+msgid "A link to a video about your company"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:209
+msgid "Twitter username"
+msgstr ""
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:212
+msgid "@yourcompany"
+msgstr ""
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:216
 msgid "Logo"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:358
+#: includes/forms/class-wp-job-manager-form-submit-job.php:365
 msgid "%s is a required field"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:364
-#: includes/forms/class-wp-job-manager-form-submit-job.php:369
+#: includes/forms/class-wp-job-manager-form-submit-job.php:371
+#: includes/forms/class-wp-job-manager-form-submit-job.php:376
 msgid "%s is invalid"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:382
+#: includes/forms/class-wp-job-manager-form-submit-job.php:389
 msgid "Please enter a valid application email address"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:391
+#: includes/forms/class-wp-job-manager-form-submit-job.php:398
 msgid "Please enter a valid application URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:401
+#: includes/forms/class-wp-job-manager-form-submit-job.php:408
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:507
+#: includes/forms/class-wp-job-manager-form-submit-job.php:515
 msgid "Preview &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:543
+#: includes/forms/class-wp-job-manager-form-submit-job.php:553
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:673
+#: includes/forms/class-wp-job-manager-form-submit-job.php:718
 msgid "Submit Listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:674
+#: includes/forms/class-wp-job-manager-form-submit-job.php:719
 msgid "&larr; Edit listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:763
+#: includes/forms/class-wp-job-manager-form-submit-job.php:809
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
@@ -830,7 +838,7 @@ msgid "(optional)"
 msgstr ""
 
 #: templates/content-job_listing.php:16
-#: templates/content-single-job_listing.php:21
+#: templates/content-single-job_listing-meta.php:19
 #: templates/content-summary-job_listing.php:14
 msgid "Posted %s ago"
 msgstr ""
@@ -839,12 +847,12 @@ msgstr ""
 msgid "No more results found."
 msgstr ""
 
-#: templates/content-single-job_listing.php:8
-msgid "This listing has expired"
+#: templates/content-single-job_listing-meta.php:22
+msgid "This position has been filled"
 msgstr ""
 
-#: templates/content-single-job_listing.php:24
-msgid "This position has been filled"
+#: templates/content-single-job_listing.php:6
+msgid "This listing has expired"
 msgstr ""
 
 #: templates/form-fields/file-field.php:6
