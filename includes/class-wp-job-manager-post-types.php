@@ -374,16 +374,18 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// Delete old expired jobs
-		$job_ids = $wpdb->get_col( $wpdb->prepare( "
-			SELECT posts.ID FROM {$wpdb->posts} as posts
-			WHERE posts.post_type = 'job_listing'
-			AND posts.post_modified < %s
-			AND posts.post_status = 'expired'
-		", date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ) ) );
+		if ( apply_filters( 'job_manager_delete_expired_jobs', true ) ) {
+			$job_ids = $wpdb->get_col( $wpdb->prepare( "
+				SELECT posts.ID FROM {$wpdb->posts} as posts
+				WHERE posts.post_type = 'job_listing'
+				AND posts.post_modified < %s
+				AND posts.post_status = 'expired'
+			", date( 'Y-m-d', strtotime( '-' . apply_filters( 'job_manager_delete_expired_jobs_days', 30 ) . ' days', current_time( 'timestamp' ) ) ) ) );
 
-		if ( $job_ids ) {
-			foreach ( $job_ids as $job_id ) {
-				wp_trash_post( $job_id );
+			if ( $job_ids ) {
+				foreach ( $job_ids as $job_id ) {
+					wp_trash_post( $job_id );
+				}
 			}
 		}
 	}

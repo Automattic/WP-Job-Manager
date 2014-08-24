@@ -74,7 +74,7 @@ Once installed:
 
 1. Create a page called "jobs" and inside place the `[jobs]` shortcode. This will list your jobs.
 2. Create a page called "submit job" and inside place the `[submit_job_form]` shortcode if you want front-end submissions.
-3. Create a page called "job dashboard" and inside place the `[job_dashboard]` shortcode for logged in users to manage their listings. 
+3. Create a page called "job dashboard" and inside place the `[job_dashboard]` shortcode for logged in users to manage their listings.
 
 **Note when using shortcodes**, if the content looks blown up/spaced out/poorly styled, edit your page and above the visual editor click on the 'text' tab. Then remove any 'pre' or 'code' tags wrapping your shortcode.
 
@@ -105,6 +105,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Video appended to company information box.
 * the_company_video() and get_the_company_video() functions.
 * show_more="false" for jobs shortcode to prevent loading more jobs.
+* job_manager_delete_expired_jobs filter (__return_false to disable expired job deletion).
+* job_manager_delete_expired_jobs_days filter (set number of days before deletion - default is 30).
 
 = 1.13.0 =
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.
@@ -147,7 +149,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Took out show_featured_only arg for the [jobs] shortcode and added 'featured' which can be set to true or false to show or hide featured jobs, or left null to show both.
 * Removed nonce from frontend job submission form to prevent issues with caching.
 
-= 1.10.0 = 
+= 1.10.0 =
 * Trigger change on 'enter' when filtering jobs.
 * Updated add-ons page to pull from wpjobmanager.com.
 * Updated links.
@@ -158,14 +160,14 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * Add required-field class around required inputs.
 * Enable paste as text in wp-editor field.
 
-= 1.9.3 = 
+= 1.9.3 =
 * Fix email URLs.
 * Target blank for application URLs.
 * Add posted by (author) setting in backend.
 * When saving jobs, ensure _featured and _filled are set.
 * Load admin scripts conditionally.
 
-= 1.9.2 = 
+= 1.9.2 =
 * Fix missing parameter in application_details_url causing URLs to be missing when applying.
 
 = 1.9.1 =
@@ -188,7 +190,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 = 1.8.2 =
 * For initial load, target all .job_filters areas. Jobify compat.
 
-= 1.8.1 = 
+= 1.8.1 =
 * Fix - Corrected check to see if any category terms with jobs exist
 
 = 1.8.0 =
@@ -219,11 +221,11 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 = 1.7.1 =
 * Updated textdomain to wp-job-manager
-* Re-done .pot file 
+* Re-done .pot file
 * Additonal filters for ajax responses
 * Moved localisations to Transifex https://www.transifex.com/projects/p/wp-job-manager/
 
-= 1.7.0 = 
+= 1.7.0 =
 * Added geolocation to save location data to meta after posting or saving a job. This will be used by other plugins.
 * Filter job_manager_geolocation_enabled and return false to turn off geolocation features.
 * Jobs shortcode can now be passed 'location' and 'keywords' to set the default for filters, or show only jobs with those keywords if filters are disabled
@@ -233,7 +235,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * submit_job_form_wp_editor_args filter
 * "Empty" categories are visible when filtering jobs in admin.
 
-= 1.6.0 = 
+= 1.6.0 =
 * MP6/WP 3.8 optimised styling. Min version 3.8 for new styling.
 * Removed images previously used in admin.
 * Tweak the_company_logo() to check if logo is valid URL.
