@@ -159,14 +159,26 @@
 			display: block;
 			line-height: 1.2em;
 		}
-		.job-manager-uploaded-file {
-			line-height: 64px;
-			font-style: italic;
-			margin: 0 0 1em 0;
-			img {
-				height: 64px;
-				vertical-align: middle;
-				margin: 0 1em 0 0;
+		.job-manager-uploaded-files {
+			display: table;
+			.job-manager-uploaded-file {
+				line-height: 1.5em;
+				font-style: italic;
+				display: table-row;
+				.job-manager-uploaded-file-preview {
+					display: table-cell;
+					vertical-align: middle;
+					padding: .5em 0 .5em 0;
+					img {
+						height: 64px;
+						margin: 0;
+					}
+				}
+				.job-manager-uploaded-file-name {
+					display: table-cell;
+					vertical-align: middle;
+					padding: .5em 0 .5em 1em;
+				}
 			}
 		}
 	}
@@ -473,7 +485,7 @@ ul.job_listings {
 	.application {
 		padding: 0;
 		margin: 0 0 1em;
-		
+
 		.application_button, .application_details {
 			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 			-moz-box-sizing: border-box;    /* Firefox, other Gecko */

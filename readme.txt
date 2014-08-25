@@ -107,6 +107,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 * show_more="false" for jobs shortcode to prevent loading more jobs.
 * job_manager_delete_expired_jobs filter (__return_false to disable expired job deletion).
 * job_manager_delete_expired_jobs_days filter (set number of days before deletion - default is 30).
+* Support HTML5 multiple attribute for file upload field. Pass multiple=>'true' to form field definition to enable.
 
 = 1.13.0 =
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.

@@ -266,10 +266,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Get the value of a posted field
 	 * @param  string $key
 	 * @param  array $field
-	 * @return string
+	 * @return string|array
 	 */
 	protected static function get_posted_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? sanitize_text_field( trim( urldecode( stripslashes( $_POST[ $key ] ) ) ) ) : '';
+		if ( ! isset( $_POST[ $key ] ) ) {
+			return '';
+		}
+		if ( is_array( $_POST[ $key ] ) ) {
+			return array_map( 'sanitize_text_field', array_map( 'urldecode', stripslashes_deep( $_POST[ $key ] ) ) );
+		} else {
+			return sanitize_text_field( trim( urldecode( stripslashes( $_POST[ $key ] ) ) ) );
+		}
 	}
 
 	/**
@@ -279,7 +286,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected static function get_posted_multiselect_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field',  $_POST[ $key ] ) : array();
+		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', $_POST[ $key ] ) : array();
 	}
 
 	/**
@@ -293,6 +300,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		if ( ! $file ) {
 			$file = self::get_posted_field( 'current_' . $key, $field );
+		} elseif ( is_array( $file ) ) {
+			$file = array_merge( $file, self::get_posted_field( 'current_' . $key, $field ) );
 		}
 
 		return $file;
@@ -644,8 +653,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				// Handle attachments
 				if ( 'file' === $field['type'] ) {
 					// Must be absolute
-					if ( strstr( $values[ $group_key ][ $key ], WP_CONTENT_URL ) ) {
-						$maybe_attach[] = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $values[ $group_key ][ $key ] );
+					if ( is_array( $values[ $group_key ][ $key ] ) ) {
+						foreach ( $values[ $group_key ][ $key ] as $file_url ) {
+							if ( strstr( $file_url, WP_CONTENT_URL ) ) {
+								$maybe_attach[] = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $file_url );
+							}
+						}
+					} else {
+						if ( strstr( $values[ $group_key ][ $key ], WP_CONTENT_URL ) ) {
+							$maybe_attach[] = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $values[ $group_key ][ $key ] );
+						}
 					}
 				}
 			}
@@ -787,6 +804,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 	/**
 	 * Upload a file
+	 *
+	 * @return  string or array
 	 */
 	public static function upload_file( $field_key, $field ) {
 
@@ -797,7 +816,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		include_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
-			$file   = $_FILES[ $field_key ];
+			$file = $_FILES[ $field_key ];
 
 			if ( ! empty( $field['allowed_mime_types'] ) ) {
 				$allowed_mime_types = $field['allowed_mime_types'];
@@ -805,19 +824,55 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$allowed_mime_types = get_allowed_mime_types();
 			}
 
-			if ( ! in_array( $_FILES[ $field_key ]["type"], $allowed_mime_types ) )
-    			throw new Exception( sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], $_FILES[ $field_key ]["type"], implode( ', ', array_keys( $allowed_mime_types ) ) ) );
+			if ( empty( $file['name'] ) ) {
+				return false;
+			}
 
-			add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
+			if ( is_array( $file['name'] ) ) {
+				$file_urls = array();
 
-			$upload = wp_handle_upload( $file, array( 'test_form' => false ) );
+				foreach ( $file['name'] as $key => $value ) {
+					if ( ! empty( $file['name'][ $key ] ) ) {
 
-			remove_filter('upload_dir', array( __CLASS__, 'upload_dir' ) );
+						if ( ! in_array( $file['type'][ $key ], $allowed_mime_types ) ) {
+			    			throw new Exception( sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], $file['type'][ $key ], implode( ', ', array_keys( $allowed_mime_types ) ) ) );
+						}
 
-			if ( ! empty( $upload['error'] ) ) {
-				throw new Exception( $upload['error'] );
+						$upload_file = array(
+							'name'     => $file['name'][ $key ],
+							'type'     => $file['type'][ $key ],
+							'tmp_name' => $file['tmp_name'][ $key ],
+							'error'    => $file['error'][ $key ],
+							'size'     => $file['size'][ $key ]
+						);
+
+						add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
+						$upload = wp_handle_upload( $upload_file, array( 'test_form' => false ) );
+						remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
+
+						if ( ! empty( $upload['error'] ) ) {
+							throw new Exception( $upload['error'] );
+						}
+
+						$file_urls[] = $upload['url'];
+					}
+				}
+
+				return $file_urls;
 			} else {
-				return $upload['url'];
+				if ( ! in_array( $file['type'], $allowed_mime_types ) ) {
+	    			throw new Exception( sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], $file['type'], implode( ', ', array_keys( $allowed_mime_types ) ) ) );
+				}
+
+				add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
+				$upload = wp_handle_upload( $file, array( 'test_form' => false ) );
+				remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
+
+				if ( ! empty( $upload['error'] ) ) {
+					throw new Exception( $upload['error'] );
+				} else {
+					return $upload['url'];
+				}
 			}
 		}
 	}
