@@ -106,7 +106,7 @@ class WP_Job_Manager_Writepanels {
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
 
 			<?php if ( ! empty( $field['multiple'] ) ) : ?>
-				<?php foreach ( $field['value'] as $value ) : ?>
+				<?php foreach ( (array) $field['value'] as $value ) : ?>
 					<span class="file_url">
 						<input type="text" name="<?php echo esc_attr( $key ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" />
 						<button class="button wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button>

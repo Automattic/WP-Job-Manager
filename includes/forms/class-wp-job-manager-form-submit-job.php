@@ -293,7 +293,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Get the value of a posted file field
 	 * @param  string $key
 	 * @param  array $field
-	 * @return string
+	 * @return string|array
 	 */
 	protected static function get_posted_file_field( $key, $field ) {
 		$file = self::upload_file( $key, $field );
@@ -301,7 +301,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! $file ) {
 			$file = self::get_posted_field( 'current_' . $key, $field );
 		} elseif ( is_array( $file ) ) {
-			$file = array_merge( $file, self::get_posted_field( 'current_' . $key, $field ) );
+			$file = array_filter( array_merge( $file, (array) self::get_posted_field( 'current_' . $key, $field ) ) );
 		}
 
 		return $file;
