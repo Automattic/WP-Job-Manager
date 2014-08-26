@@ -269,7 +269,7 @@ class WP_Job_Manager_Settings {
 								break;
 								default :
 
-									do_action( 'wp_job_manager_admin_field_' . $option['type'], $option );
+									do_action( 'wp_job_manager_admin_field_' . $option['type'], $option, $attributes, $value, $placeholder );
 									
 								break;
 
