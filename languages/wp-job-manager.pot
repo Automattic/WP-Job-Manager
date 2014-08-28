@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.14.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-08-22 17:12:37+00:00\n"
+"POT-Creation-Date: 2014-08-28 16:23:44+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -428,15 +428,23 @@ msgstr ""
 msgid "%s Data"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:104
+#: includes/admin/class-wp-job-manager-writepanels.php:112
+#: includes/admin/class-wp-job-manager-writepanels.php:118
+#: includes/admin/class-wp-job-manager-writepanels.php:127
 msgid "Use file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:104
+#: includes/admin/class-wp-job-manager-writepanels.php:112
+#: includes/admin/class-wp-job-manager-writepanels.php:118
+#: includes/admin/class-wp-job-manager-writepanels.php:127
 msgid "Upload"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:272
+#: includes/admin/class-wp-job-manager-writepanels.php:127
+msgid "Add file"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-writepanels.php:258
 msgid "Guest user"
 msgstr ""
 
@@ -682,7 +690,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
-#: includes/forms/class-wp-job-manager-form-submit-job.php:724
+#: includes/forms/class-wp-job-manager-form-submit-job.php:741
 msgid "Preview"
 msgstr ""
 
@@ -753,44 +761,45 @@ msgstr ""
 msgid "Logo"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:365
+#: includes/forms/class-wp-job-manager-form-submit-job.php:374
 msgid "%s is a required field"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:371
-#: includes/forms/class-wp-job-manager-form-submit-job.php:376
+#: includes/forms/class-wp-job-manager-form-submit-job.php:380
+#: includes/forms/class-wp-job-manager-form-submit-job.php:385
 msgid "%s is invalid"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:389
+#: includes/forms/class-wp-job-manager-form-submit-job.php:398
 msgid "Please enter a valid application email address"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:398
+#: includes/forms/class-wp-job-manager-form-submit-job.php:407
 msgid "Please enter a valid application URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:408
+#: includes/forms/class-wp-job-manager-form-submit-job.php:417
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:515
+#: includes/forms/class-wp-job-manager-form-submit-job.php:524
 msgid "Preview &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:553
+#: includes/forms/class-wp-job-manager-form-submit-job.php:562
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:718
+#: includes/forms/class-wp-job-manager-form-submit-job.php:735
 msgid "Submit Listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:719
+#: includes/forms/class-wp-job-manager-form-submit-job.php:736
 msgid "&larr; Edit listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:809
+#: includes/forms/class-wp-job-manager-form-submit-job.php:838
+#: includes/forms/class-wp-job-manager-form-submit-job.php:864
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
@@ -855,16 +864,17 @@ msgstr ""
 msgid "This listing has expired"
 msgstr ""
 
-#: templates/form-fields/file-field.php:6
+#: templates/form-fields/file-field.php:9
+#: templates/form-fields/file-field.php:18
 msgid "remove"
 msgstr ""
 
-#: templates/form-fields/file-field.php:6
+#: templates/form-fields/file-field.php:18
 msgid "or"
 msgstr ""
 
-#: templates/form-fields/file-field.php:16
-msgid "Max. file size: %s."
+#: templates/form-fields/file-field.php:30
+msgid "Maximum file size: %s."
 msgstr ""
 
 #: templates/job-application-email.php:1
@@ -965,23 +975,23 @@ msgctxt "post status"
 msgid "Active"
 msgstr ""
 
-#: wp-job-manager-functions.php:248
+#: wp-job-manager-functions.php:263
 msgid "Reset"
 msgstr ""
 
-#: wp-job-manager-functions.php:252
+#: wp-job-manager-functions.php:267
 msgid "RSS"
 msgstr ""
 
-#: wp-job-manager-functions.php:302
+#: wp-job-manager-functions.php:317
 msgid "Your email address isn&#8217;t correct."
 msgstr ""
 
-#: wp-job-manager-functions.php:305
+#: wp-job-manager-functions.php:320
 msgid "This email is already registered, please choose another one."
 msgstr ""
 
-#: wp-job-manager-functions.php:427
+#: wp-job-manager-functions.php:442
 msgid "Choose a category&hellip;"
 msgstr ""
 

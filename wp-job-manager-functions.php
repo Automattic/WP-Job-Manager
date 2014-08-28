@@ -242,6 +242,21 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
  * Shows links after filtering jobs
  */
 function job_manager_get_filtered_links( $args = array() ) {
+	$job_categories = array();
+
+	// Convert to slugs
+	if ( $args['search_categories'] ) {
+		foreach ( $args['search_categories'] as $category ) {
+			if ( is_numeric( $category ) ) {
+				$category_object = get_term_by( 'id', $category, 'job_listing_category' );
+				if ( ! is_wp_error( $category_object ) ) {
+					$job_categories[] = $category_object->slug;
+				}
+			} else {
+				$job_categories[] = $category;
+			}
+		}
+	}
 
 	$links = apply_filters( 'job_manager_job_filters_showing_jobs_links', array(
 		'reset' => array(
@@ -253,7 +268,7 @@ function job_manager_get_filtered_links( $args = array() ) {
 			'url'  => get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
 				'type'           => isset( $args['filter_job_types'] ) ? implode( ',', $args['filter_job_types'] ) : '',
 				'location'       => $args['search_location'],
-				'job_categories' => implode( ',', $args['search_categories'] ),
+				'job_categories' => implode( ',', $job_categories ),
 				's'              => $args['search_keywords'],
 			) ) )
 		)
@@ -409,18 +424,18 @@ function job_manager_user_requires_account() {
  */
 function job_manager_dropdown_categories( $args = '' ) {
 	$defaults = array(
-		'orderby'      => 'id', 
+		'orderby'      => 'id',
 		'order'        => 'ASC',
 		'show_count'   => 0,
-		'hide_empty'   => 1, 
+		'hide_empty'   => 1,
 		'child_of'     => 0,
-		'exclude'      => '', 
+		'exclude'      => '',
 		'echo'         => 1,
-		'selected'     => 0, 
+		'selected'     => 0,
 		'hierarchical' => 0,
-		'name'         => 'cat', 
+		'name'         => 'cat',
 		'id'           => '',
-		'class'        => 'job-manager-category-dropdown', 
+		'class'        => 'job-manager-category-dropdown',
 		'depth'        => 0,
 		'taxonomy'     => 'job_listing_category',
 		'value'        => 'id',
