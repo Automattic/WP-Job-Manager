@@ -76,8 +76,9 @@ class WP_Job_Manager_CPT {
 							'ID'          => $post_id,
 							'post_status' => 'publish'
 						);
-						if ( get_post_status( $post_id ) == 'pending' && wp_update_post( $job_data ) )
+						if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ) ) && wp_update_post( $job_data ) ) {
 							$approved_jobs[] = $post_id;
+						}
 					}
 
 				wp_redirect( add_query_arg( 'approve_jobs', $approved_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
