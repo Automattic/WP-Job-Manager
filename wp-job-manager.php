@@ -36,8 +36,6 @@ class WP_Job_Manager {
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
 		// Includes
-		include( 'wp-job-manager-functions.php' );
-		include( 'wp-job-manager-template.php' );
 		include( 'includes/class-wp-job-manager-post-types.php' );
 		include( 'includes/class-wp-job-manager-ajax.php' );
 		include( 'includes/class-wp-job-manager-shortcodes.php' );
@@ -60,6 +58,7 @@ class WP_Job_Manager {
 
 		// Actions
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
+		add_action( 'after_setup_theme', array( $this, 'include_template_functions' ), 11 );
 		add_action( 'switch_theme', array( $this->post_types, 'register_post_types' ), 10 );
 		add_action( 'switch_theme', 'flush_rewrite_rules', 15 );
 		add_action( 'widgets_init', create_function( "", "include_once( 'includes/class-wp-job-manager-widgets.php' );" ) );
@@ -80,6 +79,14 @@ class WP_Job_Manager {
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain( 'wp-job-manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}
+
+	/**
+	 * Load functions
+	 */
+	public function include_template_functions() {
+		include( 'wp-job-manager-functions.php' );
+		include( 'wp-job-manager-template.php' );
 	}
 
 	/**
