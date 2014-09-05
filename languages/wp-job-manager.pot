@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.14.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-09-05 16:02:34+00:00\n"
+"POT-Creation-Date: 2014-09-05 16:04:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -338,7 +338,7 @@ msgstr ""
 msgid "Settings successfully saved"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:286
+#: includes/admin/class-wp-job-manager-settings.php:285
 msgid "Save Changes"
 msgstr ""
 
