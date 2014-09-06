@@ -352,7 +352,7 @@ class WP_Job_Manager_CPT {
 				$admin_actions = apply_filters( 'job_manager_admin_actions', $admin_actions, $post );
 
 				foreach ( $admin_actions as $action ) {
-					printf( '<a class="button tips icon-%1$s" href="%2$s" data-tip="%3$s">%4$s</a>', $action['action'], esc_url( $action['url'] ), asc_attr( $action['name'] ), esc_html( $action['name'] ) );
+					printf( '<a class="button tips icon-%1$s" href="%2$s" data-tip="%3$s">%4$s</a>', $action['action'], esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_html( $action['name'] ) );
 				}
 
 				echo '</div>';
