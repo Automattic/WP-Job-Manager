@@ -19,13 +19,13 @@ class WP_Job_Manager_Addons {
 
 		if ( false === ( $addons = get_transient( 'wp_job_manager_addons_html' ) ) ) {
 
-			$raw_addons = wp_remote_get( 
+			$raw_addons = wp_remote_get(
 				'https://wpjobmanager.com/add-ons/',
 				array(
 					'timeout'     => 10,
 					'redirection' => 5,
 					'sslverify'   => false
-				) 
+				)
 			);
 
 			if ( ! is_wp_error( $raw_addons ) ) {
@@ -44,7 +44,7 @@ class WP_Job_Manager_Addons {
 					break;
 				}
 
-				$addons = wp_kses_post( $addons );
+				$addons = wp_kses_post( utf8_decode( $addons ) );
 
 				if ( $addons ) {
 					set_transient( 'wp_job_manager_addons_html', $addons, 60*60*24*7 ); // Cached for a week
