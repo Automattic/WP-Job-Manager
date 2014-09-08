@@ -2,13 +2,14 @@
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
 # paletta, 2014
+# sinnamora <pinnamail@yahoo.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-05-12 08:21+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2014-08-13 00:39+0000\n"
+"Last-Translator: sinnamora <pinnamail@yahoo.com>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/wp-job-manager/language/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,7 +44,7 @@ msgstr "Approva offerta"
 #: includes/admin/class-wp-job-manager-cpt.php:47
 #: includes/admin/class-wp-job-manager-cpt.php:48
 msgid "Expire Jobs"
-msgstr ""
+msgstr "Offerte scadute"
 
 #: includes/admin/class-wp-job-manager-cpt.php:135
 #: includes/admin/class-wp-job-manager-cpt.php:137
@@ -53,7 +54,7 @@ msgstr "%s approvato"
 #: includes/admin/class-wp-job-manager-cpt.php:155
 #: includes/admin/class-wp-job-manager-cpt.php:157
 msgid "%s expired"
-msgstr ""
+msgstr "%s scaduta"
 
 #: includes/admin/class-wp-job-manager-cpt.php:200
 msgid "Select a category"
@@ -290,7 +291,7 @@ msgstr "Per quanti <strong>giorni</strong> sarà valida l'offerta? Se non compil
 
 #: includes/admin/class-wp-job-manager-settings.php:120
 msgid "Application method"
-msgstr ""
+msgstr "Modalità di candidatura"
 
 #: includes/admin/class-wp-job-manager-settings.php:121
 msgid "Choose what employers can use for their job application method."
@@ -298,15 +299,15 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:124
 msgid "Email address or website URL"
-msgstr ""
+msgstr "Indirizzo e-mail o Web"
 
 #: includes/admin/class-wp-job-manager-settings.php:125
 msgid "Email addresses only"
-msgstr ""
+msgstr "Solo indirizzo e-mail"
 
 #: includes/admin/class-wp-job-manager-settings.php:126
 msgid "Website URLs only"
-msgstr ""
+msgstr "Solo indirizzo Web"
 
 #: includes/admin/class-wp-job-manager-settings.php:132
 msgid "Submit Page Slug"
@@ -404,7 +405,7 @@ msgstr "aaaa-mm-gg"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:70
 msgid "Posted by"
-msgstr ""
+msgstr "Inviata da"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:83
 msgid "Job Listing Data"
@@ -450,7 +451,7 @@ msgstr ""
 
 #: includes/class-wp-job-manager-install.php:39
 msgid "Employer"
-msgstr ""
+msgstr "Candidato"
 
 #: includes/class-wp-job-manager-post-types.php:48
 msgid "Job Category"
@@ -660,7 +661,7 @@ msgstr "Fatto"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:107
 msgid "Application email"
-msgstr ""
+msgstr "Email di candidatura"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:108
 msgid "you@yourdomain.com"
@@ -668,7 +669,7 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:111
 msgid "Application URL"
-msgstr ""
+msgstr "Indirizzo Web per le candidature"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:112
 #: includes/forms/class-wp-job-manager-form-submit-job.php:182
@@ -730,15 +731,15 @@ msgstr "%s è un campo obbligatorio"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:325
 msgid "Please enter a valid application email address"
-msgstr ""
+msgstr "Inserire un indirizzo email valido"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:330
 msgid "Please enter a valid application URL"
-msgstr ""
+msgstr "Inserire un indirizzo web valido"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:335
 msgid "Please enter a valid application email address or URL"
-msgstr ""
+msgstr "Inserisci l'indirizzo email o URL del sito"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:456
 msgid "Preview job listing &rarr;"
@@ -784,7 +785,7 @@ msgstr "Iscriviti"
 msgid ""
 "If you don&rsquo;t have an account you can %screate one below by entering "
 "your email address. A password will be automatically emailed to you."
-msgstr ""
+msgstr "Se non hai un profilo puoi crearlo %s  qui sotto inserendo il tuo indirizzo email. La password ti sarà inviata automaticamente all'indirizzo inserito. "
 
 #: templates/account-signin.php:27
 msgid "optionally"
@@ -847,7 +848,7 @@ msgstr "Candidati tramite webmail:"
 msgid ""
 "To apply for this job please visit the following URL: <a href=\"%1$s\" "
 "target=\"_blank\">%1$s &rarr;</a>"
-msgstr ""
+msgstr "Per candidarsi clicca qui: <a href=\"%1$s\" target=\"_blank\">%1$s &rarr;</a>"
 
 #: templates/job-application.php:5
 msgid "Apply for job"

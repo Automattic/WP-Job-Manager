@@ -120,10 +120,10 @@ module.exports = function( grunt ){
 		},
 
 		wp_deploy: {
-	        deploy: { 
+	        deploy: {
 	            options: {
 	                plugin_slug: 'wp-job-manager',
-	                svn_user: 'mikejolley',    
+	                svn_user: 'mikejolley',
 	                build_dir: 'deploy'
 	            },
 	        }
@@ -159,10 +159,9 @@ module.exports = function( grunt ){
 		'shell:generatemos'
 	]);
 
-	grunt.registerTask( 'deploy', [ 
-		'clean:deploy', 
-		'copy:deploy',
-		'wp_deploy'
+	grunt.registerTask( 'deploy', [
+		'clean:deploy',
+		'copy:deploy'
 	]);
 
 };
