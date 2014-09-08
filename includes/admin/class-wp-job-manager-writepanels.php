@@ -54,6 +54,11 @@ class WP_Job_Manager_Writepanels {
 				'placeholder' => __( 'URL to the company logo', 'wp-job-manager' ),
 				'type'  => 'file'
 			),
+			'_company_video' => array(
+				'label' => __( 'Company video', 'wp-job-manager' ),
+				'placeholder' => __( 'URL to the company video', 'wp-job-manager' ),
+				'type'  => 'file'
+			),
 			'_filled' => array(
 				'label' => __( 'Position filled?', 'wp-job-manager' ),
 				'type'  => 'checkbox'

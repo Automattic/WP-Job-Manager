@@ -91,6 +91,8 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+* Fix - Added _company_video in backend.
+
 = 1.14.0 =
 * Extra filters for the filters template.
 * Changed text strings for easier customisations based on post type labels, and made some strings more generic.
