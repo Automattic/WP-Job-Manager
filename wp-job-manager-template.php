@@ -327,6 +327,8 @@ function get_the_company_logo( $post = null ) {
 function job_manager_get_resized_image( $logo, $size ) {
 	global $_wp_additional_image_sizes;
 
+	ob_start();
+
 	if ( $size !== 'full' && ( isset( $_wp_additional_image_sizes[ $size ] ) || in_array( $size, array( 'thumbnail', 'medium', 'large' ) ) ) ) {
 
 		if ( in_array( $size, array( 'thumbnail', 'medium', 'large' ) ) ) {
@@ -349,15 +351,18 @@ function job_manager_get_resized_image( $logo, $size ) {
 			$image = wp_get_image_editor( $logo_path );
 
 			if ( ! is_wp_error( $image ) ) {
-			    $image->resize( $img_width, $img_height, $img_crop );
-			    $image->save( $resized_logo_path );
-
-			    $logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
+			   	if ( is_wp_error( $image->resize( $img_width, $img_height, $img_crop ) ) ) {
+					if ( ! is_wp_error( $image->save( $resized_logo_path ) ) ) {
+						$logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
+					}
+				}
 			}
 		} else {
 			$logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
 		}
 	}
+
+	ob_end_clean();
 
 	return $logo;
 }
@@ -556,7 +561,7 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 	if ( $post->post_type !== 'job_listing' ) {
 		return array();
 	}
-	
+
 	$classes = array();
 
 	if ( empty( $post ) ) {
@@ -573,7 +578,7 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 	if ( is_position_featured( $post ) ) {
 		$classes[] = 'job_position_featured';
 	}
-	
+
 	if ( ! empty( $class ) ) {
 		if ( ! is_array( $class ) ) {
 			$class = preg_split( '#\s+#', $class );

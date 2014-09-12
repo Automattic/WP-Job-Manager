@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.14.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-09-05 16:04:35+00:00\n"
+"POT-Creation-Date: 2014-09-12 16:14:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -166,7 +166,7 @@ msgid "View"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:342
-#: includes/class-wp-job-manager-post-types.php:167
+#: includes/class-wp-job-manager-post-types.php:169
 #: templates/job-dashboard.php:33
 msgid "Edit"
 msgstr ""
@@ -177,8 +177,8 @@ msgid "Delete"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:42
-#: includes/class-wp-job-manager-post-types.php:163
-#: includes/class-wp-job-manager-post-types.php:233
+#: includes/class-wp-job-manager-post-types.php:165
+#: includes/class-wp-job-manager-post-types.php:235
 msgid "Job Listings"
 msgstr ""
 
@@ -492,118 +492,118 @@ msgctxt "Job category slug - resave permalinks after changing this"
 msgid "job-category"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:73
-#: includes/class-wp-job-manager-post-types.php:118
-#: includes/class-wp-job-manager-post-types.php:172
+#: includes/class-wp-job-manager-post-types.php:74
+#: includes/class-wp-job-manager-post-types.php:120
+#: includes/class-wp-job-manager-post-types.php:174
 msgid "Search %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:74
-#: includes/class-wp-job-manager-post-types.php:119
-#: includes/class-wp-job-manager-post-types.php:164
+#: includes/class-wp-job-manager-post-types.php:75
+#: includes/class-wp-job-manager-post-types.php:121
+#: includes/class-wp-job-manager-post-types.php:166
 msgid "All %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:75
-#: includes/class-wp-job-manager-post-types.php:120
-#: includes/class-wp-job-manager-post-types.php:175
+#: includes/class-wp-job-manager-post-types.php:76
+#: includes/class-wp-job-manager-post-types.php:122
+#: includes/class-wp-job-manager-post-types.php:177
 msgid "Parent %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:76
-#: includes/class-wp-job-manager-post-types.php:121
+#: includes/class-wp-job-manager-post-types.php:77
+#: includes/class-wp-job-manager-post-types.php:123
 msgid "Parent %s:"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:77
-#: includes/class-wp-job-manager-post-types.php:122
-#: includes/class-wp-job-manager-post-types.php:168
+#: includes/class-wp-job-manager-post-types.php:78
+#: includes/class-wp-job-manager-post-types.php:124
+#: includes/class-wp-job-manager-post-types.php:170
 msgid "Edit %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:78
-#: includes/class-wp-job-manager-post-types.php:123
+#: includes/class-wp-job-manager-post-types.php:79
+#: includes/class-wp-job-manager-post-types.php:125
 msgid "Update %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:79
-#: includes/class-wp-job-manager-post-types.php:124
+#: includes/class-wp-job-manager-post-types.php:80
+#: includes/class-wp-job-manager-post-types.php:126
 msgid "Add New %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:80
-#: includes/class-wp-job-manager-post-types.php:125
+#: includes/class-wp-job-manager-post-types.php:81
+#: includes/class-wp-job-manager-post-types.php:127
 msgid "New %s Name"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:95
+#: includes/class-wp-job-manager-post-types.php:96
 #: includes/forms/class-wp-job-manager-form-submit-job.php:146
 msgid "Job type"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:96
+#: includes/class-wp-job-manager-post-types.php:97
 msgid "Job types"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:100
+#: includes/class-wp-job-manager-post-types.php:101
 msgctxt "Job type slug - resave permalinks after changing this"
 msgid "job-type"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:142
+#: includes/class-wp-job-manager-post-types.php:144
 msgid "Job"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:143
+#: includes/class-wp-job-manager-post-types.php:145
 msgid "Jobs"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:146
+#: includes/class-wp-job-manager-post-types.php:148
 msgctxt "Post type archive slug - resave permalinks after changing this"
 msgid "jobs"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:152
+#: includes/class-wp-job-manager-post-types.php:154
 msgctxt "Job permalink - resave permalinks after changing this"
 msgid "job"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:165
+#: includes/class-wp-job-manager-post-types.php:167
 msgid "Add New"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:166
+#: includes/class-wp-job-manager-post-types.php:168
 msgid "Add %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:169
+#: includes/class-wp-job-manager-post-types.php:171
 msgid "New %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:170
-#: includes/class-wp-job-manager-post-types.php:171
+#: includes/class-wp-job-manager-post-types.php:172
+#: includes/class-wp-job-manager-post-types.php:173
 msgid "View %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:173
+#: includes/class-wp-job-manager-post-types.php:175
 msgid "No %s found"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:174
+#: includes/class-wp-job-manager-post-types.php:176
 msgid "No %s found in trash"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:177
+#: includes/class-wp-job-manager-post-types.php:179
 msgid "This is where you can create and manage %s."
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:212
+#: includes/class-wp-job-manager-post-types.php:214
 #: wp-job-manager-functions.php:158
 msgctxt "post status"
 msgid "Expired"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:217
+#: includes/class-wp-job-manager-post-types.php:219
 msgid "Expired <span class=\"count\">(%s)</span>"
 msgid_plural "Expired <span class=\"count\">(%s)</span>"
 msgstr[0] ""
