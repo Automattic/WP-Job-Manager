@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.14.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-09-12 16:14:31+00:00\n"
+"POT-Creation-Date: 2014-09-15 16:41:30+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,7 +115,7 @@ msgid "Posted"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:257
-#: includes/admin/class-wp-job-manager-writepanels.php:67
+#: includes/admin/class-wp-job-manager-writepanels.php:72
 msgid "Expires"
 msgstr ""
 
@@ -403,48 +403,56 @@ msgid "URL to the company logo"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:58
+msgid "Company video"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-writepanels.php:59
+msgid "URL to the company video"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-writepanels.php:63
 msgid "Position filled?"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:62
+#: includes/admin/class-wp-job-manager-writepanels.php:67
 msgid "Feature this listing?"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:64
+#: includes/admin/class-wp-job-manager-writepanels.php:69
 msgid ""
 "Featured listings will be sticky during searches, and can be styled "
 "differently."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:68
+#: includes/admin/class-wp-job-manager-writepanels.php:73
 msgid "yyyy-mm-dd"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:71
+#: includes/admin/class-wp-job-manager-writepanels.php:76
 msgid "Posted by"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:86
+#: includes/admin/class-wp-job-manager-writepanels.php:91
 msgid "%s Data"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:112
-#: includes/admin/class-wp-job-manager-writepanels.php:118
-#: includes/admin/class-wp-job-manager-writepanels.php:127
+#: includes/admin/class-wp-job-manager-writepanels.php:117
+#: includes/admin/class-wp-job-manager-writepanels.php:123
+#: includes/admin/class-wp-job-manager-writepanels.php:132
 msgid "Use file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:112
-#: includes/admin/class-wp-job-manager-writepanels.php:118
-#: includes/admin/class-wp-job-manager-writepanels.php:127
+#: includes/admin/class-wp-job-manager-writepanels.php:117
+#: includes/admin/class-wp-job-manager-writepanels.php:123
+#: includes/admin/class-wp-job-manager-writepanels.php:132
 msgid "Upload"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:127
+#: includes/admin/class-wp-job-manager-writepanels.php:132
 msgid "Add file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:258
+#: includes/admin/class-wp-job-manager-writepanels.php:263
 msgid "Guest user"
 msgstr ""
 

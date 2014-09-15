@@ -101,7 +101,7 @@ class WP_Job_Manager {
 		wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
 
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', array(
-			'ajax_url' => admin_url('admin-ajax.php')
+			'ajax_url' => admin_url( 'admin-ajax.php', 'relative' )
 		) );
 		wp_localize_script( 'wp-job-manager-job-dashboard', 'job_manager_job_dashboard', array(
 			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' )
