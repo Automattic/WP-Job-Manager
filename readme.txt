@@ -92,6 +92,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 == Changelog ==
 
 * Fix - Make admin_url relative.
+* Fix - Chosen CSS cutting off the placeholder in Firefox.
 * Fix - Added _company_video in backend.
 
 = 1.14.0 =
