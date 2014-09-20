@@ -92,6 +92,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 == Changelog ==
 
 * Added checkbox field type for forms.
+* Made backend application email field default to logged in user.
 * Fix - Make admin_url relative.
 * Fix - Chosen CSS cutting off the placeholder in Firefox.
 * Fix - Added _company_video in backend.

@@ -22,6 +22,10 @@ class WP_Job_Manager_Writepanels {
 	 * @return void
 	 */
 	public function job_listing_fields() {
+		global $post;
+
+		$current_user = wp_get_current_user();
+
 		return apply_filters( 'job_manager_job_listing_data_fields', array(
 			'_job_location' => array(
 				'label' => __( 'Location', 'wp-job-manager' ),
@@ -29,9 +33,10 @@ class WP_Job_Manager_Writepanels {
 				'description' => __( 'Leave this blank if the location is not important', 'wp-job-manager' )
 			),
 			'_application' => array(
-				'label' => __( 'Application email/URL', 'wp-job-manager' ),
+				'label'       => __( 'Application email/URL', 'wp-job-manager' ),
 				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
-				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' )
+				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
+				'value'       => ( $value = get_post_meta( $post->ID, '_application', true ) ) ? $value : $current_user->user_email
 			),
 			'_company_name' => array(
 				'label' => __( 'Company name', 'wp-job-manager' ),
