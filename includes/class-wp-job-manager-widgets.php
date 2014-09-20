@@ -138,7 +138,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 		global $wp_post_types;
 
 		$this->widget_cssclass    = 'job_manager widget_recent_jobs';
-		$this->widget_description = __( 'Display a list of the most recent listings on your site.', 'wp-job-manager' );
+		$this->widget_description = __( 'Display a list of recent listings on your site, optionally matching a keyword and location.', 'wp-job-manager' );
 		$this->widget_id          = 'widget_recent_jobs';
 		$this->widget_name        = sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name );
 		$this->settings           = array(
@@ -146,6 +146,16 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 				'type'  => 'text',
 				'std'   => sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ),
 				'label' => __( 'Title', 'wp-job-manager' )
+			),
+			'keyword' => array(
+				'type'  => 'text',
+				'std'   => '',
+				'label' => __( 'Keyword', 'wp-job-manager' )
+			),
+			'location' => array(
+				'type'  => 'text',
+				'std'   => '',
+				'label' => __( 'Location', 'wp-job-manager' )
 			),
 			'number' => array(
 				'type'  => 'number',
@@ -168,7 +178,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	 * @param array $instance
 	 * @return void
 	 */
-	function widget( $args, $instance ) {
+	public function widget( $args, $instance ) {
 		if ( $this->get_cached_widget( $args ) )
 			return;
 
@@ -178,26 +188,13 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		$title  = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 		$number = absint( $instance['number'] );
-
-		$query_args = array(
-			'post_type'           => 'job_listing',
-			'post_status'         => 'publish',
-			'ignore_sticky_posts' => 1,
-			'posts_per_page'      => $number,
-			'orderby'             => 'date',
-			'order'               => 'DESC',
-		);
-
-		if ( get_option( 'job_manager_hide_filled_positions' ) == 1 )
-			$query_args['meta_query'] = array(
-				array(
-					'key'     => '_filled',
-					'value'   => '1',
-					'compare' => '!='
-				)
-			);
-
-		$jobs = new WP_Query( $query_args );
+		$jobs   = get_job_listings( array(
+			'search_location'   => isset( $instance['location'] ) ? $instance['location'] : '',
+			'search_keywords'   => isset( $instance['keyword'] ) ? $instance['keyword'] : '',
+			'posts_per_page'    => $number,
+			'orderby'           => 'date',
+			'order'             => 'DESC',
+		) );
 
 		if ( $jobs->have_posts() ) : ?>
 

@@ -79,7 +79,7 @@ class WP_Job_Manager_Settings {
 						array(
 							'name'       => 'job_manager_category_filter_type',
 							'std'        => 'any',
-							'label'      => __( 'Category filter type', 'wp-job-manager' ),
+							'label'      => __( 'Category Filter Type', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled, the category select box will default to a multiselect on the [jobs] shortcode.', 'wp-job-manager' ),
 							'type'       => 'select',
 							'options' => array(
