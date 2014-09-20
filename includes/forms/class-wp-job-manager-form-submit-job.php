@@ -847,7 +847,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						);
 
 						add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
-						$upload = wp_handle_upload( $upload_file, array( 'test_form' => false ) );
+						$upload = wp_handle_upload( $upload_file, apply_filters( 'submit_job_wp_handle_upload_overrides', array( 'test_form' => false ) ) );
 						remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
 
 						if ( ! empty( $upload['error'] ) ) {
@@ -865,7 +865,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				}
 
 				add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
-				$upload = wp_handle_upload( $file, array( 'test_form' => false ) );
+				$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', array( 'test_form' => false ) ) );
 				remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
 
 				if ( ! empty( $upload['error'] ) ) {
