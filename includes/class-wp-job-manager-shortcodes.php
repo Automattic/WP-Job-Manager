@@ -193,22 +193,22 @@ class WP_Job_Manager_Shortcodes {
 			'per_page'                  => get_option( 'job_manager_per_page' ),
 			'orderby'                   => 'featured',
 			'order'                     => 'DESC',
-			
+
 			// Filters + cats
 			'show_filters'              => true,
 			'show_categories'           => true,
 			'show_category_multiselect' => get_option( 'job_manager_enable_default_category_multiselect', false ),
-			'show_pagination'           => false, 
-			'show_more'                 => true,         
-			
+			'show_pagination'           => false,
+			'show_more'                 => true,
+
 			// Limit what jobs are shown based on category and type
 			'categories'                => '',
 			'job_types'                 => '',
 			'featured'                  => null, // True to show only featured, false to hide featured, leave null to show both.
 			'show_featured_only'        => false, // Deprecated
-			
+
 			// Default values for filters
-			'location'                  => '', 
+			'location'                  => '',
 			'keywords'                  => '',
 			'selected_category'         => '',
 			'selected_job_types'        => implode( ',', array_values( get_job_listing_types( 'id=>slug' ) ) ),
@@ -251,7 +251,8 @@ class WP_Job_Manager_Shortcodes {
 
 			get_job_manager_template( 'job-filters.php', array( 'per_page' => $per_page, 'orderby' => $orderby, 'order' => $order, 'show_categories' => $show_categories, 'categories' => $categories, 'selected_category' => $selected_category, 'job_types' => $job_types, 'atts' => $atts, 'location' => $location, 'keywords' => $keywords, 'selected_job_types' => $selected_job_types, 'show_category_multiselect' => $show_category_multiselect ) );
 
-			echo '<ul class="job_listings"></ul>';
+			get_job_manager_template( 'job-listings-start.php' );
+			get_job_manager_template( 'job-listings-end.php' );
 
 			if ( ! $show_pagination && $show_more ) {
 				echo '<a class="load_more_jobs" href="#" style="display:none;"><strong>' . __( 'Load more listings', 'wp-job-manager' ) . '</strong></a>';
@@ -272,11 +273,13 @@ class WP_Job_Manager_Shortcodes {
 
 			if ( $jobs->have_posts() ) : ?>
 
-				<ul class="job_listings">
-					<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
-						<?php get_job_manager_template_part( 'content', 'job_listing' ); ?>
-					<?php endwhile; ?>
-				</ul>
+				<?php get_job_manager_template( 'job-listings-start.php' ); ?>
+
+				<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
+					<?php get_job_manager_template_part( 'content', 'job_listing' ); ?>
+				<?php endwhile; ?>
+
+				<?php get_job_manager_template( 'job-listings-end.php' ); ?>
 
 				<?php if ( $jobs->found_posts > $per_page && $show_more ) : ?>
 
@@ -317,7 +320,7 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Show job types 
+	 * Show job types
 	 * @param  array $atts
 	 */
 	public function job_filter_job_types( $atts ) {

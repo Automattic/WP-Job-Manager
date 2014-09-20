@@ -91,6 +91,7 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+* Added job-listings-start and job-listings-end.php templates for customisation the wrapping elements.
 * Added filter type option for job categories. Can be set to require matching to any or all selected categories.
 * Added checkbox field type for forms.
 * Made backend application email field default to logged in user.
