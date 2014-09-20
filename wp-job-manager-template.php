@@ -329,7 +329,7 @@ function job_manager_get_resized_image( $logo, $size ) {
 
 	ob_start();
 
-	if ( $size !== 'full' && ( isset( $_wp_additional_image_sizes[ $size ] ) || in_array( $size, array( 'thumbnail', 'medium', 'large' ) ) ) ) {
+	if ( $size !== 'full' && strstr( $logo, WP_CONTENT_URL ) && ( isset( $_wp_additional_image_sizes[ $size ] ) || in_array( $size, array( 'thumbnail', 'medium', 'large' ) ) ) ) {
 
 		if ( in_array( $size, array( 'thumbnail', 'medium', 'large' ) ) ) {
 			$img_width  = get_option( $size . '_size_w' );
