@@ -70,11 +70,22 @@ class WP_Job_Manager_Settings {
 						array(
 							'name'       => 'job_manager_enable_default_category_multiselect',
 							'std'        => '0',
-							'label'      => __( 'Job Category filter', 'wp-job-manager' ),
+							'label'      => __( 'Multi-select Categories', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable category multiselect by default', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled, the category select box will default to a multiselect on the [jobs] shortcode.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
+						),
+						array(
+							'name'       => 'job_manager_category_filter_type',
+							'std'        => 'any',
+							'label'      => __( 'Category filter type', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, the category select box will default to a multiselect on the [jobs] shortcode.', 'wp-job-manager' ),
+							'type'       => 'select',
+							'options' => array(
+								'any'  => __( 'Jobs wil be shown if within ANY selected category', 'wp-job-manager' ),
+								'all' => __( 'Jobs will be shown if within ALL selected categories', 'wp-job-manager' ),
+							)
 						),
 					),
 				),

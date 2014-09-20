@@ -47,7 +47,8 @@ function get_job_listings( $args = array() ) {
 		$query_args['tax_query'][] = array(
 			'taxonomy' => 'job_listing_category',
 			'field'    => $field,
-			'terms'    => $args['search_categories']
+			'terms'    => $args['search_categories'],
+			'operator' => get_option( 'job_manager_category_filter_type', 'all' ) == 'all' ? 'AND' : 'IN'
 		);
 	}
 
