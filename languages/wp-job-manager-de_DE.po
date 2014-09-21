@@ -1,13 +1,15 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# kochhase <mail@henryk-ibemeinhardt.de>, 2014
+# Sebastian Wendler <sebastian.wendler@netzlodern.de>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-05-12 08:21+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2014-09-13 19:36+0000\n"
+"Last-Translator: Sebastian Wendler <sebastian.wendler@netzlodern.de>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/wp-job-manager/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,13 +20,13 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-addons.php:50
 #: includes/admin/class-wp-job-manager-admin.php:60
 msgid "WP Job Manager Add-ons"
-msgstr ""
+msgstr "WP Job Manager Add-ons"
 
 #: includes/admin/class-wp-job-manager-addons.php:51
 msgid ""
 "Buying multiple add-ons? <a href=\"%s\">Check out the core add-on bundle "
 "&rarr;</a>"
-msgstr ""
+msgstr "Wollen Sie mehrere Add-ons kaufen? <a href=\"%s\">Werfen Sie einen Blick auf das Core Add-on Paket &rarr;</a>"
 
 #: includes/admin/class-wp-job-manager-admin.php:57
 msgid "Settings"
@@ -32,7 +34,7 @@ msgstr "Einstellungen"
 
 #: includes/admin/class-wp-job-manager-admin.php:60
 msgid "Add-ons"
-msgstr ""
+msgstr "Add-ons"
 
 #: includes/admin/class-wp-job-manager-cpt.php:44
 #: includes/admin/class-wp-job-manager-cpt.php:45
@@ -42,7 +44,7 @@ msgstr "Jobs genehmigen"
 #: includes/admin/class-wp-job-manager-cpt.php:47
 #: includes/admin/class-wp-job-manager-cpt.php:48
 msgid "Expire Jobs"
-msgstr ""
+msgstr "Abgelaufene Jobs"
 
 #: includes/admin/class-wp-job-manager-cpt.php:135
 #: includes/admin/class-wp-job-manager-cpt.php:137
@@ -52,7 +54,7 @@ msgstr "%s genehmigt"
 #: includes/admin/class-wp-job-manager-cpt.php:155
 #: includes/admin/class-wp-job-manager-cpt.php:157
 msgid "%s expired"
-msgstr ""
+msgstr "%s abgelaufen"
 
 #: includes/admin/class-wp-job-manager-cpt.php:200
 msgid "Select a category"
@@ -131,7 +133,7 @@ msgstr "Kategorien"
 
 #: includes/admin/class-wp-job-manager-cpt.php:284
 msgid "Featured?"
-msgstr ""
+msgstr "Besonderheit?"
 
 #: includes/admin/class-wp-job-manager-cpt.php:285
 #: templates/job-dashboard.php:10
@@ -149,12 +151,12 @@ msgstr "Aktionen"
 
 #: includes/admin/class-wp-job-manager-cpt.php:310
 msgid "Job ID: %d"
-msgstr ""
+msgstr "Job ID: %d"
 
 #: includes/admin/class-wp-job-manager-cpt.php:336
 #: includes/admin/class-wp-job-manager-cpt.php:341
 msgid "M j, Y"
-msgstr ""
+msgstr "d.m.Y"
 
 #: includes/admin/class-wp-job-manager-cpt.php:337
 msgid "by a guest"
@@ -221,7 +223,7 @@ msgstr "Job Kategorien aktivieren"
 msgid ""
 "Choose whether to enable job categories. Categories must be setup by an "
 "admin for users to choose during job submission."
-msgstr "Wähle hier Jobkategorien aktiviert werden sollen. Die Kategorien müssen vom Admin für User angelegt werden damit sie im Forumlar für die Joberstellung verfügbar sind. "
+msgstr "Wählen Sie hier, ob Job-Kategorien aktiviert werden sollen. Die Kategorien müssen vom Administrator für Benutzer angelegt werden, damit sie im Forumlar für die Joberstellung verfügbar sind. "
 
 #: includes/admin/class-wp-job-manager-settings.php:73
 msgid "Job Submission"
@@ -239,17 +241,17 @@ msgstr "Accounterstellung erlauben"
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the job submission form."
-msgstr "Sofern aktiviert können Gäste durch Eingabe ihrer Emailadresse im Jobformular einen Account auf dieser Seite erstellen."
+msgstr "Sofern aktiviert können Gäste durch Eingabe ihrer E-Mail-Adresse im Job-Formular einen Account auf dieser Seite erstellen."
 
 #: includes/admin/class-wp-job-manager-settings.php:87
 msgid "Account Role"
-msgstr ""
+msgstr "Konto Rolle"
 
 #: includes/admin/class-wp-job-manager-settings.php:88
 msgid ""
 "If you enable registration on your job submission form, choose a role for "
 "the new user."
-msgstr ""
+msgstr "Wenn Sie die Registrierung im Job-Formular aktivieren, wählen Sie eine Rolle für den neuen Benutzer."
 
 #: includes/admin/class-wp-job-manager-settings.php:95
 msgid "Account required"
@@ -289,33 +291,33 @@ msgstr "Wie viele <strong>Tage</strong> sollen Joblistings aktiv bleiben. Leer l
 
 #: includes/admin/class-wp-job-manager-settings.php:120
 msgid "Application method"
-msgstr ""
+msgstr "Anwendungsmethode"
 
 #: includes/admin/class-wp-job-manager-settings.php:121
 msgid "Choose what employers can use for their job application method."
-msgstr ""
+msgstr "Wählen Sie, was Arbeitgeber für ihre Bewerbung Methode verwenden können."
 
 #: includes/admin/class-wp-job-manager-settings.php:124
 msgid "Email address or website URL"
-msgstr ""
+msgstr "Email Adresse oder webpage URL"
 
 #: includes/admin/class-wp-job-manager-settings.php:125
 msgid "Email addresses only"
-msgstr ""
+msgstr "Nur E-Mail-Adressen"
 
 #: includes/admin/class-wp-job-manager-settings.php:126
 msgid "Website URLs only"
-msgstr ""
+msgstr "Nur Webpage URLs "
 
 #: includes/admin/class-wp-job-manager-settings.php:132
 msgid "Submit Page Slug"
-msgstr ""
+msgstr "Seiten slugs senden"
 
 #: includes/admin/class-wp-job-manager-settings.php:133
 msgid ""
 "Enter the slug of the page where you have placed the [submit_job_form] "
 "shortcode. This lets the plugin know where the form is located."
-msgstr ""
+msgstr "Geben Sie die relative Adresse der Seite an, auf der Sie den [submit_job_form] Shortcode eingebunden haben, damit das Plugin weiß, wo das Formular eingesetzt wird."
 
 #: includes/admin/class-wp-job-manager-settings.php:185
 msgid "Settings successfully saved"
@@ -385,25 +387,25 @@ msgstr "Position vergeben?"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:61
 msgid "Feature this job listing?"
-msgstr ""
+msgstr "Jobangebot hervorheben?"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:63
 msgid ""
 "Featured listings will be sticky during searches, and can be styled "
 "differently."
-msgstr ""
+msgstr "Hervorgehobene Jobangebote erscheinen bei Suchanfragen oben und können optisch anders dargestellt werden."
 
 #: includes/admin/class-wp-job-manager-writepanels.php:66
 msgid "Job Expires"
-msgstr ""
+msgstr "Job läuft ab"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:67
 msgid "yyyy-mm-dd"
-msgstr ""
+msgstr "dd.mm.yyyy"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:70
 msgid "Posted by"
-msgstr ""
+msgstr "Veröffentlicht von"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:83
 msgid "Job Listing Data"
@@ -411,15 +413,15 @@ msgstr "Daten zum Job"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Use file"
-msgstr ""
+msgstr "Verwenden der Datei"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Upload"
-msgstr ""
+msgstr "Das Hinaufladen"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:269
 msgid "Guest user"
-msgstr ""
+msgstr "Gastbenutzer"
 
 #: includes/class-wp-job-manager-ajax.php:111
 msgid "Showing %s&ldquo;%s&rdquo; %sjobs"
@@ -435,21 +437,21 @@ msgstr "verfügbar in &ldquo;%s&rdquo;"
 
 #: includes/class-wp-job-manager-geocode.php:139
 msgid "No results found"
-msgstr ""
+msgstr "Keine Ergebnisse gefunden"
 
 #: includes/class-wp-job-manager-geocode.php:143
 msgid "Query limit reached"
-msgstr ""
+msgstr "Abfragelimit erreicht"
 
 #: includes/class-wp-job-manager-geocode.php:149
 #: includes/class-wp-job-manager-geocode.php:153
 #: includes/class-wp-job-manager-geocode.php:157
 msgid "Geocoding error"
-msgstr ""
+msgstr "Geocoding Fehler"
 
 #: includes/class-wp-job-manager-install.php:39
 msgid "Employer"
-msgstr ""
+msgstr "Der Arbeitgeber"
 
 #: includes/class-wp-job-manager-post-types.php:48
 msgid "Job Category"
@@ -601,7 +603,7 @@ msgstr "%s wurde gelöscht"
 
 #: includes/class-wp-job-manager-shortcodes.php:111
 msgid "You need to be signed in to manage your job listings."
-msgstr "Du musst angemeldet sein um deine Jobangebote zu verwalten."
+msgstr "Sie müssen angemeldet sein um Ihre Jobangebote zu verwalten."
 
 #: includes/class-wp-job-manager-shortcodes.php:204
 #: includes/class-wp-job-manager-shortcodes.php:235
@@ -610,7 +612,7 @@ msgstr "Weitere Jobangebote laden"
 
 #: includes/class-wp-job-manager-widgets.php:139
 msgid "Display a list of the most recent jobs on your site."
-msgstr "Zeigt eine Liste der neuesten Jobs auf dener Seite."
+msgstr "Zeigt eine Liste der neuesten Jobs auf Ihrer Seite."
 
 #: includes/class-wp-job-manager-widgets.php:141
 msgid "Recent Job Listings"
@@ -659,15 +661,15 @@ msgstr "Erledigt"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:107
 msgid "Application email"
-msgstr ""
+msgstr "Email für Bewerber"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:108
 msgid "you@yourdomain.com"
-msgstr ""
+msgstr "ihre@email.de"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:111
 msgid "Application URL"
-msgstr ""
+msgstr "URL für Bewerber"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:112
 #: includes/forms/class-wp-job-manager-form-submit-job.php:182
@@ -713,7 +715,7 @@ msgstr "Kurzbeschreibung zur Firma"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:194
 msgid "Twitter username"
-msgstr "Twitter Username"
+msgstr "Twitter Benutzername"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:197
 msgid "@yourcompany"
@@ -729,15 +731,15 @@ msgstr "%s ist ein erforderliches Feld"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:325
 msgid "Please enter a valid application email address"
-msgstr ""
+msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:330
 msgid "Please enter a valid application URL"
-msgstr ""
+msgstr "Bitte geben Sie eine gültige URL ein"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:335
 msgid "Please enter a valid application email address or URL"
-msgstr ""
+msgstr "Bitte geben Sie eine gültige E-Mail-Bewerber Adresse oder URL ein"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:456
 msgid "Preview job listing &rarr;"
@@ -757,7 +759,7 @@ msgstr "&larr; Jobangebot bearbeiten"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:684
 msgid "\"%s\" needs to be one of the following file types: %s"
-msgstr ""
+msgstr "\"%s\" muss einer der folgenden Dateitypen sein: %s"
 
 #: templates/account-signin.php:4
 msgid "Your account"
@@ -783,7 +785,7 @@ msgstr "Anmelden"
 msgid ""
 "If you don&rsquo;t have an account you can %screate one below by entering "
 "your email address. A password will be automatically emailed to you."
-msgstr ""
+msgstr "Sofern du noch keinen Account auf unserer Seite hast kannst du nachfolgend deine Emailadresse eingeben und somit einen Account erstellen. Das Passwort wird dir automatisch per Email zugesendet."
 
 #: templates/account-signin.php:27
 msgid "optionally"
@@ -806,7 +808,7 @@ msgstr "(optional)"
 #: templates/content-single-job_listing.php:21
 #: templates/content-summary-job_listing.php:14
 msgid "Posted %s ago"
-msgstr ""
+msgstr "Veröffentlicht %s zuvor"
 
 #: templates/content-no-jobs-found.php:1
 msgid "No more jobs found matching your selection."
@@ -822,7 +824,7 @@ msgstr "Diese Position wurde vergeben"
 
 #: templates/form-fields/file-field.php:6
 msgid "remove"
-msgstr ""
+msgstr "entfernen"
 
 #: templates/form-fields/file-field.php:6
 msgid "or"
@@ -830,7 +832,7 @@ msgstr "oder"
 
 #: templates/form-fields/file-field.php:16
 msgid "Max. file size: %s."
-msgstr ""
+msgstr "Maximale Dateigröße: %s."
 
 #: templates/job-application-email.php:1
 msgid ""
@@ -846,7 +848,7 @@ msgstr "Bewerben per Webmail: "
 msgid ""
 "To apply for this job please visit the following URL: <a href=\"%1$s\" "
 "target=\"_blank\">%1$s &rarr;</a>"
-msgstr ""
+msgstr "Um sich für diesen Job zu bewerben, geben Sie bitte die folgende URL ein: <a href=\"%1$s\" target=\"_blank\">%1$s &rarr;</a>"
 
 #: templates/job-application.php:5
 msgid "Apply for job"
@@ -951,7 +953,7 @@ msgstr "Inaktiv"
 
 #: wp-job-manager-template.php:197
 msgid "Job Application via \"%s\" listing on %s"
-msgstr ""
+msgstr "Bewerbungen via \"%s\" Kotierung an %s"
 
 #: wp-job-manager-template.php:255
 msgid "Anywhere"
@@ -963,22 +965,22 @@ msgstr "Möchtest du diesen Job wirklich löschen?"
 
 #. Plugin Name of the plugin/theme
 msgid "WP Job Manager"
-msgstr ""
+msgstr "WP Job Manager"
 
 #. Plugin URI of the plugin/theme
 msgid "https://wpjobmanager.com/"
-msgstr ""
+msgstr "https://wpjobmanager.com/"
 
 #. Description of the plugin/theme
 msgid ""
 "Manage job listings from the WordPress admin panel, and allow users to post "
 "jobs directly to your site."
-msgstr ""
+msgstr "Manage Job-Angebote direkt aus dem WordPress Backend und erlaube Benutzern Job-Angebote direkt auf Ihrer Seite zu veröffentlichen."
 
 #. Author of the plugin/theme
 msgid "Mike Jolley"
-msgstr ""
+msgstr "Mike Jolley"
 
 #. Author URI of the plugin/theme
 msgid "http://mikejolley.com"
-msgstr ""
+msgstr "http://mikejolley.com"
