@@ -26,3 +26,4 @@ wp_dropdown_categories( array(
 	'selected'         => $selected,
 	'hide_empty'       => false
 ) );
+if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
