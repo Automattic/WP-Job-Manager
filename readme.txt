@@ -108,6 +108,9 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+* Fix - Only show website link when actually set.
+* Tweak - Added description to all fields.
+
 = 1.15.0 =
 * Added location/keyword option to recent jobs widget.
 * Added job-listings-start and job-listings-end.php templates for customisation the wrapping elements.
