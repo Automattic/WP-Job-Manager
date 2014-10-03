@@ -80,6 +80,23 @@ Once installed:
 
 For more information, [read the documentation](https://wpjobmanager.com/documentation/).
 
+== Frequently Asked Questions ==
+
+= How do I setup this WP Job Manager? =
+
+
+= Can I use WP Job Manager without frontend job submission? =
+
+
+= How can I customize the job application process? =
+
+
+= How can I be notified of new jobs via email? =
+
+
+= What langauge files are available?
+
+
 == Screenshots ==
 
 1. The submit job form.
