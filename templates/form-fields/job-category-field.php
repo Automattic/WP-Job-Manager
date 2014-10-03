@@ -7,3 +7,4 @@
 	'selected'        => isset( $field['value'] ) ? $field['value'] : $field['default'],
 	'hide_empty'      => false
 ) );
+if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
