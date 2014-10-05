@@ -125,6 +125,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - Only show website link when actually set.
 * Tweak - Added description to all fields.
 * Tweak - Added better setting fields for defining which pages contain the shortcodes.
+* Tweak - Nofollow website links.
 
 = 1.15.0 =
 * Added location/keyword option to recent jobs widget.
