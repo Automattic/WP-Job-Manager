@@ -480,3 +480,17 @@ function job_manager_dropdown_categories( $args = '' ) {
 
 	return $output;
 }
+
+/**
+ * Get the permalink of a page if set
+ * @param  string $page e.g. job_dashboard, submit_job_form, jobs
+ * @return string|bool
+ */
+function job_manager_get_permalink( $page ) {
+	$page_id = get_option( 'job_manager_' . $page . '_page_id', false );
+	if ( $page_id ) {
+		return get_permalink( $page_id );
+	} else {
+		return false;
+	}
+}

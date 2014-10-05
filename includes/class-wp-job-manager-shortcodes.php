@@ -98,7 +98,7 @@ class WP_Job_Manager_Shortcodes {
 						break;
 					case 'relist' :
 						// redirect to post page
-						wp_redirect( add_query_arg( array( 'step' => 'preview', 'job_id' => absint( $job_id ) ), get_permalink( get_page_by_path( get_option( 'job_manager_submit_page_slug' ) )->ID ) ) );
+						wp_redirect( add_query_arg( array( 'step' => 'preview', 'job_id' => absint( $job_id ) ), job_manager_get_permalink( 'submit_job_form' ) ) );
 
 						break;
 					default :

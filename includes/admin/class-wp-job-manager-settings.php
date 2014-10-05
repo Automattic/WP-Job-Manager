@@ -45,14 +45,14 @@ class WP_Job_Manager_Settings {
 							'name'        => 'job_manager_per_page',
 							'std'         => '10',
 							'placeholder' => '',
-							'label'       => __( 'Listings per page', 'wp-job-manager' ),
+							'label'       => __( 'Listings Per Page', 'wp-job-manager' ),
 							'desc'        => __( 'How many listings should be shown per page by default?', 'wp-job-manager' ),
 							'attributes'  => array()
 						),
 						array(
 							'name'       => 'job_manager_hide_filled_positions',
 							'std'        => '0',
-							'label'      => __( 'Filled positions', 'wp-job-manager' ),
+							'label'      => __( 'Filled Positions', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide filled positions', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled, filled positions will be hidden.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
@@ -90,12 +90,21 @@ class WP_Job_Manager_Settings {
 					),
 				),
 				'job_submission' => array(
-					__( 'Submissions', 'wp-job-manager' ),
+					__( 'Job Submission', 'wp-job-manager' ),
 					array(
+						array(
+							'name'       => 'job_manager_user_requires_account',
+							'std'        => '1',
+							'label'      => __( 'Account Required', 'wp-job-manager' ),
+							'cb_label'   => __( 'Submitting listings requires an account', 'wp-job-manager' ),
+							'desc'       => __( 'If disabled, non-logged in users will be able to submit listings without creating an account.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
 						array(
 							'name'       => 'job_manager_enable_registration',
 							'std'        => '1',
-							'label'      => __( 'Account creation', 'wp-job-manager' ),
+							'label'      => __( 'Account Creation', 'wp-job-manager' ),
 							'cb_label'   => __( 'Allow account creation', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled, non-logged in users will be able to create an account by entering their email address on the submission form.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
@@ -110,15 +119,6 @@ class WP_Job_Manager_Settings {
 							'options'    => $account_roles
 						),
 						array(
-							'name'       => 'job_manager_user_requires_account',
-							'std'        => '1',
-							'label'      => __( 'Account required', 'wp-job-manager' ),
-							'cb_label'   => __( 'Submitting listings requires an account', 'wp-job-manager' ),
-							'desc'       => __( 'If disabled, non-logged in users will be able to submit listings without creating an account.', 'wp-job-manager' ),
-							'type'       => 'checkbox',
-							'attributes' => array()
-						),
-						array(
 							'name'       => 'job_manager_submission_requires_approval',
 							'std'        => '1',
 							'label'      => __( 'Approval Required', 'wp-job-manager' ),
@@ -130,14 +130,14 @@ class WP_Job_Manager_Settings {
 						array(
 							'name'       => 'job_manager_submission_duration',
 							'std'        => '30',
-							'label'      => __( 'Listing duration', 'wp-job-manager' ),
+							'label'      => __( 'Listing Duration', 'wp-job-manager' ),
 							'desc'       => __( 'How many <strong>days</strong> listings are live before expiring. Can be left blank to never expire.', 'wp-job-manager' ),
 							'attributes' => array()
 						),
 						array(
 							'name'       => 'job_manager_allowed_application_method',
 							'std'        => '',
-							'label'      => __( 'Application method', 'wp-job-manager' ),
+							'label'      => __( 'Application Method', 'wp-job-manager' ),
 							'desc'       => __( 'Choose the contact method for listings.', 'wp-job-manager' ),
 							'type'       => 'select',
 							'options'    => array(
@@ -145,23 +145,35 @@ class WP_Job_Manager_Settings {
 								'email' => __( 'Email addresses only', 'wp-job-manager' ),
 								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
 							)
-						),
-						array(
-							'name' 		=> 'job_manager_submit_page_slug',
-							'std' 		=> '',
-							'label' 	=> __( 'Submit Page Slug', 'wp-job-manager' ),
-							'desc'		=> __( 'Enter the slug of the page where you have placed the [submit_job_form] shortcode. This lets the plugin know where the form is located.', 'wp-job-manager' ),
-							'type'      => 'input'
-						),
-						array(
-							'name' 		=> 'job_manager_job_dashboard_page_slug',
-							'std' 		=> '',
-							'label' 	=> __( 'Dashboard Page Slug', 'wp-job-manager' ),
-							'desc'		=> __( 'Enter the slug of the page where you have placed the [job_dashboard] shortcode. This lets the plugin know where the dashboard is located.', 'wp-job-manager' ),
-							'type'      => 'input'
 						)
 					)
 				),
+				'job_pages' => array(
+					__( 'Pages', 'wp-job-manager' ),
+					array(
+						array(
+							'name' 		=> 'job_manager_submit_job_form_page_id',
+							'std' 		=> '',
+							'label' 	=> __( 'Submit Job Form Page', 'wp-job-manager' ),
+							'desc'		=> __( 'Select the page where you have placed the [submit_job_form] shortcode. This lets the plugin know where the form is located.', 'wp-job-manager' ),
+							'type'      => 'page'
+						),
+						array(
+							'name' 		=> 'job_manager_job_dashboard_page_id',
+							'std' 		=> '',
+							'label' 	=> __( 'Job Dashboard Page', 'wp-job-manager' ),
+							'desc'		=> __( 'Select the page where you have placed the [job_dashboard] shortcode. This lets the plugin know where the dashboard is located.', 'wp-job-manager' ),
+							'type'      => 'page'
+						),
+						array(
+							'name' 		=> 'job_manager_jobs_page_id',
+							'std' 		=> '',
+							'label' 	=> __( 'Job Listings Page', 'wp-job-manager' ),
+							'desc'		=> __( 'Select the page where you have placed the [jobs] shortcode. This lets the plugin know where the job listings page is located.', 'wp-job-manager' ),
+							'type'      => 'page'
+						),
+					)
+				)
 			)
 		);
 	}
@@ -257,16 +269,37 @@ class WP_Job_Manager_Settings {
 											echo '<option value="' . esc_attr( $key ) . '" ' . selected( $value, $key, false ) . '>' . esc_html( $name ) . '</option>';
 									?></select><?php
 
-									if ( $option['desc'] )
+									if ( $option['desc'] ) {
 										echo ' <p class="description">' . $option['desc'] . '</p>';
+									}
+
+								break;
+								case "page" :
+
+									$args = array(
+										'name'             => $option['name'],
+										'id'               => $option['name'],
+										'sort_column'      => 'menu_order',
+										'sort_order'       => 'ASC',
+										'show_option_none' => __( '--no page--', 'wp-job-manager' ),
+										'echo'             => false,
+										'selected'         => absint( $value )
+									);
+
+									echo str_replace(' id=', " data-placeholder='" . __( 'Select a page&hellip;', 'wp-job-manager' ) .  "' id=", wp_dropdown_pages( $args ) );
+
+									if ( $option['desc'] ) {
+										echo ' <p class="description">' . $option['desc'] . '</p>';
+									}
 
 								break;
 								case "password" :
 
 									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
-									if ( $option['desc'] )
+									if ( $option['desc'] ) {
 										echo ' <p class="description">' . $option['desc'] . '</p>';
+									}
 
 								break;
 								case "" :
@@ -275,8 +308,9 @@ class WP_Job_Manager_Settings {
 
 									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="text" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
-									if ( $option['desc'] )
+									if ( $option['desc'] ) {
 										echo ' <p class="description">' . $option['desc'] . '</p>';
+									}
 
 								break;
 								default :

@@ -1,0 +1,93 @@
+.help-page-link {
+	cursor: help;
+}
+
+.wp-job-manager-setup-steps {
+	margin: 1em 0 2em;
+	overflow: hidden;
+	li {
+		width:              33.3%;
+		padding:            7px 1em;
+		font-weight:        bold;
+		margin: 0;
+		color:              #eee;
+		background:         #222222;
+		float:              left;
+		-moz-box-sizing:    border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing:         border-box;
+
+		&:first-child {
+			margin-left:    0;
+		}
+		&.wp-job-manager-setup-active-step {
+			background:     #0074a2;
+			color:          #eee;
+		}
+	}
+}
+
+.wp-job-manager-shortcodes {
+	td, th {
+		vertical-align: middle;
+		p {
+			margin: 9px 0;
+		}
+	}
+	tr:nth-child(even) {
+		td, th {
+			background: #f9f9f9;
+		}
+	}
+}
+
+.wp-job-manager-next-steps {
+	font-size: 1.1em;
+	list-style: disc inside;
+	margin: 1.5em 2em;
+}
+
+.wp-job-manager-support-the-plugin {
+	background: #fff;
+	padding: 2em;
+	margin: 2em 0;
+	h3 {
+		margin-top: 0;
+	}
+	ul {
+		margin-bottom: 0;
+	}
+	li {
+		line-height: 2em;
+		font-size: 1.1em;
+		a {
+			text-decoration: none;
+		}
+	}
+	li a:before {
+		font-family: "dashicons";
+		font-size: 2em;
+		vertical-align: middle;
+		padding-right: .25em;
+	}
+	li.icon-review {
+		a:before {
+    		content: "\f155";
+		}
+	}
+	li.icon-localization {
+		a:before {
+			content: "\f319";
+		}
+	}
+	li.icon-code {
+		a:before {
+			content: "\f111";
+		}
+	}
+	li.icon-forum {
+		a:before {
+			content: "\f328";
+		}
+	}
+}

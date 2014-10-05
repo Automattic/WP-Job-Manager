@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.15.0
+Stable tag: 1.16.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -82,20 +82,31 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Frequently Asked Questions ==
 
-= How do I setup this WP Job Manager? =
-
+= How do I setup WP Job Manager? =
+View the getting [installation](https://wpjobmanager.com/document/installation/) and [setup](https://wpjobmanager.com/document/setting-up-wp-job-manager/) guide for advice getting started with the plugin. In most cases it's just a case of adding some shortcodes to your pages!
 
 = Can I use WP Job Manager without frontend job submission? =
-
+Yes! If you don't setup the [submit_job_form] shortcode, you can just post from the admin backend.
 
 = How can I customize the job application process? =
+There are several ways to customise the job application process in WP Job Manager, including using some extra plugins (some are free on Wordpress.org).
 
+See: [Customising the Job Application Process](https://wpjobmanager.com/document/customising-job-application-process/)
+
+= How can I customize the job submission form? =
+There are three ways to customise the fields in WP Job Manager;
+
+1. For simple text changes, using a localisation file or a plugin such as https://wordpress.org/plugins/say-what/
+2. For field changes, or adding new fields, using functions/filters inside your theme's functions.php file: [https://wpjobmanager.com/document/editing-job-submission-fields/](https://wpjobmanager.com/document/editing-job-submission-fields/)
+3. Use a 3rd party plugin such as [https://plugins.smyl.es/wp-job-manager-field-editor/](https://plugins.smyl.es/wp-job-manager-field-editor/?in=1) which has a UI for field editing.
+
+If you'd like to learn about WordPress filters, here is a great place to start: [https://pippinsplugins.com/a-quick-introduction-to-using-filters/](https://pippinsplugins.com/a-quick-introduction-to-using-filters/)
 
 = How can I be notified of new jobs via email? =
+If you wish to be notified of new postings on your site you can use a plugin such as [Post Status Notifier](http://wordpress.org/plugins/post-status-notifier-lite/).
 
-
-= What langauge files are available?
-
+= What langauge files are available? =
+You can view (and contribute) translations via the [Transifex project here](https://www.transifex.com/projects/p/wp-job-manager/).
 
 == Screenshots ==
 
@@ -108,8 +119,12 @@ For more information, [read the documentation](https://wpjobmanager.com/document
 
 == Changelog ==
 
+= 1.16.0 =
+* Added setup wizard for new installs that creates pages/shortcodes automatically.
+* Added job_manager_get_permalink function.
 * Fix - Only show website link when actually set.
 * Tweak - Added description to all fields.
+* Tweak - Added better setting fields for defining which pages contain the shortcodes.
 
 = 1.15.0 =
 * Added location/keyword option to recent jobs widget.

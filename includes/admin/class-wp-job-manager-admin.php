@@ -17,6 +17,7 @@ class WP_Job_Manager_Admin {
 		include_once( 'class-wp-job-manager-cpt.php' );
 		include_once( 'class-wp-job-manager-settings.php' );
 		include_once( 'class-wp-job-manager-writepanels.php' );
+		include_once( 'class-wp-job-manager-setup.php' );
 
 		$this->settings_page = new WP_Job_Manager_Settings();
 

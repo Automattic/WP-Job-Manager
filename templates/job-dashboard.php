@@ -39,7 +39,7 @@
 													}
 													break;
 												case 'expired' :
-													if ( get_option( 'job_manager_submit_page_slug' ) ) {
+													if ( job_manager_get_permalink( 'submit_job_form' ) ) {
 														$actions['relist'] = array( 'label' => __( 'Relist', 'wp-job-manager' ), 'nonce' => true );
 													}
 													break;
