@@ -354,7 +354,7 @@ function job_manager_get_resized_image( $logo, $size ) {
 			$image = wp_get_image_editor( $logo_path );
 
 			if ( ! is_wp_error( $image ) ) {
-			   	if ( is_wp_error( $image->resize( $img_width, $img_height, $img_crop ) ) ) {
+			   	if ( ! is_wp_error( $image->resize( $img_width, $img_height, $img_crop ) ) ) {
 					if ( ! is_wp_error( $image->save( $resized_logo_path ) ) ) {
 						$logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
 					}
