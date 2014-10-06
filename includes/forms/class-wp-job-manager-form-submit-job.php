@@ -390,7 +390,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		// Application method
-		if ( isset( $values['job']['application'] ) ) {
+		if ( isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
 			$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
 			switch ( $allowed_application_method ) {
 				case 'email' :

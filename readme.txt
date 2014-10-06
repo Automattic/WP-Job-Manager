@@ -123,6 +123,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Added setup wizard for new installs that creates pages/shortcodes automatically.
 * Added job_manager_get_permalink function.
 * Fix - Only show website link when actually set.
+* Fix - Only validate application when field is set.
 * Tweak - Added description to all fields.
 * Tweak - Added better setting fields for defining which pages contain the shortcodes.
 * Tweak - Nofollow website links.
