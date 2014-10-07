@@ -127,6 +127,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Added description to all fields.
 * Tweak - Added better setting fields for defining which pages contain the shortcodes.
 * Tweak - Nofollow website links.
+* Tweak - Removed font-sizes from default CSS and fixed display in default WP themes.
 
 = 1.15.0 =
 * Added location/keyword option to recent jobs widget.

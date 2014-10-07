@@ -94,6 +94,20 @@ function get_job_manager_template_part( $slug, $name = '', $template_path = '', 
 }
 
 /**
+ * Add custom body classes
+ * @param  array $classes
+ * @return array
+ */
+function job_manager_body_class( $classes ) {
+	$classes   = (array) $classes;
+	$classes[] = sanitize_title( wp_get_theme() );
+
+	return array_unique( $classes );
+}
+
+add_filter( 'body_class', 'job_manager_body_class' );
+
+/**
  * Get jobs pagination for [jobs] shortcode
  * @return [type] [description]
  */
