@@ -1,6 +1,7 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# allanot nicolas <n.allanot@free.fr>, 2014
 # MedTn <brkmed@gmail.com>, 2014
 # f.berniermalcoiffe <f.bernier-malcoiffe@novia-systems.fr>, 2014
 msgid ""
@@ -8,8 +9,8 @@ msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-09-16 15:06+0000\n"
-"Last-Translator: f.berniermalcoiffe <f.bernier-malcoiffe@novia-systems.fr>\n"
+"PO-Revision-Date: 2014-09-29 18:24+0000\n"
+"Last-Translator: allanot nicolas <n.allanot@free.fr>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/wp-job-manager/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,7 +55,7 @@ msgstr "%s approuvés"
 #: includes/admin/class-wp-job-manager-cpt.php:155
 #: includes/admin/class-wp-job-manager-cpt.php:157
 msgid "%s expired"
-msgstr "%s expired"
+msgstr "%s expirés"
 
 #: includes/admin/class-wp-job-manager-cpt.php:200
 msgid "Select a category"
@@ -295,7 +296,7 @@ msgstr "Méthode de candidature"
 
 #: includes/admin/class-wp-job-manager-settings.php:121
 msgid "Choose what employers can use for their job application method."
-msgstr ""
+msgstr "Choisissez ce que les employeurs peuvent utiliser pour leur méthode de candidature à un poste."
 
 #: includes/admin/class-wp-job-manager-settings.php:124
 msgid "Email address or website URL"
@@ -387,7 +388,7 @@ msgstr "Poste pourvu ?"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:61
 msgid "Feature this job listing?"
-msgstr ""
+msgstr "Mettre en avant cette offre ?"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:63
 msgid ""
@@ -661,7 +662,7 @@ msgstr "Fait"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:107
 msgid "Application email"
-msgstr "Mail de candidature"
+msgstr "Courriel de candidature"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:108
 msgid "you@yourdomain.com"
@@ -678,7 +679,7 @@ msgstr "http://"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:116
 msgid "Enter an email address or website URL"
-msgstr "Saisir une adresse mail ou une URL de site"
+msgstr "Saisir une adresse courriel ou une URL de site"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:123
 msgid "Job title"
@@ -759,7 +760,7 @@ msgstr "&larr; Editer le poste\""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:684
 msgid "\"%s\" needs to be one of the following file types: %s"
-msgstr ""
+msgstr "\"%s\" doit être un des types de fichier suivants :"
 
 #: templates/account-signin.php:4
 msgid "Your account"
@@ -929,11 +930,11 @@ msgstr "RSS"
 
 #: wp-job-manager-functions.php:278
 msgid "Your email address isn&#8217;t correct."
-msgstr "Votre adresse mail est incorrecte."
+msgstr "Votre adresse courriel est incorrecte."
 
 #: wp-job-manager-functions.php:281
 msgid "This email is already registered, please choose another one."
-msgstr "Cette adresse email est déjà enregistrée, merci d'en utiliser une autre."
+msgstr "Cette adresse courriel est déjà enregistrée, merci d'en utiliser une autre."
 
 #: wp-job-manager-template.php:116
 msgid "Active"
@@ -953,7 +954,7 @@ msgstr "Inactif"
 
 #: wp-job-manager-template.php:197
 msgid "Job Application via \"%s\" listing on %s"
-msgstr ""
+msgstr "Candidature au poste de \"%s\" paru sur le site %s"
 
 #: wp-job-manager-template.php:255
 msgid "Anywhere"

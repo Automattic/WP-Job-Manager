@@ -2,14 +2,15 @@
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
 # kochhase <mail@henryk-ibemeinhardt.de>, 2014
+# Mike Jolley <mike.jolley@me.com>, 2014
 # Sebastian Wendler <sebastian.wendler@netzlodern.de>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-09-13 19:36+0000\n"
-"Last-Translator: Sebastian Wendler <sebastian.wendler@netzlodern.de>\n"
+"PO-Revision-Date: 2014-10-03 18:03+0000\n"
+"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/wp-job-manager/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -530,12 +531,12 @@ msgstr "Job Listing"
 #: includes/class-wp-job-manager-post-types.php:141
 msgctxt "Post type archive slug - resave permalinks after changing this"
 msgid "jobs"
-msgstr "Jobs"
+msgstr "jobs"
 
 #: includes/class-wp-job-manager-post-types.php:147
 msgctxt "Job permalink - resave permalinks after changing this"
 msgid "job"
-msgstr "Job"
+msgstr "job"
 
 #: includes/class-wp-job-manager-post-types.php:160
 msgid "Add New"
