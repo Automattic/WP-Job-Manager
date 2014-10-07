@@ -387,7 +387,9 @@ class WP_Job_Manager_Writepanels {
 						}
 					break;
 					default :
-						if ( is_array( $_POST[ $key ] ) ) {
+						if ( ! isset( $_POST[ $key ] ) ) {
+							continue;
+						} elseif ( is_array( $_POST[ $key ] ) ) {
 							update_post_meta( $post_id, $key, array_filter( array_map( 'sanitize_text_field', $_POST[ $key ] ) ) );
 						} else {
 							update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
