@@ -123,6 +123,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - Use triggerHandler() instead of trigger() in ajax-filters to prevent events bubbling up.
 * Fix - Append current 'lang' to AJAX calls for WPML.
 * Fix - When specifying categories on the jobs shortcode, don't clear those categories on reset.
+* Tweak - Added job_manager_admin_screen_ids filter.
 
 = 1.16.0 =
 * Added setup wizard for new installs that creates pages/shortcodes automatically.
