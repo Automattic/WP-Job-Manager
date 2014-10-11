@@ -125,7 +125,7 @@ jQuery( document ).ready( function ( $ ) {
 
 						if ( true == target.data( 'show_pagination' ) ) {
 							target.find('.job-manager-pagination').remove();
-							
+
 							if ( result.pagination ) {
 								target.append( result.pagination );
 							}
@@ -140,8 +140,8 @@ jQuery( document ).ready( function ( $ ) {
 						}
 
 						$( results ).removeClass( 'loading' );
-						
-						target.trigger( 'updated_results', result );
+
+						target.triggerHandler( 'updated_results', result );
 
 					} catch ( err ) {
 						//console.log( err );
@@ -154,7 +154,7 @@ jQuery( document ).ready( function ( $ ) {
 	$( '#search_keywords, #search_location, .job_types input, #search_categories' ).change( function () {
 		var target = $( this ).closest( 'div.job_listings' );
 
-		target.trigger( 'update_results', [ 1, false ] );
+		target.triggerHandler( 'update_results', [ 1, false ] );
 	} )
 
 	.on( "keyup", function(e) {
@@ -176,8 +176,8 @@ jQuery( document ).ready( function ( $ ) {
 		form.find( ':input[name^=search_categories]' ).val( 0 ).trigger( 'chosen:updated' );
 		$( ':input[name="filter_job_type[]"]', form ).attr( 'checked', 'checked' );
 
-		target.trigger( 'reset' );
-		target.trigger( 'update_results', [ 1, false ] );
+		target.triggerHandler( 'reset' );
+		target.triggerHandler( 'update_results', [ 1, false ] );
 
 		return false;
 	} );
@@ -194,7 +194,7 @@ jQuery( document ).ready( function ( $ ) {
 
 		$( this ).data( 'page', ( page + 1 ) );
 
-		target.trigger( 'update_results', [ page + 1, true ] );
+		target.triggerHandler( 'update_results', [ page + 1, true ] );
 
 		return false;
 	} );
@@ -203,7 +203,7 @@ jQuery( document ).ready( function ( $ ) {
 		var target = $( this ).closest( 'div.job_listings' );
 		var page   = $( this ).data( 'page' );
 
-		target.trigger( 'update_results', [ page, false ] );
+		target.triggerHandler( 'update_results', [ page, false ] );
 
 		return false;
 	} );

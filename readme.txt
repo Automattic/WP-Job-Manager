@@ -119,6 +119,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.16.1 =
+* Use triggerHandler() instead of trigger() in ajax-filters to prevent events bubbling up.
+
 = 1.16.0 =
 * Added setup wizard for new installs that creates pages/shortcodes automatically.
 * Added job_manager_get_permalink function.
