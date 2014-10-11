@@ -122,6 +122,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 = 1.16.1 =
 * Fix - Use triggerHandler() instead of trigger() in ajax-filters to prevent events bubbling up.
 * Fix - Append current 'lang' to AJAX calls for WPML.
+* Fix - When specifying categories on the jobs shortcode, don't clear those categories on reset.
 
 = 1.16.0 =
 * Added setup wizard for new installs that creates pages/shortcodes automatically.

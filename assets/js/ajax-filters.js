@@ -171,10 +171,10 @@ jQuery( document ).ready( function ( $ ) {
 		var target = $( this ).closest( 'div.job_listings' );
 		var form = $( this ).closest( 'form' );
 
-		form.find( ':input[name=search_keywords]' ).val( '' );
-		form.find( ':input[name=search_location]' ).val( '' );
-		form.find( ':input[name^=search_categories]' ).val( 0 ).trigger( 'chosen:updated' );
-		$( ':input[name="filter_job_type[]"]', form ).attr( 'checked', 'checked' );
+		form.find( ':input[name="search_keywords"]' ).not(':input[type="hidden"]').val( '' );
+		form.find( ':input[name="search_location"]' ).not(':input[type="hidden"]').val( '' );
+		form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').val( 0 ).trigger( 'chosen:updated' );
+		$( ':input[name="filter_job_type[]"]', form ).not(':input[type="hidden"]').attr( 'checked', 'checked' );
 
 		target.triggerHandler( 'reset' );
 		target.triggerHandler( 'update_results', [ 1, false ] );
@@ -209,6 +209,6 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	if ( $.isFunction( $.fn.chosen ) ) {
-		$( 'select[name^=search_categories]' ).chosen();
+		$( 'select[name^="search_categories"]' ).chosen();
 	}
 } );
