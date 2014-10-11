@@ -93,6 +93,13 @@ class WP_Job_Manager {
 	 * Register and enqueue scripts and css
 	 */
 	public function frontend_scripts() {
+		$ajax_url = admin_url( 'admin-ajax.php', 'relative' );
+
+		// WPML workaround until this is standardized
+		if ( class_exists( 'SitePress' ) ) {
+			add_query_arg( 'lang', $GLOBALS['sitepress']->get_current_language(), $ajax_url );
+		}
+
 		wp_register_script( 'wp-job-manager-ajax-filters', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-dashboard', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-dashboard.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-application', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-application.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
@@ -101,7 +108,7 @@ class WP_Job_Manager {
 		wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
 
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', array(
-			'ajax_url' => admin_url( 'admin-ajax.php', 'relative' )
+			'ajax_url' => $ajax_url
 		) );
 		wp_localize_script( 'wp-job-manager-job-dashboard', 'job_manager_job_dashboard', array(
 			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' )
