@@ -37,7 +37,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	public static function submit() {
 		$job = get_post( self::$job_id );
 
-		if ( empty( self::$job_id  ) || $job->post_status !== 'publish' ) {
+		if ( empty( self::$job_id  ) || ( $job->post_status !== 'publish' && ! job_manager_allow_edit_pending_submissions() ) ) {
 			echo wpautop( __( 'Invalid listing', 'wp-job-manager' ) );
 			return;
 		}

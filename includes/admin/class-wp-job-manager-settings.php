@@ -128,6 +128,15 @@ class WP_Job_Manager_Settings {
 							'attributes' => array()
 						),
 						array(
+							'name'       => 'job_manager_allow_edit_pending_submissions',
+							'std'        => '0',
+							'label'      => __( 'Allow Pending Edits', 'wp-job-manager' ),
+							'cb_label'   => __( 'Submissions awaiting approval can be edited', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, submissions awaiting admin approval can be edited by the user.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
+						array(
 							'name'       => 'job_manager_submission_duration',
 							'std'        => '30',
 							'label'      => __( 'Listing Duration', 'wp-job-manager' ),

@@ -420,6 +420,15 @@ function job_manager_user_requires_account() {
 }
 
 /**
+ * True if users are allowed to edit submissions that are pending approval.
+ *
+ * @return bool
+ */
+function job_manager_allow_edit_pending_submissions() {
+	return apply_filters( 'job_manager_allow_edit_pending_submissions', get_option( 'job_manager_allow_edit_pending_submissions' ) == 1 ? true : false );
+}
+
+/**
  * Based on wp_dropdown_categories, with the exception of supporting multiple selected categories.
  * @see  wp_dropdown_categories
  */
