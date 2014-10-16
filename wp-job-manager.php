@@ -96,8 +96,8 @@ class WP_Job_Manager {
 		$ajax_url = admin_url( 'admin-ajax.php', 'relative' );
 
 		// WPML workaround until this is standardized
-		if ( class_exists( 'SitePress' ) ) {
-			$ajax_url = add_query_arg( 'lang', $GLOBALS['sitepress']->get_current_language(), $ajax_url );
+		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
+			$ajax_url = add_query_arg( 'lang', ICL_LANGUAGE_CODE, $ajax_url );
 		}
 
 		wp_register_script( 'wp-job-manager-ajax-filters', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
