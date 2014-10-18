@@ -44,7 +44,7 @@
 													}
 													break;
                         case 'pending' :
-                          if ( job_manager_allow_edit_pending_submissions() ) {
+                          if ( job_manager_user_can_edit_pending_submissions() ) {
                             $actions['edit'] = array( 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false );
                           }
                           break;

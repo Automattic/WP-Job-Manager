@@ -128,7 +128,7 @@ class WP_Job_Manager_Settings {
 							'attributes' => array()
 						),
 						array(
-							'name'       => 'job_manager_allow_edit_pending_submissions',
+							'name'       => 'job_manager_user_can_edit_pending_submissions',
 							'std'        => '0',
 							'label'      => __( 'Allow Pending Edits', 'wp-job-manager' ),
 							'cb_label'   => __( 'Submissions awaiting approval can be edited', 'wp-job-manager' ),

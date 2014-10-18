@@ -37,7 +37,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	public static function submit() {
 		$job = get_post( self::$job_id );
 
-		if ( empty( self::$job_id  ) || ( $job->post_status !== 'publish' && ! job_manager_allow_edit_pending_submissions() ) ) {
+		if ( empty( self::$job_id  ) || ( $job->post_status !== 'publish' && ! job_manager_user_can_edit_pending_submissions() ) ) {
 			echo wpautop( __( 'Invalid listing', 'wp-job-manager' ) );
 			return;
 		}
@@ -55,7 +55,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 					} elseif ( ! empty( $field['taxonomy'] ) ) {
 						self::$fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, $field['taxonomy'], array( 'fields' => 'ids' ) );
-						
+
 					} else {
 						self::$fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
 					}
@@ -66,7 +66,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		self::$fields = apply_filters( 'submit_job_form_fields_get_job_data', self::$fields, $job );
 
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
-		
+
 		get_job_manager_template( 'job-submit.php', array(
 			'form'               => self::$form_name,
 			'job_id'             => self::get_job_id(),

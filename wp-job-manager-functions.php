@@ -424,8 +424,8 @@ function job_manager_user_requires_account() {
  *
  * @return bool
  */
-function job_manager_allow_edit_pending_submissions() {
-	return apply_filters( 'job_manager_allow_edit_pending_submissions', get_option( 'job_manager_allow_edit_pending_submissions' ) == 1 ? true : false );
+function job_manager_user_can_edit_pending_submissions() {
+	return apply_filters( 'job_manager_user_can_edit_pending_submissions', get_option( 'job_manager_user_can_edit_pending_submissions' ) == 1 ? true : false );
 }
 
 /**
