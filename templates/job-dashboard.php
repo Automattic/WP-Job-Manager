@@ -43,11 +43,12 @@
 														$actions['relist'] = array( 'label' => __( 'Relist', 'wp-job-manager' ), 'nonce' => true );
 													}
 													break;
-                        case 'pending' :
-                          if ( job_manager_user_can_edit_pending_submissions() ) {
-                            $actions['edit'] = array( 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false );
-                          }
-                          break;
+												case 'pending_payment' :
+												case 'pending' :
+													if ( job_manager_user_can_edit_pending_submissions() ) {
+														$actions['edit'] = array( 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false );
+													}
+												break;
 											}
 
 											$actions['delete'] = array( 'label' => __( 'Delete', 'wp-job-manager' ), 'nonce' => true );

@@ -96,7 +96,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			}
 
 			// Update the job
-			self::save_job( $values['job']['job_title'], $values['job']['job_description'], 'publish', $values );
+			self::save_job( $values['job']['job_title'], $values['job']['job_description'], '', $values );
 			self::update_job_data( $values );
 
 			// Successful
