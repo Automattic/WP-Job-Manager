@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.16.1
+Stable tag: 1.17.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -119,10 +119,11 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.17.0 =
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.
 * Feature - Job summary shortcode - support random display of job (featured or non featured).
+* Feature - In admin, when clicking an author name show all jobs for that author.
 * Tweak - Added sanitization function to form class to handle strings and arrays.
-* Tweak - In admin, when clicking an author name show all jobs for that author.
 
 = 1.16.1 =
 * Fix - Use triggerHandler() instead of trigger() in ajax-filters to prevent events bubbling up.
