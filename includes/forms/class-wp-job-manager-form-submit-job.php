@@ -262,6 +262,26 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		return $values;
 	}
 
+
+	/**
+	 * Navigates through an array and sanitizes the field.
+	 *
+	 *
+	 * @param array|string $value The array or string to be sanitized.
+	 * @return array|string $value The sanitized array (or string from the callback).
+	 */
+	public static function sanitize_posted_field( $value ) {
+		// Decode URLs
+		if ( is_string( $value ) && strstr( $value, 'http:' ) || strstr( $value, 'https:' ) ) {
+			$value = urldecode( $value );
+		}
+
+		// Santize value
+		$value = is_array( $value ) ? array_map( array( __CLASS__, 'sanitize_posted_field' ), $value ) : sanitize_text_field( stripslashes( trim( $value ) ) );
+
+		return $value;
+	}
+
 	/**
 	 * Get the value of a posted field
 	 * @param  string $key
@@ -269,14 +289,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return string|array
 	 */
 	protected static function get_posted_field( $key, $field ) {
-		if ( ! isset( $_POST[ $key ] ) ) {
-			return '';
-		}
-		if ( is_array( $_POST[ $key ] ) ) {
-			return array_map( 'sanitize_text_field', array_map( 'urldecode', stripslashes_deep( $_POST[ $key ] ) ) );
-		} else {
-			return sanitize_text_field( trim( urldecode( stripslashes( $_POST[ $key ] ) ) ) );
-		}
+		return isset( $_POST[ $key ] ) ? self::sanitize_posted_field( $_POST[ $key ] ) : '';
 	}
 
 	/**

@@ -120,6 +120,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.
+* Tweak - Added sanitization function to form class to handle strings and arrays.
 
 = 1.16.1 =
 * Fix - Use triggerHandler() instead of trigger() in ajax-filters to prevent events bubbling up.
