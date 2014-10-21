@@ -120,6 +120,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.
+* Feature - Job summary shortcode - support random display of job (featured or non featured).
 * Tweak - Added sanitization function to form class to handle strings and arrays.
 * Tweak - In admin, when clicking an author name show all jobs for that author.
 

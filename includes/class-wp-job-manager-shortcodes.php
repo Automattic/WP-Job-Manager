@@ -390,21 +390,32 @@ class WP_Job_Manager_Shortcodes {
 	 */
 	public function output_job_summary( $atts ) {
 		extract( shortcode_atts( array(
-			'id'    => '',
-			'width' => '250px',
-			'align' => 'left'
+			'id'       => '',
+			'width'    => '250px',
+			'align'    => 'left',
+			'featured' => null, // True to show only featured, false to hide featured, leave null to show both (when leaving out id)
 		), $atts ) );
-
-		if ( ! $id )
-			return;
 
 		ob_start();
 
 		$args = array(
 			'post_type'   => 'job_listing',
-			'post_status' => 'publish',
-			'p'           => $id
+			'post_status' => 'publish'
 		);
+
+		if ( ! $id ) {
+			$args['posts_per_page'] = 1;
+			$args['orderby']        = 'rand';
+			if ( ! is_null( $featured ) ) {
+				$args['meta_query'] = array( array(
+					'key'     => '_featured',
+					'value'   => '1',
+					'compare' => $featured ? '=' : '!='
+				) );
+			}
+		} else {
+			$args['p'] = absint( $id );
+		}
 
 		$jobs = new WP_Query( $args );
 
