@@ -272,7 +272,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public static function sanitize_posted_field( $value ) {
 		// Decode URLs
-		if ( is_string( $value ) && strstr( $value, 'http:' ) || strstr( $value, 'https:' ) ) {
+		if ( is_string( $value ) && ( strstr( $value, 'http:' ) || strstr( $value, 'https:' ) ) ) {
 			$value = urldecode( $value );
 		}
 
