@@ -121,6 +121,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.
 * Tweak - Added sanitization function to form class to handle strings and arrays.
+* Tweak - In admin, when clicking an author name show all jobs for that author.
 
 = 1.16.1 =
 * Fix - Use triggerHandler() instead of trigger() in ajax-filters to prevent events bubbling up.
