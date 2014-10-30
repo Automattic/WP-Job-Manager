@@ -46,8 +46,8 @@ class WP_Job_Manager_Post_Types {
 		 * Taxonomies
 		 */
 		if ( get_option( 'job_manager_enable_categories' ) ) {
-			$singular  = __( 'Job category', 'wp-job-manager' );
-			$plural    = __( 'Job categories', 'wp-job-manager' );
+			$singular  = apply_filters( 'job_category_singular', __( 'Job category', 'wp-job-manager' ) );
+			$plural    = apply_filters( 'job_category_plural', __( 'Job categories', 'wp-job-manager' ) );
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
 				$rewrite   = array(
@@ -93,8 +93,8 @@ class WP_Job_Manager_Post_Types {
 		    );
 		}
 
-	    $singular  = __( 'Job type', 'wp-job-manager' );
-		$plural    = __( 'Job types', 'wp-job-manager' );
+	    $singular  = apply_filters( 'job_type_singular', __( 'Job type', 'wp-job-manager' ) );
+		$plural    = apply_filters( 'job_type_plural', __( 'Job types', 'wp-job-manager' ) );
 
 		if ( current_theme_supports( 'job-manager-templates' ) ) {
 			$rewrite   = array(
