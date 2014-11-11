@@ -1,6 +1,14 @@
 <?php
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	exit();
+}
+
 wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
 wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
+
+wp_trash_post( get_option( 'job_manager_submit_job_form_page_id' ) );
+wp_trash_post( get_option( 'job_manager_job_dashboard_page_id' ) );
+wp_trash_post( get_option( 'job_manager_jobs_page_id' ) );
 
 $options = array(
 	'wp_job_manager_version',
