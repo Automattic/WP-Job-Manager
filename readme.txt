@@ -119,6 +119,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Improved uninstaller.
+
 = 1.17.0 =
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.
 * Feature - Job summary shortcode - support random display of job (featured or non featured).
