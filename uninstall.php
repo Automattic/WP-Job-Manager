@@ -27,7 +27,9 @@ $options = array(
 	'job_manager_submit_job_form_page_id',
 	'job_manager_job_dashboard_page_id',
 	'job_manager_jobs_page_id',
-	'job_manager_installed_terms'
+	'job_manager_installed_terms',
+	'job_manager_submit_page_slug',
+	'job_manager_job_dashboard_page_slug'
 );
 
 foreach ( $options as $option ) {
