@@ -70,8 +70,9 @@ class WP_Job_Manager {
 	 * Handle Updates
 	 */
 	public function updater() {
-		if ( version_compare( JOB_MANAGER_VERSION, get_option( 'wp_job_manager_version' ), '>' ) )
+		if ( version_compare( JOB_MANAGER_VERSION, get_option( 'wp_job_manager_version' ), '>' ) ) {
 			include_once( 'includes/class-wp-job-manager-install.php' );
+		}
 	}
 
 	/**
