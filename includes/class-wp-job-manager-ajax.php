@@ -21,11 +21,12 @@ class WP_Job_Manager_Ajax {
 	public function get_listings() {
 		global $wp_post_types;
 
-		$result             = array();
-		$search_location    = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
-		$search_keywords    = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
-		$search_categories  = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
-		$filter_job_types   = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
+		$result            = array();
+		$search_location   = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
+		$search_keywords   = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
+		$search_categories = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
+		$filter_job_types  = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
+		$types             = get_job_listing_types();
 
 		if ( is_array( $search_categories ) ) {
 			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
@@ -71,58 +72,52 @@ class WP_Job_Manager_Ajax {
 		$result['html'] = ob_get_clean();
 
 		// Generate 'showing' text
-		$types = get_job_listing_types();
+		$showing_types = array();
+		$unmatched     = false;
 
-		if ( sizeof( $filter_job_types ) > 0 && ( sizeof( $filter_job_types ) !== sizeof( $types ) || $search_keywords || $search_location || $search_categories || apply_filters( 'job_manager_get_listings_custom_filter', false ) ) ) {
-			$showing_types = array();
-			$unmatched     = false;
-
-			foreach ( $types as $type ) {
-				if ( in_array( $type->slug, $filter_job_types ) )
-					$showing_types[] = $type->name;
-				else
-					$unmatched = true;
-			}
-
-			if ( ! $unmatched )
-				$showing_types  = '';
-			elseif ( sizeof( $showing_types ) == 1 ) {
-				$showing_types  = implode( ', ', $showing_types ) . ' ';
+		foreach ( $types as $type ) {
+			if ( in_array( $type->slug, $filter_job_types ) ) {
+				$showing_types[] = $type->name;
 			} else {
-				$last           = array_pop( $showing_types );
-				$showing_types  = implode( ', ', $showing_types );
-				$showing_types .= " &amp; $last ";
+				$unmatched = true;
 			}
+		}
 
-			$showing_categories = array();
+		if ( ! $unmatched ) {
+			$showing_types  = '';
+		} elseif ( sizeof( $showing_types ) == 1 ) {
+			$showing_types  = implode( ', ', $showing_types ) . ' ';
+		} else {
+			$last           = array_pop( $showing_types );
+			$showing_types  = implode( ', ', $showing_types );
+			$showing_types .= " &amp; $last ";
+		}
 
-			if ( $search_categories ) {
-				foreach ( $search_categories as $category ) {
-					if ( ! is_numeric( $category ) ) {
-						$category_object = get_term_by( 'slug', $category, 'job_listing_category' );
-					}
-					if ( is_numeric( $category ) || is_wp_error( $category_object ) || ! $category_object ) {
-						$category_object = get_term_by( 'id', $category, 'job_listing_category' );
-					}
-					if ( ! is_wp_error( $category_object ) ) {
-						$showing_categories[] = $category_object->name;
-					}
+		$showing_categories = array();
+
+		if ( $search_categories ) {
+			foreach ( $search_categories as $category ) {
+				if ( ! is_numeric( $category ) ) {
+					$category_object = get_term_by( 'slug', $category, 'job_listing_category' );
+				}
+				if ( is_numeric( $category ) || is_wp_error( $category_object ) || ! $category_object ) {
+					$category_object = get_term_by( 'id', $category, 'job_listing_category' );
+				}
+				if ( ! is_wp_error( $category_object ) ) {
+					$showing_categories[] = $category_object->name;
 				}
 			}
-
-			if ( $search_keywords ) {
-				$showing_jobs  = sprintf( __( 'Showing %s', 'wp-job-manager' ), $showing_types . '&ldquo;' . $search_keywords . '&rdquo; ' . implode( ', ', $showing_categories ) . $wp_post_types['job_listing']->labels->name );
-			} else {
-				$showing_jobs  = sprintf( __( 'Showing all %s', 'wp-job-manager' ), $showing_types . implode( ', ', $showing_categories ) . ' ' . $wp_post_types['job_listing']->labels->name );
-			}
-
-			$showing_location  = $search_location ? sprintf( ' ' . __( 'located in &ldquo;%s&rdquo;', 'wp-job-manager' ), $search_location ) : '';
-
-			$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $showing_jobs . $showing_location );
-
-		} else {
-			$result['showing'] = '';
 		}
+
+		if ( $search_keywords ) {
+			$showing_jobs  = sprintf( __( 'Showing %s', 'wp-job-manager' ), $showing_types . '&ldquo;' . $search_keywords . '&rdquo; ' . implode( ', ', $showing_categories ) . $wp_post_types['job_listing']->labels->name );
+		} else {
+			$showing_jobs  = sprintf( __( 'Showing all %s', 'wp-job-manager' ), $showing_types . implode( ', ', $showing_categories ) . ' ' . $wp_post_types['job_listing']->labels->name );
+		}
+
+		$showing_location  = $search_location ? sprintf( ' ' . __( 'located in &ldquo;%s&rdquo;', 'wp-job-manager' ), $search_location ) : '';
+
+		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $showing_jobs . $showing_location );
 
 		// Generate RSS link
 		$result['showing_links'] = job_manager_get_filtered_links( array(

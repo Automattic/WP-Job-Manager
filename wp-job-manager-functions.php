@@ -244,6 +244,7 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
  */
 function job_manager_get_filtered_links( $args = array() ) {
 	$job_categories = array();
+	$types          = get_job_listing_types();
 
 	// Convert to slugs
 	if ( $args['search_categories'] ) {
@@ -274,6 +275,10 @@ function job_manager_get_filtered_links( $args = array() ) {
 			) ) )
 		)
 	), $args );
+
+	if ( sizeof( $args['filter_job_types'] ) === sizeof( $types ) && ! $args['search_keywords'] && ! $args['search_location'] && ! $args['search_categories'] && ! apply_filters( 'job_manager_get_listings_custom_filter', false ) ) {
+		unset( $links['reset'] );
+	}
 
 	$return = '';
 

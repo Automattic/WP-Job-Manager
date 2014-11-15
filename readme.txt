@@ -124,6 +124,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Added new capabilities for all aspects of Job Listing Management. e.g. edit_job_listings, add_job_listing etc etc. Admin role will be updated on activation/upgrade. If you use custom roles, you'll need to edit them to grant access to the parts you wish.
 * Tweak - Improved uninstaller.
 * Tweak - Clear location data should include geolocation_postcode.
+* Tweak - Always show 'showing' bar, but conditonally show 'reset' link.
 
 = 1.17.0 =
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.
