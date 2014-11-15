@@ -83,7 +83,7 @@ class WP_Job_Manager_Settings {
 							'desc'       => __( 'If enabled, the category select box will default to a multiselect on the [jobs] shortcode.', 'wp-job-manager' ),
 							'type'       => 'select',
 							'options' => array(
-								'any'  => __( 'Jobs wil be shown if within ANY selected category', 'wp-job-manager' ),
+								'any'  => __( 'Jobs will be shown if within ANY selected category', 'wp-job-manager' ),
 								'all' => __( 'Jobs will be shown if within ALL selected categories', 'wp-job-manager' ),
 							)
 						),
