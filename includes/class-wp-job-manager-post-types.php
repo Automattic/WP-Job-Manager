@@ -28,6 +28,8 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'job_manager_application_details_email', array( $this, 'application_details_email' ) );
 		add_action( 'job_manager_application_details_url', array( $this, 'application_details_url' ) );
+
+		add_filter( 'wp_insert_post_data', array( $this, 'fix_post_name' ), 10, 2 );
 	}
 
 	/**
@@ -450,5 +452,17 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function application_details_url( $apply ) {
 		get_job_manager_template( 'job-application-url.php', array( 'apply' => $apply ) );
+	}
+
+	/**
+	 * Fix post name when wp_update_post changes it
+	 * @param  array $data
+	 * @return array
+	 */
+	public function fix_post_name( $data, $postarr ) {
+		 if ( 'job_listing' === $data['post_type'] && 'pending' === $data['post_status'] && ! current_user_can( 'publish_posts' ) ) {
+				$data['post_name'] = $postarr['post_name'];
+		 }
+		 return $data;
 	}
 }

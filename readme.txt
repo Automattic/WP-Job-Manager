@@ -119,8 +119,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - Keep post name when pending job is posted by non-admin.
 * Tweak - Added new capabilities for all aspects of Job Listing Management. e.g. edit_job_listings, add_job_listing etc etc. Admin role will be updated on activation/upgrade. If you use custom roles, you'll need to edit them to grant access to the parts you wish.
-* Improved uninstaller.
+* Tweak - Improved uninstaller.
 
 = 1.17.0 =
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.
