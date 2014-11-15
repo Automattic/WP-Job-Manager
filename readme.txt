@@ -125,6 +125,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Improved uninstaller.
 * Tweak - Clear location data should include geolocation_postcode.
 * Tweak - Always show 'showing' bar, but conditonally show 'reset' link.
+* Tweak - Trigger geolocation whenever location field is saved, even by 3rd parties.
 
 = 1.17.0 =
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.

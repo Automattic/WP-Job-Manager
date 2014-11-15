@@ -30,6 +30,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'job_manager_application_details_url', array( $this, 'application_details_url' ) );
 
 		add_filter( 'wp_insert_post_data', array( $this, 'fix_post_name' ), 10, 2 );
+		add_action( 'update_post_meta', array( $this, 'maybe_generate_geolocation_data' ), 10, 4 );
 	}
 
 	/**
@@ -464,5 +465,17 @@ class WP_Job_Manager_Post_Types {
 				$data['post_name'] = $postarr['post_name'];
 		 }
 		 return $data;
+	}
+
+	/**
+	 * Generate location data if a post is saved
+	 * @param  int $post_id
+	 * @param  array $post
+	 */
+	public function maybe_generate_geolocation_data( $meta_id, $object_id, $meta_key, $_meta_value ) {
+		if ( '_job_location' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
+			return;
+		}
+		do_action( 'job_manager_job_location_edited', $object_id, $_meta_value );
 	}
 }

@@ -357,7 +357,7 @@ class WP_Job_Manager_Writepanels {
 			// Locations
 			elseif ( '_job_location' === $key ) {
 				if ( update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) ) ) {
-					do_action( 'job_manager_job_location_edited', $post_id, sanitize_text_field( $_POST[ $key ] ) );
+					// Location data will be updated by maybe_generate_geolocation_data method
 				} elseif ( apply_filters( 'job_manager_geolocation_enabled', true ) && ! WP_Job_Manager_Geocode::has_location_data( $post_id ) ) {
 					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
 				}
