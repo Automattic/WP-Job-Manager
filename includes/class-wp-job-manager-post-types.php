@@ -331,13 +331,13 @@ class WP_Job_Manager_Post_Types {
 		$company  = get_the_company_name( $post_id );
 
 		if ( $location ) {
-			echo "<job_listing:location>{$location}</job_listing:location>\n";
+			echo "<job_listing:location>" . esc_html( $location ) . "</job_listing:location>\n";
 		}
 		if ( $job_type ) {
-			echo "<job_listing:job_type>{$job_type->name}</job_listing:job_type>\n";
+			echo "<job_listing:job_type>" . esc_html( $job_type->name ) . "</job_listing:job_type>\n";
 		}
 		if ( $company ) {
-			echo "<job_listing:company>{$company}</job_listing:company>\n";
+			echo "<job_listing:company>" . esc_html( $company ) . "</job_listing:company>\n";
 		}
 	}
 
