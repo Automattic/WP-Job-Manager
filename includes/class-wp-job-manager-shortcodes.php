@@ -60,7 +60,7 @@ class WP_Job_Manager_Shortcodes {
 				$job    = get_post( $job_id );
 
 				// Check ownership
-				if ( $job->post_author != get_current_user_id() ) {
+				if (!job_manager_user_can_edit_job($job_id)) {
 					throw new Exception( __( 'Invalid ID', 'wp-job-manager' ) );
 				}
 
