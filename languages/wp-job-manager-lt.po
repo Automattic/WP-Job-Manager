@@ -1,13 +1,14 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# gubaidulin <i@igor.lt>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-01-23 18:48+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-11-02 13:20+0000\n"
+"Last-Translator: gubaidulin <i@igor.lt>\n"
 "Language-Team: Lithuanian (http://www.transifex.com/projects/p/wp-job-manager/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +19,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-addons.php:50
 #: includes/admin/class-wp-job-manager-admin.php:60
 msgid "WP Job Manager Add-ons"
-msgstr ""
+msgstr "„WP Job Manager“ įskiepiai"
 
 #: includes/admin/class-wp-job-manager-addons.php:51
 msgid ""
@@ -28,11 +29,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-admin.php:57
 msgid "Settings"
-msgstr ""
+msgstr "Nustatymai"
 
 #: includes/admin/class-wp-job-manager-admin.php:60
 msgid "Add-ons"
-msgstr ""
+msgstr "Įskiepiai"
 
 #: includes/admin/class-wp-job-manager-cpt.php:44
 #: includes/admin/class-wp-job-manager-cpt.php:45
@@ -56,7 +57,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:200
 msgid "Select a category"
-msgstr ""
+msgstr "Pasirinkite kategoriją"
 
 #: includes/admin/class-wp-job-manager-cpt.php:233
 msgid "Job position title"
@@ -102,7 +103,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:258
 msgid "M j, Y @ G:i"
-msgstr ""
+msgstr "Y-m-d G:i"
 
 #: includes/admin/class-wp-job-manager-cpt.php:259
 msgid "Job listing draft updated. <a target=\"_blank\" href=\"%s\">Preview Job</a>"
@@ -110,11 +111,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:278
 msgid "Type"
-msgstr ""
+msgstr "Tipas"
 
 #: includes/admin/class-wp-job-manager-cpt.php:279
 msgid "Position"
-msgstr ""
+msgstr "Pozicija"
 
 #: includes/admin/class-wp-job-manager-cpt.php:280
 msgid "Posted"
@@ -127,7 +128,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:283
 msgid "Categories"
-msgstr ""
+msgstr "Kategorijos"
 
 #: includes/admin/class-wp-job-manager-cpt.php:284
 msgid "Featured?"
@@ -141,20 +142,20 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-cpt.php:286
 #: templates/job-dashboard.php:8
 msgid "Status"
-msgstr ""
+msgstr "Būsena"
 
 #: includes/admin/class-wp-job-manager-cpt.php:287
 msgid "Actions"
-msgstr ""
+msgstr "Veiksmai"
 
 #: includes/admin/class-wp-job-manager-cpt.php:310
 msgid "Job ID: %d"
-msgstr ""
+msgstr "Nr.: %d"
 
 #: includes/admin/class-wp-job-manager-cpt.php:336
 #: includes/admin/class-wp-job-manager-cpt.php:341
 msgid "M j, Y"
-msgstr ""
+msgstr "Y-m-d"
 
 #: includes/admin/class-wp-job-manager-cpt.php:337
 msgid "by a guest"
@@ -166,11 +167,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:354
 msgid "Approve"
-msgstr ""
+msgstr "Patvirtinti"
 
 #: includes/admin/class-wp-job-manager-cpt.php:361
 msgid "View"
-msgstr ""
+msgstr "Peržiūrėti"
 
 #: includes/admin/class-wp-job-manager-cpt.php:366
 #: includes/class-wp-job-manager-post-types.php:162
@@ -181,7 +182,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-cpt.php:371
 #: templates/job-dashboard.php:43
 msgid "Delete"
-msgstr ""
+msgstr "Ištrinti"
 
 #: includes/admin/class-wp-job-manager-settings.php:42
 #: includes/class-wp-job-manager-post-types.php:138
@@ -353,11 +354,11 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-writepanels.php:36
 #: includes/forms/class-wp-job-manager-form-submit-job.php:172
 msgid "Company name"
-msgstr ""
+msgstr "Įmonės pavadinimas"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:40
 msgid "Company website"
-msgstr ""
+msgstr "Įmonės svetainė"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:44
 msgid "Company tagline"
@@ -373,7 +374,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:52
 msgid "Company logo"
-msgstr ""
+msgstr "Įmonės logotipas"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:53
 msgid "URL to the company logo"
@@ -399,7 +400,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:67
 msgid "yyyy-mm-dd"
-msgstr ""
+msgstr "yyyy-mm-dd"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:70
 msgid "Posted by"
@@ -415,11 +416,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Upload"
-msgstr ""
+msgstr "Įkelti"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:269
 msgid "Guest user"
-msgstr ""
+msgstr "Svečias"
 
 #: includes/class-wp-job-manager-ajax.php:111
 msgid "Showing %s&ldquo;%s&rdquo; %sjobs"
@@ -491,12 +492,12 @@ msgstr ""
 #: includes/class-wp-job-manager-post-types.php:117
 #: includes/class-wp-job-manager-post-types.php:163
 msgid "Edit %s"
-msgstr ""
+msgstr "Keisti %s"
 
 #: includes/class-wp-job-manager-post-types.php:75
 #: includes/class-wp-job-manager-post-types.php:118
 msgid "Update %s"
-msgstr ""
+msgstr "Atnaujinti %s"
 
 #: includes/class-wp-job-manager-post-types.php:76
 #: includes/class-wp-job-manager-post-types.php:119
@@ -623,7 +624,7 @@ msgstr ""
 
 #: includes/class-wp-job-manager-widgets.php:146
 msgid "Title"
-msgstr ""
+msgstr "Antraštė"
 
 #: includes/class-wp-job-manager-widgets.php:154
 msgid "Number of jobs to show"
@@ -673,7 +674,7 @@ msgstr ""
 #: includes/forms/class-wp-job-manager-form-submit-job.php:112
 #: includes/forms/class-wp-job-manager-form-submit-job.php:182
 msgid "http://"
-msgstr ""
+msgstr "http://"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:116
 msgid "Enter an email address or website URL"
@@ -693,7 +694,7 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:156
 msgid "Description"
-msgstr ""
+msgstr "Aprašymas"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:175
 msgid "Enter the name of the company"
@@ -702,7 +703,7 @@ msgstr ""
 #: includes/forms/class-wp-job-manager-form-submit-job.php:179
 #: templates/content-single-job_listing.php:36
 msgid "Website"
-msgstr ""
+msgstr "Svetainė"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:186
 msgid "Tagline"
@@ -722,7 +723,7 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:201
 msgid "Logo"
-msgstr ""
+msgstr "Logotipas"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:314
 msgid "%s is a required field"
@@ -796,12 +797,12 @@ msgstr ""
 
 #: templates/account-signin.php:38
 msgid "Your email"
-msgstr ""
+msgstr "Jūsų e. pašto adresas"
 
 #: templates/account-signin.php:38 templates/job-submit.php:24
 #: templates/job-submit.php:41
 msgid "(optional)"
-msgstr ""
+msgstr "(neprivalomas)"
 
 #: templates/content-job_listing.php:16
 #: templates/content-single-job_listing.php:21
@@ -897,7 +898,7 @@ msgstr ""
 
 #: templates/job-filters.php:23
 msgid "Category"
-msgstr ""
+msgstr "Kategorija"
 
 #: templates/job-filters.php:24
 msgid "All Job Categories"
@@ -936,7 +937,7 @@ msgstr ""
 
 #: wp-job-manager-template.php:116
 msgid "Active"
-msgstr ""
+msgstr "Aktyvus"
 
 #: wp-job-manager-template.php:118
 msgid "Expired"
@@ -948,7 +949,7 @@ msgstr ""
 
 #: wp-job-manager-template.php:122
 msgid "Inactive"
-msgstr ""
+msgstr "Neaktyvus"
 
 #: wp-job-manager-template.php:197
 msgid "Job Application via \"%s\" listing on %s"
@@ -964,11 +965,11 @@ msgstr ""
 
 #. Plugin Name of the plugin/theme
 msgid "WP Job Manager"
-msgstr ""
+msgstr "„WP Job Manager“"
 
 #. Plugin URI of the plugin/theme
 msgid "https://wpjobmanager.com/"
-msgstr ""
+msgstr "https://wpjobmanager.com/"
 
 #. Description of the plugin/theme
 msgid ""
@@ -978,8 +979,8 @@ msgstr ""
 
 #. Author of the plugin/theme
 msgid "Mike Jolley"
-msgstr ""
+msgstr "Mike Jolley"
 
 #. Author URI of the plugin/theme
 msgid "http://mikejolley.com"
-msgstr ""
+msgstr "http://mikejolley.com"
