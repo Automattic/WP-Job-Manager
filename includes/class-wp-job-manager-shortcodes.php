@@ -219,11 +219,12 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		// String and bool handling
-		$show_filters              = ( is_bool( $show_filters ) && $show_filters ) || in_array( $show_filters, array( '1', 'true', 'yes' ) ) ? true : false;
-		$show_categories           = ( is_bool( $show_categories ) && $show_categories ) || in_array( $show_categories, array( '1', 'true', 'yes' ) ) ? true : false;
-		$show_featured_only        = ( is_bool( $show_featured_only ) && $show_featured_only ) || in_array( $show_featured_only, array( '1', 'true', 'yes' ) ) ? true : false;
-		$show_category_multiselect = ( is_bool( $show_category_multiselect ) && $show_category_multiselect ) || in_array( $show_category_multiselect, array( '1', 'true', 'yes' ) ) ? true : false;
-		$show_more                 = ( is_bool( $show_more ) && $show_more ) || in_array( $show_more, array( '1', 'true', 'yes' ) ) ? true : false;
+		$show_filters              = $this->string_to_bool( $show_filters );
+		$show_categories           = $this->string_to_bool( $show_categories );
+		$show_featured_only        = $this->string_to_bool( $show_featured_only );
+		$show_category_multiselect = $this->string_to_bool( $show_category_multiselect );
+		$show_more                 = $this->string_to_bool( $show_more );
+		$show_pagination           = $this->string_to_bool( $show_pagination );
 
 		if ( ! is_null( $featured ) ) {
 			$featured = ( is_bool( $featured ) && $featured ) || in_array( $featured, array( '1', 'true', 'yes' ) ) ? true : false;
@@ -317,6 +318,15 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		return '<div class="job_listings" ' . $data_attributes_string . '>' . ob_get_clean() . '</div>';
+	}
+
+	/**
+	 * Get string as a bool
+	 * @param  string $value
+	 * @return bool
+	 */
+	public function string_to_bool( $value ) {
+		return ( is_bool( $value ) && $value ) || in_array( $value, array( '1', 'true', 'yes' ) ) ? true : false;
 	}
 
 	/**
