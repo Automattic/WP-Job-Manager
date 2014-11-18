@@ -31,6 +31,10 @@ class WP_Job_Manager_Post_Types {
 
 		add_filter( 'wp_insert_post_data', array( $this, 'fix_post_name' ), 10, 2 );
 		add_action( 'update_post_meta', array( $this, 'maybe_generate_geolocation_data' ), 10, 4 );
+		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
+
+		// WP ALL Import
+		add_action( 'pmxi_saved_post', array( $this, 'pmxi_saved_post' ), 10, 1 );
 	}
 
 	/**
@@ -477,5 +481,30 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 		do_action( 'job_manager_job_location_edited', $object_id, $_meta_value );
+	}
+
+	/**
+	 * Maybe set default meta data for job listings
+	 * @param  int $post_id
+	 * @param  WP_Post $post
+	 */
+	public function maybe_add_default_meta_data( $post_id, $post = '' ) {
+		if ( empty( $post ) || 'job_listing' === $post->post_type ) {
+			add_post_meta( $post_id, '_filled', 0, true );
+			add_post_meta( $post_id, '_featured', 0, true );
+		}
+	}
+
+	/**
+	 * After importing via WP ALL Import, add default meta data
+	 * @param  int $post_id
+	 */
+	public function pmxi_saved_post( $post_id ) {
+		if ( 'job_listing' === get_post_type( $post_id ) ) {
+			$this->maybe_add_default_meta_data( $post_id );
+			if ( ! WP_Job_Manager_Geocode::has_location_data( $post_id ) && ( $location = get_post_meta( $post_id, '_job_location', true ) ) ) {
+				WP_Job_Manager_Geocode::generate_location_data( $post_id, $location );
+			}
+		}
 	}
 }

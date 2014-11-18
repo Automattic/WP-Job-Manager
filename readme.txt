@@ -119,6 +119,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Tweak - Set default meta data for new jobs.
+* Tweak - Add geolocation data after import with WP ALL Import.
+
 = 1.18.0 =
 * Fix - Keep post name when pending job is posted by non-admin.
 * Fix - Prevent special chars breaking the feeds.
