@@ -209,7 +209,7 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	if ( $.isFunction( $.fn.chosen ) ) {
-		if ( job_manager_ajax_filters.is_rtl ) {
+		if ( job_manager_ajax_filters.is_rtl == 1 ) {
 			$( 'select[name^="search_categories"]' ).addClass( 'chosen-rtl' );
 		}
 		$( 'select[name^="search_categories"]' ).chosen();
