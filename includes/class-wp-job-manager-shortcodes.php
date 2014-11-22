@@ -119,7 +119,8 @@ class WP_Job_Manager_Shortcodes {
 	 */
 	public function job_dashboard( $atts ) {
 		if ( ! is_user_logged_in() ) {
-			return __( 'You need to be signed in to manage your listings.', 'wp-job-manager' );
+			get_job_manager_template( 'job-dashboard-login.php' );
+			return;
 		}
 
 		extract( shortcode_atts( array(
