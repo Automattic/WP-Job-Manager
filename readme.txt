@@ -119,6 +119,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - Chosen RTL.
 * Tweak - Set default meta data for new jobs.
 * Tweak - Add geolocation data after import with WP ALL Import.
 * Tweak - Filter to disable chosen: job_manager_chosen_enabled
