@@ -736,11 +736,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Preview Step
 	 */
 	public static function preview() {
-		global $post;
+		global $post, $job_preview;
 
 		if ( self::$job_id ) {
 
-			$post = get_post( self::$job_id );
+			$job_preview       = true;
+			$post              = get_post( self::$job_id );
 			setup_postdata( $post );
 			$post->post_status = 'preview';
 			?>
