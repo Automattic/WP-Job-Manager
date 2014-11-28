@@ -26,7 +26,7 @@ class WP_Job_Manager_Writepanels {
 
 		$current_user = wp_get_current_user();
 
-		return apply_filters( 'job_manager_job_listing_data_fields', array(
+		$fields = array(
 			'_job_location' => array(
 				'label' => __( 'Location', 'wp-job-manager' ),
 				'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
@@ -67,21 +67,27 @@ class WP_Job_Manager_Writepanels {
 			'_filled' => array(
 				'label' => __( 'Position filled?', 'wp-job-manager' ),
 				'type'  => 'checkbox'
-			),
-			'_featured' => array(
+			)
+		);
+		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
+			$fields['_featured'] = array(
 				'label' => __( 'Feature this listing?', 'wp-job-manager' ),
 				'type'  => 'checkbox',
 				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' )
-			),
-			'_job_expires' => array(
+			);
+			$fields['_job_expires'] = array(
 				'label'       => __( 'Expires', 'wp-job-manager' ),
 				'placeholder' => __( 'yyyy-mm-dd', 'wp-job-manager' )
-			),
-			'_job_author' => array(
+			);
+		}
+		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
+			$fields['_job_author'] = array(
 				'label' => __( 'Posted by', 'wp-job-manager' ),
 				'type'  => 'author'
-			)
-		) );
+			);
+		}
+
+		return apply_filters( 'job_manager_job_listing_data_fields', $fields );
 	}
 
 	/**
