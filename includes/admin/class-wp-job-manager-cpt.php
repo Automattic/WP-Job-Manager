@@ -76,12 +76,12 @@ class WP_Job_Manager_CPT {
 							'ID'          => $post_id,
 							'post_status' => 'publish'
 						);
-						if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ) ) && wp_update_post( $job_data ) ) {
+						if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ) ) && current_user_can( 'publish_post', $post_id ) && wp_update_post( $job_data ) ) {
 							$approved_jobs[] = $post_id;
 						}
 					}
 
-				wp_redirect( add_query_arg( 'approve_jobs', $approved_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
+				wp_redirect( add_query_arg( 'approved_jobs', $approved_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
 				exit;
 			break;
 			case 'expire_jobs' :
@@ -96,7 +96,7 @@ class WP_Job_Manager_CPT {
 							'ID'          => $post_id,
 							'post_status' => 'expired'
 						);
-						if ( wp_update_post( $job_data ) )
+						if ( current_user_can( 'manage_job_listings' ) && wp_update_post( $job_data ) )
 							$expired_jobs[] = $post_id;
 					}
 
@@ -112,7 +112,7 @@ class WP_Job_Manager_CPT {
 	 * Approve a single job
 	 */
 	public function approve_job() {
-		if ( ! empty( $_GET['approve_job'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'approve_job' ) && current_user_can( 'edit_post', $_GET['approve_job'] ) ) {
+		if ( ! empty( $_GET['approve_job'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'approve_job' ) && current_user_can( 'publish_post', $_GET['approve_job'] ) ) {
 			$post_id = absint( $_GET['approve_job'] );
 			$job_data = array(
 				'ID'          => $post_id,
@@ -324,7 +324,7 @@ class WP_Job_Manager_CPT {
 			case "job_actions" :
 				echo '<div class="actions">';
 				$admin_actions           = array();
-				if ( in_array( $post->post_status, array( 'pending', 'pending_payment' ) ) ) {
+				if ( in_array( $post->post_status, array( 'pending', 'pending_payment' ) ) && current_user_can ( 'publish_post', $post->ID ) ) {
 					$admin_actions['approve']   = array(
 						'action'  => 'approve',
 						'name'    => __( 'Approve', 'wp-job-manager' ),
@@ -332,21 +332,27 @@ class WP_Job_Manager_CPT {
 					);
 				}
 				if ( $post->post_status !== 'trash' ) {
-					$admin_actions['view']   = array(
-						'action'  => 'view',
-						'name'    => __( 'View', 'wp-job-manager' ),
-						'url'     => get_permalink( $post->ID )
-					);
-					$admin_actions['edit']   = array(
-						'action'  => 'edit',
-						'name'    => __( 'Edit', 'wp-job-manager' ),
-						'url'     => get_edit_post_link( $post->ID )
-					);
-					$admin_actions['delete'] = array(
-						'action'  => 'delete',
-						'name'    => __( 'Delete', 'wp-job-manager' ),
-						'url'     => get_delete_post_link( $post->ID )
-					);
+					if ( current_user_can( 'read_post', $post->ID ) ) {
+						$admin_actions['view']   = array(
+							'action'  => 'view',
+							'name'    => __( 'View', 'wp-job-manager' ),
+							'url'     => get_permalink( $post->ID )
+						);
+					}
+					if ( current_user_can( 'edit_post', $post->ID ) ) {
+						$admin_actions['edit']   = array(
+							'action'  => 'edit',
+							'name'    => __( 'Edit', 'wp-job-manager' ),
+							'url'     => get_edit_post_link( $post->ID )
+						);
+					}
+					if ( current_user_can( 'delete_post', $post->ID ) ) {
+						$admin_actions['delete'] = array(
+							'action'  => 'delete',
+							'name'    => __( 'Delete', 'wp-job-manager' ),
+							'url'     => get_delete_post_link( $post->ID )
+						);
+					}
 				}
 
 				$admin_actions = apply_filters( 'job_manager_admin_actions', $admin_actions, $post );
