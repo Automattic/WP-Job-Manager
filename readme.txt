@@ -124,6 +124,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Add geolocation data after import with WP ALL Import.
 * Tweak - Filter to disable chosen: job_manager_chosen_enabled
 * Tweak - Login link on job dashboard. job-dashboard-login.php template file.
+* Tweak - Made backend management honour capabilities of users. Props to minderdl.
 
 = 1.18.0 =
 * Fix - Keep post name when pending job is posted by non-admin.
