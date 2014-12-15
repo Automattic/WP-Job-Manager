@@ -399,7 +399,7 @@ function job_manager_user_can_edit_job( $job_id ) {
 
 	if ( ! is_user_logged_in() ) {
 		$can_edit = false;
-	} elseif ( $job->post_author != get_current_user_id() ) {
+	} elseif ( $job->post_author != get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) {
 		$can_edit = false;
 	}
 

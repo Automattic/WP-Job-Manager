@@ -3,7 +3,7 @@
 # Translators:
 # Zé Fontainhas <jfontainhas@gmail.com>, 2014
 # Mike Jolley <mike.jolley@me.com>, 2014
-# Nuno Alves <nuno@raulpinadesign.pt>, 2014
+# Nuno Alves <inactive+nalvesrpd@transifex.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
