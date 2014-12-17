@@ -535,6 +535,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'action'             => self::get_action(),
 			'job_fields'         => self::get_fields( 'job' ),
 			'company_fields'     => self::get_fields( 'company' ),
+			'step'               => self::get_step(),
 			'submit_button_text' => apply_filters( 'submit_job_form_submit_button_text', __( 'Preview &rarr;', 'wp-job-manager' ) )
 		) );
 	}

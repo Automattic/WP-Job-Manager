@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.18.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-11-28 16:37:19+00:00\n"
+"POT-Creation-Date: 2014-12-17 17:13:44+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,7 +115,7 @@ msgid "Posted"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:257
-#: includes/admin/class-wp-job-manager-writepanels.php:77
+#: includes/admin/class-wp-job-manager-writepanels.php:79
 msgid "Expires"
 msgstr ""
 
@@ -161,17 +161,17 @@ msgstr ""
 msgid "Approve"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:337
+#: includes/admin/class-wp-job-manager-cpt.php:338
 msgid "View"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:342
+#: includes/admin/class-wp-job-manager-cpt.php:345
 #: includes/class-wp-job-manager-post-types.php:176
 #: templates/job-dashboard.php:33 templates/job-dashboard.php:49
 msgid "Edit"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-cpt.php:347
+#: includes/admin/class-wp-job-manager-cpt.php:352
 #: templates/job-dashboard.php:54
 msgid "Delete"
 msgstr ""
@@ -661,45 +661,45 @@ msgstr ""
 msgid "Position filled?"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:72
+#: includes/admin/class-wp-job-manager-writepanels.php:74
 msgid "Feature this listing?"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:74
+#: includes/admin/class-wp-job-manager-writepanels.php:76
 msgid ""
 "Featured listings will be sticky during searches, and can be styled "
 "differently."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:78
+#: includes/admin/class-wp-job-manager-writepanels.php:80
 msgid "yyyy-mm-dd"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:81
+#: includes/admin/class-wp-job-manager-writepanels.php:85
 msgid "Posted by"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:96
+#: includes/admin/class-wp-job-manager-writepanels.php:102
 msgid "%s Data"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:122
 #: includes/admin/class-wp-job-manager-writepanels.php:128
-#: includes/admin/class-wp-job-manager-writepanels.php:137
+#: includes/admin/class-wp-job-manager-writepanels.php:134
+#: includes/admin/class-wp-job-manager-writepanels.php:143
 msgid "Use file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:122
 #: includes/admin/class-wp-job-manager-writepanels.php:128
-#: includes/admin/class-wp-job-manager-writepanels.php:137
+#: includes/admin/class-wp-job-manager-writepanels.php:134
+#: includes/admin/class-wp-job-manager-writepanels.php:143
 msgid "Upload"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:137
+#: includes/admin/class-wp-job-manager-writepanels.php:143
 msgid "Add file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:268
+#: includes/admin/class-wp-job-manager-writepanels.php:274
 msgid "Guest user"
 msgstr ""
 
@@ -930,15 +930,15 @@ msgstr ""
 msgid "Invalid listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:76
+#: includes/forms/class-wp-job-manager-form-edit-job.php:77
 msgid "Save changes"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:103
+#: includes/forms/class-wp-job-manager-form-edit-job.php:104
 msgid "Your changes have been saved."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:103
+#: includes/forms/class-wp-job-manager-form-edit-job.php:104
 msgid "View &rarr;"
 msgstr ""
 
@@ -947,7 +947,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
-#: includes/forms/class-wp-job-manager-form-submit-job.php:756
+#: includes/forms/class-wp-job-manager-form-submit-job.php:757
 msgid "Preview"
 msgstr ""
 
@@ -1039,24 +1039,24 @@ msgstr ""
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:538
+#: includes/forms/class-wp-job-manager-form-submit-job.php:539
 msgid "Preview &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:576
+#: includes/forms/class-wp-job-manager-form-submit-job.php:577
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:750
+#: includes/forms/class-wp-job-manager-form-submit-job.php:751
 msgid "Submit Listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:751
+#: includes/forms/class-wp-job-manager-form-submit-job.php:752
 msgid "&larr; Edit listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:853
-#: includes/forms/class-wp-job-manager-form-submit-job.php:879
+#: includes/forms/class-wp-job-manager-form-submit-job.php:854
+#: includes/forms/class-wp-job-manager-form-submit-job.php:880
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
