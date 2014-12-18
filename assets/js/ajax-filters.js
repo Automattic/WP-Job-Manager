@@ -34,12 +34,12 @@ jQuery( document ).ready( function ( $ ) {
 			} );
 
 			var categories = form.find( ':input[name^=search_categories], :input[name^=search_categories]' ).map( function () {
-				return $( this ).val();
+			return $( this ).val();
 			} ).get();
-			var keywords = '';
-			var location = '';
-			var $keywords = form.find( ':input[name=search_keywords]' );
-			var $location = form.find( ':input[name=search_location]' );
+			var keywords   = '';
+			var location   = '';
+			var $keywords  = form.find( ':input[name=search_keywords]' );
+			var $location  = form.find( ':input[name=search_location]' );
 
 			// Workaround placeholder scripts
 			if ( $keywords.val() !== $keywords.attr( 'placeholder' ) ) {
@@ -110,9 +110,15 @@ jQuery( document ).ready( function ( $ ) {
 						var result = $.parseJSON( response );
 
 						if ( result.showing ) {
-							$( showing ).show().html( '' ).append( '<span>' + result.showing + '</span>' + result.showing_links );
+							$( showing ).show().html( '<span>' + result.showing + '</span>' + result.showing_links );
 						} else {
 							$( showing ).hide();
+						}
+
+						if ( result.showing_all ) {
+							$( showing ).addClass( 'wp-job-manager-showing-all' );
+						} else {
+							$( showing ).removeClass( 'wp-job-manager-showing-all' );
 						}
 
 						if ( result.html ) {

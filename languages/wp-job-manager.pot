@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.19.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-12-18 19:22:43+00:00\n"
+"POT-Creation-Date: 2014-12-18 20:29:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -703,16 +703,12 @@ msgstr ""
 msgid "Guest user"
 msgstr ""
 
-#: includes/class-wp-job-manager-ajax.php:113
-msgid "Showing %s"
-msgstr ""
-
-#: includes/class-wp-job-manager-ajax.php:115
-msgid "Showing all %s"
-msgstr ""
-
-#: includes/class-wp-job-manager-ajax.php:118
+#: includes/class-wp-job-manager-ajax.php:116
 msgid "located in &ldquo;%s&rdquo;"
+msgstr ""
+
+#: includes/class-wp-job-manager-ajax.php:123
+msgid "Showing all %s"
 msgstr ""
 
 #: includes/class-wp-job-manager-geocode.php:140

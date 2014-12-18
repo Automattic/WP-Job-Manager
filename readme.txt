@@ -125,6 +125,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - Chosen RTL.
 * Fix - Addded additonal check to check edit capabilities.
 * Fix - Add correct step input to submission form.
+* Tweak - Add CSS class to 'showing' bar when shoing all results (no filters).
 * Tweak - Geocode, use sublocality_level_1 as city.
 * Tweak - Don't update slug when editing via the frontend.
 * Tweak - Set default meta data for new jobs.
