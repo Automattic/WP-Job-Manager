@@ -536,10 +536,8 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function rp4wp_related_meta_fields( $meta_fields, $post_id, $post ) {
 		if ( 'job_listing' === $post->post_type ) {
-			$meta_fields = array(
-				'_company_name',
-				'_job_location'
-			);
+			$meta_fields[] = '_company_name';
+			$meta_fields[] = '_job_location';
 		}
 		return $meta_fields;
 	}
