@@ -191,6 +191,7 @@ class WP_Job_Manager_Geocode {
 						else
 							$address['street'] = $route;
 					break;
+					case 'sublocality_level_1' :
 					case 'locality' :
 						$address['city']          = sanitize_text_field( $data->long_name );
 					break;
