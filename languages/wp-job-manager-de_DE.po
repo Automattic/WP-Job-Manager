@@ -1,6 +1,7 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# Daniel <daniel.minder@uni-due.de>, 2014
 # kochhase <mail@henryk-ibemeinhardt.de>, 2014
 # Mike Jolley <mike.jolley@me.com>, 2014
 # Sebastian Wendler <sebastian.wendler@netzlodern.de>, 2014
@@ -9,8 +10,8 @@ msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-10-30 23:39+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2014-11-29 19:21+0000\n"
+"Last-Translator: Daniel <daniel.minder@uni-due.de>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/wp-job-manager/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -134,7 +135,7 @@ msgstr "Kategorien"
 
 #: includes/admin/class-wp-job-manager-cpt.php:284
 msgid "Featured?"
-msgstr "Besonderheit?"
+msgstr "Hevorgehoben?"
 
 #: includes/admin/class-wp-job-manager-cpt.php:285
 #: templates/job-dashboard.php:10
@@ -292,11 +293,11 @@ msgstr "Wie viele <strong>Tage</strong> sollen Joblistings aktiv bleiben. Leer l
 
 #: includes/admin/class-wp-job-manager-settings.php:120
 msgid "Application method"
-msgstr "Anwendungsmethode"
+msgstr "Bewerbungsmethode"
 
 #: includes/admin/class-wp-job-manager-settings.php:121
 msgid "Choose what employers can use for their job application method."
-msgstr "Wählen Sie, was Arbeitgeber für ihre Bewerbung Methode verwenden können."
+msgstr "Wählen Sie, welche Methoden Arbeitgeber für Bewerbungen verwenden können."
 
 #: includes/admin/class-wp-job-manager-settings.php:124
 msgid "Email address or website URL"
@@ -418,7 +419,7 @@ msgstr "Verwenden der Datei"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:101
 msgid "Upload"
-msgstr "Das Hinaufladen"
+msgstr "Hochladen"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:269
 msgid "Guest user"
@@ -452,7 +453,7 @@ msgstr "Geocoding Fehler"
 
 #: includes/class-wp-job-manager-install.php:39
 msgid "Employer"
-msgstr "Der Arbeitgeber"
+msgstr "Arbeitgeber"
 
 #: includes/class-wp-job-manager-post-types.php:48
 msgid "Job Category"
@@ -740,7 +741,7 @@ msgstr "Bitte geben Sie eine gültige URL ein"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:335
 msgid "Please enter a valid application email address or URL"
-msgstr "Bitte geben Sie eine gültige E-Mail-Bewerber Adresse oder URL ein"
+msgstr "Bitte geben Sie eine gültige E-Mail-Adresse oder URL für die Bewerbung ein"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:456
 msgid "Preview job listing &rarr;"
@@ -849,7 +850,7 @@ msgstr "Bewerben per Webmail: "
 msgid ""
 "To apply for this job please visit the following URL: <a href=\"%1$s\" "
 "target=\"_blank\">%1$s &rarr;</a>"
-msgstr "Um sich für diesen Job zu bewerben, geben Sie bitte die folgende URL ein: <a href=\"%1$s\" target=\"_blank\">%1$s &rarr;</a>"
+msgstr "Um sich für diesen Job zu bewerben, gehen Sie bitte zu folgender URL: <a href=\"%1$s\" target=\"_blank\">%1$s &rarr;</a>"
 
 #: templates/job-application.php:5
 msgid "Apply for job"

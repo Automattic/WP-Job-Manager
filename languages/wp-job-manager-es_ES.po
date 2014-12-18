@@ -2,14 +2,15 @@
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
 # Edouard Scherer <escherer@stagesperou.com>, 2014
+# Emilio Gomez Fernandez <emilio.gomez.fdez@gmail.com>, 2014
 # IlDucci <victor.gonfraile@hotmail.es>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-10-30 23:39+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2014-11-19 10:29+0000\n"
+"Last-Translator: Emilio Gomez Fernandez <emilio.gomez.fdez@gmail.com>\n"
 "Language-Team: Spanish (Spain) (http://www.transifex.com/projects/p/wp-job-manager/language/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +27,7 @@ msgstr "Extensiones de WP Job Manager "
 msgid ""
 "Buying multiple add-ons? <a href=\"%s\">Check out the core add-on bundle "
 "&rarr;</a>"
-msgstr "¿Compras varios complementos? <a href=\"%s\">Echa un vistazo al paquete de complementos centrales &rarr;</a>"
+msgstr "¿Desea comprar varios complementos? <a href=\"%s\">Echa un vistazo al paquete de complementos centrales &rarr;</a>"
 
 #: includes/admin/class-wp-job-manager-admin.php:57
 msgid "Settings"
@@ -44,7 +45,7 @@ msgstr "Aprobar Vacantes"
 #: includes/admin/class-wp-job-manager-cpt.php:47
 #: includes/admin/class-wp-job-manager-cpt.php:48
 msgid "Expire Jobs"
-msgstr "Ofertas Expiradas"
+msgstr "Ofertas expiradas"
 
 #: includes/admin/class-wp-job-manager-cpt.php:135
 #: includes/admin/class-wp-job-manager-cpt.php:137

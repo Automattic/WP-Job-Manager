@@ -1,13 +1,14 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# Nakamura Agatha <hello@nakamuraagatha.co>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-05-11 11:00:29+00:00\n"
-"PO-Revision-Date: 2014-10-30 23:39+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2014-11-21 06:20+0000\n"
+"Last-Translator: Nakamura Agatha <hello@nakamuraagatha.co>\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/wp-job-manager/language/id_ID/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,67 +25,67 @@ msgstr ""
 msgid ""
 "Buying multiple add-ons? <a href=\"%s\">Check out the core add-on bundle "
 "&rarr;</a>"
-msgstr ""
+msgstr "Membeli Beberapa add-ons? <a href=\"%s\">Periksa core paket add-on &rarr;</a>"
 
 #: includes/admin/class-wp-job-manager-admin.php:57
 msgid "Settings"
-msgstr ""
+msgstr "Pengaturan"
 
 #: includes/admin/class-wp-job-manager-admin.php:60
 msgid "Add-ons"
-msgstr ""
+msgstr "Add-ons"
 
 #: includes/admin/class-wp-job-manager-cpt.php:44
 #: includes/admin/class-wp-job-manager-cpt.php:45
 msgid "Approve Jobs"
-msgstr ""
+msgstr "Pekerjaan di setujui"
 
 #: includes/admin/class-wp-job-manager-cpt.php:47
 #: includes/admin/class-wp-job-manager-cpt.php:48
 msgid "Expire Jobs"
-msgstr ""
+msgstr "Pekerjaan telah Kadaluarsa"
 
 #: includes/admin/class-wp-job-manager-cpt.php:135
 #: includes/admin/class-wp-job-manager-cpt.php:137
 msgid "%s approved"
-msgstr ""
+msgstr "%s disetujui"
 
 #: includes/admin/class-wp-job-manager-cpt.php:155
 #: includes/admin/class-wp-job-manager-cpt.php:157
 msgid "%s expired"
-msgstr ""
+msgstr "%s kadaluarsa"
 
 #: includes/admin/class-wp-job-manager-cpt.php:200
 msgid "Select a category"
-msgstr ""
+msgstr "Pilih Kategori"
 
 #: includes/admin/class-wp-job-manager-cpt.php:233
 msgid "Job position title"
-msgstr ""
+msgstr "Judul Posisi Pekerjaan"
 
 #: includes/admin/class-wp-job-manager-cpt.php:249
 msgid "Job listing updated. <a href=\"%s\">View Job</a>"
-msgstr ""
+msgstr "Job listing diperbarui. <a href=\"%s\">Lihat Pekerjaan</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:250
 msgid "Custom field updated."
-msgstr ""
+msgstr "Bidang kustom diperbarui."
 
 #: includes/admin/class-wp-job-manager-cpt.php:251
 msgid "Custom field deleted."
-msgstr ""
+msgstr "Bidang kustom dihapus."
 
 #: includes/admin/class-wp-job-manager-cpt.php:252
 msgid "Job listing updated."
-msgstr ""
+msgstr "Listing Pekerjaan diperbarui."
 
 #: includes/admin/class-wp-job-manager-cpt.php:253
 msgid "Job listing restored to revision from %s"
-msgstr ""
+msgstr "Listing Pekerjaan dikembalikan ke revisi dari %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:254
 msgid "Job listing published. <a href=\"%s\">View Job</a>"
-msgstr ""
+msgstr "Listing Pekerjaan diterbitkan. <a href=\"%s\">Lihat Pekerjaan</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:255
 msgid "Job listing saved."
