@@ -44,7 +44,7 @@ class WP_Job_Manager_Addons {
 					break;
 				}
 
-				$addons = wp_kses_post( utf8_decode( $addons ) );
+				$addons = wp_kses_post( $addons );
 
 				if ( $addons ) {
 					set_transient( 'wp_job_manager_addons_html', $addons, 60*60*24*7 ); // Cached for a week
