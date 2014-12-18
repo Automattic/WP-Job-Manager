@@ -35,6 +35,9 @@ class WP_Job_Manager_Post_Types {
 
 		// WP ALL Import
 		add_action( 'pmxi_saved_post', array( $this, 'pmxi_saved_post' ), 10, 1 );
+
+		// RP4WP
+		add_filter( 'rp4wp_get_template', array( $this, 'rp4wp_template' ), 10, 3 );
 	}
 
 	/**
@@ -506,5 +509,19 @@ class WP_Job_Manager_Post_Types {
 				WP_Job_Manager_Geocode::generate_location_data( $post_id, $location );
 			}
 		}
+	}
+
+	/**
+	 * Replace RP4WP template with the template from Job Manager
+	 * @param  string $located
+	 * @param  string $template_name
+	 * @param  array $args
+	 * @return string
+	 */
+	public function rp4wp_template( $located, $template_name, $args ) {
+		if ( 'related-post-default.php' === $template_name && 'job_listing' === $args['related_post']->post_type ) {
+			return JOB_MANAGER_PLUGIN_DIR . '/templates/content-job_listing.php';
+		}
+		return $located;
 	}
 }
