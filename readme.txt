@@ -3,8 +3,8 @@ Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
-Tested up to: 4.0
-Stable tag: 1.18.0
+Tested up to: 4.1
+Stable tag: 1.19.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -119,6 +119,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.19.0 =
 * Feature - Added html5 required attribute to required fields.
 * Feature - Added compatibility with RP4WP.
 * Fix - Chosen RTL.
