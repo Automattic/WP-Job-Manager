@@ -125,6 +125,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - Chosen RTL.
 * Fix - Addded additonal check to check edit capabilities.
 * Fix - Add correct step input to submission form.
+* Tweak - Don't update slug when editing via the frontend.
 * Tweak - Set default meta data for new jobs.
 * Tweak - Add geolocation data after import with WP ALL Import.
 * Tweak - Filter to disable chosen: job_manager_chosen_enabled

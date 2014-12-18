@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.19.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
-"POT-Creation-Date: 2014-12-18 18:50:15+00:00\n"
+"POT-Creation-Date: 2014-12-18 19:22:43+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -947,7 +947,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:28
-#: includes/forms/class-wp-job-manager-form-submit-job.php:757
+#: includes/forms/class-wp-job-manager-form-submit-job.php:763
 msgid "Preview"
 msgstr ""
 
@@ -1047,16 +1047,16 @@ msgstr ""
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:751
+#: includes/forms/class-wp-job-manager-form-submit-job.php:757
 msgid "Submit Listing &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:752
+#: includes/forms/class-wp-job-manager-form-submit-job.php:758
 msgid "&larr; Edit listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:854
-#: includes/forms/class-wp-job-manager-form-submit-job.php:880
+#: includes/forms/class-wp-job-manager-form-submit-job.php:860
+#: includes/forms/class-wp-job-manager-form-submit-job.php:886
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
