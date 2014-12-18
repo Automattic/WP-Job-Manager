@@ -119,6 +119,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Added html5 required attribute to required fields.
 * Fix - Chosen RTL.
 * Fix - Addded additonal check to check edit capabilities.
 * Fix - Add correct step input to submission form.
