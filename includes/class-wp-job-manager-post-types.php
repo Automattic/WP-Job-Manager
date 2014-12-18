@@ -38,6 +38,8 @@ class WP_Job_Manager_Post_Types {
 
 		// RP4WP
 		add_filter( 'rp4wp_get_template', array( $this, 'rp4wp_template' ), 10, 3 );
+		add_filter( 'rp4wp_related_meta_fields', array( $this, 'rp4wp_related_meta_fields' ), 10, 3 );
+		add_filter( 'rp4wp_related_meta_fields_weight', array( $this, 'rp4wp_related_meta_fields_weight' ), 10, 3 );
 	}
 
 	/**
@@ -523,5 +525,36 @@ class WP_Job_Manager_Post_Types {
 			return JOB_MANAGER_PLUGIN_DIR . '/templates/content-job_listing.php';
 		}
 		return $located;
+	}
+
+	/**
+	 * Add meta fields for RP4WP to relate jobs by
+	 * @param  array $meta_fields
+	 * @param  int $post_id
+	 * @param  WP_Post $post
+	 * @return array
+	 */
+	public function rp4wp_related_meta_fields( $meta_fields, $post_id, $post ) {
+		if ( 'job_listing' === $post->post_type ) {
+			$meta_fields = array(
+				'_company_name',
+				'_job_location'
+			);
+		}
+		return $meta_fields;
+	}
+
+	/**
+	 * Add meta fields for RP4WP to relate jobs by
+	 * @param  int $weight
+	 * @param  WP_Post $post
+	 * @param  string $meta_field
+	 * @return int
+	 */
+	public function rp4wp_related_meta_fields_weight( $weight, $post, $meta_field ) {
+		if ( 'job_listing' === $post->post_type ) {
+			$weight = 100;
+		}
+		return $weight;
 	}
 }
