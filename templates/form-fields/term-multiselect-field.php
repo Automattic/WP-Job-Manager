@@ -12,13 +12,17 @@ if ( isset( $field['value'] ) ) {
 
 wp_enqueue_script( 'wp-job-manager-term-multiselect' );
 
-job_manager_dropdown_categories( array( 
+$args = array(
 	'taxonomy'     => $field['taxonomy'],
-	'hierarchical' => 1, 
-	'name'         => isset( $field['name'] ) ? $field['name'] : $key, 
-	'orderby'      => 'name', 
+	'hierarchical' => 1,
+	'name'         => isset( $field['name'] ) ? $field['name'] : $key,
+	'orderby'      => 'name',
 	'selected'     => $selected,
-	'hide_empty'   => false,
-) );
+	'hide_empty'   => FALSE
+);
+
+if( isset( $field['placeholder'] ) && ! empty( $field['placeholder'] ) ) $args['placeholder'] = $field['placeholder'];
+
+job_manager_dropdown_categories( apply_filters( 'job_manager_term_multiselect_field_args', $args ) );
 
 if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
