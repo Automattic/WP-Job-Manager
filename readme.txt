@@ -119,6 +119,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - Chosen width when resizing the page.
+* Tweak - content-widget-no-jobs-found.php template file.
+
 = 1.19.0 =
 * Feature - Added html5 required attribute to required fields.
 * Feature - Added compatibility with RP4WP.

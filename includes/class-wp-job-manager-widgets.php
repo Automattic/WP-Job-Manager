@@ -214,6 +214,10 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 			<?php echo $after_widget; ?>
 
+		<?php else : ?>
+
+			<?php get_job_manager_template_part( 'content-widget', 'no-jobs-found' ); ?>
+
 		<?php endif;
 
 		wp_reset_postdata();
