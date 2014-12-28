@@ -104,7 +104,6 @@ function get_job_listings( $args = array() ) {
 		    SELECT ID FROM {$wpdb->posts}
 		    WHERE ( " . implode( ' OR ', $posts_search_keywords_sql ) . " )
 		    AND post_type = 'job_listing'
-		    AND post_status = 'publish'
 		" ), array( 0 ) );
 	} else {
 		$keyword_post_ids = array();
