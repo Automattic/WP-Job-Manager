@@ -121,6 +121,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 * Fix - Chosen width when resizing the page.
 * Tweak - content-widget-no-jobs-found.php template file.
+* Tweak - Don't limit keyword search query functions to published jobs.
 
 = 1.19.0 =
 * Feature - Added html5 required attribute to required fields.
