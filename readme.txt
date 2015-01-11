@@ -119,6 +119,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - Correctly generate geolocation data when adding a post manually.
 * Fix - Chosen width when resizing the page.
 * Tweak - content-widget-no-jobs-found.php template file.
 * Tweak - Don't limit keyword search query functions to published jobs.
