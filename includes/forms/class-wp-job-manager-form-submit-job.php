@@ -157,7 +157,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'required'    => true,
 					'placeholder' => '',
 					'priority'    => 4,
-					'default'     => isset( $_REQUEST['job_category'] ) ? sanitize_text_field( $_REQUEST['job_category'] ) : '',
+					'default'     => '',
 					'taxonomy'    => 'job_listing_category'
 				),
 				'job_description' => array(
