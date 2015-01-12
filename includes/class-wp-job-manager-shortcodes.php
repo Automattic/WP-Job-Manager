@@ -234,9 +234,9 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		// Array handling
-		$categories         = array_filter( array_map( 'trim', explode( ',', $categories ) ) );
-		$job_types          = array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
-		$selected_job_types = array_filter( array_map( 'trim', explode( ',', $selected_job_types ) ) );
+		$categories         = is_array( $categories ) ? $categories : array_filter( array_map( 'trim', explode( ',', $categories ) ) );
+		$job_types          = is_array( $job_types ) ? $job_types : array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
+		$selected_job_types = is_array( $selected_job_types ) ? $selected_job_types : array_filter( array_map( 'trim', explode( ',', $selected_job_types ) ) );
 
 		// Get keywords and location from querystring if set
 		if ( ! empty( $_GET['search_keywords'] ) ) {
