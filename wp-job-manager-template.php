@@ -7,7 +7,7 @@
  * @author 		Mike Jolley
  * @category 	Core
  * @package 	Job Manager/Template
- * @version     1.0.0
+ * @version     1.20.0
  */
 
 /**
@@ -313,10 +313,11 @@ function the_company_logo( $size = 'full', $default = null, $post = null ) {
 
 		echo '<img class="company_logo" src="' . $logo . '" alt="' . get_the_company_name( $post ) . '" />';
 
-	} elseif ( $default )
+	} elseif ( $default ) {
 		echo '<img class="company_logo" src="' . $default . '" alt="' . get_the_company_name( $post ) . '" />';
-	else
-		echo '<img class="company_logo" src="' . JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' . '" alt="' . get_the_company_name( $post ) . '" />';
+	} else {
+		echo '<img class="company_logo" src="' . apply_filters( 'job_manager_default_company_logo', JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' ) . '" alt="' . get_the_company_name( $post ) . '" />';
+	}
 }
 
 /**
