@@ -169,12 +169,11 @@ class WP_Job_Manager_Geocode {
 
 		if ( ! empty( $geocoded_address->results[0]->address_components ) ) {
 			$address_data             = $geocoded_address->results[0]->address_components;
-			$street_number            = false;
 			$address['street']        = false;
 			$address['city']          = false;
 			$address['state_short']   = false;
 			$address['state_long']    = false;
-			$address['zipcode']       = false;
+			$address['postcode']      = false;
 			$address['country_short'] = false;
 			$address['country_long']  = false;
 
@@ -193,9 +192,11 @@ class WP_Job_Manager_Geocode {
 					break;
 					case 'sublocality_level_1' :
 					case 'locality' :
+					case 'postal_town' :
 						$address['city']          = sanitize_text_field( $data->long_name );
 					break;
 					case 'administrative_area_level_1' :
+					case 'administrative_area_level_2' :
 						$address['state_short']   = sanitize_text_field( $data->short_name );
 						$address['state_long']    = sanitize_text_field( $data->long_name );
 					break;
