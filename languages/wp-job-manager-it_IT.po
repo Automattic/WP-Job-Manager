@@ -883,7 +883,7 @@ msgstr "Etichetta chiusa"
 
 #: templates/job-filters.php:8
 msgid "Keywords"
-msgstr "Parole chiavi"
+msgstr "Parole chiave"
 
 #: templates/job-filters.php:9
 msgid "All Jobs"
