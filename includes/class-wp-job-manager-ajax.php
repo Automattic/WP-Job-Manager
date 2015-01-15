@@ -87,7 +87,7 @@ class WP_Job_Manager_Ajax {
 
 		if ( sizeof( $showing_types ) == 1 ) {
 			$result['showing'][] = implode( ', ', $showing_types );
-		} elseif ( $unmatched ) {
+		} elseif ( $unmatched && $showing_types ) {
 			$last_type           = array_pop( $showing_types );
 			$result['showing'][] = implode( ', ', $showing_types ) . " &amp; $last_type";
 		}
