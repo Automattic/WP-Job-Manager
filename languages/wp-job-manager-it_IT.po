@@ -157,7 +157,7 @@ msgstr "ID Offerta: %d"
 #: includes/admin/class-wp-job-manager-cpt.php:336
 #: includes/admin/class-wp-job-manager-cpt.php:341
 msgid "M j, Y"
-msgstr "M g, A"
+msgstr "M j, Y"
 
 #: includes/admin/class-wp-job-manager-cpt.php:337
 msgid "by a guest"
