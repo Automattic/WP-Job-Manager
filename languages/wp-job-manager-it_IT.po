@@ -157,7 +157,7 @@ msgstr "ID Offerta: %d"
 #: includes/admin/class-wp-job-manager-cpt.php:336
 #: includes/admin/class-wp-job-manager-cpt.php:341
 msgid "M j, Y"
-msgstr "M g, A"
+msgstr "M j, Y"
 
 #: includes/admin/class-wp-job-manager-cpt.php:337
 msgid "by a guest"
@@ -883,7 +883,7 @@ msgstr "Etichetta chiusa"
 
 #: templates/job-filters.php:8
 msgid "Keywords"
-msgstr "Parole chiavi"
+msgstr "Parole chiave"
 
 #: templates/job-filters.php:9
 msgid "All Jobs"
