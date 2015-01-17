@@ -124,6 +124,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - Show no jobs when all types de-selected.
 * Tweak - content-widget-no-jobs-found.php template file.
 * Tweak - Don't limit keyword search query functions to published jobs.
+* job_manager_default_company_logo filter for changing default company image.
 
 = 1.19.0 =
 * Feature - Added html5 required attribute to required fields.
