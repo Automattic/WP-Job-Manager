@@ -379,10 +379,8 @@ class WP_Job_Manager_Shortcodes {
 		<?php endif;
 
 		wp_reset_postdata();
-		
-		$single_job_listing_output = apply_filters( 'job_manager_single_job_listing_output', ob_get_clean() );
 
-		return '<div class="job_shortcode single_job_listing">' . $single_job_listing_output . '</div>';
+		return '<div class="job_shortcode single_job_listing">' . ob_get_clean() . '</div>';
 	}
 
 	/**
