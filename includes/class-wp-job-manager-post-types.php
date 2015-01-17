@@ -273,7 +273,7 @@ class WP_Job_Manager_Post_Types {
 
 		add_filter( 'the_content', array( $this, 'job_content' ) );
 
-		return $content;
+		return apply_filters( 'job_manager_single_job_content', $content, $post );
 	}
 
 	/**
