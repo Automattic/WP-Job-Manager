@@ -241,26 +241,30 @@ class WP_Job_Manager_CPT {
 	/**
 	 * columns function.
 	 *
-	 * @access public
-	 * @param mixed $columns
-	 * @return void
+	 * @param array $columns
+	 * @return array
 	 */
 	public function columns( $columns ) {
-		if ( ! is_array( $columns ) )
+		if ( ! is_array( $columns ) ) {
 			$columns = array();
+		}
 
 		unset( $columns['title'], $columns['date'], $columns['author'] );
 
 		$columns["job_listing_type"]     = __( "Type", 'wp-job-manager' );
 		$columns["job_position"]         = __( "Position", 'wp-job-manager' );
+		$columns["job_location"]         = __( "Location", 'wp-job-manager' );
 		$columns["job_posted"]           = __( "Posted", 'wp-job-manager' );
 		$columns["job_expires"]          = __( "Expires", 'wp-job-manager' );
-		if ( get_option( 'job_manager_enable_categories' ) )
 		$columns["job_listing_category"] = __( "Categories", 'wp-job-manager' );
 		$columns['featured_job']         = '<span class="tips" data-tip="' . __( "Featured?", 'wp-job-manager' ) . '">' . __( "Featured?", 'wp-job-manager' ) . '</span>';
 		$columns['filled']               = '<span class="tips" data-tip="' . __( "Filled?", 'wp-job-manager' ) . '">' . __( "Filled?", 'wp-job-manager' ) . '</span>';
 		$columns['job_status']           = __( "Status", 'wp-job-manager' );
 		$columns['job_actions']          = __( "Actions", 'wp-job-manager' );
+
+		if ( ! get_option( 'job_manager_enable_categories' ) ) {
+			unset( $columns["job_listing_category"] );
+		}
 
 		return $columns;
 	}
@@ -285,19 +289,21 @@ class WP_Job_Manager_CPT {
 				echo '<div class="job_position">';
 				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'ID: %d', 'wp-job-manager' ), $post->ID ) . '">' . $post->post_title . '</a>';
 
-				echo '<div class="location">';
+				echo '<div class="company">';
 
-				if ( get_the_company_website() )
-					the_company_name( '<span class="tips" data-tip="' . esc_attr( get_the_company_tagline() ) . '"><a href="' . get_the_company_website() . '">', '</a></span> &ndash; ' );
-				else
-					the_company_name( '<span class="tips" data-tip="' . esc_attr( get_the_company_tagline() ) . '">', '</span> &ndash; ' );
-
-				the_job_location( $post );
+				if ( get_the_company_website() ) {
+					the_company_name( '<span class="tips" data-tip="' . esc_attr( get_the_company_tagline() ) . '"><a href="' . get_the_company_website() . '">', '</a></span>' );
+				} else {
+					the_company_name( '<span class="tips" data-tip="' . esc_attr( get_the_company_tagline() ) . '">', '</span>' );
+				}
 
 				echo '</div>';
 
 				the_company_logo();
 				echo '</div>';
+			break;
+			case "job_location" :
+				the_job_location( $post );
 			break;
 			case "job_listing_category" :
 				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) echo '<span class="na">&ndash;</span>'; else echo $terms;
@@ -323,7 +329,8 @@ class WP_Job_Manager_CPT {
 			break;
 			case "job_actions" :
 				echo '<div class="actions">';
-				$admin_actions           = array();
+				$admin_actions = apply_filters( 'post_row_actions', array(), $post );
+
 				if ( in_array( $post->post_status, array( 'pending', 'pending_payment' ) ) && current_user_can ( 'publish_post', $post->ID ) ) {
 					$admin_actions['approve']   = array(
 						'action'  => 'approve',
@@ -358,7 +365,11 @@ class WP_Job_Manager_CPT {
 				$admin_actions = apply_filters( 'job_manager_admin_actions', $admin_actions, $post );
 
 				foreach ( $admin_actions as $action ) {
-					printf( '<a class="button tips icon-%1$s" href="%2$s" data-tip="%3$s">%4$s</a>', $action['action'], esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_html( $action['name'] ) );
+					if ( is_array( $action ) ) {
+						printf( '<a class="button button-icon tips icon-%1$s" href="%2$s" data-tip="%3$s">%4$s</a>', $action['action'], esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_html( $action['name'] ) );
+					} else {
+						echo str_replace( 'class="', 'class="button ', $action );
+					}
 				}
 
 				echo '</div>';
@@ -378,6 +389,7 @@ class WP_Job_Manager_CPT {
 		$custom = array(
 			'job_posted'   => 'date',
 			'job_position' => 'title',
+			'job_location' => 'job_location',
 			'job_expires'  => 'job_expires'
 		);
 		return wp_parse_args( $custom, $columns );
@@ -395,6 +407,11 @@ class WP_Job_Manager_CPT {
 			if ( 'job_expires' === $vars['orderby'] ) {
 				$vars = array_merge( $vars, array(
 					'meta_key' 	=> '_job_expires',
+					'orderby' 	=> 'meta_value'
+				) );
+			} elseif ( 'job_location' === $vars['orderby'] ) {
+				$vars = array_merge( $vars, array(
+					'meta_key' 	=> '_job_location',
 					'orderby' 	=> 'meta_value'
 				) );
 			}

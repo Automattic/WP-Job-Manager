@@ -44,6 +44,9 @@
 			margin-bottom: .2em;
 		}
 	}
+	.column-job_status {
+		width: 6%;
+	}
 	.column-job_listing_type {
 		text-align: left;
 		width: 6em;
@@ -74,10 +77,10 @@
 		}
 	}
 	th.column-job_position {
-		width: 30%;
+		width: 20%;
 	}
 	td.column-job_position {
-		width: 30%;
+		width: 20%;
 		height: 34px;
 		.job_position {
 			position: relative;
@@ -96,16 +99,19 @@
 			.box_shadow( 0, 1px, 0, 1px, rgba( 0,0,0,0.1 ) );
 			border: 1px solid #fff;
 		}
-		.location {
+		.company {
 			margin-top: .2em;
 			display: block;
 			padding-top: 2px;
 			color: #bbbbbb;
 		}
 	}
+	.column-job_location {
+		width: 10%;
+	}
 	.column-job_actions {
 		text-align: right;
-		width: 138px;
+		width: 188px;
 		strong {
 			display: block;
 			margin-bottom: .2em;
@@ -117,12 +123,14 @@
 			display: inline-block;
 			margin: 0 0 2px 4px;
 			cursor: pointer;
-			padding: 0 !important;
-			height: 2em !important;
-			width: 2em !important;
+			padding: 0 6px !important;
 			font-size: 1em !important;
 			line-height: 2em !important;
 			overflow: hidden;
+		}
+		a.button-icon {
+			width: 2em !important;
+			padding: 0 !important;
 			&:before {
 				.jm-icon;
 				float: left;
