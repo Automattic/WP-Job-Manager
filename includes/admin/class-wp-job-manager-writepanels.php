@@ -303,10 +303,11 @@ class WP_Job_Manager_Writepanels {
 		foreach ( $this->job_listing_fields() as $key => $field ) {
 			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
 
-			if ( method_exists( $this, 'input_' . $type ) )
-				call_user_func( array( $this, 'input_' . $type ), $key, $field );
-			else
+			if ( has_action( 'job_manager_input_' . $type ) ) {
 				do_action( 'job_manager_input_' . $type, $key, $field );
+			} elseif ( method_exists( $this, 'input_' . $type ) ) {
+				call_user_func( array( $this, 'input_' . $type ), $key, $field );
+			}
 		}
 
 		do_action( 'job_manager_job_listing_data_end', $thepostid );

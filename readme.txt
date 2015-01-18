@@ -128,6 +128,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - job_manager_output_jobs_no_results action.
 * Tweak - No results template hooked into job_manager_output_jobs_no_results.
 * Tweak - Changed content-no-jobs-found.php content to work for ajax and static lists of jobs. Tweaked text.
+* Tweak - job_manager_default_company_logo filter for changing default company image.
 
 = 1.19.0 =
 * Feature - Added html5 required attribute to required fields.
