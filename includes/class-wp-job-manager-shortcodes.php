@@ -20,7 +20,7 @@ class WP_Job_Manager_Shortcodes {
 		add_action( 'job_manager_job_dashboard_content_edit', array( $this, 'edit_job' ) );
 		add_action( 'job_manager_job_filters_end', array( $this, 'job_filter_job_types' ), 20 );
 		add_action( 'job_manager_job_filters_end', array( $this, 'job_filter_results' ), 30 );
-
+		add_action( 'job_manager_output_jobs_no_results', array( $this, 'output_no_results' ) );
 		add_shortcode( 'submit_job_form', array( $this, 'submit_job_form' ) );
 		add_shortcode( 'job_dashboard', array( $this, 'job_dashboard' ) );
 		add_shortcode( 'jobs', array( $this, 'output_jobs' ) );
@@ -295,7 +295,9 @@ class WP_Job_Manager_Shortcodes {
 
 				<?php endif; ?>
 
-			<?php endif;
+			<?php else :
+				do_action( 'job_manager_output_jobs_no_results' );
+			endif;
 
 			wp_reset_postdata();
 		}
@@ -319,6 +321,13 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		return '<div class="job_listings" ' . $data_attributes_string . '>' . ob_get_clean() . '</div>';
+	}
+
+	/**
+	 * Output some content when no results were found
+	 */
+	public function output_no_results() {
+		get_job_manager_template( 'content-no-jobs-found.php' );
 	}
 
 	/**

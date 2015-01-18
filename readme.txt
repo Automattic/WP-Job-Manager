@@ -119,11 +119,15 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Feature - Sortable location column in admin.
 * Fix - Correctly generate geolocation data when adding a post manually.
 * Fix - Chosen width when resizing the page.
 * Fix - Show no jobs when all types de-selected.
 * Tweak - content-widget-no-jobs-found.php template file.
 * Tweak - Don't limit keyword search query functions to published jobs.
+* Tweak - job_manager_output_jobs_no_results action.
+* Tweak - No results template hooked into job_manager_output_jobs_no_results.
+* Tweak - Changed content-no-jobs-found.php content to work for ajax and static lists of jobs. Tweaked text.
 
 = 1.19.0 =
 * Feature - Added html5 required attribute to required fields.
