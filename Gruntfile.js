@@ -90,6 +90,7 @@ module.exports = function( grunt ){
 			generatemos: {
 				command: [
 					'cd languages',
+					'find ./ -name "*.mo" -delete',
 					'for i in *.po; do msgfmt $i -o ${i%%.*}.mo; done'
 				].join( '&&' )
 			},
@@ -156,6 +157,10 @@ module.exports = function( grunt ){
 	grunt.registerTask( 'dev', [
 		'default',
 		'shell:txpull',
+		'shell:generatemos'
+	]);
+
+	grunt.registerTask( 'mo', [
 		'shell:generatemos'
 	]);
 

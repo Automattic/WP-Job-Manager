@@ -1,20 +1,19 @@
 # Copyright (C) 2014 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
-# Nakamura Agatha <hello@nakamuraagatha.co>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wp-job-manager\n"
 "POT-Creation-Date: 2014-12-18 21:00:48+00:00\n"
-"PO-Revision-Date: 2015-01-09 14:35+0000\n"
-"Last-Translator: Evert Semeijn <transifex@fourleafed.com>\n"
-"Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/wp-job-manager/language/id_ID/)\n"
+"PO-Revision-Date: 2014-01-23 18:48+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: French (Belgium) (http://www.transifex.com/projects/p/wp-job-manager/language/fr_BE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: id_ID\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: fr_BE\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: includes/admin/class-wp-job-manager-addons.php:57
 #: includes/admin/class-wp-job-manager-admin.php:61
@@ -25,15 +24,15 @@ msgstr ""
 msgid ""
 "Buying multiple add-ons? <a href=\"%s\">Check out the core add-on bundle "
 "&rarr;</a>"
-msgstr "Membeli Beberapa add-ons? <a href=\"%s\">Periksa core paket add-on &rarr;</a>"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-admin.php:58
 msgid "Settings"
-msgstr "Pengaturan"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-admin.php:61
 msgid "Add-ons"
-msgstr "Add-ons"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:48
 #: includes/admin/class-wp-job-manager-cpt.php:49
@@ -48,12 +47,12 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-cpt.php:140
 #: includes/admin/class-wp-job-manager-cpt.php:142
 msgid "%s approved"
-msgstr "%s disetujui"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:160
 #: includes/admin/class-wp-job-manager-cpt.php:162
 msgid "%s expired"
-msgstr "%s kadaluarsa"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:194
 msgid "Select category"
@@ -62,7 +61,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-cpt.php:209
 #: includes/admin/class-wp-job-manager-cpt.php:255
 msgid "Position"
-msgstr "Posisi"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:225
 msgid "%s updated. <a href=\"%s\">View</a>"
@@ -70,11 +69,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:226
 msgid "Custom field updated."
-msgstr "Bidang kustom diperbarui."
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:227
 msgid "Custom field deleted."
-msgstr "Bidang kustom dihapus."
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:228
 msgid "%s updated."
@@ -112,7 +111,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:254
 msgid "Type"
-msgstr "Tipe"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:256
 msgid "Posted"
@@ -125,11 +124,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:259
 msgid "Categories"
-msgstr "Kategori"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:260
 msgid "Featured?"
-msgstr "Unggulan?"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:261
 #: includes/class-wp-job-manager-shortcodes.php:164
@@ -138,7 +137,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:262
 msgid "Status"
-msgstr "Status"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:263
 msgid "Actions"
@@ -627,15 +626,15 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-writepanels.php:42
 #: includes/forms/class-wp-job-manager-form-submit-job.php:180
 msgid "Company name"
-msgstr "Nama Perusahaan"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:46
 msgid "Company website"
-msgstr "Website Perusahaan"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:50
 msgid "Company tagline"
-msgstr "Tagline Perusahaan"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:51
 msgid "Brief description about the company"
@@ -643,15 +642,15 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:54
 msgid "Company Twitter"
-msgstr "Twitter Perusahaan"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:58
 msgid "Company logo"
-msgstr "Logo Perusahaan"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:59
 msgid "URL to the company logo"
-msgstr "URL Logo Perusahaan"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:63
 msgid "Company video"
@@ -681,7 +680,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:85
 msgid "Posted by"
-msgstr "Diposting Oleh"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:102
 msgid "%s Data"
@@ -697,7 +696,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-writepanels.php:134
 #: includes/admin/class-wp-job-manager-writepanels.php:143
 msgid "Upload"
-msgstr "Unggah"
+msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:143
 msgid "Add file"
@@ -731,7 +730,7 @@ msgstr ""
 
 #: includes/class-wp-job-manager-install.php:54
 msgid "Employer"
-msgstr "Pekerja"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:61
 #: includes/forms/class-wp-job-manager-form-submit-job.php:155
@@ -740,7 +739,7 @@ msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:62
 msgid "Job categories"
-msgstr "Kategori Pekerjaan"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:66
 msgctxt "Job category slug - resave permalinks after changing this"
@@ -751,13 +750,13 @@ msgstr ""
 #: includes/class-wp-job-manager-post-types.php:132
 #: includes/class-wp-job-manager-post-types.php:186
 msgid "Search %s"
-msgstr "Cari %s"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:87
 #: includes/class-wp-job-manager-post-types.php:133
 #: includes/class-wp-job-manager-post-types.php:178
 msgid "All %s"
-msgstr "Semua %s"
+msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:88
 #: includes/class-wp-job-manager-post-types.php:134
@@ -862,6 +861,7 @@ msgstr ""
 msgid "Expired <span class=\"count\">(%s)</span>"
 msgid_plural "Expired <span class=\"count\">(%s)</span>"
 msgstr[0] ""
+msgstr[1] ""
 
 #: includes/class-wp-job-manager-shortcodes.php:64
 msgid "Invalid ID"
