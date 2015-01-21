@@ -42,8 +42,8 @@ class WP_Job_Manager_Shortcodes {
 	/**
 	 * Show the job submission form
 	 */
-	public function submit_job_form() {
-		return $GLOBALS['job_manager']->forms->get_form( 'submit-job' );
+	public function submit_job_form( $atts = array() ) {
+		return $GLOBALS['job_manager']->forms->get_form( 'submit-job', $atts );
 	}
 
 	/**
@@ -319,7 +319,7 @@ class WP_Job_Manager_Shortcodes {
 		foreach ( $data_attributes as $key => $value ) {
 			$data_attributes_string .= 'data-' . esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
 		}
-		
+
 		$job_listings_output = apply_filters( 'job_manager_job_listings_output', ob_get_clean() );
 
 		return '<div class="job_listings" ' . $data_attributes_string . '>' . $job_listings_output . '</div>';

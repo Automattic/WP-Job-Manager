@@ -130,6 +130,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Changed content-no-jobs-found.php content to work for ajax and static lists of jobs. Tweaked text.
 * Tweak - job_manager_default_company_logo filter for changing default company image.
 * Tweak - Enhance multiselect field with chosen.
+* Dev - Abiltiy to pass shortcode args to submit_job_form shortcode.
 
 = 1.19.0 =
 * Feature - Added html5 required attribute to required fields.

@@ -54,13 +54,14 @@ class WP_Job_Manager_Forms {
 	 * get_form function.
 	 *
 	 * @access public
-	 * @param mixed $form_name
+	 * @param string $form_name
+	 * @param  array $atts Optional passed attributes
 	 * @return string
 	 */
-	public function get_form( $form_name ) {
+	public function get_form( $form_name, $atts = array() ) {
 		if ( $form = $this->load_form_class( $form_name ) ) {
 			ob_start();
-			call_user_func( array( $form, "output" ) );
+			call_user_func( array( $form, "output" ), $atts );
 			return ob_get_clean();
 		}
 	}

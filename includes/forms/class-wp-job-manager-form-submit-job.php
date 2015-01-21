@@ -467,13 +467,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	/**
 	 * output function. Call the view handler.
 	 */
-	public static function output() {
+	public static function output( $atts = array() ) {
 		$keys = array_keys( self::$steps );
 
 		self::show_errors();
 
 		if ( isset( $keys[ self::$step ] ) && is_callable( self::$steps[ $keys[ self::$step ] ]['view'] ) ) {
-			call_user_func( self::$steps[ $keys[ self::$step ] ]['view'] );
+			call_user_func( self::$steps[ $keys[ self::$step ] ]['view'], $atts );
 		}
 	}
 
