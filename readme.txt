@@ -120,6 +120,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 * Feature - Sortable location column in admin.
+* Fix - Pagination with default permalinks.
 * Fix - Correctly generate geolocation data when adding a post manually.
 * Fix - Chosen width when resizing the page.
 * Fix - Show no jobs when all types de-selected.
