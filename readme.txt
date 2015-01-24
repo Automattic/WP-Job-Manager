@@ -120,6 +120,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 * Feature - Sortable location column in admin.
+* Feature - Automatically Generate Username from Email Address option (disable to show a username field).
 * Fix - Pagination with default permalinks.
 * Fix - Correctly generate geolocation data when adding a post manually.
 * Fix - Chosen width when resizing the page.
@@ -133,6 +134,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Enhance multiselect field with chosen.
 * Dev - Abiltiy to pass shortcode args to submit_job_form shortcode.
 * Dev - Made get_job_manager_template_part() use locate_job_manager_template().
+* Dev - Changed how username/email/role are passed to wp_job_manager_create_account (backwards compat).
 
 = 1.19.0 =
 * Feature - Added html5 required attribute to required fields.

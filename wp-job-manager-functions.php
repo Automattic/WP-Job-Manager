@@ -306,41 +306,64 @@ if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
  * Handle account creation.
  *
- * @param  string $account_email
- * @param  string $role
+ * @param  array $args containing username, email, role
+ * @param  string $deprecated role string
  * @return WP_error | bool was an account created?
  */
-function wp_job_manager_create_account( $account_email, $role = '' ) {
-	global  $current_user;
+function wp_job_manager_create_account( $args, $deprecated = '' ) {
+	global $current_user;
 
-	$user_email = apply_filters( 'user_registration_email', sanitize_email( $account_email ) );
+	// Soft Deprecated in 1.20.0
+	if ( ! is_array( $args ) ) {
+		$username = '';
+		$password = wp_generate_password();
+		$email    = $args;
+		$role     = $deprecated;
+	} else {
+		$defaults = array(
+			'username' => '',
+			'email'    => '',
+			'password' => wp_generate_password(),
+			'role'     => get_option( 'default_role' )
+		);
 
-	if ( empty( $user_email ) )
-		return false;
+		$args = wp_parse_args( $args, $defaults );
+		extract( $args );
+	}
 
-	if ( ! is_email( $user_email ) )
+	$username = sanitize_user( $username );
+	$email    = apply_filters( 'user_registration_email', sanitize_email( $email ) );
+
+	if ( empty( $email ) ) {
+		return new WP_Error( 'validation-error', __( 'Invalid email address.', 'wp-job-manager' ) );
+	}
+
+	if ( empty( $username ) ) {
+		$username = sanitize_user( current( explode( '@', $email ) ) );
+	}
+
+	if ( ! is_email( $email ) ) {
 		return new WP_Error( 'validation-error', __( 'Your email address isn&#8217;t correct.', 'wp-job-manager' ) );
+	}
 
-	if ( email_exists( $user_email ) )
+	if ( email_exists( $email ) ) {
 		return new WP_Error( 'validation-error', __( 'This email is already registered, please choose another one.', 'wp-job-manager' ) );
-
-	// Email is good to go - use it to create a user name
-	$username = sanitize_user( current( explode( '@', $user_email ) ) );
-	$password = wp_generate_password();
+	}
 
 	// Ensure username is unique
 	$append     = 1;
 	$o_username = $username;
 
-	while( username_exists( $username ) ) {
+	while ( username_exists( $username ) ) {
 		$username = $o_username . $append;
 		$append ++;
 	}
 
-	// Final error check
+	// Final error checking
 	$reg_errors = new WP_Error();
-	do_action( 'job_manager_register_post', $username, $user_email, $reg_errors );
-	$reg_errors = apply_filters( 'job_manager_registration_errors', $reg_errors, $username, $user_email );
+	$reg_errors = apply_filters( 'job_manager_registration_errors', $reg_errors, $username, $email );
+
+	do_action( 'job_manager_register_post', $username, $email, $reg_errors );
 
 	if ( $reg_errors->get_error_code() ) {
 		return $reg_errors;
@@ -350,14 +373,15 @@ function wp_job_manager_create_account( $account_email, $role = '' ) {
 	$new_user = array(
 		'user_login' => $username,
 		'user_pass'  => $password,
-		'user_email' => $user_email,
-		'role'       => $role ? $role : get_option( 'default_role' )
+		'user_email' => $email,
+		'role'       => $role
     );
 
     $user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
 
-    if ( is_wp_error( $user_id ) )
+    if ( is_wp_error( $user_id ) ) {
     	return $user_id;
+    }
 
     // Notify
     wp_new_user_notification( $user_id, $password );
@@ -412,6 +436,15 @@ function job_manager_user_can_edit_job( $job_id ) {
  */
 function job_manager_enable_registration() {
 	return apply_filters( 'job_manager_enable_registration', get_option( 'job_manager_enable_registration' ) == 1 ? true : false );
+}
+
+/**
+ * True if usernames are generated from email addresses.
+ *
+ * @return bool
+ */
+function job_manager_generate_username_from_email() {
+	return apply_filters( 'job_manager_generate_username_from_email', get_option( 'job_manager_generate_username_from_email' ) == 1 ? true : false );
 }
 
 /**

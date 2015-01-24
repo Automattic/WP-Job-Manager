@@ -564,8 +564,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( ! is_user_logged_in() ) {
 				$create_account = false;
 
-				if ( job_manager_enable_registration() && ! empty( $_POST['create_account_email'] ) ) {
-					$create_account = wp_job_manager_create_account( $_POST['create_account_email'], get_option( 'job_manager_registration_role' ) );
+				if ( job_manager_enable_registration() ) {
+					if ( job_manager_user_requires_account() ) {
+						if ( ! job_manager_generate_username_from_email() && empty( $_POST['create_account_username'] ) ) {
+							throw new Exception( __( 'Please enter a username.', 'wp-job-manager' ) );
+						}
+						if ( empty( $_POST['create_account_email'] ) ) {
+							throw new Exception( __( 'Please enter your email address.', 'wp-job-manager' ) );
+						}
+					}
+					if ( ! empty( $_POST['create_account_email'] ) ) {
+						$create_account = wp_job_manager_create_account( array(
+							'username' => empty( $_POST['create_account_username'] ) ? '' : $_POST['create_account_username'],
+							'email'    => $_POST['create_account_email'],
+							'role'     => get_option( 'job_manager_registration_role' )
+						) );
+					}
 				}
 
 				if ( is_wp_error( $create_account ) ) {
