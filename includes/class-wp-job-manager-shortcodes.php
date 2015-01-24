@@ -206,7 +206,7 @@ class WP_Job_Manager_Shortcodes {
 			'categories'                => '',
 			'job_types'                 => '',
 			'featured'                  => null, // True to show only featured, false to hide featured, leave null to show both.
-			'show_featured_only'        => false, // Deprecated
+			'filled'                    => null, // True to show only filled, false to hide filled, leave null to show both/use the settings.
 
 			// Default values for filters
 			'location'                  => '',
@@ -222,15 +222,16 @@ class WP_Job_Manager_Shortcodes {
 		// String and bool handling
 		$show_filters              = $this->string_to_bool( $show_filters );
 		$show_categories           = $this->string_to_bool( $show_categories );
-		$show_featured_only        = $this->string_to_bool( $show_featured_only );
 		$show_category_multiselect = $this->string_to_bool( $show_category_multiselect );
 		$show_more                 = $this->string_to_bool( $show_more );
 		$show_pagination           = $this->string_to_bool( $show_pagination );
 
 		if ( ! is_null( $featured ) ) {
 			$featured = ( is_bool( $featured ) && $featured ) || in_array( $featured, array( '1', 'true', 'yes' ) ) ? true : false;
-		} elseif( $show_featured_only ) {
-			$featured = true;
+		}
+
+		if ( ! is_null( $filled ) ) {
+			$filled = ( is_bool( $filled ) && $filled ) || in_array( $filled, array( '1', 'true', 'yes' ) ) ? true : false;
 		}
 
 		// Array handling
@@ -270,7 +271,8 @@ class WP_Job_Manager_Shortcodes {
 				'orderby'           => $orderby,
 				'order'             => $order,
 				'posts_per_page'    => $per_page,
-				'featured'          => $featured
+				'featured'          => $featured,
+				'filled'            => $filled
 			) ) );
 
 			if ( $jobs->have_posts() ) : ?>
@@ -315,6 +317,9 @@ class WP_Job_Manager_Shortcodes {
 		);
 		if ( ! is_null( $featured ) ) {
 			$data_attributes[ 'featured' ] = $featured ? 'true' : 'false';
+		}
+		if ( ! is_null( $filled ) ) {
+			$data_attributes[ 'filled' ]   = $filled ? 'true' : 'false';
 		}
 		foreach ( $data_attributes as $key => $value ) {
 			$data_attributes_string .= 'data-' . esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';

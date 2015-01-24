@@ -12,6 +12,7 @@ jQuery( document ).ready( function ( $ ) {
 		var orderby  = target.data( 'orderby' );
 		var order    = target.data( 'order' );
 		var featured = target.data( 'featured' );
+		var filled   = target.data( 'filled' );
 		var index    = $( 'div.job_listings' ).index(this);
 
 		if ( xhr[index] ) {
@@ -61,6 +62,7 @@ jQuery( document ).ready( function ( $ ) {
 				order: order,
 				page: page,
 				featured: featured,
+				filled: filled,
 				show_pagination: target.data( 'show_pagination' ),
 				form_data: form.serialize()
 			};
@@ -85,6 +87,7 @@ jQuery( document ).ready( function ( $ ) {
 				order: order,
 				page: page,
 				featured: featured,
+				filled: filled,
 				show_pagination: target.data( 'show_pagination' ),
 			};
 

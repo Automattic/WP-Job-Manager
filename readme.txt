@@ -121,6 +121,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 * Feature - Sortable location column in admin.
 * Feature - Automatically Generate Username from Email Address option (disable to show a username field).
+* Feature - 'filled' option for job shortcode to show all filled/non filled jobs.
 * Fix - Pagination with default permalinks.
 * Fix - Correctly generate geolocation data when adding a post manually.
 * Fix - Chosen width when resizing the page.

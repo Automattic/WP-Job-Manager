@@ -18,7 +18,8 @@ function get_job_listings( $args = array() ) {
 		'posts_per_page'    => '-1',
 		'orderby'           => 'date',
 		'order'             => 'DESC',
-		'featured'          => null
+		'featured'          => null,
+		'filled'            => null
 	) );
 
 	$query_args = array(
@@ -52,19 +53,25 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
-	if ( get_option( 'job_manager_hide_filled_positions' ) == 1 ) {
-		$query_args['meta_query'][] = array(
-			'key'     => '_filled',
-			'value'   => '1',
-			'compare' => '!='
-		);
-	}
-
 	if ( ! is_null( $args['featured'] ) ) {
 		$query_args['meta_query'][] = array(
 			'key'     => '_featured',
 			'value'   => '1',
 			'compare' => $args['featured'] ? '=' : '!='
+		);
+	}
+
+	if ( ! is_null( $args['filled'] ) ) {
+		$query_args['meta_query'][] = array(
+			'key'     => '_filled',
+			'value'   => '1',
+			'compare' => $args['filled'] ? '=' : '!='
+		);
+	} elseif ( get_option( 'job_manager_hide_filled_positions' ) == 1 ) {
+		$query_args['meta_query'][] = array(
+			'key'     => '_filled',
+			'value'   => '1',
+			'compare' => '!='
 		);
 	}
 
