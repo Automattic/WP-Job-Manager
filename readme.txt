@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.19.0
+Stable tag: 1.20.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -119,6 +119,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.20.0 =
 * Feature - Sortable location column in admin.
 * Feature - Automatically Generate Username from Email Address option (disable to show a username field).
 * Feature - 'filled' option for job shortcode to show all filled/non filled jobs.
