@@ -484,6 +484,7 @@ ul.job_listings {
 	.application {
 		padding: 0;
 		margin: 0 0 1em;
+		overflow: hidden;
 
 		.application_button, .application_details {
 			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -494,8 +495,8 @@ ul.job_listings {
 			text-align: center;
 			font-size: 1.1em;
 			line-height: 1em;
-			float: left;
-			margin: 0 .5em 20px 0;
+			display: inline-block;
+			margin: 0 .5em 0 0;
 			padding: 1/1.1em 2em;
 			outline: 0;
 		}
@@ -503,7 +504,7 @@ ul.job_listings {
 			clear: both;
 			border: 1px solid #eee;
 			padding: .75em 1em 0;
-			margin: 0;
+			margin: 1em 0;
 			line-height: 1.5em;
 			display: block;
 			position: relative;
