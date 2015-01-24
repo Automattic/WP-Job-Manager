@@ -113,7 +113,7 @@ class WP_Job_Manager_Settings {
 						array(
 							'name'       => 'job_manager_generate_username_from_email',
 							'std'        => '1',
-							'label'      => __( 'Username Generation', 'wp-job-manager' ),
+							'label'      => __( 'Account Username', 'wp-job-manager' ),
 							'cb_label'   => __( 'Automatically Generate Username from Email Address', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled, a username will be generated from the first part of the user email address. Otherwise, a username field will be shown.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
@@ -130,8 +130,8 @@ class WP_Job_Manager_Settings {
 						array(
 							'name'       => 'job_manager_submission_requires_approval',
 							'std'        => '1',
-							'label'      => __( 'Approval Required', 'wp-job-manager' ),
-							'cb_label'   => __( 'New submissions require admin approval', 'wp-job-manager' ),
+							'label'      => __( 'Moderate New Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'New listing submissions require admin approval', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled, new submissions will be inactive, pending admin approval.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
