@@ -511,7 +511,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			self::$fields = apply_filters( 'submit_job_form_fields_get_job_data', self::$fields, $job );
 
 		// Get user meta
-		} elseif ( is_user_logged_in() && empty( $_POST ) ) {
+		} elseif ( is_user_logged_in() && empty( $_POST['submit_job'] ) ) {
 			if ( ! empty( self::$fields['company'] ) ) {
 				foreach ( self::$fields['company'] as $key => $field ) {
 					self::$fields['company'][ $key ]['value'] = get_user_meta( get_current_user_id(), '_' . $key, true );
