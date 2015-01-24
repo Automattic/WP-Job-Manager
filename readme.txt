@@ -132,6 +132,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - job_manager_default_company_logo filter for changing default company image.
 * Tweak - Enhance multiselect field with chosen.
 * Dev - Abiltiy to pass shortcode args to submit_job_form shortcode.
+* Dev - Made get_job_manager_template_part() use locate_job_manager_template().
 
 = 1.19.0 =
 * Feature - Added html5 required attribute to required fields.
