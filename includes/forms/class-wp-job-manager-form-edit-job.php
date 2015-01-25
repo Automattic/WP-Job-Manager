@@ -22,11 +22,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 	/**
 	 * output function.
-	 *
-	 * @access public
-	 * @return void
 	 */
-	public static function output() {
+	public static function output( $atts = array() ) {
 		self::submit_handler();
 		self::submit();
 	}
