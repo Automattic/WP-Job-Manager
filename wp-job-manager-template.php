@@ -19,7 +19,7 @@
  * @param string $default_path (default: '')
  * @return void
  */
-function get_job_manager_template( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
+function get_job_manager_template( $template_name, $args = array(), $template_path = 'job_manager', $default_path = '' ) {
 	if ( $args && is_array( $args ) ) {
 		extract( $args );
 	}
