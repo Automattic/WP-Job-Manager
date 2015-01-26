@@ -1,14 +1,15 @@
 # Copyright (C) 2015 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# Edward M.F. Ho <mf.ho92@gmail.com>, 2015
 # kakadong <kakadong@kakadong.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
 "POT-Creation-Date: 2015-01-24 13:48:39+00:00\n"
-"PO-Revision-Date: 2015-01-24 13:49+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2015-01-25 18:11+0000\n"
+"Last-Translator: Edward M.F. Ho <mf.ho92@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/wp-job-manager/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,12 +39,12 @@ msgstr "附加元件"
 #: includes/admin/class-wp-job-manager-cpt.php:48
 #: includes/admin/class-wp-job-manager-cpt.php:49
 msgid "Approve %s"
-msgstr ""
+msgstr "批准 %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:51
 #: includes/admin/class-wp-job-manager-cpt.php:52
 msgid "Expire %s"
-msgstr ""
+msgstr "過期  %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:140
 #: includes/admin/class-wp-job-manager-cpt.php:142
@@ -57,16 +58,16 @@ msgstr "%s 已過期"
 
 #: includes/admin/class-wp-job-manager-cpt.php:194
 msgid "Select category"
-msgstr ""
+msgstr "選擇分類"
 
 #: includes/admin/class-wp-job-manager-cpt.php:209
 #: includes/admin/class-wp-job-manager-cpt.php:255
 msgid "Position"
-msgstr "位置"
+msgstr "空缺"
 
 #: includes/admin/class-wp-job-manager-cpt.php:225
 msgid "%s updated. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr " %s 已更新。<a href=\"%s\">查看</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:226
 msgid "Custom field updated."
@@ -78,29 +79,29 @@ msgstr "自定欄位刪除。"
 
 #: includes/admin/class-wp-job-manager-cpt.php:228
 msgid "%s updated."
-msgstr ""
+msgstr "已更新。"
 
 #: includes/admin/class-wp-job-manager-cpt.php:229
 msgid "%s restored to revision from %s"
-msgstr ""
+msgstr "%s 回復到預設 %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:230
 msgid "%s published. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s 已發布。 <a href=\"%s\">查看</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:231
 msgid "%s saved."
-msgstr ""
+msgstr "%s 已儲存。"
 
 #: includes/admin/class-wp-job-manager-cpt.php:232
 msgid "%s submitted. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "%s 已發出。 <a target=\"_blank\" href=\"%s\">預覽</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:233
 msgid ""
 "%s scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
 "href=\"%2$s\">Preview</a>"
-msgstr ""
+msgstr "排程於：<strong>%1$s</strong>的工作列表. <a target=\"_blank\" href=\"%2$s\">預覽工作</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:234
 msgid "M j, Y @ G:i"
@@ -108,7 +109,7 @@ msgstr "Y年m月j日＠G點i分"
 
 #: includes/admin/class-wp-job-manager-cpt.php:235
 msgid "%s draft updated. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "工作列表草稿已更新。<a target=\"_blank\" href=\"%s\">檢視工作</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:254
 msgid "Type"
@@ -120,7 +121,7 @@ msgstr "種類"
 #: includes/forms/class-wp-job-manager-form-submit-job.php:138
 #: templates/job-filters.php:17 templates/job-filters.php:18
 msgid "Location"
-msgstr "位置"
+msgstr "工作地點"
 
 #: includes/admin/class-wp-job-manager-cpt.php:257
 msgid "Posted"
@@ -137,12 +138,12 @@ msgstr "分類"
 
 #: includes/admin/class-wp-job-manager-cpt.php:260
 msgid "Featured?"
-msgstr "特色？"
+msgstr "置頂？"
 
 #: includes/admin/class-wp-job-manager-cpt.php:261
 #: includes/class-wp-job-manager-shortcodes.php:164
 msgid "Filled?"
-msgstr "已完成？"
+msgstr "已聘用員工？"
 
 #: includes/admin/class-wp-job-manager-cpt.php:262
 msgid "Status"
@@ -196,15 +197,15 @@ msgstr "工作列表"
 
 #: includes/admin/class-wp-job-manager-settings.php:48
 msgid "Listings Per Page"
-msgstr ""
+msgstr "每頁工作數"
 
 #: includes/admin/class-wp-job-manager-settings.php:49
 msgid "How many listings should be shown per page by default?"
-msgstr ""
+msgstr "你想每頁顯示多少工作？"
 
 #: includes/admin/class-wp-job-manager-settings.php:55
 msgid "Filled Positions"
-msgstr ""
+msgstr "已經聘用員工"
 
 #: includes/admin/class-wp-job-manager-settings.php:56
 msgid "Hide filled positions"
@@ -212,7 +213,7 @@ msgstr "隱藏已填的位置"
 
 #: includes/admin/class-wp-job-manager-settings.php:57
 msgid "If enabled, filled positions will be hidden."
-msgstr ""
+msgstr "如啟用這項功能，而聘用之工作將會被隱藏。"
 
 #: includes/admin/class-wp-job-manager-settings.php:64
 msgid "Job Categories"
@@ -220,17 +221,17 @@ msgstr "工作分類"
 
 #: includes/admin/class-wp-job-manager-settings.php:65
 msgid "Enable categories for listings"
-msgstr ""
+msgstr "啟用工作分類"
 
 #: includes/admin/class-wp-job-manager-settings.php:66
 msgid ""
 "Choose whether to enable categories. Categories must be setup by an admin to"
 " allow users to choose them during submission."
-msgstr ""
+msgstr "選擇是否啟用工作分類。分類必須由管理員設定。當使用者要發表一個工作時，可以讓使用者門選取工作的分類。"
 
 #: includes/admin/class-wp-job-manager-settings.php:73
 msgid "Multi-select Categories"
-msgstr ""
+msgstr "選擇分類"
 
 #: includes/admin/class-wp-job-manager-settings.php:74
 msgid "Enable category multiselect by default"
@@ -261,21 +262,21 @@ msgstr "工作送出"
 
 #: includes/admin/class-wp-job-manager-settings.php:98
 msgid "Account Required"
-msgstr ""
+msgstr "請先登入"
 
 #: includes/admin/class-wp-job-manager-settings.php:99
 msgid "Submitting listings requires an account"
-msgstr ""
+msgstr "你需要登入後才能提供工作。"
 
 #: includes/admin/class-wp-job-manager-settings.php:100
 msgid ""
 "If disabled, non-logged in users will be able to submit listings without "
 "creating an account."
-msgstr ""
+msgstr "若停用此功能，未登入用戶將可隨意提供工作。 "
 
 #: includes/admin/class-wp-job-manager-settings.php:107
 msgid "Account Creation"
-msgstr ""
+msgstr "建立帳戶"
 
 #: includes/admin/class-wp-job-manager-settings.php:108
 msgid "Allow account creation"
@@ -285,15 +286,15 @@ msgstr "允許建立帳號"
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the submission form."
-msgstr ""
+msgstr "若啟用此功能，未登入用戶將能夠用電郵地址認證，並隨意提供工作招聘。 "
 
 #: includes/admin/class-wp-job-manager-settings.php:116
 msgid "Username Generation"
-msgstr ""
+msgstr "建立用戶名稱"
 
 #: includes/admin/class-wp-job-manager-settings.php:117
 msgid "Automatically Generate Username from Email Address"
-msgstr ""
+msgstr "自動將電郵用作用戶名稱"
 
 #: includes/admin/class-wp-job-manager-settings.php:118
 msgid ""
@@ -338,7 +339,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:151
 msgid "Listing Duration"
-msgstr ""
+msgstr "工作列出時間"
 
 #: includes/admin/class-wp-job-manager-settings.php:152
 msgid ""
@@ -348,11 +349,11 @@ msgstr "列表中的工作可以存在多少<strong>天</strong>？留空將永�
 
 #: includes/admin/class-wp-job-manager-settings.php:158
 msgid "Application Method"
-msgstr ""
+msgstr "申請辦法"
 
 #: includes/admin/class-wp-job-manager-settings.php:159
 msgid "Choose the contact method for listings."
-msgstr ""
+msgstr "選擇聯繫方式"
 
 #: includes/admin/class-wp-job-manager-settings.php:162
 msgid "Email address or website URL"
@@ -368,11 +369,11 @@ msgstr "只有網站網址"
 
 #: includes/admin/class-wp-job-manager-settings.php:170
 msgid "Pages"
-msgstr ""
+msgstr "頁"
 
 #: includes/admin/class-wp-job-manager-settings.php:175
 msgid "Submit Job Form Page"
-msgstr ""
+msgstr "提供工作表格"
 
 #: includes/admin/class-wp-job-manager-settings.php:176
 msgid ""
@@ -382,7 +383,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:182
 msgid "Job Dashboard Page"
-msgstr ""
+msgstr "工作列表一覽"
 
 #: includes/admin/class-wp-job-manager-settings.php:183
 msgid ""
@@ -426,23 +427,23 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:131
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. 簡介"
 
 #: includes/admin/class-wp-job-manager-setup.php:132
 msgid "2. Page Setup"
-msgstr ""
+msgstr "2. 設定頁面"
 
 #: includes/admin/class-wp-job-manager-setup.php:133
 msgid "3. Done"
-msgstr ""
+msgstr "3. 完成"
 
 #: includes/admin/class-wp-job-manager-setup.php:138
 msgid "Setup Wizard Introduction"
-msgstr ""
+msgstr "安裝精靈簡介"
 
 #: includes/admin/class-wp-job-manager-setup.php:140
 msgid "Thanks for installing <em>WP Job Manager</em>!"
-msgstr ""
+msgstr "多謝你安裝 <em> 工作列表 </em> ！"
 
 #: includes/admin/class-wp-job-manager-setup.php:141
 msgid ""
