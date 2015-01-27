@@ -30,7 +30,7 @@ jQuery( document ).ready( function ( $ ) {
 
 			var filter_job_type = [];
 
-			$( ':input[name="filter_job_type[]"]:checked, :input[name="filter_job_type[]"][type="hidden"]', form ).each( function () {
+			$( ':input[name="filter_job_type[]"]:checked, :input[name="filter_job_type[]"][type="hidden"], :input[name="filter_job_type"]', form ).each( function () {
 				filter_job_type.push( $( this ).val() );
 			} );
 
@@ -160,9 +160,8 @@ jQuery( document ).ready( function ( $ ) {
 		} );
 	} );
 
-	$( '#search_keywords, #search_location, .job_types input, #search_categories' ).change( function () {
+	$( '#search_keywords, #search_location, .job_types :input, #search_categories' ).change( function () {
 		var target = $( this ).closest( 'div.job_listings' );
-
 		target.triggerHandler( 'update_results', [ 1, false ] );
 	} )
 
@@ -173,7 +172,7 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	$( '.job_filters' ).each(function() {
-		$( this ).find( '#search_keywords, #search_location, .job_types input, #search_categories' ).eq(0).change();
+		$( this ).find( '#search_keywords, #search_location, .job_types :input, #search_categories' ).eq(0).change();
 	});
 
 	$( '.job_filters' ).on( 'click', '.reset', function () {
