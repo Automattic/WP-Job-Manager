@@ -98,7 +98,7 @@ class WP_Job_Manager {
 	 */
 	public function frontend_scripts() {
 		$ajax_url         = admin_url( 'admin-ajax.php', 'relative' );
-		$ajax_filter_deps = array( 'jquery', 'jquery-bbq' );
+		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
 
 		// WPML workaround until this is standardized
 		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
@@ -113,7 +113,7 @@ class WP_Job_Manager {
 			$ajax_filter_deps[] = 'chosen';
 		}
 
-		wp_register_script( 'jquery-bbq', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-bbq/jquery.ba-bbq.min.js', array( 'jquery' ), '1.3', true );
+		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-deserialize/jquery.deserialize.js', array( 'jquery' ), '1.2.1', true );
 		wp_register_script( 'wp-job-manager-ajax-filters', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.min.js', $ajax_filter_deps, JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-dashboard', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-dashboard.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-application', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-application.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
