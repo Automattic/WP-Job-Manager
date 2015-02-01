@@ -22,10 +22,10 @@ class WP_Job_Manager_Ajax {
 		global $wp_post_types;
 
 		$result            = array();
-		$search_location   = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
-		$search_keywords   = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
-		$search_categories = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
-		$filter_job_types  = isset( $_POST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_POST['filter_job_type'] ) ) : null;
+		$search_location   = sanitize_text_field( stripslashes( $_REQUEST['search_location'] ) );
+		$search_keywords   = sanitize_text_field( stripslashes( $_REQUEST['search_keywords'] ) );
+		$search_categories = isset( $_REQUEST['search_categories'] ) ? $_REQUEST['search_categories'] : '';
+		$filter_job_types  = isset( $_REQUEST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_REQUEST['filter_job_type'] ) ) : null;
 		$types             = get_job_listing_types();
 		$post_type_label   = $wp_post_types['job_listing']->labels->name;
 
@@ -40,18 +40,18 @@ class WP_Job_Manager_Ajax {
 			'search_keywords'    => $search_keywords,
 			'search_categories'  => $search_categories,
 			'job_types'          => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
-			'orderby'            => sanitize_text_field( $_POST['orderby'] ),
-			'order'              => sanitize_text_field( $_POST['order'] ),
-			'offset'             => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
-			'posts_per_page'     => absint( $_POST['per_page'] )
+			'orderby'            => sanitize_text_field( $_REQUEST['orderby'] ),
+			'order'              => sanitize_text_field( $_REQUEST['order'] ),
+			'offset'             => ( absint( $_REQUEST['page'] ) - 1 ) * absint( $_REQUEST['per_page'] ),
+			'posts_per_page'     => absint( $_REQUEST['per_page'] )
 		);
 
-		if ( isset( $_POST['featured'] ) && ( $_POST['featured'] === 'true' || $_POST['featured'] === 'false' ) ) {
-			$args['featured'] = $_POST['featured'] === 'true' ? true : false;
+		if ( isset( $_REQUEST['featured'] ) && ( $_REQUEST['featured'] === 'true' || $_REQUEST['featured'] === 'false' ) ) {
+			$args['featured'] = $_REQUEST['featured'] === 'true' ? true : false;
 		}
 
-		if ( isset( $_POST['filled'] ) && ( $_POST['filled'] === 'true' || $_POST['filled'] === 'false' ) ) {
-			$args['filled'] = $_POST['filled'] === 'true' ? true : false;
+		if ( isset( $_REQUEST['filled'] ) && ( $_REQUEST['filled'] === 'true' || $_REQUEST['filled'] === 'false' ) ) {
+			$args['filled'] = $_REQUEST['filled'] === 'true' ? true : false;
 		}
 
 		ob_start();
@@ -135,8 +135,8 @@ class WP_Job_Manager_Ajax {
 		) );
 
 		// Generate pagination
-		if ( isset( $_POST['show_pagination'] ) && $_POST['show_pagination'] === 'true' ) {
-			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_POST['page'] ) );
+		if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
+			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
 		}
 
 		$result['max_num_pages'] = $jobs->max_num_pages;
