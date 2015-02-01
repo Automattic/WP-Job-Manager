@@ -1,29 +1,45 @@
 jQuery( document ).ready( function ( $ ) {
 
+	if ( window.history && window.history.pushState ) {
+		$supports_html5_history = true;
+	} else {
+		$supports_html5_history = false;
+	}
+
 	var xhr = [];
 
 	$( '.job_listings' ).on( 'update_results', function ( event, page, append ) {
-		var data     = '';
-		var target   = $( this );
-		var form     = target.find( '.job_filters' );
-		var showing  = target.find( '.showing_jobs' );
-		var results  = target.find( '.job_listings' );
-		var per_page = target.data( 'per_page' );
-		var orderby  = target.data( 'orderby' );
-		var order    = target.data( 'order' );
-		var featured = target.data( 'featured' );
-		var filled   = target.data( 'filled' );
-		var index    = $( 'div.job_listings' ).index(this);
+		var data         = '';
+		var target       = $( this );
+		var form         = target.find( '.job_filters' );
+		var showing      = target.find( '.showing_jobs' );
+		var results      = target.find( '.job_listings' );
+		var per_page     = target.data( 'per_page' );
+		var orderby      = target.data( 'orderby' );
+		var order        = target.data( 'order' );
+		var featured     = target.data( 'featured' );
+		var filled       = target.data( 'filled' );
+		var index        = $( 'div.job_listings' ).index(this);
+		var current_page = target.data( 'current_page' );
 
 		if ( xhr[index] ) {
 			xhr[index].abort();
 		}
 
-		if ( append ) {
-			$( '.load_more_jobs', target ).addClass( 'loading' );
-		} else {
+		if ( page > current_page ) {
+			current_page = page;
+			target.data( 'current_page', current_page );
+		}
+
+		if ( ! append ) {
 			$( results ).addClass( 'loading' );
 			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
+
+			// Not appending. If page > 1, we should show a load previous button so the user can get to earlier-page listings if needed
+			if ( page > 1 && true != target.data( 'show_pagination' ) ) {
+				$( results ).before( '<a class="load_more_jobs load_previous" href="#"><strong>' + job_manager_ajax_filters.i18n_load_prev_listings + '</strong></a>' );
+				target.find( '.load_more_jobs' ).data( 'page', page );
+			}
 		}
 
 		if ( true == target.data( 'show_filters' ) ) {
@@ -125,7 +141,9 @@ jQuery( document ).ready( function ( $ ) {
 						}
 
 						if ( result.html ) {
-							if ( append ) {
+							if ( append === 'prepend' ) {
+								$( results ).prepend( result.html );
+							} else if ( append ) {
 								$( results ).append( result.html );
 							} else {
 								$( results ).html( result.html );
@@ -139,10 +157,10 @@ jQuery( document ).ready( function ( $ ) {
 								target.append( result.pagination );
 							}
 						} else {
-							if ( ! result.found_jobs || result.max_num_pages === page ) {
-								$( '.load_more_jobs', target ).hide();
-							} else {
-								$( '.load_more_jobs', target ).show().data( 'page', page );
+							if ( ! result.found_jobs || result.max_num_pages == page ) {
+								$( '.load_more_jobs:not(.load_previous)', target ).hide();
+							} else if ( page > current_page ) {
+								$( '.load_more_jobs', target ).show();
 							}
 							$( '.load_more_jobs', target ).removeClass( 'loading' );
 							$( 'li.job_listing', results ).css( 'visibility', 'visible' );
@@ -160,8 +178,8 @@ jQuery( document ).ready( function ( $ ) {
 		} );
 	} );
 
-	$( '#search_keywords, #search_location, .job_types :input, #search_categories' ).change( function () {
-		var target = $( this ).closest( 'div.job_listings' );
+	$( '#search_keywords, #search_location, .job_types :input, #search_categories' ).change( function() {
+		var target   = $( this ).closest( 'div.job_listings' );
 		target.triggerHandler( 'update_results', [ 1, false ] );
 	} )
 
@@ -170,10 +188,6 @@ jQuery( document ).ready( function ( $ ) {
 	        $( this ).trigger( 'change' );
 	    }
 	} );
-
-	$( '.job_filters' ).each(function() {
-		$( this ).find( '#search_keywords, #search_location, .job_types :input, #search_categories' ).eq(0).change();
-	});
 
 	$( '.job_filters' ).on( 'click', '.reset', function () {
 		var target = $( this ).closest( 'div.job_listings' );
@@ -190,26 +204,41 @@ jQuery( document ).ready( function ( $ ) {
 		return false;
 	} );
 
-	$( '.load_more_jobs' ).click( function () {
+	$( 'body' ).on( 'click', '.load_more_jobs', function() {
 		var target = $( this ).closest( 'div.job_listings' );
-		var page = $( this ).data( 'page' );
+		var page   = parseInt( $( this ).data( 'page' ) || 1 );
+		var append = 'append';
 
-		if ( !page ) {
-			page = 1;
+		$(this).addClass( 'loading' );
+
+		if ( $(this).is('.load_previous') ) {
+			page   = page - 1;
+			append = 'prepend';
+			if ( page === 1 ) {
+				$(this).remove();
+			} else {
+				$( this ).data( 'page', page );
+			}
 		} else {
-			page = parseInt( page );
+			page = page + 1;
+			$( this ).data( 'page', page );
+
+			if ( $supports_html5_history ) {
+				history.replaceState( { id: 'job_manager_page' }, '', $.param.fragment( document.URL, 'p=' + page ) );
+			}
 		}
 
-		$( this ).data( 'page', ( page + 1 ) );
-
-		target.triggerHandler( 'update_results', [ page + 1, true ] );
-
+		target.triggerHandler( 'update_results', [ page, append ] );
 		return false;
 	} );
 
 	$( 'div.job_listings' ).on( 'click', '.job-manager-pagination a', function() {
 		var target = $( this ).closest( 'div.job_listings' );
 		var page   = $( this ).data( 'page' );
+
+		if ( $supports_html5_history ) {
+			history.replaceState( { id: 'job_manager_page' }, '', $.param.fragment( document.URL, 'p=' + page ) );
+		}
 
 		target.triggerHandler( 'update_results', [ page, false ] );
 
@@ -222,4 +251,23 @@ jQuery( document ).ready( function ( $ ) {
 		}
 		$( 'select[name^="search_categories"]' ).chosen({ search_contains: true });
 	}
+
+	// If we are have a fragment after page load, the back button may have been used.
+	// Lets put the user on the page they were on, and show at most 20 listings before this page.
+	// We do not want to load the full results up to that page because of performance.
+	var inital_page = 1;
+
+	if ( $supports_html5_history ) {
+		var fragments = $.deparam.fragment();
+
+		if ( fragments.p ) {
+			inital_page = fragments.p;
+		}
+	}
+
+	// Inital job population
+	$( '.job_filters' ).each( function() {
+		var target = $( this ).closest( 'div.job_listings' );
+		target.triggerHandler( 'update_results', [ inital_page, false ] );
+	});
 } );
