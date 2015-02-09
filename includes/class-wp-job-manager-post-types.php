@@ -425,9 +425,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// See if it is already set
-		$expires  = get_post_meta( $post->ID, '_job_expires', true );
-
-		if ( ! empty( $expires ) ) {
+		if ( metadata_exists( 'post', $post->ID, '_job_expires' ) ) {
 			return;
 		}
 
@@ -435,16 +433,18 @@ class WP_Job_Manager_Post_Types {
 		$duration = get_post_meta( $post->ID, '_job_duration', true );
 
 		// ...otherwise use the global option
-		if ( ! $duration )
+		if ( ! $duration ) {
 			$duration = absint( get_option( 'job_manager_submission_duration' ) );
+		}
 
 		if ( $duration ) {
 			$expires = date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
 			update_post_meta( $post->ID, '_job_expires', $expires );
 
 			// In case we are saving a post, ensure post data is updated so the field is not overridden
-			if ( isset( $_POST[ '_job_expires' ] ) )
+			if ( isset( $_POST[ '_job_expires' ] ) ) {
 				$_POST[ '_job_expires' ] = $expires;
+			}
 
 		} else {
 			update_post_meta( $post->ID, '_job_expires', '' );
