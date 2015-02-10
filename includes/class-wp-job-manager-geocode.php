@@ -169,6 +169,7 @@ class WP_Job_Manager_Geocode {
 
 		if ( ! empty( $geocoded_address->results[0]->address_components ) ) {
 			$address_data             = $geocoded_address->results[0]->address_components;
+			$address['street_number'] = false;
 			$address['street']        = false;
 			$address['city']          = false;
 			$address['state_short']   = false;
@@ -180,15 +181,10 @@ class WP_Job_Manager_Geocode {
 			foreach ( $address_data as $data ) {
 				switch ( $data->types[0] ) {
 					case 'street_number' :
-						$address['street']        = sanitize_text_field( $data->long_name );
+						$address['street_number'] = sanitize_text_field( $data->long_name );
 					break;
 					case 'route' :
-						$route = sanitize_text_field( $data->long_name );
-
-						if ( ! empty( $address['street'] ) )
-							$address['street'] = $address['street'] . ' ' . $route;
-						else
-							$address['street'] = $route;
+						$address['street']        = sanitize_text_field( $data->long_name );
 					break;
 					case 'sublocality_level_1' :
 					case 'locality' :
