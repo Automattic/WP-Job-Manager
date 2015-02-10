@@ -26,6 +26,7 @@ class WP_Job_Manager_Shortcodes {
 		add_shortcode( 'jobs', array( $this, 'output_jobs' ) );
 		add_shortcode( 'job', array( $this, 'output_job' ) );
 		add_shortcode( 'job_summary', array( $this, 'output_job_summary' ) );
+		add_shortcode( 'job_apply', array( $this, 'output_job_apply' ) );
 	}
 
 	/**
@@ -454,6 +455,49 @@ class WP_Job_Manager_Shortcodes {
 
 					<?php get_job_manager_template_part( 'content-summary', 'job_listing' ); ?>
 
+				</div>
+
+			<?php endwhile; ?>
+
+		<?php endif;
+
+		wp_reset_postdata();
+
+		return ob_get_clean();
+	}
+
+	/**
+	 * Show the application area
+	 */
+	public function output_job_apply( $atts ) {
+		extract( shortcode_atts( array(
+			'id'       => ''
+		), $atts ) );
+
+		ob_start();
+
+		$args = array(
+			'post_type'   => 'job_listing',
+			'post_status' => 'publish'
+		);
+
+		if ( ! $id ) {
+			return '';
+		} else {
+			$args['p'] = absint( $id );
+		}
+
+		$jobs = new WP_Query( $args );
+
+		if ( $jobs->have_posts() ) : ?>
+
+			<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
+
+				<div class="job-manager-application-wrapper">
+					<?php
+						$apply = get_the_job_application_method();
+						do_action( 'job_manager_application_details_' . $apply->type, $apply );
+					?>
 				</div>
 
 			<?php endwhile; ?>
