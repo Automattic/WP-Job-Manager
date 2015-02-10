@@ -48,6 +48,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
+		// Allow resuming from cookie.
+		if ( ! self::$job_id && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
+			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
+			$job_status = get_post_status( $job_id );
+
+			if ( 'preview' === $job_status && get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key'] ) {
+				self::$job_id = $job_id;
+			}
+		}
+
+		// Load job details
 		if ( self::$job_id ) {
 			$job_status = get_post_status( self::$job_id );
 			if ( 'expired' === $job_status ) {
@@ -484,7 +495,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		self::init_fields();
 
 		// Load data if neccessary
-		if ( ! empty( $_POST['edit_job'] ) && self::$job_id ) {
+		if ( self::$job_id ) {
 			$job = get_post( self::$job_id );
 			foreach ( self::$fields as $group_key => $group_fields ) {
 				foreach ( $group_fields as $key => $field ) {
@@ -654,6 +665,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			wp_update_post( $job_data );
 		} else {
 			self::$job_id = wp_insert_post( $job_data );
+
+			if ( ! headers_sent() ) {
+				$submitting_key = uniqid();
+
+				setcookie( 'wp-job-manager-submitting-job-id', self::$job_id, false, COOKIEPATH, COOKIE_DOMAIN, false );
+				setcookie( 'wp-job-manager-submitting-job-key', $submitting_key, false, COOKIEPATH, COOKIE_DOMAIN, false );
+
+				update_post_meta( self::$job_id, '_submitting_key', $submitting_key );
+			}
 		}
 	}
 
