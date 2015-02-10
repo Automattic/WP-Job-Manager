@@ -123,6 +123,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Feature - job_apply shortcode to show application area in other places on your site.
 * Fix - Prevent attachments being uploaded several times.
 * Tweak - Geocode street and street number separately.
+* Tweak - File upload field markup.
 
 = 1.21.0 =
 * Feature - Ajax loading history - back button will take you back to current position in the search. If you are on > page 1, a 'load previous' button will be shown so you can paginate either way.

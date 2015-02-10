@@ -162,22 +162,24 @@
 		.job-manager-uploaded-files {
 			display: table;
 			.job-manager-uploaded-file {
-				line-height: 1.5em;
+				line-height: 2em;
 				font-style: italic;
-				display: table-row;
+				margin-bottom: 1em;
+				display: block;
 				.job-manager-uploaded-file-preview {
-					display: table-cell;
-					vertical-align: middle;
-					padding: .5em 0 .5em 0;
 					img {
 						height: 64px;
 						margin: 0;
+						vertical-align: top;
+					}
+					a {
+						line-height: 64px;
+						display: inline-block;
+						padding: 0 0 0 1em;
 					}
 				}
 				.job-manager-uploaded-file-name {
-					display: table-cell;
-					vertical-align: middle;
-					padding: .5em 0 .5em 1em;
+					display: block;
 				}
 			}
 		}
