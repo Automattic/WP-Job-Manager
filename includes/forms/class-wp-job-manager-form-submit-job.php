@@ -714,7 +714,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			// Loop attachments already attached to the job
 			foreach ( $attachments as $attachment_key => $attachment ) {
-				$attachment_urls[] = wp_get_attachment_url( $attachment );
+				$attachment_urls[] = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, wp_get_attachment_url( $attachment ) );
 			}
 
 			foreach ( $maybe_attach as $attachment_url ) {
