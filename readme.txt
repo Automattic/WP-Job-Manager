@@ -121,6 +121,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 * Feature - Cookie set when submitting a job to allow resuming if you leave the page.
 * Feature - job_apply shortcode to show application area in other places on your site.
+* Feature - Allow admin fields to be priority sorted.
 * Fix - Prevent attachments being uploaded several times.
 * Tweak - Geocode street and street number separately.
 * Tweak - File upload field markup.
