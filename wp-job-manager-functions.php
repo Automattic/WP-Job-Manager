@@ -7,7 +7,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
  * @return void
  */
 function get_job_listings( $args = array() ) {
-	global $wpdb;
+	global $wpdb, $job_manager_keyword;
 
 	$args = wp_parse_args( $args, array(
 		'search_location'   => '',
@@ -23,34 +23,35 @@ function get_job_listings( $args = array() ) {
 	) );
 
 	$query_args = array(
-		'post_type'           => 'job_listing',
-		'post_status'         => 'publish',
-		'ignore_sticky_posts' => 1,
-		'offset'              => absint( $args['offset'] ),
-		'posts_per_page'      => intval( $args['posts_per_page'] ),
-		'orderby'             => $args['orderby'],
-		'order'               => $args['order'],
-		'tax_query'           => array(),
-		'meta_query'          => array()
+		'post_type'              => 'job_listing',
+		'post_status'            => 'publish',
+		'ignore_sticky_posts'    => 1,
+		'offset'                 => absint( $args['offset'] ),
+		'posts_per_page'         => intval( $args['posts_per_page'] ),
+		'orderby'                => $args['orderby'],
+		'order'                  => $args['order'],
+		'tax_query'              => array(),
+		'meta_query'             => array(),
+		'update_post_term_cache' => false,
+		'update_post_meta_cache' => false
 	);
 
-	if ( ! empty( $args['job_types'] ) ) {
-		$query_args['tax_query'][] = array(
-			'taxonomy' => 'job_listing_type',
-			'field'    => 'slug',
-			'terms'    => $args['job_types']
-		);
+	if ( ! empty( $args['search_location'] ) ) {
+		$location_meta_keys = array( 'geolocation_country_short', 'geolocation_formatted_address', 'geolocation_state_short', '_job_location' );
+		$location_search    = array( 'relation' => 'OR' );
+		foreach ( $location_meta_keys as $meta_key ) {
+			$location_search[] = array(
+				'key'     => $meta_key,
+				'value'   => $args['search_location'],
+				'compare' => 'like'
+			);
+		}
+		$query_args['meta_query'][] = $location_search;
 	}
 
-	if ( ! empty( $args['search_categories'] ) ) {
-		$field = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
-
-		$query_args['tax_query'][] = array(
-			'taxonomy' => 'job_listing_category',
-			'field'    => $field,
-			'terms'    => $args['search_categories'],
-			'operator' => get_option( 'job_manager_category_filter_type', 'all' ) == 'all' ? 'AND' : 'IN'
-		);
+	if ( $args['search_keywords'] ) {
+		$job_manager_keyword = $args['search_keywords'];
+		add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
 	}
 
 	if ( ! is_null( $args['featured'] ) ) {
@@ -67,7 +68,7 @@ function get_job_listings( $args = array() ) {
 			'value'   => '1',
 			'compare' => $args['filled'] ? '=' : '!='
 		);
-	} elseif ( get_option( 'job_manager_hide_filled_positions' ) == 1 ) {
+	} elseif ( 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
 		$query_args['meta_query'][] = array(
 			'key'     => '_filled',
 			'value'   => '1',
@@ -75,64 +76,36 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
-	// Location search - search geolocation data and location meta
-	if ( $args['search_location'] ) {
-		$location_post_ids = $wpdb->get_col( apply_filters( 'get_job_listings_location_post_ids_sql', $wpdb->prepare( "
-		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
-		    WHERE meta_key IN ( 'geolocation_city', 'geolocation_country_long', 'geolocation_country_short', 'geolocation_formatted_address', 'geolocation_state_long', 'geolocation_state_short', 'geolocation_street', 'geolocation_zipcode', '_job_location' )
-		    AND meta_value LIKE '%%%s%%'
-		", $args['search_location'] ) ) );
-
-		$location_post_ids = array_merge( $location_post_ids, array( 0 ) );
-	} else {
-		$location_post_ids = array();
+	if ( ! empty( $args['job_types'] ) ) {
+		$query_args['tax_query'][] = array(
+			'taxonomy' => 'job_listing_type',
+			'field'    => 'slug',
+			'terms'    => $args['job_types']
+		);
 	}
 
-	// Keyword search - search meta as well as post content
-	if ( $args['search_keywords'] ) {
-		$search_keywords              = array_map( 'trim', explode( ',', $args['search_keywords'] ) );
-		$posts_search_keywords_sql    = array();
-		$postmeta_search_keywords_sql = array();
-
-		foreach ( $search_keywords as $keyword ) {
-			$postmeta_search_keywords_sql[] = " meta_value LIKE '%" . esc_sql( $keyword ) . "%' ";
-			$posts_search_keywords_sql[]    = "
-				post_title LIKE '%" . esc_sql( $keyword ) . "%'
-				OR post_content LIKE '%" . esc_sql( $keyword ) . "%'
-			";
-		}
-
-		$keyword_post_ids = $wpdb->get_col( "
-		    SELECT DISTINCT post_id FROM {$wpdb->postmeta}
-		    WHERE " . implode( ' OR ', $postmeta_search_keywords_sql ) . "
-		" );
-
-		$keyword_post_ids = array_merge( $keyword_post_ids, $wpdb->get_col( "
-		    SELECT ID FROM {$wpdb->posts}
-		    WHERE ( " . implode( ' OR ', $posts_search_keywords_sql ) . " )
-		    AND post_type = 'job_listing'
-		" ), array( 0 ) );
-	} else {
-		$keyword_post_ids = array();
-	}
-
-	// Merge post ids
-	if ( ! empty( $location_post_ids ) && ! empty( $keyword_post_ids ) ) {
-		$query_args['post__in'] = array_intersect( $location_post_ids, $keyword_post_ids );
-	} elseif ( ! empty( $location_post_ids ) || ! empty( $keyword_post_ids ) ) {
-		$query_args['post__in'] = array_merge( $location_post_ids, $keyword_post_ids );
+	if ( ! empty( $args['search_categories'] ) ) {
+		$field                     = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
+		$query_args['tax_query'][] = array(
+			'taxonomy' => 'job_listing_category',
+			'field'    => $field,
+			'terms'    => $args['search_categories'],
+			'operator' => 'all' === get_option( 'job_manager_category_filter_type', 'all' ) ? 'AND' : 'IN'
+		);
 	}
 
 	$query_args = apply_filters( 'job_manager_get_listings', $query_args, $args );
 
-	if ( empty( $query_args['meta_query'] ) )
+	if ( empty( $query_args['meta_query'] ) ) {
 		unset( $query_args['meta_query'] );
+	}
 
-	if ( empty( $query_args['tax_query'] ) )
+	if ( empty( $query_args['tax_query'] ) ) {
 		unset( $query_args['tax_query'] );
+	}
 
-	if ( $args['orderby'] == 'featured' ) {
-		$query_args['orderby'] = 'meta_key';
+	if ( 'featured' === $args['orderby'] ) {
+		$query_args['orderby']  = 'meta_key';
 		$query_args['meta_key'] = '_featured';
 		add_filter( 'posts_clauses', 'order_featured_job_listing' );
 	}
@@ -145,11 +118,44 @@ function get_job_listings( $args = array() ) {
 	$result = new WP_Query( $query_args );
 
 	do_action( 'after_get_job_listings', $query_args, $args );
-
 	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
+	remove_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
 
 	return $result;
 }
+endif;
+
+if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
+	/**
+	 * Join and where query for keywords
+	 *
+	 * @param array $args
+	 * @return array
+	 */
+	function get_job_listings_keyword_search( $args ) {
+		global $wpdb, $job_manager_keyword;
+
+		$args['join']  .= " LEFT JOIN {$wpdb->postmeta} AS kwmeta ON ( {$wpdb->posts}.ID = kwmeta.post_id ) ";
+		$args['where'] .= " AND ( {$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%' OR {$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%' OR kwmeta.meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' ) ";
+
+		return $args;
+	}
+endif;
+
+if ( ! function_exists( 'order_featured_job_listing' ) ) :
+	/**
+	 * WP Core doens't let us change the sort direction for invidual orderby params - http://core.trac.wordpress.org/ticket/17065
+	 *
+	 * @param array $args
+	 * @return array
+	 */
+	function order_featured_job_listing( $args ) {
+		global $wpdb;
+
+		$args['orderby'] = "$wpdb->postmeta.meta_value+0 DESC, $wpdb->posts.post_date DESC";
+
+		return $args;
+	}
 endif;
 
 if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
@@ -169,23 +175,6 @@ function get_job_listing_post_statuses() {
 		'publish'         => _x( 'Active', 'post status', 'wp-job-manager' ),
 	) );
 }
-endif;
-
-if ( ! function_exists( 'order_featured_job_listing' ) ) :
-	/**
-	 * WP Core doens't let us change the sort direction for invidual orderby params - http://core.trac.wordpress.org/ticket/17065
-	 *
-	 * @access public
-	 * @param array $args
-	 * @return array
-	 */
-	function order_featured_job_listing( $args ) {
-		global $wpdb;
-
-		$args['orderby'] = "$wpdb->postmeta.meta_value+0 DESC, $wpdb->posts.post_date DESC";
-
-		return $args;
-	}
 endif;
 
 if ( ! function_exists( 'get_featured_job_ids' ) ) :
