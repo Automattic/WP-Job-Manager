@@ -75,8 +75,8 @@ class WP_Job_Manager_Post_Types {
 			}
 
 			register_taxonomy( "job_listing_category",
-		        array( "job_listing" ),
-		        array(
+				apply_filters( 'job_manager_taxonomy_objects_listing_category', array( 'job_listing' ) ),
+	       	 	apply_filters( 'job_manager_taxonomy_args_listing_category', array(
 		            'hierarchical' 			=> true,
 		            'update_count_callback' => '_update_post_term_count',
 		            'label' 				=> $plural,
@@ -102,7 +102,7 @@ class WP_Job_Manager_Post_Types {
 		            	'assign_terms' 		=> $admin_capability,
 		            ),
 		            'rewrite' 				=> $rewrite,
-		        )
+		        ) )
 		    );
 		}
 
@@ -122,8 +122,8 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		register_taxonomy( "job_listing_type",
-	        array( "job_listing" ),
-	        array(
+			apply_filters( 'job_manager_taxonomy_objects_listing_type', array( 'job_listing' ) ),
+	        apply_filters( 'job_manager_taxonomy_args_listing_type', array(
 	            'hierarchical' 			=> true,
 	            'label' 				=> $plural,
 	            'labels' => array(
@@ -148,7 +148,7 @@ class WP_Job_Manager_Post_Types {
 	            	'assign_terms' 		=> $admin_capability,
 	            ),
 	           'rewrite' 				=> $rewrite,
-	        )
+	        ) )
 	    );
 
 	    /**
