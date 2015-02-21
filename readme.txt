@@ -119,6 +119,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Feature - Ajax file upload during job submission.
 * Feature - Cookie set when submitting a job to allow resuming if you leave the page.
 * Feature - job_apply shortcode to show application area in other places on your site.
 * Feature - Allow admin fields to be priority sorted.

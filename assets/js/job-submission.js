@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-	jQuery( '.job-manager-remove-uploaded-file' ).click(function() {
+	jQuery('body').on( 'click', '.job-manager-remove-uploaded-file', function() {
 		jQuery(this).closest( '.job-manager-uploaded-file' ).remove();
 		return false;
 	});
