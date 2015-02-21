@@ -124,6 +124,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Feature - Allow admin fields to be priority sorted.
 * Feature - Featured job widget.
 * Fix - Prevent attachments being uploaded several times.
+* Fix - Expiry date on first save.
 * Tweak - Geocode street and street number separately.
 * Tweak - File upload field markup.
 * Tweak - Added filters around taxonomy definition.

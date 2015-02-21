@@ -429,25 +429,33 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		// Get duration from the product if set...
-		$duration = get_post_meta( $post->ID, '_job_duration', true );
+		// No metadata set so we can generate an expiry date
+		// See if the user has set the expiry manually:
+		if ( ! empty( $_POST[ '_job_expires' ] ) ) {
+			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ '_job_expires' ] ) ) ) );
 
-		// ...otherwise use the global option
-		if ( ! $duration ) {
-			$duration = absint( get_option( 'job_manager_submission_duration' ) );
-		}
+		// No manual setting? Lets generate a date
+		} else {
+			// Get duration from the product if set...
+			$duration = get_post_meta( $post->ID, '_job_duration', true );
 
-		if ( $duration ) {
-			$expires = date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
-			update_post_meta( $post->ID, '_job_expires', $expires );
-
-			// In case we are saving a post, ensure post data is updated so the field is not overridden
-			if ( isset( $_POST[ '_job_expires' ] ) ) {
-				$_POST[ '_job_expires' ] = $expires;
+			// ...otherwise use the global option
+			if ( ! $duration ) {
+				$duration = absint( get_option( 'job_manager_submission_duration' ) );
 			}
 
-		} else {
-			update_post_meta( $post->ID, '_job_expires', '' );
+			if ( $duration ) {
+				$expires = date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
+				update_post_meta( $post->ID, '_job_expires', $expires );
+
+				// In case we are saving a post, ensure post data is updated so the field is not overridden
+				if ( isset( $_POST[ '_job_expires' ] ) ) {
+					$_POST[ '_job_expires' ] = $expires;
+				}
+
+			} else {
+				update_post_meta( $post->ID, '_job_expires', '' );
+			}
 		}
 	}
 
