@@ -75,8 +75,8 @@ class WP_Job_Manager_Post_Types {
 			}
 
 			register_taxonomy( "job_listing_category",
-				apply_filters( 'job_manager_taxonomy_objects_listing_category', array( 'job_listing' ) ),
-	       	 	apply_filters( 'job_manager_taxonomy_args_listing_category', array(
+				apply_filters( 'register_taxonomy_job_listing_category_object_type', array( 'job_listing' ) ),
+	       	 	apply_filters( 'register_taxonomy_job_listing_category_args', array(
 		            'hierarchical' 			=> true,
 		            'update_count_callback' => '_update_post_term_count',
 		            'label' 				=> $plural,
@@ -122,8 +122,8 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		register_taxonomy( "job_listing_type",
-			apply_filters( 'job_manager_taxonomy_objects_listing_type', array( 'job_listing' ) ),
-	        apply_filters( 'job_manager_taxonomy_args_listing_type', array(
+			apply_filters( 'register_taxonomy_job_listing_type_object_type', array( 'job_listing' ) ),
+	        apply_filters( 'register_taxonomy_job_listing_type_args', array(
 	            'hierarchical' 			=> true,
 	            'label' 				=> $plural,
 	            'labels' => array(
