@@ -6,7 +6,7 @@ Description: Manage job listings from the WordPress admin panel, and allow users
 Version: 1.20.1
 Author: Mike Jolley
 Author URI: http://mikejolley.com
-Requires at least: 3.8
+Requires at least: 4.1
 Tested up to: 4.1
 Text Domain: wp-job-manager
 Domain Path: /languages

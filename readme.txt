@@ -2,7 +2,7 @@
 Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
-Requires at least: 3.8
+Requires at least: 4.1
 Tested up to: 4.1
 Stable tag: 1.20.1
 
@@ -127,6 +127,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Geocode street and street number separately.
 * Tweak - File upload field markup.
 * Tweak - Added filters around taxonomy definition.
+* Tweak - Chanced search logic/query to use the new meta queries in 4.1
 
 = 1.21.0 =
 * Feature - Ajax loading history - back button will take you back to current position in the search. If you are on > page 1, a 'load previous' button will be shown so you can paginate either way.
