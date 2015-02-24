@@ -130,7 +130,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Geocode street and street number separately.
 * Tweak - File upload field markup.
 * Tweak - Added filters around taxonomy definition.
-* Tweak - Chanced search logic/query to use the new meta queries in 4.1
+* Tweak - Chanced search logic/query to use the new meta queries in 4.1.
+* Tweak - Implement transient caching for searches.
 
 = 1.21.0 =
 * Feature - Ajax loading history - back button will take you back to current position in the search. If you are on > page 1, a 'load previous' button will be shown so you can paginate either way.

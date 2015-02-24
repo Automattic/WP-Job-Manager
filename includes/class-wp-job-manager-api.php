@@ -51,9 +51,9 @@ class WP_Job_Manager_API {
 		global $wp;
 
 		if ( ! empty( $_GET['job-manager-api'] ) )
-			$wp->query_vars['wc-api'] = $_GET['job-manager-api'];
+			$wp->query_vars['job-manager-api'] = $_GET['job-manager-api'];
 
-		if ( ! empty( $wp->query_vars['wc-api'] ) ) {
+		if ( ! empty( $wp->query_vars['job-manager-api'] ) ) {
 			// Buffer, we won't want any output here
 			ob_start();
 

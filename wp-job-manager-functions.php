@@ -14,12 +14,13 @@ function get_job_listings( $args = array() ) {
 		'search_keywords'   => '',
 		'search_categories' => array(),
 		'job_types'         => array(),
-		'offset'            => '',
-		'posts_per_page'    => '-1',
+		'offset'            => 0,
+		'posts_per_page'    => 20,
 		'orderby'           => 'date',
 		'order'             => 'DESC',
 		'featured'          => null,
-		'filled'            => null
+		'filled'            => null,
+		'fields'            => 'all'
 	) );
 
 	$query_args = array(
@@ -33,11 +34,17 @@ function get_job_listings( $args = array() ) {
 		'tax_query'              => array(),
 		'meta_query'             => array(),
 		'update_post_term_cache' => false,
-		'update_post_meta_cache' => false
+		'update_post_meta_cache' => false,
+		'cache_results'          => false,
+		'fields'                 => $args['fields']
 	);
 
+	if ( $args['posts_per_page'] < 0 ) {
+		$query_args['no_found_rows'] = true;
+	}
+
 	if ( ! empty( $args['search_location'] ) ) {
-		$location_meta_keys = array( 'geolocation_country_short', 'geolocation_formatted_address', 'geolocation_state_short', '_job_location' );
+		$location_meta_keys = array( 'geolocation_formatted_address', '_job_location' );
 		$location_search    = array( 'relation' => 'OR' );
 		foreach ( $location_meta_keys as $meta_key ) {
 			$location_search[] = array(
@@ -49,11 +56,6 @@ function get_job_listings( $args = array() ) {
 		$query_args['meta_query'][] = $location_search;
 	}
 
-	if ( $args['search_keywords'] ) {
-		$job_manager_keyword = $args['search_keywords'];
-		add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
-	}
-
 	if ( ! is_null( $args['featured'] ) ) {
 		$query_args['meta_query'][] = array(
 			'key'     => '_featured',
@@ -62,17 +64,11 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
-	if ( ! is_null( $args['filled'] ) ) {
+	if ( ! is_null( $args['filled'] ) || 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
 		$query_args['meta_query'][] = array(
 			'key'     => '_filled',
 			'value'   => '1',
 			'compare' => $args['filled'] ? '=' : '!='
-		);
-	} elseif ( 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
-		$query_args['meta_query'][] = array(
-			'key'     => '_filled',
-			'value'   => '1',
-			'compare' => '!='
 		);
 	}
 
@@ -94,6 +90,17 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
+	if ( 'featured' === $args['orderby'] ) {
+		$query_args['orderby']  = 'meta_key';
+		$query_args['meta_key'] = '_featured';
+		add_filter( 'posts_clauses', 'order_featured_job_listing' );
+	}
+
+	if ( $job_manager_keyword = $args['search_keywords'] ) {
+		$query_args['_keyword'] = $job_manager_keyword; // Does nothing but needed for unique hash
+		add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
+	}
+
 	$query_args = apply_filters( 'job_manager_get_listings', $query_args, $args );
 
 	if ( empty( $query_args['meta_query'] ) ) {
@@ -104,20 +111,22 @@ function get_job_listings( $args = array() ) {
 		unset( $query_args['tax_query'] );
 	}
 
-	if ( 'featured' === $args['orderby'] ) {
-		$query_args['orderby']  = 'meta_key';
-		$query_args['meta_key'] = '_featured';
-		add_filter( 'posts_clauses', 'order_featured_job_listing' );
-	}
-
 	// Filter args
 	$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
+	// Generate hash
+	$query_args_hash = 'jm-' . md5( json_encode( $query_args ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' ) );
+
 	do_action( 'before_get_job_listings', $query_args, $args );
 
-	$result = new WP_Query( $query_args );
+	if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
+		$result = new WP_Query( $query_args );
+	}
 
 	do_action( 'after_get_job_listings', $query_args, $args );
+
+	set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
+
 	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
 	remove_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
 
@@ -135,7 +144,7 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	function get_job_listings_keyword_search( $args ) {
 		global $wpdb, $job_manager_keyword;
 
-		$args['join']  .= " LEFT JOIN {$wpdb->postmeta} AS kwmeta ON ( {$wpdb->posts}.ID = kwmeta.post_id ) ";
+		$args['join']  .= " INNER JOIN {$wpdb->postmeta} AS kwmeta ON ( {$wpdb->posts}.ID = kwmeta.post_id ) ";
 		$args['where'] .= " AND ( {$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%' OR {$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%' OR kwmeta.meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' ) ";
 
 		return $args;

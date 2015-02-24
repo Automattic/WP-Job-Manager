@@ -42,6 +42,7 @@ class WP_Job_Manager {
 		include( 'includes/class-wp-job-manager-api.php' );
 		include( 'includes/class-wp-job-manager-forms.php' );
 		include( 'includes/class-wp-job-manager-geocode.php' );
+		include( 'includes/class-wp-job-manager-cache-helper.php' );
 
 		if ( is_admin() ) {
 			include( 'includes/admin/class-wp-job-manager-admin.php' );
