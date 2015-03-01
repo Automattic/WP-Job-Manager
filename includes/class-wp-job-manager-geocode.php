@@ -207,7 +207,7 @@ class WP_Job_Manager_Geocode {
 			}
 		}
 
-		return $address;
+		return apply_filters( 'job_manager_geolocation_get_location_data', $address, $geocoded_address );
 	}
 }
 
