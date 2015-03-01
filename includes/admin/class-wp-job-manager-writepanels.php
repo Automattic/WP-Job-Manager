@@ -289,21 +289,27 @@ class WP_Job_Manager_Writepanels {
 	public function input_author( $key, $field ) {
 		global $thepostid, $post;
 
-		if ( empty( $field['value'] ) )
+		if ( empty( $field['value'] ) ) {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
 		?>
-		<p class="form-field">
+		<p class="form-field form-field-author">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
-			<?php
-				wp_dropdown_users( array(
-					'who'              => '',
-					'show_option_none' => __( 'Guest user', 'wp-job-manager' ),
-					'name'             => $key,
-					'selected'         => $post->post_author,
-					'include_selected' => true
-				) );
-			?>
-			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+			<span class="current-author">
+				<?php
+					$posted_by = get_user_by( 'id', $post->post_author );
+
+					if ( $posted_by ) {
+						echo '#' . $post->post_author . ' - <a href="' . admin_url( 'user-edit.php?user_id=' . $post->post_author ) . '">' . $posted_by->user_login . '</a>';
+					} else {
+						 _e( 'Guest User', 'wp-job-manager' );
+					}
+				?> (<a href="#" class="change-author"><?php _e( 'Change', 'wp-job-manager' ); ?></a>)
+			</span>
+			<span class="hidden change-author">
+				<input type="number" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" step="1" value="<?php echo esc_attr( $post->post_author ); ?>" style="width: 4em;" />
+				<span class="description"><?php _e( 'Enter the ID of the user, or leave blank if submitted by a guest.', 'wp-job-manager' ) ?></span>
+			</span>
 		</p>
 		<?php
 	}

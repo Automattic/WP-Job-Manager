@@ -7,6 +7,13 @@ jQuery(document).ready(function($) {
 		'delay' : 200
 	});
 
+	// Author
+	$( "p.form-field-author" ).on( 'click', 'a.change-author', function() {
+		$(this).closest( 'p' ).find('.current-author').hide();
+		$(this).closest( 'p' ).find('.change-author').show();
+		return false;
+	});
+
 	// Datepicker
 	$( "input#_job_expires" ).datepicker({
 		dateFormat: 'yy-mm-dd',
