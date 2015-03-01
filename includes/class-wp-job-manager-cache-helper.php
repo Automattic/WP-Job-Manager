@@ -16,7 +16,7 @@ class WP_Job_Manager_Cache_Helper {
 	/**
 	 * Flush the cache
 	 */
-	public function flush_get_job_listings_cache( $post_id ) {
+	public static function flush_get_job_listings_cache( $post_id ) {
 		if ( 'job_listing' === get_post_type( $post_id ) ) {
 			self::get_transient_version( 'get_job_listings', true );
 		}

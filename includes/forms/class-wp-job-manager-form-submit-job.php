@@ -230,6 +230,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'placeholder' => '',
 					'priority'    => 6,
 					'ajax'        => true,
+					'multiple'    => false,
 					'allowed_mime_types' => array(
 						'jpg'  => 'image/jpeg',
 						'jpeg' => 'image/jpeg',
@@ -873,95 +874,34 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 	/**
 	 * Upload a file
-	 *
 	 * @return  string or array
 	 */
 	public static function upload_file( $field_key, $field ) {
-
-		/** WordPress Administration File API */
-		include_once( ABSPATH . 'wp-admin/includes/file.php' );
-
-		/** WordPress Media Administration API */
-		include_once( ABSPATH . 'wp-admin/includes/media.php' );
-
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
-			$file = $_FILES[ $field_key ];
-
 			if ( ! empty( $field['allowed_mime_types'] ) ) {
 				$allowed_mime_types = $field['allowed_mime_types'];
 			} else {
 				$allowed_mime_types = get_allowed_mime_types();
 			}
 
-			if ( empty( $file['name'] ) ) {
-				return false;
+			$file_urls       = array();
+			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] );
+
+			foreach ( $files_to_upload as $file_to_upload ) {
+				$uploaded_file = job_manager_upload_file( $file_to_upload, array( 'file_key' => $file_key ) );
+
+				if ( is_wp_error( $uploaded_file ) ) {
+					throw new Exception( $uploaded_file->get_error_message() );
+				} else {
+					$file_urls[] = $upload['url'];
+				}
 			}
 
-			if ( is_array( $file['name'] ) ) {
-				$file_urls = array();
-
-				foreach ( $file['name'] as $key => $value ) {
-					if ( ! empty( $file['name'][ $key ] ) ) {
-
-						if ( ! in_array( $file['type'][ $key ], $allowed_mime_types ) ) {
-			    			throw new Exception( sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], $file['type'][ $key ], implode( ', ', array_keys( $allowed_mime_types ) ) ) );
-						}
-
-						$upload_file = array(
-							'name'     => $file['name'][ $key ],
-							'type'     => $file['type'][ $key ],
-							'tmp_name' => $file['tmp_name'][ $key ],
-							'error'    => $file['error'][ $key ],
-							'size'     => $file['size'][ $key ]
-						);
-
-						add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
-						$upload = wp_handle_upload( $upload_file, apply_filters( 'submit_job_wp_handle_upload_overrides', array( 'test_form' => false ) ) );
-						remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
-
-						if ( ! empty( $upload['error'] ) ) {
-							throw new Exception( $upload['error'] );
-						}
-
-						$file_urls[] = $upload['url'];
-					}
-				}
-
+			if ( ! empty( $field['multiple'] ) ) {
 				return $file_urls;
 			} else {
-				if ( ! in_array( $file['type'], $allowed_mime_types ) ) {
-	    			throw new Exception( sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], $file['type'], implode( ', ', array_keys( $allowed_mime_types ) ) ) );
-				}
-
-				add_filter( 'upload_dir',  array( __CLASS__, 'upload_dir' ) );
-				$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', array( 'test_form' => false ) ) );
-				remove_filter( 'upload_dir', array( __CLASS__, 'upload_dir' ) );
-
-				if ( ! empty( $upload['error'] ) ) {
-					throw new Exception( $upload['error'] );
-				} else {
-					return $upload['url'];
-				}
+				return current( $file_urls );
 			}
 		}
-	}
-
-	/**
-	 * Filter the upload directory
-	 */
-	public static function upload_dir( $pathdata ) {
-		$dir = 'job-manager-uploads';
-
-		if ( empty( $pathdata['subdir'] ) ) {
-			$pathdata['path']   = $pathdata['path'] . '/' . $dir;
-			$pathdata['url']    = $pathdata['url'] . '/' . $dir;
-			$pathdata['subdir'] = '/' . $dir;
-		} else {
-			$new_subdir         = '/' . $dir . $pathdata['subdir'];
-			$pathdata['path']   = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['path'] );
-			$pathdata['url']    = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['url'] );
-			$pathdata['subdir'] = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['subdir'] );
-		}
-		return $pathdata;
 	}
 }

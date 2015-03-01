@@ -27,7 +27,7 @@
 				<label for="search_categories"><?php _e( 'Category', 'wp-job-manager' ); ?></label>
 				<?php if ( $show_category_multiselect ) : ?>
 					<?php job_manager_dropdown_categories( array( 'taxonomy' => 'job_listing_category', 'hierarchical' => 1, 'name' => 'search_categories', 'orderby' => 'name', 'selected' => $selected_category, 'hide_empty' => false ) ); ?>
-				<?php else : ?>	
+				<?php else : ?>
 					<?php wp_dropdown_categories( array( 'taxonomy' => 'job_listing_category', 'hierarchical' => 1, 'show_option_all' => __( 'Any category', 'wp-job-manager' ), 'name' => 'search_categories', 'orderby' => 'name', 'selected' => $selected_category ) ); ?>
 				<?php endif; ?>
 			</div>

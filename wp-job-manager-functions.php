@@ -545,3 +545,104 @@ function job_manager_get_permalink( $page ) {
 		return false;
 	}
 }
+
+/**
+ * Filters the upload dir when $job_manager_upload is true
+ * @param  array $pathdata
+ * @return array
+ */
+function job_manager_upload_dir( $pathdata ) {
+	global $job_manager_upload, $job_manager_uploading_file;
+
+	if ( ! empty( $job_manager_upload ) ) {
+		$dir = apply_filters( 'job_manager_upload_dir', 'job-manager-uploads/' . sanitize_key( $job_manager_uploading_file ), sanitize_key( $job_manager_uploading_file ) );
+
+		if ( empty( $pathdata['subdir'] ) ) {
+			$pathdata['path']   = $pathdata['path'] . '/' . $dir;
+			$pathdata['url']    = $pathdata['url'] . '/' . $dir;
+			$pathdata['subdir'] = '/' . $dir;
+		} else {
+			$new_subdir         = '/' . $dir . $pathdata['subdir'];
+			$pathdata['path']   = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['path'] );
+			$pathdata['url']    = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['url'] );
+			$pathdata['subdir'] = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['subdir'] );
+		}
+	}
+
+	return $pathdata;
+}
+add_filter( 'upload_dir', 'job_manager_upload_dir' );
+
+/**
+ * Prepare files for upload by standardizing them into an array. This adds support for multiple file upload fields.
+ * @param  array $file_data
+ * @return array
+ */
+function job_manager_prepare_uploaded_files( $file_data ) {
+	$files_to_upload = array();
+
+	if ( is_array( $file_data['name'] ) ) {
+		foreach( $file_data['name'] as $file_data_key => $file_data_value ) {
+			if ( $file_data['name'][ $file_data_key ] ) {
+				$files_to_upload[] = array(
+					'name'     => $file_data['name'][ $file_data_key ],
+					'type'     => $file_data['type'][ $file_data_key ],
+					'tmp_name' => $file_data['tmp_name'][ $file_data_key ],
+					'error'    => $file_data['error'][ $file_data_key ],
+					'size'     => $file_data['size'][ $file_data_key ]
+				);
+			}
+		}
+	} else {
+		$files_to_upload[] = $file_data;
+	}
+
+	return $files_to_upload;
+}
+
+/**
+ * Upload a file using WordPress file API.
+ * @param  array $file_data Array of $_FILE data to upload.
+ * @param  array $args Optional arguments
+ * @return array|WP_Error Array of objects containing either file information or an error
+ */
+function job_manager_upload_file( $file, $args = array() ) {
+	global $job_manager_upload, $job_manager_uploading_file;
+
+	include_once( ABSPATH . 'wp-admin/includes/file.php' );
+	include_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+	$args = wp_parse_args( $args, array(
+		'file_key'           => '',
+		'file_label'         => '',
+		'allowed_mime_types' => get_allowed_mime_types()
+	) );
+
+	$job_manager_upload         = true;
+	$job_manager_uploading_file = $args['file_key'];
+	$uploaded_file              = new stdClass();
+
+	if ( ! in_array( $file['type'], $args['allowed_mime_types'] ) ) {
+		if ( $args['file_label'] ) {
+			return new WP_Error( 'upload', sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $args['file_label'], $file['type'], implode( ', ', array_keys( $args['allowed_mime_types'] ) ) ) );
+		} else {
+			return new WP_Error( 'upload', sprintf( __( 'Uploaded files need to be one of the following file types: %s', 'wp-job-manager' ), implode( ', ', array_keys( $args['allowed_mime_types'] ) ) ) );
+		}
+	} else {
+		$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', array( 'test_form' => false ) ) );
+		if ( ! empty( $upload['error'] ) ) {
+			return new WP_Error( 'upload', $upload['error'] );
+		} else {
+			$uploaded_file->url       = $upload['url'];
+			$uploaded_file->name      = basename( $upload['file'] );
+			$uploaded_file->type      = $upload['type'];
+			$uploaded_file->size      = $file['size'];
+			$uploaded_file->extension = substr( strrchr( $uploaded_file->name, '.' ), 1 );
+		}
+	}
+
+	$job_manager_upload         = false;
+	$job_manager_uploading_file = '';
+
+	return $uploaded_file;
+}
