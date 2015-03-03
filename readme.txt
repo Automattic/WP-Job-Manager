@@ -119,6 +119,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.21.0 =
+* Feature - Ajax loading history - back button will take you back to current position in the search. If you are on > page 1, a 'load previous' button will be shown so you can paginate either way.
 * Feature - Ajax file upload during job submission.
 * Feature - Cookie set when submitting a job to allow resuming if you leave the page.
 * Feature - job_apply shortcode to show application area in other places on your site.
@@ -133,9 +135,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Chanced search logic/query to use the new meta queries in 4.1.
 * Tweak - Implement transient caching for searches.
 * Tweak - Removed wp_dropdown_user due to performance concerns.
-
-= 1.21.0 =
-* Feature - Ajax loading history - back button will take you back to current position in the search. If you are on > page 1, a 'load previous' button will be shown so you can paginate either way.
+* Tweak - Use menu_order to make featured listings sticky. Improves performance.
 * Tweak - Retrieve AJAX jobs with GET rather than POST request to take advantage of more caching. Plugins looking for POST data will need to update to look for GET/REQUEST instead.
 
 = 1.20.1 =

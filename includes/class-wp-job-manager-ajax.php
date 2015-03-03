@@ -30,6 +30,7 @@ class WP_Job_Manager_Ajax {
 		$filter_job_types  = isset( $_REQUEST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_REQUEST['filter_job_type'] ) ) : null;
 		$types             = get_job_listing_types();
 		$post_type_label   = $wp_post_types['job_listing']->labels->name;
+		$orderby           = sanitize_text_field( $_REQUEST['orderby'] );
 
 		if ( is_array( $search_categories ) ) {
 			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
@@ -41,19 +42,20 @@ class WP_Job_Manager_Ajax {
 			'search_location'    => $search_location,
 			'search_keywords'    => $search_keywords,
 			'search_categories'  => $search_categories,
-			'job_types'          => is_null( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
-			'orderby'            => sanitize_text_field( $_REQUEST['orderby'] ),
+			'job_types'          => is_null( $filter_job_types ) || sizeof( $types ) === sizeof( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
+			'orderby'            => $orderby,
 			'order'              => sanitize_text_field( $_REQUEST['order'] ),
 			'offset'             => ( absint( $_REQUEST['page'] ) - 1 ) * absint( $_REQUEST['per_page'] ),
 			'posts_per_page'     => absint( $_REQUEST['per_page'] )
 		);
 
-		if ( isset( $_REQUEST['featured'] ) && ( $_REQUEST['featured'] === 'true' || $_REQUEST['featured'] === 'false' ) ) {
-			$args['featured'] = $_REQUEST['featured'] === 'true' ? true : false;
-		}
-
 		if ( isset( $_REQUEST['filled'] ) && ( $_REQUEST['filled'] === 'true' || $_REQUEST['filled'] === 'false' ) ) {
 			$args['filled'] = $_REQUEST['filled'] === 'true' ? true : false;
+		}
+
+		if ( isset( $_REQUEST['featured'] ) && ( $_REQUEST['featured'] === 'true' || $_REQUEST['featured'] === 'false' ) ) {
+			$args['featured'] = $_REQUEST['featured'] === 'true' ? true : false;
+			$args['orderby']  = 'featured' === $orderby ? 'date' : $orderby;
 		}
 
 		ob_start();

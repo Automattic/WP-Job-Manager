@@ -91,8 +91,6 @@ function get_job_listings( $args = array() ) {
 	}
 
 	if ( 'featured' === $args['orderby'] ) {
-		$query_args['orderby']  = 'meta_key';
-		$query_args['meta_key'] = '_featured';
 		add_filter( 'posts_clauses', 'order_featured_job_listing' );
 	}
 
@@ -144,8 +142,10 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	function get_job_listings_keyword_search( $args ) {
 		global $wpdb, $job_manager_keyword;
 
-		$args['join']  .= " INNER JOIN {$wpdb->postmeta} AS kwmeta ON ( {$wpdb->posts}.ID = kwmeta.post_id ) ";
-		$args['where'] .= " AND ( {$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%' OR {$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%' OR kwmeta.meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' ) ";
+		// Query matching ids to avoid more joins
+		$post_ids = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%'" );
+
+		$args['where'] .= " AND ( {$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%' OR {$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%' OR {$wpdb->posts}.ID IN (" . esc_sql( implode( ',', $post_ids ) ) . ") ) ";
 
 		return $args;
 	}
@@ -161,7 +161,7 @@ if ( ! function_exists( 'order_featured_job_listing' ) ) :
 	function order_featured_job_listing( $args ) {
 		global $wpdb;
 
-		$args['orderby'] = "$wpdb->postmeta.meta_value+0 DESC, $wpdb->posts.post_date DESC";
+		$args['orderby'] = "$wpdb->posts.menu_order ASC, $wpdb->posts.post_date DESC";
 
 		return $args;
 	}

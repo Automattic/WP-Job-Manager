@@ -14,6 +14,8 @@ class WP_Job_Manager_Install {
 	 * @return void
 	 */
 	public function __construct() {
+		global $wpdb;
+
 		$this->init_user_roles();
 		$this->default_terms();
 		$this->cron();
@@ -24,7 +26,12 @@ class WP_Job_Manager_Install {
 			set_transient( '_job_manager_activation_redirect', 1, HOUR_IN_SECONDS );
 		}
 
-		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );
+		// Update featured posts ordering
+		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '1.21.0', '<' ) ) {
+			$featured_ids = array_map( 'absint', $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_featured' AND meta_value='1';" ) );
+			$wpdb->query( "UPDATE {$wpdb->posts} SET menu_order = 1 WHERE ID NOT IN (" . implode( ',', $featured_ids ) . ") AND post_type='job_listing' AND menu_order=0;" );
+			$wpdb->query( "UPDATE {$wpdb->posts} SET menu_order = 0 WHERE ID IN (" . implode( ',', $featured_ids ) . ") AND post_type='job_listing';" );
+		}
 
 		// Update legacy options
 		if ( false === get_option( 'job_manager_submit_job_form_page_id', false ) && get_option( 'job_manager_submit_page_slug' ) ) {
@@ -35,6 +42,8 @@ class WP_Job_Manager_Install {
 			$page_id = get_page_by_path( get_option( 'job_manager_job_dashboard_page_slug' ) )->ID;
 			update_option( 'job_manager_job_dashboard_page_id', $page_id );
 		}
+
+		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );
 	}
 
 	/**
