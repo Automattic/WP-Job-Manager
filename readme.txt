@@ -137,6 +137,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Removed wp_dropdown_user due to performance concerns.
 * Tweak - Use menu_order to make featured listings sticky. Improves performance.
 * Tweak - Retrieve AJAX jobs with GET rather than POST request to take advantage of more caching. Plugins looking for POST data will need to update to look for GET/REQUEST instead.
+* Tweak - Prevent themes that (sigh) mess with content hooks from breaking inputs.
 
 = 1.20.1 =
 * Fix - Core template overrides.
