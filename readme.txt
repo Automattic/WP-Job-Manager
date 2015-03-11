@@ -126,6 +126,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Feature - job_apply shortcode to show application area in other places on your site.
 * Feature - Allow admin fields to be priority sorted.
 * Feature - Featured job widget.
+* Feature - Scroll to top on pagination click.
 * Fix - Prevent attachments being uploaded several times.
 * Fix - Expiry date on first save.
 * Fix - Relist should go back to form.

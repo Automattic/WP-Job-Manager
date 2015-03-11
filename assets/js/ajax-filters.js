@@ -230,6 +230,10 @@ jQuery( document ).ready( function ( $ ) {
 
 		target.triggerHandler( 'update_results', [ page, false ] );
 
+		$( "body, html" ).animate({
+            scrollTop: target.offset().top
+        }, 600 );
+
 		return false;
 	} );
 
