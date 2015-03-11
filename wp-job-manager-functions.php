@@ -94,7 +94,7 @@ function get_job_listings( $args = array() ) {
 		add_filter( 'posts_clauses', 'order_featured_job_listing' );
 	}
 
-	if ( $job_manager_keyword = $args['search_keywords'] ) {
+	if ( $job_manager_keyword = sanitize_text_field( $args['search_keywords'] ) ) {
 		$query_args['_keyword'] = $job_manager_keyword; // Does nothing but needed for unique hash
 		add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
 	}
@@ -119,11 +119,11 @@ function get_job_listings( $args = array() ) {
 
 	if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
 		$result = new WP_Query( $query_args );
+
+		set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
 	}
 
 	do_action( 'after_get_job_listings', $query_args, $args );
-
-	set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
 
 	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
 	remove_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
@@ -476,22 +476,24 @@ function job_manager_user_can_edit_pending_submissions() {
  */
 function job_manager_dropdown_categories( $args = '' ) {
 	$defaults = array(
-		'orderby'      => 'id',
-		'order'        => 'ASC',
-		'show_count'   => 0,
-		'hide_empty'   => 1,
-		'child_of'     => 0,
-		'exclude'      => '',
-		'echo'         => 1,
-		'selected'     => 0,
-		'hierarchical' => 0,
-		'name'         => 'cat',
-		'id'           => '',
-		'class'        => 'job-manager-category-dropdown ' . ( is_rtl() ? 'chosen-rtl' : '' ),
-		'depth'        => 0,
-		'taxonomy'     => 'job_listing_category',
-		'value'        => 'id',
-		'placeholder'  => __( 'Choose a category&hellip;', 'wp-job-manager' )
+		'orderby'         => 'id',
+		'order'           => 'ASC',
+		'show_count'      => 0,
+		'hide_empty'      => 1,
+		'child_of'        => 0,
+		'exclude'         => '',
+		'echo'            => 1,
+		'selected'        => 0,
+		'hierarchical'    => 0,
+		'name'            => 'cat',
+		'id'              => '',
+		'class'           => 'job-manager-category-dropdown ' . ( is_rtl() ? 'chosen-rtl' : '' ),
+		'depth'           => 0,
+		'taxonomy'        => 'job_listing_category',
+		'value'           => 'id',
+		'multiple'        => true,
+		'show_option_all' => false,
+		'placeholder'     => __( 'Choose a category&hellip;', 'wp-job-manager' )
 	);
 
 	$r = wp_parse_args( $args, $defaults );
@@ -502,12 +504,23 @@ function job_manager_dropdown_categories( $args = '' ) {
 
 	extract( $r );
 
-	$categories = get_terms( $taxonomy, $r );
+	// Store in a transient to help sites with many cats
+	$categories_hash = 'jmc-' . md5( json_encode( $r ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' ) );
+
+	if ( false === ( $categories = get_transient( $categories_hash ) ) ) {
+		$categories = get_terms( $taxonomy, $r );
+		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 30 );
+	}
+
 	$name       = esc_attr( $name );
 	$class      = esc_attr( $class );
 	$id         = $id ? esc_attr( $id ) : $name;
 
-	$output = "<select name='{$name}[]' id='$id' class='$class' multiple='multiple' data-placeholder='{$placeholder}'>\n";
+	$output = "<select name='{$name}[]' id='$id' class='$class' " . ( $multiple ? "multiple='multiple'" : '' ) . " data-placeholder='{$placeholder}'>\n";
+
+	if ( $show_option_all ) {
+		$output .= '<option value="">' . $show_option_all . '</option>';
+	}
 
 	if ( ! empty( $categories ) ) {
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php' );
