@@ -146,7 +146,6 @@ function get_the_job_status( $post = null ) {
  */
 function is_position_filled( $post = null ) {
 	$post = get_post( $post );
-
 	return $post->_filled ? true : false;
 }
 
@@ -158,8 +157,18 @@ function is_position_filled( $post = null ) {
  */
 function is_position_featured( $post = null ) {
 	$post = get_post( $post );
-
 	return $post->_featured ? true : false;
+}
+
+/**
+ * Return whether or not applications are allowed
+ *
+ * @param  object $post
+ * @return boolean
+ */
+function candidates_can_apply( $post = null ) {
+	$post = get_post( $post );
+	return ! is_position_filled() && ! in_array( $post->post_status, array( 'preview', 'expired' ) );
 }
 
 /**

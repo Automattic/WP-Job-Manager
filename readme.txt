@@ -127,6 +127,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Feature - Allow admin fields to be priority sorted.
 * Feature - Featured job widget.
 * Feature - Scroll to top on pagination click.
+* Feature - Option to "Hide content within expired listings". If disabled, expired listings will be listed normally with applications disabled.
 * Fix - Prevent attachments being uploaded several times.
 * Fix - Expiry date on first save.
 * Fix - Relist should go back to form.

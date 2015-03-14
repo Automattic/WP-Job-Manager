@@ -20,6 +20,8 @@
 
 	<?php if ( is_position_filled() ) : ?>
 		<li class="position-filled"><?php _e( 'This position has been filled', 'wp-job-manager' ); ?></li>
+	<?php elseif ( ! candidates_can_apply() ) : ?>
+		<li class="listing-expired"><?php _e( 'Applications have closed', 'wp-job-manager' ); ?></li>
 	<?php endif; ?>
 
 	<?php do_action( 'single_job_listing_meta_end' ); ?>

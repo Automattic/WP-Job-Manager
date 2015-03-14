@@ -54,14 +54,23 @@ class WP_Job_Manager_Settings {
 							'std'        => '0',
 							'label'      => __( 'Filled Positions', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide filled positions', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, filled positions will be hidden.', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, filled positions will be hidden from archives.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
+						array(
+							'name'       => 'job_manager_hide_expired_content',
+							'std'        => '1',
+							'label'      => __( 'Expired Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide content within expired listings', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, the content within expired listings will be hidden. Otherwise, expired listings will be displayed as normal (without the application area).', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
 						array(
 							'name'       => 'job_manager_enable_categories',
 							'std'        => '0',
-							'label'      => __( 'Job Categories', 'wp-job-manager' ),
+							'label'      => __( 'Categories', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable categories for listings', 'wp-job-manager' ),
 							'desc'       => __( 'Choose whether to enable categories. Categories must be setup by an admin to allow users to choose them during submission.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
