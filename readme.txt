@@ -130,6 +130,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - Prevent attachments being uploaded several times.
 * Fix - Expiry date on first save.
 * Fix - Relist should go back to form.
+* Fix - jquery.com CDN for CSS.
 * Tweak - Geocode street and street number separately.
 * Tweak - File upload field markup.
 * Tweak - Added filters around taxonomy definition.
