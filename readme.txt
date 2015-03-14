@@ -121,6 +121,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 = 1.21.1 =
 * Fix - Remove file type check when field is not required and empty.
+* Fix - Hide "Applications have closed" for previews.
 
 = 1.21.0 =
 * Feature - Ajax loading history - back button will take you back to current position in the search. If you are on > page 1, a 'load previous' button will be shown so you can paginate either way.

@@ -6,8 +6,9 @@
  *
  * @since  1.14.0
  */
-?>
-<?php do_action( 'single_job_listing_meta_before' ); ?>
+global $post;
+
+do_action( 'single_job_listing_meta_before' ); ?>
 
 <ul class="meta">
 	<?php do_action( 'single_job_listing_meta_start' ); ?>
@@ -20,7 +21,7 @@
 
 	<?php if ( is_position_filled() ) : ?>
 		<li class="position-filled"><?php _e( 'This position has been filled', 'wp-job-manager' ); ?></li>
-	<?php elseif ( ! candidates_can_apply() ) : ?>
+	<?php elseif ( ! candidates_can_apply() && 'preview' !== $post->post_status ) : ?>
 		<li class="listing-expired"><?php _e( 'Applications have closed', 'wp-job-manager' ); ?></li>
 	<?php endif; ?>
 
