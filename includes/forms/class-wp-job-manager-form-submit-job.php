@@ -414,13 +414,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				}
 				if ( 'file' === $field['type'] && ! empty( $field['allowed_mime_types'] ) ) {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
-						$check_value = $values[ $group_key ][ $key ];
+						$check_value = array_filter( $values[ $group_key ][ $key ] );
 					} else {
-						$check_value = array( $values[ $group_key ][ $key ] );
+						$check_value = array_filter( array( $values[ $group_key ][ $key ] ) );
 					}
-					foreach ( $check_value as $file_url ) {
-						if ( ( $info = wp_check_filetype( $file_url ) ) && ! in_array( $info['type'], $field['allowed_mime_types'] ) ) {
-							throw new Exception( sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], $info['ext'], implode( ', ', array_keys( $field['allowed_mime_types'] ) ) ) );
+					if ( ! empty( $check_value ) ) {
+						foreach ( $check_value as $file_url ) {
+							if ( ( $info = wp_check_filetype( $file_url ) ) && ! in_array( $info['type'], $field['allowed_mime_types'] ) ) {
+								throw new Exception( sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], $info['ext'], implode( ', ', array_keys( $field['allowed_mime_types'] ) ) ) );
+							}
 						}
 					}
 				}

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 4.1
 Tested up to: 4.1
-Stable tag: 1.21.0
+Stable tag: 1.21.1
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -118,6 +118,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.21.1 =
+* Fix - Remove file type check when field is not required and empty.
 
 = 1.21.0 =
 * Feature - Ajax loading history - back button will take you back to current position in the search. If you are on > page 1, a 'load previous' button will be shown so you can paginate either way.
