@@ -142,6 +142,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Retrieve AJAX jobs with GET rather than POST request to take advantage of more caching. Plugins looking for POST data will need to update to look for GET/REQUEST instead.
 * Tweak - Prevent themes that (sigh) mess with content hooks from breaking inputs.
 * Tweak - Remove unused job-category field.
+* Tweak - Hide company div if company name missing.
 
 = 1.20.1 =
 * Fix - Core template overrides.

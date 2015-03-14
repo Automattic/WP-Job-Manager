@@ -6,6 +6,10 @@
  *
  * @since  1.14.0
  */
+
+if ( ! get_the_company_name() ) {
+	return;
+}
 ?>
 <div class="company" itemscope itemtype="http://data-vocabulary.org/Organization">
 	<?php the_company_logo(); ?>
