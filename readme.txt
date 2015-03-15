@@ -119,6 +119,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - Remove requried attribute from file input.
+
 = 1.21.1 =
 * Fix - Remove file type check when field is not required and empty.
 * Fix - Hide "Applications have closed" for previews.
