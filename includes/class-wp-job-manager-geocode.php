@@ -74,6 +74,7 @@ class WP_Job_Manager_Geocode {
 		delete_post_meta( $job_id, 'geolocation_state_long' );
 		delete_post_meta( $job_id, 'geolocation_state_short' );
 		delete_post_meta( $job_id, 'geolocation_street' );
+		delete_post_meta( $job_id, 'geolocation_street_number' );
 		delete_post_meta( $job_id, 'geolocation_zipcode' );
 		delete_post_meta( $job_id, 'geolocation_postcode' );
 	}
