@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 4.1
 Tested up to: 4.1
-Stable tag: 1.21.2
+Stable tag: 1.21.3
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -119,6 +119,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.21.3 =
 * Feature - Support posts_per_page in feed.
 * Fix - Correctly set menu_order when creating a new job, or updating featured status.
 * Fix - Updater when there are no featured jobs.
