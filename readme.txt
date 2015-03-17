@@ -119,6 +119,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - Correctly set menu_order when creating a new job, or updating featured status.
+* Fix - Updater when there are no featured jobs.
 * Fix - Add geolocation_street_number to clear_location_data.
 
 = 1.21.2 =

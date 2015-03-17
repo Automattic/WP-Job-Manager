@@ -32,6 +32,7 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'wp_insert_post_data', array( $this, 'fix_post_name' ), 10, 2 );
 		add_action( 'add_post_meta', array( $this, 'maybe_add_geolocation_data' ), 10, 3 );
 		add_action( 'update_post_meta', array( $this, 'maybe_update_geolocation_data' ), 10, 4 );
+		add_action( 'update_post_meta', array( $this, 'maybe_update_menu_order' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 
 		// WP ALL Import
@@ -499,14 +500,28 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * Generate location data if a post is updated
-	 * @param  int $post_id
-	 * @param  array $post
 	 */
 	public function maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $_meta_value ) {
 		if ( '_job_location' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
 			return;
 		}
 		do_action( 'job_manager_job_location_edited', $object_id, $_meta_value );
+	}
+
+	/**
+	 * Maybe set menu_order if the featured status of a job is changed
+	 */
+	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $_meta_value ) {
+		if ( '_featured' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
+			return;
+		}
+		global $wpdb;
+
+		if ( '1' == $_meta_value ) {
+			$wpdb->update( $wpdb->posts, array( 'menu_order' => 0 ), array( 'ID' => $object_id ) );
+		} else {
+			$wpdb->update( $wpdb->posts, array( 'menu_order' => 1 ), array( 'ID' => $object_id, 'menu_order' => 0 ) );
+		}
 	}
 
 	/**

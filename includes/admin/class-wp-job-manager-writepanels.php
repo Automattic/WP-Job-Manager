@@ -436,14 +436,6 @@ class WP_Job_Manager_Writepanels {
 					break;
 				}
 			}
-
-			if ( '_featured' === $key ) {
-				if ( ! empty( $_POST[ $key ] ) ) {
-					$wpdb->update( $wpdb->posts, array( 'menu_order' => 0 ), array( 'ID' => $post_id ) );
-				} else {
-					$wpdb->update( $wpdb->posts, array( 'menu_order' => 1 ), array( 'ID' => $post_id, 'menu_order' => 0 ) );
-				}
-			}
 		}
 	}
 }
