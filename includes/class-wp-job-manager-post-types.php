@@ -288,7 +288,7 @@ class WP_Job_Manager_Post_Types {
 			'post_type'           => 'job_listing',
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => 1,
-			'posts_per_page'      => 10,
+			'posts_per_page'      => isset( $_GET['posts_per_page'] ) ? absint( $_GET['posts_per_page'] ) : 10,
 			's'                   => isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '',
 			'meta_query'          => array(),
 			'tax_query'           => array()
