@@ -505,7 +505,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 	extract( $r );
 
 	// Store in a transient to help sites with many cats
-	$categories_hash = 'jmc-' . md5( json_encode( $r ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' ) );
+	$categories_hash = 'jmc-' . md5( json_encode( $r ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'jm_get_terms' ) );
 
 	if ( false === ( $categories = get_transient( $categories_hash ) ) ) {
 		$categories = get_terms( $taxonomy, $r );

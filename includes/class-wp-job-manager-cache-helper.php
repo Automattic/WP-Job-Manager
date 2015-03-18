@@ -11,6 +11,7 @@ class WP_Job_Manager_Cache_Helper {
 
 	public static function init() {
 		add_action( 'save_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
+		add_action( 'set_object_terms', array( __CLASS__, 'flush_terms_cache' ) );
 	}
 
 	/**
@@ -20,6 +21,13 @@ class WP_Job_Manager_Cache_Helper {
 		if ( 'job_listing' === get_post_type( $post_id ) ) {
 			self::get_transient_version( 'get_job_listings', true );
 		}
+	}
+
+	/**
+	 * Flush terms cache
+	 */
+	public static function flush_terms_cache() {
+		self::get_transient_version( 'jm_get_terms', true );
 	}
 
 	/**

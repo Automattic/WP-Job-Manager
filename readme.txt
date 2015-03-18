@@ -119,6 +119,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - Clear term cache when terms are set for any object.
+
 = 1.21.3 =
 * Feature - Support posts_per_page in feed.
 * Fix - Correctly set menu_order when creating a new job, or updating featured status.
