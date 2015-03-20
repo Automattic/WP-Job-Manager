@@ -3,7 +3,7 @@
 # Translators:
 # Claudio Sanches <contato@claudiosmweb.com>, 2014
 # Dionizio Bonfim Bach <translations@djio.com.br>, 2015
-# Fernando Sousa <hotforms@gmail.com>, 2014
+# Fernando Sousa <inactive+ifernandosousa@transifex.com>, 2014
 # Mike Jolley <mike.jolley@me.com>, 2014
 # vmassuchetto <vmassuchetto@gmail.com>, 2014
 # vmassuchetto <vmassuchetto@gmail.com>, 2014

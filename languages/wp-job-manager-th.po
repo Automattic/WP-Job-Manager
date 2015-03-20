@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
 "POT-Creation-Date: 2015-01-24 13:48:39+00:00\n"
-"PO-Revision-Date: 2015-01-24 18:50+0000\n"
+"PO-Revision-Date: 2015-02-27 12:11+0000\n"
 "Last-Translator: Nattakan Chantarumporn <khwan@outlook.com>\n"
 "Language-Team: Thai (http://www.transifex.com/projects/p/wp-job-manager/language/th/)\n"
 "MIME-Version: 1.0\n"
@@ -1059,15 +1059,15 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:570
 msgid "Please enter a username."
-msgstr ""
+msgstr "กรุณากรอกชื่อผู้ใช้"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:573
 msgid "Please enter your email address."
-msgstr ""
+msgstr "กรุณากรอกที่อยู่อีเมล"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:591
 msgid "You must be signed in to post a new listing."
-msgstr ""
+msgstr "คุณต้องลงชื่อเข้าใช้เพื่อสร้างรายการใหม่"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:771
 msgid "Submit Listing &rarr;"
@@ -1243,7 +1243,7 @@ msgstr ""
 
 #: templates/job-submitted.php:9
 msgid "%s submitted successfully. Your listing will be visible once approved."
-msgstr ""
+msgstr "โพสต์ %s เรียบร้อยแล้ว รายการของคุณจะแสดงหลังจากได้รับการอนุมัติ"
 
 #: wp-job-manager-functions.php:164
 msgctxt "post status"
@@ -1272,7 +1272,7 @@ msgstr "ทำงาน"
 
 #: wp-job-manager-functions.php:271
 msgid "Reset"
-msgstr ""
+msgstr "ล้างค่า"
 
 #: wp-job-manager-functions.php:275
 msgid "RSS"
@@ -1284,15 +1284,15 @@ msgstr "ที่อยู่อีเมลไม่ถูกต้อง"
 
 #: wp-job-manager-functions.php:353
 msgid "Your email address isn&#8217;t correct."
-msgstr ""
+msgstr "ที่อยู่อีเมลของคุณไม่ถูกต้อง"
 
 #: wp-job-manager-functions.php:357
 msgid "This email is already registered, please choose another one."
-msgstr ""
+msgstr "อีเมลนี้ถูกนำมาใช้แล้ว กรุณาเลือกอีเมลอื่น"
 
 #: wp-job-manager-functions.php:496
 msgid "Choose a category&hellip;"
-msgstr ""
+msgstr "เลือกหมวดหมู่&hellip;"
 
 #: wp-job-manager-template.php:135
 msgid "Inactive"
@@ -1322,7 +1322,7 @@ msgstr "https://wpjobmanager.com/"
 msgid ""
 "Manage job listings from the WordPress admin panel, and allow users to post "
 "jobs directly to your site."
-msgstr ""
+msgstr "จัดการรายการจากแผงควบคุมของเวิร์ดเพรส และอนุญาติให้ผู้ใช้โพสต์งานไปยังเว็บไซต์โดยตรง"
 
 #. Author of the plugin/theme
 msgid "Mike Jolley"

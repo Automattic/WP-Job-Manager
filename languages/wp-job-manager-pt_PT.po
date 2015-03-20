@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
 # Zé Fontainhas <jfontainhas@gmail.com>, 2014
-# luísbatista <mf3k.wd@gmail.com>, 2014
+# luísbatista <inactive+fr3aky@transifex.com>, 2014
 # Mike Jolley <mike.jolley@me.com>, 2014
 # Nuno Alves <inactive+nalvesrpd@transifex.com>, 2014
 msgid ""

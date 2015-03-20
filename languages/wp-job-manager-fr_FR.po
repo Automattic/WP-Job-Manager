@@ -4,6 +4,7 @@
 # adrien laudet <adrien.laudet@gmail.com>, 2015
 # allanot nicolas <n.allanot@free.fr>, 2014
 # Bérangère Audebert <berangere.audebert@gmail.com>, 2014
+# Bérangère Audebert <talentconnexionfr@gmail.com>, 2015
 # MedTn <brkmed@gmail.com>, 2014
 # f.berniermalcoiffe <f.bernier-malcoiffe@novia-systems.fr>, 2014
 msgid ""
@@ -11,8 +12,8 @@ msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
 "POT-Creation-Date: 2015-01-24 13:48:39+00:00\n"
-"PO-Revision-Date: 2015-01-24 14:01+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2015-02-18 09:00+0000\n"
+"Last-Translator: Bérangère Audebert <talentconnexionfr@gmail.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/wp-job-manager/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -830,7 +831,7 @@ msgstr "Poste"
 
 #: includes/class-wp-job-manager-post-types.php:158
 msgid "Jobs"
-msgstr "."
+msgstr "postes"
 
 #: includes/class-wp-job-manager-post-types.php:161
 msgctxt "Post type archive slug - resave permalinks after changing this"
@@ -1154,7 +1155,7 @@ msgstr "Posté il y a %s"
 
 #: templates/content-single-job_listing-meta.php:22
 msgid "This position has been filled"
-msgstr "Cet intitulé a été rempli"
+msgstr "Ce poste a été pourvu"
 
 #: templates/content-single-job_listing.php:6
 msgid "This listing has expired"
@@ -1285,7 +1286,7 @@ msgstr "RSS"
 
 #: wp-job-manager-functions.php:345
 msgid "Invalid email address."
-msgstr ""
+msgstr "Adresse mail invalide."
 
 #: wp-job-manager-functions.php:353
 msgid "Your email address isn&#8217;t correct."

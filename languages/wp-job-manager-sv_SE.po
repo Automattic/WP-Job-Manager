@@ -1,6 +1,7 @@
 # Copyright (C) 2015 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# jerwre, 2015
 # simonwimell <konto+transifex@wimellwebb.se>, 2014
 # mikkolauhakari <webmaster@lauhakari.com>, 2014
 msgid ""
@@ -8,8 +9,8 @@ msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
 "POT-Creation-Date: 2015-01-24 13:48:39+00:00\n"
-"PO-Revision-Date: 2015-01-24 13:49+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2015-02-03 16:13+0000\n"
+"Last-Translator: jerwre\n"
 "Language-Team: Swedish (Sweden) (http://www.transifex.com/projects/p/wp-job-manager/language/sv_SE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,13 +21,13 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-addons.php:57
 #: includes/admin/class-wp-job-manager-admin.php:61
 msgid "WP Job Manager Add-ons"
-msgstr "WP Job Manager Tillägg"
+msgstr "WP Job Manager-tillägg"
 
 #: includes/admin/class-wp-job-manager-addons.php:58
 msgid ""
 "Buying multiple add-ons? <a href=\"%s\">Check out the core add-on bundle "
 "&rarr;</a>"
-msgstr "Ska du köpa flera tillägg? <a href=\\\"%s\\\">Fundera på core tilläggspaketet &rarr;</a>"
+msgstr "Ska du köpa flera tillägg? <a href=\\\"%s\\\">Fundera på core-tilläggspaketet &rarr;</a>"
 
 #: includes/admin/class-wp-job-manager-admin.php:58
 msgid "Settings"
@@ -39,26 +40,26 @@ msgstr "Tillägg"
 #: includes/admin/class-wp-job-manager-cpt.php:48
 #: includes/admin/class-wp-job-manager-cpt.php:49
 msgid "Approve %s"
-msgstr ""
+msgstr "Godkänn %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:51
 #: includes/admin/class-wp-job-manager-cpt.php:52
 msgid "Expire %s"
-msgstr ""
+msgstr "Utgår %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:140
 #: includes/admin/class-wp-job-manager-cpt.php:142
 msgid "%s approved"
-msgstr "%s godkänt"
+msgstr "%s godkänd"
 
 #: includes/admin/class-wp-job-manager-cpt.php:160
 #: includes/admin/class-wp-job-manager-cpt.php:162
 msgid "%s expired"
-msgstr "%s utgånget"
+msgstr "%s utgången"
 
 #: includes/admin/class-wp-job-manager-cpt.php:194
 msgid "Select category"
-msgstr ""
+msgstr "Välj kategori"
 
 #: includes/admin/class-wp-job-manager-cpt.php:209
 #: includes/admin/class-wp-job-manager-cpt.php:255
@@ -67,11 +68,11 @@ msgstr "Position"
 
 #: includes/admin/class-wp-job-manager-cpt.php:225
 msgid "%s updated. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s uppdaterades. <a href=\"%s\">Visa</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:226
 msgid "Custom field updated."
-msgstr "Eget fält uppdaterad"
+msgstr "Eget fält uppdaterat."
 
 #: includes/admin/class-wp-job-manager-cpt.php:227
 msgid "Custom field deleted."
@@ -79,29 +80,29 @@ msgstr "Eget fält borttaget."
 
 #: includes/admin/class-wp-job-manager-cpt.php:228
 msgid "%s updated."
-msgstr ""
+msgstr "%s uppdaterad."
 
 #: includes/admin/class-wp-job-manager-cpt.php:229
 msgid "%s restored to revision from %s"
-msgstr ""
+msgstr "%s återställd till revidering från %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:230
 msgid "%s published. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s publicerades. <a href=\"%s\">Visa</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:231
 msgid "%s saved."
-msgstr ""
+msgstr "%s sparades."
 
 #: includes/admin/class-wp-job-manager-cpt.php:232
 msgid "%s submitted. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "%s skickad. <a target=\"_blank\" href=\"%s\">Förhandsgranska</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:233
 msgid ""
 "%s scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
 "href=\"%2$s\">Preview</a>"
-msgstr ""
+msgstr "%s tidsinställd till: <strong>%1$s</strong>. <a target=\"_blank\" href=\"%2$s\">Förhandsgranska</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:234
 msgid "M j, Y @ G:i"
@@ -109,7 +110,7 @@ msgstr "j M Y @ G:i"
 
 #: includes/admin/class-wp-job-manager-cpt.php:235
 msgid "%s draft updated. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "%s-utkast uppdaterad. <a target=\"_blank\" href=\"%s\">Förhandsgranska</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:254
 msgid "Type"
@@ -130,7 +131,7 @@ msgstr "Postades"
 #: includes/admin/class-wp-job-manager-cpt.php:258
 #: includes/admin/class-wp-job-manager-writepanels.php:79
 msgid "Expires"
-msgstr "Går ut"
+msgstr "Utgår"
 
 #: includes/admin/class-wp-job-manager-cpt.php:259
 msgid "Categories"
@@ -155,7 +156,7 @@ msgstr "Åtgärder"
 
 #: includes/admin/class-wp-job-manager-cpt.php:290
 msgid "ID: %d"
-msgstr ""
+msgstr "ID: %d"
 
 #: includes/admin/class-wp-job-manager-cpt.php:318
 #: includes/admin/class-wp-job-manager-cpt.php:323
@@ -197,15 +198,15 @@ msgstr "Jobbannonser"
 
 #: includes/admin/class-wp-job-manager-settings.php:48
 msgid "Listings Per Page"
-msgstr ""
+msgstr "Annonser per sida"
 
 #: includes/admin/class-wp-job-manager-settings.php:49
 msgid "How many listings should be shown per page by default?"
-msgstr ""
+msgstr "Hur många annonser ska visas per sida som standard?"
 
 #: includes/admin/class-wp-job-manager-settings.php:55
 msgid "Filled Positions"
-msgstr ""
+msgstr "Tillsatta positioner"
 
 #: includes/admin/class-wp-job-manager-settings.php:56
 msgid "Hide filled positions"
@@ -213,7 +214,7 @@ msgstr "Dölj tillsatta positioner"
 
 #: includes/admin/class-wp-job-manager-settings.php:57
 msgid "If enabled, filled positions will be hidden."
-msgstr ""
+msgstr "Om aktiverad så kommer tillsatta positioner att döljas."
 
 #: includes/admin/class-wp-job-manager-settings.php:64
 msgid "Job Categories"
@@ -221,40 +222,40 @@ msgstr "Jobbkategorier"
 
 #: includes/admin/class-wp-job-manager-settings.php:65
 msgid "Enable categories for listings"
-msgstr ""
+msgstr "Aktivera kategorier för annonser"
 
 #: includes/admin/class-wp-job-manager-settings.php:66
 msgid ""
 "Choose whether to enable categories. Categories must be setup by an admin to"
 " allow users to choose them during submission."
-msgstr ""
+msgstr "Välj att aktivera kategorier. Kategorier måste ställas in av en administratör för att tillåta användare att använda dem i annonsformuläret."
 
 #: includes/admin/class-wp-job-manager-settings.php:73
 msgid "Multi-select Categories"
-msgstr ""
+msgstr "Multival av kategorier"
 
 #: includes/admin/class-wp-job-manager-settings.php:74
 msgid "Enable category multiselect by default"
-msgstr ""
+msgstr "Aktivera multival av kategori by default"
 
 #: includes/admin/class-wp-job-manager-settings.php:75
 #: includes/admin/class-wp-job-manager-settings.php:83
 msgid ""
 "If enabled, the category select box will default to a multiselect on the "
 "[jobs] shortcode."
-msgstr ""
+msgstr "Om aktiverat, kommer kategorilistan bli av typen multival i shortcode [jobs]."
 
 #: includes/admin/class-wp-job-manager-settings.php:82
 msgid "Category Filter Type"
-msgstr ""
+msgstr "Kategori filtertyp"
 
 #: includes/admin/class-wp-job-manager-settings.php:86
 msgid "Jobs will be shown if within ANY selected category"
-msgstr ""
+msgstr "Jobb visas om inom NÅGON av de valda kategorierna"
 
 #: includes/admin/class-wp-job-manager-settings.php:87
 msgid "Jobs will be shown if within ALL selected categories"
-msgstr ""
+msgstr "Jobb visas om inom ALLA valda kategorier"
 
 #: includes/admin/class-wp-job-manager-settings.php:93
 msgid "Job Submission"
@@ -262,21 +263,21 @@ msgstr "Skicka in jobbannons"
 
 #: includes/admin/class-wp-job-manager-settings.php:98
 msgid "Account Required"
-msgstr ""
+msgstr "Konto krävs"
 
 #: includes/admin/class-wp-job-manager-settings.php:99
 msgid "Submitting listings requires an account"
-msgstr ""
+msgstr "Ett konto krävs för att skicka in platsannonser"
 
 #: includes/admin/class-wp-job-manager-settings.php:100
 msgid ""
 "If disabled, non-logged in users will be able to submit listings without "
 "creating an account."
-msgstr ""
+msgstr "Om inaktiverat, kommer icke-inloggade användare att kunna skicka in jobbannonser utan att behöva skapa ett konto."
 
 #: includes/admin/class-wp-job-manager-settings.php:107
 msgid "Account Creation"
-msgstr ""
+msgstr "Skapa konto"
 
 #: includes/admin/class-wp-job-manager-settings.php:108
 msgid "Allow account creation"
@@ -286,31 +287,31 @@ msgstr "Tillåt att skapa konto"
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the submission form."
-msgstr ""
+msgstr "Om aktiverat, kommer icke-inloggade användare att kunna skapa ett konto genom att fylla i sin epostadress i annonsformuläret."
 
 #: includes/admin/class-wp-job-manager-settings.php:116
 msgid "Username Generation"
-msgstr ""
+msgstr "Generering av användernamn"
 
 #: includes/admin/class-wp-job-manager-settings.php:117
 msgid "Automatically Generate Username from Email Address"
-msgstr ""
+msgstr "Automatiskt generera användarnamn från epostadressen"
 
 #: includes/admin/class-wp-job-manager-settings.php:118
 msgid ""
 "If enabled, a username will be generated from the first part of the user "
 "email address. Otherwise, a username field will be shown."
-msgstr ""
+msgstr "Om aktiverat, så kommer ett användarnamn att genereras av den första delen av användarens epostadress. I annat fall så kommer ett fält för användarnamn att visas."
 
 #: includes/admin/class-wp-job-manager-settings.php:125
 msgid "Account Role"
-msgstr "Konto Roll"
+msgstr "Kontoroll"
 
 #: includes/admin/class-wp-job-manager-settings.php:126
 msgid ""
 "If you enable registration on your submission form, choose a role for the "
 "new user."
-msgstr ""
+msgstr "Om du aktiverar registrering på ditt annonsformulär, välj en roll för den nya användaren."
 
 #: includes/admin/class-wp-job-manager-settings.php:133
 msgid "Approval Required"
@@ -318,42 +319,42 @@ msgstr "Godkännande krävs"
 
 #: includes/admin/class-wp-job-manager-settings.php:134
 msgid "New submissions require admin approval"
-msgstr "Nya annonser kräver godkännande från admin"
+msgstr "Nya annonser kräver godkännande från administratör"
 
 #: includes/admin/class-wp-job-manager-settings.php:135
 msgid "If enabled, new submissions will be inactive, pending admin approval."
-msgstr "Om aktiverat kommer nya annonser att vara inaktiva tills admin har godkänt dem."
+msgstr "Om aktiverat kommer nya annonser att vara inaktiva tills administratör har godkänt dem."
 
 #: includes/admin/class-wp-job-manager-settings.php:142
 msgid "Allow Pending Edits"
-msgstr ""
+msgstr "Tillåt redigering av annonser som väntar på godkännande"
 
 #: includes/admin/class-wp-job-manager-settings.php:143
 msgid "Submissions awaiting approval can be edited"
-msgstr ""
+msgstr "Annonser som väntar på godkännande kan redigeras"
 
 #: includes/admin/class-wp-job-manager-settings.php:144
 msgid ""
 "If enabled, submissions awaiting admin approval can be edited by the user."
-msgstr ""
+msgstr "Om aktiverat, så kan annonser som väntar på godkännande av administratör bli redigerade av användaren."
 
 #: includes/admin/class-wp-job-manager-settings.php:151
 msgid "Listing Duration"
-msgstr ""
+msgstr "Annonsvaraktighet"
 
 #: includes/admin/class-wp-job-manager-settings.php:152
 msgid ""
 "How many <strong>days</strong> listings are live before expiring. Can be "
 "left blank to never expire."
-msgstr "Hur många <strong>dagar</strong> annonserna kommer att vara live innan de går ut. Kan lämnas tomt för att aldrig gå ut."
+msgstr "Hur många <strong>dagar</strong> annonserna kommer att vara live innan de utgår. Kan lämnas tomt för att aldrig utgå."
 
 #: includes/admin/class-wp-job-manager-settings.php:158
 msgid "Application Method"
-msgstr ""
+msgstr "Ansökningsmetod"
 
 #: includes/admin/class-wp-job-manager-settings.php:159
 msgid "Choose the contact method for listings."
-msgstr ""
+msgstr "Välj kontaktmetod för annonser."
 
 #: includes/admin/class-wp-job-manager-settings.php:162
 msgid "Email address or website URL"
@@ -369,37 +370,37 @@ msgstr "Endast webbadress"
 
 #: includes/admin/class-wp-job-manager-settings.php:170
 msgid "Pages"
-msgstr ""
+msgstr "Sidor"
 
 #: includes/admin/class-wp-job-manager-settings.php:175
 msgid "Submit Job Form Page"
-msgstr ""
+msgstr "Annonsformulärsida"
 
 #: includes/admin/class-wp-job-manager-settings.php:176
 msgid ""
 "Select the page where you have placed the [submit_job_form] shortcode. This "
 "lets the plugin know where the form is located."
-msgstr ""
+msgstr "Välj den sida där du har placeradt shortcode [submit_job_form]. Detta låter tillägget veta vart formuläret finns."
 
 #: includes/admin/class-wp-job-manager-settings.php:182
 msgid "Job Dashboard Page"
-msgstr ""
+msgstr "Jobbkontrollpanel"
 
 #: includes/admin/class-wp-job-manager-settings.php:183
 msgid ""
 "Select the page where you have placed the [job_dashboard] shortcode. This "
 "lets the plugin know where the dashboard is located."
-msgstr ""
+msgstr "Välj den sida där du har placerat shortcode [job_dashboard]. Detta låter tillägget veta vart kontrollpanelen finns."
 
 #: includes/admin/class-wp-job-manager-settings.php:189
 msgid "Job Listings Page"
-msgstr ""
+msgstr "Jobbannonssida"
 
 #: includes/admin/class-wp-job-manager-settings.php:190
 msgid ""
 "Select the page where you have placed the [jobs] shortcode. This lets the "
 "plugin know where the job listings page is located."
-msgstr ""
+msgstr "Välj den sida där du har placerat shortcode [jobs]. Detta låter tillägget veta vart sidan för platsannonser finns."
 
 #: includes/admin/class-wp-job-manager-settings.php:242
 msgid "Settings successfully saved"
@@ -407,11 +408,11 @@ msgstr "Inställningar sparades"
 
 #: includes/admin/class-wp-job-manager-settings.php:302
 msgid "--no page--"
-msgstr ""
+msgstr "--no page--"
 
 #: includes/admin/class-wp-job-manager-settings.php:307
 msgid "Select a page&hellip;"
-msgstr ""
+msgstr "Välj en sida&hellip;"
 
 #: includes/admin/class-wp-job-manager-settings.php:348
 msgid "Save Changes"
@@ -419,56 +420,56 @@ msgstr "Spara ändringar"
 
 #: includes/admin/class-wp-job-manager-setup.php:31
 msgid "Setup"
-msgstr ""
+msgstr "Installation"
 
 #: includes/admin/class-wp-job-manager-setup.php:128
 msgid "WP Job Manager Setup"
-msgstr ""
+msgstr "WP Job Manager-installation"
 
 #: includes/admin/class-wp-job-manager-setup.php:131
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. Introduktion"
 
 #: includes/admin/class-wp-job-manager-setup.php:132
 msgid "2. Page Setup"
-msgstr ""
+msgstr "2. Sidinställningar"
 
 #: includes/admin/class-wp-job-manager-setup.php:133
 msgid "3. Done"
-msgstr ""
+msgstr "3. Färdig"
 
 #: includes/admin/class-wp-job-manager-setup.php:138
 msgid "Setup Wizard Introduction"
-msgstr ""
+msgstr "Installationshjälp"
 
 #: includes/admin/class-wp-job-manager-setup.php:140
 msgid "Thanks for installing <em>WP Job Manager</em>!"
-msgstr ""
+msgstr "Tack för att du installerade <em>WP Job Manager</em>!"
 
 #: includes/admin/class-wp-job-manager-setup.php:141
 msgid ""
 "This setup wizard will help you get started by creating the pages for job "
 "submission, job management, and listing your jobs."
-msgstr ""
+msgstr "Denna installationshjälp hjälper dig att sätta igång genom att skapa de sidor som behövs för skapande, hantering och visning av dina jobb."
 
 #: includes/admin/class-wp-job-manager-setup.php:142
 msgid ""
 "If you want to skip the wizard and setup the pages and shortcodes yourself "
 "manually, the process is still reletively simple. Refer to the "
 "%sdocumentation%s for help."
-msgstr ""
+msgstr "Om du vill hoppa över hjälpen och skapa sidorna och shortcodes själv manuellt, så är processen fortfarande relativt simpel. Läs %sdocumentation%s för hjälp."
 
 #: includes/admin/class-wp-job-manager-setup.php:145
 msgid "Continue to page setup"
-msgstr ""
+msgstr "Fortsätt till sidinstallation"
 
 #: includes/admin/class-wp-job-manager-setup.php:146
 msgid "Skip setup. I will setup the plugin manually"
-msgstr ""
+msgstr "Hoppa över installation. Jag installerar tillägget manuellt."
 
 #: includes/admin/class-wp-job-manager-setup.php:152
 msgid "Page Setup"
-msgstr ""
+msgstr "Sidinstallation"
 
 #: includes/admin/class-wp-job-manager-setup.php:154
 msgid ""
@@ -476,120 +477,120 @@ msgid ""
 " your %3$spages%2$s to output content. These can be created for you below. "
 "For more information on the job shortcodes view the %4$sshortcode "
 "documentation%2$s."
-msgstr ""
+msgstr "<em>WP Job Manager</em> inkluderar %1$sshortcodes%2$s som kan användas inuti dina %3$spages%2$s för att mata ut innehåll. Dessa kan skapas åt dig nedan. För mer information om shortcodes för jobb ta en titt på %4$sshortcodedokumentationen%2$s. "
 
 #: includes/admin/class-wp-job-manager-setup.php:161
 msgid "Page Title"
-msgstr ""
+msgstr "Sidtitel"
 
 #: includes/admin/class-wp-job-manager-setup.php:162
 msgid "Page Description"
-msgstr ""
+msgstr "Sidbeskrivning"
 
 #: includes/admin/class-wp-job-manager-setup.php:163
 msgid "Content Shortcode"
-msgstr ""
+msgstr "Shortcode innehåll"
 
 #: includes/admin/class-wp-job-manager-setup.php:169
 msgctxt "Default page title (wizard)"
 msgid "Post a Job"
-msgstr ""
+msgstr "Skapa ett jobb"
 
 #: includes/admin/class-wp-job-manager-setup.php:171
 msgid ""
 "This page allows employers to post jobs to your website from the front-end."
-msgstr ""
+msgstr "Denna sida låter arbetsgivare publicera jobb till din hemsida från front-end."
 
 #: includes/admin/class-wp-job-manager-setup.php:173
 msgid ""
 "If you do not want to accept submissions from users in this way (for example"
 " you just want to post jobs from the admin dashboard) you can skip creating "
 "this page."
-msgstr ""
+msgstr "Om du inte vill acceptera submissions från användare på detta sätt (till exempel om du bara vill publicera jobb från administratörens kontrollpanel), så kan du hoppa över skapandet av denna sidan."
 
 #: includes/admin/class-wp-job-manager-setup.php:179
 msgctxt "Default page title (wizard)"
 msgid "Job Dashboard"
-msgstr ""
+msgstr "Jobbkontrollpanel"
 
 #: includes/admin/class-wp-job-manager-setup.php:181
 msgid ""
 "This page allows employers to manage and edit their own jobs from the front-"
 "end."
-msgstr ""
+msgstr "Denna sida låter arbetsgivare hantera och redigera deras egna jobb från front-end."
 
 #: includes/admin/class-wp-job-manager-setup.php:183
 msgid ""
 "If you plan on managing all listings from the admin dashboard you can skip "
 "creating this page."
-msgstr ""
+msgstr "Om du planerar att hantera platsannonser från administratörkontrollpanelen så kan du hoppa över skapandet av denna sida."
 
 #: includes/admin/class-wp-job-manager-setup.php:189
 msgctxt "Default page title (wizard)"
 msgid "Jobs"
-msgstr ""
+msgstr "Jobannonser"
 
 #: includes/admin/class-wp-job-manager-setup.php:190
 msgid ""
 "This page allows users to browse, search, and filter job listings on the "
 "front-end of your site."
-msgstr ""
+msgstr "Denna sida låter användare att bläddra, söka och filtrera jobbannonser på front-end av din sida."
 
 #: includes/admin/class-wp-job-manager-setup.php:198
 msgid "Skip this step"
-msgstr ""
+msgstr "Hoppa över detta steg"
 
 #: includes/admin/class-wp-job-manager-setup.php:208
 msgid "All Done!"
-msgstr ""
+msgstr "Klart!"
 
 #: includes/admin/class-wp-job-manager-setup.php:210
 msgid ""
 "Looks like you're all set to start using the plugin. In case you're "
 "wondering where to go next:"
-msgstr ""
+msgstr "Det ser ut som att du är redo att börja använda tillägget. Ifall du undrar vart du ska härnäst: "
 
 #: includes/admin/class-wp-job-manager-setup.php:213
 msgid "Tweak the plugin settings"
-msgstr ""
+msgstr "Justera tilläggets inställningar"
 
 #: includes/admin/class-wp-job-manager-setup.php:214
 msgid "Add a job via the back-end"
-msgstr ""
+msgstr "Lägg till ett jobb via back-end"
 
 #: includes/admin/class-wp-job-manager-setup.php:217
 msgid "Add a job via the front-end"
-msgstr ""
+msgstr "Lägg till ett jobb via front-end"
 
 #: includes/admin/class-wp-job-manager-setup.php:219
 msgid "Find out more about the front-end job submission form"
-msgstr ""
+msgstr "Ta reda på mer om front-end-annonsformuläret"
 
 #: includes/admin/class-wp-job-manager-setup.php:223
 msgid "View submitted job listings"
-msgstr ""
+msgstr "Visa inskickade jobbannonser"
 
 #: includes/admin/class-wp-job-manager-setup.php:225
 msgid "Add the [jobs] shortcode to a page to list jobs"
-msgstr ""
+msgstr "Lägg till shortcode [jobs] på en sida för att lista jobb"
 
 #: includes/admin/class-wp-job-manager-setup.php:229
 msgid "View the job dashboard"
-msgstr ""
+msgstr "Visa jobbkontrollpanelen"
 
 #: includes/admin/class-wp-job-manager-setup.php:231
 msgid "Find out more about the front-end job dashboard"
-msgstr ""
+msgstr "Ta reda på mer om front-end-kontrollpanelen"
 
 #: includes/admin/class-wp-job-manager-setup.php:235
 msgid ""
 "And don't forget, if you need any more help using <em>WP Job Manager</em> "
 "you can consult the %1$sdocumentation%2$s or %3$spost on the forums%2$s!"
-msgstr ""
+msgstr "Och glöm inte, om du behöver mer hjälp med att använda <em>WP Job Manager</em> så kan du konsultera %1$sdokumentationen%2$s eller %3$sinläggen på forumen%2$s!"
 
 #: includes/admin/class-wp-job-manager-setup.php:238
 msgid "Support the Ongoing Development of this Plugin"
-msgstr ""
+msgstr "Stöd den pågående utvecklingen av detta tillägg"
 
 #: includes/admin/class-wp-job-manager-setup.php:239
 msgid ""
@@ -597,48 +598,48 @@ msgid ""
 "for example code contribution, translation, or even telling your friends how"
 " awesome the plugin (hopefully) is. Thanks in advance for your support - it "
 "is much appreciated!"
-msgstr ""
+msgstr "Det finns många sätt att stödja open-source-projekt som WP Job Manager, till exempel kodbidrag, översättning, eller genom att berätta för dina vänner om hur häftigt tillägget (förhoppningsvis) är. Tack på förhand för ditt stöd - det är mycket uppskattat!"
 
 #: includes/admin/class-wp-job-manager-setup.php:241
 msgid "Leave a positive review"
-msgstr ""
+msgstr "Lämna en positiv recension"
 
 #: includes/admin/class-wp-job-manager-setup.php:242
 msgid "Contribute a localization"
-msgstr ""
+msgstr "Bidra med en lokalisering"
 
 #: includes/admin/class-wp-job-manager-setup.php:243
 msgid "Contribute code or report a bug"
-msgstr ""
+msgstr "Bidra med kod eller rapportera en bug"
 
 #: includes/admin/class-wp-job-manager-setup.php:244
 msgid "Help other users on the forums"
-msgstr ""
+msgstr "Hjälp andra användare på forumen"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:32
 #: includes/forms/class-wp-job-manager-form-submit-job.php:142
 msgid "e.g. \"London\""
-msgstr ""
+msgstr "t.ex. \"Stockholm\""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:33
 #: includes/forms/class-wp-job-manager-form-submit-job.php:139
 msgid "Leave this blank if the location is not important"
-msgstr ""
+msgstr "Lämna detta tomt om plats inte är viktigt"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:36
 #: includes/forms/class-wp-job-manager-form-submit-job.php:123
 msgid "Application email/URL"
-msgstr "E-post/URL för ansökan"
+msgstr "Epost/URL för ansökan"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:37
 msgid "URL or email which applicants use to apply"
-msgstr "URL eller e-postadress där jobbsökande kan skicka in sin ansökan"
+msgstr "URL eller e-postadress jobbsökande använder för att skicka sin ansökan"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:38
 msgid ""
 "This field is required for the \"application\" area to appear beneath the "
 "listing."
-msgstr ""
+msgstr "Detta fält är obligatoriskt för att \\\"ansökan\\\" ska visas under annonsen."
 
 #: includes/admin/class-wp-job-manager-writepanels.php:42
 #: includes/forms/class-wp-job-manager-form-submit-job.php:180
@@ -671,11 +672,11 @@ msgstr "URL till företagets logotyp"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:63
 msgid "Company video"
-msgstr ""
+msgstr "Företagsvideo"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:64
 msgid "URL to the company video"
-msgstr ""
+msgstr "URL till företagets video"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:68
 msgid "Position filled?"
@@ -683,7 +684,7 @@ msgstr "Position tillsatt?"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:74
 msgid "Feature this listing?"
-msgstr ""
+msgstr "Gör denna platsannons till utvald?"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:76
 msgid ""
@@ -701,7 +702,7 @@ msgstr "Utlagt av"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:102
 msgid "%s Data"
-msgstr ""
+msgstr "%s Data"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:128
 #: includes/admin/class-wp-job-manager-writepanels.php:134
@@ -717,7 +718,7 @@ msgstr "Ladda upp"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:143
 msgid "Add file"
-msgstr ""
+msgstr "Lägg till fil"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:274
 msgid "Guest user"
@@ -729,7 +730,7 @@ msgstr "beläget i &ldquo;%s&rdquo;"
 
 #: includes/class-wp-job-manager-ajax.php:127
 msgid "Showing all %s"
-msgstr ""
+msgstr "Visar alla %s"
 
 #: includes/class-wp-job-manager-geocode.php:140
 msgid "No results found"
@@ -814,7 +815,7 @@ msgstr "Jobbtyp"
 
 #: includes/class-wp-job-manager-post-types.php:110
 msgid "Job types"
-msgstr ""
+msgstr "jobbtyper"
 
 #: includes/class-wp-job-manager-post-types.php:114
 msgctxt "Job type slug - resave permalinks after changing this"
@@ -823,11 +824,11 @@ msgstr "jobb-typ"
 
 #: includes/class-wp-job-manager-post-types.php:157
 msgid "Job"
-msgstr ""
+msgstr "Jobb"
 
 #: includes/class-wp-job-manager-post-types.php:158
 msgid "Jobs"
-msgstr ""
+msgstr "Jobb"
 
 #: includes/class-wp-job-manager-post-types.php:161
 msgctxt "Post type archive slug - resave permalinks after changing this"
@@ -866,7 +867,7 @@ msgstr "Inga %s hittades i sopkorgen"
 
 #: includes/class-wp-job-manager-post-types.php:192
 msgid "This is where you can create and manage %s."
-msgstr ""
+msgstr "Här kan du skapa och hantera %s."
 
 #: includes/class-wp-job-manager-post-types.php:217
 #: wp-job-manager-functions.php:165
@@ -882,11 +883,11 @@ msgstr[1] "Utgångna <span class=\\\"count\\\">(%s)</span>"
 
 #: includes/class-wp-job-manager-shortcodes.php:64
 msgid "Invalid ID"
-msgstr ""
+msgstr "Ogiltigt ID"
 
 #: includes/class-wp-job-manager-shortcodes.php:71
 msgid "This position has already been filled"
-msgstr ""
+msgstr "Denna position har redan blivit tillsatt"
 
 #: includes/class-wp-job-manager-shortcodes.php:77
 msgid "%s has been filled"
@@ -894,7 +895,7 @@ msgstr "%s har blivit tillsatt"
 
 #: includes/class-wp-job-manager-shortcodes.php:82
 msgid "This position is not filled"
-msgstr ""
+msgstr "Denna position är ej tilsatt"
 
 #: includes/class-wp-job-manager-shortcodes.php:89
 msgid "%s has been marked as not filled"
@@ -916,39 +917,39 @@ msgstr "Datum Upplagt"
 
 #: includes/class-wp-job-manager-shortcodes.php:166
 msgid "Date Expires"
-msgstr ""
+msgstr "Datum utgår"
 
 #: includes/class-wp-job-manager-shortcodes.php:261
 #: includes/class-wp-job-manager-shortcodes.php:295
 msgid "Load more listings"
-msgstr ""
+msgstr "Ladda fler annonser"
 
 #: includes/class-wp-job-manager-widgets.php:141
 msgid ""
 "Display a list of recent listings on your site, optionally matching a "
 "keyword and location."
-msgstr ""
+msgstr "Visa en lista på senaste annonser på din sida, eventuellt matchande ett sökord eller plats."
 
 #: includes/class-wp-job-manager-widgets.php:143
 #: includes/class-wp-job-manager-widgets.php:147
 msgid "Recent %s"
-msgstr ""
+msgstr "Senaste %s"
 
 #: includes/class-wp-job-manager-widgets.php:153
 msgid "Keyword"
-msgstr ""
+msgstr "Nyckelord"
 
 #: includes/class-wp-job-manager-widgets.php:166
 msgid "Number of listings to show"
-msgstr ""
+msgstr "Antal annonser att visa"
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:41
 msgid "Invalid listing"
-msgstr ""
+msgstr "Ogiltig annons"
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:77
 msgid "Save changes"
-msgstr ""
+msgstr "Spara ändringar"
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:104
 msgid "Your changes have been saved."
@@ -956,7 +957,7 @@ msgstr "Dina ändringar har sparats."
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:104
 msgid "View &rarr;"
-msgstr ""
+msgstr "Visa &rarr;"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:22
 msgid "Submit Details"
@@ -982,7 +983,7 @@ msgstr "jag@mindoman.se"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:119
 msgid "Application URL"
-msgstr "Ansöknings webbadress"
+msgstr "Ansöknings-URL"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:120
 #: includes/forms/class-wp-job-manager-form-submit-job.php:190
@@ -991,7 +992,7 @@ msgstr "http://"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:124
 msgid "Enter an email address or website URL"
-msgstr "Fyll i en e-postadress eller hemsides-URL"
+msgstr "Fyll i en epostadress eller hemsides-URL"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:164
 msgid "Description"
@@ -1008,7 +1009,7 @@ msgstr "Hemsida"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:194
 msgid "Tagline"
-msgstr "Slogan/kortbeskrivning"
+msgstr "Slogan/kort beskrivning"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:197
 msgid "Briefly describe your company"
@@ -1016,15 +1017,15 @@ msgstr "Beskriv ditt företag kortfattat"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:202
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:205
 msgid "A link to a video about your company"
-msgstr ""
+msgstr "Länk till video om ditt företag"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:209
 msgid "Twitter username"
-msgstr "Twitter-namn"
+msgstr "Twitternamn"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:212
 msgid "@yourcompany"
@@ -1041,7 +1042,7 @@ msgstr "%s är ett obligatoriskt fält"
 #: includes/forms/class-wp-job-manager-form-submit-job.php:393
 #: includes/forms/class-wp-job-manager-form-submit-job.php:398
 msgid "%s is invalid"
-msgstr ""
+msgstr "%s är ogiltig"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:412
 msgid "Please enter a valid application email address"
@@ -1057,19 +1058,19 @@ msgstr "Var god ange en giltig epostadress eller webbadress för ansökan"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:539
 msgid "Preview &rarr;"
-msgstr ""
+msgstr "Förhandsgranska &rarr;"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:570
 msgid "Please enter a username."
-msgstr ""
+msgstr "Fyll i ett användarnamn."
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:573
 msgid "Please enter your email address."
-msgstr ""
+msgstr "Fyll i din epostadress."
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:591
 msgid "You must be signed in to post a new listing."
-msgstr ""
+msgstr "Du måste vara inloggad för att posta en ny annons."
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:771
 msgid "Submit Listing &rarr;"
@@ -1082,7 +1083,7 @@ msgstr "&larr; Redigera jobbannons"
 #: includes/forms/class-wp-job-manager-form-submit-job.php:874
 #: includes/forms/class-wp-job-manager-form-submit-job.php:900
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
-msgstr ""
+msgstr "\"%s\" (filtyp %s) måste vara en av följande filtyper:  %s"
 
 #: templates/account-signin.php:4
 msgid "Your account"
@@ -1109,7 +1110,7 @@ msgid ""
 "If you don&rsquo;t have an account you can %screate one below by entering "
 "your email address/username. A password will be automatically emailed to "
 "you."
-msgstr ""
+msgstr "Om du inte har ett konto kan du skapa ett nedan genom att fylla i din epostadress/användarnamn. Ett lösenord skickas då automatiskt till dig."
 
 #: templates/account-signin.php:28
 msgid "optionally"
@@ -1117,11 +1118,11 @@ msgstr "valfritt"
 
 #: templates/account-signin.php:32
 msgid "You must sign in to create a new listing."
-msgstr ""
+msgstr "Du måste logga in för att skapa ny annons."
 
 #: templates/account-signin.php:40
 msgid "Username"
-msgstr ""
+msgstr "Användarnamn"
 
 #: templates/account-signin.php:40 templates/account-signin.php:47
 #: templates/job-submit.php:24 templates/job-submit.php:41
@@ -1130,19 +1131,19 @@ msgstr "(valfritt)"
 
 #: templates/account-signin.php:47
 msgid "Your email"
-msgstr "Din e-post"
+msgstr "Din epost"
 
 #: templates/content-job_listing.php:18
 msgid "%s ago"
-msgstr ""
+msgstr "%s sedan"
 
 #: templates/content-no-jobs-found.php:2
 msgid "There are no listings matching your search."
-msgstr ""
+msgstr "Det finns inga annonser som matchar din sökning."
 
 #: templates/content-no-jobs-found.php:4
 msgid "There are currently no vacancies."
-msgstr ""
+msgstr "Det finns för närvarande inga vakanser."
 
 #: templates/content-single-job_listing-meta.php:19
 #: templates/content-summary-job_listing.php:14
@@ -1151,11 +1152,11 @@ msgstr "Postades för %s sedan"
 
 #: templates/content-single-job_listing-meta.php:22
 msgid "This position has been filled"
-msgstr "Den här positionen har tillsatts"
+msgstr "Den här positionen har blivit tillsatt"
 
 #: templates/content-single-job_listing.php:6
 msgid "This listing has expired"
-msgstr ""
+msgstr "Denna annons har utgått"
 
 #: templates/form-fields/file-field.php:9
 #: templates/form-fields/file-field.php:18
@@ -1168,17 +1169,17 @@ msgstr "eller"
 
 #: templates/form-fields/file-field.php:30
 msgid "Maximum file size: %s."
-msgstr ""
+msgstr "Maximum filstorlek: %s."
 
 #: templates/job-application-email.php:1
 msgid ""
 "To apply for this job <strong>email your details to</strong> <a "
 "class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
-msgstr "För att ansöka om detta jobb, <strong>skicka dina detaljer via e-post till</strong> <a class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
+msgstr "För att ansöka om detta jobb, <strong>skicka dina detaljer via epost till</strong> <a class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
 
 #: templates/job-application-email.php:4
 msgid "Apply using webmail: "
-msgstr "Ansök med epost:"
+msgstr "Ansök via webmail:"
 
 #: templates/job-application-url.php:1
 msgid ""
@@ -1192,17 +1193,17 @@ msgstr "Ansök om jobb"
 
 #: templates/job-dashboard-login.php:3
 msgid "You need to be signed in to manage your listings."
-msgstr ""
+msgstr "Du måste vara inloggad för att hantera dina annonser."
 
 #: templates/job-dashboard.php:2
 msgid ""
 "Your listings are shown in the table below. Expired listings will be "
 "automatically removed after 30 days."
-msgstr ""
+msgstr "Dina annonser visas i tabellen nedan. Utgångna annonser tas automatiskt bort efter 30 dagar."
 
 #: templates/job-dashboard.php:14
 msgid "You do not have any active listings."
-msgstr ""
+msgstr "Du har inga aktiva annonser."
 
 #: templates/job-dashboard.php:36
 msgid "Mark not filled"
@@ -1214,7 +1215,7 @@ msgstr "Markera tillsatt"
 
 #: templates/job-dashboard.php:43
 msgid "Relist"
-msgstr ""
+msgstr "Omannonsera"
 
 #: templates/job-filters.php:12 templates/job-filters.php:13
 msgid "Keywords"
@@ -1226,31 +1227,31 @@ msgstr "Kategori"
 
 #: templates/job-filters.php:31
 msgid "Any category"
-msgstr ""
+msgstr "Alla kategorier"
 
 #: templates/job-filters.php:44
 msgid ""
 "Your browser does not support JavaScript, or it is disabled. JavaScript must"
 " be enabled in order to view listings."
-msgstr ""
+msgstr "Din webbläsare stödjer inte JavaScript, eller har det inaktiverat. JavaScript måste vara aktiverat för att kunna visa annonser."
 
 #: templates/job-submit.php:35
 msgid "Company Details"
-msgstr ""
+msgstr "Företagsdetaljer"
 
 #: templates/job-submitted.php:6
 msgid ""
 "%s listed successfully. To view your listing <a href=\"%s\">click here</a>."
-msgstr ""
+msgstr "%s publicerads. För att visa din annons <a href=\"%s\">klicka här</a>."
 
 #: templates/job-submitted.php:9
 msgid "%s submitted successfully. Your listing will be visible once approved."
-msgstr ""
+msgstr "%s skickades in. Din annons visas så fort den har blivit godkänd."
 
 #: wp-job-manager-functions.php:164
 msgctxt "post status"
 msgid "Draft"
-msgstr ""
+msgstr "Utkast"
 
 #: wp-job-manager-functions.php:166
 msgctxt "post status"
@@ -1260,12 +1261,12 @@ msgstr "Förhandsgranska"
 #: wp-job-manager-functions.php:167
 msgctxt "post status"
 msgid "Pending approval"
-msgstr ""
+msgstr "Väntar granskning"
 
 #: wp-job-manager-functions.php:168
 msgctxt "post status"
 msgid "Pending payment"
-msgstr ""
+msgstr "Väntar betalning"
 
 #: wp-job-manager-functions.php:169
 msgctxt "post status"
@@ -1282,7 +1283,7 @@ msgstr "RSS"
 
 #: wp-job-manager-functions.php:345
 msgid "Invalid email address."
-msgstr ""
+msgstr "Ogiltig epostadress."
 
 #: wp-job-manager-functions.php:353
 msgid "Your email address isn&#8217;t correct."
@@ -1294,7 +1295,7 @@ msgstr "Epostadressen finns redan registrerad, var god välj en annan."
 
 #: wp-job-manager-functions.php:496
 msgid "Choose a category&hellip;"
-msgstr ""
+msgstr "Välj en kategori&hellip;"
 
 #: wp-job-manager-template.php:135
 msgid "Inactive"
@@ -1302,15 +1303,15 @@ msgstr "Inaktiv"
 
 #: wp-job-manager-template.php:211
 msgid "Application via \"%s\" listing on %s"
-msgstr ""
+msgstr "Ansökan via\"%s\"-annonsen på %s"
 
 #: wp-job-manager-template.php:272
 msgid "Anywhere"
-msgstr "Varsomhelst"
+msgstr "Var som helst"
 
 #: wp-job-manager.php:125
 msgid "Are you sure you want to delete this listing?"
-msgstr ""
+msgstr "Är du säker på att du vill ta bort denna annons?"
 
 #. Plugin Name of the plugin/theme
 msgid "WP Job Manager"

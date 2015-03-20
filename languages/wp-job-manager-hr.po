@@ -2,13 +2,14 @@
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
 # Vedran Linić <toolrijeka@gmail.com>, 2014
+# Zlatko <exyuhosting2014@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
 "POT-Creation-Date: 2015-01-24 13:48:39+00:00\n"
-"PO-Revision-Date: 2015-01-24 13:49+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2015-02-11 18:31+0000\n"
+"Last-Translator: Zlatko <exyuhosting2014@gmail.com>\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/wp-job-manager/language/hr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,26 +39,26 @@ msgstr "Dodaci"
 #: includes/admin/class-wp-job-manager-cpt.php:48
 #: includes/admin/class-wp-job-manager-cpt.php:49
 msgid "Approve %s"
-msgstr ""
+msgstr "Odobriti  "
 
 #: includes/admin/class-wp-job-manager-cpt.php:51
 #: includes/admin/class-wp-job-manager-cpt.php:52
 msgid "Expire %s"
-msgstr ""
+msgstr "Ističe"
 
 #: includes/admin/class-wp-job-manager-cpt.php:140
 #: includes/admin/class-wp-job-manager-cpt.php:142
 msgid "%s approved"
-msgstr ""
+msgstr "Odobreno"
 
 #: includes/admin/class-wp-job-manager-cpt.php:160
 #: includes/admin/class-wp-job-manager-cpt.php:162
 msgid "%s expired"
-msgstr ""
+msgstr "Istekao"
 
 #: includes/admin/class-wp-job-manager-cpt.php:194
 msgid "Select category"
-msgstr ""
+msgstr "Odaberi kategoriju"
 
 #: includes/admin/class-wp-job-manager-cpt.php:209
 #: includes/admin/class-wp-job-manager-cpt.php:255
@@ -90,7 +91,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:231
 msgid "%s saved."
-msgstr ""
+msgstr "Spremljeno"
 
 #: includes/admin/class-wp-job-manager-cpt.php:232
 msgid "%s submitted. <a target=\"_blank\" href=\"%s\">Preview</a>"

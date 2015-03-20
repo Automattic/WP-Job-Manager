@@ -1,13 +1,14 @@
 # Copyright (C) 2015 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# tienrocker <tienrocker@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
 "POT-Creation-Date: 2015-01-24 13:48:39+00:00\n"
-"PO-Revision-Date: 2015-01-24 13:49+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2015-03-20 09:21+0000\n"
+"Last-Translator: tienrocker <tienrocker@gmail.com>\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/wp-job-manager/language/vi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,100 +19,100 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-addons.php:57
 #: includes/admin/class-wp-job-manager-admin.php:61
 msgid "WP Job Manager Add-ons"
-msgstr ""
+msgstr "WP Job Manager Tiện Ích"
 
 #: includes/admin/class-wp-job-manager-addons.php:58
 msgid ""
 "Buying multiple add-ons? <a href=\"%s\">Check out the core add-on bundle "
 "&rarr;</a>"
-msgstr ""
+msgstr "Bạn muốn mua nhiều tiện ích? <a href=\"%s\">Xem gói tiện ích &rarr;</a>"
 
 #: includes/admin/class-wp-job-manager-admin.php:58
 msgid "Settings"
-msgstr ""
+msgstr "Cấu hình"
 
 #: includes/admin/class-wp-job-manager-admin.php:61
 msgid "Add-ons"
-msgstr ""
+msgstr "Tiện ích"
 
 #: includes/admin/class-wp-job-manager-cpt.php:48
 #: includes/admin/class-wp-job-manager-cpt.php:49
 msgid "Approve %s"
-msgstr ""
+msgstr "Duyệt %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:51
 #: includes/admin/class-wp-job-manager-cpt.php:52
 msgid "Expire %s"
-msgstr ""
+msgstr "Hết hạn %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:140
 #: includes/admin/class-wp-job-manager-cpt.php:142
 msgid "%s approved"
-msgstr ""
+msgstr "%s đã duyệt"
 
 #: includes/admin/class-wp-job-manager-cpt.php:160
 #: includes/admin/class-wp-job-manager-cpt.php:162
 msgid "%s expired"
-msgstr ""
+msgstr "%s đã hết hạn"
 
 #: includes/admin/class-wp-job-manager-cpt.php:194
 msgid "Select category"
-msgstr ""
+msgstr "Chọn chuyên mục"
 
 #: includes/admin/class-wp-job-manager-cpt.php:209
 #: includes/admin/class-wp-job-manager-cpt.php:255
 msgid "Position"
-msgstr ""
+msgstr "Vị trí"
 
 #: includes/admin/class-wp-job-manager-cpt.php:225
 msgid "%s updated. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s đã cập nhật. <a href=\"%s\">Xem</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:226
 msgid "Custom field updated."
-msgstr ""
+msgstr "Trường tùy chỉnh đã cập nhật."
 
 #: includes/admin/class-wp-job-manager-cpt.php:227
 msgid "Custom field deleted."
-msgstr ""
+msgstr "Trường tùy chỉnh đã xóa."
 
 #: includes/admin/class-wp-job-manager-cpt.php:228
 msgid "%s updated."
-msgstr ""
+msgstr "%s đã cập nhật."
 
 #: includes/admin/class-wp-job-manager-cpt.php:229
 msgid "%s restored to revision from %s"
-msgstr ""
+msgstr "%s đã khôi phục lại từ phiên bản %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:230
 msgid "%s published. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s đã xuất bản. <a href=\"%s\">Xem</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:231
 msgid "%s saved."
-msgstr ""
+msgstr "%s đã lưu."
 
 #: includes/admin/class-wp-job-manager-cpt.php:232
 msgid "%s submitted. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "%s đã được đưa lên. <a target=\"_blank\" href=\"%s\">Xem thử</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:233
 msgid ""
 "%s scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
 "href=\"%2$s\">Preview</a>"
-msgstr ""
+msgstr "%s scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href=\"%2$s\">Xem thử</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:234
 msgid "M j, Y @ G:i"
-msgstr ""
+msgstr "M j, Y @ G:i"
 
 #: includes/admin/class-wp-job-manager-cpt.php:235
 msgid "%s draft updated. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "%s bản nháp đã cập nhật. <a target=\"_blank\" href=\"%s\">Xem thử</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:254
 msgid "Type"
-msgstr ""
+msgstr "Kiểu"
 
 #: includes/admin/class-wp-job-manager-cpt.php:256
 #: includes/admin/class-wp-job-manager-writepanels.php:31
@@ -119,33 +120,33 @@ msgstr ""
 #: includes/forms/class-wp-job-manager-form-submit-job.php:138
 #: templates/job-filters.php:17 templates/job-filters.php:18
 msgid "Location"
-msgstr ""
+msgstr "Địa điểm"
 
 #: includes/admin/class-wp-job-manager-cpt.php:257
 msgid "Posted"
-msgstr ""
+msgstr "Đã đăng"
 
 #: includes/admin/class-wp-job-manager-cpt.php:258
 #: includes/admin/class-wp-job-manager-writepanels.php:79
 msgid "Expires"
-msgstr ""
+msgstr "Hết hạn"
 
 #: includes/admin/class-wp-job-manager-cpt.php:259
 msgid "Categories"
-msgstr ""
+msgstr "Chuyên mục"
 
 #: includes/admin/class-wp-job-manager-cpt.php:260
 msgid "Featured?"
-msgstr ""
+msgstr "Nổi bật?"
 
 #: includes/admin/class-wp-job-manager-cpt.php:261
 #: includes/class-wp-job-manager-shortcodes.php:164
 msgid "Filled?"
-msgstr ""
+msgstr "Đã đăng ký đủ?"
 
 #: includes/admin/class-wp-job-manager-cpt.php:262
 msgid "Status"
-msgstr ""
+msgstr "Trạng thái"
 
 #: includes/admin/class-wp-job-manager-cpt.php:263
 msgid "Actions"
@@ -153,94 +154,94 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:290
 msgid "ID: %d"
-msgstr ""
+msgstr "Mã: %d"
 
 #: includes/admin/class-wp-job-manager-cpt.php:318
 #: includes/admin/class-wp-job-manager-cpt.php:323
 msgid "M j, Y"
-msgstr ""
+msgstr "M j, Y"
 
 #: includes/admin/class-wp-job-manager-cpt.php:319
 msgid "by a guest"
-msgstr ""
+msgstr "bởi khách"
 
 #: includes/admin/class-wp-job-manager-cpt.php:319
 msgid "by %s"
-msgstr ""
+msgstr "bởi %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:337
 msgid "Approve"
-msgstr ""
+msgstr "Duyệt"
 
 #: includes/admin/class-wp-job-manager-cpt.php:345
 msgid "View"
-msgstr ""
+msgstr "Xem"
 
 #: includes/admin/class-wp-job-manager-cpt.php:352
 #: includes/class-wp-job-manager-post-types.php:182
 #: templates/job-dashboard.php:33 templates/job-dashboard.php:49
 msgid "Edit"
-msgstr ""
+msgstr "Sửa"
 
 #: includes/admin/class-wp-job-manager-cpt.php:359
 #: templates/job-dashboard.php:54
 msgid "Delete"
-msgstr ""
+msgstr "Xóa"
 
 #: includes/admin/class-wp-job-manager-settings.php:42
 #: includes/class-wp-job-manager-post-types.php:178
 #: includes/class-wp-job-manager-post-types.php:238
 msgid "Job Listings"
-msgstr ""
+msgstr "Danh sách việc"
 
 #: includes/admin/class-wp-job-manager-settings.php:48
 msgid "Listings Per Page"
-msgstr ""
+msgstr "Danh sách mỗi trang"
 
 #: includes/admin/class-wp-job-manager-settings.php:49
 msgid "How many listings should be shown per page by default?"
-msgstr ""
+msgstr "Mặc định có bao nhiêu danh sách hiển thị mối trang?"
 
 #: includes/admin/class-wp-job-manager-settings.php:55
 msgid "Filled Positions"
-msgstr ""
+msgstr "Vị trí đã đăng ký hêt"
 
 #: includes/admin/class-wp-job-manager-settings.php:56
 msgid "Hide filled positions"
-msgstr ""
+msgstr "Ẩn vị trí đã đăng ký đủ"
 
 #: includes/admin/class-wp-job-manager-settings.php:57
 msgid "If enabled, filled positions will be hidden."
-msgstr ""
+msgstr "Nếu kích hoạt, các bị trí đã đăng ký hết sẽ bị ẩn."
 
 #: includes/admin/class-wp-job-manager-settings.php:64
 msgid "Job Categories"
-msgstr ""
+msgstr "Hạng mục công việc"
 
 #: includes/admin/class-wp-job-manager-settings.php:65
 msgid "Enable categories for listings"
-msgstr ""
+msgstr "Kích hoạt các mục cho danh sách"
 
 #: includes/admin/class-wp-job-manager-settings.php:66
 msgid ""
 "Choose whether to enable categories. Categories must be setup by an admin to"
 " allow users to choose them during submission."
-msgstr ""
+msgstr "Choose whether to enable categories. Hạng mục cần được cấu hình với quản trị viên để có thể cho phép người dùng chọn mục đó trong quá trình đăng tải thông tin."
 
 #: includes/admin/class-wp-job-manager-settings.php:73
 msgid "Multi-select Categories"
-msgstr ""
+msgstr "Chọn nhiều mục"
 
 #: includes/admin/class-wp-job-manager-settings.php:74
 msgid "Enable category multiselect by default"
-msgstr ""
+msgstr "Mặc định cho phép chọn nhiều mục"
 
 #: includes/admin/class-wp-job-manager-settings.php:75
 #: includes/admin/class-wp-job-manager-settings.php:83
 msgid ""
 "If enabled, the category select box will default to a multiselect on the "
 "[jobs] shortcode."
-msgstr ""
+msgstr "Nếu cho phép, the category select box will default to a multiselect on the [jobs] shortcode."
 
 #: includes/admin/class-wp-job-manager-settings.php:82
 msgid "Category Filter Type"
@@ -256,15 +257,15 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:93
 msgid "Job Submission"
-msgstr ""
+msgstr "Đăng việc"
 
 #: includes/admin/class-wp-job-manager-settings.php:98
 msgid "Account Required"
-msgstr ""
+msgstr "Yêu cầu tài khoản"
 
 #: includes/admin/class-wp-job-manager-settings.php:99
 msgid "Submitting listings requires an account"
-msgstr ""
+msgstr "Danh sách đăng lên yêu cầu tài khoản"
 
 #: includes/admin/class-wp-job-manager-settings.php:100
 msgid ""
@@ -274,11 +275,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:107
 msgid "Account Creation"
-msgstr ""
+msgstr "Tạo tài khoản"
 
 #: includes/admin/class-wp-job-manager-settings.php:108
 msgid "Allow account creation"
-msgstr ""
+msgstr "Cho phép tạo tài khoản"
 
 #: includes/admin/class-wp-job-manager-settings.php:109
 msgid ""
@@ -288,11 +289,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:116
 msgid "Username Generation"
-msgstr ""
+msgstr "Tạo tên đăng nhập ngẫu nhiên"
 
 #: includes/admin/class-wp-job-manager-settings.php:117
 msgid "Automatically Generate Username from Email Address"
-msgstr ""
+msgstr "Tự động tạo tên đăng nhập từ thư điện tử"
 
 #: includes/admin/class-wp-job-manager-settings.php:118
 msgid ""
@@ -312,11 +313,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:133
 msgid "Approval Required"
-msgstr ""
+msgstr "Yêu cầu được duyệt"
 
 #: includes/admin/class-wp-job-manager-settings.php:134
 msgid "New submissions require admin approval"
-msgstr ""
+msgstr "Tin mới đăng cần được quản trị viên duyệt"
 
 #: includes/admin/class-wp-job-manager-settings.php:135
 msgid "If enabled, new submissions will be inactive, pending admin approval."

@@ -1,13 +1,14 @@
 # Copyright (C) 2015 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# hsiuhoi <hi@yziphone.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
 "POT-Creation-Date: 2015-01-24 13:48:39+00:00\n"
-"PO-Revision-Date: 2015-01-24 13:49+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"PO-Revision-Date: 2015-02-14 04:02+0000\n"
+"Last-Translator: hsiuhoi <hi@yziphone.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/wp-job-manager/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +19,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-addons.php:57
 #: includes/admin/class-wp-job-manager-admin.php:61
 msgid "WP Job Manager Add-ons"
-msgstr ""
+msgstr "WP Job Manager Add-ons"
 
 #: includes/admin/class-wp-job-manager-addons.php:58
 msgid ""
@@ -28,35 +29,35 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-admin.php:58
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 #: includes/admin/class-wp-job-manager-admin.php:61
 msgid "Add-ons"
-msgstr ""
+msgstr "附加组件"
 
 #: includes/admin/class-wp-job-manager-cpt.php:48
 #: includes/admin/class-wp-job-manager-cpt.php:49
 msgid "Approve %s"
-msgstr ""
+msgstr "审核 %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:51
 #: includes/admin/class-wp-job-manager-cpt.php:52
 msgid "Expire %s"
-msgstr ""
+msgstr "过期 %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:140
 #: includes/admin/class-wp-job-manager-cpt.php:142
 msgid "%s approved"
-msgstr ""
+msgstr "%s 已审核"
 
 #: includes/admin/class-wp-job-manager-cpt.php:160
 #: includes/admin/class-wp-job-manager-cpt.php:162
 msgid "%s expired"
-msgstr ""
+msgstr "%s 已过期"
 
 #: includes/admin/class-wp-job-manager-cpt.php:194
 msgid "Select category"
-msgstr ""
+msgstr "选择分类"
 
 #: includes/admin/class-wp-job-manager-cpt.php:209
 #: includes/admin/class-wp-job-manager-cpt.php:255
@@ -65,19 +66,19 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:225
 msgid "%s updated. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s 已更新。<a href=\"%s\">查看</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:226
 msgid "Custom field updated."
-msgstr ""
+msgstr "自定义栏目更新。"
 
 #: includes/admin/class-wp-job-manager-cpt.php:227
 msgid "Custom field deleted."
-msgstr ""
+msgstr "自定义栏目删除。"
 
 #: includes/admin/class-wp-job-manager-cpt.php:228
 msgid "%s updated."
-msgstr ""
+msgstr "%s 已更新。"
 
 #: includes/admin/class-wp-job-manager-cpt.php:229
 msgid "%s restored to revision from %s"
@@ -103,11 +104,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:234
 msgid "M j, Y @ G:i"
-msgstr ""
+msgstr "Y年m月j日＠G时i分"
 
 #: includes/admin/class-wp-job-manager-cpt.php:235
 msgid "%s draft updated. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "工作列表草稿已更新。<a target=\"_blank\" href=\"%s\">检查工作</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:254
 msgid "Type"
@@ -119,16 +120,16 @@ msgstr ""
 #: includes/forms/class-wp-job-manager-form-submit-job.php:138
 #: templates/job-filters.php:17 templates/job-filters.php:18
 msgid "Location"
-msgstr ""
+msgstr "工作地点"
 
 #: includes/admin/class-wp-job-manager-cpt.php:257
 msgid "Posted"
-msgstr ""
+msgstr "已发布"
 
 #: includes/admin/class-wp-job-manager-cpt.php:258
 #: includes/admin/class-wp-job-manager-writepanels.php:79
 msgid "Expires"
-msgstr ""
+msgstr "过期"
 
 #: includes/admin/class-wp-job-manager-cpt.php:259
 msgid "Categories"
@@ -433,7 +434,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:133
 msgid "3. Done"
-msgstr ""
+msgstr "3、完成"
 
 #: includes/admin/class-wp-job-manager-setup.php:138
 msgid "Setup Wizard Introduction"

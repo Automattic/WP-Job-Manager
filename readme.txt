@@ -126,6 +126,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - RTL improvements.
 * Tweak - Use RLIKE to search keywords in content.
 * Tweak - Show relative pagination.
+* Updated translations.
+* Arabic translation by Mamdouh Samy.
 
 = 1.21.3 =
 * Feature - Support posts_per_page in feed.
