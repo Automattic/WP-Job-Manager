@@ -896,7 +896,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				if ( is_wp_error( $uploaded_file ) ) {
 					throw new Exception( $uploaded_file->get_error_message() );
 				} else {
-					$file_urls[] = $upload['url'];
+					$file_urls[] = $uploaded_file->url;
 				}
 			}
 
