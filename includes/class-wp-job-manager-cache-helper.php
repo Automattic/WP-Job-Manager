@@ -14,6 +14,7 @@ class WP_Job_Manager_Cache_Helper {
 		add_action( 'set_object_terms', array( __CLASS__, 'set_term' ), 10, 4 );
 		add_action( 'edited_term', array( __CLASS__, 'edited_term' ), 10, 3 );
 		add_action( 'create_term', array( __CLASS__, 'edited_term' ), 10, 3 );
+		add_action( 'delete_term', array( __CLASS__, 'edited_term' ), 10, 3 );
 	}
 
 	/**
