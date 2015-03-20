@@ -11,7 +11,9 @@ class WP_Job_Manager_Cache_Helper {
 
 	public static function init() {
 		add_action( 'save_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
-		add_action( 'set_object_terms', array( __CLASS__, 'flush_terms_cache' ) );
+		add_action( 'set_object_terms', array( __CLASS__, 'set_term' ), 10, 4 );
+		add_action( 'edited_term', array( __CLASS__, 'edited_term' ), 10, 3 );
+		add_action( 'create_term', array( __CLASS__, 'edited_term' ), 10, 3 );
 	}
 
 	/**
@@ -24,10 +26,17 @@ class WP_Job_Manager_Cache_Helper {
 	}
 
 	/**
-	 * Flush terms cache
+	 * When any post has a term set
 	 */
-	public static function flush_terms_cache() {
-		self::get_transient_version( 'jm_get_terms', true );
+	public static function set_term( $object_id = '', $terms = '', $tt_ids = '', $taxonomy = '' ) {
+		self::get_transient_version( 'jm_get_' . sanitize_text_field( $taxonomy ), true );
+	}
+
+	/**
+	 * When any term is edited
+	 */
+	public static function edited_term( $term_id = '', $tt_id = '', $taxonomy = '' ) {
+		self::get_transient_version( 'jm_get_' . sanitize_text_field( $taxonomy ), true );
 	}
 
 	/**
