@@ -124,6 +124,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - Legacy uploads.
 * Tweak - RTL improvements.
 * Tweak - Use RLIKE to search keywords in content.
+* Tweak - Show relative pagination.
 
 = 1.21.3 =
 * Feature - Support posts_per_page in feed.

@@ -13,7 +13,6 @@ if ( $max_num_pages <= 1 ) {
 		echo paginate_links( apply_filters( 'job_manager_pagination_args', array(
 			'base'      => esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) ),
 			'format'    => '',
-			'format'    => '',
 			'current'   => max( 1, get_query_var('paged') ),
 			'total'     => $max_num_pages,
 			'prev_text' => '&larr;',
