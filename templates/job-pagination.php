@@ -28,7 +28,7 @@ $prev_page   = 0;
 				if ( $prev_page != $page - 1 ) {
 					echo '<li><span class="gap">...</span></li>';
 				}
-				if ( $current_page === $page ) {
+				if ( $current_page == $page ) {
 					echo '<li><span class="current" data-page="' . $page . '">' . $page . '</span></li>';
 				} else {
 					echo '<li><a href="#" data-page="' . $page . '">' . $page . '</a></li>';
