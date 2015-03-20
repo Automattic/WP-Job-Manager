@@ -119,7 +119,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - get_job_listings_keyword_search keyword search.
 * Fix - Clear term cache when terms are set for any object.
+* Tweak - Use RLIKE to search keywords in content.
 
 = 1.21.3 =
 * Feature - Support posts_per_page in feed.
