@@ -300,11 +300,11 @@ class WP_Job_Manager_Writepanels {
 					$posted_by = get_user_by( 'id', $post->post_author );
 
 					if ( $posted_by ) {
-						echo '#' . $post->post_author . ' - <a href="' . admin_url( 'user-edit.php?user_id=' . $post->post_author ) . '">' . $posted_by->user_login . '</a>';
+						echo '<a href="' . admin_url( 'user-edit.php?user_id=' . $post->post_author ) . '">#' . $post->post_author . ' &ndash; ' . $posted_by->user_login . '</a>';
 					} else {
 						 _e( 'Guest User', 'wp-job-manager' );
 					}
-				?> (<a href="#" class="change-author"><?php _e( 'Change', 'wp-job-manager' ); ?></a>)
+				?> <a href="#" class="change-author button"><?php _e( 'Change', 'wp-job-manager' ); ?></a>
 			</span>
 			<span class="hidden change-author">
 				<input type="number" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" step="1" value="<?php echo esc_attr( $post->post_author ); ?>" style="width: 4em;" />

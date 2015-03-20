@@ -563,7 +563,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'job_fields'         => self::get_fields( 'job' ),
 			'company_fields'     => self::get_fields( 'company' ),
 			'step'               => self::get_step(),
-			'submit_button_text' => apply_filters( 'submit_job_form_submit_button_text', __( 'Preview &rarr;', 'wp-job-manager' ) )
+			'submit_button_text' => apply_filters( 'submit_job_form_submit_button_text', __( 'Preview', 'wp-job-manager' ) )
 		) );
 	}
 
@@ -805,8 +805,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			?>
 			<form method="post" id="job_preview">
 				<div class="job_listing_preview_title">
-					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing &rarr;', 'wp-job-manager' ) ); ?>" />
-					<input type="submit" name="edit_job" class="button" value="<?php _e( '&larr; Edit listing', 'wp-job-manager' ); ?>" />
+					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing', 'wp-job-manager' ) ); ?>" />
+					<input type="submit" name="edit_job" class="button" value="<?php _e( 'Edit listing', 'wp-job-manager' ); ?>" />
 					<input type="hidden" name="job_id" value="<?php echo esc_attr( self::$job_id ); ?>" />
 					<input type="hidden" name="step" value="<?php echo esc_attr( self::$step ); ?>" />
 					<input type="hidden" name="job_manager_form" value="<?php echo self::$form_name; ?>" />
