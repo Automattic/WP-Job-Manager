@@ -655,6 +655,7 @@ function job_manager_upload_file( $file, $args = array() ) {
 			return new WP_Error( 'upload', $upload['error'] );
 		} else {
 			$uploaded_file->url       = $upload['url'];
+			$uploaded_file->file      = $upload['file'];
 			$uploaded_file->name      = basename( $upload['file'] );
 			$uploaded_file->type      = $upload['type'];
 			$uploaded_file->size      = $file['size'];
