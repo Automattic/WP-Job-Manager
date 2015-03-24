@@ -1,7 +1,7 @@
 <ul class="job-manager-term-checklist job-manager-term-checklist-<?php echo $key ?>">
-<?php 
+<?php
 	require_once( ABSPATH . '/wp-admin/includes/template.php' );
-		
+
 	if ( empty( $field['default'] ) ) {
 		$field['default'] = '';
 	}
@@ -15,7 +15,10 @@
 	);
 
 	// $field['post_id'] needs to be passed via the args so we can get the existing terms
+	ob_start();
 	wp_terms_checklist( 0, $args );
+	$checklist = ob_get_clean();
+	echo str_replace( "disabled='disabled'", '', $checklist );
 ?>
 </ul>
 <?php if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
