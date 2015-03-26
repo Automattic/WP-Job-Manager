@@ -120,6 +120,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 * Tweak - Search _geolocation_state_long.
+* Fix - Prevent term-checklist being disabled for guests.
 
 = 1.21.4 =
 * Fix - get_job_listings_keyword_search keyword search.
