@@ -119,6 +119,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Tweak - Search _geolocation_state_long.
+
 = 1.21.4 =
 * Fix - get_job_listings_keyword_search keyword search.
 * Fix - Clear term cache when terms are set for any object.
