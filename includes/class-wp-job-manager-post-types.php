@@ -13,11 +13,15 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_content', array( $this, 'job_content' ) );
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
 		add_action( 'job_manager_delete_old_previews', array( $this, 'delete_old_previews' ) );
-		add_action( 'pending_to_publish', array( $this, 'set_expirey' ) );
-		add_action( 'preview_to_publish', array( $this, 'set_expirey' ) );
-		add_action( 'draft_to_publish', array( $this, 'set_expirey' ) );
-		add_action( 'auto-draft_to_publish', array( $this, 'set_expirey' ) );
-		add_action( 'expired_to_publish', array( $this, 'set_expirey' ) );
+
+		add_action( 'pending_to_publish', array( $this, 'set_expiry' ) );
+		add_action( 'preview_to_publish', array( $this, 'set_expiry' ) );
+		add_action( 'preview_to_pending', array( $this, 'set_expiry' ) );
+		add_action( 'draft_to_publish', array( $this, 'set_expiry' ) );
+		add_action( 'auto-draft_to_publish', array( $this, 'set_expiry' ) );
+		add_action( 'expired_to_publish', array( $this, 'set_expiry' ) );
+		add_action( 'pending_payment_to_pending', array( $this, 'set_expiry' ) );
+		add_action( 'pending_payment_to_publish', array( $this, 'set_expiry' ) );
 
 		add_filter( 'the_job_description', 'wptexturize'        );
 		add_filter( 'the_job_description', 'convert_smilies'    );
@@ -418,9 +422,16 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Set expirey date when job status changes
+	 * Typo -.-
 	 */
 	public function set_expirey( $post ) {
+		$this->set_expiry( $post );
+	}
+
+	/**
+	 * Set expirey date when job status changes
+	 */
+	public function set_expiry( $post ) {
 		if ( $post->post_type !== 'job_listing' ) {
 			return;
 		}
