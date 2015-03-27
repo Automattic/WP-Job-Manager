@@ -392,7 +392,7 @@ function job_manager_get_resized_image( $logo, $size ) {
  */
 function the_company_video( $post = null ) {
 	$video       = get_the_company_video( $post );
-	$video_embed = wp_oembed_get( $video );
+	$video_embed = wp_video_shortcode( array( 'src' => $video ) );
 
 	if ( $video_embed ) {
 		echo '<div class="company_video">' . $video_embed . '</div>';
