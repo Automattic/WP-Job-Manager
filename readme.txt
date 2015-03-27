@@ -120,6 +120,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 * Tweak - Search _geolocation_state_long.
+* Tweak - Allow admin fields to have custom 'name'.
 * Fix - Prevent term-checklist being disabled for guests.
 
 = 1.21.4 =

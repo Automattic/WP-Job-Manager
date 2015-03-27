@@ -138,33 +138,32 @@ class WP_Job_Manager_Writepanels {
 	public function input_file( $key, $field ) {
 		global $thepostid;
 
-		if ( empty( $field['value'] ) ) {
+		if ( ! isset( $field['value'] ) ) {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
 		}
 		if ( empty( $field['placeholder'] ) ) {
 			$field['placeholder'] = 'http://';
 		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
+		}
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
-
-			<?php if ( ! empty( $field['multiple'] ) ) : ?>
-				<?php foreach ( (array) $field['value'] as $value ) : ?>
-					<span class="file_url">
-						<input type="text" name="<?php echo esc_attr( $key ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" />
-						<button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button>
-					</span>
-				<?php endforeach; ?>
-			<?php else : ?>
-				<span class="file_url">
-					<input type="text" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
-					<button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button>
-				</span>
-			<?php endif; ?>
-
-			<?php if ( ! empty( $field['multiple'] ) ) : ?>
-				<button class="button wp_job_manager_add_another_file_button" data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php _e( 'Upload', 'wp-job-manager' ); ?>"><?php _e( 'Add file', 'wp-job-manager' ); ?></button>
-			<?php endif; ?>
+			<?php
+			if ( ! empty( $field['multiple'] ) ) {
+				foreach ( (array) $field['value'] as $value ) {
+					?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button></span><?php
+				}
+			} else {
+				?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button></span><?php
+			}
+			if ( ! empty( $field['multiple'] ) ) {
+				?><button class="button button-small wp_job_manager_add_another_file_button" data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php _e( 'Upload', 'wp-job-manager' ); ?>"><?php _e( 'Add file', 'wp-job-manager' ); ?></button><?php
+			}
+			?>
 		</p>
 		<?php
 	}
@@ -178,13 +177,18 @@ class WP_Job_Manager_Writepanels {
 	public function input_text( $key, $field ) {
 		global $thepostid;
 
-		if ( empty( $field['value'] ) ) {
+		if ( ! isset( $field['value'] ) ) {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
 		}
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
-			<input type="text" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
+			<input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
 		</p>
 		<?php
 	}
@@ -198,13 +202,18 @@ class WP_Job_Manager_Writepanels {
 	public function input_textarea( $key, $field ) {
 		global $thepostid;
 
-		if ( empty( $field['value'] ) ) {
+		if ( ! isset( $field['value'] ) ) {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
 		}
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
-			<textarea name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>"><?php echo esc_html( $field['value'] ); ?></textarea>
+			<textarea name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>"><?php echo esc_html( $field['value'] ); ?></textarea>
 		</p>
 		<?php
 	}
@@ -218,13 +227,18 @@ class WP_Job_Manager_Writepanels {
 	public function input_select( $key, $field ) {
 		global $thepostid;
 
-		if ( empty( $field['value'] ) ) {
+		if ( ! isset( $field['value'] ) ) {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
 		}
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
-			<select name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>">
+			<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>">
 				<?php foreach ( $field['options'] as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php if ( isset( $field['value'] ) ) selected( $field['value'], $key ); ?>><?php echo esc_html( $value ); ?></option>
 				<?php endforeach; ?>
@@ -242,13 +256,18 @@ class WP_Job_Manager_Writepanels {
 	public function input_multiselect( $key, $field ) {
 		global $thepostid;
 
-		if ( empty( $field['value'] ) ) {
+		if ( ! isset( $field['value'] ) ) {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
 		}
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
-			<select multiple="multiple" name="<?php echo esc_attr( $key ); ?>[]" id="<?php echo esc_attr( $key ); ?>">
+			<select multiple="multiple" name="<?php echo esc_attr( $name ); ?>[]" id="<?php echo esc_attr( $key ); ?>">
 				<?php foreach ( $field['options'] as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php if ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) selected( in_array( $key, $field['value'] ), true ); ?>><?php echo esc_html( $value ); ?></option>
 				<?php endforeach; ?>
@@ -266,12 +285,18 @@ class WP_Job_Manager_Writepanels {
 	public function input_checkbox( $key, $field ) {
 		global $thepostid;
 
-		if ( empty( $field['value'] ) )
+		if ( empty( $field['value'] ) ) {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
+		}
 		?>
 		<p class="form-field form-field-checkbox">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?></label>
-			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $field['value'], 1 ); ?> />
+			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $field['value'], 1 ); ?> />
 			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
 		</p>
 		<?php
@@ -286,8 +311,13 @@ class WP_Job_Manager_Writepanels {
 	public function input_author( $key, $field ) {
 		global $thepostid, $post;
 
-		if ( empty( $field['value'] ) ) {
+		if ( ! isset( $field['value'] ) ) {
 			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
 		}
 		?>
 		<p class="form-field form-field-author">
@@ -304,7 +334,7 @@ class WP_Job_Manager_Writepanels {
 				?> <a href="#" class="change-author button button-small"><?php _e( 'Change', 'wp-job-manager' ); ?></a>
 			</span>
 			<span class="hidden change-author">
-				<input type="number" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" step="1" value="<?php echo esc_attr( $post->post_author ); ?>" style="width: 4em;" />
+				<input type="number" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" step="1" value="<?php echo esc_attr( $post->post_author ); ?>" style="width: 4em;" />
 				<span class="description"><?php _e( 'Enter the ID of the user, or leave blank if submitted by a guest.', 'wp-job-manager' ) ?></span>
 			</span>
 		</p>

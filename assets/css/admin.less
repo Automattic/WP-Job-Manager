@@ -152,71 +152,66 @@
 		}
 	}
 }
-#job_listing_data {
-	.inside {
-		padding: 0;
-	}
-	.wp_job_manager_meta_data {
-		overflow: hidden;
-		padding: 0 0 12px;
-		.form-field {
-			width: 50%;
-			line-height: 2em;
-			float: left;
-			box-sizing: border-box;
-			//border-bottom: 1px solid #eee;
-			padding: 0 12px;
-			margin: 0 0 1em;
-			clear: left;
-			&:nth-child(even) {
-				float: right;
-				clear: none;
-			}
-			&:nth-last-child(-n+2) {
-				margin-bottom: 0;
-				padding-bottom: 0;
-				border-bottom: 0;
-			}
-			label {
-				/*width: 20%;
-				position: absolute;
-				left: 0;*/
-				vertical-align: middle;
-				display: block;
-				font-weight: bold;
-				margin: 0;
-			}
-			.tips {
-				cursor: help;
-				float: right;
-				font-weight: normal;
-				color: #999;
-			}
+.wp_job_manager_meta_data {
+	overflow: hidden;
+	padding: 12px;
+	.form-field {
+		width: 50%;
+		line-height: 2em;
+		float: left;
+		box-sizing: border-box;
+		padding: 0 12px 0 0;
+		margin: 0 0 12px;
+		clear: both;
+		&:nth-child(even) {
+			float: right;
+			padding: 0 0 0 12px;
+			clear: right;
+		}
+		&:nth-last-child(-n+2) {
+			margin-bottom: 0;
+			padding-bottom: 0;
+			border-bottom: 0;
+		}
+		label {
+			vertical-align: middle;
+			display: block;
+			font-weight: bold;
+			margin: 0;
+		}
+		.tips {
+			cursor: help;
+			float: right;
+			font-weight: normal;
+			color: #999;
+		}
+		input {
+			width: 100%;
+			margin: 1px 0;
+			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+			-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+			box-sizing: border-box;         /* Opera/IE 8+ */
+			vertical-align: middle;
+		}
+		input.checkbox {
+			width: auto;
+			margin: 4px 2px;
+			display: inline-block;
+		}
+		.description {
+			display: block;
+			color: #999;
+		}
+		&.form-field-checkbox .description {
+			display: inline;
+		}
+		.file_url {
 			input {
-				width: 100%;
-				margin: 1px 0;
-				-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-				-moz-box-sizing: border-box;    /* Firefox, other Gecko */
-				box-sizing: border-box;         /* Opera/IE 8+ */
-				vertical-align: middle;
+				width: 75%;
 			}
-			input.checkbox {
-				width: auto;
-				margin: 4px 2px;
-				display: inline-block;
-			}
-			.description {
-				display: block;
-				color: #999;
-			}
-			&.form-field-checkbox .description {
-				display: inline;
-			}
-			.file_url {
-				input {
-					width: 75%;
-				}
-			}
+		}
+		.button {
+			margin-left: 4px;
 		}
 	}
 }

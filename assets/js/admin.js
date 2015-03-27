@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
 		var button_text       = $( this ).data( 'uploader_button_text' );
 		var button            = $( this ).data( 'uploader_button' );
 
-		wrapper.prepend('<span class="file_url"><input type="text" name="' + field_name + '[]" placeholder="' + field_placeholder + '" /> <button class="button wp_job_manager_upload_file_button" data-uploader_button_text="' + button_text + '">' + button + '</button></span>');
+		$( this ).before('<span class="file_url"><input type="text" name="' + field_name + '[]" placeholder="' + field_placeholder + '" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="' + button_text + '">' + button + '</button></span>');
 	});
 
 	$('.wp_job_manager_upload_file_button').live('click', function( event ){
