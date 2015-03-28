@@ -5,118 +5,98 @@
  */
 class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
-	public    static $form_name = 'submit-job';
-	protected static $job_id;
-	protected static $preview_job;
-	protected static $steps;
-	protected static $step = 0;
+	public    $form_name = 'submit-job';
+	protected $job_id;
+	protected $preview_job;
+
+	/** @var WP_Job_Manager_Form_Submit_Job The single instance of the class */
+	protected static $_instance = null;
 
 	/**
-	 * Init form
+	 * Main Instance
 	 */
-	public static function init() {
-		add_action( 'wp', array( __CLASS__, 'process' ) );
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
 
-		self::$steps  = (array) apply_filters( 'submit_job_steps', array(
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		add_action( 'wp', array( $this, 'process' ) );
+
+		$this->steps  = (array) apply_filters( 'submit_job_steps', array(
 			'submit' => array(
 				'name'     => __( 'Submit Details', 'wp-job-manager' ),
-				'view'     => array( __CLASS__, 'submit' ),
-				'handler'  => array( __CLASS__, 'submit_handler' ),
+				'view'     => array( $this, 'submit' ),
+				'handler'  => array( $this, 'submit_handler' ),
 				'priority' => 10
 				),
 			'preview' => array(
 				'name'     => __( 'Preview', 'wp-job-manager' ),
-				'view'     => array( __CLASS__, 'preview' ),
-				'handler'  => array( __CLASS__, 'preview_handler' ),
+				'view'     => array( $this, 'preview' ),
+				'handler'  => array( $this, 'preview_handler' ),
 				'priority' => 20
 			),
 			'done' => array(
 				'name'     => __( 'Done', 'wp-job-manager' ),
-				'view'     => array( __CLASS__, 'done' ),
+				'view'     => array( $this, 'done' ),
 				'priority' => 30
 			)
 		) );
 
-		uasort( self::$steps, array( __CLASS__, 'sort_by_priority' ) );
+		uasort( $this->steps, array( $this, 'sort_by_priority' ) );
 
 		// Get step/job
 		if ( isset( $_POST['step'] ) ) {
-			self::$step = is_numeric( $_POST['step'] ) ? max( absint( $_POST['step'] ), 0 ) : array_search( $_POST['step'], array_keys( self::$steps ) );
+			$this->step = is_numeric( $_POST['step'] ) ? max( absint( $_POST['step'] ), 0 ) : array_search( $_POST['step'], array_keys( $this->steps ) );
 		} elseif ( ! empty( $_GET['step'] ) ) {
-			self::$step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( $_GET['step'], array_keys( self::$steps ) );
+			$this->step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( $_GET['step'], array_keys( $this->steps ) );
 		}
 
-		self::$job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
+		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
 		// Allow resuming from cookie.
-		if ( ! self::$job_id && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
+		if ( ! $this->job_id && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
 			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
 			$job_status = get_post_status( $job_id );
 
 			if ( 'preview' === $job_status && get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key'] ) {
-				self::$job_id = $job_id;
+				$this->job_id = $job_id;
 			}
 		}
 
 		// Load job details
-		if ( self::$job_id ) {
-			$job_status = get_post_status( self::$job_id );
+		if ( $this->job_id ) {
+			$job_status = get_post_status( $this->job_id );
 			if ( 'expired' === $job_status ) {
-				if ( ! job_manager_user_can_edit_job( self::$job_id ) ) {
-					self::$job_id = 0;
-					self::$step   = 0;
+				if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
+					$this->job_id = 0;
+					$this->step   = 0;
 				}
 			} elseif ( ! in_array( $job_status, apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ) ) ) {
-				self::$job_id = 0;
-				self::$step   = 0;
+				$this->job_id = 0;
+				$this->step   = 0;
 			}
 		}
-	}
-
-	/**
-	 * Get step from outside of the class
-	 */
-	public static function get_step() {
-		return self::$step;
-	}
-
-	/**
-	 * Increase step from outside of the class
-	 */
-	public static function next_step() {
-		self::$step ++;
-	}
-
-	/**
-	 * Decrease step from outside of the class
-	 */
-	public static function previous_step() {
-		self::$step --;
-	}
-
-	/**
-	 * Sort array by priority value
-	 */
-	protected static function sort_by_priority( $a, $b ) {
-		return $a['priority'] - $b['priority'];
 	}
 
 	/**
 	 * Get the submitted job ID
 	 * @return int
 	 */
-	public static function get_job_id() {
-		return absint( self::$job_id );
+	public function get_job_id() {
+		return absint( $this->job_id );
 	}
 
 	/**
 	 * init_fields function.
-	 *
-	 * @access public
-	 * @return void
 	 */
-	public static function init_fields() {
-		if ( self::$fields ) {
+	public function init_fields() {
+		if ( $this->fields ) {
 			return;
 		}
 
@@ -136,7 +116,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			break;
 		}
 
-		self::$fields = apply_filters( 'submit_job_form_fields', array(
+		$this->fields = apply_filters( 'submit_job_form_fields', array(
 			'job' => array(
 				'job_title' => array(
 					'label'       => __( 'Title', 'wp-job-manager' ),
@@ -242,151 +222,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		) );
 
 		if ( ! get_option( 'job_manager_enable_categories' ) || wp_count_terms( 'job_listing_category' ) == 0 ) {
-			unset( self::$fields['job']['job_category'] );
+			unset( $this->fields['job']['job_category'] );
 		}
-	}
-
-	/**
-	 * Get post data for fields
-	 *
-	 * @return array of data
-	 */
-	protected static function get_posted_fields() {
-
-		self::init_fields();
-
-		$values = array();
-
-		foreach ( self::$fields as $group_key => $group_fields ) {
-			foreach ( $group_fields as $key => $field ) {
-				// Get the value
-				$field_type = str_replace( '-', '_', $field['type'] );
-
-				if ( method_exists( __CLASS__, "get_posted_{$field_type}_field" ) ) {
-					$values[ $group_key ][ $key ] = call_user_func( __CLASS__ . "::get_posted_{$field_type}_field", $key, $field );
-				} else {
-					$values[ $group_key ][ $key ] = self::get_posted_field( $key, $field );
-				}
-
-				// Set fields value
-				self::$fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
-			}
-		}
-
-		return $values;
-	}
-
-
-	/**
-	 * Navigates through an array and sanitizes the field.
-	 *
-	 *
-	 * @param array|string $value The array or string to be sanitized.
-	 * @return array|string $value The sanitized array (or string from the callback).
-	 */
-	public static function sanitize_posted_field( $value ) {
-		// Decode URLs
-		if ( is_string( $value ) && ( strstr( $value, 'http:' ) || strstr( $value, 'https:' ) ) ) {
-			$value = urldecode( $value );
-		}
-
-		// Santize value
-		$value = is_array( $value ) ? array_map( array( __CLASS__, 'sanitize_posted_field' ), $value ) : sanitize_text_field( stripslashes( trim( $value ) ) );
-
-		return $value;
-	}
-
-	/**
-	 * Get the value of a posted field
-	 * @param  string $key
-	 * @param  array $field
-	 * @return string|array
-	 */
-	protected static function get_posted_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? self::sanitize_posted_field( $_POST[ $key ] ) : '';
-	}
-
-	/**
-	 * Get the value of a posted multiselect field
-	 * @param  string $key
-	 * @param  array $field
-	 * @return array
-	 */
-	protected static function get_posted_multiselect_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', $_POST[ $key ] ) : array();
-	}
-
-	/**
-	 * Get the value of a posted file field
-	 * @param  string $key
-	 * @param  array $field
-	 * @return string|array
-	 */
-	protected static function get_posted_file_field( $key, $field ) {
-		$file = self::upload_file( $key, $field );
-
-		if ( ! $file ) {
-			$file = self::get_posted_field( 'current_' . $key, $field );
-		} elseif ( is_array( $file ) ) {
-			$file = array_filter( array_merge( $file, (array) self::get_posted_field( 'current_' . $key, $field ) ) );
-		}
-
-		return $file;
-	}
-
-	/**
-	 * Get the value of a posted textarea field
-	 * @param  string $key
-	 * @param  array $field
-	 * @return string
-	 */
-	protected static function get_posted_textarea_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? wp_kses_post( trim( stripslashes( $_POST[ $key ] ) ) ) : '';
-	}
-
-	/**
-	 * Get the value of a posted textarea field
-	 * @param  string $key
-	 * @param  array $field
-	 * @return string
-	 */
-	protected static function get_posted_wp_editor_field( $key, $field ) {
-		return self::get_posted_textarea_field( $key, $field );
-	}
-
-	/**
-	 * Get posted terms for the taxonomy
-	 * @param  string $key
-	 * @param  array $field
-	 * @return array
-	 */
-	protected static function get_posted_term_checklist_field( $key, $field ) {
-		if ( isset( $_POST[ 'tax_input' ] ) && isset( $_POST[ 'tax_input' ][ $field['taxonomy'] ] ) ) {
-			// Ids were posted
-			return array_map( 'absint', $_POST[ 'tax_input' ][ $field['taxonomy'] ] );
-		} else {
-			return array();
-		}
-	}
-
-	/**
-	 * Get posted terms for the taxonomy
-	 * @param  string $key
-	 * @param  array $field
-	 * @return int
-	 */
-	protected static function get_posted_term_multiselect_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : array();
-	}
-
-	/**
-	 * Get posted terms for the taxonomy
-	 * @param  string $key
-	 * @param  array $field
-	 * @return int
-	 */
-	protected static function get_posted_term_select_field( $key, $field ) {
-		return ! empty( $_POST[ $key ] ) && $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : '';
 	}
 
 	/**
@@ -394,8 +231,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @return bool on success, WP_ERROR on failure
 	 */
-	protected static function validate_fields( $values ) {
-		foreach ( self::$fields as $group_key => $group_fields ) {
+	protected function validate_fields( $values ) {
+		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
 				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) ) {
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
@@ -462,16 +299,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 		}
 
-		return apply_filters( 'submit_job_form_validate_fields', true, self::$fields, $values );
+		return apply_filters( 'submit_job_form_validate_fields', true, $this->fields, $values );
 	}
 
 	/**
 	 * job_types function.
-	 *
-	 * @access private
-	 * @return void
 	 */
-	private static function job_types() {
+	private function job_types() {
 		$options = array();
 		$terms   = get_job_listing_types();
 		foreach ( $terms as $term ) {
@@ -481,88 +315,64 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Process function. all processing code if needed - can also change view if step is complete
-	 */
-	public static function process() {
-		$keys = array_keys( self::$steps );
-
-		if ( isset( $keys[ self::$step ] ) && is_callable( self::$steps[ $keys[ self::$step ] ]['handler'] ) ) {
-			call_user_func( self::$steps[ $keys[ self::$step ] ]['handler'] );
-		}
-	}
-
-	/**
-	 * output function. Call the view handler.
-	 */
-	public static function output( $atts = array() ) {
-		$keys = array_keys( self::$steps );
-
-		self::show_errors();
-
-		if ( isset( $keys[ self::$step ] ) && is_callable( self::$steps[ $keys[ self::$step ] ]['view'] ) ) {
-			call_user_func( self::$steps[ $keys[ self::$step ] ]['view'], $atts );
-		}
-	}
-
-	/**
 	 * Submit Step
 	 */
-	public static function submit() {
-		self::init_fields();
+	public function submit() {
+		$this->init_fields();
 
 		// Load data if neccessary
-		if ( self::$job_id ) {
-			$job = get_post( self::$job_id );
-			foreach ( self::$fields as $group_key => $group_fields ) {
+		if ( $this->job_id ) {
+			$job = get_post( $this->job_id );
+			foreach ( $this->fields as $group_key => $group_fields ) {
 				foreach ( $group_fields as $key => $field ) {
 					switch ( $key ) {
 						case 'job_title' :
-							self::$fields[ $group_key ][ $key ]['value'] = $job->post_title;
+							$this->fields[ $group_key ][ $key ]['value'] = $job->post_title;
 						break;
 						case 'job_description' :
-							self::$fields[ $group_key ][ $key ]['value'] = $job->post_content;
+							$this->fields[ $group_key ][ $key ]['value'] = $job->post_content;
 						break;
 						case 'job_type' :
-							self::$fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'ids' ) ) );
+							$this->fields[ $group_key ][ $key ]['value'] = current( wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'ids' ) ) );
 						break;
 						case 'job_category' :
-							self::$fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) );
+							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) );
 						break;
 						default:
-							self::$fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
+							$this->fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
 						break;
 					}
 				}
 			}
 
-			self::$fields = apply_filters( 'submit_job_form_fields_get_job_data', self::$fields, $job );
+			$this->fields = apply_filters( 'submit_job_form_fields_get_job_data', $this->fields, $job );
 
 		// Get user meta
 		} elseif ( is_user_logged_in() && empty( $_POST['submit_job'] ) ) {
-			if ( ! empty( self::$fields['company'] ) ) {
-				foreach ( self::$fields['company'] as $key => $field ) {
-					self::$fields['company'][ $key ]['value'] = get_user_meta( get_current_user_id(), '_' . $key, true );
+			if ( ! empty( $this->fields['company'] ) ) {
+				foreach ( $this->fields['company'] as $key => $field ) {
+					$this->fields['company'][ $key ]['value'] = get_user_meta( get_current_user_id(), '_' . $key, true );
 				}
 			}
-			if ( ! empty( self::$fields['job']['application'] ) ) {
+			if ( ! empty( $this->fields['job']['application'] ) ) {
 				$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
 				if ( $allowed_application_method !== 'url' ) {
 					$current_user = wp_get_current_user();
-					self::$fields['job']['application']['value'] = $current_user->user_email;
+					$this->fields['job']['application']['value'] = $current_user->user_email;
 				}
 			}
-			self::$fields = apply_filters( 'submit_job_form_fields_get_user_data', self::$fields, get_current_user_id() );
+			$this->fields = apply_filters( 'submit_job_form_fields_get_user_data', $this->fields, get_current_user_id() );
 		}
 
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
 
 		get_job_manager_template( 'job-submit.php', array(
-			'form'               => self::$form_name,
-			'job_id'             => self::get_job_id(),
-			'action'             => self::get_action(),
-			'job_fields'         => self::get_fields( 'job' ),
-			'company_fields'     => self::get_fields( 'company' ),
-			'step'               => self::get_step(),
+			'form'               => $this->form_name,
+			'job_id'             => $this->get_job_id(),
+			'action'             => $this->get_action(),
+			'job_fields'         => $this->get_fields( 'job' ),
+			'company_fields'     => $this->get_fields( 'company' ),
+			'step'               => $this->get_step(),
 			'submit_button_text' => apply_filters( 'submit_job_form_submit_button_text', __( 'Preview', 'wp-job-manager' ) )
 		) );
 	}
@@ -570,20 +380,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	/**
 	 * Submit Step is posted
 	 */
-	public static function submit_handler() {
+	public function submit_handler() {
 		try {
 			// Init fields
-			self::init_fields();
+			$this->init_fields();
 
 			// Get posted values
-			$values = self::get_posted_fields();
+			$values = $this->get_posted_fields();
 
 			if ( empty( $_POST['submit_job'] ) ) {
 				return;
 			}
 
 			// Validate required
-			if ( is_wp_error( ( $return = self::validate_fields( $values ) ) ) ) {
+			if ( is_wp_error( ( $return = $this->validate_fields( $values ) ) ) ) {
 				throw new Exception( $return->get_error_message() );
 			}
 
@@ -619,14 +429,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 
 			// Update the job
-			self::save_job( $values['job']['job_title'], $values['job']['job_description'], self::$job_id ? '' : 'preview', $values );
-			self::update_job_data( $values );
+			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $this->job_id ? '' : 'preview', $values );
+			$this->update_job_data( $values );
 
 			// Successful, show next step
-			self::$step ++;
+			$this->step ++;
 
 		} catch ( Exception $e ) {
-			self::add_error( $e->getMessage() );
+			$this->add_error( $e->getMessage() );
 			return;
 		}
 	}
@@ -640,7 +450,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  array $values
 	 * @param  bool $update_slug
 	 */
-	protected static function save_job( $post_title, $post_content, $status = 'preview', $values = array(), $update_slug = true ) {
+	protected function save_job( $post_title, $post_content, $status = 'preview', $values = array(), $update_slug = true ) {
 		$job_data = array(
 			'post_title'     => $post_title,
 			'post_content'   => $post_content,
@@ -677,19 +487,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		$job_data = apply_filters( 'submit_job_form_save_job_data', $job_data, $post_title, $post_content, $status, $values );
 
-		if ( self::$job_id ) {
-			$job_data['ID'] = self::$job_id;
+		if ( $this->job_id ) {
+			$job_data['ID'] = $this->job_id;
 			wp_update_post( $job_data );
 		} else {
-			self::$job_id = wp_insert_post( $job_data );
+			$this->job_id = wp_insert_post( $job_data );
 
 			if ( ! headers_sent() ) {
 				$submitting_key = uniqid();
 
-				setcookie( 'wp-job-manager-submitting-job-id', self::$job_id, false, COOKIEPATH, COOKIE_DOMAIN, false );
+				setcookie( 'wp-job-manager-submitting-job-id', $this->job_id, false, COOKIEPATH, COOKIE_DOMAIN, false );
 				setcookie( 'wp-job-manager-submitting-job-key', $submitting_key, false, COOKIEPATH, COOKIE_DOMAIN, false );
 
-				update_post_meta( self::$job_id, '_submitting_key', $submitting_key );
+				update_post_meta( $this->job_id, '_submitting_key', $submitting_key );
 			}
 		}
 	}
@@ -699,27 +509,27 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @param  array $values
 	 */
-	protected static function update_job_data( $values ) {
+	protected function update_job_data( $values ) {
 		// Set defaults
-		add_post_meta( self::$job_id, '_filled', 0, true );
-		add_post_meta( self::$job_id, '_featured', 0, true );
+		add_post_meta( $this->job_id, '_filled', 0, true );
+		add_post_meta( $this->job_id, '_featured', 0, true );
 
 		$maybe_attach = array();
 
 		// Loop fields and save meta and term data
-		foreach ( self::$fields as $group_key => $group_fields ) {
+		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
 				// Save taxonomies
 				if ( ! empty( $field['taxonomy'] ) ) {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
-						wp_set_object_terms( self::$job_id, $values[ $group_key ][ $key ], $field['taxonomy'], false );
+						wp_set_object_terms( $this->job_id, $values[ $group_key ][ $key ], $field['taxonomy'], false );
 					} else {
-						wp_set_object_terms( self::$job_id, array( $values[ $group_key ][ $key ] ), $field['taxonomy'], false );
+						wp_set_object_terms( $this->job_id, array( $values[ $group_key ][ $key ] ), $field['taxonomy'], false );
 					}
 
 				// Save meta data
 				} else {
-					update_post_meta( self::$job_id, '_' . $key, $values[ $group_key ][ $key ] );
+					update_post_meta( $this->job_id, '_' . $key, $values[ $group_key ][ $key ] );
 				}
 
 				// Handle attachments
@@ -746,7 +556,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			include_once( ABSPATH . 'wp-admin/includes/image.php' );
 
 			// Get attachments
-			$attachments     = get_posts( 'post_parent=' . self::$job_id . '&post_type=attachment&fields=ids&post_mime_type=image&numberposts=-1' );
+			$attachments     = get_posts( 'post_parent=' . $this->job_id . '&post_type=attachment&fields=ids&post_mime_type=image&numberposts=-1' );
 			$attachment_urls = array();
 
 			// Loop attachments already attached to the job
@@ -757,10 +567,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			foreach ( $maybe_attach as $attachment_url ) {
 				if ( ! in_array( $attachment_url, $attachment_urls ) ) {
 					$attachment = array(
-						'post_title'   => get_the_title( self::$job_id ),
+						'post_title'   => get_the_title( $this->job_id ),
 						'post_content' => '',
 						'post_status'  => 'inherit',
-						'post_parent'  => self::$job_id,
+						'post_parent'  => $this->job_id,
 						'guid'         => $attachment_url
 					);
 
@@ -768,7 +578,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						$attachment['post_mime_type'] = $info['type'];
 					}
 
-					$attachment_id = wp_insert_attachment( $attachment, $attachment_url, self::$job_id );
+					$attachment_id = wp_insert_attachment( $attachment, $attachment_url, $this->job_id );
 
 					if ( ! is_wp_error( $attachment_id ) ) {
 						wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $attachment_url ) );
@@ -787,19 +597,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			update_user_meta( get_current_user_id(), '_company_video', isset( $values['company']['company_video'] ) ? $values['company']['company_video'] : '' );
 		}
 
-		do_action( 'job_manager_update_job_data', self::$job_id, $values );
+		do_action( 'job_manager_update_job_data', $this->job_id, $values );
 	}
 
 	/**
 	 * Preview Step
 	 */
-	public static function preview() {
+	public function preview() {
 		global $post, $job_preview;
 
-		if ( self::$job_id ) {
-
+		if ( $this->job_id ) {
 			$job_preview       = true;
-			$post              = get_post( self::$job_id );
+			$post              = get_post( $this->job_id );
 			setup_postdata( $post );
 			$post->post_status = 'preview';
 			?>
@@ -807,9 +616,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				<div class="job_listing_preview_title">
 					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing', 'wp-job-manager' ) ); ?>" />
 					<input type="submit" name="edit_job" class="button" value="<?php _e( 'Edit listing', 'wp-job-manager' ); ?>" />
-					<input type="hidden" name="job_id" value="<?php echo esc_attr( self::$job_id ); ?>" />
-					<input type="hidden" name="step" value="<?php echo esc_attr( self::$step ); ?>" />
-					<input type="hidden" name="job_manager_form" value="<?php echo self::$form_name; ?>" />
+					<input type="hidden" name="job_id" value="<?php echo esc_attr( $this->job_id ); ?>" />
+					<input type="hidden" name="step" value="<?php echo esc_attr( $this->step ); ?>" />
+					<input type="hidden" name="job_manager_form" value="<?php echo $this->form_name; ?>" />
 					<h2>
 						<?php _e( 'Preview', 'wp-job-manager' ); ?>
 					</h2>
@@ -820,7 +629,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				</div>
 			</form>
 			<?php
-
 			wp_reset_postdata();
 		}
 	}
@@ -828,22 +636,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	/**
 	 * Preview Step Form handler
 	 */
-	public static function preview_handler() {
+	public function preview_handler() {
 		if ( ! $_POST ) {
 			return;
 		}
 
 		// Edit = show submit form again
 		if ( ! empty( $_POST['edit_job'] ) ) {
-			self::$step --;
+			$this->step --;
 		}
+
 		// Continue = change job status then show next screen
 		if ( ! empty( $_POST['continue'] ) ) {
-
-			$job = get_post( self::$job_id );
+			$job = get_post( $this->job_id );
 
 			if ( in_array( $job->post_status, array( 'preview', 'expired' ) ) ) {
-				// Reset expirey
+				// Reset expiry
 				delete_post_meta( $job->ID, '_job_expires' );
 
 				// Update job listing
@@ -855,56 +663,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				wp_update_post( $update_job );
 			}
 
-			self::$step ++;
+			$this->step ++;
 		}
 	}
 
 	/**
 	 * Done Step
 	 */
-	public static function done() {
-		do_action( 'job_manager_job_submitted', self::$job_id );
-
-		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( self::$job_id ) ) );
-	}
-
-	/**
-	 * Upload an image
-	 */
-	public static function upload_image( $field_key, $field = '' ) {
-		return self::upload_file( $field_key, $field );
-	}
-
-	/**
-	 * Upload a file
-	 * @return  string or array
-	 */
-	public static function upload_file( $field_key, $field ) {
-		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
-			if ( ! empty( $field['allowed_mime_types'] ) ) {
-				$allowed_mime_types = $field['allowed_mime_types'];
-			} else {
-				$allowed_mime_types = get_allowed_mime_types();
-			}
-
-			$file_urls       = array();
-			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] );
-
-			foreach ( $files_to_upload as $file_to_upload ) {
-				$uploaded_file = job_manager_upload_file( $file_to_upload, array( 'file_key' => $field_key ) );
-
-				if ( is_wp_error( $uploaded_file ) ) {
-					throw new Exception( $uploaded_file->get_error_message() );
-				} else {
-					$file_urls[] = $uploaded_file->url;
-				}
-			}
-
-			if ( ! empty( $field['multiple'] ) ) {
-				return $file_urls;
-			} else {
-				return current( $file_urls );
-			}
-		}
+	public function done() {
+		do_action( 'job_manager_job_submitted', $this->job_id );
+		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( $this->job_id ) ) );
 	}
 }

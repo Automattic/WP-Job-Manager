@@ -120,6 +120,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 = 1.22.0 =
+* Tweak - Refactored form classes to be instance based rather than static. Reduction in code base.
 * Tweak - Admin styling of the job data panels.
 * Tweak - Admin styling of the status column.
 * Tweak - Better handling of the expiry field.
