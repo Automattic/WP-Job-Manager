@@ -16,12 +16,9 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'pending_to_publish', array( $this, 'set_expiry' ) );
 		add_action( 'preview_to_publish', array( $this, 'set_expiry' ) );
-		add_action( 'preview_to_pending', array( $this, 'set_expiry' ) );
 		add_action( 'draft_to_publish', array( $this, 'set_expiry' ) );
 		add_action( 'auto-draft_to_publish', array( $this, 'set_expiry' ) );
 		add_action( 'expired_to_publish', array( $this, 'set_expiry' ) );
-		add_action( 'pending_payment_to_pending', array( $this, 'set_expiry' ) );
-		add_action( 'pending_payment_to_publish', array( $this, 'set_expiry' ) );
 
 		add_filter( 'the_job_description', 'wptexturize'        );
 		add_filter( 'the_job_description', 'convert_smilies'    );
@@ -448,25 +445,12 @@ class WP_Job_Manager_Post_Types {
 
 		// No manual setting? Lets generate a date
 		} else {
-			// Get duration from the product if set...
-			$duration = get_post_meta( $post->ID, '_job_duration', true );
+			$expires = calculate_job_expiry( $post->ID );
+			update_post_meta( $post->ID, '_job_expires', $expires );
 
-			// ...otherwise use the global option
-			if ( ! $duration ) {
-				$duration = absint( get_option( 'job_manager_submission_duration' ) );
-			}
-
-			if ( $duration ) {
-				$expires = date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
-				update_post_meta( $post->ID, '_job_expires', $expires );
-
-				// In case we are saving a post, ensure post data is updated so the field is not overridden
-				if ( isset( $_POST[ '_job_expires' ] ) ) {
-					$_POST[ '_job_expires' ] = $expires;
-				}
-
-			} else {
-				update_post_meta( $post->ID, '_job_expires', '' );
+			// In case we are saving a post, ensure post data is updated so the field is not overridden
+			if ( isset( $_POST[ '_job_expires' ] ) ) {
+				$_POST[ '_job_expires' ] = $expires;
 			}
 		}
 	}

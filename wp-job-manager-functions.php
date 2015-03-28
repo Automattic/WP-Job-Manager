@@ -668,3 +668,24 @@ function job_manager_upload_file( $file, $args = array() ) {
 
 	return $uploaded_file;
 }
+
+/**
+ * Calculate and return the job expiry date
+ * @param  int $job_id
+ * @return string
+ */
+function calculate_job_expiry( $job_id ) {
+	// Get duration from the product if set...
+	$duration = get_post_meta( $job_id, '_job_duration', true );
+
+	// ...otherwise use the global option
+	if ( ! $duration ) {
+		$duration = absint( get_option( 'job_manager_submission_duration' ) );
+	}
+
+	if ( $duration ) {
+		return date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
+	}
+
+	return '';
+}

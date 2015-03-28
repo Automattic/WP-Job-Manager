@@ -89,7 +89,8 @@ class WP_Job_Manager_Writepanels {
 			$fields['_job_expires'] = array(
 				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'placeholder' => __( 'yyyy-mm-dd', 'wp-job-manager' ),
-				'priority'    => 11
+				'priority'    => 11,
+				'value'       => metadata_exists( 'post', $post->ID, '_job_expires' ) ? get_post_meta( $post->ID, '_job_expires', true ) : calculate_job_expiry( $post->ID ),
 			);
 		}
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {

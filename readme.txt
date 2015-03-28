@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 4.1
 Tested up to: 4.1
-Stable tag: 1.21.5
+Stable tag: 1.22.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
 
@@ -119,8 +119,10 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
-= 1.21.5 =
-* Tweak - Admin styling.
+= 1.22.0 =
+* Tweak - Admin styling of the job data panels.
+* Tweak - Admin styling of the status column.
+* Tweak - Better handling of the expiry field.
 * Tweak - Search _geolocation_state_long.
 * Tweak - Allow admin fields to have custom 'name'.
 * Tweak - Use wp_video_shortcode instead of oembed directly.
