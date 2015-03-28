@@ -254,12 +254,12 @@ class WP_Job_Manager_CPT {
 		$columns["job_listing_type"]     = __( "Type", 'wp-job-manager' );
 		$columns["job_position"]         = __( "Position", 'wp-job-manager' );
 		$columns["job_location"]         = __( "Location", 'wp-job-manager' );
+		$columns['job_status']           = '<span class="tips" data-tip="' . __( "Status", 'wp-job-manager' ) . '">' . __( "Status", 'wp-job-manager' ) . '</span>';
 		$columns["job_posted"]           = __( "Posted", 'wp-job-manager' );
 		$columns["job_expires"]          = __( "Expires", 'wp-job-manager' );
 		$columns["job_listing_category"] = __( "Categories", 'wp-job-manager' );
 		$columns['featured_job']         = '<span class="tips" data-tip="' . __( "Featured?", 'wp-job-manager' ) . '">' . __( "Featured?", 'wp-job-manager' ) . '</span>';
 		$columns['filled']               = '<span class="tips" data-tip="' . __( "Filled?", 'wp-job-manager' ) . '">' . __( "Filled?", 'wp-job-manager' ) . '</span>';
-		$columns['job_status']           = __( "Status", 'wp-job-manager' );
 		$columns['job_actions']          = __( "Actions", 'wp-job-manager' );
 
 		if ( ! get_option( 'job_manager_enable_categories' ) ) {
@@ -325,7 +325,7 @@ class WP_Job_Manager_CPT {
 					echo '&ndash;';
 			break;
 			case "job_status" :
-				echo get_the_job_status( $post );
+				echo '<span data-tip="' . esc_attr( get_the_job_status( $post ) ) . '" class="tips status-' . esc_attr( $post->post_status ) . '">' . get_the_job_status( $post ) . '</span>';
 			break;
 			case "job_actions" :
 				echo '<div class="actions">';

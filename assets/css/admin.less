@@ -11,12 +11,12 @@
 	}
 }
 .widefat {
-	td.column-featured_job, td.column-filled {
+	td.column-featured_job, td.column-filled, td.column-job_status {
 		width: 46px;
 		text-align: left;
 		padding-left: 11px;
 	}
-	th.column-featured_job, th.column-filled {
+	th.column-featured_job, th.column-filled, th.column-job_status {
 		width: 1em;
 		span {
 			display: block;
@@ -38,14 +38,56 @@
 			}
 		}
 	}
+	th.column-job_status {
+		span {
+			&:before {
+				content: '\e828';
+			}
+		}
+	}
 	.column-job_posted {
 		strong {
 			display: block;
 			margin-bottom: .2em;
 		}
 	}
-	.column-job_status {
-		width: 6%;
+	td.column-job_status {
+		span {
+			position: relative;
+			font-size: 1em;
+			line-height: 1.5em;
+			width: 1em;
+			height: 0;
+			padding: 2em 0 0 0;
+			overflow: hidden;
+			display: block;
+		}
+		span:before {
+			.jm-icon;
+			position: absolute;
+			top: 0;
+			left: 0;
+			line-height: 1.5em;
+			vertical-align: middle;
+			color: #999;
+			content: '\e829';
+		}
+		.status-trash:before {
+			content: '\e82b';
+			color: #a00;
+		}
+		.status-pending:before {
+			content: '\e82c';
+			color: #ffba00;
+		}
+		.status-publish:before {
+			content: '\e82f';
+			color: #73a724;
+		}
+		.status-expired:before {
+			content: '\e82e';
+			color: #a00;
+		}
 	}
 	.column-job_listing_type {
 		text-align: left;
@@ -111,7 +153,7 @@
 	}
 	.column-job_actions {
 		text-align: right;
-		width: 188px;
+		width: 128px;
 		strong {
 			display: block;
 			margin-bottom: .2em;
@@ -145,7 +187,7 @@
 			content: '\e804';
 		}
 		.icon-delete:before {
-			content: '\e801';
+			content: '\e82b';
 		}
 		.icon-approve:before {
 			content: '\e802';

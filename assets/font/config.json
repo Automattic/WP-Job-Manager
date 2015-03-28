@@ -49,9 +49,21 @@
       "src": "fontawesome"
     },
     {
+      "uid": "43ab845088317bd348dee1d975700c48",
+      "css": "ok-circled",
+      "code": 59439,
+      "src": "fontawesome"
+    },
+    {
       "uid": "5211af474d3a9848f67f945e2ccaf143",
       "css": "cancel",
       "code": 59393,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "0f4cae16f34ae243a6144c18a003f2d8",
+      "css": "cancel-circled",
+      "code": 59438,
       "src": "fontawesome"
     },
     {
@@ -79,6 +91,12 @@
       "src": "fontawesome"
     },
     {
+      "uid": "7fd683b2c518ceb9e5fa6757f2276faa",
+      "css": "eye-off",
+      "code": 59434,
+      "src": "fontawesome"
+    },
+    {
       "uid": "f04a5d24e9e659145b966739c4fde82a",
       "css": "bookmark",
       "code": 59422,
@@ -88,6 +106,12 @@
       "uid": "2f5ef6f6b7aaebc56458ab4e865beff5",
       "css": "bookmark-empty",
       "code": 59423,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "57a0ac800df728aad61a7cf9e12f5fef",
+      "css": "flag",
+      "code": 59433,
       "src": "fontawesome"
     },
     {
@@ -127,6 +151,12 @@
       "src": "fontawesome"
     },
     {
+      "uid": "bbfb51903f40597f0b70fd75bc7b5cac",
+      "css": "trash",
+      "code": 59435,
+      "src": "fontawesome"
+    },
+    {
       "uid": "c08a1cde48d96cba21d8c05fa7d7feb1",
       "css": "doc-text-inv",
       "code": 59398,
@@ -154,6 +184,18 @@
       "uid": "531bc468eecbb8867d822f1c11f1e039",
       "css": "calendar",
       "code": 59407,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "598a5f2bcf3521d1615de8e1881ccd17",
+      "css": "clock",
+      "code": 59436,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "98d9c83c1ee7c2c25af784b518c522c5",
+      "css": "block",
+      "code": 59437,
       "src": "fontawesome"
     },
     {
