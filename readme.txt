@@ -128,6 +128,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Allow admin fields to have custom 'name'.
 * Tweak - Use wp_video_shortcode instead of oembed directly.
 * Fix - Prevent term-checklist being disabled for guests.
+* Fix - Add WPML var to transient name.
 
 = 1.21.4 =
 * Fix - get_job_listings_keyword_search keyword search.
