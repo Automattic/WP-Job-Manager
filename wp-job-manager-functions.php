@@ -44,7 +44,7 @@ function get_job_listings( $args = array() ) {
 	}
 
 	if ( ! empty( $args['search_location'] ) ) {
-		$location_meta_keys = array( 'geolocation_formatted_address', '_job_location', '_geolocation_state_long' );
+		$location_meta_keys = array( 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' );
 		$location_search    = array( 'relation' => 'OR' );
 		foreach ( $location_meta_keys as $meta_key ) {
 			$location_search[] = array(
