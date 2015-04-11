@@ -58,7 +58,7 @@ class WP_Job_Manager {
 		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), 'flush_rewrite_rules', 15 );
 
 		// Actions
-		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'after_setup_theme', array( $this, 'include_template_functions' ), 11 );
 		add_action( 'switch_theme', array( $this->post_types, 'register_post_types' ), 10 );
 		add_action( 'switch_theme', 'flush_rewrite_rules', 15 );
