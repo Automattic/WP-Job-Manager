@@ -117,8 +117,9 @@ class WP_Job_Manager_Shortcodes {
 	 */
 	public function job_dashboard( $atts ) {
 		if ( ! is_user_logged_in() ) {
+			ob_start();
 			get_job_manager_template( 'job-dashboard-login.php' );
-			return;
+			return ob_get_clean();
 		}
 
 		extract( shortcode_atts( array(
