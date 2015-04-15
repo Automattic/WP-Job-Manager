@@ -518,9 +518,9 @@ class WP_Job_Manager_Post_Types {
 		global $wpdb;
 
 		if ( '1' == $_meta_value ) {
-			$wpdb->update( $wpdb->posts, array( 'menu_order' => 0 ), array( 'ID' => $object_id ) );
+			$wpdb->update( $wpdb->posts, array( 'menu_order' => -1 ), array( 'ID' => $object_id ) );
 		} else {
-			$wpdb->update( $wpdb->posts, array( 'menu_order' => 1 ), array( 'ID' => $object_id, 'menu_order' => 0 ) );
+			$wpdb->update( $wpdb->posts, array( 'menu_order' => 0 ), array( 'ID' => $object_id, 'menu_order' => -1 ) );
 		}
 	}
 

@@ -455,8 +455,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'post_title'     => $post_title,
 			'post_content'   => $post_content,
 			'post_type'      => 'job_listing',
-			'comment_status' => 'closed',
-			'menu_order'     => 1
+			'comment_status' => 'closed'
 		);
 
 		if ( $update_slug ) {

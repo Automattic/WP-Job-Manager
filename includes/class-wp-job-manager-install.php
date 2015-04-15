@@ -27,14 +27,9 @@ class WP_Job_Manager_Install {
 		}
 
 		// Update featured posts ordering
-		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '1.22.3', '<' ) ) {
-			$wpdb->query( "UPDATE {$wpdb->posts} SET menu_order = 1 WHERE post_type='job_listing';" );
-
-			$featured_ids = array_map( 'absint', $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_featured' AND meta_value='1';" ) );
-
-			if ( $featured_ids ) {
-				$wpdb->query( "UPDATE {$wpdb->posts} SET menu_order = 0 WHERE ID IN (" . implode( ',', $featured_ids ) . ") AND post_type='job_listing';" );
-			}
+		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '1.22.0', '<' ) ) {
+			$wpdb->query( "UPDATE {$wpdb->posts} p SET p.menu_order = 0 WHERE p.post_type='job_listing';" );
+			$wpdb->query( "UPDATE {$wpdb->posts} p LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id SET p.menu_order = -1 WHERE pm.meta_key = '_featured' AND pm.meta_value='1' AND p.post_type='job_listing';" );
 		}
 
 		// Update legacy options
