@@ -435,6 +435,11 @@ class WP_Job_Manager_Post_Types {
 
 		// See if it is already set
 		if ( metadata_exists( 'post', $post->ID, '_job_expires' ) ) {
+			$expires = get_post_meta( $post->ID, '_job_expires', true );
+			if ( $expires && strtotime( $expires ) < current_time( 'timestamp' ) ) {
+				update_post_meta( $post->ID, '_job_expires', '' );
+				$_POST[ '_job_expires' ] = '';
+			}
 			return;
 		}
 
