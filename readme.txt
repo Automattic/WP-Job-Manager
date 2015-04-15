@@ -131,6 +131,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Clear expired date when publishing an expired listing.
 * Fix - Prevent term-checklist being disabled for guests.
 * Fix - Add WPML var to transient name.
+* Fix - Remove use of create_function.
 
 = 1.21.4 =
 * Fix - get_job_listings_keyword_search keyword search.

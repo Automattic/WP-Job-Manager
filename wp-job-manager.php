@@ -36,6 +36,7 @@ class WP_Job_Manager {
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
 		// Includes
+		include( 'includes/class-wp-job-manager-install.php' );
 		include( 'includes/class-wp-job-manager-post-types.php' );
 		include( 'includes/class-wp-job-manager-ajax.php' );
 		include( 'includes/class-wp-job-manager-shortcodes.php' );
@@ -54,15 +55,17 @@ class WP_Job_Manager {
 
 		// Activation - works with symlinks
 		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this->post_types, 'register_post_types' ), 10 );
-		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), create_function( "", "include_once( 'includes/class-wp-job-manager-install.php' );" ), 10 );
+		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( 'WP_Job_Manager_Install', 'install' ), 10 );
 		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), 'flush_rewrite_rules', 15 );
+
+		// Switch theme
+		add_action( 'switch_theme', array( $this->post_types, 'register_post_types' ), 10 );
+		add_action( 'switch_theme', 'flush_rewrite_rules', 15 );
 
 		// Actions
 		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'after_setup_theme', array( $this, 'include_template_functions' ), 11 );
-		add_action( 'switch_theme', array( $this->post_types, 'register_post_types' ), 10 );
-		add_action( 'switch_theme', 'flush_rewrite_rules', 15 );
-		add_action( 'widgets_init', create_function( "", "include_once( 'includes/class-wp-job-manager-widgets.php' );" ) );
+		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
 	}
@@ -72,7 +75,7 @@ class WP_Job_Manager {
 	 */
 	public function updater() {
 		if ( version_compare( JOB_MANAGER_VERSION, get_option( 'wp_job_manager_version' ), '>' ) ) {
-			include_once( 'includes/class-wp-job-manager-install.php' );
+			WP_Job_Manager_Install::install();
 		}
 	}
 
@@ -90,6 +93,13 @@ class WP_Job_Manager {
 	public function include_template_functions() {
 		include( 'wp-job-manager-functions.php' );
 		include( 'wp-job-manager-template.php' );
+	}
+
+	/**
+	 * Widgets init
+	 */
+	public function widgets_init() {
+		include_once( 'includes/class-wp-job-manager-widgets.php' );
 	}
 
 	/**
