@@ -129,6 +129,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Use wp_video_shortcode instead of oembed directly.
 * Tweak - Tweak menu order code for featured jobs - use -1 for featured and leave other jobs alone.
 * Tweak - Clear expired date when publishing an expired listing.
+* Tweak - clear_expired_transients function.
 * Fix - Prevent term-checklist being disabled for guests.
 * Fix - Add WPML var to transient name.
 * Fix - Remove use of create_function.

@@ -111,7 +111,7 @@ class WP_Job_Manager_Geocode {
 			return false;
 		}
 
-		$transient_name              = 'geocode_' . md5( $raw_address );
+		$transient_name              = 'jm_geocode_' . md5( $raw_address );
 		$geocoded_address            = get_transient( $transient_name );
 		$jm_geocode_over_query_limit = get_transient( 'jm_geocode_over_query_limit' );
 

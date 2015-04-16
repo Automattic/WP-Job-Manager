@@ -119,7 +119,7 @@ function get_job_listings( $args = array() ) {
 		$to_hash .= ICL_LANGUAGE_CODE;
 	}
 
-	$query_args_hash = 'jm-' . md5( $to_hash );
+	$query_args_hash = 'jm_query_' . md5( $to_hash );
 
 	do_action( 'before_get_job_listings', $query_args, $args );
 
@@ -519,7 +519,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 	extract( $r );
 
 	// Store in a transient to help sites with many cats
-	$categories_hash = 'jmc-' . md5( json_encode( $r ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'jm_get_' . $r['taxonomy'] ) );
+	$categories_hash = 'jm_cats_' . md5( json_encode( $r ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'jm_get_' . $r['taxonomy'] ) );
 
 	if ( false === ( $categories = get_transient( $categories_hash ) ) ) {
 		$categories = get_terms( $taxonomy, $r );
