@@ -7,7 +7,7 @@ Version: 1.22.0
 Author: Mike Jolley
 Author URI: http://mikejolley.com
 Requires at least: 4.1
-Tested up to: 4.1
+Tested up to: 4.2
 Text Domain: wp-job-manager
 Domain Path: /languages
 

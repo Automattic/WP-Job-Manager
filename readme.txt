@@ -3,7 +3,7 @@ Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
 Tags: job listing, job board, job, jobs, company, hiring, employment, employees, candidate, freelance, internship
 Requires at least: 4.1
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: 1.22.0
 
 Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
