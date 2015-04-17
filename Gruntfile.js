@@ -101,35 +101,6 @@ module.exports = function( grunt ){
 			}
 		},
 
-		copy: {
-			deploy: {
-				src: [
-					'**',
-					'!Gruntfile.js',
-					'!package.json',
-					'!node_modules/**'
-				],
-				dest: 'deploy',
-				expand: true
-			},
-		},
-
-		clean: {
-			deploy: {
-				src: [ 'deploy' ]
-			},
-		},
-
-		wp_deploy: {
-	        deploy: {
-	            options: {
-	                plugin_slug: 'wp-job-manager',
-	                svn_user: 'mikejolley',
-	                build_dir: 'deploy'
-	            },
-	        }
-	    },
-
 	});
 
 	// Load NPM tasks to be used here
@@ -138,9 +109,6 @@ module.exports = function( grunt ){
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
-	grunt.loadNpmTasks( 'grunt-contrib-copy' );
-	grunt.loadNpmTasks( 'grunt-contrib-clean' );
-	grunt.loadNpmTasks( 'grunt-wp-deploy' );
 
 	// Register tasks
 	grunt.registerTask( 'default', [
@@ -162,11 +130,6 @@ module.exports = function( grunt ){
 
 	grunt.registerTask( 'mo', [
 		'shell:generatemos'
-	]);
-
-	grunt.registerTask( 'deploy', [
-		'clean:deploy',
-		'copy:deploy'
 	]);
 
 };
