@@ -86,7 +86,7 @@ class WP_Job_Manager_Ajax {
 		$unmatched     = false;
 
 		foreach ( $types as $type ) {
-			if ( in_array( $type->slug, $filter_job_types ) ) {
+			if ( is_array( $filter_job_types ) && in_array( $type->slug, $filter_job_types ) ) {
 				$showing_types[] = $type->name;
 			} else {
 				$unmatched = true;

@@ -204,8 +204,10 @@ function get_the_job_permalink( $post = null ) {
  */
 function get_the_job_application_method( $post = null ) {
 	$post = get_post( $post );
-	if ( $post->post_type !== 'job_listing' )
+
+	if ( $post && $post->post_type !== 'job_listing' ) {
 		return;
+	}
 
 	$method = new stdClass();
 	$apply  = $post->_application;
