@@ -36,7 +36,7 @@ class WP_Job_Manager_Forms {
 		$form_file   = JOB_MANAGER_PLUGIN_DIR . '/includes/forms/class-wp-job-manager-form-' . $form_name . '.php';
 
 		if ( class_exists( $form_class ) ) {
-			return $form_class::instance();
+			return call_user_func( array( $form_class, 'instance' ) );
 		}
 
 		if ( ! file_exists( $form_file ) ) {
@@ -48,7 +48,7 @@ class WP_Job_Manager_Forms {
 		}
 
 		// Init the form
-		return $form_class::instance();
+		return call_user_func( array( $form_class, 'instance' ) );
 	}
 
 	/**
