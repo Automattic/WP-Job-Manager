@@ -63,7 +63,7 @@ class WP_Job_Manager {
 		add_action( 'switch_theme', 'flush_rewrite_rules', 15 );
 
 		// Actions
-		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		add_action( 'after_setup_theme', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'after_setup_theme', array( $this, 'include_template_functions' ), 11 );
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );

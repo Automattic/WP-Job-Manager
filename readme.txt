@@ -142,6 +142,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.22.2 =
+* Fix - Load textdomain before post types are registered.
+
 = 1.22.1 =
 * Fix - It's 2015, but some people are still running PHP 5.2. Compatibility fix.
 
