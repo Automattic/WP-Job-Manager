@@ -28,6 +28,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	public function __construct() {
 		add_action( 'wp', array( $this, 'process' ) );
 
+		$this->action = get_permalink();
 		$this->steps  = (array) apply_filters( 'submit_job_steps', array(
 			'submit' => array(
 				'name'     => __( 'Submit Details', 'wp-job-manager' ),

@@ -26,6 +26,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * Constructor
 	 */
 	public function __construct() {
+		$this->action = get_permalink();
 		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
 		if  ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
