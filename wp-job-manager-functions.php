@@ -520,9 +520,17 @@ function job_manager_dropdown_categories( $args = '' ) {
 
 	// Store in a transient to help sites with many cats
 	$categories_hash = 'jm_cats_' . md5( json_encode( $r ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'jm_get_' . $r['taxonomy'] ) );
+	$categories      = get_transient( $categories_hash );
 
-	if ( false === ( $categories = get_transient( $categories_hash ) ) ) {
-		$categories = get_terms( $taxonomy, $r );
+	if ( empty( $categories ) ) {
+		$categories = get_terms( $taxonomy, array(
+			'orderby'         => $r['orderby'],
+			'order'           => $r['order'],
+			'hide_empty'      => $r['hide_empty'],
+			'child_of'        => $r['child_of'],
+			'exclude'         => $r['exclude'],
+			'hierarchical'    => $r['hierarchical']
+		) );
 		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 30 );
 	}
 

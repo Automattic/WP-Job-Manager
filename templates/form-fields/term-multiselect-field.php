@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Get selected value
 if ( isset( $field['value'] ) ) {
 	$selected = $field['value'];
@@ -18,10 +18,10 @@ $args = array(
 	'name'         => isset( $field['name'] ) ? $field['name'] : $key,
 	'orderby'      => 'name',
 	'selected'     => $selected,
-	'hide_empty'   => FALSE
+	'hide_empty'   => false
 );
 
-if( isset( $field['placeholder'] ) && ! empty( $field['placeholder'] ) ) $args['placeholder'] = $field['placeholder'];
+if ( isset( $field['placeholder'] ) && ! empty( $field['placeholder'] ) ) $args['placeholder'] = $field['placeholder'];
 
 job_manager_dropdown_categories( apply_filters( 'job_manager_term_multiselect_field_args', $args ) );
 

@@ -142,6 +142,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Tweak - Set form actions to current page.
+
 = 1.22.2 =
 * Fix - Load textdomain before post types are registered.
 

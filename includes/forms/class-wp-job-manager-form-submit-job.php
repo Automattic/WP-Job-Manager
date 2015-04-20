@@ -28,7 +28,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	public function __construct() {
 		add_action( 'wp', array( $this, 'process' ) );
 
-		$this->action = get_permalink();
 		$this->steps  = (array) apply_filters( 'submit_job_steps', array(
 			'submit' => array(
 				'name'     => __( 'Submit Details', 'wp-job-manager' ),
@@ -608,11 +607,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		if ( $this->job_id ) {
 			$job_preview       = true;
+			$action            = $this->get_action();
 			$post              = get_post( $this->job_id );
 			setup_postdata( $post );
 			$post->post_status = 'preview';
 			?>
-			<form method="post" id="job_preview">
+			<form method="post" id="job_preview" action="<?php echo esc_url( $action ); ?>">
 				<div class="job_listing_preview_title">
 					<input type="submit" name="continue" id="job_preview_submit_button" class="button" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing', 'wp-job-manager' ) ); ?>" />
 					<input type="submit" name="edit_job" class="button" value="<?php _e( 'Edit listing', 'wp-job-manager' ); ?>" />
