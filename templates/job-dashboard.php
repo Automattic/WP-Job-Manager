@@ -59,7 +59,7 @@
 												if ( $value['nonce'] ) {
 													$action_url = wp_nonce_url( $action_url, 'job_manager_my_job_actions' );
 												}
-												echo '<li><a href="' . $action_url . '" class="job-dashboard-action-' . $action . '">' . $value['label'] . '</a></li>';
+												echo '<li><a href="' . esc_url( $action_url ) . '" class="job-dashboard-action-' . esc_attr( $action ) . '">' . esc_html( $value['label'] ) . '</a></li>';
 											}
 										?>
 									</ul>
