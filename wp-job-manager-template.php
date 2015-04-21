@@ -402,8 +402,14 @@ function job_manager_get_resized_image( $logo, $size ) {
  * Output the company video
  */
 function the_company_video( $post = null ) {
-	$video       = get_the_company_video( $post );
-	$video_embed = wp_video_shortcode( array( 'src' => $video ) );
+	$video    = get_the_company_video( $post );
+	$filetype = wp_check_filetype( $video );
+
+	if ( ! empty( $filetype['ext'] ) ) {
+		$video_embed = wp_video_shortcode( array( 'src' => $video ) );
+	} else {
+		$video_embed = wp_oembed_get( $video );
+	}
 
 	if ( $video_embed ) {
 		echo '<div class="company_video">' . $video_embed . '</div>';
