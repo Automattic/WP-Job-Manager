@@ -11,7 +11,7 @@ Tested up to: 4.2
 Text Domain: wp-job-manager
 Domain Path: /languages
 
-	Copyright: 2013 Mike Jolley
+	Copyright: 2015 Mike Jolley
 	License: GNU General Public License v3.0
 	License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
