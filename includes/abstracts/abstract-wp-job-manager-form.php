@@ -71,13 +71,12 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get action (URL for forms to post to).
-	 *
 	 * As of 1.22.2 this defaults to the current page permalink.
 	 *
 	 * @return string
 	 */
 	public function get_action() {
-		return $this->action ? $this->action : get_permalink();
+		return esc_url_raw( $this->action ? $this->action : wp_unslash( $_SERVER['REQUEST_URI'] ) );
 	}
 
 	/**
