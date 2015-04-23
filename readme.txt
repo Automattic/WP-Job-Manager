@@ -142,6 +142,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - Video max width.
+
 = 1.22.2 =
 * Tweak - Set form actions to current page.
 * Fix - Video embeds.
