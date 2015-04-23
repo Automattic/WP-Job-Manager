@@ -3,11 +3,10 @@ jQuery(function($) {
 		$(this).fileupload({
 			dataType: 'json',
 			dropZone: $(this),
-			url: job_manager_ajax_file_upload.ajax_url,
+			url: job_manager_ajax_file_upload.ajax_url + 'upload_file',
 			maxNumberOfFiles: 1,
 			formData: {
-				script: true,
-				action: 'job_manager_upload_file'
+				script: true
 			},
 			add: function (e, data) {
 				var $file_field     = $( this );

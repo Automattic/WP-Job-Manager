@@ -11,10 +11,69 @@ class WP_Job_Manager_Ajax {
 	 * Constructor
 	 */
 	public function __construct() {
+		add_action( 'init', array( __CLASS__, 'add_endpoint') );
+		add_action( 'template_redirect', array( __CLASS__, 'do_jm_ajax'), 0 );
+
+		// JM Ajax endpoints
+		add_action( 'job_manager_ajax_get_listings', array( $this, 'get_listings' ) );
+		add_action( 'job_manager_ajax_upload_file', array( $this, 'upload_file' ) );
+
+		// BW compatible handlers
 		add_action( 'wp_ajax_nopriv_job_manager_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'wp_ajax_job_manager_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'wp_ajax_nopriv_job_manager_upload_file', array( $this, 'upload_file' ) );
 		add_action( 'wp_ajax_job_manager_upload_file', array( $this, 'upload_file' ) );
+	}
+
+	/**
+	 * Add our endpoint for frontend ajax requests
+	 */
+	public static function add_endpoint() {
+		add_rewrite_tag( '%jm-ajax%', '([^/]*)' );
+		add_rewrite_rule( 'jm-ajax/([^/]*)/?', 'index.php?jm-ajax=$matches[1]', 'top' );
+	}
+
+	/**
+	 * Get JM Ajax Endpoint
+	 * @param  string $request Optional
+	 * @param  string $ssl     Optional
+	 * @return string
+	 */
+	public static function get_endpoint( $request = '', $ssl = null ) {
+		if ( is_null( $ssl ) ) {
+			$scheme = parse_url( home_url(), PHP_URL_SCHEME );
+		} elseif ( $ssl ) {
+			$scheme = 'https';
+		} else {
+			$scheme = 'http';
+		}
+		if ( strstr( get_option( 'permalink_structure' ), '/index.php/' ) ) {
+			$endpoint = trailingslashit( home_url( '/index.php/jm-ajax/' . $request, $scheme ) );
+		} elseif ( get_option( 'permalink_structure' ) ) {
+			$endpoint = trailingslashit( home_url( '/jm-ajax/' . $request, $scheme ) );
+		} else {
+			$endpoint = add_query_arg( 'jm-ajax=', $request, trailingslashit( home_url( '', $scheme ) ) );
+		}
+		return esc_url_raw( $endpoint );
+	}
+
+	/**
+	 * Check for WC Ajax request and fire action
+	 */
+	public static function do_jm_ajax() {
+		global $wp_query;
+
+		if ( ! empty( $_GET['jm-ajax'] ) ) {
+			 $wp_query->set( 'jm-ajax', sanitize_text_field( $_GET['jm-ajax'] ) );
+		}
+
+   		if ( $action = $wp_query->get( 'jm-ajax' ) ) {
+   			if ( ! defined( 'DOING_AJAX' ) ) {
+				define( 'DOING_AJAX', true );
+			}
+   			do_action( 'job_manager_ajax_' . sanitize_text_field( $action ) );
+   			die();
+   		}
 	}
 
 	/**
@@ -145,11 +204,7 @@ class WP_Job_Manager_Ajax {
 
 		$result['max_num_pages'] = $jobs->max_num_pages;
 
-		echo '<!--WPJM-->';
-		echo json_encode( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
-		echo '<!--WPJM_END-->';
-
-		die();
+		wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
 	}
 
 	/**

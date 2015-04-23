@@ -85,7 +85,6 @@ jQuery( document ).ready( function ( $ ) {
 			}
 
 			data = {
-				action: 'job_manager_get_listings',
 				search_categories: categories,
 				search_keywords: keywords,
 				search_location: location,
@@ -102,23 +101,11 @@ jQuery( document ).ready( function ( $ ) {
 
 		xhr[index] = $.ajax( {
 			type: 'GET',
-			url: job_manager_ajax_filters.ajax_url,
+			url: job_manager_ajax_filters.ajax_url + 'get_listings',
 			data: data,
-			success: function ( response ) {
-				if ( response ) {
+			success: function ( result ) {
+				if ( result ) {
 					try {
-
-						// Get the valid JSON only from the returned string
-						if ( response.indexOf( "<!--WPJM-->" ) >= 0 ) {
-							response = response.split( "<!--WPJM-->" )[ 1 ]; // Strip off before WPJM
-						}
-
-						if ( response.indexOf( "<!--WPJM_END-->" ) >= 0 ) {
-							response = response.split( "<!--WPJM_END-->" )[ 0 ]; // Strip off anything after WPJM_END
-						}
-
-						var result = $.parseJSON( response );
-
 						if ( result.showing ) {
 							$( showing ).show().html( '<span>' + result.showing + '</span>' + result.showing_links );
 						} else {
@@ -197,7 +184,7 @@ jQuery( document ).ready( function ( $ ) {
 		return false;
 	} );
 
-	$( 'body' ).on( 'click', '.load_more_jobs', function() {
+	$( document.body ).on( 'click', '.load_more_jobs', function() {
 		var target           = $( this ).closest( 'div.job_listings' );
 		var page             = parseInt( $( this ).data( 'page' ) || 1 );
 		var loading_previous = false;
