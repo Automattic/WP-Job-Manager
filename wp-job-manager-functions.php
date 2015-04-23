@@ -91,7 +91,10 @@ function get_job_listings( $args = array() ) {
 	}
 
 	if ( 'featured' === $args['orderby'] ) {
-		add_filter( 'posts_clauses', 'order_featured_job_listing' );
+		$query_args['orderby'] = array(
+			'menu_order' => 'ASC',
+			'title'      => 'DESC'
+		);
 	}
 
 	if ( $job_manager_keyword = sanitize_text_field( $args['search_keywords'] ) ) {
@@ -131,7 +134,6 @@ function get_job_listings( $args = array() ) {
 
 	do_action( 'after_get_job_listings', $query_args, $args );
 
-	remove_filter( 'posts_clauses', 'order_featured_job_listing' );
 	remove_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
 
 	return $result;
@@ -167,16 +169,15 @@ endif;
 
 if ( ! function_exists( 'order_featured_job_listing' ) ) :
 	/**
-	 * WP Core doens't let us change the sort direction for invidual orderby params - http://core.trac.wordpress.org/ticket/17065
+	 * Was used for sorting.
 	 *
+	 * @deprecated 1.22.4
 	 * @param array $args
 	 * @return array
 	 */
 	function order_featured_job_listing( $args ) {
 		global $wpdb;
-
 		$args['orderby'] = "$wpdb->posts.menu_order ASC, $wpdb->posts.post_date DESC";
-
 		return $args;
 	}
 endif;

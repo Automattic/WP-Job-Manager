@@ -143,6 +143,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 * Fix - Video max width.
+* Tweak - Improve orderby. https://make.wordpress.org/core/2014/08/29/a-more-powerful-order-by-in-wordpress-4-0/
 
 = 1.22.3 =
 * Fix frontend listing edits.
