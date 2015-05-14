@@ -139,7 +139,7 @@ class WP_Job_Manager_Setup {
 
 				<p><?php _e( 'Thanks for installing <em>WP Job Manager</em>!', 'wp-job-manager' ); ?></p>
 				<p><?php _e( 'This setup wizard will help you get started by creating the pages for job submission, job management, and listing your jobs.', 'wp-job-manager' ); ?></p>
-				<p><?php printf( __( 'If you want to skip the wizard and setup the pages and shortcodes yourself manually, the process is still reletively simple. Refer to the %sdocumentation%s for help.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
+				<p><?php printf( __( 'If you want to skip the wizard and setup the pages and shortcodes yourself manually, the process is still relatively simple. Refer to the %sdocumentation%s for help.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
 
 				<p class="submit">
 					<a href="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>" class="button button-primary"><?php _e( 'Continue to page setup', 'wp-job-manager' ); ?></a>
