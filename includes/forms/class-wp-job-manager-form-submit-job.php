@@ -256,7 +256,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						$check_value = array_filter( array( $values[ $group_key ][ $key ] ) );
 					}
 					if ( ! empty( $check_value ) ) {
-						$file_url = curent( explode( '?', $file_url ) );
 						foreach ( $check_value as $file_url ) {
 							if ( ( $info = wp_check_filetype( $file_url ) ) && ! in_array( $info['type'], $field['allowed_mime_types'] ) ) {
 								throw new Exception( sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $field['label'], $info['ext'], implode( ', ', array_keys( $field['allowed_mime_types'] ) ) ) );
