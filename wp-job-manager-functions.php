@@ -290,7 +290,7 @@ function job_manager_get_filtered_links( $args = array() ) {
 				'type'           => isset( $args['filter_job_types'] ) ? implode( ',', $args['filter_job_types'] ) : '',
 				'location'       => $args['search_location'],
 				'job_categories' => implode( ',', $job_categories ),
-				's'              => $args['search_keywords'],
+				's'              => urlencode($args['search_keywords']),
 			) ) )
 		)
 	), $args );
