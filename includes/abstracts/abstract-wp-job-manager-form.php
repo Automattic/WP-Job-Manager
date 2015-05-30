@@ -153,7 +153,9 @@ abstract class WP_Job_Manager_Form {
 				// Get the value
 				$field_type = str_replace( '-', '_', $field['type'] );
 
-				if ( method_exists( $this, "get_posted_{$field_type}_field" ) ) {
+				if ( $handler = apply_filters( "job_manager_get_posted_{$field_type}_field", false ) ) {
+					$values[ $group_key ][ $key ] = call_user_func( $handler, $key, $field );
+				} elseif ( method_exists( $this, "get_posted_{$field_type}_field" ) ) {
 					$values[ $group_key ][ $key ] = call_user_func( array( $this, "get_posted_{$field_type}_field" ), $key, $field );
 				} else {
 					$values[ $group_key ][ $key ] = $this->get_posted_field( $key, $field );
