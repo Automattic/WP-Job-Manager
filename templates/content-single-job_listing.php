@@ -1,3 +1,4 @@
+<?php global $post; ?>
 <div class="single_job_listing" itemscope itemtype="http://schema.org/JobPosting">
 	<meta itemprop="title" content="<?php echo esc_attr( $post->post_title ); ?>" />
 
