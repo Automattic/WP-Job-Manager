@@ -81,12 +81,14 @@ function get_job_listings( $args = array() ) {
 	}
 
 	if ( ! empty( $args['search_categories'] ) ) {
-		$field                     = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
+		$field    = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
+		$operator = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && sizeof( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
 		$query_args['tax_query'][] = array(
-			'taxonomy' => 'job_listing_category',
-			'field'    => $field,
-			'terms'    => $args['search_categories'],
-			'operator' => 'all' === get_option( 'job_manager_category_filter_type', 'all' ) ? 'AND' : 'IN'
+			'taxonomy'         => 'job_listing_category',
+			'field'            => $field,
+			'terms'            => array_values( $args['search_categories'] ),
+			'include_children' => $operator !== 'AND' ,
+			'operator'         => $operator
 		);
 	}
 
