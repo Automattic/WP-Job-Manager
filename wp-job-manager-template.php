@@ -312,15 +312,16 @@ function the_company_logo( $size = 'full', $default = null, $post = null ) {
 
 	if ( ! empty( $logo ) && ( strstr( $logo, 'http' ) || file_exists( $logo ) ) ) {
 
-		if ( $size !== 'full' )
+		if ( $size !== 'full' ) {
 			$logo = job_manager_get_resized_image( $logo, $size );
+		}
 
-		echo '<img class="company_logo" src="' . $logo . '" alt="' . get_the_company_name( $post ) . '" />';
+		echo '<img class="company_logo" src="' . esc_attr( $logo ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
 
 	} elseif ( $default ) {
-		echo '<img class="company_logo" src="' . $default . '" alt="' . get_the_company_name( $post ) . '" />';
+		echo '<img class="company_logo" src="' . esc_attr( $default ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
 	} else {
-		echo '<img class="company_logo" src="' . apply_filters( 'job_manager_default_company_logo', JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' ) . '" alt="' . get_the_company_name( $post ) . '" />';
+		echo '<img class="company_logo" src="' . esc_attr( apply_filters( 'job_manager_default_company_logo', JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' ) ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
 	}
 }
 
