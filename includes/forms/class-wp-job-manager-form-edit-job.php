@@ -111,7 +111,14 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			$this->update_job_data( $values );
 
 			// Successful
-			echo '<div class="job-manager-message">' . __( 'Your changes have been saved.', 'wp-job-manager' ), ' <a href="' . get_permalink( $this->job_id ) . '">' . __( 'View &rarr;', 'wp-job-manager' ) . '</a>' . '</div>';
+			switch ( get_post_status( $this->job_id ) ) {
+				case 'publish' :
+					echo '<div class="job-manager-message">' . __( 'Your changes have been saved.', 'wp-job-manager' ) . ' <a href="' . get_permalink( $this->job_id ) . '">' . __( 'View &rarr;', 'wp-job-manager' ) . '</a>' . '</div>';
+				break;
+				default :
+					echo '<div class="job-manager-message">' . __( 'Your changes have been saved.', 'wp-job-manager' ) . '</div>';
+				break;
+			}
 
 		} catch ( Exception $e ) {
 			echo '<div class="job-manager-error">' . $e->getMessage() . '</div>';
