@@ -195,8 +195,16 @@
 	}
 }
 .wp_job_manager_meta_data {
-	overflow: hidden;
 	padding: 12px;
+	zoom: 1;
+	&:before,
+	&:after {
+	  content: "";
+	  display: table;
+	}
+	&:after {
+	  clear: both;
+	}
 	.form-field {
 		width: 50%;
 		line-height: 2em;
