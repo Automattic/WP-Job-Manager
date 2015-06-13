@@ -463,17 +463,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job_slug   = array();
 
 			// Prepend with company name
-			if ( ! empty( $values['company']['company_name'] ) ) {
+			if ( apply_filters( 'submit_job_form_prefix_post_name_with_company', true ) && ! empty( $values['company']['company_name'] ) ) {
 				$job_slug[] = $values['company']['company_name'];
 			}
 
 			// Prepend location
-			if ( ! empty( $values['job']['job_location'] ) ) {
+			if ( apply_filters( 'submit_job_form_prefix_post_name_with_location', true ) && ! empty( $values['job']['job_location'] ) ) {
 				$job_slug[] = $values['job']['job_location'];
 			}
 
 			// Prepend with job type
-			if ( ! empty( $values['job']['job_type'] ) ) {
+			if ( apply_filters( 'submit_job_form_prefix_post_name_with_job_type', true ) && ! empty( $values['job']['job_type'] ) ) {
 				$job_slug[] = $values['job']['job_type'];
 			}
 

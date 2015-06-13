@@ -150,6 +150,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Custom AJAX endpoints to reduce overhead of loading admin.
 * Tweak - nofollow apply links.
 * Tweak - Rename 'title' to 'job title' for clarity.
+* Tweak - submit_job_form_prefix_post_name_with_company filter.
+* Tweak - submit_job_form_prefix_post_name_with_location filter.
+* Tweak - submit_job_form_prefix_post_name_with_job_type filter.
 
 = 1.22.3 =
 * Fix frontend listing edits.
