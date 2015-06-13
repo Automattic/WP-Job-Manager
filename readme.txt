@@ -154,6 +154,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - submit_job_form_prefix_post_name_with_company filter.
 * Tweak - submit_job_form_prefix_post_name_with_location filter.
 * Tweak - submit_job_form_prefix_post_name_with_job_type filter.
+* Tweak - Improved job_feed searching.
 
 = 1.22.3 =
 * Fix frontend listing edits.

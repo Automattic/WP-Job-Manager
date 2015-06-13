@@ -318,8 +318,7 @@ if ( ! function_exists( 'get_job_listing_rss_link' ) ) :
  * @return string
  */
 function get_job_listing_rss_link( $args = array() ) {
-	$rss_link = add_query_arg( array_merge( array( 'feed' => 'job_feed' ), $args ), home_url() );
-
+	$rss_link = add_query_arg( urlencode_deep( array_merge( array( 'feed' => 'job_feed' ), $args ) ), home_url() );
 	return $rss_link;
 }
 endif;

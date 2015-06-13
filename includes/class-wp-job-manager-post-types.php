@@ -285,45 +285,65 @@ class WP_Job_Manager_Post_Types {
 	 * Job listing feeds
 	 */
 	public function job_feed() {
-		$args = array(
+		$query_args = array(
 			'post_type'           => 'job_listing',
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => 1,
 			'posts_per_page'      => isset( $_GET['posts_per_page'] ) ? absint( $_GET['posts_per_page'] ) : 10,
-			's'                   => isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '',
-			'meta_query'          => array(),
-			'tax_query'           => array()
+			'tax_query'           => array(),
+			'meta_query'          => array()
 		);
 
-		if ( ! empty( $_GET['location'] ) ) {
-			$args['meta_query'][] = array(
-				'key'     => '_job_location',
-				'value'   => sanitize_text_field( $_GET['location'] ),
-				'compare' => 'LIKE'
-			);
+		if ( ! empty( $_GET['search_location'] ) ) {
+			$location_meta_keys = array( 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' );
+			$location_search    = array( 'relation' => 'OR' );
+			foreach ( $location_meta_keys as $meta_key ) {
+				$location_search[] = array(
+					'key'     => $meta_key,
+					'value'   => sanitize_text_field( $_GET['search_location'] ),
+					'compare' => 'like'
+				);
+			}
+			$query_args['meta_query'][] = $location_search;
 		}
 
-		if ( ! empty( $_GET['type'] ) ) {
-			$args['tax_query'][] = array(
+		if ( ! empty( $_GET['job_types'] ) ) {
+			$query_args['tax_query'][] = array(
 				'taxonomy' => 'job_listing_type',
 				'field'    => 'slug',
-				'terms'    => explode( ',', sanitize_text_field( $_GET['type'] ) ) + array( 0 )
+				'terms'    => explode( ',', sanitize_text_field( $_GET['job_types'] ) ) + array( 0 )
 			);
 		}
 
 		if ( ! empty( $_GET['job_categories'] ) ) {
-			$args['tax_query'][] = array(
-				'taxonomy' => 'job_listing_category',
-				'field'    => 'slug',
-				'terms'    => explode( ',', sanitize_text_field( $_GET['job_categories'] ) ) + array( 0 )
+			$cats     = explode( ',', sanitize_text_field( $_GET['job_categories'] ) ) + array( 0 );
+			$field    = is_numeric( $cats ) ? 'term_id' : 'slug';
+			$operator = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && sizeof( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
+			$query_args['tax_query'][] = array(
+				'taxonomy'         => 'job_listing_category',
+				'field'            => $field,
+				'terms'            => $cats,
+				'include_children' => $operator !== 'AND' ,
+				'operator'         => $operator
 			);
 		}
 
-		query_posts( apply_filters( 'job_feed_args', $args ) );
+		if ( $job_manager_keyword = sanitize_text_field( $_GET['search_keywords'] ) ) {
+			$query_args['_keyword'] = $job_manager_keyword; // Does nothing but needed for unique hash
+			add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
+		}
 
+		if ( empty( $query_args['meta_query'] ) ) {
+			unset( $query_args['meta_query'] );
+		}
+
+		if ( empty( $query_args['tax_query'] ) ) {
+			unset( $query_args['tax_query'] );
+		}
+
+		query_posts( apply_filters( 'job_feed_args', $query_args ) );
 		add_action( 'rss2_ns', array( $this, 'job_feed_namespace' ) );
 		add_action( 'rss2_item', array( $this, 'job_feed_item' ) );
-
 		do_feed_rss2( false );
 	}
 
