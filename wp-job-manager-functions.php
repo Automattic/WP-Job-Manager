@@ -289,10 +289,10 @@ function job_manager_get_filtered_links( $args = array() ) {
 		'rss_link' => array(
 			'name' => __( 'RSS', 'wp-job-manager' ),
 			'url'  => get_job_listing_rss_link( apply_filters( 'job_manager_get_listings_custom_filter_rss_args', array(
-				'type'           => isset( $args['filter_job_types'] ) ? implode( ',', $args['filter_job_types'] ) : '',
-				'location'       => $args['search_location'],
-				'job_categories' => implode( ',', $job_categories ),
-				's'              => $args['search_keywords'],
+				'job_types'       => isset( $args['filter_job_types'] ) ? implode( ',', $args['filter_job_types'] ) : '',
+				'search_location' => $args['search_location'],
+				'job_categories'  => implode( ',', $job_categories ),
+				'search_keywords' => $args['search_keywords'],
 			) ) )
 		)
 	), $args );
