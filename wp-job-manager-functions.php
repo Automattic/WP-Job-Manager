@@ -118,19 +118,13 @@ function get_job_listings( $args = array() ) {
 	$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
 	// Generate hash
-	$to_hash = json_encode( $query_args ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
-
-	if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
-		$to_hash .= ICL_LANGUAGE_CODE;
-	}
-
-	$query_args_hash = 'jm_query_' . md5( $to_hash );
+	$to_hash         = defined( 'ICL_LANGUAGE_CODE' ) ? json_encode( $query_args ) . ICL_LANGUAGE_CODE : json_encode( $query_args );
+	$query_args_hash = 'jm_' . md5( $to_hash ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
 
 	do_action( 'before_get_job_listings', $query_args, $args );
 
 	if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
 		$result = new WP_Query( $query_args );
-
 		set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
 	}
 

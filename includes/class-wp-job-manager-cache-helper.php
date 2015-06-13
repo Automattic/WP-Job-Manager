@@ -73,10 +73,22 @@ class WP_Job_Manager_Cache_Helper {
 		$transient_value = get_transient( $transient_name );
 
 		if ( false === $transient_value || true === $refresh ) {
-			$transient_value = time();
-			set_transient( $transient_name, $transient_value );
+			self::delete_version_transients( $transient_value );
+			set_transient( $transient_name, $transient_value = time() );
 		}
 		return $transient_value;
+	}
+
+	/**
+	 * When the transient version increases, this is used to remove all past transients to avoid filling the DB.
+	 *
+	 * Note; this only works on transients appended with the transient version, and when object caching is not being used.
+	 */
+	private static function delete_version_transients( $version ) {
+		if ( ! wp_using_ext_object_cache() && ! empty( $version ) ) {
+			global $wpdb;
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s;", "\_transient\_%" . $version ) );
+		}
 	}
 
     /**
@@ -85,41 +97,13 @@ class WP_Job_Manager_Cache_Helper {
 	public static function clear_expired_transients() {
 		global $wpdb;
 
-		if ( ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-			$rows = $wpdb->query( "
-				DELETE
-					a, b
-				FROM
-					{$wpdb->options} a, {$wpdb->options} b
-				WHERE
-					a.option_name LIKE '\_transient\_jm\_%' AND
-					a.option_name NOT LIKE '\_transient\_timeout\_jm\_%' AND
-					b.option_name = CONCAT(
-						'_transient_timeout_jm_',
-						SUBSTRING(
-							a.option_name,
-							CHAR_LENGTH('_transient_jm_') + 1
-						)
-					)
-					AND b.option_value < UNIX_TIMESTAMP()
-			" );
-			$rows2 = $wpdb->query( "
-				DELETE
-					a, b
-				FROM
-					{$wpdb->options} a, {$wpdb->options} b
-				WHERE
-					a.option_name LIKE '\_site\_transient\_jm\_%' AND
-					a.option_name NOT LIKE '\_site\_transient\_timeout\_jm\_%' AND
-					b.option_name = CONCAT(
-						'_site_transient_timeout_jm_',
-						SUBSTRING(
-							a.option_name,
-							CHAR_LENGTH('_site_transient_jm_') + 1
-						)
-					)
-					AND b.option_value < UNIX_TIMESTAMP()
-			" );
+		if ( ! wp_using_ext_object_cache() && ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
+			$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
+				WHERE a.option_name LIKE %s
+				AND a.option_name NOT LIKE %s
+				AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
+				AND b.option_value < %d";
+			$rows = $wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_jm_' ) . '%', $wpdb->esc_like( '_transient_timeout_jm_' ) . '%', time() ) );
 		}
 	}
 }
