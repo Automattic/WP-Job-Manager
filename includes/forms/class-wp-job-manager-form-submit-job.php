@@ -119,7 +119,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$this->fields = apply_filters( 'submit_job_form_fields', array(
 			'job' => array(
 				'job_title' => array(
-					'label'       => __( 'Title', 'wp-job-manager' ),
+					'label'       => __( 'Job Title', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => true,
 					'placeholder' => '',
