@@ -34,7 +34,6 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'add_post_meta', array( $this, 'maybe_add_geolocation_data' ), 10, 3 );
 		add_action( 'update_post_meta', array( $this, 'maybe_update_geolocation_data' ), 10, 4 );
 		add_action( 'update_post_meta', array( $this, 'maybe_update_menu_order' ), 10, 4 );
-		add_action( 'added_post_meta', array( $this, 'maybe_update_menu_order' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 
 		// WP ALL Import
@@ -523,6 +522,8 @@ class WP_Job_Manager_Post_Types {
 		} else {
 			$wpdb->update( $wpdb->posts, array( 'menu_order' => 0 ), array( 'ID' => $object_id, 'menu_order' => -1 ) );
 		}
+
+		clean_post_cache( $object_id );
 	}
 
 	/**
