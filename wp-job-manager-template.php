@@ -168,7 +168,7 @@ function is_position_featured( $post = null ) {
  */
 function candidates_can_apply( $post = null ) {
 	$post = get_post( $post );
-	return ! is_position_filled() && ! in_array( $post->post_status, array( 'preview', 'expired' ) );
+	return apply_filters( 'job_manager_candidates_can_apply', ( ! is_position_filled() && ! in_array( $post->post_status, array( 'preview', 'expired' ) ) ), $post );
 }
 
 /**
