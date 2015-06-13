@@ -1,13 +1,14 @@
 # Copyright (C) 2015 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# Klajdi Hena <khena0225@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-04-16 21:48:26+00:00\n"
-"PO-Revision-Date: 2015-04-16 21:48+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"POT-Creation-Date: 2015-04-22 13:05:30+00:00\n"
+"PO-Revision-Date: 2015-05-01 01:22+0000\n"
+"Last-Translator: Klajdi Hena <khena0225@gmail.com>\n"
 "Language-Team: Albanian (http://www.transifex.com/projects/p/wp-job-manager/language/sq/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,56 +19,56 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-addons.php:57
 #: includes/admin/class-wp-job-manager-admin.php:61
 msgid "WP Job Manager Add-ons"
-msgstr ""
+msgstr "Shtojcat e WP Job Manager"
 
 #: includes/admin/class-wp-job-manager-addons.php:59
 msgid "Do you need multiple add-ons?"
-msgstr ""
+msgstr "A më nevojiten shtojca të ndryshme?"
 
 #: includes/admin/class-wp-job-manager-addons.php:59
 msgid "Check out the core add-on bundle &rarr;"
-msgstr ""
+msgstr "Hidhu një sy shtojcave"
 
 #: includes/admin/class-wp-job-manager-admin.php:58
 msgid "Settings"
-msgstr ""
+msgstr "Ndryshimet"
 
 #: includes/admin/class-wp-job-manager-admin.php:61
 msgid "Add-ons"
-msgstr ""
+msgstr "Shtojcat"
 
 #: includes/admin/class-wp-job-manager-cpt.php:48
 #: includes/admin/class-wp-job-manager-cpt.php:49
 msgid "Approve %s"
-msgstr ""
+msgstr "Aprovo %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:51
 #: includes/admin/class-wp-job-manager-cpt.php:52
 msgid "Expire %s"
-msgstr ""
+msgstr "Skado %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:140
 #: includes/admin/class-wp-job-manager-cpt.php:142
 msgid "%s approved"
-msgstr ""
+msgstr "%s u aprovua"
 
 #: includes/admin/class-wp-job-manager-cpt.php:160
 #: includes/admin/class-wp-job-manager-cpt.php:162
 msgid "%s expired"
-msgstr ""
+msgstr "%s skadoi"
 
 #: includes/admin/class-wp-job-manager-cpt.php:194
 msgid "Select category"
-msgstr ""
+msgstr "Zgjidh Kategorinë"
 
 #: includes/admin/class-wp-job-manager-cpt.php:209
 #: includes/admin/class-wp-job-manager-cpt.php:255
 msgid "Position"
-msgstr ""
+msgstr "Pozicioni"
 
 #: includes/admin/class-wp-job-manager-cpt.php:225
 msgid "%s updated. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s u freskua. <a href=\"%s\">Shikoje</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:226
 msgid "Custom field updated."
@@ -79,7 +80,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:228
 msgid "%s updated."
-msgstr ""
+msgstr "%s u freskua."
 
 #: includes/admin/class-wp-job-manager-cpt.php:229
 msgid "%s restored to revision from %s"
@@ -91,7 +92,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:231
 msgid "%s saved."
-msgstr ""
+msgstr "% u ruajt."
 
 #: includes/admin/class-wp-job-manager-cpt.php:232
 msgid "%s submitted. <a target=\"_blank\" href=\"%s\">Preview</a>"
@@ -998,7 +999,7 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:376
-#: includes/forms/class-wp-job-manager-form-submit-job.php:622
+#: includes/forms/class-wp-job-manager-form-submit-job.php:623
 msgid "Preview"
 msgstr ""
 
@@ -1090,7 +1091,7 @@ msgid "%s is invalid"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:261
-#: wp-job-manager-functions.php:654
+#: wp-job-manager-functions.php:662
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
@@ -1118,11 +1119,11 @@ msgstr ""
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:616
+#: includes/forms/class-wp-job-manager-form-submit-job.php:617
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:617
+#: includes/forms/class-wp-job-manager-form-submit-job.php:618
 msgid "Edit listing"
 msgstr ""
 
@@ -1338,7 +1339,7 @@ msgstr ""
 msgid "Choose a category&hellip;"
 msgstr ""
 
-#: wp-job-manager-functions.php:656
+#: wp-job-manager-functions.php:664
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -1346,11 +1347,11 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: wp-job-manager-template.php:220
+#: wp-job-manager-template.php:222
 msgid "Application via \"%s\" listing on %s"
 msgstr ""
 
-#: wp-job-manager-template.php:281
+#: wp-job-manager-template.php:283
 msgid "Anywhere"
 msgstr ""
 

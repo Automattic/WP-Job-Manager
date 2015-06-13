@@ -1,7 +1,8 @@
 # Copyright (C) 2015 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
-# Emanuele <realbarnux@gmail.com>, 2015
+# Daniele Scasciafratte Mte90 <mte90net@gmail.com>, 2015
+# Emanuele <e@emanuelebartolomucci.com>, 2015
 # ignazio <bluenor@gmail.com>, 2014
 # Luca Orlandi <luca.orlandi@gmail.com>, 2015
 # paletta, 2014
@@ -11,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-04-16 21:48:26+00:00\n"
-"PO-Revision-Date: 2015-04-16 21:48+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"POT-Creation-Date: 2015-04-22 13:05:30+00:00\n"
+"PO-Revision-Date: 2015-05-29 22:40+0000\n"
+"Last-Translator: Daniele Scasciafratte Mte90 <mte90net@gmail.com>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/wp-job-manager/language/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,11 +29,11 @@ msgstr "Componenti aggiuntivi per WP Job Manager"
 
 #: includes/admin/class-wp-job-manager-addons.php:59
 msgid "Do you need multiple add-ons?"
-msgstr ""
+msgstr "Hai bisogno di addon multipli?"
 
 #: includes/admin/class-wp-job-manager-addons.php:59
 msgid "Check out the core add-on bundle &rarr;"
-msgstr ""
+msgstr "Verifica il bundle addon principale &rarr;"
 
 #: includes/admin/class-wp-job-manager-admin.php:58
 msgid "Settings"
@@ -45,12 +46,12 @@ msgstr "Componenti aggiuntivi"
 #: includes/admin/class-wp-job-manager-cpt.php:48
 #: includes/admin/class-wp-job-manager-cpt.php:49
 msgid "Approve %s"
-msgstr ""
+msgstr "Approva %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:51
 #: includes/admin/class-wp-job-manager-cpt.php:52
 msgid "Expire %s"
-msgstr ""
+msgstr "Scadenza %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:140
 #: includes/admin/class-wp-job-manager-cpt.php:142
@@ -64,7 +65,7 @@ msgstr "%s scaduta"
 
 #: includes/admin/class-wp-job-manager-cpt.php:194
 msgid "Select category"
-msgstr ""
+msgstr "Seleziona categoria"
 
 #: includes/admin/class-wp-job-manager-cpt.php:209
 #: includes/admin/class-wp-job-manager-cpt.php:255
@@ -73,7 +74,7 @@ msgstr "Posizione "
 
 #: includes/admin/class-wp-job-manager-cpt.php:225
 msgid "%s updated. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s aggiornati. <a href=\"%s\">Visualizza</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:226
 msgid "Custom field updated."
@@ -85,29 +86,29 @@ msgstr "Campo personalizzato cancellato"
 
 #: includes/admin/class-wp-job-manager-cpt.php:228
 msgid "%s updated."
-msgstr ""
+msgstr "%s aggiornati."
 
 #: includes/admin/class-wp-job-manager-cpt.php:229
 msgid "%s restored to revision from %s"
-msgstr ""
+msgstr "%s ripristinati dalla revisione del %s"
 
 #: includes/admin/class-wp-job-manager-cpt.php:230
 msgid "%s published. <a href=\"%s\">View</a>"
-msgstr ""
+msgstr "%s pubblicato. <a href=\"%s\">Visualizza</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:231
 msgid "%s saved."
-msgstr ""
+msgstr "%s salvato."
 
 #: includes/admin/class-wp-job-manager-cpt.php:232
 msgid "%s submitted. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "%s inviato. <a target=\"_blank\" href=\"%s\">Anteprima</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:233
 msgid ""
 "%s scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
 "href=\"%2$s\">Preview</a>"
-msgstr ""
+msgstr "%s programmato per: <strong>%1$s</strong>. <a target=\"_blank\" href=\"%2$s\">Anteprima</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:234
 msgid "M j, Y @ G:i"
@@ -115,7 +116,7 @@ msgstr "j M Y @ G:i"
 
 #: includes/admin/class-wp-job-manager-cpt.php:235
 msgid "%s draft updated. <a target=\"_blank\" href=\"%s\">Preview</a>"
-msgstr ""
+msgstr "%s bozza aggiornata. <a target=\"_blank\" href=\"%s\">Anteprima</a>"
 
 #: includes/admin/class-wp-job-manager-cpt.php:254
 msgid "Type"
@@ -161,7 +162,7 @@ msgstr "Azioni"
 
 #: includes/admin/class-wp-job-manager-cpt.php:290
 msgid "ID: %d"
-msgstr ""
+msgstr "ID: %d"
 
 #: includes/admin/class-wp-job-manager-cpt.php:318
 #: includes/admin/class-wp-job-manager-cpt.php:323
@@ -203,15 +204,15 @@ msgstr "Offerte di lavoro"
 
 #: includes/admin/class-wp-job-manager-settings.php:48
 msgid "Listings Per Page"
-msgstr ""
+msgstr "Offerta Per Pagina"
 
 #: includes/admin/class-wp-job-manager-settings.php:49
 msgid "How many listings should be shown per page by default?"
-msgstr ""
+msgstr "Quante offerte possono essere visualizzate per pagina di default?"
 
 #: includes/admin/class-wp-job-manager-settings.php:55
 msgid "Filled Positions"
-msgstr ""
+msgstr "Posizioni Coperte"
 
 #: includes/admin/class-wp-job-manager-settings.php:56
 msgid "Hide filled positions"
@@ -219,58 +220,58 @@ msgstr "Non visualizzare le offerte chiuse"
 
 #: includes/admin/class-wp-job-manager-settings.php:57
 msgid "If enabled, filled positions will be hidden from archives."
-msgstr ""
+msgstr "Se abilitato, le posizioni coperte saranno nascoste dagli archivi."
 
 #: includes/admin/class-wp-job-manager-settings.php:64
 msgid "Expired Listings"
-msgstr ""
+msgstr "Offerte Scadute"
 
 #: includes/admin/class-wp-job-manager-settings.php:65
 msgid "Hide content within expired listings"
-msgstr ""
+msgstr "Nascondi il contenuto con le offerte scadute"
 
 #: includes/admin/class-wp-job-manager-settings.php:66
 msgid ""
 "If enabled, the content within expired listings will be hidden. Otherwise, "
 "expired listings will be displayed as normal (without the application area)."
-msgstr ""
+msgstr "Se abilitato, il contenuto con le offerte scadute sarà nascosto. Altrimenti, le offerte scadute saranno mostrate normalmente (senza aree specifiche)."
 
 #: includes/admin/class-wp-job-manager-settings.php:74
 msgid "Enable categories for listings"
-msgstr ""
+msgstr "Abilita categorie per le offerte"
 
 #: includes/admin/class-wp-job-manager-settings.php:75
 msgid ""
 "Choose whether to enable categories. Categories must be setup by an admin to"
 " allow users to choose them during submission."
-msgstr ""
+msgstr "Scegli se abilitare le categorie. Le categorie devono essere configurate da un amministratore per abilitarle durante l'invio."
 
 #: includes/admin/class-wp-job-manager-settings.php:82
 msgid "Multi-select Categories"
-msgstr ""
+msgstr "Selezione multipla di Categorie"
 
 #: includes/admin/class-wp-job-manager-settings.php:83
 msgid "Enable category multiselect by default"
-msgstr ""
+msgstr "Abilita la selezione multipla di categoria di default"
 
 #: includes/admin/class-wp-job-manager-settings.php:84
 #: includes/admin/class-wp-job-manager-settings.php:92
 msgid ""
 "If enabled, the category select box will default to a multiselect on the "
 "[jobs] shortcode."
-msgstr ""
+msgstr "Se abilitato, il box di selezione della categoria di default diventerà una selezione multipla nello shortcode [jobs]."
 
 #: includes/admin/class-wp-job-manager-settings.php:91
 msgid "Category Filter Type"
-msgstr ""
+msgstr "Tipo di filtro della categoria"
 
 #: includes/admin/class-wp-job-manager-settings.php:95
 msgid "Jobs will be shown if within ANY selected category"
-msgstr ""
+msgstr "I lavori saranno visualizzati se una categoria qualunque è selezionata"
 
 #: includes/admin/class-wp-job-manager-settings.php:96
 msgid "Jobs will be shown if within ALL selected categories"
-msgstr ""
+msgstr "I lavori saranno visualizzati se tutte le categorie sono selezionate"
 
 #: includes/admin/class-wp-job-manager-settings.php:102
 msgid "Job Submission"
@@ -278,21 +279,21 @@ msgstr "Invio delle offerte"
 
 #: includes/admin/class-wp-job-manager-settings.php:107
 msgid "Account Required"
-msgstr ""
+msgstr "Account Richiesto"
 
 #: includes/admin/class-wp-job-manager-settings.php:108
 msgid "Submitting listings requires an account"
-msgstr ""
+msgstr "L'invio di offerte richiede un account"
 
 #: includes/admin/class-wp-job-manager-settings.php:109
 msgid ""
 "If disabled, non-logged in users will be able to submit listings without "
 "creating an account."
-msgstr ""
+msgstr "Se disabilitato, gli utenti non loggati potranno inviare delle offerte senza creare un account."
 
 #: includes/admin/class-wp-job-manager-settings.php:116
 msgid "Account Creation"
-msgstr ""
+msgstr "Creazione Account"
 
 #: includes/admin/class-wp-job-manager-settings.php:117
 msgid "Allow account creation"
@@ -302,21 +303,21 @@ msgstr "Permettere la creazione dei profili"
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the submission form."
-msgstr ""
+msgstr "Se abilitato, gli utenti non loggati potranno creare un account inserendo l'indirizzo email nel modulo di invio."
 
 #: includes/admin/class-wp-job-manager-settings.php:125
 msgid "Account Username"
-msgstr ""
+msgstr "Nome Account"
 
 #: includes/admin/class-wp-job-manager-settings.php:126
 msgid "Automatically Generate Username from Email Address"
-msgstr ""
+msgstr "Genera Automaticamente un Utente dall'indirizzo email"
 
 #: includes/admin/class-wp-job-manager-settings.php:127
 msgid ""
 "If enabled, a username will be generated from the first part of the user "
 "email address. Otherwise, a username field will be shown."
-msgstr ""
+msgstr "Se abilitato, un nome utente sarà generato dalla prima parte dell'indirizzo email. \nAltrimenti il campo utente sarà mostrato."
 
 #: includes/admin/class-wp-job-manager-settings.php:134
 msgid "Account Role"
@@ -326,15 +327,15 @@ msgstr "Ruolo dell'Account"
 msgid ""
 "If you enable registration on your submission form, choose a role for the "
 "new user."
-msgstr ""
+msgstr "Se abiliti la registrazione utente nel modulo di invio, scegli un ruolo per un nuovo utente."
 
 #: includes/admin/class-wp-job-manager-settings.php:142
 msgid "Moderate New Listings"
-msgstr ""
+msgstr "Modera le Nuove Offerte"
 
 #: includes/admin/class-wp-job-manager-settings.php:143
 msgid "New listing submissions require admin approval"
-msgstr ""
+msgstr "L'invio di nuove offerte richiede l'approvazione di un amministratore"
 
 #: includes/admin/class-wp-job-manager-settings.php:144
 msgid "If enabled, new submissions will be inactive, pending admin approval."
@@ -342,16 +343,16 @@ msgstr "Se abilitata le nuove offerte saranno inattive fino ad approvazione di u
 
 #: includes/admin/class-wp-job-manager-settings.php:151
 msgid "Allow Pending Edits"
-msgstr ""
+msgstr "Permetti la Modifica in attesa"
 
 #: includes/admin/class-wp-job-manager-settings.php:152
 msgid "Submissions awaiting approval can be edited"
-msgstr ""
+msgstr "L'invio delle offerte in attesa di approvazione possono essere modificate"
 
 #: includes/admin/class-wp-job-manager-settings.php:153
 msgid ""
 "If enabled, submissions awaiting admin approval can be edited by the user."
-msgstr ""
+msgstr "Se abilitato, l'invio richiede l'approvazione dell'amministratore per essere modificato dall'utente."
 
 #: includes/admin/class-wp-job-manager-settings.php:160
 msgid "Listing Duration"
@@ -369,7 +370,7 @@ msgstr "Modalità di candidatura"
 
 #: includes/admin/class-wp-job-manager-settings.php:168
 msgid "Choose the contact method for listings."
-msgstr ""
+msgstr "Scegli il metodo di contatto per le offerte."
 
 #: includes/admin/class-wp-job-manager-settings.php:171
 msgid "Email address or website URL"
@@ -389,7 +390,7 @@ msgstr "Pagine"
 
 #: includes/admin/class-wp-job-manager-settings.php:184
 msgid "Submit Job Form Page"
-msgstr ""
+msgstr "Invia il modulo lavorativo"
 
 #: includes/admin/class-wp-job-manager-settings.php:185
 msgid ""
@@ -423,11 +424,11 @@ msgstr "Impostazioni  salvate corretamente"
 
 #: includes/admin/class-wp-job-manager-settings.php:311
 msgid "--no page--"
-msgstr ""
+msgstr "-nessuna pagina-"
 
 #: includes/admin/class-wp-job-manager-settings.php:316
 msgid "Select a page&hellip;"
-msgstr ""
+msgstr "Seleziona una pagina&hellip;"
 
 #: includes/admin/class-wp-job-manager-settings.php:357
 msgid "Save Changes"
@@ -476,7 +477,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:145
 msgid "Continue to page setup"
-msgstr ""
+msgstr "Continua alla pagina di configurazione"
 
 #: includes/admin/class-wp-job-manager-setup.php:146
 msgid "Skip setup. I will setup the plugin manually"
@@ -496,7 +497,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:161
 msgid "Page Title"
-msgstr ""
+msgstr "Titolo Pagina"
 
 #: includes/admin/class-wp-job-manager-setup.php:162
 msgid "Page Description"
@@ -504,12 +505,12 @@ msgstr "Descrizione della pagina"
 
 #: includes/admin/class-wp-job-manager-setup.php:163
 msgid "Content Shortcode"
-msgstr ""
+msgstr "Contenuto Shortcode"
 
 #: includes/admin/class-wp-job-manager-setup.php:169
 msgctxt "Default page title (wizard)"
 msgid "Post a Job"
-msgstr ""
+msgstr "Invia un Lavoro"
 
 #: includes/admin/class-wp-job-manager-setup.php:171
 msgid ""
@@ -526,7 +527,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-setup.php:179
 msgctxt "Default page title (wizard)"
 msgid "Job Dashboard"
-msgstr ""
+msgstr "Dashboard dei lavori"
 
 #: includes/admin/class-wp-job-manager-setup.php:181
 msgid ""
@@ -557,7 +558,7 @@ msgstr "Salta questo passaggio"
 
 #: includes/admin/class-wp-job-manager-setup.php:208
 msgid "All Done!"
-msgstr ""
+msgstr "Finito"
 
 #: includes/admin/class-wp-job-manager-setup.php:210
 msgid ""
@@ -656,15 +657,15 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:44
 msgid "Company Name"
-msgstr ""
+msgstr "Nome Azienda"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:49
 msgid "Company Website"
-msgstr ""
+msgstr "Sito Azienda"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:54
 msgid "Company Tagline"
-msgstr ""
+msgstr "Motto Azienda"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:55
 msgid "Brief description about the company"
@@ -676,7 +677,7 @@ msgstr "Twitter dell'azienda"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:64
 msgid "Company Logo"
-msgstr ""
+msgstr "Logo Azienda"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:65
 msgid "URL to the company logo"
@@ -684,7 +685,7 @@ msgstr "URL logo aziendale"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:70
 msgid "Company Video"
-msgstr ""
+msgstr "Video Azienda"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:71
 msgid "URL to the company video"
@@ -692,7 +693,7 @@ msgstr "URL del video dell'azienda"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:76
 msgid "Position Filled"
-msgstr ""
+msgstr "Posizione comperte"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:79
 msgid "Filled listings will no longer accept applications."
@@ -742,11 +743,11 @@ msgstr "Aggiungi file"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:333
 msgid "Guest User"
-msgstr ""
+msgstr "Utente Ospite"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:335
 msgid "Change"
-msgstr ""
+msgstr "Modifica"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:339
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
@@ -1004,7 +1005,7 @@ msgstr "Conferma dettagli"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:376
-#: includes/forms/class-wp-job-manager-form-submit-job.php:622
+#: includes/forms/class-wp-job-manager-form-submit-job.php:623
 msgid "Preview"
 msgstr "Anteprima"
 
@@ -1096,7 +1097,7 @@ msgid "%s is invalid"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:261
-#: wp-job-manager-functions.php:654
+#: wp-job-manager-functions.php:662
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
@@ -1124,13 +1125,13 @@ msgstr "Inserisci il tuo indirizzo email."
 msgid "You must be signed in to post a new listing."
 msgstr "Devi accedere al tuo account per pubblicare una nuova offerta di lavoro."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:616
+#: includes/forms/class-wp-job-manager-form-submit-job.php:617
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:617
+#: includes/forms/class-wp-job-manager-form-submit-job.php:618
 msgid "Edit listing"
-msgstr ""
+msgstr "Modifica offerta"
 
 #: templates/account-signin.php:4
 msgid "Your account"
@@ -1344,7 +1345,7 @@ msgstr "Questa email è già registrata. Scegli un altro indirizzo email."
 msgid "Choose a category&hellip;"
 msgstr "Scegli una categoria&hellip;"
 
-#: wp-job-manager-functions.php:656
+#: wp-job-manager-functions.php:664
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -1352,11 +1353,11 @@ msgstr ""
 msgid "Inactive"
 msgstr "Inattivo"
 
-#: wp-job-manager-template.php:220
+#: wp-job-manager-template.php:222
 msgid "Application via \"%s\" listing on %s"
 msgstr ""
 
-#: wp-job-manager-template.php:281
+#: wp-job-manager-template.php:283
 msgid "Anywhere"
 msgstr "Ovunque"
 

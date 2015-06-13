@@ -4,13 +4,14 @@
 # Evert Semeijn <transifex@fourleafed.com>, 2014
 # Evert Semeijn <transifex@fourleafed.com>, 2015
 # jellealthuizen <jellealthuizen@gmail.com>, 2014
+# Niels Zandsteeg <nielszandsteeg@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-04-16 21:48:26+00:00\n"
-"PO-Revision-Date: 2015-04-17 06:11+0000\n"
-"Last-Translator: Evert Semeijn <transifex@fourleafed.com>\n"
+"POT-Creation-Date: 2015-04-22 13:05:30+00:00\n"
+"PO-Revision-Date: 2015-04-24 13:03+0000\n"
+"Last-Translator: Niels Zandsteeg <nielszandsteeg@gmail.com>\n"
 "Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/wp-job-manager/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1001,7 +1002,7 @@ msgstr "Details verzenden"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:376
-#: includes/forms/class-wp-job-manager-form-submit-job.php:622
+#: includes/forms/class-wp-job-manager-form-submit-job.php:623
 msgid "Preview"
 msgstr "Voorvertoning"
 
@@ -1093,7 +1094,7 @@ msgid "%s is invalid"
 msgstr "%s is ongeldig"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:261
-#: wp-job-manager-functions.php:654
+#: wp-job-manager-functions.php:662
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr "\"%s\" (bestandstype %s) moet een van de volgende bestandstypes zijn: %s"
 
@@ -1121,11 +1122,11 @@ msgstr ""
 msgid "You must be signed in to post a new listing."
 msgstr "U moet ingelogd zijn om vacatures te kunnen plaatsen."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:616
+#: includes/forms/class-wp-job-manager-form-submit-job.php:617
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:617
+#: includes/forms/class-wp-job-manager-form-submit-job.php:618
 msgid "Edit listing"
 msgstr ""
 
@@ -1166,7 +1167,7 @@ msgstr "U moet ingelogd zijn om vacatures te kunnen plaatsen."
 
 #: templates/account-signin.php:40
 msgid "Username"
-msgstr ""
+msgstr "Gebruikersnaam"
 
 #: templates/account-signin.php:40 templates/account-signin.php:47
 #: templates/job-submit.php:24 templates/job-submit.php:41
@@ -1327,7 +1328,7 @@ msgstr "RSS"
 
 #: wp-job-manager-functions.php:357
 msgid "Invalid email address."
-msgstr ""
+msgstr "Ongeldig e-mailadres"
 
 #: wp-job-manager-functions.php:365
 msgid "Your email address isn&#8217;t correct."
@@ -1341,7 +1342,7 @@ msgstr "Dit e-mail adres is reeds geregisterd. Kiest u alstublieft een ander e-m
 msgid "Choose a category&hellip;"
 msgstr "Kies een categorie&hellip;"
 
-#: wp-job-manager-functions.php:656
+#: wp-job-manager-functions.php:664
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -1349,11 +1350,11 @@ msgstr ""
 msgid "Inactive"
 msgstr "Niet actief"
 
-#: wp-job-manager-template.php:220
+#: wp-job-manager-template.php:222
 msgid "Application via \"%s\" listing on %s"
 msgstr "Sollicitatie via \"%s\" plaatsing op %s"
 
-#: wp-job-manager-template.php:281
+#: wp-job-manager-template.php:283
 msgid "Anywhere"
 msgstr "Overal"
 

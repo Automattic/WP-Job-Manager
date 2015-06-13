@@ -2,15 +2,16 @@
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
 # Francis Battikha, 2015
+# Francis Battikha, 2015
 # Mamdouh Ezz Samy <asyuti47@yahoo.com>, 2015
 # Shadi Kb <shombe123@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-04-16 21:48:26+00:00\n"
-"PO-Revision-Date: 2015-04-16 21:48+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"POT-Creation-Date: 2015-04-22 13:05:30+00:00\n"
+"PO-Revision-Date: 2015-05-28 16:00+0000\n"
+"Last-Translator: Mamdouh Ezz Samy <asyuti47@yahoo.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/wp-job-manager/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +26,7 @@ msgstr "إضافات WP Job Manager "
 
 #: includes/admin/class-wp-job-manager-addons.php:59
 msgid "Do you need multiple add-ons?"
-msgstr ""
+msgstr "هل تحتاج المزيد من الوظائف الإضافية"
 
 #: includes/admin/class-wp-job-manager-addons.php:59
 msgid "Check out the core add-on bundle &rarr;"
@@ -220,11 +221,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:64
 msgid "Expired Listings"
-msgstr ""
+msgstr "عروض الوظائف التي انتهت صلاحيتها"
 
 #: includes/admin/class-wp-job-manager-settings.php:65
 msgid "Hide content within expired listings"
-msgstr ""
+msgstr "إخفاء محتوى عروض الوظائف التي انتهت صلاحيتها"
 
 #: includes/admin/class-wp-job-manager-settings.php:66
 msgid ""
@@ -303,7 +304,7 @@ msgstr "إذا تم تفعيلها سيتمكن الزوار غير المسجل
 
 #: includes/admin/class-wp-job-manager-settings.php:125
 msgid "Account Username"
-msgstr ""
+msgstr "اسم المستخدم الحساب"
 
 #: includes/admin/class-wp-job-manager-settings.php:126
 msgid "Automatically Generate Username from Email Address"
@@ -327,11 +328,11 @@ msgstr "إذا كنت قد فعلت تسجيل الحسابات, اختر دور
 
 #: includes/admin/class-wp-job-manager-settings.php:142
 msgid "Moderate New Listings"
-msgstr ""
+msgstr "مراقبة الإعلانات الجديدة"
 
 #: includes/admin/class-wp-job-manager-settings.php:143
 msgid "New listing submissions require admin approval"
-msgstr ""
+msgstr "الإضافات الجديدة تحتاج لموافقة مدير الموقع"
 
 #: includes/admin/class-wp-job-manager-settings.php:144
 msgid "If enabled, new submissions will be inactive, pending admin approval."
@@ -635,11 +636,11 @@ msgstr "مثلا \"لندن\""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:33
 msgid "Leave this blank if the location is not important."
-msgstr ""
+msgstr "ترك هذا فارغا إذا كان موقع العمل ليس مهما"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:37
 msgid "Application Email or URL"
-msgstr ""
+msgstr "عنوان الموقع أو البريد الإلكتروني للطلب"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:38
 msgid "URL or email which applicants use to apply"
@@ -653,15 +654,15 @@ msgstr "هذا الحقل مطلوب لكي تظهر خانة\" التقديم\"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:44
 msgid "Company Name"
-msgstr ""
+msgstr "إسم الشركة"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:49
 msgid "Company Website"
-msgstr ""
+msgstr "موقع الشركة الإلكتروني"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:54
 msgid "Company Tagline"
-msgstr ""
+msgstr "شعار الشركة"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:55
 msgid "Brief description about the company"
@@ -673,7 +674,7 @@ msgstr "حساب الشركة على تويتر"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:64
 msgid "Company Logo"
-msgstr ""
+msgstr "لوجو الشركة"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:65
 msgid "URL to the company logo"
@@ -681,7 +682,7 @@ msgstr "رابط ملف لوجو الشركة"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:70
 msgid "Company Video"
-msgstr ""
+msgstr "فيديو الشركة"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:71
 msgid "URL to the company video"
@@ -689,7 +690,7 @@ msgstr "رابط فيديو الشركة"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:76
 msgid "Position Filled"
-msgstr ""
+msgstr " تم شغل المنصب"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:79
 msgid "Filled listings will no longer accept applications."
@@ -697,7 +698,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:84
 msgid "Featured Listing"
-msgstr ""
+msgstr "اعلان متميز "
 
 #: includes/admin/class-wp-job-manager-writepanels.php:86
 msgid ""
@@ -707,7 +708,7 @@ msgstr "الوظائف المميزة يمكن أن تظهر في مقدمة ا�
 
 #: includes/admin/class-wp-job-manager-writepanels.php:90
 msgid "Listing Expiry Date"
-msgstr ""
+msgstr "تاريخ نهاية النشر"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:91
 msgid "yyyy-mm-dd"
@@ -739,11 +740,11 @@ msgstr "اضف ملف"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:333
 msgid "Guest User"
-msgstr ""
+msgstr "مستخدم زائر"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:335
 msgid "Change"
-msgstr ""
+msgstr "تغيير"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:339
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
@@ -976,12 +977,12 @@ msgstr "عدد العناصر المطلوب عرضها"
 
 #: includes/class-wp-job-manager-widgets.php:253
 msgid "Display a list of featured listings on your site."
-msgstr ""
+msgstr "اعرض قائمة بأحدث الوظائف علي موقعك."
 
 #: includes/class-wp-job-manager-widgets.php:255
 #: includes/class-wp-job-manager-widgets.php:259
 msgid "Featured %s"
-msgstr ""
+msgstr "متميز %s"
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:51
 msgid "Invalid listing"
@@ -1005,7 +1006,7 @@ msgstr "إرسال البيانات"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:376
-#: includes/forms/class-wp-job-manager-form-submit-job.php:622
+#: includes/forms/class-wp-job-manager-form-submit-job.php:623
 msgid "Preview"
 msgstr "معاينة"
 
@@ -1097,7 +1098,7 @@ msgid "%s is invalid"
 msgstr "%s غير صحيح"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:261
-#: wp-job-manager-functions.php:654
+#: wp-job-manager-functions.php:662
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr "\"%s\" (filetype %s) الملف المستخدم يجب أن يكون أحد أنواع الملفات التالية: %s"
 
@@ -1125,13 +1126,13 @@ msgstr "برجاء ادخال بريدك الإلكتروني."
 msgid "You must be signed in to post a new listing."
 msgstr "يجب أن تقوم بتسجيل الدخول لنشر البيانات."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:616
-msgid "Submit Listing"
-msgstr ""
-
 #: includes/forms/class-wp-job-manager-form-submit-job.php:617
+msgid "Submit Listing"
+msgstr "إدراج الإعلان"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:618
 msgid "Edit listing"
-msgstr ""
+msgstr "تعديل الإعلان"
 
 #: templates/account-signin.php:4
 msgid "Your account"
@@ -1204,11 +1205,11 @@ msgstr "تم شغل الوظيفة"
 
 #: templates/content-single-job_listing-meta.php:25
 msgid "Applications have closed"
-msgstr ""
+msgstr "تم غلق باب التقديم"
 
 #: templates/content-single-job_listing.php:5
 msgid "This listing has expired."
-msgstr ""
+msgstr "انتهت صلاحية هذا الاعلان"
 
 #: templates/form-fields/file-field.php:29
 msgid "Maximum file size: %s."
@@ -1345,29 +1346,29 @@ msgstr "هذا البريد الإلكتروني مسجل من قبل, برجا�
 msgid "Choose a category&hellip;"
 msgstr "اختر تصنيف&hellip;"
 
-#: wp-job-manager-functions.php:656
+#: wp-job-manager-functions.php:664
 msgid "Uploaded files need to be one of the following file types: %s"
-msgstr ""
+msgstr "الملف المستخدم يجب أن يكون أحد أنواع الملفات التالية: s%"
 
 #: wp-job-manager-template.php:135
 msgid "Inactive"
 msgstr "غير مفعّل"
 
-#: wp-job-manager-template.php:220
+#: wp-job-manager-template.php:222
 msgid "Application via \"%s\" listing on %s"
 msgstr "تم النشر بواسطة \"%s\" في %s"
 
-#: wp-job-manager-template.php:281
+#: wp-job-manager-template.php:283
 msgid "Anywhere"
 msgstr "في أي مكان"
 
 #: wp-job-manager.php:142
 msgid "Invalid file type. Accepted types:"
-msgstr ""
+msgstr "نوع الملف غير مدعم, الأنواع المدعومة: "
 
 #: wp-job-manager.php:154
 msgid "Load previous listings"
-msgstr ""
+msgstr "تحمل اعلانات سابقة"
 
 #: wp-job-manager.php:157
 msgid "Are you sure you want to delete this listing?"

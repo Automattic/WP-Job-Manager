@@ -7,12 +7,13 @@
 # Bérangère Audebert <talentconnexionfr@gmail.com>, 2015
 # MedTn <brkmed@gmail.com>, 2014
 # f.berniermalcoiffe <f.bernier-malcoiffe@novia-systems.fr>, 2014
+# Mike Jolley <mike.jolley@me.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-04-16 21:48:26+00:00\n"
-"PO-Revision-Date: 2015-04-16 21:48+0000\n"
+"POT-Creation-Date: 2015-04-22 13:05:30+00:00\n"
+"PO-Revision-Date: 2015-06-13 10:17+0000\n"
 "Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/wp-job-manager/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -1004,7 +1005,7 @@ msgstr "Envoyer les détails"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:376
-#: includes/forms/class-wp-job-manager-form-submit-job.php:622
+#: includes/forms/class-wp-job-manager-form-submit-job.php:623
 msgid "Preview"
 msgstr "Prévisualiser"
 
@@ -1096,7 +1097,7 @@ msgid "%s is invalid"
 msgstr "%s est invalide"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:261
-#: wp-job-manager-functions.php:654
+#: wp-job-manager-functions.php:662
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr "\"%s\" doit être un des types de fichier suivants : %s"
 
@@ -1124,11 +1125,11 @@ msgstr ""
 msgid "You must be signed in to post a new listing."
 msgstr "Vous devez vous connecter pour créer un nouveau poste."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:616
+#: includes/forms/class-wp-job-manager-form-submit-job.php:617
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:617
+#: includes/forms/class-wp-job-manager-form-submit-job.php:618
 msgid "Edit listing"
 msgstr ""
 
@@ -1289,7 +1290,7 @@ msgstr "Détails de  société"
 #: templates/job-submitted.php:6
 msgid ""
 "%s listed successfully. To view your listing <a href=\"%s\">click here</a>."
-msgstr "Poste publié avec succès. Pour voir votre poste<a href=\"%s\"> cliquez ici</a>."
+msgstr "%s publié avec succès. Pour voir votre poste <a href=\"%s\">cliquez ici</a>."
 
 #: templates/job-submitted.php:9
 msgid "%s submitted successfully. Your listing will be visible once approved."
@@ -1344,7 +1345,7 @@ msgstr "Cette adresse courriel est déjà enregistrée, merci d'en utiliser une 
 msgid "Choose a category&hellip;"
 msgstr "Choisissez une catégorie&hellip;"
 
-#: wp-job-manager-functions.php:656
+#: wp-job-manager-functions.php:664
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -1352,11 +1353,11 @@ msgstr ""
 msgid "Inactive"
 msgstr "Inactif"
 
-#: wp-job-manager-template.php:220
+#: wp-job-manager-template.php:222
 msgid "Application via \"%s\" listing on %s"
 msgstr "Candidature au poste de \"%s\" paru sur le site %s"
 
-#: wp-job-manager-template.php:281
+#: wp-job-manager-template.php:283
 msgid "Anywhere"
 msgstr "N'importe où"
 

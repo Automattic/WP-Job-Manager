@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-04-16 21:48:26+00:00\n"
+"POT-Creation-Date: 2015-04-22 13:05:30+00:00\n"
 "PO-Revision-Date: 2015-04-16 21:48+0000\n"
 "Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/projects/p/wp-job-manager/language/nb_NO/)\n"
@@ -1002,7 +1002,7 @@ msgstr "Lagre detaljene"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:376
-#: includes/forms/class-wp-job-manager-form-submit-job.php:622
+#: includes/forms/class-wp-job-manager-form-submit-job.php:623
 msgid "Preview"
 msgstr "Forhåndsvis"
 
@@ -1094,7 +1094,7 @@ msgid "%s is invalid"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:261
-#: wp-job-manager-functions.php:654
+#: wp-job-manager-functions.php:662
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
@@ -1122,11 +1122,11 @@ msgstr ""
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:616
+#: includes/forms/class-wp-job-manager-form-submit-job.php:617
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:617
+#: includes/forms/class-wp-job-manager-form-submit-job.php:618
 msgid "Edit listing"
 msgstr ""
 
@@ -1342,7 +1342,7 @@ msgstr "Denne e-postadressen er allerede registrert. Vennligst prøv en annen."
 msgid "Choose a category&hellip;"
 msgstr ""
 
-#: wp-job-manager-functions.php:656
+#: wp-job-manager-functions.php:664
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -1350,11 +1350,11 @@ msgstr ""
 msgid "Inactive"
 msgstr "Inaktiv"
 
-#: wp-job-manager-template.php:220
+#: wp-job-manager-template.php:222
 msgid "Application via \"%s\" listing on %s"
 msgstr ""
 
-#: wp-job-manager-template.php:281
+#: wp-job-manager-template.php:283
 msgid "Anywhere"
 msgstr "Hvor som helst"
 
