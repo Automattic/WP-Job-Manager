@@ -143,11 +143,12 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 = 1.23.0 =
+* Feature - Custom AJAX endpoints to reduce overhead of loading admin.
+* Feature - Support radio fields.
 * Fix - Video max width.
 * Tweak - Admin remove overflow hidden from data box.
 * Tweak - Update notice styling.
 * Tweak - Improve orderby. https://make.wordpress.org/core/2014/08/29/a-more-powerful-order-by-in-wordpress-4-0/
-* Tweak - Custom AJAX endpoints to reduce overhead of loading admin.
 * Tweak - nofollow apply links.
 * Tweak - Rename 'title' to 'job title' for clarity.
 * Tweak - submit_job_form_prefix_post_name_with_company filter.

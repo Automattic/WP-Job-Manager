@@ -343,6 +343,34 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
+	 * input_radio function.
+	 *
+	 * @param mixed $key
+	 * @param mixed $field
+	 */
+	public function input_radio( $key, $field ) {
+		global $thepostid;
+
+		if ( empty( $field['value'] ) ) {
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
+		}
+		?>
+		<p class="form-field form-field-checkbox">
+			<label><?php echo esc_html( $field['label'] ) ; ?></label>
+			<?php foreach ( $field['options'] as $option_key => $value ) : ?>
+				<label><input type="radio" class="radio" name="<?php echo esc_attr( isset( $field['name'] ) ? $field['name'] : $key ); ?>" value="<?php echo esc_attr( $option_key ); ?>" <?php checked( $field['value'], $option_key ); ?> /> <?php echo esc_html( $value ); ?></label>
+			<?php endforeach; ?>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+		</p>
+		<?php
+	}
+
+	/**
 	 * job_listing_data function.
 	 *
 	 * @access public
