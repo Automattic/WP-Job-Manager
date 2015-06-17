@@ -377,7 +377,7 @@ class WP_Job_Manager_Writepanels {
 	 * @param mixed $post
 	 * @return void
 	 */
-	public static function job_listing_data( $post ) {
+	public function job_listing_data( $post ) {
 		global $post, $thepostid;
 
 		$thepostid = $post->ID;
