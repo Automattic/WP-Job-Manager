@@ -2,6 +2,7 @@
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
 # Alex <alex.abook1@gmail.com>, 2015
+# Denis Petrochenkov <denis.petrochenkov@gmail.com>, 2015
 # Gvantsa Gvinianidze <gvantsa@gmail.com>, 2014
 # Mike Jolley <mike.jolley@me.com>, 2014
 # Nikolay Nakuginkin <translator@mondaystar.ru>, 2014
@@ -11,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-04-22 13:05:30+00:00\n"
-"PO-Revision-Date: 2015-05-27 16:30+0000\n"
-"Last-Translator: Sash <sash1304@gmail.com>\n"
+"POT-Creation-Date: 2015-06-13 12:39:58+00:00\n"
+"PO-Revision-Date: 2015-06-14 08:37+0000\n"
+"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/projects/p/wp-job-manager/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -266,11 +267,11 @@ msgstr "Тип фильтра категорий"
 
 #: includes/admin/class-wp-job-manager-settings.php:95
 msgid "Jobs will be shown if within ANY selected category"
-msgstr ""
+msgstr "Вакансии будут показаны, если находятся в ЛЮБОЙ из выбранных категорий"
 
 #: includes/admin/class-wp-job-manager-settings.php:96
 msgid "Jobs will be shown if within ALL selected categories"
-msgstr ""
+msgstr "Вакансии будут показаны, если находятся ВО ВСЕХ выбранных категориях"
 
 #: includes/admin/class-wp-job-manager-settings.php:102
 msgid "Job Submission"
@@ -278,21 +279,21 @@ msgstr "Публикация вакансии"
 
 #: includes/admin/class-wp-job-manager-settings.php:107
 msgid "Account Required"
-msgstr ""
+msgstr "Требуется учетная запись"
 
 #: includes/admin/class-wp-job-manager-settings.php:108
 msgid "Submitting listings requires an account"
-msgstr ""
+msgstr "Публикация вакансий требует учетной записи"
 
 #: includes/admin/class-wp-job-manager-settings.php:109
 msgid ""
 "If disabled, non-logged in users will be able to submit listings without "
 "creating an account."
-msgstr ""
+msgstr "Если запрещено, не авторизованный пользователь сможет публиковать список вакансий без создания учетной записи."
 
 #: includes/admin/class-wp-job-manager-settings.php:116
 msgid "Account Creation"
-msgstr ""
+msgstr "Создание учетной записи"
 
 #: includes/admin/class-wp-job-manager-settings.php:117
 msgid "Allow account creation"
@@ -302,21 +303,21 @@ msgstr "Разрешить создание учетной записи"
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the submission form."
-msgstr ""
+msgstr "Если разрешено, не авторизованный пользователь сможет создать учетную запись введя свой почтовый адрес в форме подачи заявки."
 
 #: includes/admin/class-wp-job-manager-settings.php:125
 msgid "Account Username"
-msgstr ""
+msgstr "Имя учетной записи"
 
 #: includes/admin/class-wp-job-manager-settings.php:126
 msgid "Automatically Generate Username from Email Address"
-msgstr ""
+msgstr "Автоматически создать имя пользователя из адреса электронной почты"
 
 #: includes/admin/class-wp-job-manager-settings.php:127
 msgid ""
 "If enabled, a username will be generated from the first part of the user "
 "email address. Otherwise, a username field will be shown."
-msgstr ""
+msgstr "Если разрешено, имя пользователя будет сгенерировано из первой части адреса электронной почты. В противном случае, будет показно поле \"имя пользователя\""
 
 #: includes/admin/class-wp-job-manager-settings.php:134
 msgid "Account Role"
@@ -326,15 +327,15 @@ msgstr "Роль аккаунта"
 msgid ""
 "If you enable registration on your submission form, choose a role for the "
 "new user."
-msgstr ""
+msgstr "Если вы разрешили регистрацию в форме подачи заявки, выберите роль для нового пользователя."
 
 #: includes/admin/class-wp-job-manager-settings.php:142
 msgid "Moderate New Listings"
-msgstr ""
+msgstr "Модерировать поступившие вакансии"
 
 #: includes/admin/class-wp-job-manager-settings.php:143
 msgid "New listing submissions require admin approval"
-msgstr ""
+msgstr "Новые заявки требуют одобрения администратора"
 
 #: includes/admin/class-wp-job-manager-settings.php:144
 msgid "If enabled, new submissions will be inactive, pending admin approval."
@@ -346,16 +347,16 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:152
 msgid "Submissions awaiting approval can be edited"
-msgstr ""
+msgstr "Заявки, ожидающие согласования, могут редактироваться"
 
 #: includes/admin/class-wp-job-manager-settings.php:153
 msgid ""
 "If enabled, submissions awaiting admin approval can be edited by the user."
-msgstr ""
+msgstr "Если включено, заявки, ожидающие одобрения администратором могут редактироваться пользователем."
 
 #: includes/admin/class-wp-job-manager-settings.php:160
 msgid "Listing Duration"
-msgstr ""
+msgstr "Срок публикации"
 
 #: includes/admin/class-wp-job-manager-settings.php:161
 msgid ""
@@ -365,11 +366,11 @@ msgstr "Сколько <strong>дней</strong> вакансия будет н�
 
 #: includes/admin/class-wp-job-manager-settings.php:167
 msgid "Application Method"
-msgstr ""
+msgstr "Метод подачи заявки"
 
 #: includes/admin/class-wp-job-manager-settings.php:168
 msgid "Choose the contact method for listings."
-msgstr ""
+msgstr "Выбрать метод контакта для публикации."
 
 #: includes/admin/class-wp-job-manager-settings.php:171
 msgid "Email address or website URL"
@@ -385,17 +386,17 @@ msgstr "Только адреса вебсайтов"
 
 #: includes/admin/class-wp-job-manager-settings.php:179
 msgid "Pages"
-msgstr ""
+msgstr "Страницы"
 
 #: includes/admin/class-wp-job-manager-settings.php:184
 msgid "Submit Job Form Page"
-msgstr ""
+msgstr "Отправить страницу \"Job Form\""
 
 #: includes/admin/class-wp-job-manager-settings.php:185
 msgid ""
 "Select the page where you have placed the [submit_job_form] shortcode. This "
 "lets the plugin know where the form is located."
-msgstr ""
+msgstr "Выберите страницу, где размещен код  [submit_job_form]. Это позволяет плагину знать, где располагается эта форма. "
 
 #: includes/admin/class-wp-job-manager-settings.php:191
 msgid "Job Dashboard Page"
@@ -405,7 +406,7 @@ msgstr ""
 msgid ""
 "Select the page where you have placed the [job_dashboard] shortcode. This "
 "lets the plugin know where the dashboard is located."
-msgstr ""
+msgstr "Выберите страницу, где размещен код [job_dashboard] . Это позволяет плагину знать, где располагается эта форма. "
 
 #: includes/admin/class-wp-job-manager-settings.php:198
 msgid "Job Listings Page"
@@ -415,7 +416,7 @@ msgstr ""
 msgid ""
 "Select the page where you have placed the [jobs] shortcode. This lets the "
 "plugin know where the job listings page is located."
-msgstr ""
+msgstr "Выберите страницу, где размещен код [jobs] . Это позволяет плагину знать, где располагается эта форма. "
 
 #: includes/admin/class-wp-job-manager-settings.php:251
 msgid "Settings successfully saved"
@@ -423,7 +424,7 @@ msgstr "Настройки успешно сохранены"
 
 #: includes/admin/class-wp-job-manager-settings.php:311
 msgid "--no page--"
-msgstr ""
+msgstr "--нет страницы--"
 
 #: includes/admin/class-wp-job-manager-settings.php:316
 msgid "Select a page&hellip;"
@@ -435,56 +436,56 @@ msgstr "Сохранить изменения"
 
 #: includes/admin/class-wp-job-manager-setup.php:31
 msgid "Setup"
-msgstr ""
+msgstr "Настройка"
 
 #: includes/admin/class-wp-job-manager-setup.php:128
 msgid "WP Job Manager Setup"
-msgstr ""
+msgstr "Настройка WP Job Manager"
 
 #: includes/admin/class-wp-job-manager-setup.php:131
 msgid "1. Introduction"
-msgstr ""
+msgstr "1. Приветствие"
 
 #: includes/admin/class-wp-job-manager-setup.php:132
 msgid "2. Page Setup"
-msgstr ""
+msgstr "2. Настройка страниц"
 
 #: includes/admin/class-wp-job-manager-setup.php:133
 msgid "3. Done"
-msgstr ""
+msgstr "3. Готово"
 
 #: includes/admin/class-wp-job-manager-setup.php:138
 msgid "Setup Wizard Introduction"
-msgstr ""
+msgstr "Приветствие Мастера настройки"
 
 #: includes/admin/class-wp-job-manager-setup.php:140
 msgid "Thanks for installing <em>WP Job Manager</em>!"
-msgstr ""
+msgstr "Спасибо за установку <em>WP Job Manager</em>!"
 
 #: includes/admin/class-wp-job-manager-setup.php:141
 msgid ""
 "This setup wizard will help you get started by creating the pages for job "
 "submission, job management, and listing your jobs."
-msgstr ""
+msgstr "Мастер настройки поможет вам начать с создания страниц подачи заявки на публикацию вакансии, управления вакансиями и списка вакансий."
 
 #: includes/admin/class-wp-job-manager-setup.php:142
 msgid ""
 "If you want to skip the wizard and setup the pages and shortcodes yourself "
-"manually, the process is still reletively simple. Refer to the "
+"manually, the process is still relatively simple. Refer to the "
 "%sdocumentation%s for help."
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:145
 msgid "Continue to page setup"
-msgstr ""
+msgstr "Перейти к настройке страниц"
 
 #: includes/admin/class-wp-job-manager-setup.php:146
 msgid "Skip setup. I will setup the plugin manually"
-msgstr ""
+msgstr "Пропустить настройку. Я настрою плагин в ручную"
 
 #: includes/admin/class-wp-job-manager-setup.php:152
 msgid "Page Setup"
-msgstr ""
+msgstr "Настройка страниц"
 
 #: includes/admin/class-wp-job-manager-setup.php:154
 msgid ""
@@ -496,11 +497,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:161
 msgid "Page Title"
-msgstr ""
+msgstr "Наименование страницы"
 
 #: includes/admin/class-wp-job-manager-setup.php:162
 msgid "Page Description"
-msgstr ""
+msgstr "Описание страницы"
 
 #: includes/admin/class-wp-job-manager-setup.php:163
 msgid "Content Shortcode"
@@ -509,7 +510,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-setup.php:169
 msgctxt "Default page title (wizard)"
 msgid "Post a Job"
-msgstr ""
+msgstr "Опубликовать вакансию"
 
 #: includes/admin/class-wp-job-manager-setup.php:171
 msgid ""
@@ -543,7 +544,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-setup.php:189
 msgctxt "Default page title (wizard)"
 msgid "Jobs"
-msgstr ""
+msgstr "Вакансии"
 
 #: includes/admin/class-wp-job-manager-setup.php:190
 msgid ""
@@ -553,11 +554,11 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:198
 msgid "Skip this step"
-msgstr ""
+msgstr "Пропустить этот шаг"
 
 #: includes/admin/class-wp-job-manager-setup.php:208
 msgid "All Done!"
-msgstr ""
+msgstr "Все готово!"
 
 #: includes/admin/class-wp-job-manager-setup.php:210
 msgid ""
@@ -738,25 +739,25 @@ msgstr "Загрузить"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:165
 msgid "Add file"
-msgstr ""
+msgstr "Добавить файл"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:333
 msgid "Guest User"
-msgstr ""
+msgstr "Гость"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:335
 msgid "Change"
-msgstr ""
+msgstr "Изменить"
 
 #: includes/admin/class-wp-job-manager-writepanels.php:339
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
 msgstr ""
 
-#: includes/class-wp-job-manager-ajax.php:124
+#: includes/class-wp-job-manager-ajax.php:183
 msgid "located in &ldquo;%s&rdquo;"
 msgstr "найдено в &ldquo;%s&rdquo;"
 
-#: includes/class-wp-job-manager-ajax.php:131
+#: includes/class-wp-job-manager-ajax.php:190
 msgid "Showing all %s"
 msgstr ""
 
@@ -843,7 +844,7 @@ msgstr "Тип вакансии"
 
 #: includes/class-wp-job-manager-post-types.php:112
 msgid "Job types"
-msgstr ""
+msgstr "Типы вакансий"
 
 #: includes/class-wp-job-manager-post-types.php:116
 msgctxt "Job type slug - resave permalinks after changing this"
@@ -852,11 +853,11 @@ msgstr "job-type"
 
 #: includes/class-wp-job-manager-post-types.php:159
 msgid "Job"
-msgstr ""
+msgstr "Вакансия"
 
 #: includes/class-wp-job-manager-post-types.php:160
 msgid "Jobs"
-msgstr ""
+msgstr "Вакансии"
 
 #: includes/class-wp-job-manager-post-types.php:163
 msgctxt "Post type archive slug - resave permalinks after changing this"
@@ -898,7 +899,7 @@ msgid "This is where you can create and manage %s."
 msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:219
-#: wp-job-manager-functions.php:194
+#: wp-job-manager-functions.php:191
 msgctxt "post status"
 msgid "Expired"
 msgstr "Истекла"
@@ -913,11 +914,11 @@ msgstr[3] ""
 
 #: includes/class-wp-job-manager-shortcodes.php:62
 msgid "Invalid ID"
-msgstr ""
+msgstr "Неверный ID"
 
 #: includes/class-wp-job-manager-shortcodes.php:69
 msgid "This position has already been filled"
-msgstr ""
+msgstr "Эта вакансия занята"
 
 #: includes/class-wp-job-manager-shortcodes.php:75
 msgid "%s has been filled"
@@ -925,7 +926,7 @@ msgstr "%s была занята"
 
 #: includes/class-wp-job-manager-shortcodes.php:80
 msgid "This position is not filled"
-msgstr ""
+msgstr "Эта вакансия не заполнена"
 
 #: includes/class-wp-job-manager-shortcodes.php:87
 msgid "%s has been marked as not filled"
@@ -938,7 +939,6 @@ msgstr "%s была удалена"
 #: includes/class-wp-job-manager-shortcodes.php:162
 #: includes/class-wp-job-manager-widgets.php:155
 #: includes/class-wp-job-manager-widgets.php:260
-#: includes/forms/class-wp-job-manager-form-submit-job.php:122
 msgid "Title"
 msgstr "Наименование"
 
@@ -948,12 +948,12 @@ msgstr "Дата публикации"
 
 #: includes/class-wp-job-manager-shortcodes.php:165
 msgid "Date Expires"
-msgstr ""
+msgstr "Срок истек"
 
 #: includes/class-wp-job-manager-shortcodes.php:260
 #: includes/class-wp-job-manager-shortcodes.php:294
 msgid "Load more listings"
-msgstr ""
+msgstr "Загрузить ещё список вакансий"
 
 #: includes/class-wp-job-manager-widgets.php:148
 msgid ""
@@ -968,16 +968,16 @@ msgstr ""
 
 #: includes/class-wp-job-manager-widgets.php:160
 msgid "Keyword"
-msgstr ""
+msgstr "Ключевые слова"
 
 #: includes/class-wp-job-manager-widgets.php:173
 #: includes/class-wp-job-manager-widgets.php:268
 msgid "Number of listings to show"
-msgstr ""
+msgstr "Количество вакансий для отображения"
 
 #: includes/class-wp-job-manager-widgets.php:253
 msgid "Display a list of featured listings on your site."
-msgstr ""
+msgstr "Показать список наиболее свежих вакансий на вашем сайте"
 
 #: includes/class-wp-job-manager-widgets.php:255
 #: includes/class-wp-job-manager-widgets.php:259
@@ -986,17 +986,18 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:51
 msgid "Invalid listing"
-msgstr ""
+msgstr "Неверная вакансия"
 
 #: includes/forms/class-wp-job-manager-form-edit-job.php:87
 msgid "Save changes"
-msgstr ""
+msgstr "Сохранить изменения"
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:114
+#: includes/forms/class-wp-job-manager-form-edit-job.php:116
+#: includes/forms/class-wp-job-manager-form-edit-job.php:119
 msgid "Your changes have been saved."
 msgstr "Ваши изменения были сохранены."
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:114
+#: includes/forms/class-wp-job-manager-form-edit-job.php:116
 msgid "View &rarr;"
 msgstr ""
 
@@ -1005,8 +1006,8 @@ msgid "Submit Details"
 msgstr "Сохранить детали"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
-#: includes/forms/class-wp-job-manager-form-submit-job.php:376
-#: includes/forms/class-wp-job-manager-form-submit-job.php:623
+#: includes/forms/class-wp-job-manager-form-submit-job.php:377
+#: includes/forms/class-wp-job-manager-form-submit-job.php:624
 msgid "Preview"
 msgstr "Предпросмотр"
 
@@ -1016,12 +1017,12 @@ msgstr "Выполнено"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:106
 msgid "Application email"
-msgstr ""
+msgstr "Адрес электронной почты для заявки"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:107
 #: templates/account-signin.php:49
 msgid "you@yourdomain.com"
-msgstr ""
+msgstr "вы@вашдомен.рф"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:110
 msgid "Application URL"
@@ -1039,6 +1040,10 @@ msgstr "Адрес сайта или емайл"
 #: includes/forms/class-wp-job-manager-form-submit-job.php:115
 msgid "Enter an email address or website URL"
 msgstr "Введите адрес электронной почты или ссылку на сайт"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:122
+msgid "Job Title"
+msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:130
 msgid "Leave this blank if the location is not important"
@@ -1071,7 +1076,7 @@ msgstr "Краткое описание вашей компании"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:193
 msgid "Video"
-msgstr ""
+msgstr "Видео"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:196
 msgid "A link to a video about your company"
@@ -1097,42 +1102,42 @@ msgstr "%s обязательное поле"
 msgid "%s is invalid"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:261
-#: wp-job-manager-functions.php:662
+#: includes/forms/class-wp-job-manager-form-submit-job.php:262
+#: wp-job-manager-functions.php:658
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:276
+#: includes/forms/class-wp-job-manager-form-submit-job.php:277
 msgid "Please enter a valid application email address"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:285
+#: includes/forms/class-wp-job-manager-form-submit-job.php:286
 msgid "Please enter a valid application URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:295
+#: includes/forms/class-wp-job-manager-form-submit-job.php:296
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:407
+#: includes/forms/class-wp-job-manager-form-submit-job.php:408
 msgid "Please enter a username."
-msgstr ""
+msgstr "Пожалуйста, введите имя пользователя"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:410
+#: includes/forms/class-wp-job-manager-form-submit-job.php:411
 msgid "Please enter your email address."
-msgstr ""
+msgstr "Пожалуйста, введите ваш адрес электронной почты."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:428
+#: includes/forms/class-wp-job-manager-form-submit-job.php:429
 msgid "You must be signed in to post a new listing."
-msgstr ""
-
-#: includes/forms/class-wp-job-manager-form-submit-job.php:617
-msgid "Submit Listing"
-msgstr ""
+msgstr "Вы должны быть авторизованы для публикации нового списка вакансий."
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:618
+msgid "Submit Listing"
+msgstr "Отправить вакансию"
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:619
 msgid "Edit listing"
-msgstr ""
+msgstr "Редактировать вакансию"
 
 #: templates/account-signin.php:4
 msgid "Your account"
@@ -1167,11 +1172,11 @@ msgstr "необязательно"
 
 #: templates/account-signin.php:32
 msgid "You must sign in to create a new listing."
-msgstr ""
+msgstr "Вы должны авторизоваться для создания нового списка вакансий."
 
 #: templates/account-signin.php:40
 msgid "Username"
-msgstr ""
+msgstr "Имя пользователя"
 
 #: templates/account-signin.php:40 templates/account-signin.php:47
 #: templates/job-submit.php:24 templates/job-submit.php:41
@@ -1182,17 +1187,17 @@ msgstr "(необязательно)"
 msgid "Your email"
 msgstr "Ваш Email"
 
-#: templates/content-job_listing.php:18
+#: templates/content-job_listing.php:19
 msgid "%s ago"
-msgstr ""
+msgstr "%s назад"
 
 #: templates/content-no-jobs-found.php:2
 msgid "There are no listings matching your search."
-msgstr ""
+msgstr "Нет вакансий, удовлетворяющих вашему поисковому запросу."
 
 #: templates/content-no-jobs-found.php:4
 msgid "There are currently no vacancies."
-msgstr ""
+msgstr "Сейчас нет активных вакансий"
 
 #: templates/content-single-job_listing-meta.php:20
 #: templates/content-summary-job_listing.php:14
@@ -1205,11 +1210,11 @@ msgstr "Эта вакансия занята"
 
 #: templates/content-single-job_listing-meta.php:25
 msgid "Applications have closed"
-msgstr ""
+msgstr "Прием заявок закончен"
 
-#: templates/content-single-job_listing.php:5
+#: templates/content-single-job_listing.php:6
 msgid "This listing has expired."
-msgstr ""
+msgstr "Время публикации этой вакансии истекло."
 
 #: templates/form-fields/file-field.php:29
 msgid "Maximum file size: %s."
@@ -1231,9 +1236,7 @@ msgid "Apply using webmail: "
 msgstr "Отправить через Webmail: "
 
 #: templates/job-application-url.php:1
-msgid ""
-"To apply for this job please visit the following URL: <a href=\"%1$s\" "
-"target=\"_blank\">%1$s &rarr;</a>"
+msgid "To apply for this job please visit the following URL:"
 msgstr ""
 
 #: templates/job-application.php:7
@@ -1242,7 +1245,7 @@ msgstr "Заявка на вакансию"
 
 #: templates/job-dashboard-login.php:3
 msgid "You need to be signed in to manage your listings."
-msgstr ""
+msgstr "Вам необходимо авторизоваться, чтобы управлять своими вакансиями."
 
 #: templates/job-dashboard.php:2
 msgid ""
@@ -1252,7 +1255,7 @@ msgstr ""
 
 #: templates/job-dashboard.php:14
 msgid "You do not have any active listings."
-msgstr ""
+msgstr "У вас нет активных вакансий."
 
 #: templates/job-dashboard.php:36
 msgid "Mark not filled"
@@ -1264,7 +1267,7 @@ msgstr "Метка заполнена"
 
 #: templates/job-dashboard.php:43
 msgid "Relist"
-msgstr ""
+msgstr "Снова разместить вакансию"
 
 #: templates/job-filters.php:12 templates/job-filters.php:13
 msgid "Keywords"
@@ -1276,7 +1279,7 @@ msgstr "Категория"
 
 #: templates/job-filters.php:31
 msgid "Any category"
-msgstr ""
+msgstr "Любая категория"
 
 #: templates/job-filters.php:44
 msgid ""
@@ -1286,7 +1289,7 @@ msgstr ""
 
 #: templates/job-submit.php:35
 msgid "Company Details"
-msgstr ""
+msgstr "О компании"
 
 #: templates/job-submitted.php:6
 msgid ""
@@ -1297,56 +1300,56 @@ msgstr ""
 msgid "%s submitted successfully. Your listing will be visible once approved."
 msgstr ""
 
-#: wp-job-manager-functions.php:193
+#: wp-job-manager-functions.php:190
 msgctxt "post status"
 msgid "Draft"
-msgstr ""
+msgstr "Черновик"
 
-#: wp-job-manager-functions.php:195
+#: wp-job-manager-functions.php:192
 msgctxt "post status"
 msgid "Preview"
 msgstr "Предпросмотр"
 
-#: wp-job-manager-functions.php:196
+#: wp-job-manager-functions.php:193
 msgctxt "post status"
 msgid "Pending approval"
-msgstr ""
+msgstr "Ожидается подтверждение"
 
-#: wp-job-manager-functions.php:197
+#: wp-job-manager-functions.php:194
 msgctxt "post status"
 msgid "Pending payment"
-msgstr ""
+msgstr "Ожидается платеж"
 
-#: wp-job-manager-functions.php:198
+#: wp-job-manager-functions.php:195
 msgctxt "post status"
 msgid "Active"
 msgstr "Активна"
 
-#: wp-job-manager-functions.php:283
+#: wp-job-manager-functions.php:280
 msgid "Reset"
 msgstr "Сброс"
 
-#: wp-job-manager-functions.php:287
+#: wp-job-manager-functions.php:284
 msgid "RSS"
 msgstr "RSS"
 
-#: wp-job-manager-functions.php:357
+#: wp-job-manager-functions.php:353
 msgid "Invalid email address."
-msgstr ""
+msgstr "Неверный адрес электронной почты"
 
-#: wp-job-manager-functions.php:365
+#: wp-job-manager-functions.php:361
 msgid "Your email address isn&#8217;t correct."
 msgstr "Недопустимый адрес электронной почты."
 
-#: wp-job-manager-functions.php:369
+#: wp-job-manager-functions.php:365
 msgid "This email is already registered, please choose another one."
 msgstr "Учётная запись для этой электронной почты уже существует, пожалуйста, используйте другую электронную почту."
 
-#: wp-job-manager-functions.php:510
+#: wp-job-manager-functions.php:506
 msgid "Choose a category&hellip;"
 msgstr ""
 
-#: wp-job-manager-functions.php:664
+#: wp-job-manager-functions.php:660
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -1362,17 +1365,17 @@ msgstr ""
 msgid "Anywhere"
 msgstr "Везде"
 
-#: wp-job-manager.php:142
+#: wp-job-manager.php:143
 msgid "Invalid file type. Accepted types:"
-msgstr ""
+msgstr "Тип файла не поддерживается. Поддерживаемые типы файлов:"
 
-#: wp-job-manager.php:154
+#: wp-job-manager.php:155
 msgid "Load previous listings"
-msgstr ""
+msgstr "Загрузить предыдущую вакансию"
 
-#: wp-job-manager.php:157
+#: wp-job-manager.php:158
 msgid "Are you sure you want to delete this listing?"
-msgstr ""
+msgstr "Вы уверены, что хотите удалить эту вакансию?"
 
 #. Plugin Name of the plugin/theme
 msgid "WP Job Manager"
