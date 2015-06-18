@@ -54,10 +54,7 @@ class WP_Job_Manager {
 		$this->post_types = new WP_Job_Manager_Post_Types();
 
 		// Activation - works with symlinks
-		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( 'WP_Job_Manager_Ajax', 'add_endpoint' ), 10 );
-		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this->post_types, 'register_post_types' ), 10 );
-		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( 'WP_Job_Manager_Install', 'install' ), 10 );
-		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), 'flush_rewrite_rules', 15 );
+		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this, 'activate' ) );
 
 		// Switch theme
 		add_action( 'switch_theme', array( 'WP_Job_Manager_Ajax', 'add_endpoint' ), 10 );
@@ -70,6 +67,16 @@ class WP_Job_Manager {
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
+	}
+
+	/**
+	 * Called on plugin activation
+	 */
+	public function activate() {
+		WP_Job_Manager_Ajax::add_endpoint();
+		$this->post_types->register_post_types();
+		WP_Job_Manager_Install::install();
+		flush_rewrite_rules();
 	}
 
 	/**
