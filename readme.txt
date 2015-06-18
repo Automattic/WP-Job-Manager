@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
 Tested up to: 4.2
-Stable tag: 1.23.2
+Stable tag: 1.23.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -143,17 +143,18 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 = 1.23.3 =
-* Improved plugin activation code.
-* Search the entire meta field, not just from the start.
+* Fix - WPML integration with lang.
+* Tweak - Improved plugin activation code.
+* Tweak - Search the entire meta field, not just from the start.
 
 = 1.23.2 =
-* Send entire form data (listify workaround).
-* Set is_home false on ajax endpoint (listify workaround).
+* Fix - Send entire form data (listify workaround).
+* Fix - Set is_home false on ajax endpoint (listify workaround).
 
 = 1.23.1 =
-* Orderby featured should be "menu order, date", not "manu order, title".
-* Remove duplicate data from form_data in filters JS.
-* If index is -1 in filters JS, abort.
+* Fix - Orderby featured should be "menu order, date", not "manu order, title".
+* Tweak - Remove duplicate data from form_data in filters JS.
+* Tweak - If index is -1 in filters JS, abort.
 
 = 1.23.0 =
 * Feature - Custom AJAX endpoints to reduce overhead of loading admin.

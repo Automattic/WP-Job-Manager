@@ -3,7 +3,7 @@
 Plugin Name: WP Job Manager
 Plugin URI: https://wpjobmanager.com/
 Description: Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
-Version: 1.23.2
+Version: 1.23.3
 Author: Mike Jolley
 Author URI: http://mikejolley.com
 Requires at least: 4.1
@@ -31,7 +31,7 @@ class WP_Job_Manager {
 	 */
 	public function __construct() {
 		// Define constants
-		define( 'JOB_MANAGER_VERSION', '1.23.2' );
+		define( 'JOB_MANAGER_VERSION', '1.23.3' );
 		define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
@@ -118,11 +118,6 @@ class WP_Job_Manager {
 		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
 		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
 
-		// WPML workaround until this is standardized
-		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
-			$ajax_url = add_query_arg( 'lang', ICL_LANGUAGE_CODE, $ajax_url );
-		}
-
 		if ( apply_filters( 'job_manager_chosen_enabled', true ) ) {
 			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
 			wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
@@ -160,6 +155,7 @@ class WP_Job_Manager {
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', array(
 			'ajax_url'                => $ajax_url,
 			'is_rtl'                  => is_rtl() ? 1 : 0,
+			'lang'                    => defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '', // WPML workaround until this is standardized
 			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' )
 		) );
 		wp_localize_script( 'wp-job-manager-job-dashboard', 'job_manager_job_dashboard', array(
