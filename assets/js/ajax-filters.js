@@ -15,6 +15,10 @@ jQuery( document ).ready( function ( $ ) {
 		var filled       = target.data( 'filled' );
 		var index        = $( 'div.job_listings' ).index(this);
 
+		if ( index < 0 ) {
+			return;
+		}
+
 		if ( xhr[index] ) {
 			xhr[index].abort();
 		}
@@ -41,13 +45,13 @@ jQuery( document ).ready( function ( $ ) {
 				filter_job_type.push( $( this ).val() );
 			} );
 
-			var categories = form.find( ':input[name^=search_categories], :input[name^=search_categories]' ).map( function () {
+			var categories = form.find( ':input[name^="search_categories"]' ).map( function () {
 			return $( this ).val();
 			} ).get();
 			var keywords   = '';
 			var location   = '';
-			var $keywords  = form.find( ':input[name=search_keywords]' );
-			var $location  = form.find( ':input[name=search_location]' );
+			var $keywords  = form.find( ':input[name="search_keywords"]' );
+			var $location  = form.find( ':input[name="search_location"]' );
 
 			// Workaround placeholder scripts
 			if ( $keywords.val() !== $keywords.attr( 'placeholder' ) ) {
@@ -71,7 +75,7 @@ jQuery( document ).ready( function ( $ ) {
 				featured: featured,
 				filled: filled,
 				show_pagination: target.data( 'show_pagination' ),
-				form_data: form.serialize()
+				form_data: form.find(':input').not(':input[name="search_keywords"], :input[name="search_location"], :input[name^="search_categories"], :input[name^="filter_job_type"]').serialize()
 			};
 
 		} else {

@@ -142,6 +142,11 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.23.1 =
+* Orderby featured should be "menu order, date", not "manu order, title".
+* Remove duplicate data from form_data in filters JS.
+* If index is -1 in filters JS, abort.
+
 = 1.23.0 =
 * Feature - Custom AJAX endpoints to reduce overhead of loading admin.
 * Feature - Support radio fields.
