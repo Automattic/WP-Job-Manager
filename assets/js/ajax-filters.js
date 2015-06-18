@@ -75,7 +75,7 @@ jQuery( document ).ready( function ( $ ) {
 				featured: featured,
 				filled: filled,
 				show_pagination: target.data( 'show_pagination' ),
-				form_data: form.find(':input').not(':input[name="search_keywords"], :input[name="search_location"], :input[name^="search_categories"], :input[name^="filter_job_type"]').serialize()
+				form_data: form.serialize()
 			};
 
 		} else {

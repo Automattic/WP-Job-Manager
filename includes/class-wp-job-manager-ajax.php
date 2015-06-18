@@ -71,6 +71,10 @@ class WP_Job_Manager_Ajax {
    			if ( ! defined( 'DOING_AJAX' ) ) {
 				define( 'DOING_AJAX', true );
 			}
+
+			// Not home - this is an ajax endpoint
+			$wp_query->is_home = false;
+
    			do_action( 'job_manager_ajax_' . sanitize_text_field( $action ) );
    			die();
    		}
