@@ -142,6 +142,10 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.23.3 =
+* Improved plugin activation code.
+* Search the entire meta field, not just from the start.
+
 = 1.23.2 =
 * Send entire form data (listify workaround).
 * Set is_home false on ajax endpoint (listify workaround).
