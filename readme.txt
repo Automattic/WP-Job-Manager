@@ -145,7 +145,9 @@ You can view (and contribute) translations via the [Transifex project here](http
 = 1.23.3 =
 * Fix - WPML integration with lang.
 * Tweak - Improved plugin activation code.
+* Tweak - Improved theme switch code.
 * Tweak - Search the entire meta field, not just from the start.
+* Tweak - Added some debugging code to ajax-filters to display in console.
 
 = 1.23.2 =
 * Fix - Send entire form data (listify workaround).

@@ -57,9 +57,9 @@ class WP_Job_Manager {
 		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this, 'activate' ) );
 
 		// Switch theme
-		add_action( 'switch_theme', array( 'WP_Job_Manager_Ajax', 'add_endpoint' ), 10 );
-		add_action( 'switch_theme', array( $this->post_types, 'register_post_types' ), 10 );
-		add_action( 'switch_theme', 'flush_rewrite_rules', 15 );
+		add_action( 'after_switch_theme', array( 'WP_Job_Manager_Ajax', 'add_endpoint' ), 10 );
+		add_action( 'after_switch_theme', array( $this->post_types, 'register_post_types' ), 11 );
+		add_action( 'after_switch_theme', 'flush_rewrite_rules', 15 );
 
 		// Actions
 		add_action( 'after_setup_theme', array( $this, 'load_plugin_textdomain' ) );

@@ -154,7 +154,21 @@ jQuery( document ).ready( function ( $ ) {
 						target.triggerHandler( 'updated_results', result );
 
 					} catch ( err ) {
-						//console.log( err );
+						if ( window.console ) {
+							console.log( err );
+						}
+					}
+				}
+			},
+			error: function ( jqXHR, textStatus, error ) {
+				if ( window.console && 'abort' !== textStatus ) {
+					console.log( textStatus + ': ' + error );
+				}
+			},
+			statusCode: {
+				404: function() {
+					if ( window.console ) {
+						console.log( "Error 404: Ajax Endpoint cannot be reached. Go to Settings > Permalinks and save to resolve." );
 					}
 				}
 			}
