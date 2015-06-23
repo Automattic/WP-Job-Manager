@@ -31,6 +31,7 @@ class WP_Job_Manager_Ajax {
 	public static function add_endpoint() {
 		add_rewrite_tag( '%jm-ajax%', '([^/]*)' );
 		add_rewrite_rule( 'jm-ajax/([^/]*)/?', 'index.php?jm-ajax=$matches[1]', 'top' );
+		add_rewrite_rule( 'index.php/jm-ajax/([^/]*)/?', 'index.php?jm-ajax=$matches[1]', 'top' );
 	}
 
 	/**
