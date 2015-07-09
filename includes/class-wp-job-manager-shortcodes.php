@@ -420,6 +420,7 @@ class WP_Job_Manager_Shortcodes {
 			'width'    => '250px',
 			'align'    => 'left',
 			'featured' => null, // True to show only featured, false to hide featured, leave null to show both (when leaving out id)
+			'limit'    => 1
 		), $atts ) );
 
 		ob_start();
@@ -430,7 +431,7 @@ class WP_Job_Manager_Shortcodes {
 		);
 
 		if ( ! $id ) {
-			$args['posts_per_page'] = 1;
+			$args['posts_per_page'] = $limit;
 			$args['orderby']        = 'rand';
 			if ( ! is_null( $featured ) ) {
 				$args['meta_query'] = array( array(

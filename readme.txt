@@ -143,6 +143,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 == Changelog ==
 
 = 1.23.6 =
+* Feature - Allow [job_summary] to output multiple listings via 'limit' parameter.
 * Tweak - Added handling for .job-manager-filter class.
 * Tweak - Added trailing slashes to ajax endpoints.
 
