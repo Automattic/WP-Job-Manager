@@ -406,11 +406,16 @@ function the_company_video( $post = null ) {
 	$video    = get_the_company_video( $post );
 	$filetype = wp_check_filetype( $video );
 
-	if ( ! empty( $filetype['ext'] ) ) {
+	// FV Wordpress Flowplayer Support for advanced video formats
+	if ( shortcode_exists( 'flowplayer' ) ) {
+		$video_embed = '[flowplayer src="' . esc_attr( $video ) . '"]';
+	} elseif ( ! empty( $filetype['ext'] ) ) {
 		$video_embed = wp_video_shortcode( array( 'src' => $video ) );
 	} else {
 		$video_embed = wp_oembed_get( $video );
 	}
+
+	$video_embed = apply_filters( 'the_company_video_embed', $video_embed, $post );
 
 	if ( $video_embed ) {
 		echo '<div class="company_video">' . $video_embed . '</div>';
