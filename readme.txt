@@ -148,7 +148,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - Special chars in feeds.
 * Fix - Permalinks with index.php inside.
 * Fix - Notice when saving job form.
-* Fix - PHP4 widget contructors (https://gist.github.com/chriscct7/d7d077afb01011b1839d).
+* Fix - PHP4 widget constructors (https://gist.github.com/chriscct7/d7d077afb01011b1839d).
 * Tweak - Allow translation of job_manager_dropdown_categories.
 * Tweak - Added handling for .job-manager-filter class.
 * Tweak - Added trailing slashes to ajax endpoints.
