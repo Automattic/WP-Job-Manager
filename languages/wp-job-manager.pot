@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the WP Job Manager package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.23.0\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-06-17 21:17:41+00:00\n"
+"Project-Id-Version: WP Job Manager 1.23.5\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
+"POT-Creation-Date: 2015-07-25 16:24:46+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -743,11 +743,11 @@ msgstr ""
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
 msgstr ""
 
-#: includes/class-wp-job-manager-ajax.php:183
+#: includes/class-wp-job-manager-ajax.php:181
 msgid "located in &ldquo;%s&rdquo;"
 msgstr ""
 
-#: includes/class-wp-job-manager-ajax.php:190
+#: includes/class-wp-job-manager-ajax.php:188
 msgid "Showing all %s"
 msgstr ""
 
@@ -994,8 +994,8 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
-#: includes/forms/class-wp-job-manager-form-submit-job.php:377
-#: includes/forms/class-wp-job-manager-form-submit-job.php:624
+#: includes/forms/class-wp-job-manager-form-submit-job.php:378
+#: includes/forms/class-wp-job-manager-form-submit-job.php:625
 msgid "Preview"
 msgstr ""
 
@@ -1090,40 +1090,40 @@ msgstr ""
 msgid "%s is invalid"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:262
-#: wp-job-manager-functions.php:658
+#: includes/forms/class-wp-job-manager-form-submit-job.php:263
+#: wp-job-manager-functions.php:660
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:277
+#: includes/forms/class-wp-job-manager-form-submit-job.php:278
 msgid "Please enter a valid application email address"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:286
+#: includes/forms/class-wp-job-manager-form-submit-job.php:287
 msgid "Please enter a valid application URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:296
+#: includes/forms/class-wp-job-manager-form-submit-job.php:297
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:408
+#: includes/forms/class-wp-job-manager-form-submit-job.php:409
 msgid "Please enter a username."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:411
+#: includes/forms/class-wp-job-manager-form-submit-job.php:412
 msgid "Please enter your email address."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:429
+#: includes/forms/class-wp-job-manager-form-submit-job.php:430
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:618
+#: includes/forms/class-wp-job-manager-form-submit-job.php:619
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:619
+#: includes/forms/class-wp-job-manager-form-submit-job.php:620
 msgid "Edit listing"
 msgstr ""
 
@@ -1205,6 +1205,16 @@ msgstr ""
 
 #: templates/form-fields/file-field.php:29
 msgid "Maximum file size: %s."
+msgstr ""
+
+#: templates/form-fields/multiselect-field.php:3
+#: wp-job-manager-functions.php:507
+msgid "No results match"
+msgstr ""
+
+#: templates/form-fields/multiselect-field.php:3
+#: wp-job-manager-functions.php:508
+msgid "Select Some Options"
 msgstr ""
 
 #: templates/form-fields/uploaded-file-html.php:6
@@ -1336,7 +1346,7 @@ msgstr ""
 msgid "Choose a category&hellip;"
 msgstr ""
 
-#: wp-job-manager-functions.php:660
+#: wp-job-manager-functions.php:662
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -1352,15 +1362,15 @@ msgstr ""
 msgid "Anywhere"
 msgstr ""
 
-#: wp-job-manager.php:143
+#: wp-job-manager.php:147
 msgid "Invalid file type. Accepted types:"
 msgstr ""
 
-#: wp-job-manager.php:155
+#: wp-job-manager.php:160
 msgid "Load previous listings"
 msgstr ""
 
-#: wp-job-manager.php:158
+#: wp-job-manager.php:163
 msgid "Are you sure you want to delete this listing?"
 msgstr ""
 

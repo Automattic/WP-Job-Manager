@@ -4,6 +4,7 @@
 # Edouard Scherer <escherer@stagesperou.com>, 2014
 # Emilio Gomez Fernandez <emilio.gomez.fdez@gmail.com>, 2014
 # ramonasa <guido_rozenblum@hotmail.com>, 2015
+# José Carlos García <josecarlos.garcia@affinia.es>, 2015
 # Pablo González <delinean@gmail.com>, 2015
 # Pablo <pablostescovich@gmail.com>, 2015
 # Toni Devís <colomet@hotmail.com>, 2015
@@ -11,10 +12,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-06-13 12:39:58+00:00\n"
-"PO-Revision-Date: 2015-06-14 08:37+0000\n"
-"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/WP-Job-Manager\n"
+"POT-Creation-Date: 2015-06-17 21:17:41+00:00\n"
+"PO-Revision-Date: 2015-07-24 07:11+0000\n"
+"Last-Translator: Toni Devís <colomet@hotmail.com>\n"
 "Language-Team: Spanish (Spain) (http://www.transifex.com/projects/p/wp-job-manager/language/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,7 +30,7 @@ msgstr "Extensiones de WP Job Manager "
 
 #: includes/admin/class-wp-job-manager-addons.php:59
 msgid "Do you need multiple add-ons?"
-msgstr "Necesitas Múltiples Extensiones?"
+msgstr "¿Necesitas Múltiples Extensiones?"
 
 #: includes/admin/class-wp-job-manager-addons.php:59
 msgid "Check out the core add-on bundle &rarr;"
@@ -452,7 +453,7 @@ msgstr "2. Configuración de Página"
 
 #: includes/admin/class-wp-job-manager-setup.php:133
 msgid "3. Done"
-msgstr "Hecho"
+msgstr "3. Finalizado"
 
 #: includes/admin/class-wp-job-manager-setup.php:138
 msgid "Setup Wizard Introduction"
@@ -473,7 +474,7 @@ msgid ""
 "If you want to skip the wizard and setup the pages and shortcodes yourself "
 "manually, the process is still relatively simple. Refer to the "
 "%sdocumentation%s for help."
-msgstr ""
+msgstr "Si desea abandonar el asistente y configurar las páginas y los shortcodes manualmente, el proceso es relativamente sencillo. Consulte %sdocumentation%s si necesita ayuda."
 
 #: includes/admin/class-wp-job-manager-setup.php:145
 msgid "Continue to page setup"
@@ -588,7 +589,7 @@ msgstr "Ver ofertas laborales enviadas"
 
 #: includes/admin/class-wp-job-manager-setup.php:225
 msgid "Add the [jobs] shortcode to a page to list jobs"
-msgstr "Añadir el código corto [job] a una página ver las ofertas laborales"
+msgstr "Añadir el código corto [job] a una página para ver las ofertas laborales"
 
 #: includes/admin/class-wp-job-manager-setup.php:229
 msgid "View the job dashboard"
@@ -1041,7 +1042,7 @@ msgstr "Ingrese un correo o dirección web para los postulantes"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:122
 msgid "Job Title"
-msgstr ""
+msgstr "Puesto de trabajo"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:130
 msgid "Leave this blank if the location is not important"
@@ -1235,7 +1236,7 @@ msgstr "Solicitar usando webmail:"
 
 #: templates/job-application-url.php:1
 msgid "To apply for this job please visit the following URL:"
-msgstr ""
+msgstr "Para aplicar en este puesto visite la siguiente dirección: "
 
 #: templates/job-application.php:7
 msgid "Apply for job"
@@ -1373,7 +1374,7 @@ msgstr "Cargar ofertas anteriores"
 
 #: wp-job-manager.php:158
 msgid "Are you sure you want to delete this listing?"
-msgstr "Seguro que quieres borrar este anuncio?"
+msgstr "¿Seguro que quieres borrar este anuncio?"
 
 #. Plugin Name of the plugin/theme
 msgid "WP Job Manager"
