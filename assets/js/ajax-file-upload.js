@@ -3,7 +3,7 @@ jQuery(function($) {
 		$(this).fileupload({
 			dataType: 'json',
 			dropZone: $(this),
-			url: job_manager_ajax_file_upload.ajax_url + 'upload_file/',
+			url: job_manager_ajax_filters.ajax_url.toString().replace( "%%endpoint%%", "upload_file" ),
 			maxNumberOfFiles: 1,
 			formData: {
 				script: true
@@ -38,6 +38,11 @@ jQuery(function($) {
 				var $uploaded_files = $file_field.parent().find('.job-manager-uploaded-files');
 				var progress        = parseInt(data.loaded / data.total * 100, 10);
 				data.context.val( progress );
+			},
+			fail: function (e, data) {
+				var $file_field     = $( this );
+				var $form           = $file_field.closest( 'form' );
+				$form.find(':input[type="submit"]').removeAttr( 'disabled' );
 			},
 			done: function (e, data) {
 				var $file_field     = $( this );

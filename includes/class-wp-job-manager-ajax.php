@@ -40,13 +40,13 @@ class WP_Job_Manager_Ajax {
 	 * @param  string $ssl     Optional
 	 * @return string
 	 */
-	public static function get_endpoint( $request = '', $ssl = null ) {
+	public static function get_endpoint( $request = '%%endpoint%%', $ssl = null ) {
 		if ( strstr( get_option( 'permalink_structure' ), '/index.php/' ) ) {
-			$endpoint = trailingslashit( home_url( '/index.php/jm-ajax/' . $request, 'relative' ) );
+			$endpoint = trailingslashit( home_url( '/index.php/jm-ajax/' . $request . '/', 'relative' ) );
 		} elseif ( get_option( 'permalink_structure' ) ) {
-			$endpoint = trailingslashit( home_url( '/jm-ajax/' . $request, 'relative' ) );
+			$endpoint = trailingslashit( home_url( '/jm-ajax/' . $request . '/', 'relative' ) );
 		} else {
-			$endpoint = add_query_arg( 'jm-ajax=', $request, trailingslashit( home_url( '', 'relative' ) ) );
+			$endpoint = add_query_arg( 'jm-ajax', $request, trailingslashit( home_url( '', 'relative' ) ) );
 		}
 		return esc_url_raw( $endpoint );
 	}
