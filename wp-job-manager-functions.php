@@ -503,7 +503,9 @@ function job_manager_dropdown_categories( $args = '' ) {
 		'value'           => 'id',
 		'multiple'        => true,
 		'show_option_all' => false,
-		'placeholder'     => __( 'Choose a category&hellip;', 'wp-job-manager' )
+		'placeholder'     => __( 'Choose a category&hellip;', 'wp-job-manager' ),
+		'no_results_text' => __( 'No results match', 'wp-job-manager' ),
+		'multiple_text'   => __( 'Select Some Options', 'wp-job-manager' )
 	);
 
 	$r = wp_parse_args( $args, $defaults );
@@ -534,10 +536,10 @@ function job_manager_dropdown_categories( $args = '' ) {
 	$class      = esc_attr( $class );
 	$id         = $id ? esc_attr( $id ) : $name;
 
-	$output = "<select name='{$name}[]' id='$id' class='$class' " . ( $multiple ? "multiple='multiple'" : '' ) . " data-placeholder='{$placeholder}'>\n";
+	$output = "<select name='" . esc_attr( $name ) . "[]' id='" . esc_attr( $id ) . "' class='" . esc_attr( $class ) . "' " . ( $multiple ? "multiple='multiple'" : '' ) . " data-placeholder='" . esc_attr( $placeholder ) . "' data-no_results_text='" . esc_attr( $no_results_text ) . "' data-multiple_text='" . esc_attr( $multiple_text ) . "'>\n";
 
 	if ( $show_option_all ) {
-		$output .= '<option value="">' . $show_option_all . '</option>';
+		$output .= '<option value="">' . esc_html( $show_option_all ) . '</option>';
 	}
 
 	if ( ! empty( $categories ) ) {
