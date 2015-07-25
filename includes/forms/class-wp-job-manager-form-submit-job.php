@@ -552,7 +552,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		// Handle attachments
-		if ( sizeof( $maybe_attach ) ) {
+		if ( sizeof( $maybe_attach ) && apply_filters( 'job_manager_attach_uploaded_files', true ) ) {
 			/** WordPress Administration Image API */
 			include_once( ABSPATH . 'wp-admin/includes/image.php' );
 

@@ -153,6 +153,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Tweak - Added handling for .job-manager-filter class.
 * Tweak - Added trailing slashes to ajax endpoints.
 * Tweak - Made videos responsive.
+* Tweak - job_manager_attach_uploaded_files filter.
 
 = 1.23.4 =
 * Tweak - In 1.21.0 we switched to GET ajax requests to leverage caching, however, due to the length of some queries this was causing 414 request URI too long errors in many environments. Reverted to POST to avoid this.
