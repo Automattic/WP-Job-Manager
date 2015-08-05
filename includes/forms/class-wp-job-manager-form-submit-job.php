@@ -538,14 +538,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					// Must be absolute
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
 						foreach ( $values[ $group_key ][ $key ] as $file_url ) {
-							if ( strstr( $file_url, WP_CONTENT_URL ) ) {
-								$maybe_attach[] = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $file_url );
-							}
+							$maybe_attach[] = str_replace( array( WP_CONTENT_URL, site_url() ), array( WP_CONTENT_DIR, ABSPATH ), $file_url );
 						}
 					} else {
-						if ( strstr( $values[ $group_key ][ $key ], WP_CONTENT_URL ) ) {
-							$maybe_attach[] = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $values[ $group_key ][ $key ] );
-						}
+						$maybe_attach[] = str_replace( array( WP_CONTENT_URL, site_url() ), array( WP_CONTENT_DIR, ABSPATH ), $values[ $group_key ][ $key ] );
 					}
 				}
 			}
@@ -562,7 +558,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			// Loop attachments already attached to the job
 			foreach ( $attachments as $attachment_key => $attachment ) {
-				$attachment_urls[] = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, wp_get_attachment_url( $attachment ) );
+				$attachment_urls[] = str_replace( array( WP_CONTENT_URL, site_url() ), array( WP_CONTENT_DIR, ABSPATH ), wp_get_attachment_url( $attachment ) );
 			}
 
 			foreach ( $maybe_attach as $attachment_url ) {
