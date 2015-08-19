@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the WP Job Manager package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.23.5\n"
+"Project-Id-Version: WP Job Manager 1.23.7\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-07-25 16:24:46+00:00\n"
+"POT-Creation-Date: 2015-08-19 14:31:57+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -995,7 +995,7 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:378
-#: includes/forms/class-wp-job-manager-form-submit-job.php:625
+#: includes/forms/class-wp-job-manager-form-submit-job.php:621
 msgid "Preview"
 msgstr ""
 
@@ -1119,11 +1119,11 @@ msgstr ""
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:619
+#: includes/forms/class-wp-job-manager-form-submit-job.php:615
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:620
+#: includes/forms/class-wp-job-manager-form-submit-job.php:616
 msgid "Edit listing"
 msgstr ""
 
@@ -1245,9 +1245,7 @@ msgid "You need to be signed in to manage your listings."
 msgstr ""
 
 #: templates/job-dashboard.php:2
-msgid ""
-"Your listings are shown in the table below. Expired listings will be "
-"automatically removed after 30 days."
+msgid "Your listings are shown in the table below."
 msgstr ""
 
 #: templates/job-dashboard.php:14

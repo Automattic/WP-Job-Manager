@@ -3,8 +3,8 @@ Contributors: mikejolley
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
-Tested up to: 4.2
-Stable tag: 1.23.6
+Tested up to: 4.3
+Stable tag: 1.23.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -142,6 +142,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+= 1.23.7 =
 * Fix - 4.3 issue showing "Description is a required field" due to editor field.
 * Tweak - Default job_manager_delete_expired_jobs to false. Set to true to have expired jobs deleted automatically. More sensible default.
 * Tweak - job_manager_term_select_field_wp_dropdown_categories_args filter.
