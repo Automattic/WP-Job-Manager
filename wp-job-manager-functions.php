@@ -118,7 +118,7 @@ function get_job_listings( $args = array() ) {
 	$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
 	// Generate hash
-	$to_hash         = defined( 'ICL_LANGUAGE_CODE' ) ? json_encode( $query_args ) . ICL_LANGUAGE_CODE : json_encode( $query_args );
+	$to_hash         = json_encode( $query_args ) . apply_filters( 'wpml_current_language', '' );
 	$query_args_hash = 'jm_' . md5( $to_hash ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
 
 	do_action( 'before_get_job_listings', $query_args, $args );
@@ -701,3 +701,16 @@ function calculate_job_expiry( $job_id ) {
 
 	return '';
 }
+
+/**
+ * Set the current language of the ajax request
+ * @param  string $lang
+ * @return string
+ */
+function job_manager_set_ajax_language( $lang ) {
+    if ( ( strstr( $_SERVER['REQUEST_URI'], '/jm-ajax/' ) || ! empty( $_GET['jm-ajax'] ) ) && isset( $_POST['lang'] ) ) {
+		$lang = sanitize_text_field( $_POST['lang'] );
+	}
+    return $lang;
+}
+add_filter( 'icl_current_language', 'job_manager_set_ajax_language' );

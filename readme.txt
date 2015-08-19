@@ -145,6 +145,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 * Fix - 4.3 issue showing "Description is a required field" due to editor field.
 * Tweak - Default job_manager_delete_expired_jobs to false. Set to true to have expired jobs deleted automatically. More sensible default.
 * Tweak - job_manager_term_select_field_wp_dropdown_categories_args filter.
+* Tweak - Ajax WPML handling.
 
 = 1.23.6 =
 * Fix - job_manager_ajax_filters -> job_manager_ajax_file_upload in file upload script.
