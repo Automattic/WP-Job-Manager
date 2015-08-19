@@ -1,17 +1,18 @@
 # Copyright (C) 2015 WP Job Manager
 # This file is distributed under the same license as the WP Job Manager package.
 # Translators:
+# Alper Çiftçi <alprciftci@gmail.com>, 2015
 # Emir S. <emirsavranogullari@gmail.com>, 2015
 # Levent A <aklievvel@gmail.com>, 2015
 # Natalya Rovina <natalya.rovina@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-06-17 21:17:41+00:00\n"
-"PO-Revision-Date: 2015-06-14 09:16+0000\n"
-"Last-Translator: Emir S. <emirsavranogullari@gmail.com>\n"
-"Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/wp-job-manager/language/tr_TR/)\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
+"POT-Creation-Date: 2015-07-25 16:24:46+00:00\n"
+"PO-Revision-Date: 2015-08-11 12:35+0000\n"
+"Last-Translator: Alper Çiftçi <alprciftci@gmail.com>\n"
+"Language-Team: Turkish (Turkey) (http://www.transifex.com/mikejolley/wp-job-manager/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -749,11 +750,11 @@ msgstr "Değiştir"
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
 msgstr "Kullanıcı ID&rsquo;si ekle ya da misafir için boş bırak."
 
-#: includes/class-wp-job-manager-ajax.php:183
+#: includes/class-wp-job-manager-ajax.php:181
 msgid "located in &ldquo;%s&rdquo;"
 msgstr "Lokasyon &ldquo;%s&rdquo;"
 
-#: includes/class-wp-job-manager-ajax.php:190
+#: includes/class-wp-job-manager-ajax.php:188
 msgid "Showing all %s"
 msgstr "\"%s\" - Hepsi gösteriliyor "
 
@@ -999,8 +1000,8 @@ msgid "Submit Details"
 msgstr "Detayları Gönder"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
-#: includes/forms/class-wp-job-manager-form-submit-job.php:377
-#: includes/forms/class-wp-job-manager-form-submit-job.php:624
+#: includes/forms/class-wp-job-manager-form-submit-job.php:378
+#: includes/forms/class-wp-job-manager-form-submit-job.php:625
 msgid "Preview"
 msgstr "Önizleme"
 
@@ -1095,40 +1096,40 @@ msgstr "%s zorunlu alan"
 msgid "%s is invalid"
 msgstr "%s geçersiz"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:262
-#: wp-job-manager-functions.php:658
+#: includes/forms/class-wp-job-manager-form-submit-job.php:263
+#: wp-job-manager-functions.php:660
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr "\"%s\" (dosya türü %s) bu türlerden birinde olmalı: %s"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:277
+#: includes/forms/class-wp-job-manager-form-submit-job.php:278
 msgid "Please enter a valid application email address"
 msgstr "Lütfen başvuru için geçerli bir email adresi girin"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:286
+#: includes/forms/class-wp-job-manager-form-submit-job.php:287
 msgid "Please enter a valid application URL"
 msgstr "Lütfen başvuru için geçerli bir URL girin"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:296
+#: includes/forms/class-wp-job-manager-form-submit-job.php:297
 msgid "Please enter a valid application email address or URL"
 msgstr "Lütfen başvuru için geçerli bir emaill adresi ya da URL girin"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:408
+#: includes/forms/class-wp-job-manager-form-submit-job.php:409
 msgid "Please enter a username."
 msgstr "Lütfen kullanıcı adı girin."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:411
+#: includes/forms/class-wp-job-manager-form-submit-job.php:412
 msgid "Please enter your email address."
 msgstr "Lütfen email adresinizi girin."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:429
+#: includes/forms/class-wp-job-manager-form-submit-job.php:430
 msgid "You must be signed in to post a new listing."
 msgstr "Yeni ilan göndermek için oturum açmalısınız."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:618
+#: includes/forms/class-wp-job-manager-form-submit-job.php:619
 msgid "Submit Listing"
 msgstr "İlanı Gönder"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:619
+#: includes/forms/class-wp-job-manager-form-submit-job.php:620
 msgid "Edit listing"
 msgstr "İlanı düzenle"
 
@@ -1212,6 +1213,16 @@ msgstr "Bu ilanın süresi dolmuş."
 #: templates/form-fields/file-field.php:29
 msgid "Maximum file size: %s."
 msgstr "Maksimum dosya boyutu: %s."
+
+#: templates/form-fields/multiselect-field.php:3
+#: wp-job-manager-functions.php:507
+msgid "No results match"
+msgstr "Herhangi Bir Eşleşme Bulunamadı"
+
+#: templates/form-fields/multiselect-field.php:3
+#: wp-job-manager-functions.php:508
+msgid "Select Some Options"
+msgstr "Bazı Ayarları Seçin"
 
 #: templates/form-fields/uploaded-file-html.php:6
 #: templates/form-fields/uploaded-file-html.php:8
@@ -1342,7 +1353,7 @@ msgstr "Bu email adresi zaten kayıtlı, lütfen başka bir tane seçin."
 msgid "Choose a category&hellip;"
 msgstr "Kategori seç&hellip;"
 
-#: wp-job-manager-functions.php:660
+#: wp-job-manager-functions.php:662
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr "Gönderilen dosyalar bu türlerden biri olmalı: %s"
 
@@ -1358,15 +1369,15 @@ msgstr "%s ilanı için \"%s\" aracılığıyla başvuru"
 msgid "Anywhere"
 msgstr "Herhangi Bir Yer"
 
-#: wp-job-manager.php:143
+#: wp-job-manager.php:147
 msgid "Invalid file type. Accepted types:"
 msgstr "Geçersiz dosya türü. Kabul edilen türler:"
 
-#: wp-job-manager.php:155
+#: wp-job-manager.php:160
 msgid "Load previous listings"
 msgstr "Bir önceki ilanı aç"
 
-#: wp-job-manager.php:158
+#: wp-job-manager.php:163
 msgid "Are you sure you want to delete this listing?"
 msgstr "Bu ilanı silmek istediğinize emin misiniz?"
 

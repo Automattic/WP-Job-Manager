@@ -3,6 +3,7 @@
 # Translators:
 # BRUNO KIM ALMEIDA WATANABE <watanabe.bruno@gmail.com>, 2015
 # Claudio Sanches <contato@claudiosmweb.com>, 2014-2015
+# David Vasconcelos <vascoda40@gmail.com>, 2015
 # Dionizio Bonfim Bach <translations@djio.com.br>, 2015
 # Fernando Sousa <inactive+ifernandosousa@transifex.com>, 2014
 # Maristela Porangaba Feitoza <circulohumanorhe@gmail.com>, 2015
@@ -13,11 +14,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-06-17 21:17:41+00:00\n"
-"PO-Revision-Date: 2015-07-03 20:02+0000\n"
-"Last-Translator: BRUNO KIM ALMEIDA WATANABE <watanabe.bruno@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/wp-job-manager/language/pt_BR/)\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
+"POT-Creation-Date: 2015-07-25 16:24:46+00:00\n"
+"PO-Revision-Date: 2015-08-12 15:49+0000\n"
+"Last-Translator: David Vasconcelos <vascoda40@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/mikejolley/wp-job-manager/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -755,11 +756,11 @@ msgstr "Alterar"
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
 msgstr "Entre com o ID do usuário ou deixei em branco se foi enviado por um convidado"
 
-#: includes/class-wp-job-manager-ajax.php:183
+#: includes/class-wp-job-manager-ajax.php:181
 msgid "located in &ldquo;%s&rdquo;"
 msgstr "localizada em &ldquo;%s&rdquo;"
 
-#: includes/class-wp-job-manager-ajax.php:190
+#: includes/class-wp-job-manager-ajax.php:188
 msgid "Showing all %s"
 msgstr "Mostrando todos %s"
 
@@ -1006,8 +1007,8 @@ msgid "Submit Details"
 msgstr "Enviar Detalhes"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
-#: includes/forms/class-wp-job-manager-form-submit-job.php:377
-#: includes/forms/class-wp-job-manager-form-submit-job.php:624
+#: includes/forms/class-wp-job-manager-form-submit-job.php:378
+#: includes/forms/class-wp-job-manager-form-submit-job.php:625
 msgid "Preview"
 msgstr "Pré-visualizar"
 
@@ -1102,40 +1103,40 @@ msgstr "%s é um campo necessários"
 msgid "%s is invalid"
 msgstr "%s é inválido"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:262
-#: wp-job-manager-functions.php:658
+#: includes/forms/class-wp-job-manager-form-submit-job.php:263
+#: wp-job-manager-functions.php:660
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr "\"%s\" (tipo de arquivo %s) deve estar num dos seguintes formatos: %s"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:277
+#: includes/forms/class-wp-job-manager-form-submit-job.php:278
 msgid "Please enter a valid application email address"
 msgstr "Por favor insira um endereço de e-mail para aplicação válido"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:286
+#: includes/forms/class-wp-job-manager-form-submit-job.php:287
 msgid "Please enter a valid application URL"
 msgstr "Por favor insira um URL de aplicação válida"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:296
+#: includes/forms/class-wp-job-manager-form-submit-job.php:297
 msgid "Please enter a valid application email address or URL"
 msgstr "Por favor insira um endereço de e-mail ou URL válida para aplicação"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:408
+#: includes/forms/class-wp-job-manager-form-submit-job.php:409
 msgid "Please enter a username."
 msgstr "Por favor, digite um nome de usuário."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:411
+#: includes/forms/class-wp-job-manager-form-submit-job.php:412
 msgid "Please enter your email address."
 msgstr "Por favor, digite o seu endereço de e-mail."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:429
+#: includes/forms/class-wp-job-manager-form-submit-job.php:430
 msgid "You must be signed in to post a new listing."
 msgstr "Você deve ser logado para postar um novo anúncio."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:618
+#: includes/forms/class-wp-job-manager-form-submit-job.php:619
 msgid "Submit Listing"
 msgstr "Enviar Anúncio de Vaga"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:619
+#: includes/forms/class-wp-job-manager-form-submit-job.php:620
 msgid "Edit listing"
 msgstr "Editar Anúncio de Vaga"
 
@@ -1219,6 +1220,16 @@ msgstr "Este anúncio expirou"
 #: templates/form-fields/file-field.php:29
 msgid "Maximum file size: %s."
 msgstr "Tamanho máximo do arquivo para upload: %s."
+
+#: templates/form-fields/multiselect-field.php:3
+#: wp-job-manager-functions.php:507
+msgid "No results match"
+msgstr "Nenhum resultado foi encontrado"
+
+#: templates/form-fields/multiselect-field.php:3
+#: wp-job-manager-functions.php:508
+msgid "Select Some Options"
+msgstr "Selecione Algumas Opções"
 
 #: templates/form-fields/uploaded-file-html.php:6
 #: templates/form-fields/uploaded-file-html.php:8
@@ -1349,7 +1360,7 @@ msgstr "Este e-mail já está cadastrado, por favor, escolha outro."
 msgid "Choose a category&hellip;"
 msgstr "Escolha uma categoria&hellip;"
 
-#: wp-job-manager-functions.php:660
+#: wp-job-manager-functions.php:662
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr "Os arquivos para upload precisam ser um dos seguintes tipos de arquivo: %s"
 
@@ -1365,15 +1376,15 @@ msgstr "Candidato via anúncio \"%s\" em %s"
 msgid "Anywhere"
 msgstr "Em qualquer lugar"
 
-#: wp-job-manager.php:143
+#: wp-job-manager.php:147
 msgid "Invalid file type. Accepted types:"
 msgstr "Tipo de arquivo inválido. Tipos aceitos:"
 
-#: wp-job-manager.php:155
+#: wp-job-manager.php:160
 msgid "Load previous listings"
 msgstr "Anúncio em Destaque?"
 
-#: wp-job-manager.php:158
+#: wp-job-manager.php:163
 msgid "Are you sure you want to delete this listing?"
 msgstr "Você tem certeza de que deseja excluir este anúncio?"
 
