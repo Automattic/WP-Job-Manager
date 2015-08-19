@@ -15,7 +15,7 @@ if ( is_array( $selected ) ) {
 	$selected = current( $selected );
 }
 
-wp_dropdown_categories( array(
+wp_dropdown_categories( apply_filters( 'job_manager_term_select_field_wp_dropdown_categories_args', array(
 	'taxonomy'         => $field['taxonomy'],
 	'hierarchical'     => 1,
 	'show_option_all'  => false,
@@ -24,5 +24,5 @@ wp_dropdown_categories( array(
 	'orderby'          => 'name',
 	'selected'         => $selected,
 	'hide_empty'       => false
-) );
+), $key, $field ) );
 if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
