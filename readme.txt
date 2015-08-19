@@ -142,6 +142,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Fix - 4.3 issue showing "Description is a required field" due to editor field.
+
 = 1.23.6 =
 * Fix - job_manager_ajax_filters -> job_manager_ajax_file_upload in file upload script.
 
