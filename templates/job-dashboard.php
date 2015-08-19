@@ -1,5 +1,5 @@
 <div id="job-manager-job-dashboard">
-	<p><?php _e( 'Your listings are shown in the table below. Expired listings will be automatically removed after 30 days.', 'wp-job-manager' ); ?></p>
+	<p><?php _e( 'Your listings are shown in the table below.', 'wp-job-manager' ); ?></p>
 	<table class="job-manager-jobs">
 		<thead>
 			<tr>

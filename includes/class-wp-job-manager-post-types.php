@@ -401,7 +401,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// Delete old expired jobs
-		if ( apply_filters( 'job_manager_delete_expired_jobs', true ) ) {
+		if ( apply_filters( 'job_manager_delete_expired_jobs', false ) ) {
 			$job_ids = $wpdb->get_col( $wpdb->prepare( "
 				SELECT posts.ID FROM {$wpdb->posts} as posts
 				WHERE posts.post_type = 'job_listing'
