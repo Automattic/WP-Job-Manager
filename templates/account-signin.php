@@ -13,7 +13,7 @@
 	</fieldset>
 
 <?php else :
-
+	global $wp_version;
 	$account_required             = job_manager_user_requires_account();
 	$registration_enabled         = job_manager_enable_registration();
 	$generate_username_from_email = job_manager_generate_username_from_email();
@@ -25,7 +25,7 @@
 
 			<?php if ( $registration_enabled ) : ?>
 
-				<?php printf( __( 'If you don&rsquo;t have an account you can %screate one below by entering your email address/username. A password will be automatically emailed to you.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
+				<?php printf( __( 'If you don&rsquo;t have an account you can %1$screate one below by entering your email address/username. %2$s will be automatically emailed to you.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ', version_compare( $wp_version, '4.3', '>=' ) ? __( 'A link to set a password', 'wp-job-manager' ) : __( 'A password', 'wp-job-manager' ) ); ?>
 
 			<?php elseif ( $account_required ) : ?>
 
