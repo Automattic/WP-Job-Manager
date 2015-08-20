@@ -25,7 +25,7 @@
 
 			<?php if ( $registration_enabled ) : ?>
 
-				<?php printf( __( 'If you don&rsquo;t have an account you can %screate one below by entering your email address/username. A password will be automatically emailed to you.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
+				<?php printf( __( 'If you don&rsquo;t have an account you can %screate one below by entering your email address/username. Your account details will be confirmed via email.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
 
 			<?php elseif ( $account_required ) : ?>
 
