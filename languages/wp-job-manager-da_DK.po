@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-07-25 16:24:46+00:00\n"
-"PO-Revision-Date: 2015-07-26 08:41+0000\n"
+"POT-Creation-Date: 2015-08-19 14:31:57+00:00\n"
+"PO-Revision-Date: 2015-08-20 08:42+0000\n"
 "Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
 "Language-Team: Danish (Denmark) (http://www.transifex.com/mikejolley/wp-job-manager/language/da_DK/)\n"
 "MIME-Version: 1.0\n"
@@ -1000,7 +1000,7 @@ msgstr "Indsend detaljer"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:378
-#: includes/forms/class-wp-job-manager-form-submit-job.php:625
+#: includes/forms/class-wp-job-manager-form-submit-job.php:621
 msgid "Preview"
 msgstr "Vis"
 
@@ -1124,11 +1124,11 @@ msgstr "Venligst indtast din e-mail adresse "
 msgid "You must be signed in to post a new listing."
 msgstr "Du skal være logged ind for at indsende en ny liste"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:619
+#: includes/forms/class-wp-job-manager-form-submit-job.php:615
 msgid "Submit Listing"
 msgstr "Indsend stilling"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:620
+#: includes/forms/class-wp-job-manager-form-submit-job.php:616
 msgid "Edit listing"
 msgstr "Ret stilling"
 
@@ -1251,10 +1251,8 @@ msgid "You need to be signed in to manage your listings."
 msgstr "Du skal logge ind for at administrer dine liste"
 
 #: templates/job-dashboard.php:2
-msgid ""
-"Your listings are shown in the table below. Expired listings will be "
-"automatically removed after 30 days."
-msgstr "Dine lister er vist nedenfor. Udløbet stillinger bliver slettede automatisk efter 30 dage."
+msgid "Your listings are shown in the table below."
+msgstr ""
 
 #: templates/job-dashboard.php:14
 msgid "You do not have any active listings."

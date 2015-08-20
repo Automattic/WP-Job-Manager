@@ -15,9 +15,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-07-25 16:24:46+00:00\n"
-"PO-Revision-Date: 2015-08-12 15:49+0000\n"
-"Last-Translator: David Vasconcelos <vascoda40@gmail.com>\n"
+"POT-Creation-Date: 2015-08-19 14:31:57+00:00\n"
+"PO-Revision-Date: 2015-08-20 08:42+0000\n"
+"Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/mikejolley/wp-job-manager/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1008,7 +1008,7 @@ msgstr "Enviar Detalhes"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:378
-#: includes/forms/class-wp-job-manager-form-submit-job.php:625
+#: includes/forms/class-wp-job-manager-form-submit-job.php:621
 msgid "Preview"
 msgstr "Pré-visualizar"
 
@@ -1132,11 +1132,11 @@ msgstr "Por favor, digite o seu endereço de e-mail."
 msgid "You must be signed in to post a new listing."
 msgstr "Você deve ser logado para postar um novo anúncio."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:619
+#: includes/forms/class-wp-job-manager-form-submit-job.php:615
 msgid "Submit Listing"
 msgstr "Enviar Anúncio de Vaga"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:620
+#: includes/forms/class-wp-job-manager-form-submit-job.php:616
 msgid "Edit listing"
 msgstr "Editar Anúncio de Vaga"
 
@@ -1259,10 +1259,8 @@ msgid "You need to be signed in to manage your listings."
 msgstr "Você deve esta logado para gerenciar seus anúncios."
 
 #: templates/job-dashboard.php:2
-msgid ""
-"Your listings are shown in the table below. Expired listings will be "
-"automatically removed after 30 days."
-msgstr "Seus anúncios são exibidos na tabela abaixo. Anúncios expirados serão removidas automaticamente após 30 dias."
+msgid "Your listings are shown in the table below."
+msgstr ""
 
 #: templates/job-dashboard.php:14
 msgid "You do not have any active listings."

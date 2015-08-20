@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-07-25 16:24:46+00:00\n"
-"PO-Revision-Date: 2015-07-26 08:41+0000\n"
+"POT-Creation-Date: 2015-08-19 14:31:57+00:00\n"
+"PO-Revision-Date: 2015-08-20 08:42+0000\n"
 "Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
 "Language-Team: Swedish (Sweden) (http://www.transifex.com/mikejolley/wp-job-manager/language/sv_SE/)\n"
 "MIME-Version: 1.0\n"
@@ -1001,7 +1001,7 @@ msgstr "Skicka in detaljer"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:378
-#: includes/forms/class-wp-job-manager-form-submit-job.php:625
+#: includes/forms/class-wp-job-manager-form-submit-job.php:621
 msgid "Preview"
 msgstr "Förhandsgranska"
 
@@ -1125,11 +1125,11 @@ msgstr "Fyll i din epostadress."
 msgid "You must be signed in to post a new listing."
 msgstr "Du måste vara inloggad för att posta en ny annons."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:619
+#: includes/forms/class-wp-job-manager-form-submit-job.php:615
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:620
+#: includes/forms/class-wp-job-manager-form-submit-job.php:616
 msgid "Edit listing"
 msgstr "Redigera annons"
 
@@ -1252,10 +1252,8 @@ msgid "You need to be signed in to manage your listings."
 msgstr "Du måste vara inloggad för att hantera dina annonser."
 
 #: templates/job-dashboard.php:2
-msgid ""
-"Your listings are shown in the table below. Expired listings will be "
-"automatically removed after 30 days."
-msgstr "Dina annonser visas i tabellen nedan. Utgångna annonser tas automatiskt bort efter 30 dagar."
+msgid "Your listings are shown in the table below."
+msgstr ""
 
 #: templates/job-dashboard.php:14
 msgid "You do not have any active listings."

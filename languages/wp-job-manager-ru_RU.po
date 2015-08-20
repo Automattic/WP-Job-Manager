@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-07-25 16:24:46+00:00\n"
-"PO-Revision-Date: 2015-07-26 08:41+0000\n"
+"POT-Creation-Date: 2015-08-19 14:31:57+00:00\n"
+"PO-Revision-Date: 2015-08-20 08:42+0000\n"
 "Last-Translator: Mike Jolley <mike.jolley@me.com>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/mikejolley/wp-job-manager/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
@@ -1007,7 +1007,7 @@ msgstr "Сохранить детали"
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:378
-#: includes/forms/class-wp-job-manager-form-submit-job.php:625
+#: includes/forms/class-wp-job-manager-form-submit-job.php:621
 msgid "Preview"
 msgstr "Предпросмотр"
 
@@ -1131,11 +1131,11 @@ msgstr "Пожалуйста, введите ваш адрес электрон�
 msgid "You must be signed in to post a new listing."
 msgstr "Вы должны быть авторизованы для публикации нового списка вакансий."
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:619
+#: includes/forms/class-wp-job-manager-form-submit-job.php:615
 msgid "Submit Listing"
 msgstr "Отправить вакансию"
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:620
+#: includes/forms/class-wp-job-manager-form-submit-job.php:616
 msgid "Edit listing"
 msgstr "Редактировать вакансию"
 
@@ -1258,9 +1258,7 @@ msgid "You need to be signed in to manage your listings."
 msgstr "Вам необходимо авторизоваться, чтобы управлять своими вакансиями."
 
 #: templates/job-dashboard.php:2
-msgid ""
-"Your listings are shown in the table below. Expired listings will be "
-"automatically removed after 30 days."
+msgid "Your listings are shown in the table below."
 msgstr ""
 
 #: templates/job-dashboard.php:14
