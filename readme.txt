@@ -144,6 +144,7 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 = 1.23.8 =
 * Fix - Security: XSS issue in account signin.
+* Tweak - Update new account email text.
 
 = 1.23.7 =
 * Fix - 4.3 issue showing "Description is a required field" due to editor field.
