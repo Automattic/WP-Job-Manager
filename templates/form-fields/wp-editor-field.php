@@ -18,5 +18,5 @@ $editor = apply_filters( 'submit_job_form_wp_editor_args', array(
 		'toolbar4'                      => ''
 	),
 ) );
-wp_editor( isset( $field['value'] ) ? esc_textarea( $field['value'] ) : '', $key, $editor );
+wp_editor( isset( $field['value'] ) ? wp_kses_post( $field['value'] ) : '', $key, $editor );
 if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
