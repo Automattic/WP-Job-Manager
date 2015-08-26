@@ -184,14 +184,11 @@ jQuery( document ).ready( function ( $ ) {
 
 	//end of the initial update_results listener
 
-	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' ).change( function() {
-		var target   = $( this ).closest( 'div.job_listings' );
-		target.triggerHandler( 'update_results', [ 1, false ] );
-	} )
-
-	.on( "keyup", function(e) {
+	// Changed this to just listen for enter button instead of listening for change event which was calling the loop twice.
+	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' ).on( "keyup", function(e) {
 		if ( e.which === 13 ) {
-			$( this ).trigger( 'change' );
+			var target = $( this ).closest( 'div.job_listings' );
+			target.triggerHandler( 'update_results', [ 1, false ] );
 		}
 	} );
 
@@ -242,6 +239,14 @@ jQuery( document ).ready( function ( $ ) {
             scrollTop: target.offset().top
         }, 600 );
 
+		return false;
+	} );
+
+	// if there is a search button listen for a click
+	$( 'div.job_listings' ).on( 'click', '[type="submit"]', function() {
+		console.log('submit button clicked');
+		var target = $( this ).closest( 'div.job_listings' );
+		target.triggerHandler( 'update_results', [ 1, false ] );
 		return false;
 	} );
 
@@ -308,8 +313,10 @@ jQuery( document ).ready( function ( $ ) {
 		}
 	}
 
+	/*
 	//On back button trigger update with artificial history
 	if ( $supports_html5_history) {
+		console.log('popstate');
 		$(window).on( "onpopstate", function( event ) {
 			console.log('back');
 			$( '.job_filters' ).each( function() {
@@ -322,6 +329,7 @@ jQuery( document ).ready( function ( $ ) {
 
 	// Inital job and form population
 	$(window).on( "load", function( event ) {
+		console.log('window load');
 		$( '.job_filters' ).each( function() {
 			var target      = $( this ).closest( 'div.job_listings' );
 			var form        = target.find( '.job_filters' );
