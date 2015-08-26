@@ -24,6 +24,9 @@ jQuery( document ).ready( function ( $ ) {
 			xhr[index].abort();
 		}
 
+		//clean the current href of empty query strings if user arrived here from a GET request
+		job_manager_clean_state( target, page);
+
 		//if append parameter is passed as false then ... remove previous results before appending new results.
 		if ( ! append ) {
 			$( results ).addClass( 'loading' );
@@ -106,7 +109,6 @@ jQuery( document ).ready( function ( $ ) {
 
 		}
 
-		//Make an ajax request for results.
 		xhr[index] = $.ajax( {
 			type: 'POST',
 			url: job_manager_ajax_filters.ajax_url.toString().replace( "%%endpoint%%", "get_listings" ),
@@ -155,7 +157,9 @@ jQuery( document ).ready( function ( $ ) {
 						$( results ).removeClass( 'loading' );
 
 						target.triggerHandler( 'updated_results', result );
-						job_manager_store_state( target, page);
+
+						//add the current search to the browser history
+						job_manager_store_state( target.closest( 'div.job_listings' ) , page);
 
 					} catch ( err ) {
 						if ( window.console ) {
@@ -184,7 +188,6 @@ jQuery( document ).ready( function ( $ ) {
 	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' ).change( function() {
 		var target   = $( this ).closest( 'div.job_listings' );
 		target.triggerHandler( 'update_results', [ 1, false ] );
-		job_manager_store_state( target, 1 );
 	} )
 
 	.on( "keyup", function(e) {
@@ -203,8 +206,6 @@ jQuery( document ).ready( function ( $ ) {
 
 		target.triggerHandler( 'reset' );
 		target.triggerHandler( 'update_results', [ 1, false ] );
-		job_manager_store_state( target, 1 );
-
 		return false;
 	} );
 
@@ -226,7 +227,6 @@ jQuery( document ).ready( function ( $ ) {
 		} else {
 			page = page + 1;
 			$( this ).data( 'page', page );
-			job_manager_store_state( target, page );
 		}
 
 		target.triggerHandler( 'update_results', [ page, true, loading_previous ] );
@@ -236,9 +236,6 @@ jQuery( document ).ready( function ( $ ) {
 	$( 'div.job_listings' ).on( 'click', '.job-manager-pagination a', function() {
 		var target = $( this ).closest( 'div.job_listings' );
 		var page   = $( this ).data( 'page' );
-
-		job_manager_store_state( target, page );
-
 		target.triggerHandler( 'update_results', [ page, false ] );
 
 		$( "body, html" ).animate({
@@ -264,9 +261,6 @@ jQuery( document ).ready( function ( $ ) {
 	// changed this to ? because this is the standard query string identifier in php
 	var location = document.location.href.split('?')[0];
 	var query = document.location.href.split('?')[1];
-	console.log(query);
-	//filter empty query strings and replaceState
-
 
 	function job_manager_store_state( target, page ) {
 		if ( $supports_html5_history ) {
