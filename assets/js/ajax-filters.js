@@ -2,6 +2,7 @@ jQuery( document ).ready( function ( $ ) {
 
 	var xhr = [];
 
+	//Update Results Listener
 	$( '.job_listings' ).on( 'update_results', function ( event, page, append, loading_previous ) {
 		var data         = '';
 		var target       = $( this );
@@ -23,6 +24,7 @@ jQuery( document ).ready( function ( $ ) {
 			xhr[index].abort();
 		}
 
+		//if append parameter is passed as false then ... remove previous results before appending new results.
 		if ( ! append ) {
 			$( results ).addClass( 'loading' );
 			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
@@ -104,6 +106,7 @@ jQuery( document ).ready( function ( $ ) {
 
 		}
 
+		//Make an ajax request for results.
 		xhr[index] = $.ajax( {
 			type: 'POST',
 			url: job_manager_ajax_filters.ajax_url.toString().replace( "%%endpoint%%", "get_listings" ),
@@ -152,6 +155,7 @@ jQuery( document ).ready( function ( $ ) {
 						$( results ).removeClass( 'loading' );
 
 						target.triggerHandler( 'updated_results', result );
+						job_manager_store_state( target, page);
 
 					} catch ( err ) {
 						if ( window.console ) {
@@ -174,6 +178,8 @@ jQuery( document ).ready( function ( $ ) {
 			}
 		} );
 	} );
+
+	//end of the initial update_results listener
 
 	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' ).change( function() {
 		var target   = $( this ).closest( 'div.job_listings' );
@@ -258,18 +264,16 @@ jQuery( document ).ready( function ( $ ) {
 	// changed this to ? because this is the standard query string identifier in php
 	var location = document.location.href.split('?')[0];
 
-
-
 	function job_manager_store_state( target, page ) {
 		if ( $supports_html5_history ) {
 			var form  = target.find( '.job_filters' );
 			var data  = $( form ).serialize();
 			var index = $( 'div.job_listings' ).index( target );
 			var keyword = form.find('#search_keywords').val() ? 'search_keywords='+encodeURIComponent(form.find('#search_keywords').val()): '';
-			var geo = form.find('#search_location').val() ? '&search_location='+encodeURIComponent(form.find('#search_location').val()): '';
+			var geo = form.find('#search_location').val() ? 'search_location='+encodeURIComponent(form.find('#search_location').val()): '';
 			var current_page = '';
 			//pushState in order to allow back button on search results
-			window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index }, '', location + ((keyword || geo) ? '?':'') + keyword + geo + current_page );
+			window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index },'',location+((keyword||geo||current_page)?'?':'')+keyword+(keyword ? '&':'')+geo+((keyword||geo)?'&':'')+current_page);
 		}
 	}
 
