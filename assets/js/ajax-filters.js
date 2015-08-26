@@ -263,6 +263,10 @@ jQuery( document ).ready( function ( $ ) {
 
 	// changed this to ? because this is the standard query string identifier in php
 	var location = document.location.href.split('?')[0];
+	var query = document.location.href.split('?')[1];
+	console.log(query);
+	//filter empty query strings and replaceState
+
 
 	function job_manager_store_state( target, page ) {
 		if ( $supports_html5_history ) {
@@ -272,8 +276,13 @@ jQuery( document ).ready( function ( $ ) {
 			var keyword = form.find('#search_keywords').val() ? 'search_keywords='+encodeURIComponent(form.find('#search_keywords').val()): '';
 			var geo = form.find('#search_location').val() ? 'search_location='+encodeURIComponent(form.find('#search_location').val()): '';
 			var current_page = '';
-			//pushState in order to allow back button on search results
-			window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index },'',location+((keyword||geo||current_page)?'?':'')+keyword+(keyword ? '&':'')+geo+((keyword||geo)?'&':'')+current_page);
+			var newURL = location+((keyword||geo||current_page)?'?':'')+keyword+((keyword&&geo)?'&':'')+geo+(((keyword||geo)&&current_page)?'&':'')+current_page;
+
+
+			//pushState in order to allow back button on search results (only if different from current)
+			if ( document.location.href !== newURL ) {
+				window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
+			}
 		}
 	}
 
