@@ -262,6 +262,25 @@ jQuery( document ).ready( function ( $ ) {
 	var location = document.location.href.split('?')[0];
 	var query = document.location.href.split('?')[1];
 
+	//filter empty query strings and replaceState
+	function job_manager_clean_state( target, page ) {
+		if ( $supports_html5_history ) {
+			var form  = target.find( '.job_filters' );
+			var data  = $( form ).serialize();
+			var index = $( 'div.job_listings' ).index( target );
+			var keyword = form.find('#search_keywords').val() ? 'search_keywords='+encodeURIComponent(form.find('#search_keywords').val()): '';
+			var geo = form.find('#search_location').val() ? 'search_location='+encodeURIComponent(form.find('#search_location').val()): '';
+			var current_page = '';
+			var newURL = location+((keyword||geo||current_page)?'?':'')+keyword+((keyword&&geo)?'&':'')+geo+(((keyword||geo)&&current_page)?'&':'')+current_page;
+
+
+			//pushState in order to allow back button on search results (only if different from current)
+			if ( document.location.href !== newURL ) {
+				window.history.replaceState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
+			}
+		}
+	}
+	
 	function job_manager_store_state( target, page ) {
 		if ( $supports_html5_history ) {
 			var form  = target.find( '.job_filters' );
