@@ -4,6 +4,7 @@ jQuery( document ).ready( function ( $ ) {
 
 	//Update Results Listener
 	$( '.job_listings' ).on( 'update_results', function ( event, page, append, loading_previous ) {
+		console.log('update_results starting');
 		var data         = '';
 		var target       = $( this );
 		var form         = target.find( '.job_filters' );
@@ -24,8 +25,8 @@ jQuery( document ).ready( function ( $ ) {
 			xhr[index].abort();
 		}
 
-		//clean the current href of empty query strings if user arrived here from a GET request
-		job_manager_clean_state( target, page);
+		//Manage the local HTML5 history
+		job_manager_store_state( target.closest( 'div.job_listings' ), page, false);
 
 		//if append parameter is passed as false then ... remove previous results before appending new results.
 		if ( ! append ) {
@@ -158,9 +159,6 @@ jQuery( document ).ready( function ( $ ) {
 
 						target.triggerHandler( 'updated_results', result );
 
-						//add the current search to the browser history
-						job_manager_store_state( target.closest( 'div.job_listings' ) , page);
-
 					} catch ( err ) {
 						if ( window.console ) {
 							console.log( err );
@@ -181,6 +179,7 @@ jQuery( document ).ready( function ( $ ) {
 				}
 			}
 		} );
+		console.log('update_results ending');
 	} );
 
 	//end of the initial update_results listener
@@ -197,6 +196,7 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	$( '.job_filters' ).on( 'click', '.reset', function () {
+		console.log('job_filters click');
 		var target = $( this ).closest( 'div.job_listings' );
 		var form = $( this ).closest( 'form' );
 
@@ -261,26 +261,8 @@ jQuery( document ).ready( function ( $ ) {
 	// changed this to ? because this is the standard query string identifier in php
 	var location = document.location.href.split('?')[0];
 	var query = document.location.href.split('?')[1];
+	query = query.split('&');
 
-	//filter empty query strings and replaceState
-	function job_manager_clean_state( target, page ) {
-		if ( $supports_html5_history ) {
-			var form  = target.find( '.job_filters' );
-			var data  = $( form ).serialize();
-			var index = $( 'div.job_listings' ).index( target );
-			var keyword = form.find('#search_keywords').val() ? 'search_keywords='+encodeURIComponent(form.find('#search_keywords').val()): '';
-			var geo = form.find('#search_location').val() ? 'search_location='+encodeURIComponent(form.find('#search_location').val()): '';
-			var current_page = '';
-			var newURL = location+((keyword||geo||current_page)?'?':'')+keyword+((keyword&&geo)?'&':'')+geo+(((keyword||geo)&&current_page)?'&':'')+current_page;
-
-
-			//pushState in order to allow back button on search results (only if different from current)
-			if ( document.location.href !== newURL ) {
-				window.history.replaceState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
-			}
-		}
-	}
-	
 	function job_manager_store_state( target, page ) {
 		if ( $supports_html5_history ) {
 			var form  = target.find( '.job_filters' );
@@ -288,45 +270,55 @@ jQuery( document ).ready( function ( $ ) {
 			var index = $( 'div.job_listings' ).index( target );
 			var keyword = form.find('#search_keywords').val() ? 'search_keywords='+encodeURIComponent(form.find('#search_keywords').val()): '';
 			var geo = form.find('#search_location').val() ? 'search_location='+encodeURIComponent(form.find('#search_location').val()): '';
-			var current_page = '';
+			var current_page = 'current_page='+page;
 			var newURL = location+((keyword||geo||current_page)?'?':'')+keyword+((keyword&&geo)?'&':'')+geo+(((keyword||geo)&&current_page)?'&':'')+current_page;
-
-
-			//pushState in order to allow back button on search results (only if different from current)
-			if ( document.location.href !== newURL ) {
-				window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
+			// Get the query values from the query portion of the url
+			var queryValues = function () { 
+				var values = [];
+				for (var i = 0; i < query.length; i++) {
+					value = decodeURIComponent(query[i].split('=')[1]);
+					pl = /\+/g;  // Regex for replacing addition symbol with a space
+					value = value.replace(pl, " ");
+					values.push(value);
+				}
+				return values; 
+			}();
+			// Check if any of the query values are empty and if so replaceState e.g. empty form used in GET request
+			var empty = false;
+			emptyCheck: 
+				for (var i = 0; i < queryValues.length; i++) {
+					if (queryValues[i] === '') {
+						empty = true;
+						break emptyCheck;
+					}
+				}
+			if ( empty ) {
+				window.history.replaceState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
+				console.log('empty');
 			}
+			// otherwise check if same as last search and if not then store new state
+			else if ( document.location.href !== newURL ) {
+				window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
+				console.log('different')
+			} else {
+				console.log('The current search was the same as the last')
+				return;
+			}
+			//*/
 		}
 	}
 
-	// get url query strings 
-	// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript/901144#901144
-	function getParameterByName(name) {
-	    var match,
-        pl     = /\+/g,  // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-        query  = window.location.search.substring(1);
-
-	    var urlParams = {};
-	    while (match = search.exec(query))
-	       urlParams[decode(match[1])] = decode(match[2]);
-	   return urlParams;
-	}
-
-	//On back button trigger update
+	//On back button trigger update with artificial history
 	if ( $supports_html5_history) {
 		$(window).on( "onpopstate", function( event ) {
-			console.log(getParameterByName());
+			console.log('back');
 			$( '.job_filters' ).each( function() {
 				var target      = $( this ).closest( 'div.job_listings' );
-				var form        = target.find( '.job_filters' );
-				var inital_page = 1;
-				var index       = $( 'div.job_listings' ).index( target );
-				target.triggerHandler( 'update_results', [ inital_page, false ] );
+				target.triggerHandler( 'update_results', [ 1, false ] );
 			});
 		});
 	}
+	//*/
 
 	// Inital job and form population
 	$(window).on( "load", function( event ) {
