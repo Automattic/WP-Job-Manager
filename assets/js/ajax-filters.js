@@ -17,18 +17,21 @@ jQuery( document ).ready( function ( $ ) {
 		var filled       = target.data( 'filled' );
 		var index        = $( 'div.job_listings' ).index(this);
 
+
+		// If it can't find a div with class job_listings in the element which triggered an update_results return without result
 		if ( index < 0 ) {
 			return;
 		}
 
+		// If there is already an ajax call in the xhr array then abort it 
 		if ( xhr[index] ) {
 			xhr[index].abort();
 		}
 
-		//Manage the local HTML5 history
+		// Manage the local HTML5 history
 		job_manager_store_state( target.closest( 'div.job_listings' ), page, false);
 
-		//if append parameter is passed as false then ... remove previous results before appending new results.
+		// If append parameter is passed as false then ... remove previous results before appending new results.
 		if ( ! append ) {
 			$( results ).addClass( 'loading' );
 			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
@@ -179,6 +182,7 @@ jQuery( document ).ready( function ( $ ) {
 				}
 			}
 		} );
+		console.log(xhr);
 		console.log('update_results ending');
 	} );
 
@@ -263,12 +267,14 @@ jQuery( document ).ready( function ( $ ) {
 		$supports_html5_history = false;
 	}
 
-	// changed this to ? because this is the standard query string identifier in php
-	var location = document.location.href.split('?')[0];
-	var query = document.location.href.split('?')[1];
-	query = query.split('&');
-
 	function job_manager_store_state( target, page ) {
+		// changed this to ? because this is the standard query string identifier in php
+		// and changed to window.location for better cross browser support
+		// and moved into the function so it rechecks everytime the function is called
+		var location = window.location.href.split('?')[0];
+		var query = window.location.href.split('?')[1];
+		query = query.split('&');
+
 		if ( $supports_html5_history ) {
 			var form  = target.find( '.job_filters' );
 			var data  = $( form ).serialize();
@@ -313,28 +319,14 @@ jQuery( document ).ready( function ( $ ) {
 		}
 	}
 
-	/*
-	//On back button trigger update with artificial history
-	if ( $supports_html5_history) {
-		console.log('popstate');
-		$(window).on( "onpopstate", function( event ) {
-			console.log('back');
-			$( '.job_filters' ).each( function() {
-				var target      = $( this ).closest( 'div.job_listings' );
-				target.triggerHandler( 'update_results', [ 1, false ] );
-			});
-		});
-	}
-	//*/
-
-	// Inital job and form population
-	$(window).on( "load", function( event ) {
-		console.log('window load');
+	function populate_forms () {
 		$( '.job_filters' ).each( function() {
 			var target      = $( this ).closest( 'div.job_listings' );
 			var form        = target.find( '.job_filters' );
 			var inital_page = 1;
 			var index       = $( 'div.job_listings' ).index( target );
+
+			target.triggerHandler( 'update_results', [ inital_page, false ] );
 
 	   		if ( window.history.state && window.location.hash ) {
 	   			var state = window.history.state;
@@ -345,7 +337,24 @@ jQuery( document ).ready( function ( $ ) {
 				}
 	   		}
 
-			target.triggerHandler( 'update_results', [ inital_page, false ] );
+			
 	   	});
+	}
+
+	//On back button trigger update with artificial history
+	if ( $supports_html5_history) {
+		$(window).on( "popstate", function( event ) {
+			window.history.back();
+			console.log('popstate');
+			populate_forms();
+		});
+	}
+	//*/
+
+
+	// Inital job and form population
+	$(window).on( "load", function( event ) {
+		console.log('window load');
+		populate_forms();
 	});
 } );
