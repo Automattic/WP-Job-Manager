@@ -4,7 +4,6 @@ jQuery( document ).ready( function ( $ ) {
 
 	//Update Results Listener
 	$( '.job_listings' ).on( 'update_results', function ( event, page, append, loading_previous ) {
-		console.log('update_results starting');
 		var data         = '';
 		var target       = $( this );
 		var form         = target.find( '.job_filters' );
@@ -182,8 +181,6 @@ jQuery( document ).ready( function ( $ ) {
 				}
 			}
 		} );
-		console.log(xhr);
-		console.log('update_results ending');
 	} );
 
 	//end of the initial update_results listener
@@ -197,7 +194,6 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	$( '.job_filters' ).on( 'click', '.reset', function () {
-		console.log('job_filters click');
 		var target = $( this ).closest( 'div.job_listings' );
 		var form = $( this ).closest( 'form' );
 
@@ -248,7 +244,6 @@ jQuery( document ).ready( function ( $ ) {
 
 	// if there is a search button listen for a click
 	$( 'div.job_listings' ).on( 'click', '[type="submit"]', function() {
-		console.log('submit button clicked');
 		var target = $( this ).closest( 'div.job_listings' );
 		target.triggerHandler( 'update_results', [ 1, false ] );
 		return false;
@@ -283,7 +278,8 @@ jQuery( document ).ready( function ( $ ) {
 			var geo = form.find('#search_location').val() ? 'search_location='+encodeURIComponent(form.find('#search_location').val()): '';
 			var current_page = 'current_page='+page;
 			var newURL = location+((keyword||geo||current_page)?'?':'')+keyword+((keyword&&geo)?'&':'')+geo+(((keyword||geo)&&current_page)?'&':'')+current_page;
-			// Get the query values from the query portion of the url
+			// Get the query values from the query portion of the url 
+			// NOTE: this might work better as a separate function with dependency injection
 			var queryValues = function () { 
 				var values = [];
 				for (var i = 0; i < query.length; i++) {
@@ -305,14 +301,14 @@ jQuery( document ).ready( function ( $ ) {
 				}
 			if ( empty ) {
 				window.history.replaceState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
-				console.log('empty');
 			}
 			// otherwise check if same as last search and if not then store new state
 			else if ( document.location.href !== newURL ) {
 				window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
-				console.log('different')
 			} else {
-				console.log('The current search was the same as the last')
+				if ( window.console ) {
+					console.log('The current search was the same as the last');
+				}
 				return;
 			}
 			//*/
@@ -325,10 +321,8 @@ jQuery( document ).ready( function ( $ ) {
 			var form        = target.find( '.job_filters' );
 			var inital_page = 1;
 			var index       = $( 'div.job_listings' ).index( target );
-
-			target.triggerHandler( 'update_results', [ inital_page, false ] );
-
-	   		if ( window.history.state && window.location.hash ) {
+			// removed window.location.hash 
+	   		if ( window.history.state ) {
 	   			var state = window.history.state;
 	   			if ( state.id && 'job_manager_state' === state.id && index == state.index ) {
 					inital_page = state.page;
@@ -336,17 +330,19 @@ jQuery( document ).ready( function ( $ ) {
 					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'chosen:updated' );
 				}
 	   		}
-
-			
 	   	});
 	}
 
 	//On back button trigger update with artificial history
 	if ( $supports_html5_history) {
 		$(window).on( "popstate", function( event ) {
-			window.history.back();
-			console.log('popstate');
 			populate_forms();
+			var target = $( '.job_filters' ).closest( 'div.job_listings' );
+			//check if the window.history.state from synthetic history, otherwise go to the last page for real
+			if (window.history.state) {
+				target.trigger( 'update_results', [ 1, false ] );
+			}
+			
 		});
 	}
 	//*/
@@ -354,7 +350,9 @@ jQuery( document ).ready( function ( $ ) {
 
 	// Inital job and form population
 	$(window).on( "load", function( event ) {
-		console.log('window load');
 		populate_forms();
+		var target = $( '.job_filters' ).closest( 'div.job_listings' );
+		target.triggerHandler( 'update_results', [ 1, false ] );
 	});
+
 } );
