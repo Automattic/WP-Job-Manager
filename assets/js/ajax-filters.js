@@ -255,15 +255,51 @@ jQuery( document ).ready( function ( $ ) {
 		$supports_html5_history = false;
 	}
 
-	var location = document.location.href.split('#')[0];
+	// changed this to ? because this is the standard query string identifier in php
+	var location = document.location.href.split('?')[0];
+
+
 
 	function job_manager_store_state( target, page ) {
 		if ( $supports_html5_history ) {
 			var form  = target.find( '.job_filters' );
 			var data  = $( form ).serialize();
 			var index = $( 'div.job_listings' ).index( target );
-			window.history.replaceState( { id: 'job_manager_state', page: page, data: data, index: index }, '', location + '#s=1' );
+			var keyword = form.find('#search_keywords').val() ? 'search_keywords='+encodeURIComponent(form.find('#search_keywords').val()): '';
+			var geo = form.find('#search_location').val() ? '&search_location='+encodeURIComponent(form.find('#search_location').val()): '';
+			var current_page = '';
+			//pushState in order to allow back button on search results
+			window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index }, '', location + ((keyword || geo) ? '?':'') + keyword + geo + current_page );
 		}
+	}
+
+	// get url query strings 
+	// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript/901144#901144
+	function getParameterByName(name) {
+	    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+
+	    var urlParams = {};
+	    while (match = search.exec(query))
+	       urlParams[decode(match[1])] = decode(match[2]);
+	   return urlParams;
+	}
+
+	//On back button trigger update
+	if ( $supports_html5_history) {
+		$(window).on( "onpopstate", function( event ) {
+			console.log(getParameterByName());
+			$( '.job_filters' ).each( function() {
+				var target      = $( this ).closest( 'div.job_listings' );
+				var form        = target.find( '.job_filters' );
+				var inital_page = 1;
+				var index       = $( 'div.job_listings' ).index( target );
+				target.triggerHandler( 'update_results', [ inital_page, false ] );
+			});
+		});
 	}
 
 	// Inital job and form population
