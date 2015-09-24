@@ -399,7 +399,7 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
     }
 
     // Notify
-    wp_new_user_notification( $user_id, $password );
+    wp_new_user_notification( $user_id, null, 'both' );
 
 	// Login
     wp_set_auth_cookie( $user_id, true, is_ssl() );
