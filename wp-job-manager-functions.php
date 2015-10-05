@@ -400,7 +400,7 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
     }
 
     // Notify
-    if ( version_compare( $wp_version, '4.3.0', '<' ) ) {
+    if ( version_compare( $wp_version, '4.3.1', '<' ) ) {
     	wp_new_user_notification( $user_id, $password );
     } else {
     	wp_new_user_notification( $user_id, null, 'both' );
