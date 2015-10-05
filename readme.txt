@@ -142,6 +142,8 @@ You can view (and contribute) translations via the [Transifex project here](http
 
 == Changelog ==
 
+* Map mime types to those that WordPress knows.
+
 = 1.23.9 =
 * Fixed editing content with wp_editor. Can no longer be passed to function already escaped.
 

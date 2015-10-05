@@ -551,6 +551,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( sizeof( $maybe_attach ) && apply_filters( 'job_manager_attach_uploaded_files', true ) ) {
 			/** WordPress Administration Image API */
 			include_once( ABSPATH . 'wp-admin/includes/image.php' );
+			include_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 			// Get attachments
 			$attachments     = get_posts( 'post_parent=' . $this->job_id . '&post_type=attachment&fields=ids&post_mime_type=image&numberposts=-1' );

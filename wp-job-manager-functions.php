@@ -617,9 +617,10 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 	if ( is_array( $file_data['name'] ) ) {
 		foreach( $file_data['name'] as $file_data_key => $file_data_value ) {
 			if ( $file_data['name'][ $file_data_key ] ) {
+				$type              = wp_check_filetype( $file_data['name'][ $file_data_key ] ); // Map mime type to one WordPress recognises
 				$files_to_upload[] = array(
 					'name'     => $file_data['name'][ $file_data_key ],
-					'type'     => $file_data['type'][ $file_data_key ],
+					'type'     => $type['type'],
 					'tmp_name' => $file_data['tmp_name'][ $file_data_key ],
 					'error'    => $file_data['error'][ $file_data_key ],
 					'size'     => $file_data['size'][ $file_data_key ]
@@ -627,6 +628,8 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 			}
 		}
 	} else {
+		$type              = wp_check_filetype( $file_data['name'] ); // Map mime type to one WordPress recognises
+		$file_data['type'] = $type['type'];
 		$files_to_upload[] = $file_data;
 	}
 
