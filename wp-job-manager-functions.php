@@ -438,12 +438,15 @@ function job_manager_user_can_post_job() {
  */
 function job_manager_user_can_edit_job( $job_id ) {
 	$can_edit = true;
-	$job      = get_post( $job_id );
 
-	if ( ! is_user_logged_in() ) {
+	if ( ! is_user_logged_in() || ! $job_id ) {
 		$can_edit = false;
-	} elseif ( $job->post_author != get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) {
-		$can_edit = false;
+	} else {
+		$job      = get_post( $job_id );
+
+		if ( ! $job || ( $job->post_author !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
+			$can_edit = false;
+		}
 	}
 
 	return apply_filters( 'job_manager_user_can_edit_job', $can_edit, $job_id );
