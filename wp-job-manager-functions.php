@@ -327,6 +327,7 @@ if ( ! function_exists( 'job_manager_create_account' ) ) :
  */
 function wp_job_manager_create_account( $args, $deprecated = '' ) {
 	global $current_user;
+	global $wp_version;
 
 	// Soft Deprecated in 1.20.0
 	if ( ! is_array( $args ) ) {
@@ -399,7 +400,12 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
     }
 
     // Notify
-    wp_new_user_notification( $user_id, $password );
+    if ( version_compare( $wp_version, '4.3.0', '<=' ) ) {
+    	wp_new_user_notification( $user_id, $password );
+    }
+    elseif {
+    	wp_new_user_notification( $user_id, null, 'both' );
+    }
 
 	// Login
     wp_set_auth_cookie( $user_id, true, is_ssl() );
