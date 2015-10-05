@@ -547,6 +547,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 		}
 
+		$maybe_attach = array_filter( $maybe_attach );
+
 		// Handle attachments
 		if ( sizeof( $maybe_attach ) && apply_filters( 'job_manager_attach_uploaded_files', true ) ) {
 			/** WordPress Administration Image API */
