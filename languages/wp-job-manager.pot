@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the WP Job Manager package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.23.8\n"
+"Project-Id-Version: WP Job Manager 1.23.10\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2015-08-20 22:10:01+00:00\n"
+"POT-Creation-Date: 2015-10-08 15:55:01+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -995,7 +995,7 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:39
 #: includes/forms/class-wp-job-manager-form-submit-job.php:378
-#: includes/forms/class-wp-job-manager-form-submit-job.php:621
+#: includes/forms/class-wp-job-manager-form-submit-job.php:624
 msgid "Preview"
 msgstr ""
 
@@ -1091,7 +1091,7 @@ msgid "%s is invalid"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:263
-#: wp-job-manager-functions.php:660
+#: wp-job-manager-functions.php:671
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
@@ -1119,11 +1119,11 @@ msgstr ""
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:615
+#: includes/forms/class-wp-job-manager-form-submit-job.php:618
 msgid "Submit Listing"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:616
+#: includes/forms/class-wp-job-manager-form-submit-job.php:619
 msgid "Edit listing"
 msgstr ""
 
@@ -1209,12 +1209,12 @@ msgid "Maximum file size: %s."
 msgstr ""
 
 #: templates/form-fields/multiselect-field.php:3
-#: wp-job-manager-functions.php:507
+#: wp-job-manager-functions.php:515
 msgid "No results match"
 msgstr ""
 
 #: templates/form-fields/multiselect-field.php:3
-#: wp-job-manager-functions.php:508
+#: wp-job-manager-functions.php:516
 msgid "Select Some Options"
 msgstr ""
 
@@ -1329,23 +1329,23 @@ msgstr ""
 msgid "RSS"
 msgstr ""
 
-#: wp-job-manager-functions.php:353
+#: wp-job-manager-functions.php:354
 msgid "Invalid email address."
 msgstr ""
 
-#: wp-job-manager-functions.php:361
+#: wp-job-manager-functions.php:362
 msgid "Your email address isn&#8217;t correct."
 msgstr ""
 
-#: wp-job-manager-functions.php:365
+#: wp-job-manager-functions.php:366
 msgid "This email is already registered, please choose another one."
 msgstr ""
 
-#: wp-job-manager-functions.php:506
+#: wp-job-manager-functions.php:514
 msgid "Choose a category&hellip;"
 msgstr ""
 
-#: wp-job-manager-functions.php:662
+#: wp-job-manager-functions.php:673
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
