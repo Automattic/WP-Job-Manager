@@ -82,18 +82,6 @@ module.exports = function( grunt ){
 				stdout: true,
 				stderr: true
 			},
-			txpull: {
-				command: [
-					'tx pull -a -f',
-				].join( '&&' )
-			},
-			generatemos: {
-				command: [
-					'cd languages',
-					'find ./ -name "*.mo" -delete',
-					'for i in *.po; do msgfmt $i -o ${i%%.*}.mo; done'
-				].join( '&&' )
-			},
 			generatepot: {
 				command: [
 					'makepot'
@@ -123,13 +111,7 @@ module.exports = function( grunt ){
 	]);
 
 	grunt.registerTask( 'dev', [
-		'default',
-		'shell:txpull',
-		'shell:generatemos'
-	]);
-
-	grunt.registerTask( 'mo', [
-		'shell:generatemos'
+		'default'
 	]);
 
 };
