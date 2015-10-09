@@ -184,13 +184,23 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	//end of the initial update_results listener
+	
 
-	// Changed this to just listen for enter button instead of listening for change event which was calling the loop twice.
-	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' ).on( "keyup", function(e) {
-		if ( e.which === 13 ) {
-			var target = $( this ).closest( 'div.job_listings' );
-			target.triggerHandler( 'update_results', [ 1, false ] );
-		}
+	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' )
+	// Because of implicit submission we must prevent default on keypress 13 to stop double form submission
+	// http://stackoverflow.com/questions/33026415/keyup-13-event-repeats-implied-submission-submit-form-on-enter-issue
+	.on('keypress', function (e) {
+		if (13 === e.which)
+	 		e.preventDefault();
+	})
+	.change( function(e) {
+		e.preventDefault();
+		var target   = $( this ).closest( 'div.job_listings' );
+		target.triggerHandler( 'update_results', [ 1, false ] );
+	} )
+	.on( "keyup", function(e) {
+		if ( e.which === 13 )
+			$( this ).trigger( 'change' );
 	} );
 
 	$( '.job_filters' ).on( 'click', '.reset', function () {
