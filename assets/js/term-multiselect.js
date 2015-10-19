@@ -1,3 +1,3 @@
 jQuery(function(){
-	jQuery( '.job-manager-category-dropdown' ).chosen({ search_contains: true });
+	jQuery( '.job-manager-category-dropdown' ).chosen( job_manager_chosen_multiselect_args );
 });
