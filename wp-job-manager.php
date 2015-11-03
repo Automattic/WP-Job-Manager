@@ -125,6 +125,10 @@ class WP_Job_Manager {
 			wp_register_script( 'wp-job-manager-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
 			wp_enqueue_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/css/chosen.css' );
 			$ajax_filter_deps[] = 'chosen';
+
+			wp_localize_script( 'chosen', 'job_manager_chosen_multiselect_args',
+				apply_filters( 'job_manager_chosen_multiselect_args', array( 'search_contains' => true ) )
+			);
 		}
 
 		if ( apply_filters( 'job_manager_ajax_file_upload_enabled', true ) ) {

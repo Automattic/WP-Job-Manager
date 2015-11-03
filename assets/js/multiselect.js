@@ -1,3 +1,3 @@
 jQuery(function(){
-	jQuery( '.job-manager-multiselect' ).chosen({ search_contains: true });
+	jQuery( '.job-manager-multiselect' ).chosen( job_manager_chosen_multiselect_args );
 });
