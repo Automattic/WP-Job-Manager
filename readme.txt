@@ -146,6 +146,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Fix - Handle WP 4.3 signup notification.
 * Fix - Map mime types to those that WordPress knows.
 * Fix - Alert text color.
+* Fix - Searches containing special chars.
 * Tweak - Improved uploader error handling and updated library.
 * Tweak - Improve job_manager_user_can_post_job and job_manager_user_can_edit_job capability handling in job-submit.php
 * Tweak - Clear transients in batches of 500.
