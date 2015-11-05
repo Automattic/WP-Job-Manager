@@ -144,6 +144,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 = 1.23.11 =
 * Fix - Author check in job_manager_user_can_edit_job().
+* Tweak - Before deleting a job, delete its attachments.
 
 = 1.23.10 =
 * Fix - Handle WP 4.3 signup notification.
