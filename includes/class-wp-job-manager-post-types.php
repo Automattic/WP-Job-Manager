@@ -229,7 +229,7 @@ class WP_Job_Manager_Post_Types {
 			'label'                     => _x( 'Preview', 'post status', 'wp-job-manager' ),
 			'public'                    => false,
 			'exclude_from_search'       => true,
-			'show_in_admin_all_list'    => true,
+			'show_in_admin_all_list'    => false,
 			'show_in_admin_status_list' => true,
 			'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
 		) );
