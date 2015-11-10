@@ -332,7 +332,7 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 		}
 	}
 endif;
-add_action( 'job_manager_new_user_notification', 'wp_job_manager_notify_new_user', 2);
+add_action( 'job_manager_new_user_notification', 'wp_job_manager_notify_new_user', 10, 2);
 
 if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
