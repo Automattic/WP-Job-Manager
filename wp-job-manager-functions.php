@@ -332,7 +332,6 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 		}
 	}
 endif;
-add_action( 'job_manager_new_user_notification', 'wp_job_manager_notify_new_user', 10, 2);
 
 if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
@@ -417,9 +416,8 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
     }
 
     // Notify
-	do_action( 'job_manager_new_user_notification', $user_id, $password, $new_user );
-
-	// Login
+    wp_job_manager_notify_new_user( $user_id, $password, $new_user );
+    // Login
     wp_set_auth_cookie( $user_id, true, is_ssl() );
     $current_user = get_user_by( 'id', $user_id );
 
