@@ -143,6 +143,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 == Changelog ==
 
 * Fix - Transient clear query.
+* Tweak - New user notification pluggable function.
 
 = 1.23.11 =
 * Fix - Author check in job_manager_user_can_edit_job().
