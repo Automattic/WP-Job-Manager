@@ -276,9 +276,9 @@ function the_job_location( $map_link = true, $post = null ) {
 
 	if ( $location ) {
 		if ( $map_link )
-			echo apply_filters( 'the_job_location_map_link', '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false" target="_blank">' . esc_html($location) . '</a>', $location, $post );
+			echo apply_filters( 'the_job_location_map_link', '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false" target="_blank">' . esc_html( $location ) . '</a>', $location, $post );
 		else
-			echo esc_html($location);
+			echo esc_html( $location );
 	} else {
 		echo apply_filters( 'the_job_location_anywhere_text', __( 'Anywhere', 'wp-job-manager' ) );
 	}
