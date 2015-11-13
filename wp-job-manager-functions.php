@@ -322,6 +322,22 @@ function get_job_listing_rss_link( $args = array() ) {
 }
 endif;
 
+if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
+	/**
+	 * Handle account creation.
+	 *
+	 * @param  int $user_id 
+	 * @param  string $password
+	 */
+	function wp_job_manager_notify_new_user( $user_id, $password ) {
+		if ( version_compare( $wp_version, '4.3.1', '<' ) ) {
+			wp_new_user_notification( $user_id, $password );
+		} else {
+			wp_new_user_notification( $user_id, null, 'both' );
+		}
+	}
+endif;
+
 if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
  * Handle account creation.
@@ -405,13 +421,8 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
     }
 
     // Notify
-    if ( version_compare( $wp_version, '4.3.1', '<' ) ) {
-    	wp_new_user_notification( $user_id, $password );
-    } else {
-    	wp_new_user_notification( $user_id, null, 'both' );
-    }
-
-	// Login
+    wp_job_manager_notify_new_user( $user_id, $password, $new_user );
+    // Login
     wp_set_auth_cookie( $user_id, true, is_ssl() );
     $current_user = get_user_by( 'id', $user_id );
 
