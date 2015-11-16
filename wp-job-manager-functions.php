@@ -321,7 +321,7 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 	/**
 	 * Handle account creation.
 	 *
-	 * @param  int $user_id 
+	 * @param  int $user_id
 	 * @param  string $password
 	 */
 	function wp_job_manager_notify_new_user( $user_id, $password ) {
@@ -457,7 +457,7 @@ function job_manager_user_can_edit_job( $job_id ) {
 	} else {
 		$job      = get_post( $job_id );
 
-		if ( ! $job || ( $job->post_author !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
+		if ( ! $job || ( (int) $job->post_author !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
 			$can_edit = false;
 		}
 	}
