@@ -147,16 +147,11 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 		global $wpdb, $job_manager_keyword;
 
 		// Query matching ids to avoid more joins
-		$post_ids   = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%'" );
+		$post_ids   = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" .esc_sql( $job_manager_keyword ) . "%'" );
 		$conditions = array();
 
 		$conditions[] = "{$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
-
-		if ( ctype_alnum( $job_manager_keyword ) ) {
-			$conditions[] = "{$wpdb->posts}.post_content RLIKE '[[:<:]]" . esc_sql( $job_manager_keyword ) . "[[:>:]]'";
-		} else {
-			$conditions[] = "{$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
-		}
+		$conditions[] = "{$wpdb->posts}.post_content RLIKE '[[:<:]]" . esc_sql( $job_manager_keyword ) . "[[:>:]]'";
 
 		if ( $post_ids ) {
 			$conditions[] = "{$wpdb->posts}.ID IN (" . esc_sql( implode( ',', $post_ids ) ) . ")";
@@ -326,7 +321,7 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 	/**
 	 * Handle account creation.
 	 *
-	 * @param  int $user_id 
+	 * @param  int $user_id
 	 * @param  string $password
 	 */
 	function wp_job_manager_notify_new_user( $user_id, $password ) {
@@ -337,6 +332,7 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 		}
 	}
 endif;
+add_action( 'job_manager_new_user_notification', 'wp_job_manager_notify_new_user', 2);
 
 if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
@@ -421,8 +417,9 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
     }
 
     // Notify
-    wp_job_manager_notify_new_user( $user_id, $password, $new_user );
-    // Login
+	do_action( 'job_manager_new_user_notification', $user_id, $password, $new_user );
+
+	// Login
     wp_set_auth_cookie( $user_id, true, is_ssl() );
     $current_user = get_user_by( 'id', $user_id );
 
@@ -460,7 +457,7 @@ function job_manager_user_can_edit_job( $job_id ) {
 	} else {
 		$job      = get_post( $job_id );
 
-		if ( ! $job || ( absint( $job->post_author ) !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
+		if ( ! $job || ( (int) $job->post_author !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
 			$can_edit = false;
 		}
 	}
