@@ -36,6 +36,8 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'update_post_meta', array( $this, 'maybe_update_menu_order' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 
+		add_action( 'before_delete_post', array( $this, 'before_delete_job' ) );
+
 		// WP ALL Import
 		add_action( 'pmxi_saved_post', array( $this, 'pmxi_saved_post' ), 10, 1 );
 
@@ -224,10 +226,12 @@ class WP_Job_Manager_Post_Types {
 			'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'wp-job-manager' ),
 		) );
 		register_post_status( 'preview', array(
+			'label'                     => _x( 'Preview', 'post status', 'wp-job-manager' ),
 			'public'                    => false,
 			'exclude_from_search'       => true,
 			'show_in_admin_all_list'    => false,
-			'show_in_admin_status_list' => false,
+			'show_in_admin_status_list' => true,
+			'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
 		) );
 	}
 
@@ -620,5 +624,25 @@ class WP_Job_Manager_Post_Types {
 			$weight = 100;
 		}
 		return $weight;
+	}
+
+	/**
+	 * When deleting a job, delete its attachments
+	 * @param  int $post_id
+	 */
+	public function before_delete_job( $post_id ) {
+    	if ( 'job_listing' === get_post_type( $post_id ) ) {
+			$attachments = get_children( array(
+		        'post_parent' => $post_id,
+		        'post_type'   => 'attachment'
+		    ) );
+
+			if ( $attachments ) {
+				foreach ( $attachments as $attachment ) {
+					wp_delete_attachment( $attachment->ID );
+					@unlink( get_attached_file( $attachment->ID ) );
+				}
+			}
+		}
 	}
 }

@@ -98,19 +98,13 @@ class WP_Job_Manager_Cache_Helper {
 		global $wpdb;
 
 		if ( ! wp_using_ext_object_cache() && ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-			$limit = apply_filters( 'job_manager_clear_expired_transients_limit', 500 );
-			$sql   = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
+			$sql   = "
+				DELETE a, b FROM $wpdb->options a, $wpdb->options b
 				WHERE a.option_name LIKE %s
 				AND a.option_name NOT LIKE %s
 				AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
-				AND b.option_value < %d
-				LIMIT %d;";
-			$affected = $wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_jm_' ) . '%', $wpdb->esc_like( '_transient_timeout_jm_' ) . '%', time(), $limit ) );
-
-			// If affected rows is equal to limit, there are more rows to delete. Delete in 10 secs.
-			if ( $affected === $limit ) {
-				wp_schedule_single_event( time() + 10, 'job_manager_clear_expired_transients' );
-			}
+				AND b.option_value < %s;";
+			$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_jm_' ) . '%', $wpdb->esc_like( '_transient_timeout_jm_' ) . '%', time() ) );
 		}
 	}
 }

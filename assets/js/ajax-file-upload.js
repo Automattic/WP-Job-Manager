@@ -42,6 +42,13 @@ jQuery(function($) {
 			fail: function (e, data) {
 				var $file_field     = $( this );
 				var $form           = $file_field.closest( 'form' );
+
+				if ( data.errorThrown ) {
+					alert( data.errorThrown );
+				}
+
+				data.context.remove();
+
 				$form.find(':input[type="submit"]').removeAttr( 'disabled' );
 			},
 			done: function (e, data) {

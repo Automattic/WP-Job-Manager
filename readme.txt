@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jol
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
 Tested up to: 4.3
-Stable tag: 1.23.9
+Stable tag: 1.23.11
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -142,9 +142,20 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+* Fix - Transient clear query.
+* Tweak - New user notification pluggable function.
+
+= 1.23.11 =
+* Fix - Author check in job_manager_user_can_edit_job().
+* Tweak - Before deleting a job, delete its attachments.
+* Tweak - Show previews in backend if needed.
+
 = 1.23.10 =
 * Fix - Handle WP 4.3 signup notification.
 * Fix - Map mime types to those that WordPress knows.
+* Fix - Alert text color.
+* Fix - Searches containing special chars.
+* Tweak - Improved uploader error handling and updated library.
 * Tweak - Improve job_manager_user_can_post_job and job_manager_user_can_edit_job capability handling in job-submit.php
 * Tweak - Clear transients in batches of 500.
 * Tweak - Removed transifex and translations - translation will take place on https://translate.wordpress.org/projects/wp-plugins/wp-job-manager
