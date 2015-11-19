@@ -330,6 +330,8 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 	 * @param  string $password
 	 */
 	function wp_job_manager_notify_new_user( $user_id, $password ) {
+		global $wp_version;
+
 		if ( version_compare( $wp_version, '4.3.1', '<' ) ) {
 			wp_new_user_notification( $user_id, $password );
 		} else {
@@ -348,7 +350,6 @@ if ( ! function_exists( 'job_manager_create_account' ) ) :
  */
 function wp_job_manager_create_account( $args, $deprecated = '' ) {
 	global $current_user;
-	global $wp_version;
 
 	// Soft Deprecated in 1.20.0
 	if ( ! is_array( $args ) ) {
