@@ -10,7 +10,7 @@ global $post;
 
 do_action( 'single_job_listing_meta_before' ); ?>
 
-<ul class="meta">
+<ul class="job-listing-meta meta">
 	<?php do_action( 'single_job_listing_meta_start' ); ?>
 
 	<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>" itemprop="employmentType"><?php the_job_type(); ?></li>

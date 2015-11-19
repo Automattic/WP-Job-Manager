@@ -10,7 +10,6 @@ class WP_Job_Manager_Post_Types {
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_types' ), 0 );
 		add_filter( 'admin_head', array( $this, 'admin_head' ) );
-		add_filter( 'the_content', array( $this, 'job_content' ) );
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
 		add_action( 'job_manager_delete_old_previews', array( $this, 'delete_old_previews' ) );
 
@@ -19,13 +18,6 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'draft_to_publish', array( $this, 'set_expiry' ) );
 		add_action( 'auto-draft_to_publish', array( $this, 'set_expiry' ) );
 		add_action( 'expired_to_publish', array( $this, 'set_expiry' ) );
-
-		add_filter( 'the_job_description', 'wptexturize'        );
-		add_filter( 'the_job_description', 'convert_smilies'    );
-		add_filter( 'the_job_description', 'convert_chars'      );
-		add_filter( 'the_job_description', 'wpautop'            );
-		add_filter( 'the_job_description', 'shortcode_unautop'  );
-		add_filter( 'the_job_description', 'prepend_attachment' );
 
 		add_action( 'job_manager_application_details_email', array( $this, 'application_details_email' ) );
 		add_action( 'job_manager_application_details_url', array( $this, 'application_details_url' ) );
@@ -45,6 +37,9 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'rp4wp_get_template', array( $this, 'rp4wp_template' ), 10, 3 );
 		add_filter( 'rp4wp_related_meta_fields', array( $this, 'rp4wp_related_meta_fields' ), 10, 3 );
 		add_filter( 'rp4wp_related_meta_fields_weight', array( $this, 'rp4wp_related_meta_fields_weight' ), 10, 3 );
+
+		// Single job content
+		$this->job_content_filter( true );
 	}
 
 	/**
@@ -257,30 +252,40 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Add extra content when showing job content
+	 * Toggle filter on and off
+	 */
+	private function job_content_filter( $enable ) {
+		if ( ! $enable ) {
+			remove_filter( 'the_content', array( $this, 'job_content' ) );
+		} else {
+			add_filter( 'the_content', array( $this, 'job_content' ), 99 );
+		}
+	}
+
+	/**
+	 * Add extra content before/after the post for single job listings.
 	 */
 	public function job_content( $content ) {
 		global $post;
 
-		if ( ! is_singular( 'job_listing' ) || ! in_the_loop() ) {
+		if ( ! is_singular( 'job_listing' ) || ! in_the_loop() || 'job_listing' !== $post->post_type ) {
 			return $content;
 		}
 
-		remove_filter( 'the_content', array( $this, 'job_content' ) );
+		ob_start();
 
-		if ( 'job_listing' === $post->post_type ) {
-			ob_start();
+		$this->job_content_filter( false );
 
-			do_action( 'job_content_start' );
+		do_action( 'job_content_start' );
 
-			get_job_manager_template_part( 'content-single', 'job_listing' );
+		get_job_manager_template_part( 'content-single', 'job_listing' );
 
-			do_action( 'job_content_end' );
+		do_action( 'job_content_end' );
 
-			$content = ob_get_clean();
-		}
+		$this->job_content_filter( true );
 
-		add_filter( 'the_content', array( $this, 'job_content' ) );
+		// Put back original content
+		$content = str_replace( '{{{post_content}}}', apply_filters( 'the_job_description', $content ), ob_get_clean() );
 
 		return apply_filters( 'job_manager_single_job_content', $content, $post );
 	}
