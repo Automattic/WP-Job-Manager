@@ -214,8 +214,9 @@ class WP_Job_Manager_Post_Types {
 		 */
 		register_post_status( 'expired', array(
 			'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
-			'public'                    => true,
-			'exclude_from_search'       => false,
+			'public'                    => false,
+			'protected'                 => true,
+			'exclude_from_search'       => true,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,
 			'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'wp-job-manager' ),
