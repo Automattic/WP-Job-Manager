@@ -162,7 +162,7 @@ class WP_Job_Manager_Shortcodes {
 			'job_title' => __( 'Title', 'wp-job-manager' ),
 			'filled'    => __( 'Filled?', 'wp-job-manager' ),
 			'date'      => __( 'Date Posted', 'wp-job-manager' ),
-			'expires'   => __( 'Date Expires', 'wp-job-manager' )
+			'expires'   => __( 'Listing Expires', 'wp-job-manager' )
 		) );
 
 		get_job_manager_template( 'job-dashboard.php', array( 'jobs' => $jobs->query( $args ), 'max_num_pages' => $jobs->max_num_pages, 'job_dashboard_columns' => $job_dashboard_columns ) );

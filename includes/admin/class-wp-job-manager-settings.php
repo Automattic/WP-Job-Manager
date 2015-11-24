@@ -329,16 +329,21 @@ class WP_Job_Manager_Settings {
 									}
 
 								break;
+								case "number" :
+									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="number" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+
+									if ( $option['desc'] ) {
+										echo ' <p class="description">' . $option['desc'] . '</p>';
+									}
+								break;
 								case "" :
 								case "input" :
 								case "text" :
-
 									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="text" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
 									if ( $option['desc'] ) {
 										echo ' <p class="description">' . $option['desc'] . '</p>';
 									}
-
 								break;
 								default :
 									do_action( 'wp_job_manager_admin_field_' . $option['type'], $option, $attributes, $value, $placeholder );
