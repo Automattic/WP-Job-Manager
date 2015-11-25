@@ -99,7 +99,9 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
-	if ( $job_manager_keyword = sanitize_text_field( $args['search_keywords'] ) ) {
+	$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
+
+	if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
 		$query_args['_keyword'] = $job_manager_keyword; // Does nothing but needed for unique hash
 		add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
 	}
@@ -146,20 +148,14 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	function get_job_listings_keyword_search( $args ) {
 		global $wpdb, $job_manager_keyword;
 
-		// Query matching ids to avoid more joins
-		$post_ids   = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%'" );
-		$conditions = array();
-
+		$conditions   = array();
 		$conditions[] = "{$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
+		$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
 
 		if ( ctype_alnum( $job_manager_keyword ) ) {
 			$conditions[] = "{$wpdb->posts}.post_content RLIKE '[[:<:]]" . esc_sql( $job_manager_keyword ) . "[[:>:]]'";
 		} else {
 			$conditions[] = "{$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
-		}
-
-		if ( $post_ids ) {
-			$conditions[] = "{$wpdb->posts}.ID IN (" . esc_sql( implode( ',', $post_ids ) ) . ")";
 		}
 
 		$args['where'] .= " AND ( " . implode( ' OR ', $conditions ) . " ) ";
@@ -326,7 +322,7 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 	/**
 	 * Handle account creation.
 	 *
-	 * @param  int $user_id 
+	 * @param  int $user_id
 	 * @param  string $password
 	 */
 	function wp_job_manager_notify_new_user( $user_id, $password ) {
