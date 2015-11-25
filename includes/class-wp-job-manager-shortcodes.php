@@ -490,14 +490,20 @@ class WP_Job_Manager_Shortcodes {
 
 		if ( $jobs->have_posts() ) : ?>
 
-			<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
+			<?php while ( $jobs->have_posts() ) :
+				$jobs->the_post();
+				$apply = get_the_job_application_method();
+				?>
 
-				<div class="job-manager-application-wrapper">
-					<?php
-						$apply = get_the_job_application_method();
-						do_action( 'job_manager_application_details_' . $apply->type, $apply );
-					?>
-				</div>
+				<?php do_action( 'job_manager_before_job_apply_' . absint( $id ) ); ?>
+
+				<?php if ( apply_filters( 'job_manager_show_job_apply_' . absint( $id ), true ) ) : ?>
+					<div class="job-manager-application-wrapper">
+						<?php do_action( 'job_manager_application_details_' . $apply->type, $apply ); ?>
+					</div>
+				<?php endif; ?>
+
+				<?php do_action( 'job_manager_after_job_apply_' . absint( $id ) ); ?>
 
 			<?php endwhile; ?>
 
