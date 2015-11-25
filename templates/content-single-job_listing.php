@@ -16,7 +16,7 @@
 		?>
 
 		<div class="job_description" itemprop="description">
-			{{{post_content}}}
+			<?php echo apply_filters( 'the_job_description', get_the_content() ); ?>
 		</div>
 
 		<?php if ( candidates_can_apply() ) : ?>

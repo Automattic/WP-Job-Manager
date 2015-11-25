@@ -144,7 +144,6 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 * Fix - Transient clear query.
 * Tweak - New user notification pluggable function.
-* Tweak - When replacing content on single job listings, maintain original content.
 
 = 1.23.11 =
 * Fix - Author check in job_manager_user_can_edit_job().

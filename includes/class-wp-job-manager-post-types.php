@@ -259,7 +259,7 @@ class WP_Job_Manager_Post_Types {
 		if ( ! $enable ) {
 			remove_filter( 'the_content', array( $this, 'job_content' ) );
 		} else {
-			add_filter( 'the_content', array( $this, 'job_content' ), 99 );
+			add_filter( 'the_content', array( $this, 'job_content' ) );
 		}
 	}
 
@@ -285,10 +285,7 @@ class WP_Job_Manager_Post_Types {
 
 		$this->job_content_filter( true );
 
-		// Put back original content
-		$content = str_replace( '{{{post_content}}}', apply_filters( 'the_job_description', $content ), ob_get_clean() );
-
-		return apply_filters( 'job_manager_single_job_content', $content, $post );
+		return apply_filters( 'job_manager_single_job_content', ob_get_clean(), $post );
 	}
 
 	/**
