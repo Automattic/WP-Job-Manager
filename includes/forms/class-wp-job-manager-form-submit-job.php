@@ -661,6 +661,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$update_job['post_status']   = get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish';
 				$update_job['post_date']     = current_time( 'mysql' );
 				$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
+				$update_job['post_author']   = get_current_user_id();
+
 				wp_update_post( $update_job );
 			}
 
