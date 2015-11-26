@@ -149,6 +149,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Tweak - Only search for keywords of 2 or more characters.
 * Tweak - job_manager_get_listings_keyword_length_threshold filter.
 * Tweak - PolyLang compatibility functions.
+* Tweak - Unattach company logo when a new attachment is uploaded.
 
 = 1.23.11 =
 * Fix - Author check in job_manager_user_can_edit_job().

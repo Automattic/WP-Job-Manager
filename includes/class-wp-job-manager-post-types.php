@@ -24,8 +24,7 @@ class WP_Job_Manager_Post_Types {
 
 		add_filter( 'wp_insert_post_data', array( $this, 'fix_post_name' ), 10, 2 );
 		add_action( 'add_post_meta', array( $this, 'maybe_add_geolocation_data' ), 10, 3 );
-		add_action( 'update_post_meta', array( $this, 'maybe_update_geolocation_data' ), 10, 4 );
-		add_action( 'update_post_meta', array( $this, 'maybe_update_menu_order' ), 10, 4 );
+		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 
 		add_action( 'before_delete_post', array( $this, 'before_delete_job' ) );
@@ -518,33 +517,46 @@ class WP_Job_Manager_Post_Types {
 	 * @param  int $post_id
 	 * @param  array $post
 	 */
-	public function maybe_add_geolocation_data( $object_id, $meta_key, $_meta_value ) {
+	public function maybe_add_geolocation_data( $object_id, $meta_key, $meta_value ) {
 		if ( '_job_location' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
 			return;
 		}
-		do_action( 'job_manager_job_location_edited', $object_id, $_meta_value );
+		do_action( 'job_manager_job_location_edited', $object_id, $meta_value );
+	}
+
+	/**
+	 * Triggered when updating meta on a job listing
+	 */
+	public function update_post_meta( $meta_id, $object_id, $meta_key, $meta_value ) {
+		if ( 'job_listing' === get_post_type( $object_id ) ) {
+			switch ( $meta_key ) {
+				case '_job_location' :
+					$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value );
+				break;
+				case '_featured' :
+					$this->maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value );
+				break;
+				case '_company_logo' :
+					$this->maybe_unattach_attachment( $meta_id, $object_id, $meta_key, $meta_value );
+				break;
+			}
+		}
 	}
 
 	/**
 	 * Generate location data if a post is updated
 	 */
-	public function maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $_meta_value ) {
-		if ( '_job_location' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
-			return;
-		}
-		do_action( 'job_manager_job_location_edited', $object_id, $_meta_value );
+	public function maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
+		do_action( 'job_manager_job_location_edited', $object_id, $meta_value );
 	}
 
 	/**
 	 * Maybe set menu_order if the featured status of a job is changed
 	 */
-	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $_meta_value ) {
-		if ( '_featured' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
-			return;
-		}
+	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {
 		global $wpdb;
 
-		if ( '1' == $_meta_value ) {
+		if ( '1' == $meta_value ) {
 			$wpdb->update( $wpdb->posts, array( 'menu_order' => -1 ), array( 'ID' => $object_id ) );
 		} else {
 			$wpdb->update( $wpdb->posts, array( 'menu_order' => 0 ), array( 'ID' => $object_id, 'menu_order' => -1 ) );
@@ -554,11 +566,41 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Remove old attachment from listing
+	 */
+	public function maybe_unattach_attachment( $meta_id, $object_id, $meta_key, $meta_value ) {
+		global $wpdb;
+
+		$dir                = wp_upload_dir();
+		$old_attachment_url = get_post_meta( $object_id, '_company_logo', true );
+		$path = $old_attachment_url;
+
+	    if ( 0 === strpos( $path, $dir['baseurl'] . '/' ) ) {
+	        $path = substr( $path, strlen( $dir['baseurl'] . '/' ) );
+	    }
+
+	    $sql            = $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_attached_file' AND meta_value = %s", $path );
+	    $attachment_ids = $wpdb->get_col( $sql );
+
+		if ( $attachment_ids ) {
+			foreach ( $attachment_ids as $attachment_id ) {
+				if ( $object_id === wp_get_post_parent_id( $attachment_id ) ) {
+					wp_update_post( array(
+						'ID'          => $attachment_id,
+						'post_parent' => 0
+					) );
+					break;
+				}
+			}
+		}
+	}
+
+	/**
 	 * Legacy
 	 * @deprecated 1.19.1
 	 */
-	public function maybe_generate_geolocation_data( $meta_id, $object_id, $meta_key, $_meta_value ) {
-		$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $_meta_value );
+	public function maybe_generate_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
+		$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value );
 	}
 
 	/**
