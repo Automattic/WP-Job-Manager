@@ -19,6 +19,13 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'auto-draft_to_publish', array( $this, 'set_expiry' ) );
 		add_action( 'expired_to_publish', array( $this, 'set_expiry' ) );
 
+		add_filter( 'the_job_description', 'wptexturize'        );
+		add_filter( 'the_job_description', 'convert_smilies'    );
+		add_filter( 'the_job_description', 'convert_chars'      );
+		add_filter( 'the_job_description', 'wpautop'            );
+		add_filter( 'the_job_description', 'shortcode_unautop'  );
+		add_filter( 'the_job_description', 'prepend_attachment' );
+
 		add_action( 'job_manager_application_details_email', array( $this, 'application_details_email' ) );
 		add_action( 'job_manager_application_details_url', array( $this, 'application_details_url' ) );
 
