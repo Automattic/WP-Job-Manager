@@ -116,6 +116,11 @@ function get_job_listings( $args = array() ) {
 		unset( $query_args['tax_query'] );
 	}
 
+	// Polylang LANG arg
+	if ( function_exists( 'pll_current_language' ) ) {
+		$query_args['lang'] = pll_current_language();
+	}
+
 	// Filter args
 	$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
@@ -587,13 +592,26 @@ function job_manager_dropdown_categories( $args = '' ) {
 }
 
 /**
+ * Get the page ID of a page if set, with PolyLang compat.
+ * @param  string $page e.g. job_dashboard, submit_job_form, jobs
+ * @return int
+ */
+function job_manager_get_page_id( $page ) {
+	$page_id = get_option( 'job_manager_' . $page . '_page_id', false );
+	if ( $page_id ) {
+		return absint( function_exists( 'pll_get_post' ) ? pll_get_post( $page_id ) : $page_id );
+	} else {
+		return 0;
+	}
+}
+
+/**
  * Get the permalink of a page if set
  * @param  string $page e.g. job_dashboard, submit_job_form, jobs
  * @return string|bool
  */
 function job_manager_get_permalink( $page ) {
-	$page_id = get_option( 'job_manager_' . $page . '_page_id', false );
-	if ( $page_id ) {
+	if ( $page_id = job_manager_get_page_id( $page ) ) {
 		return get_permalink( $page_id );
 	} else {
 		return false;
