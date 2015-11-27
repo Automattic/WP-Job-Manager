@@ -142,6 +142,8 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+* Tweak - Allow some HTML in the_job_location - uses wp_kses_post
+
 = 1.23.12 =
 * Fix - Transient clear query.
 * Tweak - New user notification pluggable function.
