@@ -268,22 +268,22 @@ function get_the_job_type( $post = null ) {
 
 /**
  * the_job_location function.
- * @param  boolean $map_link whether or not to link to the map on google maps
+ * @param  boolean $map_link whether or not to link to google maps
  * @return [type]
  */
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
 
 	if ( $location ) {
-		if ( $map_link )
-			$location_html = apply_filters( 'the_job_location_map_link', '<a class="google_map_link" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false" target="_blank">' . esc_html( $location ) . '</a>', $location, $post );
-		else
-			$location_html = $location;
+		if ( $map_link ) {
+			// If linking to google maps, we don't want anything but text here
+			echo apply_filters( 'the_job_location_map_link', '<a class="google_map_link" href="' . esc_url( 'http://maps.google.com/maps?q=' . urlencode( strip_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( strip_tags( $location ) ) . '</a>', $location, $post );
+		} else {
+			echo wp_kses_post( $location );
+		}
 	} else {
-		$location_html = apply_filters( 'the_job_location_anywhere_text', __( 'Anywhere', 'wp-job-manager' ) );
+		echo wp_kses_post( apply_filters( 'the_job_location_anywhere_text', __( 'Anywhere', 'wp-job-manager' ) ) );
 	}
-
-	return wp_kses_post( $location_html );
 }
 
 /**
@@ -295,8 +295,9 @@ function the_job_location( $map_link = true, $post = null ) {
  */
 function get_the_job_location( $post = null ) {
 	$post = get_post( $post );
-	if ( $post->post_type !== 'job_listing' )
+	if ( $post->post_type !== 'job_listing' ) {
 		return;
+	}
 
 	return apply_filters( 'the_job_location', $post->_job_location, $post );
 }
