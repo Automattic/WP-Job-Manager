@@ -1,6 +1,5 @@
 === WP Job Manager ===
 Contributors: mikejolley, automattic
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=mike.jolley@me.com&currency_code=&amount=&return=&item_name=Buy+me+a+coffee+for+A+New+Job+Board+Plugin+for+WordPress
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
 Tested up to: 4.4
@@ -63,13 +62,13 @@ You can get the above add-ons and several others at discount with our [Core Add-
 
 = Contributing and reporting bugs =
 
-You can contribute code to this plugin via GitHub: [https://github.com/mikejolley/wp-job-manager](https://github.com/mikejolley/wp-job-manager) and localizations via [https://translate.wordpress.org/projects/wp-plugins/wp-job-manager](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager)
+You can contribute code to this plugin via GitHub: [https://github.com/mikejolley/wp-job-manager](https://github.com/Automattic/WP-Job-Manager) and localizations via [https://translate.wordpress.org/projects/wp-plugins/wp-job-manager](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager)
 
 Thanks to all of our contributors.
 
 = Support =
 
-Use the WordPress.org forums for community support where we try to help all users. If you spot a bug, you can log it (or fix it) on [Github](https://github.com/mikejolley/wp-job-manager) where we can act upon them more efficiently.
+Use the WordPress.org forums for community support where we try to help all users. If you spot a bug, you can log it (or fix it) on [Github](https://github.com/Automattic/WP-Job-Manager) where we can act upon them more efficiently.
 
 If you need help with one of our add-ons, [please raise a ticket in our help desk](https://wpjobmanager.com/support/).
 
