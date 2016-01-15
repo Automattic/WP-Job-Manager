@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
 Tested up to: 4.4
-Stable tag: 1.23.13
+Stable tag: 1.24.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,10 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.24.0 =
+* Dev - Added methods to WP_Job_Manager_Form; get_steps, get_step_key, set_step.
+* Dev - Made WP_Job_Manager_Form call the next 'handler' if no view is defined for the next step.
 
 = 1.23.13 =
 * Fix - Conflict between the_job_location() and the regions plugin.
