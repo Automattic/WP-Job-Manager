@@ -60,12 +60,6 @@ class WP_Job_Manager_Writepanels {
 				'placeholder' => '@yourcompany',
 				'priority'    => 6
 			),
-			'_company_logo' => array(
-				'label'       => __( 'Company Logo', 'wp-job-manager' ),
-				'placeholder' => __( 'URL to the company logo', 'wp-job-manager' ),
-				'type'        => 'file',
-				'priority'    => 7
-			),
 			'_company_video' => array(
 				'label'       => __( 'Company Video', 'wp-job-manager' ),
 				'placeholder' => __( 'URL to the company video', 'wp-job-manager' ),

@@ -34,8 +34,6 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 
-		add_action( 'before_delete_post', array( $this, 'before_delete_job' ) );
-
 		// WP ALL Import
 		add_action( 'pmxi_saved_post', array( $this, 'pmxi_saved_post' ), 10, 1 );
 
@@ -192,7 +190,11 @@ class WP_Job_Manager_Post_Types {
 					'search_items' 			=> sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
 					'not_found' 			=> sprintf( __( 'No %s found', 'wp-job-manager' ), $plural ),
 					'not_found_in_trash' 	=> sprintf( __( 'No %s found in trash', 'wp-job-manager' ), $plural ),
-					'parent' 				=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular )
+					'parent' 				=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
+					'featured_image'        => __( 'Company Logo', 'woocommerce' ),
+					'set_featured_image'    => __( 'Set company logo', 'woocommerce' ),
+					'remove_featured_image' => __( 'Remove company logo', 'woocommerce' ),
+					'use_featured_image'    => __( 'Use as company logo', 'woocommerce' ),
 				),
 				'description' => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
 				'public' 				=> true,
@@ -204,7 +206,7 @@ class WP_Job_Manager_Post_Types {
 				'hierarchical' 			=> false,
 				'rewrite' 				=> $rewrite,
 				'query_var' 			=> true,
-				'supports' 				=> array( 'title', 'editor', 'custom-fields', 'publicize' ),
+				'supports' 				=> array( 'title', 'editor', 'custom-fields', 'publicize', 'thumbnail' ),
 				'has_archive' 			=> $has_archive,
 				'show_in_nav_menus' 	=> false
 			) )
@@ -543,9 +545,6 @@ class WP_Job_Manager_Post_Types {
 				case '_featured' :
 					$this->maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value );
 				break;
-				case '_company_logo' :
-					$this->maybe_unattach_attachment( $meta_id, $object_id, $meta_key, $meta_value );
-				break;
 			}
 		}
 	}
@@ -570,36 +569,6 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		clean_post_cache( $object_id );
-	}
-
-	/**
-	 * Remove old attachment from listing
-	 */
-	public function maybe_unattach_attachment( $meta_id, $object_id, $meta_key, $meta_value ) {
-		global $wpdb;
-
-		$dir                = wp_upload_dir();
-		$old_attachment_url = get_post_meta( $object_id, '_company_logo', true );
-		$path = $old_attachment_url;
-
-	    if ( 0 === strpos( $path, $dir['baseurl'] . '/' ) ) {
-	        $path = substr( $path, strlen( $dir['baseurl'] . '/' ) );
-	    }
-
-	    $sql            = $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_attached_file' AND meta_value = %s", $path );
-	    $attachment_ids = $wpdb->get_col( $sql );
-
-		if ( $attachment_ids ) {
-			foreach ( $attachment_ids as $attachment_id ) {
-				if ( $object_id === wp_get_post_parent_id( $attachment_id ) ) {
-					wp_update_post( array(
-						'ID'          => $attachment_id,
-						'post_parent' => 0
-					) );
-					break;
-				}
-			}
-		}
 	}
 
 	/**
@@ -676,25 +645,5 @@ class WP_Job_Manager_Post_Types {
 			$weight = 100;
 		}
 		return $weight;
-	}
-
-	/**
-	 * When deleting a job, delete its attachments
-	 * @param  int $post_id
-	 */
-	public function before_delete_job( $post_id ) {
-    	if ( 'job_listing' === get_post_type( $post_id ) ) {
-			$attachments = get_children( array(
-		        'post_parent' => $post_id,
-		        'post_type'   => 'attachment'
-		    ) );
-
-			if ( $attachments ) {
-				foreach ( $attachments as $attachment ) {
-					wp_delete_attachment( $attachment->ID );
-					@unlink( get_attached_file( $attachment->ID ) );
-				}
-			}
-		}
 	}
 }

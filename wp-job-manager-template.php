@@ -310,17 +310,18 @@ function get_the_job_location( $post = null ) {
  * @param mixed $default (default: null)
  * @return void
  */
-function the_company_logo( $size = 'full', $default = null, $post = null ) {
+function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) {
 	$logo = get_the_company_logo( $post );
 
-	if ( ! empty( $logo ) && ( strstr( $logo, 'http' ) || file_exists( $logo ) ) ) {
+	if ( has_post_thumbnail( $post ) ) {
+		echo '<img class="company_logo" src="' . esc_attr( $logo ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
 
+	// Before 1.24.0, logo URLs were stored in post meta.
+	} elseif ( ! empty( $logo ) && ( strstr( $logo, 'http' ) || file_exists( $logo ) ) ) {
 		if ( $size !== 'full' ) {
 			$logo = job_manager_get_resized_image( $logo, $size );
 		}
-
 		echo '<img class="company_logo" src="' . esc_attr( $logo ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
-
 	} elseif ( $default ) {
 		echo '<img class="company_logo" src="' . esc_attr( $default ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
 	} else {
@@ -333,14 +334,20 @@ function the_company_logo( $size = 'full', $default = null, $post = null ) {
  *
  * @access public
  * @param mixed $post (default: null)
- * @return string
+ * @return string Image SRC
  */
-function get_the_company_logo( $post = null ) {
+function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 	$post = get_post( $post );
-	if ( $post->post_type !== 'job_listing' )
-		return;
 
-	return apply_filters( 'the_company_logo', $post->_company_logo, $post );
+	if ( has_post_thumbnail( $post->ID ) ) {
+		$src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $size );
+		return $src ? $src[0] : '';
+	} elseif ( ! empty( $post->_company_logo ) ) {
+		// Before 1.24.0, logo URLs were stored in post meta.
+		return apply_filters( 'the_company_logo', $post->_company_logo, $post );
+	}
+
+	return '';
 }
 
 /**

@@ -142,6 +142,8 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 == Changelog ==
 
 = 1.24.0 =
+* Tweak - Use featured images to store company logos.
+* Fix - The above change avoids creation of duplicate images in media library.
 * Dev - Added methods to WP_Job_Manager_Form; get_steps, get_step_key, set_step.
 * Dev - Made WP_Job_Manager_Form call the next 'handler' if no view is defined for the next step.
 
