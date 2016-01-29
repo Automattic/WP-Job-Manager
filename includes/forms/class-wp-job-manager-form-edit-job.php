@@ -63,6 +63,9 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 					} elseif ( 'job_description' === $key ) {
 						$this->fields[ $group_key ][ $key ]['value'] = $job->post_content;
 
+					} elseif ( 'company_logo' === $key ) {
+						$this->fields[ $group_key ][ $key ]['value'] = has_post_thumbnail( $job->ID ) ? get_post_thumbnail_id( $job->ID ) : get_post_meta( $job->ID, '_' . $key, true );
+
 					} elseif ( ! empty( $field['taxonomy'] ) ) {
 						$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, $field['taxonomy'], array( 'fields' => 'ids' ) );
 
