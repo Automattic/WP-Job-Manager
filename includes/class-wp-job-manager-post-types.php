@@ -220,7 +220,7 @@ class WP_Job_Manager_Post_Types {
 		 */
 		register_post_status( 'expired', array(
 			'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
-			'public'                    => false,
+			'public'                    => true,
 			'protected'                 => true,
 			'exclude_from_search'       => true,
 			'show_in_admin_all_list'    => true,
