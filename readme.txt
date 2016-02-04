@@ -143,6 +143,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 = 1.24.0 =
 * Feature - Use featured images to store company logos.
+* Feature - Search term names for keywords.
 * Tweak - Allow job expiry field to be localised.
 * Fix - The above change avoids creation of duplicate images in media library.
 * Dev - Added methods to WP_Job_Manager_Form; get_steps, get_step_key, set_step.
