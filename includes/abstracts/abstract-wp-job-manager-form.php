@@ -86,6 +86,15 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Get formn name.
+	 * @since 1.24.0
+	 * @return string
+	 */
+	public function get_form_name() {
+		return $this->form_name;
+	}
+
+	/**
 	 * Get steps from outside of the class
 	 * @since 1.24.0
 	 */

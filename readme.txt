@@ -147,6 +147,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Fix - The above change avoids creation of duplicate images in media library.
 * Dev - Added methods to WP_Job_Manager_Form; get_steps, get_step_key, set_step.
 * Dev - Made WP_Job_Manager_Form call the next 'handler' if no view is defined for the next step.
+* Dev - Added template to control job preview form.
 
 = 1.23.13 =
 * Fix - Conflict between the_job_location() and the regions plugin.
