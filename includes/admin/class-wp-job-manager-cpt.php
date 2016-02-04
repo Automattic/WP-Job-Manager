@@ -19,6 +19,8 @@ class WP_Job_Manager_CPT {
 		add_action( 'manage_job_listing_posts_custom_column', array( $this, 'custom_columns' ), 2 );
 		add_filter( 'manage_edit-job_listing_sortable_columns', array( $this, 'sortable_columns' ) );
 		add_filter( 'request', array( $this, 'sort_columns' ) );
+		add_action( 'parse_query', array( $this, 'search_meta' ) );
+		add_filter( 'get_search_query', array( $this, 'search_meta_label' ) );
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_action( 'admin_footer-edit.php', array( $this, 'add_bulk_actions' ) );
 		add_action( 'load-edit.php', array( $this, 'do_bulk_actions' ) );
@@ -417,6 +419,57 @@ class WP_Job_Manager_CPT {
 			}
 		}
 		return $vars;
+	}
+
+	/**
+	 * Search custom fields as well as content.
+	 * @param WP_Query $wp
+	 */
+	public function search_meta( $wp ) {
+		global $pagenow, $wpdb;
+
+		if ( 'edit.php' !== $pagenow || empty( $wp->query_vars['s'] ) || 'job_listing' !== $wp->query_vars['post_type'] ) {
+			return;
+		}
+
+		$post_ids = array_unique( array_merge(
+			$wpdb->get_col(
+				$wpdb->prepare( "
+					SELECT posts.ID
+					FROM {$wpdb->posts} posts
+					INNER JOIN {$wpdb->postmeta} p1 ON posts.ID = p1.post_id
+					WHERE p1.meta_value LIKE '%%%s%%'
+					OR posts.post_title LIKE '%%%s%%'
+					OR posts.post_content LIKE '%%%s%%'
+					AND posts.post_type = 'job_listing'
+					",
+					esc_sql( $wp->query_vars['s'] ),
+					esc_sql( $wp->query_vars['s'] ),
+					esc_sql( $wp->query_vars['s'] )
+				)
+			),
+			array( 0 )
+		) );
+
+		// Adjust the query vars
+		unset( $wp->query_vars['s'] );
+		$wp->query_vars['job_listing_search'] = true;
+		$wp->query_vars['post__in'] = $post_ids;
+	}
+
+	/**
+	 * Change the label when searching meta.
+	 * @param string $query
+	 * @return string
+	 */
+	public function search_meta_label( $query ) {
+		global $pagenow, $typenow;
+
+		if ( 'edit.php' !== $pagenow || $typenow !== 'job_listing' || ! get_query_var( 'job_listing_search' ) ) {
+			return $query;
+		}
+
+		return wp_unslash( sanitize_text_field( $_GET['s'] ) );
 	}
 
     /**
