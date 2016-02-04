@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.24.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/WP-Job-Manager\n"
-"POT-Creation-Date: 2016-02-04 10:00:03+00:00\n"
+"POT-Creation-Date: 2016-02-04 12:06:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -700,39 +700,44 @@ msgstr ""
 msgid "Listing Expiry Date"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:91
+#: includes/admin/class-wp-job-manager-writepanels.php:86
+msgctxt "Date format placeholder"
+msgid "yyyy-mm-dd"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-writepanels.php:92
 msgid "Posted by"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:123
+#: includes/admin/class-wp-job-manager-writepanels.php:124
 msgid "%s Data"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:152
-#: includes/admin/class-wp-job-manager-writepanels.php:155
-#: includes/admin/class-wp-job-manager-writepanels.php:158
+#: includes/admin/class-wp-job-manager-writepanels.php:153
+#: includes/admin/class-wp-job-manager-writepanels.php:156
+#: includes/admin/class-wp-job-manager-writepanels.php:159
 msgid "Use file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:152
-#: includes/admin/class-wp-job-manager-writepanels.php:155
-#: includes/admin/class-wp-job-manager-writepanels.php:158
+#: includes/admin/class-wp-job-manager-writepanels.php:153
+#: includes/admin/class-wp-job-manager-writepanels.php:156
+#: includes/admin/class-wp-job-manager-writepanels.php:159
 msgid "Upload"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:158
+#: includes/admin/class-wp-job-manager-writepanels.php:159
 msgid "Add file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:326
+#: includes/admin/class-wp-job-manager-writepanels.php:327
 msgid "Guest User"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:328
+#: includes/admin/class-wp-job-manager-writepanels.php:329
 msgid "Change"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:332
+#: includes/admin/class-wp-job-manager-writepanels.php:333
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
 msgstr ""
 
