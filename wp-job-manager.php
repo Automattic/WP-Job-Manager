@@ -1,22 +1,17 @@
 <?php
-/*
-Plugin Name: WP Job Manager
-Plugin URI: https://wpjobmanager.com/
-Description: Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
-Version: 1.24.0
-Author: Mike Jolley
-Author URI: http://mikejolley.com
-Requires at least: 4.1
-Tested up to: 4.4
-Text Domain: wp-job-manager
-Domain Path: /languages/
-
-	Copyright: 2015 Mike Jolley
-	License: GNU General Public License v3.0
-	License URI: http://www.gnu.org/licenses/gpl-3.0.html
-*/
-
-// Exit if accessed directly
+/**
+ * Plugin Name: WP Job Manager
+ * Plugin URI: https://wpjobmanager.com/
+ * Description: Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
+ * Version: 1.24.0
+ * Author: Automattic
+ * Author URI: https://wpjobmanager.com/
+ * Requires at least: 4.1
+ * Tested up to: 4.4
+ * Text Domain: wp-job-manager
+ * Domain Path: /languages/
+ * License: GPL2+
+ */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
