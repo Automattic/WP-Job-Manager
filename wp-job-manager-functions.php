@@ -628,7 +628,7 @@ function job_manager_upload_dir( $pathdata ) {
 	global $job_manager_upload, $job_manager_uploading_file;
 
 	if ( ! empty( $job_manager_upload ) ) {
-		$dir = untrailingslashit( apply_filters( 'job_manager_upload_dir', 'job-manager-uploads' . sanitize_key( $job_manager_uploading_file ), sanitize_key( $job_manager_uploading_file ) ) );
+		$dir = untrailingslashit( apply_filters( 'job_manager_upload_dir', 'job-manager-uploads/' . sanitize_key( $job_manager_uploading_file ), sanitize_key( $job_manager_uploading_file ) ) );
 
 		if ( empty( $pathdata['subdir'] ) ) {
 			$pathdata['path']   = $pathdata['path'] . '/' . $dir;
@@ -638,9 +638,10 @@ function job_manager_upload_dir( $pathdata ) {
 			$new_subdir         = '/' . $dir . $pathdata['subdir'];
 			$pathdata['path']   = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['path'] );
 			$pathdata['url']    = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['url'] );
-			$pathdata['subdir'] = str_replace( $pathdata['subdir'], $new_subdir, $pathdata['subdir'] );
+			$pathdata['subdir'] = $new_subdir;
 		}
 	}
+
 	return $pathdata;
 }
 add_filter( 'upload_dir', 'job_manager_upload_dir' );
