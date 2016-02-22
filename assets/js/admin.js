@@ -15,15 +15,15 @@ jQuery(document).ready(function($) {
 	});
 
 	// Datepicker
-	$( "input#_job_expires" ).datepicker({
+	$( 'input.wpjm-date' ).datepicker({
 		altFormat  : 'yy-mm-dd',
 		dateFormat : job_manager_admin.date_format,
 		minDate    : 0
 	});
 
-	if ( $( "input#_job_expires" ).val() ) {
-		var date = new Date( $( "input#_job_expires" ).val() );
-		$( "input#_job_expires" ).datepicker( "setDate", date );
+	if ( $( "input.wpjm-date" ).val() ) {
+		var date = new Date( $( "input.wpjm-date" ).val() );
+		$( "input.wpjm-date" ).datepicker( "setDate", date );
 	}
 
 	// Uploading files
