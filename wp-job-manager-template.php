@@ -311,7 +311,7 @@ function get_the_job_location( $post = null ) {
  * @return void
  */
 function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) {
-	$logo = get_the_company_logo( $post );
+	$logo = get_the_company_logo( $post, $size );
 
 	if ( has_post_thumbnail( $post ) ) {
 		echo '<img class="company_logo" src="' . esc_attr( $logo ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
