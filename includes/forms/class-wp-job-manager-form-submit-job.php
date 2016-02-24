@@ -516,6 +516,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		include_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 		$attachment_url = str_replace( array( WP_CONTENT_URL, site_url() ), array( WP_CONTENT_DIR, ABSPATH ), $attachment_url );
+
+		if ( empty( $attachment_url ) || ! is_string( $attachment_url ) ) {
+			return 0;
+		}
+
 		$attachment     = array(
 			'post_title'   => get_the_title( $this->job_id ),
 			'post_content' => '',
