@@ -83,7 +83,7 @@ class WP_Job_Manager_Writepanels {
 			$fields['_job_expires'] = array(
 				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'priority'    => 11,
-				'classes'     => ['wpjm-date'],
+				'classes'     => array( 'wpjm-date' ),
 				'placeholder' => _x( 'yyyy-mm-dd', 'Date format placeholder', 'wp-job-manager' ),
 				'value'       => metadata_exists( 'post', $post->ID, '_job_expires' ) ? get_post_meta( $post->ID, '_job_expires', true ) : calculate_job_expiry( $post->ID ),
 			);
@@ -182,7 +182,7 @@ class WP_Job_Manager_Writepanels {
 			$name = $key;
 		}
 
-		$classes = (is_array($field['classes']) ? $field['classes'] : [$field['classes']]);
+		$classes = ( is_array( $field['classes'] ) ? $field['classes'] : array( $field['classes'] ) );
 
 		if( sizeof($classes) < 1 ){
 			$classes = '';
