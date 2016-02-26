@@ -2,6 +2,7 @@ jQuery( document ).ready( function ( $ ) {
 
 	var xhr = [];
 
+	//Update Results Listener
 	$( '.job_listings' ).on( 'update_results', function ( event, page, append, loading_previous ) {
 		var data         = '';
 		var target       = $( this );
@@ -15,14 +16,21 @@ jQuery( document ).ready( function ( $ ) {
 		var filled       = target.data( 'filled' );
 		var index        = $( 'div.job_listings' ).index(this);
 
+
+		// If it can't find a div with class job_listings in the element which triggered an update_results return without result
 		if ( index < 0 ) {
 			return;
 		}
 
+		// If there is already an ajax call in the xhr array then abort it 
 		if ( xhr[index] ) {
 			xhr[index].abort();
 		}
 
+		// Manage the local HTML5 history
+		job_manager_store_state( target.closest( 'div.job_listings' ), page, false);
+
+		// If append parameter is passed as false then ... remove previous results before appending new results.
 		if ( ! append ) {
 			$( results ).addClass( 'loading' );
 			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
@@ -175,16 +183,24 @@ jQuery( document ).ready( function ( $ ) {
 		} );
 	} );
 
-	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' ).change( function() {
+	//end of the initial update_results listener
+	
+
+	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' )
+	// Because of implicit submission we must prevent default on keypress 13 to stop double form submission
+	// http://stackoverflow.com/questions/33026415/keyup-13-event-repeats-implied-submission-submit-form-on-enter-issue
+	.on('keypress', function (e) {
+		if (13 === e.which)
+	 		e.preventDefault();
+	})
+	.change( function(e) {
+		e.preventDefault();
 		var target   = $( this ).closest( 'div.job_listings' );
 		target.triggerHandler( 'update_results', [ 1, false ] );
-		job_manager_store_state( target, 1 );
 	} )
-
 	.on( "keyup", function(e) {
-		if ( e.which === 13 ) {
+		if ( e.which === 13 )
 			$( this ).trigger( 'change' );
-		}
 	} );
 
 	$( '.job_filters' ).on( 'click', '.reset', function () {
@@ -197,8 +213,6 @@ jQuery( document ).ready( function ( $ ) {
 
 		target.triggerHandler( 'reset' );
 		target.triggerHandler( 'update_results', [ 1, false ] );
-		job_manager_store_state( target, 1 );
-
 		return false;
 	} );
 
@@ -220,7 +234,6 @@ jQuery( document ).ready( function ( $ ) {
 		} else {
 			page = page + 1;
 			$( this ).data( 'page', page );
-			job_manager_store_state( target, page );
 		}
 
 		target.triggerHandler( 'update_results', [ page, true, loading_previous ] );
@@ -230,15 +243,19 @@ jQuery( document ).ready( function ( $ ) {
 	$( 'div.job_listings' ).on( 'click', '.job-manager-pagination a', function() {
 		var target = $( this ).closest( 'div.job_listings' );
 		var page   = $( this ).data( 'page' );
-
-		job_manager_store_state( target, page );
-
 		target.triggerHandler( 'update_results', [ page, false ] );
 
 		$( "body, html" ).animate({
             scrollTop: target.offset().top
         }, 600 );
 
+		return false;
+	} );
+
+	// if there is a search button listen for a click
+	$( 'div.job_listings' ).on( 'click', '[type="submit"]', function() {
+		var target = $( this ).closest( 'div.job_listings' );
+		target.triggerHandler( 'update_results', [ 1, false ] );
 		return false;
 	} );
 
@@ -255,26 +272,67 @@ jQuery( document ).ready( function ( $ ) {
 		$supports_html5_history = false;
 	}
 
-	var location = document.location.href.split('#')[0];
-
 	function job_manager_store_state( target, page ) {
+		// changed this to ? because this is the standard query string identifier in php
+		// and changed to window.location for better cross browser support
+		// and moved into the function so it rechecks everytime the function is called
+		var location = window.location.href.split('?')[0];
+		var query = window.location.href.split('?')[1];
+		query = query.split('&');
+
 		if ( $supports_html5_history ) {
 			var form  = target.find( '.job_filters' );
 			var data  = $( form ).serialize();
 			var index = $( 'div.job_listings' ).index( target );
-			window.history.replaceState( { id: 'job_manager_state', page: page, data: data, index: index }, '', location + '#s=1' );
+			var keyword = form.find('#search_keywords').val() ? 'search_keywords='+encodeURIComponent(form.find('#search_keywords').val()): '';
+			var geo = form.find('#search_location').val() ? 'search_location='+encodeURIComponent(form.find('#search_location').val()): '';
+			var current_page = 'current_page='+page;
+			var newURL = location+((keyword||geo||current_page)?'?':'')+keyword+((keyword&&geo)?'&':'')+geo+(((keyword||geo)&&current_page)?'&':'')+current_page;
+			// Get the query values from the query portion of the url 
+			// NOTE: this might work better as a separate function with dependency injection
+			var queryValues = function () { 
+				var values = [];
+				for (var i = 0; i < query.length; i++) {
+					value = decodeURIComponent(query[i].split('=')[1]);
+					pl = /\+/g;  // Regex for replacing addition symbol with a space
+					value = value.replace(pl, " ");
+					values.push(value);
+				}
+				return values; 
+			}();
+			// Check if any of the query values are empty and if so replaceState e.g. empty form used in GET request
+			var empty = false;
+			emptyCheck: 
+				for (var i = 0; i < queryValues.length; i++) {
+					if (queryValues[i] === '') {
+						empty = true;
+						break emptyCheck;
+					}
+				}
+			if ( empty ) {
+				window.history.replaceState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
+			}
+			// otherwise check if same as last search and if not then store new state
+			else if ( document.location.href !== newURL ) {
+				window.history.pushState( { id: 'job_manager_state', page: page, data: data, index: index }, '', newURL );
+			} else {
+				if ( window.console ) {
+					console.log('The current search was the same as the last');
+				}
+				return;
+			}
+			//*/
 		}
 	}
 
-	// Inital job and form population
-	$(window).on( "load", function( event ) {
+	function populate_forms () {
 		$( '.job_filters' ).each( function() {
 			var target      = $( this ).closest( 'div.job_listings' );
 			var form        = target.find( '.job_filters' );
 			var inital_page = 1;
 			var index       = $( 'div.job_listings' ).index( target );
-
-	   		if ( window.history.state && window.location.hash ) {
+			// removed window.location.hash 
+	   		if ( window.history.state ) {
 	   			var state = window.history.state;
 	   			if ( state.id && 'job_manager_state' === state.id && index == state.index ) {
 					inital_page = state.page;
@@ -282,8 +340,29 @@ jQuery( document ).ready( function ( $ ) {
 					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'chosen:updated' );
 				}
 	   		}
-
-			target.triggerHandler( 'update_results', [ inital_page, false ] );
 	   	});
+	}
+
+	//On back button trigger update with artificial history
+	if ( $supports_html5_history) {
+		$(window).on( "popstate", function( event ) {
+			populate_forms();
+			var target = $( '.job_filters' ).closest( 'div.job_listings' );
+			//check if the window.history.state from synthetic history, otherwise go to the last page for real
+			if (window.history.state) {
+				target.trigger( 'update_results', [ 1, false ] );
+			}
+			
+		});
+	}
+	//*/
+
+
+	// Inital job and form population
+	$(window).on( "load", function( event ) {
+		populate_forms();
+		var target = $( '.job_filters' ).closest( 'div.job_listings' );
+		target.triggerHandler( 'update_results', [ 1, false ] );
 	});
+
 } );
