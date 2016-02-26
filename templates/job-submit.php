@@ -8,6 +8,8 @@ global $job_manager;
 ?>
 <form action="<?php echo esc_url( $action ); ?>" method="post" id="submit-job-form" class="job-manager-form" enctype="multipart/form-data">
 
+	<?php do_action( 'submit_job_form_start' ); ?>
+
 	<?php if ( apply_filters( 'submit_job_form_show_signin', true ) ) : ?>
 
 		<?php get_job_manager_template( 'account-signin.php' ); ?>
@@ -47,6 +49,8 @@ global $job_manager;
 
 			<?php do_action( 'submit_job_form_company_fields_end' ); ?>
 		<?php endif; ?>
+
+		<?php do_action( 'submit_job_form_end' ); ?>
 
 		<p>
 			<input type="hidden" name="job_manager_form" value="<?php echo $form; ?>" />

@@ -141,6 +141,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+= 1.24.1 =
+* Dev - submit_job_form_end/submit_job_form_start actions.
+
 = 1.24.0 =
 * Feature - Use featured images to store company logos.
 * Feature - Search term names for keywords.
