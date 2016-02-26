@@ -144,6 +144,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 = 1.25.0 =
 * Feature - Ability to duplicate listings from job dashboard.
 * Dev - submit_job_form_end/submit_job_form_start actions.
+* Dev - job-manager-datepicker class for backend date fields.
 
 = 1.24.0 =
 * Feature - Use featured images to store company logos.
