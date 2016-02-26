@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
 Tested up to: 4.4
-Stable tag: 1.24.0
+Stable tag: 1.25.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -141,7 +141,8 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
-= 1.24.1 =
+= 1.25.0 =
+* Feature - Ability to duplicate listings from job dashboard.
 * Dev - submit_job_form_end/submit_job_form_start actions.
 
 = 1.24.0 =

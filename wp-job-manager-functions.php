@@ -757,3 +757,65 @@ function job_manager_set_ajax_language( $lang ) {
     return $lang;
 }
 add_filter( 'icl_current_language', 'job_manager_set_ajax_language' );
+
+/**
+ * Duplicate a listing.
+ * @param  int $post_id
+ * @return int 0 on fail or the post ID.
+ */
+function job_manager_duplicate_listing( $post_id ) {
+	if ( empty( $post_id ) || ! ( $post = get_post( $post_id ) ) ) {
+		return 0;
+	}
+
+	global $wpdb;
+
+	/**
+	 * Duplicate the post.
+	 */
+	$new_post_id = wp_insert_post( array(
+		'comment_status' => $post->comment_status,
+		'ping_status'    => $post->ping_status,
+		'post_author'    => $post->post_author,
+		'post_content'   => $post->post_content,
+		'post_excerpt'   => $post->post_excerpt,
+		'post_name'      => $post->post_name,
+		'post_parent'    => $post->post_parent,
+		'post_password'  => $post->post_password,
+		'post_status'    => 'preview',
+		'post_title'     => $post->post_title,
+		'post_type'      => $post->post_type,
+		'to_ping'        => $post->to_ping,
+		'menu_order'     => $post->menu_order
+	) );
+
+	/**
+	 * Copy taxonomies.
+	 */
+	$taxonomies = get_object_taxonomies( $post->post_type );
+
+	foreach ( $taxonomies as $taxonomy ) {
+		$post_terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'slugs' ) );
+		wp_set_object_terms( $new_post_id, $post_terms, $taxonomy, false );
+	}
+
+	/*
+	 * Duplicate post meta, aside from some reserved fields.
+	 */
+	$post_meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id=%d", $post_id ) );
+
+	if ( ! empty( $post_meta ) ) {
+		$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
+		foreach ( $post_meta as $meta_key => $meta_value ) {
+			if ( in_array( $meta_key, apply_filters( 'job_manager_duplicate_listing_ignore_keys', array( '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' ) ) ) ) {
+				continue;
+			}
+			update_post_meta( $new_post_id, $meta_key, $meta_value );
+		}
+	}
+
+	update_post_meta( $new_post_id, '_filled', 0 );
+	update_post_meta( $new_post_id, '_featured', 0 );
+
+	return $new_post_id;
+}

@@ -94,9 +94,27 @@ class WP_Job_Manager_Shortcodes {
 						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been deleted', 'wp-job-manager' ), $job->post_title ) . '</div>';
 
 						break;
+					case 'duplicate' :
+						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
+							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
+						}
+
+						$new_job_id = job_manager_duplicate_listing( $job_id );
+
+						if ( $new_job_id ) {
+							wp_redirect( add_query_arg( array( 'job_id' => absint( $new_job_id ) ), job_manager_get_permalink( 'submit_job_form' ) ) );
+							exit;
+						}
+
+						break;
 					case 'relist' :
+						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
+							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
+						}
+
 						// redirect to post page
 						wp_redirect( add_query_arg( array( 'job_id' => absint( $job_id ) ), job_manager_get_permalink( 'submit_job_form' ) ) );
+						exit;
 
 						break;
 					default :

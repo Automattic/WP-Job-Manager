@@ -37,6 +37,8 @@
 													} else {
 														$actions['mark_filled'] = array( 'label' => __( 'Mark filled', 'wp-job-manager' ), 'nonce' => true );
 													}
+
+													$actions['duplicate'] = array( 'label' => __( 'Duplicate', 'wp-job-manager' ), 'nonce' => true );
 													break;
 												case 'expired' :
 													if ( job_manager_get_permalink( 'submit_job_form' ) ) {
