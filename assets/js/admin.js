@@ -15,16 +15,18 @@ jQuery(document).ready(function($) {
 	});
 
 	// Datepicker
-	$( "input#_job_expires" ).datepicker({
+	$( 'input.job-manager-datepicker, input#_job_expires' ).datepicker({
 		altFormat  : 'yy-mm-dd',
 		dateFormat : job_manager_admin.date_format,
 		minDate    : 0
 	});
 
-	if ( $( "input#_job_expires" ).val() ) {
-		var date = new Date( $( "input#_job_expires" ).val() );
-		$( "input#_job_expires" ).datepicker( "setDate", date );
-	}
+	$( 'input.job-manager-datepicker, input#_job_expires' ).each( function(){
+		if ( $(this).val() ) {
+			var date = new Date( $(this).val() );
+			$(this).datepicker( "setDate", date );
+		}
+	});
 
 	// Uploading files
 	var file_frame;

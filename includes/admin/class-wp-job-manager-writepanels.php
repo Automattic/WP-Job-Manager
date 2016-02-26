@@ -83,6 +83,7 @@ class WP_Job_Manager_Writepanels {
 			$fields['_job_expires'] = array(
 				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'priority'    => 11,
+				'classes'     => array( 'job-manager-datepicker' ),
 				'placeholder' => _x( 'yyyy-mm-dd', 'Date format placeholder', 'wp-job-manager' ),
 				'value'       => metadata_exists( 'post', $post->ID, '_job_expires' ) ? get_post_meta( $post->ID, '_job_expires', true ) : calculate_job_expiry( $post->ID ),
 			);
@@ -180,10 +181,15 @@ class WP_Job_Manager_Writepanels {
 		} else {
 			$name = $key;
 		}
+		if ( ! empty( $field['classes'] ) ) {
+			$classes = implode( ' ', is_array( $field['classes'] ) ? $field['classes'] : array( $field['classes'] ) );
+		} else {
+			$classes = '';
+		}
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
-			<input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
+			<input type="text" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
 		</p>
 		<?php
 	}
