@@ -39,6 +39,11 @@ function get_job_listings( $args = array() ) {
 		'fields'                 => $args['fields']
 	);
 
+	// WPML workaround
+	if ( ( strstr( $_SERVER['REQUEST_URI'], '/jm-ajax/' ) || ! empty( $_GET['jm-ajax'] ) ) && isset( $_POST['lang'] ) ) {
+		do_action( 'wpml_switch_language', sanitize_text_field( $_POST['lang'] ) );
+	}
+
 	if ( $args['posts_per_page'] < 0 ) {
 		$query_args['no_found_rows'] = true;
 	}
@@ -744,19 +749,6 @@ function calculate_job_expiry( $job_id ) {
 
 	return '';
 }
-
-/**
- * Set the current language of the ajax request
- * @param  string $lang
- * @return string
- */
-function job_manager_set_ajax_language( $lang ) {
-    if ( ( strstr( $_SERVER['REQUEST_URI'], '/jm-ajax/' ) || ! empty( $_GET['jm-ajax'] ) ) && isset( $_POST['lang'] ) ) {
-		$lang = sanitize_text_field( $_POST['lang'] );
-	}
-    return $lang;
-}
-add_filter( 'icl_current_language', 'job_manager_set_ajax_language' );
 
 /**
  * Duplicate a listing.
