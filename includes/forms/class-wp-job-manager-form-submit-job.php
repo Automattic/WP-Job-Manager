@@ -591,11 +591,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// And user meta to save time in future
 		if ( is_user_logged_in() ) {
 			update_user_meta( get_current_user_id(), '_company_name', isset( $values['company']['company_name'] ) ? $values['company']['company_name'] : '' );
-			update_user_meta( get_current_user_id(), '_company_website', isset( $values['company']['company_website'] ) ? $values['company']['company_website'] : '' );
+			update_user_meta( get_current_user_id(), '_company_website', isset( $values['company']['company_website'] ) ? urlencode_deep($values['company']['company_website']): '' );
 			update_user_meta( get_current_user_id(), '_company_tagline', isset( $values['company']['company_tagline'] ) ? $values['company']['company_tagline'] : '' );
-			update_user_meta( get_current_user_id(), '_company_twitter', isset( $values['company']['company_twitter'] ) ? $values['company']['company_twitter'] : '' );
-			update_user_meta( get_current_user_id(), '_company_logo', isset( $values['company']['company_logo'] ) ? $values['company']['company_logo'] : '' );
-			update_user_meta( get_current_user_id(), '_company_video', isset( $values['company']['company_video'] ) ? $values['company']['company_video'] : '' );
+			update_user_meta( get_current_user_id(), '_company_twitter', isset( $values['company']['company_twitter'] ) ? urlencode_deep($values['company']['company_twitter']) : '' );
+			update_user_meta( get_current_user_id(), '_company_logo', isset( $values['company']['company_logo'] ) ? urlencode_deep($values['company']['company_logo']) : '' );
+			update_user_meta( get_current_user_id(), '_company_video', isset( $values['company']['company_video'] ) ? urlencode_deep($values['company']['company_video']) : '' );
 		}
 
 		do_action( 'job_manager_update_job_data', $this->job_id, $values );
