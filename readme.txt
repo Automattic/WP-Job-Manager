@@ -147,6 +147,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Fix - Ensure logo is displayed on edit, before submission.
 * Fix - Attachment URLs on multisite.
 * Fix - Refactored WPML workaround, which was causing no job listings on non-default languages. (https://github.com/Automattic/WP-Job-Manager/issues/617)
+* Fix - No need to decode URLs anymore https://core.trac.wordpress.org/ticket/23605.
 * Dev - submit_job_form_end/submit_job_form_start actions.
 * Dev - job-manager-datepicker class for backend date fields.
 

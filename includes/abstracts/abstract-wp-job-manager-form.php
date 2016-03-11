@@ -219,11 +219,6 @@ abstract class WP_Job_Manager_Form {
 	 * @return array|string $value The sanitized array (or string from the callback).
 	 */
 	protected function sanitize_posted_field( $value ) {
-		// Decode URLs
-		if ( is_string( $value ) && ( strstr( $value, 'http:' ) || strstr( $value, 'https:' ) ) ) {
-			$value = urldecode( $value );
-		}
-
 		// Santize value
 		$value = is_array( $value ) ? array_map( array( $this, 'sanitize_posted_field' ), $value ) : sanitize_text_field( stripslashes( trim( $value ) ) );
 
