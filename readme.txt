@@ -141,6 +141,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+= 1.25.1 =
+* Fix - Refactored WPML workaround, which was causing no job listings on non-default languages. (https://github.com/Automattic/WP-Job-Manager/issues/617)
+
 = 1.25.0 =
 * Feature - Ability to duplicate listings from job dashboard.
 * Fix - Ensure logo is displayed on edit, before submission.

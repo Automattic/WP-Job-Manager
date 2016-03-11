@@ -26,7 +26,7 @@ class WP_Job_Manager {
 	 */
 	public function __construct() {
 		// Define constants
-		define( 'JOB_MANAGER_VERSION', '1.25.0' );
+		define( 'JOB_MANAGER_VERSION', '1.25.1' );
 		define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
@@ -113,6 +113,16 @@ class WP_Job_Manager {
 	public function frontend_scripts() {
 		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
 		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
+		$ajax_data 		  = array(
+			'ajax_url'                => $ajax_url,
+			'is_rtl'                  => is_rtl() ? 1 : 0,
+			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' )
+		);
+
+		// WPML workaround
+		if ( defined( 'ICL_SITEPRESS_VERSION' ) ){
+			$ajax_data['lang'] = apply_filters( 'wpml_current_language', NULL );
+		}
 
 		if ( apply_filters( 'job_manager_chosen_enabled', true ) ) {
 			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
@@ -152,12 +162,7 @@ class WP_Job_Manager {
 		wp_register_script( 'wp-job-manager-job-dashboard', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-dashboard.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-application', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-application.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-submission.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
-		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', array(
-			'ajax_url'                => $ajax_url,
-			'is_rtl'                  => is_rtl() ? 1 : 0,
-			'lang'                    => defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '', // WPML workaround until this is standardized
-			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' )
-		) );
+		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
 		wp_localize_script( 'wp-job-manager-job-dashboard', 'job_manager_job_dashboard', array(
 			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' )
 		) );
