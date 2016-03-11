@@ -143,6 +143,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 = 1.25.0 =
 * Feature - Ability to duplicate listings from job dashboard.
+* Fix - Support WP_EMBED in job descriptions.
 * Fix - Ensure logo is displayed on edit, before submission.
 * Fix - Attachment URLs on multisite.
 * Fix - Refactored WPML workaround, which was causing no job listings on non-default languages. (https://github.com/Automattic/WP-Job-Manager/issues/617)

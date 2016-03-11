@@ -25,6 +25,10 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_job_description', 'wpautop'            );
 		add_filter( 'the_job_description', 'shortcode_unautop'  );
 		add_filter( 'the_job_description', 'prepend_attachment' );
+		if ( ! empty( $GLOBALS['wp_embed'] ) ) {
+			add_filter( 'the_job_description', array( $GLOBALS['wp_embed'], 'run_shortcode' ), 8 );
+			add_filter( 'the_job_description', array( $GLOBALS['wp_embed'], 'autoembed' ), 8 );
+		}
 
 		add_action( 'job_manager_application_details_email', array( $this, 'application_details_email' ) );
 		add_action( 'job_manager_application_details_url', array( $this, 'application_details_url' ) );
