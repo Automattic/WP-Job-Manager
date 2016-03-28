@@ -1,3 +1,4 @@
+/* global job_manager_job_dashboard */
 jQuery(document).ready(function($) {
 
 	$('.job-dashboard-action-delete').click(function() {
