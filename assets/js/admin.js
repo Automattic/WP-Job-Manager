@@ -69,7 +69,7 @@ jQuery(document).ready(function($) {
 		// When an image is selected, run a callback.
 		file_frame.on( 'select', function() {
 			// We set multiple to false so only get one image from the uploader
-			attachment = file_frame.state().get('selection').first().toJSON();
+			var attachment = file_frame.state().get('selection').first().toJSON();
 
 			$( file_target_input ).val( attachment.url );
 		});
