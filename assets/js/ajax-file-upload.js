@@ -35,8 +35,6 @@ jQuery(function($) {
 				}
 			},
 			progress: function (e, data) {
-				var $file_field     = $( this );
-				var $uploaded_files = $file_field.parent().find('.job-manager-uploaded-files');
 				var progress        = parseInt(data.loaded / data.total * 100, 10);
 				data.context.val( progress );
 			},
