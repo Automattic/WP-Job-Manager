@@ -14,6 +14,7 @@ jQuery( document ).ready( function ( $ ) {
 		var featured     = target.data( 'featured' );
 		var filled       = target.data( 'filled' );
 		var index        = $( 'div.job_listings' ).index(this);
+		var categories, keywords, location;
 
 		if ( index < 0 ) {
 			return;
@@ -45,11 +46,11 @@ jQuery( document ).ready( function ( $ ) {
 				filter_job_type.push( $( this ).val() );
 			} );
 
-			var categories = form.find( ':input[name^="search_categories"]' ).map( function () {
-			return $( this ).val();
+			categories = form.find( ':input[name^="search_categories"]' ).map( function () {
+				return $( this ).val();
 			} ).get();
-			var keywords   = '';
-			var location   = '';
+			keywords   = '';
+			location   = '';
 			var $keywords  = form.find( ':input[name="search_keywords"]' );
 			var $location  = form.find( ':input[name="search_location"]' );
 
@@ -80,9 +81,9 @@ jQuery( document ).ready( function ( $ ) {
 
 		} else {
 
-			var categories = target.data( 'categories' );
-			var keywords   = target.data( 'keywords' );
-			var location   = target.data( 'location' );
+			categories = target.data( 'categories' );
+			keywords   = target.data( 'keywords' );
+			location   = target.data( 'location' );
 
 			if ( categories ) {
 				categories = categories.split( ',' );
