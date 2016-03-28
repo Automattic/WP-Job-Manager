@@ -251,10 +251,9 @@ jQuery( document ).ready( function ( $ ) {
 		$( 'select[name^="search_categories"]' ).chosen({ search_contains: true });
 	}
 
+	var $supports_html5_history = false;
 	if ( window.history && window.history.pushState ) {
 		$supports_html5_history = true;
-	} else {
-		$supports_html5_history = false;
 	}
 
 	var location = document.location.href.split('#')[0];
