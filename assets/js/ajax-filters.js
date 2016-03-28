@@ -106,7 +106,7 @@ jQuery( document ).ready( function ( $ ) {
 
 		xhr[index] = $.ajax( {
 			type: 'POST',
-			url: job_manager_ajax_filters.ajax_url.toString().replace( "%%endpoint%%", "get_listings" ),
+			url: job_manager_ajax_filters.ajax_url.toString().replace( '%%endpoint%%', 'get_listings' ),
 			data: data,
 			success: function ( result ) {
 				if ( result ) {
@@ -168,7 +168,6 @@ jQuery( document ).ready( function ( $ ) {
 			statusCode: {
 				404: function() {
 					if ( window.console ) {
-						console.log( "Error 404: Ajax Endpoint cannot be reached. Go to Settings > Permalinks and save to resolve." );
 					}
 				}
 			}
@@ -181,7 +180,7 @@ jQuery( document ).ready( function ( $ ) {
 		job_manager_store_state( target, 1 );
 	} )
 
-	.on( "keyup", function(e) {
+	.on( 'keyup', function(e) {
 		if ( e.which === 13 ) {
 			$( this ).trigger( 'change' );
 		}
@@ -235,7 +234,7 @@ jQuery( document ).ready( function ( $ ) {
 
 		target.triggerHandler( 'update_results', [ page, false ] );
 
-		$( "body, html" ).animate({
+		$( 'body, html' ).animate({
             scrollTop: target.offset().top
         }, 600 );
 
@@ -267,7 +266,6 @@ jQuery( document ).ready( function ( $ ) {
 	}
 
 	// Inital job and form population
-	$(window).on( "load", function( event ) {
 		$( '.job_filters' ).each( function() {
 			var target      = $( this ).closest( 'div.job_listings' );
 			var form        = target.find( '.job_filters' );
