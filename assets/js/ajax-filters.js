@@ -238,8 +238,8 @@ jQuery( document ).ready( function ( $ ) {
 		target.triggerHandler( 'update_results', [ page, false ] );
 
 		$( 'body, html' ).animate({
-            scrollTop: target.offset().top
-        }, 600 );
+			scrollTop: target.offset().top
+		}, 600 );
 
 		return false;
 	} );
@@ -275,16 +275,16 @@ jQuery( document ).ready( function ( $ ) {
 			var inital_page = 1;
 			var index       = $( 'div.job_listings' ).index( target );
 
-	   		if ( window.history.state && window.location.hash ) {
-	   			var state = window.history.state;
+			if ( window.history.state && window.location.hash ) {
+				var state = window.history.state;
 				if ( state.id && 'job_manager_state' === state.id && index === state.index ) {
 					inital_page = state.page;
 					form.deserialize( state.data );
 					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'chosen:updated' );
 				}
-	   		}
+			}
 
 			target.triggerHandler( 'update_results', [ inital_page, false ] );
-	   	});
+		});
 	});
 } );
