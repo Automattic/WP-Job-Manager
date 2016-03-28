@@ -268,6 +268,7 @@ jQuery( document ).ready( function ( $ ) {
 	}
 
 	// Inital job and form population
+	$(window).on( 'load', function() {
 		$( '.job_filters' ).each( function() {
 			var target      = $( this ).closest( 'div.job_listings' );
 			var form        = target.find( '.job_filters' );
