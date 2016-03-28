@@ -1,3 +1,4 @@
+/* global job_manager_admin */
 jQuery(document).ready(function($) {
 	// Tooltips
 	$( '.tips, .help_tip' ).tipTip({
