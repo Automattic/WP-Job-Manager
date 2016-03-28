@@ -37,7 +37,6 @@ jQuery(document).ready(function($) {
 	$('.wp_job_manager_add_another_file_button').live('click', function( event ){
 		event.preventDefault();
 
-		var wrapper           = $( this ).closest( '.form-field' );
 		var field_name        = $( this ).data( 'field_name' );
 		var field_placeholder = $( this ).data( 'field_placeholder' );
 		var button_text       = $( this ).data( 'uploader_button_text' );
