@@ -89,6 +89,18 @@ module.exports = function( grunt ){
 			}
 		},
 
+		jshint: {
+			options: grunt.file.readJSON('.jshintrc'),
+			src: [
+				'assets/js/**/*.js',
+				'!assets/js/**/*.min.js',
+				// External Libraries:
+				'!assets/js/jquery-chosen/*.js',
+				'!assets/js/jquery-deserialize/*.js',
+				'!assets/js/jquery-fileupload/*.js',
+				'!assets/js/jquery-tiptip/*.js'
+			]
+		},
 	});
 
 	// Load NPM tasks to be used here
@@ -97,6 +109,7 @@ module.exports = function( grunt ){
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
+	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 
 	// Register tasks
 	grunt.registerTask( 'default', [
