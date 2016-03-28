@@ -3,7 +3,7 @@ jQuery(function($) {
 		$(this).fileupload({
 			dataType: 'json',
 			dropZone: $(this),
-			url: job_manager_ajax_file_upload.ajax_url.toString().replace( "%%endpoint%%", "upload_file" ),
+			url: job_manager_ajax_file_upload.ajax_url.toString().replace( '%%endpoint%%', 'upload_file' ),
 			maxNumberOfFiles: 1,
 			formData: {
 				script: true
@@ -18,7 +18,7 @@ jQuery(function($) {
 				var allowed_types = $(this).data('file_types');
 
 				if ( allowed_types ) {
-	        		var acceptFileTypes = new RegExp( "(\.|\/)(" + allowed_types + ")$", "i" );
+					var acceptFileTypes = new RegExp( '(\.|\/)(' + allowed_types + ')$', 'i' );
 
 			        if ( data.originalFiles[0]['name'].length && ! acceptFileTypes.test( data.originalFiles[0]['name'] ) ) {
 			        	uploadErrors.push( job_manager_ajax_file_upload.i18n_invalid_file_type + ' ' + allowed_types );
@@ -26,7 +26,7 @@ jQuery(function($) {
 			    }
 
 	        	if ( uploadErrors.length > 0 ) {
-	            	alert( uploadErrors.join( "\n" ) );
+					window.alert( uploadErrors.join( '\n' ) );
 				} else {
 					$form.find(':input[type="submit"]').attr( 'disabled', 'disabled' );
 					data.context = $('<progress value="" max="100"></progress>').appendTo( $uploaded_files );
