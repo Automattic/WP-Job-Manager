@@ -44,7 +44,7 @@ jQuery(function($) {
 				var $form           = $file_field.closest( 'form' );
 
 				if ( data.errorThrown ) {
-					alert( data.errorThrown );
+					window.alert( data.errorThrown );
 				}
 
 				data.context.remove();
@@ -62,7 +62,7 @@ jQuery(function($) {
 
 				$.each(data.result.files, function(index, file) {
 					if ( file.error ) {
-						alert( file.error );
+						window.alert( file.error );
 					} else {
 						if ( $.inArray( file.extension, image_types ) >= 0 ) {
 							var html = $.parseHTML( job_manager_ajax_file_upload.js_field_html_img );
