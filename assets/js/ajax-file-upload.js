@@ -63,11 +63,12 @@ jQuery(function($) {
 					if ( file.error ) {
 						window.alert( file.error );
 					} else {
+						var html;
 						if ( $.inArray( file.extension, image_types ) >= 0 ) {
-							var html = $.parseHTML( job_manager_ajax_file_upload.js_field_html_img );
+							html = $.parseHTML( job_manager_ajax_file_upload.js_field_html_img );
 							$( html ).find('.job-manager-uploaded-file-preview img').attr( 'src', file.url );
 						} else {
-							var html = $.parseHTML( job_manager_ajax_file_upload.js_field_html );
+							html = $.parseHTML( job_manager_ajax_file_upload.js_field_html );
 							$( html ).find('.job-manager-uploaded-file-name code').text( file.name );
 						}
 
