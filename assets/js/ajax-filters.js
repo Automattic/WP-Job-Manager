@@ -155,19 +155,20 @@ jQuery( document ).ready( function ( $ ) {
 
 					} catch ( err ) {
 						if ( window.console ) {
-							console.log( err );
+							window.console.log( err );
 						}
 					}
 				}
 			},
 			error: function ( jqXHR, textStatus, error ) {
 				if ( window.console && 'abort' !== textStatus ) {
-					console.log( textStatus + ': ' + error );
+					window.console.log( textStatus + ': ' + error );
 				}
 			},
 			statusCode: {
 				404: function() {
 					if ( window.console ) {
+						window.console.log( 'Error 404: Ajax Endpoint cannot be reached. Go to Settings > Permalinks and save to resolve.' );
 					}
 				}
 			}
