@@ -1,3 +1,4 @@
+/* global job_manager_ajax_filters */
 jQuery( document ).ready( function ( $ ) {
 
 	var xhr = [];
