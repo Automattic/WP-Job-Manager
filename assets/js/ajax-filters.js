@@ -206,7 +206,7 @@ jQuery( document ).ready( function ( $ ) {
 
 	$( document.body ).on( 'click', '.load_more_jobs', function() {
 		var target           = $( this ).closest( 'div.job_listings' );
-		var page             = parseInt( $( this ).data( 'page' ) || 1 );
+		var page             = parseInt( ( $( this ).data( 'page' ) || 1 ), 10 );
 		var loading_previous = false;
 
 		$(this).addClass( 'loading' );
