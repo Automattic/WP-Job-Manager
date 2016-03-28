@@ -30,7 +30,7 @@ jQuery( document ).ready( function ( $ ) {
 			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
 
 			// Not appending. If page > 1, we should show a load previous button so the user can get to earlier-page listings if needed
-			if ( page > 1 && true != target.data( 'show_pagination' ) ) {
+			if ( page > 1 && true !== target.data( 'show_pagination' ) ) {
 				$( results ).before( '<a class="load_more_jobs load_previous" href="#"><strong>' + job_manager_ajax_filters.i18n_load_prev_listings + '</strong></a>' );
 			} else {
 				target.find( '.load_previous' ).remove();
@@ -39,7 +39,7 @@ jQuery( document ).ready( function ( $ ) {
 			target.find( '.load_more_jobs' ).data( 'page', page );
 		}
 
-		if ( true == target.data( 'show_filters' ) ) {
+		if ( true === target.data( 'show_filters' ) ) {
 
 			var filter_job_type = [];
 
@@ -135,7 +135,7 @@ jQuery( document ).ready( function ( $ ) {
 							}
 						}
 
-						if ( true == target.data( 'show_pagination' ) ) {
+						if ( true === target.data( 'show_pagination' ) ) {
 							target.find('.job-manager-pagination').remove();
 
 							if ( result.pagination ) {
@@ -245,7 +245,7 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	if ( $.isFunction( $.fn.chosen ) ) {
-		if ( job_manager_ajax_filters.is_rtl == 1 ) {
+		if ( job_manager_ajax_filters.is_rtl === 1 ) {
 			$( 'select[name^="search_categories"]' ).addClass( 'chosen-rtl' );
 		}
 		$( 'select[name^="search_categories"]' ).chosen({ search_contains: true });
@@ -277,7 +277,7 @@ jQuery( document ).ready( function ( $ ) {
 
 	   		if ( window.history.state && window.location.hash ) {
 	   			var state = window.history.state;
-	   			if ( state.id && 'job_manager_state' === state.id && index == state.index ) {
+				if ( state.id && 'job_manager_state' === state.id && index === state.index ) {
 					inital_page = state.page;
 					form.deserialize( state.data );
 					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'chosen:updated' );
