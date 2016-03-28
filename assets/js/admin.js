@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
 	// Tooltips
-	$( ".tips, .help_tip" ).tipTip({
+	$( '.tips, .help_tip' ).tipTip({
 		'attribute' : 'data-tip',
 		'fadeIn' : 50,
 		'fadeOut' : 50,
@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
 	});
 
 	// Author
-	$( "p.form-field-author" ).on( 'click', 'a.change-author', function() {
+	$( 'p.form-field-author' ).on( 'click', 'a.change-author', function() {
 		$(this).closest( 'p' ).find('.current-author').hide();
 		$(this).closest( 'p' ).find('.change-author').show();
 		return false;
@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
 	$( 'input.job-manager-datepicker, input#_job_expires' ).each( function(){
 		if ( $(this).val() ) {
 			var date = new Date( $(this).val() );
-			$(this).datepicker( "setDate", date );
+			$(this).datepicker( 'setDate', date );
 		}
 	});
 
