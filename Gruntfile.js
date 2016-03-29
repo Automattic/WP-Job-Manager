@@ -77,18 +77,6 @@ module.exports = function( grunt ){
 			}
 		},
 
-		shell: {
-			options: {
-				stdout: true,
-				stderr: true
-			},
-			generatepot: {
-				command: [
-					'makepot'
-				].join( '&&' )
-			}
-		},
-
 		makepot: {
 			wpjobmanager: {
 				options: {
@@ -120,7 +108,6 @@ module.exports = function( grunt ){
 	});
 
 	// Load NPM tasks to be used here
-	grunt.loadNpmTasks( 'grunt-shell' );
 	grunt.loadNpmTasks( 'grunt-wp-i18n' );
 	grunt.loadNpmTasks( 'grunt-contrib-less' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
@@ -136,7 +123,7 @@ module.exports = function( grunt ){
 
 	// Just an alias for pot file generation
 	grunt.registerTask( 'pot', [
-		'shell:generatepot'
+		'makepot'
 	]);
 
 	grunt.registerTask( 'dev', [
