@@ -431,7 +431,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 
 			if ( job_manager_user_requires_account() && ! is_user_logged_in() ) {
-				throw new Exception( __( 'You must be signed in to post a new listing.' ) );
+				throw new Exception( __( 'You must be signed in to post a new listing.', 'wp-job-manager' ) );
 			}
 
 			// Update the job
