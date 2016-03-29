@@ -89,10 +89,39 @@ module.exports = function( grunt ){
 			}
 		},
 
+		makepot: {
+			wpjobmanager: {
+				options: {
+					domainPath: '/languages',
+					exclude: [
+						'node_modules'
+					],
+					mainFile:    'wp-job-manager.php',
+					potFilename: 'wp-job-manager.pot'
+				}
+			}
+		},
+
+		addtextdomain: {
+			wpjobmanager: {
+				options: {
+					textdomain: 'wp-job-manager'
+				},
+				files: {
+					src: [
+						'*.php',
+						'**/*.php',
+						'!node_modules/**'
+					]
+				}
+			}
+		}
+
 	});
 
 	// Load NPM tasks to be used here
 	grunt.loadNpmTasks( 'grunt-shell' );
+	grunt.loadNpmTasks( 'grunt-wp-i18n' );
 	grunt.loadNpmTasks( 'grunt-contrib-less' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
