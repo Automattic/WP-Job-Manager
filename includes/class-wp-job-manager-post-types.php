@@ -391,6 +391,13 @@ class WP_Job_Manager_Post_Types {
 		if ( $company ) {
 			echo "<job_listing:company><![CDATA[" . esc_html( $company ) . "]]></job_listing:company>\n";
 		}
+		
+		/**
+		 * Fires at the end of each job RSS feed item.
+		 *
+		 * @param int $post_id The post ID of the job.
+		 */
+		 do_action( 'job_feed_item', $post_id );
 	}
 
 	/**
