@@ -1,3 +1,4 @@
+/* global job_manager_ajax_filters */
 jQuery( document ).ready( function ( $ ) {
 
 	var xhr = [];
@@ -14,6 +15,7 @@ jQuery( document ).ready( function ( $ ) {
 		var featured     = target.data( 'featured' );
 		var filled       = target.data( 'filled' );
 		var index        = $( 'div.job_listings' ).index(this);
+		var categories, keywords, location;
 
 		if ( index < 0 ) {
 			return;
@@ -28,7 +30,7 @@ jQuery( document ).ready( function ( $ ) {
 			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
 
 			// Not appending. If page > 1, we should show a load previous button so the user can get to earlier-page listings if needed
-			if ( page > 1 && true != target.data( 'show_pagination' ) ) {
+			if ( page > 1 && true !== target.data( 'show_pagination' ) ) {
 				$( results ).before( '<a class="load_more_jobs load_previous" href="#"><strong>' + job_manager_ajax_filters.i18n_load_prev_listings + '</strong></a>' );
 			} else {
 				target.find( '.load_previous' ).remove();
@@ -37,7 +39,7 @@ jQuery( document ).ready( function ( $ ) {
 			target.find( '.load_more_jobs' ).data( 'page', page );
 		}
 
-		if ( true == target.data( 'show_filters' ) ) {
+		if ( true === target.data( 'show_filters' ) ) {
 
 			var filter_job_type = [];
 
@@ -45,11 +47,11 @@ jQuery( document ).ready( function ( $ ) {
 				filter_job_type.push( $( this ).val() );
 			} );
 
-			var categories = form.find( ':input[name^="search_categories"]' ).map( function () {
-			return $( this ).val();
+			categories = form.find( ':input[name^="search_categories"]' ).map( function () {
+				return $( this ).val();
 			} ).get();
-			var keywords   = '';
-			var location   = '';
+			keywords   = '';
+			location   = '';
 			var $keywords  = form.find( ':input[name="search_keywords"]' );
 			var $location  = form.find( ':input[name="search_location"]' );
 
@@ -80,9 +82,9 @@ jQuery( document ).ready( function ( $ ) {
 
 		} else {
 
-			var categories = target.data( 'categories' );
-			var keywords   = target.data( 'keywords' );
-			var location   = target.data( 'location' );
+			categories = target.data( 'categories' );
+			keywords   = target.data( 'keywords' );
+			location   = target.data( 'location' );
 
 			if ( categories ) {
 				categories = categories.split( ',' );
@@ -106,7 +108,7 @@ jQuery( document ).ready( function ( $ ) {
 
 		xhr[index] = $.ajax( {
 			type: 'POST',
-			url: job_manager_ajax_filters.ajax_url.toString().replace( "%%endpoint%%", "get_listings" ),
+			url: job_manager_ajax_filters.ajax_url.toString().replace( '%%endpoint%%', 'get_listings' ),
 			data: data,
 			success: function ( result ) {
 				if ( result ) {
@@ -133,7 +135,7 @@ jQuery( document ).ready( function ( $ ) {
 							}
 						}
 
-						if ( true == target.data( 'show_pagination' ) ) {
+						if ( true === target.data( 'show_pagination' ) ) {
 							target.find('.job-manager-pagination').remove();
 
 							if ( result.pagination ) {
@@ -155,20 +157,20 @@ jQuery( document ).ready( function ( $ ) {
 
 					} catch ( err ) {
 						if ( window.console ) {
-							console.log( err );
+							window.console.log( err );
 						}
 					}
 				}
 			},
 			error: function ( jqXHR, textStatus, error ) {
 				if ( window.console && 'abort' !== textStatus ) {
-					console.log( textStatus + ': ' + error );
+					window.console.log( textStatus + ': ' + error );
 				}
 			},
 			statusCode: {
 				404: function() {
 					if ( window.console ) {
-						console.log( "Error 404: Ajax Endpoint cannot be reached. Go to Settings > Permalinks and save to resolve." );
+						window.console.log( 'Error 404: Ajax Endpoint cannot be reached. Go to Settings > Permalinks and save to resolve.' );
 					}
 				}
 			}
@@ -181,7 +183,7 @@ jQuery( document ).ready( function ( $ ) {
 		job_manager_store_state( target, 1 );
 	} )
 
-	.on( "keyup", function(e) {
+	.on( 'keyup', function(e) {
 		if ( e.which === 13 ) {
 			$( this ).trigger( 'change' );
 		}
@@ -204,7 +206,7 @@ jQuery( document ).ready( function ( $ ) {
 
 	$( document.body ).on( 'click', '.load_more_jobs', function() {
 		var target           = $( this ).closest( 'div.job_listings' );
-		var page             = parseInt( $( this ).data( 'page' ) || 1 );
+		var page             = parseInt( ( $( this ).data( 'page' ) || 1 ), 10 );
 		var loading_previous = false;
 
 		$(this).addClass( 'loading' );
@@ -235,24 +237,23 @@ jQuery( document ).ready( function ( $ ) {
 
 		target.triggerHandler( 'update_results', [ page, false ] );
 
-		$( "body, html" ).animate({
-            scrollTop: target.offset().top
-        }, 600 );
+		$( 'body, html' ).animate({
+			scrollTop: target.offset().top
+		}, 600 );
 
 		return false;
 	} );
 
 	if ( $.isFunction( $.fn.chosen ) ) {
-		if ( job_manager_ajax_filters.is_rtl == 1 ) {
+		if ( job_manager_ajax_filters.is_rtl === 1 ) {
 			$( 'select[name^="search_categories"]' ).addClass( 'chosen-rtl' );
 		}
 		$( 'select[name^="search_categories"]' ).chosen({ search_contains: true });
 	}
 
+	var $supports_html5_history = false;
 	if ( window.history && window.history.pushState ) {
 		$supports_html5_history = true;
-	} else {
-		$supports_html5_history = false;
 	}
 
 	var location = document.location.href.split('#')[0];
@@ -267,23 +268,23 @@ jQuery( document ).ready( function ( $ ) {
 	}
 
 	// Inital job and form population
-	$(window).on( "load", function( event ) {
+	$(window).on( 'load', function() {
 		$( '.job_filters' ).each( function() {
 			var target      = $( this ).closest( 'div.job_listings' );
 			var form        = target.find( '.job_filters' );
 			var inital_page = 1;
 			var index       = $( 'div.job_listings' ).index( target );
 
-	   		if ( window.history.state && window.location.hash ) {
-	   			var state = window.history.state;
-	   			if ( state.id && 'job_manager_state' === state.id && index == state.index ) {
+			if ( window.history.state && window.location.hash ) {
+				var state = window.history.state;
+				if ( state.id && 'job_manager_state' === state.id && index === state.index ) {
 					inital_page = state.page;
 					form.deserialize( state.data );
 					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'chosen:updated' );
 				}
-	   		}
+			}
 
 			target.triggerHandler( 'update_results', [ inital_page, false ] );
-	   	});
+		});
 	});
 } );
