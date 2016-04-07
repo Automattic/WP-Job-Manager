@@ -41,8 +41,28 @@ jQuery(document).ready(function($) {
 		var field_placeholder = $( this ).data( 'field_placeholder' );
 		var button_text       = $( this ).data( 'uploader_button_text' );
 		var button            = $( this ).data( 'uploader_button' );
+		var view_button       = $( this ).data( 'view_button' );
 
-		$( this ).before('<span class="file_url"><input type="text" name="' + field_name + '[]" placeholder="' + field_placeholder + '" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="' + button_text + '">' + button + '</button></span>');
+		$( this ).before( '<span class="file_url"><input type="text" name="' + field_name + '[]" placeholder="' + field_placeholder + '" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="' + button_text + '">' + button + '</button><button class="button button-small wp_job_manager_view_file_button">' + view_button + '</button></span>' );
+	} );
+
+	$('.wp_job_manager_view_file_button').live('click', function ( event ) {
+		event.preventDefault();
+
+		file_target_wrapper = $( this ).closest( '.file_url' );
+		file_target_input = file_target_wrapper.find( 'input' );
+
+		var attachment_url = file_target_input.val();
+
+		if ( attachment_url.indexOf( '://' ) > - 1 ) {
+			window.open( attachment_url, '_blank' );
+		} else {
+			file_target_input.addClass( 'file_no_url' );
+			setTimeout( function () {
+				file_target_input.removeClass( 'file_no_url' );
+			}, 1000 );
+		}
+
 	});
 
 	$('.wp_job_manager_upload_file_button').live('click', function( event ){
