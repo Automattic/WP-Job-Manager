@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
 	var file_target_input;
 	var file_target_wrapper;
 
-	$('.wp_job_manager_add_another_file_button').live('click', function( event ){
+	$(document).on('click', '.wp_job_manager_add_another_file_button', function( event ){
 		event.preventDefault();
 
 		var field_name        = $( this ).data( 'field_name' );
@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
 		$( this ).before( '<span class="file_url"><input type="text" name="' + field_name + '[]" placeholder="' + field_placeholder + '" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="' + button_text + '">' + button + '</button><button class="button button-small wp_job_manager_view_file_button">' + view_button + '</button></span>' );
 	} );
 
-	$('.wp_job_manager_view_file_button').live('click', function ( event ) {
+	$(document).on('click', '.wp_job_manager_view_file_button', function ( event ) {
 		event.preventDefault();
 
 		file_target_wrapper = $( this ).closest( '.file_url' );
@@ -65,7 +65,7 @@ jQuery(document).ready(function($) {
 
 	});
 
-	$('.wp_job_manager_upload_file_button').live('click', function( event ){
+	$(document).on('click', '.wp_job_manager_upload_file_button', function( event ){
 		event.preventDefault();
 
 		file_target_wrapper = $( this ).closest('.file_url');
