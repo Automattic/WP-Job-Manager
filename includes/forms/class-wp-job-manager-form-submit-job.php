@@ -116,7 +116,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			break;
 		}
 
-		$this->fields = apply_filters( 'submit_job_form_fields', array(
+		$job_form_fields = array(
 			'job' => array(
 				'job_title' => array(
 					'label'       => __( 'Job Title', 'wp-job-manager' ),
@@ -132,15 +132,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'required'    => false,
 					'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
 					'priority'    => 2
-				),
-				'job_type' => array(
-					'label'       => __( 'Job type', 'wp-job-manager' ),
-					'type'        => 'term-select',
-					'required'    => true,
-					'placeholder' => '',
-					'priority'    => 3,
-					'default'     => 'full-time',
-					'taxonomy'    => 'job_listing_type'
 				),
 				'job_category' => array(
 					'label'       => __( 'Job category', 'wp-job-manager' ),
@@ -219,7 +210,25 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					)
 				)
 			)
-		) );
+		);
+		if(wp_count_terms('job_listing_type')>0){
+			$job_type_field = array(
+				'job' => array(
+					'job_type' => array(
+						'label'       => __( 'Job type', 'wp-job-manager' ),
+						'type'        => 'term-select',
+						'required'    => true,
+						'placeholder' => '',
+						'priority'    => 3,
+						'default'     => 'full-time',
+						'taxonomy'    => 'job_listing_type'
+					)
+				)
+			);
+			$job_form_fields = array_merge_recursive($job_form_fields,$job_type_field);
+		}
+
+		$this->fields = apply_filters( 'submit_job_form_fields', $job_form_fields );
 
 		if ( ! get_option( 'job_manager_enable_categories' ) || wp_count_terms( 'job_listing_category' ) == 0 ) {
 			unset( $this->fields['job']['job_category'] );
