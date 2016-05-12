@@ -131,6 +131,19 @@ class WP_Job_Manager_Widget extends WP_Widget {
 			}
 		}
 	}
+
+	/**
+	 * widget function.
+	 *
+	 * @see    WP_Widget
+	 * @access public
+	 *
+	 * @param array $args
+	 * @param array $instance
+	 *
+	 * @return void
+	 */
+	public function widget( $args, $instance ) {}
 }
 
 /**
