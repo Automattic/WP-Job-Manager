@@ -135,9 +135,17 @@ function get_job_listings( $args = array() ) {
 
 	do_action( 'before_get_job_listings', $query_args, $args );
 
-	if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
+	// Cache results
+	if ( apply_filters( 'get_job_listings_cache_results', true ) ) {
+
+		if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
+			$result = new WP_Query( $query_args );
+			set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
+		}
+
+	}
+	else {
 		$result = new WP_Query( $query_args );
-		set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
 	}
 
 	do_action( 'after_get_job_listings', $query_args, $args );
