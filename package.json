@@ -3,6 +3,8 @@
   "title": "WP Job Manager",
   "version": "1.18.0",
   "homepage": "http://wordpress.org/plugins/wp-job-manager/",
+  "license": "GPL-2.0+",
+  "repository": "automattic/wp-job-manager",
   "main": "Gruntfile.js",
   "devDependencies": {
     "grunt": "~0.4.2",
