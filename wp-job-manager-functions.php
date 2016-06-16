@@ -546,6 +546,13 @@ function job_manager_dropdown_categories( $args = '' ) {
 		$r['pad_counts'] = true;
 	}
 
+	// WPML & Polylang caching per language
+	if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
+		$r['lang'] = apply_filters( 'wpml_current_language', NULL );
+	} elseif ( function_exists( 'pll_current_language' ) ) {
+		$r['lang'] = pll_current_language();
+	}
+
 	extract( $r );
 
 	// Store in a transient to help sites with many cats
