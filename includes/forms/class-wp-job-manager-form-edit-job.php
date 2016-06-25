@@ -7,9 +7,20 @@ include_once( 'class-wp-job-manager-form-submit-job.php' );
  */
 class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
-	public $form_name           = 'edit-job';
+	/**
+	 * Form name
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $form_name = 'edit-job';
 
-	/** @var WP_Job_Manager_Form_Edit_Job The single instance of the class */
+	/**
+	 * Instance
+	 *
+	 * @access protected
+	 * @var WP_Job_Manager_Form_Edit_Job The single instance of the class
+	 */
 	protected static $_instance = null;
 
 	/**

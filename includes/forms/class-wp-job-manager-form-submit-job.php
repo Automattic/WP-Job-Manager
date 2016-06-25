@@ -5,11 +5,36 @@
  */
 class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
-	public    $form_name = 'submit-job';
+	/**
+	 * Form name
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $form_name = 'submit-job';
+
+	/**
+	 * Job id
+	 *
+	 * @access protected
+	 * @var int
+	 */
 	protected $job_id;
+
+	/**
+	 * Preview job
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $preview_job;
 
-	/** @var WP_Job_Manager_Form_Submit_Job The single instance of the class */
+	/**
+	 * Instance
+	 *
+	 * @access protected
+	 * @var WP_Job_Manager_Form_Submit_Job The single instance of the class
+	 */
 	protected static $_instance = null;
 
 	/**
