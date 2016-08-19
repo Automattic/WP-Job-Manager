@@ -73,7 +73,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	/**
 	 * get_cached_widget function.
 	 */
-	function get_cached_widget( $args ) {
+	public function get_cached_widget( $args ) {
 		$cache = wp_cache_get( $this->widget_id, 'widget' );
 
 		if ( ! is_array( $cache ) )
@@ -113,7 +113,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 * @param array $old_instance
 	 * @return array
 	 */
-	function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 
 		if ( ! $this->settings )
