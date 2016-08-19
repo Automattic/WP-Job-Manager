@@ -5,11 +5,36 @@
  */
 class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
-	public    $form_name = 'submit-job';
+	/**
+	 * Form name
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $form_name = 'submit-job';
+
+	/**
+	 * Job id
+	 *
+	 * @access protected
+	 * @var int
+	 */
 	protected $job_id;
+
+	/**
+	 * Preview job
+	 *
+	 * @access protected
+	 * @var string
+	 */
 	protected $preview_job;
 
-	/** @var WP_Job_Manager_Form_Submit_Job The single instance of the class */
+	/**
+	 * Instance
+	 *
+	 * @access protected
+	 * @var WP_Job_Manager_Form_Submit_Job The single instance of the class
+	 */
 	protected static $_instance = null;
 
 	/**
@@ -64,7 +89,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
 			$job_status = get_post_status( $job_id );
 
-			if ( 'preview' === $job_status && get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key'] ) {
+			if ( ( 'preview' === $job_status || 'pending_payment' === $job_status ) && get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key'] ) {
 				$this->job_id = $job_id;
 			}
 		}

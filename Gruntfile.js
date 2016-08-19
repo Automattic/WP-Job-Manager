@@ -101,6 +101,14 @@ module.exports = function( grunt ){
 				'!assets/js/jquery-tiptip/*.js'
 			]
 		},
+
+		wp_readme_to_markdown: {
+			readme: {
+				files: {
+					'readme.md': 'readme.txt'
+				}
+			}
+		}
 	});
 
 	// Load NPM tasks to be used here
@@ -110,12 +118,14 @@ module.exports = function( grunt ){
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
+	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown');
 
 	// Register tasks
 	grunt.registerTask( 'default', [
 		'less',
 		'cssmin',
-		'uglify'
+		'uglify',
+		'wp_readme_to_markdown'
 	]);
 
 	// Just an alias for pot file generation

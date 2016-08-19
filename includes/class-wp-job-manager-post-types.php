@@ -101,6 +101,7 @@ class WP_Job_Manager_Post_Types {
 						'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
 	            	),
 		            'show_ui' 				=> true,
+		            'show_tagcloud'			=> false,
 		            'public' 	     		=> $public,
 		            'capabilities'			=> array(
 		            	'manage_terms' 		=> $admin_capability,
@@ -147,6 +148,7 @@ class WP_Job_Manager_Post_Types {
                     'new_item_name' 	=> sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
             	),
 	            'show_ui' 				=> true,
+	            'show_tagcloud'			=> false,
 	            'public' 			    => $public,
 	            'capabilities'			=> array(
 	            	'manage_terms' 		=> $admin_capability,

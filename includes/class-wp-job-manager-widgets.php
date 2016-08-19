@@ -7,10 +7,44 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class WP_Job_Manager_Widget extends WP_Widget {
 
+	/**
+	 * Widget CSS class
+	 *
+	 * @access public
+	 * @var string
+	 */
 	public $widget_cssclass;
+
+	/**
+	 * Widget description
+	 *
+	 * @access public
+	 * @var string
+	 */
 	public $widget_description;
+
+	/**
+	 * Widget id
+	 *
+	 * @access public
+	 * @var string
+	 */
 	public $widget_id;
+
+	/**
+	 * Widget name
+	 *
+	 * @access public
+	 * @var string
+	 */
 	public $widget_name;
+
+	/**
+	 * Widget settings
+	 *
+	 * @access public
+	 * @var array
+	 */
 	public $settings;
 
 	/**
