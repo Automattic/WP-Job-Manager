@@ -8,7 +8,20 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class WP_Job_Manager_Category_Walker extends Walker {
 
+	/**
+	 * Tree type
+	 *
+	 * @access public
+	 * @var string
+	 */
 	var $tree_type = 'category';
+
+	/**
+	 * Database fields
+	 *
+	 * @access public
+	 * @var array
+	 */
 	var $db_fields = array ('parent' => 'parent', 'id' => 'term_id', 'slug' => 'slug' );
 
 	/**

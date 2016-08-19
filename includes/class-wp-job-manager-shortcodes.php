@@ -7,6 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class WP_Job_Manager_Shortcodes {
 
+	/**
+	 * Dashboard message
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private $job_dashboard_message = '';
 
 	/**
