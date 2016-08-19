@@ -701,10 +701,21 @@ function job_manager_upload_file( $file, $args = array() ) {
 	include_once( ABSPATH . 'wp-admin/includes/file.php' );
 	include_once( ABSPATH . 'wp-admin/includes/media.php' );
 
+	$allowed_mime_types = array(
+		'jpg|jpeg|jpe' => 'image/jpeg',
+		'gif'          => 'image/gif',
+		'png'          => 'image/png',
+		'bmp'          => 'image/bmp',
+		'tif|tiff'     => 'image/tiff',
+		'ico'          => 'image/x-icon',
+	);
+
+	$allowed_mime_types = apply_filters( 'job_manager_allowed_mime_types', $allowed_mime_types );
+
 	$args = wp_parse_args( $args, array(
 		'file_key'           => '',
 		'file_label'         => '',
-		'allowed_mime_types' => get_allowed_mime_types()
+		'allowed_mime_types' => $allowed_mime_types,
 	) );
 
 	$job_manager_upload         = true;
