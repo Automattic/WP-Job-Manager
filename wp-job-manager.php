@@ -3,11 +3,11 @@
  * Plugin Name: WP Job Manager
  * Plugin URI: https://wpjobmanager.com/
  * Description: Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
- * Version: 1.25.0
+ * Version: 1.25.1
  * Author: Automattic
  * Author URI: https://wpjobmanager.com/
  * Requires at least: 4.1
- * Tested up to: 4.4
+ * Tested up to: 4.6
  * Text Domain: wp-job-manager
  * Domain Path: /languages/
  * License: GPL2+
