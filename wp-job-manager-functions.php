@@ -711,18 +711,23 @@ function job_manager_upload_file( $file, $args = array() ) {
 	$args = wp_parse_args( $args, array(
 		'file_key'           => '',
 		'file_label'         => '',
-		'allowed_mime_types' => get_allowed_mime_types()
+		'allowed_mime_types' => '',
 	) );
 
 	$job_manager_upload         = true;
 	$job_manager_uploading_file = $args['file_key'];
 	$uploaded_file              = new stdClass();
+	if ( '' === $args['allowed_mime_types'] ) {
+		$allowed_mime_types = job_manager_get_allowed_mime_types( $job_manager_uploading_file );
+	} else {
+		$allowed_mime_types = $args['allowed_mime_types'];
+	}
 
-	if ( ! in_array( $file['type'], $args['allowed_mime_types'] ) ) {
+	if ( ! in_array( $file['type'], $allowed_mime_types ) ) {
 		if ( $args['file_label'] ) {
-			return new WP_Error( 'upload', sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $args['file_label'], $file['type'], implode( ', ', array_keys( $args['allowed_mime_types'] ) ) ) );
+			return new WP_Error( 'upload', sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $args['file_label'], $file['type'], implode( ', ', array_keys( $allowed_mime_types ) ) ) );
 		} else {
-			return new WP_Error( 'upload', sprintf( __( 'Uploaded files need to be one of the following file types: %s', 'wp-job-manager' ), implode( ', ', array_keys( $args['allowed_mime_types'] ) ) ) );
+			return new WP_Error( 'upload', sprintf( __( 'Uploaded files need to be one of the following file types: %s', 'wp-job-manager' ), implode( ', ', array_keys( $allowed_mime_types ) ) ) );
 		}
 	} else {
 		$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', array( 'test_form' => false ) ) );
@@ -742,6 +747,45 @@ function job_manager_upload_file( $file, $args = array() ) {
 	$job_manager_uploading_file = '';
 
 	return $uploaded_file;
+}
+
+/**
+ * Allowed Mime types specifically for WPJM.
+ * @param   string $field Field used.
+ * @return  array  Array of allowed mime types
+ */
+function job_manager_get_allowed_mime_types( $field = '' ){
+	if ( 'company_logo' === $field ) {
+		$allowed_mime_types = array(
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
+		);
+	} else {
+		$allowed_mime_types = array(
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
+			'pdf'          => 'application/pdf',
+			'doc'          => 'application/msword',
+			'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+		);
+	}
+
+	/**
+	 * Mime types to accept in uploaded files.
+	 *
+	 * Default is image, pdf, and doc(x) files.
+	 *
+	 * @since 1.25.1
+	 *
+	 * @param array  {
+	 *     Array of allowed file extensions and mime types.
+	 *     Key is pipe-separated file extensions. Value is mime type.
+	 * }
+	 * @param string $field The field key for the upload.
+	 */
+	return apply_filters( 'job_manager_mime_types', $allowed_mime_types, $field );
 }
 
 /**
