@@ -710,7 +710,7 @@ function job_manager_upload_file( $file, $args = array() ) {
 	$job_manager_upload         = true;
 	$job_manager_uploading_file = $args['file_key'];
 	$uploaded_file              = new stdClass();
-	if ( '' == $args['allowed_mime_types'] ) {
+	if ( '' === $args['allowed_mime_types'] ) {
 		$allowed_mime_types = job_manager_get_allowed_mime_types( $job_manager_uploading_file );
 	} else {
 		$allowed_mime_types = $args['allowed_mime_types'];
