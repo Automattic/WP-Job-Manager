@@ -26,7 +26,7 @@ class WP_Job_Manager {
 	 */
 	public function __construct() {
 		// Define constants
-		define( 'JOB_MANAGER_VERSION', '1.25.1' );
+		define( 'JOB_MANAGER_VERSION', '1.25.0' );
 		define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
@@ -116,11 +116,11 @@ class WP_Job_Manager {
 		$ajax_data 		  = array(
 			'ajax_url'                => $ajax_url,
 			'is_rtl'                  => is_rtl() ? 1 : 0,
-			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' )
+			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' ),
 		);
 
 		// WPML workaround
-		if ( defined( 'ICL_SITEPRESS_VERSION' ) ){
+		if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
 			$ajax_data['lang'] = apply_filters( 'wpml_current_language', NULL );
 		}
 

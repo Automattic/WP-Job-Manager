@@ -7,12 +7,53 @@
  */
 abstract class WP_Job_Manager_Form {
 
-	protected $fields    = array();
-	protected $action    = '';
-	protected $errors    = array();
-	protected $steps     = array();
-	protected $step      = 0;
-	public    $form_name = '';
+	/**
+	 * Form fields
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $fields = array();
+
+	/**
+	 * Form action
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $action = '';
+
+	/**
+	 * Form errors
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $errors = array();
+
+	/**
+	 * Form steps
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $steps = array();
+
+	/**
+	 * Form step
+	 *
+	 * @access protected
+	 * @var int
+	 */
+	protected $step = 0;
+
+	/**
+	 * Form fields
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	public $form_name = '';
 
 	/**
 	 * Cloning is forbidden.
@@ -219,11 +260,6 @@ abstract class WP_Job_Manager_Form {
 	 * @return array|string $value The sanitized array (or string from the callback).
 	 */
 	protected function sanitize_posted_field( $value ) {
-		// Decode URLs
-		if ( is_string( $value ) && ( strstr( $value, 'http:' ) || strstr( $value, 'https:' ) ) ) {
-			$value = urldecode( $value );
-		}
-
 		// Santize value
 		$value = is_array( $value ) ? array_map( array( $this, 'sanitize_posted_field' ), $value ) : sanitize_text_field( stripslashes( trim( $value ) ) );
 

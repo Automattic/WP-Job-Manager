@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
 	// Slide toggle
-	jQuery( '.application_details' ).hide();
-	jQuery( '.application_button' ).click(function() {
-		jQuery( '.application_details' ).slideToggle();
+	$( '.application_details' ).hide();
+	$( '.application_button' ).click(function() {
+		$( '.application_details' ).slideToggle();
 	});
 });
