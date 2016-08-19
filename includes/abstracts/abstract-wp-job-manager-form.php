@@ -326,14 +326,17 @@ abstract class WP_Job_Manager_Form {
 			if ( ! empty( $field['allowed_mime_types'] ) ) {
 				$allowed_mime_types = $field['allowed_mime_types'];
 			} else {
-				$allowed_mime_types = get_allowed_mime_types();
+				$allowed_mime_types = job_manager_get_allowed_mime_types();
 			}
 
 			$file_urls       = array();
 			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] );
 
 			foreach ( $files_to_upload as $file_to_upload ) {
-				$uploaded_file = job_manager_upload_file( $file_to_upload, array( 'file_key' => $field_key ) );
+				$uploaded_file = job_manager_upload_file( $file_to_upload, array(
+					'file_key'           => $field_key,
+					'allowed_mime_types' => $allowed_mime_types,
+					) );
 
 				if ( is_wp_error( $uploaded_file ) ) {
 					throw new Exception( $uploaded_file->get_error_message() );
