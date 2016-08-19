@@ -698,7 +698,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 function job_manager_upload_file( $file, $args = array() ) {
 	global $job_manager_upload, $job_manager_uploading_file;
 
-	include_once( ABSPATH . 'wp-admin/includes/file.php'  );
+	include_once( ABSPATH . 'wp-admin/includes/file.php' );
 	include_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 	$args = wp_parse_args( $args, array(
@@ -712,8 +712,7 @@ function job_manager_upload_file( $file, $args = array() ) {
 	$uploaded_file              = new stdClass();
 	if ( '' == $args['allowed_mime_types'] ) {
 		$allowed_mime_types = job_manager_get_allowed_mime_types( $job_manager_uploading_file );
-	}
-	else {
+	} else {
 		$allowed_mime_types = $args['allowed_mime_types'];
 	}
 
@@ -748,24 +747,21 @@ function job_manager_upload_file( $file, $args = array() ) {
  * @param   string $field Field used.
  * @return  array  Array of allowed mime types
  */
-function job_manager_get_allowed_mime_types( $field = null ){
+function job_manager_get_allowed_mime_types( $field = '' ){
 	if ( 'company_logo' === $field ) {
 		$allowed_mime_types = array(
-		'jpg|jpeg|jpe' => 'image/jpeg',
-		'gif'          => 'image/gif',
-		'png'          => 'image/png',
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
 		);
-	}
-	else {
+	} else {
 		$allowed_mime_types = array(
-		'jpg|jpeg|jpe' => 'image/jpeg',
-		'gif'          => 'image/gif',
-		'png'          => 'image/png',
-		'tiff|tif'     => 'image/tiff',
-		'ico'          => 'image/x-icon',
-		'pdf'          => 'application/pdf',
-		'doc'          => 'application/msword',
-		'dotx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
+			'pdf'          => 'application/pdf',
+			'doc'          => 'application/msword',
+			'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 		);
 	}
 
@@ -782,7 +778,7 @@ function job_manager_get_allowed_mime_types( $field = null ){
 	 * }
 	 * @param string $field The field key for the upload.
 	 */
-	return apply_filter( 'job_manager_mime_types', $allowed_mime_types, $field );
+	return apply_filters( 'job_manager_mime_types', $allowed_mime_types, $field );
 }
 
 /**
