@@ -142,8 +142,17 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 == Changelog ==
 
 = 1.25.1 =
+* Feature - Adds a view button to the Admin UI for easy access to submitted files or URLs. Props tripflex (https://github.com/Automattic/WP-Job-Manager/pull/650)
+* Fix - Add hardening to file uploads to prevent accepting unexpected file times. Previously, other WP-allowed types were sometimes accepted.
 * Fix - Job post form categories are now properly cached and displayed per language when using WPML or Polylang. (https://github.com/Automattic/WP-Job-Manager/issues/692)
 * Fix - Refactored WPML workaround, which was causing no job listings on non-default languages. (https://github.com/Automattic/WP-Job-Manager/issues/617)
+* Fix - Allow employers to edit job listings when a listing is pending payment. (https://github.com/Automattic/WP-Job-Manager/pull/664)
+* Fix - No longer display Job Taxonomies in the WordPress tag cloud. (https://github.com/Automattic/WP-Job-Manager/pull/658)
+* Fix - Migrate away from jQuery.live, which is no longer supported. ( https://github.com/Automattic/WP-Job-Manager/pull/664 )
+* Tweak - Updated incorrect settings description. (https://github.com/Automattic/WP-Job-Manager/pull/632)
+* Dev - Adds hook to add items in a job's RSS feed item. (https://github.com/Automattic/WP-Job-Manager/pull/636)
+* Dev - Adds filter to disable Job Listings cache (https://github.com/Automattic/WP-Job-Manager/pull/684)
+* Dev - Inline docs and coding standards improvements.
 
 = 1.25.0 =
 * Feature - Ability to duplicate listings from job dashboard.
@@ -262,5 +271,5 @@ See additional changelog items in changelog.txt
 
 == Upgrade Notice ==
 
-= 1.22.0 =
-As this is a major update, please ensure you update any plugins and themes that rely on Job Manager. This includes Resume Manager, Applications, WC Paid Lisitngs, and themes such as Jobify.
+= 1.25.1 =
+This release includes many bugs and fixes including some security improvements. Upgrade today!
