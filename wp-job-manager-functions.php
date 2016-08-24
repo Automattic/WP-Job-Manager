@@ -723,7 +723,21 @@ function job_manager_upload_file( $file, $args = array() ) {
 		$allowed_mime_types = $args['allowed_mime_types'];
 	}
 
-	if( is_wp_error( $file = apply_filters( 'job_manager_upload_file_pre_upload', $file, $args, $allowed_mime_types ) ) ) {
+	/**
+	 * Filter file configuration before upload
+	 *
+	 * This filter can be used to modify the file arguments before being uploaded, or return a WP_Error
+	 * object to prevent the file from being uploaded, and return the error.
+	 *
+	 * @since 1.25.2
+	 *
+	 * @param array $file               Array of $_FILE data to upload.
+	 * @param array $args               Optional file arguments
+	 * @param array $allowed_mime_types Array of allowed mime types from field config or defaults
+	 */
+	$file = apply_filters( 'job_manager_upload_file_pre_upload', $file, $args, $allowed_mime_types );
+
+	if ( is_wp_error( $file ) ) {
 		return $file;
 	}
 
