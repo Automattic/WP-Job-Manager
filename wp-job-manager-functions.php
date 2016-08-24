@@ -693,14 +693,14 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 		$files_to_upload[] = $file_data;
 	}
 
-	return $files_to_upload;
+	return apply_filters( 'job_manager_prepare_uploaded_files', $files_to_upload );
 }
 
 /**
  * Upload a file using WordPress file API.
  * @param  array $file_data Array of $_FILE data to upload.
  * @param  array $args Optional arguments
- * @return array|WP_Error Array of objects containing either file information or an error
+ * @return stdClass|WP_Error Object containing file information, or error
  */
 function job_manager_upload_file( $file, $args = array() ) {
 	global $job_manager_upload, $job_manager_uploading_file;
@@ -721,6 +721,24 @@ function job_manager_upload_file( $file, $args = array() ) {
 		$allowed_mime_types = job_manager_get_allowed_mime_types( $job_manager_uploading_file );
 	} else {
 		$allowed_mime_types = $args['allowed_mime_types'];
+	}
+
+	/**
+	 * Filter file configuration before upload
+	 *
+	 * This filter can be used to modify the file arguments before being uploaded, or return a WP_Error
+	 * object to prevent the file from being uploaded, and return the error.
+	 *
+	 * @since 1.25.2
+	 *
+	 * @param array $file               Array of $_FILE data to upload.
+	 * @param array $args               Optional file arguments
+	 * @param array $allowed_mime_types Array of allowed mime types from field config or defaults
+	 */
+	$file = apply_filters( 'job_manager_upload_file_pre_upload', $file, $args, $allowed_mime_types );
+
+	if ( is_wp_error( $file ) ) {
+		return $file;
 	}
 
 	if ( ! in_array( $file['type'], $allowed_mime_types ) ) {
