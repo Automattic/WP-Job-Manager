@@ -143,6 +143,11 @@ function get_job_listings( $args = array() ) {
 			set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
 		}
 
+		// random order is cached so shuffle them
+		if ( $query_args[ 'orderby' ] == 'rand' ) {
+			shuffle( $result->posts );
+		}
+
 	}
 	else {
 		$result = new WP_Query( $query_args );
