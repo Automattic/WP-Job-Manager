@@ -171,4 +171,10 @@ class WP_Job_Manager {
 	}
 }
 
+function job_manager_add_post_types( $types, $id ) {
+	$types[] = 'job_listing';
+	return $types;
+}
+add_filter( 'post_types_to_delete_with_user', 'job_manager_add_post_types' );
+
 $GLOBALS['job_manager'] = new WP_Job_Manager();
