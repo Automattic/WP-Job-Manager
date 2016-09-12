@@ -17,7 +17,7 @@ do_action( 'single_job_listing_meta_before' ); ?>
 
 	<li class="location" itemprop="jobLocation"><?php the_job_location(); ?></li>
 
-	<li class="date-posted" itemprop="datePosted"><date><?php printf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) ); ?></date></li>
+	<li class="date-posted" itemprop="datePosted"><date><?php the_job_publish_date(); ?></date></li>
 
 	<?php if ( is_position_filled() ) : ?>
 		<li class="position-filled"><?php _e( 'This position has been filled', 'wp-job-manager' ); ?></li>
