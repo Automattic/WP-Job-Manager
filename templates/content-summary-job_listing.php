@@ -11,7 +11,7 @@
 
 		<h1><?php the_title(); ?></h1>
 
-		<p class="meta"><?php the_job_location( false ); ?> &mdash; <date><?php the_job_publish_date(); ?></date></p>
+		<p class="meta"><?php the_job_location( false ); ?> &mdash; <?php the_job_publish_date(); ?></p>
 
 	</div>
 </a>
