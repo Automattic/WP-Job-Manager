@@ -275,12 +275,12 @@ function the_job_publish_date( $post = null ) {
 	$date_format = get_option( 'job_manager_date_format' );
 
 	if ( $date_format === 'default' ) {
-		$display_date = get_the_time( get_option( 'date_format' ) );
+		$display_date = get_post_time( get_option( 'date_format' ) );
 	} else {
 		$display_date = sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) );
 	}
 
-	echo '<date>' . $display_date . '</date>';
+	echo '<time datetime="' . get_post_time( 'Y-m-d' ) . '">' . $display_date . '</time>';
 }
 
 
@@ -293,7 +293,7 @@ function get_the_job_publish_date( $post = null ) {
 	$date_format = get_option( 'job_manager_date_format' );
 
 	if ( $date_format === 'default' ) {
-		return get_the_time( get_option( 'date_format' ) );
+		return get_post_time( get_option( 'date_format' ) );
 	} else {
 		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) );
 	}
