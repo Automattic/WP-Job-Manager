@@ -185,7 +185,13 @@ class WP_Job_Manager_Ajax {
 			$result['showing_all'] = true;
 		}
 
-		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', sprintf( __( 'Showing all %s', 'wp-job-manager' ), implode( ' ', $result['showing'] ) ) );
+		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
+			$message = sprintf( __( '%1$s search completed. Found %2$d matching records.', 'wp-job-manager' ), __( $post_type_label, 'wp-job-manager' ), $jobs->post_count );
+			$result['showing_all'] = true;
+		} else {
+			$message = "";
+		}
+		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $message );
 
 		// Generate RSS link
 		$result['showing_links'] = job_manager_get_filtered_links( array(
