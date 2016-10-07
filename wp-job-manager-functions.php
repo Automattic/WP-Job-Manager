@@ -23,9 +23,15 @@ function get_job_listings( $args = array() ) {
 		'fields'            => 'all'
 	) );
 
+	if ( false == get_option( 'job_manager_hide_expired_content', 1 ) ) {
+		$post_status = array( 'publish', 'expired' );
+	} else {
+		$post_status = 'publish';
+	}
+
 	$query_args = array(
 		'post_type'              => 'job_listing',
-		'post_status'            => 'publish',
+		'post_status'            => $post_status,
 		'ignore_sticky_posts'    => 1,
 		'offset'                 => absint( $args['offset'] ),
 		'posts_per_page'         => intval( $args['posts_per_page'] ),
