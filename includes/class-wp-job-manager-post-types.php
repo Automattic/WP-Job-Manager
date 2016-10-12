@@ -486,18 +486,15 @@ class WP_Job_Manager_Post_Types {
 			$expires = get_post_meta( $post->ID, '_job_expires', true );
 			if ( $expires && strtotime( $expires ) < current_time( 'timestamp' ) ) {
 				update_post_meta( $post->ID, '_job_expires', '' );
-				$_POST[ '_job_expires' ] = '';
 			}
-			return;
 		}
 
-		// No metadata set so we can generate an expiry date
 		// See if the user has set the expiry manually:
 		if ( ! empty( $_POST[ '_job_expires' ] ) ) {
 			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ '_job_expires' ] ) ) ) );
 
-		// No manual setting? Lets generate a date
-		} else {
+		// No manual setting? Lets generate a date if there isn't already one
+		} elseif ( false == isset( $expires ) ) {
 			$expires = calculate_job_expiry( $post->ID );
 			update_post_meta( $post->ID, '_job_expires', $expires );
 
