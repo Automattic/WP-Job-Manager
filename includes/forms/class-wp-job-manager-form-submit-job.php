@@ -145,6 +145,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			break;
 		}
 
+		if ( job_manager_single_job_type() ) {
+			$job_type = 'term-select';
+		} else {
+			$job_type = 'term-multiselect';
+		}
 		$this->fields = apply_filters( 'submit_job_form_fields', array(
 			'job' => array(
 				'job_title' => array(
@@ -164,7 +169,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				),
 				'job_type' => array(
 					'label'       => __( 'Job type', 'wp-job-manager' ),
-					'type'        => 'term-select',
+					'type'        => $job_type,
 					'required'    => true,
 					'placeholder' => '',
 					'priority'    => 3,

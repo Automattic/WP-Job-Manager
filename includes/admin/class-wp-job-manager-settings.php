@@ -172,7 +172,16 @@ class WP_Job_Manager_Settings {
 								'email' => __( 'Email addresses only', 'wp-job-manager' ),
 								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
 							)
-						)
+						),
+						array(
+							'name'       => 'job_manager_single_job_type',
+							'std'        => '1',
+							'label'      => __( 'One type per job', 'wp-job-manager' ),
+							'cb_label'   => __( 'Every job may only have one job type', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled each job may only have one job type.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
 					)
 				),
 				'job_pages' => array(
