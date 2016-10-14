@@ -500,8 +500,8 @@ function job_manager_user_can_edit_job( $job_id ) {
  *
  * @return bool
  */
-function job_manager_single_job_type() {
-	return apply_filters( 'job_manager_one_job_type', get_option( 'job_manager_single_job_type' ) == 1 ? true : false );
+function job_manager_multi_job_type() {
+	return apply_filters( 'job_manager_multi_job_type', get_option( 'job_manager_multi_job_type' ) == 1 ? true : false );
 }
 
 /**

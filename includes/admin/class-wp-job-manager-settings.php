@@ -96,6 +96,15 @@ class WP_Job_Manager_Settings {
 								'all' => __( 'Jobs will be shown if within ALL selected categories', 'wp-job-manager' ),
 							)
 						),
+						array(
+							'name'       => 'job_manager_multi_job_type',
+							'std'        => '0',
+							'label'      => __( 'Multi-select Listing Types', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable multiple types for listings', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled each job can have more than one type. The metabox on the post editor and the select box on the frontend job submission form are changed by this.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
 					),
 				),
 				'job_submission' => array(
@@ -172,15 +181,6 @@ class WP_Job_Manager_Settings {
 								'email' => __( 'Email addresses only', 'wp-job-manager' ),
 								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
 							)
-						),
-						array(
-							'name'       => 'job_manager_single_job_type',
-							'std'        => '1',
-							'label'      => __( 'One type per job', 'wp-job-manager' ),
-							'cb_label'   => __( 'Every job may only have one job type', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled each job may only have one job type.', 'wp-job-manager' ),
-							'type'       => 'checkbox',
-							'attributes' => array()
 						),
 					)
 				),
