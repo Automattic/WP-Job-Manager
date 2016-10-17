@@ -496,6 +496,15 @@ function job_manager_user_can_edit_job( $job_id ) {
 }
 
 /**
+ * True if only one type allowed per job
+ *
+ * @return bool
+ */
+function job_manager_multi_job_type() {
+	return apply_filters( 'job_manager_multi_job_type', get_option( 'job_manager_multi_job_type' ) == 1 ? true : false );
+}
+
+/**
  * True if registration is enabled.
  *
  * @return bool
