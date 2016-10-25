@@ -114,51 +114,53 @@ class WP_Job_Manager_Post_Types {
 		    );
 		}
 
-	    $singular  = __( 'Job type', 'wp-job-manager' );
-		$plural    = __( 'Job types', 'wp-job-manager' );
+		if ( get_option( 'job_manager_enable_types' ) ) {
+			$singular  = __( 'Job type', 'wp-job-manager' );
+			$plural    = __( 'Job types', 'wp-job-manager' );
 
-		if ( current_theme_supports( 'job-manager-templates' ) ) {
-			$rewrite   = array(
-				'slug'         => _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ),
-				'with_front'   => false,
-				'hierarchical' => false
+			if ( current_theme_supports( 'job-manager-templates' ) ) {
+				$rewrite   = array(
+					'slug'         => _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ),
+					'with_front'   => false,
+					'hierarchical' => false
+				);
+				$public    = true;
+			} else {
+				$rewrite   = false;
+				$public    = false;
+			}
+
+			register_taxonomy( "job_listing_type",
+				apply_filters( 'register_taxonomy_job_listing_type_object_type', array( 'job_listing' ) ),
+				apply_filters( 'register_taxonomy_job_listing_type_args', array(
+					'hierarchical' 			=> true,
+					'label' 				=> $plural,
+					'labels' => array(
+						'name' 				=> $plural,
+						'singular_name' 	=> $singular,
+						'menu_name'         => ucwords( $plural ),
+						'search_items' 		=> sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+						'all_items' 		=> sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
+						'parent_item' 		=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
+						'parent_item_colon' => sprintf( __( 'Parent %s:', 'wp-job-manager' ), $singular ),
+						'edit_item' 		=> sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+						'update_item' 		=> sprintf( __( 'Update %s', 'wp-job-manager' ), $singular ),
+						'add_new_item' 		=> sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
+						'new_item_name' 	=> sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
+					),
+					'show_ui' 				=> true,
+					'show_tagcloud'			=> false,
+					'public' 			    => $public,
+					'capabilities'			=> array(
+						'manage_terms' 		=> $admin_capability,
+						'edit_terms' 		=> $admin_capability,
+						'delete_terms' 		=> $admin_capability,
+						'assign_terms' 		=> $admin_capability,
+					),
+					'rewrite' 				=> $rewrite,
+				) )
 			);
-			$public    = true;
-		} else {
-			$rewrite   = false;
-			$public    = false;
 		}
-
-		register_taxonomy( "job_listing_type",
-			apply_filters( 'register_taxonomy_job_listing_type_object_type', array( 'job_listing' ) ),
-	        apply_filters( 'register_taxonomy_job_listing_type_args', array(
-	            'hierarchical' 			=> true,
-	            'label' 				=> $plural,
-	            'labels' => array(
-                    'name' 				=> $plural,
-                    'singular_name' 	=> $singular,
-                    'menu_name'         => ucwords( $plural ),
-                    'search_items' 		=> sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
-                    'all_items' 		=> sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
-                    'parent_item' 		=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
-                    'parent_item_colon' => sprintf( __( 'Parent %s:', 'wp-job-manager' ), $singular ),
-                    'edit_item' 		=> sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
-                    'update_item' 		=> sprintf( __( 'Update %s', 'wp-job-manager' ), $singular ),
-                    'add_new_item' 		=> sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
-                    'new_item_name' 	=> sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
-            	),
-	            'show_ui' 				=> true,
-	            'show_tagcloud'			=> false,
-	            'public' 			    => $public,
-	            'capabilities'			=> array(
-	            	'manage_terms' 		=> $admin_capability,
-	            	'edit_terms' 		=> $admin_capability,
-	            	'delete_terms' 		=> $admin_capability,
-	            	'assign_terms' 		=> $admin_capability,
-	            ),
-	           'rewrite' 				=> $rewrite,
-	        ) )
-	    );
 
 	    /**
 		 * Post types

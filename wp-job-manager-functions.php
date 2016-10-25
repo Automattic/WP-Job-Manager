@@ -255,12 +255,16 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
  * @return array
  */
 function get_job_listing_types( $fields = 'all' ) {
-	return get_terms( "job_listing_type", array(
-		'orderby'    => 'name',
-		'order'      => 'ASC',
-		'hide_empty' => false,
-		'fields'     => $fields
-	) );
+	if ( ! get_option( 'job_manager_enable_types' ) ) {
+		return array();
+	} else {
+		return get_terms( "job_listing_type", array(
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+			'hide_empty' => false,
+			'fields'     => $fields
+		) );
+	}
 }
 endif;
 

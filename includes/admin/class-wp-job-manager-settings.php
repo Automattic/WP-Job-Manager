@@ -97,6 +97,15 @@ class WP_Job_Manager_Settings {
 							)
 						),
 						array(
+							'name'       => 'job_manager_enable_types',
+							'std'        => '1',
+							'label'      => __( 'Types', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable types for listings', 'wp-job-manager' ),
+							'desc'       => __( 'Choose whether to enable types. Types must be setup by an admin to allow users to choose them during submission.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
+						array(
 							'name'       => 'job_manager_multi_job_type',
 							'std'        => '0',
 							'label'      => __( 'Multi-select Listing Types', 'wp-job-manager' ),

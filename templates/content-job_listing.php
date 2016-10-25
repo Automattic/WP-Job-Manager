@@ -15,7 +15,9 @@
 		<ul class="meta">
 			<?php do_action( 'job_listing_meta_start' ); ?>
 
+			<?php if ( get_option( 'job_manager_enable_types' ) ) { ?>
 			<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>"><?php the_job_type(); ?></li>
+			<?php } ?>
 			<li class="date"><date><?php printf( __( '%s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) ); ?></date></li>
 
 			<?php do_action( 'job_listing_meta_end' ); ?>
