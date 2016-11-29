@@ -77,18 +77,6 @@ module.exports = function( grunt ){
 			}
 		},
 
-		shell: {
-			options: {
-				stdout: true,
-				stderr: true
-			},
-			generatepot: {
-				command: [
-					'makepot'
-				].join( '&&' )
-			}
-		},
-
 		jshint: {
 			options: grunt.file.readJSON('.jshintrc'),
 			src: [
@@ -112,7 +100,6 @@ module.exports = function( grunt ){
 	});
 
 	// Load NPM tasks to be used here
-	grunt.loadNpmTasks( 'grunt-shell' );
 	grunt.loadNpmTasks( 'grunt-contrib-less' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
@@ -126,11 +113,6 @@ module.exports = function( grunt ){
 		'cssmin',
 		'uglify',
 		'wp_readme_to_markdown'
-	]);
-
-	// Just an alias for pot file generation
-	grunt.registerTask( 'pot', [
-		'shell:generatepot'
 	]);
 
 	grunt.registerTask( 'dev', [
