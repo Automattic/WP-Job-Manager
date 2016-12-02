@@ -13,7 +13,9 @@ do_action( 'single_job_listing_meta_before' ); ?>
 <ul class="job-listing-meta meta">
 	<?php do_action( 'single_job_listing_meta_start' ); ?>
 
+	<?php if ( get_option( 'job_manager_enable_types' ) ) { ?>
 	<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>" itemprop="employmentType"><?php the_job_type(); ?></li>
+	<?php } ?>
 
 	<li class="location" itemprop="jobLocation"><?php the_job_location(); ?></li>
 

@@ -236,6 +236,9 @@ function get_the_job_application_method( $post = null ) {
  * @return void
  */
 function the_job_type( $post = null ) {
+	if ( ! get_option( 'job_manager_enable_types' ) ) {
+		return '';
+	}
 	if ( $job_type = get_the_job_type( $post ) ) {
 		echo $job_type->name;
 	}
@@ -610,6 +613,10 @@ function job_listing_class( $class = '', $post_id = null ) {
  * @return array
  */
 function get_job_listing_class( $class = '', $post_id = null ) {
+	if ( ! get_option( 'job_manager_enable_types' ) ) {
+		return get_post_class( array( 'job_classes' ), $post_id );
+	}
+
 	$post = get_post( $post_id );
 
 	if ( $post->post_type !== 'job_listing' ) {

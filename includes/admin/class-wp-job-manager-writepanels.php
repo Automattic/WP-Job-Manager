@@ -124,7 +124,9 @@ class WP_Job_Manager_Writepanels {
 		global $wp_post_types;
 
 		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
-		if ( false == job_manager_multi_job_type() ) {
+		if ( ! get_option( 'job_manager_enable_types' ) ) {
+			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side');
+		} elseif ( false == job_manager_multi_job_type() ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side');
 			add_meta_box( 'job_listing_type', __( 'Job Listings', 'wp-job-manager' ), array( $this, 'job_listing_metabox' ),'job_listing' ,'side','core');
 		}

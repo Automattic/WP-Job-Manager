@@ -258,6 +258,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! get_option( 'job_manager_enable_categories' ) || wp_count_terms( 'job_listing_category' ) == 0 ) {
 			unset( $this->fields['job']['job_category'] );
 		}
+		if ( ! get_option( 'job_manager_enable_types' ) || wp_count_terms( 'job_listing_type' ) == 1 ) {
+			unset( $this->fields['job']['job_type'] );
+		}
 	}
 
 	/**
