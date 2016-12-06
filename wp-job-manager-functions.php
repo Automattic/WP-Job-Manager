@@ -265,7 +265,7 @@ function get_job_listing_types( $fields = 'all' ) {
 			'orderby'    => 'name'
 		);
 
-		apply_filters( 'get_job_listing_types_args', $args );
+		$args = apply_filters( 'get_job_listing_types_args', $args );
 
 		// Prevent users from filtering the taxonomy
 		$args['taxonomy'] = 'job_listing_type';
