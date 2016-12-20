@@ -191,7 +191,13 @@ class WP_Job_Manager_Ajax {
 		} else {
 			$message = "";
 		}
-		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $message );
+		
+		$search_values = array(
+				'location'   => $search_location,
+				'keywords'   => $search_keywords,
+				'categories' => $search_categories
+			);
+		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $message, $search_values );
 
 		// Generate RSS link
 		$result['showing_links'] = job_manager_get_filtered_links( array(
