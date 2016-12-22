@@ -8,6 +8,12 @@ global $job_manager;
 ?>
 <form action="<?php echo esc_url( $action ); ?>" method="post" id="submit-job-form" class="job-manager-form" enctype="multipart/form-data">
 
+	<?php
+	if ( isset( $resume_edit ) && $resume_edit ) {
+		printf( '<p><strong>' . __( "You are editing an existing job. %s" ) . '</strong></p>', '<a href="?new=1&key=' . $resume_edit . '">' . __( 'Create A New Job' ) . '</a>' );
+	}
+	?>
+
 	<?php do_action( 'submit_job_form_start' ); ?>
 
 	<?php if ( apply_filters( 'submit_job_form_show_signin', true ) ) : ?>
