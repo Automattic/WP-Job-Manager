@@ -287,7 +287,7 @@ class WP_Job_Manager_Settings {
 								foreach ( $option['attributes'] as $attribute_name => $attribute_value )
 									$attributes[] = esc_attr( $attribute_name ) . '="' . esc_attr( $attribute_value ) . '"';
 
-							echo '<tr valign="top" class="' . $class . '"><th scope="row"><label for="setting-' . $option['name'] . '">' . $option['label'] . '</a></th><td>';
+							echo '<tr valign="top" class="' . $class . '"><th scope="row"><label for="setting-' . $option['name'] . '">' . $option['label'] . '</label></th><td>';
 
 							switch ( $option['type'] ) {
 
