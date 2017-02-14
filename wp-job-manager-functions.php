@@ -258,12 +258,19 @@ function get_job_listing_types( $fields = 'all' ) {
 	if ( ! get_option( 'job_manager_enable_types' ) ) {
 		return array();
 	} else {
-		return get_terms( "job_listing_type", array(
-			'orderby'    => 'name',
-			'order'      => 'ASC',
+		$args = array(
+			'fields'     => $fields,
 			'hide_empty' => false,
-			'fields'     => $fields
-		) );
+			'order'      => 'ASC',
+			'orderby'    => 'name'
+		);
+
+		$args = apply_filters( 'get_job_listing_types_args', $args );
+
+		// Prevent users from filtering the taxonomy
+		$args['taxonomy'] = 'job_listing_type';
+
+		return get_terms( $args );
 	}
 }
 endif;
