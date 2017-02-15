@@ -45,7 +45,8 @@ class WP_Job_Manager_Admin {
 			wp_enqueue_script( 'job_manager_admin_js', JOB_MANAGER_PLUGIN_URL. '/assets/js/admin.min.js', array( 'jquery', 'jquery-tiptip', 'jquery-ui-datepicker' ), JOB_MANAGER_VERSION, true );
 
 			wp_localize_script( 'job_manager_admin_js', 'job_manager_admin', array(
-				'date_format' => _x( 'yy-mm-dd', 'Date format for jQuery datepicker', 'wp-job-manager' )
+				/* translators: jQuery date format, see http://api.jqueryui.com/datepicker/#utility-formatDate */
+				'date_format' => _x( 'yy-mm-dd', 'Date format for jQuery datepicker.', 'wp-job-manager' )
 			) );
 		}
 

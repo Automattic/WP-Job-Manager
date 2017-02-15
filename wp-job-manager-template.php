@@ -236,6 +236,9 @@ function get_the_job_application_method( $post = null ) {
  * @return void
  */
 function the_job_type( $post = null ) {
+	if ( ! get_option( 'job_manager_enable_types' ) ) {
+		return '';
+	}
 	if ( $job_type = get_the_job_type( $post ) ) {
 		echo $job_type->name;
 	}
@@ -409,7 +412,8 @@ function job_manager_get_resized_image( $logo, $size ) {
 		$upload_dir        = wp_upload_dir();
 		$logo_path         = str_replace( array( $upload_dir['baseurl'], $upload_dir['url'], WP_CONTENT_URL ), array( $upload_dir['basedir'], $upload_dir['path'], WP_CONTENT_DIR ), $logo );
 		$path_parts        = pathinfo( $logo_path );
-		$resized_logo_path = str_replace( '.' . $path_parts['extension'], '-' . $size . '.' . $path_parts['extension'], $logo_path );
+		$dims              = $img_width . 'x' . $img_height;
+		$resized_logo_path = str_replace( '.' . $path_parts['extension'], '-' . $dims . '.' . $path_parts['extension'], $logo_path );
 
 		if ( strstr( $resized_logo_path, 'http:' ) || strstr( $resized_logo_path, 'https:' ) ) {
 			return $logo;
@@ -447,16 +451,19 @@ function job_manager_get_resized_image( $logo, $size ) {
  * Output the company video
  */
 function the_company_video( $post = null ) {
-	$video    = get_the_company_video( $post );
-	$filetype = wp_check_filetype( $video );
+	$video_embed = false;
+	$video       = get_the_company_video( $post );
+	$filetype    = wp_check_filetype( $video );
 
-	// FV Wordpress Flowplayer Support for advanced video formats
-	if ( shortcode_exists( 'flowplayer' ) ) {
-		$video_embed = '[flowplayer src="' . esc_attr( $video ) . '"]';
-	} elseif ( ! empty( $filetype['ext'] ) ) {
-		$video_embed = wp_video_shortcode( array( 'src' => $video ) );
-	} else {
-		$video_embed = wp_oembed_get( $video );
+	if( ! empty( $video ) ){
+		// FV Wordpress Flowplayer Support for advanced video formats
+		if ( shortcode_exists( 'flowplayer' ) ) {
+			$video_embed = '[flowplayer src="' . esc_attr( $video ) . '"]';
+		} elseif ( ! empty( $filetype[ 'ext' ] ) ) {
+			$video_embed = wp_video_shortcode( array( 'src' => $video ) );
+		} else {
+			$video_embed = wp_oembed_get( $video );
+		}
 	}
 
 	$video_embed = apply_filters( 'the_company_video_embed', $video_embed, $post );
@@ -643,6 +650,10 @@ function job_listing_class( $class = '', $post_id = null ) {
  * @return array
  */
 function get_job_listing_class( $class = '', $post_id = null ) {
+	if ( ! get_option( 'job_manager_enable_types' ) ) {
+		return get_post_class( array( 'job_classes' ), $post_id );
+	}
+
 	$post = get_post( $post_id );
 
 	if ( $post->post_type !== 'job_listing' ) {

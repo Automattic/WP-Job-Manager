@@ -23,9 +23,15 @@ function get_job_listings( $args = array() ) {
 		'fields'            => 'all'
 	) );
 
+	if ( false == get_option( 'job_manager_hide_expired_content', 1 ) ) {
+		$post_status = array( 'publish', 'expired' );
+	} else {
+		$post_status = 'publish';
+	}
+
 	$query_args = array(
 		'post_type'              => 'job_listing',
-		'post_status'            => 'publish',
+		'post_status'            => $post_status,
 		'ignore_sticky_posts'    => 1,
 		'offset'                 => absint( $args['offset'] ),
 		'posts_per_page'         => intval( $args['posts_per_page'] ),
@@ -249,12 +255,23 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
  * @return array
  */
 function get_job_listing_types( $fields = 'all' ) {
-	return get_terms( "job_listing_type", array(
-		'orderby'    => 'name',
-		'order'      => 'ASC',
-		'hide_empty' => false,
-		'fields'     => $fields
-	) );
+	if ( ! get_option( 'job_manager_enable_types' ) ) {
+		return array();
+	} else {
+		$args = array(
+			'fields'     => $fields,
+			'hide_empty' => false,
+			'order'      => 'ASC',
+			'orderby'    => 'name'
+		);
+
+		$args = apply_filters( 'get_job_listing_types_args', $args );
+
+		// Prevent users from filtering the taxonomy
+		$args['taxonomy'] = 'job_listing_type';
+
+		return get_terms( $args );
+	}
 }
 endif;
 
@@ -490,6 +507,15 @@ function job_manager_user_can_edit_job( $job_id ) {
 }
 
 /**
+ * True if only one type allowed per job
+ *
+ * @return bool
+ */
+function job_manager_multi_job_type() {
+	return apply_filters( 'job_manager_multi_job_type', get_option( 'job_manager_multi_job_type' ) == 1 ? true : false );
+}
+
+/**
  * True if registration is enabled.
  *
  * @return bool
@@ -625,7 +651,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 function job_manager_get_page_id( $page ) {
 	$page_id = get_option( 'job_manager_' . $page . '_page_id', false );
 	if ( $page_id ) {
-		return absint( function_exists( 'pll_get_post' ) ? pll_get_post( $page_id ) : $page_id );
+		return apply_filters( 'wpml_object_id', absint( function_exists( 'pll_get_post' ) ? pll_get_post( $page_id ) : $page_id ), 'page', TRUE );
 	} else {
 		return 0;
 	}

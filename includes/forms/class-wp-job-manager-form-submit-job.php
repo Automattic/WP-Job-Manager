@@ -82,7 +82,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( $_GET['step'], array_keys( $this->steps ) );
 		}
 
-		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
+		$this->job_id = ! empty( $_REQUEST[ 'job_id' ] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
+
+		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
+			$this->job_id = 0;
+		}
 
 		// Allow resuming from cookie.
 		if ( ! $this->job_id && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
@@ -141,6 +145,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			break;
 		}
 
+		if ( job_manager_multi_job_type() ) {
+			$job_type = 'term-multiselect';
+		} else {
+			$job_type = 'term-select';
+		}
 		$this->fields = apply_filters( 'submit_job_form_fields', array(
 			'job' => array(
 				'job_title' => array(
@@ -160,7 +169,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				),
 				'job_type' => array(
 					'label'       => __( 'Job type', 'wp-job-manager' ),
-					'type'        => 'term-select',
+					'type'        => $job_type,
 					'required'    => true,
 					'placeholder' => '',
 					'priority'    => 3,
@@ -248,6 +257,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		if ( ! get_option( 'job_manager_enable_categories' ) || wp_count_terms( 'job_listing_category' ) == 0 ) {
 			unset( $this->fields['job']['job_category'] );
+		}
+		if ( ! get_option( 'job_manager_enable_types' ) || wp_count_terms( 'job_listing_type' ) == 0 ) {
+			unset( $this->fields['job']['job_type'] );
 		}
 	}
 

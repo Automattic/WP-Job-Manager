@@ -1,3 +1,17 @@
+= 1.25.2 =
+* Fix - The date format of the expiry date picker was incorrect in translations so we added a comment to clarify, and fixed translations. (https://github.com/Automattic/WP-Job-Manager/issues/697)
+* Fix - Changing the date of an expired job would forget the date, even though the job would become active. (https://github.com/Automattic/WP-Job-Manager/issues/653)
+* Fix - Site owner can allow jobs to have only one or more than one types. (https://github.com/Automattic/WP-Job-Manager/issues/549)
+* Fix - Show expired jobs if that setting is enabled. (https://github.com/Automattic/WP-Job-Manager/issues/703)
+* Fix - Simplify the search message on the jobs page to avoid translation problems. (https://github.com/Automattic/WP-Job-Manager/issues/647)
+* Fix - The uploader would ignore WordPress created image sizes. (https://github.com/Automattic/WP-Job-Manager/issues/706)
+* Fix - setup.css was loaded on all admin pages. (https://github.com/Automattic/WP-Job-Manager/issues/728)
+* Fix - The preview of a listing could be edited or viewed by anyone. Props @tripflex (https://github.com/Automattic/WP-Job-Manager/issues/690)
+* Fix - When users were deleted their jobs weren't. (https://github.com/Automattic/WP-Job-Manager/issues/675)
+* Fix - OrderBy Rand wasn't working. (https://github.com/Automattic/WP-Job-Manager/issues/714)
+* Dev - Add upload filters and update PHPDocs, props @tripflex (https://github.com/Automattic/WP-Job-Manager/pull/747)
+* Fix - Stop using jQuery.live, props @tripflex (https://github.com/Automattic/WP-Job-Manager/pull/664)
+
 = 1.25.1 =
 * Feature - Adds a view button to the Admin UI for easy access to submitted files or URLs. Props tripflex (https://github.com/Automattic/WP-Job-Manager/pull/650)
 * Fix - Add hardening to file uploads to prevent accepting unexpected file times. Previously, other WP-allowed types were sometimes accepted.
