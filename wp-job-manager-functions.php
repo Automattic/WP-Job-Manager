@@ -23,9 +23,15 @@ function get_job_listings( $args = array() ) {
 		'fields'            => 'all'
 	) );
 
+	if ( false == get_option( 'job_manager_hide_expired_content', 1 ) ) {
+		$post_status = array( 'publish', 'expired' );
+	} else {
+		$post_status = 'publish';
+	}
+
 	$query_args = array(
 		'post_type'              => 'job_listing',
-		'post_status'            => 'publish',
+		'post_status'            => $post_status,
 		'ignore_sticky_posts'    => 1,
 		'offset'                 => absint( $args['offset'] ),
 		'posts_per_page'         => intval( $args['posts_per_page'] ),
@@ -135,9 +141,22 @@ function get_job_listings( $args = array() ) {
 
 	do_action( 'before_get_job_listings', $query_args, $args );
 
-	if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
+	// Cache results
+	if ( apply_filters( 'get_job_listings_cache_results', true ) ) {
+
+		if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
+			$result = new WP_Query( $query_args );
+			set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
+		}
+
+		// random order is cached so shuffle them
+		if ( $query_args[ 'orderby' ] == 'rand' ) {
+			shuffle( $result->posts );
+		}
+
+	}
+	else {
 		$result = new WP_Query( $query_args );
-		set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
 	}
 
 	do_action( 'after_get_job_listings', $query_args, $args );
@@ -236,12 +255,23 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
  * @return array
  */
 function get_job_listing_types( $fields = 'all' ) {
-	return get_terms( "job_listing_type", array(
-		'orderby'    => 'name',
-		'order'      => 'ASC',
-		'hide_empty' => false,
-		'fields'     => $fields
-	) );
+	if ( ! get_option( 'job_manager_enable_types' ) ) {
+		return array();
+	} else {
+		$args = array(
+			'fields'     => $fields,
+			'hide_empty' => false,
+			'order'      => 'ASC',
+			'orderby'    => 'name'
+		);
+
+		$args = apply_filters( 'get_job_listing_types_args', $args );
+
+		// Prevent users from filtering the taxonomy
+		$args['taxonomy'] = 'job_listing_type';
+
+		return get_terms( $args );
+	}
 }
 endif;
 
@@ -477,6 +507,15 @@ function job_manager_user_can_edit_job( $job_id ) {
 }
 
 /**
+ * True if only one type allowed per job
+ *
+ * @return bool
+ */
+function job_manager_multi_job_type() {
+	return apply_filters( 'job_manager_multi_job_type', get_option( 'job_manager_multi_job_type' ) == 1 ? true : false );
+}
+
+/**
  * True if registration is enabled.
  *
  * @return bool
@@ -546,6 +585,13 @@ function job_manager_dropdown_categories( $args = '' ) {
 		$r['pad_counts'] = true;
 	}
 
+	// WPML & Polylang caching per language
+	if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
+		$r['lang'] = apply_filters( 'wpml_current_language', NULL );
+	} elseif ( function_exists( 'pll_current_language' ) ) {
+		$r['lang'] = pll_current_language();
+	}
+
 	extract( $r );
 
 	// Store in a transient to help sites with many cats
@@ -605,7 +651,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 function job_manager_get_page_id( $page ) {
 	$page_id = get_option( 'job_manager_' . $page . '_page_id', false );
 	if ( $page_id ) {
-		return absint( function_exists( 'pll_get_post' ) ? pll_get_post( $page_id ) : $page_id );
+		return apply_filters( 'wpml_object_id', absint( function_exists( 'pll_get_post' ) ? pll_get_post( $page_id ) : $page_id ), 'page', TRUE );
 	} else {
 		return 0;
 	}
@@ -678,14 +724,14 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 		$files_to_upload[] = $file_data;
 	}
 
-	return $files_to_upload;
+	return apply_filters( 'job_manager_prepare_uploaded_files', $files_to_upload );
 }
 
 /**
  * Upload a file using WordPress file API.
  * @param  array $file_data Array of $_FILE data to upload.
  * @param  array $args Optional arguments
- * @return array|WP_Error Array of objects containing either file information or an error
+ * @return stdClass|WP_Error Object containing file information, or error
  */
 function job_manager_upload_file( $file, $args = array() ) {
 	global $job_manager_upload, $job_manager_uploading_file;
@@ -696,18 +742,41 @@ function job_manager_upload_file( $file, $args = array() ) {
 	$args = wp_parse_args( $args, array(
 		'file_key'           => '',
 		'file_label'         => '',
-		'allowed_mime_types' => get_allowed_mime_types()
+		'allowed_mime_types' => '',
 	) );
 
 	$job_manager_upload         = true;
 	$job_manager_uploading_file = $args['file_key'];
 	$uploaded_file              = new stdClass();
+	if ( '' === $args['allowed_mime_types'] ) {
+		$allowed_mime_types = job_manager_get_allowed_mime_types( $job_manager_uploading_file );
+	} else {
+		$allowed_mime_types = $args['allowed_mime_types'];
+	}
 
-	if ( ! in_array( $file['type'], $args['allowed_mime_types'] ) ) {
+	/**
+	 * Filter file configuration before upload
+	 *
+	 * This filter can be used to modify the file arguments before being uploaded, or return a WP_Error
+	 * object to prevent the file from being uploaded, and return the error.
+	 *
+	 * @since 1.25.2
+	 *
+	 * @param array $file               Array of $_FILE data to upload.
+	 * @param array $args               Optional file arguments
+	 * @param array $allowed_mime_types Array of allowed mime types from field config or defaults
+	 */
+	$file = apply_filters( 'job_manager_upload_file_pre_upload', $file, $args, $allowed_mime_types );
+
+	if ( is_wp_error( $file ) ) {
+		return $file;
+	}
+
+	if ( ! in_array( $file['type'], $allowed_mime_types ) ) {
 		if ( $args['file_label'] ) {
-			return new WP_Error( 'upload', sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $args['file_label'], $file['type'], implode( ', ', array_keys( $args['allowed_mime_types'] ) ) ) );
+			return new WP_Error( 'upload', sprintf( __( '"%s" (filetype %s) needs to be one of the following file types: %s', 'wp-job-manager' ), $args['file_label'], $file['type'], implode( ', ', array_keys( $allowed_mime_types ) ) ) );
 		} else {
-			return new WP_Error( 'upload', sprintf( __( 'Uploaded files need to be one of the following file types: %s', 'wp-job-manager' ), implode( ', ', array_keys( $args['allowed_mime_types'] ) ) ) );
+			return new WP_Error( 'upload', sprintf( __( 'Uploaded files need to be one of the following file types: %s', 'wp-job-manager' ), implode( ', ', array_keys( $allowed_mime_types ) ) ) );
 		}
 	} else {
 		$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', array( 'test_form' => false ) ) );
@@ -727,6 +796,45 @@ function job_manager_upload_file( $file, $args = array() ) {
 	$job_manager_uploading_file = '';
 
 	return $uploaded_file;
+}
+
+/**
+ * Allowed Mime types specifically for WPJM.
+ * @param   string $field Field used.
+ * @return  array  Array of allowed mime types
+ */
+function job_manager_get_allowed_mime_types( $field = '' ){
+	if ( 'company_logo' === $field ) {
+		$allowed_mime_types = array(
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
+		);
+	} else {
+		$allowed_mime_types = array(
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
+			'pdf'          => 'application/pdf',
+			'doc'          => 'application/msword',
+			'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+		);
+	}
+
+	/**
+	 * Mime types to accept in uploaded files.
+	 *
+	 * Default is image, pdf, and doc(x) files.
+	 *
+	 * @since 1.25.1
+	 *
+	 * @param array  {
+	 *     Array of allowed file extensions and mime types.
+	 *     Key is pipe-separated file extensions. Value is mime type.
+	 * }
+	 * @param string $field The field key for the upload.
+	 */
+	return apply_filters( 'job_manager_mime_types', $allowed_mime_types, $field );
 }
 
 /**

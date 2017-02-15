@@ -1,9 +1,10 @@
+/* global job_manager_ajax_file_upload */
 jQuery(function($) {
 	$('.wp-job-manager-file-upload').each(function(){
 		$(this).fileupload({
 			dataType: 'json',
 			dropZone: $(this),
-			url: job_manager_ajax_file_upload.ajax_url.toString().replace( "%%endpoint%%", "upload_file" ),
+			url: job_manager_ajax_file_upload.ajax_url.toString().replace( '%%endpoint%%', 'upload_file' ),
 			maxNumberOfFiles: 1,
 			formData: {
 				script: true
@@ -18,15 +19,15 @@ jQuery(function($) {
 				var allowed_types = $(this).data('file_types');
 
 				if ( allowed_types ) {
-	        		var acceptFileTypes = new RegExp( "(\.|\/)(" + allowed_types + ")$", "i" );
+					var acceptFileTypes = new RegExp( '(\.|\/)(' + allowed_types + ')$', 'i' );
 
-			        if ( data.originalFiles[0]['name'].length && ! acceptFileTypes.test( data.originalFiles[0]['name'] ) ) {
-			        	uploadErrors.push( job_manager_ajax_file_upload.i18n_invalid_file_type + ' ' + allowed_types );
-			        }
-			    }
+					if ( data.originalFiles[0].name.length && ! acceptFileTypes.test( data.originalFiles[0].name ) ) {
+						uploadErrors.push( job_manager_ajax_file_upload.i18n_invalid_file_type + ' ' + allowed_types );
+					}
+				}
 
-	        	if ( uploadErrors.length > 0 ) {
-	            	alert( uploadErrors.join( "\n" ) );
+				if ( uploadErrors.length > 0 ) {
+					window.alert( uploadErrors.join( '\n' ) );
 				} else {
 					$form.find(':input[type="submit"]').attr( 'disabled', 'disabled' );
 					data.context = $('<progress value="" max="100"></progress>').appendTo( $uploaded_files );
@@ -34,8 +35,6 @@ jQuery(function($) {
 				}
 			},
 			progress: function (e, data) {
-				var $file_field     = $( this );
-				var $uploaded_files = $file_field.parent().find('.job-manager-uploaded-files');
 				var progress        = parseInt(data.loaded / data.total * 100, 10);
 				data.context.val( progress );
 			},
@@ -44,7 +43,7 @@ jQuery(function($) {
 				var $form           = $file_field.closest( 'form' );
 
 				if ( data.errorThrown ) {
-					alert( data.errorThrown );
+					window.alert( data.errorThrown );
 				}
 
 				data.context.remove();
@@ -62,13 +61,14 @@ jQuery(function($) {
 
 				$.each(data.result.files, function(index, file) {
 					if ( file.error ) {
-						alert( file.error );
+						window.alert( file.error );
 					} else {
+						var html;
 						if ( $.inArray( file.extension, image_types ) >= 0 ) {
-							var html = $.parseHTML( job_manager_ajax_file_upload.js_field_html_img );
+							html = $.parseHTML( job_manager_ajax_file_upload.js_field_html_img );
 							$( html ).find('.job-manager-uploaded-file-preview img').attr( 'src', file.url );
 						} else {
-							var html = $.parseHTML( job_manager_ajax_file_upload.js_field_html );
+							html = $.parseHTML( job_manager_ajax_file_upload.js_field_html );
 							$( html ).find('.job-manager-uploaded-file-name code').text( file.name );
 						}
 

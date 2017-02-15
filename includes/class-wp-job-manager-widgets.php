@@ -7,10 +7,44 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class WP_Job_Manager_Widget extends WP_Widget {
 
+	/**
+	 * Widget CSS class
+	 *
+	 * @access public
+	 * @var string
+	 */
 	public $widget_cssclass;
+
+	/**
+	 * Widget description
+	 *
+	 * @access public
+	 * @var string
+	 */
 	public $widget_description;
+
+	/**
+	 * Widget id
+	 *
+	 * @access public
+	 * @var string
+	 */
 	public $widget_id;
+
+	/**
+	 * Widget name
+	 *
+	 * @access public
+	 * @var string
+	 */
 	public $widget_name;
+
+	/**
+	 * Widget settings
+	 *
+	 * @access public
+	 * @var array
+	 */
 	public $settings;
 
 	/**
@@ -39,7 +73,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	/**
 	 * get_cached_widget function.
 	 */
-	function get_cached_widget( $args ) {
+	public function get_cached_widget( $args ) {
 		$cache = wp_cache_get( $this->widget_id, 'widget' );
 
 		if ( ! is_array( $cache ) )
@@ -79,7 +113,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 * @param array $old_instance
 	 * @return array
 	 */
-	function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 
 		if ( ! $this->settings )
@@ -131,6 +165,19 @@ class WP_Job_Manager_Widget extends WP_Widget {
 			}
 		}
 	}
+
+	/**
+	 * widget function.
+	 *
+	 * @see    WP_Widget
+	 * @access public
+	 *
+	 * @param array $args
+	 * @param array $instance
+	 *
+	 * @return void
+	 */
+	public function widget( $args, $instance ) {}
 }
 
 /**

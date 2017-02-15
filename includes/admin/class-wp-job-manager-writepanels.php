@@ -84,7 +84,8 @@ class WP_Job_Manager_Writepanels {
 				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'priority'    => 11,
 				'classes'     => array( 'job-manager-datepicker' ),
-				'placeholder' => _x( 'yyyy-mm-dd', 'Date format placeholder', 'wp-job-manager' ),
+				/* translators: date format placeholder, see https://secure.php.net/date */
+				'placeholder' => _x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ),
 				'value'       => metadata_exists( 'post', $post->ID, '_job_expires' ) ? get_post_meta( $post->ID, '_job_expires', true ) : calculate_job_expiry( $post->ID ),
 			);
 		}
@@ -123,6 +124,68 @@ class WP_Job_Manager_Writepanels {
 		global $wp_post_types;
 
 		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
+		if ( ! get_option( 'job_manager_enable_types' ) || wp_count_terms( 'job_listing_type' ) == 0 ) {
+			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side');
+		} elseif ( false == job_manager_multi_job_type() ) {
+			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side');
+			add_meta_box( 'job_listing_type', __( 'Job Listings', 'wp-job-manager' ), array( $this, 'job_listing_metabox' ),'job_listing' ,'side','core');
+		}
+	}
+
+	function job_listing_metabox( $post ) {
+		//Set up the taxonomy object and get terms
+		$taxonomy = 'job_listing_type';
+		$tax = get_taxonomy( $taxonomy );//This is the taxonomy object
+
+		//The name of the form
+		$name = 'tax_input[' . $taxonomy . ']';
+
+		//Get all the terms for this taxonomy
+		$terms = get_terms( $taxonomy, array( 'hide_empty' => 0 ) );
+		$postterms = get_the_terms( $post->ID, $taxonomy );
+		$current = ( $postterms ? array_pop( $postterms ) : false );
+		$current = ( $current ? $current->term_id : 0 );
+		//Get current and popular terms
+		$popular = get_terms( $taxonomy, array( 'orderby' => 'count', 'order' => 'DESC', 'number' => 10, 'hierarchical' => false ) );
+		$postterms = get_the_terms( $post->ID,$taxonomy );
+		$current = ($postterms ? array_pop($postterms) : false);
+		$current = ($current ? $current->term_id : 0);
+		?>
+
+		<div id="taxonomy-<?php echo $taxonomy; ?>" class="categorydiv">
+
+			<!-- Display tabs-->
+			<ul id="<?php echo $taxonomy; ?>-tabs" class="category-tabs">
+				<li class="tabs"><a href="#<?php echo $taxonomy; ?>-all" tabindex="3"><?php echo $tax->labels->all_items; ?></a></li>
+				<li class="hide-if-no-js"><a href="#<?php echo $taxonomy; ?>-pop" tabindex="3"><?php _e( 'Most Used' ); ?></a></li>
+			</ul>
+
+			<!-- Display taxonomy terms -->
+			<div id="<?php echo $taxonomy; ?>-all" class="tabs-panel">
+				<ul id="<?php echo $taxonomy; ?>checklist" class="list:<?php echo $taxonomy?> categorychecklist form-no-clear">
+					<?php   foreach($terms as $term){
+						$id = $taxonomy.'-'.$term->term_id;
+						echo "<li id='$id'><label class='selectit'>";
+						echo "<input type='radio' id='in-$id' name='{$name}'".checked($current,$term->term_id,false)."value='$term->term_id' />$term->name<br />";
+					   echo "</label></li>";
+					}?>
+			   </ul>
+			</div>
+
+			<!-- Display popular taxonomy terms -->
+			<div id="<?php echo $taxonomy; ?>-pop" class="tabs-panel" style="display: none;">
+				<ul id="<?php echo $taxonomy; ?>checklist-pop" class="categorychecklist form-no-clear" >
+					<?php   foreach($popular as $term){
+						$id = 'popular-'.$taxonomy.'-'.$term->term_id;
+						echo "<li id='$id'><label class='selectit'>";
+						echo "<input type='radio' id='in-$id'".checked($current,$term->term_id,false)."value='$term->term_id' />$term->name<br />";
+						echo "</label></li>";
+					}?>
+			   </ul>
+		   </div>
+
+		</div>
+		<?php
 	}
 
 	/**
@@ -151,13 +214,13 @@ class WP_Job_Manager_Writepanels {
 			<?php
 			if ( ! empty( $field['multiple'] ) ) {
 				foreach ( (array) $field['value'] as $value ) {
-					?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button></span><?php
+					?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php _e( 'View', 'wp-job-manager' ); ?></button></span><?php
 				}
 			} else {
-				?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button></span><?php
+				?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php _e( 'View', 'wp-job-manager' ); ?></button></span><?php
 			}
 			if ( ! empty( $field['multiple'] ) ) {
-				?><button class="button button-small wp_job_manager_add_another_file_button" data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php _e( 'Upload', 'wp-job-manager' ); ?>"><?php _e( 'Add file', 'wp-job-manager' ); ?></button><?php
+				?><button class="button button-small wp_job_manager_add_another_file_button" data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php _e( 'Upload', 'wp-job-manager' ); ?>" data-view_button="<?php _e( 'View', 'wp-job-manager' ); ?>"><?php _e( 'Add file', 'wp-job-manager' ); ?></button><?php
 			}
 			?>
 		</p>

@@ -108,17 +108,43 @@ module.exports = function( grunt ){
 	});
 
 	// Load NPM tasks to be used here
-	grunt.loadNpmTasks( 'grunt-wp-i18n' );
+		jshint: {
+			options: grunt.file.readJSON('.jshintrc'),
+			src: [
+				'assets/js/**/*.js',
+				'!assets/js/**/*.min.js',
+				// External Libraries:
+				'!assets/js/jquery-chosen/*.js',
+				'!assets/js/jquery-deserialize/*.js',
+				'!assets/js/jquery-fileupload/*.js',
+				'!assets/js/jquery-tiptip/*.js'
+			]
+		},
+
+		wp_readme_to_markdown: {
+			readme: {
+				files: {
+					'readme.md': 'readme.txt'
+				}
+			}
+		}
+	});
+
+	// Load NPM tasks to be used here
 	grunt.loadNpmTasks( 'grunt-contrib-less' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
+	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
+	grunt.loadNpmTasks( 'grunt-wp-i18n' );
+	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown');
 
 	// Register tasks
 	grunt.registerTask( 'default', [
 		'less',
 		'cssmin',
-		'uglify'
+		'uglify',
+		'wp_readme_to_markdown'
 	]);
 
 	// Just an alias for pot file generation

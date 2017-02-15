@@ -89,12 +89,30 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_category_filter_type',
 							'std'        => 'any',
 							'label'      => __( 'Category Filter Type', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, the category select box will default to a multiselect on the [jobs] shortcode.', 'wp-job-manager' ),
+							'desc'       => __( 'Determines the logic used to display jobs when selecting multiple categories.', 'wp-job-manager' ),
 							'type'       => 'select',
 							'options' => array(
 								'any'  => __( 'Jobs will be shown if within ANY selected category', 'wp-job-manager' ),
 								'all' => __( 'Jobs will be shown if within ALL selected categories', 'wp-job-manager' ),
 							)
+						),
+						array(
+							'name'       => 'job_manager_enable_types',
+							'std'        => '1',
+							'label'      => __( 'Types', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable types for listings', 'wp-job-manager' ),
+							'desc'       => __( 'Choose whether to enable types. Types must be setup by an admin to allow users to choose them during submission.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
+						array(
+							'name'       => 'job_manager_multi_job_type',
+							'std'        => '0',
+							'label'      => __( 'Multi-select Listing Types', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable multiple types for listings', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled each job can have more than one type. The metabox on the post editor and the select box on the frontend job submission form are changed by this.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
 						),
 					),
 				),
@@ -172,7 +190,7 @@ class WP_Job_Manager_Settings {
 								'email' => __( 'Email addresses only', 'wp-job-manager' ),
 								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
 							)
-						)
+						),
 					)
 				),
 				'job_pages' => array(

@@ -1,19 +1,19 @@
-=== WP Job Manager ===
-Contributors: mikejolley, automattic, adamkheckler, annezazu, artemitos, bikedorkjon, cena, chaselivingston, csonnek, davor.altman, drawmyface, erania-pinnera, jacobshere, jeherve, jenhooks, jgs, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, ryancowles, richardmtl, scarstocea
-Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
-Requires at least: 4.1
-Tested up to: 4.7
-Stable tag: 1.25.2
-License: GPLv3
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+# WP Job Manager #
+**Contributors:** [mikejolley](https://profiles.wordpress.org/mikejolley), [automattic](https://profiles.wordpress.org/automattic), [adamkheckler](https://profiles.wordpress.org/adamkheckler), [annezazu](https://profiles.wordpress.org/annezazu), [artemitos](https://profiles.wordpress.org/artemitos), [bikedorkjon](https://profiles.wordpress.org/bikedorkjon), [cena](https://profiles.wordpress.org/cena), [chaselivingston](https://profiles.wordpress.org/chaselivingston), [csonnek](https://profiles.wordpress.org/csonnek), [davor.altman](https://profiles.wordpress.org/davor.altman), [drawmyface](https://profiles.wordpress.org/drawmyface), [erania-pinnera](https://profiles.wordpress.org/erania-pinnera), [jacobshere](https://profiles.wordpress.org/jacobshere), [jeherve](https://profiles.wordpress.org/jeherve), [jenhooks](https://profiles.wordpress.org/jenhooks), [jgs](https://profiles.wordpress.org/jgs), [kraftbj](https://profiles.wordpress.org/kraftbj), [lamdayap](https://profiles.wordpress.org/lamdayap), [lschuyler](https://profiles.wordpress.org/lschuyler), [macmanx](https://profiles.wordpress.org/macmanx), [nancythanki](https://profiles.wordpress.org/nancythanki), [orangesareorange](https://profiles.wordpress.org/orangesareorange), [rachelsquirrel](https://profiles.wordpress.org/rachelsquirrel), [ryancowles](https://profiles.wordpress.org/ryancowles), [richardmtl](https://profiles.wordpress.org/richardmtl), [scarstocea](https://profiles.wordpress.org/scarstocea)
+**Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
+**Requires at least:** 4.1
+**Tested up to:** 4.7
+**Stable tag:** 1.25.2
+**License:** GPLv3
+**License URI:** http://www.gnu.org/licenses/gpl-3.0.html
 
 Manage job listings from the WordPress admin panel, and allow users to post job listings directly to your site.
 
-== Description ==
+## Description ##
 
 WP Job Manager is a **lightweight** job listing plugin for adding job-board like functionality to your WordPress site. Being shortcode based, it can work with any theme (given a bit of CSS styling) and is really simple to setup.
 
-= Features =
+### Features ###
 
 * Add, manage, and categorize job listings using the familiar WordPress UI.
 * Searchable & filterable ajax powered job listings added to your pages via shortcodes.
@@ -28,11 +28,11 @@ The plugin comes with several shortcodes to output jobs in various formats, and 
 
 [Read more about WP Job Manager](https://wpjobmanager.com/).
 
-= Documentation =
+### Documentation ###
 
 Documentation for the core plugin and add-ons can be found [on the docs site here](https://wpjobmanager.com/documentation/). Please take a look before requesting support because it covers all frequently asked questions!
 
-= Add-ons =
+### Add-ons ###
 
 The core WP Job Manager plugin is free and always will be. It covers all functionality we consider 'core' to running a simple job board site.
 
@@ -60,13 +60,13 @@ Allow registered users to save their job searches and create alerts which send n
 
 You can get the above add-ons and several others at discount with our [Core Add-on Bundle](https://wpjobmanager.com/add-ons/bundle/). Take a look!
 
-= Contributing and reporting bugs =
+### Contributing and reporting bugs ###
 
 You can contribute code to this plugin via GitHub: [https://github.com/Automattic/WP-Job-Manager](https://github.com/Automattic/WP-Job-Manager) and localizations via [https://translate.wordpress.org/projects/wp-plugins/wp-job-manager](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager)
 
 Thanks to all of our contributors.
 
-= Support =
+### Support ###
 
 Use the WordPress.org forums for community support where we try to help all users. If you spot a bug, you can log it (or fix it) on [Github](https://github.com/Automattic/WP-Job-Manager) where we can act upon them more efficiently.
 
@@ -74,15 +74,15 @@ If you need help with one of our add-ons, [please raise a ticket in our help des
 
 If you want help with a customisation, please consider hiring a developer! [http://jobs.wordpress.net/](http://jobs.wordpress.net/) is a good place to start.
 
-== Installation ==
+## Installation ##
 
-= Automatic installation =
+### Automatic installation ###
 
 Automatic installation is the easiest option as WordPress handles the file transfers itself and you don't even need to leave your web browser. To do an automatic install, log in to your WordPress admin panel, navigate to the Plugins menu and click Add New.
 
 In the search field type "WP Job Manager" and click Search Plugins. Once you've found the plugin you can view details about it such as the point release, rating and description. Most importantly of course, you can install it by clicking _Install Now_.
 
-= Manual installation =
+### Manual installation ###
 
 The manual installation method involves downloading the plugin and uploading it to your web server via your favorite FTP application.
 
@@ -90,7 +90,7 @@ The manual installation method involves downloading the plugin and uploading it 
 * Using an FTP program, or your hosting control panel, upload the unzipped plugin folder to your WordPress installation's `wp-content/plugins/` directory.
 * Activate the plugin from the Plugins menu within the WordPress admin.
 
-= Getting started =
+### Getting started ###
 
 Once installed:
 
@@ -102,20 +102,20 @@ Once installed:
 
 For more information, [read the documentation](https://wpjobmanager.com/documentation/).
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions ##
 
-= How do I setup WP Job Manager? =
+### How do I setup WP Job Manager? ###
 View the getting [installation](https://wpjobmanager.com/document/installation/) and [setup](https://wpjobmanager.com/document/setting-up-wp-job-manager/) guide for advice getting started with the plugin. In most cases it's just a case of adding some shortcodes to your pages!
 
-= Can I use WP Job Manager without frontend job submission? =
+### Can I use WP Job Manager without frontend job submission? ###
 Yes! If you don't setup the [submit_job_form] shortcode, you can just post from the admin backend.
 
-= How can I customize the job application process? =
+### How can I customize the job application process? ###
 There are several ways to customise the job application process in WP Job Manager, including using some extra plugins (some are free on Wordpress.org).
 
 See: [Customising the Job Application Process](https://wpjobmanager.com/document/customising-job-application-process/)
 
-= How can I customize the job submission form? =
+### How can I customize the job submission form? ###
 There are three ways to customise the fields in WP Job Manager;
 
 1. For simple text changes, using a localisation file or a plugin such as https://wordpress.org/plugins/say-what/
@@ -124,13 +124,13 @@ There are three ways to customise the fields in WP Job Manager;
 
 If you'd like to learn about WordPress filters, here is a great place to start: [https://pippinsplugins.com/a-quick-introduction-to-using-filters/](https://pippinsplugins.com/a-quick-introduction-to-using-filters/)
 
-= How can I be notified of new jobs via email? =
+### How can I be notified of new jobs via email? ###
 If you wish to be notified of new postings on your site you can use a plugin such as [Post Status Notifier](http://wordpress.org/plugins/post-status-notifier-lite/).
 
-= What language files are available? =
+### What language files are available? ###
 You can view (and contribute) translations via the [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager).
 
-== Screenshots ==
+## Screenshots ##
 
 1. The submit job form.
 2. Submit job preview.
@@ -139,9 +139,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 5. Job listings and filters.
 6. Job listings in admin.
 
-== Changelog ==
+## Changelog ##
 
-= 1.25.2 =
+### 1.25.2 ###
 * Fix - The date format of the expiry date picker was incorrect in translations so we added a comment to clarify, and fixed translations. (https://github.com/Automattic/WP-Job-Manager/issues/697)
 * Fix - Changing the date of an expired job would forget the date, even though the job would become active. (https://github.com/Automattic/WP-Job-Manager/issues/653)
 * Fix - Site owner can allow jobs to have only one or more than one types. (https://github.com/Automattic/WP-Job-Manager/issues/549)
@@ -157,7 +157,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 See additional changelog items in changelog.txt
 
-== Upgrade Notice ==
+## Upgrade Notice ##
 
-= 1.25.2 =
+### 1.25.2 ###
 Lots of bugs fixed.

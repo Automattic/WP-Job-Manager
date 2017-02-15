@@ -101,6 +101,7 @@ class WP_Job_Manager_Post_Types {
 						'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
 	            	),
 		            'show_ui' 				=> true,
+		            'show_tagcloud'			=> false,
 		            'public' 	     		=> $public,
 		            'capabilities'			=> array(
 		            	'manage_terms' 		=> $admin_capability,
@@ -113,50 +114,53 @@ class WP_Job_Manager_Post_Types {
 		    );
 		}
 
-	    $singular  = __( 'Job type', 'wp-job-manager' );
-		$plural    = __( 'Job types', 'wp-job-manager' );
+		if ( get_option( 'job_manager_enable_types' ) ) {
+			$singular  = __( 'Job type', 'wp-job-manager' );
+			$plural    = __( 'Job types', 'wp-job-manager' );
 
-		if ( current_theme_supports( 'job-manager-templates' ) ) {
-			$rewrite   = array(
-				'slug'         => _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ),
-				'with_front'   => false,
-				'hierarchical' => false
+			if ( current_theme_supports( 'job-manager-templates' ) ) {
+				$rewrite   = array(
+					'slug'         => _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ),
+					'with_front'   => false,
+					'hierarchical' => false
+				);
+				$public    = true;
+			} else {
+				$rewrite   = false;
+				$public    = false;
+			}
+
+			register_taxonomy( "job_listing_type",
+				apply_filters( 'register_taxonomy_job_listing_type_object_type', array( 'job_listing' ) ),
+				apply_filters( 'register_taxonomy_job_listing_type_args', array(
+					'hierarchical' 			=> true,
+					'label' 				=> $plural,
+					'labels' => array(
+						'name' 				=> $plural,
+						'singular_name' 	=> $singular,
+						'menu_name'         => ucwords( $plural ),
+						'search_items' 		=> sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+						'all_items' 		=> sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
+						'parent_item' 		=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
+						'parent_item_colon' => sprintf( __( 'Parent %s:', 'wp-job-manager' ), $singular ),
+						'edit_item' 		=> sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+						'update_item' 		=> sprintf( __( 'Update %s', 'wp-job-manager' ), $singular ),
+						'add_new_item' 		=> sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
+						'new_item_name' 	=> sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
+					),
+					'show_ui' 				=> true,
+					'show_tagcloud'			=> false,
+					'public' 			    => $public,
+					'capabilities'			=> array(
+						'manage_terms' 		=> $admin_capability,
+						'edit_terms' 		=> $admin_capability,
+						'delete_terms' 		=> $admin_capability,
+						'assign_terms' 		=> $admin_capability,
+					),
+					'rewrite' 				=> $rewrite,
+				) )
 			);
-			$public    = true;
-		} else {
-			$rewrite   = false;
-			$public    = false;
 		}
-
-		register_taxonomy( "job_listing_type",
-			apply_filters( 'register_taxonomy_job_listing_type_object_type', array( 'job_listing' ) ),
-	        apply_filters( 'register_taxonomy_job_listing_type_args', array(
-	            'hierarchical' 			=> true,
-	            'label' 				=> $plural,
-	            'labels' => array(
-                    'name' 				=> $plural,
-                    'singular_name' 	=> $singular,
-                    'menu_name'         => ucwords( $plural ),
-                    'search_items' 		=> sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
-                    'all_items' 		=> sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
-                    'parent_item' 		=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
-                    'parent_item_colon' => sprintf( __( 'Parent %s:', 'wp-job-manager' ), $singular ),
-                    'edit_item' 		=> sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
-                    'update_item' 		=> sprintf( __( 'Update %s', 'wp-job-manager' ), $singular ),
-                    'add_new_item' 		=> sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
-                    'new_item_name' 	=> sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
-            	),
-	            'show_ui' 				=> true,
-	            'public' 			    => $public,
-	            'capabilities'			=> array(
-	            	'manage_terms' 		=> $admin_capability,
-	            	'edit_terms' 		=> $admin_capability,
-	            	'delete_terms' 		=> $admin_capability,
-	            	'assign_terms' 		=> $admin_capability,
-	            ),
-	           'rewrite' 				=> $rewrite,
-	        ) )
-	    );
 
 	    /**
 		 * Post types
@@ -180,21 +184,21 @@ class WP_Job_Manager_Post_Types {
 		register_post_type( "job_listing",
 			apply_filters( "register_post_type_job_listing", array(
 				'labels' => array(
-					'name' 					=> $plural,
-					'singular_name' 		=> $singular,
+					'name'			=> $plural,
+					'singular_name' 	=> $singular,
 					'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
 					'all_items'             => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
-					'add_new' 				=> __( 'Add New', 'wp-job-manager' ),
-					'add_new_item' 			=> sprintf( __( 'Add %s', 'wp-job-manager' ), $singular ),
-					'edit' 					=> __( 'Edit', 'wp-job-manager' ),
-					'edit_item' 			=> sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
-					'new_item' 				=> sprintf( __( 'New %s', 'wp-job-manager' ), $singular ),
-					'view' 					=> sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
-					'view_item' 			=> sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
-					'search_items' 			=> sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
-					'not_found' 			=> sprintf( __( 'No %s found', 'wp-job-manager' ), $plural ),
+					'add_new' 		=> __( 'Add New', 'wp-job-manager' ),
+					'add_new_item' 		=> sprintf( __( 'Add %s', 'wp-job-manager' ), $singular ),
+					'edit' 			=> __( 'Edit', 'wp-job-manager' ),
+					'edit_item' 		=> sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+					'new_item' 		=> sprintf( __( 'New %s', 'wp-job-manager' ), $singular ),
+					'view' 			=> sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
+					'view_item' 		=> sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
+					'search_items' 		=> sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+					'not_found' 		=> sprintf( __( 'No %s found', 'wp-job-manager' ), $plural ),
 					'not_found_in_trash' 	=> sprintf( __( 'No %s found in trash', 'wp-job-manager' ), $plural ),
-					'parent' 				=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
+					'parent' 		=> sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
 					'featured_image'        => __( 'Company Logo', 'wp-job-manager' ),
 					'set_featured_image'    => __( 'Set company logo', 'wp-job-manager' ),
 					'remove_featured_image' => __( 'Remove company logo', 'wp-job-manager' ),
@@ -391,6 +395,13 @@ class WP_Job_Manager_Post_Types {
 		if ( $company ) {
 			echo "<job_listing:company><![CDATA[" . esc_html( $company ) . "]]></job_listing:company>\n";
 		}
+		
+		/**
+		 * Fires at the end of each job RSS feed item.
+		 *
+		 * @param int $post_id The post ID of the job.
+		 */
+		 do_action( 'job_feed_item', $post_id );
 	}
 
 	/**
@@ -477,18 +488,15 @@ class WP_Job_Manager_Post_Types {
 			$expires = get_post_meta( $post->ID, '_job_expires', true );
 			if ( $expires && strtotime( $expires ) < current_time( 'timestamp' ) ) {
 				update_post_meta( $post->ID, '_job_expires', '' );
-				$_POST[ '_job_expires' ] = '';
 			}
-			return;
 		}
 
-		// No metadata set so we can generate an expiry date
 		// See if the user has set the expiry manually:
 		if ( ! empty( $_POST[ '_job_expires' ] ) ) {
 			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ '_job_expires' ] ) ) ) );
 
-		// No manual setting? Lets generate a date
-		} else {
+		// No manual setting? Lets generate a date if there isn't already one
+		} elseif ( false == isset( $expires ) ) {
 			$expires = calculate_job_expiry( $post->ID );
 			update_post_meta( $post->ID, '_job_expires', $expires );
 

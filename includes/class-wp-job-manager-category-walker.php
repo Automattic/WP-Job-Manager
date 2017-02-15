@@ -8,8 +8,21 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class WP_Job_Manager_Category_Walker extends Walker {
 
-	var $tree_type = 'category';
-	var $db_fields = array ('parent' => 'parent', 'id' => 'term_id', 'slug' => 'slug' );
+	/**
+	 * Tree type
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $tree_type = 'category';
+
+	/**
+	 * Database fields
+	 *
+	 * @access public
+	 * @var array
+	 */
+	public $db_fields = array ('parent' => 'parent', 'id' => 'term_id', 'slug' => 'slug' );
 
 	/**
 	 * @see Walker::start_el()
@@ -20,7 +33,7 @@ class WP_Job_Manager_Category_Walker extends Walker {
 	 * @param int $depth Depth of category in reference to parents.
 	 * @param array $args
 	 */
-	function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
+	public function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
 
 		if ( ! empty( $args['hierarchical'] ) )
 			$pad = str_repeat('&nbsp;', $depth * 3);

@@ -199,11 +199,11 @@
 	zoom: 1;
 	&:before,
 	&:after {
-	  content: "";
-	  display: table;
+		content: "";
+		display: table;
 	}
 	&:after {
-	  clear: both;
+		clear: both;
 	}
 	.form-field {
 		width: 50%;
@@ -262,6 +262,14 @@
 		}
 		.button {
 			margin-left: 4px;
+		}
+		.file_no_url {
+			.keyframes(flash; {
+				from { background-color: unset; }
+				to { background-color: #dc3232; }
+			});
+
+			.animation(flash 0.3s linear infinite alternate);
 		}
 	}
 }

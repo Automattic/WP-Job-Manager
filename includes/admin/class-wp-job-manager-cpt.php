@@ -268,6 +268,10 @@ class WP_Job_Manager_CPT {
 			unset( $columns["job_listing_category"] );
 		}
 
+		if ( ! get_option( 'job_manager_enable_types' ) ) {
+			unset( $columns["job_listing_type"] );
+		}
+
 		return $columns;
 	}
 
