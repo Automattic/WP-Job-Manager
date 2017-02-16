@@ -61,7 +61,7 @@ class WP_Job_Manager_API {
 			$api = strtolower( esc_attr( $wp->query_vars['job-manager-api'] ) );
 
 			// Load class if exists
-			if ( class_exists( $api ) )
+			if ( has_action( 'job_manager_api_' . $api ) && class_exists( $api ) )
 				$api_class = new $api();
 
 			// Trigger actions
