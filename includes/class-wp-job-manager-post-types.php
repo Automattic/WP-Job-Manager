@@ -38,6 +38,8 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 
+		add_action( 'parse_query', array( $this, 'add_feed_query_args' ) );
+
 		// WP ALL Import
 		add_action( 'pmxi_saved_post', array( $this, 'pmxi_saved_post' ), 10, 1 );
 
@@ -368,6 +370,31 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'rss2_ns', array( $this, 'job_feed_namespace' ) );
 		add_action( 'rss2_item', array( $this, 'job_feed_item' ) );
 		do_feed_rss2( false );
+	}
+
+	/**
+	 * In order to make sure that the feed properly queries the 'job_listing' type
+	 *
+	 * @param WP_Query $wp
+	 */
+	public function add_feed_query_args( $wp ) {
+
+		// Let's leave if not the job feed
+		if ( ! isset( $wp->query_vars['feed'] ) || 'job_feed' !== $wp->query_vars['feed'] ) {
+			return;
+		}
+
+		// Leave if not a feed.
+		if ( false === $wp->is_feed ) {
+			return;
+		}
+
+		// If the post_type was already set, let's get out of here.
+		if ( isset( $wp->query_vars['post_type'] ) && ! empty( $wp->query_vars['post_type'] ) ) {
+			return;
+		}
+
+		$wp->query_vars['post_type'] = 'job_listing';
 	}
 
 	/**
