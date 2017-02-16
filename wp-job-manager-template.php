@@ -270,6 +270,40 @@ function get_the_job_type( $post = null ) {
 
 
 /**
+ * the_job_publish_date function.
+ * @param mixed $post (default: null)
+ * @return [type]
+ */
+function the_job_publish_date( $post = null ) {
+	$date_format = get_option( 'job_manager_date_format' );
+
+	if ( $date_format === 'default' ) {
+		$display_date = __( 'Posted on ', 'wp-job-manager' ) . get_post_time( get_option( 'date_format' ) );
+	} else {
+		$display_date = sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) );
+	}
+
+	echo '<time datetime="' . get_post_time( 'Y-m-d' ) . '">' . $display_date . '</time>';
+}
+
+
+/**
+ * get_the_job_publish_date function.
+ * @param mixed $post (default: null)
+ * @return [type]
+ */
+function get_the_job_publish_date( $post = null ) {
+	$date_format = get_option( 'job_manager_date_format' );
+
+	if ( $date_format === 'default' ) {
+		return get_post_time( get_option( 'date_format' ) );
+	} else {
+		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) );
+	}
+}
+
+
+/**
  * the_job_location function.
  * @param  boolean $map_link whether or not to link to google maps
  * @return [type]
