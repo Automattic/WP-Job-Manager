@@ -123,7 +123,7 @@ class WP_Job_Manager_Geocode {
 		try {
 			if ( false === $geocoded_address || empty( $geocoded_address->results[0] ) ) {
 				$result = wp_remote_get(
-					apply_filters( 'job_manager_geolocation_endpoint', "http://maps.googleapis.com/maps/api/geocode/json?address=" . $raw_address . "&sensor=false&region=" . apply_filters( 'job_manager_geolocation_region_cctld', '', $raw_address ), $raw_address ),
+					apply_filters( 'job_manager_geolocation_endpoint', "https://maps.googleapis.com/maps/api/geocode/json?address=" . $raw_address . "&sensor=false&region=" . apply_filters( 'job_manager_geolocation_region_cctld', '', $raw_address ), $raw_address ),
 					array(
 						'timeout'     => 5,
 					    'redirection' => 1,
