@@ -340,7 +340,7 @@ class WP_Job_Manager_Settings {
 								break;
 								case "password" :
 
-									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
 									if ( $option['desc'] ) {
 										echo ' <p class="description">' . $option['desc'] . '</p>';
@@ -348,7 +348,7 @@ class WP_Job_Manager_Settings {
 
 								break;
 								case "number" :
-									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="number" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="number" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
 									if ( $option['desc'] ) {
 										echo ' <p class="description">' . $option['desc'] . '</p>';
@@ -357,7 +357,7 @@ class WP_Job_Manager_Settings {
 								case "" :
 								case "input" :
 								case "text" :
-									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="text" name="<?php echo $option['name']; ?>" value="<?php esc_attr_e( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="text" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
 									if ( $option['desc'] ) {
 										echo ' <p class="description">' . $option['desc'] . '</p>';

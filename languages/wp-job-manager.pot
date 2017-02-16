@@ -1,16 +1,17 @@
-# Copyright (C) 2016 WP Job Manager
-# This file is distributed under the same license as the WP Job Manager package.
+# Copyright (C) 2016 Automattic
+# This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.25.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager\n"
 "POT-Creation-Date: 2016-11-14 15:22:37+00:00\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
 
 #: includes/admin/class-wp-job-manager-addons.php:57
 #: includes/admin/class-wp-job-manager-admin.php:66
@@ -103,8 +104,8 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:235
 msgid ""
-"%s scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href=\"%2$s"
-"\">Preview</a>"
+"%s scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
+"href=\"%2$s\">Preview</a>"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:236
@@ -243,8 +244,8 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:75
 msgid ""
-"Choose whether to enable categories. Categories must be setup by an admin to "
-"allow users to choose them during submission."
+"Choose whether to enable categories. Categories must be setup by an admin "
+"to allow users to choose them during submission."
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:82
@@ -509,9 +510,9 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:155
 msgid ""
-"<em>WP Job Manager</em> includes %1$sshortcodes%2$s which can be used within "
-"your %3$spages%2$s to output content. These can be created for you below. "
-"For more information on the job shortcodes view the %4$sshortcode "
+"<em>WP Job Manager</em> includes %1$sshortcodes%2$s which can be used "
+"within your %3$spages%2$s to output content. These can be created for you "
+"below. For more information on the job shortcodes view the %4$sshortcode "
 "documentation%2$s."
 msgstr ""
 
@@ -551,8 +552,8 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:182
 msgid ""
-"This page allows employers to manage and edit their own jobs from the front-"
-"end."
+"This page allows employers to manage and edit their own jobs from the "
+"front-end."
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:184
@@ -631,9 +632,9 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-setup.php:240
 msgid ""
 "There are many ways to support open-source projects such as WP Job Manager, "
-"for example code contribution, translation, or even telling your friends how "
-"awesome the plugin (hopefully) is. Thanks in advance for your support - it "
-"is much appreciated!"
+"for example code contribution, translation, or even telling your friends "
+"how awesome the plugin (hopefully) is. Thanks in advance for your support - "
+"it is much appreciated!"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:242
@@ -806,11 +807,6 @@ msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:70
 msgid "Job categories"
-msgstr ""
-
-#: includes/class-wp-job-manager-post-types.php:74
-msgctxt "Job category slug - resave permalinks after changing this"
-msgid "job-category"
 msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:94
@@ -1280,8 +1276,8 @@ msgstr ""
 
 #: templates/job-application-email.php:1
 msgid ""
-"To apply for this job <strong>email your details to</strong> <a class="
-"\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
+"To apply for this job <strong>email your details to</strong> <a "
+"class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
 msgstr ""
 
 #: templates/job-application-email.php:4
@@ -1338,8 +1334,8 @@ msgstr ""
 
 #: templates/job-filters.php:44
 msgid ""
-"Your browser does not support JavaScript, or it is disabled. JavaScript must "
-"be enabled in order to view listings."
+"Your browser does not support JavaScript, or it is disabled. JavaScript "
+"must be enabled in order to view listings."
 msgstr ""
 
 #: templates/job-preview.php:3
@@ -1355,8 +1351,7 @@ msgid "Company Details"
 msgstr ""
 
 #: templates/job-submitted.php:6
-msgid ""
-"%s listed successfully. To view your listing <a href=\"%s\">click here</a>."
+msgid "%s listed successfully. To view your listing <a href=\"%s\">click here</a>."
 msgstr ""
 
 #: templates/job-submitted.php:9
@@ -1454,4 +1449,81 @@ msgstr ""
 
 #. Author of the plugin/theme
 msgid "Automattic"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-admin.php:48
+msgctxt "Date format for jQuery datepicker"
+msgid "yy-mm-dd"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-setup.php:169
+msgctxt "Default page title (wizard)"
+msgid "Post a Job"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-setup.php:179
+msgctxt "Default page title (wizard)"
+msgid "Job Dashboard"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-setup.php:189
+msgctxt "Default page title (wizard)"
+msgid "Jobs"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-writepanels.php:87
+msgctxt "Date format placeholder"
+msgid "yyyy-mm-dd"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:74
+msgctxt "Job category slug - resave permalinks after changing this"
+msgid "job-category"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:121
+msgctxt "Job type slug - resave permalinks after changing this"
+msgid "job-type"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:168
+msgctxt "Post type archive slug - resave permalinks after changing this"
+msgid "jobs"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:174
+msgctxt "Job permalink - resave permalinks after changing this"
+msgid "job"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:228
+#: wp-job-manager-functions.php:203
+msgctxt "post status"
+msgid "Expired"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:237
+#: wp-job-manager-functions.php:204
+msgctxt "post status"
+msgid "Preview"
+msgstr ""
+
+#: wp-job-manager-functions.php:202
+msgctxt "post status"
+msgid "Draft"
+msgstr ""
+
+#: wp-job-manager-functions.php:205
+msgctxt "post status"
+msgid "Pending approval"
+msgstr ""
+
+#: wp-job-manager-functions.php:206
+msgctxt "post status"
+msgid "Pending payment"
+msgstr ""
+
+#: wp-job-manager-functions.php:207
+msgctxt "post status"
+msgid "Active"
 msgstr ""

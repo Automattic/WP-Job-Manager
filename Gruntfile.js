@@ -77,6 +77,37 @@ module.exports = function( grunt ){
 			}
 		},
 
+		makepot: {
+			wpjobmanager: {
+				options: {
+					domainPath: '/languages',
+					exclude: [
+						'node_modules'
+					],
+					mainFile:    'wp-job-manager.php',
+					potFilename: 'wp-job-manager.pot'
+				}
+			}
+		},
+
+		addtextdomain: {
+			wpjobmanager: {
+				options: {
+					textdomain: 'wp-job-manager'
+				},
+				files: {
+					src: [
+						'*.php',
+						'**/*.php',
+						'!node_modules/**'
+					]
+				}
+			}
+		}
+
+	});
+
+	// Load NPM tasks to be used here
 		jshint: {
 			options: grunt.file.readJSON('.jshintrc'),
 			src: [
@@ -105,6 +136,7 @@ module.exports = function( grunt ){
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
+	grunt.loadNpmTasks( 'grunt-wp-i18n' );
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown');
 
 	// Register tasks
@@ -113,6 +145,11 @@ module.exports = function( grunt ){
 		'cssmin',
 		'uglify',
 		'wp_readme_to_markdown'
+	]);
+
+	// Just an alias for pot file generation
+	grunt.registerTask( 'pot', [
+		'makepot'
 	]);
 
 	grunt.registerTask( 'dev', [
