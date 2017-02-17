@@ -353,7 +353,8 @@ class WP_Job_Manager_Post_Types {
 			);
 		}
 
-		if ( $job_manager_keyword = sanitize_text_field( $_GET['search_keywords'] ) ) {
+		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( $_GET['search_keywords'] ) : '';
+		if ( !empty( $job_manager_keyword ) ) {
 			$query_args['_keyword'] = $job_manager_keyword; // Does nothing but needed for unique hash
 			add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
 		}
