@@ -90,7 +90,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Allow resuming from cookie.
 		$this->resume_edit = false;
-		if ( ! isset( $_GET[ 'new' ] ) && ! $this->job_id && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
+		if ( ! isset( $_GET[ 'new' ] ) && ( 'before' === get_option( 'job_manager_paid_listings_flow' ) || ! $this->job_id ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
 			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
 			$job_status = get_post_status( $job_id );
 
