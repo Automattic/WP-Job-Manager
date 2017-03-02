@@ -103,11 +103,9 @@ module.exports = function( grunt ){
 					]
 				}
 			}
-		}
+		},
 
-	});
-
-	// Load NPM tasks to be used here
+		// Load NPM tasks to be used here
 		jshint: {
 			options: grunt.file.readJSON('.jshintrc'),
 			src: [
