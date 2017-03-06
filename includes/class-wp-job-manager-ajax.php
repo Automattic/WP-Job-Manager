@@ -150,7 +150,7 @@ class WP_Job_Manager_Ajax {
 		$result['max_num_pages'] = $jobs->max_num_pages;
 
 		// Give plugins the opportunity to control what JSON is returned
-		if ( $result == apply_filters( 'wp_job_manager_ajax_get_jobs', null, $result, $jobs ) ) {
+		if ( $result = apply_filters( 'wp_job_manager_ajax_get_jobs', null, $result, $jobs ) ) {
 			return wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
 		}
 
