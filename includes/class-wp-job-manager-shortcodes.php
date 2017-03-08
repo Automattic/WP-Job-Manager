@@ -38,7 +38,7 @@ class WP_Job_Manager_Shortcodes {
 	public function shortcode_action_handler() {
 		global $post;
 
-		if ( is_page() && strstr( $post->post_content, '[job_dashboard' ) ) {
+		if ( is_page() && has_shortcode($post->post_content, 'job_dashboard' ) ) {
 			$this->job_dashboard_handler();
 		}
 	}
