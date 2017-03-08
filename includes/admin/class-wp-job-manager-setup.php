@@ -109,6 +109,8 @@ class WP_Job_Manager_Setup {
 		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
 
 		if ( 3 === $step && ! empty( $_POST ) ) {
+			if ( false == wp_verify_nonce( $_REQUEST[ 'setup_wizard' ], 'step_3' ) )
+				wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
 			$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? $_POST['wp-job-manager-create-page'] : array();
 			$page_titles     = $_POST['wp-job-manager-page-title'];
 			$pages_to_create = array(
@@ -155,6 +157,7 @@ class WP_Job_Manager_Setup {
 				<p><?php printf( __( '<em>WP Job Manager</em> includes %1$sshortcodes%2$s which can be used within your %3$spages%2$s to output content. These can be created for you below. For more information on the job shortcodes view the %4$sshortcode documentation%2$s.', 'wp-job-manager' ), '<a href="http://codex.wordpress.org/Shortcode" title="What is a shortcode?" target="_blank" class="help-page-link">', '</a>', '<a href="http://codex.wordpress.org/Pages" target="_blank" class="help-page-link">', '<a href="https://wpjobmanager.com/document/shortcode-reference/" target="_blank" class="help-page-link">' ); ?></p>
 
 				<form action="<?php echo esc_url( add_query_arg( 'step', 3 ) ); ?>" method="post">
+				<?php wp_nonce_field( 'step_3', 'setup_wizard' ); ?>
 					<table class="wp-job-manager-shortcodes widefat">
 						<thead>
 							<tr>
