@@ -526,7 +526,7 @@ class WP_Job_Manager_Writepanels {
 			}
 
 			elseif ( '_application' === $key ) {
-				update_post_meta( $post_id, $key, sanitize_text_field( urldecode( $_POST[ $key ] ) ) );
+				update_post_meta( $post_id, $key, sanitize_text_field( is_email( $_POST[ $key ] ) ? $_POST[ $key ] : urldecode( $_POST[ $key ] ) ) );
 			}
 
 			// Everything else
