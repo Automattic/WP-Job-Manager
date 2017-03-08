@@ -1,3 +1,6 @@
+= 1.25.3 =
+* Security Fix: Prevent a potential CSRF vector. Props Jay Patel for the responsible disclosure.
+
 = 1.25.2 =
 * Fix - The date format of the expiry date picker was incorrect in translations so we added a comment to clarify, and fixed translations. (https://github.com/Automattic/WP-Job-Manager/issues/697)
 * Fix - Changing the date of an expired job would forget the date, even though the job would become active. (https://github.com/Automattic/WP-Job-Manager/issues/653)

@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic, adamkheckler, annezazu, artemitos, bikedor
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
 Tested up to: 4.7
-Stable tag: 1.25.2
+Stable tag: 1.25.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -141,6 +141,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+= 1.25.3 =
+* Security Fix: Prevent a potential CSRF vector. Props Jay Patel for the responsible disclosure.
+
 = 1.25.2 =
 * Fix - The date format of the expiry date picker was incorrect in translations so we added a comment to clarify, and fixed translations. (https://github.com/Automattic/WP-Job-Manager/issues/697)
 * Fix - Changing the date of an expired job would forget the date, even though the job would become active. (https://github.com/Automattic/WP-Job-Manager/issues/653)
@@ -159,5 +162,5 @@ See additional changelog items in changelog.txt
 
 == Upgrade Notice ==
 
-= 1.25.2 =
-Lots of bugs fixed.
+= 1.25.3 =
+Security fix! Please update immediately.

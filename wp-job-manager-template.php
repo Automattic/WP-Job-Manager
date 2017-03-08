@@ -7,7 +7,7 @@
  * @author 		Mike Jolley
  * @category 	Core
  * @package 	Job Manager/Template
- * @version     1.20.0
+ * @version     1.25.3
  */
 
 /**
