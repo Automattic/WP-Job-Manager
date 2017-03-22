@@ -508,7 +508,7 @@ class WP_Job_Manager_Writepanels {
 				if ( ! empty( $_POST[ $key ] ) ) {
 					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
 				} else {
-					update_post_meta( $post_id, $key, '' );
+					update_post_meta( $post_id, $key, calculate_job_expiry( $post_id ) );
 				}
 			}
 
