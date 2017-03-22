@@ -59,10 +59,19 @@ class WP_Job_Manager_Settings {
 							'attributes' => array()
 						),
 						array(
+							'name'       => 'job_manager_hide_expired',
+							'std'        => get_option( 'job_manager_hide_expired_content' ) ? '1' : '0', // back compat
+							'label'      => __( 'Hide Expired Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide expired listings in job archive/search', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, expired job listing is not searchable.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
+						array(
 							'name'       => 'job_manager_hide_expired_content',
 							'std'        => '1',
-							'label'      => __( 'Expired Listings', 'wp-job-manager' ),
-							'cb_label'   => __( 'Hide content within expired listings', 'wp-job-manager' ),
+							'label'      => __( 'Hide Expired Listings Content', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide expired listing content in single job listing (singular)', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled, the content within expired listings will be hidden. Otherwise, expired listings will be displayed as normal (without the application area).', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
