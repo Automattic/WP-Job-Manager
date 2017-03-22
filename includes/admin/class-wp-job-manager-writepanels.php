@@ -556,6 +556,18 @@ class WP_Job_Manager_Writepanels {
 				}
 			}
 		}
+
+		/* Set Post Status To Expired If Already Expired */
+		$expiry_date = get_post_meta( $post_id, '_job_expires', true );
+		$today_date  = date( 'Y-m-d', current_time( 'timestamp' ) );
+		$post_status = $today_date > $expiry_date ? 'expired' : $_POST['post_status'];
+		remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
+		$job_data = array(
+			'ID'          => $post_id,
+			'post_status' => $post_status,
+		);
+		wp_update_post( $job_data );
+		add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
 	}
 }
 
