@@ -85,8 +85,8 @@ class WP_Job_Manager_Writepanels {
 				'priority'    => 11,
 				'classes'     => array( 'job-manager-datepicker' ),
 				/* translators: date format placeholder, see https://secure.php.net/date */
-				'placeholder' => _x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ),
-				'value'       => metadata_exists( 'post', $post->ID, '_job_expires' ) ? get_post_meta( $post->ID, '_job_expires', true ) : calculate_job_expiry( $post->ID ),
+				'placeholder' => metadata_exists( 'post', $post->ID, '_job_expires' ) ? esc_attr_x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ) : calculate_job_expiry( $post->ID ),
+				'value'       => get_post_meta( $post->ID, '_job_expires', true ),
 			);
 		}
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
@@ -252,7 +252,7 @@ class WP_Job_Manager_Writepanels {
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
-			<input type="text" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
+			<input type="text" autocomplete="off" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
 		</p>
 		<?php
 	}
