@@ -19,7 +19,6 @@ jQuery(document).ready(function($) {
 	$( 'input.job-manager-datepicker, input#_job_expires' ).datepicker({
 		altFormat  : 'yy-mm-dd',
 		dateFormat : job_manager_admin.date_format,
-		minDate    : 0
 	});
 
 	$( 'input.job-manager-datepicker, input#_job_expires' ).each( function(){
