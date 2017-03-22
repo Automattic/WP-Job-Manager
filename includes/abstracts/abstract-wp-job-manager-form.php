@@ -73,6 +73,20 @@ abstract class WP_Job_Manager_Form {
 	 * Process function. all processing code if needed - can also change view if step is complete
 	 */
 	public function process() {
+
+		// reset cookie
+		if (
+			isset( $_GET[ 'new' ] ) &&
+			isset( $_COOKIE[ 'wp-job-manager-submitting-job-id' ] ) &&
+			isset( $_COOKIE[ 'wp-job-manager-submitting-job-key' ] ) &&
+			get_post_meta( $_COOKIE[ 'wp-job-manager-submitting-job-id' ], '_submitting_key', true ) == $_COOKIE['wp-job-manager-submitting-job-key']
+		) {
+			delete_post_meta( $_COOKIE[ 'wp-job-manager-submitting-job-id' ], '_submitting_key' );
+			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
+			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
+			wp_redirect( remove_query_arg( array( 'new', 'key' ), $_SERVER[ 'REQUEST_URI' ] ) );
+		}
+
 		$step_key = $this->get_step_key( $this->step );
 
 		if ( $step_key && is_callable( $this->steps[ $step_key ]['handler'] ) ) {
