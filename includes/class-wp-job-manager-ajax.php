@@ -123,7 +123,7 @@ class WP_Job_Manager_Ajax {
 
 		// Give plugins the opportunity to control what JSON is returned
 		if ( $result = apply_filters( 'job_manager_ajax_get_jobs', null, $result, $jobs ) ) {
-			return wp_send_json( apply_filters( 'manager_get_listings_result', $result, $jobs ) );
+			return wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
 		}
 
 		if ( $jobs->have_posts() ) : $result['found_jobs'] = true; ?>
