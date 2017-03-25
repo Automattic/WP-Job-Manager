@@ -129,7 +129,7 @@ class WP_Job_Manager_Writepanels {
 		} elseif ( false == job_manager_multi_job_type() ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side');
 			$job_listing_type = get_taxonomy( 'job_listing_type' );
-			add_meta_box( 'job_listing_type', $job_listing_type->label, array( $this, 'job_listing_metabox' ),'job_listing' ,'side','core');
+			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, array( $this, 'job_listing_metabox' ),'job_listing' ,'side','core');
 		}
 	}
 
