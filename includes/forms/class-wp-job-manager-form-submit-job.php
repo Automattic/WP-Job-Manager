@@ -209,6 +209,41 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'required'    => true,
 					'placeholder' => __( 'Enter the name of the company', 'wp-job-manager' ),
 					'priority'    => 1
+					
+				'contact_first_name' => array(
+					'label'       => __( 'contact first name', 'wp-job-manager' ),
+					'type'        => 'text',
+					'required'    => true,
+					'placeholder' => __( 'Enter the contact first name', 'wp-job-manager' ),
+					'priority'    => 1
+					
+				'contact_last_name' => array(
+					'label'       => __( 'contact last name', 'wp-job-manager' ),
+					'type'        => 'text',
+					'required'    => true,
+					'placeholder' => __( 'Enter the contact last name', 'wp-job-manager' ),
+					'priority'    => 1
+					
+				'contact_title' => array(
+					'label'       => __( 'contact title', 'wp-job-manager' ),
+					'type'        => 'text',
+					'required'    => true,
+					'placeholder' => __( 'Enter the contact title', 'wp-job-manager' ),
+					'priority'    => 1
+					
+				'contact_telephone_number' => array(
+					'label'       => __( 'contact telephone number', 'wp-job-manager' ),
+					'type'        => 'text',
+					'required'    => true,
+					'placeholder' => __( 'Enter the contact telephone number', 'wp-job-manager' ),
+					'priority'    => 2
+					
+				'contact_mobile_number' => array(
+					'label'       => __( 'contact mobile number', 'wp-job-manager' ),
+					'type'        => 'text',
+					'required'    => true,
+					'placeholder' => __( 'Enter the contact mobile number', 'wp-job-manager' ),
+					'priority'    => 2
 				),
 				'company_website' => array(
 					'label'       => __( 'Website', 'wp-job-manager' ),
