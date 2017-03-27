@@ -919,3 +919,4 @@ function job_manager_duplicate_listing( $post_id ) {
 
 	return $new_post_id;
 }
+

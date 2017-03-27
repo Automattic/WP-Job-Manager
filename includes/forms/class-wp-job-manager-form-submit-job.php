@@ -89,12 +89,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		// Allow resuming from cookie.
-		if ( ! $this->job_id && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
+		$this->resume_edit = false;
+		if ( ! isset( $_GET[ 'new' ] ) && ( 'before' === get_option( 'job_manager_paid_listings_flow' ) || ! $this->job_id ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
 			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
 			$job_status = get_post_status( $job_id );
 
 			if ( ( 'preview' === $job_status || 'pending_payment' === $job_status ) && get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key'] ) {
 				$this->job_id = $job_id;
+				$this->resume_edit = get_post_meta( $job_id, '_submitting_key', true );
 			}
 		}
 
@@ -412,6 +414,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		get_job_manager_template( 'job-submit.php', array(
 			'form'               => $this->form_name,
 			'job_id'             => $this->get_job_id(),
+			'resume_edit'        => $this->resume_edit,
 			'action'             => $this->get_action(),
 			'job_fields'         => $this->get_fields( 'job' ),
 			'company_fields'     => $this->get_fields( 'company' ),
