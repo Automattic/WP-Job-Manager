@@ -488,3 +488,37 @@
 		}
 	}
 }
+
+/**
+ * Mobile styles
+ */
+@media only screen and (max-width: 767px) {
+	.widefat {
+		.column-job_actions {
+			text-align: left;
+
+			a.button-icon {
+				&:before {
+					float: left;
+				}
+			}
+		}
+	}
+	.rtl {
+		.widefat {
+			.column-job_actions {
+				text-align: right;
+
+				a.button-icon {
+					&:before {
+						float: right;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+

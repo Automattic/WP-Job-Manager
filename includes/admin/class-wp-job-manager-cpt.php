@@ -16,6 +16,8 @@ class WP_Job_Manager_CPT {
 	public function __construct() {
 		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 1, 2 );
 		add_filter( 'manage_edit-job_listing_columns', array( $this, 'columns' ) );
+		add_filter( 'list_table_primary_column', array( $this, 'primary_column' ), 10, 2 );
+		add_filter( 'post_row_actions', array( $this, 'row_actions' ) );
 		add_action( 'manage_job_listing_posts_custom_column', array( $this, 'custom_columns' ), 2 );
 		add_filter( 'manage_edit-job_listing_sortable_columns', array( $this, 'sortable_columns' ) );
 		add_filter( 'request', array( $this, 'sort_columns' ) );
@@ -253,8 +255,8 @@ class WP_Job_Manager_CPT {
 
 		unset( $columns['title'], $columns['date'], $columns['author'] );
 
-		$columns["job_listing_type"]     = __( "Type", 'wp-job-manager' );
 		$columns["job_position"]         = __( "Position", 'wp-job-manager' );
+		$columns["job_listing_type"]     = __( "Type", 'wp-job-manager' );
 		$columns["job_location"]         = __( "Location", 'wp-job-manager' );
 		$columns['job_status']           = '<span class="tips" data-tip="' . __( "Status", 'wp-job-manager' ) . '">' . __( "Status", 'wp-job-manager' ) . '</span>';
 		$columns["job_posted"]           = __( "Posted", 'wp-job-manager' );
@@ -273,6 +275,39 @@ class WP_Job_Manager_CPT {
 		}
 
 		return $columns;
+	}
+
+	/**
+	 * primary_column function.
+	 * This is required to make column responsive since WP 4.3
+	 * 
+	 * @access public
+	 * @param string $column
+	 * @param string $screen
+	 * @return string
+	 */
+	public function primary_column( $column, $screen ){
+		if ( 'edit-job_listing' === $screen ) {
+			$column = 'job_position';
+		}
+		return $column;
+	}
+
+	/**
+	 * row_actions function.
+	 * Remove all action links because WordPress add it to primary column.
+	 * Note: Removing all actions also remove mobile "Show more details" toggle button.
+	 * So the button need to be added manually in custom_columns callback for primary column.
+	 * 
+	 * @access public
+	 * @param array $actions
+	 * @return array
+	 */
+	public function row_actions( $actions ){
+		if( 'job_listing' == get_post_type() ){
+			return array();
+		}
+		return $actions;
 	}
 
 	/**
@@ -307,6 +342,7 @@ class WP_Job_Manager_CPT {
 
 				the_company_logo();
 				echo '</div>';
+				echo '<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>';
 			break;
 			case "job_location" :
 				the_job_location( $post );
