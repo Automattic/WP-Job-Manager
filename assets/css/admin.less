@@ -195,7 +195,6 @@
 	}
 }
 .wp_job_manager_meta_data {
-	padding: 12px;
 	zoom: 1;
 	&:before,
 	&:after {
@@ -492,7 +491,7 @@
 /**
  * Mobile styles
  */
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 782px) {
 	.widefat {
 		.job_position.column-primary{
 			display: table-cell !important;
@@ -520,6 +519,25 @@
 						float: right;
 					}
 				}
+			}
+		}
+	}
+	.wp_job_manager_meta_data {
+		.form-field {
+			width: 100%;
+			padding: 0;
+
+			&:nth-child(even) {
+				float: none;
+				padding: 0;
+				margin-bottom: 12px;
+				clear: both;
+			}
+			&:nth-last-child(-n+2) {
+				float: none;
+				padding: 0;
+				margin-bottom: 12px;
+				clear: both;
 			}
 		}
 	}
