@@ -173,7 +173,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'label'       => __( 'Job type', 'wp-job-manager' ),
 					'type'        => $job_type,
 					'required'    => true,
-					'placeholder' => '',
+					'placeholder' => __( 'Choose job type&hellip;', 'wp-job-manager' ),
 					'priority'    => 3,
 					'default'     => 'full-time',
 					'taxonomy'    => 'job_listing_type'

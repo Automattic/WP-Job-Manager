@@ -191,6 +191,7 @@ msgid "Delete"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:42
+#: includes/admin/class-wp-job-manager-writepanels.php:131
 #: includes/class-wp-job-manager-post-types.php:191
 #: includes/class-wp-job-manager-post-types.php:258
 msgid "Job Listings"
@@ -1080,6 +1081,10 @@ msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:166
 msgid "Leave this blank if the location is not important"
+msgstr ""
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:176
+msgid "Choose job type&hellip;"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:191
