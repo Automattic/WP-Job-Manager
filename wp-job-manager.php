@@ -111,6 +111,8 @@ class WP_Job_Manager {
 	 * Register and enqueue scripts and css
 	 */
 	public function frontend_scripts() {
+		global $post;
+
 		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
 		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
 		$ajax_data 		  = array(
@@ -167,7 +169,10 @@ class WP_Job_Manager {
 			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' )
 		) );
 
-		wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css' );
+		wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
+		if( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'submit_job_form') ) {
+			wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', array(), JOB_MANAGER_VERSION );
+		}
 	}
 }
 
