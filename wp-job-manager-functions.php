@@ -910,7 +910,7 @@ function job_manager_duplicate_listing( $post_id ) {
 			if ( in_array( $meta_key, apply_filters( 'job_manager_duplicate_listing_ignore_keys', array( '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' ) ) ) ) {
 				continue;
 			}
-			update_post_meta( $new_post_id, $meta_key, $meta_value );
+			update_post_meta( $new_post_id, $meta_key, maybe_unserialize( $meta_value ) );
 		}
 	}
 

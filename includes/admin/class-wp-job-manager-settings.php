@@ -125,6 +125,13 @@ class WP_Job_Manager_Settings {
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
+						array(
+							'name'       => 'job_manager_google_maps_api_key',
+							'std'        => '',
+							'label'      => __( 'Google Maps API Key', 'wp-job-manager' ),
+							'desc'       => sprintf( __( 'Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href="%s">Google Maps API developer site</a>.', 'wp-job-manager' ), 'https://developers.google.com/maps/documentation/geocoding/get-api-key' ),
+							'attributes' => array()
+						),
 					),
 				),
 				'job_submission' => array(

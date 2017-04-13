@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.25.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager\n"
-"POT-Creation-Date: 2017-03-27 04:41:25+00:00\n"
+"POT-Creation-Date: 2017-03-28 18:28:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -173,9 +173,9 @@ msgid "Approve"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:351
-#: includes/admin/class-wp-job-manager-writepanels.php:217
-#: includes/admin/class-wp-job-manager-writepanels.php:220
-#: includes/admin/class-wp-job-manager-writepanels.php:223
+#: includes/admin/class-wp-job-manager-writepanels.php:218
+#: includes/admin/class-wp-job-manager-writepanels.php:221
+#: includes/admin/class-wp-job-manager-writepanels.php:224
 msgid "View"
 msgstr ""
 
@@ -321,162 +321,173 @@ msgid ""
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:131
-msgid "Job Submission"
+msgid "Google Maps API Key"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:136
-msgid "Account Required"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-settings.php:137
-msgid "Submitting listings requires an account"
+#: includes/admin/class-wp-job-manager-settings.php:132
+msgid ""
+"Google requires an API key to retrieve location information for job "
+"listings. Acquire an API key from the <a href=\"%s\">Google Maps API "
+"developer site</a>."
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:138
+msgid "Job Submission"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:143
+msgid "Account Required"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:144
+msgid "Submitting listings requires an account"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:145
 msgid ""
 "If disabled, non-logged in users will be able to submit listings without "
 "creating an account."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:145
+#: includes/admin/class-wp-job-manager-settings.php:152
 msgid "Account Creation"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:146
+#: includes/admin/class-wp-job-manager-settings.php:153
 msgid "Allow account creation"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:147
+#: includes/admin/class-wp-job-manager-settings.php:154
 msgid ""
 "If enabled, non-logged in users will be able to create an account by "
 "entering their email address on the submission form."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:154
+#: includes/admin/class-wp-job-manager-settings.php:161
 msgid "Account Username"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:155
+#: includes/admin/class-wp-job-manager-settings.php:162
 msgid "Automatically Generate Username from Email Address"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:156
+#: includes/admin/class-wp-job-manager-settings.php:163
 msgid ""
 "If enabled, a username will be generated from the first part of the user "
 "email address. Otherwise, a username field will be shown."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:163
+#: includes/admin/class-wp-job-manager-settings.php:170
 msgid "Account Role"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:164
+#: includes/admin/class-wp-job-manager-settings.php:171
 msgid ""
 "If you enable registration on your submission form, choose a role for the "
 "new user."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:171
+#: includes/admin/class-wp-job-manager-settings.php:178
 msgid "Moderate New Listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:172
+#: includes/admin/class-wp-job-manager-settings.php:179
 msgid "New listing submissions require admin approval"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:173
+#: includes/admin/class-wp-job-manager-settings.php:180
 msgid "If enabled, new submissions will be inactive, pending admin approval."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:180
+#: includes/admin/class-wp-job-manager-settings.php:187
 msgid "Allow Pending Edits"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:181
+#: includes/admin/class-wp-job-manager-settings.php:188
 msgid "Submissions awaiting approval can be edited"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:182
+#: includes/admin/class-wp-job-manager-settings.php:189
 msgid "If enabled, submissions awaiting admin approval can be edited by the user."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:189
+#: includes/admin/class-wp-job-manager-settings.php:196
 msgid "Listing Duration"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:190
+#: includes/admin/class-wp-job-manager-settings.php:197
 msgid ""
 "How many <strong>days</strong> listings are live before expiring. Can be "
 "left blank to never expire."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:196
+#: includes/admin/class-wp-job-manager-settings.php:203
 msgid "Application Method"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:197
+#: includes/admin/class-wp-job-manager-settings.php:204
 msgid "Choose the contact method for listings."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:200
+#: includes/admin/class-wp-job-manager-settings.php:207
 msgid "Email address or website URL"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:201
+#: includes/admin/class-wp-job-manager-settings.php:208
 msgid "Email addresses only"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:202
+#: includes/admin/class-wp-job-manager-settings.php:209
 msgid "Website URLs only"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:208
+#: includes/admin/class-wp-job-manager-settings.php:215
 msgid "Pages"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:213
+#: includes/admin/class-wp-job-manager-settings.php:220
 msgid "Submit Job Form Page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:214
+#: includes/admin/class-wp-job-manager-settings.php:221
 msgid ""
 "Select the page where you have placed the [submit_job_form] shortcode. This "
 "lets the plugin know where the form is located."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:220
+#: includes/admin/class-wp-job-manager-settings.php:227
 msgid "Job Dashboard Page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:221
+#: includes/admin/class-wp-job-manager-settings.php:228
 msgid ""
 "Select the page where you have placed the [job_dashboard] shortcode. This "
 "lets the plugin know where the dashboard is located."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:227
+#: includes/admin/class-wp-job-manager-settings.php:234
 msgid "Job Listings Page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:228
+#: includes/admin/class-wp-job-manager-settings.php:235
 msgid ""
 "Select the page where you have placed the [jobs] shortcode. This lets the "
 "plugin know where the job listings page is located."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:280
+#: includes/admin/class-wp-job-manager-settings.php:287
 msgid "Settings successfully saved"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:340
+#: includes/admin/class-wp-job-manager-settings.php:347
 msgid "--no page--"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:345
+#: includes/admin/class-wp-job-manager-settings.php:352
 msgid "Select a page&hellip;"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:391
+#: includes/admin/class-wp-job-manager-settings.php:398
 msgid "Save Changes"
 msgstr ""
 
@@ -743,35 +754,35 @@ msgstr ""
 msgid "%s Data"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:160
+#: includes/admin/class-wp-job-manager-writepanels.php:161
 msgid "Most Used"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:217
-#: includes/admin/class-wp-job-manager-writepanels.php:220
-#: includes/admin/class-wp-job-manager-writepanels.php:223
+#: includes/admin/class-wp-job-manager-writepanels.php:218
+#: includes/admin/class-wp-job-manager-writepanels.php:221
+#: includes/admin/class-wp-job-manager-writepanels.php:224
 msgid "Use file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:217
-#: includes/admin/class-wp-job-manager-writepanels.php:220
-#: includes/admin/class-wp-job-manager-writepanels.php:223
+#: includes/admin/class-wp-job-manager-writepanels.php:218
+#: includes/admin/class-wp-job-manager-writepanels.php:221
+#: includes/admin/class-wp-job-manager-writepanels.php:224
 msgid "Upload"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:223
+#: includes/admin/class-wp-job-manager-writepanels.php:224
 msgid "Add file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:396
+#: includes/admin/class-wp-job-manager-writepanels.php:397
 msgid "Guest User"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:398
+#: includes/admin/class-wp-job-manager-writepanels.php:399
 msgid "Change"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:402
+#: includes/admin/class-wp-job-manager-writepanels.php:403
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
 msgstr ""
 
@@ -785,17 +796,17 @@ msgid_plural "Search completed. Found %d matching records."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-wp-job-manager-geocode.php:141
+#: includes/class-wp-job-manager-geocode.php:184
 msgid "No results found"
 msgstr ""
 
-#: includes/class-wp-job-manager-geocode.php:145
+#: includes/class-wp-job-manager-geocode.php:188
 msgid "Query limit reached"
 msgstr ""
 
-#: includes/class-wp-job-manager-geocode.php:151
-#: includes/class-wp-job-manager-geocode.php:155
-#: includes/class-wp-job-manager-geocode.php:159
+#: includes/class-wp-job-manager-geocode.php:194
+#: includes/class-wp-job-manager-geocode.php:198
+#: includes/class-wp-job-manager-geocode.php:202
 msgid "Geocoding error"
 msgstr ""
 
