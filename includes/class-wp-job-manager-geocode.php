@@ -158,7 +158,7 @@ class WP_Job_Manager_Geocode {
 			return false;
 		}
 
-		$geocode_api_url = apply_filters( 'job_manager_geolocation_endpoint', static::GOOGLE_MAPS_GEOCODE_API_URL, $raw_address );
+		$geocode_api_url = apply_filters( 'job_manager_geolocation_endpoint', self::GOOGLE_MAPS_GEOCODE_API_URL, $raw_address );
 		if ( false === $geocode_api_url ) {
 			return false;
 		}
