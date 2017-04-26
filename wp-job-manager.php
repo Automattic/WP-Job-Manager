@@ -49,7 +49,13 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Constructor.
+     * @var object|null The Mixtape instance of wpjm
+     */
+	private $mix_tape;
+
+	/**
+	 * Constructor - get the plugin hooked in and ready
+	 * Initialize REST api on WP_Job_Manager::__construct
 	 */
 	public function __construct() {
 		// Define constants
@@ -66,6 +72,8 @@ class WP_Job_Manager {
 		include( 'includes/class-wp-job-manager-forms.php' );
 		include( 'includes/class-wp-job-manager-geocode.php' );
 		include( 'includes/class-wp-job-manager-cache-helper.php' );
+
+		add_action( 'init', array( $this, 'init_rest_api' ) );
 
 		if ( is_admin() ) {
 			include( 'includes/admin/class-wp-job-manager-admin.php' );
@@ -92,7 +100,38 @@ class WP_Job_Manager {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Performs plugin activation steps.
+=======
+	 * Initialize Mixtape and include WPJM REST api classes
+	 * @returns $this WP_Job_Manager
+	 */
+	public function init_rest_api() {
+		$wpjm_rest_enabled_constant = 'WPJM_REST_API_ENABLED';
+		if ( ! defined( $wpjm_rest_enabled_constant ) || ( false === (bool)constant( $wpjm_rest_enabled_constant ) ) ) {
+			return $this;
+		}
+		include_once( 'lib/mixtape/loader.php' );
+
+		$this->mix_tape = Mixtape::create( array(
+			'prefix' => 'Mixtape',
+			'base_dir' => untrailingslashit( path_join( dirname( __FILE__ ), 'lib/mixtape' ) ),
+			'is_debugging' => true,
+		) )->load();
+
+		include_once( 'includes/rest-api/class-wp-job-manager-rest-api-v1.php' );
+		include_once( 'includes/rest-api/class-wp-job-manager-rest-api-endpoint-version.php' );
+
+		$this->mix_tape->environment()
+			->add_rest_bundle( new WP_Job_Manager_REST_API_V1() )
+			->start();
+
+		return $this;
+	}
+
+	/**
+	 * Called on plugin activation
+>>>>>>> Initialize REST api on WP_Job_Manager::__construct
 	 */
 	public function activate() {
 		WP_Job_Manager_Ajax::add_endpoint();
