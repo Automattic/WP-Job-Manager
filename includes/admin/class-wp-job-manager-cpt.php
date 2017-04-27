@@ -476,7 +476,7 @@ class WP_Job_Manager_CPT {
 		return wp_unslash( sanitize_text_field( $_GET['s'] ) );
 	}
 
-    /**
+	/**
 	 * Adds post status to the "submitdiv" Meta Box and post type WP List Table screens. Based on https://gist.github.com/franz-josef-kaiser/2930190
 	 *
 	 * @return void

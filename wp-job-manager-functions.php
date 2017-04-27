@@ -450,21 +450,21 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 		'user_pass'  => $password,
 		'user_email' => $email,
 		'role'       => $role
-    );
+	);
 
-    $user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
+	$user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
 
-    if ( is_wp_error( $user_id ) ) {
-    	return $user_id;
-    }
+	if ( is_wp_error( $user_id ) ) {
+		return $user_id;
+	}
 
-    // Notify
-    wp_job_manager_notify_new_user( $user_id, $password, $new_user );
-    // Login
-    wp_set_auth_cookie( $user_id, true, is_ssl() );
-    $current_user = get_user_by( 'id', $user_id );
+	// Notify
+	wp_job_manager_notify_new_user( $user_id, $password, $new_user );
+	// Login
+	wp_set_auth_cookie( $user_id, true, is_ssl() );
+	$current_user = get_user_by( 'id', $user_id );
 
-    return true;
+	return true;
 }
 endif;
 
