@@ -363,7 +363,7 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 	/**
 	 * Handle account creation.
 	 *
-	 * @param  int $user_id
+	 * @param  int    $user_id
 	 * @param  string $password
 	 */
 	function wp_job_manager_notify_new_user( $user_id, $password ) {
@@ -381,7 +381,7 @@ if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
  * Handle account creation.
  *
- * @param  array $args containing username, email, role
+ * @param  array  $args containing username, email, role
  * @param  string $deprecated role string
  * @return WP_error | bool was an account created?
  */
@@ -553,6 +553,7 @@ function job_manager_user_can_edit_pending_submissions() {
 
 /**
  * Based on wp_dropdown_categories, with the exception of supporting multiple selected categories.
+ *
  * @see  wp_dropdown_categories
  */
 function job_manager_dropdown_categories( $args = '' ) {
@@ -645,6 +646,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 
 /**
  * Get the page ID of a page if set, with PolyLang compat.
+ *
  * @param  string $page e.g. job_dashboard, submit_job_form, jobs
  * @return int
  */
@@ -659,6 +661,7 @@ function job_manager_get_page_id( $page ) {
 
 /**
  * Get the permalink of a page if set
+ *
  * @param  string $page e.g. job_dashboard, submit_job_form, jobs
  * @return string|bool
  */
@@ -672,6 +675,7 @@ function job_manager_get_permalink( $page ) {
 
 /**
  * Filters the upload dir when $job_manager_upload is true
+ *
  * @param  array $pathdata
  * @return array
  */
@@ -699,6 +703,7 @@ add_filter( 'upload_dir', 'job_manager_upload_dir' );
 
 /**
  * Prepare files for upload by standardizing them into an array. This adds support for multiple file upload fields.
+ *
  * @param  array $file_data
  * @return array
  */
@@ -729,6 +734,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 
 /**
  * Upload a file using WordPress file API.
+ *
  * @param  array $file_data Array of $_FILE data to upload.
  * @param  array $args Optional arguments
  * @return stdClass|WP_Error Object containing file information, or error
@@ -800,6 +806,7 @@ function job_manager_upload_file( $file, $args = array() ) {
 
 /**
  * Allowed Mime types specifically for WPJM.
+ *
  * @param   string $field Field used.
  * @return  array  Array of allowed mime types
  */
@@ -839,6 +846,7 @@ function job_manager_get_allowed_mime_types( $field = '' ){
 
 /**
  * Calculate and return the job expiry date
+ *
  * @param  int $job_id
  * @return string
  */
@@ -860,6 +868,7 @@ function calculate_job_expiry( $job_id ) {
 
 /**
  * Duplicate a listing.
+ *
  * @param  int $post_id
  * @return int 0 on fail or the post ID.
  */

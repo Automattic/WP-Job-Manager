@@ -115,6 +115,7 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Add an error
+	 *
 	 * @param string $error
 	 */
 	public function add_error( $error ) {
@@ -142,6 +143,7 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get formn name.
+	 *
 	 * @since 1.24.0
 	 * @return string
 	 */
@@ -151,6 +153,7 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get steps from outside of the class
+	 *
 	 * @since 1.24.0
 	 */
 	public function get_steps() {
@@ -166,6 +169,7 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get step key from outside of the class
+	 *
 	 * @since 1.24.0
 	 */
 	public function get_step_key( $step = '' ) {
@@ -178,6 +182,7 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get step from outside of the class
+	 *
 	 * @since 1.24.0
 	 */
 	public function set_step( $step ) {
@@ -218,6 +223,7 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Sort array by priority value
+	 *
 	 * @param array $a
 	 * @param array $b
 	 * @return int
@@ -282,8 +288,9 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get the value of a posted field
+	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 * @return string|array
 	 */
 	protected function get_posted_field( $key, $field ) {
@@ -292,8 +299,9 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get the value of a posted multiselect field
+	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 * @return array
 	 */
 	protected function get_posted_multiselect_field( $key, $field ) {
@@ -302,8 +310,9 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get the value of a posted file field
+	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 * @return string|array
 	 */
 	protected function get_posted_file_field( $key, $field ) {
@@ -320,8 +329,9 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get the value of a posted textarea field
+	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 * @return string
 	 */
 	protected function get_posted_textarea_field( $key, $field ) {
@@ -330,8 +340,9 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get the value of a posted textarea field
+	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 * @return string
 	 */
 	protected function get_posted_wp_editor_field( $key, $field ) {
@@ -340,8 +351,9 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get posted terms for the taxonomy
+	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 * @return array
 	 */
 	protected function get_posted_term_checklist_field( $key, $field ) {
@@ -354,8 +366,9 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get posted terms for the taxonomy
+	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 * @return int
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
@@ -364,8 +377,9 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Get posted terms for the taxonomy
+	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 * @return int
 	 */
 	protected function get_posted_term_select_field( $key, $field ) {
@@ -374,6 +388,7 @@ abstract class WP_Job_Manager_Form {
 
 	/**
 	 * Upload a file
+	 *
 	 * @return  string or array
 	 */
 	protected function upload_file( $field_key, $field ) {

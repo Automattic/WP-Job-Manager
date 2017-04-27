@@ -1,6 +1,5 @@
 <?php
 // From Jetpack
-
 $ch = curl_init();
 curl_setopt( $ch, CURLOPT_URL, 'https://api.wordpress.org/core/version-check/1.7/' );
 

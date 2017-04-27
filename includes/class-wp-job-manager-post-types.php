@@ -551,6 +551,7 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * Fix post name when wp_update_post changes it
+	 *
 	 * @param  array $data
 	 * @return array
 	 */
@@ -563,7 +564,8 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * Generate location data if a post is added
-	 * @param  int $post_id
+	 *
+	 * @param  int   $post_id
 	 * @param  array $post
 	 */
 	public function maybe_add_geolocation_data( $object_id, $meta_key, $meta_value ) {
@@ -613,6 +615,7 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * Legacy
+	 *
 	 * @deprecated 1.19.1
 	 */
 	public function maybe_generate_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
@@ -621,7 +624,8 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * Maybe set default meta data for job listings
-	 * @param  int $post_id
+	 *
+	 * @param  int     $post_id
 	 * @param  WP_Post $post
 	 */
 	public function maybe_add_default_meta_data( $post_id, $post = '' ) {
@@ -633,6 +637,7 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * After importing via WP ALL Import, add default meta data
+	 *
 	 * @param  int $post_id
 	 */
 	public function pmxi_saved_post( $post_id ) {
@@ -646,9 +651,10 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * Replace RP4WP template with the template from Job Manager
+	 *
 	 * @param  string $located
 	 * @param  string $template_name
-	 * @param  array $args
+	 * @param  array  $args
 	 * @return string
 	 */
 	public function rp4wp_template( $located, $template_name, $args ) {
@@ -660,8 +666,9 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * Add meta fields for RP4WP to relate jobs by
-	 * @param  array $meta_fields
-	 * @param  int $post_id
+	 *
+	 * @param  array   $meta_fields
+	 * @param  int     $post_id
 	 * @param  WP_Post $post
 	 * @return array
 	 */
@@ -675,9 +682,10 @@ class WP_Job_Manager_Post_Types {
 
 	/**
 	 * Add meta fields for RP4WP to relate jobs by
-	 * @param  int $weight
+	 *
+	 * @param  int     $weight
 	 * @param  WP_Post $post
-	 * @param  string $meta_field
+	 * @param  string  $meta_field
 	 * @return int
 	 */
 	public function rp4wp_related_meta_fields_weight( $weight, $post, $meta_field ) {

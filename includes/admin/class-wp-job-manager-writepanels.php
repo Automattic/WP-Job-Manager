@@ -134,19 +134,19 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	function job_listing_metabox( $post ) {
-		//Set up the taxonomy object and get terms
+		// Set up the taxonomy object and get terms
 		$taxonomy = 'job_listing_type';
-		$tax = get_taxonomy( $taxonomy );//This is the taxonomy object
+		$tax = get_taxonomy( $taxonomy );// This is the taxonomy object
 
-		//The name of the form
+		// The name of the form
 		$name = 'tax_input[' . $taxonomy . ']';
 
-		//Get all the terms for this taxonomy
+		// Get all the terms for this taxonomy
 		$terms = get_terms( $taxonomy, array( 'hide_empty' => 0 ) );
 		$postterms = get_the_terms( $post->ID, $taxonomy );
 		$current = ( $postterms ? array_pop( $postterms ) : false );
 		$current = ( $current ? $current->term_id : 0 );
-		//Get current and popular terms
+		// Get current and popular terms
 		$popular = get_terms( $taxonomy, array( 'orderby' => 'count', 'order' => 'DESC', 'number' => 10, 'hierarchical' => false ) );
 		$postterms = get_the_terms( $post->ID,$taxonomy );
 		$current = ($postterms ? array_pop($postterms) : false);

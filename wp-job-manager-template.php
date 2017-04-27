@@ -13,8 +13,8 @@
 /**
  * Get and include template files.
  *
- * @param mixed $template_name
- * @param array $args (default: array())
+ * @param mixed  $template_name
+ * @param array  $args (default: array())
  * @param string $template_path (default: '')
  * @param string $default_path (default: '')
  * @return void
@@ -35,8 +35,8 @@ function get_job_manager_template( $template_name, $args = array(), $template_pa
  *		yourtheme		/	$template_name
  *		$default_path	/	$template_name
  *
- * @param string $template_name
- * @param string $template_path (default: 'job_manager')
+ * @param string      $template_name
+ * @param string      $template_path (default: 'job_manager')
  * @param string|bool $default_path (default: '') False to not load a default
  * @return string
  */
@@ -64,9 +64,9 @@ function locate_job_manager_template( $template_name, $template_path = 'job_mana
 /**
  * Get template part (for templates in loops).
  *
- * @param string $slug
- * @param string $name (default: '')
- * @param string $template_path (default: 'job_manager')
+ * @param string      $slug
+ * @param string      $name (default: '')
+ * @param string      $template_path (default: 'job_manager')
  * @param string|bool $default_path (default: '') False to not load a default
  */
 function get_job_manager_template_part( $slug, $name = '', $template_path = 'job_manager', $default_path = '' ) {
@@ -88,6 +88,7 @@ function get_job_manager_template_part( $slug, $name = '', $template_path = 'job
 
 /**
  * Add custom body classes
+ *
  * @param  array $classes
  * @return array
  */
@@ -102,6 +103,7 @@ add_filter( 'body_class', 'job_manager_body_class' );
 
 /**
  * Get jobs pagination for [jobs] shortcode
+ *
  * @return [type] [description]
  */
 function get_job_listing_pagination( $max_num_pages, $current_page = 1 ) {
@@ -271,6 +273,7 @@ function get_the_job_type( $post = null ) {
 
 /**
  * the_job_publish_date function.
+ *
  * @param mixed $post (default: null)
  * @return [type]
  */
@@ -289,6 +292,7 @@ function the_job_publish_date( $post = null ) {
 
 /**
  * get_the_job_publish_date function.
+ *
  * @param mixed $post (default: null)
  * @return [type]
  */
@@ -305,6 +309,7 @@ function get_the_job_publish_date( $post = null ) {
 
 /**
  * the_job_location function.
+ *
  * @param  boolean $map_link whether or not to link to google maps
  * @return [type]
  */
@@ -344,7 +349,7 @@ function get_the_job_location( $post = null ) {
  *
  * @access public
  * @param string $size (default: 'full')
- * @param mixed $default (default: null)
+ * @param mixed  $default (default: null)
  * @return void
  */
 function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) {
@@ -635,7 +640,7 @@ function get_the_company_twitter( $post = null ) {
  *
  * @access public
  * @param string $class (default: '')
- * @param mixed $post_id (default: null)
+ * @param mixed  $post_id (default: null)
  * @return void
  */
 function job_listing_class( $class = '', $post_id = null ) {
