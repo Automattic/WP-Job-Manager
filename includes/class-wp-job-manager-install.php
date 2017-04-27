@@ -73,6 +73,7 @@ class WP_Job_Manager_Install {
 
 	/**
 	 * Get capabilities
+	 *
 	 * @return array
 	 */
 	private static function get_core_capabilities() {

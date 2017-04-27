@@ -117,6 +117,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 	/**
 	 * Get the submitted job ID
+	 *
 	 * @return int
 	 */
 	public function get_job_id() {
@@ -493,8 +494,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  string $post_title
 	 * @param  string $post_content
 	 * @param  string $status
-	 * @param  array $values
-	 * @param  bool $update_slug
+	 * @param  array  $values
+	 * @param  bool   $update_slug
 	 */
 	protected function save_job( $post_title, $post_content, $status = 'preview', $values = array(), $update_slug = true ) {
 		$job_data = array(
@@ -551,6 +552,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 	/**
 	 * Create an attachment
+	 *
 	 * @param  string $attachment_url
 	 * @return int attachment id
 	 */

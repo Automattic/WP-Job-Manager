@@ -80,6 +80,7 @@ class WP_Job_Manager_Setup {
 
 	/**
 	 * Create a page.
+	 *
 	 * @param  string $title
 	 * @param  string $content
 	 * @param  string $option

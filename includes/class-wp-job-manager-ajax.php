@@ -36,6 +36,7 @@ class WP_Job_Manager_Ajax {
 
 	/**
 	 * Get JM Ajax Endpoint
+	 *
 	 * @param  string $request Optional
 	 * @param  string $ssl     Optional
 	 * @return string

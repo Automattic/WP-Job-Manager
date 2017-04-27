@@ -427,6 +427,7 @@ class WP_Job_Manager_CPT {
 
 	/**
 	 * Search custom fields as well as content.
+	 *
 	 * @param WP_Query $wp
 	 */
 	public function search_meta( $wp ) {
@@ -463,6 +464,7 @@ class WP_Job_Manager_CPT {
 
 	/**
 	 * Change the label when searching meta.
+	 *
 	 * @param string $query
 	 * @return string
 	 */

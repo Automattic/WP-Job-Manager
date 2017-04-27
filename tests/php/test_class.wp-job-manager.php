@@ -3,6 +3,7 @@
 class WP_Test_WP_Job_Manager extends WP_UnitTestCase {
 	/**
 	 * Test the global $job_manager object
+	 *
 	 * @author jom
 	 * @since 1.26
 	 */

@@ -362,6 +362,7 @@ class WP_Job_Manager_Shortcodes {
 
 	/**
 	 * Get string as a bool
+	 *
 	 * @param  string $value
 	 * @return bool
 	 */
@@ -371,6 +372,7 @@ class WP_Job_Manager_Shortcodes {
 
 	/**
 	 * Show job types
+	 *
 	 * @param  array $atts
 	 */
 	public function job_filter_job_types( $atts ) {

@@ -98,6 +98,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 
 	/**
 	 * Flush the cache
+	 *
 	 * @return [type]
 	 */
 	public function flush_widget_cache() {
