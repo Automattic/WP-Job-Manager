@@ -61,17 +61,17 @@ class WP_Job_Manager_Ajax {
 			 $wp_query->set( 'jm-ajax', sanitize_text_field( $_GET['jm-ajax'] ) );
 		}
 
-   		if ( $action = $wp_query->get( 'jm-ajax' ) ) {
-   			if ( ! defined( 'DOING_AJAX' ) ) {
-				define( 'DOING_AJAX', true );
+			if ( $action = $wp_query->get( 'jm-ajax' ) ) {
+				if ( ! defined( 'DOING_AJAX' ) ) {
+					define( 'DOING_AJAX', true );
+				}
+
+				// Not home - this is an ajax endpoint
+				$wp_query->is_home = false;
+
+				do_action( 'job_manager_ajax_' . sanitize_text_field( $action ) );
+				die();
 			}
-
-			// Not home - this is an ajax endpoint
-			$wp_query->is_home = false;
-
-   			do_action( 'job_manager_ajax_' . sanitize_text_field( $action ) );
-   			die();
-   		}
 	}
 
 	/**
@@ -191,7 +191,7 @@ class WP_Job_Manager_Ajax {
 		} else {
 			$message = "";
 		}
-		
+
 		$search_values = array(
 				'location'   => $search_location,
 				'keywords'   => $search_keywords,

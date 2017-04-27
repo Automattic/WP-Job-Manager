@@ -91,7 +91,7 @@ class WP_Job_Manager_Cache_Helper {
 		}
 	}
 
-    /**
+	/**
 	 * Clear expired transients
 	 */
 	public static function clear_expired_transients() {
