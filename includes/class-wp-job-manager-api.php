@@ -24,7 +24,8 @@ class WP_Job_Manager_API {
 	 * add_query_vars function.
 	 *
 	 * @access public
-	 * @return void
+	 * @param array $vars the query vars
+	 * @return array
 	 */
 	public function add_query_vars( $vars ) {
 		$vars[] = 'job-manager-api';
