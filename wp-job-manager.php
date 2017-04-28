@@ -17,12 +17,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_Job_Manager class.
+ * Handles core plugin hooks and action setup.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager {
 
 	/**
-	 * Constructor - get the plugin hooked in and ready
+	 * Constructor.
 	 */
 	public function __construct() {
 		// Define constants
@@ -65,7 +68,7 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Called on plugin activation
+	 * Performs plugin activation steps.
 	 */
 	public function activate() {
 		WP_Job_Manager_Ajax::add_endpoint();
@@ -75,7 +78,7 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Handle Updates
+	 * Handles tasks after plugin is updated.
 	 */
 	public function updater() {
 		if ( version_compare( JOB_MANAGER_VERSION, get_option( 'wp_job_manager_version' ), '>' ) ) {
@@ -85,7 +88,7 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Localisation
+	 * Loads textdomain for plugin.
 	 */
 	public function load_plugin_textdomain() {
 		load_textdomain( 'wp-job-manager', WP_LANG_DIR . "/wp-job-manager/wp-job-manager-" . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . ".mo" );
@@ -93,7 +96,7 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Load functions
+	 * Loads plugin's core helper functions.
 	 */
 	public function include_template_functions() {
 		include( 'wp-job-manager-functions.php' );
@@ -101,14 +104,14 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Widgets init
+	 * Loads plugin's widgets.
 	 */
 	public function widgets_init() {
 		include_once( 'includes/class-wp-job-manager-widgets.php' );
 	}
 
 	/**
-	 * Register and enqueue scripts and css
+	 * Registers and enqueues scripts and CSS.
 	 */
 	public function frontend_scripts() {
 		global $post;
@@ -176,6 +179,12 @@ class WP_Job_Manager {
 	}
 }
 
+/**
+ * Add post type for Job Manager.
+ *
+ * @param array $types
+ * @return array
+ */
 function job_manager_add_post_types( $types ) {
 	$types[] = 'job_listing';
 	return $types;
