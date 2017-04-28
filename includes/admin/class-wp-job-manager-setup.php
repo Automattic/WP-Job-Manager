@@ -4,15 +4,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_Job_Manager_Setup class.
+ * Handles initial environment setup after plugin is first activated.
+ *
+ * @package wp-job-manager
+ * @since 1.16.0
  */
 class WP_Job_Manager_Setup {
 
 	/**
-	 * __construct function.
-	 *
-	 * @access public
-	 * @return void
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
@@ -23,27 +23,21 @@ class WP_Job_Manager_Setup {
 	}
 
 	/**
-	 * admin_menu function.
-	 *
-	 * @access public
-	 * @return void
+	 * Adds setup link to admin dashboard menu briefly so the page callback is registered.
 	 */
 	public function admin_menu() {
 		add_dashboard_page( __( 'Setup', 'wp-job-manager' ), __( 'Setup', 'wp-job-manager' ), 'manage_options', 'job-manager-setup', array( $this, 'output' ) );
 	}
 
 	/**
-	 * Add styles just for this page, and remove dashboard page links.
-	 *
-	 * @access public
-	 * @return void
+	 * Removes the setup link from admin dashboard menu so just the handler callback is registered.
 	 */
 	public function admin_head() {
 		remove_submenu_page( 'index.php', 'job-manager-setup' );
 	}
 
 	/**
-	 * Sends user to the setup page on first activation
+	 * Sends user to the setup page on first activation.
 	 */
 	public function redirect() {
 		// Bail if no activation redirect transient is set
@@ -72,14 +66,14 @@ class WP_Job_Manager_Setup {
 	}
 
 	/**
-	 * Enqueue scripts for setup page
+	 * Enqueues scripts for setup page.
 	 */
 	public function admin_enqueue_scripts() {
 		wp_enqueue_style( 'job_manager_setup_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/setup.css', array( 'dashicons' ) );
 	}
 
 	/**
-	 * Create a page.
+	 * Creates a page.
 	 *
 	 * @param  string $title
 	 * @param  string $content
@@ -104,7 +98,7 @@ class WP_Job_Manager_Setup {
 	}
 
 	/**
-	 * Output addons page
+	 * Displays setup page.
 	 */
 	public function output() {
 		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;

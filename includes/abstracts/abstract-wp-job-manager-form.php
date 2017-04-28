@@ -1,14 +1,16 @@
 <?php
 
 /**
- * Abstract WP_Job_Manager_Form class.
+ * Parent abstract class for form classes.
  *
  * @abstract
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 abstract class WP_Job_Manager_Form {
 
 	/**
-	 * Form fields
+	 * Form fields.
 	 *
 	 * @access protected
 	 * @var array
@@ -16,7 +18,7 @@ abstract class WP_Job_Manager_Form {
 	protected $fields = array();
 
 	/**
-	 * Form action
+	 * Form action.
 	 *
 	 * @access protected
 	 * @var string
@@ -24,7 +26,7 @@ abstract class WP_Job_Manager_Form {
 	protected $action = '';
 
 	/**
-	 * Form errors
+	 * Form errors.
 	 *
 	 * @access protected
 	 * @var array
@@ -32,7 +34,7 @@ abstract class WP_Job_Manager_Form {
 	protected $errors = array();
 
 	/**
-	 * Form steps
+	 * Form steps.
 	 *
 	 * @access protected
 	 * @var array
@@ -40,7 +42,7 @@ abstract class WP_Job_Manager_Form {
 	protected $steps = array();
 
 	/**
-	 * Form step
+	 * Current form step.
 	 *
 	 * @access protected
 	 * @var int
@@ -48,7 +50,7 @@ abstract class WP_Job_Manager_Form {
 	protected $step = 0;
 
 	/**
-	 * Form fields
+	 * Form name.
 	 *
 	 * @access protected
 	 * @var string
@@ -63,14 +65,14 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Unserializing instances of this class is forbidden.
+	 * Unserializes instances of this class is forbidden.
 	 */
 	public function __wakeup() {
 		_doing_it_wrong( __FUNCTION__ );
 	}
 
 	/**
-	 * Process function. all processing code if needed - can also change view if step is complete
+	 * Processes the form result and can also change view if step is complete.
 	 */
 	public function process() {
 
@@ -102,7 +104,9 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Call the view handler if set, otherwise call the next handler.
+	 * Calls the view handler if set, otherwise call the next handler.
+	 *
+	 * @param array $atts Attributes to use in the view handler.
 	 */
 	public function output( $atts = array() ) {
 		$step_key = $this->get_step_key( $this->step );
@@ -114,16 +118,16 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Add an error
+	 * Adds an error.
 	 *
-	 * @param string $error
+	 * @param string $error The error message.
 	 */
 	public function add_error( $error ) {
 		$this->errors[] = $error;
 	}
 
 	/**
-	 * Show errors
+	 * Displays errors.
 	 */
 	public function show_errors() {
 		foreach ( $this->errors as $error ) {
@@ -132,7 +136,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get action (URL for forms to post to).
+	 * Gets the action (URL for forms to post to).
 	 * As of 1.22.2 this defaults to the current page permalink.
 	 *
 	 * @return string
@@ -142,7 +146,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get formn name.
+	 * Gets form name.
 	 *
 	 * @since 1.24.0
 	 * @return string
@@ -152,7 +156,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get steps from outside of the class
+	 * Gets steps from outside of the class.
 	 *
 	 * @since 1.24.0
 	 */
@@ -161,16 +165,18 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get step from outside of the class
+	 * Gets step from outside of the class.
 	 */
 	public function get_step() {
 		return $this->step;
 	}
 
 	/**
-	 * Get step key from outside of the class
+	 * Gets step key from outside of the class.
 	 *
 	 * @since 1.24.0
+	 * @param string|int $step
+	 * @return string
 	 */
 	public function get_step_key( $step = '' ) {
 		if ( ! $step ) {
@@ -181,30 +187,31 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get step from outside of the class
+	 * Sets step from outside of the class.
 	 *
 	 * @since 1.24.0
+	 * @param int $step
 	 */
 	public function set_step( $step ) {
 		$this->step = absint( $step );
 	}
 
 	/**
-	 * Increase step from outside of the class
+	 * Increases step from outside of the class.
 	 */
 	public function next_step() {
 		$this->step ++;
 	}
 
 	/**
-	 * Decrease step from outside of the class
+	 * Decreases step from outside of the class.
 	 */
 	public function previous_step() {
 		$this->step --;
 	}
 
 	/**
-	 * get_fields function.
+	 * Gets fields for form.
 	 *
 	 * @param string $key
 	 * @return array
@@ -222,7 +229,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Sort array by priority value
+	 * Sorts array by priority value.
 	 *
 	 * @param array $a
 	 * @param array $b
@@ -236,14 +243,14 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Init form fields
+	 * Initializes form fields.
 	 */
 	protected function init_fields() {
 		$this->fields = array();
 	}
 
 	/**
-	 * Get post data for fields
+	 * Gets post data for fields.
 	 *
 	 * @return array of data
 	 */
@@ -287,7 +294,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get the value of a posted field
+	 * Gets the value of a posted field.
 	 *
 	 * @param  string $key
 	 * @param  array  $field
@@ -298,7 +305,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get the value of a posted multiselect field
+	 * Gets the value of a posted multiselect field.
 	 *
 	 * @param  string $key
 	 * @param  array  $field
@@ -309,7 +316,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get the value of a posted file field
+	 * Gets the value of a posted file field.
 	 *
 	 * @param  string $key
 	 * @param  array  $field
@@ -328,7 +335,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get the value of a posted textarea field
+	 * Gets the value of a posted textarea field.
 	 *
 	 * @param  string $key
 	 * @param  array  $field
@@ -339,7 +346,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get the value of a posted textarea field
+	 * Gets the value of a posted textarea field.
 	 *
 	 * @param  string $key
 	 * @param  array  $field
@@ -350,7 +357,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get posted terms for the taxonomy
+	 * Gets posted terms for the taxonomy.
 	 *
 	 * @param  string $key
 	 * @param  array  $field
@@ -365,7 +372,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get posted terms for the taxonomy
+	 * Gets posted terms for the taxonomy.
 	 *
 	 * @param  string $key
 	 * @param  array  $field
@@ -376,7 +383,7 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get posted terms for the taxonomy
+	 * Gets posted terms for the taxonomy.
 	 *
 	 * @param  string $key
 	 * @param  array  $field
@@ -387,9 +394,12 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Upload a file
+	 * Handles the uploading of files.
 	 *
-	 * @return  string or array
+	 * @param string $field_key
+	 * @param array  $field
+	 * @throws Exception When file upload failed
+	 * @return  string|array
 	 */
 	protected function upload_file( $field_key, $field ) {
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {

@@ -14,6 +14,7 @@
  * 		)
  * 	)
  */
+
 $field['default'] = empty( $field['default'] ) ? current( array_keys( $field['options'] ) ) : $field['default'];
 $default          = ! empty( $field['value'] ) ? $field['value'] : $field['default'];
 

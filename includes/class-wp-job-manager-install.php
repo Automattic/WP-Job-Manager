@@ -5,12 +5,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_Job_Manager_Install
+ * Handles the installation of the WP Job Manager plugin.s
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Install {
 
 	/**
-	 * Install WP Job Manager
+	 * Installs WP Job Manager.
 	 */
 	public static function install() {
 		global $wpdb;
@@ -45,7 +48,7 @@ class WP_Job_Manager_Install {
 	}
 
 	/**
-	 * Init user roles
+	 * Initializes user roles.
 	 */
 	private static function init_user_roles() {
 		global $wp_roles;
@@ -72,7 +75,7 @@ class WP_Job_Manager_Install {
 	}
 
 	/**
-	 * Get capabilities
+	 * Returns capabilities.
 	 *
 	 * @return array
 	 */
@@ -104,7 +107,7 @@ class WP_Job_Manager_Install {
 	}
 
 	/**
-	 * default_terms function.
+	 * Returns the default Job Manager terms.
 	 */
 	private static function default_terms() {
 		if ( get_option( 'job_manager_installed_terms' ) == 1 ) {
@@ -133,7 +136,7 @@ class WP_Job_Manager_Install {
 	}
 
 	/**
-	 * Setup cron jobs
+	 * Setup cron jobs.
 	 */
 	private static function schedule_cron() {
 		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );

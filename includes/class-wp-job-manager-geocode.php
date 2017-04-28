@@ -3,16 +3,17 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_Geocode
- *
  * Obtains Geolocation data for posted jobs from Google.
+ *
+ * @package wp-job-manager
+ * @since 1.6.1
  */
 class WP_Job_Manager_Geocode {
 
 	const GOOGLE_MAPS_GEOCODE_API_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_filter( 'job_manager_geolocation_endpoint', array( $this, 'add_geolocation_endpoint_query_args' ), 0, 2 );
@@ -22,7 +23,10 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Update location data - when submitting a job
+	 * Updates location data when submitting a job.
+	 *
+	 * @param int   $job_id
+	 * @param array $values
 	 */
 	public function update_location_data( $job_id, $values ) {
 		if ( apply_filters( 'job_manager_geolocation_enabled', true ) && isset( $values['job']['job_location'] ) ) {
@@ -32,7 +36,7 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Change a jobs location data upon editing
+	 * Changes a jobs location data upon editing.
 	 *
 	 * @param  int    $job_id
 	 * @param  string $new_location
@@ -46,7 +50,7 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Checks if a job has location data or not
+	 * Checks if a job has location data or not.
 	 *
 	 * @param  int $job_id
 	 * @return boolean
@@ -56,7 +60,7 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Called manually to generate location data and save to a post
+	 * Generates location data and saves to a post.
 	 *
 	 * @param  int    $job_id
 	 * @param  string $location
@@ -67,7 +71,7 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Delete a job's location data
+	 * Deletes a job's location data.
 	 *
 	 * @param  int $job_id
 	 */
@@ -88,7 +92,7 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Save any returned data to post meta
+	 * Saves any returned data to post meta.
 	 *
 	 * @param  int   $job_id
 	 * @param  array $address_data
@@ -105,7 +109,7 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Retrieves the Google Maps API key from the plugin's settings
+	 * Retrieves the Google Maps API key from the plugin's settings.
 	 *
 	 * @param  string $key
 	 * @return string
@@ -115,7 +119,7 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Adds the necessary query arguments for a Google Maps Geocode API request
+	 * Adds the necessary query arguments for a Google Maps Geocode API request.
 	 *
 	 * @param  string $geocode_endpoint_url
 	 * @param  string $raw_address
@@ -141,7 +145,7 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Get Location Data from Google
+	 * Gets Location Data from Google.
 	 *
 	 * Based on code by Eyal Fitoussi.
 	 *
