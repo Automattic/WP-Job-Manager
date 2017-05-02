@@ -23,6 +23,30 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class WP_Job_Manager {
+	/**
+	 * The single instance of the class.
+	 *
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Main WP Job Manager Instance.
+	 *
+	 * Ensures only one instance of WP Job Manager is loaded or can be loaded.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @see WPJM()
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
 
 	/**
 	 * Constructor.
@@ -191,4 +215,16 @@ function job_manager_add_post_types( $types ) {
 }
 add_filter( 'post_types_to_delete_with_user', 'job_manager_add_post_types', 10 );
 
-$GLOBALS['job_manager'] = new WP_Job_Manager();
+/**
+ * Main instance of WP Job Manager.
+ *
+ * Returns the main instance of WP Job Manager to prevent the need to use globals.
+ *
+ * @since  1.26
+ * @return WP_Job_Manager
+ */
+function WPJM() {
+	return WP_Job_Manager::instance();
+}
+
+$GLOBALS['job_manager'] = WPJM();
