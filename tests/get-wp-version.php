@@ -22,7 +22,7 @@ uasort( $versions, 'offer_version_sort' );
 
 $version_stack = array();
 
-foreach( $versions as $offer ) {
+foreach ( $versions as $offer ) {
 	list( $major, $minor ) = explode( '.',  $offer->version );
 
 	$base = $major . '.' . $minor;
@@ -44,11 +44,11 @@ $wp_versions = array_values( $version_stack );
 
 if ( empty( $argv[1] ) ) {
 	print $wp_versions[0] . "\n";
-} else if ( '--previous' === $argv[1] ) {
+} elseif ( '--previous' === $argv[1] ) {
 	print $wp_versions[1] . "\n";
 } else {
 	die(
-		"Unknown argument: " . $argv[1] . "\n"
+		'Unknown argument: ' . $argv[1] . "\n"
 		. "Use with no arguments to get the latest stable WordPress version, or use `--previous' to get the previous stable major release.\n"
 	);
 }
