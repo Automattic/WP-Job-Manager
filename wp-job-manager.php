@@ -115,7 +115,7 @@ class WP_Job_Manager {
 	 * Loads textdomain for plugin.
 	 */
 	public function load_plugin_textdomain() {
-		load_textdomain( 'wp-job-manager', WP_LANG_DIR . "/wp-job-manager/wp-job-manager-" . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . ".mo" );
+		load_textdomain( 'wp-job-manager', WP_LANG_DIR . '/wp-job-manager/wp-job-manager-' . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . '.mo' );
 		load_plugin_textdomain( 'wp-job-manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
@@ -150,7 +150,7 @@ class WP_Job_Manager {
 
 		// WPML workaround
 		if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
-			$ajax_data['lang'] = apply_filters( 'wpml_current_language', NULL );
+			$ajax_data['lang'] = apply_filters( 'wpml_current_language', null );
 		}
 
 		if ( apply_filters( 'job_manager_chosen_enabled', true ) ) {
@@ -161,7 +161,9 @@ class WP_Job_Manager {
 			$ajax_filter_deps[] = 'chosen';
 
 			wp_localize_script( 'chosen', 'job_manager_chosen_multiselect_args',
-				apply_filters( 'job_manager_chosen_multiselect_args', array( 'search_contains' => true ) )
+				apply_filters( 'job_manager_chosen_multiselect_args', array(
+					'search_contains' => true,
+				) )
 			);
 		}
 
@@ -171,18 +173,26 @@ class WP_Job_Manager {
 			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', array( 'jquery', 'jquery-fileupload' ), JOB_MANAGER_VERSION, true );
 
 			ob_start();
-			get_job_manager_template( 'form-fields/uploaded-file-html.php', array( 'name' => '', 'value' => '', 'extension' => 'jpg' ) );
+			get_job_manager_template( 'form-fields/uploaded-file-html.php', array(
+				'name' => '',
+				'value' => '',
+				'extension' => 'jpg',
+			) );
 			$js_field_html_img = ob_get_clean();
 
 			ob_start();
-			get_job_manager_template( 'form-fields/uploaded-file-html.php', array( 'name' => '', 'value' => '', 'extension' => 'zip' ) );
+			get_job_manager_template( 'form-fields/uploaded-file-html.php', array(
+				'name' => '',
+				'value' => '',
+				'extension' => 'zip',
+			) );
 			$js_field_html = ob_get_clean();
 
 			wp_localize_script( 'wp-job-manager-ajax-file-upload', 'job_manager_ajax_file_upload', array(
 				'ajax_url'               => $ajax_url,
-				'js_field_html_img'      => esc_js( str_replace( "\n", "", $js_field_html_img ) ),
-				'js_field_html'          => esc_js( str_replace( "\n", "", $js_field_html ) ),
-				'i18n_invalid_file_type' => __( 'Invalid file type. Accepted types:', 'wp-job-manager' )
+				'js_field_html_img'      => esc_js( str_replace( "\n", '', $js_field_html_img ) ),
+				'js_field_html'          => esc_js( str_replace( "\n", '', $js_field_html ) ),
+				'i18n_invalid_file_type' => __( 'Invalid file type. Accepted types:', 'wp-job-manager' ),
 			) );
 		}
 
@@ -193,11 +203,11 @@ class WP_Job_Manager {
 		wp_register_script( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-submission.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
 		wp_localize_script( 'wp-job-manager-job-dashboard', 'job_manager_job_dashboard', array(
-			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' )
+			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 		) );
 
 		wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
-		if( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'submit_job_form') ) {
+		if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'submit_job_form' ) ) {
 			wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', array(), JOB_MANAGER_VERSION );
 		}
 	}
