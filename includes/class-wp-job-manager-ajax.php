@@ -56,7 +56,7 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Ferforms Job Manager's Ajax actions.
+	 * Performs Job Manager's Ajax actions.
 	 */
 	public static function do_jm_ajax() {
 		global $wp_query;

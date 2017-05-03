@@ -1,6 +1,6 @@
 <?php
 
-class WP_Test_WP_Job_Manager extends WP_UnitTestCase {
+class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 	/**
 	 * Tests the global $job_manager object.
 	 *
@@ -42,5 +42,18 @@ class WP_Test_WP_Job_Manager extends WP_UnitTestCase {
 		$job_manager_instance = WP_Job_Manager::instance();
 		$this->assertSame( WP_Job_Manager::instance(), $job_manager_instance, 'WP_Job_Manager::instance() must always provide the same instance of WP_Job_Manager' );
 		$this->assertInstanceOf( 'WP_Job_Manager', $job_manager_instance, 'WP_Job_Manager::instance() must always provide the same instance of WP_Job_Manager' );
+	}
+
+	/**
+	 * Tests classes of object properties.
+	 *
+	 * @since 1.26
+	 */
+	function test_classes_of_object_properties() {
+		// setup the test
+		global $job_manager;
+
+		$this->assertInstanceOf( 'WP_Job_Manager_Forms', $job_manager->forms );
+		$this->assertInstanceOf( 'WP_Job_Manager_Post_Types', $job_manager->post_types );
 	}
 }
