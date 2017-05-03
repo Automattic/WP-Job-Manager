@@ -71,13 +71,14 @@ class WPJM_Unit_Tests_Bootstrap {
 	}
 
 	/**
-	 * Load WPJM-specific test cases and factories.
+	 * Load WPJM-specific test cases and framework.
 	 *
 	 * @since 1.26
 	 */
 	public function includes() {
-		// factories
-		require_once( $this->tests_dir . '/factories/class.wpjm-factory.php' );
+		// framework
+		require_once( $this->tests_dir . '/factories/class-wpjm-factory.php' );
+		require_once( $this->tests_dir . '/class-wpjm-base-test.php' );
 	}
 
 	/**
