@@ -6,14 +6,41 @@ class WP_Test_WP_Job_Manager extends WP_UnitTestCase {
 	 *
 	 * @since 1.26
 	 */
-	function test_job_manager_global_var() {
+	public function test_wp_job_manager_global_object() {
 		// setup the test
 		global $job_manager;
 
 		// test if the global job manager object is loaded
-		$this->assertTrue( isset( $job_manager ), 'Job Manager global object loaded ' );
+		$this->assertTrue( isset( $job_manager ), 'Job Manager global object loaded' );
 
 		// check the class
-		$this->assertTrue( $job_manager instanceof WP_Job_Manager, 'Job Manager object is instance of WP_Job_Manager class' );
+		$this->assertInstanceOf( 'WP_Job_Manager', $job_manager, 'Job Manager object is instance of WP_Job_Manager class' );
+
+		// check it matches result of global function
+		$this->assertSame( WPJM(), $job_manager, 'Job Manager global must be equal to result of WPJM()' );
+	}
+
+	/**
+	 * Tests the WPJM() always returns the same `WP_Job_Manager` instance.
+	 *
+	 * @since 1.26
+	 * @covers ::WPJM
+	 */
+	public function test_wp_job_manager_global_function() {
+		$job_manager_instance = WPJM();
+		$this->assertSame( WPJM(), $job_manager_instance, 'WPJM() must always provide the same instance of WP_Job_Manager' );
+		$this->assertTrue( $job_manager_instance instanceof WP_Job_Manager, 'Job Manager object is instance of WP_Job_Manager class' );
+	}
+
+	/**
+	 * Tests the WP_Job_Manager::instance() always returns the same `WP_Job_Manager` instance.
+	 *
+	 * @since 1.26
+	 * @covers WP_Job_Manager::instance
+	 */
+	public function test_wp_job_manager_instance() {
+		$job_manager_instance = WP_Job_Manager::instance();
+		$this->assertSame( WP_Job_Manager::instance(), $job_manager_instance, 'WP_Job_Manager::instance() must always provide the same instance of WP_Job_Manager' );
+		$this->assertInstanceOf( 'WP_Job_Manager', $job_manager_instance, 'WP_Job_Manager::instance() must always provide the same instance of WP_Job_Manager' );
 	}
 }
