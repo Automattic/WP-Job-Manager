@@ -142,53 +142,6 @@ class WP_Job_Manager_Ajax {
 		$result['html']    = ob_get_clean();
 		$result['showing'] = array();
 
-		// Generate 'showing' text
-		$showing_types = array();
-		$unmatched     = false;
-
-		foreach ( $types as $type ) {
-			if ( is_array( $filter_job_types ) && in_array( $type->slug, $filter_job_types ) ) {
-				$showing_types[] = $type->name;
-			} else {
-				$unmatched = true;
-			}
-		}
-
-		if ( sizeof( $showing_types ) == 1 ) {
-			$result['showing'][] = implode( ', ', $showing_types );
-		} elseif ( $unmatched && $showing_types ) {
-			$last_type           = array_pop( $showing_types );
-			$result['showing'][] = implode( ', ', $showing_types ) . " &amp; $last_type";
-		}
-
-		if ( $search_categories ) {
-			$showing_categories = array();
-
-			foreach ( $search_categories as $category ) {
-				$category_object = get_term_by( is_numeric( $category ) ? 'id' : 'slug', $category, 'job_listing_category' );
-
-				if ( ! is_wp_error( $category_object ) ) {
-					$showing_categories[] = $category_object->name;
-				}
-			}
-
-			$result['showing'][] = implode( ', ', $showing_categories );
-		}
-
-		if ( $search_keywords ) {
-			$result['showing'][] = '&ldquo;' . $search_keywords . '&rdquo;';
-		}
-
-		$result['showing'][] = $post_type_label;
-
-		if ( $search_location ) {
-			$result['showing'][] = sprintf( __( 'located in &ldquo;%s&rdquo;', 'wp-job-manager' ), $search_location );
-		}
-
-		if ( 1 === sizeof( $result['showing'] ) ) {
-			$result['showing_all'] = true;
-		}
-
 		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
 			$message = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->post_count, 'wp-job-manager' ), $jobs->post_count );
 			$result['showing_all'] = true;
