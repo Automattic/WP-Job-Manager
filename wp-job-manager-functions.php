@@ -1,10 +1,11 @@
 <?php
 if ( ! function_exists( 'get_job_listings' ) ) :
 /**
- * Queries job listings with certain criteria and returns them
+ * Queries job listings with certain criteria and returns them.
  *
- * @access public
- * @return void
+ * @since 1.0.5
+ * @param array $args
+ * @return array
  */
 function get_job_listings( $args = array() ) {
 	global $wpdb, $job_manager_keyword;
@@ -169,8 +170,9 @@ endif;
 
 if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	/**
-	 * Join and where query for keywords
+	 * Adds join and where query for keywords.
 	 *
+	 * @since 1.21.0
 	 * @param array $args
 	 * @return array
 	 */
@@ -211,9 +213,9 @@ endif;
 
 if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
 /**
- * Get post statuses used for jobs
+ * Gets post statuses used for jobs.
  *
- * @access public
+ * @since 1.12.0
  * @return array
  */
 function get_job_listing_post_statuses() {
@@ -232,7 +234,7 @@ if ( ! function_exists( 'get_featured_job_ids' ) ) :
 /**
  * Gets the ids of featured jobs.
  *
- * @access public
+ * @since 1.0.4
  * @return array
  */
 function get_featured_job_ids() {
@@ -249,9 +251,10 @@ endif;
 
 if ( ! function_exists( 'get_job_listing_types' ) ) :
 /**
- * Get job listing types
+ * Gets job listing types.
  *
- * @access public
+ * @since 1.0.0
+ * @param string|array $fields
  * @return array
  */
 function get_job_listing_types( $fields = 'all' ) {
@@ -277,9 +280,9 @@ endif;
 
 if ( ! function_exists( 'get_job_listing_categories' ) ) :
 /**
- * Get job categories
+ * Gets job categories.
  *
- * @access public
+ * @since 1.0.0
  * @return array
  */
 function get_job_listing_categories() {
@@ -298,6 +301,10 @@ endif;
 if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 /**
  * Shows links after filtering jobs
+ *
+ * @since 1.0.6
+ * @param array $args
+ * @return string
  */
 function job_manager_get_filtered_links( $args = array() ) {
 	$job_categories = array();
@@ -351,6 +358,8 @@ if ( ! function_exists( 'get_job_listing_rss_link' ) ) :
 /**
  * Get the Job Listing RSS link
  *
+ * @since 1.0.0
+ * @param array $args
  * @return string
  */
 function get_job_listing_rss_link( $args = array() ) {
@@ -361,9 +370,10 @@ endif;
 
 if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 	/**
-	 * Handle account creation.
+	 * Handles notification of new users.
 	 *
-	 * @param  int $user_id
+	 * @since 1.23.10
+	 * @param  int    $user_id
 	 * @param  string $password
 	 */
 	function wp_job_manager_notify_new_user( $user_id, $password ) {
@@ -379,11 +389,12 @@ endif;
 
 if ( ! function_exists( 'job_manager_create_account' ) ) :
 /**
- * Handle account creation.
+ * Handles account creation.
  *
- * @param  array $args containing username, email, role
- * @param  string $deprecated role string
- * @return WP_error | bool was an account created?
+ * @since 1.0.0
+ * @param  string|array|object $args containing username, email, role
+ * @param  string              $deprecated role string
+ * @return WP_Error|bool was an account created?
  */
 function wp_job_manager_create_account( $args, $deprecated = '' ) {
 	global $current_user;
@@ -450,27 +461,28 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 		'user_pass'  => $password,
 		'user_email' => $email,
 		'role'       => $role
-    );
+	);
 
-    $user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
+	$user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
 
-    if ( is_wp_error( $user_id ) ) {
-    	return $user_id;
-    }
+	if ( is_wp_error( $user_id ) ) {
+		return $user_id;
+	}
 
-    // Notify
-    wp_job_manager_notify_new_user( $user_id, $password, $new_user );
-    // Login
-    wp_set_auth_cookie( $user_id, true, is_ssl() );
-    $current_user = get_user_by( 'id', $user_id );
+	// Notify
+	wp_job_manager_notify_new_user( $user_id, $password, $new_user );
+	// Login
+	wp_set_auth_cookie( $user_id, true, is_ssl() );
+	$current_user = get_user_by( 'id', $user_id );
 
-    return true;
+	return true;
 }
 endif;
 
 /**
- * True if an the user can post a job. If accounts are required, and reg is enabled, users can post (they signup at the same time).
+ * Checks if an the user can post a job. If accounts are required, and reg is enabled, users can post (they signup at the same time).
  *
+ * @since 1.5.1
  * @return bool
  */
 function job_manager_user_can_post_job() {
@@ -486,8 +498,10 @@ function job_manager_user_can_post_job() {
 }
 
 /**
- * True if an the user can edit a job.
+ * Checks if the user can edit a job.
  *
+ * @since 1.5.1
+ * @param int|WP_Post $job_id
  * @return bool
  */
 function job_manager_user_can_edit_job( $job_id ) {
@@ -507,8 +521,9 @@ function job_manager_user_can_edit_job( $job_id ) {
 }
 
 /**
- * True if only one type allowed per job
+ * Checks if only one type allowed per job.
  *
+ * @since 1.25.2
  * @return bool
  */
 function job_manager_multi_job_type() {
@@ -516,8 +531,9 @@ function job_manager_multi_job_type() {
 }
 
 /**
- * True if registration is enabled.
+ * Checks if registration is enabled.
  *
+ * @since 1.5.1
  * @return bool
  */
 function job_manager_enable_registration() {
@@ -525,8 +541,9 @@ function job_manager_enable_registration() {
 }
 
 /**
- * True if usernames are generated from email addresses.
+ * Checks if usernames are generated from email addresses.
  *
+ * @since 1.20.0
  * @return bool
  */
 function job_manager_generate_username_from_email() {
@@ -534,8 +551,9 @@ function job_manager_generate_username_from_email() {
 }
 
 /**
- * True if an account is required to post a job.
+ * Checks if an account is required to post a job.
  *
+ * @since 1.5.1
  * @return bool
  */
 function job_manager_user_requires_account() {
@@ -543,8 +561,9 @@ function job_manager_user_requires_account() {
 }
 
 /**
- * True if users are allowed to edit submissions that are pending approval.
+ * Checks if users are allowed to edit submissions that are pending approval.
  *
+ * @since 1.16.1
  * @return bool
  */
 function job_manager_user_can_edit_pending_submissions() {
@@ -552,8 +571,14 @@ function job_manager_user_can_edit_pending_submissions() {
 }
 
 /**
+ * Displays category select dropdown.
+ *
  * Based on wp_dropdown_categories, with the exception of supporting multiple selected categories.
+ *
+ * @since 1.14.0
  * @see  wp_dropdown_categories
+ * @param string|array|object $args
+ * @return string
  */
 function job_manager_dropdown_categories( $args = '' ) {
 	$defaults = array(
@@ -644,7 +669,9 @@ function job_manager_dropdown_categories( $args = '' ) {
 }
 
 /**
- * Get the page ID of a page if set, with PolyLang compat.
+ * Gets the page ID of a page if set, with PolyLang compat.
+ *
+ * @since 1.23.12
  * @param  string $page e.g. job_dashboard, submit_job_form, jobs
  * @return int
  */
@@ -658,7 +685,9 @@ function job_manager_get_page_id( $page ) {
 }
 
 /**
- * Get the permalink of a page if set
+ * Gets the permalink of a page if set.
+ *
+ * @since 1.16.0
  * @param  string $page e.g. job_dashboard, submit_job_form, jobs
  * @return string|bool
  */
@@ -671,7 +700,9 @@ function job_manager_get_permalink( $page ) {
 }
 
 /**
- * Filters the upload dir when $job_manager_upload is true
+ * Filters the upload dir when $job_manager_upload is true.
+ *
+ * @since 1.21.0
  * @param  array $pathdata
  * @return array
  */
@@ -698,7 +729,9 @@ function job_manager_upload_dir( $pathdata ) {
 add_filter( 'upload_dir', 'job_manager_upload_dir' );
 
 /**
- * Prepare files for upload by standardizing them into an array. This adds support for multiple file upload fields.
+ * Prepares files for upload by standardizing them into an array. This adds support for multiple file upload fields.
+ *
+ * @since 1.21.0
  * @param  array $file_data
  * @return array
  */
@@ -728,9 +761,11 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 }
 
 /**
- * Upload a file using WordPress file API.
- * @param  array $file_data Array of $_FILE data to upload.
- * @param  array $args Optional arguments
+ * Uploads a file using WordPress file API.
+ *
+ * @since 1.21.0
+ * @param  array|WP_Error      $file Array of $_FILE data to upload.
+ * @param  string|array|object $args Optional arguments
  * @return stdClass|WP_Error Object containing file information, or error
  */
 function job_manager_upload_file( $file, $args = array() ) {
@@ -799,7 +834,9 @@ function job_manager_upload_file( $file, $args = array() ) {
 }
 
 /**
- * Allowed Mime types specifically for WPJM.
+ * Returns mime types specifically for WPJM.
+ *
+ * @since 1.25.1
  * @param   string $field Field used.
  * @return  array  Array of allowed mime types
  */
@@ -838,7 +875,9 @@ function job_manager_get_allowed_mime_types( $field = '' ){
 }
 
 /**
- * Calculate and return the job expiry date
+ * Calculates and returns the job expiry date.
+ *
+ * @since 1.22.0
  * @param  int $job_id
  * @return string
  */
@@ -859,7 +898,9 @@ function calculate_job_expiry( $job_id ) {
 }
 
 /**
- * Duplicate a listing.
+ * Duplicates a listing.
+ *
+ * @since 1.25.0
  * @param  int $post_id
  * @return int 0 on fail or the post ID.
  */
@@ -910,7 +951,7 @@ function job_manager_duplicate_listing( $post_id ) {
 			if ( in_array( $meta_key, apply_filters( 'job_manager_duplicate_listing_ignore_keys', array( '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' ) ) ) ) {
 				continue;
 			}
-			update_post_meta( $new_post_id, $meta_key, $meta_value );
+			update_post_meta( $new_post_id, $meta_key, maybe_unserialize( $meta_value ) );
 		}
 	}
 

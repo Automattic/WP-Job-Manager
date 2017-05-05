@@ -8,7 +8,10 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! class_exists( 'WP_Job_Manager_Addons' ) ) :
 
 /**
- * WP_Job_Manager_Addons Class
+ * Handles the admin add-ons page.
+ *
+ * @package wp-job-manager
+ * @since 1.1.0
  */
 class WP_Job_Manager_Addons {
 

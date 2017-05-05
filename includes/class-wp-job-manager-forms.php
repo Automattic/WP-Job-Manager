@@ -1,11 +1,14 @@
 <?php
 /**
- * WP_Job_Manager_Forms class.
+ * Base class for all WP Job Manager forms.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Forms {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'load_posted_form' ) );
@@ -52,11 +55,11 @@ class WP_Job_Manager_Forms {
 	}
 
 	/**
-	 * get_form function.
+	 * Returns the form content.
 	 *
 	 * @param string $form_name
-	 * @param  array $atts Optional passed attributes
-	 * @return string
+	 * @param array  $atts Optional passed attributes
+	 * @return string|null
 	 */
 	public function get_form( $form_name, $atts = array() ) {
 		if ( $form = $this->load_form_class( $form_name ) ) {

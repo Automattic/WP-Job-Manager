@@ -3,15 +3,15 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_CPT class.
+ * Handles actions and filters specific to the custom post type for Job Listings.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_CPT {
 
 	/**
-	 * __construct function.
-	 *
-	 * @access public
-	 * @return void
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 1, 2 );
@@ -40,7 +40,7 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Edit bulk actions
+	 * Adds bulk actions to drop downs on Job Listing admin page.
 	 */
 	public function add_bulk_actions() {
 		global $post_type, $wp_post_types;;
@@ -61,7 +61,7 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Do custom bulk actions
+	 * Performs bulk actions on Job Listing admin page.
 	 */
 	public function do_bulk_actions() {
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
@@ -113,7 +113,7 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Approve a single job
+	 * Approves a single job.
 	 */
 	public function approve_job() {
 		if ( ! empty( $_GET['approve_job'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'approve_job' ) && current_user_can( 'publish_post', $_GET['approve_job'] ) ) {
@@ -129,7 +129,7 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Show a notice if we did a bulk action or approval
+	 * Shows a notice if we did a bulk approval action.
 	 */
 	public function approved_notice() {
 		 global $post_type, $pagenow;
@@ -149,7 +149,7 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Show a notice if we did a bulk action or approval
+	 * Shows a notice if we did a bulk expired action.
 	 */
 	public function expired_notice() {
 		 global $post_type, $pagenow;
@@ -169,7 +169,7 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Show category dropdown
+	 * Shows category dropdown.
 	 */
 	public function jobs_by_category() {
 		global $typenow, $wp_query;
@@ -203,10 +203,11 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * enter_title_here function.
+	 * Filters page title placeholder text to show custom label.
 	 *
-	 * @access public
-	 * @return void
+	 * @param string      $text
+	 * @param WP_Post|int $post
+	 * @return string
 	 */
 	public function enter_title_here( $text, $post ) {
 		if ( $post->post_type == 'job_listing' )
@@ -215,11 +216,10 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * post_updated_messages function.
+	 * Filters the post updated message array to add custom post type's messages.
 	 *
-	 * @access public
-	 * @param mixed $messages
-	 * @return void
+	 * @param array $messages
+	 * @return array
 	 */
 	public function post_updated_messages( $messages ) {
 		global $post, $post_ID, $wp_post_types;
@@ -243,7 +243,7 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * columns function.
+	 * Adds columns to admin listing of Job Listings.
 	 *
 	 * @param array $columns
 	 * @return array
@@ -278,7 +278,6 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * primary_column function.
 	 * This is required to make column responsive since WP 4.3
 	 * 
 	 * @access public
@@ -286,7 +285,7 @@ class WP_Job_Manager_CPT {
 	 * @param string $screen
 	 * @return string
 	 */
-	public function primary_column( $column, $screen ){
+	public function primary_column( $column, $screen ) {
 		if ( 'edit-job_listing' === $screen ) {
 			$column = 'job_position';
 		}
@@ -294,8 +293,7 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * row_actions function.
-	 * Remove all action links because WordPress add it to primary column.
+	 * Removes all action links because WordPress add it to primary column.
 	 * Note: Removing all actions also remove mobile "Show more details" toggle button.
 	 * So the button need to be added manually in custom_columns callback for primary column.
 	 * 
@@ -303,19 +301,17 @@ class WP_Job_Manager_CPT {
 	 * @param array $actions
 	 * @return array
 	 */
-	public function row_actions( $actions ){
-		if( 'job_listing' == get_post_type() ){
+	public function row_actions( $actions ) {
+		if ( 'job_listing' == get_post_type() ) {
 			return array();
 		}
 		return $actions;
 	}
 
 	/**
-	 * custom_columns function.
+	 * Displays the content for each custom column on the admin list for Job Listings.
 	 *
-	 * @access public
 	 * @param mixed $column
-	 * @return void
 	 */
 	public function custom_columns( $column ) {
 		global $post;
@@ -421,11 +417,10 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * sortable_columns function.
+	 * Filters the list table sortable columns for the admin list of Job Listings.
 	 *
-	 * @access public
 	 * @param mixed $columns
-	 * @return void
+	 * @return array
 	 */
 	public function sortable_columns( $columns ) {
 		$custom = array(
@@ -438,11 +433,10 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * sort_columns function.
+	 * Sorts the admin listing of Job Listings by updating the main query in the request.
 	 *
-	 * @access public
 	 * @param mixed $vars
-	 * @return void
+	 * @return array
 	 */
 	public function sort_columns( $vars ) {
 		if ( isset( $vars['orderby'] ) ) {
@@ -462,7 +456,8 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Search custom fields as well as content.
+	 * Searches custom fields as well as content.
+	 *
 	 * @param WP_Query $wp
 	 */
 	public function search_meta( $wp ) {
@@ -498,7 +493,8 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Change the label when searching meta.
+	 * Changes the label when searching meta.
+	 *
 	 * @param string $query
 	 * @return string
 	 */
@@ -512,10 +508,8 @@ class WP_Job_Manager_CPT {
 		return wp_unslash( sanitize_text_field( $_GET['s'] ) );
 	}
 
-    /**
+	/**
 	 * Adds post status to the "submitdiv" Meta Box and post type WP List Table screens. Based on https://gist.github.com/franz-josef-kaiser/2930190
-	 *
-	 * @return void
 	 */
 	public function extend_submitdiv_post_status() {
 		global $post, $post_type;

@@ -1,20 +1,23 @@
 <?php
 
 /**
- * WP_Job_Manager_Form_Submit_Job class.
+ * Handles the editing of Job Listings from the public facing frontend (from within `[submit_job_form]` shortcode).
+ *
+ * @package wp-job-manager
+ * @extends WP_Job_Manager_Form
+ * @since 1.0.0
  */
 class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 	/**
-	 * Form name
+	 * Form name.
 	 *
-	 * @access public
 	 * @var string
 	 */
 	public $form_name = 'submit-job';
 
 	/**
-	 * Job id
+	 * Job listing ID.
 	 *
 	 * @access protected
 	 * @var int
@@ -22,7 +25,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected $job_id;
 
 	/**
-	 * Preview job
+	 * Preview job (unused)
 	 *
 	 * @access protected
 	 * @var string
@@ -30,7 +33,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected $preview_job;
 
 	/**
-	 * Instance
+	 * Stores static instance of class.
 	 *
 	 * @access protected
 	 * @var WP_Job_Manager_Form_Submit_Job The single instance of the class
@@ -38,7 +41,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected static $_instance = null;
 
 	/**
-	 * Main Instance
+	 * Returns static instance of class.
+	 *
+	 * @return self
 	 */
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
@@ -116,7 +121,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Get the submitted job ID
+	 * Gets the submitted job ID.
+	 *
 	 * @return int
 	 */
 	public function get_job_id() {
@@ -124,7 +130,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * init_fields function.
+	 * Initializes the fields used in the form.
 	 */
 	public function init_fields() {
 		if ( $this->fields ) {
@@ -173,7 +179,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'label'       => __( 'Job type', 'wp-job-manager' ),
 					'type'        => $job_type,
 					'required'    => true,
-					'placeholder' => '',
+					'placeholder' => __( 'Choose job type&hellip;', 'wp-job-manager' ),
 					'priority'    => 3,
 					'default'     => 'full-time',
 					'taxonomy'    => 'job_listing_type'
@@ -266,9 +272,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Validate the posted fields
+	 * Validates the posted fields.
 	 *
-	 * @return bool on success, WP_ERROR on failure
+	 * @param array $values
+	 * @throws Exception Uploaded file is not a valid mime-type or other validation error
+	 * @return bool|WP_Error True on success, WP_Error on failure
 	 */
 	protected function validate_fields( $values ) {
 		foreach ( $this->fields as $group_key => $group_fields ) {
@@ -345,7 +353,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * job_types function.
+	 * Returns an array of the job types indexed by slug. (Unused)
+	 *
+	 * @return array
 	 */
 	private function job_types() {
 		$options = array();
@@ -357,7 +367,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Submit Step
+	 * Displays the form.
 	 */
 	public function submit() {
 		$this->init_fields();
@@ -424,7 +434,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Submit Step is posted
+	 * Handles the submission of form data.
 	 */
 	public function submit_handler() {
 		try {
@@ -488,13 +498,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Update or create a job listing from posted data
+	 * Updates or creates a job listing from posted data.
 	 *
 	 * @param  string $post_title
 	 * @param  string $post_content
 	 * @param  string $status
-	 * @param  array $values
-	 * @param  bool $update_slug
+	 * @param  array  $values
+	 * @param  bool   $update_slug
 	 */
 	protected function save_job( $post_title, $post_content, $status = 'preview', $values = array(), $update_slug = true ) {
 		$job_data = array(
@@ -550,7 +560,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Create an attachment
+	 * Creates a file attachment.
+	 *
 	 * @param  string $attachment_url
 	 * @return int attachment id
 	 */
@@ -588,7 +599,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Set job meta + terms based on posted values
+	 * Sets job meta and terms based on posted values.
 	 *
 	 * @param  array $values
 	 */
@@ -667,7 +678,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Preview Step
+	 * Displays preview of Job Listing.
 	 */
 	public function preview() {
 		global $post, $job_preview;
@@ -688,7 +699,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Preview Step Form handler
+	 * Handles the preview step form response.
 	 */
 	public function preview_handler() {
 		if ( ! $_POST ) {
@@ -724,7 +735,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Done Step
+	 * Displays the final screen after a job listing has been submitted.
 	 */
 	public function done() {
 		do_action( 'job_manager_job_submitted', $this->job_id );

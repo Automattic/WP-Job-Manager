@@ -17,12 +17,39 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_Job_Manager class.
+ * Handles core plugin hooks and action setup.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager {
+	/**
+	 * The single instance of the class.
+	 *
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
 
 	/**
-	 * Constructor - get the plugin hooked in and ready
+	 * Main WP Job Manager Instance.
+	 *
+	 * Ensures only one instance of WP Job Manager is loaded or can be loaded.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @see WPJM()
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		// Define constants
@@ -65,7 +92,7 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Called on plugin activation
+	 * Performs plugin activation steps.
 	 */
 	public function activate() {
 		WP_Job_Manager_Ajax::add_endpoint();
@@ -75,7 +102,7 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Handle Updates
+	 * Handles tasks after plugin is updated.
 	 */
 	public function updater() {
 		if ( version_compare( JOB_MANAGER_VERSION, get_option( 'wp_job_manager_version' ), '>' ) ) {
@@ -85,15 +112,15 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Localisation
+	 * Loads textdomain for plugin.
 	 */
 	public function load_plugin_textdomain() {
-		load_textdomain( 'wp-job-manager', WP_LANG_DIR . "/wp-job-manager/wp-job-manager-" . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . ".mo" );
+		load_textdomain( 'wp-job-manager', WP_LANG_DIR . '/wp-job-manager/wp-job-manager-' . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . '.mo' );
 		load_plugin_textdomain( 'wp-job-manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
 	/**
-	 * Load functions
+	 * Loads plugin's core helper functions.
 	 */
 	public function include_template_functions() {
 		include( 'wp-job-manager-functions.php' );
@@ -101,16 +128,18 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Widgets init
+	 * Loads plugin's widgets.
 	 */
 	public function widgets_init() {
 		include_once( 'includes/class-wp-job-manager-widgets.php' );
 	}
 
 	/**
-	 * Register and enqueue scripts and css
+	 * Registers and enqueues scripts and CSS.
 	 */
 	public function frontend_scripts() {
+		global $post;
+
 		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
 		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
 		$ajax_data 		  = array(
@@ -121,7 +150,7 @@ class WP_Job_Manager {
 
 		// WPML workaround
 		if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
-			$ajax_data['lang'] = apply_filters( 'wpml_current_language', NULL );
+			$ajax_data['lang'] = apply_filters( 'wpml_current_language', null );
 		}
 
 		if ( apply_filters( 'job_manager_chosen_enabled', true ) ) {
@@ -132,7 +161,9 @@ class WP_Job_Manager {
 			$ajax_filter_deps[] = 'chosen';
 
 			wp_localize_script( 'chosen', 'job_manager_chosen_multiselect_args',
-				apply_filters( 'job_manager_chosen_multiselect_args', array( 'search_contains' => true ) )
+				apply_filters( 'job_manager_chosen_multiselect_args', array(
+					'search_contains' => true,
+				) )
 			);
 		}
 
@@ -142,18 +173,26 @@ class WP_Job_Manager {
 			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', array( 'jquery', 'jquery-fileupload' ), JOB_MANAGER_VERSION, true );
 
 			ob_start();
-			get_job_manager_template( 'form-fields/uploaded-file-html.php', array( 'name' => '', 'value' => '', 'extension' => 'jpg' ) );
+			get_job_manager_template( 'form-fields/uploaded-file-html.php', array(
+				'name' => '',
+				'value' => '',
+				'extension' => 'jpg',
+			) );
 			$js_field_html_img = ob_get_clean();
 
 			ob_start();
-			get_job_manager_template( 'form-fields/uploaded-file-html.php', array( 'name' => '', 'value' => '', 'extension' => 'zip' ) );
+			get_job_manager_template( 'form-fields/uploaded-file-html.php', array(
+				'name' => '',
+				'value' => '',
+				'extension' => 'zip',
+			) );
 			$js_field_html = ob_get_clean();
 
 			wp_localize_script( 'wp-job-manager-ajax-file-upload', 'job_manager_ajax_file_upload', array(
 				'ajax_url'               => $ajax_url,
-				'js_field_html_img'      => esc_js( str_replace( "\n", "", $js_field_html_img ) ),
-				'js_field_html'          => esc_js( str_replace( "\n", "", $js_field_html ) ),
-				'i18n_invalid_file_type' => __( 'Invalid file type. Accepted types:', 'wp-job-manager' )
+				'js_field_html_img'      => esc_js( str_replace( "\n", '', $js_field_html_img ) ),
+				'js_field_html'          => esc_js( str_replace( "\n", '', $js_field_html ) ),
+				'i18n_invalid_file_type' => __( 'Invalid file type. Accepted types:', 'wp-job-manager' ),
 			) );
 		}
 
@@ -164,17 +203,38 @@ class WP_Job_Manager {
 		wp_register_script( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-submission.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
 		wp_localize_script( 'wp-job-manager-job-dashboard', 'job_manager_job_dashboard', array(
-			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' )
+			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 		) );
 
-		wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css' );
+		wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
+		if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'submit_job_form' ) ) {
+			wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', array(), JOB_MANAGER_VERSION );
+		}
 	}
 }
 
+/**
+ * Add post type for Job Manager.
+ *
+ * @param array $types
+ * @return array
+ */
 function job_manager_add_post_types( $types ) {
 	$types[] = 'job_listing';
 	return $types;
 }
 add_filter( 'post_types_to_delete_with_user', 'job_manager_add_post_types', 10 );
 
-$GLOBALS['job_manager'] = new WP_Job_Manager();
+/**
+ * Main instance of WP Job Manager.
+ *
+ * Returns the main instance of WP Job Manager to prevent the need to use globals.
+ *
+ * @since  1.26
+ * @return WP_Job_Manager
+ */
+function WPJM() {
+	return WP_Job_Manager::instance();
+}
+
+$GLOBALS['job_manager'] = WPJM();

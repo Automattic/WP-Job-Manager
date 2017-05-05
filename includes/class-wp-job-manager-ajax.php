@@ -3,12 +3,15 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_Ajax class.
+ * Handles Job Manager's Ajax endpoints.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Ajax {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'init', array( __CLASS__, 'add_endpoint') );
@@ -26,7 +29,7 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Add our endpoint for frontend ajax requests
+	 * Adds endpoint for frontend Ajax requests.
 	 */
 	public static function add_endpoint() {
 		add_rewrite_tag( '%jm-ajax%', '([^/]*)' );
@@ -35,9 +38,10 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Get JM Ajax Endpoint
-	 * @param  string $request Optional
-	 * @param  string $ssl     Optional
+	 * Gets Job Manager's Ajax Endpoint.
+	 *
+	 * @param  string $request      Optional
+	 * @param  string $ssl (Unused) Optional
 	 * @return string
 	 */
 	public static function get_endpoint( $request = '%%endpoint%%', $ssl = null ) {
@@ -52,7 +56,7 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Check for WC Ajax request and fire action
+	 * Performs Job Manager's Ajax actions.
 	 */
 	public static function do_jm_ajax() {
 		global $wp_query;
@@ -61,21 +65,21 @@ class WP_Job_Manager_Ajax {
 			 $wp_query->set( 'jm-ajax', sanitize_text_field( $_GET['jm-ajax'] ) );
 		}
 
-   		if ( $action = $wp_query->get( 'jm-ajax' ) ) {
-   			if ( ! defined( 'DOING_AJAX' ) ) {
-				define( 'DOING_AJAX', true );
+			if ( $action = $wp_query->get( 'jm-ajax' ) ) {
+				if ( ! defined( 'DOING_AJAX' ) ) {
+					define( 'DOING_AJAX', true );
+				}
+
+				// Not home - this is an ajax endpoint
+				$wp_query->is_home = false;
+
+				do_action( 'job_manager_ajax_' . sanitize_text_field( $action ) );
+				die();
 			}
-
-			// Not home - this is an ajax endpoint
-			$wp_query->is_home = false;
-
-   			do_action( 'job_manager_ajax_' . sanitize_text_field( $action ) );
-   			die();
-   		}
 	}
 
 	/**
-	 * Get listings via ajax
+	 * Returns Job Listings for Ajax endpoint.
 	 */
 	public function get_listings() {
 		global $wp_post_types;
@@ -191,7 +195,7 @@ class WP_Job_Manager_Ajax {
 		} else {
 			$message = "";
 		}
-		
+
 		$search_values = array(
 				'location'   => $search_location,
 				'keywords'   => $search_keywords,
@@ -218,7 +222,7 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Upload file via ajax
+	 * Uploads file from an Ajax request.
 	 *
 	 * No nonce field since the form may be statically cached.
 	 */

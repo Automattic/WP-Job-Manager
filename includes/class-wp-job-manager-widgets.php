@@ -3,59 +3,57 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Job Manager Widget base
+ * Job Manager Widget base.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Widget extends WP_Widget {
 
 	/**
-	 * Widget CSS class
+	 * Widget CSS class.
 	 *
-	 * @access public
 	 * @var string
 	 */
 	public $widget_cssclass;
 
 	/**
-	 * Widget description
+	 * Widget description.
 	 *
-	 * @access public
 	 * @var string
 	 */
 	public $widget_description;
 
 	/**
-	 * Widget id
+	 * Widget id.
 	 *
-	 * @access public
 	 * @var string
 	 */
 	public $widget_id;
 
 	/**
-	 * Widget name
+	 * Widget name.
 	 *
-	 * @access public
 	 * @var string
 	 */
 	public $widget_name;
 
 	/**
-	 * Widget settings
+	 * Widget settings.
 	 *
-	 * @access public
 	 * @var array
 	 */
 	public $settings;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		$this->register();
 	}
 
 	/**
-	 * Register Widget
+	 * Registers widget.
 	 */
 	public function register() {
 		$widget_ops = array(
@@ -71,7 +69,10 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	}
 
 	/**
-	 * get_cached_widget function.
+	 * Checks for cached version of widget and outputs it if found.
+	 *
+	 * @param array $args
+	 * @return bool
 	 */
 	public function get_cached_widget( $args ) {
 		$cache = wp_cache_get( $this->widget_id, 'widget' );
@@ -88,7 +89,10 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Cache the widget
+	 * Caches the widget.
+	 *
+	 * @param array  $args
+	 * @param string $content
 	 */
 	public function cache_widget( $args, $content ) {
 		$cache[ $args['widget_id'] ] = $content;
@@ -97,18 +101,16 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Flush the cache
-	 * @return [type]
+	 * Flushes the cache for a widget.
 	 */
 	public function flush_widget_cache() {
 		wp_cache_delete( $this->widget_id, 'widget' );
 	}
 
 	/**
-	 * update function.
+	 * Updates a widget instance settings.
 	 *
 	 * @see WP_Widget->update
-	 * @access public
 	 * @param array $new_instance
 	 * @param array $old_instance
 	 * @return array
@@ -129,14 +131,13 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	}
 
 	/**
-	 * form function.
+	 * Displays widget setup form.
 	 *
 	 * @see WP_Widget->form
-	 * @access public
 	 * @param array $instance
 	 * @return void
 	 */
-	function form( $instance ) {
+	public function form( $instance ) {
 
 		if ( ! $this->settings )
 			return;
@@ -167,26 +168,26 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	}
 
 	/**
-	 * widget function.
+	 * Echoes the widget content.
 	 *
 	 * @see    WP_Widget
-	 * @access public
 	 *
 	 * @param array $args
 	 * @param array $instance
-	 *
-	 * @return void
 	 */
 	public function widget( $args, $instance ) {}
 }
 
 /**
- * Recent Jobs Widget
+ * Recent Jobs widget.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		global $wp_post_types;
@@ -224,13 +225,11 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	}
 
 	/**
-	 * widget function.
+	 * Echoes the widget content.
 	 *
 	 * @see WP_Widget
-	 * @access public
 	 * @param array $args
 	 * @param array $instance
-	 * @return void
 	 */
 	public function widget( $args, $instance ) {
 		if ( $this->get_cached_widget( $args ) ) {
@@ -286,12 +285,15 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 }
 
 /**
- * Featured Jobs Widget
+ * Featured Jobs widget.
+ *
+ * @package wp-job-manager
+ * @since 1.21.0
  */
 class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
 		global $wp_post_types;
@@ -319,13 +321,11 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 	}
 
 	/**
-	 * widget function.
+	 * Echoes the widget content.
 	 *
 	 * @see WP_Widget
-	 * @access public
 	 * @param array $args
 	 * @param array $instance
-	 * @return void
 	 */
 	public function widget( $args, $instance ) {
 		if ( $this->get_cached_widget( $args ) ) {

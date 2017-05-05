@@ -3,22 +3,30 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_Geocode
- *
  * Obtains Geolocation data for posted jobs from Google.
+ *
+ * @package wp-job-manager
+ * @since 1.6.1
  */
 class WP_Job_Manager_Geocode {
 
+	const GOOGLE_MAPS_GEOCODE_API_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
+
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct() {
+		add_filter( 'job_manager_geolocation_endpoint', array( $this, 'add_geolocation_endpoint_query_args' ), 0, 2 );
+		add_filter( 'job_manager_geolocation_api_key', array( $this, 'get_google_maps_api_key' ), 0 );
 		add_action( 'job_manager_update_job_data', array( $this, 'update_location_data' ), 20, 2 );
 		add_action( 'job_manager_job_location_edited', array( $this, 'change_location_data' ), 20, 2 );
 	}
 
 	/**
-	 * Update location data - when submitting a job
+	 * Updates location data when submitting a job.
+	 *
+	 * @param int   $job_id
+	 * @param array $values
 	 */
 	public function update_location_data( $job_id, $values ) {
 		if ( apply_filters( 'job_manager_geolocation_enabled', true ) && isset( $values['job']['job_location'] ) ) {
@@ -28,8 +36,9 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Change a jobs location data upon editing
-	 * @param  int $job_id
+	 * Changes a jobs location data upon editing.
+	 *
+	 * @param  int    $job_id
 	 * @param  string $new_location
 	 */
 	public function change_location_data( $job_id, $new_location ) {
@@ -41,8 +50,9 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Checks if a job has location data or not
-	 * @param  int  $job_id
+	 * Checks if a job has location data or not.
+	 *
+	 * @param  int $job_id
 	 * @return boolean
 	 */
 	public static function has_location_data( $job_id ) {
@@ -50,8 +60,9 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Called manually to generate location data and save to a post
-	 * @param  int $job_id
+	 * Generates location data and saves to a post.
+	 *
+	 * @param  int    $job_id
 	 * @param  string $location
 	 */
 	public static function generate_location_data( $job_id, $location ) {
@@ -60,7 +71,8 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Delete a job's location data
+	 * Deletes a job's location data.
+	 *
 	 * @param  int $job_id
 	 */
 	public static function clear_location_data( $job_id ) {
@@ -80,8 +92,9 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Save any returned data to post meta
-	 * @param  int $job_id
+	 * Saves any returned data to post meta.
+	 *
+	 * @param  int   $job_id
 	 * @param  array $address_data
 	 */
 	public static function save_location_data( $job_id, $address_data ) {
@@ -96,12 +109,48 @@ class WP_Job_Manager_Geocode {
 	}
 
 	/**
-	 * Get Location Data from Google
+	 * Retrieves the Google Maps API key from the plugin's settings.
+	 *
+	 * @param  string $key
+	 * @return string
+	 */
+	public function get_google_maps_api_key( $key ) {
+		return get_option( 'job_manager_google_maps_api_key' );
+	}
+
+	/**
+	 * Adds the necessary query arguments for a Google Maps Geocode API request.
+	 *
+	 * @param  string $geocode_endpoint_url
+	 * @param  string $raw_address
+	 * @return string|bool
+	 */
+	public function add_geolocation_endpoint_query_args( $geocode_endpoint_url, $raw_address ) {
+		$api_key = apply_filters( 'job_manager_geolocation_api_key', '', $raw_address );
+
+		// Google Maps API no longer accepts requests without an API key
+		if ( '' === $api_key ) {
+			return false;
+		}
+
+		$geocode_endpoint_url = add_query_arg( 'key', urlencode( $api_key ), $geocode_endpoint_url );
+		$geocode_endpoint_url = add_query_arg( 'address', urlencode( $raw_address ), $geocode_endpoint_url );
+
+		$region = apply_filters( 'job_manager_geolocation_region_cctld', '', $raw_address );
+		if ( '' !== $region ) {
+			$geocode_endpoint_url = add_query_arg( 'region', urlencode( $region ), $geocode_endpoint_url );
+		}
+
+		return $geocode_endpoint_url;
+	}
+
+	/**
+	 * Gets Location Data from Google.
 	 *
 	 * Based on code by Eyal Fitoussi.
 	 *
 	 * @param string $raw_address
-	 * @return array location data
+	 * @return array|bool location data
 	 */
 	public static function get_location_data( $raw_address ) {
 		$invalid_chars = array( " " => "+", "," => "", "?" => "", "&" => "", "=" => "" , "#" => "" );
@@ -120,17 +169,22 @@ class WP_Job_Manager_Geocode {
 			return false;
 		}
 
+		$geocode_api_url = apply_filters( 'job_manager_geolocation_endpoint', self::GOOGLE_MAPS_GEOCODE_API_URL, $raw_address );
+		if ( false === $geocode_api_url ) {
+			return false;
+		}
+
 		try {
 			if ( false === $geocoded_address || empty( $geocoded_address->results[0] ) ) {
 				$result = wp_remote_get(
-					apply_filters( 'job_manager_geolocation_endpoint', "http://maps.googleapis.com/maps/api/geocode/json?address=" . $raw_address . "&sensor=false&region=" . apply_filters( 'job_manager_geolocation_region_cctld', '', $raw_address ), $raw_address ),
+					$geocode_api_url,
 					array(
 						'timeout'     => 5,
-					    'redirection' => 1,
-					    'httpversion' => '1.1',
-					    'user-agent'  => 'WordPress/WP-Job-Manager-' . JOB_MANAGER_VERSION . '; ' . get_bloginfo( 'url' ),
-					    'sslverify'   => false
-				    )
+						'redirection' => 1,
+						'httpversion' => '1.1',
+						'user-agent'  => 'WordPress/WP-Job-Manager-' . JOB_MANAGER_VERSION . '; ' . get_bloginfo( 'url' ),
+						'sslverify'   => false
+					)
 				);
 				$result           = wp_remote_retrieve_body( $result );
 				$geocoded_address = json_decode( $result );

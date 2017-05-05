@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        bootstrap="tests/php/bootstrap.php"
+        backupGlobals="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        verbose="true"
+        syntaxCheck="true"
+>
+    <php>
+        <const name="PHPUNIT_WPJM_TESTSUITE" value="true"/>
+        <const name='HTTP_HOST' value='http://localhost' />
+        <const name="SERVER_NAME" value="http://foo.bar"/>
+        <const name="SERVER_PORT" value="80"/>
+        <const name="REMOTE_ADDR" value="127.0.0.2"/>
+    </php>
+    <testsuites>
+        <testsuite name="WPJM Test Suite">
+            <directory prefix="test_class." suffix=".php">tests/php</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="false">
+            <directory suffix=".php">.</directory>
+            <exclude>
+                <directory suffix=".php">tests</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
