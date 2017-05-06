@@ -10,6 +10,28 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class WP_Job_Manager_Writepanels {
 
 	/**
+	 * The single instance of the class.
+	 *
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -562,4 +584,4 @@ class WP_Job_Manager_Writepanels {
 	}
 }
 
-new WP_Job_Manager_Writepanels();
+WP_Job_Manager_Writepanels::instance();
