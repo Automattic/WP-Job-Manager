@@ -72,8 +72,8 @@ class WP_Job_Manager {
 		}
 
 		// Init classes
-		$this->forms      = new WP_Job_Manager_Forms();
-		$this->post_types = new WP_Job_Manager_Post_Types();
+		$this->forms      = WP_Job_Manager_Forms::instance();
+		$this->post_types = WP_Job_Manager_Post_Types::instance();
 
 		// Activation - works with symlinks
 		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this, 'activate' ) );

@@ -16,6 +16,28 @@ if ( ! class_exists( 'WP_Job_Manager_Addons' ) ) :
 class WP_Job_Manager_Addons {
 
 	/**
+	 * The single instance of the class.
+	 *
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
 	 * Handles output of the reports page in admin.
 	 */
 	public function output() {
@@ -69,4 +91,4 @@ class WP_Job_Manager_Addons {
 
 endif;
 
-return new WP_Job_Manager_Addons();
+return WP_Job_Manager_Addons::instance();
