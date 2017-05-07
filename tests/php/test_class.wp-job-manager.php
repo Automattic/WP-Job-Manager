@@ -49,11 +49,20 @@ class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 	 *
 	 * @since 1.26
 	 */
-	function test_classes_of_object_properties() {
-		// setup the test
-		global $job_manager;
+	public function test_classes_of_object_properties() {
+		$this->assertInstanceOf( 'WP_Job_Manager_Forms', WPJM()->forms );
+		$this->assertInstanceOf( 'WP_Job_Manager_Post_Types', WPJM()->post_types );
+	}
 
-		$this->assertInstanceOf( 'WP_Job_Manager_Forms', $job_manager->forms );
-		$this->assertInstanceOf( 'WP_Job_Manager_Post_Types', $job_manager->post_types );
+	/**
+	 * Checks constants are defined when constructing
+	 *
+	 * @since 1.26
+	 */
+	public function test_class_defined_constants() {
+		WPJM();
+		$this->assertTrue( defined( 'JOB_MANAGER_VERSION' ) );
+		$this->assertTrue( defined( 'JOB_MANAGER_PLUGIN_DIR' ) );
+		$this->assertTrue( defined( 'JOB_MANAGER_PLUGIN_URL' ) );
 	}
 }
