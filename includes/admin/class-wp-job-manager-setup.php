@@ -4,15 +4,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_Job_Manager_Setup class.
+ * Handles initial environment setup after plugin is first activated.
+ *
+ * @package wp-job-manager
+ * @since 1.16.0
  */
 class WP_Job_Manager_Setup {
 
 	/**
-	 * __construct function.
+	 * The single instance of the class.
 	 *
-	 * @access public
-	 * @return void
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
@@ -23,27 +45,21 @@ class WP_Job_Manager_Setup {
 	}
 
 	/**
-	 * admin_menu function.
-	 *
-	 * @access public
-	 * @return void
+	 * Adds setup link to admin dashboard menu briefly so the page callback is registered.
 	 */
 	public function admin_menu() {
 		add_dashboard_page( __( 'Setup', 'wp-job-manager' ), __( 'Setup', 'wp-job-manager' ), 'manage_options', 'job-manager-setup', array( $this, 'output' ) );
 	}
 
 	/**
-	 * Add styles just for this page, and remove dashboard page links.
-	 *
-	 * @access public
-	 * @return void
+	 * Removes the setup link from admin dashboard menu so just the handler callback is registered.
 	 */
 	public function admin_head() {
 		remove_submenu_page( 'index.php', 'job-manager-setup' );
 	}
 
 	/**
-	 * Sends user to the setup page on first activation
+	 * Sends user to the setup page on first activation.
 	 */
 	public function redirect() {
 		// Bail if no activation redirect transient is set
@@ -72,14 +88,15 @@ class WP_Job_Manager_Setup {
 	}
 
 	/**
-	 * Enqueue scripts for setup page
+	 * Enqueues scripts for setup page.
 	 */
 	public function admin_enqueue_scripts() {
 		wp_enqueue_style( 'job_manager_setup_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/setup.css', array( 'dashicons' ) );
 	}
 
 	/**
-	 * Create a page.
+	 * Creates a page.
+	 *
 	 * @param  string $title
 	 * @param  string $content
 	 * @param  string $option
@@ -103,12 +120,14 @@ class WP_Job_Manager_Setup {
 	}
 
 	/**
-	 * Output addons page
+	 * Displays setup page.
 	 */
 	public function output() {
 		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
 
 		if ( 3 === $step && ! empty( $_POST ) ) {
+			if ( false == wp_verify_nonce( $_REQUEST[ 'setup_wizard' ], 'step_3' ) )
+				wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
 			$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? $_POST['wp-job-manager-create-page'] : array();
 			$page_titles     = $_POST['wp-job-manager-page-title'];
 			$pages_to_create = array(
@@ -155,6 +174,7 @@ class WP_Job_Manager_Setup {
 				<p><?php printf( __( '<em>WP Job Manager</em> includes %1$sshortcodes%2$s which can be used within your %3$spages%2$s to output content. These can be created for you below. For more information on the job shortcodes view the %4$sshortcode documentation%2$s.', 'wp-job-manager' ), '<a href="http://codex.wordpress.org/Shortcode" title="What is a shortcode?" target="_blank" class="help-page-link">', '</a>', '<a href="http://codex.wordpress.org/Pages" target="_blank" class="help-page-link">', '<a href="https://wpjobmanager.com/document/shortcode-reference/" target="_blank" class="help-page-link">' ); ?></p>
 
 				<form action="<?php echo esc_url( add_query_arg( 'step', 3 ) ); ?>" method="post">
+				<?php wp_nonce_field( 'step_3', 'setup_wizard' ); ?>
 					<table class="wp-job-manager-shortcodes widefat">
 						<thead>
 							<tr>
@@ -252,4 +272,4 @@ class WP_Job_Manager_Setup {
 	}
 }
 
-new WP_Job_Manager_Setup();
+WP_Job_Manager_Setup::instance();

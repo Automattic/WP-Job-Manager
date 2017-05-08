@@ -1,11 +1,36 @@
 <?php
 /**
- * WP_Job_Manager_Content class.
+ * Handles displays and hooks for the Job Listing custom post type.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Post_Types {
 
 	/**
-	 * Constructor
+	 * The single instance of the class.
+	 *
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_types' ), 0 );
@@ -38,6 +63,8 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 
+		add_action( 'parse_query', array( $this, 'add_feed_query_args' ) );
+
 		// WP ALL Import
 		add_action( 'pmxi_saved_post', array( $this, 'pmxi_saved_post' ), 10, 1 );
 
@@ -51,10 +78,7 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * register_post_types function.
-	 *
-	 * @access public
-	 * @return void
+	 * Registers the custom post type and taxonomies.
 	 */
 	public function register_post_types() {
 		if ( post_type_exists( "job_listing" ) )
@@ -248,7 +272,7 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Change label
+	 * Change label for admin menu item to show number of Job Listing items pending approval.
 	 */
 	public function admin_head() {
 		global $menu;
@@ -269,7 +293,9 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Toggle filter on and off
+	 * Toggles content filter on and off.
+	 *
+	 * @param bool $enable
 	 */
 	private function job_content_filter( $enable ) {
 		if ( ! $enable ) {
@@ -280,7 +306,10 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Add extra content before/after the post for single job listings.
+	 * Adds extra content before/after the post for single job listings.
+	 *
+	 * @param string $content
+	 * @return string
 	 */
 	public function job_content( $content ) {
 		global $post;
@@ -305,7 +334,7 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Job listing feeds
+	 * Generates the RSS feed for Job Listings.
 	 */
 	public function job_feed() {
 		$query_args = array(
@@ -351,7 +380,8 @@ class WP_Job_Manager_Post_Types {
 			);
 		}
 
-		if ( $job_manager_keyword = sanitize_text_field( $_GET['search_keywords'] ) ) {
+		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( $_GET['search_keywords'] ) : '';
+		if ( !empty( $job_manager_keyword ) ) {
 			$query_args['_keyword'] = $job_manager_keyword; // Does nothing but needed for unique hash
 			add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
 		}
@@ -371,14 +401,39 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Add a custom namespace to the job feed
+	 * Adds query arguments in order to make sure that the feed properly queries the 'job_listing' type.
+	 *
+	 * @param WP_Query $wp
+	 */
+	public function add_feed_query_args( $wp ) {
+
+		// Let's leave if not the job feed
+		if ( ! isset( $wp->query_vars['feed'] ) || 'job_feed' !== $wp->query_vars['feed'] ) {
+			return;
+		}
+
+		// Leave if not a feed.
+		if ( false === $wp->is_feed ) {
+			return;
+		}
+
+		// If the post_type was already set, let's get out of here.
+		if ( isset( $wp->query_vars['post_type'] ) && ! empty( $wp->query_vars['post_type'] ) ) {
+			return;
+		}
+
+		$wp->query_vars['post_type'] = 'job_listing';
+	}
+
+	/**
+	 * Adds a custom namespace to the job feed.
 	 */
 	public function job_feed_namespace() {
 		echo 'xmlns:job_listing="' .  site_url() . '"' . "\n";
 	}
 
 	/**
-	 * Add custom data to the job feed
+	 * Adds custom data to the job feed.
 	 */
 	public function job_feed_item() {
 		$post_id  = get_the_ID();
@@ -395,7 +450,7 @@ class WP_Job_Manager_Post_Types {
 		if ( $company ) {
 			echo "<job_listing:company><![CDATA[" . esc_html( $company ) . "]]></job_listing:company>\n";
 		}
-		
+
 		/**
 		 * Fires at the end of each job RSS feed item.
 		 *
@@ -405,7 +460,7 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Expire jobs
+	 * Maintenance task to expire jobs.
 	 */
 	public function check_for_expired_jobs() {
 		global $wpdb;
@@ -448,7 +503,7 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Delete old previewed jobs after 30 days to keep the DB clean
+	 * Deletes old previewed jobs after 30 days to keep the DB clean.
 	 */
 	public function delete_old_previews() {
 		global $wpdb;
@@ -469,14 +524,19 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Typo -.-
+	 * Typo wrapper for `set_expiry` method.
+	 *
+	 * @param WP_Post $post
+	 * @deprecated
 	 */
 	public function set_expirey( $post ) {
 		$this->set_expiry( $post );
 	}
 
 	/**
-	 * Set expirey date when job status changes
+	 * Sets expiry date when job status changes.
+	 *
+	 * @param WP_Post $post
 	 */
 	public function set_expiry( $post ) {
 		if ( $post->post_type !== 'job_listing' ) {
@@ -508,22 +568,28 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * The application content when the application method is an email
+	 * Displays the application content when the application method is an email.
+	 *
+	 * @param stdClass $apply
 	 */
 	public function application_details_email( $apply ) {
 		get_job_manager_template( 'job-application-email.php', array( 'apply' => $apply ) );
 	}
 
 	/**
-	 * The application content when the application method is a url
+	 * Displays the application content when the application method is a url.
+	 *
+	 * @param stdClass $apply
 	 */
 	public function application_details_url( $apply ) {
 		get_job_manager_template( 'job-application-url.php', array( 'apply' => $apply ) );
 	}
 
 	/**
-	 * Fix post name when wp_update_post changes it
-	 * @param  array $data
+	 * Fixes post name when wp_update_post changes it.
+	 *
+	 * @param array $data
+	 * @param array $postarr
 	 * @return array
 	 */
 	public function fix_post_name( $data, $postarr ) {
@@ -534,9 +600,11 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Generate location data if a post is added
-	 * @param  int $post_id
-	 * @param  array $post
+	 * Generates location data if a post is added.
+	 *
+	 * @param int    $object_id
+	 * @param string $meta_key
+	 * @param mixed  $meta_value
 	 */
 	public function maybe_add_geolocation_data( $object_id, $meta_key, $meta_value ) {
 		if ( '_job_location' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
@@ -546,7 +614,12 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Triggered when updating meta on a job listing
+	 * Triggered when updating meta on a job listing.
+	 *
+	 * @param int    $meta_id
+	 * @param int    $object_id
+	 * @param string $meta_key
+	 * @param mixed  $meta_value
 	 */
 	public function update_post_meta( $meta_id, $object_id, $meta_key, $meta_value ) {
 		if ( 'job_listing' === get_post_type( $object_id ) ) {
@@ -562,14 +635,24 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Generate location data if a post is updated
+	 * Generates location data if a post is updated.
+	 *
+	 * @param int    $meta_id (Unused)
+	 * @param int    $object_id
+	 * @param string $meta_key (Unused)
+	 * @param mixed  $meta_value
 	 */
 	public function maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
 		do_action( 'job_manager_job_location_edited', $object_id, $meta_value );
 	}
 
 	/**
-	 * Maybe set menu_order if the featured status of a job is changed
+	 * Maybe sets menu_order if the featured status of a job is changed.
+	 *
+	 * @param int    $meta_id (Unused)
+	 * @param int    $object_id
+	 * @param string $meta_key (Unused)
+	 * @param mixed  $meta_value
 	 */
 	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {
 		global $wpdb;
@@ -584,7 +667,12 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Legacy
+	 * Legacy.
+	 *
+	 * @param int    $meta_id
+	 * @param int    $object_id
+	 * @param string $meta_key
+	 * @param mixed  $meta_value
 	 * @deprecated 1.19.1
 	 */
 	public function maybe_generate_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
@@ -592,9 +680,10 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Maybe set default meta data for job listings
-	 * @param  int $post_id
-	 * @param  WP_Post $post
+	 * Maybe sets default meta data for job listings.
+	 *
+	 * @param  int            $post_id
+	 * @param  WP_Post|string $post
 	 */
 	public function maybe_add_default_meta_data( $post_id, $post = '' ) {
 		if ( empty( $post ) || 'job_listing' === $post->post_type ) {
@@ -604,7 +693,8 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * After importing via WP ALL Import, add default meta data
+	 * After importing via WP All Import, adds default meta data.
+	 *
 	 * @param  int $post_id
 	 */
 	public function pmxi_saved_post( $post_id ) {
@@ -617,10 +707,11 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Replace RP4WP template with the template from Job Manager
+	 * Replaces RP4WP template with the template from Job Manager.
+	 *
 	 * @param  string $located
 	 * @param  string $template_name
-	 * @param  array $args
+	 * @param  array  $args
 	 * @return string
 	 */
 	public function rp4wp_template( $located, $template_name, $args ) {
@@ -631,9 +722,10 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Add meta fields for RP4WP to relate jobs by
-	 * @param  array $meta_fields
-	 * @param  int $post_id
+	 * Adds meta fields for RP4WP to relate jobs by.
+	 *
+	 * @param  array   $meta_fields
+	 * @param  int     $post_id
 	 * @param  WP_Post $post
 	 * @return array
 	 */
@@ -646,10 +738,11 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Add meta fields for RP4WP to relate jobs by
-	 * @param  int $weight
+	 * Adds meta fields for RP4WP to relate jobs by.
+	 *
+	 * @param  int     $weight
 	 * @param  WP_Post $post
-	 * @param  string $meta_field
+	 * @param  string  $meta_field
 	 * @return int
 	 */
 	public function rp4wp_related_meta_fields_weight( $weight, $post, $meta_field ) {

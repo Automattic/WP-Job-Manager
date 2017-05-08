@@ -3,12 +3,15 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_Shortcodes class.
+ * Handles the shortcodes for WP Job Manager.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Shortcodes {
 
 	/**
-	 * Dashboard message
+	 * Dashboard message.
 	 *
 	 * @access private
 	 * @var string
@@ -16,7 +19,29 @@ class WP_Job_Manager_Shortcodes {
 	private $job_dashboard_message = '';
 
 	/**
-	 * Constructor
+	 * The single instance of the class.
+	 *
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'wp', array( $this, 'shortcode_action_handler' ) );
@@ -33,25 +58,28 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Handle actions which need to be run before the shortcode e.g. post actions
+	 * Handles actions which need to be run before the shortcode e.g. post actions.
 	 */
 	public function shortcode_action_handler() {
 		global $post;
 
-		if ( is_page() && strstr( $post->post_content, '[job_dashboard' ) ) {
+		if ( is_page() && has_shortcode($post->post_content, 'job_dashboard' ) ) {
 			$this->job_dashboard_handler();
 		}
 	}
 
 	/**
-	 * Show the job submission form
+	 * Shows the job submission form.
+	 *
+	 * @param array $atts
+	 * @return string|null
 	 */
 	public function submit_job_form( $atts = array() ) {
 		return $GLOBALS['job_manager']->forms->get_form( 'submit-job', $atts );
 	}
 
 	/**
-	 * Handles actions on job dashboard
+	 * Handles actions on job dashboard.
 	 */
 	public function job_dashboard_handler() {
 		if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'job_manager_my_job_actions' ) ) {
@@ -137,7 +165,10 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Shortcode which lists the logged in user's jobs
+	 * Handles shortcode which lists the logged in user's jobs.
+	 *
+	 * @param array $atts
+	 * @return string
 	 */
 	public function job_dashboard( $atts ) {
 		if ( ! is_user_logged_in() ) {
@@ -195,7 +226,7 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Edit job form
+	 * Displays edit job form.
 	 */
 	public function edit_job() {
 		global $job_manager;
@@ -204,11 +235,10 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * output_jobs function.
+	 * Lists all job listings.
 	 *
-	 * @access public
-	 * @param mixed $args
-	 * @return void
+	 * @param array $atts
+	 * @return string
 	 */
 	public function output_jobs( $atts ) {
 		ob_start();
@@ -354,14 +384,15 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Output some content when no results were found
+	 * Displays some content when no results were found.
 	 */
 	public function output_no_results() {
 		get_job_manager_template( 'content-no-jobs-found.php' );
 	}
 
 	/**
-	 * Get string as a bool
+	 * Gets string as a bool.
+	 *
 	 * @param  string $value
 	 * @return bool
 	 */
@@ -370,7 +401,8 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Show job types
+	 * Shows job types.
+	 *
 	 * @param  array $atts
 	 */
 	public function job_filter_job_types( $atts ) {
@@ -383,26 +415,26 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Show results div
+	 * Shows results div.
 	 */
 	public function job_filter_results() {
 		echo '<div class="showing_jobs"></div>';
 	}
 
 	/**
-	 * output_job function.
+	 * Shows a single job.
 	 *
-	 * @access public
-	 * @param array $args
-	 * @return string
+	 * @param array $atts
+	 * @return string|null
 	 */
 	public function output_job( $atts ) {
 		extract( shortcode_atts( array(
 			'id' => '',
 		), $atts ) );
 
-		if ( ! $id )
+		if ( ! $id ) {
 			return;
+		}
 
 		ob_start();
 
@@ -432,10 +464,9 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Job Summary shortcode
+	 * Handles the Job Summary shortcode.
 	 *
-	 * @access public
-	 * @param array $args
+	 * @param array $atts
 	 * @return string
 	 */
 	public function output_job_summary( $atts ) {
@@ -490,7 +521,10 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	 * Show the application area
+	 * Shows the application area.
+	 *
+	 * @param array $atts
+	 * @return string
 	 */
 	public function output_job_apply( $atts ) {
 		extract( shortcode_atts( array(
@@ -539,4 +573,4 @@ class WP_Job_Manager_Shortcodes {
 	}
 }
 
-new WP_Job_Manager_Shortcodes();
+WP_Job_Manager_Shortcodes::instance();

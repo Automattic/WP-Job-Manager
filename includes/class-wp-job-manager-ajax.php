@@ -3,12 +3,37 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_Ajax class.
+ * Handles Job Manager's Ajax endpoints.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Ajax {
 
 	/**
-	 * Constructor
+	 * The single instance of the class.
+	 *
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'init', array( __CLASS__, 'add_endpoint') );
@@ -26,7 +51,7 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Add our endpoint for frontend ajax requests
+	 * Adds endpoint for frontend Ajax requests.
 	 */
 	public static function add_endpoint() {
 		add_rewrite_tag( '%jm-ajax%', '([^/]*)' );
@@ -35,9 +60,10 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Get JM Ajax Endpoint
-	 * @param  string $request Optional
-	 * @param  string $ssl     Optional
+	 * Gets Job Manager's Ajax Endpoint.
+	 *
+	 * @param  string $request      Optional
+	 * @param  string $ssl (Unused) Optional
 	 * @return string
 	 */
 	public static function get_endpoint( $request = '%%endpoint%%', $ssl = null ) {
@@ -52,7 +78,7 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Check for WC Ajax request and fire action
+	 * Performs Job Manager's Ajax actions.
 	 */
 	public static function do_jm_ajax() {
 		global $wp_query;
@@ -61,21 +87,21 @@ class WP_Job_Manager_Ajax {
 			 $wp_query->set( 'jm-ajax', sanitize_text_field( $_GET['jm-ajax'] ) );
 		}
 
-   		if ( $action = $wp_query->get( 'jm-ajax' ) ) {
-   			if ( ! defined( 'DOING_AJAX' ) ) {
-				define( 'DOING_AJAX', true );
+			if ( $action = $wp_query->get( 'jm-ajax' ) ) {
+				if ( ! defined( 'DOING_AJAX' ) ) {
+					define( 'DOING_AJAX', true );
+				}
+
+				// Not home - this is an ajax endpoint
+				$wp_query->is_home = false;
+
+				do_action( 'job_manager_ajax_' . sanitize_text_field( $action ) );
+				die();
 			}
-
-			// Not home - this is an ajax endpoint
-			$wp_query->is_home = false;
-
-   			do_action( 'job_manager_ajax_' . sanitize_text_field( $action ) );
-   			die();
-   		}
 	}
 
 	/**
-	 * Get listings via ajax
+	 * Returns Job Listings for Ajax endpoint.
 	 */
 	public function get_listings() {
 		global $wp_post_types;
@@ -143,60 +169,13 @@ class WP_Job_Manager_Ajax {
 		$result['html']    = ob_get_clean();
 		$result['showing'] = array();
 
-		// Generate 'showing' text
-		$showing_types = array();
-		$unmatched     = false;
-
-		foreach ( $types as $type ) {
-			if ( is_array( $filter_job_types ) && in_array( $type->slug, $filter_job_types ) ) {
-				$showing_types[] = $type->name;
-			} else {
-				$unmatched = true;
-			}
-		}
-
-		if ( sizeof( $showing_types ) == 1 ) {
-			$result['showing'][] = implode( ', ', $showing_types );
-		} elseif ( $unmatched && $showing_types ) {
-			$last_type           = array_pop( $showing_types );
-			$result['showing'][] = implode( ', ', $showing_types ) . " &amp; $last_type";
-		}
-
-		if ( $search_categories ) {
-			$showing_categories = array();
-
-			foreach ( $search_categories as $category ) {
-				$category_object = get_term_by( is_numeric( $category ) ? 'id' : 'slug', $category, 'job_listing_category' );
-
-				if ( ! is_wp_error( $category_object ) ) {
-					$showing_categories[] = $category_object->name;
-				}
-			}
-
-			$result['showing'][] = implode( ', ', $showing_categories );
-		}
-
-		if ( $search_keywords ) {
-			$result['showing'][] = '&ldquo;' . $search_keywords . '&rdquo;';
-		}
-
-		$result['showing'][] = $post_type_label;
-
-		if ( $search_location ) {
-			$result['showing'][] = sprintf( __( 'located in &ldquo;%s&rdquo;', 'wp-job-manager' ), $search_location );
-		}
-
-		if ( 1 === sizeof( $result['showing'] ) ) {
-			$result['showing_all'] = true;
-		}
-
 		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
 			$message = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->post_count, 'wp-job-manager' ), $jobs->post_count );
 			$result['showing_all'] = true;
 		} else {
 			$message = "";
 		}
-		
+
 		$search_values = array(
 				'location'   => $search_location,
 				'keywords'   => $search_keywords,
@@ -223,7 +202,7 @@ class WP_Job_Manager_Ajax {
 	}
 
 	/**
-	 * Upload file via ajax
+	 * Uploads file from an Ajax request.
 	 *
 	 * No nonce field since the form may be statically cached.
 	 */
@@ -249,4 +228,4 @@ class WP_Job_Manager_Ajax {
 	}
 }
 
-new WP_Job_Manager_Ajax();
+WP_Job_Manager_Ajax::instance();

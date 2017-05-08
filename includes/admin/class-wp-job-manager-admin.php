@@ -3,15 +3,37 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_Admin class.
+ * Handles front admin page for WP Job Manager.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Admin {
 
 	/**
-	 * __construct function.
+	 * The single instance of the class.
 	 *
-	 * @access public
-	 * @return void
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		include_once( 'class-wp-job-manager-cpt.php' );
@@ -19,17 +41,14 @@ class WP_Job_Manager_Admin {
 		include_once( 'class-wp-job-manager-writepanels.php' );
 		include_once( 'class-wp-job-manager-setup.php' );
 
-		$this->settings_page = new WP_Job_Manager_Settings();
+		$this->settings_page = WP_Job_Manager_Settings::instance();
 
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 	}
 
 	/**
-	 * admin_enqueue_scripts function.
-	 *
-	 * @access public
-	 * @return void
+	 * Enqueues CSS and JS assets.
 	 */
 	public function admin_enqueue_scripts() {
 		global $wp_scripts;
@@ -54,10 +73,7 @@ class WP_Job_Manager_Admin {
 	}
 
 	/**
-	 * admin_menu function.
-	 *
-	 * @access public
-	 * @return void
+	 * Adds pages to admin menu.
 	 */
 	public function admin_menu() {
 		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'wp-job-manager' ), __( 'Settings', 'wp-job-manager' ), 'manage_options', 'job-manager-settings', array( $this->settings_page, 'output' ) );
@@ -67,7 +83,7 @@ class WP_Job_Manager_Admin {
 	}
 
 	/**
-	 * Output addons page
+	 * Displays addons page.
 	 */
 	public function addons_page() {
 		$addons = include( 'class-wp-job-manager-addons.php' );
@@ -75,4 +91,4 @@ class WP_Job_Manager_Admin {
 	}
 }
 
-new WP_Job_Manager_Admin();
+WP_Job_Manager_Admin::instance();

@@ -3,14 +3,17 @@
 include_once( 'class-wp-job-manager-form-submit-job.php' );
 
 /**
- * WP_Job_Manager_Form_Edit_Job class.
+ * Handles the editing of Job Listings from the public facing frontend (from within `[job_dashboard]` shortcode).
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
+ * @extends WP_Job_Manager_Form_Submit_Job
  */
 class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 	/**
 	 * Form name
 	 *
-	 * @access public
 	 * @var string
 	 */
 	public $form_name = 'edit-job';
@@ -46,6 +49,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 	/**
 	 * output function.
+	 *
+	 * @param array $atts
 	 */
 	public function output( $atts = array() ) {
 		$this->submit_handler();

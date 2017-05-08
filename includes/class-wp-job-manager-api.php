@@ -3,17 +3,37 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_API API
+ * Handles API requests for WP Job Manager.
  *
- * This API class handles API requests.
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_API {
 
 	/**
-	 * __construct function.
+	 * The single instance of the class.
 	 *
-	 * @access public
-	 * @return void
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_filter( 'query_vars', array( $this, 'add_query_vars'), 0 );
@@ -21,10 +41,10 @@ class WP_Job_Manager_API {
 	}
 
 	/**
-	 * add_query_vars function.
+	 * Adds query vars used in API calls.
 	 *
-	 * @access public
-	 * @return void
+	 * @param array $vars the query vars
+	 * @return array
 	 */
 	public function add_query_vars( $vars ) {
 		$vars[] = 'job-manager-api';
@@ -32,10 +52,7 @@ class WP_Job_Manager_API {
 	}
 
 	/**
-	 * add_endpoint function.
-	 *
-	 * @access public
-	 * @return void
+	 * Adds endpoint for API requests.
 	 */
 	public function add_endpoint() {
 		add_rewrite_endpoint( 'job-manager-api', EP_ALL );
@@ -43,9 +60,6 @@ class WP_Job_Manager_API {
 
 	/**
 	 * API request - Trigger any API requests (handy for third party plugins/gateways).
-	 *
-	 * @access public
-	 * @return void
 	 */
 	public function api_requests() {
 		global $wp;
@@ -74,4 +88,4 @@ class WP_Job_Manager_API {
 	}
 }
 
-new WP_Job_Manager_API();
+WP_Job_Manager_API::instance();

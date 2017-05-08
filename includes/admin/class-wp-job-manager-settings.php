@@ -3,15 +3,37 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_Settings class.
+ * Handles the management of plugin settings.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Settings {
 
 	/**
-	 * __construct function.
+	 * The single instance of the class.
 	 *
-	 * @access public
-	 * @return void
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		$this->settings_group = 'job_manager';
@@ -19,10 +41,9 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-	 * init_settings function.
+	 * Initializes the configuration for the plugin's setting fields.
 	 *
 	 * @access protected
-	 * @return void
 	 */
 	protected function init_settings() {
 		// Prepare roles option
@@ -59,10 +80,19 @@ class WP_Job_Manager_Settings {
 							'attributes' => array()
 						),
 						array(
+							'name'       => 'job_manager_hide_expired',
+							'std'        => get_option( 'job_manager_hide_expired_content' ) ? '1' : '0', // back compat
+							'label'      => __( 'Hide Expired Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide expired listings in job archive/search', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, expired job listing is not searchable.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
+						array(
 							'name'       => 'job_manager_hide_expired_content',
 							'std'        => '1',
-							'label'      => __( 'Expired Listings', 'wp-job-manager' ),
-							'cb_label'   => __( 'Hide content within expired listings', 'wp-job-manager' ),
+							'label'      => __( 'Hide Expired Listings Content', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide expired listing content in single job listing (singular)', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled, the content within expired listings will be hidden. Otherwise, expired listings will be displayed as normal (without the application area).', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
@@ -123,6 +153,13 @@ class WP_Job_Manager_Settings {
 							'cb_label'   => __( 'Enable multiple types for listings', 'wp-job-manager' ),
 							'desc'       => __( 'If enabled each job can have more than one type. The metabox on the post editor and the select box on the frontend job submission form are changed by this.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
+							'attributes' => array()
+						),
+						array(
+							'name'       => 'job_manager_google_maps_api_key',
+							'std'        => '',
+							'label'      => __( 'Google Maps API Key', 'wp-job-manager' ),
+							'desc'       => sprintf( __( 'Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href="%s">Google Maps API developer site</a>.', 'wp-job-manager' ), 'https://developers.google.com/maps/documentation/geocoding/get-api-key' ),
 							'attributes' => array()
 						),
 					),
@@ -235,10 +272,7 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-	 * register_settings function.
-	 *
-	 * @access public
-	 * @return void
+	 * Registers the plugin's settings with WordPress's Settings API.
 	 */
 	public function register_settings() {
 		$this->init_settings();
@@ -253,10 +287,7 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-	 * output function.
-	 *
-	 * @access public
-	 * @return void
+	 * Shows the plugin's settings page.
 	 */
 	public function output() {
 		$this->init_settings();

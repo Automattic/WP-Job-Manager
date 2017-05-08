@@ -2,24 +2,24 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
- * WP_Job_Manager_Category_Walker class.
+ * Walks through categories.
  *
  * @extends Walker
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Category_Walker extends Walker {
 
 	/**
-	 * Tree type
+	 * Tree type that the class handles.
 	 *
-	 * @access public
 	 * @var string
 	 */
 	public $tree_type = 'category';
 
 	/**
-	 * Database fields
+	 * Database fields to use.
 	 *
-	 * @access public
 	 * @var array
 	 */
 	public $db_fields = array ('parent' => 'parent', 'id' => 'term_id', 'slug' => 'slug' );
@@ -29,9 +29,10 @@ class WP_Job_Manager_Category_Walker extends Walker {
 	 * @since 2.1.0
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param object $category Category data object.
-	 * @param int $depth Depth of category in reference to parents.
-	 * @param array $args
+	 * @param object $object Category data object.
+	 * @param int    $depth Depth of category in reference to parents.
+	 * @param array  $args
+	 * @param int    $current_object_id
 	 */
 	public function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
 

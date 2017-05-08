@@ -5,10 +5,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_Job_Manager_Cache_Helper class.
+ * Assists in cache management for WP Job Management posts and terms.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Cache_Helper {
 
+	/**
+	 * Initializes cache hooks.
+	 */
 	public static function init() {
 		add_action( 'save_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
 		add_action( 'job_manager_my_job_do_action', array( __CLASS__, 'job_manager_my_job_do_action' ) );
@@ -20,7 +26,9 @@ class WP_Job_Manager_Cache_Helper {
 	}
 
 	/**
-	 * Flush the cache
+	 * Flushes the cache.
+	 *
+	 * @param int|WP_Post $post_id
 	 */
 	public static function flush_get_job_listings_cache( $post_id ) {
 		if ( 'job_listing' === get_post_type( $post_id ) ) {
@@ -29,7 +37,9 @@ class WP_Job_Manager_Cache_Helper {
 	}
 
 	/**
-	 * Flush the cache
+	 * Refreshes the Job Listing cache when performing actions on it.
+	 *
+	 * @param string $action
 	 */
 	public static function job_manager_my_job_do_action( $action ) {
 		if ( 'mark_filled' === $action || 'mark_not_filled' === $action ) {
@@ -38,21 +48,30 @@ class WP_Job_Manager_Cache_Helper {
 	}
 
 	/**
-	 * When any post has a term set
+	 * Refreshes the Job Listing cache when terms are updated.
+	 *
+	 * @param string|int $object_id
+	 * @param string     $terms
+	 * @param string     $tt_ids
+	 * @param string     $taxonomy
 	 */
 	public static function set_term( $object_id = '', $terms = '', $tt_ids = '', $taxonomy = '' ) {
 		self::get_transient_version( 'jm_get_' . sanitize_text_field( $taxonomy ), true );
 	}
 
 	/**
-	 * When any term is edited
+	 * Refreshes the Job Listing cache when terms are updated.
+	 *
+	 * @param string|int $term_id
+	 * @param string|int $tt_id
+	 * @param string     $taxonomy
 	 */
 	public static function edited_term( $term_id = '', $tt_id = '', $taxonomy = '' ) {
 		self::get_transient_version( 'jm_get_' . sanitize_text_field( $taxonomy ), true );
 	}
 
 	/**
-	 * Get transient version
+	 * Gets transient version.
 	 *
 	 * When using transients with unpredictable names, e.g. those containing an md5
 	 * hash in the name, we need a way to invalidate them all at once.
@@ -64,9 +83,9 @@ class WP_Job_Manager_Cache_Helper {
 	 * to append a unique string (based on time()) to each transient. When transients
 	 * are invalidated, the transient version will increment and data will be regenerated.
 	 *
-	 * @param  string  $group   Name for the group of transients we need to invalidate
-	 * @param  boolean $refresh true to force a new version
-	 * @return string transient version based on time(), 10 digits
+	 * @param  string  $group   Name for the group of transients we need to invalidate.
+	 * @param  boolean $refresh True to force a new version (Default: false).
+	 * @return string Transient version based on time(), 10 digits.
 	 */
 	public static function get_transient_version( $group, $refresh = false ) {
 		$transient_name  = $group . '-transient-version';
@@ -83,6 +102,8 @@ class WP_Job_Manager_Cache_Helper {
 	 * When the transient version increases, this is used to remove all past transients to avoid filling the DB.
 	 *
 	 * Note; this only works on transients appended with the transient version, and when object caching is not being used.
+	 *
+	 * @param string $version
 	 */
 	private static function delete_version_transients( $version ) {
 		if ( ! wp_using_ext_object_cache() && ! empty( $version ) ) {
@@ -91,8 +112,8 @@ class WP_Job_Manager_Cache_Helper {
 		}
 	}
 
-    /**
-	 * Clear expired transients
+	/**
+	 * Clear expired transients.
 	 */
 	public static function clear_expired_transients() {
 		global $wpdb;

@@ -1,9 +1,9 @@
 === WP Job Manager ===
-Contributors: mikejolley, automattic, adamkheckler, annezazu, artemitos, bikedorkjon, cena, chaselivingston, csonnek, davor.altman, drawmyface, erania-pinnera, jacobshere, jeherve, jenhooks, jgs, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, ryancowles, richardmtl, scarstocea
+Contributors: mikejolley, automattic, adamkheckler, annezazu, cena, chaselivingston, csonnek, davor.altman, drawmyface, erania-pinnera, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
 Tested up to: 4.7
-Stable tag: 1.25.2
+Stable tag: 1.25.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -141,6 +141,17 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+= 1.25.3 =
+* Enhancement: Allow job types to be optional, just like categories. https://github.com/automattic/wp-job-manager/pull/789 Props Donncha.
+* Enhancement: Add get_job_listing_types filter. https://github.com/automattic/wp-job-manager/pull/824 Props Adam Heckler.
+* Enhancement: Various date format setting improvements. See https://github.com/automattic/wp-job-manager/pull/757 Props Christian Nolen.
+* Enhancement: Pass search values with the job_manager_get_listings_custom_filter_text filter. https://github.com/automattic/wp-job-manager/pull/845 Props Kraft.
+* Fix: Prevent a potential CSRF vector. https://github.com/automattic/wp-job-manager/pull/891 Props Jay Patel for the responsible disclosure.
+* Fix: Improve load time by removing unnecessary oEmbed call. https://github.com/automattic/wp-job-manager/pull/768 Props Myles McNamara.
+* Fix: Improve WPML compatability. https://github.com/automattic/wp-job-manager/pull/787 Props Spencer Finnell.
+* Fix: Add an implicit whitelist for API requests. https://github.com/automattic/wp-job-manager/pull/855 Props muddletoes.
+* Fix: Fixed taxonomy search conditions. See https://github.com/automattic/wp-job-manager/pull/859/ Props Jonas Vogel.
+
 = 1.25.2 =
 * Fix - The date format of the expiry date picker was incorrect in translations so we added a comment to clarify, and fixed translations. (https://github.com/Automattic/WP-Job-Manager/issues/697)
 * Fix - Changing the date of an expired job would forget the date, even though the job would become active. (https://github.com/Automattic/WP-Job-Manager/issues/653)
@@ -159,5 +170,5 @@ See additional changelog items in changelog.txt
 
 == Upgrade Notice ==
 
-= 1.25.2 =
-Lots of bugs fixed.
+= 1.25.3 =
+Make job types optional! Date format improvements! Update today!

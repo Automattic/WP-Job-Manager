@@ -103,9 +103,7 @@ module.exports = function( grunt ){
 					]
 				}
 			}
-		}
-
-	});
+		},
 
 	// Load NPM tasks to be used here
 		jshint: {

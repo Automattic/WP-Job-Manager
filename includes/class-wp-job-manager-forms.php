@@ -1,11 +1,36 @@
 <?php
 /**
- * WP_Job_Manager_Forms class.
+ * Base class for all WP Job Manager forms.
+ *
+ * @package wp-job-manager
+ * @since 1.0.0
  */
 class WP_Job_Manager_Forms {
 
 	/**
-	 * Constructor
+	 * The single instance of the class.
+	 *
+	 * @var self
+	 * @since  1.26
+	 */
+	private static $_instance = null;
+
+	/**
+	 * Allows for accessing single instance of class. Class should only be constructed once per call.
+	 *
+	 * @since  1.26
+	 * @static
+	 * @return self Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+
+	/**
+	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'load_posted_form' ) );
@@ -52,11 +77,11 @@ class WP_Job_Manager_Forms {
 	}
 
 	/**
-	 * get_form function.
+	 * Returns the form content.
 	 *
 	 * @param string $form_name
-	 * @param  array $atts Optional passed attributes
-	 * @return string
+	 * @param array  $atts Optional passed attributes
+	 * @return string|null
 	 */
 	public function get_form( $form_name, $atts = array() ) {
 		if ( $form = $this->load_form_class( $form_name ) ) {
