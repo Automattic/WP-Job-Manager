@@ -23,7 +23,7 @@ function get_job_listings( $args = array() ) {
 		'fields'            => 'all'
 	) );
 
-	if ( false == get_option( 'job_manager_hide_expired', get_option( 'job_manager_hide_expired_content' ) ) ) {
+	if ( false == get_option( 'job_manager_hide_expired', get_option( 'job_manager_hide_expired_content', 1 ) ) ) {
 		$post_status = array( 'publish', 'expired' );
 	} else {
 		$post_status = 'publish';

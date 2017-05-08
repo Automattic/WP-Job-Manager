@@ -85,7 +85,7 @@ class WP_Job_Manager_Writepanels {
 				'priority'    => 11,
 				'classes'     => array( 'job-manager-datepicker' ),
 				/* translators: date format placeholder, see https://secure.php.net/date */
-				'placeholder' => metadata_exists( 'post', $post->ID, '_job_expires' ) ? esc_attr_x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ) : calculate_job_expiry( $post->ID ),
+				'placeholder' => metadata_exists( 'post', $post->ID, '_job_expires' ) ? _x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ) : calculate_job_expiry( $post->ID ),
 				'value'       => get_post_meta( $post->ID, '_job_expires', true ),
 			);
 		}
@@ -561,7 +561,7 @@ class WP_Job_Manager_Writepanels {
 		$expiry_date = get_post_meta( $post_id, '_job_expires', true );
 		$today_date  = date( 'Y-m-d', current_time( 'timestamp' ) );
 		$post_status = $expiry_date && $today_date > $expiry_date ? 'expired' : false;
-		if( $post_status ){
+		if( $post_status ) {
 			remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
 			$job_data = array(
 				'ID'          => $post_id,
