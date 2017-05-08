@@ -131,7 +131,9 @@ class WP_Job_Manager {
 	 * Loads plugin's widgets.
 	 */
 	public function widgets_init() {
-		include_once( 'includes/class-wp-job-manager-widgets.php' );
+		include_once( 'includes/class-wp-job-manager-widget.php' );
+		include_once( 'includes/widgets/class-wp-job-manager-widget-recent-jobs.php' );
+		include_once( 'includes/widgets/class-wp-job-manager-widget-featured-jobs.php' );
 	}
 
 	/**
