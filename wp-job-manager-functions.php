@@ -179,9 +179,37 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	function get_job_listings_keyword_search( $args ) {
 		global $wpdb, $job_manager_keyword;
 
+		// Searchable Meta Keys: set to empty to search all meta keys
+		$searchable_meta_keys = array(
+			'_job_location',
+			'_company_name',
+			'_application',
+			'_company_name',
+			'_company_tagline',
+			'_company_website',
+			'_company_twitter',
+		);
+		$searchable_meta_keys = apply_filters( 'job_listing_searchable_meta_keys', $searchable_meta_keys );
+
+		// Set Search DB Conditions
 		$conditions   = array();
+
+		// Search Post Title
 		$conditions[] = "{$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
-		$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
+
+		// Search Post Meta
+		if( apply_filters( 'job_listing_search_post_meta', true ) ) {
+
+			// Only selected meta keys
+			if( $searchable_meta_keys ) {
+				$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ( '" . implode( "','", array_map( 'esc_sql', $searchable_meta_keys ) ) . "' ) AND meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
+			} else {
+			    // No meta keys defined, search all post meta value
+				$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
+			}
+		}
+
+		// Search taxonomy
 		$conditions[] = "{$wpdb->posts}.ID IN ( SELECT object_id FROM {$wpdb->term_relationships} AS tr LEFT JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id LEFT JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id WHERE t.name LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
 
 		if ( ctype_alnum( $job_manager_keyword ) ) {
