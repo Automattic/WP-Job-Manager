@@ -141,16 +141,51 @@ class WP_Job_Manager_Ajax {
 			$args['orderby']  = 'featured' === $orderby ? 'date' : $orderby;
 		}
 
-		ob_start();
-
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 
-		$result['found_jobs'] = false;
+		$result = array(
+			'found_jobs' => false,
+			'showing' => '',
+			'max_num_pages' => $jobs->max_num_pages
+		);
 
-		// Give plugins the opportunity to control what JSON is returned
-		if ( $result = apply_filters( 'job_manager_ajax_get_jobs', null, $result, $jobs ) ) {
+		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
+			$message = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->post_count, 'wp-job-manager' ), $jobs->post_count );
+			$result['showing_all'] = true;
+		} else {
+			$message = "";
+		}
+
+		$search_values = array(
+			'location'   => $search_location,
+			'keywords'   => $search_keywords,
+			'categories' => $search_categories
+		);
+
+		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $message, $search_values );
+
+		// Generate RSS link
+		$result['showing_links'] = job_manager_get_filtered_links( array(
+			'filter_job_types'  => $filter_job_types,
+			'search_location'   => $search_location,
+			'search_categories' => $search_categories,
+			'search_keywords'   => $search_keywords
+		) );
+
+		/**
+		 * Send back a response to the AJAX request without creating HTML.
+		 *
+		 * @since 1.26.0
+		 *
+		 * @param array $result
+		 * @param WP_Query $jobs
+		 * @return bool True by default. Change to false to halt further response.
+		 */
+		if ( true !== apply_filters( 'job_manager_ajax_get_jobs_html_results', '__return_true', $result, $jobs ) ) {
 			return wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
 		}
+
+		ob_start();
 
 		if ( $jobs->have_posts() ) : $result['found_jobs'] = true; ?>
 
@@ -166,37 +201,12 @@ class WP_Job_Manager_Ajax {
 
 		<?php endif;
 
-		$result['html']    = ob_get_clean();
-		$result['showing'] = array();
-
-		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
-			$message = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->post_count, 'wp-job-manager' ), $jobs->post_count );
-			$result['showing_all'] = true;
-		} else {
-			$message = "";
-		}
-
-		$search_values = array(
-				'location'   => $search_location,
-				'keywords'   => $search_keywords,
-				'categories' => $search_categories
-			);
-		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $message, $search_values );
-
-		// Generate RSS link
-		$result['showing_links'] = job_manager_get_filtered_links( array(
-			'filter_job_types'  => $filter_job_types,
-			'search_location'   => $search_location,
-			'search_categories' => $search_categories,
-			'search_keywords'   => $search_keywords
-		) );
+		$result['html'] = ob_get_clean();
 
 		// Generate pagination
 		if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
 			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
 		}
-
-		$result['max_num_pages'] = $jobs->max_num_pages;
 
 		wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
 	}
