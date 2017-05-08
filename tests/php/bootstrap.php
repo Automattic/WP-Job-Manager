@@ -11,6 +11,9 @@ class WPJM_Unit_Tests_Bootstrap {
 	/** @var string directory where wordpress-tests-lib is installed */
 	public $wp_tests_dir;
 
+	/** @var string testing includes directory */
+	public $includes_dir;
+
 	/** @var string testing directory */
 	public $tests_dir;
 
@@ -25,8 +28,9 @@ class WPJM_Unit_Tests_Bootstrap {
 	public function __construct() {
 		ini_set( 'display_errors','on' );
 		error_reporting( E_ALL );
-		$this->tests_dir    = dirname( __FILE__ );
-		$this->plugin_dir   = dirname( dirname( $this->tests_dir ) );
+		$this->tests_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'tests';
+		$this->includes_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes';
+		$this->plugin_dir   = dirname( dirname ( dirname( $this->tests_dir ) ) );
 		$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ? getenv( 'WP_TESTS_DIR' ) : '/tmp/wordpress-tests-lib';
 
 		// load test function so tests_add_filter() is available
@@ -77,8 +81,8 @@ class WPJM_Unit_Tests_Bootstrap {
 	 */
 	public function includes() {
 		// framework
-		require_once( $this->tests_dir . '/factories/class-wpjm-factory.php' );
-		require_once( $this->tests_dir . '/class-wpjm-base-test.php' );
+		require_once( $this->includes_dir . '/factories/class-wpjm-factory.php' );
+		require_once( $this->includes_dir . '/class-wpjm-base-test.php' );
 	}
 
 	/**
