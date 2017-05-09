@@ -30,7 +30,7 @@ class WPJM_Unit_Tests_Bootstrap {
 		error_reporting( E_ALL );
 		$this->tests_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'tests';
 		$this->includes_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes';
-		$this->plugin_dir   = dirname( dirname ( dirname( $this->tests_dir ) ) );
+		$this->plugin_dir   = dirname( dirname( dirname( $this->tests_dir ) ) );
 		$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ? getenv( 'WP_TESTS_DIR' ) : '/tmp/wordpress-tests-lib';
 
 		// load test function so tests_add_filter() is available
