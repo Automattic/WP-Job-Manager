@@ -144,7 +144,7 @@ class WP_Job_Manager_Ajax {
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 
 		$result = array(
-			'found_jobs' => false,
+			'found_jobs' => $jobs->have_posts(),
 			'showing' => '',
 			'max_num_pages' => $jobs->max_num_pages
 		);
@@ -181,13 +181,13 @@ class WP_Job_Manager_Ajax {
 		 * @param WP_Query $jobs
 		 * @return bool True by default. Change to false to halt further response.
 		 */
-		if ( true !== apply_filters( 'job_manager_ajax_get_jobs_html_results', '__return_true', $result, $jobs ) ) {
+		if ( true !== apply_filters( 'job_manager_ajax_get_jobs_html_results', true, $result, $jobs ) ) {
 			return wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
 		}
 
 		ob_start();
 
-		if ( $jobs->have_posts() ) : $result['found_jobs'] = true; ?>
+		if ( $result['found_jobs'] ) : ?>
 
 			<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
 
