@@ -41,29 +41,11 @@ class WP_Test_WP_Job_Manager_API extends WPJM_BaseTest {
 		$this->assertTrue( class_exists( 'WPJM_Api_Handler_Stub' ) );
 		$handler = new WPJM_Api_Handler_Stub();
 		$handler_tag = strtolower( get_class( $handler ) );
-		add_action( 'wp_die_handler', array( $this, 'return_do_not_die' ) );
+		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
 		$wp->query_vars['job-manager-api'] = $handler_tag;
 		$this->assertFalse( $handler->fired );
 		$instance->api_requests();
 		$this->assertTrue( $handler->fired );
-	}
-
-	/**
-	 * Helps to prevent `wp_die()` from ending execution during API call.
-	 *
-	 * @since 1.26
-	 * @return array
-	 */
-	public function return_do_not_die() {
-		return array( $this, 'do_not_die' );
-	}
-
-	/**
-	 * Does nothing.
-	 *
-	 * @since 1.26
-	 */
-	public function do_not_die() {
-		return;
+		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
 	}
 }
