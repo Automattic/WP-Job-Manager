@@ -26,6 +26,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	 * @since 1.26
 	 */
 	public function __construct() {
+		define( 'DOING_AJAX', true );
 		ini_set( 'display_errors','on' );
 		error_reporting( E_ALL );
 		$this->tests_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'tests';
