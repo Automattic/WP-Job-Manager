@@ -137,6 +137,7 @@ class WP_Job_Manager_Models_Settings extends Mixtape_Model_Declaration {
     }
 
     function get_id( $model ) {
+        // settings have no id
         return null;
     }
 
