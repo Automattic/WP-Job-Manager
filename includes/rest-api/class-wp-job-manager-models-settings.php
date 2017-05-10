@@ -2,8 +2,8 @@
 
 class WP_Job_Manager_Models_Settings extends Mixtape_Model_Declaration {
     /**
-     * @param Mixtape_Model_Definition $def
-     * @return array
+     * @param Mixtape_Model_Declaration $def
+     * @return array the fields
      */
     function declare_fields( $def ) {
 
