@@ -119,12 +119,20 @@ class WP_Job_Manager {
 			'is_debugging' => true,
 		) )->load();
 
-		include_once( 'includes/rest-api/class-wp-job-manager-rest-api-v1.php' );
+		include_once( 'includes/rest-api/class-wp-job-manager-models-settings.php' );
 		include_once( 'includes/rest-api/class-wp-job-manager-rest-api-endpoint-version.php' );
 
-		$this->mix_tape->environment()
-			->add_rest_bundle( new WP_Job_Manager_REST_API_V1() )
-			->start();
+		$env = $this->mix_tape->environment();
+		$env->define_model( new WP_Job_Manager_Models_Settings(), new Mixtape_Data_Store_Option() );
+
+		$bundle = $env->define_bundle('wpjm/v1')
+			->add_endpoint(
+				$env->crud( $env->model_definition( 'WP_Job_Manager_Models_Settings' ), '/settings' )
+					->with_class_name( 'Mixtape_Rest_Api_Controller_Settings' )
+			)
+			->add_endpoint( $env->endpoint( 'WP_Job_Manager_Rest_Api_Endpoint_Version' ) );
+		$env->add_rest_bundle( $bundle );
+		$env->start();
 
 		return $this;
 	}
