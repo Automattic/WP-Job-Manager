@@ -10,41 +10,36 @@ class WP_Job_Manager_Models_Settings extends Mixtape_Model_Declaration {
         return array(
             $def->field( 'job_manager_per_page' )
                 ->of_type( 'integer' )
-                ->with_default( 125 )
-                ->dto_name( 'per_page' )
-                ->with_sanitize( 'as_uint' ),
+                ->with_default( 10 )
+                ->dto_name( 'per_page' ),
 
             $def->field( 'job_manager_hide_filled_positions' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'hide_filled_positions' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_hide_expired_content' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'hide_expired_content' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_enable_categories' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'enable_categories' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_enable_default_category_multiselect' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'enable_default_category_multiselect' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_category_filter_type' )
                 ->of_type( 'string' )
@@ -56,40 +51,35 @@ class WP_Job_Manager_Models_Settings extends Mixtape_Model_Declaration {
                 ->with_default( false )
                 ->dto_name( 'enable_types' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_multi_job_type' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'multi_job_type' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_user_requires_account' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'user_requires_account' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_enable_registration' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'user_requires_account' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_generate_username_from_email' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'generate_username_from_email' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_registration_role' )
                 ->of_type( 'string' )
@@ -100,15 +90,13 @@ class WP_Job_Manager_Models_Settings extends Mixtape_Model_Declaration {
                 ->with_default( false )
                 ->dto_name( 'submission_requires_approval' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
             $def->field( 'job_manager_user_can_edit_pending_submissions' )
                 ->of_type( 'boolean' )
                 ->with_default( false )
                 ->dto_name( 'can_edit_pending_submissions' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
             $def->field( 'job_manager_submission_duration' )
                 ->of_type( 'integer' )
                 ->with_default( 30 )
@@ -119,8 +107,7 @@ class WP_Job_Manager_Models_Settings extends Mixtape_Model_Declaration {
                 ->with_default( false )
                 ->dto_name( 'allowed_application_method' )
                 ->with_serializer( 'bool_to_bit' )
-                ->with_deserializer( 'bit_to_bool' )
-                ->with_sanitize( 'as_bool' ),
+                ->with_deserializer( 'bit_to_bool' ),
 
             $def->field( 'job_manager_submit_job_form_page_id' )
                 ->of_type( 'integer' )
