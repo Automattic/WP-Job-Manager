@@ -4,7 +4,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
  * Queries job listings with certain criteria and returns them.
  *
  * @since 1.0.5
- * @param array $args
+ * @param string|array|object $args Arguments used to retrieve job listings.
  * @return array
  */
 function get_job_listings( $args = array() ) {
@@ -23,6 +23,15 @@ function get_job_listings( $args = array() ) {
 		'filled'            => null,
 		'fields'            => 'all'
 	) );
+
+	/**
+	 * Perform actions that need to be done prior to the start of the job listings query.
+	 *
+	 * @since 1.26.0
+	 *
+	 * @param array $args Arguments used to retrieve job listings.
+	 */
+	do_action( 'get_job_listings_init', $args );
 
 	if ( false == get_option( 'job_manager_hide_expired', get_option( 'job_manager_hide_expired_content', 1 ) ) ) {
 		$post_status = array( 'publish', 'expired' );
@@ -45,11 +54,6 @@ function get_job_listings( $args = array() ) {
 		'cache_results'          => false,
 		'fields'                 => $args['fields']
 	);
-
-	// WPML workaround
-	if ( ( strstr( $_SERVER['REQUEST_URI'], '/jm-ajax/' ) || ! empty( $_GET['jm-ajax'] ) ) && isset( $_POST['lang'] ) ) {
-		do_action( 'wpml_switch_language', sanitize_text_field( $_POST['lang'] ) );
-	}
 
 	if ( $args['posts_per_page'] < 0 ) {
 		$query_args['no_found_rows'] = true;
@@ -128,16 +132,14 @@ function get_job_listings( $args = array() ) {
 		unset( $query_args['tax_query'] );
 	}
 
-	// Polylang LANG arg
-	if ( function_exists( 'pll_current_language' ) ) {
-		$query_args['lang'] = pll_current_language();
-	}
+	/** This filter is documented in wp-job-manager.php */
+	$query_args['lang'] = apply_filters( 'wpjm_lang', null );
 
 	// Filter args
 	$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
 	// Generate hash
-	$to_hash         = json_encode( $query_args ) . apply_filters( 'wpml_current_language', '' );
+	$to_hash         = json_encode( $query_args );
 	$query_args_hash = 'jm_' . md5( $to_hash ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
 
 	do_action( 'before_get_job_listings', $query_args, $args );
@@ -638,12 +640,8 @@ function job_manager_dropdown_categories( $args = '' ) {
 		$r['pad_counts'] = true;
 	}
 
-	// WPML & Polylang caching per language
-	if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
-		$r['lang'] = apply_filters( 'wpml_current_language', NULL );
-	} elseif ( function_exists( 'pll_current_language' ) ) {
-		$r['lang'] = pll_current_language();
-	}
+	/** This filter is documented in wp-job-manager.php */
+	$r['lang'] = apply_filters( 'wpjm_lang', null );
 
 	extract( $r );
 
@@ -697,7 +695,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 }
 
 /**
- * Gets the page ID of a page if set, with PolyLang compat.
+ * Gets the page ID of a page if set.
  *
  * @since 1.23.12
  * @param  string $page e.g. job_dashboard, submit_job_form, jobs
@@ -706,7 +704,14 @@ function job_manager_dropdown_categories( $args = '' ) {
 function job_manager_get_page_id( $page ) {
 	$page_id = get_option( 'job_manager_' . $page . '_page_id', false );
 	if ( $page_id ) {
-		return apply_filters( 'wpml_object_id', absint( function_exists( 'pll_get_post' ) ? pll_get_post( $page_id ) : $page_id ), 'page', TRUE );
+		/**
+		 * Filters the page ID for a WPJM page.
+		 *
+		 * @since 1.26.0
+		 *
+		 * @param int $page_id
+		 */
+		return apply_filters( 'wpjm_page_id', $page_id );
 	} else {
 		return 0;
 	}

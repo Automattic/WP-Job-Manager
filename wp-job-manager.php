@@ -71,6 +71,9 @@ class WP_Job_Manager {
 			include( 'includes/admin/class-wp-job-manager-admin.php' );
 		}
 
+		// Load 3rd party customizations
+		require_once( 'includes/3rd-party/3rd-party.php' );
+
 		// Init classes
 		$this->forms      = WP_Job_Manager_Forms::instance();
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
@@ -150,10 +153,14 @@ class WP_Job_Manager {
 			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' ),
 		);
 
-		// WPML workaround
-		if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
-			$ajax_data['lang'] = apply_filters( 'wpml_current_language', null );
-		}
+		/**
+		 * Retrieves the current language for use when caching requests.
+		 *
+		 * @since 1.26.0
+		 *
+		 * @param string|null $lang
+		 */
+		$ajax_data['lang'] = apply_filters( 'wpjm_lang', null );
 
 		if ( apply_filters( 'job_manager_chosen_enabled', true ) ) {
 			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
