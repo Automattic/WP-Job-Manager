@@ -118,8 +118,8 @@ function get_job_listings( $args = array() ) {
 	$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
 
 	if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
-		$query_args['_keyword'] = $job_manager_keyword; // Does nothing but needed for unique hash
-		add_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
+		$query_args['s'] = $job_manager_keyword;
+		add_filter( 'posts_search', 'get_job_listings_keyword_search' );
 	}
 
 	$query_args = apply_filters( 'job_manager_get_listings', $query_args, $args );
@@ -164,7 +164,7 @@ function get_job_listings( $args = array() ) {
 
 	do_action( 'after_get_job_listings', $query_args, $args );
 
-	remove_filter( 'posts_clauses', 'get_job_listings_keyword_search' );
+	remove_filter( 'posts_search', 'get_job_listings_keyword_search' );
 
 	return $result;
 }
@@ -175,10 +175,12 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	 * Adds join and where query for keywords.
 	 *
 	 * @since 1.21.0
-	 * @param array $args
-	 * @return array
+	 * @since 1.26.0 Moved from the `posts_clauses` filter to the `posts_search` to use WP Query's keyword
+	 *               search for `post_title` and `post_content`.
+	 * @param string $search
+	 * @return string
 	 */
-	function get_job_listings_keyword_search( $args ) {
+	function get_job_listings_keyword_search( $search ) {
 		global $wpdb, $job_manager_keyword;
 
 		// Searchable Meta Keys: set to empty to search all meta keys
@@ -191,13 +193,11 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 			'_company_website',
 			'_company_twitter',
 		);
+
 		$searchable_meta_keys = apply_filters( 'job_listing_searchable_meta_keys', $searchable_meta_keys );
 
 		// Set Search DB Conditions
 		$conditions   = array();
-
-		// Search Post Title
-		$conditions[] = "{$wpdb->posts}.post_title LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
 
 		// Search Post Meta
 		if( apply_filters( 'job_listing_search_post_meta', true ) ) {
@@ -214,15 +214,29 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 		// Search taxonomy
 		$conditions[] = "{$wpdb->posts}.ID IN ( SELECT object_id FROM {$wpdb->term_relationships} AS tr LEFT JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id LEFT JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id WHERE t.name LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
 
-		if ( ctype_alnum( $job_manager_keyword ) ) {
-			$conditions[] = "{$wpdb->posts}.post_content RLIKE '[[:<:]]" . esc_sql( $job_manager_keyword ) . "[[:>:]]'";
-		} else {
-			$conditions[] = "{$wpdb->posts}.post_content LIKE '%" . esc_sql( $job_manager_keyword ) . "%'";
+		/**
+		 * Filters the conditions to use when querying job listings. Resulting array is joined with OR statements.
+		 *
+		 * @since 1.26.0
+		 *
+		 * @param array  $conditions          Conditions to join by OR when querying job listings.
+		 * @param string $job_manager_keyword Search query.
+		 */
+		$conditions = apply_filters( 'job_listing_search_conditions', $conditions, $job_manager_keyword );
+		if ( empty( $conditions ) ) {
+			return $search;
 		}
 
-		$args['where'] .= " AND ( " . implode( ' OR ', $conditions ) . " ) ";
+		$conditions_str = implode( ' OR ', $conditions );
 
-		return $args;
+		if ( ! empty( $search ) ) {
+			$search = preg_replace( '/^ AND /', '', $search );
+			$search = " AND ( {$search} OR ( {$conditions_str} ) )";
+		} else {
+			$search = " AND ( {$conditions_str} )";
+		}
+
+		return $search;
 	}
 endif;
 
