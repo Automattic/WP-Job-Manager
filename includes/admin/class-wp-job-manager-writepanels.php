@@ -585,16 +585,32 @@ class WP_Job_Manager_Writepanels {
 		/* Set Post Status To Expired If Already Expired */
 		$expiry_date = get_post_meta( $post_id, '_job_expires', true );
 		$today_date  = date( 'Y-m-d', current_time( 'timestamp' ) );
-		$post_status = $expiry_date && $today_date > $expiry_date ? 'expired' : false;
-		if( $post_status ) {
+		$is_job_listing_expired = $expiry_date && $today_date > $expiry_date;
+		if( $is_job_listing_expired ) {
 			remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
-			$job_data = array(
-				'ID'          => $post_id,
-				'post_status' => $post_status,
-			);
-			wp_update_post( $job_data );
+			if ( $this->is_job_listing_being_reactivated() ) {
+				update_post_meta( $post_id, '_job_expires', calculate_job_expiry( $post_id ) );
+			} else {
+				$job_data = array(
+					'ID'          => $post_id,
+					'post_status' => 'expired',
+				);
+				wp_update_post( $job_data );
+			}
 			add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
 		}
+	}
+
+	/**
+	 * Checks if the job listing is being reactivated from an expired state.
+	 *
+	 * @return bool True if being reactivated.
+	 */
+	protected function is_job_listing_being_reactivated() {
+		return isset( $_POST['post_status'] )
+			   && isset( $_POST['original_post_status'] )
+			   && 'expired' === $_POST['original_post_status']
+			   && 'publish' === $_POST['post_status'];
 	}
 }
 
