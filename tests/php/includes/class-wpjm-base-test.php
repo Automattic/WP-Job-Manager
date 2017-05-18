@@ -24,7 +24,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	 *
 	 * Example setting of hook: add_action( 'wp_die_handler', array( $this, 'return_do_not_die' ) )
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 * @return array
 	 */
 	public function return_do_not_die() {
@@ -34,7 +34,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	/**
 	 * Does nothing.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 */
 	public function do_not_die() {
 		return;

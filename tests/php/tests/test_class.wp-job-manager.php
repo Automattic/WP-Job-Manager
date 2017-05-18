@@ -4,7 +4,7 @@ class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 	/**
 	 * Tests the global $job_manager object.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 */
 	public function test_wp_job_manager_global_object() {
 		// setup the test
@@ -23,7 +23,7 @@ class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 	/**
 	 * Tests the WPJM() always returns the same `WP_Job_Manager` instance.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 * @covers ::WPJM
 	 */
 	public function test_wp_job_manager_global_function() {
@@ -35,7 +35,7 @@ class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 	/**
 	 * Tests the WP_Job_Manager::instance() always returns the same `WP_Job_Manager` instance.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 * @covers WP_Job_Manager::instance
 	 */
 	public function test_wp_job_manager_instance() {
@@ -47,7 +47,7 @@ class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 	/**
 	 * Tests classes of object properties.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 */
 	public function test_classes_of_object_properties() {
 		$this->assertInstanceOf( 'WP_Job_Manager_Forms', WPJM()->forms );
@@ -57,7 +57,7 @@ class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 	/**
 	 * Checks constants are defined when constructing
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 */
 	public function test_class_defined_constants() {
 		WPJM();

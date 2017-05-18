@@ -4,7 +4,7 @@
  *
  * This class takes care of creating testing data for the WPJM Unit tests
  *
- * @since 1.26
+ * @since 1.26.0
  */
 class WPJM_Factory extends WP_UnitTest_Factory {
 	public $job_listing;
