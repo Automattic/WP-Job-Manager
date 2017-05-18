@@ -2,7 +2,7 @@
 /**
  * WPJM Unit Tests Bootstrap
  *
- * @since 1.26
+ * @since 1.26.0
  */
 class WPJM_Unit_Tests_Bootstrap {
 	/** @var \WPJM_Unit_Tests_Bootstrap instance */
@@ -23,7 +23,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	/**
 	 * Setup the unit testing environment.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 */
 	public function __construct() {
 		define( 'DOING_AJAX', true );
@@ -53,7 +53,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	/**
 	 * Load WPJM.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 */
 	public function load_plugin() {
 		require_once( $this->plugin_dir . '/wp-job-manager.php' );
@@ -62,7 +62,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	/**
 	 * Install WPJM after the test environment and WPJM have been loaded.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 */
 	public function install_plugin() {
 		global $wp_version;
@@ -78,7 +78,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	/**
 	 * Load WPJM-specific test cases and framework.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 */
 	public function includes() {
 		// framework
@@ -89,7 +89,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	/**
 	 * Get the single class instance.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 * @return WPJM_Unit_Tests_Bootstrap
 	 */
 	public static function instance() {

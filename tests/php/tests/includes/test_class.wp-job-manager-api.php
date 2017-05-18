@@ -4,7 +4,7 @@ class WP_Test_WP_Job_Manager_API extends WPJM_BaseTest {
 	/**
 	 * Tests the WP_Job_Manager_API::instance() always returns the same `WP_Job_Manager_API` instance.
 	 *
-	 * @since 1.26
+	 * @since 1.26.0
 	 * @covers WP_Job_Manager_API::instance
 	 */
 	public function test_wp_job_manager_api_instance() {
@@ -17,7 +17,7 @@ class WP_Test_WP_Job_Manager_API extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26
+	 * @since 1.26.0
 	 * @covers WP_Job_Manager_API::add_query_vars
 	 */
 	public function test_add_query_vars() {
@@ -30,7 +30,7 @@ class WP_Test_WP_Job_Manager_API extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26
+	 * @since 1.26.0
 	 * @covers WP_Job_Manager_API::api_requests
 	 */
 	public function test_valid_api_requests() {
