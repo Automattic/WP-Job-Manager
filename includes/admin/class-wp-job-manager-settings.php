@@ -19,6 +19,13 @@ class WP_Job_Manager_Settings {
 	private static $_instance = null;
 
 	/**
+	 * Our Settings.
+	 *
+	 * @var array Settings.
+	 */
+	private $settings = array();
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  1.26
@@ -41,17 +48,29 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
+	 * Get Job Manager Settings
+	 *
+	 * @return array
+	 */
+	public function get_settings() {
+		if ( 0 === count( $this->settings ) ) {
+			$this->init_settings();
+		}
+		return $this->settings;
+	}
+
+	/**
 	 * Initializes the configuration for the plugin's setting fields.
 	 *
 	 * @access protected
 	 */
 	protected function init_settings() {
-		// Prepare roles option
+		// Prepare roles option.
 		$roles         = get_editable_roles();
 		$account_roles = array();
 
 		foreach ( $roles as $key => $role ) {
-			if ( $key == 'administrator' ) {
+			if ( 'administrator' === $key ) {
 				continue;
 			}
 			$account_roles[ $key ] = $role['name'];
