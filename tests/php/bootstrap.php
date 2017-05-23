@@ -27,6 +27,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	 */
 	public function __construct() {
 		define( 'DOING_AJAX', true );
+		define( 'WPJM_REST_API_ENABLED', true );
 		ini_set( 'display_errors','on' );
 		error_reporting( E_ALL );
 		$this->tests_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'tests';
@@ -84,6 +85,7 @@ class WPJM_Unit_Tests_Bootstrap {
 		// framework
 		require_once( $this->includes_dir . '/factories/class-wpjm-factory.php' );
 		require_once( $this->includes_dir . '/class-wpjm-base-test.php' );
+		require_once( $this->includes_dir . '/class-wpjm-rest-testcase.php' );
 	}
 
 	/**
