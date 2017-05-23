@@ -46,7 +46,7 @@ git checkout $TARGET
 echo "Purging paths included in .svnignore"
 # check .svnignore
 for file in $( cat "$ROOT_PATH$PRODUCT_NAME_GIT/.svnignore" 2>/dev/null ); do
-	rm -rf $ROOT_PATH$PRODUCT_NAME_GIT/trunk/$file
+	rm -rf $ROOT_PATH$PRODUCT_NAME_GIT/$file
 done
 echo "Done!"
 
