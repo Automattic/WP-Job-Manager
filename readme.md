@@ -1,5 +1,5 @@
 # WP Job Manager #
-**Contributors:** [mikejolley](https://profiles.wordpress.org/mikejolley), [automattic](https://profiles.wordpress.org/automattic), [adamkheckler](https://profiles.wordpress.org/adamkheckler), [annezazu](https://profiles.wordpress.org/annezazu), [artemitos](https://profiles.wordpress.org/artemitos), [bikedorkjon](https://profiles.wordpress.org/bikedorkjon), [cena](https://profiles.wordpress.org/cena), [chaselivingston](https://profiles.wordpress.org/chaselivingston), [csonnek](https://profiles.wordpress.org/csonnek), [davor.altman](https://profiles.wordpress.org/davor.altman), [drawmyface](https://profiles.wordpress.org/drawmyface), [erania-pinnera](https://profiles.wordpress.org/erania-pinnera), [jacobshere](https://profiles.wordpress.org/jacobshere), [jeherve](https://profiles.wordpress.org/jeherve), [jenhooks](https://profiles.wordpress.org/jenhooks), [jgs](https://profiles.wordpress.org/jgs), [kraftbj](https://profiles.wordpress.org/kraftbj), [lamdayap](https://profiles.wordpress.org/lamdayap), [lschuyler](https://profiles.wordpress.org/lschuyler), [macmanx](https://profiles.wordpress.org/macmanx), [nancythanki](https://profiles.wordpress.org/nancythanki), [orangesareorange](https://profiles.wordpress.org/orangesareorange), [rachelsquirrel](https://profiles.wordpress.org/rachelsquirrel), [ryancowles](https://profiles.wordpress.org/ryancowles), [richardmtl](https://profiles.wordpress.org/richardmtl), [scarstocea](https://profiles.wordpress.org/scarstocea)  
+**Contributors:** [mikejolley](https://profiles.wordpress.org/mikejolley), [automattic](https://profiles.wordpress.org/automattic), [adamkheckler](https://profiles.wordpress.org/adamkheckler), [annezazu](https://profiles.wordpress.org/annezazu), [cena](https://profiles.wordpress.org/cena), [chaselivingston](https://profiles.wordpress.org/chaselivingston), [csonnek](https://profiles.wordpress.org/csonnek), [davor.altman](https://profiles.wordpress.org/davor.altman), [drawmyface](https://profiles.wordpress.org/drawmyface), [erania-pinnera](https://profiles.wordpress.org/erania-pinnera), [jacobshere](https://profiles.wordpress.org/jacobshere), [jakeom](https://profiles.wordpress.org/jakeom), [jeherve](https://profiles.wordpress.org/jeherve), [jenhooks](https://profiles.wordpress.org/jenhooks), [jgs](https://profiles.wordpress.org/jgs), [jonryan](https://profiles.wordpress.org/jonryan), [kraftbj](https://profiles.wordpress.org/kraftbj), [lamdayap](https://profiles.wordpress.org/lamdayap), [lschuyler](https://profiles.wordpress.org/lschuyler), [macmanx](https://profiles.wordpress.org/macmanx), [nancythanki](https://profiles.wordpress.org/nancythanki), [orangesareorange](https://profiles.wordpress.org/orangesareorange), [rachelsquirrel](https://profiles.wordpress.org/rachelsquirrel), [ryancowles](https://profiles.wordpress.org/ryancowles), [richardmtl](https://profiles.wordpress.org/richardmtl), [scarstocea](https://profiles.wordpress.org/scarstocea)  
 **Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent  
 **Requires at least:** 4.1  
 **Tested up to:** 4.7  
@@ -140,6 +140,23 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 ## Changelog ##
+
+### 1.26.0 ###
+* Enhancement: Warn the user if they're editing an existing job. (@donnchawp; https://github.com/Automattic/WP-Job-Manager/pull/847)
+* Enhancement: WP Admin Job Listing page's table is now responsive. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/906)
+* Enhancement: New setting for hiding expired listings from `[jobs]` filter. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/903)
+* Enhancement: Use WP Query's built in search function to improve searching in `[jobs]`. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/960)
+* Fix: Job Listing filter only searches meta fields with relevant content. Add custom fields with `job_listing_searchable_meta_keys` filter. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/910)
+* Fix: Improved support for WPML and Polylang. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/963)
+* Fix: Expired field no longer forces admins to choose a date in the future. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/903)
+* Fix: Listings with expiration date in past will immediately expire; moving to Active status will extend if necessary. (@turtlepod, @jom; https://github.com/Automattic/WP-Job-Manager/pull/903, https://github.com/Automattic/WP-Job-Manager/pull/975)
+* Fix: Google Maps API key setting added to fix geolocation retrieval on new sites. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/912)
+* Fix: Issue when duplicating a job listing with a field for multiple file uploads. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/911)
+* Fix: Hide page results when adding links in the `[submit_job_form]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/922)
+* Fix: Job feed now loads when a site has no posts. (@dbtlr; https://github.com/Automattic/WP-Job-Manager/pull/870)
+* Fix: No error is thrown when deleting a user. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/875)
+* Dev: Plugins and themes can now retrieve JSON of Job Listings results without HTML. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/888)
+* Dev: Updated inline documentation.
 
 ### 1.25.3 ###
 * Enhancement: Allow job types to be optional, just like categories. https://github.com/automattic/wp-job-manager/pull/789 Props Donncha.
