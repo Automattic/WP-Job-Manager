@@ -1,0 +1,104 @@
+<?php
+/**
+ * The REST API Initializer
+ *
+ * @package WPJM/REST
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Class WP_Job_Manager_REST_API
+ */
+class WP_Job_Manager_REST_API {
+	/**
+	 * Is the api enabled?
+	 *
+	 * @var bool
+	 */
+	private $is_rest_api_enabled;
+	/**
+	 * Our bootstrap
+	 *
+	 * @var WPJM_REST_Bootstrap
+	 */
+	private $wpjm_rest_api;
+	/**
+	 * The plugin base dir
+	 *
+	 * @var string
+	 */
+	private $base_dir;
+
+	/**
+	 * WP_Job_Manager_REST_API constructor.
+	 *
+	 * @param string $base_dir The base dir.
+	 */
+	function __construct( $base_dir ) {
+		$this->base_dir = trailingslashit( $base_dir );
+		$this->is_rest_api_enabled = defined( 'WPJM_REST_API_ENABLED' ) && ( true === constant( 'WPJM_REST_API_ENABLED' ) );
+	}
+
+	/**
+	 * Bootstrap our REST Api
+	 */
+	private function bootstrap() {
+		include_once( $this->base_dir . 'lib/wpjm_rest/class-wpjm-rest-bootstrap.php' );
+
+		$this->wpjm_rest_api = WPJM_REST_Bootstrap::create()->load();
+
+		include_once( 'class-wp-job-manager-models-settings.php' );
+	}
+
+	/**
+	 * Get WPJM_REST_Bootstrap
+	 *
+	 * @return WPJM_REST_Bootstrap
+	 */
+	function get_bootstrap() {
+		return $this->wpjm_rest_api;
+	}
+
+	/**
+	 * Initialize the REST API
+	 *
+	 * @return WP_Job_Manager_REST_API $this
+	 */
+	function init() {
+		if ( ! $this->is_rest_api_enabled ) {
+			return $this;
+		}
+		$this->bootstrap();
+		$this->define_api( $this->wpjm_rest_api->environment() );
+		$this->wpjm_rest_api->environment()
+			->start();
+		return $this;
+	}
+
+	/**
+	 * Define our REST API Models and Controllers
+	 *
+	 * @param WPJM_REST_Environment $env The Environment.
+	 */
+	function define_api( $env ) {
+		$env->define()
+			->model( 'WP_Job_Manager_Models_Settings' )
+			->with_data_store(
+				$env->define()
+					->data_store()
+					->option()
+			);
+
+		$wpjm_v1 = $env->define()->rest_api( 'wpjm/v1' );
+
+		$wpjm_v1->endpoint()
+			->for_model(
+				$env->get()
+			->model( 'WP_Job_Manager_Models_Settings' ) )
+			->with_base( '/settings' )
+			->with_class( 'WPJM_REST_Controller_Settings' );
+	}
+}
