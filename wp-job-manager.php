@@ -32,6 +32,11 @@ class WP_Job_Manager {
 	private static $_instance = null;
 
 	/**
+	 * @var WP_Job_Manager_REST_API
+	 */
+	private $rest_api;
+
+	/**
 	 * Main WP Job Manager Instance.
 	 *
 	 * Ensures only one instance of WP Job Manager is loaded or can be loaded.
@@ -68,6 +73,9 @@ class WP_Job_Manager {
 		include_once( 'includes/class-wp-job-manager-forms.php' );
 		include_once( 'includes/class-wp-job-manager-geocode.php' );
 		include_once( 'includes/class-wp-job-manager-cache-helper.php' );
+		include( 'includes/rest-api/class-wp-job-manager-rest-api.php' );
+
+		add_action( 'init', array( $this, 'rest_api' ) );
 
 		if ( is_admin() ) {
 			include_once( 'includes/admin/class-wp-job-manager-admin.php' );
@@ -126,6 +134,14 @@ class WP_Job_Manager {
 	public function load_plugin_textdomain() {
 		load_textdomain( 'wp-job-manager', WP_LANG_DIR . '/wp-job-manager/wp-job-manager-' . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . '.mo' );
 		load_plugin_textdomain( 'wp-job-manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}
+
+	public function rest_api() {
+		if ( null === $this->rest_api ) {
+			$this->rest_api = new WP_Job_Manager_REST_API( dirname( __FILE__ ) );
+			$this->rest_api->init();
+		}
+		return $this->rest_api;
 	}
 
 	/**
