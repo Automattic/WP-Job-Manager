@@ -148,14 +148,13 @@ class WP_Job_Manager_Geocode {
 	 * @return string|bool
 	 */
 	public function add_geolocation_endpoint_query_args( $geocode_endpoint_url, $raw_address ) {
+		// Add an API key if available.
 		$api_key = apply_filters( 'job_manager_geolocation_api_key', '', $raw_address );
 
-		// Google Maps API no longer accepts requests without an API key
-		if ( '' === $api_key ) {
-			return false;
+		if ( '' !== $api_key ) {
+			$geocode_endpoint_url = add_query_arg( 'key', urlencode( $api_key ), $geocode_endpoint_url );
 		}
 
-		$geocode_endpoint_url = add_query_arg( 'key', urlencode( $api_key ), $geocode_endpoint_url );
 		$geocode_endpoint_url = add_query_arg( 'address', urlencode( $raw_address ), $geocode_endpoint_url );
 
 		$region = apply_filters( 'job_manager_geolocation_region_cctld', '', $raw_address );
