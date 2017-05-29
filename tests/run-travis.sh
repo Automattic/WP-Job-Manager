@@ -1,36 +1,22 @@
 #!/bin/bash
 
+test_on() {
+    local wordpress_to_test=$1;
+    local plugin_path="/tmp/$wordpress_to_test/src/wp-content/plugins/$PLUGIN_SLUG";
+    echo "Testing on $wordpress_to_test";
+    export WP_TESTS_DIR="/tmp/$wordpress_to_test/tests/phpunit";
+    cd $plugin_path;
+    $WP_TRAVISCI;
+    if [ $? -ne 0 ]; then
+        echo "PHPUnit ($WP_TRAVISCI): Failed for $wordpress_to_test";
+        exit 1;
+    fi
+}
+
 if [ "$WP_TRAVISCI" == "phpunit" ]; then
-
-    echo "Testing on WordPress master..."
-    export WP_TESTS_DIR=/tmp/wordpress-master/tests/phpunit
-    cd /tmp/wordpress-master/src/wp-content/plugins/$PLUGIN_SLUG
-    if $WP_TRAVISCI; then
-	# Everything is fine
-	:
-    else
-        exit 1
-    fi
-
-    echo "Testing on WordPress stable..."
-    export WP_TESTS_DIR=/tmp/wordpress-latest/tests/phpunit
-    cd /tmp/wordpress-latest/src/wp-content/plugins/$PLUGIN_SLUG
-    if $WP_TRAVISCI; then
-	# Everything is fine
-	:
-    else
-        exit 1
-    fi
-
-    echo "Testing on WordPress stable minus one..."
-    export WP_TESTS_DIR=/tmp/wordpress-previous/tests/phpunit
-    cd /tmp/wordpress-previous/src/wp-content/plugins/$PLUGIN_SLUG
-    if $WP_TRAVISCI; then
-	# Everything is fine
-	:
-    else
-        exit 1
-    fi
+    test_on "wordpress-master";
+    test_on "wordpress-latest";
+    test_on "wordpress-previous";
 else
 
     gem install less
