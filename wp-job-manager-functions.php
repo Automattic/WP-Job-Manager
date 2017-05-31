@@ -5,7 +5,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
  *
  * @since 1.0.5
  * @param string|array|object $args Arguments used to retrieve job listings.
- * @return array
+ * @return WP_Query
  */
 function get_job_listings( $args = array() ) {
 	global $wpdb, $job_manager_keyword;

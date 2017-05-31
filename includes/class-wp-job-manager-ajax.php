@@ -165,7 +165,7 @@ class WP_Job_Manager_Ajax {
 		);
 
 		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
-			$message = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->post_count, 'wp-job-manager' ), $jobs->post_count );
+			$message = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
 			$result['showing_all'] = true;
 		} else {
 			$message = '';
