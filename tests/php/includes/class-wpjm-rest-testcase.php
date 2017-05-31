@@ -1,71 +1,147 @@
 <?php
+/**
+ * Base class for testing Controllers
+ *
+ * @package wpjm/tests
+ */
 
+/**
+ * Class WPJM_REST_TestCase
+ */
 class WPJM_REST_TestCase extends WPJM_BaseTest {
 
-    /**
-     * @var WP_REST_Server
-     */
-    private $rest_server;
+	/**
+	 * A REST Server.
+	 *
+	 * @var WP_REST_Server
+	 */
+	private $rest_server;
 
-    /**
-     * @var WPJM_REST_Environment
-     */
-    private $environment;
+	/**
+	 * An Environment
+	 *
+	 * @var WPJM_REST_Environment
+	 */
+	private $environment;
 
-    /**
-     * @return WPJM_REST_Environment
-     */
-    protected function environment() {
-        return $this->environment;
-    }
+	/**
+	 * Get Environment
+	 *
+	 * @return WPJM_REST_Environment
+	 */
+	protected function environment() {
+		return $this->environment;
+	}
 
-    protected function rest_server() {
-        return $this->rest_server;
-    }
+	/**
+	 * Get REST Server
+	 *
+	 * @return WP_REST_Server
+	 */
+	protected function rest_server() {
+		return $this->rest_server;
+	}
 
-    function setUp() {
-        parent::setUp();
-        $this->environment = WPJM()->rest_api()->get_bootstrap()->environment();
-        /** @var WP_REST_Server $wp_rest_server */
-        global $wp_rest_server;
-        $this->rest_server = $wp_rest_server = new WP_REST_Server;
-        do_action( 'rest_api_init' );
-    }
+	/**
+	 * Set this up.
+	 */
+	function setUp() {
+		/** @var WP_REST_Server $wp_rest_server */
+		global $wp_rest_server;
+		parent::setUp();
+		$this->environment = WPJM()->rest_api()->get_bootstrap()->environment();
+		$this->rest_server = new WP_REST_Server();
+		$wp_rest_server = $this->rest_server;
+		do_action( 'rest_api_init' );
+	}
 
-    function assertClassExists( $cls) {
-        $this->assertNotFalse( class_exists( $cls ), $cls . ': should exist' );
-    }
+	/**
+	 * Expect a clas Exists.
+	 *
+	 * @param string $cls Class Name.
+	 */
+	function assertClassExists( $cls ) {
+		$this->assertNotFalse( class_exists( $cls ), $cls . ': should exist' );
+	}
 
-    function assertModelValid( $model ) {
-        $this->assertTrue( $model->validate() );
-    }
+	/**
+	 * Expect a model is valid
+	 *
+	 * @param WPJM_REST_Interfaces_Model $model The model.
+	 */
+	function assertModelValid( $model ) {
+		$this->assertTrue( $model->validate() );
+	}
 
-    function assertResponseStatus($response, $status_code) {
-        $this->assertInstanceOf( WP_REST_Response::class, $response );
-        $this->assertEquals( $status_code, $response->get_status() );
-    }
+	/**
+	 * Ensure we got a certain response code
+	 *
+	 * @param WP_REST_Response $response The Response.
+	 * @param int              $status_code Expected status code.
+	 */
+	function assertResponseStatus( $response, $status_code ) {
+		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertEquals( $status_code, $response->get_status() );
+	}
 
-    function request( $endpoint, $method, $args = array() ) {
-        $request = new WP_REST_Request( $method, $endpoint );
-        foreach ($args as $key => $value ) {
-            $request->set_param( $key, $value );
-        }
-        return $this->rest_server()->dispatch( $request );
-    }
+	/**
+	 * Have WP_REST_Server Dispatch an HTTP request
+	 *
+	 * @param string $endpoint The Endpoint.
+	 * @param string $method Http mehod.
+	 * @param array  $args Any Data/Args.
+	 * @return WP_REST_Response
+	 */
+	function request( $endpoint, $method, $args = array() ) {
+		$request = new WP_REST_Request( $method, $endpoint );
+		foreach ( $args as $key => $value ) {
+			$request->set_param( $key, $value );
+		}
+		return $this->rest_server()->dispatch( $request );
+	}
 
-    function get( $endpoint, $args = array() ) {
-        return $this->request( $endpoint, 'GET', $args );
-    }
+	/**
+	 * Have WP_REST_Server Dispatch a GET HTTP request
+	 *
+	 * @param string $endpoint The Endpoint.
+	 * @param array  $args Any Data/Args.
+	 * @return WP_REST_Response
+	 */
+	function get( $endpoint, $args = array() ) {
+		return $this->request( $endpoint, 'GET', $args );
+	}
 
-    function post( $endpoint, $args = array() ) {
-        return $this->request( $endpoint, 'POST', $args );
-    }
+	/**
+	 * Have WP_REST_Server Dispatch a POST HTTP request
+	 *
+	 * @param string $endpoint The Endpoint.
+	 * @param array  $args Any Data/Args.
+	 * @return WP_REST_Response
+	 */
+	function post( $endpoint, $args = array() ) {
+		return $this->request( $endpoint, 'POST', $args );
+	}
 
-    function put( $endpoint, $args = array() ) {
-        return $this->request( $endpoint, 'PUT', $args );
-    }
+	/**
+	 * Have WP_REST_Server Dispatch a PUT HTTP request
+	 *
+	 * @param string $endpoint The Endpoint.
+	 * @param array  $args Any Data/Args.
+	 * @return WP_REST_Response
+	 */
+	function put( $endpoint, $args = array() ) {
+		return $this->request( $endpoint, 'PUT', $args );
+	}
 
-    function delete( $endpoint, $args = array() ) {
-        return $this->request( $endpoint, 'DELETE', $args );
-    }
+	/**
+	 * Have WP_REST_Server Dispatch a DELETE HTTP request
+	 *
+	 * @param string $endpoint The Endpoint.
+	 * @param array  $args Any Data/Args.
+	 * @return WP_REST_Response
+	 */
+	function delete( $endpoint, $args = array() ) {
+		return $this->request( $endpoint, 'DELETE', $args );
+	}
 }
+
