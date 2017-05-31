@@ -110,7 +110,7 @@ class WP_Job_Manager_Writepanels {
 				'classes'     => array( 'job-manager-datepicker' ),
 				/* translators: date format placeholder, see https://secure.php.net/date */
 				'placeholder' => metadata_exists( 'post', $post->ID, '_job_expires' ) ? _x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ) : calculate_job_expiry( $post->ID ),
-				'value'       => get_post_meta( $post->ID, '_job_expires', true ),
+				'value'       => date( 'Y-m-d H:i:s', strtotime( get_post_meta( $post->ID, '_job_expires', true ) ) ),
 			);
 		}
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
