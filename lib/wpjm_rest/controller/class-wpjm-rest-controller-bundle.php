@@ -13,27 +13,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WPJM_REST_Controller_Bundle implements WPJM_REST_Interfaces_Controller_Bundle {
 
 	/**
-	 * @var string|null the prefix of this bundle
+	 * The prefix of this bundle (required)
+	 *
+	 * @var string|null
 	 */
 	protected $bundle_prefix = null;
+
 	/**
-	 * @var array collection of Mixtape_Rest_Api_Controller subclasses
+	 * Collection of Mixtape_Rest_Api_Controller subclasses
+	 *
+	 * @var array
 	 */
 	protected $endpoints = array();
 
-	function start() {
-		WPJM_REST_Expect::that( null !== $this->bundle_prefix, 'api_prefix should be defined' );
-		add_action( 'rest_api_init', array( $this, 'register' ) );
-		return $this;
-	}
-
 	/**
-	 * bootstrap registry
-	 * register all endpoints
+	 * Register all endpoints
+	 *
+	 * @return WPJM_REST_Interfaces_Controller_Bundle $this;
 	 */
 	function register() {
+		WPJM_REST_Expect::that( null !== $this->bundle_prefix, 'api_prefix should be defined' );
 		/**
-		 * add/remove endpoints. Useful for extensions
+		 * Add/remove endpoints. Useful for extensions
 		 *
 		 * @param $endpoints array an array of Mixtape_Rest_Api_Controller
 		 * @param $bundle WPJM_REST_Controller_Bundle the bundle instance
@@ -48,6 +49,8 @@ class WPJM_REST_Controller_Bundle implements WPJM_REST_Interfaces_Controller_Bun
 		foreach ( $this->endpoints as $endpoint ) {
 			$endpoint->register( $this );
 		}
+
+		return $this;
 	}
 
 	function get_endpoints() {
