@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.26.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager\n"
-"POT-Creation-Date: 2017-05-18 17:27:44+00:00\n"
+"POT-Creation-Date: 2017-05-31 22:26:08+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -803,17 +803,17 @@ msgid_plural "Search completed. Found %d matching records."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-wp-job-manager-geocode.php:217
+#: includes/class-wp-job-manager-geocode.php:221
 msgid "No results found"
 msgstr ""
 
-#: includes/class-wp-job-manager-geocode.php:221
+#: includes/class-wp-job-manager-geocode.php:225
 msgid "Query limit reached"
 msgstr ""
 
-#: includes/class-wp-job-manager-geocode.php:227
 #: includes/class-wp-job-manager-geocode.php:231
 #: includes/class-wp-job-manager-geocode.php:235
+#: includes/class-wp-job-manager-geocode.php:239
 msgid "Geocoding error"
 msgstr ""
 
