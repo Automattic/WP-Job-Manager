@@ -73,9 +73,8 @@ class WP_Job_Manager {
 		include_once( 'includes/class-wp-job-manager-forms.php' );
 		include_once( 'includes/class-wp-job-manager-geocode.php' );
 		include_once( 'includes/class-wp-job-manager-cache-helper.php' );
-		include( 'includes/rest-api/class-wp-job-manager-rest-api.php' );
 
-		add_action( 'init', array( $this, 'rest_api' ) );
+		add_action( 'rest_api_init', array( $this, 'rest_api' ) );
 
 		if ( is_admin() ) {
 			include_once( 'includes/admin/class-wp-job-manager-admin.php' );
@@ -136,8 +135,14 @@ class WP_Job_Manager {
 		load_plugin_textdomain( 'wp-job-manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
+	/**
+	 * Initialize our REST API.
+	 *
+	 * @return WP_Job_Manager_REST_API
+	 */
 	public function rest_api() {
 		if ( null === $this->rest_api ) {
+			include( 'includes/rest-api/class-wp-job-manager-rest-api.php' );
 			$this->rest_api = new WP_Job_Manager_REST_API( dirname( __FILE__ ) );
 			$this->rest_api->init();
 		}
