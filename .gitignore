@@ -11,6 +11,10 @@ sftp-config.json
 /deploy/
 /vendor/
 
+# Ignore lib/wpjm_rest but keep folder
+lib/wpjm_rest/*
+!lib/wpjm_rest/.gitkeep
+
 # Ignore all log files except for .htaccess
 /logs/*
 !/logs/.htaccess
