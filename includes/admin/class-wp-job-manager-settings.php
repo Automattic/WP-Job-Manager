@@ -23,7 +23,7 @@ class WP_Job_Manager_Settings {
 	 *
 	 * @var array Settings.
 	 */
-	private $settings = array();
+	protected $settings = array();
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
