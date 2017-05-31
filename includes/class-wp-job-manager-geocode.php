@@ -157,6 +157,11 @@ class WP_Job_Manager_Geocode {
 
 		$geocode_endpoint_url = add_query_arg( 'address', urlencode( $raw_address ), $geocode_endpoint_url );
 
+		$locale = get_locale();
+		if ( $locale ) {
+			$geocode_endpoint_url = add_query_arg( 'language',  substr( $locale, 0, 2 ), $geocode_endpoint_url );
+		}
+
 		$region = apply_filters( 'job_manager_geolocation_region_cctld', '', $raw_address );
 		if ( '' !== $region ) {
 			$geocode_endpoint_url = add_query_arg( 'region', urlencode( $region ), $geocode_endpoint_url );
