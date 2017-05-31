@@ -27,7 +27,7 @@ class WP_Test_WP_Job_Manager_Models_Settings extends WPJM_REST_TestCase {
 		}
 	}
 
-	function test_dto_name_for_field_removes_job_manager_prefix() {
+	function test_dto_name_for_field_does_not_remove_job_manager_prefix() {
 		$setting_definition = $this->environment()
 			->get()
 			->model( 'WP_Job_Manager_Models_Settings' );
@@ -35,9 +35,9 @@ class WP_Test_WP_Job_Manager_Models_Settings extends WPJM_REST_TestCase {
 		$this->assertNotNull( $settings );
 		$dto = $setting_definition->model_to_dto( $settings );
 		$this->assertInternalType( 'array', $dto );
-		$this->assertArrayHasKey( 'per_page', $dto );
+		$this->assertArrayHasKey( 'job_manager_per_page', $dto );
 		foreach ( $dto as $key => $value ) {
-			$this->assertNotContains( 'job_manager_', $key );
+			$this->assertContains( 'job_manager_', $key );
 		}
 	}
 }

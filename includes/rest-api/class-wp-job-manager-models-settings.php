@@ -42,7 +42,6 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 
 	/**
 	 * Adds validations to fields requiring page ids.
-	 * Sets field's dto name.
 	 *
 	 * @param string                                               $field_name The fields name.
 	 * @param WPJM_REST_Model_Field_Declaration_Builder            $field_builder The field builder.
@@ -50,8 +49,6 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	 * @param WPJM_REST_Model_Field_Declaration_Collection_Builder $def The definition.
 	 */
 	protected function on_field_setup( $field_name, $field_builder, $field_data, $def ) {
-		$field_builder->dto_name( str_replace( 'job_manager_' , '', $field_name ) );
-
 		if ( in_array( $field_name, $this->get_fields_requiring_page_id_validation(), true ) ) {
 			$field_builder->typed( $def->type( 'integer' ) )
 				->validated_by( 'validate_page_id_belongs_to_valid_page' );
