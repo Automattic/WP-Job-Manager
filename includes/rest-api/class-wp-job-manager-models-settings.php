@@ -18,13 +18,9 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	/**
 	 * Fields that have to be valid page ids.
 	 *
-	 * @var array
+	 * @var array|null
 	 */
-	private $fields_requiring_page_id_validation = array(
-		'job_manager_submit_job_form_page_id',
-		'job_manager_job_dashboard_page_id',
-		'job_manager_jobs_page_id',
-	);
+	private $fields_requiring_page_id_validation = null;
 
 	/**
 	 * Get Job Manager Settings
@@ -56,7 +52,7 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	protected function on_field_setup( $field_name, $field_builder, $field_data, $def ) {
 		$field_builder->dto_name( str_replace( 'job_manager_' , '', $field_name ) );
 
-		if ( in_array( $field_name, $this->fields_requiring_page_id_validation, true ) ) {
+		if ( in_array( $field_name, $this->get_fields_requiring_page_id_validation(), true ) ) {
 			$field_builder->typed( $def->type( 'integer' ) )
 				->validated_by( 'validate_page_id_belongs_to_valid_page' );
 		}
@@ -89,5 +85,24 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	 */
 	function permissions_check( $request, $action ) {
 		return current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Lazy-load field names requiring Page ID Validation.
+	 *
+	 * @return array
+	 */
+	private function get_fields_requiring_page_id_validation() {
+		if ( null === $this->fields_requiring_page_id_validation ) {
+			$this->fields_requiring_page_id_validation = (array) apply_filters(
+				'wpjm_rest_api_settings_fields_requiring_page_id_validation',
+				array(
+					'job_manager_submit_job_form_page_id',
+					'job_manager_job_dashboard_page_id',
+					'job_manager_jobs_page_id',
+			) );
+		}
+
+		return $this->fields_requiring_page_id_validation;
 	}
 }
