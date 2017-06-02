@@ -17,6 +17,8 @@
 	$account_required             = job_manager_user_requires_account();
 	$registration_enabled         = job_manager_enable_registration();
 	$generate_username_from_email = job_manager_generate_username_from_email();
+    $field                        = array ( 'label' => 'Email', 'type' => 'text', );
+
 	?>
 	<fieldset>
 		<label><?php _e( 'Have an account?', 'wp-job-manager' ); ?></label>
@@ -37,14 +39,14 @@
 	<?php if ( $registration_enabled ) : ?>
 		<?php if ( ! $generate_username_from_email ) : ?>
 			<fieldset>
-				<label><?php _e( 'Username', 'wp-job-manager' ); ?> <?php echo apply_filters( 'submit_job_form_required_label', ( ! $account_required ) ? ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>' : '' ); ?></label>
+				<label><?php _e( 'Username', 'wp-job-manager' ); ?> <?php echo apply_filters( 'submit_job_form_required_label', ( ! $account_required ) ? ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>' : '', $field ); ?></label>
 				<div class="field">
 					<input type="text" class="input-text" name="create_account_username" id="account_username" value="<?php echo empty( $_POST['create_account_username'] ) ? '' : esc_attr( sanitize_text_field( stripslashes( $_POST['create_account_username'] ) ) ); ?>" />
 				</div>
 			</fieldset>
 		<?php endif; ?>
 		<fieldset>
-			<label><?php _e( 'Your email', 'wp-job-manager' ); ?> <?php echo apply_filters( 'submit_job_form_required_label', ( ! $account_required ) ? ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>' : '' ); ?></label>
+			<label><?php _e( 'Your email', 'wp-job-manager' ); ?> <?php echo apply_filters( 'submit_job_form_required_label', ( ! $account_required ) ? ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>' : '', $field ); ?></label>
 			<div class="field">
 				<input type="email" class="input-text" name="create_account_email" id="account_email" placeholder="<?php esc_attr_e( 'you@yourdomain.com', 'wp-job-manager' ); ?>" value="<?php echo empty( $_POST['create_account_email'] ) ? '' : esc_attr( sanitize_text_field( stripslashes( $_POST['create_account_email'] ) ) ); ?>" />
 			</div>
