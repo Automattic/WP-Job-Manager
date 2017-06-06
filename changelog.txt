@@ -1,3 +1,9 @@
+= 1.26.1 =
+* Enhancement: Add language using WordPress's current locale to geocode requests. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1007)
+* Fix: Allow attempts to use Google Maps Geocode API without an API key. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/998)
+* Fix: Issue affecting job expiry date when editing a job listing. (@spencerfinnell, @jom; https://github.com/Automattic/WP-Job-Manager/pull/1008)
+* Fix: Show correct total count of results on `[jobs]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1006)
+
 = 1.26.0 =
 * Enhancement: Warn the user if they're editing an existing job. (@donnchawp; https://github.com/Automattic/WP-Job-Manager/pull/847)
 * Enhancement: WP Admin Job Listing page's table is now responsive. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/906)

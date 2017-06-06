@@ -2,8 +2,8 @@
 Contributors: mikejolley, automattic, adamkheckler, annezazu, cena, chaselivingston, csonnek, davor.altman, drawmyface, erania-pinnera, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
-Tested up to: 4.7
-Stable tag: 1.26.0
+Tested up to: 4.8
+Stable tag: 1.26.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,12 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.26.1 =
+* Enhancement: Add language using WordPress's current locale to geocode requests. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1007)
+* Fix: Allow attempts to use Google Maps Geocode API without an API key. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/998)
+* Fix: Issue affecting job expiry date when editing a job listing. (@spencerfinnell, @jom; https://github.com/Automattic/WP-Job-Manager/pull/1008)
+* Fix: Show correct total count of results on `[jobs]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1006)
 
 = 1.26.0 =
 * Enhancement: Warn the user if they're editing an existing job. (@donnchawp; https://github.com/Automattic/WP-Job-Manager/pull/847)
