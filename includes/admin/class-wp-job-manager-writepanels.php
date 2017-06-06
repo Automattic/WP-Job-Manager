@@ -104,13 +104,14 @@ class WP_Job_Manager_Writepanels {
 				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
 				'priority'    => 10
 			);
+			$job_expires = get_post_meta( $post->ID, '_job_expires', true );
 			$fields['_job_expires'] = array(
 				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'priority'    => 11,
 				'classes'     => array( 'job-manager-datepicker' ),
 				/* translators: date format placeholder, see https://secure.php.net/date */
-				'placeholder' => metadata_exists( 'post', $post->ID, '_job_expires' ) ? _x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ) : calculate_job_expiry( $post->ID ),
-				'value'       => date( 'Y-m-d H:i:s', strtotime( get_post_meta( $post->ID, '_job_expires', true ) ) ),
+				'placeholder' => ! empty( $job_expires ) ? _x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ) : calculate_job_expiry( $post->ID ),
+				'value'       => ! empty( $job_expires ) ? date( 'Y-m-d H:i:s', strtotime( $job_expires ) ) : '',
 			);
 		}
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
