@@ -323,6 +323,53 @@ function get_the_job_type( $post = null ) {
 	return apply_filters( 'the_job_type', $type, $post );
 }
 
+/**
+ * Displays multiple job types for the listing.
+ *
+ * @since 1.26.2
+ *
+ * @param int|WP_Post $post Current post object.
+ * @param string      $separator String to join the term names with.
+ * @return string
+ */
+function the_job_types( $post = null, $separator = ', ' ) {
+	if ( ! get_option( 'job_manager_enable_types' ) ) {
+		return '';
+	}
+
+	// Return single if not enabled.
+	if ( ! get_option( 'job_manager_multi_job_type', false ) ) {
+		return the_job_type( $post );
+	}
+
+	$job_types = get_the_job_types( $post );
+
+	if ( $job_types ) {
+		$names = wp_list_pluck( $job_types, 'name' );
+
+		echo esc_html( implode( $separator, $names ) );
+	}
+}
+
+/**
+ * Gets the job type for the listing.
+ *
+ * @since 1.26.2
+ *
+ * @param int|WP_Post $post (default: null).
+ * @return false|array
+ */
+function get_the_job_types( $post = null ) {
+	$post = get_post( $post );
+
+	if ( 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	$types = get_the_terms( $post->ID, 'job_listing_type' );
+
+	return apply_filters( 'the_job_types', $types, $post );
+}
 
 /**
  * Displays the published date of the job listing.
