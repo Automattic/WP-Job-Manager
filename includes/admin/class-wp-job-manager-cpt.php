@@ -418,9 +418,13 @@ class WP_Job_Manager_CPT {
 
 		switch ( $column ) {
 			case "job_listing_type" :
-				$type = get_the_job_type( $post );
-				if ( $type )
-					echo '<span class="job-type ' . $type->slug . '">' . $type->name . '</span>';
+				$types = get_the_job_types( $post );
+
+				if ( $types && ! empty( $types ) ) {
+					foreach ( $types as $type ) {
+						echo '<span class="job-type ' . $type->slug . '">' . $type->name . '</span>';
+					}
+				}
 			break;
 			case "job_position" :
 				echo '<div class="job_position">';
