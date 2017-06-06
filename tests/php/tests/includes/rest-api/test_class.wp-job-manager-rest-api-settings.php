@@ -1,6 +1,6 @@
 <?php
 
-class WP_Test_WPJM_REST_API_Settings extends WPJM_REST_TestCase {
+class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 
     /**
      * @var int
@@ -41,6 +41,11 @@ class WP_Test_WPJM_REST_API_Settings extends WPJM_REST_TestCase {
         $response = $this->get( '/wpjm/v1/settings' );
         $this->assertResponseStatus( $response, 403 );
     }
+
+	function test_delete_not_found() {
+		$response = $this->delete( '/wpjm/v1/settings' );
+		$this->assertResponseStatus( $response, 404 );
+	}
 
     function test_get_response_status_success() {
         $response = $this->get( '/wpjm/v1/settings' );
@@ -119,15 +124,11 @@ class WP_Test_WPJM_REST_API_Settings extends WPJM_REST_TestCase {
         $response = $this->put( '/wpjm/v1/settings', $new_settings );
         $this->assertResponseStatus( $response, 400 );
 
+
         $response = $this->get( '/wpjm/v1/settings' );
         $data = $response->get_data();
         $this->assertArrayHasKey( 'job_manager_job_dashboard_page_id', $data );
         $this->assertEquals( $previous_setting, $data['job_manager_job_dashboard_page_id'] );
-    }
-
-    function test_delete_not_found() {
-        $response = $this->delete( '/wpjm/v1/settings' );
-        $this->assertResponseStatus( $response, 404 );
     }
 
     private function get_settings() {

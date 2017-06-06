@@ -10,6 +10,14 @@
  */
 class WPJM_REST_TestCase extends WPJM_BaseTest {
 
+	public static function setUpBeforeClass() {
+		/** @var WP_REST_Server $wp_rest_server */
+		global $wp_rest_server;
+		if ( !isset( $wp_rest_server ) ) {
+			$wp_rest_server = new WP_REST_Server();
+			do_action( 'rest_api_init' );
+		}
+	}
 	/**
 	 * A REST Server.
 	 *
@@ -49,10 +57,8 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
 		parent::setUp();
+		$this->rest_server = $wp_rest_server;
 		$this->environment = WPJM()->rest_api()->get_bootstrap()->environment();
-		$this->rest_server = new WP_REST_Server();
-		$wp_rest_server = $this->rest_server;
-		do_action( 'rest_api_init' );
 	}
 
 	/**
