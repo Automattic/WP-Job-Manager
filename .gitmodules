@@ -1,0 +1,3 @@
+[submodule "lib/mixtape"]
+	path = lib/mixtape
+	url = https://github.com/Automattic/mixtape.git

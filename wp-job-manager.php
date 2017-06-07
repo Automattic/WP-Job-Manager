@@ -49,7 +49,14 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Constructor.
+     * @var Mixtape|null The Mixtape instance responsible for WPJM's REST API
+     */
+	private $wpjm_rest_api;
+
+	/**
+	 * Constructor - get the plugin hooked in and ready
+	 * Performs plugin activation steps.
+	 * Initialize REST api on WP_Job_Manager::__construct
 	 */
 	public function __construct() {
 		// Define constants
@@ -66,6 +73,8 @@ class WP_Job_Manager {
 		include( 'includes/class-wp-job-manager-forms.php' );
 		include( 'includes/class-wp-job-manager-geocode.php' );
 		include( 'includes/class-wp-job-manager-cache-helper.php' );
+
+		add_action( 'init', array( $this, 'init_rest_api' ) );
 
 		if ( is_admin() ) {
 			include( 'includes/admin/class-wp-job-manager-admin.php' );
@@ -95,7 +104,42 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Performs plugin activation steps.
+	 * Initialize Mixtape and include WPJM REST api classes
+	 * @returns $this WP_Job_Manager
+	 */
+	public function init_rest_api() {
+		$wpjm_rest_enabled_constant = 'WPJM_REST_API_ENABLED';
+		if ( ! defined( $wpjm_rest_enabled_constant ) || ( false === (bool)constant( $wpjm_rest_enabled_constant ) ) ) {
+			return $this;
+		}
+		include_once( 'lib/mixtape/loader.php' );
+
+		$this->wpjm_rest_api = Mixtape::create( array(
+			'prefix' => 'Mixtape',
+			'base_dir' => untrailingslashit( path_join( dirname( __FILE__ ), 'lib/mixtape' ) ),
+			'is_debugging' => true,
+		) )->load();
+
+		include_once( 'includes/rest-api/class-wp-job-manager-models-settings.php' );
+		include_once( 'includes/rest-api/class-wp-job-manager-rest-api-endpoint-version.php' );
+
+		$env = $this->wpjm_rest_api->environment();
+		$env->define_model( new WP_Job_Manager_Models_Settings(), new Mixtape_Data_Store_Option() );
+
+		$bundle = $env->define_bundle('wpjm/v1')
+			->add_endpoint(
+				$env->crud( $env->model_definition( 'WP_Job_Manager_Models_Settings' ), '/settings' )
+					->with_class_name( 'Mixtape_Rest_Api_Controller_Settings' )
+			)
+			->add_endpoint( $env->endpoint( 'WP_Job_Manager_Rest_Api_Endpoint_Version' ) );
+		$env->add_rest_bundle( $bundle );
+		$env->start();
+
+		return $this;
+	}
+
+	/**
+	 * Called on plugin activation
 	 */
 	public function activate() {
 		WP_Job_Manager_Ajax::add_endpoint();
