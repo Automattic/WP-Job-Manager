@@ -434,7 +434,7 @@ class WP_Job_Manager_Settings {
 			var goto_hash = window.location.hash;
 			if ( goto_hash ) {
 				var the_tab = jQuery( 'a[href="' + goto_hash + '"]' );
-				if ( the_tab ) {
+				if ( the_tab.length > 0 ) {
 					the_tab.click();
 				} else {
 					jQuery( '.nav-tab-wrapper a:first' ).click();
