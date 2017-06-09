@@ -524,6 +524,24 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 endif;
 
 /**
+ * Checks if the user can upload a file via the Ajax endpoint.
+ *
+ * @since 1.26.2
+ * @return bool
+ */
+function job_manager_user_can_upload_file_via_ajax() {
+	$can_upload = is_user_logged_in() && job_manager_user_can_post_job();
+
+	/**
+	 * Override ability of a user to upload a file via Ajax.
+	 *
+	 * @since 1.26.2
+	 * @param bool $can_upload True if they can upload files from Ajax endpoint.
+	 */
+	return apply_filters( 'job_manager_user_can_upload_file_via_ajax', $can_upload );
+}
+
+/**
  * Checks if an the user can post a job. If accounts are required, and reg is enabled, users can post (they signup at the same time).
  *
  * @since 1.5.1
