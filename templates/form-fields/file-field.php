@@ -4,7 +4,7 @@ $allowed_mime_types = array_keys( ! empty( $field['allowed_mime_types'] ) ? $fie
 $field_name         = isset( $field['name'] ) ? $field['name'] : $key;
 $field_name         .= ! empty( $field['multiple'] ) ? '[]' : '';
 
-if ( ! empty( $field['ajax'] ) ) {
+if ( ! empty( $field['ajax'] ) && job_manager_user_can_upload_file_via_ajax() ) {
 	wp_enqueue_script( 'wp-job-manager-ajax-file-upload' );
 	$classes[] = 'wp-job-manager-file-upload';
 }
