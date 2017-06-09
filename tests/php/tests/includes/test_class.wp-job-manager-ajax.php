@@ -165,7 +165,9 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		$this->assertFileExists( $tmp_name );
 
 		// Add extra filters
+		add_filter( 'job_manager_user_can_upload_file_via_ajax', '__return_true' );
 		add_filter( 'submit_job_wp_handle_upload_overrides', array( $this, 'override_upload_action' ) );
+
 		// Run the action
 		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
 		ob_start();
@@ -187,6 +189,46 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		@unlink( $result['files'][0]['file'] );
 	}
 
+	/**
+	 * @since 1.26.2
+	 * @covers WP_Job_Manager_Ajax::upload_file
+	 */
+	public function test_upload_file_without_permission() {
+		$instance = WP_Job_Manager_Ajax::instance();
+		$iptc_file = DIR_TESTDATA . '/images/test-image-iptc.jpg';
+
+		// Make a copy of this file as it gets moved during the file upload
+		$tmp_name = wp_tempnam( $iptc_file );
+
+		copy( $iptc_file, $tmp_name );
+
+		$_FILES['upload'] = array(
+			'tmp_name' => $tmp_name,
+			'name'     => 'test-image-iptc.jpg',
+			'type'     => 'image/jpeg',
+			'error'    => 0,
+			'size'     => filesize( $iptc_file ),
+		);
+		$this->assertFileExists( $tmp_name );
+
+		// Add extra filters
+		add_filter( 'job_manager_user_can_upload_file_via_ajax', '__return_false' );
+		add_filter( 'submit_job_wp_handle_upload_overrides', array( $this, 'override_upload_action' ) );
+
+		// Run the action
+		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		ob_start();
+		$instance->upload_file();
+		$result = json_decode( ob_get_clean(), true );
+		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		unset( $_FILES['upload'] );
+
+		// Check result
+		$this->assertNotEmpty( $result );
+		$this->assertArrayHasKey( 'success', $result );
+		$this->assertFalse( $result['success'] );
+	}
+
 
 	/**
 	 * @since 1.26.0
@@ -204,7 +246,9 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		);
 
 		// Add extra filters
+		add_filter( 'job_manager_user_can_upload_file_via_ajax', '__return_true' );
 		add_filter( 'submit_job_wp_handle_upload_overrides', array( $this, 'override_upload_action' ) );
+
 		// Run the action
 		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
 		ob_start();
