@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic, adamkheckler, annezazu, cena, chaselivings
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.1
 Tested up to: 4.8
-Stable tag: 1.26.1
+Stable tag: 1.26.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,10 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.26.2 =
+* Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.  (https://github.com/Automattic/WP-Job-Manager/pull/1020)
+* Fix: Escape post title in WP Admin's Job Listings page and template segments. (Props to @EhsanCod3r; https://github.com/Automattic/WP-Job-Manager/pull/1026)
 
 = 1.26.1 =
 * Enhancement: Add language using WordPress's current locale to geocode requests. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1007)
