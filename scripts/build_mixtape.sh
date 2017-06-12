@@ -41,13 +41,15 @@ if [ "$MIXTAPE_PATH" == "$MIXTAPE_TEMP_PATH" ]; then
       exit 1;
     }
     cd "$MIXTAPE_PATH" && git checkout master >/dev/null 2>&1;
-    if [$? -ne 0 ]; then
+    if [ "$?" -ne 0 ]; then
       echo "Can't run git checkout command on $MIXTAPE_PATH" >&2;
       exit 1;
     fi
   fi
   cd "$MIXTAPE_PATH" && git fetch 2>&1;
 fi
+
+cd "$SCRIPT_ROOT";
 
 expect_directory "$MIXTAPE_PATH";
 
