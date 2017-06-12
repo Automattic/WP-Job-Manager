@@ -1,0 +1,7 @@
+<wpml-config>
+	<custom-fields>
+		<custom-field action="copy">_job_expires</custom-field>
+		<custom-field action="copy">_job_duration</custom-field>
+		<custom-field action="copy">_filled</custom-field>
+	</custom-fields>
+</wpml-config>
