@@ -11,7 +11,7 @@
 
 	<div class="job_summary_content">
 
-		<h1><?php the_title(); ?></h1>
+		<h1><?php echo esc_html( get_the_title() ); ?></h1>
 
 		<p class="meta"><?php the_job_location( false ); ?> &mdash; <?php the_job_publish_date(); ?></p>
 

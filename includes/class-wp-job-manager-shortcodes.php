@@ -106,7 +106,7 @@ class WP_Job_Manager_Shortcodes {
 						update_post_meta( $job_id, '_filled', 1 );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been filled', 'wp-job-manager' ), $job->post_title ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been filled', 'wp-job-manager' ), esc_html( $job->post_title ) ) . '</div>';
 						break;
 					case 'mark_not_filled' :
 						// Check status
@@ -118,14 +118,14 @@ class WP_Job_Manager_Shortcodes {
 						update_post_meta( $job_id, '_filled', 0 );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), $job->post_title ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), esc_html( $job->post_title ) ) . '</div>';
 						break;
 					case 'delete' :
 						// Trash it
 						wp_trash_post( $job_id );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been deleted', 'wp-job-manager' ), $job->post_title ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been deleted', 'wp-job-manager' ), esc_html( $job->post_title ) ) . '</div>';
 
 						break;
 					case 'duplicate' :
@@ -450,7 +450,7 @@ class WP_Job_Manager_Shortcodes {
 
 			<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
 
-				<h1><?php the_title(); ?></h1>
+				<h1><?php echo esc_html( get_the_title() ); ?></h1>
 
 				<?php get_job_manager_template_part( 'content-single', 'job_listing' ); ?>
 
