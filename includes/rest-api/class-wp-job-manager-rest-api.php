@@ -84,20 +84,13 @@ class WP_Job_Manager_REST_API {
 	 * @param WPJM_REST_Environment $env The Environment.
 	 */
 	function define_api( $env ) {
-		$env->define()
-			->model( 'WP_Job_Manager_Models_Settings' )
-			->with_data_store(
-				$env->define()
-					->data_store()
-					->option()
-			);
+		$env->define_model( 'WP_Job_Manager_Models_Settings' )
+			->with_data_store( $env->data_store()->option() );
 
-		$wpjm_v1 = $env->define()->rest_api( 'wpjm/v1' );
+		$wpjm_v1 = $env->rest_api( 'wpjm/v1' );
 
 		$wpjm_v1->endpoint()
-			->for_model(
-				$env->get()
-			->model( 'WP_Job_Manager_Models_Settings' ) )
+			->for_model( $env->model( 'WP_Job_Manager_Models_Settings' ) )
 			->with_base( '/settings' )
 			->with_class( 'WPJM_REST_Controller_Settings' );
 	}

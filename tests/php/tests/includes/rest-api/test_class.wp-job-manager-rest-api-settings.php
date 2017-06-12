@@ -132,9 +132,7 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
     }
 
     private function get_settings() {
-        return $this->environment()
-            ->get()
-            ->model( WP_Job_Manager_Models_Settings::class )
+        return $this->environment()->model( 'WP_Job_Manager_Models_Settings' )
             ->get_data_store()->get_entity(-1);
     }
 }
