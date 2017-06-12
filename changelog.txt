@@ -1,3 +1,7 @@
+= 1.26.2 =
+* Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.  (https://github.com/Automattic/WP-Job-Manager/pull/1020)
+* Fix: Escape post title in WP Admin's Job Listings page and template segments. (Props to @EhsanCod3r; https://github.com/Automattic/WP-Job-Manager/pull/1026)
+
 = 1.26.1 =
 * Enhancement: Add language using WordPress's current locale to geocode requests. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1007)
 * Fix: Allow attempts to use Google Maps Geocode API without an API key. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/998)

@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.26.0\n"
+"Project-Id-Version: WP Job Manager 1.26.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager\n"
-"POT-Creation-Date: 2017-05-31 22:26:08+00:00\n"
+"POT-Creation-Date: 2017-06-12 15:22:01+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -173,9 +173,9 @@ msgid "Approve"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:405
-#: includes/admin/class-wp-job-manager-writepanels.php:248
-#: includes/admin/class-wp-job-manager-writepanels.php:251
-#: includes/admin/class-wp-job-manager-writepanels.php:254
+#: includes/admin/class-wp-job-manager-writepanels.php:249
+#: includes/admin/class-wp-job-manager-writepanels.php:252
+#: includes/admin/class-wp-job-manager-writepanels.php:255
 msgid "View"
 msgstr ""
 
@@ -753,47 +753,47 @@ msgid ""
 "differently."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:108
+#: includes/admin/class-wp-job-manager-writepanels.php:109
 msgid "Listing Expiry Date"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:118
+#: includes/admin/class-wp-job-manager-writepanels.php:119
 msgid "Posted by"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:151
+#: includes/admin/class-wp-job-manager-writepanels.php:152
 msgid "%s Data"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:191
+#: includes/admin/class-wp-job-manager-writepanels.php:192
 msgid "Most Used"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:248
-#: includes/admin/class-wp-job-manager-writepanels.php:251
-#: includes/admin/class-wp-job-manager-writepanels.php:254
+#: includes/admin/class-wp-job-manager-writepanels.php:249
+#: includes/admin/class-wp-job-manager-writepanels.php:252
+#: includes/admin/class-wp-job-manager-writepanels.php:255
 msgid "Use file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:248
-#: includes/admin/class-wp-job-manager-writepanels.php:251
-#: includes/admin/class-wp-job-manager-writepanels.php:254
+#: includes/admin/class-wp-job-manager-writepanels.php:249
+#: includes/admin/class-wp-job-manager-writepanels.php:252
+#: includes/admin/class-wp-job-manager-writepanels.php:255
 msgid "Upload"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:254
+#: includes/admin/class-wp-job-manager-writepanels.php:255
 msgid "Add file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:427
+#: includes/admin/class-wp-job-manager-writepanels.php:428
 msgid "Guest User"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:429
+#: includes/admin/class-wp-job-manager-writepanels.php:430
 msgid "Change"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:433
+#: includes/admin/class-wp-job-manager-writepanels.php:434
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
 msgstr ""
 
@@ -802,6 +802,10 @@ msgid "Search completed. Found %d matching record."
 msgid_plural "Search completed. Found %d matching records."
 msgstr[0] ""
 msgstr[1] ""
+
+#: includes/class-wp-job-manager-ajax.php:267
+msgid "You must be logged in to upload files using this method."
+msgstr ""
 
 #: includes/class-wp-job-manager-geocode.php:221
 msgid "No results found"
@@ -1119,7 +1123,7 @@ msgid "%s is invalid"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:311
-#: wp-job-manager-functions.php:859
+#: wp-job-manager-functions.php:877
 msgid "\"%s\" (filetype %s) needs to be one of the following file types: %s"
 msgstr ""
 
@@ -1249,12 +1253,12 @@ msgid "Maximum file size: %s."
 msgstr ""
 
 #: templates/form-fields/multiselect-field.php:3
-#: wp-job-manager-functions.php:647
+#: wp-job-manager-functions.php:665
 msgid "No results match"
 msgstr ""
 
 #: templates/form-fields/multiselect-field.php:3
-#: wp-job-manager-functions.php:648
+#: wp-job-manager-functions.php:666
 msgid "Select Some Options"
 msgstr ""
 
@@ -1371,11 +1375,11 @@ msgstr ""
 msgid "This email is already registered, please choose another one."
 msgstr ""
 
-#: wp-job-manager-functions.php:646
+#: wp-job-manager-functions.php:664
 msgid "Choose a category&hellip;"
 msgstr ""
 
-#: wp-job-manager-functions.php:861
+#: wp-job-manager-functions.php:879
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -1451,7 +1455,7 @@ msgctxt "Default page title (wizard)"
 msgid "Jobs"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:112
+#: includes/admin/class-wp-job-manager-writepanels.php:113
 #. translators: date format placeholder, see https:secure.php.net/date
 msgctxt "Date format placeholder."
 msgid "yyyy-mm-dd"
