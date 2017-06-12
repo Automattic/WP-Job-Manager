@@ -7,9 +7,7 @@ class WP_Test_WP_Job_Manager_Models_Settings extends WPJM_REST_TestCase {
 	}
 
 	function test_validate_fail_when_invalid_page_id_settings() {
-		$setting_definition = $this->environment()
-			->get()
-			->model( WP_Job_Manager_Models_Settings::class );
+		$setting_definition = $this->environment()->model( 'WP_Job_Manager_Models_Settings' );
 		$settings = $setting_definition->get_data_store()->get_entity( null );
 		$this->assertNotNull( $settings );
 		$settings_fields_with_page_ids = array(
@@ -28,9 +26,7 @@ class WP_Test_WP_Job_Manager_Models_Settings extends WPJM_REST_TestCase {
 	}
 
 	function test_dto_name_for_field_does_not_remove_job_manager_prefix() {
-		$setting_definition = $this->environment()
-			->get()
-			->model( 'WP_Job_Manager_Models_Settings' );
+		$setting_definition = $this->environment()->model( 'WP_Job_Manager_Models_Settings' );
 		$settings = $setting_definition->get_data_store()->get_entity( null );
 		$this->assertNotNull( $settings );
 		$dto = $setting_definition->model_to_dto( $settings );
