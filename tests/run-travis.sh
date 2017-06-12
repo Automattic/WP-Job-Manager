@@ -1,36 +1,25 @@
 #!/bin/bash
 
+set -e
+
+run_phpunit_for() {
+  test_branch="$1";
+  echo "Testing on $test_branch..."
+  export WP_TESTS_DIR="/tmp/$test_branch/tests/phpunit"
+  cd "/tmp/$test_branch/src/wp-content/plugins/$PLUGIN_SLUG"
+  ./scripts/build_mixtape.sh >/dev/null 2>&1
+
+  phpunit
+
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
+}
+
 if [ "$WP_TRAVISCI" == "phpunit" ]; then
-
-    echo "Testing on WordPress master..."
-    export WP_TESTS_DIR=/tmp/wordpress-master/tests/phpunit
-    cd /tmp/wordpress-master/src/wp-content/plugins/$PLUGIN_SLUG
-    if $WP_TRAVISCI; then
-	# Everything is fine
-	:
-    else
-        exit 1
-    fi
-
-    echo "Testing on WordPress stable..."
-    export WP_TESTS_DIR=/tmp/wordpress-latest/tests/phpunit
-    cd /tmp/wordpress-latest/src/wp-content/plugins/$PLUGIN_SLUG
-    if $WP_TRAVISCI; then
-	# Everything is fine
-	:
-    else
-        exit 1
-    fi
-
-    echo "Testing on WordPress stable minus one..."
-    export WP_TESTS_DIR=/tmp/wordpress-previous/tests/phpunit
-    cd /tmp/wordpress-previous/src/wp-content/plugins/$PLUGIN_SLUG
-    if $WP_TRAVISCI; then
-	# Everything is fine
-	:
-    else
-        exit 1
-    fi
+    run_phpunit_for "wordpress-master"
+    run_phpunit_for "wordpress-latest"
+    run_phpunit_for "wordpress-previous"
 else
 
     gem install less
