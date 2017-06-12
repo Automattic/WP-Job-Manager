@@ -48,7 +48,6 @@ before_script:
     - nvm install 6
     - nvm use 6
     - ./tests/prepare-wordpress.sh
-    - ./scripts/build_mixtape.sh
     - mysql -e "set global wait_timeout = 3600;"
 
 script:

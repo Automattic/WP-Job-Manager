@@ -86,7 +86,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param int              $status_code Expected status code.
 	 */
 	function assertResponseStatus( $response, $status_code ) {
-		$this->assertInstanceOf( WP_REST_Response::class, $response );
+		$this->assertInstanceOf( 'WP_REST_Response', $response );
 		$this->assertEquals( $status_code, $response->get_status() );
 	}
 

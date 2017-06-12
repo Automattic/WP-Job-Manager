@@ -7,7 +7,6 @@ run_phpunit_for() {
   echo "Testing on $test_branch..."
   export WP_TESTS_DIR="/tmp/$test_branch/tests/phpunit"
   cd "/tmp/$test_branch/src/wp-content/plugins/$PLUGIN_SLUG"
-
   phpunit
 
   if [ $? -ne 0 ]; then
