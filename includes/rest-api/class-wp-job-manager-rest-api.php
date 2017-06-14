@@ -85,7 +85,7 @@ class WP_Job_Manager_REST_API {
 	 */
 	function define_api( $env ) {
 		$env->define_model( 'WP_Job_Manager_Models_Settings' )
-			->with_data_store( $env->data_store()->option() );
+			->with_data_store( $env->data_store()->with_class( 'WPJM_REST_Data_Store_Option' ) );
 
 		$wpjm_v1 = $env->rest_api( 'wpjm/v1' );
 
