@@ -5,7 +5,7 @@
 		<h2><?php _e( 'Preview', 'wp-job-manager' ); ?></h2>
 	</div>
 	<div class="job_listing_preview single_job_listing">
-		<h1><?php echo esc_html( get_the_title() ); ?></h1>
+		<h1><?php wpjm_the_job_title(); ?></h1>
 
 		<?php get_job_manager_template_part( 'content-single', 'job_listing' ); ?>
 

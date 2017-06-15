@@ -20,9 +20,9 @@
 							<td class="<?php echo esc_attr( $key ); ?>">
 								<?php if ('job_title' === $key ) : ?>
 									<?php if ( $job->post_status == 'publish' ) : ?>
-										<a href="<?php echo get_permalink( $job->ID ); ?>"><?php echo esc_html( $job->post_title ); ?></a>
+										<a href="<?php echo get_permalink( $job->ID ); ?>"><?php wpjm_the_job_title( $job ); ?></a>
 									<?php else : ?>
-										<?php echo esc_html( $job->post_title ); ?> <small>(<?php the_job_status( $job ); ?>)</small>
+										<?php wpjm_the_job_title( $job ); ?> <small>(<?php the_job_status( $job ); ?>)</small>
 									<?php endif; ?>
 									<ul class="job-dashboard-actions">
 										<?php

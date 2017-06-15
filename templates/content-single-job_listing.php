@@ -1,6 +1,6 @@
 <?php global $post; ?>
 <div class="single_job_listing" itemscope itemtype="http://schema.org/JobPosting">
-	<meta itemprop="title" content="<?php echo esc_attr( $post->post_title ); ?>" />
+	<meta itemprop="title" content="<?php echo esc_attr( wpjm_get_the_job_title( $post ) ); ?>" />
 
 	<?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
 		<div class="job-manager-info"><?php _e( 'This listing has expired.', 'wp-job-manager' ); ?></div>
