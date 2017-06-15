@@ -95,13 +95,17 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 *
 	 * @param string $endpoint The Endpoint.
 	 * @param string $method Http mehod.
-	 * @param array  $args Any Data/Args.
+	 * @param array  $args_or_body Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function request( $endpoint, $method, $args = array() ) {
+	function request( $endpoint, $method, $args_or_body = array() ) {
 		$request = new WP_REST_Request( $method, $endpoint );
-		foreach ( $args as $key => $value ) {
-			$request->set_param( $key, $value );
+		if ( is_array( $args_or_body ) ) {
+			foreach ( $args_or_body as $key => $value ) {
+				$request->set_param( $key, $value );
+			}
+		} else {
+			$request->set_body( $args_or_body );
 		}
 		return $this->rest_server()->dispatch( $request );
 	}
