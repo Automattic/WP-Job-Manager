@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class WP_Job_Manager_REST_API
  */
 class WP_Job_Manager_REST_API {
+
 	/**
 	 * Is the api enabled?
 	 *
@@ -46,11 +47,16 @@ class WP_Job_Manager_REST_API {
 	 * Bootstrap our REST Api
 	 */
 	private function bootstrap() {
-		include_once( $this->base_dir . 'lib/wpjm_rest/class-wpjm-rest-bootstrap.php' );
+		include_once $this->base_dir . 'lib/wpjm_rest/class-wpjm-rest-bootstrap.php';
 
 		$this->wpjm_rest_api = WPJM_REST_Bootstrap::create()->load();
 
-		include_once( 'class-wp-job-manager-models-settings.php' );
+		include_once 'class-wp-job-manager-models-settings.php';
+		include_once 'class-wp-job-manager-models-configuration.php';
+		include_once 'class-wp-job-manager-filters-configuration.php';
+		include_once 'class-wp-job-manager-data-stores-configuration.php';
+		include_once 'class-wp-job-manager-controllers-configuration.php';
+		include_once 'class-wp-job-manager-permissions-any.php';
 	}
 
 	/**
@@ -84,14 +90,24 @@ class WP_Job_Manager_REST_API {
 	 * @param WPJM_REST_Environment $env The Environment.
 	 */
 	function define_api( $env ) {
+		// Models.
 		$env->define_model( 'WP_Job_Manager_Models_Settings' )
-			->with_data_store( $env->data_store()->with_class( 'WPJM_REST_Data_Store_Option' ) );
+			->with_data_store( $env->data_store( 'WPJM_REST_Data_Store_Option' ) );
+		$env->define_model( 'WP_Job_Manager_Models_Configuration' )
+			->with_data_store( $env->data_store( 'WP_Job_Manager_Data_Stores_Configuration' ) );
+		$env->define_model( 'WP_Job_Manager_Filters_Configuration' )
+			->with_permissions_provider( new WP_Job_Manager_Permissions_Any() );
 
+		// Endpoints.
 		$wpjm_v1 = $env->rest_api( 'wpjm/v1' );
-
 		$wpjm_v1->endpoint()
 			->for_model( $env->model( 'WP_Job_Manager_Models_Settings' ) )
 			->with_base( '/settings' )
 			->with_class( 'WPJM_REST_Controller_Settings' );
+		$wpjm_v1->endpoint()
+			->for_model( $env->model( 'WP_Job_Manager_Models_Configuration' ) )
+			->with_base( '/configuration' )
+			->with_class( 'WP_Job_Manager_Controllers_Configuration' );
 	}
 }
+
