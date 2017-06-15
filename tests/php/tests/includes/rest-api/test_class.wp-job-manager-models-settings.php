@@ -37,3 +37,4 @@ class WP_Test_WP_Job_Manager_Models_Settings extends WPJM_REST_TestCase {
 		}
 	}
 }
+
