@@ -1,7 +1,7 @@
 <li <?php job_listing_class(); ?>>
 	<a href="<?php the_job_permalink(); ?>">
 		<div class="position">
-			<h3><?php echo esc_html( get_the_title() ); ?></h3>
+			<h3><?php wpjm_the_job_title(); ?></h3>
 		</div>
 		<ul class="meta">
 			<li class="location"><?php the_job_location( false ); ?></li>

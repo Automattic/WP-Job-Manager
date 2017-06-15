@@ -162,10 +162,10 @@ class WP_Job_Manager_CPT {
 				$approved_jobs = array_map( 'absint', $approved_jobs );
 				$titles        = array();
 				foreach ( $approved_jobs as $job_id )
-					$titles[] = get_the_title( $job_id );
+					$titles[] = wpjm_get_the_job_title( $job_id );
 				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
 			} else {
-				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . get_the_title( $approved_jobs ) . '&quot;' ) . '</p></div>';
+				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . wpjm_get_the_job_title( $approved_jobs ) . '&quot;' ) . '</p></div>';
 			}
 		}
 	}
@@ -182,10 +182,10 @@ class WP_Job_Manager_CPT {
 				$expired_jobs = array_map( 'absint', $expired_jobs );
 				$titles        = array();
 				foreach ( $expired_jobs as $job_id )
-					$titles[] = get_the_title( $job_id );
+					$titles[] = wpjm_get_the_job_title( $job_id );
 				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
 			} else {
-				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . get_the_title( $expired_jobs ) . '&quot;' ) . '</p></div>';
+				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . wpjm_get_the_job_title( $expired_jobs ) . '&quot;' ) . '</p></div>';
 			}
 		}
 	}
@@ -346,7 +346,7 @@ class WP_Job_Manager_CPT {
 			break;
 			case "job_position" :
 				echo '<div class="job_position">';
-				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'ID: %d', 'wp-job-manager' ), $post->ID ) . '">' . esc_html( $post->post_title ) . '</a>';
+				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'ID: %d', 'wp-job-manager' ), $post->ID ) . '">' . wpjm_get_the_job_title() . '</a>';
 
 				echo '<div class="company">';
 

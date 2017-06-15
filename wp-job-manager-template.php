@@ -244,6 +244,45 @@ function get_the_job_application_method( $post = null ) {
 
 	return apply_filters( 'the_job_application_method', $method, $post );
 }
+
+/**
+ * Displays the job title for the listing.
+ *
+ * @since 1.26.3
+ * @param int|WP_Post $post
+ * @return string
+ */
+function wpjm_the_job_title( $post = null ) {
+	if ( $job_title = wpjm_get_the_job_title( $post ) ) {
+		echo $job_title;
+	}
+}
+
+/**
+ * Gets the job title for the listing.
+ *
+ * @since 1.26.3
+ * @param int|WP_Post $post (default: null)
+ * @return string|bool|null
+ */
+function wpjm_get_the_job_title( $post = null ) {
+	$post = get_post( $post );
+	if ( $post->post_type !== 'job_listing' ) {
+		return;
+	}
+
+	$title = esc_html( get_the_title( $post ) );
+
+	/**
+	 * Filter for the job title.
+	 *
+	 * @since 1.26.3
+	 * @param string      $title Title to be filtered.
+	 * @param int|WP_Post $post
+	 */
+	return apply_filters( 'wpjm_the_job_title', $title, $post );
+}
+
 /**
  * Displays the job type for the listing.
  *
