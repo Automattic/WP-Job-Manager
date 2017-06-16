@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Models_Settings
  */
-class WP_Job_Manager_Models_Configuration extends WPJM_REST_Model_Declaration
+class WP_Job_Manager_Models_Status extends WPJM_REST_Model_Declaration
 	implements WPJM_REST_Interfaces_Permissions_Provider {
 
 

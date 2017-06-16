@@ -1,6 +1,6 @@
 <?php
 /**
- * Declaration of our Configuration Model
+ * Declaration of our Status Model
  *
  * @package WPJM/REST
  */
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class WP_Job_Manager_Controllers_Configuration
+ * Class WP_Job_Manager_Controllers_Status
  */
-class WP_Job_Manager_Controllers_Configuration extends WPJM_REST_Controller_Model
+class WP_Job_Manager_Controllers_Status extends WPJM_REST_Controller_Model
 	implements WPJM_REST_Interfaces_Controller {
 
 
@@ -37,7 +37,7 @@ class WP_Job_Manager_Controllers_Configuration extends WPJM_REST_Controller_Mode
 	function index( $request ) {
 		$params = $request->get_params();
 		$filter = $this->environment()
-			->model( 'WP_Job_Manager_Filters_Configuration' )
+			->model( 'WP_Job_Manager_Filters_Status' )
 			->new_from_array( $params );
 
 		if ( is_wp_error( $filter ) ) {

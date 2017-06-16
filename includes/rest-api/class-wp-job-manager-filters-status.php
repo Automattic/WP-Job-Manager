@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Models_Settings
  */
-class WP_Job_Manager_Filters_Configuration extends WPJM_REST_Model_Declaration {
+class WP_Job_Manager_Filters_Status extends WPJM_REST_Model_Declaration {
 
 	/**
 	 * Declare our fields
@@ -23,7 +23,7 @@ class WP_Job_Manager_Filters_Configuration extends WPJM_REST_Model_Declaration {
 	 */
 	function declare_fields( $def ) {
 		return array(
-		 $def->field( 'keys', 'The configuration keys to return' )
+		 $def->field( 'keys', 'The status keys to return' )
 			 ->typed( $def->type( 'array:string' ) )
 			 ->before_set( 'explode_keys' )
 			 ->with_default( array() ),

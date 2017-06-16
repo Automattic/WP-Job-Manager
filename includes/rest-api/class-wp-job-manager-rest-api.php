@@ -52,10 +52,10 @@ class WP_Job_Manager_REST_API {
 		$this->wpjm_rest_api = WPJM_REST_Bootstrap::create()->load();
 
 		include_once 'class-wp-job-manager-models-settings.php';
-		include_once 'class-wp-job-manager-models-configuration.php';
-		include_once 'class-wp-job-manager-filters-configuration.php';
-		include_once 'class-wp-job-manager-data-stores-configuration.php';
-		include_once 'class-wp-job-manager-controllers-configuration.php';
+		include_once 'class-wp-job-manager-models-status.php';
+		include_once 'class-wp-job-manager-filters-status.php';
+		include_once 'class-wp-job-manager-data-stores-status.php';
+		include_once 'class-wp-job-manager-controllers-status.php';
 		include_once 'class-wp-job-manager-permissions-any.php';
 	}
 
@@ -93,9 +93,9 @@ class WP_Job_Manager_REST_API {
 		// Models.
 		$env->define_model( 'WP_Job_Manager_Models_Settings' )
 			->with_data_store( $env->data_store( 'WPJM_REST_Data_Store_Option' ) );
-		$env->define_model( 'WP_Job_Manager_Models_Configuration' )
-			->with_data_store( $env->data_store( 'WP_Job_Manager_Data_Stores_Configuration' ) );
-		$env->define_model( 'WP_Job_Manager_Filters_Configuration' )
+		$env->define_model( 'WP_Job_Manager_Models_Status' )
+			->with_data_store( $env->data_store( 'WP_Job_Manager_Data_Stores_Status' ) );
+		$env->define_model( 'WP_Job_Manager_Filters_Status' )
 			->with_permissions_provider( new WP_Job_Manager_Permissions_Any() );
 
 		// Endpoints.
@@ -105,9 +105,9 @@ class WP_Job_Manager_REST_API {
 			->with_base( '/settings' )
 			->with_class( 'WPJM_REST_Controller_Settings' );
 		$wpjm_v1->endpoint()
-			->for_model( $env->model( 'WP_Job_Manager_Models_Configuration' ) )
-			->with_base( '/configuration' )
-			->with_class( 'WP_Job_Manager_Controllers_Configuration' );
+			->for_model( $env->model( 'WP_Job_Manager_Models_Status' ) )
+			->with_base( '/status' )
+			->with_class( 'WP_Job_Manager_Controllers_Status' );
 	}
 }
 

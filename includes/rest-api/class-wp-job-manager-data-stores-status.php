@@ -1,6 +1,6 @@
 <?php
 /**
- * Declaration of our Configuration Data Store
+ * Declaration of our Status Data Store
  *
  * @package WPJM/REST
  */
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class WP_Job_Manager_Data_Stores_Configuration
+ * Class WP_Job_Manager_Data_Stores_Status
  */
-class WP_Job_Manager_Data_Stores_Configuration extends WPJM_REST_Data_Store_Abstract
+class WP_Job_Manager_Data_Stores_Status extends WPJM_REST_Data_Store_Abstract
 	implements WPJM_REST_Interfaces_Data_Store {
 
 	/**
@@ -47,7 +47,7 @@ class WP_Job_Manager_Data_Stores_Configuration extends WPJM_REST_Data_Store_Abst
 	 * @return mixed
 	 */
 	public function delete( $model, $args = array() ) {
-		// TODO: Implement delete() method.
+		return true;
 	}
 
 	/**
