@@ -727,24 +727,44 @@ function job_listing_class( $class = '', $post_id = null ) {
  * @return array
  */
 function get_job_listing_class( $class = '', $post_id = null ) {
-	if ( ! get_option( 'job_manager_enable_types' ) ) {
-		return get_post_class( array( 'job_classes' ), $post_id );
-	}
-
 	$post = get_post( $post_id );
 
-	if ( $post->post_type !== 'job_listing' ) {
+	if (  empty( $post ) || 'job_listing' !== $post->post_type ) {
 		return array();
 	}
 
 	$classes = array();
 
-	if ( empty( $post ) ) {
+	if ( ! empty( $class ) ) {
+		if ( ! is_array( $class ) ) {
+			$class = preg_split( '#\s+#', $class );
+		}
+		$classes = array_merge( $classes, $class );
+	}
+
+	return get_post_class( $classes, $post->ID );
+}
+
+/**
+ * Adds post classes with meta info and the status of the job listing.
+ *
+ * @since 1.26.3
+ *
+ * @param array $classes An array of post classes.
+ * @param array $class   An array of additional classes added to the post.
+ * @param int   $post_id The post ID.
+ * @return array
+ */
+function wpjm_add_post_class( $classes, $class, $post_id ) {
+	$post = get_post( $post_id );
+
+	if (  empty( $post ) || 'job_listing' !== $post->post_type ) {
 		return $classes;
 	}
 
 	$classes[] = 'job_listing';
-	if ( $job_type = get_the_job_type() ) {
+
+	if ( get_option( 'job_manager_enable_types' ) && ( $job_type = get_the_job_type( $post ) ) ) {
 		$classes[] = 'job-type-' . sanitize_title( $job_type->name );
 	}
 
@@ -756,15 +776,9 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 		$classes[] = 'job_position_featured';
 	}
 
-	if ( ! empty( $class ) ) {
-		if ( ! is_array( $class ) ) {
-			$class = preg_split( '#\s+#', $class );
-		}
-		$classes = array_merge( $classes, $class );
-	}
-
-	return get_post_class( $classes, $post->ID );
+	return $classes;
 }
+add_action( 'post_class', 'wpjm_add_post_class', 10, 3 );
 
 /**
  * Displays job meta data on the single job page.
