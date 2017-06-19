@@ -264,7 +264,7 @@ class WP_Job_Manager_Ajax {
 	 */
 	public function upload_file() {
 		if ( ! job_manager_user_can_upload_file_via_ajax() ) {
-			wp_send_json_error( new WP_Error( 'upload', __( 'You must be logged in to upload files using this method.', 'wp-job-manager' ) ) );
+			wp_send_json_error( __( 'You must be logged in to upload files using this method.', 'wp-job-manager' ) );
 			return;
 		}
 		$data = array(
