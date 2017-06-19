@@ -431,7 +431,17 @@ class WP_Job_Manager_Settings {
 				jQuery(this).addClass('nav-tab-active');
 				return false;
 			});
-			jQuery('.nav-tab-wrapper a:first').click();
+			var goto_hash = window.location.hash;
+			if ( goto_hash ) {
+				var the_tab = jQuery( 'a[href="' + goto_hash + '"]' );
+				if ( the_tab.length > 0 ) {
+					the_tab.click();
+				} else {
+					jQuery( '.nav-tab-wrapper a:first' ).click();
+				}
+			} else {
+				jQuery( '.nav-tab-wrapper a:first' ).click();
+			}
 			jQuery('#setting-job_manager_enable_registration').change(function(){
 				if ( jQuery( this ).is(':checked') ) {
 					jQuery('#setting-job_manager_registration_role').closest('tr').show();
