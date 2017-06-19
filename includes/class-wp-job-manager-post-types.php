@@ -86,6 +86,7 @@ class WP_Job_Manager_Post_Types {
 
 		$admin_capability = 'manage_job_listings';
 
+		$permalink_structure = wpjm_get_permalink_structure();
 		/**
 		 * Taxonomies
 		 */
@@ -95,7 +96,7 @@ class WP_Job_Manager_Post_Types {
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
 				$rewrite   = array(
-					'slug'         => _x( 'job-category', 'Job category slug - resave permalinks after changing this', 'wp-job-manager' ),
+					'slug'         => $permalink_structure['category_rewrite_slug'],
 					'with_front'   => false,
 					'hierarchical' => false
 				);
@@ -144,7 +145,7 @@ class WP_Job_Manager_Post_Types {
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
 				$rewrite   = array(
-					'slug'         => _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ),
+					'slug'         => $permalink_structure['type_rewrite_slug'],
 					'with_front'   => false,
 					'hierarchical' => false
 				);
@@ -199,7 +200,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$rewrite     = array(
-			'slug'       => _x( 'job', 'Job permalink - resave permalinks after changing this', 'wp-job-manager' ),
+			'slug'       => $permalink_structure['job_rewrite_slug'],
 			'with_front' => false,
 			'feeds'      => true,
 			'pages'      => false
