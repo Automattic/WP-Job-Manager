@@ -122,7 +122,16 @@ class WP_Job_Manager_Writepanels {
 			);
 		}
 
-		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields );
+		/**
+		 * Filters job listing data fields for WP Admin post editor.
+		 *
+		 * @since 1.0.0
+		 * @since 1.26.3 $post_id was added
+		 *
+		 * @param array $fields
+		 * @param int   $post_id
+		 */
+		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields, $post->ID );
 
 		uasort( $fields, array( $this, 'sort_by_priority' ) );
 
