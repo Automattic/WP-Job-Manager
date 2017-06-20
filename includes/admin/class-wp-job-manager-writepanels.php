@@ -299,6 +299,59 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
+	 * Just displays information.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param string $key
+	 * @param array  $field
+	 */
+	public static function input_info( $key, $field ) {
+		self::input_hidden( $key, $field );
+	}
+
+	/**
+	 * Displays information and/or hidden input.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param string $key
+	 * @param array  $field
+	 */
+	public static function input_hidden( $key, $field ) {
+		global $thepostid;
+
+		if ( 'hidden' === $field['type'] && ! isset( $field['value'] ) ) {
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
+		}
+		if ( ! empty( $field['classes'] ) ) {
+			$classes = implode( ' ', is_array( $field['classes'] ) ? $field['classes'] : array( $field['classes'] ) );
+		} else {
+			$classes = '';
+		}
+		$hidden_input = '';
+		if ( 'hidden' === $field['type'] ) {
+			$hidden_input = '<input type="hidden" name="' . esc_attr( $name ) . '" class="' . esc_attr( $classes ) . '" id="' . esc_attr( $key ) . '" value="' . esc_attr( $field['value'] ) . '" />';
+			if ( empty( $field['label'] ) ) {
+				echo $hidden_input;
+				return;
+			}
+		}
+		?>
+		<p class="form-field">
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<?php if ( ! empty( $field['information'] ) ) : ?><span class="information"><?php echo wp_kses( $field['information'], array( 'a' => array( 'href' => array() ) ) ); ?></span><?php endif; ?>
+			<?php echo $hidden_input; ?>
+		</p>
+		<?php
+	}
+
+	/**
 	 * Displays label and textarea input field.
 	 *
 	 * @param string $key
@@ -538,6 +591,10 @@ class WP_Job_Manager_Writepanels {
 
 		// Save fields
 		foreach ( $this->job_listing_fields() as $key => $field ) {
+			if ( isset( $field['type'] ) && 'info' === $field['type'] ) {
+				continue;
+			}
+
 			// Expirey date
 			if ( '_job_expires' === $key ) {
 				if ( ! empty( $_POST[ $key ] ) ) {
