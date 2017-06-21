@@ -77,6 +77,16 @@ class WP_Job_Manager_CPT {
 			'notice' => __( '%s expired', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_expire_job' ),
 		);
+		$actions_handled['mark_jobs_filled'] = array(
+			'label' => __( 'Mark %s Filled', 'wp-job-manager' ),
+			'notice' => __( '%s marked as filled', 'wp-job-manager' ),
+			'handler' => array( $this, 'bulk_action_handle_mark_job_filled' ),
+		);
+		$actions_handled['mark_jobs_not_filled'] = array(
+			'label' => __( 'Mark %s Not Filled', 'wp-job-manager' ),
+			'notice' => __( '%s marked as not filled', 'wp-job-manager' ),
+			'handler' => array( $this, 'bulk_action_handle_mark_job_not_filled' ),
+		);
 
 		/**
 		 * Filters the bulk actions that can be applied to job listings.
@@ -174,6 +184,38 @@ class WP_Job_Manager_CPT {
 		);
 		if ( current_user_can( 'manage_job_listings', $post_id )
 		     && wp_update_post( $job_data )
+		) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Performs bulk action to mark a single job listing as filled.
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool
+	 */
+	public function bulk_action_handle_mark_job_filled( $post_id ) {
+		if ( current_user_can( 'manage_job_listings', $post_id )
+		     && update_post_meta( $post_id, '_filled', 1 )
+		) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Performs bulk action to mark a single job listing as not filled.
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool
+	 */
+	public function bulk_action_handle_mark_job_not_filled( $post_id ) {
+		if ( current_user_can( 'manage_job_listings', $post_id )
+		     && update_post_meta( $post_id, '_filled', 0 )
 		) {
 			return true;
 		}
