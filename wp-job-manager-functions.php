@@ -15,6 +15,7 @@ function get_job_listings( $args = array() ) {
 		'search_keywords'   => '',
 		'search_categories' => array(),
 		'job_types'         => array(),
+		'post_status'       => array(),
 		'offset'            => 0,
 		'posts_per_page'    => 20,
 		'orderby'           => 'date',
@@ -33,7 +34,9 @@ function get_job_listings( $args = array() ) {
 	 */
 	do_action( 'get_job_listings_init', $args );
 
-	if ( false == get_option( 'job_manager_hide_expired', get_option( 'job_manager_hide_expired_content', 1 ) ) ) {
+	if ( ! empty( $args['post_status'] ) ) {
+		$post_status = $args['post_status'];
+	} elseif ( false == get_option( 'job_manager_hide_expired', get_option( 'job_manager_hide_expired_content', 1 ) ) ) {
 		$post_status = array( 'publish', 'expired' );
 	} else {
 		$post_status = 'publish';
