@@ -644,5 +644,3 @@ class WP_Job_Manager_CPT {
 		<?php
 	}
 }
-
-WP_Job_Manager_CPT::instance();
