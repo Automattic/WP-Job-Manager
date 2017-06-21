@@ -624,7 +624,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				// Company logo is a featured image
 				} elseif ( 'company_logo' === $key ) {
 					$attachment_id = is_numeric( $values[ $group_key ][ $key ] ) ? absint( $values[ $group_key ][ $key ] ) : $this->create_attachment( $values[ $group_key ][ $key ] );
-					set_post_thumbnail( $this->job_id, $attachment_id );
+					if ( empty( $attachment_id ) ) {
+						delete_post_thumbnail( $this->job_id );
+					} else {
+						set_post_thumbnail( $this->job_id, $attachment_id );
+					}
 					update_user_meta( get_current_user_id(), '_company_logo', $attachment_id );
 
 				// Save meta data
