@@ -14,6 +14,8 @@ jQuery( document ).ready( function ( $ ) {
 		var order        = target.data( 'order' );
 		var featured     = target.data( 'featured' );
 		var filled       = target.data( 'filled' );
+		var job_types    = target.data( 'job_types' );
+		var post_status  = target.data( 'post_status' );
 		var index        = $( 'div.job_listings' ).index(this);
 		var categories, keywords, location;
 
@@ -70,6 +72,7 @@ jQuery( document ).ready( function ( $ ) {
 				search_location: location,
 				search_categories: categories,
 				filter_job_type: filter_job_type,
+				filter_post_status: post_status,
 				per_page: per_page,
 				orderby: orderby,
 				order: order,
@@ -95,6 +98,8 @@ jQuery( document ).ready( function ( $ ) {
 				search_categories: categories,
 				search_keywords: keywords,
 				search_location: location,
+				filter_post_status: post_status,
+				filter_job_type: job_types,
 				per_page: per_page,
 				orderby: orderby,
 				order: order,
