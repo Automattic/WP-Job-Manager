@@ -46,11 +46,10 @@ class WP_Job_Manager_CPT {
 		add_action( 'parse_query', array( $this, 'search_meta' ) );
 		add_filter( 'get_search_query', array( $this, 'search_meta_label' ) );
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
-		add_action( 'admin_footer-edit.php', array( $this, 'add_bulk_actions' ) );
-		add_action( 'load-edit.php', array( $this, 'do_bulk_actions' ) );
+		add_action( 'bulk_actions-edit-job_listing', array( $this, 'add_bulk_actions' ) );
+		add_action( 'handle_bulk_actions-edit-job_listing', array( $this, 'do_bulk_actions' ), 10, 3 );
 		add_action( 'admin_init', array( $this, 'approve_job' ) );
-		add_action( 'admin_notices', array( $this, 'approved_notice' ) );
-		add_action( 'admin_notices', array( $this, 'expired_notice' ) );
+		add_action( 'admin_notices', array( $this, 'action_notices' ) );
 
 		if ( get_option( 'job_manager_enable_categories' ) ) {
 			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
@@ -62,76 +61,165 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Adds bulk actions to drop downs on Job Listing admin page.
+	 * Returns the list of bulk actions that can be performed on job listings.
+	 *
+	 * @return array
 	 */
-	public function add_bulk_actions() {
-		global $post_type, $wp_post_types;;
+	public function get_bulk_actions() {
+		$actions_handled = array();
+		$actions_handled['approve_jobs'] = array(
+			'label' => __( 'Approve %s', 'wp-job-manager' ),
+			'notice' => __( '%s approved', 'wp-job-manager' ),
+			'handler' => array( $this, 'bulk_action_handle_approve_job' ),
+		);
+		$actions_handled['expire_jobs'] = array(
+			'label' => __( 'Expire %s', 'wp-job-manager' ),
+			'notice' => __( '%s expired', 'wp-job-manager' ),
+			'handler' => array( $this, 'bulk_action_handle_expire_job' ),
+		);
+		$actions_handled['mark_jobs_filled'] = array(
+			'label' => __( 'Mark %s Filled', 'wp-job-manager' ),
+			'notice' => __( '%s marked as filled', 'wp-job-manager' ),
+			'handler' => array( $this, 'bulk_action_handle_mark_job_filled' ),
+		);
+		$actions_handled['mark_jobs_not_filled'] = array(
+			'label' => __( 'Mark %s Not Filled', 'wp-job-manager' ),
+			'notice' => __( '%s marked as not filled', 'wp-job-manager' ),
+			'handler' => array( $this, 'bulk_action_handle_mark_job_not_filled' ),
+		);
 
-		if ( $post_type == 'job_listing' ) {
-			?>
-			<script type="text/javascript">
-		      jQuery(document).ready(function() {
-		        jQuery('<option>').val('approve_jobs').text('<?php printf( __( 'Approve %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ); ?>').appendTo("select[name='action']");
-		        jQuery('<option>').val('approve_jobs').text('<?php printf( __( 'Approve %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ); ?>').appendTo("select[name='action2']");
+		/**
+		 * Filters the bulk actions that can be applied to job listings.
+		 *
+		 * @since 1.26.3
+		 *
+		 * @param array $actions_handled {
+		 *     Bulk actions that can be handled, indexed by a unique key name (approve_jobs, expire_jobs, etc). Handlers
+		 *     are responsible for checking abilities (`current_user_can( 'manage_job_listings', $post_id )`) before
+		 *     performing action.
+		 *
+		 *     @type string   $label   Label for the bulk actions dropdown. Passed through sprintf with label name of job listing post type.
+		 *     @type string   $notice  Success notice shown after performing the action. Passed through sprintf with title(s) of affected job listings.
+		 *     @type callback $handler Callable handler for performing action. Passed one argument (int $post_id) and should return true on success and false on failure.
+		 * }
+		 */
+		return apply_filters( 'wpjm_job_listing_bulk_actions', $actions_handled );
+	}
 
-		        jQuery('<option>').val('expire_jobs').text('<?php printf( __( 'Expire %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ); ?>').appendTo("select[name='action']");
-		        jQuery('<option>').val('expire_jobs').text('<?php printf( __( 'Expire %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ); ?>').appendTo("select[name='action2']");
-		      });
-		    </script>
-		    <?php
+	/**
+	 * Adds bulk actions to drop downs on Job Listing admin page.
+	 *
+	 * @param array $bulk_actions
+	 * @return array
+	 */
+	public function add_bulk_actions( $bulk_actions ) {
+		global $wp_post_types;
+
+		foreach ( $this->get_bulk_actions() as $key => $bulk_action ) {
+			if ( isset( $bulk_action['label'] ) ) {
+				$bulk_actions[ $key ] = sprintf( $bulk_action['label'], $wp_post_types['job_listing']->labels->name );
+			}
 		}
+		return $bulk_actions;
 	}
 
 	/**
 	 * Performs bulk actions on Job Listing admin page.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param string $redirect_url The redirect URL.
+	 * @param string $action       The action being taken.
+	 * @param array  $post_ids     The posts to take the action on.
 	 */
-	public function do_bulk_actions() {
-		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
-		$action        = $wp_list_table->current_action();
-
-		switch( $action ) {
-			case 'approve_jobs' :
-				check_admin_referer( 'bulk-posts' );
-
-				$post_ids      = array_map( 'absint', array_filter( (array) $_GET['post'] ) );
-				$approved_jobs = array();
-
-				if ( ! empty( $post_ids ) )
-					foreach( $post_ids as $post_id ) {
-						$job_data = array(
-							'ID'          => $post_id,
-							'post_status' => 'publish'
-						);
-						if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ) ) && current_user_can( 'publish_post', $post_id ) && wp_update_post( $job_data ) ) {
-							$approved_jobs[] = $post_id;
-						}
+	public function do_bulk_actions( $redirect_url, $action, $post_ids ) {
+		$actions_handled = $this->get_bulk_actions();
+		if ( isset ( $actions_handled[ $action ] ) && isset ( $actions_handled[ $action ]['handler'] ) ) {
+			$handled_jobs = array();
+			if ( ! empty( $post_ids ) ) {
+				foreach ( $post_ids as $post_id ) {
+					if ( 'job_listing' === get_post_type( $post_id )
+					     && call_user_func( $actions_handled[ $action ]['handler'], $post_id ) ) {
+						$handled_jobs[] = $post_id;
 					}
-
-				wp_redirect( add_query_arg( 'approved_jobs', $approved_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
+				}
+				wp_redirect( add_query_arg( 'handled_jobs', $handled_jobs, add_query_arg( 'action_performed', $action, $redirect_url ) ) );
 				exit;
-			break;
-			case 'expire_jobs' :
-				check_admin_referer( 'bulk-posts' );
-
-				$post_ids     = array_map( 'absint', array_filter( (array) $_GET['post'] ) );
-				$expired_jobs = array();
-
-				if ( ! empty( $post_ids ) )
-					foreach( $post_ids as $post_id ) {
-						$job_data = array(
-							'ID'          => $post_id,
-							'post_status' => 'expired'
-						);
-						if ( current_user_can( 'manage_job_listings' ) && wp_update_post( $job_data ) )
-							$expired_jobs[] = $post_id;
-					}
-
-				wp_redirect( add_query_arg( 'expired_jobs', $expired_jobs, remove_query_arg( array( 'approved_jobs', 'expired_jobs' ), admin_url( 'edit.php?post_type=job_listing' ) ) ) );
-				exit;
-			break;
+			}
 		}
+	}
 
-		return;
+	/**
+	 * Performs bulk action to approve a single job listing.
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool
+	 */
+	public function bulk_action_handle_approve_job( $post_id ) {
+		$job_data = array(
+			'ID'          => $post_id,
+			'post_status' => 'publish',
+		);
+		if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ) )
+		     && current_user_can( 'publish_post', $post_id )
+		     && wp_update_post( $job_data )
+		) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Performs bulk action to expire a single job listing.
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool
+	 */
+	public function bulk_action_handle_expire_job( $post_id ) {
+		$job_data = array(
+			'ID'          => $post_id,
+			'post_status' => 'expired',
+		);
+		if ( current_user_can( 'manage_job_listings', $post_id )
+		     && wp_update_post( $job_data )
+		) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Performs bulk action to mark a single job listing as filled.
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool
+	 */
+	public function bulk_action_handle_mark_job_filled( $post_id ) {
+		if ( current_user_can( 'manage_job_listings', $post_id )
+		     && update_post_meta( $post_id, '_filled', 1 )
+		) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Performs bulk action to mark a single job listing as not filled.
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool
+	 */
+	public function bulk_action_handle_mark_job_not_filled( $post_id ) {
+		if ( current_user_can( 'manage_job_listings', $post_id )
+		     && update_post_meta( $post_id, '_filled', 0 )
+		) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -145,47 +233,37 @@ class WP_Job_Manager_CPT {
 				'post_status' => 'publish'
 			);
 			wp_update_post( $job_data );
-			wp_redirect( remove_query_arg( 'approve_job', add_query_arg( 'approved_jobs', $post_id, admin_url( 'edit.php?post_type=job_listing' ) ) ) );
+			wp_redirect( remove_query_arg( 'approve_job', add_query_arg( 'handled_jobs', $post_id, add_query_arg( 'action_performed', 'approve_jobs', admin_url( 'edit.php?post_type=job_listing' ) ) ) ) );
 			exit;
 		}
 	}
 
 	/**
-	 * Shows a notice if we did a bulk approval action.
+	 * Shows a notice if we did a bulk action.
 	 */
-	public function approved_notice() {
-		 global $post_type, $pagenow;
+	public function action_notices() {
+		global $post_type, $pagenow;
 
-		if ( $pagenow == 'edit.php' && $post_type == 'job_listing' && ! empty( $_REQUEST['approved_jobs'] ) ) {
-			$approved_jobs = $_REQUEST['approved_jobs'];
-			if ( is_array( $approved_jobs ) ) {
-				$approved_jobs = array_map( 'absint', $approved_jobs );
-				$titles        = array();
-				foreach ( $approved_jobs as $job_id )
+		$handled_jobs = isset ( $_REQUEST['handled_jobs'] ) ? $_REQUEST['handled_jobs'] : false;
+		$action = isset ( $_REQUEST['action_performed'] ) ? $_REQUEST['action_performed'] : false;
+		$actions_handled = $this->get_bulk_actions();
+
+		if ( $pagenow == 'edit.php'
+			 && $post_type == 'job_listing'
+			 && $action
+			 && ! empty( $handled_jobs )
+			 && isset ( $actions_handled[ $action ] )
+			 && isset ( $actions_handled[ $action ]['notice'] )
+		) {
+			if ( is_array( $handled_jobs ) ) {
+				$handled_jobs = array_map( 'absint', $handled_jobs );
+				$titles       = array();
+				foreach ( $handled_jobs as $job_id ) {
 					$titles[] = wpjm_get_the_job_title( $job_id );
-				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
+				}
+				echo '<div class="updated"><p>' . sprintf( $actions_handled[ $action ]['notice'], '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
 			} else {
-				echo '<div class="updated"><p>' . sprintf( __( '%s approved', 'wp-job-manager' ), '&quot;' . wpjm_get_the_job_title( $approved_jobs ) . '&quot;' ) . '</p></div>';
-			}
-		}
-	}
-
-	/**
-	 * Shows a notice if we did a bulk expired action.
-	 */
-	public function expired_notice() {
-		 global $post_type, $pagenow;
-
-		if ( $pagenow == 'edit.php' && $post_type == 'job_listing' && ! empty( $_REQUEST['expired_jobs'] ) ) {
-			$expired_jobs = $_REQUEST['expired_jobs'];
-			if ( is_array( $expired_jobs ) ) {
-				$expired_jobs = array_map( 'absint', $expired_jobs );
-				$titles        = array();
-				foreach ( $expired_jobs as $job_id )
-					$titles[] = wpjm_get_the_job_title( $job_id );
-				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
-			} else {
-				echo '<div class="updated"><p>' . sprintf( __( '%s expired', 'wp-job-manager' ), '&quot;' . wpjm_get_the_job_title( $expired_jobs ) . '&quot;' ) . '</p></div>';
+				echo '<div class="updated"><p>' . sprintf( $actions_handled[ $action ]['notice'], '&quot;' . wpjm_get_the_job_title( absint( $handled_jobs ) ) . '&quot;' ) . '</p></div>';
 			}
 		}
 	}
@@ -566,5 +644,3 @@ class WP_Job_Manager_CPT {
 		<?php
 	}
 }
-
-WP_Job_Manager_CPT::instance();
