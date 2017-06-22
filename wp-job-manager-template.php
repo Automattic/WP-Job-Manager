@@ -357,7 +357,7 @@ function wpjm_get_the_job_types( $post = null ) {
 	$post = get_post( $post );
 
 	if ( 'job_listing' !== $post->post_type ) {
-		return;
+		return false;
 	}
 
 	$types = get_the_terms( $post->ID, 'job_listing_type' );
@@ -367,7 +367,15 @@ function wpjm_get_the_job_types( $post = null ) {
 		$types = array( current( $types ) );
 	}
 
-	return apply_filters( 'the_job_types', $types, $post );
+	/**
+	 * Filter the returned job types for a post.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param array   $types
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_the_job_types', $types, $post );
 }
 
 /**
