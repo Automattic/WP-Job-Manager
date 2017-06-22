@@ -818,8 +818,13 @@ function wpjm_add_post_class( $classes, $class, $post_id ) {
 
 	$classes[] = 'job_listing';
 
-	if ( get_option( 'job_manager_enable_types' ) && ( $job_type = get_the_job_type( $post ) ) ) {
-		$classes[] = 'job-type-' . sanitize_title( $job_type->name );
+	if ( get_option( 'job_manager_enable_types' ) ) {
+		$job_types = wpjm_get_the_job_types( $post );
+		if ( ! empty( $job_types ) ) {
+			foreach ( $job_types as $job_type ) {
+				$classes[] = 'job-type-' . sanitize_title( $job_type->name );
+			}
+		}
 	}
 
 	if ( is_position_filled( $post ) ) {
