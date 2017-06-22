@@ -51,8 +51,23 @@ class WP_Job_Manager_Admin {
 
 		$this->settings_page = WP_Job_Manager_Settings::instance();
 
+		add_action( 'current_screen', array( $this, 'conditional_includes' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+	}
+
+	/**
+	 * Include admin files conditionally.
+	 */
+	public function conditional_includes() {
+		if ( ! $screen = get_current_screen() ) {
+			return;
+		}
+		switch ( $screen->id ) {
+			case 'options-permalink' :
+				include( 'class-wp-job-manager-permalink-settings.php' );
+				break;
+		}
 	}
 
 	/**
