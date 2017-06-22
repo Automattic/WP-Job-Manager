@@ -336,11 +336,6 @@ function wpjm_the_job_types( $post = null, $separator = ', ' ) {
 		return;
 	}
 
-	// Return single if not enabled.
-	if ( ! get_option( 'job_manager_multi_job_type', false ) ) {
-		return the_job_type( $post );
-	}
-
 	$job_types = wpjm_get_the_job_types( $post );
 
 	if ( $job_types ) {
@@ -366,6 +361,11 @@ function wpjm_get_the_job_types( $post = null ) {
 	}
 
 	$types = get_the_terms( $post->ID, 'job_listing_type' );
+
+	// Return single if not enabled.
+	if ( ! get_option( 'job_manager_multi_job_type', false ) ) {
+		$types = array( current( $types ) );
+	}
 
 	return apply_filters( 'the_job_types', $types, $post );
 }
