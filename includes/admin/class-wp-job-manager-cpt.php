@@ -418,7 +418,7 @@ class WP_Job_Manager_CPT {
 
 		switch ( $column ) {
 			case "job_listing_type" :
-				$types = get_the_job_types( $post );
+				$types = wpjm_get_the_job_types( $post );
 
 				if ( $types && ! empty( $types ) ) {
 					foreach ( $types as $type ) {

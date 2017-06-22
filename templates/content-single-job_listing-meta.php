@@ -24,7 +24,7 @@ do_action( 'single_job_listing_meta_before' ); ?>
 
 			<li class="job-type <?php echo get_the_job_type() ? esc_attr( sanitize_title( get_the_job_type()->slug ) ) : ''; ?>" itemprop="employmentType"><?php the_job_type(); ?></li>
 
-		<?php else : $types = get_the_job_types(); ?>
+		<?php else : $types = wpjm_get_the_job_types(); ?>
 
 			<?php if ( ! empty( $types ) ) : foreach ( $types as $type ) : ?>
 

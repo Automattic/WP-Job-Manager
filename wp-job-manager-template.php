@@ -326,15 +326,14 @@ function get_the_job_type( $post = null ) {
 /**
  * Displays multiple job types for the listing.
  *
- * @since 1.26.2
+ * @since 1.26.3
  *
  * @param int|WP_Post $post Current post object.
  * @param string      $separator String to join the term names with.
- * @return string
  */
-function the_job_types( $post = null, $separator = ', ' ) {
+function wpjm_the_job_types( $post = null, $separator = ', ' ) {
 	if ( ! get_option( 'job_manager_enable_types' ) ) {
-		return '';
+		return;
 	}
 
 	// Return single if not enabled.
@@ -342,7 +341,7 @@ function the_job_types( $post = null, $separator = ', ' ) {
 		return the_job_type( $post );
 	}
 
-	$job_types = get_the_job_types( $post );
+	$job_types = wpjm_get_the_job_types( $post );
 
 	if ( $job_types ) {
 		$names = wp_list_pluck( $job_types, 'name' );
@@ -354,12 +353,12 @@ function the_job_types( $post = null, $separator = ', ' ) {
 /**
  * Gets the job type for the listing.
  *
- * @since 1.26.2
+ * @since 1.26.3
  *
  * @param int|WP_Post $post (default: null).
- * @return false|array
+ * @return bool|array
  */
-function get_the_job_types( $post = null ) {
+function wpjm_get_the_job_types( $post = null ) {
 	$post = get_post( $post );
 
 	if ( 'job_listing' !== $post->post_type ) {
