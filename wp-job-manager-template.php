@@ -363,7 +363,7 @@ function wpjm_get_the_job_types( $post = null ) {
 	$types = get_the_terms( $post->ID, 'job_listing_type' );
 
 	// Return single if not enabled.
-	if ( ! empty( $types ) && ! get_option( 'job_manager_multi_job_type', false ) ) {
+	if ( ! empty( $types ) && ! job_manager_multi_job_type() ) {
 		$types = array( current( $types ) );
 	}
 
