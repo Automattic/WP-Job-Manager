@@ -287,10 +287,14 @@ function wpjm_get_the_job_title( $post = null ) {
  * Displays the job type for the listing.
  *
  * @since 1.0.0
+ * @deprecated 1.26.3 Use `wpjm_the_job_types()` instead.
+ *
  * @param int|WP_Post $post
  * @return string
  */
 function the_job_type( $post = null ) {
+	_deprecated_function( __FUNCTION__, '1.26.3', 'wpjm_the_job_types' );
+
 	if ( ! get_option( 'job_manager_enable_types' ) ) {
 		return '';
 	}
@@ -303,10 +307,14 @@ function the_job_type( $post = null ) {
  * Gets the job type for the listing.
  *
  * @since 1.0.0
+ * @deprecated 1.26.3 Use `wpjm_get_the_job_types()` instead.
+ *
  * @param int|WP_Post $post (default: null)
  * @return string|bool|null
  */
 function get_the_job_type( $post = null ) {
+	_deprecated_function( __FUNCTION__, '1.26.3', 'wpjm_get_the_job_types' );
+
 	$post = get_post( $post );
 	if ( $post->post_type !== 'job_listing' ) {
 		return;
