@@ -136,7 +136,7 @@ class WP_Job_Manager_Cache_Helper {
 	 * When a supported post type status is updated, check if any cached count transients
 	 * need to be removed, and remove the
 	 *
-	 * @since 1.6.2
+	 * @since 1.26.3
 	 *
 	 * @param string  $new_status New post status.
 	 * @param string  $old_status Old post status.
@@ -148,13 +148,13 @@ class WP_Job_Manager_Cache_Helper {
 		/**
 		 * Get supported post types for count caching
 		 *
-		 * @since 1.26.2
+		 * @since 1.26.3
 		 *
 		 * @param string  $new_status New post status.
 		 * @param string  $old_status Old post status.
 		 * @param WP_Post $post       Post object.
 		 */
-		$post_types = apply_filters( 'job_manager_count_cache_supported_post_types', array( 'job_listing' ), $new_status, $old_status, $post );
+		$post_types = apply_filters( 'wpjm_count_cache_supported_post_types', array( 'job_listing' ), $new_status, $old_status, $post );
 
 		// Only proceed when statuses do not match, and post type is supported post type
 		if ( $new_status === $old_status || ! in_array( $post->post_type, $post_types ) ) {
@@ -164,13 +164,13 @@ class WP_Job_Manager_Cache_Helper {
 		/**
 		 * Get supported post statuses for count caching
 		 *
-		 * @since 1.26.2
+		 * @since 1.26.3
 		 *
 		 * @param string  $new_status New post status.
 		 * @param string  $old_status Old post status.
 		 * @param WP_Post $post       Post object.
 		 */
-		$valid_statuses = apply_filters( 'job_manager_count_cache_supported_statuses', array( 'pending' ), $new_status, $old_status, $post );
+		$valid_statuses = apply_filters( 'wpjm_count_cache_supported_statuses', array( 'pending' ), $new_status, $old_status, $post );
 
 		$rlike = array();
 		// New status transient option name
@@ -200,8 +200,7 @@ class WP_Job_Manager_Cache_Helper {
 	/**
 	 * Get Listings Count from Cache
 	 *
-	 *
-	 * @since 1.26.2
+	 * @since 1.26.3
 	 *
 	 * @param string $post_type
 	 * @param string $status
@@ -209,7 +208,7 @@ class WP_Job_Manager_Cache_Helper {
 	 *
 	 * @return int
 	 */
-	public static function get_listings_count( $post_type = 'job_listing', $status = 'pending', $force = FALSE ) {
+	public static function get_listings_count( $post_type = 'job_listing', $status = 'pending', $force = false ) {
 
 		// Get user based cache transient
 		$user_id   = get_current_user_id();
@@ -219,7 +218,7 @@ class WP_Job_Manager_Cache_Helper {
 		$status_count = ( $cached_count = get_transient( $transient ) ) ? $cached_count : 0;
 
 		// $cached_count will be false if transient does not exist
-		if ( $cached_count === FALSE || $force ) {
+		if ( $cached_count === false || $force ) {
 			$count_posts = wp_count_posts( $post_type, 'readable' );
 			// Default to 0 $status if object does not have a value
 			$status_count = isset( $count_posts->$status ) ? $count_posts->$status : 0;
