@@ -20,7 +20,6 @@ class WP_Job_Manager_Install {
 
 		self::init_user_roles();
 		self::default_terms();
-		self::schedule_cron();
 
 		// Redirect to setup screen for new installs
 		if ( ! get_option( 'wp_job_manager_version' ) ) {
@@ -133,17 +132,5 @@ class WP_Job_Manager_Install {
 		}
 
 		update_option( 'job_manager_installed_terms', 1 );
-	}
-
-	/**
-	 * Setup cron jobs.
-	 */
-	private static function schedule_cron() {
-		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
-		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
-		wp_clear_scheduled_hook( 'job_manager_clear_expired_transients' );
-		wp_schedule_event( time(), 'hourly', 'job_manager_check_for_expired_jobs' );
-		wp_schedule_event( time(), 'daily', 'job_manager_delete_old_previews' );
-		wp_schedule_event( time(), 'twicedaily', 'job_manager_clear_expired_transients' );
 	}
 }
