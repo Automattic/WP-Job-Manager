@@ -2,7 +2,7 @@
 
 set -e;
 
-SCRIPT_ROOT=`pwd`;
+SCRIPT_ROOT="`pwd`";
 MIXTAPE_TEMP_PATH="$SCRIPT_ROOT/tmp/mt";
 MIXTAPE_REPO="https://github.com/Automattic/mixtape/";
 MIXTAPEFILE_NAME=".mixtapefile";
@@ -86,7 +86,7 @@ fi
 
 expect_directory "$mt_current_destination";
 
-cd $MIXTAPE_PATH;
+cd "$MIXTAPE_PATH";
 mt_repo_current_sha="$(git rev-parse HEAD)";
 
 if [ "$mt_repo_current_sha" != "$mt_current_sha" ]; then
