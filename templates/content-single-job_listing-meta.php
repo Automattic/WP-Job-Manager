@@ -4,8 +4,14 @@
  *
  * Hooked into single_job_listing_start priority 20
  *
- * @since  1.14.0
+ * @since 1.14.0
+ * @version 1.26.3
+ *
+ * @package WP Job Manager
+ * @category Template
+ * @author Automattic
  */
+
 global $post;
 
 do_action( 'single_job_listing_meta_before' ); ?>
@@ -14,7 +20,12 @@ do_action( 'single_job_listing_meta_before' ); ?>
 	<?php do_action( 'single_job_listing_meta_start' ); ?>
 
 	<?php if ( get_option( 'job_manager_enable_types' ) ) { ?>
-	<li class="job-type <?php echo get_the_job_type() ? sanitize_title( get_the_job_type()->slug ) : ''; ?>" itemprop="employmentType"><?php the_job_type(); ?></li>
+		<?php $types = wpjm_get_the_job_types(); ?>
+		<?php if ( ! empty( $types ) ) : foreach ( $types as $type ) : ?>
+
+			<li class="job-type <?php echo esc_attr( sanitize_title( $type->slug ) ); ?>" itemprop="employmentType"><?php echo esc_html( $type->name ); ?></li>
+
+		<?php endforeach; endif; ?>
 	<?php } ?>
 
 	<li class="location" itemprop="jobLocation"><?php the_job_location(); ?></li>

@@ -442,16 +442,17 @@ class WP_Job_Manager_Post_Types {
 	 * Adds custom data to the job feed.
 	 */
 	public function job_feed_item() {
-		$post_id  = get_the_ID();
-		$location = get_the_job_location( $post_id );
-		$job_type = get_the_job_type( $post_id );
-		$company  = get_the_company_name( $post_id );
+		$post_id         = get_the_ID();
+		$location        = get_the_job_location( $post_id );
+		$company         = get_the_company_name( $post_id );
+		$job_types       = wpjm_get_the_job_types( $post_id );
 
 		if ( $location ) {
 			echo "<job_listing:location><![CDATA[" . esc_html( $location ) . "]]></job_listing:location>\n";
 		}
-		if ( $job_type ) {
-			echo "<job_listing:job_type><![CDATA[" . esc_html( $job_type->name ) . "]]></job_listing:job_type>\n";
+		if ( ! empty( $job_types ) ) {
+			$job_types_names = implode( ', ', wp_list_pluck( $job_types, 'name' ) );
+			echo "<job_listing:job_type><![CDATA[" . esc_html( $job_types_names ) . "]]></job_listing:job_type>\n";
 		}
 		if ( $company ) {
 			echo "<job_listing:company><![CDATA[" . esc_html( $company ) . "]]></job_listing:company>\n";

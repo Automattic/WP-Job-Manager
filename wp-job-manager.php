@@ -128,6 +128,7 @@ class WP_Job_Manager {
 	public function include_template_functions() {
 		include( 'wp-job-manager-functions.php' );
 		include( 'wp-job-manager-template.php' );
+		include( 'wp-job-manager-deprecated.php' );
 	}
 
 	/**

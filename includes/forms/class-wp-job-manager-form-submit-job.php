@@ -529,7 +529,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			// Prepend with job type
 			if ( apply_filters( 'submit_job_form_prefix_post_name_with_job_type', true ) && ! empty( $values['job']['job_type'] ) ) {
-				$job_slug[] = $values['job']['job_type'];
+				if ( ! job_manager_multi_job_type() ) {
+					$job_slug[] = $values['job']['job_type'];
+				} else {
+					$terms = $values['job']['job_type'];
+
+					foreach ( $terms as $term ) {
+						$term = get_term_by( 'id', intval( $term ), 'job_listing_type' );
+
+						if ( $term ) {
+							$job_slug[] = $term->slug;
+						}
+					}
+				}
 			}
 
 			$job_slug[]            = $post_title;

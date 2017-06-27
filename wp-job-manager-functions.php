@@ -243,21 +243,6 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	}
 endif;
 
-if ( ! function_exists( 'order_featured_job_listing' ) ) :
-	/**
-	 * Was used for sorting.
-	 *
-	 * @deprecated 1.22.4
-	 * @param array $args
-	 * @return array
-	 */
-	function order_featured_job_listing( $args ) {
-		global $wpdb;
-		$args['orderby'] = "$wpdb->posts.menu_order ASC, $wpdb->posts.post_date DESC";
-		return $args;
-	}
-endif;
-
 if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
 /**
  * Gets post statuses used for jobs.

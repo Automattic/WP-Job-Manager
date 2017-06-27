@@ -284,45 +284,59 @@ function wpjm_get_the_job_title( $post = null ) {
 }
 
 /**
- * Displays the job type for the listing.
+ * Displays multiple job types for the listing.
  *
- * @since 1.0.0
- * @param int|WP_Post $post
- * @return string
+ * @since 1.26.3
+ *
+ * @param int|WP_Post $post Current post object.
+ * @param string      $separator String to join the term names with.
  */
-function the_job_type( $post = null ) {
+function wpjm_the_job_types( $post = null, $separator = ', ' ) {
 	if ( ! get_option( 'job_manager_enable_types' ) ) {
-		return '';
+		return;
 	}
-	if ( $job_type = get_the_job_type( $post ) ) {
-		echo $job_type->name;
+
+	$job_types = wpjm_get_the_job_types( $post );
+
+	if ( $job_types ) {
+		$names = wp_list_pluck( $job_types, 'name' );
+
+		echo esc_html( implode( $separator, $names ) );
 	}
 }
 
 /**
  * Gets the job type for the listing.
  *
- * @since 1.0.0
- * @param int|WP_Post $post (default: null)
- * @return string|bool|null
+ * @since 1.26.3
+ *
+ * @param int|WP_Post $post (default: null).
+ * @return bool|array
  */
-function get_the_job_type( $post = null ) {
+function wpjm_get_the_job_types( $post = null ) {
 	$post = get_post( $post );
-	if ( $post->post_type !== 'job_listing' ) {
-		return;
+
+	if ( 'job_listing' !== $post->post_type ) {
+		return false;
 	}
 
-	$types = wp_get_post_terms( $post->ID, 'job_listing_type' );
+	$types = get_the_terms( $post->ID, 'job_listing_type' );
 
-	if ( $types ) {
-		$type = current( $types );
-	} else {
-		$type = false;
+	// Return single if not enabled.
+	if ( ! empty( $types ) && ! job_manager_multi_job_type() ) {
+		$types = array( current( $types ) );
 	}
 
-	return apply_filters( 'the_job_type', $type, $post );
+	/**
+	 * Filter the returned job types for a post.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param array   $types
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_the_job_types', $types, $post );
 }
-
 
 /**
  * Displays the published date of the job listing.
@@ -764,8 +778,13 @@ function wpjm_add_post_class( $classes, $class, $post_id ) {
 
 	$classes[] = 'job_listing';
 
-	if ( get_option( 'job_manager_enable_types' ) && ( $job_type = get_the_job_type( $post ) ) ) {
-		$classes[] = 'job-type-' . sanitize_title( $job_type->name );
+	if ( get_option( 'job_manager_enable_types' ) ) {
+		$job_types = wpjm_get_the_job_types( $post );
+		if ( ! empty( $job_types ) ) {
+			foreach ( $job_types as $job_type ) {
+				$classes[] = 'job-type-' . sanitize_title( $job_type->name );
+			}
+		}
 	}
 
 	if ( is_position_filled( $post ) ) {
