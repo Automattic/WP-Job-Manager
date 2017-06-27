@@ -122,7 +122,16 @@ class WP_Job_Manager_Writepanels {
 			);
 		}
 
-		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields );
+		/**
+		 * Filters job listing data fields for WP Admin post editor.
+		 *
+		 * @since 1.0.0
+		 * @since 1.26.3 $post_id was added
+		 *
+		 * @param array $fields
+		 * @param int   $post_id
+		 */
+		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields, $post->ID );
 
 		uasort( $fields, array( $this, 'sort_by_priority' ) );
 
@@ -285,6 +294,59 @@ class WP_Job_Manager_Writepanels {
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
 			<input type="text" autocomplete="off" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
+		</p>
+		<?php
+	}
+
+	/**
+	 * Just displays information.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param string $key
+	 * @param array  $field
+	 */
+	public static function input_info( $key, $field ) {
+		self::input_hidden( $key, $field );
+	}
+
+	/**
+	 * Displays information and/or hidden input.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param string $key
+	 * @param array  $field
+	 */
+	public static function input_hidden( $key, $field ) {
+		global $thepostid;
+
+		if ( 'hidden' === $field['type'] && ! isset( $field['value'] ) ) {
+			$field['value'] = get_post_meta( $thepostid, $key, true );
+		}
+		if ( ! empty( $field['name'] ) ) {
+			$name = $field['name'];
+		} else {
+			$name = $key;
+		}
+		if ( ! empty( $field['classes'] ) ) {
+			$classes = implode( ' ', is_array( $field['classes'] ) ? $field['classes'] : array( $field['classes'] ) );
+		} else {
+			$classes = '';
+		}
+		$hidden_input = '';
+		if ( 'hidden' === $field['type'] ) {
+			$hidden_input = '<input type="hidden" name="' . esc_attr( $name ) . '" class="' . esc_attr( $classes ) . '" id="' . esc_attr( $key ) . '" value="' . esc_attr( $field['value'] ) . '" />';
+			if ( empty( $field['label'] ) ) {
+				echo $hidden_input;
+				return;
+			}
+		}
+		?>
+		<p class="form-field">
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<?php if ( ! empty( $field['information'] ) ) : ?><span class="information"><?php echo wp_kses( $field['information'], array( 'a' => array( 'href' => array() ) ) ); ?></span><?php endif; ?>
+			<?php echo $hidden_input; ?>
 		</p>
 		<?php
 	}
@@ -529,6 +591,10 @@ class WP_Job_Manager_Writepanels {
 
 		// Save fields
 		foreach ( $this->job_listing_fields() as $key => $field ) {
+			if ( isset( $field['type'] ) && 'info' === $field['type'] ) {
+				continue;
+			}
+
 			// Expirey date
 			if ( '_job_expires' === $key ) {
 				if ( ! empty( $_POST[ $key ] ) ) {
