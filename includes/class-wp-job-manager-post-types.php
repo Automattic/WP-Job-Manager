@@ -278,17 +278,21 @@ class WP_Job_Manager_Post_Types {
 	public function admin_head() {
 		global $menu;
 
-		$plural     = __( 'Job Listings', 'wp-job-manager' );
-		$count_jobs = wp_count_posts( 'job_listing', 'readable' );
+		$pending_jobs = WP_Job_Manager_Cache_Helper::get_listings_count();
 
-		if ( ! empty( $menu ) && is_array( $menu ) ) {
-			foreach ( $menu as $key => $menu_item ) {
-				if ( strpos( $menu_item[0], $plural ) === 0 ) {
-					if ( $order_count = $count_jobs->pending ) {
-						$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-$order_count'><span class='pending-count'>" . number_format_i18n( $count_jobs->pending ) . "</span></span>" ;
-					}
-					break;
-				}
+		// No need to go further if no pending jobs, menu is not set, or is not an array
+		if( empty( $pending_jobs ) || empty( $menu ) || ! is_array( $menu ) ){
+			return;
+		}
+
+		// Try to pull menu_name from post type object to support themes/plugins that change the menu string
+		$post_type = get_post_type_object( 'job_listing' );
+		$plural = isset( $post_type->labels, $post_type->labels->menu_name ) ? $post_type->labels->menu_name : __( 'Job Listings', 'wp-job-manager' );
+
+		foreach ( $menu as $key => $menu_item ) {
+			if ( strpos( $menu_item[0], $plural ) === 0 ) {
+				$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-{$pending_jobs}'><span class='pending-count'>" . number_format_i18n( $pending_jobs ) . "</span></span>" ;
+				break;
 			}
 		}
 	}
