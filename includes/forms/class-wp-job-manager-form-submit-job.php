@@ -563,8 +563,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( ! headers_sent() ) {
 				$submitting_key = uniqid();
 
-				setcookie( 'wp-job-manager-submitting-job-id', $this->job_id, false, COOKIEPATH, COOKIE_DOMAIN, false );
-				setcookie( 'wp-job-manager-submitting-job-key', $submitting_key, false, COOKIEPATH, COOKIE_DOMAIN, false );
+				setcookie( 'wp-job-manager-submitting-job-id', $this->job_id, 0, COOKIEPATH, COOKIE_DOMAIN, false );
+				setcookie( 'wp-job-manager-submitting-job-key', $submitting_key, 0, COOKIEPATH, COOKIE_DOMAIN, false );
 
 				update_post_meta( $this->job_id, '_submitting_key', $submitting_key );
 			}
