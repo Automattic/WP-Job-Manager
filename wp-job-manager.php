@@ -78,6 +78,9 @@ class WP_Job_Manager {
 		$this->forms      = WP_Job_Manager_Forms::instance();
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
 
+		// Schedule cron jobs
+		self::maybe_schedule_cron_jobs();
+
 		// Activation - works with symlinks
 		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this, 'activate' ) );
 
@@ -138,6 +141,21 @@ class WP_Job_Manager {
 		include_once( 'includes/class-wp-job-manager-widget.php' );
 		include_once( 'includes/widgets/class-wp-job-manager-widget-recent-jobs.php' );
 		include_once( 'includes/widgets/class-wp-job-manager-widget-featured-jobs.php' );
+	}
+
+	/**
+	 * Schedule cron jobs for WPJM events.
+	 */
+	public static function maybe_schedule_cron_jobs() {
+		if ( ! wp_next_scheduled( 'job_manager_check_for_expired_jobs' ) ) {
+			wp_schedule_event( time(), 'hourly', 'job_manager_check_for_expired_jobs' );
+		}
+		if ( ! wp_next_scheduled( 'job_manager_delete_old_previews' ) ) {
+			wp_schedule_event( time(), 'daily', 'job_manager_delete_old_previews' );
+		}
+		if ( ! wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
+			wp_schedule_event( time(), 'twicedaily', 'job_manager_clear_expired_transients' );
+		}
 	}
 
 	/**
