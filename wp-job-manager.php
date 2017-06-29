@@ -58,21 +58,23 @@ class WP_Job_Manager {
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
 		// Includes
-		include( 'includes/class-wp-job-manager-install.php' );
-		include( 'includes/class-wp-job-manager-post-types.php' );
-		include( 'includes/class-wp-job-manager-ajax.php' );
-		include( 'includes/class-wp-job-manager-shortcodes.php' );
-		include( 'includes/class-wp-job-manager-api.php' );
-		include( 'includes/class-wp-job-manager-forms.php' );
-		include( 'includes/class-wp-job-manager-geocode.php' );
-		include( 'includes/class-wp-job-manager-cache-helper.php' );
+		include_once( 'wp-job-manager-functions.php' );
+		include_once( 'wp-job-manager-deprecated.php' );
+		include_once( 'includes/class-wp-job-manager-install.php' );
+		include_once( 'includes/class-wp-job-manager-post-types.php' );
+		include_once( 'includes/class-wp-job-manager-ajax.php' );
+		include_once( 'includes/class-wp-job-manager-shortcodes.php' );
+		include_once( 'includes/class-wp-job-manager-api.php' );
+		include_once( 'includes/class-wp-job-manager-forms.php' );
+		include_once( 'includes/class-wp-job-manager-geocode.php' );
+		include_once( 'includes/class-wp-job-manager-cache-helper.php' );
 
 		if ( is_admin() ) {
-			include( 'includes/admin/class-wp-job-manager-admin.php' );
+			include_once( 'includes/admin/class-wp-job-manager-admin.php' );
 		}
 
 		// Load 3rd party customizations
-		require_once( 'includes/3rd-party/3rd-party.php' );
+		include_once( 'includes/3rd-party/3rd-party.php' );
 
 		// Init classes
 		$this->forms      = WP_Job_Manager_Forms::instance();
@@ -126,12 +128,10 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Loads plugin's core helper functions.
+	 * Loads plugin's core helper template functions.
 	 */
 	public function include_template_functions() {
-		include( 'wp-job-manager-functions.php' );
-		include( 'wp-job-manager-template.php' );
-		include( 'wp-job-manager-deprecated.php' );
+		include_once( 'wp-job-manager-template.php' );
 	}
 
 	/**
