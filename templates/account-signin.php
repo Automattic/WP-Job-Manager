@@ -13,12 +13,9 @@
 	</fieldset>
 
 <?php else :
-
-	$account_required             = job_manager_user_requires_account();
-	$registration_enabled         = job_manager_enable_registration();
-	$generate_username_from_email = job_manager_generate_username_from_email();
-    $field                        = array ( 'label' => 'Email', 'type' => 'text', );
-
+	$account_required      = job_manager_user_requires_account();
+	$registration_enabled  = job_manager_enable_registration();
+	$registration_fields   = wpjm_get_registration_fields();
 	?>
 	<fieldset>
 		<label><?php _e( 'Have an account?', 'wp-job-manager' ); ?></label>
@@ -36,22 +33,20 @@
 			<?php endif; ?>
 		</div>
 	</fieldset>
-	<?php if ( $registration_enabled ) : ?>
-		<?php if ( ! $generate_username_from_email ) : ?>
-			<fieldset>
-				<label><?php _e( 'Username', 'wp-job-manager' ); ?> <?php echo apply_filters( 'submit_job_form_required_label', ( ! $account_required ) ? ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>' : '', $field ); ?></label>
-				<div class="field">
-					<input type="text" class="input-text" name="create_account_username" id="account_username" value="<?php echo empty( $_POST['create_account_username'] ) ? '' : esc_attr( sanitize_text_field( stripslashes( $_POST['create_account_username'] ) ) ); ?>" />
+	<?php
+	if ( ! empty( $registration_fields ) ) {
+		foreach ( $registration_fields as $key => $field ) {
+			?>
+			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
+				<label
+					for="<?php echo esc_attr( $key ); ?>"><?php echo $field[ 'label' ] . apply_filters( 'submit_job_form_required_label', $field[ 'required' ] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>
+				<div class="field <?php echo $field[ 'required' ] ? 'required-field' : ''; ?>">
+					<?php get_job_manager_template( 'form-fields/' . $field[ 'type' ] . '-field.php', array( 'key'   => $key, 'field' => $field ) ); ?>
 				</div>
 			</fieldset>
-		<?php endif; ?>
-		<fieldset>
-			<label><?php _e( 'Your email', 'wp-job-manager' ); ?> <?php echo apply_filters( 'submit_job_form_required_label', ( ! $account_required ) ? ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>' : '', $field ); ?></label>
-			<div class="field">
-				<input type="email" class="input-text" name="create_account_email" id="account_email" placeholder="<?php esc_attr_e( 'you@yourdomain.com', 'wp-job-manager' ); ?>" value="<?php echo empty( $_POST['create_account_email'] ) ? '' : esc_attr( sanitize_text_field( stripslashes( $_POST['create_account_email'] ) ) ); ?>" />
-			</div>
-		</fieldset>
-		<?php do_action( 'job_manager_register_form' ); ?>
-	<?php endif; ?>
-
+			<?php
+		}
+		do_action( 'job_manager_register_form' );
+	}
+	?>
 <?php endif; ?>

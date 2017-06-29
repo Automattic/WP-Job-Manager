@@ -339,6 +339,65 @@ function wpjm_get_the_job_types( $post = null ) {
 }
 
 /**
+ * Returns the registration fields used when an account is required.
+ *
+ * @since 1.26.3
+ *
+ * @return array $registration_fields
+ */
+function wpjm_get_registration_fields() {
+	$generate_username_from_email      = job_manager_generate_username_from_email();
+	$use_standard_password_setup_email = wpjm_use_standard_password_setup_email();
+	$account_required  = job_manager_user_requires_account();
+
+	$registration_fields = array();
+	if ( job_manager_enable_registration() ) {
+		if ( ! $generate_username_from_email ) {
+			$registration_fields['create_account_username'] = array(
+				'type'     => 'text',
+				'label'    => __( 'Username', 'wp-job-manager' ),
+				'required' => $account_required,
+				'value'    => isset( $_POST['create_account_username'] ) ? $_POST['create_account_username'] : '',
+			);
+		}
+		if ( ! $use_standard_password_setup_email ) {
+			$registration_fields['create_account_password'] = array(
+				'type'         => 'password',
+				'label'        => __( 'Password', 'wp-job-manager' ),
+				'autocomplete' => false,
+				'required'     => $account_required,
+			);
+			$password_hint = wpjm_get_password_rules_hint();
+			if ( $password_hint ) {
+				$registration_fields['create_account_password']['description'] = $password_hint;
+			}
+			$registration_fields['create_account_password_verify'] = array(
+				'type'         => 'password',
+				'label'        => __( 'Verify Password', 'wp-job-manager' ),
+				'autocomplete' => false,
+				'required'     => $account_required,
+			);
+		}
+		$registration_fields['create_account_email'] = array(
+			'type'        => 'text',
+			'label'       => __( 'Your email', 'wp-job-manager' ),
+			'placeholder' => __( 'you@yourdomain.com', 'wp-job-manager' ),
+			'required'    => $account_required,
+			'value'       => isset( $_POST['create_account_email'] ) ? $_POST['create_account_email'] : '',
+		);
+	}
+
+	/**
+	 * Filters the fields used at registration.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param array $registration_fields
+	 */
+	return apply_filters( 'wpjm_get_registration_fields', $registration_fields );
+}
+
+/**
  * Displays the published date of the job listing.
  *
  * @since 1.25.3
