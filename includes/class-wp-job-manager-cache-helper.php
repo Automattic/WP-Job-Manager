@@ -182,6 +182,10 @@ class WP_Job_Manager_Cache_Helper {
 			$rlike[] = "^_transient_jm_{$old_status}_{$post->post_type}_count_user_";
 		}
 
+		if ( empty( $rlike ) ) {
+			return;
+		}
+
 		$sql        = $wpdb->prepare( "SELECT option_name FROM $wpdb->options WHERE option_name RLIKE '%s'", implode('|', $rlike ) );
 		$transients = $wpdb->get_col( $sql );
 
