@@ -97,6 +97,7 @@ class WP_Job_Manager {
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
+		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
 	}
 
 	/**
@@ -155,6 +156,18 @@ class WP_Job_Manager {
 		}
 		if ( ! wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
 			wp_schedule_event( time(), 'twicedaily', 'job_manager_clear_expired_transients' );
+		}
+	}
+
+	/**
+	 * Cleanup job posting cookies.
+	 */
+	public function cleanup_job_posting_cookies() {
+		if ( isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) {
+			setcookie( 'wp-job-manager-submitting-job-id', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
+		}
+		if ( isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
+			setcookie( 'wp-job-manager-submitting-job-key', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
 		}
 	}
 
