@@ -84,8 +84,8 @@ abstract class WP_Job_Manager_Form {
 			get_post_meta( $_COOKIE[ 'wp-job-manager-submitting-job-id' ], '_submitting_key', true ) == $_COOKIE['wp-job-manager-submitting-job-key']
 		) {
 			delete_post_meta( $_COOKIE[ 'wp-job-manager-submitting-job-id' ], '_submitting_key' );
-			setcookie( 'wp-job-manager-submitting-job-id', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
-			setcookie( 'wp-job-manager-submitting-job-key', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
+			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
+			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
 			wp_redirect( remove_query_arg( array( 'new', 'key' ), $_SERVER[ 'REQUEST_URI' ] ) );
 		}
 
