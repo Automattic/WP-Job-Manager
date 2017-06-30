@@ -41,7 +41,7 @@ jQuery(function($) {
 			fail: function (e, data) {
 				var $file_field     = $( this );
 				var $form           = $file_field.closest( 'form' );
-
+				
 				if ( data.errorThrown ) {
 					window.alert( data.errorThrown );
 				}
@@ -58,6 +58,11 @@ jQuery(function($) {
 				var image_types     = [ 'jpg', 'gif', 'png', 'jpeg', 'jpe' ];
 
 				data.context.remove();
+
+				// Handle JSON errors when success is false
+				if( typeof data.result.success !== 'undefined' && ! data.result.success ){
+					window.alert( data.result.data );
+				}
 
 				$.each(data.result.files, function(index, file) {
 					if ( file.error ) {
