@@ -41,7 +41,7 @@ jQuery(function($) {
 			fail: function (e, data) {
 				var $file_field     = $( this );
 				var $form           = $file_field.closest( 'form' );
-				
+
 				if ( data.errorThrown ) {
 					window.alert( data.errorThrown );
 				}
