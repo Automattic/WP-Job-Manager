@@ -72,7 +72,7 @@ Use the WordPress.org forums for community support where we try to help all user
 
 If you need help with one of our add-ons, [please raise a ticket in our help desk](https://wpjobmanager.com/support/).
 
-If you want help with a customisation, please consider hiring a developer! [http://jobs.wordpress.net/](http://jobs.wordpress.net/) is a good place to start.
+If you want help with a customization, please consider hiring a developer! [http://jobs.wordpress.net/](http://jobs.wordpress.net/) is a good place to start.
 
 == Installation ==
 
@@ -111,12 +111,12 @@ View the getting [installation](https://wpjobmanager.com/document/installation/)
 Yes! If you don't setup the [submit_job_form] shortcode, you can just post from the admin backend.
 
 = How can I customize the job application process? =
-There are several ways to customise the job application process in WP Job Manager, including using some extra plugins (some are free on Wordpress.org).
+There are several ways to customize the job application process in WP Job Manager, including using some extra plugins (some are free on Wordpress.org).
 
-See: [Customising the Job Application Process](https://wpjobmanager.com/document/customising-job-application-process/)
+See: [Customizing the Job Application Process](https://wpjobmanager.com/document/customising-job-application-process/)
 
 = How can I customize the job submission form? =
-There are three ways to customise the fields in WP Job Manager;
+There are three ways to customize the fields in WP Job Manager;
 
 1. For simple text changes, using a localisation file or a plugin such as https://wordpress.org/plugins/say-what/
 2. For field changes, or adding new fields, using functions/filters inside your theme's functions.php file: [https://wpjobmanager.com/document/editing-job-submission-fields/](https://wpjobmanager.com/document/editing-job-submission-fields/)
@@ -175,7 +175,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Enhancement: Pass search values with the job_manager_get_listings_custom_filter_text filter. https://github.com/automattic/wp-job-manager/pull/845 Props Kraft.
 * Fix: Prevent a potential CSRF vector. https://github.com/automattic/wp-job-manager/pull/891 Props Jay Patel for the responsible disclosure.
 * Fix: Improve load time by removing unnecessary oEmbed call. https://github.com/automattic/wp-job-manager/pull/768 Props Myles McNamara.
-* Fix: Improve WPML compatability. https://github.com/automattic/wp-job-manager/pull/787 Props Spencer Finnell.
+* Fix: Improve WPML compatibility. https://github.com/automattic/wp-job-manager/pull/787 Props Spencer Finnell.
 * Fix: Add an implicit whitelist for API requests. https://github.com/automattic/wp-job-manager/pull/855 Props muddletoes.
 * Fix: Fixed taxonomy search conditions. See https://github.com/automattic/wp-job-manager/pull/859/ Props Jonas Vogel.
 

@@ -134,7 +134,7 @@ class WP_Job_Manager_Settings {
 							'type'       => 'select',
 							'options'    => array(
 								'relative' => __( 'Relative to the current date (e.g., 1 day, 1 week, 1 month ago)', 'wp-job-manager' ),
-								'default'   => __( 'Default date format as defined in Setttings', 'wp-job-manager' ),
+								'default'   => __( 'Default date format as defined in Settings', 'wp-job-manager' ),
 							)
 						),
 						array(
