@@ -150,6 +150,7 @@ class WP_Job_Manager_Cache_Helper {
 		 *
 		 * @since 1.26.3
 		 *
+		 * @param array   $post_types Post types that should be cached.
 		 * @param string  $new_status New post status.
 		 * @param string  $old_status Old post status.
 		 * @param WP_Post $post       Post object.
@@ -166,9 +167,10 @@ class WP_Job_Manager_Cache_Helper {
 		 *
 		 * @since 1.26.3
 		 *
-		 * @param string  $new_status New post status.
-		 * @param string  $old_status Old post status.
-		 * @param WP_Post $post       Post object.
+		 * @param array   $post_statuses Post statuses that should be cached.
+		 * @param string  $new_status    New post status.
+		 * @param string  $old_status    Old post status.
+		 * @param WP_Post $post          Post object.
 		 */
 		$valid_statuses = apply_filters( 'wpjm_count_cache_supported_statuses', array( 'pending' ), $new_status, $old_status, $post );
 
