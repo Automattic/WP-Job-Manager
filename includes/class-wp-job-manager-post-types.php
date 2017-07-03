@@ -600,7 +600,7 @@ class WP_Job_Manager_Post_Types {
 	 * @return array
 	 */
 	public function fix_post_name( $data, $postarr ) {
-		 if ( 'job_listing' === $data['post_type'] && 'pending' === $data['post_status'] && ! current_user_can( 'publish_posts' ) ) {
+		 if ( 'job_listing' === $data['post_type'] && 'pending' === $data['post_status'] && ! current_user_can( 'publish_posts' ) && isset( $postarr['post_name'] ) ) {
 				$data['post_name'] = $postarr['post_name'];
 		 }
 		 return $data;
