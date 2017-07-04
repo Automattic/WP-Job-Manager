@@ -47,7 +47,7 @@ class WP_Job_Manager_Category_Walker extends Walker {
 
 		$output .= "\t<option class=\"level-$depth\" value=\"" . $value . "\"";
 
-		if ( $value == $args['selected'] || ( is_array( $args['selected'] ) && in_array( $value, $args['selected'] ) ) )
+		if ( isset( $args['selected'] ) && ( $value == $args['selected'] || ( is_array( $args['selected'] ) && in_array( $value, $args['selected'] ) ) ) )
 			$output .= ' selected="selected"';
 
 		$output .= '>';
