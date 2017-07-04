@@ -199,7 +199,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '1',
 							'label'      => __( 'Account Password', 'wp-job-manager' ),
 							'cb_label'   => __( 'Use WordPress\' default behavior and email new users link to set a password', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, an email will be sent to the user with their username and a link to set their password. Otherwise, a password field will be shown.', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, an email will be sent to the user with their username and a link to set their password. Otherwise, a password field will be shown and their email address won\'t be verified.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
