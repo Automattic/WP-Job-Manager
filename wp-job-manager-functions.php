@@ -405,8 +405,8 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 	 * Handles notification of new users.
 	 *
 	 * @since 1.23.10
-	 * @param  int    $user_id
-	 * @param  string $password
+	 * @param  int         $user_id
+	 * @param  string|bool $password
 	 */
 	function wp_job_manager_notify_new_user( $user_id, $password ) {
 		global $wp_version;
@@ -414,7 +414,11 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 		if ( version_compare( $wp_version, '4.3.1', '<' ) ) {
 			wp_new_user_notification( $user_id, $password );
 		} else {
-			wp_new_user_notification( $user_id, null, 'both' );
+			$notify = 'admin';
+			if ( empty( $password ) ) {
+				$notify = 'both';
+			}
+			wp_new_user_notification( $user_id, null, $notify );
 		}
 	}
 endif;
@@ -434,14 +438,14 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 	// Soft Deprecated in 1.20.0
 	if ( ! is_array( $args ) ) {
 		$username = '';
-		$password = wp_generate_password();
+		$password = false;
 		$email    = $args;
 		$role     = $deprecated;
 	} else {
 		$defaults = array(
 			'username' => '',
 			'email'    => '',
-			'password' => wp_generate_password(),
+			'password' => false,
 			'role'     => get_option( 'default_role' )
 		);
 
@@ -492,8 +496,13 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 		'user_login' => $username,
 		'user_pass'  => $password,
 		'user_email' => $email,
-		'role'       => $role
+		'role'       => $role,
 	);
+
+	// User is forced to set up account with email sent to them. This password will remain a secret.
+	if ( empty( $new_user['user_pass'] ) ) {
+		$new_user['user_pass'] = wp_generate_password();
+	}
 
 	$user_id = wp_insert_user( apply_filters( 'job_manager_create_account_data', $new_user ) );
 
@@ -503,6 +512,7 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 
 	// Notify
 	wp_job_manager_notify_new_user( $user_id, $password, $new_user );
+
 	// Login
 	wp_set_auth_cookie( $user_id, true, is_ssl() );
 	$current_user = get_user_by( 'id', $user_id );
@@ -600,6 +610,70 @@ function job_manager_user_can_edit_job( $job_id ) {
 	}
 
 	return apply_filters( 'job_manager_user_can_edit_job', $can_edit, $job_id );
+}
+
+/**
+ * Checks to see if the standard password setup email should be used.
+ *
+ * @since 1.26.3
+ *
+ * @return bool True if they are to use standard email, false to allow user to set password at first job creation.
+ */
+function wpjm_use_standard_password_setup_email() {
+	$use_standard_password_setup_email = true;
+
+	// If username is being automatically generated, force them to send password setup email.
+	if ( ! job_manager_generate_username_from_email() ) {
+		$use_standard_password_setup_email = get_option( 'job_manager_use_standard_password_setup_email' ) == 1 ? true : false;
+	}
+
+	/**
+	 * Allows an override of the setting for if a password should be auto-generated for new users.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param bool $use_standard_password_setup_email True if a standard account setup email should be sent.
+	 */
+	return apply_filters( 'wpjm_use_standard_password_setup_email', $use_standard_password_setup_email );
+}
+
+/**
+ * Checks if a password should be auto-generated for new users.
+ *
+ * @since 1.26.3
+ *
+ * @param string $password Password to validate.
+ * @return bool True if password meets rules.
+ */
+function wpjm_validate_new_password( $password ) {
+	// Password must be at least 8 characters long. Trimming here because `wp_hash_password()` will later on.
+	$is_valid_password = strlen( trim ( $password ) ) >= 8;
+
+	/**
+	 * Allows overriding default WPJM password validation rules.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param bool   $is_valid_password True if new password is validated.
+	 * @param string $password          Password to validate.
+	 */
+	return apply_filters( 'wpjm_validate_new_password', $is_valid_password, $password );
+}
+
+/**
+ * Returns the password rules hint.
+ *
+ * @return string
+ */
+function wpjm_get_password_rules_hint() {
+	/**
+	 * Allows overriding the hint shown below the new password input field. Describes rules set in `wpjm_validate_new_password`.
+	 *
+	 * @since 1.26.3
+	 *
+	 * @param string $password_rules Password rules description.
+	 */
+	return apply_filters( 'wpjm_password_rules_hint', __( 'Passwords must be at least 8 characters long.', 'wp-job-manager') );
 }
 
 /**

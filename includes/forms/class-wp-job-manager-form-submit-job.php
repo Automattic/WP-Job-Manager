@@ -462,15 +462,36 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						if ( ! job_manager_generate_username_from_email() && empty( $_POST['create_account_username'] ) ) {
 							throw new Exception( __( 'Please enter a username.', 'wp-job-manager' ) );
 						}
+						if ( ! wpjm_use_standard_password_setup_email() ) {
+							if ( empty( $_POST['create_account_password'] ) ) {
+								throw new Exception( __( 'Please enter a password.', 'wp-job-manager' ) );
+							}
+						}
 						if ( empty( $_POST['create_account_email'] ) ) {
 							throw new Exception( __( 'Please enter your email address.', 'wp-job-manager' ) );
 						}
 					}
+
+					if ( ! wpjm_use_standard_password_setup_email() && ! empty( $_POST['create_account_password'] ) ) {
+						if ( empty( $_POST['create_account_password_verify'] ) || $_POST['create_account_password_verify'] !== $_POST['create_account_password'] ) {
+							throw new Exception( __( 'Passwords must match.', 'wp-job-manager' ) );
+						}
+						if ( ! wpjm_validate_new_password( $_POST['create_account_password'] ) ) {
+							$password_hint = wpjm_get_password_rules_hint();
+							if ( $password_hint ) {
+								throw new Exception( sprintf( __( 'Invalid Password: %s', 'wp-job-manager' ), $password_hint ) );
+							} else {
+								throw new Exception( __( 'Password is not valid.', 'wp-job-manager' ) );
+							}
+						}
+					}
+
 					if ( ! empty( $_POST['create_account_email'] ) ) {
 						$create_account = wp_job_manager_create_account( array(
-							'username' => empty( $_POST['create_account_username'] ) ? '' : $_POST['create_account_username'],
+							'username' => ( job_manager_generate_username_from_email() || empty( $_POST['create_account_username'] ) ) ? '' : $_POST['create_account_username'],
+							'password' => ( wpjm_use_standard_password_setup_email() || empty( $_POST['create_account_password'] ) ) ? '' : $_POST['create_account_password'],
 							'email'    => $_POST['create_account_email'],
-							'role'     => get_option( 'job_manager_registration_role' )
+							'role'     => get_option( 'job_manager_registration_role' ),
 						) );
 					}
 				}
