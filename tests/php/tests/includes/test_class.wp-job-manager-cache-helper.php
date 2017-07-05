@@ -148,7 +148,6 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	/**
 	 * @since 1.26.3
 	 * @covers WP_Job_Manager_Cache_Helper::edited_term
-	 *
 	 */
 	public function test_edited_term() {
 		/**
