@@ -597,10 +597,14 @@ class WP_Job_Manager_Writepanels {
 
 			// Expirey date
 			if ( '_job_expires' === $key ) {
-				if ( ! empty( $_POST[ $key ] ) ) {
-					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
+				if ( empty( $_POST[ $key ] ) ) {
+					if ( get_option( 'job_manager_submission_duration' ) ) {
+						update_post_meta( $post_id, $key, calculate_job_expiry( $post_id ) );
+					} else {
+						delete_post_meta( $post_id, $key );
+					}
 				} else {
-					update_post_meta( $post_id, $key, calculate_job_expiry( $post_id ) );
+					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
 				}
 			}
 
