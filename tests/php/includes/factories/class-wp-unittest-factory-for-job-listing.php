@@ -6,7 +6,7 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 	function __construct( $factory = null ) {
 		parent::__construct( $factory );
 		$this->default_job_listing_meta = array(
-			'_job_location' => new WP_UnitTest_Generator_Sequence( 'Job Listing location %s' ),
+			'_job_location' => '',
 			'_job_type' => 'full-time',
 			'_company_name' => new WP_UnitTest_Generator_Sequence( 'Job Listing company name %s' ),
 			'_company_website' => new WP_UnitTest_Generator_Sequence( 'Job Listing company website %s' ),
