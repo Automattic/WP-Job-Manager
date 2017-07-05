@@ -11,7 +11,9 @@ class Requests_Transport_Faker implements Requests_Transport {
 	 * @param array $response
 	 */
 	public function add_fake_request( $request, $response ) {
+		$response_arr = array();
 		if ( is_array( $request ) ) {
+			$response_arr['request'] = $request;
 			$request = self::make_request_signature(
 				isset( $request['url'] ) ? $request['url'] : '',
 				isset( $request['headers'] ) ? $request['headers'] : array(),
@@ -21,7 +23,8 @@ class Requests_Transport_Faker implements Requests_Transport {
 		if ( is_array( $response ) ) {
 			$response = self::build_response( $response );
 		}
-		$this->_responses[ $request ] = $response;
+		$response_arr['response'] = $response;
+		$this->_responses[ $request ] = $response_arr;
 	}
 
 	/**
@@ -39,6 +42,9 @@ class Requests_Transport_Faker implements Requests_Transport {
 		}
 		if ( empty( $data ) ) {
 			$data = array();
+		}
+		if ( is_object( $url ) && $url instanceof Requests_IRI ) {
+			$url = $url->__toString();
 		}
 		return sha1( json_encode( array( $url, $headers, $data ) ) );
 	}
@@ -95,11 +101,11 @@ class Requests_Transport_Faker implements Requests_Transport {
 		} else {
 			$signature = self::make_request_signature( $url, array(), $data );
 		}
-		$this->_log[ $signature ] = true;
+		$this->_log[ $signature ] = array( 'url' => $url, 'headers' => $headers, 'data' => $data );
 		if ( ! isset( $this->_responses[ $signature ] ) ) {
 			throw new Requests_Exception( 'Computer says no', 'test' );
 		}
-		return $this->_responses[ $signature ];
+		return $this->_responses[ $signature ]['response'];
 	}
 
 	/**
