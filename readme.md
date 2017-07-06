@@ -1,9 +1,9 @@
 # WP Job Manager #
 **Contributors:** [mikejolley](https://profiles.wordpress.org/mikejolley), [automattic](https://profiles.wordpress.org/automattic), [adamkheckler](https://profiles.wordpress.org/adamkheckler), [annezazu](https://profiles.wordpress.org/annezazu), [cena](https://profiles.wordpress.org/cena), [chaselivingston](https://profiles.wordpress.org/chaselivingston), [csonnek](https://profiles.wordpress.org/csonnek), [davor.altman](https://profiles.wordpress.org/davor.altman), [drawmyface](https://profiles.wordpress.org/drawmyface), [erania-pinnera](https://profiles.wordpress.org/erania-pinnera), [jacobshere](https://profiles.wordpress.org/jacobshere), [jakeom](https://profiles.wordpress.org/jakeom), [jeherve](https://profiles.wordpress.org/jeherve), [jenhooks](https://profiles.wordpress.org/jenhooks), [jgs](https://profiles.wordpress.org/jgs), [jonryan](https://profiles.wordpress.org/jonryan), [kraftbj](https://profiles.wordpress.org/kraftbj), [lamdayap](https://profiles.wordpress.org/lamdayap), [lschuyler](https://profiles.wordpress.org/lschuyler), [macmanx](https://profiles.wordpress.org/macmanx), [nancythanki](https://profiles.wordpress.org/nancythanki), [orangesareorange](https://profiles.wordpress.org/orangesareorange), [rachelsquirrel](https://profiles.wordpress.org/rachelsquirrel), [ryancowles](https://profiles.wordpress.org/ryancowles), [richardmtl](https://profiles.wordpress.org/richardmtl), [scarstocea](https://profiles.wordpress.org/scarstocea)  
 **Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent  
-**Requires at least:** 4.3.1 
+**Requires at least:** 4.3.1  
 **Tested up to:** 4.8  
-**Stable tag:** 1.26.2  
+**Stable tag:** 1.27.0  
 **License:** GPLv3  
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -72,7 +72,7 @@ Use the WordPress.org forums for community support where we try to help all user
 
 If you need help with one of our add-ons, [please raise a ticket in our help desk](https://wpjobmanager.com/support/).
 
-If you want help with a customisation, please consider hiring a developer! [http://jobs.wordpress.net/](http://jobs.wordpress.net/) is a good place to start.
+If you want help with a customization, please consider hiring a developer! [http://jobs.wordpress.net/](http://jobs.wordpress.net/) is a good place to start.
 
 ## Installation ##
 
@@ -111,12 +111,12 @@ View the getting [installation](https://wpjobmanager.com/document/installation/)
 Yes! If you don't setup the [submit_job_form] shortcode, you can just post from the admin backend.
 
 ### How can I customize the job application process? ###
-There are several ways to customise the job application process in WP Job Manager, including using some extra plugins (some are free on Wordpress.org).
+There are several ways to customize the job application process in WP Job Manager, including using some extra plugins (some are free on Wordpress.org).
 
-See: [Customising the Job Application Process](https://wpjobmanager.com/document/customising-job-application-process/)
+See: [Customizing the Job Application Process](https://wpjobmanager.com/document/customising-job-application-process/)
 
 ### How can I customize the job submission form? ###
-There are three ways to customise the fields in WP Job Manager;
+There are three ways to customize the fields in WP Job Manager;
 
 1. For simple text changes, using a localisation file or a plugin such as https://wordpress.org/plugins/say-what/
 2. For field changes, or adding new fields, using functions/filters inside your theme's functions.php file: [https://wpjobmanager.com/document/editing-job-submission-fields/](https://wpjobmanager.com/document/editing-job-submission-fields/)
@@ -140,6 +140,25 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 ## Changelog ##
+
+### 1.27.0 ###
+* Enhancement: Admins can now allow users to specify an account password when posting their first job listing. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1063)
+* Enhancement: Pending job listing counts are now cached for improved WP Admin performance. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/1024)
+* Enhancement: Allows users to override permalink slugs in WP Admin's Permalink Settings screen. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1042)
+* Enhancement: Allows admins to perform bulk updating of jobs as filled/not filled. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1049)
+* Enhancement: Adds job listing status CSS classes on single job listings. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1041)
+* Enhancement: Adds `wpjm_the_job_title` filter for inserting non-escaped HTML alongside job titles in templates. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1033)
+* Enhancement: Allows admins to filter by `post_status` in `[jobs]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1051)
+* Enhancement: Allows accessing settings tab from hash in URL. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/999)
+* Fix: Make sure cron jobs for checking/cleaning expired listings are always in place. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1058)
+* Fix: Better handling of multiple job types. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/1014)
+* Fix: Issue with deleting company logos from job listings submission form. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1047)
+* Fix: Warning thrown on job submission form when user not logged in. (@piersb; https://github.com/Automattic/WP-Job-Manager/pull/1011)  
+* Fix: Issue with WPML not syncing some meta fields. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1027)
+* Fix: Better handling of AJAX upload errors. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/1044)
+* Fix: Remove job posting cookies on logout. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1065)
+* Fix: Expiration date can be cleared if default job duration option is empty. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/1076)
+* Fix: Issue with Safari and expiration datepicker. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1078)
 
 ### 1.26.2 ###
 * Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.  (https://github.com/Automattic/WP-Job-Manager/pull/1020)
@@ -175,7 +194,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Enhancement: Pass search values with the job_manager_get_listings_custom_filter_text filter. https://github.com/automattic/wp-job-manager/pull/845 Props Kraft.
 * Fix: Prevent a potential CSRF vector. https://github.com/automattic/wp-job-manager/pull/891 Props Jay Patel for the responsible disclosure.
 * Fix: Improve load time by removing unnecessary oEmbed call. https://github.com/automattic/wp-job-manager/pull/768 Props Myles McNamara.
-* Fix: Improve WPML compatability. https://github.com/automattic/wp-job-manager/pull/787 Props Spencer Finnell.
+* Fix: Improve WPML compatibility. https://github.com/automattic/wp-job-manager/pull/787 Props Spencer Finnell.
 * Fix: Add an implicit whitelist for API requests. https://github.com/automattic/wp-job-manager/pull/855 Props muddletoes.
 * Fix: Fixed taxonomy search conditions. See https://github.com/automattic/wp-job-manager/pull/859/ Props Jonas Vogel.
 

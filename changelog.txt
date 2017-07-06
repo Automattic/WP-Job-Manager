@@ -1,3 +1,22 @@
+= 1.27.0 =
+* Enhancement: Admins can now allow users to specify an account password when posting their first job listing. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1063)
+* Enhancement: Pending job listing counts are now cached for improved WP Admin performance. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/1024)
+* Enhancement: Allows users to override permalink slugs in WP Admin's Permalink Settings screen. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1042)
+* Enhancement: Allows admins to perform bulk updating of jobs as filled/not filled. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1049)
+* Enhancement: Adds job listing status CSS classes on single job listings. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1041)
+* Enhancement: Adds `wpjm_the_job_title` filter for inserting non-escaped HTML alongside job titles in templates. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1033)
+* Enhancement: Allows admins to filter by `post_status` in `[jobs]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1051)
+* Enhancement: Allows accessing settings tab from hash in URL. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/999)
+* Fix: Make sure cron jobs for checking/cleaning expired listings are always in place. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1058)
+* Fix: Better handling of multiple job types. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/1014)
+* Fix: Issue with deleting company logos from job listings submission form. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1047)
+* Fix: Warning thrown on job submission form when user not logged in. (@piersb; https://github.com/Automattic/WP-Job-Manager/pull/1011)  
+* Fix: Issue with WPML not syncing some meta fields. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1027)
+* Fix: Better handling of AJAX upload errors. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/1044)
+* Fix: Remove job posting cookies on logout. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1065)
+* Fix: Expiration date can be cleared if default job duration option is empty. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/1076)
+* Fix: Issue with Safari and expiration datepicker. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1078)
+
 = 1.26.2 =
 * Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.  (https://github.com/Automattic/WP-Job-Manager/pull/1020)
 * Fix: Escape post title in WP Admin's Job Listings page and template segments. (Props to @EhsanCod3r; https://github.com/Automattic/WP-Job-Manager/pull/1026)
