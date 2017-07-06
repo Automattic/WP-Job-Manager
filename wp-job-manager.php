@@ -27,7 +27,7 @@ class WP_Job_Manager {
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  1.26
+	 * @since  1.26.0
 	 */
 	private static $_instance = null;
 
@@ -36,7 +36,7 @@ class WP_Job_Manager {
 	 *
 	 * Ensures only one instance of WP Job Manager is loaded or can be loaded.
 	 *
-	 * @since  1.26
+	 * @since  1.26.0
 	 * @static
 	 * @see WPJM()
 	 * @return self Main instance.
