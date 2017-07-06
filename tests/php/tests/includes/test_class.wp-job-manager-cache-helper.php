@@ -6,7 +6,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::flush_get_job_listings_cache
 	 */
 	public function test_flush_get_job_listings_cache_explicit_trigger() {
@@ -28,7 +28,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::flush_get_job_listings_cache
 	 */
 	public function test_flush_get_job_listings_cache_action_trigger() {
@@ -54,7 +54,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::flush_get_job_listings_cache
 	 */
 	public function test_flush_get_job_listings_cache_action_bad_trigger() {
@@ -80,7 +80,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::job_manager_my_job_do_action
 	 */
 	public function test_job_manager_my_job_do_action() {
@@ -111,7 +111,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::set_term
 	 *
 	 */
@@ -146,7 +146,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::edited_term
 	 */
 	public function test_edited_term() {
@@ -179,7 +179,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::get_transient_version
 	 */
 	public function test_get_transient_version() {
@@ -197,7 +197,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::get_listings_count
 	 */
 	public function test_get_listings_count_default_args() {
@@ -233,7 +233,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::get_listings_count
 	 */
 	public function test_get_listings_count_nonstandard_args() {
@@ -268,7 +268,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::maybe_clear_count_transients
 	 * @group wip
 	 */

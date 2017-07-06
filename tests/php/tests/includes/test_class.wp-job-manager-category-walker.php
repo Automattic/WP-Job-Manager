@@ -9,7 +9,7 @@ class WP_Test_WP_Job_Manager_Cache_Walker extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Walker::start_el
 	 */
 	public function test_start_el() {

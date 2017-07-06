@@ -126,7 +126,7 @@ class WP_Job_Manager_Writepanels {
 		 * Filters job listing data fields for WP Admin post editor.
 		 *
 		 * @since 1.0.0
-		 * @since 1.26.3 $post_id was added
+		 * @since 1.27.0 $post_id was added
 		 *
 		 * @param array $fields
 		 * @param int   $post_id
@@ -301,7 +301,7 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * Just displays information.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 *
 	 * @param string $key
 	 * @param array  $field
@@ -313,7 +313,7 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * Displays information and/or hidden input.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 *
 	 * @param string $key
 	 * @param array  $field

@@ -5,7 +5,7 @@
  * Hooked into single_job_listing_start priority 20
  *
  * @since 1.14.0
- * @version 1.26.3
+ * @version 1.27.0
  *
  * @package WP Job Manager
  * @category Template

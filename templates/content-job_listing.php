@@ -3,7 +3,7 @@
  * Job listing in the loop.
  *
  * @since 1.0.0
- * @version 1.26.3
+ * @version 1.27.0
  *
  * @package WP Job Manager
  * @category Template
