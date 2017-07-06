@@ -23,8 +23,11 @@ jQuery(document).ready(function($) {
 
 	$( 'input.job-manager-datepicker, input#_job_expires' ).each( function(){
 		if ( $(this).val() ) {
-			var date = new Date( $(this).val() );
-			$(this).datepicker( 'setDate', date );
+			var dateParts = $(this).val().split("-");
+			if ( 3 === dateParts.length ) {
+				var selectedDate = new Date(parseInt(dateParts[0], 10), (parseInt(dateParts[1], 10) - 1), parseInt(dateParts[2], 10));
+				$(this).datepicker('setDate', selectedDate);
+			}
 		}
 	});
 
