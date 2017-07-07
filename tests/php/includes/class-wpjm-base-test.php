@@ -9,6 +9,12 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 		$this->factory = self::factory();
+		$this->enable_manage_job_listings_cap();
+	}
+
+	public function tearDown() {
+		parent::tearDown();
+		$this->disable_manage_job_listings_cap();
 	}
 
 	protected static function factory() {
@@ -38,5 +44,27 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	 */
 	public function do_not_die() {
 		return;
+	}
+
+	/**
+	 * Helper to disable manage job listings capability.
+	 */
+	protected function disable_manage_job_listings_cap() {
+		remove_filter( 'user_has_cap', array( $this, 'add_manage_job_listing_cap') );
+	}
+
+	/**
+	 * Helper to enable manage job listings capability.
+	 */
+	protected function enable_manage_job_listings_cap() {
+		add_filter( 'user_has_cap', array( $this, 'add_manage_job_listing_cap') );
+	}
+
+	/**
+	 * Helper to add capability for `user_has_cap` filter.
+	 */
+	public function add_manage_job_listing_cap( $caps ) {
+		$caps['manage_job_listings'] = 1;
+		return $caps;
 	}
 }
