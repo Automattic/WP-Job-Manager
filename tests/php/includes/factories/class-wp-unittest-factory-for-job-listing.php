@@ -16,6 +16,7 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 			'_company_logo' => '',
 			'_job_expires' => '',
 			'_filled' => '0',
+			'_featured' => '0',
 		);
 		$this->default_generation_definitions = array(
 			'post_status' => 'publish',
