@@ -10,6 +10,20 @@
  */
 class WPJM_REST_TestCase extends WPJM_BaseTest {
 
+	/**
+	 * Admin ID
+	 *
+	 * @var int
+	 */
+	protected $admin_id;
+
+	/**
+	 * Default User ID
+	 *
+	 * @var int
+	 */
+	protected $default_user_id;
+
 	public static function setUpBeforeClass() {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
@@ -57,8 +71,29 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
 		parent::setUp();
+		$admin = get_user_by( 'email', 'rest_api_admin_user@test.com' );
+		if ( false === $admin ){
+			$this->admin_id = wp_create_user(
+				'rest_api_admin_user',
+				'rest_api_admin_user',
+				'rest_api_admin_user@test.com' );
+			$admin = get_user_by( 'ID', $this->admin_id );
+			$admin->set_role( 'administrator' );
+		}
+
+		$this->default_user_id = get_current_user_id();
+		$this->login_as_admin();
 		$this->rest_server = $wp_rest_server;
 		$this->environment = WPJM()->rest_api()->get_bootstrap()->environment();
+	}
+
+	function login_as_admin() {
+		return $this->login_as( $this->admin_id );
+	}
+
+	function login_as( $user_id ) {
+		wp_set_current_user( $user_id );
+		return $this;
 	}
 
 	/**
