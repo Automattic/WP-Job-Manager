@@ -22,7 +22,7 @@ class WP_Job_Manager_Data_Stores_Status extends WPJM_REST_Data_Store_Abstract
 	 * @return WPJM_REST_Model_Collection
 	 */
 	public function get_entities( $filter = null ) {
-		return new WPJM_REST_Model_Collection( array( $this->get_entity() ) );
+		return new WPJM_REST_Model_Collection( array( $this->get_entity( null ) ) );
 	}
 
 	/**
@@ -31,7 +31,7 @@ class WP_Job_Manager_Data_Stores_Status extends WPJM_REST_Data_Store_Abstract
 	 * @param  mixed $id The id of the entity.
 	 * @return WPJM_REST_Interfaces_Model
 	 */
-	public function get_entity( $id = null ) {
+	public function get_entity( $id ) {
 		$should_run_page_setup = (bool) get_transient( '_job_manager_activation_redirect' );
 		$params = array(
 		 'run_page_setup' => $should_run_page_setup,
