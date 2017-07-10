@@ -1,6 +1,6 @@
 <?php
 /**
- * Declaration of our Configuration Filter
+ * Declaration of our Status Filters (will be used in GET requests)
  *
  * @package WPJM/REST
  */
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class WP_Job_Manager_Models_Settings
+ * Class WP_Job_Manager_Filters_Status
  */
 class WP_Job_Manager_Filters_Status extends WPJM_REST_Model_Declaration {
 
@@ -33,8 +33,8 @@ class WP_Job_Manager_Filters_Status extends WPJM_REST_Model_Declaration {
 	/**
 	 * Explode keys
 	 *
-	 * @param  MT_Interfaces_Model $model Model.
-	 * @param  mixed               $keys  The keys.
+	 * @param  WPJM_REST_Interfaces_Model $model Model.
+	 * @param  mixed                      $keys  The keys.
 	 * @return array
 	 */
 	function explode_keys( $model, $keys ) {
