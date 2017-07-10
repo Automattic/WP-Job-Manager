@@ -1,6 +1,6 @@
 <?php
 /**
- * Declaration of our Configuration Model
+ * Declaration of our Status Model
  *
  * @package WPJM/REST
  */
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class WP_Job_Manager_Models_Settings
+ * Class WP_Job_Manager_Models_Status
  */
 class WP_Job_Manager_Models_Status extends WPJM_REST_Model_Declaration
 	implements WPJM_REST_Interfaces_Permissions_Provider {
@@ -23,7 +23,7 @@ class WP_Job_Manager_Models_Status extends WPJM_REST_Model_Declaration
 	 * @return array
 	 * @throws WPJM_REST_Exception Exc.
 	 */
-	function declare_fields( $def ) {
+	public function declare_fields( $def ) {
 		return array(
 		 $def->field( 'run_page_setup', 'Should we run page setup' )
 			 ->typed( $def->type( 'boolean' ) ),
