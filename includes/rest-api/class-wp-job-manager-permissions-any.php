@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Permissions_Any
  */
-class WP_Job_Manager_Permissions_Any implements WPJM_REST_Interfaces_Permissions_Provider {
+class WP_Job_Manager_Permissions_Any implements WP_Job_Manager_REST_Interfaces_Permissions_Provider {
 
 	/**
 	 * Handle Permissions for a REST Controller Action

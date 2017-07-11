@@ -12,8 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Models_Settings
  */
-class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Settings
-	implements WPJM_REST_Interfaces_Permissions_Provider {
+class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Declaration_Settings
+	implements WP_Job_Manager_REST_Interfaces_Permissions_Provider {
 
 
 	/**
@@ -44,10 +44,10 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	/**
 	 * Adds validations to fields requiring page ids.
 	 *
-	 * @param string                                               $field_name    The fields name.
-	 * @param WPJM_REST_Model_Field_Declaration_Builder            $field_builder The field builder.
-	 * @param array                                                $field_data    The field data.
-	 * @param WPJM_REST_Model_Field_Declaration_Collection_Builder $def           The definition.
+	 * @param string                                                         $field_name    The fields name.
+	 * @param WP_Job_Manager_REST_Model_Field_Declaration_Builder            $field_builder The field builder.
+	 * @param array                                                          $field_data    The field data.
+	 * @param WP_Job_Manager_REST_Model_Field_Declaration_Collection_Builder $def           The definition.
 	 */
 	protected function on_field_setup( $field_name, $field_builder, $field_data, $def ) {
 		if ( in_array( $field_name, $this->get_fields_requiring_page_id_validation(), true ) ) {
@@ -59,7 +59,7 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	/**
 	 * Validates that a page_id points to a valid page.
 	 *
-	 * @param  WPJM_REST_Model_ValidationData $validation_data The data.
+	 * @param  WP_Job_Manager_REST_Model_ValidationData $validation_data The data.
 	 * @return bool|WP_Error
 	 */
 	public function validate_page_id_belongs_to_valid_page( $validation_data ) {
