@@ -38,7 +38,7 @@ class WP_Job_Manager_REST_API {
 	 *
 	 * @param string $base_dir The base dir.
 	 */
-	function __construct( $base_dir ) {
+	public function __construct( $base_dir ) {
 		$this->base_dir = trailingslashit( $base_dir );
 		$this->is_rest_api_enabled = defined( 'WPJM_REST_API_ENABLED' ) && ( true === constant( 'WPJM_REST_API_ENABLED' ) );
 	}
@@ -64,7 +64,7 @@ class WP_Job_Manager_REST_API {
 	 *
 	 * @return WPJM_REST_Bootstrap
 	 */
-	function get_bootstrap() {
+	public function get_bootstrap() {
 		return $this->wpjm_rest_api;
 	}
 
@@ -73,7 +73,7 @@ class WP_Job_Manager_REST_API {
 	 *
 	 * @return WP_Job_Manager_REST_API $this
 	 */
-	function init() {
+	public function init() {
 		if ( ! $this->is_rest_api_enabled ) {
 			return $this;
 		}
@@ -89,7 +89,7 @@ class WP_Job_Manager_REST_API {
 	 *
 	 * @param WPJM_REST_Environment $env The Environment.
 	 */
-	function define_api( $env ) {
+	public function define_api( $env ) {
 		// Models.
 		$env->define_model( 'WP_Job_Manager_Models_Settings' )
 			->with_data_store( $env->data_store( 'WPJM_REST_Data_Store_Option' ) );
