@@ -23,7 +23,7 @@ class WP_Job_Manager_REST_API {
 	/**
 	 * Our bootstrap
 	 *
-	 * @var WPJM_REST_Bootstrap
+	 * @var WP_Job_Manager_REST_Bootstrap
 	 */
 	private $wpjm_rest_api;
 	/**
@@ -47,9 +47,9 @@ class WP_Job_Manager_REST_API {
 	 * Bootstrap our REST Api
 	 */
 	private function bootstrap() {
-		include_once $this->base_dir . 'lib/wpjm_rest/class-wpjm-rest-bootstrap.php';
+		include_once $this->base_dir . 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php';
 
-		$this->wpjm_rest_api = WPJM_REST_Bootstrap::create()->load();
+		$this->wpjm_rest_api = WP_Job_Manager_REST_Bootstrap::create()->load();
 
 		include_once 'class-wp-job-manager-models-settings.php';
 		include_once 'class-wp-job-manager-models-status.php';
@@ -60,9 +60,9 @@ class WP_Job_Manager_REST_API {
 	}
 
 	/**
-	 * Get WPJM_REST_Bootstrap
+	 * Get WP_Job_Manager_REST_Bootstrap
 	 *
-	 * @return WPJM_REST_Bootstrap
+	 * @return WP_Job_Manager_REST_Bootstrap
 	 */
 	public function get_bootstrap() {
 		return $this->wpjm_rest_api;
@@ -87,12 +87,12 @@ class WP_Job_Manager_REST_API {
 	/**
 	 * Define our REST API Models and Controllers
 	 *
-	 * @param WPJM_REST_Environment $env The Environment.
+	 * @param WP_Job_Manager_REST_Environment $env The Environment.
 	 */
 	public function define_api( $env ) {
 		// Models.
 		$env->define_model( 'WP_Job_Manager_Models_Settings' )
-			->with_data_store( $env->data_store( 'WPJM_REST_Data_Store_Option' ) );
+			->with_data_store( $env->data_store( 'WP_Job_Manager_REST_Data_Store_Option' ) );
 		$env->define_model( 'WP_Job_Manager_Models_Status' )
 			->with_data_store( $env->data_store( 'WP_Job_Manager_Data_Stores_Status' ) );
 		$env->define_model( 'WP_Job_Manager_Filters_Status' )
@@ -103,7 +103,7 @@ class WP_Job_Manager_REST_API {
 		$wpjm_v1->endpoint()
 			->for_model( $env->model( 'WP_Job_Manager_Models_Settings' ) )
 			->with_base( '/settings' )
-			->with_class( 'WPJM_REST_Controller_Settings' );
+			->with_class( 'WP_Job_Manager_REST_Controller_Settings' );
 		$wpjm_v1->endpoint()
 			->for_model( $env->model( 'WP_Job_Manager_Models_Status' ) )
 			->with_base( '/status' )

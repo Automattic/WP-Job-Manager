@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Filters_Status
  */
-class WP_Job_Manager_Filters_Status extends WPJM_REST_Model_Declaration {
+class WP_Job_Manager_Filters_Status extends WP_Job_Manager_REST_Model_Declaration {
 
 	/**
 	 * Declare our fields
 	 *
-	 * @param  WPJM_REST_Model_Field_Declaration_Collection_Builder $def Def.
+	 * @param  WP_Job_Manager_REST_Model_Field_Declaration_Collection_Builder $def Def.
 	 * @return array
-	 * @throws WPJM_REST_Exception Exc.
+	 * @throws WP_Job_Manager_REST_Exception Exc.
 	 */
 	public function declare_fields( $def ) {
 		return array(
@@ -33,8 +33,8 @@ class WP_Job_Manager_Filters_Status extends WPJM_REST_Model_Declaration {
 	/**
 	 * Explode keys
 	 *
-	 * @param  WPJM_REST_Interfaces_Model $model Model.
-	 * @param  mixed                      $keys  The keys.
+	 * @param  WP_Job_Manager_REST_Interfaces_Model $model Model.
+	 * @param  mixed                                $keys  The keys.
 	 * @return array
 	 */
 	public function explode_keys( $model, $keys ) {

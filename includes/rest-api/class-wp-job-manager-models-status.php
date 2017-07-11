@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Models_Status
  */
-class WP_Job_Manager_Models_Status extends WPJM_REST_Model_Declaration
-	implements WPJM_REST_Interfaces_Permissions_Provider {
+class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model_Declaration
+	implements WP_Job_Manager_REST_Interfaces_Permissions_Provider {
 
 
 	/**
 	 * Declare our fields
 	 *
-	 * @param  WPJM_REST_Model_Field_Declaration_Collection_Builder $def Def.
+	 * @param  WP_Job_Manager_REST_Model_Field_Declaration_Collection_Builder $def Def.
 	 * @return array
 	 * @throws WPJM_REST_Exception Exc.
 	 */
