@@ -12,8 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Controllers_Status
  */
-class WP_Job_Manager_Controllers_Status extends WPJM_REST_Controller_Model
-	implements WPJM_REST_Interfaces_Controller {
+class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_Model
+	implements WP_Job_Manager_REST_Interfaces_Controller {
 
 
 	/**

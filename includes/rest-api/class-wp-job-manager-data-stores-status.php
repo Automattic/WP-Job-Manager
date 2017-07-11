@@ -12,8 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Data_Stores_Status
  */
-class WP_Job_Manager_Data_Stores_Status extends WPJM_REST_Data_Store_Abstract
-	implements WPJM_REST_Interfaces_Data_Store {
+class WP_Job_Manager_Data_Stores_Status extends WP_Job_Manager_REST_Data_Store_Abstract
+	implements WP_Job_Manager_REST_Interfaces_Data_Store {
 
 	/**
 	 * Get all the models (taking into account any filtering)
@@ -22,7 +22,7 @@ class WP_Job_Manager_Data_Stores_Status extends WPJM_REST_Data_Store_Abstract
 	 * @return WPJM_REST_Model_Collection
 	 */
 	public function get_entities( $filter = null ) {
-		return new WPJM_REST_Model_Collection( array( $this->get_entity( null ) ) );
+		return new WP_Job_Manager_REST_Model_Collection( array( $this->get_entity( null ) ) );
 	}
 
 	/**
