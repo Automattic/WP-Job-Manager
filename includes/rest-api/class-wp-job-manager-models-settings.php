@@ -28,7 +28,7 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	 *
 	 * @return array
 	 */
-	function get_settings() {
+	public function get_settings() {
 		if ( ! class_exists( 'WP_Job_Manager_Settings' ) ) {
 			$parent = dirname( dirname( __FILE__ ) );
 			if ( ! function_exists( 'get_editable_roles' ) ) {
@@ -62,7 +62,7 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	 * @param  WPJM_REST_Model_ValidationData $validation_data The data.
 	 * @return bool|WP_Error
 	 */
-	function validate_page_id_belongs_to_valid_page( $validation_data ) {
+	public function validate_page_id_belongs_to_valid_page( $validation_data ) {
 		$id = $validation_data->get_value();
 		$content = get_post( $id );
 
@@ -81,7 +81,7 @@ class WP_Job_Manager_Models_Settings extends WPJM_REST_Model_Declaration_Setting
 	 *
 	 * @return bool
 	 */
-	function permissions_check( $request, $action ) {
+	public function permissions_check( $request, $action ) {
 		return current_user_can( 'manage_options' );
 	}
 
