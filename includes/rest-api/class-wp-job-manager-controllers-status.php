@@ -19,7 +19,7 @@ class WP_Job_Manager_Controllers_Status extends WPJM_REST_Controller_Model
 	/**
 	 * Setup
 	 */
-	function setup() {
+	public function setup() {
 		$this->add_route( '/' )
 			->handler( 'index', 'index' );
 
@@ -34,7 +34,7 @@ class WP_Job_Manager_Controllers_Status extends WPJM_REST_Controller_Model
 	 * @param  WP_REST_Request $request The request.
 	 * @return WP_REST_Response
 	 */
-	function index( $request ) {
+	public function index( $request ) {
 		$params = $request->get_params();
 		$filter = $this->environment()
 			->model( 'WP_Job_Manager_Filters_Status' )
@@ -73,7 +73,7 @@ class WP_Job_Manager_Controllers_Status extends WPJM_REST_Controller_Model
 	 * @param  WP_REST_Request $request The request.
 	 * @return WP_REST_Response
 	 */
-	function show( $request ) {
+	public function show( $request ) {
 		$key = $request->get_param( 'key' );
 		$configuration = $this->get_model_definition()
 			->get_data_store()
@@ -92,7 +92,7 @@ class WP_Job_Manager_Controllers_Status extends WPJM_REST_Controller_Model
 	 * @param  WP_REST_Request $request The request.
 	 * @return WP_REST_Response
 	 */
-	function update( $request ) {
+	public function update( $request ) {
 		$key = $request->get_param( 'key' );
 		$value = $request->get_param( 'value' );
 		if ( empty( $value ) ) {

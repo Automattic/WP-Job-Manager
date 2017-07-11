@@ -21,7 +21,7 @@ class WP_Job_Manager_Filters_Status extends WPJM_REST_Model_Declaration {
 	 * @return array
 	 * @throws WPJM_REST_Exception Exc.
 	 */
-	function declare_fields( $def ) {
+	public function declare_fields( $def ) {
 		return array(
 		 $def->field( 'keys', 'The status keys to return' )
 			 ->typed( $def->type( 'array:string' ) )
@@ -37,7 +37,7 @@ class WP_Job_Manager_Filters_Status extends WPJM_REST_Model_Declaration {
 	 * @param  mixed                      $keys  The keys.
 	 * @return array
 	 */
-	function explode_keys( $model, $keys ) {
+	public function explode_keys( $model, $keys ) {
 		if ( is_string( $keys ) ) {
 			return explode( ',', $keys );
 		}
