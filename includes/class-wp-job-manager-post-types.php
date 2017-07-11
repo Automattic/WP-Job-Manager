@@ -108,11 +108,11 @@ class WP_Job_Manager_Post_Types {
 
 			register_taxonomy( "job_listing_category",
 				apply_filters( 'register_taxonomy_job_listing_category_object_type', array( 'job_listing' ) ),
-	       	 	apply_filters( 'register_taxonomy_job_listing_category_args', array(
-		            'hierarchical' 			=> true,
-		            'update_count_callback' => '_update_post_term_count',
-		            'label' 				=> $plural,
-		            'labels' => array(
+				apply_filters( 'register_taxonomy_job_listing_category_args', array(
+					'hierarchical' 			=> true,
+					'update_count_callback' => '_update_post_term_count',
+					'label' 				=> $plural,
+					'labels' => array(
 						'name'              => $plural,
 						'singular_name'     => $singular,
 						'menu_name'         => ucwords( $plural ),
@@ -124,19 +124,19 @@ class WP_Job_Manager_Post_Types {
 						'update_item'       => sprintf( __( 'Update %s', 'wp-job-manager' ), $singular ),
 						'add_new_item'      => sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
 						'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
-	            	),
-		            'show_ui' 				=> true,
-		            'show_tagcloud'			=> false,
-		            'public' 	     		=> $public,
-		            'capabilities'			=> array(
-		            	'manage_terms' 		=> $admin_capability,
-		            	'edit_terms' 		=> $admin_capability,
-		            	'delete_terms' 		=> $admin_capability,
-		            	'assign_terms' 		=> $admin_capability,
-		            ),
-		            'rewrite' 				=> $rewrite,
-		        ) )
-		    );
+					),
+					'show_ui' 				=> true,
+					'show_tagcloud'			=> false,
+					'public' 	     		=> $public,
+					'capabilities'			=> array(
+						'manage_terms' 		=> $admin_capability,
+						'edit_terms' 		=> $admin_capability,
+						'delete_terms' 		=> $admin_capability,
+						'assign_terms' 		=> $admin_capability,
+					),
+					'rewrite' 				=> $rewrite,
+				) )
+			);
 		}
 
 		if ( get_option( 'job_manager_enable_types' ) ) {
@@ -187,7 +187,7 @@ class WP_Job_Manager_Post_Types {
 			);
 		}
 
-	    /**
+		/**
 		 * Post types
 		 */
 		$singular  = __( 'Job', 'wp-job-manager' );
