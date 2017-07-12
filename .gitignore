@@ -1,5 +1,6 @@
 /nbproject/private/
 /node_modules/
+package-lock.json
 project.xml
 project.properties
 .DS_Store
@@ -10,6 +11,7 @@ Thumbs.db
 sftp-config.json
 /deploy/
 /vendor/
+/tmp/
 
 # Ignore all log files except for .htaccess
 /logs/*
