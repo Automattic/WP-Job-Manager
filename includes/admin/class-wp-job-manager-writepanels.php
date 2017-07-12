@@ -198,7 +198,7 @@ class WP_Job_Manager_Writepanels {
 			<!-- Display tabs-->
 			<ul id="<?php echo $taxonomy; ?>-tabs" class="category-tabs">
 				<li class="tabs"><a href="#<?php echo $taxonomy; ?>-all" tabindex="3"><?php echo $tax->labels->all_items; ?></a></li>
-				<li class="hide-if-no-js"><a href="#<?php echo $taxonomy; ?>-pop" tabindex="3"><?php _e( 'Most Used' ); ?></a></li>
+				<li class="hide-if-no-js"><a href="#<?php echo $taxonomy; ?>-pop" tabindex="3"><?php _e( 'Most Used', 'wp-job-manager' ); ?></a></li>
 			</ul>
 
 			<!-- Display taxonomy terms -->
