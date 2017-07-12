@@ -256,8 +256,7 @@ module.exports = function( grunt ){
 	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'checkrepo', 'build', 'wp_deploy' ] );
 	grunt.registerTask( 'deploy-unsafe', [ 'build', 'wp_deploy' ] );
 
-	grunt.registerTask( 'package', [ 'checkbranch:master', 'checkrepo', 'build', 'zip' ] );
-	grunt.registerTask( 'package-unsafe', [ 'build', 'zip' ] );
+	grunt.registerTask( 'package', [ 'build', 'zip' ] );
 
 	// Register tasks
 	grunt.registerTask( 'default', [
