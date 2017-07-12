@@ -10,7 +10,7 @@ global $job_manager;
 
 	<?php
 	if ( isset( $resume_edit ) && $resume_edit ) {
-		printf( '<p><strong>' . __( "You are editing an existing job. %s" ) . '</strong></p>', '<a href="?new=1&key=' . $resume_edit . '">' . __( 'Create A New Job' ) . '</a>' );
+		printf( '<p><strong>' . __( "You are editing an existing job. %s", 'wp-job-manager' ) . '</strong></p>', '<a href="?new=1&key=' . $resume_edit . '">' . __( 'Create A New Job', 'wp-job-manager' ) . '</a>' );
 	}
 	?>
 
