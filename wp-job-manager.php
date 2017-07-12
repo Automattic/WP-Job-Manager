@@ -3,7 +3,7 @@
  * Plugin Name: WP Job Manager
  * Plugin URI: https://wpjobmanager.com/
  * Description: Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
- * Version: 1.26.2
+ * Version: 1.27.0
  * Author: Automattic
  * Author URI: https://wpjobmanager.com/
  * Requires at least: 4.1
@@ -27,7 +27,7 @@ class WP_Job_Manager {
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  1.26
+	 * @since  1.26.0
 	 */
 	private static $_instance = null;
 
@@ -36,7 +36,7 @@ class WP_Job_Manager {
 	 *
 	 * Ensures only one instance of WP Job Manager is loaded or can be loaded.
 	 *
-	 * @since  1.26
+	 * @since  1.26.0
 	 * @static
 	 * @see WPJM()
 	 * @return self Main instance.
@@ -53,7 +53,7 @@ class WP_Job_Manager {
 	 */
 	public function __construct() {
 		// Define constants
-		define( 'JOB_MANAGER_VERSION', '1.26.2' );
+		define( 'JOB_MANAGER_VERSION', '1.27.0' );
 		define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 

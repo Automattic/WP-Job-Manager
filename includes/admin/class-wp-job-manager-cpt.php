@@ -14,14 +14,14 @@ class WP_Job_Manager_CPT {
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  1.26
+	 * @since  1.26.0
 	 */
 	private static $_instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
-	 * @since  1.26
+	 * @since  1.26.0
 	 * @static
 	 * @return self Main instance.
 	 */
@@ -91,7 +91,7 @@ class WP_Job_Manager_CPT {
 		/**
 		 * Filters the bulk actions that can be applied to job listings.
 		 *
-		 * @since 1.26.3
+		 * @since 1.27.0
 		 *
 		 * @param array $actions_handled {
 		 *     Bulk actions that can be handled, indexed by a unique key name (approve_jobs, expire_jobs, etc). Handlers
@@ -126,7 +126,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk actions on Job Listing admin page.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 *
 	 * @param string $redirect_url The redirect URL.
 	 * @param string $action       The action being taken.

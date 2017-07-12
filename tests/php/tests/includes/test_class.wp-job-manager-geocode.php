@@ -18,7 +18,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	/**
 	 * Tests the WP_Job_Manager_Geocode::instance() always returns the same `WP_Job_Manager_Geocode` instance.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::instance
 	 */
 	public function test_wp_job_manager_api_instance() {
@@ -31,7 +31,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::update_location_data
 	 * @dataProvider get_location_data
 	 */
@@ -45,7 +45,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::update_location_data
 	 */
 	public function test_update_location_data_disabled() {
@@ -61,7 +61,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::update_location_data
 	 */
 	public function test_update_location_data_not_set() {
@@ -73,7 +73,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::update_location_data
 	 * @dataProvider get_location_data
 	 */
@@ -95,7 +95,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::has_location_data
 	 */
 	public function test_has_location_data() {
@@ -110,7 +110,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::has_location_data
 	 */
 	public function test_has_location_data_nope() {
@@ -120,7 +120,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::generate_location_data
 	 * @dataProvider get_location_data
 	 */
@@ -132,7 +132,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::clear_location_data
 	 */
 	public function test_clear_location_data() {
@@ -146,7 +146,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::save_location_data
 	 */
 	public function test_save_location_data() {
@@ -172,7 +172,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::get_google_maps_api_key
 	 */
 	public function test_get_google_maps_api_key() {
@@ -184,7 +184,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::add_geolocation_endpoint_query_args
 	 */
 	public function test_add_geolocation_endpoint_query_args() {
@@ -206,7 +206,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::get_location_data
 	 * @dataProvider get_location_data
 	 */
@@ -230,7 +230,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::get_location_data
 	 * @dataProvider get_location_data
 	 */

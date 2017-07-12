@@ -615,7 +615,7 @@ function job_manager_user_can_edit_job( $job_id ) {
 /**
  * Checks to see if the standard password setup email should be used.
  *
- * @since 1.26.3
+ * @since 1.27.0
  *
  * @return bool True if they are to use standard email, false to allow user to set password at first job creation.
  */
@@ -630,7 +630,7 @@ function wpjm_use_standard_password_setup_email() {
 	/**
 	 * Allows an override of the setting for if a password should be auto-generated for new users.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 *
 	 * @param bool $use_standard_password_setup_email True if a standard account setup email should be sent.
 	 */
@@ -640,7 +640,7 @@ function wpjm_use_standard_password_setup_email() {
 /**
  * Checks if a password should be auto-generated for new users.
  *
- * @since 1.26.3
+ * @since 1.27.0
  *
  * @param string $password Password to validate.
  * @return bool True if password meets rules.
@@ -652,7 +652,7 @@ function wpjm_validate_new_password( $password ) {
 	/**
 	 * Allows overriding default WPJM password validation rules.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 *
 	 * @param bool   $is_valid_password True if new password is validated.
 	 * @param string $password          Password to validate.
@@ -669,7 +669,7 @@ function wpjm_get_password_rules_hint() {
 	/**
 	 * Allows overriding the hint shown below the new password input field. Describes rules set in `wpjm_validate_new_password`.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 *
 	 * @param string $password_rules Password rules description.
 	 */

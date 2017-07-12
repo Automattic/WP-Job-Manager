@@ -9,7 +9,7 @@ class WP_Test_WP_Job_Manager_Forms extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Forms::load_posted_form
 	 */
 	public function test_load_posted_form_too_legit_to_quit() {
@@ -22,7 +22,7 @@ class WP_Test_WP_Job_Manager_Forms extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Forms::load_posted_form
 	 */
 	public function test_load_posted_form_not_legit_so_quit() {
@@ -35,7 +35,7 @@ class WP_Test_WP_Job_Manager_Forms extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Forms::get_form
 	 */
 	public function test_get_form_good_form() {
@@ -48,7 +48,7 @@ class WP_Test_WP_Job_Manager_Forms extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Forms::get_form
 	 */
 	public function test_get_form_bad_form() {

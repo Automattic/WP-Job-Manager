@@ -15,14 +15,14 @@ class WP_Job_Manager_Setup {
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  1.26
+	 * @since  1.26.0
 	 */
 	private static $_instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
-	 * @since  1.26
+	 * @since  1.26.0
 	 * @static
 	 * @return self Main instance.
 	 */

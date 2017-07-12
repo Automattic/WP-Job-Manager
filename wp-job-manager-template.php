@@ -248,7 +248,7 @@ function get_the_job_application_method( $post = null ) {
 /**
  * Displays the job title for the listing.
  *
- * @since 1.26.3
+ * @since 1.27.0
  * @param int|WP_Post $post
  * @return string
  */
@@ -261,7 +261,7 @@ function wpjm_the_job_title( $post = null ) {
 /**
  * Gets the job title for the listing.
  *
- * @since 1.26.3
+ * @since 1.27.0
  * @param int|WP_Post $post (default: null)
  * @return string|bool|null
  */
@@ -276,7 +276,7 @@ function wpjm_get_the_job_title( $post = null ) {
 	/**
 	 * Filter for the job title.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 * @param string      $title Title to be filtered.
 	 * @param int|WP_Post $post
 	 */
@@ -286,7 +286,7 @@ function wpjm_get_the_job_title( $post = null ) {
 /**
  * Displays multiple job types for the listing.
  *
- * @since 1.26.3
+ * @since 1.27.0
  *
  * @param int|WP_Post $post Current post object.
  * @param string      $separator String to join the term names with.
@@ -308,7 +308,7 @@ function wpjm_the_job_types( $post = null, $separator = ', ' ) {
 /**
  * Gets the job type for the listing.
  *
- * @since 1.26.3
+ * @since 1.27.0
  *
  * @param int|WP_Post $post (default: null).
  * @return bool|array
@@ -330,7 +330,7 @@ function wpjm_get_the_job_types( $post = null ) {
 	/**
 	 * Filter the returned job types for a post.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 *
 	 * @param array   $types
 	 * @param WP_Post $post
@@ -341,7 +341,7 @@ function wpjm_get_the_job_types( $post = null ) {
 /**
  * Returns the registration fields used when an account is required.
  *
- * @since 1.26.3
+ * @since 1.27.0
  *
  * @return array $registration_fields
  */
@@ -390,7 +390,7 @@ function wpjm_get_registration_fields() {
 	/**
 	 * Filters the fields used at registration.
 	 *
-	 * @since 1.26.3
+	 * @since 1.27.0
 	 *
 	 * @param array $registration_fields
 	 */
@@ -821,7 +821,7 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 /**
  * Adds post classes with meta info and the status of the job listing.
  *
- * @since 1.26.3
+ * @since 1.27.0
  *
  * @param array $classes An array of post classes.
  * @param array $class   An array of additional classes added to the post.

@@ -6,21 +6,21 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Handles legacy actions and filters specific to the custom post type for Job Listings.
  *
  * @package wp-job-manager
- * @since 1.26.3
+ * @since 1.27.0
  */
 class WP_Job_Manager_CPT_Legacy extends WP_Job_Manager_CPT {
 	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  1.26.3
+	 * @since  1.27.0
 	 */
 	private static $_instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
-	 * @since  1.26.3
+	 * @since  1.27.0
 	 * @static
 	 * @return self Main instance.
 	 */
