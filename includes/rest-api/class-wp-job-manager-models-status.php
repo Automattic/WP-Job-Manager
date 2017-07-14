@@ -19,14 +19,14 @@ class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model_Declaration
 	/**
 	 * Declare our fields
 	 *
-	 * @param  WP_Job_Manager_REST_Model_Field_Declaration_Collection_Builder $def Def.
+	 * @param  WP_Job_Manager_REST_Environment $env Env.
 	 * @return array
-	 * @throws WPJM_REST_Exception Exc.
+	 * @throws WP_Job_Manager_REST_Exception Exc.
 	 */
-	public function declare_fields( $def ) {
+	public function declare_fields( $env ) {
 		return array(
-		 $def->field( 'run_page_setup', 'Should we run page setup' )
-			 ->typed( $def->type( 'boolean' ) ),
+		 $env->field( 'run_page_setup', 'Should we run page setup' )
+			 ->with_type( $env->type( 'boolean' ) ),
 		);
 	}
 
