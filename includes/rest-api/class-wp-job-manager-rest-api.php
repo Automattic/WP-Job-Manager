@@ -99,15 +99,9 @@ class WP_Job_Manager_REST_API {
 			->with_permissions_provider( new WP_Job_Manager_Permissions_Any() );
 
 		// Endpoints.
-		$wpjm_v1 = $env->rest_api( 'wpjm/v1' );
-		$wpjm_v1->endpoint()
-			->for_model( $env->model( 'WP_Job_Manager_Models_Settings' ) )
-			->with_base( '/settings' )
-			->with_class( 'WP_Job_Manager_REST_Controller_Settings' );
-		$wpjm_v1->endpoint()
-			->for_model( $env->model( 'WP_Job_Manager_Models_Status' ) )
-			->with_base( '/status' )
-			->with_class( 'WP_Job_Manager_Controllers_Status' );
+		$env->rest_api( 'wpjm/v1' )
+			->add_endpoint( new WP_Job_Manager_REST_Controller_Settings( '/settings', 'WP_Job_Manager_Models_Settings' ) )
+			->add_endpoint( new WP_Job_Manager_Controllers_Status( '/status', 'WP_Job_Manager_Models_Status' ) );
 	}
 }
 

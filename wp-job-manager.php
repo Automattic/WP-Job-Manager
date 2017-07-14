@@ -34,7 +34,7 @@ class WP_Job_Manager {
 	/**
 	 * @var WP_Job_Manager_REST_API
 	 */
-	private $rest_api;
+	private $rest_api = null;
 
 	/**
 	 * Main WP Job Manager Instance.

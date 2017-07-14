@@ -17,15 +17,15 @@ class WP_Job_Manager_Filters_Status extends WP_Job_Manager_REST_Model_Declaratio
 	/**
 	 * Declare our fields
 	 *
-	 * @param  WP_Job_Manager_REST_Model_Field_Declaration_Collection_Builder $def Def.
+	 * @param  WP_Job_Manager_REST_Environment $env Def.
 	 * @return array
 	 * @throws WP_Job_Manager_REST_Exception Exc.
 	 */
-	public function declare_fields( $def ) {
+	public function declare_fields( $env ) {
 		return array(
-		 $def->field( 'keys', 'The status keys to return' )
-			 ->typed( $def->type( 'array:string' ) )
-			 ->before_set( 'explode_keys' )
+		 $env->field( 'keys', 'The status keys to return' )
+			 ->with_type( $env->type( 'array:string' ) )
+			 ->with_before_set( array( $this, 'explode_keys' ) )
 			 ->with_default( array() ),
 		);
 	}

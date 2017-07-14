@@ -21,11 +21,11 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 	 */
 	public function setup() {
 		$this->add_route( '/' )
-			->handler( 'index', 'index' );
+			->add_action( $this->action( 'index', 'index' ) );
 
 		$this->add_route( '/(?P<key>[a-zA-Z_]+)' )
-			->handler( 'show', 'show' )
-			->handler( 'update', 'update' );
+			->add_action( $this->action( 'show', 'show' ) )
+			->add_action( $this->action( 'update', 'update' ) );
 	}
 
 	/**
