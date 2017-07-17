@@ -152,7 +152,7 @@ function get_job_listings( $args = array() ) {
 
 		if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
 			$result = new WP_Query( $query_args );
-			set_transient( $query_args_hash, $result, DAY_IN_SECONDS * 30 );
+			set_transient( $query_args_hash, $result, DAY_IN_SECONDS );
 		}
 
 		// random order is cached so shuffle them
@@ -784,7 +784,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 			'exclude'         => $r['exclude'],
 			'hierarchical'    => $r['hierarchical']
 		) );
-		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 30 );
+		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 7 );
 	}
 
 	$name       = esc_attr( $name );
