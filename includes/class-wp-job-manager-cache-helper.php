@@ -228,7 +228,7 @@ class WP_Job_Manager_Cache_Helper {
 			$count_posts = wp_count_posts( $post_type, 'readable' );
 			// Default to 0 $status if object does not have a value
 			$status_count = isset( $count_posts->$status ) ? $count_posts->$status : 0;
-			set_transient( $transient, $status_count );
+			set_transient( $transient, $status_count, DAY_IN_SECONDS * 7 );
 		}
 
 		return $status_count;
