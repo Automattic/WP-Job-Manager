@@ -58,8 +58,6 @@ class WP_Job_Manager {
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
 		// Includes
-		include_once( 'wp-job-manager-functions.php' );
-		include_once( 'wp-job-manager-deprecated.php' );
 		include_once( 'includes/class-wp-job-manager-install.php' );
 		include_once( 'includes/class-wp-job-manager-post-types.php' );
 		include_once( 'includes/class-wp-job-manager-ajax.php' );
@@ -132,6 +130,8 @@ class WP_Job_Manager {
 	 * Loads plugin's core helper template functions.
 	 */
 	public function include_template_functions() {
+		include_once( 'wp-job-manager-deprecated.php' );
+		include_once( 'wp-job-manager-functions.php' );
 		include_once( 'wp-job-manager-template.php' );
 	}
 
