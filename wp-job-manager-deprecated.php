@@ -71,3 +71,16 @@ function get_the_job_type( $post = null ) {
 	return apply_filters( 'the_job_type', $type, $post );
 }
 endif;
+
+if ( ! function_exists( 'wpjm_get_permalink_structure' ) ) :
+/**
+ * Retrieves permalink settings. Moved to `WP_Job_Manager_Post_Types` class in 1.27.1.
+ *
+ * @since 1.27.0
+ * @deprecated 1.27.1
+ * @return array
+ */
+function wpjm_get_permalink_structure() {
+	return WP_Job_Manager_Post_Types::get_permalink_structure();
+}
+endif;

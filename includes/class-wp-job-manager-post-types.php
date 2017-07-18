@@ -86,7 +86,8 @@ class WP_Job_Manager_Post_Types {
 
 		$admin_capability = 'manage_job_listings';
 
-		$permalink_structure = wpjm_get_permalink_structure();
+		$permalink_structure = WP_Job_Manager_Post_Types::get_permalink_structure();
+
 		/**
 		 * Taxonomies
 		 */
@@ -604,6 +605,37 @@ class WP_Job_Manager_Post_Types {
 				$data['post_name'] = $postarr['post_name'];
 		 }
 		 return $data;
+	}
+
+	/**
+	 * Retrieves permalink settings.
+	 *
+	 * @see https://github.com/woocommerce/woocommerce/blob/3.0.8/includes/wc-core-functions.php#L1573
+	 * @since 1.27.1
+	 * @return array
+	 */
+	public static function get_permalink_structure() {
+		// Switch to the site's default locale, bypassing the active user's locale.
+		if ( function_exists( 'switch_to_locale' ) && did_action( 'admin_init' ) ) {
+			switch_to_locale( get_locale() );
+		}
+
+		$permalinks = wp_parse_args( (array) get_option( 'wpjm_permalinks', array() ), array(
+			'job_base'           => '',
+			'category_base'          => '',
+			'type_base'               => '',
+		) );
+
+		// Ensure rewrite slugs are set.
+		$permalinks['job_rewrite_slug']      = untrailingslashit( empty( $permalinks['job_base'] ) ? _x( 'job', 'Job permalink - resave permalinks after changing this', 'wp-job-manager' )                   : $permalinks['job_base'] );
+		$permalinks['category_rewrite_slug'] = untrailingslashit( empty( $permalinks['category_base'] ) ? _x( 'job-category', 'Job category slug - resave permalinks after changing this', 'wp-job-manager' ) : $permalinks['category_base'] );
+		$permalinks['type_rewrite_slug']     = untrailingslashit( empty( $permalinks['type_base'] ) ? _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' )             : $permalinks['type_base'] );
+
+		// Restore the original locale.
+		if ( function_exists( 'restore_current_locale' ) && did_action( 'admin_init' ) ) {
+			restore_current_locale();
+		}
+		return $permalinks;
 	}
 
 	/**
