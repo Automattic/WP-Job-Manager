@@ -127,17 +127,6 @@ class WP_Job_Manager_Settings {
 							)
 						),
 						array(
-							'name'       => 'job_manager_date_format',
-							'std'        => 'relative',
-							'label'      => __( 'Date Format', 'wp-job-manager' ),
-							'desc'       => __( 'Choose how you want the published date for jobs to be displayed on the front-end.', 'wp-job-manager' ),
-							'type'       => 'select',
-							'options'    => array(
-								'relative' => __( 'Relative to the current date (e.g., 1 day, 1 week, 1 month ago)', 'wp-job-manager' ),
-								'default'   => __( 'Default date format as defined in Settings', 'wp-job-manager' ),
-							)
-						),
-						array(
 							'name'       => 'job_manager_enable_types',
 							'std'        => '1',
 							'label'      => __( 'Types', 'wp-job-manager' ),
@@ -154,6 +143,17 @@ class WP_Job_Manager_Settings {
 							'desc'       => __( 'This allows users to select more than one type when submitting a job. The metabox on the post editor and the selection box on the front-end job submission form will both reflect this.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
+						),
+						array(
+							'name'       => 'job_manager_date_format',
+							'std'        => 'relative',
+							'label'      => __( 'Date Format', 'wp-job-manager' ),
+							'desc'       => __( 'Choose how you want the published date for jobs to be displayed on the front-end.', 'wp-job-manager' ),
+							'type'       => 'select',
+							'options'    => array(
+								'relative' => __( 'Relative to the current date (e.g., 1 day, 1 week, 1 month ago)', 'wp-job-manager' ),
+								'default'   => __( 'Default date format as defined in Settings', 'wp-job-manager' ),
+							)
 						),
 						array(
 							'name'       => 'job_manager_google_maps_api_key',
