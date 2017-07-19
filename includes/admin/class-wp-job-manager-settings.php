@@ -67,7 +67,7 @@ class WP_Job_Manager_Settings {
 							'std'         => '10',
 							'placeholder' => '',
 							'label'       => __( 'Listings Per Page', 'wp-job-manager' ),
-							'desc'        => __( 'How many listings should be shown per page by default?', 'wp-job-manager' ),
+							'desc'        => __( 'Number of job listings to display per page.', 'wp-job-manager' ),
 							'attributes'  => array()
 						),
 						array(
@@ -75,7 +75,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '0',
 							'label'      => __( 'Filled Positions', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide filled positions', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, filled positions will be hidden from archives.', 'wp-job-manager' ),
+							'desc'       => __( 'Filled positions will not display in your archives.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -83,8 +83,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_hide_expired',
 							'std'        => get_option( 'job_manager_hide_expired_content' ) ? '1' : '0', // back compat
 							'label'      => __( 'Hide Expired Listings', 'wp-job-manager' ),
-							'cb_label'   => __( 'Hide expired listings in job archive/search', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, expired job listing is not searchable.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide expired listings in job archives/search', 'wp-job-manager' ),
+							'desc'       => __( 'Expired job listings will not be searchable.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -92,8 +92,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_hide_expired_content',
 							'std'        => '1',
 							'label'      => __( 'Hide Expired Listings Content', 'wp-job-manager' ),
-							'cb_label'   => __( 'Hide expired listing content in single job listing (singular)', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, the content within expired listings will be hidden. Otherwise, expired listings will be displayed as normal (without the application area).', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide content in expired single job listings', 'wp-job-manager' ),
+							'desc'       => __( 'Your site will display the titles of expired listings, but not the content of the listings. Otherwise, expired listings display their full content minus the application area.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -101,8 +101,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_enable_categories',
 							'std'        => '0',
 							'label'      => __( 'Categories', 'wp-job-manager' ),
-							'cb_label'   => __( 'Enable categories for listings', 'wp-job-manager' ),
-							'desc'       => __( 'Choose whether to enable categories. Categories must be setup by an admin to allow users to choose them during submission.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable listing categories', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users select from a list of categories when submitting a job. Note: an admin has to create categories before site users can select them.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -110,8 +110,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_enable_default_category_multiselect',
 							'std'        => '0',
 							'label'      => __( 'Multi-select Categories', 'wp-job-manager' ),
-							'cb_label'   => __( 'Enable category multiselect by default', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, the category select box will default to a multiselect on the [jobs] shortcode.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Default to category multiselect', 'wp-job-manager' ),
+							'desc'       => __( 'The category selection box will default to allowing multiple selections on the [jobs] shortcode. Without this, users will only be able to select a single category when submitting jobs.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -141,8 +141,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_enable_types',
 							'std'        => '1',
 							'label'      => __( 'Types', 'wp-job-manager' ),
-							'cb_label'   => __( 'Enable types for listings', 'wp-job-manager' ),
-							'desc'       => __( 'Choose whether to enable types. Types must be setup by an admin to allow users to choose them during submission.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable listing types', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users select from a list of types when submitting a job. Note: an admin has to create types before site users can select them.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -150,8 +150,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_multi_job_type',
 							'std'        => '0',
 							'label'      => __( 'Multi-select Listing Types', 'wp-job-manager' ),
-							'cb_label'   => __( 'Enable multiple types for listings', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled each job can have more than one type. The metabox on the post editor and the select box on the frontend job submission form are changed by this.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Allow multiple types for listings', 'wp-job-manager' ),
+							'desc'       => __( 'This allows users to select more than one type when submitting a job. The metabox on the post editor and the selection box on the front-end job submission form will both reflect this.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -171,8 +171,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_user_requires_account',
 							'std'        => '1',
 							'label'      => __( 'Account Required', 'wp-job-manager' ),
-							'cb_label'   => __( 'Submitting listings requires an account', 'wp-job-manager' ),
-							'desc'       => __( 'If disabled, non-logged in users will be able to submit listings without creating an account.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Require an account to submit listings', 'wp-job-manager' ),
+							'desc'       => __( 'Limits job listing submissions to registered, logged-in users.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -180,8 +180,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_enable_registration',
 							'std'        => '1',
 							'label'      => __( 'Account Creation', 'wp-job-manager' ),
-							'cb_label'   => __( 'Allow account creation', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, non-logged in users will be able to create an account by entering their email address on the submission form.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable account creation during submission', 'wp-job-manager' ),
+							'desc'       => __( 'Includes account creation on the listing submission form, to allow non-registered users to create an account and submit a job listing simultaneously.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -189,8 +189,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_generate_username_from_email',
 							'std'        => '1',
 							'label'      => __( 'Account Username', 'wp-job-manager' ),
-							'cb_label'   => __( 'Automatically Generate Username from Email Address', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, a username will be generated from the first part of the user email address. Otherwise, a username field will be shown.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Generate usernames from email addresses', 'wp-job-manager' ),
+							'desc'       => __( 'Automatically generates usernames for new accounts from the registrant\'s email address. If this is not enabled, a "username" field will display instead.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -198,8 +198,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_use_standard_password_setup_email',
 							'std'        => '1',
 							'label'      => __( 'Account Password', 'wp-job-manager' ),
-							'cb_label'   => __( 'Use WordPress\' default behavior and email new users link to set a password', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, an email will be sent to the user with their username and a link to set their password. Otherwise, a password field will be shown and their email address won\'t be verified.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Email new users a link to set a password', 'wp-job-manager' ),
+							'desc'       => __( 'Sends an email to the user with their username and a link to set their password. If this is not enabled, a "password" field will display instead, and their email address won\'t be verified.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -207,7 +207,7 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_registration_role',
 							'std'        => 'employer',
 							'label'      => __( 'Account Role', 'wp-job-manager' ),
-							'desc'       => __( 'If you enable registration on your submission form, choose a role for the new user.', 'wp-job-manager' ),
+							'desc'       => __( 'Any new accounts created during submission will have this role. If you haven\'t enabled account creation during submission in the options above, your own method of assigning roles will apply.', 'wp-job-manager' ),
 							'type'       => 'select',
 							'options'    => $account_roles
 						),
@@ -215,8 +215,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_submission_requires_approval',
 							'std'        => '1',
 							'label'      => __( 'Moderate New Listings', 'wp-job-manager' ),
-							'cb_label'   => __( 'New listing submissions require admin approval', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, new submissions will be inactive, pending admin approval.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Require admin approval of all new listing submissions', 'wp-job-manager' ),
+							'desc'       => __( 'Sets all new submissions to "pending." They will not appear on your site until an admin approves them.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -224,8 +224,8 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_user_can_edit_pending_submissions',
 							'std'        => '0',
 							'label'      => __( 'Allow Pending Edits', 'wp-job-manager' ),
-							'cb_label'   => __( 'Submissions awaiting approval can be edited', 'wp-job-manager' ),
-							'desc'       => __( 'If enabled, submissions awaiting admin approval can be edited by the user.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Allow editing of pending listings', 'wp-job-manager' ),
+							'desc'       => __( 'Users can continue to edit pending listings until they are approved by an admin.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array()
 						),
@@ -233,14 +233,14 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_submission_duration',
 							'std'        => '30',
 							'label'      => __( 'Listing Duration', 'wp-job-manager' ),
-							'desc'       => __( 'How many <strong>days</strong> listings are live before expiring. Can be left blank to never expire.', 'wp-job-manager' ),
+							'desc'       => __( 'Listings will display for the set number of days, then expire. Leave this field blank if you don\'t want listings to have an expiration date.', 'wp-job-manager' ),
 							'attributes' => array()
 						),
 						array(
 							'name'       => 'job_manager_allowed_application_method',
 							'std'        => '',
 							'label'      => __( 'Application Method', 'wp-job-manager' ),
-							'desc'       => __( 'Choose the contact method for listings.', 'wp-job-manager' ),
+							'desc'       => __( 'Choose the application method job listers will need to provide. Specify URL or email address only, or allow listers to choose which they prefer.', 'wp-job-manager' ),
 							'type'       => 'select',
 							'options'    => array(
 								''      => __( 'Email address or website URL', 'wp-job-manager' ),
@@ -257,21 +257,21 @@ class WP_Job_Manager_Settings {
 							'name' 		=> 'job_manager_submit_job_form_page_id',
 							'std' 		=> '',
 							'label' 	=> __( 'Submit Job Form Page', 'wp-job-manager' ),
-							'desc'		=> __( 'Select the page where you have placed the [submit_job_form] shortcode. This lets the plugin know where the form is located.', 'wp-job-manager' ),
+							'desc'		=> __( 'Select the page where you\'ve used the [submit_job_form] shortcode. This lets the plugin know the location of the form.', 'wp-job-manager' ),
 							'type'      => 'page'
 						),
 						array(
 							'name' 		=> 'job_manager_job_dashboard_page_id',
 							'std' 		=> '',
 							'label' 	=> __( 'Job Dashboard Page', 'wp-job-manager' ),
-							'desc'		=> __( 'Select the page where you have placed the [job_dashboard] shortcode. This lets the plugin know where the dashboard is located.', 'wp-job-manager' ),
+							'desc'		=> __( 'Select the page where you\'ve used the [job_dashboard] shortcode. This lets the plugin know the location of the dashboard.', 'wp-job-manager' ),
 							'type'      => 'page'
 						),
 						array(
 							'name' 		=> 'job_manager_jobs_page_id',
 							'std' 		=> '',
 							'label' 	=> __( 'Job Listings Page', 'wp-job-manager' ),
-							'desc'		=> __( 'Select the page where you have placed the [jobs] shortcode. This lets the plugin know where the job listings page is located.', 'wp-job-manager' ),
+							'desc'		=> __( 'Select the page where you\'ve used the [jobs] shortcode. This lets the plugin know the location of the job listings page.', 'wp-job-manager' ),
 							'type'      => 'page'
 						),
 					)
