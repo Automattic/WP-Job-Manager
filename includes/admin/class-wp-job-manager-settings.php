@@ -120,7 +120,7 @@ class WP_Job_Manager_Settings {
 							'std'        => 'any',
 							'label'      => __( 'Category Filter Type', 'wp-job-manager' ),
 							'desc'       => __( 'Determines the logic used to display jobs when selecting multiple categories.', 'wp-job-manager' ),
-							'type'       => 'select',
+							'type'       => 'radio',
 							'options' => array(
 								'any'  => __( 'Jobs will be shown if within ANY selected category', 'wp-job-manager' ),
 								'all' => __( 'Jobs will be shown if within ALL selected categories', 'wp-job-manager' ),
@@ -149,7 +149,7 @@ class WP_Job_Manager_Settings {
 							'std'        => 'relative',
 							'label'      => __( 'Date Format', 'wp-job-manager' ),
 							'desc'       => __( 'Choose how you want the published date for jobs to be displayed on the front-end.', 'wp-job-manager' ),
-							'type'       => 'select',
+							'type'       => 'radio',
 							'options'    => array(
 								'relative' => __( 'Relative to the current date (e.g., 1 day, 1 week, 1 month ago)', 'wp-job-manager' ),
 								'default'   => __( 'Default date format as defined in Settings', 'wp-job-manager' ),
@@ -241,7 +241,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '',
 							'label'      => __( 'Application Method', 'wp-job-manager' ),
 							'desc'       => __( 'Choose the application method job listers will need to provide. Specify URL or email address only, or allow listers to choose which they prefer.', 'wp-job-manager' ),
-							'type'       => 'select',
+							'type'       => 'radio',
 							'options'    => array(
 								''      => __( 'Email address or website URL', 'wp-job-manager' ),
 								'email' => __( 'Email addresses only', 'wp-job-manager' ),
@@ -368,6 +368,22 @@ class WP_Job_Manager_Settings {
 									if ( $option['desc'] ) {
 										echo ' <p class="description">' . $option['desc'] . '</p>';
 									}
+
+								break;
+								case "radio":
+									?><fieldset>
+										<legend class="screen-reader-text">
+											<span><?php echo esc_html( $option['label'] ); ?></span>
+										</legend><?php
+
+									if ( $option['desc'] ) {
+										echo '<p class="description">' . $option['desc'] . '</p>';
+									}
+
+									foreach( $option['options'] as $key => $name )
+										echo '<label><input name="' . esc_attr( $option['name'] ) . '" type="radio" value="' . esc_attr( $key ) . '" ' . checked( $value, $key, false ) . ' />' . esc_html( $name ) . '</label><br>';
+
+									?></fieldset><?php
 
 								break;
 								case "page" :
