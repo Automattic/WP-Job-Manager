@@ -226,7 +226,7 @@ class WP_Job_Manager_Geocode {
 						break;
 						case 'OK' :
 							if ( ! empty( $geocoded_address->results[0] ) ) {
-								set_transient( $transient_name, $geocoded_address, 24 * HOUR_IN_SECONDS * 365 );
+								set_transient( $transient_name, $geocoded_address, DAY_IN_SECONDS * 7 );
 							} else {
 								throw new Exception( __( "Geocoding error", 'wp-job-manager' ) );
 							}
