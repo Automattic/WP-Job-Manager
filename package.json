@@ -13,7 +13,8 @@
     "js/"
   ],
   "dependencies": {
-    "i18n-calypso": "^1.7.4"
+    "i18n-calypso": "^1.7.4",
+    "page": "^1.7.1"
   },
   "devDependencies": {
     "grunt": "~1.0.1",
