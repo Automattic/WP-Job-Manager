@@ -6,6 +6,15 @@
   "license": "GPL-2.0+",
   "repository": "automattic/wp-job-manager",
   "main": "Gruntfile.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "files": [
+    "js/"
+  ],
+  "dependencies": {
+    "i18n-calypso": "^1.7.4"
+  },
   "devDependencies": {
     "grunt": "~1.0.1",
     "grunt-checkbranch": "^1.0.4",
@@ -29,7 +38,8 @@
     "grunt-wp-deploy": "^1.2.1",
     "grunt-wp-i18n": "~0.5.4",
     "grunt-wp-readme-to-markdown": "^2.0.0",
-    "grunt-zip": "^0.17.1"
+    "grunt-zip": "^0.17.1",
+    "webpack": "^3.3.0"
   },
   "engines": {
     "node": ">=0.8.0",

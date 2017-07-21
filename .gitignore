@@ -10,6 +10,7 @@ Thumbs.db
 .settings*
 sftp-config.json
 /deploy/
+/dist/
 /vendor/
 /tmp/
 
