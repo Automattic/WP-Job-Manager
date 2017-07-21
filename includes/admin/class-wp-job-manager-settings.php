@@ -52,7 +52,20 @@ class WP_Job_Manager_Settings {
 	 * Enqueues CSS and JS assets.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_register_script( 'wp-job-manager-job-settings', JOB_MANAGER_PLUGIN_URL . '/dist/bundle.js', array(), JOB_MANAGER_VERSION, true );
+		$suffix = SCRIPT_DEBUG ? '' : '.min';
+		// Vendor Scripts.
+		wp_register_script(
+						'lodash',
+						'https://unpkg.com/lodash@4.17.4/lodash' . $suffix . '.js'
+		);
+		wp_enqueue_script( 'lodash' );
+		$react_suffix = ( SCRIPT_DEBUG ? '.development' : '.production' ) . $suffix;
+		wp_register_script(
+						'react',
+						'https://unpkg.com/react@next/umd/react' . $react_suffix . '.js'
+		);
+		wp_enqueue_script( 'react' );
+		wp_register_script( 'wp-job-manager-job-settings', JOB_MANAGER_PLUGIN_URL . '/dist/bundle.js', array( 'lodash', 'react' ), JOB_MANAGER_VERSION, true );
 		wp_enqueue_script( 'wp-job-manager-job-settings' );
 	}
 
