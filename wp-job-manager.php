@@ -136,7 +136,7 @@ class WP_Job_Manager {
 	/**
 	 * Initialize our REST API.
 	 *
-	 * @return WP_Job_Manager_REST_API
+	 * @return WP_Job_Manager_REST_API|WP_Error
 	 */
 	public function rest_api() {
 		if ( null === $this->rest_api ) {

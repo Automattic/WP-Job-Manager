@@ -47,16 +47,24 @@ class WP_Job_Manager_REST_API {
 	 * Bootstrap our REST Api
 	 */
 	private function bootstrap() {
-		include_once $this->base_dir . 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php';
+		$file = $this->base_dir . 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php';
+		if ( ! file_exists( $file ) ) {
+			return new WP_Error( 'mixtape-missing' );
+		}
 
-		$this->wpjm_rest_api = WP_Job_Manager_REST_Bootstrap::create()->load();
+		include_once $file;
+
+		$this->wpjm_rest_api = WP_Job_Manager_REST_Bootstrap::create();
+		if ( empty( $this->wpjm_rest_api ) ) {
+			return new WP_Error( 'rest-api-bootstrap-failed' );
+		}
+		$this->wpjm_rest_api->load();
 
 		include_once 'class-wp-job-manager-models-settings.php';
 		include_once 'class-wp-job-manager-models-status.php';
 		include_once 'class-wp-job-manager-filters-status.php';
 		include_once 'class-wp-job-manager-data-stores-status.php';
 		include_once 'class-wp-job-manager-controllers-status.php';
-		include_once 'class-wp-job-manager-permissions-any.php';
 	}
 
 	/**
@@ -77,7 +85,11 @@ class WP_Job_Manager_REST_API {
 		if ( ! $this->is_rest_api_enabled ) {
 			return $this;
 		}
-		$this->bootstrap();
+		$err = $this->bootstrap();
+		if ( is_wp_error( $err ) ) {
+			// Silently don't initialize the rest api if we get a wp_error.
+			return $this;
+		}
 		$this->define_api( $this->wpjm_rest_api->environment() );
 		$this->wpjm_rest_api->environment()
 			->start();
@@ -92,11 +104,10 @@ class WP_Job_Manager_REST_API {
 	public function define_api( $env ) {
 		// Models.
 		$env->define_model( 'WP_Job_Manager_Models_Settings' )
-			->with_data_store( $env->data_store( 'WP_Job_Manager_REST_Data_Store_Option' ) );
+			->with_data_store( new WP_Job_Manager_REST_Data_Store_Option( $env->model( 'WP_Job_Manager_Models_Settings' ) ) );
 		$env->define_model( 'WP_Job_Manager_Models_Status' )
-			->with_data_store( $env->data_store( 'WP_Job_Manager_Data_Stores_Status' ) );
-		$env->define_model( 'WP_Job_Manager_Filters_Status' )
-			->with_permissions_provider( new WP_Job_Manager_Permissions_Any() );
+			->with_data_store( new WP_Job_Manager_Data_Stores_Status( $env->model( 'WP_Job_Manager_Models_Status' ) ) );
+		$env->define_model( 'WP_Job_Manager_Filters_Status' );
 
 		// Endpoints.
 		$env->rest_api( 'wpjm/v1' )

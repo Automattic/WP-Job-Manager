@@ -9,7 +9,11 @@ run_phpunit_for() {
   cd "/tmp/$test_branch/src/wp-content/plugins/$PLUGIN_SLUG"
   ./scripts/build_mixtape.sh >/dev/null 2>&1
 
-  phpunit
+  if [[ ${TRAVIS_PHP_VERSION:0:3} == "5.2" ]]; then
+    phpunit --exclude-group rest
+  else
+    phpunit
+  fi
 
   if [ $? -ne 0 ]; then
     exit 1

@@ -27,7 +27,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	public static function setUpBeforeClass() {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
-		if ( !isset( $wp_rest_server ) ) {
+		if ( ! isset( $wp_rest_server ) ) {
 			$wp_rest_server = new WP_REST_Server();
 			do_action( 'rest_api_init' );
 		}
@@ -42,14 +42,14 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	/**
 	 * An Environment
 	 *
-	 * @var WPJM_REST_Environment
+	 * @var WP_Job_Manager_REST_Environment
 	 */
 	private $environment;
 
 	/**
 	 * Get Environment
 	 *
-	 * @return WPJM_REST_Environment
+	 * @return WP_Job_Manager_REST_Environment
 	 */
 	protected function environment() {
 		return $this->environment;
@@ -84,7 +84,15 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		$this->default_user_id = get_current_user_id();
 		$this->login_as_admin();
 		$this->rest_server = $wp_rest_server;
-		$this->environment = WPJM()->rest_api()->get_bootstrap()->environment();
+		$rest_api = WPJM()->rest_api();
+		if ( empty( $rest_api) || is_wp_error( $rest_api ) ) {
+			$this->markTestSkipped( 'Incompatible php version' );
+		}
+		$bootstrap = WPJM()->rest_api()->get_bootstrap();
+		if ( is_wp_error( $bootstrap ) ) {
+			$this->markTestSkipped( 'No Mixtape installation found' );
+		}
+		$this->environment = $bootstrap->environment();
 	}
 
 	function login_as_admin() {
