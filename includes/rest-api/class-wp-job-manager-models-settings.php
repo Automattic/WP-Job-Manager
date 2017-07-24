@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Models_Settings
  */
-class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Declaration_Settings
+class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Settings
 	implements WP_Job_Manager_REST_Interfaces_Permissions_Provider {
 
 
@@ -21,14 +21,14 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Declarati
 	 *
 	 * @var array|null
 	 */
-	private $fields_requiring_page_id_validation = null;
+	private static $fields_requiring_page_id_validation = null;
 
 	/**
 	 * Get Job Manager Settings
 	 *
 	 * @return array
 	 */
-	public function get_settings() {
+	public static function get_settings() {
 		if ( ! class_exists( 'WP_Job_Manager_Settings' ) ) {
 			$parent = dirname( dirname( __FILE__ ) );
 			if ( ! function_exists( 'get_editable_roles' ) ) {
@@ -49,21 +49,20 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Declarati
 	 * @param array                                         $field_data    The field data.
 	 * @param WP_Job_Manager_REST_Environment               $env           The definition.
 	 */
-	protected function on_field_setup( $field_name, $field_builder, $field_data, $env ) {
-		if ( in_array( $field_name, $this->get_fields_requiring_page_id_validation(), true ) ) {
+	protected static function on_field_setup( $field_name, $field_builder, $field_data, $env ) {
+		if ( in_array( $field_name, self::get_fields_requiring_page_id_validation(), true ) ) {
 			$field_builder->with_type( $env->type( 'integer' ) )
-				->with_validations( array( $this, 'validate_page_id_belongs_to_valid_page' ) );
+				->with_validations( 'validate_page_id_belongs_to_valid_page' );
 		}
 	}
 
 	/**
 	 * Validates that a page_id points to a valid page.
 	 *
-	 * @param  WP_Job_Manager_REST_Model_ValidationData $validation_data The data.
+	 * @param  int $id The id.
 	 * @return bool|WP_Error
 	 */
-	public function validate_page_id_belongs_to_valid_page( $validation_data ) {
-		$id = $validation_data->get_value();
+	public function validate_page_id_belongs_to_valid_page( $id ) {
 		$content = get_post( $id );
 
 		if ( ! empty( $content ) && 'page' === $content->post_type ) {
@@ -81,7 +80,7 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Declarati
 	 *
 	 * @return bool
 	 */
-	public function permissions_check( $request, $action ) {
+	public static function permissions_check( $request, $action ) {
 		return current_user_can( 'manage_options' );
 	}
 
@@ -90,9 +89,9 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Declarati
 	 *
 	 * @return array
 	 */
-	private function get_fields_requiring_page_id_validation() {
-		if ( null === $this->fields_requiring_page_id_validation ) {
-			$this->fields_requiring_page_id_validation = (array) apply_filters(
+	private static function get_fields_requiring_page_id_validation() {
+		if ( null === self::$fields_requiring_page_id_validation ) {
+			self::$fields_requiring_page_id_validation = (array) apply_filters(
 				'wpjm_rest_api_settings_fields_requiring_page_id_validation',
 				array(
 				'job_manager_submit_job_form_page_id',
@@ -102,7 +101,7 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Declarati
 			);
 		}
 
-		return $this->fields_requiring_page_id_validation;
+		return self::$fields_requiring_page_id_validation;
 	}
 }
 

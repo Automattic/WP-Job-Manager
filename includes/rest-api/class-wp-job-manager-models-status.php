@@ -12,18 +12,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WP_Job_Manager_Models_Status
  */
-class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model_Declaration
+class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model
 	implements WP_Job_Manager_REST_Interfaces_Permissions_Provider {
 
 
 	/**
 	 * Declare our fields
 	 *
-	 * @param  WP_Job_Manager_REST_Environment $env Env.
 	 * @return array
 	 * @throws WP_Job_Manager_REST_Exception Exc.
 	 */
-	public function declare_fields( $env ) {
+	public static function declare_fields() {
+		$env = self::get_environment();
 		return array(
 		 $env->field( 'run_page_setup', 'Should we run page setup' )
 			 ->with_type( $env->type( 'boolean' ) ),
@@ -37,7 +37,7 @@ class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model_Declaration
 	 * @param  string          $action  The action (e.g. index, create update etc).
 	 * @return bool
 	 */
-	public function permissions_check( $request, $action ) {
+	public static function permissions_check( $request, $action ) {
 		if ( in_array( $action, array( 'index', 'show' ), true ) ) {
 			return true;
 		}

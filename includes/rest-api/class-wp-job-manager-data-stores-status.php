@@ -18,8 +18,8 @@ class WP_Job_Manager_Data_Stores_Status extends WP_Job_Manager_REST_Data_Store_A
 	/**
 	 * Get all the models (taking into account any filtering)
 	 *
-	 * @param  WPJM_REST_Interfaces_Model|null $filter A filter.
-	 * @return WPJM_REST_Model_Collection
+	 * @param  WP_Job_Manager_REST_Interfaces_Model|null $filter A filter.
+	 * @return WP_Job_Manager_REST_Model_Collection
 	 */
 	public function get_entities( $filter = null ) {
 		return new WP_Job_Manager_REST_Model_Collection( array( $this->get_entity( null ) ) );
@@ -29,21 +29,21 @@ class WP_Job_Manager_Data_Stores_Status extends WP_Job_Manager_REST_Data_Store_A
 	 * Get a Model Using it's unique identifier
 	 *
 	 * @param  mixed $id The id of the entity.
-	 * @return WPJM_REST_Interfaces_Model
+	 * @return WP_Job_Manager_REST_Interfaces_Model
 	 */
 	public function get_entity( $id ) {
 		$should_run_page_setup = (bool) get_transient( '_job_manager_activation_redirect' );
 		$params = array(
 		 'run_page_setup' => $should_run_page_setup,
 		);
-		return $this->get_definition()->create_instance( $params );
+		return $this->get_model_factory()->create( $params );
 	}
 
 	/**
 	 * Delete a Model
 	 *
-	 * @param  WPJM_REST_Interfaces_Model $model The model to delete.
-	 * @param  array                      $args  Args.
+	 * @param  WP_Job_Manager_REST_Interfaces_Model $model The model to delete.
+	 * @param  array                                $args  Args.
 	 * @return mixed
 	 */
 	public function delete( $model, $args = array() ) {
@@ -53,7 +53,7 @@ class WP_Job_Manager_Data_Stores_Status extends WP_Job_Manager_REST_Data_Store_A
 	/**
 	 * Update/Insert Model
 	 *
-	 * @param  WPJM_REST_Interfaces_Model $model The model.
+	 * @param  WP_Job_Manager_REST_Interfaces_Model $model The model.
 	 * @return mixed
 	 */
 	public function upsert( $model ) {
