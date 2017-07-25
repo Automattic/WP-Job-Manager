@@ -32,6 +32,11 @@ class WP_Job_Manager_Install {
 			$wpdb->query( "UPDATE {$wpdb->posts} p LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id SET p.menu_order = -1 WHERE pm.meta_key = '_featured' AND pm.meta_value='1' AND p.post_type='job_listing';" );
 		}
 
+		// Update default term meta with employment types
+		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '1.28.0', '<' ) ) {
+			self::add_employment_types();
+		}
+
 		// Update legacy options
 		if ( false === get_option( 'job_manager_submit_job_form_page_id', false ) && get_option( 'job_manager_submit_page_slug' ) ) {
 			$page_id = get_page_by_path( get_option( 'job_manager_submit_page_slug' ) )->ID;
@@ -106,31 +111,73 @@ class WP_Job_Manager_Install {
 	}
 
 	/**
-	 * Returns the default Job Manager terms.
+	 * Sets up the default WP Job Manager terms.
 	 */
 	private static function default_terms() {
 		if ( get_option( 'job_manager_installed_terms' ) == 1 ) {
 			return;
 		}
 
-		$taxonomies = array(
-			'job_listing_type' => array(
-				'Full Time',
-				'Part Time',
-				'Temporary',
-				'Freelance',
-				'Internship'
-			)
-		);
-
+		$taxonomies = self::get_default_taxonomy_terms();
 		foreach ( $taxonomies as $taxonomy => $terms ) {
-			foreach ( $terms as $term ) {
+			foreach ( $terms as $term => $meta ) {
 				if ( ! get_term_by( 'slug', sanitize_title( $term ), $taxonomy ) ) {
-					wp_insert_term( $term, $taxonomy );
+					$tt_package = wp_insert_term( $term, $taxonomy );
+					if ( is_array( $tt_package ) && isset( $tt_package['term_id'] ) && ! empty( $meta ) ) {
+						foreach ( $meta as $meta_key => $meta_value ) {
+							add_term_meta( $tt_package['term_id'], $meta_key, $meta_value );
+						}
+					}
 				}
 			}
 		}
 
 		update_option( 'job_manager_installed_terms', 1 );
+	}
+
+	/**
+	 * Default taxonomy terms to set up in WP Job Manager.
+	 *
+	 * @return array Default taxonomy terms.
+	 */
+	private static function get_default_taxonomy_terms() {
+		return array(
+			'job_listing_type' => array(
+				'Full Time' => array(
+					'employment_type' => 'FULL_TIME',
+				),
+				'Part Time' => array(
+					'employment_type' => 'PART_TIME',
+				),
+				'Temporary' => array(
+					'employment_type' => 'TEMPORARY',
+				),
+				'Freelance' => array(
+					'employment_type' => 'CONTRACTOR',
+				),
+				'Internship' => array(
+					'employment_type' => 'INTERN',
+				),
+			)
+		);
+	}
+
+	/**
+	 * Adds the employment type to default job types when updating from a previous WP Job Manager version.
+	 */
+	private static function add_employment_types() {
+		$taxonomies = self::get_default_taxonomy_terms();
+		$terms = $taxonomies['job_listing_type'];
+
+		foreach ( $terms as $term => $meta ) {
+			$term = get_term_by( 'slug', sanitize_title( $term ), 'job_listing_type' );
+			if ( $term ) {
+				foreach ( $meta as $meta_key => $meta_value ) {
+					if ( ! get_term_meta( (int) $term->term_id, $meta_key, true ) ) {
+						add_term_meta( (int) $term->term_id, $meta_key, $meta_value );
+					}
+				}
+			}
+		}
 	}
 }
