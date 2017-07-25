@@ -67,6 +67,7 @@ class WP_Job_Manager_Settings {
 		wp_enqueue_script( 'react' );
 		wp_register_script( 'wp-job-manager-job-settings', JOB_MANAGER_PLUGIN_URL . '/dist/bundle.js', array( 'lodash', 'react' ), JOB_MANAGER_VERSION, true );
 		wp_enqueue_script( 'wp-job-manager-job-settings' );
+		wp_add_inline_script ( 'wp-job-manager-job-settings', 'window.pageBase = "' . $base . '"; window.bootApp();' );
 	}
 
 	/**

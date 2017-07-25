@@ -2,14 +2,13 @@
  * External dependencies
  */
 import page from 'page';
-import { get } from 'lodash';
 
 /**
  * Internal dependencies
  */
 // import { navigation, sites, siteSelection } from 'my-sites/controller';
 // import { renderTab } from './app/controller';
-// import { Tabs } from './constants';
+import { Tabs } from './constants';
 // import JobListings from './components/settings/job-listings';
 // import JobSubmission from './components/settings/job-submission';
 // import Pages from './components/settings/pages';
@@ -19,9 +18,9 @@ import { get } from 'lodash';
 // 	installActionHandlers();
 // }
 
-export default function() {
-	const jobSubmissionSlug = get( Tabs, 'JOB_SUBMISSION.slug', '' );
-	const pagesSlug = get( Tabs, 'PAGES.slug', '' );
+window.bootApp = () => {
+	const jobSubmissionSlug = _.get( Tabs, 'JOB_SUBMISSION.slug', '' );
+	const pagesSlug = _.get( Tabs, 'PAGES.slug', '' );
 
 	// page( '/extensions/wp-job-manager', sites );
 	page( '/extensions/wp-job-manager/:site', siteSelection, navigation, renderTab( JobListings ) );
