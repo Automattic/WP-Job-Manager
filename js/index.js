@@ -7,7 +7,7 @@ import page from 'page';
  * Internal dependencies
  */
 // import { navigation, sites, siteSelection } from 'my-sites/controller';
-// import { renderTab } from './app/controller';
+import { renderTab } from './app/controller';
 import { Tabs } from './constants';
 // import JobListings from './components/settings/job-listings';
 // import JobSubmission from './components/settings/job-submission';
