@@ -46,7 +46,7 @@ class WP_Job_Manager_Permalink_Settings {
 	public function __construct() {
 		$this->setup_fields();
 		$this->settings_save();
-		$this->permalinks = wpjm_get_permalink_structure();
+		$this->permalinks = WP_Job_Manager_Post_Types::get_permalink_structure();
 	}
 
 	public function setup_fields() {
