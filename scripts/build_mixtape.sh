@@ -80,6 +80,10 @@ echo "PREFIX      = $mt_current_prefix";
 echo "DESTINATION = $mt_current_destination";
 echo "";
 
+if [ ! -d "$mt_current_destination" ]; then
+  mkdir -p "$mt_current_destination"
+fi
+
 expect_directory "$mt_current_destination";
 
 cd $MIXTAPE_PATH;
