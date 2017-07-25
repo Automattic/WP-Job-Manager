@@ -14,7 +14,8 @@
   ],
   "dependencies": {
     "i18n-calypso": "^1.7.4",
-    "page": "^1.7.1"
+    "page": "^1.7.1",
+    "to-title-case": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
