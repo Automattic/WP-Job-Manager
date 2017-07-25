@@ -15,6 +15,7 @@
   "dependencies": {
     "i18n-calypso": "^1.7.4",
     "page": "^1.7.1",
+    "prop-types": "^15.5.10",
     "to-title-case": "^1.0.0"
   },
   "devDependencies": {
