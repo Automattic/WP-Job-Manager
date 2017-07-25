@@ -23,6 +23,11 @@ const siteSelection = ( context, next ) => {
 	next();
 }
 
+const navigation = ( context, next ) => {
+	// Stub
+	next();
+}
+
 window.bootApp = () => {
 	const jobSubmissionSlug = _.get( Tabs, 'JOB_SUBMISSION.slug', '' );
 	const pagesSlug = _.get( Tabs, 'PAGES.slug', '' );
