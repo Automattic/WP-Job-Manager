@@ -51,9 +51,17 @@ class WP_Job_Manager_Admin {
 
 		$this->settings_page = WP_Job_Manager_Settings::instance();
 
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'current_screen', array( $this, 'conditional_includes' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+	}
+
+	/**
+	 * Set up actions during admin initialization.
+	 */
+	public function admin_init() {
+		include_once( 'class-wp-job-manager-taxonomy-meta.php' );
 	}
 
 	/**
