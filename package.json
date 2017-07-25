@@ -1,7 +1,9 @@
 {
   "name": "wp-job-manager",
   "title": "WP Job Manager",
+  "author": "Automattic",
   "version": "1.27.0",
+  "description": "Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.",
   "homepage": "http://wordpress.org/plugins/wp-job-manager/",
   "license": "GPL-2.0+",
   "repository": "automattic/wp-job-manager",
@@ -57,5 +59,14 @@
   "engines": {
     "node": ">=0.8.0",
     "npm": ">=1.1.0"
+  },
+  "env_id": [ "development", "wpcalypso" ],
+  "section": {
+    "name": "wp-job-manager",
+    "paths": [ "/extensions/wp-job-manager" ],
+    "settings_path": "/extensions/wp-job-manager",
+    "module": "wp-job-manager",
+    "group": "sites",
+    "secondary": true
   }
 }
