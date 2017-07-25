@@ -18,6 +18,8 @@
     "i18n-calypso": "^1.7.4",
     "page": "^1.7.1",
     "prop-types": "^15.5.10",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.2",
     "to-title-case": "^1.0.0"
   },
   "devDependencies": {
@@ -60,10 +62,15 @@
     "node": ">=0.8.0",
     "npm": ">=1.1.0"
   },
-  "env_id": [ "development", "wpcalypso" ],
+  "env_id": [
+    "development",
+    "wpcalypso"
+  ],
   "section": {
     "name": "wp-job-manager",
-    "paths": [ "/extensions/wp-job-manager" ],
+    "paths": [
+      "/extensions/wp-job-manager"
+    ],
     "settings_path": "/extensions/wp-job-manager",
     "module": "wp-job-manager",
     "group": "sites",
