@@ -2,6 +2,7 @@
  * External Dependencies
  */
 import React from 'react';
+import { render } from 'react-dom';
 
 /**
  * Internal Dependencies
@@ -9,7 +10,6 @@ import React from 'react';
 //import analytics from 'lib/analytics';
 import titlecase from 'to-title-case';
 //import { getSiteFragment, sectionify } from 'lib/route';
-import { renderWithReduxStore } from 'lib/react-helpers';
 import Settings from '../components/settings';
 
 export const renderTab = ( component, tab = '' ) => ( context ) => {
@@ -33,11 +33,10 @@ export const renderTab = ( component, tab = '' ) => ( context ) => {
 	//
 	// analytics.pageView.record( baseAnalyticsPath, analyticsPageTitle );
 
-	renderWithReduxStore(
+	render(
 		<Settings tab={ tab }>
 			{ React.createElement( component ) }
 		</Settings>,
-		document.getElementById( 'primary' ),
-		context.store
+		document.getElementById( 'primary' )
 	);
 };
