@@ -16,7 +16,7 @@
 		?>
 
 		<div class="job_description" itemprop="description">
-			<?php echo apply_filters( 'the_job_description', get_the_content() ); ?>
+			<?php wpjm_the_job_description(); ?>
 		</div>
 
 		<?php if ( candidates_can_apply() ) : ?>
