@@ -44,6 +44,8 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'auto-draft_to_publish', array( $this, 'set_expiry' ) );
 		add_action( 'expired_to_publish', array( $this, 'set_expiry' ) );
 
+		add_action( 'wp_footer', array( $this, 'output_structured_data' ) );
+
 		add_filter( 'the_job_description', 'wptexturize'        );
 		add_filter( 'the_job_description', 'convert_smilies'    );
 		add_filter( 'the_job_description', 'convert_chars'      );
@@ -728,6 +730,22 @@ class WP_Job_Manager_Post_Types {
 		if ( empty( $post ) || 'job_listing' === $post->post_type ) {
 			add_post_meta( $post_id, '_filled', 0, true );
 			add_post_meta( $post_id, '_featured', 0, true );
+		}
+	}
+
+	public function output_structured_data() {
+		if ( ! is_single() ) {
+			return;
+		}
+
+		$post = get_post();
+		if ( ! $post || $post->post_type !== 'job_listing' ) {
+			return;
+		}
+
+		$structured_data = wpjm_get_job_listing_structured_data();
+		if ( ! empty( $structured_data ) ) {
+			echo '<script type="application/ld+json">' . wp_json_encode( $structured_data ) . '</script>';
 		}
 	}
 
