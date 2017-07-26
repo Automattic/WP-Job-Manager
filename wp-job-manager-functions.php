@@ -606,6 +606,54 @@ function wpjm_use_standard_password_setup_email() {
 }
 
 /**
+ * Returns the list of employment types from Google's modification of schema.org's employmentType.
+ *
+ * @since 1.28.0
+ * @see https://developers.google.com/search/docs/data-types/job-postings#definitions
+ *
+ * @return array
+ */
+function wpjm_job_listing_employment_type_options() {
+	$employment_types = array();
+	$employment_types['FULL_TIME'] = __( 'Full Time', 'wp-job-manager' );
+	$employment_types['PART_TIME'] = __( 'Part Time', 'wp-job-manager' );
+	$employment_types['CONTRACTOR'] = __( 'Contractor', 'wp-job-manager' );
+	$employment_types['TEMPORARY'] = __( 'Temporary', 'wp-job-manager' );
+	$employment_types['INTERN'] = __( 'Intern', 'wp-job-manager' );
+	$employment_types['VOLUNTEER'] = __( 'Volunteer', 'wp-job-manager' );
+	$employment_types['PER_DIEM'] = __( 'Per Diem', 'wp-job-manager' );
+	$employment_types['OTHER'] = __( 'Other', 'wp-job-manager' );
+
+	/**
+	 * Filter the list of employment types.
+	 *
+	 * @since 1.28.0
+	 *
+	 * @param array List of employment types { string $key => string $label }.
+	 */
+	return apply_filters( 'wpjm_job_listing_employment_type_options', $employment_types );
+}
+
+
+/**
+ * Check if employment type meta fields are enabled on job type terms.
+ *
+ * @since 1.28.0
+ *
+ * @return bool
+ */
+function wpjm_job_listing_employment_type_enabled() {
+	/**
+	 * Filter whether employment types are enabled for job type terms.
+	 *
+	 * @since 1.28.0
+	 *
+	 * @param bool True if employment type meta field is enabled on job type terms.
+	 */
+	return apply_filters( 'wpjm_job_listing_employment_type_enabled', get_option( 'job_manager_enable_types' ) ? true : false );
+}
+
+/**
  * Checks if a password should be auto-generated for new users.
  *
  * @since 1.27.0
