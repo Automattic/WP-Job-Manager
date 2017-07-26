@@ -738,8 +738,7 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		$post = get_post();
-		if ( ! $post || $post->post_type !== 'job_listing' ) {
+		if ( ! wpjm_output_job_listing_structured_data() ) {
 			return;
 		}
 

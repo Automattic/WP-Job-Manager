@@ -281,6 +281,33 @@ function wpjm_get_job_employment_types( $post = null) {
 }
 
 /**
+ * Returns if we output job listing structured data for a post.
+ *
+ * @since 1.28.0
+ *
+ * @param WP_Post|int|null $post
+ * @return bool
+ */
+function wpjm_output_job_listing_structured_data( $post = null ) {
+	$post = get_post( $post );
+
+	if ( $post && $post->post_type !== 'job_listing' ) {
+		return false;
+	}
+
+	// Only show structured data for un-filled and published job listings.
+	$output_structured_data = ! is_position_filled( $post ) && 'publish' === $post->post_status;
+
+	/**
+	 * Filter if we should output structured data.
+	 *
+	 * @since 1.28.0
+	 * @param bool $output_structured_data True if we should show structured data for post.
+	 */
+	return apply_filters( 'wpjm_output_job_listing_structured_data', $output_structured_data );
+}
+
+/**
  * Gets the structured data for the job listing.
  *
  * @since 1.28.0
