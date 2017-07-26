@@ -23,14 +23,14 @@ do_action( 'single_job_listing_meta_before' ); ?>
 		<?php $types = wpjm_get_the_job_types(); ?>
 		<?php if ( ! empty( $types ) ) : foreach ( $types as $type ) : ?>
 
-			<li class="job-type <?php echo esc_attr( sanitize_title( $type->slug ) ); ?>" itemprop="employmentType"><?php echo esc_html( $type->name ); ?></li>
+			<li class="job-type <?php echo esc_attr( sanitize_title( $type->slug ) ); ?>"><?php echo esc_html( $type->name ); ?></li>
 
 		<?php endforeach; endif; ?>
 	<?php } ?>
 
-	<li class="location" itemprop="jobLocation"><?php the_job_location(); ?></li>
+	<li class="location"><?php the_job_location(); ?></li>
 
-	<li class="date-posted" itemprop="datePosted"><?php the_job_publish_date(); ?></li>
+	<li class="date-posted"><?php the_job_publish_date(); ?></li>
 
 	<?php if ( is_position_filled() ) : ?>
 		<li class="position-filled"><?php _e( 'This position has been filled', 'wp-job-manager' ); ?></li>
