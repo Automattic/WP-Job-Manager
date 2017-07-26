@@ -1,8 +1,19 @@
 <?php
 /**
  * Pagination - Show numbered pagination for catalog pages.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/pagination.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.20.0
  */
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 if ( $max_num_pages <= 1 ) {
 	return;

@@ -1,8 +1,19 @@
 <?php
 /**
- * Pagination - Show numbered pagination for the [jobs] shortcode
+ * Pagination - Show numbered pagination for the `[jobs]` shortcode.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/job-pagination.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.21.4
  */
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 if ( $max_num_pages <= 1 ) {
 	return;

@@ -1,4 +1,22 @@
-<?php global $job_manager; ?>
+<?php
+/**
+ * Job listing summary
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/content-summary-job_listing.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.27.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+global $job_manager;
+?>
 
 <a href="<?php the_permalink(); ?>">
 	<?php if ( get_option( 'job_manager_enable_types' ) ) { ?>

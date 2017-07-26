@@ -1,3 +1,20 @@
+<?php
+/**
+ * Shows info for an uploaded file on job listing forms.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/form-fields/uploaded-file-html.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.24.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+?>
 <div class="job-manager-uploaded-file">
 	<?php
 	if ( is_numeric( $value ) ) {

@@ -1,3 +1,20 @@
+<?php
+/**
+ * Job listing preview when submitting job listings.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/job-preview.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.27.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+?>
 <form method="post" id="job_preview" action="<?php echo esc_url( $form->get_action() ); ?>">
 	<div class="job_listing_preview_title">
 		<input type="submit" name="continue" id="job_preview_submit_button" class="button job-manager-button-submit-listing" value="<?php echo apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing', 'wp-job-manager' ) ); ?>" />
