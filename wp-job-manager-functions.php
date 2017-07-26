@@ -650,7 +650,7 @@ function wpjm_job_listing_employment_type_enabled() {
 	 *
 	 * @param bool True if employment type meta field is enabled on job type terms.
 	 */
-	return apply_filters( 'wpjm_job_listing_employment_type_enabled', true );
+	return apply_filters( 'wpjm_job_listing_employment_type_enabled', get_option( 'job_manager_enable_types' ) ? true : false );
 }
 
 /**
