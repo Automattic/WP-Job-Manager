@@ -31,7 +31,7 @@ global $post; ?>
 			<?php if ( get_option( 'job_manager_enable_types' ) ) { ?>
 				<?php $types = wpjm_get_the_job_types(); ?>
 				<?php if ( ! empty( $types ) ) : foreach ( $types as $type ) : ?>
-					<li class="job-type <?php echo esc_attr( sanitize_title( $type->slug ) ); ?>" itemprop="employmentType"><?php echo esc_html( $type->name ); ?></li>
+					<li class="job-type <?php echo esc_attr( sanitize_title( $type->slug ) ); ?>"><?php echo esc_html( $type->name ); ?></li>
 				<?php endforeach; endif; ?>
 			<?php } ?>
 

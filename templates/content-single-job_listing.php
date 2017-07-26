@@ -1,7 +1,5 @@
 <?php global $post; ?>
-<div class="single_job_listing" itemscope itemtype="http://schema.org/JobPosting">
-	<meta itemprop="title" content="<?php echo esc_attr( wpjm_get_the_job_title( $post ) ); ?>" />
-
+<div class="single_job_listing">
 	<?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
 		<div class="job-manager-info"><?php _e( 'This listing has expired.', 'wp-job-manager' ); ?></div>
 	<?php else : ?>
@@ -15,8 +13,8 @@
 			do_action( 'single_job_listing_start' );
 		?>
 
-		<div class="job_description" itemprop="description">
-			<?php echo apply_filters( 'the_job_description', get_the_content() ); ?>
+		<div class="job_description">
+			<?php wpjm_the_job_description(); ?>
 		</div>
 
 		<?php if ( candidates_can_apply() ) : ?>

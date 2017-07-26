@@ -287,7 +287,7 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
  *
  * @since 1.0.0
  * @param string|array $fields
- * @return array
+ * @return WP_Term[]
  */
 function get_job_listing_types( $fields = 'all' ) {
 	if ( ! get_option( 'job_manager_enable_types' ) ) {

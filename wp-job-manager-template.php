@@ -246,6 +246,194 @@ function get_the_job_application_method( $post = null ) {
 }
 
 /**
+ * Get the employment types for the job listing.
+ *
+ * @since 1.28.0
+ *
+ * @param WP_Post|int|null $post
+ * @return bool|array
+ */
+function wpjm_get_job_employment_types( $post = null) {
+	if ( ! wpjm_job_listing_employment_type_enabled() ) {
+		return false;
+	}
+	$employment_types = array();
+	$job_types = wpjm_get_the_job_types( $post );
+
+	if ( ! empty( $job_types ) ) {
+		foreach ( $job_types as $job_type ) {
+			$employment_type = get_term_meta( $job_type->term_id, 'employment_type', true );
+			if ( ! empty( $employment_type ) ) {
+				$employment_types[] = $employment_type;
+			}
+		}
+	}
+
+	/**
+	 * Filter the employment types for a job listing.
+	 *
+	 * @since 1.28.0
+	 *
+	 * @param array            $employment_types Employment types.
+	 * @param WP_Post|int|null $post
+	 */
+	return apply_filters( 'wpjm_get_job_employment_types', array_unique( $employment_types ), $post );
+}
+
+/**
+ * Returns if we output job listing structured data for a post.
+ *
+ * @since 1.28.0
+ *
+ * @param WP_Post|int|null $post
+ * @return bool
+ */
+function wpjm_output_job_listing_structured_data( $post = null ) {
+	$post = get_post( $post );
+
+	if ( $post && $post->post_type !== 'job_listing' ) {
+		return false;
+	}
+
+	// Only show structured data for un-filled and published job listings.
+	$output_structured_data = ! is_position_filled( $post ) && 'publish' === $post->post_status;
+
+	/**
+	 * Filter if we should output structured data.
+	 *
+	 * @since 1.28.0
+	 * @param bool $output_structured_data True if we should show structured data for post.
+	 */
+	return apply_filters( 'wpjm_output_job_listing_structured_data', $output_structured_data );
+}
+
+/**
+ * Gets the structured data for the job listing.
+ *
+ * @since 1.28.0
+ * @see https://developers.google.com/search/docs/data-types/job-postings
+ *
+ * @param WP_Post|int|null $post
+ * @return bool|array False if functionality is disabled; otherwise array of structured data.
+ */
+function wpjm_get_job_listing_structured_data( $post = null ) {
+	$post = get_post( $post );
+
+	if ( $post && $post->post_type !== 'job_listing' ) {
+		return false;
+	}
+
+	$data = array();
+	$data['@context'] = 'http://schema.org/';
+	$data['@type'] = 'JobPosting';
+	$data['datePosted'] = get_post_time( 'c', false, $post );
+
+	$job_expires = get_post_meta( $post->ID, '_job_expires', true );
+	if ( ! empty( $job_expires ) ) {
+		$data[ 'validThrough' ] = date( 'c', strtotime( $job_expires ) );
+	}
+
+	$data['title'] = strip_tags( wpjm_get_the_job_title( $post ) );
+	$data['description'] = wpjm_get_the_job_description( $post );
+
+	$employmentTypes = wpjm_get_job_employment_types();
+	if ( ! empty( $employmentTypes ) ) {
+		$data['employmentType'] = $employmentTypes;
+	}
+
+	$data['hiringOrganization'] = array();
+	$data['hiringOrganization']['@type'] = 'Organization';
+	$data['hiringOrganization']['name'] = get_the_company_name( $post );
+	if ( $company_website = get_the_company_website( $post ) ) {
+		$data['hiringOrganization']['sameAs'] = $company_website;
+		$data['hiringOrganization']['url'] = $company_website;
+	}
+
+	$data['identifier'] = array();
+	$data['identifier']['@type'] = 'PropertyValue';
+	$data['identifier']['name'] = get_the_company_name( $post );
+	$data['identifier']['value'] = get_the_guid( $post );
+
+	$location = get_the_job_location( $post );
+	if ( ! empty( $location ) ) {
+		$data['jobLocation'] = array();
+		$data['jobLocation']['@type'] = 'Place';
+		$data['jobLocation']['address'] = wpjm_get_job_listing_location_structured_data( $post );
+		if ( empty( $data['jobLocation']['address'] ) ) {
+			$data['jobLocation']['address'] = $location;
+		}
+	}
+
+	/**
+	 * Filter the structured data for a job listing.
+	 *
+	 * @since 1.28.0
+	 *
+	 * @param bool|array $structured_data False if functionality is disabled; otherwise array of structured data.
+	 * @param WP_Post    $post
+	 */
+	return apply_filters( 'wpjm_get_job_listing_structured_data', $data, $post );
+}
+
+/**
+ * Gets the job listing location data.
+ *
+ * @see http://schema.org/PostalAddress
+ *
+ * @param WP_Post $post
+ * @return array|bool
+ */
+function wpjm_get_job_listing_location_structured_data( $post ) {
+	$post = get_post( $post );
+
+	if ( $post && $post->post_type !== 'job_listing' ) {
+		return false;
+	}
+
+	$mapping = array();
+	$mapping['streetAddress'] = array( 'street_number', 'street' );
+	$mapping['addressLocality'] = 'city';
+	$mapping['addressRegion'] = 'state_short';
+	$mapping['postalCode'] = 'postcode';
+	$mapping['addressCountry'] = 'country_short';
+
+	$address = array();
+	$address['@type'] = 'PostalAddress';
+	foreach ( $mapping as $schema_key => $geolocation_key ) {
+		if ( is_array( $geolocation_key ) ) {
+			$values = array();
+			foreach ( $geolocation_key as $sub_geo_key ) {
+				$geo_value = get_post_meta( $post->ID, 'geolocation_' . $sub_geo_key, true );
+				if ( ! empty( $geo_value ) ) {
+					$values[] = $geo_value;
+				}
+			}
+			$value = implode( ' ', $values );
+		} else {
+			$value = get_post_meta( $post->ID, 'geolocation_' . $geolocation_key, true );
+		}
+		if ( ! empty( $value ) ) {
+			$address[ $schema_key ] = $value;
+		}
+	}
+
+	// No address parts were found
+	if ( 1 === count( $address ) ) {
+		$address = false;
+	}
+
+	/**
+	 * Gets the job listing location structured data.
+	 *
+	 * @since 1.28.0
+	 *
+	 * @param array|bool $address Array of address data.
+	 * @param WP_Post    $post
+	 */
+	return apply_filters( 'wpjm_get_job_listing_location_structured_data', $address, $post );
+}
+
+/**
  * Displays the job title for the listing.
  *
  * @since 1.27.0
@@ -281,6 +469,44 @@ function wpjm_get_the_job_title( $post = null ) {
 	 * @param int|WP_Post $post
 	 */
 	return apply_filters( 'wpjm_the_job_title', $title, $post );
+}
+
+/**
+ * Displays the job description for the listing.
+ *
+ * @since 1.28.0
+ * @param int|WP_Post $post
+ * @return string
+ */
+function wpjm_the_job_description( $post = null ) {
+	if ( $job_description = wpjm_get_the_job_description( $post ) ) {
+		echo $job_description;
+	}
+}
+
+/**
+ * Gets the job description for the listing.
+ *
+ * @since 1.28.0
+ * @param int|WP_Post $post (default: null)
+ * @return string|bool|null
+ */
+function wpjm_get_the_job_description( $post = null ) {
+	$post = get_post( $post );
+	if ( $post->post_type !== 'job_listing' ) {
+		return;
+	}
+
+	$description = apply_filters( 'the_job_description', get_the_content( $post ) );
+
+	/**
+	 * Filter for the job description.
+	 *
+	 * @since 1.28.0
+	 * @param string      $title Title to be filtered.
+	 * @param int|WP_Post $post
+	 */
+	return apply_filters( 'wpjm_the_job_description', $description, $post );
 }
 
 /**
