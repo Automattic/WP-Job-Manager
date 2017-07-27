@@ -44,6 +44,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'auto-draft_to_publish', array( $this, 'set_expiry' ) );
 		add_action( 'expired_to_publish', array( $this, 'set_expiry' ) );
 
+		add_action( 'wp_head', array( $this, 'noindex_expired_filled_job_listings' ) );
 		add_action( 'wp_footer', array( $this, 'output_structured_data' ) );
 
 		add_filter( 'the_job_description', 'wptexturize'        );
@@ -733,6 +734,29 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
+	/**
+	 * Add noindex for expired and filled job listings.
+	 */
+	public function noindex_expired_filled_job_listings() {
+		if ( ! is_single() ) {
+			return;
+		}
+
+		$post = get_post();
+		if ( ! $post || 'job_listing' !== $post->post_type ) {
+			return;
+		}
+
+		if ( wpjm_allow_indexing_job_listing() ) {
+			return;
+		}
+
+		wp_no_robots();
+	}
+
+	/**
+	 * Add structured data to the footer of job listing pages.
+	 */
 	public function output_structured_data() {
 		if ( ! is_single() ) {
 			return;

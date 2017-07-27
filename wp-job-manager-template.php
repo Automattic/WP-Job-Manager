@@ -281,6 +281,33 @@ function wpjm_get_job_employment_types( $post = null) {
 }
 
 /**
+ * Returns if we allow indexing of a job listing.
+ *
+ * @since 1.28.0
+ *
+ * @param WP_Post|int|null $post
+ * @return bool
+ */
+function wpjm_allow_indexing_job_listing( $post = null ) {
+	$post = get_post( $post );
+
+	if ( $post && $post->post_type !== 'job_listing' ) {
+		return true;
+	}
+
+	// Only index job listings that are un-filled and published.
+	$index_job_listing = ! is_position_filled( $post ) && 'publish' === $post->post_status;
+
+	/**
+	 * Filter if we should allow indexing of job listing.
+	 *
+	 * @since 1.28.0
+	 * @param bool $index_job_listing True if we should allow indexing of job listing.
+	 */
+	return apply_filters( 'wpjm_allow_indexing_job_listing', $index_job_listing );
+}
+
+/**
  * Returns if we output job listing structured data for a post.
  *
  * @since 1.28.0
