@@ -1,3 +1,20 @@
+<?php
+/**
+ * In job listing creation flow, this template shows above the job creation form.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/account-signin.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.27.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+?>
 <?php if ( is_user_logged_in() ) : ?>
 
 	<fieldset>

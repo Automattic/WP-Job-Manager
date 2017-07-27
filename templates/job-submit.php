@@ -1,8 +1,19 @@
 <?php
 /**
- * Job Submission Form
+ * Content for job submission (`[submit_job_form]`) shortcode.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/job-submit.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.27.0
  */
-if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 global $job_manager;
 ?>

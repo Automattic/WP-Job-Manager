@@ -2,16 +2,22 @@
 /**
  * Job listing in the loop.
  *
- * @since 1.0.0
- * @version 1.27.0
+ * This template can be overridden by copying it to yourtheme/job_manager/content-job_listing.php.
  *
- * @package WP Job Manager
- * @category Template
- * @author Automattic
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @since       1.0.0
+ * @version     1.27.0
  */
 
-global $post; ?>
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
+global $post;
+?>
 <li <?php job_listing_class(); ?> data-longitude="<?php echo esc_attr( $post->geolocation_lat ); ?>" data-latitude="<?php echo esc_attr( $post->geolocation_long ); ?>">
 	<a href="<?php the_job_permalink(); ?>">
 		<?php the_company_logo(); ?>

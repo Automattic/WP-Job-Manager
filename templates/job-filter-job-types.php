@@ -1,3 +1,20 @@
+<?php
+/**
+ * Filter in `[jobs]` shortcode for job types.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/job-filter-job-types.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.20.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+?>
 <?php if ( ! is_tax( 'job_listing_type' ) && empty( $job_types ) ) : ?>
 	<ul class="job_types">
 		<?php foreach ( get_job_listing_types() as $type ) : ?>

@@ -1,16 +1,22 @@
 <?php
 /**
- * Single view Job meta box
+ * Single view job meta box.
  *
  * Hooked into single_job_listing_start priority 20
  *
- * @since 1.14.0
- * @version 1.27.0
+ * This template can be overridden by copying it to yourtheme/job_manager/content-single-job_listing-meta.php.
  *
- * @package WP Job Manager
- * @category Template
- * @author Automattic
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @since       1.14.0
+ * @version     1.28.0
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 global $post;
 

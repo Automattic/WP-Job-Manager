@@ -1,3 +1,20 @@
+<?php
+/**
+ * Job dashboard shortcode content.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/job-dashboard.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.27.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+?>
 <div id="job-manager-job-dashboard">
 	<p><?php _e( 'Your listings are shown in the table below.', 'wp-job-manager' ); ?></p>
 	<table class="job-manager-jobs">

@@ -1,3 +1,20 @@
+<?php
+/**
+ * Shows `checkbox` form fields in a list from a list on job listing forms.
+ *
+ * This template can be overridden by copying it to yourtheme/job_manager/form-fields/term-checklist-field.php.
+ *
+ * @see         https://wpjobmanager.com/document/template-overrides/
+ * @author      Automattic
+ * @package     WP Job Manager
+ * @category    Template
+ * @version     1.22.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+?>
 <ul class="job-manager-term-checklist job-manager-term-checklist-<?php echo $key ?>">
 <?php
 	require_once( ABSPATH . '/wp-admin/includes/template.php' );
