@@ -302,9 +302,11 @@ function wpjm_allow_indexing_job_listing( $post = null ) {
 	 * Filter if we should allow indexing of job listing.
 	 *
 	 * @since 1.28.0
-	 * @param bool $index_job_listing True if we should allow indexing of job listing.
+	 *
+	 * @param bool             $index_job_listing True if we should allow indexing of job listing.
+	 * @param WP_Post|int|null $post
 	 */
-	return apply_filters( 'wpjm_allow_indexing_job_listing', $index_job_listing );
+	return apply_filters( 'wpjm_allow_indexing_job_listing', $index_job_listing, $post );
 }
 
 /**
@@ -329,9 +331,11 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 	 * Filter if we should output structured data.
 	 *
 	 * @since 1.28.0
-	 * @param bool $output_structured_data True if we should show structured data for post.
+	 *
+	 * @param bool             $output_structured_data True if we should show structured data for post.
+	 * @param WP_Post|int|null $post
 	 */
-	return apply_filters( 'wpjm_output_job_listing_structured_data', $output_structured_data );
+	return apply_filters( 'wpjm_output_job_listing_structured_data', $output_structured_data, $post );
 }
 
 /**
