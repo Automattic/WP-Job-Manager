@@ -510,8 +510,23 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 		return $user_id;
 	}
 
-	// Notify
-	wp_job_manager_notify_new_user( $user_id, $password, $new_user );
+	/**
+	 * Send notification to new users.
+	 *
+	 * @since 1.28.0
+	 *
+	 * @param  int         $user_id
+	 * @param  string|bool $password
+	 * @param  array       $new_user {
+	 *     Information about the new user.
+	 *
+	 *     @type string $user_login Username for the user.
+	 *     @type string $user_pass  Password for the user (may be blank).
+	 *     @type string $user_email Email for the new user account.
+	 *     @type string $role       New user's role.
+	 * }
+	 */
+	do_action( 'wpjm_notify_new_user', $user_id, $password, $new_user );
 
 	// Login
 	wp_set_auth_cookie( $user_id, true, is_ssl() );

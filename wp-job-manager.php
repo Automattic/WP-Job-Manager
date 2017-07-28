@@ -103,6 +103,9 @@ class WP_Job_Manager {
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
+
+		// Defaults for WPJM core actions
+		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
 	}
 
 	/**
