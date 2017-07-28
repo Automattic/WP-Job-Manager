@@ -614,7 +614,7 @@ class WP_Job_Manager_Post_Types {
 	 * Retrieves permalink settings.
 	 *
 	 * @see https://github.com/woocommerce/woocommerce/blob/3.0.8/includes/wc-core-functions.php#L1573
-	 * @since 1.27.1
+	 * @since 1.28.0
 	 * @return array
 	 */
 	public static function get_permalink_structure() {
@@ -624,9 +624,9 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$permalinks = wp_parse_args( (array) get_option( 'wpjm_permalinks', array() ), array(
-			'job_base'           => '',
-			'category_base'          => '',
-			'type_base'               => '',
+			'job_base'        => '',
+			'category_base'   => '',
+			'type_base'       => '',
 		) );
 
 		// Ensure rewrite slugs are set.

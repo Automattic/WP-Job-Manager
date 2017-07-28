@@ -74,10 +74,10 @@ endif;
 
 if ( ! function_exists( 'wpjm_get_permalink_structure' ) ) :
 /**
- * Retrieves permalink settings. Moved to `WP_Job_Manager_Post_Types` class in 1.27.1.
+ * Retrieves permalink settings. Moved to `WP_Job_Manager_Post_Types` class in 1.28.0.
  *
  * @since 1.27.0
- * @deprecated 1.27.1
+ * @deprecated 1.28.0
  * @return array
  */
 function wpjm_get_permalink_structure() {
