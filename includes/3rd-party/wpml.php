@@ -14,6 +14,7 @@ function wpml_wpjm_init() {
 	add_filter( 'wpjm_page_id', 'wpml_wpjm_page_id' );
 }
 add_action( 'wpml_loaded', 'wpml_wpjm_init' );
+add_action( 'wpml_loaded', 'wpml_wpjm_set_language' );
 
 /**
  * Sets WPJM's language if it is sent in the Ajax request.
