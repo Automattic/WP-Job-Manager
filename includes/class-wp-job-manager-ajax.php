@@ -76,7 +76,18 @@ class WP_Job_Manager_Ajax {
 		} else {
 			$endpoint = add_query_arg( 'jm-ajax', $request, trailingslashit( home_url( '', 'relative' ) ) );
 		}
-		return esc_url_raw( $endpoint );
+
+		/**
+		 * Allows overriding of Ajax endpoint.
+		 *
+		 * @since 1.28.0
+		 *
+		 * @param string $endpoint
+		 */
+		$endpoint = apply_filters( 'wpjm_ajax_endpoint', $endpoint );
+
+		// URL may have been encoded above, but we need `%25%25endpoint%25%25` => `%%endpoint%%`
+		return esc_url_raw( strtr( $endpoint, array( '%25%25' => '%%' ) ) );
 	}
 
 	/**
