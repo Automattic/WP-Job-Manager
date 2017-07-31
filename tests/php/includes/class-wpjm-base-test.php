@@ -67,4 +67,32 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 		$caps['manage_job_listings'] = 1;
 		return $caps;
 	}
+
+	protected function assertTrashed( $post ) {
+		$this->assertPostStatus( 'trash', $post );
+	}
+
+	protected function assertNotTrashed( $post ) {
+		$this->assertNotPostStatus( 'trash', $post );
+	}
+
+	protected function assertExpired( $post ) {
+		$this->assertPostStatus( 'expired', $post );
+	}
+
+	protected function assertNotExpired( $post ) {
+		$this->assertNotPostStatus( 'expired', $post );
+	}
+
+	protected function assertPostStatus( $expected_post_type, $post ) {
+		$post = get_post( $post );
+		$this->assertNotEmpty( $post );
+		$this->assertEquals( $expected_post_type, $post->post_status );
+	}
+
+	protected function assertNotPostStatus( $expected_post_type, $post ) {
+		$post = get_post( $post );
+		$this->assertNotEmpty( $post );
+		$this->assertNotEquals( $expected_post_type, $post->post_status );
+	}
 }
