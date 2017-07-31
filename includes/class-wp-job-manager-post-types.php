@@ -346,6 +346,8 @@ class WP_Job_Manager_Post_Types {
 	 * Generates the RSS feed for Job Listings.
 	 */
 	public function job_feed() {
+		global $job_manager_keyword;
+
 		$query_args = array(
 			'post_type'           => 'job_listing',
 			'post_status'         => 'publish',
@@ -390,7 +392,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( $_GET['search_keywords'] ) : '';
-		if ( !empty( $job_manager_keyword ) ) {
+		if ( ! empty( $job_manager_keyword ) ) {
 			$query_args['s'] = $job_manager_keyword;
 			add_filter( 'posts_search', 'get_job_listings_keyword_search' );
 		}
@@ -538,9 +540,11 @@ class WP_Job_Manager_Post_Types {
 	 * Typo wrapper for `set_expiry` method.
 	 *
 	 * @param WP_Post $post
-	 * @deprecated
+	 * @since 1.0.0
+	 * @deprecated 1.0.1
 	 */
 	public function set_expirey( $post ) {
+		_deprecated_function( __METHOD__, '1.0.1', 'WP_Job_Manager_Post_Types::set_expiry' );
 		$this->set_expiry( $post );
 	}
 
@@ -604,10 +608,14 @@ class WP_Job_Manager_Post_Types {
 	 * @return array
 	 */
 	public function fix_post_name( $data, $postarr ) {
-		 if ( 'job_listing' === $data['post_type'] && 'pending' === $data['post_status'] && ! current_user_can( 'publish_posts' ) && isset( $postarr['post_name'] ) ) {
-				$data['post_name'] = $postarr['post_name'];
-		 }
-		 return $data;
+		if ( 'job_listing' === $data['post_type']
+			&& 'pending' === $data['post_status']
+			&& ! current_user_can( 'publish_posts' )
+			&& isset( $postarr['post_name'] )
+		) {
+			$data['post_name'] = $postarr['post_name'];
+		}
+		return $data;
 	}
 
 	/**
@@ -718,6 +726,7 @@ class WP_Job_Manager_Post_Types {
 	 * @deprecated 1.19.1
 	 */
 	public function maybe_generate_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
+		_deprecated_function( __METHOD__, '1.19.1', 'WP_Job_Manager_Post_Types::maybe_update_geolocation_data' );
 		$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value );
 	}
 
