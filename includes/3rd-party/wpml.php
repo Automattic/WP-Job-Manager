@@ -18,6 +18,10 @@ add_action( 'wpml_loaded', 'wpml_wpjm_set_language' );
 
 /**
  * Sets WPJM's language if it is sent in the Ajax request.
+ * Note: This is hooked into both `wpml_loaded` and `get_job_listings_init`. As of WPML 3.7.1, if it was hooked
+ * into just `wpml_loaded` the query doesn't get the correct language for job listings. If it is just hooked into
+ * `get_job_listings_init` the locale doesn't get set correctly and the string translations are only loaded from
+ * the default language.
  *
  * @since 1.26.0
  */
