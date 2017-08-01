@@ -13,6 +13,12 @@ module.exports = function( grunt ){
 			svn: 'tmp/release-svn'
 		},
 
+		shell: {
+			buildMixtape: {
+				command: 'scripts/build_mixtape.sh'
+			}
+		},
+
 		// Compile all .less files.
 		less: {
 			compile: {
@@ -246,12 +252,27 @@ module.exports = function( grunt ){
 	grunt.loadNpmTasks( 'grunt-phpunit' );
 	grunt.loadNpmTasks( 'grunt-checkbranch' );
 	grunt.loadNpmTasks( 'grunt-wp-deploy' );
+	grunt.loadNpmTasks( 'grunt-shell' );
 	grunt.loadNpmTasks( 'grunt-checkrepo' );
 	grunt.loadNpmTasks( 'grunt-wp-i18n' );
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown');
 	grunt.loadNpmTasks( 'grunt-zip' );
 
-	grunt.registerTask( 'build', [ 'gitinfo', 'test', 'clean', 'copy' ] );
+	grunt.registerTask( 'check-mixtape', 'Checking for WPJM\'s REST library (Mixtape) and building if necessary', function() {
+		if ( ! grunt.file.exists( 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php' ) ) {
+			grunt.task.run( [ 'build-mixtape' ] );
+		}
+	});
+
+	grunt.registerTask( 'check-mixtape-fatal', 'Checking for WPJM\'s REST library (Mixtape)', function() {
+		if ( ! grunt.file.exists( 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php' ) ) {
+			grunt.fail.fatal( 'Unable to build WPJM\'s REST library (Mixtape).' );
+		}
+	});
+
+	grunt.registerTask( 'build-mixtape', [ 'shell:buildMixtape' ] );
+
+	grunt.registerTask( 'build', [ 'gitinfo', 'check-mixtape', 'check-mixtape-fatal', 'test', 'clean', 'copy' ] );
 
 	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'checkrepo', 'build', 'wp_deploy' ] );
 	grunt.registerTask( 'deploy-unsafe', [ 'build', 'wp_deploy' ] );
