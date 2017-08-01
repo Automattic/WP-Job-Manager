@@ -113,7 +113,10 @@ class WP_Job_Manager {
 	 */
 	public function activate() {
 		WP_Job_Manager_Ajax::add_endpoint();
+		unregister_post_type( 'job_listing' );
+		add_filter( 'pre_option_job_manager_enable_types', '__return_true' );
 		$this->post_types->register_post_types();
+		remove_filter( 'pre_option_job_manager_enable_types', '__return_true' );
 		WP_Job_Manager_Install::install();
 		flush_rewrite_rules();
 	}
