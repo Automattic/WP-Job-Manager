@@ -14,7 +14,6 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 			'_company_video' => '',
 			'_company_twitter' => '',
 			'_company_logo' => '',
-			'_job_expires' => '',
 			'_filled' => '0',
 			'_featured' => '0',
 		);
@@ -37,7 +36,16 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 			$args['meta_input'] = array();
 		}
 		$args['meta_input'] = $this->generate_args( $args['meta_input'], $this->default_job_listing_meta );
-		return wp_insert_post( $args );
+		$post = wp_insert_post( $args );
+		if ( isset( $args['age'] ) ) {
+			$this->set_post_age( $post, $args['age'] );
+		}
+		return $post;
 	}
 
+	public function set_post_age( $post_id, $age ) {
+		global $wpdb;
+		$mod_date = date( 'Y-m-d', strtotime( $age ) );
+		$wpdb->update( $wpdb->posts, array( 'post_modified' => $mod_date, 'post_modified_gmt' => $mod_date), array( 'ID' => $post_id ) );
+	}
 }
