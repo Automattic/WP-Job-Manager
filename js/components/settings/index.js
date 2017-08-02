@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import { flowRight } from 'lodash';
+import Main from '@automattic/simple-components/main';
 
 /**
  * Internal dependencies
  */
 import DocumentHead from 'components/data/document-head';
-import Main from 'components/main';
 import Navigation from '../navigation';
 import QuerySettings from '../data/query-settings';
 import { saveSettings } from '../../state/settings/actions';

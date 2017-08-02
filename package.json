@@ -15,6 +15,7 @@
     "js/"
   ],
   "dependencies": {
+    "@automattic/simple-components": "0.1.0-alpha.1",
     "i18n-calypso": "^1.7.4",
     "page": "^1.7.1",
     "prop-types": "^15.5.10",
