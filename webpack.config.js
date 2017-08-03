@@ -1,4 +1,14 @@
-var path = require( 'path' );
+/**
+ * External dependencies
+ */
+const findRoot = require( 'find-root' );
+const fs = require( 'fs' );
+const path = require( 'path' );
+const pathIsInside = require( 'path-is-inside' );
+
+const PROPKEY_ESNEXT = 'esnext';
+const jsDir = path.resolve( __dirname, 'js' );
+const nodeModulesDir = path.resolve( __dirname, 'node_modules' );
 
 module.exports = {
 	entry: './js/index.js',
@@ -19,7 +29,12 @@ module.exports = {
 		rules: [
 			{
 				test: /\.jsx?$/,
-				exclude: /node_modules/,
+				// Should Babel transpile the file at `filepath`?
+				include: ( filepath ) => {
+					return pathIsInside( filepath, jsDir ) ||
+						( pathIsInside( filepath, nodeModulesDir ) &&
+						hasPkgEsnext( filepath ) );
+				},
 				use: {
 					loader: 'babel-loader'
 				}
@@ -27,3 +42,17 @@ module.exports = {
 		]
 	}
 };
+
+/*
+ * Find package.json for file at `filepath`.
+ * Return `true` if it has a property whose key is `PROPKEY_ESNEXT` or 'module'.
+ */
+function hasPkgEsnext( filepath ) {
+	const pkgRoot = findRoot( filepath );
+	const packageJsonPath = path.resolve( pkgRoot, 'package.json' );
+	const packageJsonText = fs.readFileSync( packageJsonPath,
+		{ encoding: 'utf-8' } );
+	const packageJson = JSON.parse( packageJsonText );
+	return {}.hasOwnProperty.call( packageJson, PROPKEY_ESNEXT ) ||
+		{}.hasOwnProperty.call( packageJson, 'module' );
+}

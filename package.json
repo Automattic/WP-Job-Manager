@@ -15,7 +15,7 @@
     "js/"
   ],
   "dependencies": {
-    "@automattic/simple-components": "0.1.0-alpha.1",
+    "@automattic/simple-components": "0.1.0-alpha.2",
     "i18n-calypso": "^1.7.4",
     "page": "^1.7.1",
     "prop-types": "^15.5.10",
@@ -34,6 +34,7 @@
     "eslint-config-wpcalypso": "^0.8.0",
     "eslint-plugin-react": "^7.1.0",
     "eslint-plugin-wpcalypso": "^3.4.0",
+    "find-root": "^1.1.0",
     "grunt": "~1.0.1",
     "grunt-checkbranch": "^1.0.4",
     "grunt-checkrepo": "^0.1.0",
@@ -57,6 +58,7 @@
     "grunt-wp-i18n": "~0.5.4",
     "grunt-wp-readme-to-markdown": "^2.0.0",
     "grunt-zip": "^0.17.1",
+    "path-is-inside": "^1.0.2",
     "webpack": "^3.3.0"
   },
   "engines": {
