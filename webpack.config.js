@@ -43,6 +43,7 @@ module.exports = {
 	},
 	resolve: {
 		extensions: [ '.js', '.jsx' ],
+		mainFields: [ PROPKEY_ESNEXT, 'browser', 'module', 'main' ],
 	},
 };
 
