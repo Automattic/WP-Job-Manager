@@ -45,6 +45,35 @@ class WP_Job_Manager_Settings {
 	public function __construct() {
 		$this->settings_group = 'job_manager';
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+	}
+
+	/**
+	 * Enqueues CSS and JS assets.
+	 */
+	public function admin_enqueue_scripts() {
+		$suffix = SCRIPT_DEBUG ? '' : '.min';
+		// Vendor Scripts.
+		wp_register_script(
+						'lodash',
+						'https://unpkg.com/lodash@4.17.4/lodash' . $suffix . '.js'
+		);
+		wp_enqueue_script( 'lodash' );
+		$react_suffix = ( SCRIPT_DEBUG ? '.development' : '.production' ) . $suffix;
+		wp_register_script(
+						'react',
+						'https://unpkg.com/react@next/umd/react' . $react_suffix . '.js'
+		);
+		wp_register_script(
+						'react-dom',
+						'https://unpkg.com/react-dom@next/umd/react-dom' . $react_suffix . '.js',
+						array( 'react' )
+		);
+		wp_register_script( 'wp-job-manager-job-settings', JOB_MANAGER_PLUGIN_URL . '/dist/bundle.js', array( 'lodash', 'react' ), JOB_MANAGER_VERSION, true );
+		wp_enqueue_script( 'react' );
+		wp_enqueue_script( 'react-dom' );
+		wp_enqueue_script( 'wp-job-manager-job-settings' );
+		wp_add_inline_script ( 'wp-job-manager-job-settings', 'window.pageBase = "' . $base . '"; window.bootApp();' );
 	}
 
 	/**

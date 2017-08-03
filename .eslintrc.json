@@ -1,0 +1,14 @@
+{
+	"root": true,
+	"extends": "wpcalypso/react",
+	"parser": "babel-eslint",
+	"env": {
+		"browser": true,
+		"mocha": true,
+		"node": true
+	},
+	"rules": {
+		"max-len": [ 2, { "code": 140 } ],
+		"wpcalypso/jsx-classname-namespace": 0
+	}
+}

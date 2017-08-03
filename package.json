@@ -1,12 +1,40 @@
 {
   "name": "wp-job-manager",
   "title": "WP Job Manager",
+  "author": "Automattic",
   "version": "1.27.0",
+  "description": "Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.",
   "homepage": "http://wordpress.org/plugins/wp-job-manager/",
   "license": "GPL-2.0+",
   "repository": "automattic/wp-job-manager",
   "main": "Gruntfile.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "files": [
+    "js/"
+  ],
+  "dependencies": {
+    "@automattic/simple-components": "0.1.0-alpha.3",
+    "i18n-calypso": "^1.7.4",
+    "page": "^1.7.1",
+    "prop-types": "^15.5.10",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.2",
+    "to-title-case": "^1.0.0"
+  },
   "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^4.3.0",
+    "eslint-config-wpcalypso": "^0.8.0",
+    "eslint-plugin-react": "^7.1.0",
+    "eslint-plugin-wpcalypso": "^3.4.0",
+    "find-root": "^1.1.0",
     "grunt": "~1.0.1",
     "grunt-checkbranch": "^1.0.4",
     "grunt-checkrepo": "^0.1.0",
@@ -30,10 +58,26 @@
     "grunt-wp-deploy": "^1.2.1",
     "grunt-wp-i18n": "~0.5.4",
     "grunt-wp-readme-to-markdown": "^2.0.0",
-    "grunt-zip": "^0.17.1"
+    "grunt-zip": "^0.17.1",
+    "path-is-inside": "^1.0.2",
+    "webpack": "^3.3.0"
   },
   "engines": {
     "node": ">=0.8.0",
     "npm": ">=1.1.0"
+  },
+  "env_id": [
+    "development",
+    "wpcalypso"
+  ],
+  "section": {
+    "name": "wp-job-manager",
+    "paths": [
+      "/extensions/wp-job-manager"
+    ],
+    "settings_path": "/extensions/wp-job-manager",
+    "module": "wp-job-manager",
+    "group": "sites",
+    "secondary": true
   }
 }
