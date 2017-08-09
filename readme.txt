@@ -142,7 +142,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 == Changelog ==
 
 = 1.28.0 =
-* Enhancement: Improves support for Google Job Search by adding `JobListing` structured data. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1115)
+* Enhancement: Improves support for Google Job Search by adding `JobPosting` structured data. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1115)
 * Enhancement: Adds ability for job types to be mapped to an employment type as defined for Google Job Search. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1112)
 * Enhancement: Requests search engines no longer index expired and filled job listings. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1120)
 * Enhancement: Improves support with third-party sitemap generation in Jetpack, Yoast SEO, and All in One SEO. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1119)
