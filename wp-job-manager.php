@@ -104,6 +104,9 @@ class WP_Job_Manager {
 		add_action( 'admin_init', array( $this, 'updater' ) );
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
 
+		// TinyMCE Plugins.
+		add_filter( 'mce_external_plugins', array( $this, 'register_mce_plugins' ) );
+
 		// Defaults for WPJM core actions
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
 	}
@@ -278,6 +281,21 @@ class WP_Job_Manager {
 		if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'submit_job_form' ) ) {
 			wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', array(), JOB_MANAGER_VERSION );
 		}
+	}
+
+	/**
+	 * Register MCE Plugins.
+	 *
+	 * @since 1.28.0
+	 *
+	 * @param array $plugins MCE Plugins.
+	 * @return array
+	 */
+	public function register_mce_plugins( $plugins ) {
+		if ( ! is_admin() && ! isset( $plugins['link'] ) ) {
+			$plugins['link'] = JOB_MANAGER_PLUGIN_URL . '/assets/js/mce-plugins/link.js';
+		}
+		return $plugins;
 	}
 }
 
