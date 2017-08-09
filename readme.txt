@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic, adamkheckler, annezazu, cena, chaselivings
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.3.1
 Tested up to: 4.8
-Stable tag: 1.27.0
+Stable tag: 1.28.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,21 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.28.0 =
+* Enhancement: Improves support for Google Job Search by adding `JobListing` structured data. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1115)
+* Enhancement: Adds ability for job types to be mapped to an employment type as defined for Google Job Search. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1112)
+* Enhancement: Requests search engines no longer index expired and filled job listings. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1120)
+* Enhancement: Improves support with third-party sitemap generation in Jetpack, Yoast SEO, and All in One SEO. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1119)
+* Enhancement: Updated descriptions and help text on settings page. (@donnapep; Props to @michelleweber for updated copy; https://github.com/Automattic/WP-Job-Manager/pull/1107)
+* Enhancement: Lower cache expiration times across plugin and limit use of autoloaded cache transients. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1101/files) 
+* Fix: Localization issue with WPML in the [jobs] shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1129)
+* Fix: Show job listings' published date in localized format. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1118)
+* Fix: Job submission form allows users to select multiple job types when they go back a step. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1099)
+* Fix: Some themes that overloaded functions would break in previous release. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1104)
+* Dev: Adds versions to template files so it is easier to tell when they are updated. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1116)
+* Dev: Adds a new `wpjm_notify_new_user` action that allows you to override default behavior. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1125)
+* Dev: Early version of REST API is bundled but disabled by default. Requires PHP 5.3+ and `WPJM_REST_API_ENABLED` constant must be set to true. Do not use in production; endpoints may change. (@pkg)
 
 = 1.27.0 =
 * Enhancement: Admins can now allow users to specify an account password when posting their first job listing. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1063)
