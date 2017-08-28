@@ -149,7 +149,6 @@ class WP_Job_Manager {
 		if ( null === $this->rest_api ) {
 			include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/rest-api/class-wp-job-manager-rest-api.php' );
 			$this->rest_api = new WP_Job_Manager_REST_API( dirname( __FILE__ ) );
-			$this->rest_api->init();
 		}
 		return $this->rest_api;
 	}

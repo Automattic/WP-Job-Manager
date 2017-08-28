@@ -30,7 +30,8 @@
     "grunt-wp-deploy": "^1.2.1",
     "grunt-wp-i18n": "~0.5.4",
     "grunt-wp-readme-to-markdown": "^2.0.0",
-    "grunt-zip": "^0.17.1"
+    "grunt-zip": "^0.17.1",
+    "mixtape": "git+https://github.com/Automattic/mixtape.git#ce7e91"
   },
   "engines": {
     "node": ">=0.8.0",
