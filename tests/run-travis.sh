@@ -2,12 +2,16 @@
 
 set -e
 
+source ~/.nvm/nvm.sh
+
 run_phpunit_for() {
   test_branch="$1";
   echo "Testing on $test_branch..."
   export WP_TESTS_DIR="/tmp/$test_branch/tests/phpunit"
   cd "/tmp/$test_branch/src/wp-content/plugins/$PLUGIN_SLUG"
-  ./scripts/build_mixtape.sh >/dev/null 2>&1
+  nvm use 6
+  npm install >/dev/null
+  ./node_modules/.bin/mixtape build >/dev/null
 
   if [[ ${TRAVIS_PHP_VERSION:0:3} == "5.2" ]]; then
     phpunit --exclude-group rest

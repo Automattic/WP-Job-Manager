@@ -89,9 +89,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 			$this->markTestSkipped( 'Incompatible php version' );
 		}
 		$bootstrap = WPJM()->rest_api()->get_bootstrap();
-		if ( null === $bootstrap || is_wp_error( $bootstrap ) ) {
-			$this->markTestSkipped( 'No Mixtape installation found' );
-		}
+		$this->bootstrap = WPJM()->rest_api()->get_bootstrap();
 		$this->environment = $bootstrap->environment();
 	}
 

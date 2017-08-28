@@ -1,6 +1,6 @@
 <?php
 /**
- * Registrable used for extending RESTifying the job_listing post type
+ * Used for RESTifying the job_listing post type
  * 
  * Adds custom fields. Needs a model definition that will provide the extra fields.
  *

@@ -41,26 +41,13 @@ class WP_Job_Manager_REST_API {
 	public function __construct( $base_dir ) {
 		$this->base_dir = trailingslashit( $base_dir );
 		$this->is_rest_api_enabled = defined( 'WPJM_REST_API_ENABLED' ) && ( true === constant( 'WPJM_REST_API_ENABLED' ) );
-	}
-
-	/**
-	 * Bootstrap our REST Api
-	 */
-	private function bootstrap() {
+		add_action( 'mt_environment_before_start', array( $this, 'define_api' ) );
 		$file = $this->base_dir . 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php';
-		if ( ! file_exists( $file ) ) {
-			return new WP_Error( 'mixtape-missing' );
+		if ( file_exists( $file ) && $this->is_rest_api_enabled ) {
+			include_once $file;
+			$this->wpjm_rest_api = WP_Job_Manager_REST_Bootstrap::create();
+			$this->wpjm_rest_api->run();
 		}
-
-		include_once $file;
-
-		$this->wpjm_rest_api = WP_Job_Manager_REST_Bootstrap::create();
-		if ( empty( $this->wpjm_rest_api ) ) {
-			return new WP_Error( 'rest-api-bootstrap-failed' );
-		}
-		$this->wpjm_rest_api->load();
-
-		add_action( 'mt_environment_before_start', array( $this, 'init' ) );
 	}
 
 	/**
@@ -81,14 +68,7 @@ class WP_Job_Manager_REST_API {
 		if ( ! $this->is_rest_api_enabled ) {
 			return $this;
 		}
-		$err = $this->bootstrap();
-		if ( is_wp_error( $err ) ) {
-			// Silently don't initialize the rest api if we get a wp_error.
-			return $this;
-		}
 		$this->define_api( $this->wpjm_rest_api->environment() );
-		$this->wpjm_rest_api->environment()
-			->start();
 		return $this;
 	}
 
@@ -98,6 +78,10 @@ class WP_Job_Manager_REST_API {
 	 * @param WP_Job_Manager_REST_Environment $env The Environment.
 	 */
 	public function define_api( $env ) {
+		if ( ! is_a( $env, 'WP_Job_Manager_REST_Environment' ) ) {
+			return;
+		}
+
 		include_once 'class-wp-job-manager-models-settings.php';
 		include_once 'class-wp-job-manager-models-status.php';
 		include_once 'class-wp-job-manager-filters-status.php';

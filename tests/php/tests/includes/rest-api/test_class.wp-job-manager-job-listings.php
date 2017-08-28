@@ -3,6 +3,7 @@
 class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
 	/**
+	 * @group rest
 	 * @covers WP_Job_Manager_REST_Registrable_Job_Listings::get_fields
 	 */
 	function test_get_job_listings_success() {
@@ -12,6 +13,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	/**
+	 * @group rest
 	 * @covers WP_Job_Manager_REST_Registrable_Job_Listings::get_fields
 	 */
 	function test_get_job_listings_add_fields() {
@@ -34,6 +36,9 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertArrayHasKey( '_filled', $fields );
 	}
 
+	/**
+	 * @group rest
+	 */
 	function test_update_update_fields_fail_if_no_permissions() {
 		$published = $this->factory->job_listing->create_many( 2 );
 		$first_id = $published[0];
@@ -47,6 +52,9 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 403 );
 	}
 
+	/**
+	 * @group rest
+	 */
 	function test_update_update_fields_success() {
 		$this->markTestSkipped( 'Skip for now, need to figure out why this does not pass while working on the frontend' );
 		$user_id = $this->factory->user->create( array(
