@@ -71,6 +71,7 @@ class WP_Job_Manager {
 		include_once( 'includes/class-wp-job-manager-forms.php' );
 		include_once( 'includes/class-wp-job-manager-geocode.php' );
 		include_once( 'includes/class-wp-job-manager-cache-helper.php' );
+		include_once( 'includes/helper/class-wp-job-manager-helper.php' );
 
 		add_action( 'rest_api_init', array( $this, 'rest_api' ) );
 
