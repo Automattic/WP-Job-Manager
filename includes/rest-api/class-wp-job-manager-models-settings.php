@@ -28,7 +28,7 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Settings
 	 *
 	 * @return array
 	 */
-	public static function get_settings() {
+	public function get_settings() {
 		if ( ! class_exists( 'WP_Job_Manager_Settings' ) ) {
 			$parent = dirname( dirname( __FILE__ ) );
 			if ( ! function_exists( 'get_editable_roles' ) ) {
@@ -49,7 +49,7 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Settings
 	 * @param array                                         $field_data    The field data.
 	 * @param WP_Job_Manager_REST_Environment               $env           The definition.
 	 */
-	protected static function on_field_setup( $field_name, $field_builder, $field_data, $env ) {
+	protected function on_field_setup( $field_name, $field_builder, $field_data, $env ) {
 		if ( in_array( $field_name, self::get_fields_requiring_page_id_validation(), true ) ) {
 			$field_builder->with_type( $env->type( 'integer' ) )
 				->with_validations( 'validate_page_id_belongs_to_valid_page' );
@@ -80,7 +80,7 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Settings
 	 *
 	 * @return bool
 	 */
-	public static function permissions_check( $request, $action ) {
+	public function permissions_check( $request, $action ) {
 		return current_user_can( 'manage_options' );
 	}
 
@@ -89,7 +89,7 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Settings
 	 *
 	 * @return array
 	 */
-	private static function get_fields_requiring_page_id_validation() {
+	private function get_fields_requiring_page_id_validation() {
 		if ( null === self::$fields_requiring_page_id_validation ) {
 			self::$fields_requiring_page_id_validation = (array) apply_filters(
 				'wpjm_rest_api_settings_fields_requiring_page_id_validation',
