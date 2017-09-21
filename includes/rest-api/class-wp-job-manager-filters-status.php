@@ -20,8 +20,8 @@ class WP_Job_Manager_Filters_Status extends WP_Job_Manager_REST_Model {
 	 * @return array
 	 * @throws WP_Job_Manager_REST_Exception Exc.
 	 */
-	public static function declare_fields() {
-		$env = self::get_environment();
+	public function declare_fields() {
+		$env = $this->get_environment();
 		return array(
 		 $env->field( 'keys', 'The status keys to return' )
 			 ->with_type( $env->type( 'array:string' ) )

@@ -22,8 +22,8 @@ class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model
 	 * @return array
 	 * @throws WP_Job_Manager_REST_Exception Exc.
 	 */
-	public static function declare_fields() {
-		$env = self::get_environment();
+	public function declare_fields() {
+		$env = $this->get_environment();
 		return array(
 		 $env->field( 'run_page_setup', 'Should we run page setup' )
 			 ->with_type( $env->type( 'boolean' ) ),
@@ -37,7 +37,7 @@ class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model
 	 * @param  string          $action  The action (e.g. index, create update etc).
 	 * @return bool
 	 */
-	public static function permissions_check( $request, $action ) {
+	public function permissions_check( $request, $action ) {
 		if ( in_array( $action, array( 'index', 'show' ), true ) ) {
 			return true;
 		}

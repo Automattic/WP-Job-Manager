@@ -36,7 +36,7 @@ class WP_Job_Manager_Data_Stores_Status extends WP_Job_Manager_REST_Data_Store_A
 		$params = array(
 		 'run_page_setup' => $should_run_page_setup,
 		);
-		return $this->get_model_factory()->create( $params );
+		return $this->get_model_prototype()->create( $params );
 	}
 
 	/**

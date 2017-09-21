@@ -44,7 +44,7 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 			return $this->bad_request( $filter );
 		}
 
-		$configuration = $this->get_model_factory()
+		$configuration = $this->get_model_prototype()
 			->get_data_store()
 			->get_entity( null );
 
@@ -75,7 +75,7 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 	 */
 	public function show( $request ) {
 		$key = $request->get_param( 'key' );
-		$configuration = $this->get_model_factory()
+		$configuration = $this->get_model_prototype()
 			->get_data_store()
 			->get_entity( null );
 
@@ -106,11 +106,11 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 		 $key => $value,
 		);
 
-		$configuration = $this->get_model_factory()
+		$configuration = $this->get_model_prototype()
 			->get_data_store()
 			->get_entity( '' );
 		$configuration->update_from_array( $thing_to_update );
-		$result = $this->get_model_factory()
+		$result = $this->get_model_prototype()
 			->get_data_store()
 			->upsert( $configuration );
 
