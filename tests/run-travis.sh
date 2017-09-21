@@ -13,11 +13,7 @@ run_phpunit_for() {
   npm install >/dev/null
   ./node_modules/.bin/mixtape build >/dev/null
 
-  if [[ ${TRAVIS_PHP_VERSION:0:3} == "5.2" ]]; then
-    phpunit --exclude-group rest
-  else
-    phpunit
-  fi
+  phpunit
 
   if [ $? -ne 0 ]; then
     exit 1

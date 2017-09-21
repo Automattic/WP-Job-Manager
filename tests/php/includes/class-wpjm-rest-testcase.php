@@ -84,10 +84,6 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		$this->default_user_id = get_current_user_id();
 		$this->login_as_admin();
 		$this->rest_server = $wp_rest_server;
-		$rest_api = WPJM()->rest_api();
-		if ( empty( $rest_api) || is_wp_error( $rest_api ) ) {
-			$this->markTestSkipped( 'Incompatible php version' );
-		}
 		$bootstrap = WPJM()->rest_api()->get_bootstrap();
 		$this->bootstrap = WPJM()->rest_api()->get_bootstrap();
 		$this->environment = $bootstrap->environment();
