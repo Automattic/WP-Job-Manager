@@ -101,7 +101,7 @@ class WP_Job_Manager_Helper_API {
 	 *
 	 * @return array|bool|mixed|object
 	 */
-	private function request( $args, $return_error = false ) {
+	protected function request( $args, $return_error = false ) {
 		$defaults = array(
 			'instance'       => $this->get_site_url(),
 			'plugin_name'    => '',

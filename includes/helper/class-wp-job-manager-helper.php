@@ -14,12 +14,12 @@ class WP_Job_Manager_Helper {
 	/**
 	 * @var array Messages when updating licences.
 	 */
-	private $licence_messages = array();
+	protected $licence_messages = array();
 
 	/**
 	 * @var WP_Job_Manager_Helper_API
 	 */
-	private $api;
+	protected $api;
 
 	/**
 	 * The single instance of the class.
@@ -232,7 +232,7 @@ class WP_Job_Manager_Helper {
 	 *
 	 * @return bool|object
 	 */
-	private function get_plugin_info( $product_slug ) {
+	protected function get_plugin_info( $product_slug ) {
 		if ( ! $this->is_product_installed( $product_slug ) ) {
 			return false;
 		}
@@ -322,7 +322,7 @@ class WP_Job_Manager_Helper {
 	 * @param bool $active_only Only return active plugins
 	 * @return array
 	 */
-	private function get_installed_plugins( $active_only = true ) {
+	protected function get_installed_plugins( $active_only = true ) {
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		}
@@ -466,7 +466,6 @@ class WP_Job_Manager_Helper {
 		if ( ! isset( $plugin_products[ $product_slug ] ) ) {
 			return;
 		}
-		$plugin_data = $plugin_products[ $product_slug ];
 		if ( ! empty( $errors['no_activation'] ) ) {
 			$this->deactivate_licence( $product_slug );
 			$this->add_licence_error( $product_slug, $errors['no_activation'] );

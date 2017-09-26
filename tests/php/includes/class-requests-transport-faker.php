@@ -1,6 +1,7 @@
 <?php
 
 class Requests_Transport_Faker implements Requests_Transport {
+	public $headers_matter = false;
 	private $_log = array();
 	private $_responses = array();
 
@@ -96,7 +97,7 @@ class Requests_Transport_Faker implements Requests_Transport {
 	 * {@inheritdoc}
 	 */
 	public function request( $url, $headers = array(), $data = array(), $options = array() ) {
-		if ( isset( $options['headers_matter'] ) && true === $options['headers_matter'] ) {
+		if ( $this->headers_matter ) {
 			$signature = self::make_request_signature( $url, $headers, $data );
 		} else {
 			$signature = self::make_request_signature( $url, array(), $data );
