@@ -54,6 +54,7 @@ class WP_Job_Manager_Helper {
 
 		add_action( 'job_manager_helper_output', array( $this, 'licence_output' ) );
 
+		add_filter( 'job_manager_addon_core_version_check', array( $this, 'addon_core_version_check' ), 10, 2 );
 		add_filter( 'extra_plugin_headers', array( $this, 'extra_headers' ) );
 		add_filter( 'plugins_api', array( $this, 'plugins_api' ), 20, 3 );
 		add_action( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_updates' ) );
@@ -83,6 +84,35 @@ class WP_Job_Manager_Helper {
 				WP_Job_Manager_Helper_Options::update( $product_slug, 'hide_key_notice', true );
 			}
 		}
+	}
+
+	/**
+	 * Tell the add-on when to check for and display and core WPJM version notices.
+	 *
+	 * @param bool   $do_check                       True if the add-on should do a core version check.
+	 * @param string $minimum_required_core_version  Minimum version the plugin is reporting it requires.
+	 * @return bool
+	 */
+	public function addon_core_version_check( $do_check, $minimum_required_core_version = null ) {
+		if ( ! is_admin() || ! did_action( 'admin_init' ) ) {
+			return false;
+		}
+
+		// We only want to show the notices on the plugins page and main job listing admin page.
+		$screen = get_current_screen();
+		if ( null === $screen || ! in_array( $screen->id, array( 'plugins', 'edit-job_listing' ) ) ) {
+			return false;
+		}
+
+		$dev_version_loc = strpos( JOB_MANAGER_VERSION, '-dev' );
+		if (
+			false !== $dev_version_loc
+			&& $minimum_required_core_version === substr( JOB_MANAGER_VERSION, 0, $dev_version_loc )
+		) {
+			return false;
+		}
+
+		return $do_check;
 	}
 
 	/**
