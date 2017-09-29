@@ -79,11 +79,21 @@ class WP_Job_Manager_Addons {
 
 		?>
 		<div class="wrap wp_job_manager wp_job_manager_addons_wrap">
-			<h2><?php _e( 'WP Job Manager Add-ons', 'wp-job-manager' ); ?></h2>
-
-			<div id="job-manager-addons-banner" class="notice updated below-h2"><strong><?php _e( 'Do you need multiple add-ons?', 'wp-job-manager' ); ?></strong> <a href="https://wpjobmanager.com/add-ons/bundle/" class="button"><?php _e( 'Check out the core add-on bundle &rarr;', 'wp-job-manager' ); ?></a></div>
-
-			<?php echo $addons; ?>
+			<nav class="nav-tab-wrapper woo-nav-tab-wrapper">
+				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ) ); ?>" class="nav-tab<?php if ( ! isset( $_GET['section'] ) || 'helper' !== $_GET['section'] ) { echo ' nav-tab-active'; } ?>"><?php _e( 'WP Job Manager Add-ons', 'wp-job-manager' ); ?></a>
+				<?php if ( current_user_can( 'update_plugins' ) ) : ?>
+				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' ) ); ?>" class="nav-tab<?php if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) { echo ' nav-tab-active'; } ?>"><?php _e( 'Licenses', 'wp-job-manager' ); ?></a>
+				<?php endif; ?>
+			</nav>
+			<?php
+			if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
+				do_action( 'job_manager_helper_output' );
+			} else {
+				echo '<h1 class="screen-reader-text">' . __( 'WP Job Manager Add-ons', 'wp-job-manager' ) . '</h1>';
+				echo '<div id="job-manager-addons-banner" class="notice updated below-h2"><strong>' . __( 'Do you need multiple add-ons?', 'wp-job-manager' ) . '</strong> <a href="https://wpjobmanager.com/add-ons/bundle/" class="button">' . __( 'Check out the core add-on bundle &rarr;', 'wp-job-manager' ) . '</a></div>';
+				echo $addons;
+			}
+			?>
 		</div>
 		<?php
 	}

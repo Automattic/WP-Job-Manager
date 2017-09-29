@@ -270,7 +270,6 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	/**
 	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::maybe_clear_count_transients
-	 * @group wip
 	 */
 	public function test_maybe_clear_count_transients() {
 		global $wpdb;

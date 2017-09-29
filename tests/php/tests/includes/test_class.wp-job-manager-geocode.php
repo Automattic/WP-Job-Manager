@@ -1,17 +1,14 @@
 <?php
 
+/**
+ * @group geocode
+ */
 class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
-	/**
-	 * @var Requests_Transport
-	 */
-	private $_transport;
 
 	public function setUp() {
 		parent::setUp();
-		include_once( WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/class-requests-transport-faker.php' );
 		add_filter( 'job_manager_geolocation_api_key', array( $this, 'get_google_maps_api_key' ), 10 );
 		add_filter( 'job_manager_geolocation_enabled', '__return_true' );
-		$this->_transport = null;
 		$this->enable_transport_faker();
 	}
 
@@ -277,29 +274,6 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 			$this->markTestSkipped( 'Geocode test requires WPJM_PHPUNIT_GOOGLE_GEOCODE_API_KEY environment variable to be set to valid Google Maps Geocode API Key' );
 		}
 		$this->disable_transport_faker();
-	}
-
-	protected function disable_transport_faker() {
-		remove_action( 'requests-requests.before_request', array( $this, 'overload_request_transport' ), 10 );
-		remove_filter( 'job_manager_geolocation_api_key', '__return_empty_string', 10 );
-		add_filter( 'job_manager_geolocation_api_key', array( $this, 'get_google_maps_api_key' ), 10 );
-	}
-
-	protected function enable_transport_faker() {
-		add_action( 'requests-requests.before_request', array( $this, 'overload_request_transport' ), 10, 5 );
-		remove_filter( 'job_manager_geolocation_api_key', array( $this, 'get_google_maps_api_key' ), 10 );
-		add_filter( 'job_manager_geolocation_api_key', '__return_empty_string', 10 );
-	}
-
-	public function overload_request_transport(&$url, &$headers, &$data, &$type, &$options) {
-		$options['transport'] = $this->get_request_transport();
-	}
-
-	private function get_request_transport() {
-		if ( ! isset( $this->_transport ) ) {
-			$this->_transport = new Requests_Transport_Faker();
-		}
-		return $this->_transport;
 	}
 
 	public function get_google_maps_api_key() {
