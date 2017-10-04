@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic, adamkheckler, annezazu, cena, chaselivings
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.3.1
 Tested up to: 4.8
-Stable tag: 1.28.0
+Stable tag: 1.29.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,14 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.29.0 =
+* Enhancement: Moves license and update management for official add-ons to the core plugin. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1168)
+* Enhancement: Update language for setup wizard with more clear descriptions. (@donnapep; https://github.com/Automattic/WP-Job-Manager/pull/1194)
+* Fix: Prevent duplicate attachments to job listing posts for non-image media. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/1144)
+* Fix: PHP error on registration form due to missing placeholder text. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1180)
+* Fix: Apply `the_job_application_method` filter even when no default is available. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/issues/1164)
+* Fix: Properly reset category selector on `[jobs]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1190)
 
 = 1.28.0 =
 * Enhancement: Improves support for Google Job Search by adding `JobPosting` structured data. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1115)
