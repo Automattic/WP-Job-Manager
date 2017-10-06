@@ -63,24 +63,24 @@ class WP_Job_Manager {
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 
 		// Includes
-		include_once( 'includes/class-wp-job-manager-install.php' );
-		include_once( 'includes/class-wp-job-manager-post-types.php' );
-		include_once( 'includes/class-wp-job-manager-ajax.php' );
-		include_once( 'includes/class-wp-job-manager-shortcodes.php' );
-		include_once( 'includes/class-wp-job-manager-api.php' );
-		include_once( 'includes/class-wp-job-manager-forms.php' );
-		include_once( 'includes/class-wp-job-manager-geocode.php' );
-		include_once( 'includes/class-wp-job-manager-cache-helper.php' );
-		include_once( 'includes/helper/class-wp-job-manager-helper.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-install.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-post-types.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ajax.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-shortcodes.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-api.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-forms.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-geocode.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-cache-helper.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper.php' );
 
 		add_action( 'rest_api_init', array( $this, 'rest_api' ) );
 
 		if ( is_admin() ) {
-			include_once( 'includes/admin/class-wp-job-manager-admin.php' );
+			include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php' );
 		}
 
 		// Load 3rd party customizations
-		include_once( 'includes/3rd-party/3rd-party.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/3rd-party/3rd-party.php' );
 
 		// Init classes
 		$this->forms      = WP_Job_Manager_Forms::instance();
@@ -147,7 +147,7 @@ class WP_Job_Manager {
 	 */
 	public function rest_api() {
 		if ( null === $this->rest_api ) {
-			include( 'includes/rest-api/class-wp-job-manager-rest-api.php' );
+			include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/rest-api/class-wp-job-manager-rest-api.php' );
 			$this->rest_api = new WP_Job_Manager_REST_API( dirname( __FILE__ ) );
 			$this->rest_api->init();
 		}
@@ -158,18 +158,18 @@ class WP_Job_Manager {
 	 * Loads plugin's core helper template functions.
 	 */
 	public function include_template_functions() {
-		include_once( 'wp-job-manager-deprecated.php' );
-		include_once( 'wp-job-manager-functions.php' );
-		include_once( 'wp-job-manager-template.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/wp-job-manager-deprecated.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/wp-job-manager-functions.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/wp-job-manager-template.php' );
 	}
 
 	/**
 	 * Loads plugin's widgets.
 	 */
 	public function widgets_init() {
-		include_once( 'includes/class-wp-job-manager-widget.php' );
-		include_once( 'includes/widgets/class-wp-job-manager-widget-recent-jobs.php' );
-		include_once( 'includes/widgets/class-wp-job-manager-widget-featured-jobs.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-widget.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/widgets/class-wp-job-manager-widget-recent-jobs.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/widgets/class-wp-job-manager-widget-featured-jobs.php' );
 	}
 
 	/**

@@ -47,8 +47,8 @@ class WP_Job_Manager_Helper {
 	 * Loads the class, runs on init.
 	 */
 	public function init() {
-		include_once( 'class-wp-job-manager-helper-options.php' );
-		include_once( 'class-wp-job-manager-helper-api.php' );
+		include_once( dirname( __FILE__ ) . '/class-wp-job-manager-helper-options.php' );
+		include_once( dirname( __FILE__ ) . '/class-wp-job-manager-helper-api.php' );
 
 		$this->api = WP_Job_Manager_Helper_API::instance();
 
