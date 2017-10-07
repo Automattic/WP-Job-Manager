@@ -38,16 +38,16 @@ class WP_Job_Manager_Admin {
 	public function __construct() {
 		global $wp_version;
 
-		include_once( 'class-wp-job-manager-cpt.php' );
+		include_once( dirname( __FILE__ ) . '/class-wp-job-manager-cpt.php' );
 		if ( version_compare( $wp_version, '4.7.0', '<' ) ) {
-			include_once( 'class-wp-job-manager-cpt-legacy.php' );
+			include_once( dirname( __FILE__ ) . '/class-wp-job-manager-cpt-legacy.php' );
 			WP_Job_Manager_CPT_Legacy::instance();
 		} else {
 			WP_Job_Manager_CPT::instance();
 		}
-		include_once( 'class-wp-job-manager-settings.php' );
-		include_once( 'class-wp-job-manager-writepanels.php' );
-		include_once( 'class-wp-job-manager-setup.php' );
+		include_once( dirname( __FILE__ ) . '/class-wp-job-manager-settings.php' );
+		include_once( dirname( __FILE__ ) . '/class-wp-job-manager-writepanels.php' );
+		include_once( dirname( __FILE__ ) . '/class-wp-job-manager-setup.php' );
 
 		$this->settings_page = WP_Job_Manager_Settings::instance();
 
@@ -61,7 +61,7 @@ class WP_Job_Manager_Admin {
 	 * Set up actions during admin initialization.
 	 */
 	public function admin_init() {
-		include_once( 'class-wp-job-manager-taxonomy-meta.php' );
+		include_once( dirname( __FILE__ ) . '/class-wp-job-manager-taxonomy-meta.php' );
 	}
 
 	/**
