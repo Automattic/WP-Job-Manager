@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Helper {
 	/**
-	 * @var array Messages when updating licenses.
+	 * @var array Messages when updating licences.
 	 */
 	protected $licence_messages = array();
 
@@ -116,7 +116,7 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
-	 * Check for license managed WPJM addon plugin updates.
+	 * Check for licence managed WPJM addon plugin updates.
 	 *
 	 * @param array $check_for_updates_data
 	 *
@@ -174,7 +174,7 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
-	 * Cleanup old things when WPJM license managed plugin is activated.
+	 * Cleanup old things when WPJM licence managed plugin is activated.
 	 *
 	 * @param string $plugin_filename
 	 */
@@ -190,7 +190,7 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
-	 * Deactivate license when WPJM license managed plugin is deactivated.
+	 * Deactivate licence when WPJM licence managed plugin is deactivated.
 	 *
 	 * @param string $plugin_filename
 	 */
@@ -231,7 +231,7 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
-	 * Appends links to manage plugin license when managed.
+	 * Appends links to manage plugin licence when managed.
 	 *
 	 * @param array  $actions
 	 * @param string $plugin_filename
