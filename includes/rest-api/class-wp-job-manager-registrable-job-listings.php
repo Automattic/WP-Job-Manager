@@ -52,8 +52,9 @@ class WP_Job_Manager_REST_Registrable_Job_Listings implements WP_Job_Manager_RES
 	 *
 	 * @param string $object_to_extend Post type.
 	 * @param string $model_class Model Class name.
+	 * @param string $rest_field_name The REST field name.
 	 */
-	function __construct($object_to_extend, $model_class, $rest_field_name ) {
+	public function __construct( $object_to_extend, $model_class, $rest_field_name ) {
 		$this->model_class = $model_class;
 		$this->object_to_extend = $object_to_extend;
 		$this->rest_field_name = $rest_field_name;
@@ -142,7 +143,7 @@ class WP_Job_Manager_REST_Registrable_Job_Listings implements WP_Job_Manager_RES
 	 * @return mixed|string
 	 * @throws WP_Job_Manager_REST_Exception If type not there.
 	 */
-	function get_fields( $object, $field_name, $request, $object_type ) {
+	public function get_fields( $object, $field_name, $request, $object_type ) {
 		if ( 'job_listing' !== $object_type ) {
 			return null;
 		}
@@ -160,7 +161,7 @@ class WP_Job_Manager_REST_Registrable_Job_Listings implements WP_Job_Manager_RES
 	 * Get a model if exists
 	 *
 	 * @param int $object_id Object ID.
-	 * @return WP_Job_Manager_REST_Model
+	 * @return WP_Job_Manager_REST_Interfaces_Model
 	 * @throws WP_Job_Manager_REST_Exception On Error.
 	 */
 	private function get_model( $object_id ) {
@@ -181,8 +182,8 @@ class WP_Job_Manager_REST_Registrable_Job_Listings implements WP_Job_Manager_RES
 	/**
 	 * Our Reader.
 	 *
-	 * @param mixed 		  $data Data.
-	 * @param array           $object Object.
+	 * @param mixed           $data Data.
+	 * @param array|object    $object Object.
 	 * @param string          $field_name Field Name.
 	 * @param WP_REST_Request $request Request.
 	 * @param string          $object_type Object Type.
@@ -190,7 +191,7 @@ class WP_Job_Manager_REST_Registrable_Job_Listings implements WP_Job_Manager_RES
 	 * @return mixed|string
 	 * @throws WP_Job_Manager_REST_Exception If type not there.
 	 */
-	function update_fields( $data, $object, $field_name, $request, $object_type ) {
+	public function update_fields( $data, $object, $field_name, $request, $object_type ) {
 		if ( 'job_listing' !== $object_type ) {
 			return null;
 		}

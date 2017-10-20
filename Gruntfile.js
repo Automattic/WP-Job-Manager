@@ -83,7 +83,8 @@ module.exports = function( grunt ){
 					'!CONTRIBUTING.md',
 					'!readme.md',
 					'!phpcs.ruleset.xml',
-					'!tools/**'
+					'!tools/**',
+					'!mixtape.json'
 				],
 				dest: '<%= dirs.build %>/'
 			}
