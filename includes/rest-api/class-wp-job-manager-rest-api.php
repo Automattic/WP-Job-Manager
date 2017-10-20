@@ -15,12 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Job_Manager_REST_API {
 
 	/**
-	 * Is the api enabled?
-	 *
-	 * @var bool
-	 */
-	private $is_rest_api_enabled;
-	/**
 	 * Our bootstrap
 	 *
 	 * @var WP_Job_Manager_REST_Bootstrap
@@ -40,10 +34,9 @@ class WP_Job_Manager_REST_API {
 	 */
 	public function __construct( $base_dir ) {
 		$this->base_dir = trailingslashit( $base_dir );
-		$this->is_rest_api_enabled = defined( 'WPJM_REST_API_ENABLED' ) && ( true === constant( 'WPJM_REST_API_ENABLED' ) );
 		add_action( 'mt_environment_before_start', array( $this, 'define_api' ) );
 		$file = $this->base_dir . 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php';
-		if ( file_exists( $file ) && $this->is_rest_api_enabled ) {
+		if ( file_exists( $file ) && self::is_rest_api_enabled() ) {
 			include_once $file;
 			$this->wpjm_rest_api = WP_Job_Manager_REST_Bootstrap::create();
 			$this->wpjm_rest_api->run();
@@ -65,7 +58,7 @@ class WP_Job_Manager_REST_API {
 	 * @return WP_Job_Manager_REST_API $this
 	 */
 	public function init() {
-		if ( ! $this->is_rest_api_enabled ) {
+		if ( ! self::is_rest_api_enabled() ) {
 			return $this;
 		}
 		$this->define_api( $this->wpjm_rest_api->environment() );
@@ -106,6 +99,24 @@ class WP_Job_Manager_REST_API {
 			'job_listing',
 			'WP_Job_Manager_Models_Job_Listings_Custom_Fields',
 			'fields' ) );
+	}
+
+	/**
+	 * Is REST API Enabled?
+	 *
+	 * @return bool
+	 */
+	public static function is_rest_api_enabled() {
+		$is_rest_api_enabled = (bool) get_option( 'job_manager_rest_api_enabled', true );
+
+		/**
+		 * Determine if the REST API should be enabled.
+		 *
+		 * @param bool $is_rest_api_enabled
+		 * @return bool
+		 * @since ?
+		 */
+		return (bool) apply_filters( 'job_manager_rest_api_enabled', $is_rest_api_enabled );
 	}
 }
 

@@ -38,7 +38,16 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Settings
 			include_once $parent . '/admin/class-wp-job-manager-settings.php';
 		}
 
-		return WP_Job_Manager_Settings::instance()->get_settings();
+		$settings = WP_Job_Manager_Settings::instance()->get_settings();
+		$filtered_settings = array();
+		foreach ( $settings as $key => $value ) {
+			// We don't want the rest api setting block to be tweaked via the rest api.
+			if ( 'rest_api' === $key ) {
+				continue;
+			}
+			$filtered_settings[ $key ] = $value;
+		}
+		return $filtered_settings;
 	}
 
 	/**

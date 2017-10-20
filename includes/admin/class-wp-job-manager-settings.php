@@ -294,6 +294,19 @@ class WP_Job_Manager_Settings {
 							'type'      => 'page'
 						),
 					)
+				),
+				'rest_api' => array(
+					__( 'REST API', 'wp-job-manager' ),
+					array(
+						array(
+							'name'       => 'job_manager_rest_api_enabled',
+							'std'        => '1',
+							'label'      => __( 'REST API enabled', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable the REST API', 'wp-job-manager' ),
+							'desc'       => __( 'Enables Job Manager\'s REST API', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+						),
+					),
 				)
 			)
 		);
