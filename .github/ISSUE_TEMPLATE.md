@@ -1,17 +1,38 @@
-<!-- 
-Thanks for contributing to WP Job Manager! Enter a clear title (e.g. "Search error when using plus sign") and proceed. 
--->
+<!-- Thanks for contributing to WP Job Manager! Pick a clear title ("Improve client-side UI validation") and proceed. -->
 
-#### What I Expected To Happen
+#### Steps to Reproduce
+1.
+2.
+3.
+
+#### What I Expected
+
 
 #### What Happened Instead
 
-#### Steps to Reproduce the Bug
+
+#### WordPress / WP Job Manager Version
+
+
+#### Browser / OS Version
+
+
+#### Screenshot / Video
+
+
+#### Context / Source
+<!-- Optional: share your unique context to help us understand your perspective.
+
+If requesting a new feature, explain why you'd like to see it added.
+-->
+
+
 
 <!--
-PLEASE NOTE:
+PLEASE NOTE
 - These comments won't show up when you submit the issue.
-- Try to add as much detail as possible. Be specific!
-- GitHub issues aren't for support! If you have questions, use this form: https://wpjobmanager.com/support/
-- If you're requesting a new feature, explain why you'd like it to be added.
+- Everything is optional, but try to add as many details as possible.
+
+Helpful tips for screenshots:
+https://en.support.wordpress.com/make-a-screenshot/
 -->
