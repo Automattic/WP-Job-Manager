@@ -15,7 +15,7 @@ module.exports = function( grunt ){
 
 		shell: {
 			buildMixtape: {
-				command: 'scripts/build_mixtape.sh'
+				command: 'node_modules/.bin/mixtape build'
 			}
 		},
 
