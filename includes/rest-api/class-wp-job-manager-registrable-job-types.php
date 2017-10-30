@@ -4,6 +4,7 @@
  *
  * @package WPJM/REST
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -175,14 +176,16 @@ class WP_Job_Manager_Registrable_Job_Types implements WP_Job_Manager_REST_Interf
 		}
 
 		if ( ! is_a( $object, 'WP_Term' ) ) {
-		    return null;
-        }
+			return null;
+		}
 
 		$term_id = absint( $object->term_id );
 		if ( ! $term_id ) {
-		    // we got no way to update this. Bail
-            return new WP_Error('job-types-error-invalid-id', 'job-types-error-invalid-id', array( 'status' => 400 ) );
-        }
+			// No way to update this. Bail.
+			return new WP_Error( 'job-types-error-invalid-id', 'job-types-error-invalid-id', array(
+				'status' => 400,
+			) );
+		}
 		$existing_model = $this->get_model( $term_id );
 
 		$updated = $existing_model->update_from_array( $data );
@@ -197,10 +200,9 @@ class WP_Job_Manager_Registrable_Job_Types implements WP_Job_Manager_REST_Interf
 
 		$serialized_data = $updated->serialize( WP_Job_Manager_REST_Field_Declaration::META );
 
-
 		foreach ( $serialized_data as $field_name => $val ) {
 			if ( metadata_exists( 'term', $term_id, $field_name ) ) {
-              update_term_meta( $term_id, $field_name, $val );
+				update_term_meta( $term_id, $field_name, $val );
 			} else {
 				add_term_meta( $term_id, $field_name, $val );
 			}
