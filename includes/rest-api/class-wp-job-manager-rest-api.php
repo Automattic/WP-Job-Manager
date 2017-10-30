@@ -41,11 +41,14 @@ class WP_Job_Manager_REST_API {
 	public function __construct( $base_dir ) {
 		$this->base_dir = trailingslashit( $base_dir );
 		$this->is_rest_api_enabled = defined( 'WPJM_REST_API_ENABLED' ) && ( true === constant( 'WPJM_REST_API_ENABLED' ) );
-		add_action( 'mt_environment_before_start', array( $this, 'define_api' ) );
 		$file = $this->base_dir . 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php';
 		if ( file_exists( $file ) && $this->is_rest_api_enabled ) {
 			include_once $file;
 			$this->wpjm_rest_api = WP_Job_Manager_REST_Bootstrap::create();
+			$this->wpjm_rest_api
+				->environment()
+				->get_event_dispatcher()
+				->add_action( 'environment_before_start', array( $this, 'define_api' ) );
 			$this->wpjm_rest_api->run();
 		}
 	}
