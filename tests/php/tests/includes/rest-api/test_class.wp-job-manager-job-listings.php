@@ -4,7 +4,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
 	/**
 	 * @group rest
-	 * @covers WP_Job_Manager_REST_Registrable_Job_Listings::get_fields
+	 * @covers WP_Job_Manager_Registrable_Job_Listings::get_fields
 	 */
 	function test_get_job_listings_success() {
 		$this->login_as( $this->default_user_id );
@@ -14,7 +14,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
 	/**
 	 * @group rest
-	 * @covers WP_Job_Manager_REST_Registrable_Job_Listings::get_fields
+	 * @covers WP_Job_Manager_Registrable_Job_Listings::get_fields
 	 */
 	function test_get_job_listings_add_fields() {
 		$published = $this->factory->job_listing->create_many( 2 );

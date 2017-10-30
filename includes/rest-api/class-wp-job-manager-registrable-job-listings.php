@@ -1,7 +1,7 @@
 <?php
 /**
  * Used for RESTifying the job_listing post type
- * 
+ *
  * Adds custom fields. Needs a model definition that will provide the extra fields.
  *
  * @package WPJM/REST
@@ -10,7 +10,7 @@
 /**
  * Class MT_Controller_Extension
  */
-class WP_Job_Manager_REST_Registrable_Job_Listings implements WP_Job_Manager_REST_Interfaces_Registrable {
+class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Interfaces_Registrable {
 
 	/**
 	 * Environment

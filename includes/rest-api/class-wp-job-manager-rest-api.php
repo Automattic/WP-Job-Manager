@@ -105,10 +105,10 @@ class WP_Job_Manager_REST_API {
 		$env->rest_api( 'wpjm/v1' )
 			->add_endpoint( new WP_Job_Manager_REST_Controller_Settings( '/settings', 'WP_Job_Manager_Models_Settings' ) )
 			->add_endpoint( new WP_Job_Manager_Controllers_Status( '/status', 'WP_Job_Manager_Models_Status' ) );
-		$env->add_registrable( new WP_Job_Manager_REST_Registrable_Job_Listings(
+		$env->add_registrable( new WP_Job_Manager_Registrable_Job_Listings(
 			'job_listing',
 			'WP_Job_Manager_Models_Job_Listings_Custom_Fields',
-			'fields' ) );
+		'fields' ) );
 		$env->add_registrable( new WP_Job_Manager_Registrable_Job_Types() );
 	}
 }
