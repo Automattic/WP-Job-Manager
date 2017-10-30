@@ -57,6 +57,10 @@ class WPJM_Unit_Tests_Bootstrap {
 	 * @since 1.26.0
 	 */
 	public function load_plugin() {
+        $enabled = get_option( 'job_manager_enable_types' );
+        if (! $enabled ) {
+            update_option( 'job_manager_enable_types', true );
+        }
 		require_once( $this->plugin_dir . '/wp-job-manager.php' );
 	}
 
