@@ -283,14 +283,39 @@ abstract class WP_Job_Manager_Form {
 	/**
 	 * Navigates through an array and sanitizes the field.
 	 *
-	 * @param array|string $value The array or string to be sanitized.
-	 * @return array|string $value The sanitized array (or string from the callback).
+	 * @since 1.22.0
+	 * @since 1.29.1 Added the $sanitizer argument
+	 *
+	 * @param array|string    $value      The array or string to be sanitized.
+	 * @param string|callable $sanitizer  The sanitization method to use. Built in: `url`, `email`, `url_or_email`, or
+	 *                                      default (text). Custom single argument callable allowed.
+	 * @return array|string   $value      The sanitized array (or string from the callback).
 	 */
-	protected function sanitize_posted_field( $value ) {
-		// Santize value
-		$value = is_array( $value ) ? array_map( array( $this, 'sanitize_posted_field' ), $value ) : sanitize_text_field( stripslashes( trim( $value ) ) );
+	protected function sanitize_posted_field( $value, $sanitizer = null ) {
+		// Sanitize value
+		if ( is_array( $value ) ) {
+			return array_map( array( $this, 'sanitize_posted_field' ), $value, $sanitizer );
+		}
+		$value = trim( $value );
 
-		return $value;
+		if ( 'url' === $sanitizer ) {
+			return esc_url_raw( $value );
+		} elseif ( 'email' === $sanitizer ) {
+			return sanitize_email( $value );
+		} elseif ( 'url_or_email' === $sanitizer ) {
+			if ( null !== parse_url( $value, PHP_URL_HOST ) ) {
+				// Sanitize as URL
+				return esc_url_raw( $value );
+			}
+
+			// Sanitize as email
+			return sanitize_email( $value );
+		} elseif ( is_callable( $sanitizer ) ) {
+			return call_user_func( $sanitizer, $value );
+		}
+
+		// Use standard text sanitizer
+		return sanitize_text_field( stripslashes( $value ) );
 	}
 
 	/**
@@ -301,7 +326,11 @@ abstract class WP_Job_Manager_Form {
 	 * @return string|array
 	 */
 	protected function get_posted_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( $_POST[ $key ] ) : '';
+		// Allow custom sanitizers with standard text fields.
+		if ( ! isset( $field['sanitizer'] ) ) {
+			$field['sanitizer'] = null;
+		}
+		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( $_POST[ $key ], $field['sanitizer'] ) : '';
 	}
 
 	/**
