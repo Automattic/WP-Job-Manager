@@ -118,7 +118,7 @@ class WP_Job_Manager_Registrable_Job_Types implements WP_Job_Manager_REST_Interf
 	 * @return mixed|string
 	 * @throws WP_Job_Manager_REST_Exception If type not there.
 	 */
-	function get_employment_type( $object, $field_name, $request, $object_type ) {
+	public function get_employment_type( $object, $field_name, $request, $object_type ) {
 		if ( $this->taxonomy_type !== $object_type ) {
 			return null;
 		}
@@ -166,7 +166,7 @@ class WP_Job_Manager_Registrable_Job_Types implements WP_Job_Manager_REST_Interf
 	 * @return mixed|string
 	 * @throws WP_Job_Manager_REST_Exception If type not there.
 	 */
-	function update_employment_type( $data, $object, $field_name, $request, $object_type ) {
+	public function update_employment_type( $data, $object, $field_name, $request, $object_type ) {
 		if ( $this->taxonomy_type !== $object_type ) {
 			return null;
 		}
