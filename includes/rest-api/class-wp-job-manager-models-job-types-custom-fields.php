@@ -21,6 +21,7 @@ class WP_Job_Manager_Models_Job_Types_Custom_Fields extends WP_Job_Manager_REST_
 	 * @var array
 	 */
 	private static $accepted_employment_types = array();
+
 	/**
 	 * Declare Fields
 	 *
