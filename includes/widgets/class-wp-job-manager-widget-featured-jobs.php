@@ -54,9 +54,9 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 		ob_start();
 
 		extract( $args );
-
-		$title  = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
-		$number = absint( $instance['number'] );
+		$titleInstance = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
+		$number = isset( $instance['number'] ) ? absint( $instance['number'] ) : '';
+		$title  = apply_filters( 'widget_title', $titleInstance, $instance, $this->id_base );		
 		$jobs   = get_job_listings( array(
 			'posts_per_page' => $number,
 			'orderby'        => 'date',
