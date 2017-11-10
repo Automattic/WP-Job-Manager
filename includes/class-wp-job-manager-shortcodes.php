@@ -75,6 +75,8 @@ class WP_Job_Manager_Shortcodes {
 	 * @return string|null
 	 */
 	public function submit_job_form( $atts = array() ) {
+		if( is_admin() )// don't want the shortcode to run in the admin
+			return;
 		return $GLOBALS['job_manager']->forms->get_form( 'submit-job', $atts );
 	}
 
