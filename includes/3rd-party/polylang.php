@@ -11,8 +11,25 @@
 function polylang_wpjm_init() {
 	add_filter( 'wpjm_lang', 'polylang_wpjm_get_job_listings_lang' );
 	add_filter( 'wpjm_page_id', 'polylang_wpjm_page_id' );
+	add_action( 'get_job_listings_query_args', 'polylang_wpjm_query_language' );
 }
 add_action( 'pll_init', 'polylang_wpjm_init' );
+
+
+/**
+ * Sets the current language when running job listings query.
+ *
+ * @since 1.29.1
+ *
+ * @param array $query_args
+ * @return array
+ */
+function polylang_wpjm_query_language( $query_args ) {
+	if ( isset( $_POST['lang'] ) ) {
+		$query_args['lang'] = $_POST['lang'];
+	}
+	return $query_args;
+}
 
 /**
  * Returns Polylang's current language.
