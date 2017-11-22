@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.27.0
+ * @version     1.29.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,9 +30,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</fieldset>
 
 <?php else :
-	$account_required      = job_manager_user_requires_account();
-	$registration_enabled  = job_manager_enable_registration();
-	$registration_fields   = wpjm_get_registration_fields();
+	$account_required            = job_manager_user_requires_account();
+	$registration_enabled        = job_manager_enable_registration();
+	$registration_fields         = wpjm_get_registration_fields();
+	$use_standard_password_email = wpjm_use_standard_password_setup_email();
 	?>
 	<fieldset>
 		<label><?php _e( 'Have an account?', 'wp-job-manager' ); ?></label>
@@ -41,7 +42,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<?php if ( $registration_enabled ) : ?>
 
-				<?php printf( __( 'If you don&rsquo;t have an account you can %screate one below by entering your email address/username. Your account details will be confirmed via email.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
+				<?php printf( __( 'If you don&rsquo;t have an account you can %screate one below by entering your email address/username.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
+				<?php if ( $use_standard_password_email ) : ?>
+					<?php printf( __( 'Your account details will be confirmed via email.', 'wp-job-manager' ) ); ?>
+				<?php endif; ?>
 
 			<?php elseif ( $account_required ) : ?>
 
