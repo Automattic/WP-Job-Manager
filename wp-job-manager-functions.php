@@ -118,6 +118,13 @@ function get_job_listings( $args = array() ) {
 		);
 	}
 
+	if ( 'rand_featured' === $args['orderby'] ) {
+		$query_args['orderby'] = array(
+			'menu_order' => 'ASC',
+			'rand'       => 'ASC'
+		);
+	}
+
 	$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
 
 	if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
@@ -149,19 +156,22 @@ function get_job_listings( $args = array() ) {
 
 	// Cache results
 	if ( apply_filters( 'get_job_listings_cache_results', true ) ) {
-
+		$cached_query = true;
 		if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
 			$result = new WP_Query( $query_args );
+			$cached_query = false;
 			set_transient( $query_args_hash, $result, DAY_IN_SECONDS );
 		}
 
-		// random order is cached so shuffle them
-		if ( $query_args[ 'orderby' ] == 'rand' ) {
-			shuffle( $result->posts );
+		if ( $cached_query ) {
+			// random order is cached so shuffle them
+			if ( 'rand_featured' === $args['orderby'] ) {
+				usort( $result->posts, '_wpjm_shuffle_featured_post_results_helper' );
+			} elseif ( 'rand' === $args['orderby'] ) {
+				shuffle( $result->posts );
+			}
 		}
-
-	}
-	else {
+	} else {
 		$result = new WP_Query( $query_args );
 	}
 
@@ -171,6 +181,30 @@ function get_job_listings( $args = array() ) {
 
 	return $result;
 }
+endif;
+
+if ( ! function_exists( '_wpjm_shuffle_post_results_helper' ) ) :
+	/**
+	 * Helper function to maintain featured status when shuffling results.
+	 *
+	 * @param WP_Post $a
+	 * @param WP_Post $b
+	 *
+	 * @return bool
+	 */
+	function _wpjm_shuffle_featured_post_results_helper( $a, $b ) {
+		if ( -1 === $a->menu_order || -1 === $b->menu_order ) {
+			// Left is featured
+			if ( 0 === $b->menu_order ) {
+				return -1;
+			}
+			// Right is featured
+			if ( 0 === $a->menu_order ) {
+				return 1;
+			}
+		}
+		return rand( -1, 1 );
+	}
 endif;
 
 if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
