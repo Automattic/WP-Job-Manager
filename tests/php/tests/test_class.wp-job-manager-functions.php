@@ -309,6 +309,82 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since 1.29.1
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_featured_rand_cache() {
+		$this->enable_job_listing_cache();
+		$featured_flag = array( 'featured' => array(), 'not-featured' => array() );
+
+		$featured_flag['featured'] = $this->factory->job_listing->create_many( 5, array(
+			'post_title' => 'Featured Post',
+			'meta_input' => array(
+				'_featured' => 1,
+			),
+		) );
+		$featured_flag['not-featured'] = $this->factory->job_listing->create_many( 5, array(
+			'post_title' => 'Not Featured Post',
+			'meta_input' => array(
+				'_featured' => 0,
+			),
+		) );
+
+		// Try 10x, verfying first 5 are always job listings
+		for ($i = 1; $i <= 10; $i++) {
+			$results = get_job_listings( array( 'search_keywords' => '', 'orderby' => 'rand_featured' ) );
+			$tc = 0;
+			foreach ( $results->posts as $result ) {
+				if ( $tc < 5 ) {
+					$this->assertEquals( 1, $result->_featured );
+					$this->assertEquals( -1, $result->menu_order );
+				} else {
+					$this->assertEquals( 0, $result->_featured );
+					$this->assertEquals( 0, $result->menu_order );
+				}
+				$tc++;
+			}
+		}
+	}
+
+	/**
+	 * @since 1.29.1
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_featured_rand_no_cache() {
+		$this->disable_job_listing_cache();
+		$featured_flag = array( 'featured' => array(), 'not-featured' => array() );
+
+		$featured_flag['featured'] = $this->factory->job_listing->create_many( 5, array(
+			'post_title' => 'Featured Post',
+			'meta_input' => array(
+				'_featured' => 1,
+			),
+		) );
+		$featured_flag['not-featured'] = $this->factory->job_listing->create_many( 5, array(
+			'post_title' => 'Not Featured Post',
+			'meta_input' => array(
+				'_featured' => 0,
+			),
+		) );
+
+		// Try 10x, verifying first 5 are always job listings
+		for ($i = 1; $i <= 10; $i++) {
+			$results = get_job_listings( array( 'search_keywords' => '', 'orderby' => 'rand_featured' ) );
+			$tc = 0;
+			foreach ( $results->posts as $result ) {
+				if ( $tc < 5 ) {
+					$this->assertEquals( 1, $result->_featured );
+					$this->assertEquals( -1, $result->menu_order );
+				} else {
+					$this->assertEquals( 0, $result->_featured );
+					$this->assertEquals( 0, $result->menu_order );
+				}
+				$tc++;
+			}
+		}
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */
