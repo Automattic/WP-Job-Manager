@@ -75,6 +75,17 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 			'order'             => 'DESC',
 		) );
 
+		/**
+		 * Runs before Recent Jobs widget content.
+		 *
+		 * @since 1.29.1
+		 *
+		 * @param array    $args
+		 * @param array    $instance
+		 * @param WP_Query $jobs
+		 */
+		do_action( 'job_manager_recent_jobs_widget_before', $args, $instance, $jobs );
+
 		if ( $jobs->have_posts() ) : ?>
 
 			<?php echo $before_widget; ?>
@@ -98,6 +109,17 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 			<?php get_job_manager_template_part( 'content-widget', 'no-jobs-found' ); ?>
 
 		<?php endif;
+
+		/**
+		 * Runs after Recent Jobs widget content.
+		 *
+		 * @since 1.29.1
+		 *
+		 * @param array    $args
+		 * @param array    $instance
+		 * @param WP_Query $jobs
+		 */
+		do_action( 'job_manager_recent_jobs_widget_after', $args, $instance, $jobs );
 
 		wp_reset_postdata();
 
