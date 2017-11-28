@@ -183,7 +183,7 @@ function get_job_listings( $args = array() ) {
 }
 endif;
 
-if ( ! function_exists( '_wpjm_shuffle_post_results_helper' ) ) :
+if ( ! function_exists( '_wpjm_shuffle_featured_post_results_helper' ) ) :
 	/**
 	 * Helper function to maintain featured status when shuffling results.
 	 *
