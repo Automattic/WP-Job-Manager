@@ -30,6 +30,12 @@ class WP_Job_Manager_Helper {
 	private static $_instance = null;
 
 	/**
+	 * @var bool
+	 * @since 1.29.1
+	 */
+	private static $checked_plugin_cache = false;
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  1.29.0
@@ -355,6 +361,15 @@ class WP_Job_Manager_Helper {
 	protected function get_installed_plugins( $active_only = true ) {
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		}
+
+		// On the first call, let's make sure we aren't seeing an outdated list of plugin data.
+		if ( ! self::$checked_plugin_cache ) {
+			// If plugins were already loaded prematurely, reset the plugin cache.
+			if ( wp_cache_get( 'plugins', 'plugins' ) ) {
+				wp_clean_plugins_cache( false );
+			}
+			self::$checked_plugin_cache = true;
 		}
 
 		$wpjm_plugins = array();
