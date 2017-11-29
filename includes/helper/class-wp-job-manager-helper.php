@@ -33,7 +33,7 @@ class WP_Job_Manager_Helper {
 	 * @var bool
 	 * @since 1.29.1
 	 */
-	private static $checked_plugin_cache = false;
+	private static $cleared_plugin_cache = false;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -363,13 +363,17 @@ class WP_Job_Manager_Helper {
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		}
 
-		// On the first call, let's make sure we aren't seeing an outdated list of plugin data.
-		if ( ! self::$checked_plugin_cache ) {
-			// If plugins were already loaded prematurely, reset the plugin cache.
-			if ( wp_cache_get( 'plugins', 'plugins' ) ) {
-				wp_clean_plugins_cache( false );
-			}
-			self::$checked_plugin_cache = true;
+		/**
+		 * Clear the plugin cache on first request for installed WPJM add-on plugins.
+		 *
+		 * @since 1.29.1
+		 *
+		 * @param bool $clear_plugin_cache True if we should clear the plugin cache.
+		 */
+		if ( ! self::$cleared_plugin_cache && apply_filters( 'job_manager_clear_plugin_cache', true ) ) {
+			// Reset the plugin cache on the first call. Some plugins prematurely hydrate the cache.
+			wp_clean_plugins_cache( false );
+			self::$cleared_plugin_cache = true;
 		}
 
 		$wpjm_plugins = array();
