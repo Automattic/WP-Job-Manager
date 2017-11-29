@@ -208,7 +208,7 @@ module.exports = function( grunt ){
 		},
 
 		clean: {
-			main: [ 'tmp/' ], //Clean up build folder
+			main: [ 'tmp/', 'lib/' ], //Clean up build folder
 		},
 
 		jshint: {
@@ -273,7 +273,7 @@ module.exports = function( grunt ){
 
 	grunt.registerTask( 'build-mixtape', [ 'shell:buildMixtape' ] );
 
-	grunt.registerTask( 'build', [ 'gitinfo', 'check-mixtape', 'check-mixtape-fatal', 'test', 'clean', 'copy' ] );
+	grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'check-mixtape', 'check-mixtape-fatal', 'test', 'copy' ] );
 
 	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'checkrepo', 'build', 'wp_deploy' ] );
 	grunt.registerTask( 'deploy-unsafe', [ 'build', 'wp_deploy' ] );

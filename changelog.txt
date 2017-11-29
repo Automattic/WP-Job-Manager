@@ -1,70 +1,82 @@
+= 1.29.1 =
+* Enhancement: When retrieving listings in `[jobs]` shortcode, setting `orderby` to `rand_featured` will still place featured listings at the top. (@jom)
+* Enhancement: Scroll to show application details when clicking on "Apply for Job" button. (@jom)
+* Change: Updates `account-signin.php` template to warn users email will be confirmed only if that is enabled. (@jom)
+* Fix: Sanitize URLs and emails differently on the application method job listing field. (@jom)
+* Fix: Remove PHP notice in Featured Jobs widget. (@himanshuahuja96)
+* Fix: String fix for consistent spelling of "license" when appearing in strings. (@garrett-eclipse)
+* Fix: Issue with paid add-on licenses not showing up when some third-party plugins were installed. (@jom)
+* Dev: Runs new actions (`job_manager_recent_jobs_widget_before` and `job_manager_recent_jobs_widget_after`) inside Recent Jobs widget. (@jom)
+* Dev: Change `wpjm_get_the_job_types()` to return an empty array when job types are disabled. (@jom)
+* See all: https://github.com/Automattic/WP-Job-Manager/milestone/15?closed=1
+
 = 1.29.0 =
-* Enhancement: Moves license and update management for official add-ons to the core plugin. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1168)
-* Enhancement: Update language for setup wizard with more clear descriptions. (@donnapep; https://github.com/Automattic/WP-Job-Manager/pull/1194)
-* Fix: Prevent duplicate attachments to job listing posts for non-image media. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/1144)
-* Fix: PHP error on registration form due to missing placeholder text. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1180)
-* Fix: Apply `the_job_application_method` filter even when no default is available. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/issues/1164)
-* Fix: Properly reset category selector on `[jobs]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1190)
+* Enhancement: Moves license and update management for official add-ons to the core plugin. (@jom)
+* Enhancement: Update language for setup wizard with more clear descriptions. (@donnapep)
+* Fix: Prevent duplicate attachments to job listing posts for non-image media. (@tripflex)
+* Fix: PHP error on registration form due to missing placeholder text. (@jom)
+* Fix: Apply `the_job_application_method` filter even when no default is available. (@turtlepod)
+* Fix: Properly reset category selector on `[jobs]` shortcode. (@jom)
 
 = 1.28.0 =
-* Enhancement: Improves support for Google Job Search by adding `JobPosting` structured data. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1115)
-* Enhancement: Adds ability for job types to be mapped to an employment type as defined for Google Job Search. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1112)
-* Enhancement: Requests search engines no longer index expired and filled job listings. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1120)
-* Enhancement: Improves support with third-party sitemap generation in Jetpack, Yoast SEO, and All in One SEO. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1119)
-* Enhancement: Updated descriptions and help text on settings page. (@donnapep; Props to @michelleweber for updated copy; https://github.com/Automattic/WP-Job-Manager/pull/1107)
-* Enhancement: Lower cache expiration times across plugin and limit use of autoloaded cache transients. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1101/files) 
-* Fix: Localization issue with WPML in the [jobs] shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1129)
-* Fix: Show job listings' published date in localized format. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1118)
-* Fix: Job submission form allows users to select multiple job types when they go back a step. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1099)
-* Fix: Some themes that overloaded functions would break in previous release. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1104)
-* Dev: Adds versions to template files so it is easier to tell when they are updated. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1116)
-* Dev: Adds a new `wpjm_notify_new_user` action that allows you to override default behavior. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1125)
+* Enhancement: Improves support for Google Job Search by adding `JobPosting` structured data. (@jom)
+* Enhancement: Adds ability for job types to be mapped to an employment type as defined for Google Job Search. (@jom)
+* Enhancement: Requests search engines no longer index expired and filled job listings. (@jom)
+* Enhancement: Improves support with third-party sitemap generation in Jetpack, Yoast SEO, and All in One SEO. (@jom)
+* Enhancement: Updated descriptions and help text on settings page. (@donnapep; Props to @michelleweber for updated copy)
+* Enhancement: Lower cache expiration times across plugin and limit use of autoloaded cache transients. (@jom/files) 
+* Fix: Localization issue with WPML in the [jobs] shortcode. (@jom)
+* Fix: Show job listings' published date in localized format. (@jom)
+* Fix: Job submission form allows users to select multiple job types when they go back a step. (@jom)
+* Fix: Some themes that overloaded functions would break in previous release. (@jom)
+* Dev: Adds versions to template files so it is easier to tell when they are updated. (@jom)
+* Dev: Adds a new `wpjm_notify_new_user` action that allows you to override default behavior. (@jom)
 * Dev: Early version of REST API is bundled but disabled by default. Requires PHP 5.3+ and `WPJM_REST_API_ENABLED` constant must be set to true. Do not use in production; endpoints may change. (@pkg)
 
 = 1.27.0 =
-* Enhancement: Admins can now allow users to specify an account password when posting their first job listing. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1063)
-* Enhancement: Pending job listing counts are now cached for improved WP Admin performance. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/1024)
-* Enhancement: Allows users to override permalink slugs in WP Admin's Permalink Settings screen. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1042)
-* Enhancement: Allows admins to perform bulk updating of jobs as filled/not filled. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1049)
-* Enhancement: Adds job listing status CSS classes on single job listings. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1041)
-* Enhancement: Adds `wpjm_the_job_title` filter for inserting non-escaped HTML alongside job titles in templates. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1033)
-* Enhancement: Allows admins to filter by `post_status` in `[jobs]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1051)
-* Enhancement: Allows accessing settings tab from hash in URL. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/999)
-* Fix: Make sure cron jobs for checking/cleaning expired listings are always in place. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1058)
-* Fix: Better handling of multiple job types. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/1014)
-* Fix: Issue with deleting company logos from job listings submission form. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1047)
-* Fix: Warning thrown on job submission form when user not logged in. (@piersb; https://github.com/Automattic/WP-Job-Manager/pull/1011)  
-* Fix: Issue with WPML not syncing some meta fields. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1027)
-* Fix: Better handling of AJAX upload errors. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/1044)
-* Fix: Remove job posting cookies on logout. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1065)
-* Fix: Expiration date can be cleared if default job duration option is empty. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/1076)
-* Fix: Issue with Safari and expiration datepicker. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1078)
+* Enhancement: Admins can now allow users to specify an account password when posting their first job listing. (@jom)
+* Enhancement: Pending job listing counts are now cached for improved WP Admin performance. (@tripflex)
+* Enhancement: Allows users to override permalink slugs in WP Admin's Permalink Settings screen. (@jom)
+* Enhancement: Allows admins to perform bulk updating of jobs as filled/not filled. (@jom)
+* Enhancement: Adds job listing status CSS classes on single job listings. (@jom)
+* Enhancement: Adds `wpjm_the_job_title` filter for inserting non-escaped HTML alongside job titles in templates. (@jom)
+* Enhancement: Allows admins to filter by `post_status` in `[jobs]` shortcode. (@jom)
+* Enhancement: Allows accessing settings tab from hash in URL. (@tripflex)
+* Fix: Make sure cron jobs for checking/cleaning expired listings are always in place. (@jom)
+* Fix: Better handling of multiple job types. (@spencerfinnell)
+* Fix: Issue with deleting company logos from job listings submission form. (@jom)
+* Fix: Warning thrown on job submission form when user not logged in. (@piersb)  
+* Fix: Issue with WPML not syncing some meta fields. (@jom)
+* Fix: Better handling of AJAX upload errors. (@tripflex)
+* Fix: Remove job posting cookies on logout. (@jom)
+* Fix: Expiration date can be cleared if default job duration option is empty. (@spencerfinnell)
+* Fix: Issue with Safari and expiration datepicker. (@jom)
 
 = 1.26.2 =
-* Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.  (https://github.com/Automattic/WP-Job-Manager/pull/1020)
-* Fix: Escape post title in WP Admin's Job Listings page and template segments. (Props to @EhsanCod3r; https://github.com/Automattic/WP-Job-Manager/pull/1026)
+* Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.  
+* Fix: Escape post title in WP Admin's Job Listings page and template segments. (Props to @EhsanCod3r)
 
 = 1.26.1 =
-* Enhancement: Add language using WordPress's current locale to geocode requests. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1007)
-* Fix: Allow attempts to use Google Maps Geocode API without an API key. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/998)
-* Fix: Issue affecting job expiry date when editing a job listing. (@spencerfinnell, @jom; https://github.com/Automattic/WP-Job-Manager/pull/1008)
-* Fix: Show correct total count of results on `[jobs]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/1006)
+* Enhancement: Add language using WordPress's current locale to geocode requests. (@jom)
+* Fix: Allow attempts to use Google Maps Geocode API without an API key. (@spencerfinnell)
+* Fix: Issue affecting job expiry date when editing a job listing. (@spencerfinnell, @jom)
+* Fix: Show correct total count of results on `[jobs]` shortcode. (@jom)
 
 = 1.26.0 =
-* Enhancement: Warn the user if they're editing an existing job. (@donnchawp; https://github.com/Automattic/WP-Job-Manager/pull/847)
-* Enhancement: WP Admin Job Listing page's table is now responsive. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/906)
-* Enhancement: New setting for hiding expired listings from `[jobs]` filter. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/903)
-* Enhancement: Use WP Query's built in search function to improve searching in `[jobs]`. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/960)
-* Fix: Job Listing filter only searches meta fields with relevant content. Add custom fields with `job_listing_searchable_meta_keys` filter. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/910)
-* Fix: Improved support for WPML and Polylang. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/963)
-* Fix: Expired field no longer forces admins to choose a date in the future. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/903)
-* Fix: Listings with expiration date in past will immediately expire; moving to Active status will extend if necessary. (@turtlepod, @jom; https://github.com/Automattic/WP-Job-Manager/pull/903, https://github.com/Automattic/WP-Job-Manager/pull/975)
-* Fix: Google Maps API key setting added to fix geolocation retrieval on new sites. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/912)
-* Fix: Issue when duplicating a job listing with a field for multiple file uploads. (@turtlepod; https://github.com/Automattic/WP-Job-Manager/pull/911)
-* Fix: Hide page results when adding links in the `[submit_job_form]` shortcode. (@jom; https://github.com/Automattic/WP-Job-Manager/pull/922)
-* Fix: Job feed now loads when a site has no posts. (@dbtlr; https://github.com/Automattic/WP-Job-Manager/pull/870)
-* Fix: No error is thrown when deleting a user. (@tripflex; https://github.com/Automattic/WP-Job-Manager/pull/875)
-* Dev: Plugins and themes can now retrieve JSON of Job Listings results without HTML. (@spencerfinnell; https://github.com/Automattic/WP-Job-Manager/pull/888)
+* Enhancement: Warn the user if they're editing an existing job. (@donnchawp)
+* Enhancement: WP Admin Job Listing page's table is now responsive. (@turtlepod)
+* Enhancement: New setting for hiding expired listings from `[jobs]` filter. (@turtlepod)
+* Enhancement: Use WP Query's built in search function to improve searching in `[jobs]`. (@jom)
+* Fix: Job Listing filter only searches meta fields with relevant content. Add custom fields with `job_listing_searchable_meta_keys` filter. (@turtlepod)
+* Fix: Improved support for WPML and Polylang. (@jom)
+* Fix: Expired field no longer forces admins to choose a date in the future. (@turtlepod)
+* Fix: Listings with expiration date in past will immediately expire; moving to Active status will extend if necessary. (@turtlepod, @jom, https://github.com/Automattic/WP-Job-Manager/pull/975)
+* Fix: Google Maps API key setting added to fix geolocation retrieval on new sites. (@jom)
+* Fix: Issue when duplicating a job listing with a field for multiple file uploads. (@turtlepod)
+* Fix: Hide page results when adding links in the `[submit_job_form]` shortcode. (@jom)
+* Fix: Job feed now loads when a site has no posts. (@dbtlr)
+* Fix: No error is thrown when deleting a user. (@tripflex)
+* Dev: Plugins and themes can now retrieve JSON of Job Listings results without HTML. (@spencerfinnell)
 * Dev: Updated inline documentation.
 
 = 1.25.3 =
@@ -79,30 +91,30 @@
 * Fix: Fixed taxonomy search conditions. See https://github.com/automattic/wp-job-manager/pull/859/ Props Jonas Vogel.
 
 = 1.25.2 =
-* Fix - The date format of the expiry date picker was incorrect in translations so we added a comment to clarify, and fixed translations. (https://github.com/Automattic/WP-Job-Manager/issues/697)
-* Fix - Changing the date of an expired job would forget the date, even though the job would become active. (https://github.com/Automattic/WP-Job-Manager/issues/653)
-* Fix - Site owner can allow jobs to have only one or more than one types. (https://github.com/Automattic/WP-Job-Manager/issues/549)
-* Fix - Show expired jobs if that setting is enabled. (https://github.com/Automattic/WP-Job-Manager/issues/703)
-* Fix - Simplify the search message on the jobs page to avoid translation problems. (https://github.com/Automattic/WP-Job-Manager/issues/647)
-* Fix - The uploader would ignore WordPress created image sizes. (https://github.com/Automattic/WP-Job-Manager/issues/706)
-* Fix - setup.css was loaded on all admin pages. (https://github.com/Automattic/WP-Job-Manager/issues/728)
-* Fix - The preview of a listing could be edited or viewed by anyone. Props @tripflex (https://github.com/Automattic/WP-Job-Manager/issues/690)
-* Fix - When users were deleted their jobs weren't. (https://github.com/Automattic/WP-Job-Manager/issues/675)
-* Fix - OrderBy Rand wasn't working. (https://github.com/Automattic/WP-Job-Manager/issues/714)
-* Dev - Add upload filters and update PHPDocs, props @tripflex (https://github.com/Automattic/WP-Job-Manager/pull/747)
-* Fix - Stop using jQuery.live, props @tripflex (https://github.com/Automattic/WP-Job-Manager/pull/664)
+* Fix - The date format of the expiry date picker was incorrect in translations so we added a comment to clarify, and fixed translations. 
+* Fix - Changing the date of an expired job would forget the date, even though the job would become active. 
+* Fix - Site owner can allow jobs to have only one or more than one types. 
+* Fix - Show expired jobs if that setting is enabled. 
+* Fix - Simplify the search message on the jobs page to avoid translation problems. 
+* Fix - The uploader would ignore WordPress created image sizes. 
+* Fix - setup.css was loaded on all admin pages. 
+* Fix - The preview of a listing could be edited or viewed by anyone. Props @tripflex 
+* Fix - When users were deleted their jobs weren't. 
+* Fix - OrderBy Rand wasn't working. 
+* Dev - Add upload filters and update PHPDocs, props @tripflex 
+* Fix - Stop using jQuery.live, props @tripflex 
 
 = 1.25.1 =
-* Feature - Adds a view button to the Admin UI for easy access to submitted files or URLs. Props tripflex (https://github.com/Automattic/WP-Job-Manager/pull/650)
+* Feature - Adds a view button to the Admin UI for easy access to submitted files or URLs. Props tripflex 
 * Fix - Add hardening to file uploads to prevent accepting unexpected file times. Previously, other WP-allowed types were sometimes accepted.
-* Fix - Job post form categories are now properly cached and displayed per language when using WPML or Polylang. (https://github.com/Automattic/WP-Job-Manager/issues/692)
-* Fix - Refactored WPML workaround, which was causing no job listings on non-default languages. (https://github.com/Automattic/WP-Job-Manager/issues/617)
-* Fix - Allow employers to edit job listings when a listing is pending payment. (https://github.com/Automattic/WP-Job-Manager/pull/664)
-* Fix - No longer display Job Taxonomies in the WordPress tag cloud. (https://github.com/Automattic/WP-Job-Manager/pull/658)
-* Fix - Migrate away from jQuery.live, which is no longer supported. ( https://github.com/Automattic/WP-Job-Manager/pull/664 )
-* Tweak - Updated incorrect settings description. (https://github.com/Automattic/WP-Job-Manager/pull/632)
-* Dev - Adds hook to add items in a job's RSS feed item. (https://github.com/Automattic/WP-Job-Manager/pull/636)
-* Dev - Adds filter to disable Job Listings cache (https://github.com/Automattic/WP-Job-Manager/pull/684)
+* Fix - Job post form categories are now properly cached and displayed per language when using WPML or Polylang. 
+* Fix - Refactored WPML workaround, which was causing no job listings on non-default languages. 
+* Fix - Allow employers to edit job listings when a listing is pending payment. 
+* Fix - No longer display Job Taxonomies in the WordPress tag cloud. 
+* Fix - Migrate away from jQuery.live, which is no longer supported. 
+* Tweak - Updated incorrect settings description. 
+* Dev - Adds hook to add items in a job's RSS feed item. 
+* Dev - Adds filter to disable Job Listings cache 
 * Dev - Inline docs and coding standards improvements.
 
 = 1.25.0 =
@@ -110,7 +122,7 @@
 * Fix - Support WP_EMBED in job descriptions.
 * Fix - Ensure logo is displayed on edit, before submission.
 * Fix - Attachment URLs on multisite.
-* Fix - Refactored WPML workaround, which was causing no job listings on non-default languages. (https://github.com/Automattic/WP-Job-Manager/issues/617)
+* Fix - Refactored WPML workaround, which was causing no job listings on non-default languages. 
 * Fix - No need to decode URLs anymore https://core.trac.wordpress.org/ticket/23605.
 * Dev - submit_job_form_end/submit_job_form_start actions.
 * Dev - job-manager-datepicker class for backend date fields.

@@ -230,6 +230,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::get_location_data
 	 * @dataProvider get_location_data
+	 * @group google-api
 	 */
 	public function test_get_location_data_simple_live( $test_data ) {
 		$this->use_live_google_api();
@@ -244,9 +245,21 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 			if ( empty( $value ) ) {
 				continue;
 			}
+			$this->assertTrue( is_array( $location_data ) );
 			$this->assertTrue( isset( $location_data[ $key ] ) );
 			$this->assertEquals( $value, $location_data[ $key ] );
 		}
+	}
+
+	/**
+	 * @since 1.29.1
+	 * @covers WP_Job_Manager_Geocode::get_location_data
+	 * @group google-api
+	 */
+	public function test_get_location_data_error_live() {
+		$this->use_live_google_api();
+		$location_data = WP_Job_Manager_Geocode::get_location_data( 'Fake Moon Town, The Sun 00000' );
+		$this->assertTrue( $location_data instanceof  WP_Error );
 	}
 
 	/**
