@@ -294,7 +294,9 @@ abstract class WP_Job_Manager_Form {
 	protected function sanitize_posted_field( $value, $sanitizer = null ) {
 		// Sanitize value
 		if ( is_array( $value ) ) {
-			return array_map( array( $this, 'sanitize_posted_field' ), $value, $sanitizer );
+			return array_map( function( $value ) use ( $sanitizer ) {
+				return $this->sanitize_posted_field( $value, $sanitizer );
+			}, $value );
 		}
 		$value = trim( $value );
 
