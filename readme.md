@@ -141,6 +141,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 ## Changelog ##
 
+### 1.29.2 ###
+* Fix: PHP Notice when sanitizing multiple inputs (bug in 1.29.1 release). (@albionselimaj)
+
 ### 1.29.1 ###
 * Enhancement: When retrieving listings in `[jobs]` shortcode, setting `orderby` to `rand_featured` will still place featured listings at the top. (@jom)
 * Enhancement: Scroll to show application details when clicking on "Apply for Job" button. (@jom)
@@ -148,7 +151,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Fix: Sanitize URLs and emails differently on the application method job listing field. (@jom)
 * Fix: Remove PHP notice in Featured Jobs widget. (@himanshuahuja96)
 * Fix: String fix for consistent spelling of "license" when appearing in strings. (@garrett-eclipse)
-* Fix: Issue with paid add-on licenses not showing up when some third-party plugins were installed. (@jom)  
+* Fix: Issue with paid add-on licenses not showing up when some third-party plugins were installed. (@jom)
 * Dev: Runs new actions (`job_manager_recent_jobs_widget_before` and `job_manager_recent_jobs_widget_after`) inside Recent Jobs widget. (@jom)
 * Dev: Change `wpjm_get_the_job_types()` to return an empty array when job types are disabled. (@jom)
 * See all: https://github.com/Automattic/WP-Job-Manager/milestone/15?closed=1

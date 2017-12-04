@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.29.1\n"
+"Project-Id-Version: WP Job Manager 1.29.2\n"
 "Report-Msgid-Bugs-To: https://github.com/Automattic/WP-Job-Manager/issues\n"
-"POT-Creation-Date: 2017-11-27 12:20:43+00:00\n"
+"POT-Creation-Date: 2017-12-04 13:55:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1238,38 +1238,38 @@ msgstr ""
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
-#: includes/helper/class-wp-job-manager-helper.php:249
+#: includes/helper/class-wp-job-manager-helper.php:255
 msgid "Manage License"
 msgstr ""
 
-#: includes/helper/class-wp-job-manager-helper.php:251
+#: includes/helper/class-wp-job-manager-helper.php:257
 #: includes/helper/views/html-licences.php:69
 msgid "Activate License"
 msgstr ""
 
-#: includes/helper/class-wp-job-manager-helper.php:421
+#: includes/helper/class-wp-job-manager-helper.php:440
 msgid ""
 "Please enter a valid license key and email address in order to activate "
 "this plugin's license."
 msgstr ""
 
-#: includes/helper/class-wp-job-manager-helper.php:449
+#: includes/helper/class-wp-job-manager-helper.php:468
 msgid "Connection failed to the License Key API server - possible server issue."
 msgstr ""
 
-#: includes/helper/class-wp-job-manager-helper.php:457
+#: includes/helper/class-wp-job-manager-helper.php:476
 msgid "Plugin license has been activated."
 msgstr ""
 
-#: includes/helper/class-wp-job-manager-helper.php:459
+#: includes/helper/class-wp-job-manager-helper.php:478
 msgid "An unknown error occurred while attempting to activate the license"
 msgstr ""
 
-#: includes/helper/class-wp-job-manager-helper.php:471
+#: includes/helper/class-wp-job-manager-helper.php:490
 msgid "license is not active."
 msgstr ""
 
-#: includes/helper/class-wp-job-manager-helper.php:485
+#: includes/helper/class-wp-job-manager-helper.php:504
 msgid "Plugin license has been deactivated."
 msgstr ""
 
