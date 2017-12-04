@@ -1,3 +1,6 @@
+= 1.29.2 =
+* Fix: PHP Notice when sanitizing multiple inputs (bug in 1.29.1 release). (@albionselimaj)
+
 = 1.29.1 =
 * Enhancement: When retrieving listings in `[jobs]` shortcode, setting `orderby` to `rand_featured` will still place featured listings at the top. (@jom)
 * Enhancement: Scroll to show application details when clicking on "Apply for Job" button. (@jom)
