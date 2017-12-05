@@ -3,7 +3,7 @@
 **Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent  
 **Requires at least:** 4.3.1  
 **Tested up to:** 4.9  
-**Stable tag:** 1.29.1  
+**Stable tag:** 1.29.2
 **License:** GPLv3  
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
