@@ -114,7 +114,8 @@ function get_job_listings( $args = array() ) {
 	if ( 'featured' === $args['orderby'] ) {
 		$query_args['orderby'] = array(
 			'menu_order' => 'ASC',
-			'date'       => 'DESC'
+			'date'       => 'DESC',
+			'ID'         => 'DESC',
 		);
 	}
 
