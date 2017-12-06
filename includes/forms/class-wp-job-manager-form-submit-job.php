@@ -238,6 +238,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'company_video' => array(
 					'label'       => __( 'Video', 'wp-job-manager' ),
 					'type'        => 'text',
+					'sanitizer'   => 'url',
 					'required'    => false,
 					'placeholder' => __( 'A link to a video about your company', 'wp-job-manager' ),
 					'priority'    => 4
@@ -245,6 +246,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'company_twitter' => array(
 					'label'       => __( 'Twitter username', 'wp-job-manager' ),
 					'type'        => 'text',
+					'sanitizer'   => 'url',
 					'required'    => false,
 					'placeholder' => __( '@yourcompany', 'wp-job-manager' ),
 					'priority'    => 5
