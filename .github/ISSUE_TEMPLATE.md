@@ -1,4 +1,16 @@
-<!-- Thanks for contributing to WP Job Manager! Pick a clear title ("Improve client-side UI validation") and proceed. -->
+<!--
+Thanks for contributing to WP Job Manager! Pick a clear title ("Improve client-side UI validation") and proceed.
+
+PLEASE NOTE
+- These comments won't show up when you submit the issue.
+- Everything is optional, but try to add as many details as possible.
+- If requesting a new feature, explain why you'd like to see it added.
+- This issue tracker is not for support. If you have questions about WP Job Manager you can [start a new thread in the WP Job Manager support forums](https://wordpress.org/support/plugin/wp-job-manager#new-post).
+- Do not report potential security vulnerabilities here. For responsible disclosure of security issues and to be eligible for our bug bounty program, please submit your report via [the HackerOne portal](https://hackerone.com/automattic).
+
+Helpful tips for screenshots:
+https://en.support.wordpress.com/make-a-screenshot/
+-->
 
 #### Steps to Reproduce
 1.
@@ -26,13 +38,3 @@
 If requesting a new feature, explain why you'd like to see it added.
 -->
 
-
-
-<!--
-PLEASE NOTE
-- These comments won't show up when you submit the issue.
-- Everything is optional, but try to add as many details as possible.
-
-Helpful tips for screenshots:
-https://en.support.wordpress.com/make-a-screenshot/
--->
