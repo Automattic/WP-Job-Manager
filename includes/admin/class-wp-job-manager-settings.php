@@ -249,6 +249,20 @@ class WP_Job_Manager_Settings {
 							'attributes' => array()
 						),
 						array(
+							'name'       => 'job_manager_user_edit_published_submissions',
+							'std'        => 'yes',
+							'label'      => __( 'Allow Published Edits', 'wp-job-manager' ),
+							'cb_label'   => __( 'Allow editing of published listings', 'wp-job-manager' ),
+							'desc'       => __( 'Choose whether published job listings can be edited and if edits require admin approval. When moderation is required, the original job listings will be unpublished while edits await admin approval.', 'wp-job-manager' ),
+							'type'       => 'radio',
+							'options'    => array(
+								'no'             => __( 'Users cannot edit', 'wp-job-manager' ),
+								'yes'            => __( 'Users can edit without admin approval', 'wp-job-manager' ),
+								'yes_moderated'  => __( 'Users can edit, but edits require admin approval', 'wp-job-manager' ),
+							),
+							'attributes' => array()
+						),
+						array(
 							'name'       => 'job_manager_submission_duration',
 							'std'        => '30',
 							'label'      => __( 'Listing Duration', 'wp-job-manager' ),
