@@ -45,6 +45,16 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		if  ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
 			$this->job_id = 0;
 		}
+
+		if ( ! empty( $this->job_id ) ) {
+			$post_status = get_post_status( $this->job_id );
+			if (
+				( 'publish' === $post_status && ! wpjm_user_can_edit_published_submissions() )
+				|| ( 'publish' !== $post_status && ! job_manager_user_can_edit_pending_submissions() )
+			) {
+				$this->job_id = 0;
+			}
+		}
 	}
 
 	/**
@@ -63,7 +73,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	public function submit() {
 		$job = get_post( $this->job_id );
 
-		if ( empty( $this->job_id  ) || ( $job->post_status !== 'publish' && ! job_manager_user_can_edit_pending_submissions() ) ) {
+		if ( empty( $this->job_id ) ) {
 			echo wpautop( __( 'Invalid listing', 'wp-job-manager' ) );
 			return;
 		}
@@ -96,6 +106,14 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
 
+		$save_button_text = __( 'Save changes', 'wp-job-manager' );
+		if ( 'publish' === get_post_status( $this->job_id )
+			 && wpjm_published_submission_edits_require_moderation() ) {
+			$save_button_text = __( 'Submit changes for approval', 'wp-job-manager' );
+		}
+
+		$save_button_text = apply_filters( 'update_job_form_submit_button_text', $save_button_text );
+
 		get_job_manager_template( 'job-submit.php', array(
 			'form'               => $this->form_name,
 			'job_id'             => $this->get_job_id(),
@@ -103,8 +121,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			'job_fields'         => $this->get_fields( 'job' ),
 			'company_fields'     => $this->get_fields( 'company' ),
 			'step'               => $this->get_step(),
-			'submit_button_text' => __( 'Save changes', 'wp-job-manager' )
-			) );
+			'submit_button_text' => $save_button_text,
+		) );
 	}
 
 	/**
@@ -125,20 +143,50 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 				throw new Exception( $return->get_error_message() );
 			}
 
+			$save_post_status = '';
+			if ( wpjm_published_submission_edits_require_moderation() ) {
+				$save_post_status = 'pending';
+			}
+			$original_post_status = get_post_status( $this->job_id );
+
 			// Update the job
-			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], '', $values, false );
+			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $save_post_status, $values, false );
 			$this->update_job_data( $values );
 
 			// Successful
-			switch ( get_post_status( $this->job_id ) ) {
-				case 'publish' :
-					echo '<div class="job-manager-message">' . __( 'Your changes have been saved.', 'wp-job-manager' ) . ' <a href="' . get_permalink( $this->job_id ) . '">' . __( 'View &rarr;', 'wp-job-manager' ) . '</a>' . '</div>';
-				break;
-				default :
-					echo '<div class="job-manager-message">' . __( 'Your changes have been saved.', 'wp-job-manager' ) . '</div>';
-				break;
+			$save_message = __( 'Your changes have been saved.', 'wp-job-manager' );
+			$post_status = get_post_status( $this->job_id );
+
+			update_post_meta( $this->job_id, '_job_edited', time() );
+
+			if ( 'publish' === $post_status ) {
+				$save_message = $save_message . ' <a href="' . get_permalink( $this->job_id ) . '">' . __( 'View &rarr;', 'wp-job-manager' ) . '</a>';
+			} elseif ( 'publish' === $original_post_status && 'pending' === $post_status ) {
+				$save_message = __( 'Your changes have been submitted and your listing will be visible again once approved.', 'wp-job-manager' );
+
+				/**
+				 * Resets the job expiration date when a user submits their job listing edit for approval.
+				 * Defaults to `false`.
+				 *
+				 * @since 1.19.0
+				 *
+				 * @param bool $reset_expiration If true, reset expiration date.
+				 */
+				if ( apply_filters( 'job_manager_reset_listing_expiration_on_user_edit', false ) ) {
+					delete_post_meta( $this->job_id, '_job_expires' );
+				}
 			}
 
+			/**
+			 * Change the message that appears when a user edits a job listing.
+			 *
+			 * @since 1.19.0
+			 *
+			 * @param string $save_message  Save message to filter.
+			 * @param int    $job_id        Job ID.
+			 * @param array  $values        Submitted values for job listing.
+			 */
+			echo '<div class="job-manager-message">' . apply_filters( 'job_manager_update_job_listings_message', $save_message, $this->job_id, $values ) . '</div>';
 		} catch ( Exception $e ) {
 			echo '<div class="job-manager-error">' . $e->getMessage() . '</div>';
 			return;
