@@ -267,6 +267,44 @@ class WP_Job_Manager_Settings {
 								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
 							)
 						),
+					),
+				),
+				'recaptcha' => array(
+					__( 'reCAPTCHA', 'wp-job-manager' ),
+					array(
+						array(
+							'name'        => 'job_manager_recaptcha_label',
+							'std'         => __( 'Are you human?', 'wp-job-manager' ),
+							'placeholder' => '',
+							'label'       => __( 'Field Label', 'wp-job-manager' ),
+							'desc'        => __( 'The label used for the reCAPTCHA field on forms.', 'wp-job-manager' ),
+							'attributes'  => array()
+						),
+						array(
+							'name'        => 'job_manager_recaptcha_site_key',
+							'std'         => '',
+							'placeholder' => '',
+							'label'       => __( 'Site Key', 'wp-job-manager' ),
+							'desc'        => sprintf( __( 'You can retrieve your site key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
+							'attributes'  => array()
+						),
+						array(
+							'name'        => 'job_manager_recaptcha_secret_key',
+							'std'         => '',
+							'placeholder' => '',
+							'label'       => __( 'Secret Key', 'wp-job-manager' ),
+							'desc'        => sprintf( __( 'You can retrieve your secret key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
+							'attributes'  => array()
+						),
+						array(
+							'name'       => 'job_manager_enable_recaptcha_job_submission',
+							'std'        => '0',
+							'label'      => __( 'Job Submission Form', 'wp-job-manager' ),
+							'cb_label'   => __( 'Display a reCAPTCHA field on job submission form.', 'wp-job-manager' ),
+							'desc'       => sprintf( __( 'This will help prevent bots from submitting job listings. You must have entered a valid site key and secret key above.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
 					)
 				),
 				'job_pages' => array(
