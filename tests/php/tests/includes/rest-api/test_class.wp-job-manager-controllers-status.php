@@ -101,12 +101,19 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 	 * @group rest
 	 */
 	function test_post_response_status_requires_admin() {
+		global $wp_version;
+
 		$this->login_as( $this->default_user_id );
 
 		$response = $this->put( '/wpjm/v1/status/run_page_setup', array(
 			'value' => false,
 		) );
-
-		$this->assertResponseStatus( $response, 403 );
+		// We have a logged in user so post-4.9.1 versions of WordPress will correctly return 401.
+		// See https://core.trac.wordpress.org/changeset/42421
+		if ( version_compare( $wp_version, '4.9.1', '>' ) ) {
+			$this->assertResponseStatus( $response, 401 );
+		} else {
+			$this->assertResponseStatus( $response, 403 );
+		}
 	}
 }
