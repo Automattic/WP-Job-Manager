@@ -5,11 +5,20 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 	/**
 	 * @group rest
 	 */
-    function test_responds_when_no_sufficient_permissions() {
-        $this->login_as( $this->default_user_id );
-        $response = $this->get( '/wpjm/v1/settings' );
-        $this->assertResponseStatus( $response, 403 );
-    }
+	function test_responds_when_no_sufficient_permissions() {
+		global $wp_version;
+
+		$this->login_as( $this->default_user_id );
+		$response = $this->get( '/wpjm/v1/settings' );
+
+		// We have a logged in user so post-4.9.1 versions of WordPress will correctly return 401.
+		// See https://core.trac.wordpress.org/changeset/42421
+		if ( version_compare( $wp_version, '4.9.1', '>' ) ) {
+			$this->assertResponseStatus( $response, 401 );
+		} else {
+			$this->assertResponseStatus( $response, 403 );
+		}
+	}
 
 	/**
 	 * @group rest
