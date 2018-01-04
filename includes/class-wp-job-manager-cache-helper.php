@@ -17,6 +17,8 @@ class WP_Job_Manager_Cache_Helper {
 	 */
 	public static function init() {
 		add_action( 'save_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
+		add_action( 'delete_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
+		add_action( 'trash_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
 		add_action( 'job_manager_my_job_do_action', array( __CLASS__, 'job_manager_my_job_do_action' ) );
 		add_action( 'set_object_terms', array( __CLASS__, 'set_term' ), 10, 4 );
 		add_action( 'edited_term', array( __CLASS__, 'edited_term' ), 10, 3 );
