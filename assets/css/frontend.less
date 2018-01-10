@@ -190,6 +190,24 @@
 			}
 		}
 	}
+	input[type=submit]:disabled, input[type=submit].disabled {
+		opacity: .5;
+		filter: alpha(opacity=50);
+		cursor: not-allowed;
+	}
+	.spinner {
+		background: url(../../../../../wp-includes/images/spinner.gif) no-repeat;
+		background-size: 20px 20px;
+		display: inline-block;
+		visibility: hidden;
+		width: 20px;
+		height: 20px;
+		margin: 0;
+		vertical-align: middle;
+	}
+	.spinner.is-active {
+		visibility: visible;
+	}
 }
 div.job_listings {
 	margin-bottom: 1em;

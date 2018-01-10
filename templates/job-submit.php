@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.27.0
+ * @version     1.30.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -74,6 +74,7 @@ global $job_manager;
 			<input type="hidden" name="job_id" value="<?php echo esc_attr( $job_id ); ?>" />
 			<input type="hidden" name="step" value="<?php echo esc_attr( $step ); ?>" />
 			<input type="submit" name="submit_job" class="button" value="<?php echo esc_attr( $submit_button_text ); ?>" />
+			<span class="spinner" style="background-image: url(<?php echo includes_url( 'images/spinner.gif' ); ?>);"></span>
 		</p>
 
 	<?php else : ?>
