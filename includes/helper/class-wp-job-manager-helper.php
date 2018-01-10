@@ -519,7 +519,6 @@ class WP_Job_Manager_Helper {
 			$this->deactivate_licence( $product_slug );
 			$this->add_licence_error( $product_slug, $errors['no_activation'] );
 		} elseif ( ! empty( $errors['expired_key'] ) ) {
-			$this->deactivate_licence( $product_slug );
 			$this->add_licence_error( $product_slug, $errors['expired_key'] );
 		}
 	}
