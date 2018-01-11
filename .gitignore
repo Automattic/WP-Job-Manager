@@ -21,3 +21,6 @@ tmp/mt
 # Ignore all log files except for .htaccess
 /logs/*
 !/logs/.htaccess
+
+# Ignore compiled blocks.
+/includes/blocks/*/build
