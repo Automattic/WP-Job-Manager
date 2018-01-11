@@ -1,0 +1,107 @@
+$full-time: #90da36;
+$freelance: #3399cc;
+
+%display-icon {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	-webkit-font-smoothing: antialiased;
+	font-size: 16px;
+	font-family: "job-manager" !important;
+	text-decoration: none;
+	font-weight: normal;
+	font-style: normal;
+	vertical-align: top;
+	margin: 0 2px 0 0;
+}
+
+.wp-block-wpjm-job-listing .job-listing__details {
+	margin-top: 1em;
+}
+
+.wp-block-wpjm-job-listing .job-listing__type-list {
+	list-style: none;
+	margin: 0 0 .5em;
+	padding: 0;
+}
+
+.wp-block-wpjm-job-listing .job-listing__type {
+	display: inline-block;
+	padding: .5em;
+	margin: 0 1em 0 0;
+	line-height: 1em;
+	color: #fff;
+
+	&.is-freelance {
+		background-color: $freelance;
+	}
+
+	&.is-full-time {
+		background-color: $full-time;
+	}
+}
+
+.wp-block-wpjm-job-listing .job-listing__meta {
+	margin-bottom: 1em;
+}
+
+.wp-block-wpjm-job-listing .job-listing__location {
+	display: inline-block;
+}
+
+.wp-block-wpjm-job-listing .job-listing__location,
+.wp-block-wpjm-job-listing .job-listing__date-posted {
+	margin-right: 1em;
+	color: #999;
+}
+
+.wp-block-wpjm-job-listing .job-listing__location:before {
+	@extend %display-icon;
+	content: '\e81d';
+}
+
+.wp-block-wpjm-job-listing .job-listing__date-posted:before {
+	@extend %display-icon;
+	content: '\e80f';
+}
+
+.wp-block-wpjm-job-listing .job-listing__twitter:before {
+	@extend %display-icon;
+	content: '\e80a';
+}
+
+.wp-block-wpjm-job-listing .job-listing__company-details {
+	border: 1px solid #eee;
+	padding: 1em;
+	margin: 0 0 2em;
+	min-height: 3em;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.wp-block-wpjm-job-listing .job-listing__description {
+	margin: 0 0 2em;
+}
+
+.wp-block-wpjm-job-listing .job-listing__application-wrapper {
+	margin: 0 0 1em;
+}
+
+.wp-block-wpjm-job-listing .job-listing__application {
+	display: inline-block;
+	margin: 0 .5em 0 0;
+	padding: 1em 2em;
+	text-align: center;
+	font-size: 1.1em;
+	line-height: 1em;
+	outline: 0;
+}
+
+/**
+ * Small devices (landscape phones, 576px and up)
+*/
+@media screen and (min-width: 576px) {
+	.wp-block-wpjm-job-listing .job-listing__type-list,
+	.wp-block-wpjm-job-listing .job-listing__meta {
+		display: inline-block;
+	}
+}
