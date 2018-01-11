@@ -72,6 +72,7 @@ class WP_Job_Manager {
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-geocode.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-cache-helper.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/blocks/job-listing/class-wp-job-manager-block-job-listing.php' );
 
 		add_action( 'rest_api_init', array( $this, 'rest_api' ) );
 
