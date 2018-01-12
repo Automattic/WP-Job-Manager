@@ -47,8 +47,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 											switch ( $job->post_status ) {
 												case 'publish' :
-													$actions['edit'] = array( 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false );
-
+													if ( wpjm_user_can_edit_published_submissions() ) {
+														$actions[ 'edit' ] = array( 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false );
+													}
 													if ( is_position_filled( $job ) ) {
 														$actions['mark_not_filled'] = array( 'label' => __( 'Mark not filled', 'wp-job-manager' ), 'nonce' => true );
 													} else {

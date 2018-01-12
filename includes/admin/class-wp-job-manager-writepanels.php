@@ -533,7 +533,7 @@ class WP_Job_Manager_Writepanels {
 	 * @param int|WP_Post $post
 	 */
 	public function job_listing_data( $post ) {
-		global $post, $thepostid;
+		global $post, $thepostid, $wp_post_types;
 
 		$thepostid = $post->ID;
 
@@ -551,6 +551,13 @@ class WP_Job_Manager_Writepanels {
 			} elseif ( method_exists( $this, 'input_' . $type ) ) {
 				call_user_func( array( $this, 'input_' . $type ), $key, $field );
 			}
+		}
+
+		$user_edited_date = get_post_meta( $post->ID, '_job_edited', true );
+		if ( $user_edited_date ) {
+			echo '<p class="form-field">';
+			echo '<em>' . sprintf( __( '%s was last modified by the user on %s.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, date_i18n( get_option( 'date_format' ), $user_edited_date ) ) . '</em>';
+			echo '</p>';
 		}
 
 		do_action( 'job_manager_job_listing_data_end', $thepostid );
