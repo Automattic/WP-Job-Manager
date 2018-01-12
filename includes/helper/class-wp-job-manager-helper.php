@@ -250,7 +250,12 @@ class WP_Job_Manager_Helper {
 		$licence = $this->get_plugin_licence( $product_slug );
 		$css_class = '';
 		if ( $licence && ! empty( $licence['licence_key'] ) ) {
-			$manage_licence_label = __( 'Manage License', 'wp-job-manager' );
+			if ( ! empty( $licence['errors'] ) ) {
+				$manage_licence_label = __( 'Manage License (Requires Attention)', 'wp-job-manager' );
+				$css_class = 'wpjm-activate-licence-link';
+			} else {
+				$manage_licence_label = __( 'Manage License', 'wp-job-manager' );
+			}
 		} else {
 			$manage_licence_label = __( 'Activate License', 'wp-job-manager' );
 			$css_class = 'wpjm-activate-licence-link';
@@ -407,10 +412,18 @@ class WP_Job_Manager_Helper {
 	 * Outputs unset license key notices.
 	 */
 	public function licence_error_notices() {
+		$screen = get_current_screen();
+		if ( null === $screen || in_array( $screen->id, array( 'job_listing_page_job-manager-addons' ) ) ) {
+			return;
+		}
 		foreach( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$licence = $this->get_plugin_licence( $product_slug );
-			if ( empty( $licence['licence_key'] ) && ! WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ) ) {
-				include( 'views/html-licence-key-notice.php' );
+			if ( ! WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ) ) {
+				if ( empty( $licence[ 'licence_key' ] ) ) {
+					include( 'views/html-licence-key-notice.php' );
+				} elseif ( ! empty( $licence[ 'errors' ] ) ) {
+					include( 'views/html-licence-key-error.php' );
+				}
 			}
 		}
 	}
