@@ -167,6 +167,17 @@ class WP_Job_Manager_Widget extends WP_Widget {
 					</p>
 					<?php
 				break;
+				case 'select' :
+					?>
+					<p>
+						<label for="<?php echo $this->get_field_id( $key ); ?>"><?php echo $setting['label']; ?></label>
+						<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo $this->get_field_name( $key ); ?>">
+							<?php foreach ( $setting['options'] as $key => $label ) : ?>
+								<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $value, $key ); ?>><?php echo esc_html( $label ); ?></option>
+							<?php endforeach; ?></select>
+					</p>
+					<?php
+				break;
 			}
 		}
 	}

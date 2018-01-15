@@ -35,6 +35,26 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 				'std'   => 10,
 				'label' => __( 'Number of listings to show', 'wp-job-manager' ),
 			),
+			'orderby' => array(
+				'type'  => 'select',
+				'std'   => 'date',
+				'label' => __( 'Sort By', 'wp-job-manager' ),
+				'options' => array(
+					'date'           => __( 'Date', 'wp-job-manager' ),
+					'title'          => __( 'Title', 'wp-job-manager' ),
+					'author'         => __( 'Author', 'wp-job-manager' ),
+					'rand_featured'  => __( 'Random', 'wp-job-manager' ),
+				),
+			),
+			'order' => array(
+				'type'  => 'select',
+				'std'   => 'DESC',
+				'label' => __( 'Sort Direction', 'wp-job-manager' ),
+				'options' => array(
+					'ASC'   => __( 'Ascending', 'wp-job-manager' ),
+					'DESC'  => __( 'Descending', 'wp-job-manager' ),
+				),
+			),
 		);
 		$this->register();
 	}
@@ -55,12 +75,14 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 
 		extract( $args );
 		$titleInstance = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
-		$number = isset( $instance['number'] ) ? absint( $instance['number'] ) : '';
-		$title  = apply_filters( 'widget_title', $titleInstance, $instance, $this->id_base );		
-		$jobs   = get_job_listings( array(
+		$number  = isset( $instance['number'] ) ? absint( $instance['number'] ) : '';
+		$orderby = isset( $instance['orderby'] ) ? esc_attr( $instance['orderby'] ) : 'date';
+		$order   = isset( $instance['order'] ) ? esc_attr( $instance['order'] ) : 'DESC';
+		$title   = apply_filters( 'widget_title', $titleInstance, $instance, $this->id_base );
+		$jobs    = get_job_listings( array(
 			'posts_per_page' => $number,
-			'orderby'        => 'date',
-			'order'          => 'DESC',
+			'orderby'        => $orderby,
+			'order'          => $order,
 			'featured'       => true,
 		) );
 
