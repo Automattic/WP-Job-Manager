@@ -178,6 +178,17 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			}
 
 			/**
+			 * Fire action after the user edits a job listing.
+			 *
+			 * @since 1.30.0
+			 *
+			 * @param int    $job_id        Job ID.
+			 * @param string $save_message  Save message to filter.
+			 * @param array  $values        Submitted values for job listing.
+			 */
+			do_action( 'job_manager_user_edit_job_listing', $this->job_id, $save_message, $values );
+
+			/**
 			 * Change the message that appears when a user edits a job listing.
 			 *
 			 * @since 1.29.0
