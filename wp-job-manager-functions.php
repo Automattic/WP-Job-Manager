@@ -631,6 +631,138 @@ function job_manager_user_can_edit_job( $job_id ) {
 }
 
 /**
+ * Checks if the visitor is currently on a WPJM page, job listing, or taxonomy.
+ *
+ * @since 1.30.0
+ *
+ * @return bool
+ */
+function is_wpjm() {
+	/**
+	 * Filter the result of is_wpjm()
+	 *
+	 * @since 1.30.0
+	 *
+	 * @param bool $is_wpjm
+	 */
+	return apply_filters( 'is_wpjm', ( is_wpjm_page() || has_wpjm_shortcode() || is_wpjm_job_listing() || is_wpjm_taxonomy() ) ? true : false );
+}
+
+/**
+ * Checks if the visitor is currently on a WPJM page.
+ *
+ * @since 1.30.0
+ *
+ * @return bool
+ */
+function is_wpjm_page() {
+	$is_wpjm_page = is_post_type_archive( 'job_listing' );
+
+	if ( ! $is_wpjm_page ) {
+		$wpjm_page_ids = array_filter( array(
+			get_option( 'job_manager_submit_job_form_page_id', false ),
+			get_option( 'job_manager_job_dashboard_page_id', false ),
+			get_option( 'job_manager_jobs_page_id', false ),
+		) );
+
+		/**
+		 * Filters a list of all page IDs related to WPJM.
+		 *
+		 * @since 1.30.0
+		 *
+		 * @param int[] $wpjm_page_ids
+		 */
+		$wpjm_page_ids = array_unique( apply_filters( 'job_manager_page_ids', $wpjm_page_ids ) );
+
+		$is_wpjm_page  = is_page( $wpjm_page_ids );
+	}
+
+	/**
+	 * Filter the result of is_wpjm_page()
+	 *
+	 * @since 1.30.0
+	 *
+	 * @param bool $is_wpjm_page
+	 */
+	return apply_filters( 'is_wpjm_page', $is_wpjm_page );
+}
+
+/**
+ * Checks if the provided content or the current single page or post has a WPJM shortcode.
+ *
+ * @param string|null       $content   Content to check. If not provided, it uses the current post content.
+ * @param string|array|null $tag Check specifically for one or more shortcodes. If not provided, checks for any WPJM shortcode.
+ *
+ * @return bool
+ */
+function has_wpjm_shortcode( $content = null, $tag = null ) {
+	global $post;
+
+	$has_wpjm_shortcode = false;
+
+	if ( null === $content && is_single() && is_a( $post, 'WP_Post' ) ) {
+		$content = $post->post_content;
+	}
+
+	if ( ! empty( $content ) ) {
+		$wpjm_shortcodes = array( 'submit_job_form', 'job_dashboard', 'jobs', 'job', 'job_summary', 'job_apply' );
+		/**
+		 * Filters a list of all shortcodes associated with WPJM.
+		 *
+		 * @since 1.30.0
+		 *
+		 * @param string[] $wpjm_shortcodes
+		 */
+		$wpjm_shortcodes = array_unique( apply_filters( 'job_manager_shortcodes', $wpjm_shortcodes ) );
+
+		if ( null !== $tag ) {
+			if ( ! is_array( $tag ) ) {
+				$tag = array( $tag );
+			}
+			$wpjm_shortcodes = array_intersect( $wpjm_shortcodes, $tag );
+		}
+
+		foreach ( $wpjm_shortcodes as $shortcode ) {
+			if ( has_shortcode( $content, $shortcode ) ) {
+				$has_wpjm_shortcode = true;
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Filter the result of has_wpjm_shortcode()
+	 *
+	 * @since 1.30.0
+	 *
+	 * @param bool $has_wpjm_shortcode
+	 */
+	return apply_filters( 'has_wpjm_shortcode', $has_wpjm_shortcode );
+}
+
+/**
+ * Checks if the current page is a job listing.
+ *
+ * @since 1.30.0
+ *
+ * @return bool
+ */
+function is_wpjm_job_listing() {
+	return is_singular( array( 'job_listing' ) );
+}
+
+/**
+ * Checks if the visitor is on a page for a WPJM taxonomy.
+ *
+ * @since 1.30.0
+ *
+ * @return bool
+ */
+function is_wpjm_taxonomy() {
+	return is_tax( get_object_taxonomies( 'job_listing' ) );
+}
+
+/**
  * Checks to see if the standard password setup email should be used.
  *
  * @since 1.27.0

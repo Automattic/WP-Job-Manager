@@ -5,6 +5,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		parent::setUp();
 		update_option( 'job_manager_enable_categories', 1 );
 		update_option( 'job_manager_enable_types', 1 );
+		add_theme_support( 'job-manager-templates' );
 		unregister_post_type( 'job_listing' );
 		$post_type_instance = WP_Job_Manager_Post_Types::instance();
 		$post_type_instance->register_post_types();
@@ -414,6 +415,176 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		foreach ( $results as $key => $result ) {
 			$this->assertEqualSets( $result['expected'], wp_list_pluck( $result['results']->posts, 'ID' ), "{$key} doesn't match" );
 		}
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 */
+	public function test_is_wpjm_no_request() {
+		$this->assertFalse( is_wpjm() );
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 * @covers ::is_wpjm_page
+	 */
+	public function test_is_wpjm_job_listing_archive_request() {
+		$this->assertFalse( is_wpjm() );
+		$this->assertFalse( is_wpjm_page() );
+		$this->set_up_request_page();
+		$this->assertTrue( is_wpjm() );
+		$this->assertTrue( is_wpjm_page() );
+		$this->assertFalse( is_wpjm_job_listing() );
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 * @covers ::is_wpjm_page
+	 * @covers ::has_wpjm_shortcode
+	 */
+	public function test_is_wpjm_job_listing_jobs_shortcode_request() {
+		$this->assertFalse( is_wpjm() );
+		$this->assertFalse( is_wpjm_page() );
+		$this->assertFalse( has_wpjm_shortcode( null, 'jobs' ) );
+		$page_id = $this->set_up_request_shortcode( 'jobs' );
+		update_option( 'job_manager_jobs_page_id', $page_id, true );
+		$this->assertTrue( is_wpjm() );
+		$this->assertTrue( is_wpjm_page() );
+		$this->assertTrue( has_wpjm_shortcode( null, 'jobs' ) );
+		$this->assertFalse( has_wpjm_shortcode( null, 'job' ) );
+		$this->assertFalse( is_wpjm_job_listing() );
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 * @covers ::is_wpjm_page
+	 * @covers ::has_wpjm_shortcode
+	 */
+	public function test_is_wpjm_job_listing_jobs_dashboard_shortcode_request() {
+		$this->assertFalse( is_wpjm() );
+		$this->assertFalse( is_wpjm_page() );
+		$this->assertFalse( has_wpjm_shortcode( null, 'job_dashboard' ) );
+		$page_id = $this->set_up_request_shortcode( 'job_dashboard' );
+		update_option( 'job_manager_job_dashboard_page_id', $page_id, true );
+		$this->assertTrue( is_wpjm() );
+		$this->assertTrue( is_wpjm_page() );
+		$this->assertTrue( has_wpjm_shortcode( null, 'job_dashboard' ) );
+		$this->assertFalse( has_wpjm_shortcode( null, 'job' ) );
+		$this->assertFalse( is_wpjm_job_listing() );
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 * @covers ::is_wpjm_page
+	 * @covers ::has_wpjm_shortcode
+	 */
+	public function test_is_wpjm_job_listing_submit_jobs_shortcode_request() {
+		$this->assertFalse( is_wpjm() );
+		$this->assertFalse( is_wpjm_page() );
+		$this->assertFalse( has_wpjm_shortcode( null, 'submit_job_form' ) );
+		$page_id = $this->set_up_request_shortcode( 'submit_job_form' );
+		update_option( 'job_manager_submit_job_form_page_id', $page_id, true );
+		$this->assertTrue( is_wpjm() );
+		$this->assertTrue( is_wpjm_page() );
+		$this->assertTrue( has_wpjm_shortcode( null, 'submit_job_form' ) );
+		$this->assertFalse( has_wpjm_shortcode( null, 'job' ) );
+		$this->assertFalse( is_wpjm_job_listing() );
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 * @covers ::is_wpjm_page
+	 * @covers ::is_wpjm_job_listing
+	 */
+	public function test_is_wpjm_job_listing_request() {
+		$this->assertFalse( is_wpjm_job_listing() );
+		$this->set_up_request_job_listing();
+		$this->assertTrue( is_wpjm() );
+		$this->assertFalse( is_wpjm_page() );
+		$this->assertTrue( is_wpjm_job_listing() );
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 * @covers ::is_wpjm_page
+	 * @covers ::is_wpjm_job_listing
+	 */
+	public function test_is_wpjm_not_job_listing_request() {
+		$this->assertFalse( is_wpjm_job_listing() );
+		$this->set_up_request_normal_page();
+		$this->assertFalse( is_wpjm() );
+		$this->assertFalse( is_wpjm_page() );
+		$this->assertFalse( is_wpjm_job_listing() );
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 * @covers ::is_wpjm_page
+	 * @covers ::is_wpjm_job_listing
+	 */
+	public function test_is_wpjm_not_job_listing_home_request() {
+		$this->assertFalse( is_wpjm_job_listing() );
+		$this->set_up_request_home_page();
+		$this->assertFalse( is_wpjm() );
+		$this->assertFalse( is_wpjm_page() );
+		$this->assertFalse( is_wpjm_job_listing() );
+	}
+
+	/**
+	 * @since 1.30.0
+	 * @covers ::is_wpjm
+	 * @covers ::is_wpjm_taxonomy
+	 */
+	public function test_is_wpjm_taxonomy_success() {
+		$this->assertFalse( is_wpjm_taxonomy() );
+		$this->assertFalse( is_wpjm() );
+		$this->assertTrue( taxonomy_exists('job_listing_category') );
+		$this->assertTrue( current_user_can( get_taxonomy( 'job_listing_category' )->cap->assign_terms ) );
+		$this->set_up_request_taxonomy();
+		$this->assertTrue( is_wpjm_taxonomy() );
+		$this->assertTrue( is_wpjm() );
+	}
+
+	protected function set_up_request_page() {
+		$this->go_to( get_post_type_archive_link( 'job_listing' ) );
+	}
+
+	protected function set_up_request_shortcode( $tag = 'jobs' ) {
+		$page = $this->create_shortcode_page( ucfirst( $tag ), $tag );
+		$this->go_to( get_post_permalink( $page ) );
+		$GLOBALS['wp_query']->is_page = true;
+		return $page;
+	}
+
+	protected function set_up_request_job_listing() {
+		$job_listing = $this->factory->job_listing->create();
+		$this->go_to( get_post_permalink( $job_listing ) );
+	}
+
+	protected function set_up_request_normal_page() {
+		$page = $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => 'Cool', 'post_content' => 'Awesome' ) );
+		$this->go_to( get_post_permalink( $page ) );
+	}
+
+	protected function set_up_request_home_page() {
+		$this->go_to( home_url() );
+	}
+
+	protected function set_up_request_taxonomy() {
+		$term = wp_create_term( 'jazz', 'job_listing_category' );
+		$this->go_to( get_term_link( $term['term_id'] ) );
+	}
+
+	protected function create_shortcode_page( $title, $tag ) {
+		return $this->factory->post->create( array( 'post_type' => 'page', 'post_title' => $title, 'post_content' => '[' . $tag .']' ) );
 	}
 
 	protected function disable_job_listing_cache() {
