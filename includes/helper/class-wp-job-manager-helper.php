@@ -167,9 +167,7 @@ class WP_Job_Manager_Helper {
 			'email'          => $licence['email'],
 		) );
 
-		if ( isset( $response['errors'] ) ) {
-			$this->handle_api_errors( $product_slug, $response['errors'] );
-		}
+		$this->handle_api_errors( $product_slug, $response );
 
 		// Set version variables
 		if ( ! empty( $response ) ) {
@@ -252,7 +250,12 @@ class WP_Job_Manager_Helper {
 		$licence = $this->get_plugin_licence( $product_slug );
 		$css_class = '';
 		if ( $licence && ! empty( $licence['licence_key'] ) ) {
-			$manage_licence_label = __( 'Manage License', 'wp-job-manager' );
+			if ( ! empty( $licence['errors'] ) ) {
+				$manage_licence_label = __( 'Manage License (Requires Attention)', 'wp-job-manager' );
+				$css_class = 'wpjm-activate-licence-link';
+			} else {
+				$manage_licence_label = __( 'Manage License', 'wp-job-manager' );
+			}
 		} else {
 			$manage_licence_label = __( 'Activate License', 'wp-job-manager' );
 			$css_class = 'wpjm-activate-licence-link';
@@ -279,9 +282,7 @@ class WP_Job_Manager_Helper {
 		$args['api_product_id'] = $product_slug;
 
 		$response = $this->api->plugin_information( $args );
-		if ( isset( $response['errors'] ) ) {
-			$this->handle_api_errors( $product_slug, $response['errors'] );
-		}
+		$this->handle_api_errors( $product_slug, $response );
 
 		return $response;
 	}
@@ -411,10 +412,18 @@ class WP_Job_Manager_Helper {
 	 * Outputs unset license key notices.
 	 */
 	public function licence_error_notices() {
+		$screen = get_current_screen();
+		if ( null === $screen || in_array( $screen->id, array( 'job_listing_page_job-manager-addons' ) ) ) {
+			return;
+		}
 		foreach( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$licence = $this->get_plugin_licence( $product_slug );
-			if ( empty( $licence['licence_key'] ) && ! WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ) ) {
-				include( 'views/html-licence-key-notice.php' );
+			if ( ! WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ) ) {
+				if ( empty( $licence[ 'licence_key' ] ) ) {
+					include( 'views/html-licence-key-notice.php' );
+				} elseif ( ! empty( $licence[ 'errors' ] ) ) {
+					include( 'views/html-licence-key-error.php' );
+				}
 			}
 		}
 	}
@@ -508,37 +517,26 @@ class WP_Job_Manager_Helper {
 	 * Handle errors from the API.
 	 *
 	 * @param  string $product_slug
-	 * @param  array  $errors
+	 * @param  array  $response
 	 */
-	private function handle_api_errors( $product_slug, $errors ) {
+	private function handle_api_errors( $product_slug, $response ) {
 		$plugin_products = $this->get_installed_plugins();
 		if ( ! isset( $plugin_products[ $product_slug ] ) ) {
 			return;
 		}
+
+		$errors = ! empty( $response['errors'] ) ? $response['errors'] : array();
+		$allowed_errors = array( 'no_activation', 'expired_key', 'expiring_soon' );
+		$ignored_errors = array_diff( array_keys( $errors ), $allowed_errors );
+
+		foreach ( $ignored_errors as $key ) {
+			unset( $errors[ $key ] );
+		}
+
 		if ( ! empty( $errors['no_activation'] ) ) {
 			$this->deactivate_licence( $product_slug );
-			$this->add_licence_error( $product_slug, $errors['no_activation'] );
-		} elseif ( ! empty( $errors['expired_key'] ) ) {
-			$this->deactivate_licence( $product_slug );
-			$this->add_licence_error( $product_slug, $errors['expired_key'] );
 		}
-	}
 
-	/**
-	 * Add an error message for a licence.
-	 *
-	 * @param string $product_slug
-	 * @param string $message      Your error message
-	 * @param string $type         Type of error message
-	 */
-	private function add_licence_error( $product_slug, $message, $type = '' ) {
-		$licence = $this->get_plugin_licence( $product_slug );
-		$errors = ! empty( $licence['errors'] ) ? $licence['errors'] : array();
-		if ( $type ) {
-			$errors[ $type ] = $message;
-		} else {
-			$errors[] = $message;
-		}
 		WP_Job_Manager_Helper_Options::update( $product_slug, 'errors', $errors );
 	}
 
