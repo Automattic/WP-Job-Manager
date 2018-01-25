@@ -57,6 +57,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function __construct() {
 		add_action( 'wp', array( $this, 'process' ) );
+		if ( $this->use_recaptcha_field() ) {
+			add_action( 'submit_job_form_end', array( $this, 'display_recaptcha_field' ) );
+			add_action( 'submit_job_form_validate_fields', array( $this, 'validate_recaptcha_field' ) );
+		}
 
 		$this->steps  = (array) apply_filters( 'submit_job_steps', array(
 			'submit' => array(
@@ -278,6 +282,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Use reCAPTCHA field on the form?
+	 *
+	 * @return bool
+	 */
+	public function use_recaptcha_field() {
+		if ( ! $this->is_recaptcha_available() ) {
+			return false;
+		}
+		return 1 === absint( get_option( 'job_manager_enable_recaptcha_job_submission' ) );
+	}
+
+	/**
 	 * Validates the posted fields.
 	 *
 	 * @param array $values
@@ -331,7 +347,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					if ( ! is_email( $values['job']['application'] ) ) {
 						throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
 					}
-				break;
+					break;
 				case 'url' :
 					// Prefix http if needed
 					if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
@@ -340,7 +356,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 						throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
 					}
-				break;
+					break;
 				default :
 					if ( ! is_email( $values['job']['application'] ) ) {
 						// Prefix http if needed
@@ -351,7 +367,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
 						}
 					}
-				break;
+					break;
 			}
 		}
 

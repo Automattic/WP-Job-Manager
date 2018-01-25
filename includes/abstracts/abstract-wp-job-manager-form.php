@@ -109,6 +109,7 @@ abstract class WP_Job_Manager_Form {
 	 * @param array $atts Attributes to use in the view handler.
 	 */
 	public function output( $atts = array() ) {
+		$this->enqueue_scripts();
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
 
@@ -247,6 +248,84 @@ abstract class WP_Job_Manager_Form {
 	 */
 	protected function init_fields() {
 		$this->fields = array();
+	}
+
+	/**
+	 * Enqueue the scripts for the form.
+	 */
+	public function enqueue_scripts() {
+		if ( $this->use_recaptcha_field() ) {
+			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js' );
+		}
+	}
+
+	/**
+	 * Checks whether reCAPTCHA has been set up and is available.
+	 *
+	 * @return bool
+	 */
+	public function is_recaptcha_available() {
+		$site_key = get_option( 'job_manager_recaptcha_site_key' );
+		$secret_key = get_option( 'job_manager_recaptcha_secret_key' );
+		$is_recaptcha_available = ! empty( $site_key ) && ! empty( $secret_key );
+
+		/**
+		 * Filter whether reCAPTCHA should be available for this form.
+		 *
+		 * @since 1.30.0
+		 *
+		 * @param bool $is_recaptcha_available
+		 */
+		return apply_filters( 'job_manager_is_recaptcha_available', $is_recaptcha_available );
+	}
+
+	/**
+	 * Show reCAPTCHA field on the form.
+	 *
+	 * @return bool
+	 */
+	public function use_recaptcha_field() {
+		return false;
+	}
+
+	/**
+	 * Output the reCAPTCHA field.
+	 */
+	public function display_recaptcha_field() {
+		$field = array();
+		$field['label'] = get_option( 'job_manager_recaptcha_label' );
+		$field['required'] = true;
+		$field['site_key'] = get_option( 'job_manager_recaptcha_site_key' );
+		get_job_manager_template( 'form-fields/recaptcha-field.php', array( 'key' => 'recaptcha', 'field' => $field ) );
+	}
+
+	/**
+	 * Validate a reCAPTCHA field.
+	 *
+	 * @param bool $success
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function validate_recaptcha_field( $success ) {
+		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
+		if ( empty( $_POST['g-recaptcha-response'] ) ) {
+			return new WP_Error( 'validation-error', sprintf( __( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+		}
+
+		$response = wp_remote_get( add_query_arg( array(
+			'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
+			'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
+			'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']
+		), 'https://www.google.com/recaptcha/api/siteverify' ) );
+
+		if ( is_wp_error( $response )
+		     || empty( $response['body'] )
+		     || ! ( $json = json_decode( $response['body'] ) )
+		     || ! $json->success ) {
+			return new WP_Error( 'validation-error', sprintf( __( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+		}
+
+		return $success;
 	}
 
 	/**
