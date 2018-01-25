@@ -168,7 +168,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 				 * Resets the job expiration date when a user submits their job listing edit for approval.
 				 * Defaults to `false`.
 				 *
-				 * @since 1.19.0
+				 * @since 1.29.0
 				 *
 				 * @param bool $reset_expiration If true, reset expiration date.
 				 */
@@ -180,7 +180,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			/**
 			 * Change the message that appears when a user edits a job listing.
 			 *
-			 * @since 1.19.0
+			 * @since 1.29.0
 			 *
 			 * @param string $save_message  Save message to filter.
 			 * @param int    $job_id        Job ID.
