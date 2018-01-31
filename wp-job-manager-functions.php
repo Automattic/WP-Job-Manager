@@ -157,7 +157,7 @@ function get_job_listings( $args = array() ) {
 		$to_hash = json_encode( $query_args );
 		$query_args_hash =  'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
 		$result = false;
-		$cached_query_results = false;
+		$cached_query_results = true;
 		$cached_query_posts = get_transient( $query_args_hash );
 		if ( is_string( $cached_query_posts ) ) {
 			$cached_query_posts = json_decode( $cached_query_posts, false );
