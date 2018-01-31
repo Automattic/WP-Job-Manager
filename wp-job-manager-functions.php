@@ -149,22 +149,47 @@ function get_job_listings( $args = array() ) {
 	// Filter args
 	$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
-	// Generate hash
-	$to_hash         = json_encode( $query_args );
-	$query_args_hash = 'jm_' . md5( $to_hash ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
 
 	do_action( 'before_get_job_listings', $query_args, $args );
 
 	// Cache results
 	if ( apply_filters( 'get_job_listings_cache_results', true ) ) {
-		$cached_query = true;
-		if ( false === ( $result = get_transient( $query_args_hash ) ) ) {
-			$result = new WP_Query( $query_args );
-			$cached_query = false;
-			set_transient( $query_args_hash, $result, DAY_IN_SECONDS );
+		$to_hash = json_encode( $query_args );
+		$query_args_hash =  'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
+		$result = false;
+		$cached_query_results = false;
+		$cached_query_posts = get_transient( $query_args_hash );
+		if ( is_string( $cached_query_posts ) ) {
+			$cached_query_posts = json_decode( $cached_query_posts, false );
+			if ( $cached_query_posts
+				 && is_object( $cached_query_posts )
+				 && isset( $cached_query_posts->max_num_pages )
+				 && isset( $cached_query_posts->found_posts )
+				 && isset( $cached_query_posts->posts )
+				 && is_array( $cached_query_posts->posts )
+			) {
+				$posts = array_map( 'get_post', $cached_query_posts->posts );
+				$result = new WP_Query();
+				$result->parse_query( $query_args );
+				$result->posts = $posts;
+				$result->found_posts = intval( $cached_query_posts->found_posts );
+				$result->max_num_pages = intval( $cached_query_posts->max_num_pages );
+				$result->post_count = count( $posts );
+			}
 		}
 
-		if ( $cached_query ) {
+		if ( false === $result ) {
+			$result = new WP_Query( $query_args );
+			$cached_query_results = false;
+
+			$cacheable_result = array();
+			$cacheable_result['posts'] = array_values( $result->posts );
+			$cacheable_result['found_posts'] = $result->found_posts;
+			$cacheable_result['max_num_pages'] = $result->max_num_pages;
+			set_transient( $query_args_hash, json_encode( $cacheable_result ), DAY_IN_SECONDS );
+		}
+
+		if ( $cached_query_results ) {
 			// random order is cached so shuffle them
 			if ( 'rand_featured' === $args['orderby'] ) {
 				usort( $result->posts, '_wpjm_shuffle_featured_post_results_helper' );
