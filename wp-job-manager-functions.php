@@ -952,14 +952,14 @@ function job_manager_user_can_edit_pending_submissions() {
 /**
  * Checks if users are allowed to edit published submissions.
  *
- * @since 1.19.0
+ * @since 1.29.0
  * @return bool
  */
 function wpjm_user_can_edit_published_submissions() {
 	/**
 	 * Override the setting for allowing a user to edit published job listings.
 	 *
-	 * @since 1.19.0
+	 * @since 1.29.0
 	 *
 	 * @param bool $can_edit_published_submissions
 	 */
@@ -969,7 +969,7 @@ function wpjm_user_can_edit_published_submissions() {
 /**
  * Checks if moderation is required when users edit published submissions.
  *
- * @since 1.19.0
+ * @since 1.29.0
  * @return bool
  */
 function wpjm_published_submission_edits_require_moderation() {
@@ -978,7 +978,7 @@ function wpjm_published_submission_edits_require_moderation() {
 	/**
 	 * Override the setting for user edits to job listings requiring moderation.
 	 *
-	 * @since 1.19.0
+	 * @since 1.29.0
 	 *
 	 * @param bool $require_moderation
 	 */

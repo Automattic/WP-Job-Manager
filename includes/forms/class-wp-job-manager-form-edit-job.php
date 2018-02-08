@@ -19,6 +19,16 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	public $form_name = 'edit-job';
 
 	/**
+	 * @var bool|string
+	 */
+	private $save_message = false;
+
+	/**
+	 * @var bool|string
+	 */
+	private $save_error = false;
+
+	/**
 	 * Instance
 	 *
 	 * @access protected
@@ -40,6 +50,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * Constructor
 	 */
 	public function __construct() {
+		add_action( 'wp', array( $this, 'submit_handler' ) );
 		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
 
 		if  ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
@@ -63,7 +74,12 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * @param array $atts
 	 */
 	public function output( $atts = array() ) {
-		$this->submit_handler();
+		if ( ! empty( $this->save_message ) ) {
+			echo '<div class="job-manager-message">' . $this->save_message . '</div>';
+		}
+		if ( ! empty( $this->save_error ) ) {
+			echo '<div class="job-manager-error">' . $this->save_error . '</div>';
+		}
 		$this->submit();
 	}
 
@@ -168,7 +184,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 				 * Resets the job expiration date when a user submits their job listing edit for approval.
 				 * Defaults to `false`.
 				 *
-				 * @since 1.19.0
+				 * @since 1.29.0
 				 *
 				 * @param bool $reset_expiration If true, reset expiration date.
 				 */
@@ -178,18 +194,29 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			}
 
 			/**
+			 * Fire action after the user edits a job listing.
+			 *
+			 * @since 1.30.0
+			 *
+			 * @param int    $job_id        Job ID.
+			 * @param string $save_message  Save message to filter.
+			 * @param array  $values        Submitted values for job listing.
+			 */
+			do_action( 'job_manager_user_edit_job_listing', $this->job_id, $save_message, $values );
+
+			/**
 			 * Change the message that appears when a user edits a job listing.
 			 *
-			 * @since 1.19.0
+			 * @since 1.29.0
 			 *
 			 * @param string $save_message  Save message to filter.
 			 * @param int    $job_id        Job ID.
 			 * @param array  $values        Submitted values for job listing.
 			 */
-			echo '<div class="job-manager-message">' . apply_filters( 'job_manager_update_job_listings_message', $save_message, $this->job_id, $values ) . '</div>';
+			$this->save_message = apply_filters( 'job_manager_update_job_listings_message', $save_message, $this->job_id, $values );
+
 		} catch ( Exception $e ) {
-			echo '<div class="job-manager-error">' . $e->getMessage() . '</div>';
-			return;
+			$this->save_error = $e->getMessage();
 		}
 	}
 }
