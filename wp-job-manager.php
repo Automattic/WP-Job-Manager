@@ -105,6 +105,8 @@ class WP_Job_Manager {
 		add_action( 'admin_init', array( $this, 'updater' ) );
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
 
+		add_action( 'init', array( $this, 'usage_tracking_init' ) );
+
 		// Defaults for WPJM core actions
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
 	}
@@ -169,6 +171,19 @@ class WP_Job_Manager {
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-widget.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/widgets/class-wp-job-manager-widget-recent-jobs.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/widgets/class-wp-job-manager-widget-featured-jobs.php' );
+	}
+
+	/**
+	 * Initialize the Usage Tracking system.
+	 */
+	public function usage_tracking_init() {
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-usage-tracking.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-usage-tracking-data.php' );
+
+		WP_Job_Manager_Usage_Tracking::get_instance()->set_callback(
+			array( 'WP_Job_Manager_Usage_Tracking_Data', 'get_usage_data' )
+		);
+		WP_Job_Manager_Usage_Tracking::get_instance()->schedule_tracking_task();
 	}
 
 	/**
