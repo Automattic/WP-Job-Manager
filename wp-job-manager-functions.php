@@ -730,7 +730,7 @@ function has_wpjm_shortcode( $content = null, $tag = null ) {
 
 	$has_wpjm_shortcode = false;
 
-	if ( null === $content && is_single() && is_a( $post, 'WP_Post' ) ) {
+	if ( null === $content && is_singular() && is_a( $post, 'WP_Post' ) ) {
 		$content = $post->post_content;
 	}
 
