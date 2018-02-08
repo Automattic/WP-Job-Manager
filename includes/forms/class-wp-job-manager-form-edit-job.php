@@ -120,7 +120,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 		$this->fields = apply_filters( 'submit_job_form_fields_get_job_data', $this->fields, $job );
 
-		wp_enqueue_script( 'wp-job-manager-job-submission' );
+		$this->enqueue_job_form_assets();
 
 		$save_button_text = __( 'Save changes', 'wp-job-manager' );
 		if ( 'publish' === get_post_status( $this->job_id )
