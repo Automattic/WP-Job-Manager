@@ -78,6 +78,29 @@ class WP_Job_Manager_Settings {
 
 		$this->settings = apply_filters( 'job_manager_settings',
 			array(
+				'general' => array(
+					__( 'General', 'wp-job-manager' ),
+					array(
+						array(
+							'name'       => 'job_manager_date_format',
+							'std'        => 'relative',
+							'label'      => __( 'Date Format', 'wp-job-manager' ),
+							'desc'       => __( 'Choose how you want the published date for jobs to be displayed on the front-end.', 'wp-job-manager' ),
+							'type'       => 'radio',
+							'options'    => array(
+								'relative' => __( 'Relative to the current date (e.g., 1 day, 1 week, 1 month ago)', 'wp-job-manager' ),
+								'default'   => __( 'Default date format as defined in Settings', 'wp-job-manager' ),
+							)
+						),
+						array(
+							'name'       => 'job_manager_google_maps_api_key',
+							'std'        => '',
+							'label'      => __( 'Google Maps API Key', 'wp-job-manager' ),
+							'desc'       => sprintf( __( 'Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href="%s">Google Maps API developer site</a>.', 'wp-job-manager' ), 'https://developers.google.com/maps/documentation/geocoding/get-api-key' ),
+							'attributes' => array()
+						),
+					),
+				),
 				'job_listings' => array(
 					__( 'Job Listings', 'wp-job-manager' ),
 					array(
@@ -161,24 +184,6 @@ class WP_Job_Manager_Settings {
 							'cb_label'   => __( 'Allow multiple types for listings', 'wp-job-manager' ),
 							'desc'       => __( 'This allows users to select more than one type when submitting a job. The metabox on the post editor and the selection box on the front-end job submission form will both reflect this.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array()
-						),
-						array(
-							'name'       => 'job_manager_date_format',
-							'std'        => 'relative',
-							'label'      => __( 'Date Format', 'wp-job-manager' ),
-							'desc'       => __( 'Choose how you want the published date for jobs to be displayed on the front-end.', 'wp-job-manager' ),
-							'type'       => 'radio',
-							'options'    => array(
-								'relative' => __( 'Relative to the current date (e.g., 1 day, 1 week, 1 month ago)', 'wp-job-manager' ),
-								'default'   => __( 'Default date format as defined in Settings', 'wp-job-manager' ),
-							)
-						),
-						array(
-							'name'       => 'job_manager_google_maps_api_key',
-							'std'        => '',
-							'label'      => __( 'Google Maps API Key', 'wp-job-manager' ),
-							'desc'       => sprintf( __( 'Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href="%s">Google Maps API developer site</a>.', 'wp-job-manager' ), 'https://developers.google.com/maps/documentation/geocoding/get-api-key' ),
 							'attributes' => array()
 						),
 					),
