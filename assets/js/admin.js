@@ -16,10 +16,13 @@ jQuery(document).ready(function($) {
 	});
 
 	// Datepicker
-	$( 'input.job-manager-datepicker, input#_job_expires' ).datepicker({
+	var datePickerOptions = {
 		altFormat  : 'yy-mm-dd',
-		dateFormat : job_manager_admin.date_format,
-	});
+	};
+	if ( typeof job_manager_admin !== 'undefined' ) {
+		datePickerOptions.dateFormat = job_manager_admin.date_format;
+	}
+	$( 'input.job-manager-datepicker, input#_job_expires' ).datepicker( datePickerOptions );
 
 	$( 'input.job-manager-datepicker, input#_job_expires' ).each( function(){
 		if ( $(this).val() ) {
