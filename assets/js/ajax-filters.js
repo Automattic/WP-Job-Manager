@@ -90,6 +90,9 @@ jQuery( document ).ready( function ( $ ) {
 			location   = target.data( 'location' );
 
 			if ( categories ) {
+				if ( typeof categories !== 'string' ) {
+					categories = String( categories );
+				}
 				categories = categories.split( ',' );
 			}
 
