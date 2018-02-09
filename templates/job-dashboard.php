@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.27.0
+ * @version     1.30.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tbody>
 			<?php if ( ! $jobs ) : ?>
 				<tr>
-					<td colspan="6"><?php _e( 'You do not have any active listings.', 'wp-job-manager' ); ?></td>
+					<td colspan="<?php echo count( $job_dashboard_columns ); ?>"><?php _e( 'You do not have any active listings.', 'wp-job-manager' ); ?></td>
 				</tr>
 			<?php else : ?>
 				<?php foreach ( $jobs as $job ) : ?>
