@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.24.0
+ * @version     1.30.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		$image_src = $value;
 	}
 	$extension = ! empty( $extension ) ? $extension : substr( strrchr( $image_src, '.' ), 1 );
-	if ( wp_ext2type( $extension ) === 'image' ) : ?>
+	if ( 'image' === wp_ext2type( $extension ) ) : ?>
 		<span class="job-manager-uploaded-file-preview"><img src="<?php echo esc_url( $image_src ); ?>" /> <a class="job-manager-remove-uploaded-file" href="#">[<?php _e( 'remove', 'wp-job-manager' ); ?>]</a></span>
 	<?php else : ?>
 		<span class="job-manager-uploaded-file-name"><code><?php echo esc_html( basename( $image_src ) ); ?></code> <a class="job-manager-remove-uploaded-file" href="#">[<?php _e( 'remove', 'wp-job-manager' ); ?>]</a></span>
