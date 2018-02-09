@@ -221,7 +221,17 @@ class WP_Job_Manager {
 		 */
 		$ajax_data['lang'] = apply_filters( 'wpjm_lang', null );
 
-		if ( apply_filters( 'job_manager_chosen_enabled', true ) ) {
+		$chosen_shortcodes = array( 'submit_job_form', 'job_dashboard', 'jobs' );
+		$chosen_used_on_page = has_wpjm_shortcode( null, $chosen_shortcodes );
+
+		/**
+		 * Filter the use of the chosen library.
+		 *
+		 * @since 1.19.0
+		 *
+		 * @param bool $chosen_used_on_page Defaults to only when there are known shortcodes on the page.
+		 */
+		if ( apply_filters( 'job_manager_chosen_enabled', $chosen_used_on_page ) ) {
 			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
 			wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
 			wp_register_script( 'wp-job-manager-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
@@ -235,7 +245,7 @@ class WP_Job_Manager {
 			);
 		}
 
-		if ( apply_filters( 'job_manager_ajax_file_upload_enabled', true ) ) {
+		if ( job_manager_user_can_upload_file_via_ajax() ) {
 			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', array( 'jquery' ), '1.8.3', true );
 			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', array( 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ), '9.11.2', true );
 			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', array( 'jquery', 'jquery-fileupload' ), JOB_MANAGER_VERSION, true );
@@ -274,9 +284,8 @@ class WP_Job_Manager {
 			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 		) );
 
-		wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
-		if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'submit_job_form' ) ) {
-			wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', array(), JOB_MANAGER_VERSION );
+		if ( is_wpjm() ) {
+			wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
 		}
 	}
 }

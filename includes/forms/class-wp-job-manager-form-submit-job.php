@@ -375,6 +375,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Enqueues styles for editing and posting a job listing.
+	 */
+	protected function enqueue_job_form_assets() {
+		wp_enqueue_script( 'wp-job-manager-job-submission' );
+		wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', array(), JOB_MANAGER_VERSION );
+	}
+
+	/**
 	 * Returns an array of the job types indexed by slug. (Unused)
 	 *
 	 * @return array
@@ -444,8 +452,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->fields = apply_filters( 'submit_job_form_fields_get_user_data', $this->fields, get_current_user_id() );
 		}
 
-		wp_enqueue_script( 'wp-job-manager-job-submission' );
-
+		$this->enqueue_job_form_assets();
 		get_job_manager_template( 'job-submit.php', array(
 			'form'               => $this->form_name,
 			'job_id'             => $this->get_job_id(),

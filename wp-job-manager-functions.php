@@ -605,6 +605,11 @@ endif;
 function job_manager_user_can_upload_file_via_ajax() {
 	$can_upload = is_user_logged_in() && job_manager_user_can_post_job();
 
+	if ( has_filter( 'job_manager_ajax_file_upload_enabled' ) ) {
+		_deprecated_hook( 'job_manager_ajax_file_upload_enabled', '1.30.0', 'job_manager_user_can_upload_file_via_ajax' );
+		$can_upload = apply_filters( 'job_manager_ajax_file_upload_enabled', true );
+	}
+
 	/**
 	 * Override ability of a user to upload a file via Ajax.
 	 *
@@ -725,7 +730,7 @@ function has_wpjm_shortcode( $content = null, $tag = null ) {
 
 	$has_wpjm_shortcode = false;
 
-	if ( null === $content && is_single() && is_a( $post, 'WP_Post' ) ) {
+	if ( null === $content && is_singular() && is_a( $post, 'WP_Post' ) ) {
 		$content = $post->post_content;
 	}
 
