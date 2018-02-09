@@ -335,7 +335,7 @@ class WP_Job_Manager_CPT {
 			7 => sprintf( __( '%s saved.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
 			8 => sprintf( __( '%s submitted. <a target="_blank" href="%s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
 			9 => sprintf( __( '%s scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name,
-			  date_i18n( __( 'M j, Y @ G:i', 'wp-job-manager' ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) ) ),
+			  date_i18n( get_option( 'date_format' ) . ' @ '. get_option( 'time_format' ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) ) ),
 			10 => sprintf( __( '%s draft updated. <a target="_blank" href="%s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 		);
 
@@ -457,12 +457,12 @@ class WP_Job_Manager_CPT {
 				if ( is_position_featured( $post ) ) echo '&#10004;'; else echo '&ndash;';
 			break;
 			case "job_posted" :
-				echo '<strong>' . date_i18n( __( 'M j, Y', 'wp-job-manager' ), strtotime( $post->post_date ) ) . '</strong><span>';
+				echo '<strong>' . date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) . '</strong><span>';
 				echo ( empty( $post->post_author ) ? __( 'by a guest', 'wp-job-manager' ) : sprintf( __( 'by %s', 'wp-job-manager' ), '<a href="' . esc_url( add_query_arg( 'author', $post->post_author ) ) . '">' . get_the_author() . '</a>' ) ) . '</span>';
 			break;
 			case "job_expires" :
 				if ( $post->_job_expires )
-					echo '<strong>' . date_i18n( __( 'M j, Y', 'wp-job-manager' ), strtotime( $post->_job_expires ) ) . '</strong>';
+					echo '<strong>' . date_i18n( get_option( 'date_format' ), strtotime( $post->_job_expires ) ) . '</strong>';
 				else
 					echo '&ndash;';
 			break;

@@ -109,8 +109,7 @@ class WP_Job_Manager_Writepanels {
 				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'priority'    => 11,
 				'classes'     => array( 'job-manager-datepicker' ),
-				/* translators: date format placeholder, see https://secure.php.net/date */
-				'placeholder' => ! empty( $job_expires ) ? _x( 'yyyy-mm-dd', 'Date format placeholder.', 'wp-job-manager' ) : calculate_job_expiry( $post->ID ),
+				'placeholder' => ! empty( $job_expires ) ? null : date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post->ID ) ) ),
 				'value'       => ! empty( $job_expires ) ? date( 'Y-m-d', strtotime( $job_expires ) ) : '',
 			);
 		}
