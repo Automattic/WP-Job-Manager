@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Usage Tracking class. Please update the prefix to something unique to your
  * plugin.
  */
-abstract class Sensei_Usage_Tracking_Base {
+abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/*
 	 * Instance variables.
 	 */

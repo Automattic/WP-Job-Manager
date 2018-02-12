@@ -10,7 +10,7 @@ Usage_Tracking_Test_Subclass::get_instance();
  * Usage Tracking tests. Please update the prefix to something unique to your
  * plugin.
  */
-class Sensei_Usage_Tracking_Test extends WP_UnitTestCase {
+class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
