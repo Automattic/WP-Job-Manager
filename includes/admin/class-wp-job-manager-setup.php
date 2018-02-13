@@ -143,6 +143,19 @@ class WP_Job_Manager_Setup {
 				$this->create_page( sanitize_text_field( $page_titles[ $page ] ), $content, 'job_manager_' . $page . '_page_id' );
 			}
 		}
+
+		$usage_tracking = WP_Job_Manager_Usage_Tracking::get_instance();
+
+		ob_start();
+		?>
+		<p class="submit">
+			<a href="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>" class="button button-primary"><?php _e( 'Start setup', 'wp-job-manager' ); ?></a>
+			<a href="<?php echo esc_url( add_query_arg( 'skip-job-manager-setup', 1, admin_url( 'index.php?page=job-manager-setup&step=3' ) ) ); ?>" class="button"><?php _e( 'Skip setup. I will set up the plugin manually.', 'wp-job-manager' ); ?></a>
+		</p>
+		<?php
+		$step_one_submit = ob_get_contents();
+		ob_end_clean();
+
 		?>
 		<div class="wrap wp_job_manager wp_job_manager_addons_wrap">
 			<h2><?php _e( 'WP Job Manager Setup', 'wp-job-manager' ); ?></h2>
@@ -161,10 +174,7 @@ class WP_Job_Manager_Setup {
 				<p><?php _e( 'This setup wizard will walk you through the process of creating pages for job submissions, management, and listings.', 'wp-job-manager' ); ?></p>
 				<p><?php printf( __( 'If you\'d prefer to skip this and set up your pages manually, our %sdocumentation%s will walk you through each step.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
 
-				<p class="submit">
-					<a href="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>" class="button button-primary"><?php _e( 'Start setup', 'wp-job-manager' ); ?></a>
-					<a href="<?php echo esc_url( add_query_arg( 'skip-job-manager-setup', 1, admin_url( 'index.php?page=job-manager-setup&step=3' ) ) ); ?>" class="button"><?php _e( 'Skip setup. I will set up the plugin manually.', 'wp-job-manager' ); ?></a>
-				</p>
+				<?php $usage_tracking->maybe_display_tracking_opt_in_for_wizard( $step_one_submit ); ?>
 
 			<?php endif; ?>
 			<?php if ( 2 === $step ) : ?>
