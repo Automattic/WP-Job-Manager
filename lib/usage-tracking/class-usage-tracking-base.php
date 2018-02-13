@@ -327,6 +327,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 			'a'      => array(
 				'href'  => array(),
 				'title' => array(),
+				'target' => array(),
 			),
 			'em'     => array(),
 			'strong' => array(),
