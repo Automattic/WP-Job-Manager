@@ -291,8 +291,9 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @param array $schedules the existing cron schedules.
 	 **/
 	public function add_usage_tracking_two_week_schedule( $schedules ) {
+		$day_in_seconds = 86400;
 		$schedules[ $this->get_prefix() . '_usage_tracking_two_weeks' ] = array(
-			'interval' => 15 * DAY_IN_SECONDS,
+			'interval' => 15 * $day_in_seconds,
 			'display'  => esc_html__( 'Every Two Weeks', 'a8c-usage-tracking' ),
 		);
 
@@ -384,6 +385,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$enable_tracking = isset( $_POST['enable_tracking'] ) && '1' === $_POST['enable_tracking'];
 		$this->set_tracking_enabled( $enable_tracking );
 		$this->hide_tracking_opt_in();
+		$this->send_usage_data();
 		wp_die();
 	}
 

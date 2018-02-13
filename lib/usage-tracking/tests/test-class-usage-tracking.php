@@ -95,6 +95,32 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Ensure usage data is sent when tracking is enabled.
+	 *
+	 * @covers {Prefix}_Usage_Tracking::_handle_tracking_opt_in
+	 */
+	public function testAjaxRequestEnableTrackingSendsData() {
+		$this->setupAjaxRequest();
+		$_POST['enable_tracking'] = '1';
+
+		// Count the number of network requests
+		$count = 0;
+		add_filter( 'pre_http_request', function() use ( &$count ) {
+			$count++;
+			return new WP_Error();
+		} );
+
+		try {
+			$this->usage_tracking->handle_tracking_opt_in();
+		} catch ( WP_Die_Exception $e ) {
+			$wp_die_args = $e->get_wp_die_args();
+			$this->assertEquals( array(), $wp_die_args['args'], 'wp_die call has no non-success status' );
+		}
+
+		$this->assertEquals( 1, $count, 'Data was sent on usage tracking enable' );
+	}
+
+	/**
 	 * Ensure tracking is disabled through ajax request.
 	 *
 	 * @covers {Prefix}_Usage_Tracking::_handle_tracking_opt_in
