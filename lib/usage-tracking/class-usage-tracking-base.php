@@ -22,7 +22,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *
 	 * @var string
 	 **/
-	private $hide_tracking_opt_in_option_name;
+	protected $hide_tracking_opt_in_option_name;
 
 	/**
 	 * The name of the cron job action for regularly logging usage data.
