@@ -1,7 +1,10 @@
 <?php
 /**
  * Usage tracking data
+ *
+ * @package Usage Tracking
  **/
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -39,10 +42,12 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int the number of "employers".
 	 */
 	private static function get_employer_count() {
-		$employer_query = new WP_User_Query( array(
-			'fields' => 'ID',
-			'role' => 'employer',
-		) );
+		$employer_query = new WP_User_Query(
+			array(
+				'fields' => 'ID',
+				'role'   => 'employer',
+			)
+		);
 
 		return $employer_query->total_users;
 	}
