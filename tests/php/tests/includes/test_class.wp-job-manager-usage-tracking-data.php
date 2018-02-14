@@ -409,4 +409,36 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 		$this->assertEquals( $with_company_twitter_count, $data['jobs_company_twitter'] );
 	}
+
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with a company video.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_company_video() {
+		$with_company_video_count = 3;
+
+		$this->factory->job_listing->create_many(
+			$with_company_video_count, array(
+				'meta_input' => array(
+					'_company_video' => 'youtube.com/1234',
+				),
+			)
+		);
+
+		// Add 5 with no company video
+		$this->factory->job_listing->create( array() );
+		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
+			$this->factory->job_listing->create( array(
+				'meta_input' => array(
+					'_company_video' => $val,
+				),
+			) );
+		}
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $with_company_video_count, $data['jobs_company_video'] );
+	}
 }
