@@ -116,7 +116,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_usage_data_expired_jobs() {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		$this->assertEquals( $this->expired_count, $data['jobs_expired'] );
+		$this->assertEquals( $this->expired_count, $data['jobs_status_expired'] );
 	}
 
 	/**
@@ -128,7 +128,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_usage_data_pending_jobs() {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		$this->assertEquals( $this->pending_count, $data['jobs_pending'] );
+		$this->assertEquals( $this->pending_count, $data['jobs_status_pending'] );
 	}
 
 	/**
@@ -140,7 +140,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_usage_data_pending_payment_jobs() {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		$this->assertEquals( $this->pending_payment_count, $data['jobs_pending_payment'] );
+		$this->assertEquals( $this->pending_payment_count, $data['jobs_status_pending_payment'] );
 	}
 
 	/**
@@ -152,7 +152,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_usage_data_preview_jobs() {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		$this->assertEquals( $this->preview_count, $data['jobs_preview'] );
+		$this->assertEquals( $this->preview_count, $data['jobs_status_preview'] );
 	}
 
 	/**
@@ -164,7 +164,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_usage_data_publish_jobs() {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		$this->assertEquals( $this->publish_count, $data['jobs_publish'] );
+		$this->assertEquals( $this->publish_count, $data['jobs_status_publish'] );
 	}
 
 	/**

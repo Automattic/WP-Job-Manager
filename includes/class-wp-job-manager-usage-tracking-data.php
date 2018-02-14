@@ -27,14 +27,14 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count_posts = wp_count_posts( 'job_listing' );
 
 		return array(
-			'employers'            => self::get_employer_count(),
-			'jobs_type'            => self::get_job_type_count(),
-			'jobs_logo'            => self::get_company_logo_count(),
-			'jobs_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
-			'jobs_pending'         => $count_posts->pending,
-			'jobs_pending_payment' => isset( $count_posts->pending_payment ) ? $count_posts->pending_payment : 0,
-			'jobs_preview'         => isset( $count_posts->preview ) ? $count_posts->preview : 0,
-			'jobs_publish'         => $count_posts->publish,
+			'employers'                   => self::get_employer_count(),
+			'jobs_type'                   => self::get_job_type_count(),
+			'jobs_logo'                   => self::get_company_logo_count(),
+			'jobs_status_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
+			'jobs_status_pending'         => $count_posts->pending,
+			'jobs_status_pending_payment' => isset( $count_posts->pending_payment ) ? $count_posts->pending_payment : 0,
+			'jobs_status_preview'         => isset( $count_posts->preview ) ? $count_posts->preview : 0,
+			'jobs_status_publish'         => $count_posts->publish,
 		);
 	}
 
