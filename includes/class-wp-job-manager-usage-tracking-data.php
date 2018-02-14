@@ -39,6 +39,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_app_contact'            => self::get_jobs_count_with_meta( '_application' ),
 			'jobs_company_name'           => self::get_jobs_count_with_meta( '_company_name' ),
 			'jobs_company_site'           => self::get_jobs_count_with_meta( '_company_website' ),
+			'jobs_company_tagline'        => self::get_jobs_count_with_meta( '_company_tagline' ),
 		);
 	}
 

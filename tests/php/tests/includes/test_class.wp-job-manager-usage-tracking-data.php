@@ -346,4 +346,35 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 		$this->assertEquals( $with_company_website_count, $data['jobs_company_site'] );
 	}
+
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with a company tagline.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_company_tagline() {
+		$with_company_tagline_count = 3;
+
+		$this->factory->job_listing->create_many(
+			$with_company_tagline_count, array(
+				'meta_input' => array(
+					'_company_tagline' => 'We are passionate about making the web a better place.',
+				),
+			)
+		);
+
+		// Add 4 with no company tagline
+		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
+			$this->factory->job_listing->create( array(
+				'meta_input' => array(
+					'_company_tagline' => $val,
+				),
+			) );
+		}
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $with_company_tagline_count, $data['jobs_company_tagline'] );
+	}
 }
