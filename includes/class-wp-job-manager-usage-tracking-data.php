@@ -36,6 +36,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_status_preview'         => isset( $count_posts->preview ) ? $count_posts->preview : 0,
 			'jobs_status_publish'         => $count_posts->publish,
 			'jobs_location'               => self::get_jobs_with_location_count(),
+			'jobs_app_contact'            => self::get_jobs_with_application_contact_count(),
 		);
 	}
 
@@ -117,6 +118,28 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'meta_query' => array(
 				array(
 					'key'     => '_job_location',
+					'value'   => '[^[:space:]]',
+					'compare' => 'REGEXP',
+				),
+			),
+		) );
+
+		return $query->found_posts;
+	}
+
+	/**
+	 * Get the number of job listings with a non-empty application email or
+	 * URL.
+	 *
+	 * @return int the number of job listings.
+	 */
+	private static function get_jobs_with_application_contact_count() {
+		$query = new WP_Query( array(
+			'post_type'  => 'job_listing',
+			'fields'     => 'ids',
+			'meta_query' => array(
+				array(
+					'key'     => '_application',
 					'value'   => '[^[:space:]]',
 					'compare' => 'REGEXP',
 				),

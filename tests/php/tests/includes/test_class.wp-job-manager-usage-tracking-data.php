@@ -250,4 +250,36 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 		$this->assertEquals( $with_location_count, $data['jobs_location'] );
 	}
+
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with an application email or URL.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_application_contact() {
+		$with_app_contact_count = 3;
+
+		$this->factory->job_listing->create_many(
+			$with_app_contact_count, array(
+				'meta_input' => array(
+					'_application' => 'email@example.com',
+				),
+			)
+		);
+
+		// Add 5 with no contact
+		$this->factory->job_listing->create( array() );
+		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
+			$this->factory->job_listing->create( array(
+				'meta_input' => array(
+					'_application' => $val,
+				),
+			) );
+		}
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $with_app_contact_count, $data['jobs_app_contact'] );
+	}
 }
