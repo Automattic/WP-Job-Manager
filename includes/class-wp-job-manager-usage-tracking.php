@@ -34,6 +34,10 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		return 'wpjm';
 	}
 
+	protected function get_text_domain() {
+		return 'wp-job-manager';
+	}
+
 	protected function get_tracking_enabled() {
 		return get_option( self::WPJM_SETTING_NAME  ) || false;
 	}
