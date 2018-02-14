@@ -218,4 +218,36 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		// 2 expired + 1 publish
 		$this->assertEquals( 3, $data['jobs_type'] );
 	}
+
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with a location.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_location() {
+		$with_location_count = 3;
+
+		$this->factory->job_listing->create_many(
+			$with_location_count, array(
+				'meta_input' => array(
+					'_job_location' => 'Toronto',
+				),
+			)
+		);
+
+		// Add 5 with no location
+		$this->factory->job_listing->create( array() );
+		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
+			$this->factory->job_listing->create( array(
+				'meta_input' => array(
+					'_job_location' => $val,
+				),
+			) );
+		}
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $with_location_count, $data['jobs_location'] );
+	}
 }
