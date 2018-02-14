@@ -41,6 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<?php else : ?>
 										<?php wpjm_the_job_title( $job ); ?> <small>(<?php the_job_status( $job ); ?>)</small>
 									<?php endif; ?>
+									<?php echo is_position_featured( $job ) ? '<span class="featured-job-icon" title="' . esc_attr__( 'Featured Job', 'wp-job-manager' ) . '"></span>' : ''; ?>
 									<ul class="job-dashboard-actions">
 										<?php
 											$actions = array();
