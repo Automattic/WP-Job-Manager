@@ -20,7 +20,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		);
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
-		$this->assertEquals( $published_listing_count, $data['jobs'] );
+		$this->assertEquals( $published_listing_count, $data['jobs_published'] );
 	}
 
 	/**

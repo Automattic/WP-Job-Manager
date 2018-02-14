@@ -22,7 +22,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 **/
 	public static function get_usage_data() {
 		return array(
-			'jobs' => wp_count_posts( 'job_listing' )->publish,
+			'jobs_published' => wp_count_posts( 'job_listing' )->publish,
 			'employers' => self::get_employer_count(),
 		);
 	}
