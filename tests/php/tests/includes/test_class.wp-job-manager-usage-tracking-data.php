@@ -282,4 +282,35 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 		$this->assertEquals( $with_app_contact_count, $data['jobs_app_contact'] );
 	}
+
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with a company name.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_company_name() {
+		$with_company_name_count = 3;
+
+		$this->factory->job_listing->create_many(
+			$with_company_name_count, array(
+				'meta_input' => array(
+					'_company_name' => 'Automattic',
+				),
+			)
+		);
+
+		// Add 4 with no company name
+		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
+			$this->factory->job_listing->create( array(
+				'meta_input' => array(
+					'_company_name' => $val,
+				),
+			) );
+		}
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $with_company_name_count, $data['jobs_company_name'] );
+	}
 }
