@@ -607,7 +607,7 @@ function job_manager_user_can_upload_file_via_ajax() {
 
 	if ( has_filter( 'job_manager_ajax_file_upload_enabled' ) ) {
 		_deprecated_hook( 'job_manager_ajax_file_upload_enabled', '1.30.0', 'job_manager_user_can_upload_file_via_ajax' );
-		$can_upload = apply_filters( 'job_manager_ajax_file_upload_enabled', true );
+		$can_upload = apply_filters( 'job_manager_ajax_file_upload_enabled', $can_upload );
 	}
 
 	/**
