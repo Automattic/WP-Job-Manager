@@ -229,28 +229,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_jobs_location() {
-		$with_location_count = 3;
+		$published = 3;
+		$expired   = 2;
 
-		$this->factory->job_listing->create_many(
-			$with_location_count, array(
-				'meta_input' => array(
-					'_job_location' => 'Toronto',
-				),
-			)
-		);
-
-		// Add 5 with no location
-		$this->factory->job_listing->create( array() );
-		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
-			$this->factory->job_listing->create( array(
-				'meta_input' => array(
-					'_job_location' => $val,
-				),
-			) );
-		}
+		$this->create_job_listings( '_job_location', 'Toronto', $published, $expired );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
-		$this->assertEquals( $with_location_count, $data['jobs_location'] );
+		$this->assertEquals( $published + $expired, $data['jobs_location'] );
 	}
 
 	/**
@@ -261,28 +246,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_jobs_application_contact() {
-		$with_app_contact_count = 3;
+		$published = 3;
+		$expired   = 2;
 
-		$this->factory->job_listing->create_many(
-			$with_app_contact_count, array(
-				'meta_input' => array(
-					'_application' => 'email@example.com',
-				),
-			)
-		);
-
-		// Add 5 with no contact
-		$this->factory->job_listing->create( array() );
-		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
-			$this->factory->job_listing->create( array(
-				'meta_input' => array(
-					'_application' => $val,
-				),
-			) );
-		}
+		$this->create_job_listings( '_application', 'email@example.com', $published, $expired );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
-		$this->assertEquals( $with_app_contact_count, $data['jobs_app_contact'] );
+		$this->assertEquals( $published + $expired, $data['jobs_app_contact'] );
 	}
 
 	/**
@@ -293,27 +263,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_jobs_company_name() {
-		$with_company_name_count = 3;
+		$published = 3;
+		$expired   = 2;
 
-		$this->factory->job_listing->create_many(
-			$with_company_name_count, array(
-				'meta_input' => array(
-					'_company_name' => 'Automattic',
-				),
-			)
-		);
-
-		// Add 4 with no company name
-		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
-			$this->factory->job_listing->create( array(
-				'meta_input' => array(
-					'_company_name' => $val,
-				),
-			) );
-		}
+		$this->create_job_listings( '_company_name', 'Automattic', $published, $expired );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
-		$this->assertEquals( $with_company_name_count, $data['jobs_company_name'] );
+		$this->assertEquals( $published + $expired, $data['jobs_company_name'] );
 	}
 
 	/**
@@ -324,27 +280,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_jobs_company_website() {
-		$with_company_website_count = 3;
+		$published = 3;
+		$expired   = 2;
 
-		$this->factory->job_listing->create_many(
-			$with_company_website_count, array(
-				'meta_input' => array(
-					'_company_website' => 'automattic.com',
-				),
-			)
-		);
-
-		// Add 4 with no company website
-		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
-			$this->factory->job_listing->create( array(
-				'meta_input' => array(
-					'_company_website' => $val,
-				),
-			) );
-		}
+		$this->create_job_listings( '_company_website', 'automattic.com', $published, $expired );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
-		$this->assertEquals( $with_company_website_count, $data['jobs_company_site'] );
+		$this->assertEquals( $published + $expired, $data['jobs_company_site'] );
 	}
 
 	/**
@@ -355,27 +297,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_jobs_company_tagline() {
-		$with_company_tagline_count = 3;
+		$published = 3;
+		$expired   = 2;
 
-		$this->factory->job_listing->create_many(
-			$with_company_tagline_count, array(
-				'meta_input' => array(
-					'_company_tagline' => 'We are passionate about making the web a better place.',
-				),
-			)
-		);
-
-		// Add 4 with no company tagline
-		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
-			$this->factory->job_listing->create( array(
-				'meta_input' => array(
-					'_company_tagline' => $val,
-				),
-			) );
-		}
+		$this->create_job_listings( '_company_tagline', 'We are passionate about making the web a better place.', $published, $expired );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
-		$this->assertEquals( $with_company_tagline_count, $data['jobs_company_tagline'] );
+		$this->assertEquals( $published + $expired, $data['jobs_company_tagline'] );
 	}
 
 	/**
@@ -386,28 +314,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_jobs_company_twitter() {
-		$with_company_twitter_count = 3;
+		$published = 3;
+		$expired   = 2;
 
-		$this->factory->job_listing->create_many(
-			$with_company_twitter_count, array(
-				'meta_input' => array(
-					'_company_twitter' => '@automattic',
-				),
-			)
-		);
-
-		// Add 5 with no company twitter handle
-		$this->factory->job_listing->create( array() );
-		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
-			$this->factory->job_listing->create( array(
-				'meta_input' => array(
-					'_company_twitter' => $val,
-				),
-			) );
-		}
+		$this->create_job_listings( '_company_twitter', '@automattic', $published, $expired );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
-		$this->assertEquals( $with_company_twitter_count, $data['jobs_company_twitter'] );
+		$this->assertEquals( $published + $expired, $data['jobs_company_twitter'] );
 	}
 
 	/**
@@ -418,27 +331,69 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_jobs_company_video() {
-		$with_company_video_count = 3;
+		$published = 3;
+		$expired   = 2;
 
-		$this->factory->job_listing->create_many(
-			$with_company_video_count, array(
-				'meta_input' => array(
-					'_company_video' => 'youtube.com/1234',
-				),
-			)
-		);
+		$this->create_job_listings( '_company_video', 'youtube.com/1234', $published, $expired );
 
-		// Add 5 with no company video
-		$this->factory->job_listing->create( array() );
-		foreach ( array( '', '   ', "\n\t", " \n \t " ) as $val ) {
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $published + $expired, $data['jobs_company_video'] );
+	}
+
+
+	/**
+	 * Creates job listings with the given meta values. This will also create
+	 * some listings with values for the meta parameter that should be
+	 * considered empty (e.g. spaces) and some entries with other statuses
+	 * (such as draft). For tracking data, only the published and expired
+	 * entries should be counted.
+	 *
+	 * @param string $meta_name  the name of the meta parameter to set.
+	 * @param string $meta_value the desired value of the meta parameter.
+	 * @param int $published     the number of published listings to create.
+	 * @param int $expired       the number of expired listings to create.
+	 */
+	private function create_job_listings( $meta_name, $meta_value, $published, $expired ) {
+		// Create published listings.
+		$this->factory->job_listing->create_many( $published, array(
+			'meta_input' => array(
+				$meta_name => $meta_value,
+			),
+		) );
+
+		// Create expired listings.
+		$this->factory->job_listing->create_many( $expired, array(
+			'meta_input' => array(
+				$meta_name     => $meta_value,
+				'_job_expires' => "2018-01-01",
+			),
+		) );
+
+		// Create listings with empty values.
+		$empty_values = array( '', '   ', "\n\t", " \n \t " );
+		foreach ( $empty_values as $val ) {
 			$this->factory->job_listing->create( array(
 				'meta_input' => array(
-					'_company_video' => $val,
+					$meta_name => $val,
 				),
 			) );
 		}
 
-		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
-		$this->assertEquals( $with_company_video_count, $data['jobs_company_video'] );
+		// Create listings with other statuses.
+		$statuses = array( 'future', 'draft', 'pending', 'private', 'trash' );
+		foreach ( $statuses as $status ) {
+			$params = array(
+				'post_status' => $status,
+				'meta_input'  => array(
+					$meta_name => $meta_value,
+				),
+			);
+
+			if ( 'future' == $status ) {
+				$params['post_date'] = '3018-02-15 00:00:00';
+			}
+
+			$this->factory->job_listing->create( $params );
+		}
 	}
 }
