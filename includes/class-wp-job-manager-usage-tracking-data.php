@@ -43,6 +43,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_company_twitter'        => self::get_jobs_count_with_meta( '_company_twitter' ),
 			'jobs_company_video'          => self::get_jobs_count_with_meta( '_company_video' ),
 			'jobs_expiry'                 => self::get_jobs_count_with_meta( '_job_expires' ),
+			'jobs_filled'                 => self::get_jobs_count_with_checked_meta( '_filled' ),
 		);
 	}
 
@@ -129,6 +130,29 @@ class WP_Job_Manager_Usage_Tracking_Data {
 					'key'     => $meta_key,
 					'value'   => '[^[:space:]]',
 					'compare' => 'REGEXP',
+				),
+			),
+		) );
+
+		return $query->found_posts;
+	}
+
+	/**
+	 * Get the number of job listings where the given checkbox meta value is
+	 * checked.
+	 *
+	 * @param string $meta_key the key for the meta value to check.
+	 *
+	 * @return int the number of job listings.
+	 */
+	private static function get_jobs_count_with_checked_meta( $meta_key ) {
+		$query = new WP_Query( array(
+			'post_type'  => 'job_listing',
+			'fields'     => 'ids',
+			'meta_query' => array(
+				array(
+					'key'   => $meta_key,
+					'value' => '1',
 				),
 			),
 		) );

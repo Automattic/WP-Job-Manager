@@ -357,6 +357,23 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$this->assertEquals( $published + $expired, $data['jobs_expiry'] );
 	}
 
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with the Position Filled box checked.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_filled() {
+		$published = 3;
+		$expired   = 2;
+
+		$this->create_job_listings( '_filled', '1', $published, $expired, array( '0' ) );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $published + $expired, $data['jobs_filled'] );
+	}
+
 
 	/**
 	 * Creates job listings with the given meta values. This will also create
@@ -369,8 +386,9 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @param string $meta_value the desired value of the meta parameter.
 	 * @param int $published     the number of published listings to create.
 	 * @param int $expired       the number of expired listings to create.
+	 * @param int $other_values  other values for which to create listings (optional).
 	 */
-	private function create_job_listings( $meta_name, $meta_value, $published, $expired ) {
+	private function create_job_listings( $meta_name, $meta_value, $published, $expired, $other_values = array() ) {
 		// Create published listings.
 		$this->factory->job_listing->create_many( $published, array(
 			'meta_input' => array(
@@ -411,6 +429,15 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 			}
 
 			$this->factory->job_listing->create( $params );
+		}
+
+		// Create listings with other values.
+		foreach ( $other_values as $val ) {
+			$this->factory->job_listing->create( array(
+				'meta_input' => array(
+					$meta_name => $val,
+				)
+			) );
 		}
 	}
 }
