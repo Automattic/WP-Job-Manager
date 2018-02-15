@@ -363,9 +363,9 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		// Create expired listings.
 		$this->factory->job_listing->create_many( $expired, array(
+			'post_status' => 'expired',
 			'meta_input' => array(
-				$meta_name     => $meta_value,
-				'_job_expires' => "2018-01-01",
+				$meta_name => $meta_value,
 			),
 		) );
 

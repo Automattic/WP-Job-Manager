@@ -121,6 +121,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_count_with_meta( $meta_key ) {
 		$query = new WP_Query( array(
 			'post_type'  => 'job_listing',
+			'post_status' => 'publish,expired',
 			'fields'     => 'ids',
 			'meta_query' => array(
 				array(
