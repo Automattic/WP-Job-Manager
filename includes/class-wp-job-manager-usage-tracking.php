@@ -80,4 +80,14 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 
 		return $fields;
 	}
+
+
+	/*
+	 * Helpers.
+	 */
+
+	public function clear_options() {
+		delete_option( self::WPJM_SETTING_NAME );
+		delete_option( $this->hide_tracking_opt_in_option_name );
+	}
 }
