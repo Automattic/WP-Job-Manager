@@ -42,6 +42,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_company_tagline'        => self::get_jobs_count_with_meta( '_company_tagline' ),
 			'jobs_company_twitter'        => self::get_jobs_count_with_meta( '_company_twitter' ),
 			'jobs_company_video'          => self::get_jobs_count_with_meta( '_company_video' ),
+			'jobs_expiry'                 => self::get_jobs_count_with_meta( '_job_expires' ),
 		);
 	}
 

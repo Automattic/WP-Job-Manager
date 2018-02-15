@@ -340,6 +340,23 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$this->assertEquals( $published + $expired, $data['jobs_company_video'] );
 	}
 
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with an expiry date.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_expiry() {
+		$published = 3;
+		$expired   = 2;
+
+		$this->create_job_listings( '_job_expires', '2018-01-01', $published, $expired );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $published + $expired, $data['jobs_expiry'] );
+	}
+
 
 	/**
 	 * Creates job listings with the given meta values. This will also create
