@@ -75,6 +75,14 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	abstract protected function get_prefix();
 
 	/**
+	 * Get the text domain used by this plugin. This class will add some
+	 * strings to be translated.
+	 *
+	 * @return string The text domain string
+	 **/
+	abstract protected function get_text_domain();
+
+	/**
 	 * Determine whether usage tracking is enabled.
 	 *
 	 * @return bool true if usage tracking is enabled, false otherwise.
@@ -294,7 +302,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$day_in_seconds = 86400;
 		$schedules[ $this->get_prefix() . '_usage_tracking_two_weeks' ] = array(
 			'interval' => 15 * $day_in_seconds,
-			'display'  => esc_html__( 'Every Two Weeks', 'a8c-usage-tracking' ),
+			'display'  => esc_html__( 'Every Two Weeks', $this->get_text_domain() ),
 		);
 
 		return $schedules;
@@ -351,22 +359,22 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 				</p>
 				<p>
 					<button class="button button-primary" data-enable-tracking="yes">
-						<?php esc_html_e( 'Enable Usage Tracking', 'a8c-usage-tracking' ); ?>
+						<?php esc_html_e( 'Enable Usage Tracking', $this->get_text_domain() ); ?>
 					</button>
 					<button class="button" data-enable-tracking="no">
-						<?php esc_html_e( 'Disable Usage Tracking', 'a8c-usage-tracking' ); ?>
+						<?php esc_html_e( 'Disable Usage Tracking', $this->get_text_domain() ); ?>
 					</button>
 					<span id="progress" class="spinner alignleft"></span>
 				</p>
 			</div>
 			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-enable-success" class="notice notice-success hidden">
-				<p><?php esc_html_e( 'Usage data enabled. Thank you!', 'a8c-usage-tracking' ); ?></p>
+				<p><?php esc_html_e( 'Usage data enabled. Thank you!', $this->get_text_domain() ); ?></p>
 			</div>
 			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-disable-success" class="notice notice-success hidden">
-				<p><?php esc_html_e( 'Disabled usage tracking.', 'a8c-usage-tracking' ); ?></p>
+				<p><?php esc_html_e( 'Disabled usage tracking.', $this->get_text_domain() ); ?></p>
 			</div>
 			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-failure" class="notice notice-error hidden">
-				<p><?php esc_html_e( 'Something went wrong. Please try again later.', 'a8c-usage-tracking' ); ?></p>
+				<p><?php esc_html_e( 'Something went wrong. Please try again later.', $this->get_text_domain() ); ?></p>
 			</div>
 		<?php
 		}

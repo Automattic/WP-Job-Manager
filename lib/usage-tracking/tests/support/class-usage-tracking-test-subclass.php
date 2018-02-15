@@ -18,6 +18,10 @@ class Usage_Tracking_Test_Subclass extends WP_Job_Manager_Usage_Tracking_Base {
 		return 'testing';
 	}
 
+	public function get_text_domain() {
+		return 'text-domain';
+	}
+
 	public function get_tracking_enabled() {
 		return get_option( self::TRACKING_ENABLED_OPTION_NAME ) || false;
 	}
