@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-	/**
-	 * Supplies the usage tracking data for logging.
-	 *
-	 * @package Usage Tracking
-	 * @since 1.30.0
-	 */
+/**
+ * Supplies the usage tracking data for logging.
+ *
+ * @package Usage Tracking
+ * @since 1.30.0
+ */
 class WP_Job_Manager_Usage_Tracking_Data {
 	/**
 	 * Get the usage tracking data to send.
