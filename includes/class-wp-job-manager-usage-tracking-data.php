@@ -44,6 +44,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_company_video'          => self::get_jobs_count_with_meta( '_company_video' ),
 			'jobs_expiry'                 => self::get_jobs_count_with_meta( '_job_expires' ),
 			'jobs_filled'                 => self::get_jobs_count_with_checked_meta( '_filled' ),
+			'jobs_featured'               => self::get_jobs_count_with_checked_meta( '_featured' ),
 		);
 	}
 
