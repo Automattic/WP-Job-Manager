@@ -53,16 +53,10 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 */
 	private $publish;
 
-	public function setUp() {
-		parent::setUp();
-
-		$this->create_job_listings();
-	}
-
 	/**
 	 * Create a number of job listings with different statuses.
 	 */
-	private function create_job_listings() {
+	private function create_default_job_listings() {
 		$this->draft           = $this->factory->job_listing->create_many(
 			2, array( 'post_status' => 'draft' )
 		);
@@ -112,6 +106,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_get_usage_data_expired_jobs() {
+		$this->create_default_job_listings();
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
 		$this->assertEquals( count( $this->expired ), $data['jobs_status_expired'] );
@@ -124,6 +119,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_get_usage_data_pending_jobs() {
+		$this->create_default_job_listings();
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
 		$this->assertEquals( count( $this->pending ), $data['jobs_status_pending'] );
@@ -136,6 +132,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_get_usage_data_pending_payment_jobs() {
+		$this->create_default_job_listings();
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
 		$this->assertEquals( count( $this->pending_payment ), $data['jobs_status_pending_payment'] );
@@ -148,6 +145,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_get_usage_data_preview_jobs() {
+		$this->create_default_job_listings();
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
 		$this->assertEquals( count( $this->preview ), $data['jobs_status_preview'] );
@@ -160,6 +158,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_get_usage_data_publish_jobs() {
+		$this->create_default_job_listings();
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
 		$this->assertEquals( count( $this->publish ), $data['jobs_status_publish'] );
@@ -173,6 +172,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_company_logo_count
 	 */
 	public function test_get_company_logo_count() {
+		$this->create_default_job_listings();
+
 		// Create some media attachments.
 		$media = $this->factory->attachment->create_many(
 			6, array(
@@ -203,6 +204,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_job_type_count
 	 */
 	public function test_get_job_type_count() {
+		$this->create_default_job_listings();
 		$terms = $this->factory->term->create_many( 6, array( 'taxonomy' => 'job_listing_type' ) );
 
 		// Assign job types to some jobs.
