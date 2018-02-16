@@ -66,6 +66,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_status_pending_payment' => isset( $count_posts->pending_payment ) ? $count_posts->pending_payment : 0,
 			'jobs_status_preview'         => isset( $count_posts->preview ) ? $count_posts->preview : 0,
 			'jobs_status_publish'         => $count_posts->publish,
+			'jobs_temp'                   => self::get_jobs_by_type_count( 'temporary' ),
 			'jobs_type'                   => self::get_job_type_count(),
 		);
 	}

@@ -307,6 +307,26 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Count of temporary jobs.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_jobs_by_type_count
+	 */
+	public function test_get_temporary_jobs_count() {
+		wp_set_object_terms( $this->draft[0], 'temporary', 'job_listing_type', false );
+		wp_set_object_terms( $this->expired[5], 'temporary', 'job_listing_type', false );
+		wp_set_object_terms( $this->expired[6], 'temporary', 'job_listing_type', false );
+		wp_set_object_terms( $this->preview[0], 'temporary', 'job_listing_type', false );
+		wp_set_object_terms( $this->pending[3], 'temporary', 'job_listing_type', false );
+		wp_set_object_terms( $this->publish[9], 'temporary', 'job_listing_type', false );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+
+		$this->assertEquals( 3, $data['jobs_temp'], 'Temporary' );
+	}
+
+	/**
 	 * Expired jobs count.
 	 *
 	 * @since 1.30.0
