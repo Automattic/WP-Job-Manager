@@ -207,6 +207,26 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Count of job types that have en employment type.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_job_type_has_employment_type_count
+	 */
+	public function test_get_job_type_has_employment_type_count() {
+		$terms = $this->factory->term->create_many( 5, array( 'taxonomy' => 'job_listing_type' ) );
+
+		// Set the employment type for some terms.
+		add_term_meta( $terms[1], 'employment_type', 'FULL_TIME' );
+		add_term_meta( $terms[2], 'employment_type', 'VOLUNTEER' );
+		add_term_meta( $terms[4], 'employment_type', 'TEMPORARY' );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+
+		$this->assertEquals( 3, $data['job_types_emp_type'] );
+	}
+
+	/**
 	 * Expired jobs count.
 	 *
 	 * @since 1.30.0
