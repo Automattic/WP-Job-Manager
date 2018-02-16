@@ -60,6 +60,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_intern'                 => self::get_jobs_by_type_count( 'internship' ),
 			'jobs_location'               => self::get_jobs_count_with_meta( '_job_location' ),
 			'jobs_logo'                   => self::get_company_logo_count(),
+			'jobs_part_time'              => self::get_jobs_by_type_count( 'part-time' ),
 			'jobs_status_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
 			'jobs_status_pending'         => $count_posts->pending,
 			'jobs_status_pending_payment' => isset( $count_posts->pending_payment ) ? $count_posts->pending_payment : 0,
