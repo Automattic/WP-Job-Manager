@@ -55,6 +55,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_expiry'                 => self::get_jobs_count_with_meta( '_job_expires' ),
 			'jobs_featured'               => self::get_jobs_count_with_checked_meta( '_featured' ),
 			'jobs_filled'                 => self::get_jobs_count_with_checked_meta( '_filled' ),
+			'jobs_freelance'              => self::get_jobs_by_type_count( 'freelance' ),
 			'jobs_location'               => self::get_jobs_count_with_meta( '_job_location' ),
 			'jobs_logo'                   => self::get_company_logo_count(),
 			'jobs_status_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
@@ -164,6 +165,34 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		}
 
 		return $count;
+	}
+
+	/**
+	 * Get the total number of published or expired jobs for a particular job type.
+	 *
+	 * @since 1.30.0
+	 *
+	 * @param string $job_type Job type to search for.
+	 *
+	 * @return array Number of published or expired jobs for a particular job type.
+	 **/
+	private static function get_jobs_by_type_count( $job_type ) {
+		$query = new WP_Query(
+			array(
+				'post_type'   => 'job_listing',
+				'post_status' => array( 'expired', 'publish' ),
+				'fields'      => 'ids',
+				'tax_query'   => array(
+					array(
+						'field'    => 'slug',
+						'taxonomy' => 'job_listing_type',
+						'terms'    => $job_type,
+					),
+				),
+			)
+		);
+
+		return $query->found_posts;
 	}
 
 	/**

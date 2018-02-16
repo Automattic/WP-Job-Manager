@@ -227,6 +227,26 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Count of freelance jobs.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_jobs_by_type_count
+	 */
+	public function test_get_freelance_jobs_count() {
+		wp_set_object_terms( $this->draft[0], 'freelance', 'job_listing_type', false );
+		wp_set_object_terms( $this->expired[5], 'freelance', 'job_listing_type', false );
+		wp_set_object_terms( $this->expired[6], 'freelance', 'job_listing_type', false );
+		wp_set_object_terms( $this->preview[0], 'freelance', 'job_listing_type', false );
+		wp_set_object_terms( $this->pending[3], 'freelance', 'job_listing_type', false );
+		wp_set_object_terms( $this->publish[9], 'freelance', 'job_listing_type', false );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+
+		$this->assertEquals( 3, $data['jobs_freelance'], 'Freelance' );
+	}
+
+	/**
 	 * Expired jobs count.
 	 *
 	 * @since 1.30.0
