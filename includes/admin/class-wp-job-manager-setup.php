@@ -129,8 +129,13 @@ class WP_Job_Manager_Setup {
 			$enable = isset( $_POST['job_manager_usage_tracking_enabled'] )
 				&& '1' === $_POST['job_manager_usage_tracking_enabled'];
 
-			$usage_tracking->set_tracking_enabled( $enable );
-			$usage_tracking->hide_tracking_opt_in();
+			$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : null;
+			$valid_nonce = wp_verify_nonce( $_POST['nonce'], 'enable-usage-tracking' );
+
+			if ( $valid_nonce ) {
+				$usage_tracking->set_tracking_enabled( $enable );
+				$usage_tracking->hide_tracking_opt_in();
+			}
 		}
 
 		$this->output();
@@ -217,6 +222,7 @@ class WP_Job_Manager_Setup {
 				<p><?php printf( __( 'If you\'d prefer to skip this and set up your pages manually, our %sdocumentation%s will walk you through each step.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
 
 				<form method="post" action="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>">
+					<input type="hidden" name="nonce" value="<?php echo wp_create_nonce( 'enable-usage-tracking' ); ?>" />
 
 					<?php $this->maybe_output_opt_in_checkbox(); ?>
 
