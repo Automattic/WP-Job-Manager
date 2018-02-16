@@ -628,6 +628,61 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$this->assertEquals( $published + $expired, $data['jobs_featured'] );
 	}
 
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * posted by guests.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_by_guests() {
+		$published_by_guest = 3;
+		$expired_by_guest   = 2;
+
+		// Create published listings.
+		$this->factory->job_listing->create_many( $published_by_guest, array(
+			'post_author' => '0',
+		) );
+
+		// Create expired listings.
+		$this->factory->job_listing->create_many( $expired_by_guest, array(
+			'post_author' => '0',
+			'post_status' => 'expired',
+		) );
+
+		// Create guest listings with other statuses.
+		$statuses = array( 'future', 'draft', 'pending', 'private', 'trash' );
+		foreach ( $statuses as $status ) {
+			$params = array(
+				'post_author' => '0',
+				'post_status' => $status,
+			);
+
+			if ( 'future' == $status ) {
+				$params['post_date'] = '3018-02-15 00:00:00';
+			}
+
+			$this->factory->job_listing->create( $params );
+		}
+
+		// Create listings with other author.
+		$all_statuses = array_merge( $statuses, array( 'publish', 'expired' ) );
+		$author_id    = $this->factory->user->create();
+		foreach ( $all_statuses as $status ) {
+			$params = array(
+				'post_author' => $author_id,
+				'post_status' => $status,
+			);
+
+			if ( 'future' == $status ) {
+				$params['post_date'] = '3018-02-15 00:00:00';
+			}
+		}
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $published_by_guest + $expired_by_guest, $data['jobs_by_guests'] );
+	}
+
 
 	/**
 	 * Creates job listings with the given meta values. This will also create
