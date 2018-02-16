@@ -9,6 +9,8 @@ Usage_Tracking_Test_Subclass::get_instance();
 /**
  * Usage Tracking tests. Please update the prefix to something unique to your
  * plugin.
+ *
+ * @group usage-tracking
  */
 class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	private $event_counts = array();
