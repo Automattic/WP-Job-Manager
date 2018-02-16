@@ -28,6 +28,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 
 		return array(
 			'employers'                   => self::get_employer_count(),
+			'job_categories'              => wp_count_terms( 'job_listing_category', array( 'hide_empty' => false ) ),
 			'jobs_type'                   => self::get_job_type_count(),
 			'jobs_logo'                   => self::get_company_logo_count(),
 			'jobs_status_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
