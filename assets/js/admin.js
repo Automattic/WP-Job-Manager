@@ -26,6 +26,11 @@ jQuery(document).ready(function($) {
 	$( 'input.job-manager-datepicker, input#_job_expires' ).each( function(){
 		var $hidden_input = $( '<input />', { type: 'hidden', name: $(this).attr( 'name' ) } ).insertAfter( $( this ) );
 		$(this).attr( 'name', $(this).attr( 'name' ) + '-datepicker' );
+		$(this).keyup( function() {
+			if ( '' === $(this).val() ) {
+				$hidden_input.val( '' );
+			}
+		} );
 		$(this).datepicker( $.extend( {}, datePickerOptions, { altField: $hidden_input } ) );
 		if ( $(this).val() ) {
 			var dateParts = $(this).val().split("-");
