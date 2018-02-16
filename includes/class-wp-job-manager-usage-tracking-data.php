@@ -24,11 +24,16 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return array Usage data.
 	 **/
 	public static function get_usage_data() {
+		$categories  = 0;
 		$count_posts = wp_count_posts( 'job_listing' );
+
+		if ( taxonomy_exists( 'job_listing_category' ) ) {
+			$categories = wp_count_terms( 'job_listing_category', array( 'hide_empty' => false ) );
+		}
 
 		return array(
 			'employers'                   => self::get_employer_count(),
-			'job_categories'              => wp_count_terms( 'job_listing_category', array( 'hide_empty' => false ) ),
+			'job_categories'              => $categories,
 			'job_categories_desc'         => self::get_job_category_has_description_count(),
 			'jobs_type'                   => self::get_job_type_count(),
 			'jobs_logo'                   => self::get_company_logo_count(),
@@ -64,6 +69,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int Number of job categories with a description.
 	 **/
 	private static function get_job_category_has_description_count() {
+		if ( ! taxonomy_exists( 'job_listing_category' ) ) {
+			return 0;
+		}
+
 		$count = 0;
 		$terms = get_terms(
 			'job_listing_category', array(
