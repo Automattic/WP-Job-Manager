@@ -129,7 +129,7 @@ class WP_Job_Manager_Setup {
 			$enable = isset( $_POST['job_manager_usage_tracking_enabled'] )
 				&& '1' === $_POST['job_manager_usage_tracking_enabled'];
 
-			$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : null;
+			$nonce       = isset( $_POST['nonce'] ) ? $_POST['nonce'] : null;
 			$valid_nonce = wp_verify_nonce( $_POST['nonce'], 'enable-usage-tracking' );
 
 			if ( $valid_nonce ) {
@@ -141,8 +141,16 @@ class WP_Job_Manager_Setup {
 		$this->output();
 	}
 
+	/**
+	 * Usage tracking opt in text for setup page.
+	 */
 	private function opt_in_text() {
 		return sprintf(
+
+			/*
+			 * translators: the href tag contains the URL for the page
+			 * telling users what data WPJM tracks.
+			 */
 			__(
 				'Check the box below to allow us to collect <a href="%s" target="_blank">usage tracking data</a>.  No sensitive information is collected.',
 				'wp-job-manager'
@@ -151,6 +159,9 @@ class WP_Job_Manager_Setup {
 		);
 	}
 
+	/**
+	 * Output opt-in checkbox if usage tracking isn't already enabled.
+	 */
 	private function maybe_output_opt_in_checkbox() {
 		// Only show the checkbox if we aren't already opted in.
 		$usage_tracking = WP_Job_Manager_Usage_Tracking::get_instance();
@@ -160,10 +171,12 @@ class WP_Job_Manager_Setup {
 				<strong>
 					<?php esc_html_e( 'Help us make WP Job Manager better!', 'wp-job-manager' ); ?>
 				</strong>
-				<?php echo wp_kses(
+				<?php
+				echo wp_kses(
 					$this->opt_in_text(),
 					$usage_tracking->opt_in_dialog_text_allowed_html()
-				); ?>
+				);
+				?>
 			</p>
 
 			<p>
@@ -222,13 +235,13 @@ class WP_Job_Manager_Setup {
 				<p><?php printf( __( 'If you\'d prefer to skip this and set up your pages manually, our %sdocumentation%s will walk you through each step.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
 
 				<form method="post" action="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>">
-					<input type="hidden" name="nonce" value="<?php echo wp_create_nonce( 'enable-usage-tracking' ); ?>" />
+					<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'enable-usage-tracking' ) ); ?>" />
 
 					<?php $this->maybe_output_opt_in_checkbox(); ?>
 
 					<p class="submit">
-						<input type="submit" value="<?php _e( 'Start setup', 'wp-job-manager' ); ?>" class="button button-primary" />
-						<a href="<?php echo esc_url( add_query_arg( 'skip-job-manager-setup', 1, admin_url( 'index.php?page=job-manager-setup&step=3' ) ) ); ?>" class="button"><?php _e( 'Skip setup. I will set up the plugin manually.', 'wp-job-manager' ); ?></a>
+						<input type="submit" value="<?php esc_html_e( 'Start setup', 'wp-job-manager' ); ?>" class="button button-primary" />
+						<a href="<?php echo esc_url( add_query_arg( 'skip-job-manager-setup', 1, admin_url( 'index.php?page=job-manager-setup&step=3' ) ) ); ?>" class="button"><?php esc_html_e( 'Skip setup. I will set up the plugin manually.', 'wp-job-manager' ); ?></a>
 					</p>
 				</form>
 
