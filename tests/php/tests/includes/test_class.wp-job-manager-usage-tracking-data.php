@@ -166,6 +166,20 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Count of job types.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_job_types_count() {
+		$terms = $this->factory->term->create_many( 14, array( 'taxonomy' => 'job_listing_type' ) );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+
+		$this->assertEquals( 14, $data['job_types'] );
+	}
+
+	/**
 	 * Expired jobs count.
 	 *
 	 * @since 1.30.0
