@@ -35,6 +35,16 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_status_pending_payment' => isset( $count_posts->pending_payment ) ? $count_posts->pending_payment : 0,
 			'jobs_status_preview'         => isset( $count_posts->preview ) ? $count_posts->preview : 0,
 			'jobs_status_publish'         => $count_posts->publish,
+			'jobs_location'               => self::get_jobs_count_with_meta( '_job_location' ),
+			'jobs_app_contact'            => self::get_jobs_count_with_meta( '_application' ),
+			'jobs_company_name'           => self::get_jobs_count_with_meta( '_company_name' ),
+			'jobs_company_site'           => self::get_jobs_count_with_meta( '_company_website' ),
+			'jobs_company_tagline'        => self::get_jobs_count_with_meta( '_company_tagline' ),
+			'jobs_company_twitter'        => self::get_jobs_count_with_meta( '_company_twitter' ),
+			'jobs_company_video'          => self::get_jobs_count_with_meta( '_company_video' ),
+			'jobs_expiry'                 => self::get_jobs_count_with_meta( '_job_expires' ),
+			'jobs_filled'                 => self::get_jobs_count_with_checked_meta( '_filled' ),
+			'jobs_featured'               => self::get_jobs_count_with_checked_meta( '_featured' ),
 		);
 	}
 
@@ -100,6 +110,54 @@ class WP_Job_Manager_Usage_Tracking_Data {
 				),
 			)
 		);
+
+		return $query->found_posts;
+	}
+
+	/**
+	 * Get the number of job listings where the given meta value is non-empty.
+	 *
+	 * @param string $meta_key the key for the meta value to check.
+	 *
+	 * @return int the number of job listings.
+	 */
+	private static function get_jobs_count_with_meta( $meta_key ) {
+		$query = new WP_Query( array(
+			'post_type'   => 'job_listing',
+			'post_status' => array( 'publish', 'expired' ),
+			'fields'      => 'ids',
+			'meta_query'  => array(
+				array(
+					'key'     => $meta_key,
+					'value'   => '[^[:space:]]',
+					'compare' => 'REGEXP',
+				),
+			),
+		) );
+
+		return $query->found_posts;
+	}
+
+	/**
+	 * Get the number of job listings where the given checkbox meta value is
+	 * checked.
+	 *
+	 * @param string $meta_key the key for the meta value to check.
+	 *
+	 * @return int the number of job listings.
+	 */
+	private static function get_jobs_count_with_checked_meta( $meta_key ) {
+		$query = new WP_Query( array(
+			'post_type'   => 'job_listing',
+			'post_status' => array( 'publish', 'expired' ),
+			'fields'      => 'ids',
+			'meta_query'  => array(
+				array(
+					'key'   => $meta_key,
+					'value' => '1',
+				),
+			),
+		) );
 
 		return $query->found_posts;
 	}
