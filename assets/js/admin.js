@@ -22,9 +22,11 @@ jQuery(document).ready(function($) {
 	if ( typeof job_manager_admin !== 'undefined' ) {
 		datePickerOptions.dateFormat = job_manager_admin.date_format;
 	}
-	$( 'input.job-manager-datepicker, input#_job_expires' ).datepicker( datePickerOptions );
 
 	$( 'input.job-manager-datepicker, input#_job_expires' ).each( function(){
+		var $hidden_input = $( '<input />', { type: 'hidden', name: $(this).attr( 'name' ) } ).insertAfter( $( this ) );
+		$(this).attr( 'name', $(this).attr( 'name' ) + '-datepicker' );
+		$(this).datepicker( $.extend( {}, datePickerOptions, { altField: $hidden_input } ) );
 		if ( $(this).val() ) {
 			var dateParts = $(this).val().split("-");
 			if ( 3 === dateParts.length ) {
