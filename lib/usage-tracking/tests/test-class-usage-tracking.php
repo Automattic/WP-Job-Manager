@@ -335,6 +335,46 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 	/* END tests for tracking opt in dialog */
 
+	/* Tests for system data */
+
+	/**
+	 * Tests the basic structure for collected system data.
+	 *
+	 * @covers {Prefix}_Usage_Tracking::get_system_data
+	 * @group track-system-data
+	 */
+	public function testSystemDataStructure() {
+		global $wp_version;
+
+		$system_data = 		$this->usage_tracking->get_system_data();
+
+		$this->assertInternalType( 'array', $system_data, 'System data must be returned as an array' );
+
+		$this->assertArrayHasKey( 'wp_version', $system_data, '`wp_version` key must exist in system data' );
+		$this->assertEquals( $wp_version, $system_data['wp_version'], '`wp_version` does not match expected value' );
+
+		$this->assertArrayHasKey( 'php_version', $system_data, '`php_version` key must exist in system data' );
+		$this->assertEquals( PHP_VERSION, $system_data['php_version'], '`php_version` does not match expected value' );
+
+		$this->assertArrayHasKey( 'locale', $system_data, '`locale` key must exist in system data' );
+		$this->assertEquals( get_locale(), $system_data['locale'], '`locale` does not match expected value' );
+
+		$this->assertArrayHasKey( 'multisite', $system_data, '`multisite` key must exist in system data' );
+		$this->assertEquals( is_multisite(), $system_data['multisite'], '`multisite` does not match expected value' );
+
+		/**
+		 * @var WP_Theme $theme Current active theme.
+		 */
+		$theme = wp_get_theme();
+
+		$this->assertArrayHasKey( 'active_theme', $system_data, '`active_theme` key must exist in system data' );
+		$this->assertEquals( $theme['Name'], $system_data['active_theme'], '`active_theme` does not match expected value' );
+
+		$this->assertArrayHasKey( 'active_theme_version', $system_data, '`active_theme_version` key must exist in system data' );
+		$this->assertEquals( $theme['Version'], $system_data['active_theme_version'], '`active_theme_version` does not match expected value' );
+	}
+
+	/* END tests for system data */
 
 	/****** Helper methods ******/
 
