@@ -100,6 +100,72 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Count of job categories.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_job_categories_count() {
+		$terms = $this->factory->term->create_many( 14, array( 'taxonomy' => 'job_listing_category' ) );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+
+		$this->assertEquals( 14, $data['job_categories'] );
+	}
+
+	/**
+	 * Count of job categories.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_no_job_categories_count() {
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+
+		$this->assertEquals( 0, $data['job_categories'] );
+	}
+
+	/**
+	 * Count of job categories that have a description.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_job_category_has_description_count
+	 */
+	public function test_get_job_category_has_description_count() {
+		// Create some terms with varying descriptions.
+		$valid   = $this->factory->term->create_many(
+			2, array(
+				'taxonomy'    => 'job_listing_category',
+				'description' => ' Valid description ',
+			)
+		);
+		$invalid = $this->factory->term->create(
+			array(
+				'taxonomy'    => 'job_listing_category',
+				'description' => "\t\n",
+			)
+		);
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+
+		$this->assertEquals( 2, $data['job_categories_desc'] );
+	}
+
+	/**
+	 * Count of job categories that have a description.
+	 *
+	 * @since 1.30.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_job_category_has_description_count
+	 */
+	public function test_get_no_job_category_has_description_count() {
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+
+		$this->assertEquals( 0, $data['job_categories_desc'] );
+	}
+
+	/**
 	 * Expired jobs count.
 	 *
 	 * @since 1.30.0

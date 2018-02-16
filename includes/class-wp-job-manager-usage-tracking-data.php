@@ -24,10 +24,17 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return array Usage data.
 	 **/
 	public static function get_usage_data() {
+		$categories  = 0;
 		$count_posts = wp_count_posts( 'job_listing' );
+
+		if ( taxonomy_exists( 'job_listing_category' ) ) {
+			$categories = wp_count_terms( 'job_listing_category', array( 'hide_empty' => false ) );
+		}
 
 		return array(
 			'employers'                   => self::get_employer_count(),
+			'job_categories'              => $categories,
+			'job_categories_desc'         => self::get_job_category_has_description_count(),
 			'jobs_type'                   => self::get_job_type_count(),
 			'jobs_logo'                   => self::get_company_logo_count(),
 			'jobs_status_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
@@ -62,6 +69,36 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		);
 
 		return $employer_query->total_users;
+	}
+
+	/**
+	 * Get the number of job categories that have a description.
+	 *
+	 * @since 1.30.0
+	 *
+	 * @return int Number of job categories with a description.
+	 **/
+	private static function get_job_category_has_description_count() {
+		if ( ! taxonomy_exists( 'job_listing_category' ) ) {
+			return 0;
+		}
+
+		$count = 0;
+		$terms = get_terms(
+			'job_listing_category', array(
+				'hide_empty' => false,
+			)
+		);
+
+		foreach ( $terms as $term ) {
+			$description = isset( $term->description ) ? trim( $term->description ) : '';
+
+			if ( ! empty( $description ) ) {
+				$count++;
+			}
+		}
+
+		return $count;
 	}
 
 	/**
