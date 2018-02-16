@@ -234,6 +234,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_jobs_by_type_count
 	 */
 	public function test_get_freelance_jobs_count() {
+		$this->create_default_job_listings();
+
 		wp_set_object_terms( $this->draft[0], 'freelance', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[5], 'freelance', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[6], 'freelance', 'job_listing_type', false );
@@ -254,6 +256,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_jobs_by_type_count
 	 */
 	public function test_get_full_time_jobs_count() {
+		$this->create_default_job_listings();
+
 		wp_set_object_terms( $this->draft[0], 'full-time', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[5], 'full-time', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[6], 'full-time', 'job_listing_type', false );
@@ -274,6 +278,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_jobs_by_type_count
 	 */
 	public function test_get_internship_jobs_count() {
+		$this->create_default_job_listings();
+
 		wp_set_object_terms( $this->draft[0], 'internship', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[5], 'internship', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[6], 'internship', 'job_listing_type', false );
@@ -294,6 +300,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_jobs_by_type_count
 	 */
 	public function test_get_part_time_jobs_count() {
+		$this->create_default_job_listings();
+
 		wp_set_object_terms( $this->draft[0], 'part-time', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[5], 'part-time', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[6], 'part-time', 'job_listing_type', false );
@@ -314,6 +322,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_jobs_by_type_count
 	 */
 	public function test_get_temporary_jobs_count() {
+		$this->create_default_job_listings();
+
 		wp_set_object_terms( $this->draft[0], 'temporary', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[5], 'temporary', 'job_listing_type', false );
 		wp_set_object_terms( $this->expired[6], 'temporary', 'job_listing_type', false );
@@ -628,34 +638,40 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 *
 	 * @param string $meta_name  the name of the meta parameter to set.
 	 * @param string $meta_value the desired value of the meta parameter.
-	 * @param int $published     the number of published listings to create.
-	 * @param int $expired       the number of expired listings to create.
-	 * @param int $other_values  other values for which to create listings (optional).
+	 * @param int    $published     the number of published listings to create.
+	 * @param int    $expired       the number of expired listings to create.
+	 * @param int    $other_values  other values for which to create listings (optional).
 	 */
 	private function create_job_listings_with_meta( $meta_name, $meta_value, $published, $expired, $other_values = array() ) {
 		// Create published listings.
-		$this->factory->job_listing->create_many( $published, array(
-			'meta_input' => array(
-				$meta_name => $meta_value,
-			),
-		) );
+		$this->factory->job_listing->create_many(
+			$published, array(
+				'meta_input' => array(
+					$meta_name => $meta_value,
+				),
+			)
+		);
 
 		// Create expired listings.
-		$this->factory->job_listing->create_many( $expired, array(
-			'post_status' => 'expired',
-			'meta_input' => array(
-				$meta_name => $meta_value,
-			),
-		) );
+		$this->factory->job_listing->create_many(
+			$expired, array(
+				'post_status' => 'expired',
+				'meta_input'  => array(
+					$meta_name => $meta_value,
+				),
+			)
+		);
 
 		// Create listings with empty values.
 		$empty_values = array( '', '   ', "\n\t", " \n \t " );
 		foreach ( $empty_values as $val ) {
-			$this->factory->job_listing->create( array(
-				'meta_input' => array(
-					$meta_name => $val,
-				),
-			) );
+			$this->factory->job_listing->create(
+				array(
+					'meta_input' => array(
+						$meta_name => $val,
+					),
+				)
+			);
 		}
 
 		// Create listings with other statuses.
@@ -668,7 +684,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 				),
 			);
 
-			if ( 'future' == $status ) {
+			if ( 'future' === $status ) {
 				$params['post_date'] = '3018-02-15 00:00:00';
 			}
 
@@ -677,11 +693,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		// Create listings with other values.
 		foreach ( $other_values as $val ) {
-			$this->factory->job_listing->create( array(
-				'meta_input' => array(
-					$meta_name => $val,
+			$this->factory->job_listing->create(
+				array(
+					'meta_input' => array(
+						$meta_name => $val,
+					),
 				)
-			) );
+			);
 		}
 	}
 }
