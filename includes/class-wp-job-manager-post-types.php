@@ -197,7 +197,14 @@ class WP_Job_Manager_Post_Types {
 		$singular  = __( 'Job', 'wp-job-manager' );
 		$plural    = __( 'Jobs', 'wp-job-manager' );
 
-		if ( current_theme_supports( 'job-manager-templates' ) ) {
+		/**
+		 * Set whether to add archive page support when registering the job listing post type.
+		 *
+		 * @since 1.30.0
+		 *
+		 * @param bool $enable_job_archive_page
+		 */
+		if ( apply_filters( 'job_manager_enable_job_archive_page', current_theme_supports( 'job-manager-templates' ) ) ) {
 			$has_archive = _x( 'jobs', 'Post type archive slug - resave permalinks after changing this', 'wp-job-manager' );
 		} else {
 			$has_archive = false;
