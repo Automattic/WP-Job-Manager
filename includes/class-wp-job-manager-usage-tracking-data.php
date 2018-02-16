@@ -56,6 +56,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_featured'               => self::get_jobs_count_with_checked_meta( '_featured' ),
 			'jobs_filled'                 => self::get_jobs_count_with_checked_meta( '_filled' ),
 			'jobs_freelance'              => self::get_jobs_by_type_count( 'freelance' ),
+			'jobs_full_time'              => self::get_jobs_by_type_count( 'full-time' ),
 			'jobs_location'               => self::get_jobs_count_with_meta( '_job_location' ),
 			'jobs_logo'                   => self::get_company_logo_count(),
 			'jobs_status_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
