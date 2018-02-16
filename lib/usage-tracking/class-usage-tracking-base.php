@@ -311,7 +311,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Hide the opt-in for enabling usage tracking.
 	 **/
-	private function hide_tracking_opt_in() {
+	protected function hide_tracking_opt_in() {
 		update_option( $this->hide_tracking_opt_in_option_name, true );
 	}
 
