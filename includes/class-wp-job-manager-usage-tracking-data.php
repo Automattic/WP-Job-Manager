@@ -36,6 +36,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'job_categories'              => $categories,
 			'job_categories_desc'         => self::get_job_category_has_description_count(),
 			'job_types'                   => wp_count_terms( 'job_listing_type', array( 'hide_empty' => false ) ),
+			'job_types_desc'              => self::get_job_type_has_description_count(),
 			'jobs_type'                   => self::get_job_type_count(),
 			'jobs_logo'                   => self::get_company_logo_count(),
 			'jobs_status_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
@@ -95,6 +96,33 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count = 0;
 		$terms = get_terms(
 			'job_listing_category', array(
+				'hide_empty' => false,
+			)
+		);
+
+		foreach ( $terms as $term ) {
+			$description = isset( $term->description ) ? trim( $term->description ) : '';
+
+			if ( ! empty( $description ) ) {
+				$count++;
+			}
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Get the number of job types that have a description.
+	 *
+	 * @since 1.30.0
+	 *
+	 * @return int Number of job types with a description.
+	 **/
+	private static function get_job_type_has_description_count() {
+		$count = 0;
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'job_listing_type',
 				'hide_empty' => false,
 			)
 		);
