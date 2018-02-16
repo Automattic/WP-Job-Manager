@@ -48,7 +48,7 @@ class WP_Job_Manager_Setup {
 	 * Adds setup link to admin dashboard menu briefly so the page callback is registered.
 	 */
 	public function admin_menu() {
-		add_dashboard_page( __( 'Setup', 'wp-job-manager' ), __( 'Setup', 'wp-job-manager' ), 'manage_options', 'job-manager-setup', array( $this, 'output' ) );
+		add_dashboard_page( __( 'Setup', 'wp-job-manager' ), __( 'Setup', 'wp-job-manager' ), 'manage_options', 'job-manager-setup', array( $this, 'setup_page' ) );
 	}
 
 	/**
@@ -120,6 +120,61 @@ class WP_Job_Manager_Setup {
 	}
 
 	/**
+	 * Handle request to the setup page.
+	 */
+	public function setup_page() {
+		$usage_tracking = WP_Job_Manager_Usage_Tracking::get_instance();
+
+		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+			$enable = isset( $_POST['job_manager_usage_tracking_enabled'] )
+				&& '1' === $_POST['job_manager_usage_tracking_enabled'];
+
+			$nonce       = isset( $_POST['nonce'] ) ? $_POST['nonce'] : null;
+			$valid_nonce = wp_verify_nonce( $_POST['nonce'], 'enable-usage-tracking' );
+
+			if ( $valid_nonce ) {
+				$usage_tracking->set_tracking_enabled( $enable );
+				$usage_tracking->hide_tracking_opt_in();
+			}
+		}
+
+		$this->output();
+	}
+
+	/**
+	 * Usage tracking opt in text for setup page.
+	 */
+	private function opt_in_text() {
+		return WP_Job_Manager_Usage_Tracking::get_instance()->opt_in_checkbox_text();
+	}
+
+	/**
+	 * Output opt-in checkbox if usage tracking isn't already enabled.
+	 */
+	private function maybe_output_opt_in_checkbox() {
+		// Only show the checkbox if we aren't already opted in.
+		$usage_tracking = WP_Job_Manager_Usage_Tracking::get_instance();
+		if ( ! $usage_tracking->get_tracking_enabled() ) {
+			?>
+			<p>
+				<label>
+					<input
+						type="checkbox"
+						name="job_manager_usage_tracking_enabled"
+						value="1" />
+					<?php
+					echo wp_kses(
+						$this->opt_in_text(),
+						$usage_tracking->opt_in_dialog_text_allowed_html()
+					);
+					?>
+				</label>
+			</p>
+			<?php
+		}
+	}
+
+	/**
 	 * Displays setup page.
 	 */
 	public function output() {
@@ -161,10 +216,16 @@ class WP_Job_Manager_Setup {
 				<p><?php _e( 'This setup wizard will walk you through the process of creating pages for job submissions, management, and listings.', 'wp-job-manager' ); ?></p>
 				<p><?php printf( __( 'If you\'d prefer to skip this and set up your pages manually, our %sdocumentation%s will walk you through each step.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
 
-				<p class="submit">
-					<a href="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>" class="button button-primary"><?php _e( 'Start setup', 'wp-job-manager' ); ?></a>
-					<a href="<?php echo esc_url( add_query_arg( 'skip-job-manager-setup', 1, admin_url( 'index.php?page=job-manager-setup&step=3' ) ) ); ?>" class="button"><?php _e( 'Skip setup. I will set up the plugin manually.', 'wp-job-manager' ); ?></a>
-				</p>
+				<form method="post" action="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>">
+					<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'enable-usage-tracking' ) ); ?>" />
+
+					<?php $this->maybe_output_opt_in_checkbox(); ?>
+
+					<p class="submit">
+						<input type="submit" value="<?php esc_html_e( 'Start setup', 'wp-job-manager' ); ?>" class="button button-primary" />
+						<a href="<?php echo esc_url( add_query_arg( 'skip-job-manager-setup', 1, admin_url( 'index.php?page=job-manager-setup&step=3' ) ) ); ?>" class="button"><?php esc_html_e( 'Skip setup. I will set up the plugin manually.', 'wp-job-manager' ); ?></a>
+					</p>
+				</form>
 
 			<?php endif; ?>
 			<?php if ( 2 === $step ) : ?>

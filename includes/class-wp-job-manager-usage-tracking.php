@@ -20,6 +20,11 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 
 		// Add filter for settings.
 		add_filter( 'job_manager_settings', array( $this, 'add_setting_field' ) );
+
+		// In the setup wizard, do not display the normal opt-in dialog.
+		if ( isset( $_GET['page'] ) && 'job-manager-setup' === $_GET['page'] ) {
+			remove_action( 'admin_notices', array( $this, 'maybe_display_tracking_opt_in' ) );
+		}
 	}
 
 	/*
@@ -38,11 +43,11 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		return 'wp-job-manager';
 	}
 
-	protected function get_tracking_enabled() {
-		return get_option( self::WPJM_SETTING_NAME  ) || false;
+	public function get_tracking_enabled() {
+		return get_option( self::WPJM_SETTING_NAME ) || false;
 	}
 
-	protected function set_tracking_enabled( $enable ) {
+	public function set_tracking_enabled( $enable ) {
 		update_option( self::WPJM_SETTING_NAME, $enable );
 	}
 
@@ -59,6 +64,34 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 
 
 	/*
+	 * Public functions.
+	 */
+
+	public function hide_tracking_opt_in() {
+		parent::hide_tracking_opt_in();
+	}
+
+	public function opt_in_dialog_text_allowed_html() {
+		return parent::opt_in_dialog_text_allowed_html();
+	}
+
+	public function opt_in_checkbox_text() {
+		return sprintf(
+
+			/*
+			 * translators: the href tag contains the URL for the page
+			 * telling users what data WPJM tracks.
+			 */
+			__(
+				'Help us make WP Job Manager better by allowing us to collect
+				<a href="%s" target="_blank">usage tracking data</a>.
+				No sensitive information is collected.', 'wp-job-manager'
+			), self::WPJM_TRACKING_INFO_URL
+		);
+	}
+
+
+	/*
 	 * Hooks.
 	 */
 
@@ -69,13 +102,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 			'type'     => 'checkbox',
 			'desc'     => '',
 			'label'    => __( 'Enable usage tracking', 'wp-job-manager' ),
-			'cb_label' => sprintf(
-				__(
-					'Help us make WP Job Manager better by allowing us to collect
-					<a href="%s" target="_blank">usage tracking data</a>.
-					No sensitive information is collected.', 'wp-job-manager'
-				), self::WPJM_TRACKING_INFO_URL
-			),
+			'cb_label' => $this->opt_in_checkbox_text(),
 		);
 
 		return $fields;

@@ -311,7 +311,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Hide the opt-in for enabling usage tracking.
 	 **/
-	private function hide_tracking_opt_in() {
+	protected function hide_tracking_opt_in() {
 		update_option( $this->hide_tracking_opt_in_option_name, true );
 	}
 
@@ -320,7 +320,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *
 	 * @return bool true if the opt-in is hidden, false otherwise.
 	 **/
-	private function is_opt_in_hidden() {
+	protected function is_opt_in_hidden() {
 		return (bool) get_option( $this->hide_tracking_opt_in_option_name );
 	}
 
@@ -330,7 +330,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *
 	 * @return array the html tags.
 	 **/
-	private function opt_in_dialog_text_allowed_html() {
+	protected function opt_in_dialog_text_allowed_html() {
 		return array(
 			'a'      => array(
 				'href'  => array(),
