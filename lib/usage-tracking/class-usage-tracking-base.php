@@ -284,11 +284,12 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 			return;
 		}
 
-		return self::send_event( 'stats_log', $usage_data );
+		self::send_event( 'system_log', $this->get_system_data() );
+		self::send_event( 'stats_log', $usage_data );
 	}
 
 
-	/*
+	/**
 	 * Internal methods.
 	 */
 
@@ -315,6 +316,70 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		);
 
 		return $schedules;
+	}
+
+	/**
+	 * Collect system data to track.
+	 *
+	 * @return array
+	 */
+	public function get_system_data() {
+		global $wp_version;
+
+		/**
+		 * @var WP_Theme $theme Current active theme.
+		 */
+		$theme = wp_get_theme();
+
+		$system_data                         = array();
+		$system_data['wp_version']           = $wp_version;
+		$system_data['php_version']          = PHP_VERSION;
+		$system_data['locale']               = get_locale();
+		$system_data['multisite']            = is_multisite() ? 1 : 0;
+		$system_data['active_theme']         = $theme['Name'];
+		$system_data['active_theme_version'] = $theme['Version'];
+
+		$plugin_data = $this->get_plugin_data();
+		foreach ( $plugin_data as $plugin_name => $plugin_version ) {
+			$system_data[ self::PLUGIN_PREFIX . $plugin_name ] = $plugin_version;
+		}
+
+		return $system_data;
+	}
+
+	/**
+	 * Gets a list of activated plugins.
+	 *
+	 * @return array List of plugins. Index is friendly name, value is version.
+	 */
+	protected function get_plugin_data() {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$plugins = array();
+		foreach ( get_plugins() as $path => $plugin ) {
+			if ( ! is_plugin_active( $path ) ) {
+				continue;
+			}
+			$plugin_name                      = $this->get_plugin_name( plugin_basename( $path ) );
+			$plugin_friendly_name             = preg_replace( '/[^a-zA-Z0-9\-]/', '_', $plugin_name );
+			$plugins[ $plugin_friendly_name ] = $plugin['Version'];
+		}
+		return $plugins;
+	}
+
+	/**
+	 * Returns a friendly slug for a plugin.
+	 *
+	 * @param string $basename Plugin basename.
+	 *
+	 * @return string
+	 */
+	private function get_plugin_name( $basename ) {
+		if ( false === strpos( $basename, '/' ) ) {
+			return basename( $basename, '.php' );
+		}
+		return dirname( $basename );
 	}
 
 	/**
