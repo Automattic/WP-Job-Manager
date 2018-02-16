@@ -145,18 +145,7 @@ class WP_Job_Manager_Setup {
 	 * Usage tracking opt in text for setup page.
 	 */
 	private function opt_in_text() {
-		return sprintf(
-
-			/*
-			 * translators: the href tag contains the URL for the page
-			 * telling users what data WPJM tracks.
-			 */
-			__(
-				'Check the box below to allow us to collect <a href="%s" target="_blank">usage tracking data</a>.  No sensitive information is collected.',
-				'wp-job-manager'
-			),
-			WP_Job_Manager_Usage_Tracking::WPJM_TRACKING_INFO_URL
-		);
+		return WP_Job_Manager_Usage_Tracking::get_instance()->opt_in_checkbox_text();
 	}
 
 	/**
@@ -168,24 +157,17 @@ class WP_Job_Manager_Setup {
 		if ( ! $usage_tracking->get_tracking_enabled() ) {
 			?>
 			<p>
-				<strong>
-					<?php esc_html_e( 'Help us make WP Job Manager better!', 'wp-job-manager' ); ?>
-				</strong>
-				<?php
-				echo wp_kses(
-					$this->opt_in_text(),
-					$usage_tracking->opt_in_dialog_text_allowed_html()
-				);
-				?>
-			</p>
-
-			<p>
 				<label>
 					<input
 						type="checkbox"
 						name="job_manager_usage_tracking_enabled"
 						value="1" />
-					<?php esc_html_e( 'Enable Usage Tracking.', 'wp-job-manager' ); ?>
+					<?php
+					echo wp_kses(
+						$this->opt_in_text(),
+						$usage_tracking->opt_in_dialog_text_allowed_html()
+					);
+					?>
 				</label>
 			</p>
 			<?php

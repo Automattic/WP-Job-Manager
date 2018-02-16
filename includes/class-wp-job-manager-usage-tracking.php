@@ -75,6 +75,21 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		return parent::opt_in_dialog_text_allowed_html();
 	}
 
+	public function opt_in_checkbox_text() {
+		return sprintf(
+
+			/*
+			 * translators: the href tag contains the URL for the page
+			 * telling users what data WPJM tracks.
+			 */
+			__(
+				'Help us make WP Job Manager better by allowing us to collect
+				<a href="%s" target="_blank">usage tracking data</a>.
+				No sensitive information is collected.', 'wp-job-manager'
+			), self::WPJM_TRACKING_INFO_URL
+		);
+	}
+
 
 	/*
 	 * Hooks.
@@ -87,13 +102,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 			'type'     => 'checkbox',
 			'desc'     => '',
 			'label'    => __( 'Enable usage tracking', 'wp-job-manager' ),
-			'cb_label' => sprintf(
-				__(
-					'Help us make WP Job Manager better by allowing us to collect
-					<a href="%s" target="_blank">usage tracking data</a>.
-					No sensitive information is collected.', 'wp-job-manager'
-				), self::WPJM_TRACKING_INFO_URL
-			),
+			'cb_label' => $this->opt_in_checkbox_text(),
 		);
 
 		return $fields;
