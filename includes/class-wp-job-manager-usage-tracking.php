@@ -36,7 +36,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	protected function get_prefix() {
-		return 'wpjm';
+		return 'job_manager';
 	}
 
 	protected function get_text_domain() {
