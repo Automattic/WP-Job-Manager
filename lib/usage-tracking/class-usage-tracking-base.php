@@ -191,7 +191,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		}
 
 		$pixel      = 'http://pixel.wp.com/t.gif';
-		$event_name = $this->get_prefix() . '_' . $event;
+		$event_name = $this->get_event_prefix() . '_' . $event;
 		$user       = wp_get_current_user();
 
 		if ( null === $event_timestamp ) {
@@ -199,7 +199,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		}
 
 		$properties['admin_email'] = get_option( 'admin_email' );
-		$properties['_ut']         = $this->get_prefix() . ':site_url';
+		$properties['_ut']         = $this->get_event_prefix() . ':site_url';
 		// Use site URL as the userid to enable usage tracking at the site level.
 		// Note that we would likely want to use site URL + user ID for userid if we were
 		// to ever add event tracking at the user level.
@@ -221,7 +221,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 				'timeout'     => 1,
 				'redirection' => 2,
 				'httpversion' => '1.1',
-				'user-agent'  => $this->get_prefix() . '_usage_tracking',
+				'user-agent'  => $this->get_event_prefix() . '_usage_tracking',
 			)
 		);
 
@@ -291,6 +291,15 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/*
 	 * Internal methods.
 	 */
+
+	/**
+	 * Get the prefix for the event-related values. By default, this is the
+	 * same prefix used everywhere else, but plugins may override this if
+	 * needed.
+	 */
+	protected function get_event_prefix() {
+		return $this->get_prefix();
+	}
 
 	/**
 	 * Add two week schedule to use for cron job. Should not be called
