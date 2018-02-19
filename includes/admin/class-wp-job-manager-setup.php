@@ -130,7 +130,7 @@ class WP_Job_Manager_Setup {
 				&& '1' === $_POST['job_manager_usage_tracking_enabled'];
 
 			$nonce       = isset( $_POST['nonce'] ) ? $_POST['nonce'] : null;
-			$valid_nonce = wp_verify_nonce( $_POST['nonce'], 'enable-usage-tracking' );
+			$valid_nonce = wp_verify_nonce( $nonce, 'enable-usage-tracking' );
 
 			if ( $valid_nonce ) {
 				$usage_tracking->set_tracking_enabled( $enable );
