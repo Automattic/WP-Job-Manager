@@ -11,14 +11,14 @@ Usage_Tracking_Test_Subclass::get_instance();
  * plugin.
  */
 class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
+	private $event_counts = array();
+	private $track_http_request = array();
 
 	public function setUp() {
 		parent::setUp();
 		// Update the class name here to match the Usage Tracking class.
 		$this->usage_tracking = Usage_Tracking_Test_Subclass::get_instance();
-		$this->usage_tracking->set_callback( function() {
-			return array( 'testing' => true );
-		} );
+		$this->usage_tracking->set_callback( array( $this, 'basicDataCallback' ) );
 	}
 
 	/**
@@ -40,24 +40,18 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		wp_clear_scheduled_hook( $this->usage_tracking->get_prefix() . '_usage_tracking_send_usage_data' );
 
 		// Record how many times the event is scheduled
-		$prefix = $this->usage_tracking->get_prefix();
-		$event_count = 0;
-		add_filter( 'schedule_event', function( $event ) use ( &$event_count, $prefix ) {
-			if ( $event->hook === $prefix . '_usage_tracking_send_usage_data' ) {
-				$event_count++;
-			}
-			return $event;
-		} );
+		$this->event_counts['schedule_event'] = 0;
+		add_filter( 'schedule_event', array( $this, 'countScheduleEvent' ) );
 
 		// Should successfully schedule the task
 		$this->assertFalse( wp_get_schedule( $this->usage_tracking->get_prefix() . '_usage_tracking_send_usage_data' ), 'Not scheduled initial' );
 		$this->usage_tracking->schedule_tracking_task();
 		$this->assertNotFalse( wp_get_schedule( $this->usage_tracking->get_prefix() . '_usage_tracking_send_usage_data' ), 'Schedules a job' );
-		$this->assertEquals( 1, $event_count, 'Schedules only one job' );
+		$this->assertEquals( 1, $this->event_counts['schedule_event'], 'Schedules only one job' );
 
 		// Should not duplicate when called again
 		$this->usage_tracking->schedule_tracking_task();
-		$this->assertEquals( 1, $event_count, 'Does not schedule an additional job' );
+		$this->assertEquals( 1, $this->event_counts['schedule_event'], 'Does not schedule an additional job' );
 	}
 
 	/* Test ajax request cases */
@@ -104,11 +98,8 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$_POST['enable_tracking'] = '1';
 
 		// Count the number of network requests
-		$count = 0;
-		add_filter( 'pre_http_request', function() use ( &$count ) {
-			$count++;
-			return new WP_Error();
-		} );
+		$this->event_counts['http_request'] = 0;
+		add_filter( 'pre_http_request', array( $this, 'countHttpRequest' ) );
 
 		try {
 			$this->usage_tracking->handle_tracking_opt_in();
@@ -117,7 +108,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 			$this->assertEquals( array(), $wp_die_args['args'], 'wp_die call has no non-success status' );
 		}
 
-		$this->assertEquals( 1, $count, 'Data was sent on usage tracking enable' );
+		$this->assertEquals( 1, $this->event_counts['http_request'], 'Data was sent on usage tracking enable' );
 	}
 
 	/**
@@ -211,33 +202,33 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		// Capture the network request, save the request URL and arguments, and
 		// simulate a WP_Error
-		$request_params = null;
-		$request_url    = null;
-		add_filter( 'pre_http_request', function( $preempt, $r, $url ) use ( &$request_params, &$request_url ) {
-			$request_params = $r;
-			$request_url    = $url;
-			return new WP_Error();
-		}, 10, 3 );
+		$this->track_http_request['request_params'] = null;
+		$this->track_http_request['request_url']    = null;
+		add_filter( 'pre_http_request', array( $this, 'trackHttpRequest' ), 10, 3 );
 
 		$this->usage_tracking->send_event( 'my_event', $properties, $timestamp );
 
-		$parsed_url = parse_url( $request_url );
+		$parsed_url = parse_url( $this->track_http_request['request_url'] );
 
 		$this->assertEquals( 'pixel.wp.com', $parsed_url['host'], 'Host' );
 		$this->assertEquals( '/t.gif', $parsed_url['path'], 'Path' );
 
 		$query = array();
 		parse_str( $parsed_url['query'], $query );
-		$this->assertArraySubset( array(
-			'button_clicked' => 'my_button',
-			'admin_email'    => 'admin@example.org',
-			'_ut'            => $this->usage_tracking->get_prefix() . ':site_url',
-			'_ui'            => 'http://example.org',
-			'_ul'            => '',
-			'_en'            => $this->usage_tracking->get_prefix() . '_my_event',
-			'_ts'            => '1234000',
-			'_'              => '_',
-		), $query, 'Query parameters' );
+
+		// Older versions (for PHP 5.2) of PHPUnit do not have this method
+		if ( method_exists( $this, 'assertArraySubset' ) ) {
+			$this->assertArraySubset( array(
+				'button_clicked' => 'my_button',
+				'admin_email'    => 'admin@example.org',
+				'_ut'            => $this->usage_tracking->get_prefix() . ':site_url',
+				'_ui'            => 'http://example.org',
+				'_ul'            => '',
+				'_en'            => $this->usage_tracking->get_prefix() . '_my_event',
+				'_ts'            => '1234000',
+				'_'              => '_',
+			), $query, 'Query parameters' );
+		}
 	}
 
 	/**
@@ -257,14 +248,11 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->usage_tracking->set_tracking_enabled( false );
 
 		// Count network requests
-		$count = 0;
-		add_filter( 'pre_http_request', function() use ( &$count ) {
-			$count++;
-			return new WP_Error();
-		} );
+		$this->event_counts['http_request'] = 0;
+		add_filter( 'pre_http_request', array( $this, 'countHttpRequest' ) );
 
 		$this->usage_tracking->send_event( 'my_event', $properties, $timestamp );
-		$this->assertEquals( 0, $count, 'No request when disabled' );
+		$this->assertEquals( 0, $this->event_counts['http_request'], 'No request when disabled' );
 	}
 
 	/**
@@ -273,23 +261,19 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 * @covers {Prefix}_Usage_Tracking::maybe_send_usage_data
 	 */
 	public function testSendUsageData() {
-		$count = 0;
-
 		// Count the number of network requests
-		add_filter( 'pre_http_request', function() use ( &$count ) {
-			$count++;
-			return new WP_Error();
-		} );
+		$this->event_counts['http_request'] = 0;
+		add_filter( 'pre_http_request', array( $this, 'countHttpRequest' ) );
 
 		// Setting is not set, ensure the request is not sent.
 		$this->usage_tracking->send_usage_data();
-		$this->assertEquals( 0, $count, 'Request not sent when Usage Tracking disabled' );
+		$this->assertEquals( 0, $this->event_counts['http_request'], 'Request not sent when Usage Tracking disabled' );
 
 		// Set the setting and ensure request is sent.
 		$this->usage_tracking->set_tracking_enabled( true );
 
 		$this->usage_tracking->send_usage_data();
-		$this->assertEquals( 1, $count, 'Request sent when Usage Tracking enabled' );
+		$this->assertEquals( 1, $this->event_counts['http_request'], 'Request sent when Usage Tracking enabled' );
 	}
 
 	/* Tests for tracking opt in dialog */
@@ -357,7 +341,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 */
 	private function setupAjaxRequest() {
 		// Simulate an ajax request
-		add_filter( 'wp_doing_ajax', function() { return true; } );
+		add_filter( 'wp_doing_ajax', '__return_true' );
 
 		// Set up nonce
 		$_REQUEST['nonce'] = wp_create_nonce( 'tracking-opt-in' );
@@ -367,13 +351,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		// When wp_die is called, save the args and throw an exception to stop
 		// execution.
-		add_filter( 'wp_die_ajax_handler', function() {
-			return function( $message, $title, $args ) {
-				$e = new WP_Die_Exception( 'wp_die called' );
-				$e->set_wp_die_args( $message, $title, $args );
-				throw $e;
-			};
-		} );
+		add_filter( 'wp_die_ajax_handler', array( $this, 'ajaxDieHandler') );
 	}
 
 	/**
@@ -402,5 +380,82 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		} else {
 			$user->remove_cap( 'manage_usage_tracking' );
 		}
+	}
+
+	/**
+	 * Callback helpers.
+	 */
+
+	/**
+	 * Basic callback for usage data.
+	 *
+	 * @return array
+	 */
+	public function basicDataCallback() {
+		return array( 'testing' => true );
+	}
+
+	/**
+	 * Sets the die handler for ajax request.
+	 *
+	 * @return array
+	 */
+	public function ajaxDieHandler() {
+		return array( $this, 'ajaxDieHandlerCallback' );
+	}
+
+	/**
+	 * Error handler for ajax requests.
+	 *
+	 * @param string $message
+	 * @param string $title
+	 * @param array  $args
+	 *
+	 * @throws WP_Die_Exception
+	 */
+	public function ajaxDieHandlerCallback( $message, $title, $args ) {
+		$e = new WP_Die_Exception( 'wp_die called' );
+		$e->set_wp_die_args( $message, $title, $args );
+		throw $e;
+	}
+
+	/**
+	 * Count the number of times an event is scheduled.
+	 *
+	 * @param object $event
+	 *
+	 * @return object
+	 */
+	public function countScheduleEvent( $event ) {
+		$prefix = $this->usage_tracking->get_prefix();
+		if ( $event->hook === $prefix . '_usage_tracking_send_usage_data' ) {
+			$this->event_counts['schedule_event']++;
+		}
+		return $event;
+	}
+
+	/**
+	 * Count the number of HTTP requests.
+	 *
+	 * @return WP_Error
+	 */
+	public function countHttpRequest() {
+		$this->event_counts['http_request']++;
+		return new WP_Error();
+	}
+
+	/**
+	 * Track HTTP request params and URL.
+	 *
+	 * @param string $preempt
+	 * @param array  $r
+	 * @param string $url
+	 *
+	 * @return WP_Error
+	 */
+	public function trackHttpRequest( $preempt, $r, $url ) {
+		$this->track_http_request['request_params'] = $r;
+		$this->track_http_request['request_url']    = $url;
+		return new WP_Error();
 	}
 }
