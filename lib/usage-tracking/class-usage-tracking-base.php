@@ -399,6 +399,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return string
 	 */
 	private function get_plugin_name( $basename ) {
+		$basename = strtolower( $basename );
 		if ( false === strpos( $basename, '/' ) ) {
 			return basename( $basename, '.php' );
 		}
