@@ -677,6 +677,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 			if ( 'future' == $status ) {
 				$params['post_date'] = '3018-02-15 00:00:00';
 			}
+
+			$this->factory->job_listing->create( $params );
 		}
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
