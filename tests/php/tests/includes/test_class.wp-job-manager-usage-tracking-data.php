@@ -658,7 +658,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 				'post_status' => $status,
 			);
 
-			if ( 'future' == $status ) {
+			if ( 'future' === $status ) {
 				$params['post_date'] = '3018-02-15 00:00:00';
 			}
 
@@ -674,7 +674,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 				'post_status' => $status,
 			);
 
-			if ( 'future' == $status ) {
+			if ( 'future' === $status ) {
 				$params['post_date'] = '3018-02-15 00:00:00';
 			}
 
@@ -693,11 +693,11 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * (such as draft). For tracking data, only the published and expired
 	 * entries should be counted.
 	 *
-	 * @param string $meta_name  the name of the meta parameter to set.
+	 * @param string $meta_name the name of the meta parameter to set.
 	 * @param string $meta_value the desired value of the meta parameter.
-	 * @param int    $published     the number of published listings to create.
-	 * @param int    $expired       the number of expired listings to create.
-	 * @param int    $other_values  other values for which to create listings (optional).
+	 * @param int    $published the number of published listings to create.
+	 * @param int    $expired the number of expired listings to create.
+	 * @param int    $other_values other values for which to create listings (optional).
 	 */
 	private function create_job_listings_with_meta( $meta_name, $meta_value, $published, $expired, $other_values = array() ) {
 		// Create published listings.
