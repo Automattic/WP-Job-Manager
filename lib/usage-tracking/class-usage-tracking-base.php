@@ -392,7 +392,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 				unset( $plugins[ $plugin_basename ] );
 			}
 		}
-		return get_plugins();
+		return $plugins;
 	}
 
 	/**
