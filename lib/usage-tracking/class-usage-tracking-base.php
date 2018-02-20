@@ -369,24 +369,27 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 */
 	protected function get_plugin_data() {
 		$plugins = array();
-		foreach ( $this->get_plugins() as $path => $plugin ) {
-			if ( ! is_plugin_active( $path ) ) {
-				continue;
-			}
-			$plugin_name                      = $this->get_plugin_name( $path );
+		foreach ( $this->get_plugins() as $plugin_basename => $plugin ) {
+			$plugin_name             = $this->get_plugin_name( $plugin_basename );
 			$plugins[ $plugin_name ] = $plugin['Version'];
 		}
 		return $plugins;
 	}
 
 	/**
-	 * Partial wrapper for for `get_plugins()` function.
+	 * Partial wrapper for for `get_plugins()` function. Filters out non-active plugins.
 	 *
 	 * @return array Key is the plugin file path and the value is an array of the plugin data.
 	 */
 	protected function get_plugins() {
 		if ( ! function_exists( 'get_plugins' ) ) {
 			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$plugins = get_plugins();
+		foreach ( $plugins as $plugin_basename => $plugin_data ) {
+			if ( ! is_plugin_active( $plugin_basename ) ) {
+				unset( $plugins[ $plugin_basename ] );
+			}
 		}
 		return get_plugins();
 	}
