@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * plugin.
  */
 abstract class WP_Job_Manager_Usage_Tracking_Base {
+	const PLUGIN_PREFIX = 'plugin_';
+
 	/*
 	 * Instance variables.
 	 */
@@ -373,7 +375,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 			if ( ! is_plugin_active( $path ) ) {
 				continue;
 			}
-			$plugin_name                      = $this->get_plugin_name( plugin_basename( $path ) );
+			$plugin_name                      = $this->get_plugin_name( $path );
 			$plugin_friendly_name             = preg_replace( '/[^a-zA-Z0-9\-]/', '_', $plugin_name );
 			$plugins[ $plugin_friendly_name ] = $plugin['Version'];
 		}
