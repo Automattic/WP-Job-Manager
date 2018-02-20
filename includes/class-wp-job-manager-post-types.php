@@ -776,6 +776,7 @@ class WP_Job_Manager_Post_Types {
 
 		$structured_data = wpjm_get_job_listing_structured_data();
 		if ( ! empty( $structured_data ) ) {
+			echo '<!-- WP Job Manager Structured Data -->' . "\r\n";
 			echo '<script type="application/ld+json">' . wp_json_encode( $structured_data ) . '</script>';
 		}
 	}
