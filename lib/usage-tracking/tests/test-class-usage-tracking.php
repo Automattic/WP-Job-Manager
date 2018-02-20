@@ -13,7 +13,7 @@ Usage_Tracking_Test_Subclass::get_instance();
  * @group usage-tracking
  */
 class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
-	private $event_counts = array();
+	private $event_counts       = array();
 	private $track_http_request = array();
 
 	public function setUp() {
@@ -195,7 +195,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	public function testSendEvent() {
 		$event      = 'my_event';
 		$properties = array(
-			'button_clicked' => 'my_button'
+			'button_clicked' => 'my_button',
 		);
 		$timestamp  = '1234';
 
@@ -220,16 +220,18 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		// Older versions (for PHP 5.2) of PHPUnit do not have this method
 		if ( method_exists( $this, 'assertArraySubset' ) ) {
-			$this->assertArraySubset( array(
-				'button_clicked' => 'my_button',
-				'admin_email'    => 'admin@example.org',
-				'_ut'            => $this->usage_tracking->get_prefix() . ':site_url',
-				'_ui'            => 'http://example.org',
-				'_ul'            => '',
-				'_en'            => $this->usage_tracking->get_prefix() . '_my_event',
-				'_ts'            => '1234000',
-				'_'              => '_',
-			), $query, 'Query parameters' );
+			$this->assertArraySubset(
+				array(
+					'button_clicked' => 'my_button',
+					'admin_email'    => 'admin@example.org',
+					'_ut'            => $this->usage_tracking->get_prefix() . ':site_url',
+					'_ui'            => 'http://example.org',
+					'_ul'            => '',
+					'_en'            => $this->usage_tracking->get_prefix() . '_my_event',
+					'_ts'            => '1234000',
+					'_'              => '_',
+				), $query, 'Query parameters'
+			);
 		}
 	}
 
@@ -242,7 +244,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	public function testSendEventWithTrackingDisabled() {
 		$event      = 'my_event';
 		$properties = array(
-			'button_clicked' => 'my_button'
+			'button_clicked' => 'my_button',
 		);
 		$timestamp  = '1234';
 
@@ -414,7 +416,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		// When wp_die is called, save the args and throw an exception to stop
 		// execution.
-		add_filter( 'wp_die_ajax_handler', array( $this, 'ajaxDieHandler') );
+		add_filter( 'wp_die_ajax_handler', array( $this, 'ajaxDieHandler' ) );
 	}
 
 	/**

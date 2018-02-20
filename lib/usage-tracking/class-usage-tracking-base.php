@@ -354,8 +354,9 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$plugin_data = $this->get_plugin_data();
 		foreach ( $plugin_data as $plugin_name => $plugin_version ) {
 			if ( $this->do_track_plugin( $plugin_name ) ) {
-				$plugin_friendly_name             = preg_replace( '/[^a-z0-9]/', '_', $plugin_name );
-				$system_data[ self::PLUGIN_PREFIX . $plugin_friendly_name ] = $plugin_version;
+				$plugin_friendly_name       = preg_replace( '/[^a-z0-9]/', '_', $plugin_name );
+				$plugin_key                 = self::PLUGIN_PREFIX . $plugin_friendly_name;
+				$system_data[ $plugin_key ] = $plugin_version;
 			}
 		}
 
@@ -434,8 +435,8 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	protected function opt_in_dialog_text_allowed_html() {
 		return array(
 			'a'      => array(
-				'href'  => array(),
-				'title' => array(),
+				'href'   => array(),
+				'title'  => array(),
 				'target' => array(),
 			),
 			'em'     => array(),
