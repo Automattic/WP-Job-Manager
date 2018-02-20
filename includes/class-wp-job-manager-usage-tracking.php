@@ -74,11 +74,11 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 			'all-in-one-seo-pack',
 			'polylang',
 			'jetpack',
-			'wordpress-seo', // Yoast
-			'sitepress-multilingual-cms', // WPML
-			'bibblio-related-posts', // Related Posts for WordPress
+			'wordpress-seo', // Yoast.
+			'sitepress-multilingual-cms', // WPML.
+			'bibblio-related-posts', // Related Posts for WordPress.
 		);
-		if ( in_array( $plugin_slug, $third_party_plugins ) ) {
+		if ( in_array( $plugin_slug, $third_party_plugins, true ) ) {
 			return true;
 		}
 		return false;

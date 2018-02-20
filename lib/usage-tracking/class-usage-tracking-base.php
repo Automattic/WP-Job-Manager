@@ -120,7 +120,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * Checks if we should send an activated plugin's installed version in the
 	 * `system_log` event.
 	 *
-	 * @param string $plugin_slug the plugin slug to check
+	 * @param string $plugin_slug the plugin slug to check.
 	 *
 	 * @return bool true if we send the version, false if not.
 	 */
@@ -339,7 +339,9 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		global $wp_version;
 
 		/**
-		 * @var WP_Theme $theme Current active theme.
+		 * Current active theme.
+		 *
+		 * @var WP_Theme $theme
 		 */
 		$theme = wp_get_theme();
 

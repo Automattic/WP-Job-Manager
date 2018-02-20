@@ -39,7 +39,7 @@ class Usage_Tracking_Test_Subclass extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	public function do_track_plugin( $plugin_slug ) {
-		if ( in_array( $plugin_slug, array( 'hello', 'test', 'my-favorite-plugin' ) ) ) {
+		if ( in_array( $plugin_slug, array( 'hello', 'test', 'my-favorite-plugin' ), true ) ) {
 			return true;
 		}
 		return false;

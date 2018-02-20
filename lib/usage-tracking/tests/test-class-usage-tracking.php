@@ -365,7 +365,9 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->assertEquals( is_multisite(), $system_data['multisite'], '`multisite` does not match expected value' );
 
 		/**
-		 * @var WP_Theme $theme Current active theme.
+		 * Current active theme.
+		 *
+		 * @var WP_Theme $theme
 		 */
 		$theme = wp_get_theme();
 
