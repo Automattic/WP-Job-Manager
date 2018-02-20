@@ -354,7 +354,8 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$plugin_data = $this->get_plugin_data();
 		foreach ( $plugin_data as $plugin_name => $plugin_version ) {
 			if ( $this->do_track_plugin( $plugin_name ) ) {
-				$system_data[ self::PLUGIN_PREFIX . $plugin_name ] = $plugin_version;
+				$plugin_friendly_name             = preg_replace( '/[^a-z0-9]/', '_', $plugin_name );
+				$system_data[ self::PLUGIN_PREFIX . $plugin_friendly_name ] = $plugin_version;
 			}
 		}
 
@@ -376,8 +377,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 				continue;
 			}
 			$plugin_name                      = $this->get_plugin_name( $path );
-			$plugin_friendly_name             = preg_replace( '/[^a-zA-Z0-9\-]/', '_', $plugin_name );
-			$plugins[ $plugin_friendly_name ] = $plugin['Version'];
+			$plugins[ $plugin_name ] = $plugin['Version'];
 		}
 		return $plugins;
 	}
