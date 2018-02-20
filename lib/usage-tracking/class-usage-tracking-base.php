@@ -114,6 +114,16 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 **/
 	abstract protected function opt_in_dialog_text();
 
+	/**
+	 * Checks if we should send an activated plugin's installed version in the
+	 * `system_log` event.
+	 *
+	 * @param string $plugin_slug the plugin slug to check
+	 *
+	 * @return bool true if we send the version, false if not.
+	 */
+	abstract protected function do_track_plugin( $plugin_slug );
+
 
 	/*
 	 * Initialization.
@@ -341,7 +351,9 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 
 		$plugin_data = $this->get_plugin_data();
 		foreach ( $plugin_data as $plugin_name => $plugin_version ) {
-			$system_data[ self::PLUGIN_PREFIX . $plugin_name ] = $plugin_version;
+			if ( $this->do_track_plugin( $plugin_name ) ) {
+				$system_data[ self::PLUGIN_PREFIX . $plugin_name ] = $plugin_version;
+			}
 		}
 
 		return $system_data;
