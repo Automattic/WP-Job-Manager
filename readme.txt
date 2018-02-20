@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic, adamkheckler, annezazu, cena, chaselivings
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.3.1
 Tested up to: 4.9
-Stable tag: 1.29.3
+Stable tag: 1.30.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,26 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.30.0 =
+* Enhancement: Adds ability to have a reCAPTCHA field to check if job listing author is human. (@jom)
+* Enhancement: Allows for option to make edits to job listings force listing back into pending approval status. (@jom)
+* Enhancement: Adds spinner and disables form when user submits job listing. (@jom)
+* Enhancement: Update the add-ons page of the plugin. (@jom)
+* Enhancement: Added the ability to sort jobs randomly on the Featured Jobs Widget. (@jom)
+* Enhancement: Improved handling of alternative date formats when editing job expiration field in WP admin. (@jom)
+* Enhancement: Added star indicator next to featured listings on `[job_dashboard]`. (@jom)
+* Enhancement: Opt-in to usage tracking so we can better improve the plugin. (@alexsanford, @donnapep, @jom)
+* Enhancement: Introduced new asset enqueuing strategy that will be turned on in 1.32.0. Requires plugin and theme updates. (@jom; Dev notes: https://github.com/Automattic/WP-Job-Manager/pull/1354)
+* Fix: Use WordPress core checks for image formats to not confuse `docx` as an image. (@tripflex)
+* Fix: Issue with `[jobs]` shortcode when `categories` argument is provided. (@jom)
+* Fix: Issue with double encoding HTML entities in custom text area fields. (@jom)
+* Fix: Updates `job-dashboard.php` template with `colspan` fix on no active listings message. (@jom)
+* Fix: Clear job listings cache when deleting a user and their job listings. (@jom)
+* Dev: Adds `is_wpjm()` and related functions to test if we're on a WPJM related page. (@jom)
+* Dev: Adds `job_manager_user_edit_job_listing` action that fires after a user edits a job listing. (@jom)
+* Dev: Adds `job_manager_enable_job_archive_page` filter to enable job archive page. (@jom)
+* Dev: Adds `date` field for custom job listing form fields. (@alexsandford)
 
 = 1.29.3 =
 * Fix: When retrieving job listing results, cache only the post results and not all of `WP_Query` (@jom; props slavco)
