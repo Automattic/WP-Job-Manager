@@ -37,4 +37,31 @@ class Usage_Tracking_Test_Subclass extends WP_Job_Manager_Usage_Tracking_Base {
 	public function opt_in_dialog_text() {
 		return 'Please enable Usage Tracking!';
 	}
+
+	public function do_track_plugin( $plugin_slug ) {
+		if ( in_array( $plugin_slug, array( 'hello', 'test', 'my-favorite-plugin' ) ) ) {
+			return true;
+		}
+		return false;
+	}
+
+	protected function get_plugins() {
+		return array(
+			'Hello.php' => array(
+				'Version' => '1.0.0',
+			),
+			'jetpack/jetpack.php' => array(
+				'Version' => '1.1.1',
+			),
+			'test-dev/test.php' => array(
+				'Version' => '1.1.1',
+			),
+			'test/test.php' => array(
+				'Version' => '1.0.0',
+			),
+			'my-favorite-plugin/my-favorite-plugin.php' => array(
+				'Version' => '1.0.0',
+			),
+		);
+	}
 }

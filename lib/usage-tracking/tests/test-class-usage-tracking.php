@@ -346,7 +346,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	public function testSystemDataStructure() {
 		global $wp_version;
 
-		$system_data = 		$this->usage_tracking->get_system_data();
+		$system_data = $this->usage_tracking->get_system_data();
 
 		$this->assertInternalType( 'array', $system_data, 'System data must be returned as an array' );
 
@@ -372,6 +372,27 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		$this->assertArrayHasKey( 'active_theme_version', $system_data, '`active_theme_version` key must exist in system data' );
 		$this->assertEquals( $theme['Version'], $system_data['active_theme_version'], '`active_theme_version` does not match expected value' );
+
+		$this->assertArrayHasKey( 'plugin_my_favorite_plugin', $system_data, '`plugin_my_favorite_plugin` key must exist in system data' );
+		$this->assertEquals( '1.0.0', $system_data['plugin_my_favorite_plugin'], '`plugin_my_favorite_plugin` does not match expected value' );
+
+		$this->assertArrayHasKey( 'plugin_hello', $system_data, '`plugin_hello` key must exist in system data' );
+		$this->assertEquals( '1.0.0', $system_data['plugin_my_favorite_plugin'], '`plugin_hello` does not match expected value' );
+
+		$this->assertArrayHasKey( 'plugin_test', $system_data, '`plugin_test` key must exist in system data' );
+		$this->assertEquals( '1.0.0', $system_data['plugin_test'], '`plugin_test` does not match expected value' );
+
+		$this->assertArrayNotHasKey( 'plugin_jetpack', $system_data, '`plugin_jetpack` key must NOT exist in system data' );
+		$this->assertArrayNotHasKey( 'plugin_test_dev', $system_data, '`plugin_test_dev` key must NOT exist in system data' );
+
+		$plugin_prefix_count = 0;
+		foreach ( $system_data as $key => $value ) {
+			if ( 1 === preg_match( '/^plugin_/', $key ) ) {
+				$plugin_prefix_count++;
+			}
+		}
+
+		$this->assertEquals( 3, $plugin_prefix_count );
 	}
 
 	/* END tests for system data */
