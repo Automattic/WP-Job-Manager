@@ -9,9 +9,11 @@ Usage_Tracking_Test_Subclass::get_instance();
 /**
  * Usage Tracking tests. Please update the prefix to something unique to your
  * plugin.
+ *
+ * @group usage-tracking
  */
 class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
-	private $event_counts = array();
+	private $event_counts       = array();
 	private $track_http_request = array();
 
 	public function setUp() {
@@ -108,7 +110,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 			$this->assertEquals( array(), $wp_die_args['args'], 'wp_die call has no non-success status' );
 		}
 
-		$this->assertEquals( 1, $this->event_counts['http_request'], 'Data was sent on usage tracking enable' );
+		$this->assertEquals( 2, $this->event_counts['http_request'], 'Data was sent on usage tracking enable' );
 	}
 
 	/**
@@ -193,7 +195,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	public function testSendEvent() {
 		$event      = 'my_event';
 		$properties = array(
-			'button_clicked' => 'my_button'
+			'button_clicked' => 'my_button',
 		);
 		$timestamp  = '1234';
 
@@ -218,16 +220,18 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		// Older versions (for PHP 5.2) of PHPUnit do not have this method
 		if ( method_exists( $this, 'assertArraySubset' ) ) {
-			$this->assertArraySubset( array(
-				'button_clicked' => 'my_button',
-				'admin_email'    => 'admin@example.org',
-				'_ut'            => $this->usage_tracking->get_prefix() . ':site_url',
-				'_ui'            => 'http://example.org',
-				'_ul'            => '',
-				'_en'            => $this->usage_tracking->get_prefix() . '_my_event',
-				'_ts'            => '1234000',
-				'_'              => '_',
-			), $query, 'Query parameters' );
+			$this->assertArraySubset(
+				array(
+					'button_clicked' => 'my_button',
+					'admin_email'    => 'admin@example.org',
+					'_ut'            => $this->usage_tracking->get_prefix() . ':site_url',
+					'_ui'            => 'http://example.org',
+					'_ul'            => '',
+					'_en'            => $this->usage_tracking->get_prefix() . '_my_event',
+					'_ts'            => '1234000',
+					'_'              => '_',
+				), $query, 'Query parameters'
+			);
 		}
 	}
 
@@ -240,7 +244,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	public function testSendEventWithTrackingDisabled() {
 		$event      = 'my_event';
 		$properties = array(
-			'button_clicked' => 'my_button'
+			'button_clicked' => 'my_button',
 		);
 		$timestamp  = '1234';
 
@@ -273,7 +277,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->usage_tracking->set_tracking_enabled( true );
 
 		$this->usage_tracking->send_usage_data();
-		$this->assertEquals( 1, $this->event_counts['http_request'], 'Request sent when Usage Tracking enabled' );
+		$this->assertEquals( 2, $this->event_counts['http_request'], 'Request sent when Usage Tracking enabled' );
 	}
 
 	/* Tests for tracking opt in dialog */
@@ -333,6 +337,69 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 	/* END tests for tracking opt in dialog */
 
+	/* Tests for system data */
+
+	/**
+	 * Tests the basic structure for collected system data.
+	 *
+	 * @covers {Prefix}_Usage_Tracking::get_system_data
+	 * @group track-system-data
+	 */
+	public function testSystemDataStructure() {
+		global $wp_version;
+
+		$system_data = $this->usage_tracking->get_system_data();
+
+		$this->assertInternalType( 'array', $system_data, 'System data must be returned as an array' );
+
+		$this->assertArrayHasKey( 'wp_version', $system_data, '`wp_version` key must exist in system data' );
+		$this->assertEquals( $wp_version, $system_data['wp_version'], '`wp_version` does not match expected value' );
+
+		$this->assertArrayHasKey( 'php_version', $system_data, '`php_version` key must exist in system data' );
+		$this->assertEquals( PHP_VERSION, $system_data['php_version'], '`php_version` does not match expected value' );
+
+		$this->assertArrayHasKey( 'locale', $system_data, '`locale` key must exist in system data' );
+		$this->assertEquals( get_locale(), $system_data['locale'], '`locale` does not match expected value' );
+
+		$this->assertArrayHasKey( 'multisite', $system_data, '`multisite` key must exist in system data' );
+		$this->assertEquals( is_multisite(), $system_data['multisite'], '`multisite` does not match expected value' );
+
+		/**
+		 * Current active theme.
+		 *
+		 * @var WP_Theme $theme
+		 */
+		$theme = wp_get_theme();
+
+		$this->assertArrayHasKey( 'active_theme', $system_data, '`active_theme` key must exist in system data' );
+		$this->assertEquals( $theme['Name'], $system_data['active_theme'], '`active_theme` does not match expected value' );
+
+		$this->assertArrayHasKey( 'active_theme_version', $system_data, '`active_theme_version` key must exist in system data' );
+		$this->assertEquals( $theme['Version'], $system_data['active_theme_version'], '`active_theme_version` does not match expected value' );
+
+		$this->assertArrayHasKey( 'plugin_my_favorite_plugin', $system_data, '`plugin_my_favorite_plugin` key must exist in system data' );
+		$this->assertEquals( '1.0.0', $system_data['plugin_my_favorite_plugin'], '`plugin_my_favorite_plugin` does not match expected value' );
+
+		$this->assertArrayHasKey( 'plugin_hello', $system_data, '`plugin_hello` key must exist in system data' );
+		$this->assertEquals( '1.0.0', $system_data['plugin_my_favorite_plugin'], '`plugin_hello` does not match expected value' );
+
+		$this->assertArrayHasKey( 'plugin_test', $system_data, '`plugin_test` key must exist in system data' );
+		$this->assertEquals( '1.0.0', $system_data['plugin_test'], '`plugin_test` does not match expected value' );
+
+		$this->assertArrayNotHasKey( 'plugin_jetpack', $system_data, '`plugin_jetpack` key must NOT exist in system data' );
+		$this->assertArrayNotHasKey( 'plugin_test_dev', $system_data, '`plugin_test_dev` key must NOT exist in system data' );
+
+		$plugin_prefix_count = 0;
+		foreach ( $system_data as $key => $value ) {
+			if ( 1 === preg_match( '/^plugin_/', $key ) ) {
+				$plugin_prefix_count++;
+			}
+		}
+
+		$this->assertEquals( 3, $plugin_prefix_count );
+	}
+
+	/* END tests for system data */
 
 	/****** Helper methods ******/
 
@@ -351,7 +418,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		// When wp_die is called, save the args and throw an exception to stop
 		// execution.
-		add_filter( 'wp_die_ajax_handler', array( $this, 'ajaxDieHandler') );
+		add_filter( 'wp_die_ajax_handler', array( $this, 'ajaxDieHandler' ) );
 	}
 
 	/**
