@@ -227,6 +227,39 @@ class WP_Job_Manager {
 	public function frontend_scripts() {
 		global $post;
 
+		/**
+		 * Starting in WP Job Manager 1.31.0, the chosen JS library and core frontend WPJM CSS will only be enqueued
+		 * when used on a particular page. Theme and plugin authors as well as people who have overloaded WPJM's default
+		 * template files should test this upcoming behavior.
+		 *
+		 * To test this behavior before 1.31.0, add this to your `wp-config.php`:
+		 * define( 'JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR', true );
+		 *
+		 * Unless this constant is defined, WP Job Manager 1.30.0 will default to its old behavior: chosen JS library and
+		 * frontend styles are always enqueued.
+		 *
+		 * If your theme or plugin depend on the `frontend.css` or chosen JS library from WPJM core, you can use the
+		 * `job_manager_chosen_enabled` and `job_manager_enqueue_frontend_style` filters.
+		 *
+		 * Example code for a custom shortcode that depends on the chosen library:
+		 *
+		 * add_filter( 'job_manager_chosen_enabled', function( $chosen_used_on_page ) {
+		 *   global $post;
+		 *   if ( is_singular()
+		 *        && is_a( $post, 'WP_Post' )
+		 *        && has_shortcode( $post->post_content, 'resumes' )
+		 *   ) {
+		 *     $chosen_used_on_page = true;
+		 *   }
+		 *   return $chosen_used_on_page;
+		 * } );
+		 * 
+		 */
+		if ( ! defined( 'JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR' ) || true !== JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR ) {
+			add_filter( 'job_manager_chosen_enabled', '__return_true' );
+			add_filter( 'job_manager_enqueue_frontend_style', '__return_true' );
+		}
+
 		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
 		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
 		$ajax_data 		  = array(
@@ -249,6 +282,8 @@ class WP_Job_Manager {
 
 		/**
 		 * Filter the use of the chosen library.
+		 *
+		 * NOTE: See above. In WP Job Manager 1.30.0, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
 		 *
 		 * @since 1.19.0
 		 *
@@ -311,6 +346,8 @@ class WP_Job_Manager {
 		/**
 		 * Filter whether to enqueue WPJM core's frontend scripts. By default, they will only be enqueued on WPJM related
 		 * pages.
+		 *
+		 * NOTE: See above. In WP Job Manager 1.30.0, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
 		 *
 		 * @since 1.30.0
 		 *
