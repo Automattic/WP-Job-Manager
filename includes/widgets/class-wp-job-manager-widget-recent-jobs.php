@@ -57,6 +57,8 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		wp_enqueue_style( 'wp-job-manager-job-listings' );
+
 		if ( $this->get_cached_widget( $args ) ) {
 			return;
 		}
