@@ -307,7 +307,16 @@ class WP_Job_Manager {
 			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 		) );
 
-		if ( is_wpjm() ) {
+
+		/**
+		 * Filter whether to enqueue WPJM core's frontend scripts. By default, they will only be enqueued on WPJM related
+		 * pages.
+		 *
+		 * @since 1.30.0
+		 *
+		 * @param bool $is_frontend_style_enabled
+		 */
+		if ( apply_filters( 'job_manager_enqueue_frontend_style', is_wpjm() ) ) {
 			wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
 		}
 	}
