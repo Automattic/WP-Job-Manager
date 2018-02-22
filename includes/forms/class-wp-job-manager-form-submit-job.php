@@ -374,11 +374,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Enqueues styles for editing and posting a job listing.
+	 * Enqueues scripts and  styles for editing and posting a job listing.
 	 */
 	protected function enqueue_job_form_assets() {
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
+		wp_enqueue_script( 'job_manager_datepicker_js', JOB_MANAGER_PLUGIN_URL. '/assets/js/datepicker.min.js', array( 'jquery', 'jquery-ui-datepicker' ), JOB_MANAGER_VERSION, true );
 		wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', array(), JOB_MANAGER_VERSION );
+
+		if ( function_exists( 'wp_localize_jquery_ui_datepicker' ) ) {
+			// Ensure the WP localization is done.
+			wp_localize_jquery_ui_datepicker();
+		} else {
+			wp_localize_script( 'job_manager_datepicker_js', 'job_manager_datepicker', array(
+				/* translators: jQuery date format, see http://api.jqueryui.com/datepicker/#utility-formatDate */
+				'date_format' => _x( 'yy-mm-dd', 'Date format for jQuery datepicker.', 'wp-job-manager' )
+			) );
+		}
 	}
 
 	/**
