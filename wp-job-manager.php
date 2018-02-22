@@ -228,14 +228,14 @@ class WP_Job_Manager {
 		global $post;
 
 		/**
-		 * Starting in WP Job Manager 1.31.0, the chosen JS library and core frontend WPJM CSS will only be enqueued
+		 * Starting in WP Job Manager 1.32.0, the chosen JS library and core frontend WPJM CSS will only be enqueued
 		 * when used on a particular page. Theme and plugin authors as well as people who have overloaded WPJM's default
 		 * template files should test this upcoming behavior.
 		 *
-		 * To test this behavior before 1.31.0, add this to your `wp-config.php`:
+		 * To test this behavior before 1.32.0, add this to your `wp-config.php`:
 		 * define( 'JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR', true );
 		 *
-		 * Unless this constant is defined, WP Job Manager 1.30.0 will default to its old behavior: chosen JS library and
+		 * Unless this constant is defined, WP Job Manager will default to its old behavior: chosen JS library and
 		 * frontend styles are always enqueued.
 		 *
 		 * If your theme or plugin depend on the `frontend.css` or chosen JS library from WPJM core, you can use the
@@ -253,7 +253,7 @@ class WP_Job_Manager {
 		 *   }
 		 *   return $chosen_used_on_page;
 		 * } );
-		 * 
+		 *
 		 */
 		if ( ! defined( 'JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR' ) || true !== JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR ) {
 			add_filter( 'job_manager_chosen_enabled', '__return_true' );
@@ -283,7 +283,7 @@ class WP_Job_Manager {
 		/**
 		 * Filter the use of the chosen library.
 		 *
-		 * NOTE: See above. In WP Job Manager 1.30.0, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
+		 * NOTE: See above. Before WP Job Manager 1.32.0 is released, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
 		 *
 		 * @since 1.19.0
 		 *
@@ -347,7 +347,7 @@ class WP_Job_Manager {
 		 * Filter whether to enqueue WPJM core's frontend scripts. By default, they will only be enqueued on WPJM related
 		 * pages.
 		 *
-		 * NOTE: See above. In WP Job Manager 1.30.0, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
+		 * NOTE: See above. Before WP Job Manager 1.32.0 is released, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
 		 *
 		 * @since 1.30.0
 		 *
