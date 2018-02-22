@@ -208,7 +208,7 @@ module.exports = function( grunt ){
 		},
 
 		clean: {
-			main: [ 'tmp/', 'lib/' ], //Clean up build folder
+			main: [ 'tmp/', 'lib/wpjm_rest' ], //Clean up build folder
 		},
 
 		jshint: {
