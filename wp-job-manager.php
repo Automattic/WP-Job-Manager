@@ -355,6 +355,8 @@ class WP_Job_Manager {
 		 */
 		if ( apply_filters( 'job_manager_enqueue_frontend_style', is_wpjm() ) ) {
 			wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
+		} else {
+			wp_register_style( 'wp-job-manager-job-listings', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-listings.css', array(), JOB_MANAGER_VERSION );
 		}
 	}
 }
