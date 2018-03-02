@@ -52,11 +52,6 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 **/
 	private static $instances = array();
 
-
-	/*
-	 * Abstract methods.
-	 */
-
 	/**
 	 * Gets the singleton instance of this class. Subclasses should implement
 	 * this as follows:
@@ -66,8 +61,19 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *   return self::get_instance_for_subclass( get_class() );
 	 * }
 	 * ```
+	 *
+	 * This function cannot be abstract (because it is static) but it *must* be
+	 * implemented by subclasses.
 	 */
-	abstract public static function get_instance();
+	public static function get_instance() {
+		throw new Exception( 'Usage Tracking subclasses must implement get_instance. See class-usage-tracking-base.php' );
+	}
+
+
+	/*
+	 * Abstract methods.
+	 */
+
 
 	/**
 	 * Get prefix for actions and strings. Should be unique to this plugin.
