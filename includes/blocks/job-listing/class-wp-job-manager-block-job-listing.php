@@ -15,29 +15,38 @@ class WP_Job_Manager_Block_Job_Listing {
 	}
 
 	public function __construct() {
-		add_action( 'init', array( $this, 'enqueue_assets' ) );
+		add_action( 'init', array( $this, 'register_block' ) );
 	}
 
-	public function enqueue_assets() {
-		wp_enqueue_script(
-			'wpjm-job-listing',
-			plugins_url( 'build/index.js', __FILE__ ),
-			array( 'wp-blocks' )
-		);
+	public function register_block() {
+		if ( function_exists( 'register_block_type' ) ) {
+			wp_register_script(
+				'wpjm-job-listing',
+				plugins_url( 'build/index.js', __FILE__ ),
+				array( 'wp-blocks', 'wp-i18n' ),
+				filemtime( plugin_dir_path( __FILE__ ) . 'build/index.js' )
+			);
 
-		wp_enqueue_style(
-			'wpjm-job-listing-editor',
-			plugins_url( 'build/editor.css', __FILE__ ),
-			array( 'wp-edit-blocks' ),
-			filemtime( plugin_dir_path( __FILE__ ) . 'build/editor.css' )
-		);
+			wp_register_style(
+				'wpjm-job-listing-editor',
+				plugins_url( 'build/editor.css', __FILE__ ),
+				array( 'wp-edit-blocks' ),
+				filemtime( plugin_dir_path( __FILE__ ) . 'build/editor.css' )
+			);
 
-		wp_enqueue_style(
-			'wpjm-job-listing',
-			plugins_url( 'build/style.css', __FILE__ ),
-			array( 'wp-edit-blocks' ),
-			filemtime( plugin_dir_path( __FILE__ ) . 'build/style.css' )
-		);
+			wp_register_style(
+				'wpjm-job-listing',
+				plugins_url( 'build/style.css', __FILE__ ),
+				array( 'wp-edit-blocks' ),
+				filemtime( plugin_dir_path( __FILE__ ) . 'build/style.css' )
+			);
+
+			register_block_type( 'wpjm/job-listing', array(
+				'editor_script' => 'wpjm-job-listing',
+				'editor_style'	=> 'wpjm-job-listing-editor',
+				'style'					=> 'wpjm-job-listing',
+			) );
+		}
 	}
 }
 
