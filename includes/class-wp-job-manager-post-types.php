@@ -121,6 +121,7 @@ class WP_Job_Manager_Post_Types {
 						'add_new_item'      => sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
 						'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
 					),
+					'show_in_rest' => true,
 					'show_ui' 				=> true,
 					'show_tagcloud'			=> false,
 					'public' 	     		=> $public,
@@ -169,6 +170,7 @@ class WP_Job_Manager_Post_Types {
 						'add_new_item' 		=> sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
 						'new_item_name' 	=> sprintf( __( 'New %s Name', 'wp-job-manager' ),  $singular )
 					),
+					'show_in_rest' => true,
 					'show_ui' 				=> true,
 					'show_tagcloud'			=> false,
 					'public' 			    => $public,
