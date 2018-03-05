@@ -5,23 +5,22 @@ const { __ } = wp.i18n;
 const {
 	registerBlockType,
 	BlockControls,
-	BlockDescription,
-	Editable,
 	InspectorControls,
-	MediaUploadButton,
+	MediaUpload,
+	RichText,
 } = wp.blocks;
 const {
-	Dashicon,
+	withState,
+	Button,
 	FormFileUpload,
+	IconButton,
 	PanelBody,
 	Placeholder,
+	TextControl,
+	ToggleControl,
 	Toolbar,
 } = wp.components;
 const { mediaUpload } = wp.utils;
-const {
-	TextControl,
-	ToggleControl,
-} = InspectorControls;
 
 /**
  * Internal dependencies
@@ -57,7 +56,9 @@ registerBlockType( 'wpjm/job-listing', {
 			attribute: 'src',
 		},
 	},
-	edit: ( { attributes, className, focus, setAttributes, setFocus } ) => {
+	edit: withState( {
+		editable: 'location',
+	} )( ( { attributes, className, editable, isSelected, setAttributes, setState } ) => {
 		const {
 			alt,
 			application,
@@ -72,9 +73,7 @@ registerBlockType( 'wpjm/job-listing', {
 			twitter,
 			url,
 		} = attributes;
-		const focusedEditable = focus ? focus.editable || 'location' : null;
-		const uploadButtonProps = { isLarge: true };
-		const updateFocus = field => focusValue => setFocus( { editable: field, ...focusValue } );
+		const onSetActiveEditable = newEditable => () => setState( { editable: newEditable } );
 		const updateLogo = ( { alt, id, url } ) => setAttributes( { alt, id, url } );
 		const updateToggle = field => () => setAttributes( { [ field ]: ! attributes[ field ] } );
 		const updateValue = field => value => setAttributes( { [ field ]: value } );
@@ -82,29 +81,28 @@ registerBlockType( 'wpjm/job-listing', {
 
 		return (
 			<div className={ className }>
-				{ !! focus && (
+				{ !! isSelected && (
 					<BlockControls key="controls">
 						<Toolbar>
-							<MediaUploadButton
-								buttonProps={ {
-									className: 'components-icon-button components-toolbar__control',
-									'aria-label': __( 'Edit Logo' ),
-								} }
+							<MediaUpload
 								onSelect={ updateLogo }
 								type="image"
-								value={ id }>
-								<Dashicon icon="edit" />
-							</MediaUploadButton>
+								value={ id }
+								render={ ( { open } ) => (
+									<IconButton
+										className="components-toolbar__control"
+										label={ __( 'Edit Logo' ) }
+										icon="edit"
+										onClick={ open }
+									/>
+								) }
+							/>
 						</Toolbar>
 					</BlockControls>
 				) }
 
-				{ focus && (
+				{ isSelected && (
 					<InspectorControls key="inspector">
-						<BlockDescription>
-							<p>{ __( 'Shows a job listing.' ) }</p>
-						</BlockDescription>
-
 						<PanelBody title={ __( 'Job Listing Settings' ) }>
 							<ToggleControl
 								checked={ positionFilled }
@@ -143,12 +141,15 @@ registerBlockType( 'wpjm/job-listing', {
 							accept="image/*">
 							{ __( 'Upload' ) }
 						</FormFileUpload>
-						<MediaUploadButton
-							buttonProps={ uploadButtonProps }
+						<MediaUpload
 							onSelect={ updateLogo }
-							type="image">
-							{ __( 'Insert from Media Library' ) }
-						</MediaUploadButton>
+							type="image"
+							render={ ( { open } ) => (
+								<Button isLarge onClick={ open }>
+									{ __( 'Insert from Media Library' ) }
+								</Button>
+							) }
+						/>
 					</Placeholder>
 				) }
 
@@ -156,14 +157,13 @@ registerBlockType( 'wpjm/job-listing', {
 					<img
 						alt={ alt }
 						className="job-listing__logo"
-						onClick={ setFocus }
 						src={ url } />
 				) }
 
 				<div className="job-listing__details">
 					{ false && (
 						<ul className="job-listing__type-list">
-							{ /* TODO: Dynamically add list item when job type is selected in Inspector. */ }
+							{ /* TODO: Dynamically add list item when job type is selected. */ }
 							<li className="job-listing__type is-full-time">
 								{ __( 'Full Time' ) }
 							</li>
@@ -174,14 +174,14 @@ registerBlockType( 'wpjm/job-listing', {
 					) }
 
 					<div className="job-listing__meta">
-						<Editable
-							focus={ focusedEditable === 'location' ? focus : null }
+						<RichText
+							isSelected={ isSelected && editable === 'location' }
 							onChange={ updateValue( 'location' ) }
-							onFocus={ updateFocus( 'location' ) }
+							onFocus={ onSetActiveEditable( 'location' ) }
 							placeholder={ __( 'Enter job location…' ) }
 							tagName="span"
-							value={ location }
 							wrapperClassName="job-listing__location"
+							value={ location }
 							keepPlaceholderOnFocus />
 
 						{ false && (
@@ -194,26 +194,26 @@ registerBlockType( 'wpjm/job-listing', {
 					</div>
 
 					<div className="job-listing__company-details">
-						<Editable
-							focus={ focusedEditable === 'company' ? focus : null }
+						<RichText
+							isSelected={ isSelected && editable === 'company' }
 							onChange={ updateValue( 'company' ) }
-							onFocus={ updateFocus( 'company' ) }
+							onFocus={ onSetActiveEditable( 'company' ) }
 							placeholder={ __( 'Enter company name…' ) }
 							tagName="span"
 							value={ company }
 							keepPlaceholderOnFocus />
-						<Editable
-							focus={ focusedEditable === 'tagline' ? focus : null }
+						<RichText
+							isSelected={ isSelected && editable === 'tagline' }
 							onChange={ updateValue( 'tagline' ) }
-							onFocus={ updateFocus( 'tagline' ) }
+							onFocus={ onSetActiveEditable( 'tagline' ) }
 							placeholder={ __( 'Enter company tagline…' ) }
 							tagName="span"
 							value={ tagline }
 							keepPlaceholderOnFocus />
-						<Editable
-							focus={ focusedEditable === 'twitter' ? focus : null }
+						<RichText
+							isSelected={ isSelected && editable === 'twitter' }
 							onChange={ updateValue( 'twitter' ) }
-							onFocus={ updateFocus( 'twitter' ) }
+							onFocus={ onSetActiveEditable( 'twitter' ) }
 							placeholder={ __( 'Enter company Twitter account…' ) }
 							tagName="span"
 							value={ twitter }
@@ -221,10 +221,10 @@ registerBlockType( 'wpjm/job-listing', {
 							keepPlaceholderOnFocus />
 					</div>
 
-					<Editable
-						focus={ focusedEditable === 'description' ? focus : null }
+					<RichText
+						isSelected={ isSelected && editable === 'description' }
 						onChange={ updateValue( 'description' ) }
-						onFocus={ updateFocus( 'description' ) }
+						onFocus={ onSetActiveEditable( 'description' ) }
 						placeholder={ __( 'Write job description…' ) }
 						tagName="p"
 						value={ description }
@@ -243,7 +243,7 @@ registerBlockType( 'wpjm/job-listing', {
 				</div>
 			</div>
 		);
-	},
+	} ),
 	save: () => {
 		// TODO
 		return null;
