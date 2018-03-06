@@ -1,25 +1,3 @@
 {
-	"presets": [
-		[ "env", {
-			"modules": false,
-			"targets": {
-				"browsers": [
-					"last 2 Chrome versions",
-					"last 2 Firefox versions",
-					"last 2 Safari versions",
-					"last 2 iOS versions",
-					"last 1 Android version",
-					"last 1 ChromeAndroid version",
-					"ie 11"
-				]
-			}
-		} ],
-		"stage-2"
-	],
-	"plugins": [
-		"transform-object-rest-spread",
-		[ "transform-react-jsx", {
-			"pragma": "wp.element.createElement"
-		} ]
-	]
+  "presets": [ "@wordpress/default" ]
 }
