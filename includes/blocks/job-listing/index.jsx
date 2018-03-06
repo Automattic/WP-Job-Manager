@@ -161,6 +161,7 @@ registerBlockType( 'wpjm/job-listing', {
 				) }
 
 				<div className="job-listing__details">
+					{ /* TODO: Show when at least one job type is selected. */ }
 					{ false && (
 						<ul className="job-listing__type-list">
 							{ /* TODO: Dynamically add list item when job type is selected. */ }
@@ -184,6 +185,7 @@ registerBlockType( 'wpjm/job-listing', {
 							value={ location }
 							keepPlaceholderOnFocus />
 
+						{ /* TODO: Show once job is saved. */ }
 						{ false && (
 							<span className="job-listing__date-posted">
 								<time dateTime="2017-08-31">
