@@ -73,11 +73,12 @@ registerBlockType( 'wpjm/job-listing', {
 			twitter,
 			url,
 		} = attributes;
+		const onSelectImage = ( [ image ] ) => image && setAttributes( { id: image.id, url: image.url } );
 		const onSetActiveEditable = newEditable => () => setState( { editable: newEditable } );
 		const updateLogo = ( { alt, id, url } ) => setAttributes( { alt, id, url } );
 		const updateToggle = field => () => setAttributes( { [ field ]: ! attributes[ field ] } );
 		const updateValue = field => value => setAttributes( { [ field ]: value } );
-		const uploadFromFiles = event => mediaUpload( event.target.files, setAttributes );
+		const uploadFromFiles = event => mediaUpload( event.target.files, onSelectImage );
 
 		return (
 			<div className={ className }>
