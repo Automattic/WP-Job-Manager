@@ -21,13 +21,13 @@ for WP_SLUG in 'master' 'latest' 'previous'; do
 
 	case $WP_SLUG in
 	master)
-		git clone --depth=1 --branch master git://develop.git.wordpress.org/ /tmp/wordpress-master
+		git clone --depth=1 --branch master https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-master
 		;;
 	latest)
-		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/get-wp-version.php` git://develop.git.wordpress.org/ /tmp/wordpress-latest
+		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/get-wp-version.php` https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-latest
 		;;
 	previous)
-		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/get-wp-version.php --previous` git://develop.git.wordpress.org/ /tmp/wordpress-previous
+		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/get-wp-version.php --previous` https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-previous
 		;;
 	esac
 
