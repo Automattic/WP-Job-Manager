@@ -249,7 +249,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_nav_menus' 	=> false,
 				'show_in_rest' => true,
 				'template' => array(
-					array( 'wpjm/job-listing' ),
+					array( 'wpjm/job-data' ),
 				),
 			) )
 		);

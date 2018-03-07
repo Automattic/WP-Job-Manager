@@ -36,7 +36,7 @@ const extractConfig = {
 
 const webpackConfig = {
 	entry: {
-		['job-listing']: './includes/blocks/job-listing/index.jsx',
+		['job-data']: './includes/blocks/job-data/index.jsx',
 	},
 	output: {
 		filename: 'includes/blocks/[name]/build/index.js',

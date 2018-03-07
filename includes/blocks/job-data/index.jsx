@@ -21,10 +21,10 @@ import './editor.scss';
 import './style.scss';
 import BriefcaseIcon from './briefcase-icon';
 
-registerBlockType( 'wpjm/job-listing', {
-	title: __( 'Job Listing' ),
+registerBlockType( 'wpjm/job-data', {
+	title: __( 'Job Data' ),
 	category: 'widgets',
-	description: __( 'Shows a job listing.' ),
+	description: __( 'Shows additional information about a job listing.' ),
 	icon: BriefcaseIcon,
 	attributes: {
 		alt: {
@@ -69,7 +69,7 @@ registerBlockType( 'wpjm/job-listing', {
 			<div className={ className }>
 				{ isSelected && (
 					<InspectorControls key="inspector">
-						<PanelBody title={ __( 'Job Listing Settings' ) }>
+						<PanelBody title={ __( 'Job Data Settings' ) }>
 							<ToggleControl
 								checked={ positionFilled }
 								label={ __( 'Position Filled' ) }
@@ -93,34 +93,34 @@ registerBlockType( 'wpjm/job-listing', {
 					</InspectorControls>
 				) }
 
-				<div className="job-listing__details">
+				<div className="job-data__details">
 					{ /* TODO: Show when at least one job type is selected. */ }
 					{ false && (
-						<ul className="job-listing__type-list">
+						<ul className="job-data__type-list">
 							{ /* TODO: Dynamically add list item when job type is selected. */ }
-							<li className="job-listing__type is-full-time">
+							<li className="job-data__type is-full-time">
 								{ __( 'Full Time' ) }
 							</li>
-							<li className="job-listing__type is-freelance">
+							<li className="job-data__type is-freelance">
 								{ __( 'Freelance' ) }
 							</li>
 						</ul>
 					) }
 
-					<div className="job-listing__meta">
+					<div className="job-data__meta">
 						<RichText
 							isSelected={ isSelected && editable === 'location' }
 							onChange={ updateValue( 'location' ) }
 							onFocus={ onSetActiveEditable( 'location' ) }
 							placeholder={ __( 'Enter job location…' ) }
 							tagName="span"
-							wrapperClassName="job-listing__location"
+							wrapperClassName="job-data__location"
 							value={ location }
 							keepPlaceholderOnFocus />
 
 						{ /* TODO: Show once job is saved. */ }
 						{ false && (
-							<span className="job-listing__date-posted">
+							<span className="job-data__date-posted">
 								<time dateTime="2017-08-31">
 									{ __( 'Posted 1 minute ago' ) }
 								</time>
@@ -128,7 +128,7 @@ registerBlockType( 'wpjm/job-listing', {
 						) }
 					</div>
 
-					<div className="job-listing__company-details">
+					<div className="job-data__company-details">
 						<RichText
 							isSelected={ isSelected && editable === 'company' }
 							onChange={ updateValue( 'company' ) }
@@ -152,7 +152,7 @@ registerBlockType( 'wpjm/job-listing', {
 							placeholder={ __( 'Enter company Twitter account…' ) }
 							tagName="span"
 							value={ twitter }
-							wrapperClassName="job-listing__twitter"
+							wrapperClassName="job-data__twitter"
 							keepPlaceholderOnFocus />
 					</div>
 				</div>

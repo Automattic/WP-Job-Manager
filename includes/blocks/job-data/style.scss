@@ -15,17 +15,17 @@ $freelance: #3399cc;
 	margin: 0 2px 0 0;
 }
 
-.wp-block-wpjm-job-listing .job-listing__details {
+.wp-block-wpjm-job-data .job-data__details {
 	margin-top: 1em;
 }
 
-.wp-block-wpjm-job-listing .job-listing__type-list {
+.wp-block-wpjm-job-data .job-data__type-list {
 	list-style: none;
 	margin: 0 0 .5em;
 	padding: 0;
 }
 
-.wp-block-wpjm-job-listing .job-listing__type {
+.wp-block-wpjm-job-data .job-data__type {
 	display: inline-block;
 	padding: .5em;
 	margin: 0 1em 0 0;
@@ -41,36 +41,36 @@ $freelance: #3399cc;
 	}
 }
 
-.wp-block-wpjm-job-listing .job-listing__meta {
+.wp-block-wpjm-job-data .job-data__meta {
 	margin-bottom: 1em;
 }
 
-.wp-block-wpjm-job-listing .job-listing__location {
+.wp-block-wpjm-job-data .job-data__location {
 	display: inline-block;
 }
 
-.wp-block-wpjm-job-listing .job-listing__location,
-.wp-block-wpjm-job-listing .job-listing__date-posted {
+.wp-block-wpjm-job-data .job-data__location,
+.wp-block-wpjm-job-data .job-data__date-posted {
 	margin-right: 1em;
 	color: #999;
 }
 
-.wp-block-wpjm-job-listing .job-listing__location:before {
+.wp-block-wpjm-job-data .job-data__location:before {
 	@extend %display-icon;
 	content: '\e81d';
 }
 
-.wp-block-wpjm-job-listing .job-listing__date-posted:before {
+.wp-block-wpjm-job-data .job-data__date-posted:before {
 	@extend %display-icon;
 	content: '\e80f';
 }
 
-.wp-block-wpjm-job-listing .job-listing__twitter:before {
+.wp-block-wpjm-job-data .job-data__twitter:before {
 	@extend %display-icon;
 	content: '\e80a';
 }
 
-.wp-block-wpjm-job-listing .job-listing__company-details {
+.wp-block-wpjm-job-data .job-data__company-details {
 	border: 1px solid #eee;
 	padding: 1em;
 	margin: 0 0 2em;
@@ -78,11 +78,11 @@ $freelance: #3399cc;
 	box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
-.wp-block-wpjm-job-listing .job-listing__application-wrapper {
+.wp-block-wpjm-job-data .job-data__application-wrapper {
 	margin: 0 0 1em;
 }
 
-.wp-block-wpjm-job-listing .job-listing__application {
+.wp-block-wpjm-job-data .job-data__application {
 	display: inline-block;
 	margin: 0 .5em 0 0;
 	padding: 1em 2em;
@@ -96,8 +96,8 @@ $freelance: #3399cc;
  * Small devices (landscape phones, 576px and up)
 */
 @media screen and (min-width: 576px) {
-	.wp-block-wpjm-job-listing .job-listing__type-list,
-	.wp-block-wpjm-job-listing .job-listing__meta {
+	.wp-block-wpjm-job-data .job-data__type-list,
+	.wp-block-wpjm-job-data .job-data__meta {
 		display: inline-block;
 	}
 }

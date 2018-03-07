@@ -1,7 +1,7 @@
 const BriefcaseIcon = () => (
 	<svg
 		aria-hidden
-		className="job-listing__briefcase-icon"
+		className="job-data__briefcase-icon"
 		role="img"
 		focusable="false"
 		xmlns="http://www.w3.org/2000/svg"
