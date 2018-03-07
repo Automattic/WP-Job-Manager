@@ -36,11 +36,6 @@ registerBlockType( 'wpjm/job-listing', {
 		id: {
 			type: 'number',
 		},
-		description: {
-			type: 'array',
-			source: 'children',
-			selector: '.description',
-		},
 		url: {
 			type: 'string',
 			source: 'attribute',
@@ -55,7 +50,6 @@ registerBlockType( 'wpjm/job-listing', {
 			alt,
 			application,
 			company,
-			description,
 			expiryDate,
 			featuredListing,
 			id,
@@ -161,26 +155,6 @@ registerBlockType( 'wpjm/job-listing', {
 							wrapperClassName="job-listing__twitter"
 							keepPlaceholderOnFocus />
 					</div>
-
-					<RichText
-						isSelected={ isSelected && editable === 'description' }
-						onChange={ updateValue( 'description' ) }
-						onFocus={ onSetActiveEditable( 'description' ) }
-						placeholder={ __( 'Write job description…' ) }
-						tagName="p"
-						value={ description }
-						wrapperClassName="job-listing__description"
-						inlineToolbar
-						keepPlaceholderOnFocus />
-
-					{ !! application && (
-						<div className="job-listing__application-wrapper">
-							<input
-								className="job-listing__application"
-								type="button"
-								value={ __( 'Apply for job' ) } />
-						</div>
-					) }
 				</div>
 			</div>
 		);
