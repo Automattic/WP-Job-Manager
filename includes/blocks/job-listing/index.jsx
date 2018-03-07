@@ -4,23 +4,15 @@
 const { __ } = wp.i18n;
 const {
 	registerBlockType,
-	BlockControls,
 	InspectorControls,
-	MediaUpload,
 	RichText,
 } = wp.blocks;
 const {
 	withState,
-	Button,
-	FormFileUpload,
-	IconButton,
 	PanelBody,
-	Placeholder,
 	TextControl,
 	ToggleControl,
-	Toolbar,
 } = wp.components;
-const { mediaUpload } = wp.utils;
 
 /**
  * Internal dependencies
@@ -73,35 +65,14 @@ registerBlockType( 'wpjm/job-listing', {
 			twitter,
 			url,
 		} = attributes;
-		const onSelectImage = ( [ image ] ) => image && setAttributes( { id: image.id, url: image.url } );
+
 		const onSetActiveEditable = newEditable => () => setState( { editable: newEditable } );
 		const updateLogo = ( { alt, id, url } ) => setAttributes( { alt, id, url } );
 		const updateToggle = field => () => setAttributes( { [ field ]: ! attributes[ field ] } );
 		const updateValue = field => value => setAttributes( { [ field ]: value } );
-		const uploadFromFiles = event => mediaUpload( event.target.files, onSelectImage );
 
 		return (
 			<div className={ className }>
-				{ !! isSelected && (
-					<BlockControls key="controls">
-						<Toolbar>
-							<MediaUpload
-								onSelect={ updateLogo }
-								type="image"
-								value={ id }
-								render={ ( { open } ) => (
-									<IconButton
-										className="components-toolbar__control"
-										label={ __( 'Edit Logo' ) }
-										icon="edit"
-										onClick={ open }
-									/>
-								) }
-							/>
-						</Toolbar>
-					</BlockControls>
-				) }
-
 				{ isSelected && (
 					<InspectorControls key="inspector">
 						<PanelBody title={ __( 'Job Listing Settings' ) }>
@@ -126,39 +97,6 @@ registerBlockType( 'wpjm/job-listing', {
 								value={ expiryDate } />
 						</PanelBody>
 					</InspectorControls>
-				) }
-
-				{ ! url && (
-					<Placeholder
-						key="placeholder"
-						instructions={ __( 'Drag logo here or insert from media library' ) }
-						icon="format-image"
-						label={ __( 'Company Logo' ) }
-						className="job-listing__logo">
-						<FormFileUpload
-							isLarge
-							className="job-listing__upload-button"
-							onChange={ uploadFromFiles }
-							accept="image/*">
-							{ __( 'Upload' ) }
-						</FormFileUpload>
-						<MediaUpload
-							onSelect={ updateLogo }
-							type="image"
-							render={ ( { open } ) => (
-								<Button isLarge onClick={ open }>
-									{ __( 'Insert from Media Library' ) }
-								</Button>
-							) }
-						/>
-					</Placeholder>
-				) }
-
-				{ !! url && (
-					<img
-						alt={ alt }
-						className="job-listing__logo"
-						src={ url } />
 				) }
 
 				<div className="job-listing__details">
