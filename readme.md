@@ -3,7 +3,7 @@
 **Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent  
 **Requires at least:** 4.3.1  
 **Tested up to:** 4.9  
-**Stable tag:** 1.30.0  
+**Stable tag:** 1.30.1  
 **License:** GPLv3  
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -140,6 +140,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 ## Changelog ##
+
+### 1.30.1 ###
+* Fix: Minor issue with a strict standard error being displayed on some instances. (@alexsanford)
 
 ### 1.30.0 ###
 * Enhancement: Adds ability to have a reCAPTCHA field to check if job listing author is human. (@jom)
