@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.30.0\n"
+"Project-Id-Version: WP Job Manager 1.30.1\n"
 "Report-Msgid-Bugs-To: https://github.com/Automattic/WP-Job-Manager/issues\n"
-"POT-Creation-Date: 2018-02-23 13:04:57+00:00\n"
+"POT-Creation-Date: 2018-03-12 18:10:30+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1482,27 +1482,27 @@ msgstr ""
 msgid "Keyword"
 msgstr ""
 
-#: lib/usage-tracking/class-usage-tracking-base.php:327
+#: lib/usage-tracking/class-usage-tracking-base.php:333
 msgid "Every Two Weeks"
 msgstr ""
 
-#: lib/usage-tracking/class-usage-tracking-base.php:466
+#: lib/usage-tracking/class-usage-tracking-base.php:472
 msgid "Enable Usage Tracking"
 msgstr ""
 
-#: lib/usage-tracking/class-usage-tracking-base.php:469
+#: lib/usage-tracking/class-usage-tracking-base.php:475
 msgid "Disable Usage Tracking"
 msgstr ""
 
-#: lib/usage-tracking/class-usage-tracking-base.php:475
+#: lib/usage-tracking/class-usage-tracking-base.php:481
 msgid "Usage data enabled. Thank you!"
 msgstr ""
 
-#: lib/usage-tracking/class-usage-tracking-base.php:478
+#: lib/usage-tracking/class-usage-tracking-base.php:484
 msgid "Disabled usage tracking."
 msgstr ""
 
-#: lib/usage-tracking/class-usage-tracking-base.php:481
+#: lib/usage-tracking/class-usage-tracking-base.php:487
 msgid "Something went wrong. Please try again later."
 msgstr ""
 
