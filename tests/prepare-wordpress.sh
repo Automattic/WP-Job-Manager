@@ -14,7 +14,13 @@ mysql -u root -e "CREATE DATABASE wordpress_tests;"
 
 CURRENT_DIR=$(pwd)
 
-for WP_SLUG in 'master' 'latest' 'previous'; do
+WP_SLUGS=('master' 'latest' 'previous')
+
+if [ ! -z "$WP_VERSION" ]; then
+	WP_SLUGS=("$WP_VERSION")
+fi
+
+for WP_SLUG in "${WP_SLUGS[@]}"; do
 	echo "Preparing $WP_SLUG WordPress...";
 
 	cd $CURRENT_DIR/..
@@ -28,6 +34,9 @@ for WP_SLUG in 'master' 'latest' 'previous'; do
 		;;
 	previous)
 		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/get-wp-version.php --previous` https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-previous
+		;;
+	*)
+		git clone --depth=1 --branch $WP_SLUG https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-$WP_SLUG
 		;;
 	esac
 
