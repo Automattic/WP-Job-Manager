@@ -101,6 +101,7 @@ class WP_Job_Manager {
 		add_action( 'after_setup_theme', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'after_setup_theme', array( $this, 'include_template_functions' ), 11 );
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
+		add_action( 'wp_loaded', array( $this, 'register_shared_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
@@ -219,6 +220,16 @@ class WP_Job_Manager {
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
 			setcookie( 'wp-job-manager-submitting-job-key', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
 		}
+	}
+
+	/**
+	 * Registers assets used in both the frontend and WP admin.
+	 */
+	public function register_shared_assets() {
+		global $wp_scripts;
+
+		$jquery_version = isset( $wp_scripts->registered['jquery-ui-core']->ver ) ? $wp_scripts->registered['jquery-ui-core']->ver : '1.9.2';
+		wp_register_style( 'jquery-ui', '//code.jquery.com/ui/' . $jquery_version . '/themes/smoothness/jquery-ui.css', array(), $jquery_version );
 	}
 
 	/**
