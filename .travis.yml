@@ -8,30 +8,38 @@ env:
   global:
     - WP_TRAVISCI=phpunit
 
-cache: yarn
+cache:
+  directories:
+  - vendor
+  - "$HOME/.composer/cache"
+
+branches:
+  only:
+  - master
 
 # Next we define our matrix of additional build configurations to test against.
-# The versions listed above will automatically create our first configuration,
-# so it doesn't need to be re-defined below.
-
-# Test WP trunk/master and two latest versions on minimum (5.2).
-# Test WP latest two versions (4.5, 4.3) on most popular (5.5, 5.6).
-# Test WP latest stable (4.5) on other supported PHP (5.3, 5.4).
-# Test WP trunk/master on edge platforms (7.0, hhvm, PHP nightly).
-
-# WP_VERSION specifies the tag to use. The way these tests are configured to run
-# requires at least WordPress 3.8. Specify "master" to test against SVN trunk.
-
 matrix:
   include:
   - php: "5.2"
     dist: precise
+    env: WP_VERSION=latest
   - php: "5.3"
     dist: precise
+    env: WP_VERSION=latest
   - php: "5.5"
+    env: WP_VERSION=latest
   - php: "5.6"
+    env: WP_VERSION=latest
+  - php: "5.6"
+    env: WP_VERSION=master
+  - php: "5.6"
+    env: WP_VERSION=previous
   - php: "7.0"
+    env: WP_VERSION=latest
   - php: "7.1"
+    env: WP_VERSION=latest
+  - php: "7.2"
+    env: WP_VERSION=latest
 
 # Clones WordPress and configures our testing environment.
 before_script:

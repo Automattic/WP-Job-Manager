@@ -21,9 +21,15 @@ run_phpunit_for() {
 }
 
 if [ "$WP_TRAVISCI" == "phpunit" ]; then
-    run_phpunit_for "wordpress-master"
-    run_phpunit_for "wordpress-latest"
-    run_phpunit_for "wordpress-previous"
+	WP_SLUGS=('master' 'latest' 'previous')
+
+	if [ ! -z "$WP_VERSION" ]; then
+		WP_SLUGS=("$WP_VERSION")
+	fi
+
+	for WP_SLUG in "${WP_SLUGS[@]}"; do
+		run_phpunit_for "wordpress-$WP_SLUG"
+	done
 else
 
     gem install less

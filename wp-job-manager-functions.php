@@ -432,7 +432,12 @@ function job_manager_get_filtered_links( $args = array() ) {
 		)
 	), $args );
 
-	if ( sizeof( $args['filter_job_types'] ) === sizeof( $types ) && ! $args['search_keywords'] && ! $args['search_location'] && ! $args['search_categories'] && ! apply_filters( 'job_manager_get_listings_custom_filter', false ) ) {
+	if ( count( (array) $args['filter_job_types'] ) === count( $types )
+		 && empty( $args['search_keywords'] )
+		 && empty( $args['search_location'] )
+		 && empty( $args['search_categories'] )
+		 && ! apply_filters( 'job_manager_get_listings_custom_filter', false )
+	) {
 		unset( $links['reset'] );
 	}
 
