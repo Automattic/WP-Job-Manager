@@ -356,7 +356,7 @@ abstract class WP_Job_Manager_Form {
 			}
 		}
 
-		return $values;
+		return apply_filters( 'job_manager_get_posted_fields', $values, $this->fields );
 	}
 
 	/**
