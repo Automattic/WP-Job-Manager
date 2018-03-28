@@ -50,7 +50,7 @@ class WP_Job_Manager_CPT {
 		add_action( 'handle_bulk_actions-edit-job_listing', array( $this, 'do_bulk_actions' ), 10, 3 );
 		add_action( 'admin_init', array( $this, 'approve_job' ) );
 		add_action( 'admin_notices', array( $this, 'action_notices' ) );
-		add_action( 'view_mode_post_types', array($this, 'disable_view_mode' ) );
+		add_action( 'view_mode_post_types', array( $this, 'disable_view_mode' ) );
 
 		if ( get_option( 'job_manager_enable_categories' ) ) {
 			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
