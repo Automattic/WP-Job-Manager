@@ -50,6 +50,7 @@ class WP_Job_Manager_CPT {
 		add_action( 'handle_bulk_actions-edit-job_listing', array( $this, 'do_bulk_actions' ), 10, 3 );
 		add_action( 'admin_init', array( $this, 'approve_job' ) );
 		add_action( 'admin_notices', array( $this, 'action_notices' ) );
+		add_action( 'view_mode_post_types', array( $this, 'disable_view_mode' ) );
 
 		if ( get_option( 'job_manager_enable_categories' ) ) {
 			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
@@ -646,5 +647,16 @@ class WP_Job_Manager_CPT {
 			} );
 		</script>
 		<?php
+	}
+
+	/**
+	 * Removes job_listing from the list of post types that support "View Mode" option
+	 *
+	 * @param array $post_types Array of post types that support view mode
+	 * @return array            Array of post types that support view mode, without job_listing post type
+	 */
+	public function disable_view_mode( $post_types ) {
+		unset( $post_types['job_listing'] );
+		return $post_types;
 	}
 }
