@@ -1,109 +1,109 @@
 = 1.30.1 =
-* Fix: Minor issue with a strict standard error being displayed on some instances. (@alexsanford)
+* Fix: Minor issue with a strict standard error being displayed on some instances.
 
 = 1.30.0 =
-* Enhancement: Adds ability to have a reCAPTCHA field to check if job listing author is human. (@jom)
-* Enhancement: Allows for option to make edits to job listings force listing back into pending approval status. (@jom)
-* Enhancement: Adds spinner and disables form when user submits job listing. (@jom)
-* Enhancement: Update the add-ons page of the plugin. (@jom)
-* Enhancement: Added the ability to sort jobs randomly on the Featured Jobs Widget. (@jom)
-* Enhancement: Improved handling of alternative date formats when editing job expiration field in WP admin. (@jom)
-* Enhancement: Added star indicator next to featured listings on `[job_dashboard]`. (@jom)
-* Enhancement: Opt-in to usage tracking so we can better improve the plugin. (@alexsanford, @donnapep, @jom)
-* Enhancement: Introduced new asset enqueuing strategy that will be turned on in 1.32.0. Requires plugin and theme updates. (@jom; Dev notes: https://github.com/Automattic/WP-Job-Manager/pull/1354)
+* Enhancement: Adds ability to have a reCAPTCHA field to check if job listing author is human.
+* Enhancement: Allows for option to make edits to job listings force listing back into pending approval status.
+* Enhancement: Adds spinner and disables form when user submits job listing.
+* Enhancement: Update the add-ons page of the plugin.
+* Enhancement: Added the ability to sort jobs randomly on the Featured Jobs Widget.
+* Enhancement: Improved handling of alternative date formats when editing job expiration field in WP admin.
+* Enhancement: Added star indicator next to featured listings on `[job_dashboard]`.
+* Enhancement: Opt-in to usage tracking so we can better improve the plugin.
+* Enhancement: Introduced new asset enqueuing strategy that will be turned on in 1.32.0. Requires plugin and theme updates. (Dev notes: https://github.com/Automattic/WP-Job-Manager/pull/1354)
 * Fix: Use WordPress core checks for image formats to not confuse `docx` as an image. (@tripflex)
-* Fix: Issue with `[jobs]` shortcode when `categories` argument is provided. (@jom)
-* Fix: Issue with double encoding HTML entities in custom text area fields. (@jom)
-* Fix: Updates `job-dashboard.php` template with `colspan` fix on no active listings message. (@jom)
-* Fix: Clear job listings cache when deleting a user and their job listings. (@jom)
-* Dev: Adds `is_wpjm()` and related functions to test if we're on a WPJM related page. (@jom)
-* Dev: Adds `job_manager_user_edit_job_listing` action that fires after a user edits a job listing. (@jom)
-* Dev: Adds `job_manager_enable_job_archive_page` filter to enable job archive page. (@jom)
-* Dev: Adds `date` field for custom job listing form fields. (@alexsandford)
+* Fix: Issue with `[jobs]` shortcode when `categories` argument is provided.
+* Fix: Issue with double encoding HTML entities in custom text area fields.
+* Fix: Updates `job-dashboard.php` template with `colspan` fix on no active listings message.
+* Fix: Clear job listings cache when deleting a user and their job listings.
+* Dev: Adds `is_wpjm()` and related functions to test if we're on a WPJM related page.
+* Dev: Adds `job_manager_user_edit_job_listing` action that fires after a user edits a job listing.
+* Dev: Adds `job_manager_enable_job_archive_page` filter to enable job archive page.
+* Dev: Adds `date` field for custom job listing form fields.
 
 = 1.29.3 =
-* Fix: When retrieving job listing results, cache only the post results and not all of `WP_Query` (@jom; props slavco)
+* Fix: When retrieving job listing results, cache only the post results and not all of `WP_Query` (props slavco)
 
 = 1.29.2 =
 * Fix: PHP Notice when sanitizing multiple inputs (bug in 1.29.1 release). (@albionselimaj)
 
 = 1.29.1 =
-* Enhancement: When retrieving listings in `[jobs]` shortcode, setting `orderby` to `rand_featured` will still place featured listings at the top. (@jom)
-* Enhancement: Scroll to show application details when clicking on "Apply for Job" button. (@jom)
-* Change: Updates `account-signin.php` template to warn users email will be confirmed only if that is enabled. (@jom)
-* Fix: Sanitize URLs and emails differently on the application method job listing field. (@jom)
+* Enhancement: When retrieving listings in `[jobs]` shortcode, setting `orderby` to `rand_featured` will still place featured listings at the top.
+* Enhancement: Scroll to show application details when clicking on "Apply for Job" button.
+* Change: Updates `account-signin.php` template to warn users email will be confirmed only if that is enabled.
+* Fix: Sanitize URLs and emails differently on the application method job listing field.
 * Fix: Remove PHP notice in Featured Jobs widget. (@himanshuahuja96)
 * Fix: String fix for consistent spelling of "license" when appearing in strings. (@garrett-eclipse)
-* Fix: Issue with paid add-on licenses not showing up when some third-party plugins were installed. (@jom)
-* Dev: Runs new actions (`job_manager_recent_jobs_widget_before` and `job_manager_recent_jobs_widget_after`) inside Recent Jobs widget. (@jom)
-* Dev: Change `wpjm_get_the_job_types()` to return an empty array when job types are disabled. (@jom)
+* Fix: Issue with paid add-on licenses not showing up when some third-party plugins were installed.
+* Dev: Runs new actions (`job_manager_recent_jobs_widget_before` and `job_manager_recent_jobs_widget_after`) inside Recent Jobs widget.
+* Dev: Change `wpjm_get_the_job_types()` to return an empty array when job types are disabled.
 * See all: https://github.com/Automattic/WP-Job-Manager/milestone/15?closed=1
 
 = 1.29.0 =
-* Enhancement: Moves license and update management for official add-ons to the core plugin. (@jom)
-* Enhancement: Update language for setup wizard with more clear descriptions. (@donnapep)
+* Enhancement: Moves license and update management for official add-ons to the core plugin.
+* Enhancement: Update language for setup wizard with more clear descriptions.
 * Fix: Prevent duplicate attachments to job listing posts for non-image media. (@tripflex)
-* Fix: PHP error on registration form due to missing placeholder text. (@jom)
+* Fix: PHP error on registration form due to missing placeholder text.
 * Fix: Apply `the_job_application_method` filter even when no default is available. (@turtlepod)
-* Fix: Properly reset category selector on `[jobs]` shortcode. (@jom)
+* Fix: Properly reset category selector on `[jobs]` shortcode.
 
 = 1.28.0 =
-* Enhancement: Improves support for Google Job Search by adding `JobPosting` structured data. (@jom)
-* Enhancement: Adds ability for job types to be mapped to an employment type as defined for Google Job Search. (@jom)
-* Enhancement: Requests search engines no longer index expired and filled job listings. (@jom)
-* Enhancement: Improves support with third-party sitemap generation in Jetpack, Yoast SEO, and All in One SEO. (@jom)
-* Enhancement: Updated descriptions and help text on settings page. (@donnapep; Props to @michelleweber for updated copy)
-* Enhancement: Lower cache expiration times across plugin and limit use of autoloaded cache transients. (@jom/files) 
-* Fix: Localization issue with WPML in the [jobs] shortcode. (@jom)
-* Fix: Show job listings' published date in localized format. (@jom)
-* Fix: Job submission form allows users to select multiple job types when they go back a step. (@jom)
-* Fix: Some themes that overloaded functions would break in previous release. (@jom)
-* Dev: Adds versions to template files so it is easier to tell when they are updated. (@jom)
-* Dev: Adds a new `wpjm_notify_new_user` action that allows you to override default behavior. (@jom)
+* Enhancement: Improves support for Google Job Search by adding `JobPosting` structured data.
+* Enhancement: Adds ability for job types to be mapped to an employment type as defined for Google Job Search.
+* Enhancement: Requests search engines no longer index expired and filled job listings.
+* Enhancement: Improves support with third-party sitemap generation in Jetpack, Yoast SEO, and All in One SEO.
+* Enhancement: Updated descriptions and help text on settings page.
+* Enhancement: Lower cache expiration times across plugin and limit use of autoloaded cache transients.
+* Fix: Localization issue with WPML in the [jobs] shortcode.
+* Fix: Show job listings' published date in localized format.
+* Fix: Job submission form allows users to select multiple job types when they go back a step.
+* Fix: Some themes that overloaded functions would break in previous release.
+* Dev: Adds versions to template files so it is easier to tell when they are updated.
+* Dev: Adds a new `wpjm_notify_new_user` action that allows you to override default behavior.
 * Dev: Early version of REST API is bundled but disabled by default. Requires PHP 5.3+ and `WPJM_REST_API_ENABLED` constant must be set to true. Do not use in production; endpoints may change. (@pkg)
 
 = 1.27.0 =
-* Enhancement: Admins can now allow users to specify an account password when posting their first job listing. (@jom)
+* Enhancement: Admins can now allow users to specify an account password when posting their first job listing.
 * Enhancement: Pending job listing counts are now cached for improved WP Admin performance. (@tripflex)
-* Enhancement: Allows users to override permalink slugs in WP Admin's Permalink Settings screen. (@jom)
-* Enhancement: Allows admins to perform bulk updating of jobs as filled/not filled. (@jom)
-* Enhancement: Adds job listing status CSS classes on single job listings. (@jom)
-* Enhancement: Adds `wpjm_the_job_title` filter for inserting non-escaped HTML alongside job titles in templates. (@jom)
-* Enhancement: Allows admins to filter by `post_status` in `[jobs]` shortcode. (@jom)
+* Enhancement: Allows users to override permalink slugs in WP Admin's Permalink Settings screen.
+* Enhancement: Allows admins to perform bulk updating of jobs as filled/not filled.
+* Enhancement: Adds job listing status CSS classes on single job listings.
+* Enhancement: Adds `wpjm_the_job_title` filter for inserting non-escaped HTML alongside job titles in templates.
+* Enhancement: Allows admins to filter by `post_status` in `[jobs]` shortcode.
 * Enhancement: Allows accessing settings tab from hash in URL. (@tripflex)
-* Fix: Make sure cron jobs for checking/cleaning expired listings are always in place. (@jom)
+* Fix: Make sure cron jobs for checking/cleaning expired listings are always in place.
 * Fix: Better handling of multiple job types. (@spencerfinnell)
-* Fix: Issue with deleting company logos from job listings submission form. (@jom)
+* Fix: Issue with deleting company logos from job listings submission form.
 * Fix: Warning thrown on job submission form when user not logged in. (@piersb)  
-* Fix: Issue with WPML not syncing some meta fields. (@jom)
+* Fix: Issue with WPML not syncing some meta fields.
 * Fix: Better handling of AJAX upload errors. (@tripflex)
-* Fix: Remove job posting cookies on logout. (@jom)
+* Fix: Remove job posting cookies on logout.
 * Fix: Expiration date can be cleared if default job duration option is empty. (@spencerfinnell)
-* Fix: Issue with Safari and expiration datepicker. (@jom)
+* Fix: Issue with Safari and expiration datepicker.
 
 = 1.26.2 =
 * Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.  
 * Fix: Escape post title in WP Admin's Job Listings page and template segments. (Props to @EhsanCod3r)
 
 = 1.26.1 =
-* Enhancement: Add language using WordPress's current locale to geocode requests. (@jom)
+* Enhancement: Add language using WordPress's current locale to geocode requests.
 * Fix: Allow attempts to use Google Maps Geocode API without an API key. (@spencerfinnell)
-* Fix: Issue affecting job expiry date when editing a job listing. (@spencerfinnell, @jom)
-* Fix: Show correct total count of results on `[jobs]` shortcode. (@jom)
+* Fix: Issue affecting job expiry date when editing a job listing. (@spencerfinnell)
+* Fix: Show correct total count of results on `[jobs]` shortcode.
 
 = 1.26.0 =
-* Enhancement: Warn the user if they're editing an existing job. (@donnchawp)
+* Enhancement: Warn the user if they're editing an existing job.
 * Enhancement: WP Admin Job Listing page's table is now responsive. (@turtlepod)
 * Enhancement: New setting for hiding expired listings from `[jobs]` filter. (@turtlepod)
-* Enhancement: Use WP Query's built in search function to improve searching in `[jobs]`. (@jom)
+* Enhancement: Use WP Query's built in search function to improve searching in `[jobs]`.
 * Fix: Job Listing filter only searches meta fields with relevant content. Add custom fields with `job_listing_searchable_meta_keys` filter. (@turtlepod)
-* Fix: Improved support for WPML and Polylang. (@jom)
+* Fix: Improved support for WPML and Polylang.
 * Fix: Expired field no longer forces admins to choose a date in the future. (@turtlepod)
-* Fix: Listings with expiration date in past will immediately expire; moving to Active status will extend if necessary. (@turtlepod, @jom, https://github.com/Automattic/WP-Job-Manager/pull/975)
-* Fix: Google Maps API key setting added to fix geolocation retrieval on new sites. (@jom)
+* Fix: Listings with expiration date in past will immediately expire; moving to Active status will extend if necessary. (@turtlepod)
+* Fix: Google Maps API key setting added to fix geolocation retrieval on new sites.
 * Fix: Issue when duplicating a job listing with a field for multiple file uploads. (@turtlepod)
-* Fix: Hide page results when adding links in the `[submit_job_form]` shortcode. (@jom)
-* Fix: Job feed now loads when a site has no posts. (@dbtlr)
+* Fix: Hide page results when adding links in the `[submit_job_form]` shortcode.
+* Fix: Job feed now loads when a site has no posts.
 * Fix: No error is thrown when deleting a user. (@tripflex)
 * Dev: Plugins and themes can now retrieve JSON of Job Listings results without HTML. (@spencerfinnell)
 * Dev: Updated inline documentation.
