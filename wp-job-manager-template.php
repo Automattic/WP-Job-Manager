@@ -380,6 +380,9 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['hiringOrganization']['sameAs'] = $company_website;
 		$data['hiringOrganization']['url'] = $company_website;
 	}
+	if ( $company_logo = get_the_company_logo( $post, 'full' ) ) {
+		$data['hiringOrganization']['logo'] = $company_logo;
+	}
 
 	$data['identifier'] = array();
 	$data['identifier']['@type'] = 'PropertyValue';
