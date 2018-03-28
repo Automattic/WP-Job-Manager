@@ -59,8 +59,10 @@ class WP_Job_Manager {
 	public function __construct() {
 		// Define constants
 		define( 'JOB_MANAGER_VERSION', '1.30.1' );
+		define( 'JOB_MANAGER_MINIMUM_WP_VERSION', '4.7' );
 		define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+		define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 		// Includes
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-install.php' );
