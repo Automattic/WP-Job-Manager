@@ -29,7 +29,10 @@ class WPJM_Unit_Tests_Bootstrap {
 		define( 'DOING_AJAX', true );
 		define( 'WPJM_REST_API_ENABLED', true );
 		ini_set( 'display_errors','on' );
+
 		error_reporting( E_ALL );
+		set_error_handler( array( $this, 'convert_to_exception' ), E_ALL );
+
 		$this->tests_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'tests';
 		$this->includes_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes';
 		$this->plugin_dir   = dirname( dirname( dirname( $this->tests_dir ) ) );
@@ -39,7 +42,7 @@ class WPJM_Unit_Tests_Bootstrap {
 		require_once( $this->wp_tests_dir . '/includes/functions.php' );
 
 		// load WPJM
-		tests_add_filter( 'plugins_loaded', array( $this, 'load_plugin' ) );
+		tests_add_filter( 'muplugins_loaded', array( $this, 'load_plugin' ) );
 
 		// install WPJM
 		tests_add_filter( 'setup_theme', array( $this, 'install_plugin' ) );
@@ -49,6 +52,7 @@ class WPJM_Unit_Tests_Bootstrap {
 
 		// load WPJM testing framework
 		$this->includes();
+		restore_error_handler();
 	}
 
 	/**
@@ -57,10 +61,12 @@ class WPJM_Unit_Tests_Bootstrap {
 	 * @since 1.26.0
 	 */
 	public function load_plugin() {
-        $enabled = get_option( 'job_manager_enable_types' );
-        if (! $enabled ) {
-            update_option( 'job_manager_enable_types', true );
-        }
+		error_reporting( E_ALL );
+		$enabled = get_option( 'job_manager_enable_types' );
+		if (! $enabled ) {
+			update_option( 'job_manager_enable_types', true );
+		}
+
 		require_once( $this->plugin_dir . '/wp-job-manager.php' );
 	}
 
@@ -104,6 +110,46 @@ class WPJM_Unit_Tests_Bootstrap {
 			self::$instance = new self();
 		}
 		return self::$instance;
+	}
+
+	/**
+	 * Converts all errors to exceptions during plugin loading.
+	 *
+	 * @param int    $errno
+	 * @param string $errstr
+	 * @param string $errfile
+	 * @param int    $errline
+	 *
+	 * @throws Exception
+	 */
+	public function convert_to_exception( $errno, $errstr, $errfile, $errline ) {
+		if ( ! defined( 'E_DEPRECATED' ) ) {
+			define( 'E_DEPRECATED', 8192 );
+		}
+
+		$error_descriptions = array(
+			E_WARNING => 'Warning',
+			E_ERROR => 'Error',
+			E_PARSE => 'Parse Error',
+			E_NOTICE => 'Notice',
+			E_STRICT => 'Strict Notice',
+			E_DEPRECATED => 'PHP Deprecated',
+		);
+		if ( in_array( $errno, array( E_RECOVERABLE_ERROR ) ) ) {
+			return;
+		}
+		$description = 'Unknown Error: ';
+		if ( isset( $error_descriptions[ $errno ] ) ) {
+			$description = $error_descriptions[ $errno ] . ': ';
+		}
+		$description .= $errstr . " in {$errfile} on line {$errline}";
+
+		// PHP 5.2 doesn't show the error from Exceptions.
+		if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
+			echo "Error ($errno) - $description\n";
+		}
+
+		throw new Exception( $description );
 	}
 }
 WPJM_Unit_Tests_Bootstrap::instance();
