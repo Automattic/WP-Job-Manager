@@ -1,6 +1,6 @@
 <?php
 /**
- * Exposes Job Types Taxonomy REST Api
+ * Exposes Job Categories Taxonomy REST Api
  *
  * @package WPJM/REST
  */
@@ -10,16 +10,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class WP_Job_Manager_Registrable_Job_Types
+ * Class WP_Job_Manager_Registrable_Job_Categories
  */
-class WP_Job_Manager_Registrable_Job_Types extends WP_Job_Manager_Registrable_Taxonomy_Type {
+class WP_Job_Manager_Registrable_Job_Categories extends WP_Job_Manager_Registrable_Taxonomy_Type {
 	/**
 	 * Gets the taxonomy type to register.
 	 *
 	 * @return string Taxonomy type to expose.
 	 */
 	public function get_taxonomy_type() {
-		return 'job_listing_type';
+		return 'job_listing_category';
 	}
 
 	/**
@@ -28,7 +28,7 @@ class WP_Job_Manager_Registrable_Job_Types extends WP_Job_Manager_Registrable_Ta
 	 * @return string Slug for REST API base.
 	 */
 	public function get_rest_base() {
-		return 'job-types';
+		return 'job-categories';
 	}
 
 	/**
@@ -37,6 +37,6 @@ class WP_Job_Manager_Registrable_Job_Types extends WP_Job_Manager_Registrable_Ta
 	 * @return string Class name for the taxonomy type's model.
 	 */
 	public function get_model_class_name() {
-		return 'WP_Job_Manager_Models_Job_Types_Custom_Fields';
+		return 'WP_Job_Manager_Models_Job_Categories_Custom_Fields';
 	}
 }
