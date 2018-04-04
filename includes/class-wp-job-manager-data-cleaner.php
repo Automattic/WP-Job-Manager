@@ -46,6 +46,7 @@ class WP_Job_Manager_Data_Cleaner {
 	public static function cleanup_all() {
 		self::cleanup_custom_post_types();
 		self::cleanup_taxonomies();
+		self::cleanup_pages();
 	}
 
 	/**
@@ -91,6 +92,31 @@ class WP_Job_Manager_Data_Cleaner {
 				$wpdb->delete( $wpdb->terms, array( 'term_id' => $term->term_id ) );
 				$wpdb->delete( $wpdb->termmeta, array( 'term_id' => $term->term_id ) );
 			}
+		}
+	}
+
+	/**
+	 * Cleanup data for pages.
+	 *
+	 * @access private
+	 */
+	private static function cleanup_pages() {
+		// Trash the Submit Job page.
+		$submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
+		if ( $submit_job_form_page_id ) {
+			wp_trash_post( $submit_job_form_page_id );
+		}
+
+		// Trash the Job Dashboard page.
+		$job_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id' );
+		if ( $job_dashboard_page_id ) {
+			wp_trash_post( $job_dashboard_page_id );
+		}
+
+		// Trash the Jobs page.
+		$jobs_page_id = get_option( 'job_manager_jobs_page_id' );
+		if ( $jobs_page_id ) {
+			wp_trash_post( $jobs_page_id );
 		}
 	}
 }

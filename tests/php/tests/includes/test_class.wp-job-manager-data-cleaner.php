@@ -13,6 +13,12 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	private $categories;
 	private $ages;
 
+	// Pages.
+	private $regular_page_ids;
+	private $submit_job_form_page_id;
+	private $job_dashboard_page_id;
+	private $jobs_page_id;
+
 	/**
 	 * Add some posts to run tests against. Any that are associated with WPJM
 	 * should be trashed on cleanup. The others should not be trashed.
@@ -128,6 +134,39 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Add some pages to run tests against. Any that are associated with WPJM
+	 * should be trashed on cleanup. The others should not be trashed.
+	 */
+	private function setupPages() {
+		// Create some regular pages.
+		$this->regular_page_ids = $this->factory->post->create_many( 2, array(
+			'post_type'  => 'page',
+			'post_title' => 'Normal page',
+		) );
+
+		// Create the Submit Job page.
+		$this->submit_job_form_page_id = $this->factory->post->create( array(
+			'post_type'  => 'page',
+			'post_title' => 'Submit Job Page',
+		) );
+		update_option( 'job_manager_submit_job_form_page_id', $this->submit_job_form_page_id );
+
+		// Create the Job Dashboard page.
+		$this->job_dashboard_page_id = $this->factory->post->create( array(
+			'post_type'  => 'page',
+			'post_title' => 'Job Dashboard Page',
+		) );
+		update_option( 'job_manager_job_dashboard_page_id', $this->job_dashboard_page_id );
+
+		// Create the Submit Job page.
+		$this->jobs_page_id = $this->factory->post->create( array(
+			'post_type'  => 'page',
+			'post_title' => 'Jobs Page',
+		) );
+		update_option( 'job_manager_jobs_page_id', $this->jobs_page_id );
+	}
+
+	/**
 	 * Set up for tests.
 	 */
 	public function setUp() {
@@ -135,6 +174,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 		$this->setupPosts();
 		$this->setupTaxonomyTerms();
+		$this->setupPages();
 	}
 
 	/**
@@ -269,6 +309,24 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 			$this->getPostIdsWithTerm( $this->ages[1]['term_id'], 'age' ),
 			'"New" should not be deleted'
 		);
+	}
+
+	/**
+	 * Ensure the WPJM pages are trashed, and the other pages are not.
+	 *
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_all
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_pages
+	 */
+	public function testSenseiPagesTrashed() {
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+
+		$this->assertEquals( 'trash', get_post_status( $this->submit_job_form_page_id ), 'Submit Job page should be trashed' );
+		$this->assertEquals( 'trash', get_post_status( $this->job_dashboard_page_id ), 'Job Dashboard page should be trashed' );
+		$this->assertEquals( 'trash', get_post_status( $this->jobs_page_id ), 'Jobs page should be trashed' );
+
+		foreach ( $this->regular_page_ids as $page_id ) {
+			$this->assertNotEquals( 'trash', get_post_status( $page_id ), 'Regular page should not be trashed' );
+		}
 	}
 
 	/* Helper functions. */
