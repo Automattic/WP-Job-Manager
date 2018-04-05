@@ -601,6 +601,60 @@ function wpjm_get_the_job_types( $post = null ) {
 }
 
 /**
+ * Displays job categories for the listing.
+ *
+ * @since 1.31.0
+ *
+ * @param int|WP_Post $post      Current post object.
+ * @param string      $separator String to join the term names with.
+ */
+function wpjm_the_job_categories( $post = null, $separator = ', ' ) {
+	if ( ! get_option( 'job_manager_enable_categories' ) ) {
+		return;
+	}
+
+	$job_categories = wpjm_get_the_job_categories( $post );
+
+	if ( $job_categories ) {
+		$names = wp_list_pluck( $job_categories, 'name' );
+
+		echo esc_html( implode( $separator, $names ) );
+	}
+}
+
+/**
+ * Gets the job type for the listing.
+ *
+ * @since 1.31.0
+ *
+ * @param int|WP_Post $post (default: null).
+ * @return bool|array
+ */
+function wpjm_get_the_job_categories( $post = null ) {
+	$post = get_post( $post );
+
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return false;
+	}
+
+	$categories = get_the_terms( $post->ID, 'job_listing_category' );
+
+	if ( empty( $categories ) || is_wp_error( $categories ) ) {
+		$categories = array();
+	}
+
+	/**
+	 * Filter the returned job categories for a post.
+	 *
+	 * @since 1.31.0
+	 *
+	 * @param array   $types
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_the_job_categories', $categories, $post );
+}
+
+/**
  * Returns the registration fields used when an account is required.
  *
  * @since 1.27.0
