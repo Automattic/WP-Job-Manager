@@ -9,6 +9,7 @@ include_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class
  */
 class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	public function setUp() {
+		defined( 'PHPUNIT_WPJM_TESTSUITE' ) || define( 'PHPUNIT_WPJM_TESTSUITE', true );
 		parent::setUp();
 		reset_phpmailer_instance();
 		WP_Job_Manager_Email_Notifications::_clear_deferred_notifications();
@@ -217,7 +218,9 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$this->assertTrue( is_string( $core_email_class ) );
 		$this->assertTrue( class_exists( $core_email_class ) );
 		$this->assertTrue( is_subclass_of( $core_email_class, 'WP_Job_Manager_Email' ) );
-		$this->assertTrue( is_string( $core_email_class::get_key() ) );
-		$this->assertTrue( is_string( $core_email_class::get_name() ) );
+
+		// // PHP 5.2: Using `call_user_func()` but `$core_email_class::get_key()` preferred.
+		$this->assertTrue( is_string( call_user_func( array( $core_email_class, 'get_key') ) ) );
+		$this->assertTrue( is_string( call_user_func( array( $core_email_class, 'get_name') ) ) );
 	}
 }

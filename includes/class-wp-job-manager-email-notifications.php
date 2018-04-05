@@ -140,7 +140,8 @@ final class WP_Job_Manager_Email_Notifications {
 				continue;
 			}
 
-			$email_notification_key = $email_class::get_key();
+			// PHP 5.2: Using `call_user_func()` but `$email_class::get_key()` preferred.
+			$email_notification_key = call_user_func( array( $email_class, 'get_key') );
 			if (
 				isset( $email_notifications[ $email_notification_key ] )
 				|| ( $enabled_notifications_only && ! self::is_email_notification_enabled( $email_notification_key ) )
@@ -192,11 +193,12 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return bool
 	 */
 	private static function is_email_notification_valid( $email_class ) {
+		// PHP 5.2: Using `call_user_func()` but `$email_class::get_key()` preferred.
 		return is_string( $email_class )
 				&& class_exists( $email_class )
 				&& is_subclass_of( $email_class, 'WP_Job_Manager_Email' )
-				&& false !== $email_class::get_key()
-				&& false !== $email_class::get_name();
+				&& false !== call_user_func( array( $email_class, 'get_key') )
+				&& false !== call_user_func( array( $email_class, 'get_name') );
 	}
 
 	/**
