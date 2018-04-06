@@ -17,6 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $post;
+
+do_action( 'job_manager_send_notification', 'admin-notice-new-listing', array( 'job_id' => $post->ID, 'user_id' => get_current_user_id() ) );
 ?>
 <div class="single_job_listing">
 	<?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
