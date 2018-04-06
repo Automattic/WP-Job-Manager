@@ -29,12 +29,23 @@ class WP_Job_Manager_Data_Cleaner {
 	);
 
 	/**
+	 * Taxonomies to be deleted.
+	 *
+	 * @var $taxonomies
+	 */
+	private static $taxonomies = array(
+		'job_listing_category',
+		'job_listing_type',
+	);
+
+	/**
 	 * Cleanup all data.
 	 *
 	 * @access public
 	 */
 	public static function cleanup_all() {
 		self::cleanup_custom_post_types();
+		self::cleanup_taxonomies();
 	}
 
 	/**
@@ -53,6 +64,32 @@ class WP_Job_Manager_Data_Cleaner {
 
 			foreach ( $items as $item ) {
 				wp_trash_post( $item );
+			}
+		}
+	}
+
+	/**
+	 * Cleanup data for taxonomies.
+	 *
+	 * @access private
+	 */
+	private static function cleanup_taxonomies() {
+		global $wpdb;
+
+		foreach ( self::$taxonomies as $taxonomy ) {
+			$terms = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s",
+					$taxonomy
+				)
+			);
+
+			// Delete all data for each term.
+			foreach ( $terms as $term ) {
+				$wpdb->delete( $wpdb->term_relationships, array( 'term_taxonomy_id' => $term->term_taxonomy_id ) );
+				$wpdb->delete( $wpdb->term_taxonomy, array( 'term_taxonomy_id' => $term->term_taxonomy_id ) );
+				$wpdb->delete( $wpdb->terms, array( 'term_id' => $term->term_id ) );
+				$wpdb->delete( $wpdb->termmeta, array( 'term_id' => $term->term_id ) );
 			}
 		}
 	}

@@ -8,6 +8,11 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	private $biography_ids;
 	private $job_listing_ids;
 
+	// Taxonomies.
+	private $job_listing_types;
+	private $categories;
+	private $ages;
+
 	/**
 	 * Add some posts to run tests against. Any that are associated with WPJM
 	 * should be trashed on cleanup. The others should not be trashed.
@@ -38,12 +43,98 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Add some taxonomies to run tests against. Any that are associated with
+	 * WPJM should be deleted on cleanup. The others should not be deleted.
+	 */
+	private function setupTaxonomyTerms() {
+		// Setup some job types.
+		$this->job_listing_types = array();
+
+		for ( $i = 1; $i <= 3; $i++ ) {
+			$this->job_listing_types[] = wp_insert_term( 'Job Type ' . $i, 'job_listing_type' );
+		}
+
+		wp_set_object_terms( $this->course_ids[0],
+			array(
+				$this->job_listing_types[0]['term_id'],
+				$this->job_listing_types[1]['term_id'],
+			),
+			'job_listing_type'
+		);
+		wp_set_object_terms( $this->course_ids[1],
+			array(
+				$this->job_listing_types[1]['term_id'],
+				$this->job_listing_types[2]['term_id'],
+			),
+			'job_listing_type'
+		);
+		wp_set_object_terms( $this->course_ids[2],
+			array(
+				$this->job_listing_types[0]['term_id'],
+				$this->job_listing_types[1]['term_id'],
+				$this->job_listing_types[2]['term_id'],
+			),
+			'job_listing_type'
+		);
+
+		// Setup some categories.
+		$this->categories = array();
+
+		for ( $i = 1; $i <= 3; $i++ ) {
+			$this->categories[] = wp_insert_term( 'Category ' . $i, 'category' );
+		}
+
+		wp_set_object_terms( $this->course_ids[0],
+			array(
+				$this->categories[0]['term_id'],
+				$this->categories[1]['term_id'],
+			),
+			'category'
+		);
+		wp_set_object_terms( $this->post_ids[0],
+			array(
+				$this->categories[1]['term_id'],
+				$this->categories[2]['term_id'],
+			),
+			'category'
+		);
+		wp_set_object_terms( $this->biography_ids[2],
+			array(
+				$this->categories[0]['term_id'],
+				$this->categories[1]['term_id'],
+				$this->categories[2]['term_id'],
+			),
+			'category'
+		);
+
+		// Setup a custom taxonomy.
+		register_taxonomy( 'age', 'biography' );
+
+		$this->ages = array(
+			wp_insert_term( 'Old', 'age' ),
+			wp_insert_term( 'New', 'age' ),
+		);
+
+		wp_set_object_terms( $this->biography_ids[0], $this->ages[0]['term_id'], 'age' );
+		wp_set_object_terms( $this->biography_ids[1], $this->ages[1]['term_id'], 'age' );
+
+		// Add a piece of termmeta for every term.
+		$terms = array_merge( $this->job_listing_types, $this->categories, $this->ages );
+		foreach ( $terms as $term ) {
+			$key   = 'the_term_id';
+			$value = 'The ID is ' . $term['term_id'];
+			update_term_meta( $term['term_id'], $key, $value );
+		}
+	}
+
+	/**
 	 * Set up for tests.
 	 */
 	public function setUp() {
 		parent::setUp();
 
 		$this->setupPosts();
+		$this->setupTaxonomyTerms();
 	}
 
 	/**
@@ -75,5 +166,124 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 			$post = get_post( $id );
 			$this->assertNotEquals( 'trash', $post->post_status, 'Non-WPJM post should not be trashed' );
 		}
+	}
+
+	/**
+	 * Ensure the data for WPJM taxonomies and terms are deleted.
+	 *
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_all
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_taxonomies
+	 */
+	public function testJobManagerTaxonomiesDeleted() {
+		global $wpdb;
+
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+
+		foreach ( $this->job_listing_types as $job_listing_type ) {
+			$term_id          = $job_listing_type['term_id'];
+			$term_taxonomy_id = $job_listing_type['term_taxonomy_id'];
+
+			// Ensure the data is deleted from all the relevant DB tables.
+			$this->assertEquals( array(), $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * from $wpdb->termmeta WHERE term_id = %s",
+					$term_id
+				)
+			), 'WPJM term meta should be deleted' );
+
+			$this->assertEquals( array(), $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * from $wpdb->terms WHERE term_id = %s",
+					$term_id
+				)
+			), 'WPJM term should be deleted' );
+
+			$this->assertEquals( array(), $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * from $wpdb->term_taxonomy WHERE term_taxonomy_id = %s",
+					$term_taxonomy_id
+				)
+			), 'WPJM term taxonomy should be deleted' );
+
+			$this->assertEquals( array(), $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * from $wpdb->term_relationships WHERE term_taxonomy_id = %s",
+					$term_taxonomy_id
+				)
+			), 'WPJM term relationships should be deleted' );
+		}
+	}
+
+	/**
+	 * Ensure the data for non-WPJM taxonomies and terms are not deleted.
+	 *
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_all
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_taxonomies
+	 */
+	public function testOtherTaxonomiesUntouched() {
+		global $wpdb;
+
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+
+		// Check "Category 1".
+		$this->assertEquals(
+			array( $this->biography_ids[2] ),
+			$this->getPostIdsWithTerm( $this->categories[0]['term_id'], 'category' ),
+			'Category 1 should not be deleted'
+		);
+
+		// Check "Category 2". Sort the arrays because the ordering doesn't
+		// matter.
+		$expected = array( $this->post_ids[0], $this->biography_ids[2] );
+		$actual   = $this->getPostIdsWithTerm( $this->categories[1]['term_id'], 'category' );
+		sort( $expected );
+		sort( $actual );
+		$this->assertEquals(
+			$expected,
+			$actual,
+			'Category 2 should not be deleted'
+		);
+
+		// Check "Category 3". Sort the arrays because the ordering doesn't
+		// matter.
+		$expected = array( $this->post_ids[0], $this->biography_ids[2] );
+		$actual   = $this->getPostIdsWithTerm( $this->categories[2]['term_id'], 'category' );
+		sort( $expected );
+		sort( $actual );
+		$this->assertEquals(
+			$expected,
+			$actual,
+			'Category 3 should not be deleted'
+		);
+
+		// Check "Old" biographies.
+		$this->assertEquals(
+			array( $this->biography_ids[0] ),
+			$this->getPostIdsWithTerm( $this->ages[0]['term_id'], 'age' ),
+			'"Old" should not be deleted'
+		);
+
+		// Check "New" biographies.
+		$this->assertEquals(
+			array( $this->biography_ids[1] ),
+			$this->getPostIdsWithTerm( $this->ages[1]['term_id'], 'age' ),
+			'"New" should not be deleted'
+		);
+	}
+
+	/* Helper functions. */
+
+	private function getPostIdsWithTerm( $term_id, $taxonomy ) {
+		return get_posts( array(
+			'fields'    => 'ids',
+			'post_type' => 'any',
+			'tax_query' => array(
+				array(
+					'field'    => 'term_id',
+					'terms'    => $term_id,
+					'taxonomy' => $taxonomy,
+				),
+			),
+		) );
 	}
 }
