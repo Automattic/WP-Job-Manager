@@ -39,12 +39,12 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 	 * Get the contents of a template.
 	 *
 	 * @param bool $plain_text
-	 * @return string|bool
+	 * @return string
 	 */
 	public function get_template( $plain_text = false ) {
 		$template = $this->locate_template( $plain_text );
 		if ( ! $template ) {
-			return false;
+			return '';
 		}
 		$args = $this->get_args();
 		$email = $this;
