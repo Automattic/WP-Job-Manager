@@ -3,6 +3,25 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit();
 }
 
+// Cleanup all data.
+require 'includes/class-wp-job-manager-data-cleaner.php';
+
+if ( ! is_multisite() ) {
+	WP_Job_Manager_Data_Cleaner::cleanup_all();
+} else {
+	global $wpdb;
+
+	$blog_ids         = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+	$original_blog_id = get_current_blog_id();
+
+	foreach ( $blog_ids as $blog_id ) {
+		switch_to_blog( $blog_id );
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+	}
+
+	switch_to_blog( $original_blog_id );
+}
+
 wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
 wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
 
