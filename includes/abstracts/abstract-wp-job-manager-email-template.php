@@ -32,7 +32,7 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 		if ( $this->has_template( true ) ) {
 			return $this->get_template( true );
 		}
-		return strip_tags( $this->get_rich_content() );
+		return parent::get_plain_content();
 	}
 
 	/**
