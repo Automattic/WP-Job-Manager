@@ -174,7 +174,7 @@ final class WP_Job_Manager_Email_Notifications {
 	}
 
 	/**
-	 * Returns the total number of deferred notifications to be sent.
+	 * Returns the total number of deferred notifications to be sent. Used in unit tests.
 	 *
 	 * @access private
 	 *
