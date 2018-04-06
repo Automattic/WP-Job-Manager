@@ -243,6 +243,21 @@ final class WP_Job_Manager_Email_Notifications {
 
 		$content = self::get_email_content( $email_notification_key, $args );
 
+		/**
+		 * Allows for short-circuiting the actual sending of email notifications.
+		 *
+		 * @since 1.31.0
+		 *
+		 * @param bool                  $do_send_notification   True if we should send the notification.
+		 * @param WP_Job_Manager_Email  $email                  Email notification object.
+		 * @param array                 $args                   Email arguments for generating email.
+		 * @param string                $content                Email content.
+		 * @param array                 $headers                Email headers.
+		 * @param
+		 */
+		if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $content, $headers ) ) {
+			return false;
+		}
 		return wp_mail( $args['to'], $args['subject'], $content, $headers, $args['attachments'] );
 	}
 
