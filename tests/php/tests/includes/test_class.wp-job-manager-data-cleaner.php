@@ -317,7 +317,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_all
 	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_pages
 	 */
-	public function testSenseiPagesTrashed() {
+	public function testJobManagerPagesTrashed() {
 		WP_Job_Manager_Data_Cleaner::cleanup_all();
 
 		$this->assertEquals( 'trash', get_post_status( $this->submit_job_form_page_id ), 'Submit Job page should be trashed' );
