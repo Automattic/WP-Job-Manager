@@ -324,7 +324,7 @@ final class WP_Job_Manager_Email_Notifications {
 		 * @param bool   $send_notification
 		 * @param string $email_notification_key
 		 */
-		return apply_filters( 'job_manager_emails_is_email_notification_enabled', true, $email_notification_key );
+		return apply_filters( 'job_manager_email_is_email_notification_enabled', true, $email_notification_key );
 	}
 
 	/**
@@ -344,6 +344,6 @@ final class WP_Job_Manager_Email_Notifications {
 		 * @param bool   $send_as_plain_text
 		 * @param string $email_notification_key
 		 */
-		return apply_filters( 'job_manager_emails_send_as_plain_text', false, $email_notification_key );
+		return apply_filters( 'job_manager_email_send_as_plain_text', false, $email_notification_key );
 	}
 }
