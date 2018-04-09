@@ -74,6 +74,9 @@ class WP_Job_Manager {
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-geocode.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-cache-helper.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email-template.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-email-notifications.php' );
 
 		add_action( 'rest_api_init', array( $this, 'rest_api' ) );
 
@@ -106,6 +109,7 @@ class WP_Job_Manager {
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
+		add_action( 'init', array( 'WP_Job_Manager_Email_Notifications', 'init' ) );
 
 		add_action( 'init', array( $this, 'usage_tracking_init' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'usage_tracking_cleanup' ) );
