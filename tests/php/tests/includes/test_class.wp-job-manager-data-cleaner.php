@@ -19,6 +19,10 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	private $job_dashboard_page_id;
 	private $jobs_page_id;
 
+	// Users.
+	private $regular_user_id;
+	private $employer_user_id;
+
 	/**
 	 * Add some posts to run tests against. Any that are associated with WPJM
 	 * should be trashed on cleanup. The others should not be trashed.
@@ -167,6 +171,32 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Add some users to run tests against. The roles and capabilities
+	 * associated with WPJM should be deleted on cleanup. The others should
+	 * not be deleted.
+	 */
+	private function setupUsers() {
+		// Ensure the role is created.
+		WP_Job_Manager_Install::install();
+
+		// Create a regular user and assign some caps.
+		$this->regular_user_id = $this->factory->user->create( array( 'role' => 'author' ) );
+		$regular_user          = get_user_by( 'id', $this->regular_user_id );
+		$regular_user->add_cap( 'edit_others_posts' );
+		$regular_user->add_cap( 'manage_job_listings' );
+
+		// Create a teacher user and assign some caps.
+		$this->employer_user_id = $this->factory->user->create( array( 'role' => 'employer' ) );
+		$employer_user          = get_user_by( 'id', $this->employer_user_id );
+		$employer_user->add_cap( 'edit_others_posts' );
+		$employer_user->add_cap( 'manage_job_listings' );
+
+		// Add a WPJM cap to an existing role.
+		$role = get_role( 'editor' );
+		$role->add_cap( 'manage_job_listing' );
+	}
+
+	/**
 	 * Set up for tests.
 	 */
 	public function setUp() {
@@ -175,6 +205,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		$this->setupPosts();
 		$this->setupTaxonomyTerms();
 		$this->setupPages();
+		$this->setupUsers();
 	}
 
 	/**
@@ -385,6 +416,36 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		// Ensure the other transient and its timeout was not deleted.
 		$this->assertNotFalse( get_option( "{$prefix}other_transient" ), 'Non-WPJM transient' );
 		$this->assertNotFalse( get_option( "{$timeout_prefix}other_transient" ), 'Non-WPJM transient' );
+	}
+
+	/**
+	 * Ensure the WPJM roles and caps are deleted.
+	 *
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_all
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_roles_and_caps
+	 */
+	public function testJobManagerRolesAndCapsDeleted() {
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+
+		// Refresh user info.
+		wp_cache_flush();
+
+		$regular_user = get_user_by( 'id', $this->regular_user_id );
+		$this->assertTrue( in_array( 'author', $regular_user->roles, true ), 'Author role should not be removed' );
+		$this->assertTrue( $regular_user->has_cap( 'edit_others_posts' ), 'Non-WPJM cap should not be removed from user' );
+		$this->assertFalse( $regular_user->has_cap( 'manage_job_listings' ), 'WPJM cap should be removed from user' );
+
+		$employer_user = get_user_by( 'id', $this->employer_user_id );
+		$this->assertFalse( in_array( 'employer', $employer_user->roles, true ), 'Employer role should be removed from user' );
+		$this->assertFalse( array_key_exists( 'employer', $employer_user->caps ), 'Employer role should be removed from user caps' );
+		$this->assertTrue( $employer_user->has_cap( 'edit_others_posts' ), 'Non-WPJM cap should not be removed from employer' );
+		$this->assertFalse( $employer_user->has_cap( 'manage_job_listings' ), 'WPJM cap should be removed from employer' );
+
+		$role = get_role( 'editor' );
+		$this->assertFalse( $role->has_cap( 'manage_job_listings' ), 'WPJM cap should be removed from role' );
+
+		$role = get_role( 'employer' );
+		$this->assertNull( $role, 'Employer role should be removed overall' );
 	}
 
 	/* Helper functions. */
