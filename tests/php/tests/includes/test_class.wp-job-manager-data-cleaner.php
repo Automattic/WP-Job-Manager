@@ -339,6 +339,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		// Set a couple WPJM options.
 		update_option( 'job_manager_usage_tracking_opt_in_hide', '1' );
 		update_option( 'wp_job_manager_version', '1.10.0' );
+		update_site_option( 'job_manager_helper', '{}' );
 
 		// Set a couple other options.
 		update_option( 'my_option_1', 'Value 1' );
@@ -349,6 +350,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		// Ensure the WPJM options are deleted.
 		$this->assertFalse( get_option( 'job_manager_usage_tracking_opt_in_hide' ), 'Option job_manager_usage_tracking_opt_in_hide should be deleted' );
 		$this->assertFalse( get_option( 'wp_job_manager_version' ), 'Option wp_job_manager_version should be deleted' );
+		$this->assertFalse( get_site_option( 'job_manager_helper' ), 'Site option job_manager_helper should be deleted' );
 
 		// Ensure the non-WPJM options are intact.
 		$this->assertEquals( 'Value 1', get_option( 'my_option_1' ), 'Option my_option_1 should not be deleted' );

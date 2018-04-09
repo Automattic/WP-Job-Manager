@@ -83,6 +83,15 @@ class WP_Job_Manager_Data_Cleaner {
 	);
 
 	/**
+	 * Site options to be deleted.
+	 *
+	 * @var $site_options
+	 */
+	private static $site_options = array(
+		'job_manager_helper',
+	);
+
+	/**
 	 * Cleanup all data.
 	 *
 	 * @access public
@@ -92,6 +101,7 @@ class WP_Job_Manager_Data_Cleaner {
 		self::cleanup_taxonomies();
 		self::cleanup_pages();
 		self::cleanup_options();
+		self::cleanup_site_options();
 	}
 
 	/**
@@ -173,6 +183,17 @@ class WP_Job_Manager_Data_Cleaner {
 	private static function cleanup_options() {
 		foreach ( self::$options as $option ) {
 			delete_option( $option );
+		}
+	}
+
+	/**
+	 * Cleanup data for site options.
+	 *
+	 * @access private
+	 */
+	private static function cleanup_site_options() {
+		foreach ( self::$site_options as $option ) {
+			delete_site_option( $option );
 		}
 	}
 }
