@@ -34,7 +34,7 @@ global $job_manager;
 
 	<div class="job_summary_content">
 
-		<h1><?php wpjm_the_job_title(); ?></h1>
+		<h2 class="job_summary_title"><?php wpjm_the_job_title(); ?></h2>
 
 		<p class="meta"><?php the_job_location( false ); ?> &mdash; <?php the_job_publish_date(); ?></p>
 
