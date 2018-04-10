@@ -492,6 +492,41 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * Ensure the WPJM cron jobs are unscheduled, and all the others are not.
+	 *
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_all
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_cron_jobs
+	 */
+	public function testJobManagerCronJobsRemoved() {
+		$wpjm_jobs     = array(
+			'job_manager_check_for_expired_jobs',
+			'job_manager_delete_old_previews',
+			'job_manager_clear_expired_transients',
+			'job_manager_usage_tracking_send_usage_data',
+		);
+		$non_wpjm_jobs = array(
+			'another_job',
+			'random_job',
+		);
+
+		foreach ( array_merge( $wpjm_jobs, $non_wpjm_jobs ) as $job ) {
+			wp_schedule_event( time() + 3600, 'daily', $job );
+		}
+
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+
+		// Ensure the WPJM jobs are no longer scheduled.
+		foreach ( $wpjm_jobs as $job ) {
+			$this->assertFalse( wp_next_scheduled( $job ), "WPJM Job $job should no longer be scheduled" );
+		}
+
+		// Ensure the non-WPJM jobs are no longer scheduled.
+		foreach ( $non_wpjm_jobs as $job ) {
+			$this->assertNotFalse( wp_next_scheduled( $job ), "Non-WPJM Job $job should still be scheduled" );
+		}
+	}
+
 	/* Helper functions. */
 
 	private function getPostIdsWithTerm( $term_id, $taxonomy ) {
