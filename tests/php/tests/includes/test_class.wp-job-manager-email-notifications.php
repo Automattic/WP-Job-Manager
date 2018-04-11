@@ -12,6 +12,12 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		defined( 'PHPUNIT_WPJM_TESTSUITE' ) || define( 'PHPUNIT_WPJM_TESTSUITE', true );
 		parent::setUp();
 		reset_phpmailer_instance();
+		update_option( 'job_manager_enable_categories', 1 );
+		update_option( 'job_manager_enable_types', 1 );
+		add_theme_support( 'job-manager-templates' );
+		unregister_post_type( 'job_listing' );
+		$post_type_instance = WP_Job_Manager_Post_Types::instance();
+		$post_type_instance->register_post_types();
 		WP_Job_Manager_Email_Notifications::_clear_deferred_notifications();
 	}
 
@@ -189,6 +195,28 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @covers WP_Job_Manager_Email_Notifications::output_job_details()
+	 * @covers WP_Job_Manager_Email_Notifications::get_job_detail_fields()
+	 */
+	public function test_output_job_details() {
+		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
+		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$email = $emails['valid-email'];
+		$job = $this->get_valid_job();
+
+		ob_start();
+		WP_Job_Manager_Email_Notifications::output_job_details( $job, $email, true, true );
+		$content = ob_get_clean();
+		$this->assertContains( 'Job title: ' . $job->post_title, $content );
+		$this->assertContains( 'Location: ' . $job->_job_location, $content );
+		$this->assertContains( 'Job type: Full Time', $content );
+		$this->assertContains( 'Job category: Weird', $content );
+		$this->assertContains( 'Company name: ' . $job->_company_name, $content );
+		$this->assertContains( 'Company website: ' . $job->_company_website, $content );
+	}
+
+	/**
 	 * @covers WP_Job_Manager_Email_Notifications::output_header()
 	 */
 	public function test_output_header() {
@@ -237,6 +265,25 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	public function inject_email_config_valid_email( $emails ) {
 		$emails[] = 'WP_Job_Manager_Email_Valid';
 		return $emails;
+	}
+
+	protected function get_valid_job() {
+		$full_time_term = wp_create_term( 'Full Time', 'job_listing_type' );
+		$weird_cat_term = wp_create_term( 'Weird', 'job_listing_category' );
+		$job_args = array(
+			'post_title'   => 'Job Post-' . md5( microtime( true ) ),
+			'post_content' => 'Job Description-' . md5( microtime( true ) ),
+			'meta_input'   => array(
+				'_job_location'    => 'Job Location-' . md5( microtime( true ) ),
+				'_company_name'    => 'Company-' . md5( microtime( true ) ),
+				'_company_website' => 'http://' . md5( microtime( true ) ) .'.com',
+			),
+			'tax_input' => array(
+				'job_listing_type'     => $full_time_term['term_id'],
+				'job_listing_category' => $weird_cat_term['term_id'],
+			),
+		);
+		return get_post( $this->factory->job_listing->create( $job_args ) );
 	}
 
 	/**
