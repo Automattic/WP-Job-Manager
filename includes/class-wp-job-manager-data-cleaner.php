@@ -80,6 +80,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_jobs_page_id',
 		'job_manager_submit_page_slug',
 		'job_manager_job_dashboard_page_slug',
+		'job_manager_delete_data_on_uninstall',
 	);
 
 	/**
