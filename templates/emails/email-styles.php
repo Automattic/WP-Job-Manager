@@ -57,7 +57,7 @@ a {
 	text-decoration: underline;
 }
 
-.job-manager-email-container {
+.email-container {
 	margin-bottom: 10px;
 }
 
