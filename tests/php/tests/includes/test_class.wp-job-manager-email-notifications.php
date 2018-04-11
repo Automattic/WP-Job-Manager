@@ -80,7 +80,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$this->assertEmpty( $sent_email->cc );
 		$this->assertEmpty( $sent_email->bcc );
 		$this->assertEquals( 'Test Subject', $sent_email->subject );
-		$this->assertEquals( "<p><strong>test</strong></p>\n", $sent_email->body );
+		$this->assertContains( "<p><strong>test</strong></p>\n", $sent_email->body );
 		$this->assertContains( 'From: From Name <from@example.com>', $sent_email->header );
 		$this->assertContains( 'Content-Type: text/html;', $sent_email->header );
 	}
@@ -186,6 +186,34 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	public function test_get_template_file_name_rich() {
 		$template_name = md5( microtime( true ) );
 		$this->assertEquals( "emails/{$template_name}.php", WP_Job_Manager_Email_Notifications::get_template_file_name( $template_name, false ) );
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Email_Notifications::output_header()
+	 */
+	public function test_output_header() {
+		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
+		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$email = $emails['valid-email'];
+		ob_start();
+		WP_Job_Manager_Email_Notifications::output_header( $email, true, false );
+		$content = ob_get_clean();
+		$this->assertContains( '<!DOCTYPE html>', $content );
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Email_Notifications::output_footer()
+	 */
+	public function test_output_footer() {
+		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
+		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$email = $emails['valid-email'];
+		ob_start();
+		WP_Job_Manager_Email_Notifications::output_footer( $email, true, false );
+		$content = ob_get_clean();
+		$this->assertContains( '</html>', $content );
 	}
 
 	/**
