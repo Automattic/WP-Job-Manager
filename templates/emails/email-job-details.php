@@ -2,7 +2,7 @@
 /**
  * Email content for showing job details.
  *
- * This template can be overridden by copying it to yourtheme/job_manager/emails/plain/email-job-details.php.
+ * This template can be overridden by copying it to yourtheme/job_manager/emails/email-job-details.php.
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
