@@ -99,6 +99,15 @@ class WP_Job_Manager_Settings {
 							'desc'       => sprintf( __( 'Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href="%s">Google Maps API developer site</a>.', 'wp-job-manager' ), 'https://developers.google.com/maps/documentation/geocoding/get-api-key' ),
 							'attributes' => array()
 						),
+						array(
+							'name'       => 'job_manager_delete_data_on_uninstall',
+							'std'        => '0',
+							'label'      => __( 'Delete Data On Uninstall', 'wp-job-manager' ),
+							'cb_label'   => __( 'Delete WP Job Manager data when the plugin is deleted. Once removed, this data cannot be restored.', 'wp-job-manager' ),
+							'desc'       => '',
+							'type'       => 'checkbox',
+							'attributes' => array()
+						),
 					),
 				),
 				'job_listings' => array(

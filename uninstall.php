@@ -7,7 +7,12 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 require 'includes/class-wp-job-manager-data-cleaner.php';
 
 if ( ! is_multisite() ) {
-	WP_Job_Manager_Data_Cleaner::cleanup_all();
+
+	// Only do deletion if the setting is true.
+	$do_deletion = get_option( 'job_manager_delete_data_on_uninstall' );
+	if ( $do_deletion ) {
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+	}
 } else {
 	global $wpdb;
 
@@ -16,7 +21,12 @@ if ( ! is_multisite() ) {
 
 	foreach ( $blog_ids as $blog_id ) {
 		switch_to_blog( $blog_id );
-		WP_Job_Manager_Data_Cleaner::cleanup_all();
+
+		// Only do deletion if the setting is true.
+		$do_deletion = get_option( 'job_manager_delete_data_on_uninstall' );
+		if ( $do_deletion ) {
+			WP_Job_Manager_Data_Cleaner::cleanup_all();
+		}
 	}
 
 	switch_to_blog( $original_blog_id );
