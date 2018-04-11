@@ -357,6 +357,36 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		$this->assertEquals( 'Value 2', get_option( 'my_option_2' ), 'Option my_option_2 should not be deleted' );
 	}
 
+	/**
+	 * Ensure the WPJM transients are deleted from the DB.
+	 *
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_all
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_transients
+	 */
+	public function testJobManagerTransientsDeleted() {
+		set_transient( '_job_manager_activation_redirect', 'value', 3600 );
+		set_transient( 'jm_random_transient', 'value', 3600 );
+		set_transient( 'other_transient', 'value', 3600 );
+
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+
+		// Flush transients from cache.
+		wp_cache_flush();
+
+		$prefix         = '_transient_';
+		$timeout_prefix = '_transient_timeout_';
+
+		// Ensure the transients and their timeouts were deleted.
+		$this->assertFalse( get_option( "{$prefix}_job_manager_activation_redirect" ), 'WPJM _job_manager_activation_redirect transient' );
+		$this->assertFalse( get_option( "{$timeout_prefix}_job_manager_activation_redirect" ), 'WPJM _job_manager_activation_redirect transient timeout' );
+		$this->assertFalse( get_option( "{$prefix}jm_random_transient" ), 'WPJM jm_random_transient transient' );
+		$this->assertFalse( get_option( "{$timeout_prefix}jm_random_transient" ), 'WPJM jm_random_transient transient timeout' );
+
+		// Ensure the other transient and its timeout was not deleted.
+		$this->assertNotFalse( get_option( "{$prefix}other_transient" ), 'Non-WPJM transient' );
+		$this->assertNotFalse( get_option( "{$timeout_prefix}other_transient" ), 'Non-WPJM transient' );
+	}
+
 	/* Helper functions. */
 
 	private function getPostIdsWithTerm( $term_id, $taxonomy ) {
