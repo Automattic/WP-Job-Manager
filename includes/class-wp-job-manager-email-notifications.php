@@ -29,6 +29,8 @@ final class WP_Job_Manager_Email_Notifications {
 	public static function init() {
 		add_action( 'job_manager_send_notification', array( __CLASS__, '_schedule_notification' ), 10, 2 );
 		add_action( 'job_manager_email_init', array( __CLASS__, '_lazy_init' ) );
+		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
+		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
 	}
 
 	/**
@@ -174,6 +176,36 @@ final class WP_Job_Manager_Email_Notifications {
 		$file_name_parts[] = $template_name . '.php';
 
 		return implode( '/', $file_name_parts );
+	}
+
+	/**
+	 * Output email header.
+	 *
+	 * @param WP_Job_Manager_Email $email          Email object for the notification.
+	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
+	 * @param bool                 $plain_text     True if the email is being sent as plain text.
+	 */
+	static public function output_header( $email, $sent_to_admin, $plain_text = false ) {
+		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-header', $plain_text ) );
+		if ( ! file_exists( $template_segment ) ) {
+			return;
+		}
+		include $template_segment;
+	}
+
+	/**
+	 * Output email footer.
+	 *
+	 * @param WP_Job_Manager_Email $email          Email object for the notification.
+	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
+	 * @param bool                 $plain_text     True if the email is being sent as plain text.
+	 */
+	static public function output_footer( $email, $sent_to_admin, $plain_text = false ) {
+		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-footer', $plain_text ) );
+		if ( ! file_exists( $template_segment ) ) {
+			return;
+		}
+		include $template_segment;
 	}
 
 	/**
