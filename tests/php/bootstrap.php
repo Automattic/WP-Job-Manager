@@ -62,10 +62,8 @@ class WPJM_Unit_Tests_Bootstrap {
 	 */
 	public function load_plugin() {
 		error_reporting( E_ALL );
-		$enabled = get_option( 'job_manager_enable_types' );
-		if (! $enabled ) {
-			update_option( 'job_manager_enable_types', true );
-		}
+		update_option( 'job_manager_enable_types', true );
+		update_option( 'job_manager_enable_categories', true );
 
 		require_once( $this->plugin_dir . '/wp-job-manager.php' );
 	}
