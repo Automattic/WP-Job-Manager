@@ -29,6 +29,8 @@ final class WP_Job_Manager_Email_Notifications {
 	public static function init() {
 		add_action( 'job_manager_send_notification', array( __CLASS__, '_schedule_notification' ), 10, 2 );
 		add_action( 'job_manager_email_init', array( __CLASS__, '_lazy_init' ) );
+		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
+		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
 	}
 
 	/**
@@ -98,6 +100,9 @@ final class WP_Job_Manager_Email_Notifications {
 		add_action( 'shutdown', array( __CLASS__, '_send_deferred_notifications' ) );
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
+		if ( ! class_exists( 'Emogrifier' ) && class_exists( 'DOMDocument' ) ) {
+			include_once JOB_MANAGER_PLUGIN_DIR . '/lib/emogrifier/class-emogrifier.php';
+		}
 	}
 
 	/**
@@ -171,6 +176,36 @@ final class WP_Job_Manager_Email_Notifications {
 		$file_name_parts[] = $template_name . '.php';
 
 		return implode( '/', $file_name_parts );
+	}
+
+	/**
+	 * Output email header.
+	 *
+	 * @param WP_Job_Manager_Email $email          Email object for the notification.
+	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
+	 * @param bool                 $plain_text     True if the email is being sent as plain text.
+	 */
+	static public function output_header( $email, $sent_to_admin, $plain_text = false ) {
+		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-header', $plain_text ) );
+		if ( ! file_exists( $template_segment ) ) {
+			return;
+		}
+		include $template_segment;
+	}
+
+	/**
+	 * Output email footer.
+	 *
+	 * @param WP_Job_Manager_Email $email          Email object for the notification.
+	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
+	 * @param bool                 $plain_text     True if the email is being sent as plain text.
+	 */
+	static public function output_footer( $email, $sent_to_admin, $plain_text = false ) {
+		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-footer', $plain_text ) );
+		if ( ! file_exists( $template_segment ) ) {
+			return;
+		}
+		include $template_segment;
 	}
 
 	/**
@@ -304,7 +339,54 @@ final class WP_Job_Manager_Email_Notifications {
 		do_action( 'job_manager_email_footer', $email_notification_key, $args, $plain_text );
 
 		$content = ob_get_clean();
+		if ( ! $plain_text ) {
+			$content = self::inject_styles( $content );
+		}
+
+		/**
+		 * Filter the content of the email.
+		 *
+		 * @since 1.31.0
+		 *
+		 * @param string $content                Email content.
+		 * @param string $email_notification_key Unique email notification key.
+		 * @param array  $args                   Arguments passed for generating email.
+		 * @param bool   $plain_text             True if sending plain text email.
+		 */
+		return apply_filters( 'job_manager_email_content', $content, $email_notification_key, $args, $plain_text );
+	}
+
+	/**
+	 * Inject inline styles into email content.
+	 *
+	 * @param string $content
+	 * @return string
+	 */
+	private static function inject_styles( $content ) {
+		if ( class_exists( 'Emogrifier' ) ) {
+			try {
+				$emogrifier = new Emogrifier( $content, self::get_styles() );
+				$content    = $emogrifier->emogrify();
+			} catch ( Exception $e ) {
+				trigger_error( 'Unable to inject styles into email notification: ' . $e->getMessage() );
+			}
+		}
 		return $content;
+	}
+
+	/**
+	 * Gets the CSS styles to be used in email notifications.
+	 *
+	 * @return bool|string
+	 */
+	private static function get_styles() {
+		$email_styles_template = locate_job_manager_template( self::get_template_file_name( 'email-styles' ) );
+		if ( ! file_exists( $email_styles_template ) ) {
+			return false;
+		}
+		ob_start();
+		include $email_styles_template;
+		return ob_get_clean();
 	}
 
 	/**
