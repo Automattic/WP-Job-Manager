@@ -102,7 +102,7 @@ class WP_Job_Manager_Settings {
 						array(
 							'name'       => 'job_manager_delete_data_on_uninstall',
 							'std'        => '0',
-							'label'      => __( 'Delete data on uninstall', 'wp-job-manager' ),
+							'label'      => __( 'Delete Data On Uninstall', 'wp-job-manager' ),
 							'cb_label'   => __( 'Delete WP Job Manager data when the plugin is deleted. Once removed, this data cannot be restored.', 'wp-job-manager' ),
 							'desc'       => '',
 							'type'       => 'checkbox',
