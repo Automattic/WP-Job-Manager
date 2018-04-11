@@ -137,6 +137,20 @@ class WP_Job_Manager_Data_Cleaner {
 	);
 
 	/**
+	 * User meta key names to be deleted.
+	 *
+	 * @var array $user_meta_keys
+	 */
+	private static $user_meta_keys = array(
+		'_company_logo',
+		'_company_name',
+		'_company_website',
+		'_company_tagline',
+		'_company_twitter',
+		'_company_video',
+	);
+
+	/**
 	 * Cleanup all data.
 	 *
 	 * @access public
@@ -147,6 +161,7 @@ class WP_Job_Manager_Data_Cleaner {
 		self::cleanup_pages();
 		self::cleanup_roles_and_caps();
 		self::cleanup_transients();
+		self::cleanup_user_meta();
 		self::cleanup_options();
 		self::cleanup_site_options();
 	}
@@ -298,6 +313,19 @@ class WP_Job_Manager_Data_Cleaner {
 	private static function remove_all_job_manager_caps( $object ) {
 		foreach ( self::$caps as $cap ) {
 			$object->remove_cap( $cap );
+		}
+	}
+
+	/**
+	 * Cleanup user meta from the database.
+	 *
+	 * @access private
+	 */
+	private static function cleanup_user_meta() {
+		global $wpdb;
+
+		foreach ( self::$user_meta_keys as $meta_key ) {
+			$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => $meta_key ) );
 		}
 	}
 }

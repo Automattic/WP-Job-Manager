@@ -448,6 +448,50 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		$this->assertNull( $role, 'Employer role should be removed overall' );
 	}
 
+	/**
+	 * Ensure the WPJM user meta are deleted from the DB.
+	 *
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_all
+	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_user_meta
+	 */
+	public function testCleanupUserMeta() {
+		$user_id = $this->factory->user->create( array( 'role' => 'author' ) );
+
+		$keep_meta_keys = array(
+			'company_logo',
+			'company_name',
+			'company_website',
+			'company_tagline',
+			'company_twitter',
+			'company_video',
+		);
+
+		$remove_meta_keys = array(
+			'_company_logo',
+			'_company_name',
+			'_company_website',
+			'_company_tagline',
+			'_company_twitter',
+			'_company_video',
+		);
+
+		foreach ( array_merge( $keep_meta_keys, $remove_meta_keys ) as $meta_key ) {
+			update_user_meta( $user_id, $meta_key, 'test_value' );
+			$this->assertTrue( 'test_value' === get_user_meta( $user_id, $meta_key, true ) );
+		}
+
+		WP_Job_Manager_Data_Cleaner::cleanup_all();
+		wp_cache_flush();
+
+		foreach ( $keep_meta_keys as $meta_key ) {
+			$this->assertTrue( 'test_value' === get_user_meta( $user_id, $meta_key, true ), sprintf( 'The user meta key "%s" was supposed to be preserved.', $meta_key ) );
+		}
+
+		foreach ( $remove_meta_keys as $meta_key ) {
+			$this->assertTrue( '' === get_user_meta( $user_id, $meta_key, true ), sprintf( 'The user meta key "%s" was supposed to be removed.', $meta_key ) );
+		}
+	}
+
 	/* Helper functions. */
 
 	private function getPostIdsWithTerm( $term_id, $taxonomy ) {
