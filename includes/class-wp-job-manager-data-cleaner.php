@@ -342,7 +342,8 @@ class WP_Job_Manager_Data_Cleaner {
 	}
 
 	/**
-	 * Cleanup cron jobs.
+	 * Cleanup cron jobs. Note that this should be done on deactivation, but
+	 * doing it here as well for safety.
 	 *
 	 * @access private
 	 */
