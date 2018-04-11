@@ -98,6 +98,9 @@ final class WP_Job_Manager_Email_Notifications {
 		add_action( 'shutdown', array( __CLASS__, '_send_deferred_notifications' ) );
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
+		if ( ! class_exists( 'Emogrifier' ) && class_exists( 'DOMDocument' ) ) {
+			include_once JOB_MANAGER_PLUGIN_DIR . '/lib/emogrifier/class-emogrifier.php';
+		}
 	}
 
 	/**
@@ -304,7 +307,54 @@ final class WP_Job_Manager_Email_Notifications {
 		do_action( 'job_manager_email_footer', $email_notification_key, $args, $plain_text );
 
 		$content = ob_get_clean();
+		if ( ! $plain_text ) {
+			$content = self::inject_styles( $content );
+		}
+
+		/**
+		 * Filter the content of the email.
+		 *
+		 * @since 1.31.0
+		 *
+		 * @param string $content                Email content.
+		 * @param string $email_notification_key Unique email notification key.
+		 * @param array  $args                   Arguments passed for generating email.
+		 * @param bool   $plain_text             True if sending plain text email.
+		 */
+		return apply_filters( 'job_manager_email_content', $content, $email_notification_key, $args, $plain_text );
+	}
+
+	/**
+	 * Inject inline styles into email content.
+	 *
+	 * @param string $content
+	 * @return string
+	 */
+	private static function inject_styles( $content ) {
+		if ( class_exists( 'Emogrifier' ) ) {
+			try {
+				$emogrifier = new Emogrifier( $content, self::get_styles() );
+				$content    = $emogrifier->emogrify();
+			} catch ( Exception $e ) {
+				trigger_error( 'Unable to inject styles into email notification: ' . $e->getMessage() );
+			}
+		}
 		return $content;
+	}
+
+	/**
+	 * Gets the CSS styles to be used in email notifications.
+	 *
+	 * @return bool|string
+	 */
+	private static function get_styles() {
+		$email_styles_template = locate_job_manager_template( self::get_template_file_name( 'email-styles' ) );
+		if ( ! file_exists( $email_styles_template ) ) {
+			return false;
+		}
+		ob_start();
+		include $email_styles_template;
+		return ob_get_clean();
 	}
 
 	/**
