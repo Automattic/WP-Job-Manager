@@ -104,6 +104,39 @@ class WP_Job_Manager_Data_Cleaner {
 	);
 
 	/**
+	 * Role to be removed.
+	 *
+	 * @var $role
+	 */
+	private static $role = 'employer';
+
+	/**
+	 * Capabilities to be deleted.
+	 *
+	 * @var $caps
+	 */
+	private static $caps = array(
+		'manage_job_listings',
+		'edit_job_listing',
+		'read_job_listing',
+		'delete_job_listing',
+		'edit_job_listings',
+		'edit_others_job_listings',
+		'publish_job_listings',
+		'read_private_job_listings',
+		'delete_job_listings',
+		'delete_private_job_listings',
+		'delete_published_job_listings',
+		'delete_others_job_listings',
+		'edit_private_job_listings',
+		'edit_published_job_listings',
+		'manage_job_listing_terms',
+		'edit_job_listing_terms',
+		'delete_job_listing_terms',
+		'assign_job_listing_terms',
+	);
+
+	/**
 	 * Cleanup all data.
 	 *
 	 * @access public
@@ -112,6 +145,7 @@ class WP_Job_Manager_Data_Cleaner {
 		self::cleanup_custom_post_types();
 		self::cleanup_taxonomies();
 		self::cleanup_pages();
+		self::cleanup_roles_and_caps();
 		self::cleanup_transients();
 		self::cleanup_options();
 		self::cleanup_site_options();
@@ -227,6 +261,43 @@ class WP_Job_Manager_Data_Cleaner {
 					)
 				);
 			}
+		}
+	}
+
+	/**
+	 * Cleanup data for roles and caps.
+	 *
+	 * @access private
+	 */
+	private static function cleanup_roles_and_caps() {
+		global $wp_roles;
+
+		// Remove caps from roles.
+		$role_names = array_keys( $wp_roles->roles );
+		foreach ( $role_names as $role_name ) {
+			$role = get_role( $role_name );
+			self::remove_all_job_manager_caps( $role );
+		}
+
+		// Remove caps and role from users.
+		$users = get_users( array() );
+		foreach ( $users as $user ) {
+			self::remove_all_job_manager_caps( $user );
+			$user->remove_role( self::$role );
+		}
+
+		// Remove role.
+		remove_role( self::$role );
+	}
+
+	/**
+	 * Helper method to remove WPJM caps from a user or role object.
+	 *
+	 * @param (WP_User|WP_Role) $object the user or role object.
+	 */
+	private static function remove_all_job_manager_caps( $object ) {
+		foreach ( self::$caps as $cap ) {
+			$object->remove_cap( $cap );
 		}
 	}
 }
