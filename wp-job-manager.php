@@ -115,6 +115,9 @@ class WP_Job_Manager {
 		add_action( 'init', array( $this, 'usage_tracking_init' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'usage_tracking_cleanup' ) );
 
+		// Other cleanup
+		register_deactivation_hook( __FILE__, array( $this, 'unschedule_cron_jobs' ) );
+
 		// Defaults for WPJM core actions
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
 	}
@@ -214,6 +217,15 @@ class WP_Job_Manager {
 		if ( ! wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
 			wp_schedule_event( time(), 'twicedaily', 'job_manager_clear_expired_transients' );
 		}
+	}
+
+	/**
+	 * Unschedule cron jobs. This is run on plugin deactivation.
+	 */
+	public static function unschedule_cron_jobs() {
+		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
+		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
+		wp_clear_scheduled_hook( 'job_manager_clear_expired_transients' );
 	}
 
 	/**

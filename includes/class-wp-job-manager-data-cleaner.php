@@ -38,6 +38,17 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_listing_type',
 	);
 
+	/** Cron jobs to be unscheduled.
+	 *
+	 * @var $cron_jobs
+	 */
+	private static $cron_jobs = array(
+		'job_manager_check_for_expired_jobs',
+		'job_manager_delete_old_previews',
+		'job_manager_clear_expired_transients',
+		'job_manager_usage_tracking_send_usage_data',
+	);
+
 	/**
 	 * Options to be deleted.
 	 *
@@ -159,6 +170,7 @@ class WP_Job_Manager_Data_Cleaner {
 		self::cleanup_custom_post_types();
 		self::cleanup_taxonomies();
 		self::cleanup_pages();
+		self::cleanup_cron_jobs();
 		self::cleanup_roles_and_caps();
 		self::cleanup_transients();
 		self::cleanup_user_meta();
@@ -326,6 +338,18 @@ class WP_Job_Manager_Data_Cleaner {
 
 		foreach ( self::$user_meta_keys as $meta_key ) {
 			$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => $meta_key ) );
+		}
+	}
+
+	/**
+	 * Cleanup cron jobs. Note that this should be done on deactivation, but
+	 * doing it here as well for safety.
+	 *
+	 * @access private
+	 */
+	private static function cleanup_cron_jobs() {
+		foreach ( self::$cron_jobs as $job ) {
+			wp_clear_scheduled_hook( $job );
 		}
 	}
 }
