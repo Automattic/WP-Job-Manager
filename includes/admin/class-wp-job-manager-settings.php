@@ -490,6 +490,17 @@ class WP_Job_Manager_Settings {
 									}
 
 								break;
+								case "hidden" :
+									$human_value = $value;
+									if( $option['human_value'] ) {
+										$human_value = $option['human_value'];
+									}
+									?><input id="setting-<?php echo $option['name']; ?>" type="hidden" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> /><strong><?php echo esc_html( $human_value ) ?></strong><?php
+
+									if ( $option['desc'] ) {
+										echo ' <p class="description">' . $option['desc'] . '</p>';
+									}
+                                break;
 								case "password" :
 
 									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
