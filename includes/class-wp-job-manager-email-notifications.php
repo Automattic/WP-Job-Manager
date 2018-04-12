@@ -29,6 +29,7 @@ final class WP_Job_Manager_Email_Notifications {
 	public static function init() {
 		add_action( 'job_manager_send_notification', array( __CLASS__, '_schedule_notification' ), 10, 2 );
 		add_action( 'job_manager_email_init', array( __CLASS__, '_lazy_init' ) );
+		add_action( 'job_manager_email_job_details', array( __CLASS__, 'output_job_details'), 10, 4 );
 		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
 		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
 	}
@@ -179,6 +180,120 @@ final class WP_Job_Manager_Email_Notifications {
 	}
 
 	/**
+	 * Show details about the job listing.
+	 *
+	 * @param WP_Post              $job            The job listing to show details for.
+	 * @param WP_Job_Manager_Email $email          Email object for the notification.
+	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
+	 * @param bool                 $plain_text     True if the email is being sent as plain text.
+	 */
+	static public function output_job_details( $job, $email, $sent_to_admin, $plain_text = false ) {
+		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-job-details', $plain_text ) );
+		if ( ! file_exists( $template_segment ) ) {
+			return;
+		}
+
+		$fields = self::get_job_detail_fields( $job, $sent_to_admin, $plain_text );
+
+		include $template_segment;
+	}
+
+	/**
+	 * Get the job fields to show in email templates.
+	 *
+	 * @param WP_Post $job
+	 * @param bool    $sent_to_admin
+	 * @param bool    $plain_text
+	 * @return array
+	 */
+	static private function get_job_detail_fields( WP_Post $job, $sent_to_admin, $plain_text = false ) {
+		$fields = array();
+
+		$fields['job_title'] = array(
+			'label' => __( 'Job title', 'wp-job-manager' ),
+			'value' => $job->post_title,
+		);
+
+		if ( $sent_to_admin || 'publish' === $job->post_status ) {
+			$fields['job_title']['url'] = get_permalink( $job );
+		}
+
+		$job_location = get_the_job_location( $job );
+		if ( ! empty( $job_location ) ) {
+			$fields['job_location'] = array(
+				'label' => __( 'Location', 'wp-job-manager' ),
+				'value' => $job_location,
+			);
+		}
+
+		if ( get_option( 'job_manager_enable_types' ) && wp_count_terms( 'job_listing_type' ) > 0 ) {
+			$job_types = wpjm_get_the_job_types( $job );
+			if ( ! empty( $job_types ) ) {
+				$fields[ 'job_type' ] = array(
+					'label' => __( 'Job type', 'wp-job-manager' ),
+					'value' => implode( ', ', wp_list_pluck( $job_types, 'name' ) ),
+				);
+			}
+		}
+
+		if ( get_option( 'job_manager_enable_categories' ) && wp_count_terms( 'job_listing_category' ) > 0 ) {
+			$job_categories = wpjm_get_the_job_categories( $job );
+			if ( ! empty( $job_categories ) ) {
+				$fields[ 'job_category' ] = array(
+					'label' => __( 'Job category', 'wp-job-manager' ),
+					'value' => implode( ', ', wp_list_pluck( $job_categories, 'name' ) ),
+				);
+			}
+		}
+
+		$company_name = get_the_company_name( $job );
+		if ( ! empty( $company_name ) ) {
+			$fields['company_name'] = array(
+				'label' => __( 'Company name', 'wp-job-manager' ),
+				'value' => $company_name,
+			);
+		}
+
+		$company_website = get_the_company_website( $job );
+		if ( ! empty( $company_website ) ) {
+			$fields['company_website'] = array(
+				'label' => __( 'Company website', 'wp-job-manager' ),
+				'value' => $plain_text ? $company_website : sprintf( '<a href="%1$s">%1$s</a>', esc_url( $company_website, array( 'http', 'https' ) ) ),
+			);
+		}
+
+		if ( $sent_to_admin ) {
+			$author = get_user_by( 'ID', $job->post_author );
+			if ( $author instanceof WP_User ) {
+				$fields[ 'author' ] = array(
+					'label' => __( 'Posted by', 'wp-job-manager' ),
+					'value' => $author->user_nicename,
+					'url'   => 'mailto:' . $author->user_email,
+				);
+			}
+		}
+
+		/**
+		 * Modify the fields shown in email notifications in the details summary a job listing.
+		 *
+		 * @since 1.31.0
+		 *
+		 * @param array   $fields         {
+		 *     Array of fields. Each field is keyed with a unique identifier.
+		 *     {
+		 *          @type string $label Label to show next to field.
+		 *          @type string $value Value for field.
+		 *          @type string $url   URL to provide with the value (optional).
+		 *     }
+		 * }
+		 * @param WP_Post $job            Job listing.
+		 * @param bool    $sent_to_admin  True if being sent in an admin notification.
+		 * @param bool    $plain_text     True if being sent as plain text.
+		 */
+		return apply_filters( 'job_manager_emails_job_detail_fields', $fields, $job, $sent_to_admin, $plain_text );
+	}
+
+	/**
 	 * Output email header.
 	 *
 	 * @param WP_Job_Manager_Email $email          Email object for the notification.
@@ -322,7 +437,7 @@ final class WP_Job_Manager_Email_Notifications {
 		do_action( 'job_manager_email_header', $email_notification_key, $args, $plain_text );
 
 		if ( $plain_text ) {
-			echo wptexturize( $args['plain_content'] );
+			echo html_entity_decode( wptexturize( $args['plain_content'] ) );
 		} else {
 			echo wpautop( wptexturize( $args['rich_content'] ) );
 		}

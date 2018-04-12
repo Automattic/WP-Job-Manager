@@ -18,9 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @var WP_Post $job
  */
 $job = $args['job'];
-?>
-<?php
-printf( __( 'A new job listing has been submitted titled "%s".', 'wp-job-manager' ), esc_html( $job->post_title ) );
+
+printf( __( 'A new job listing has been submitted to %s (%s).', 'wp-job-manager' ), get_bloginfo( 'name' ), home_url() );
 switch ( $job->post_status ) {
 	case 'publish':
 		printf( ' ' . __( 'It has been published and is now available to the public.', 'wp-job-manager' ) );
