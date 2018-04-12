@@ -38,7 +38,7 @@ $style_vars = apply_filters( 'job_manager_email_style_vars', $style_vars );
  *
  * @param array $style_vars Variables used in style generation.
  */
-do_action( 'job_manager_email_style_pre', $style_vars );
+do_action( 'job_manager_email_style_before', $style_vars );
 ?>
 
 #wrapper {
@@ -80,5 +80,5 @@ td.detail-label {
  *
  * @param array $style_vars Variables used in style generation.
  */
-do_action( 'job_manager_email_style_post', $style_vars );
+do_action( 'job_manager_email_style_after', $style_vars );
 ?>
