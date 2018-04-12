@@ -214,6 +214,10 @@ final class WP_Job_Manager_Email_Notifications {
 			'value' => $job->post_title,
 		);
 
+		if ( $sent_to_admin || 'publish' === $job->post_status ) {
+			$fields['job_title']['url'] = get_permalink( $job );
+		}
+
 		$job_location = get_the_job_location( $job );
 		if ( ! empty( $job_location ) ) {
 			$fields['job_location'] = array(
@@ -268,6 +272,7 @@ final class WP_Job_Manager_Email_Notifications {
 		 *     {
 		 *          @type string $label Label to show next to field.
 		 *          @type string $value Value for field.
+		 *          @type string $url   URL to provide with the value (optional).
 		 *     }
 		 * }
 		 * @param WP_Post $job            Job listing.

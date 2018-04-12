@@ -26,7 +26,13 @@ if ( ! empty( $fields ) ) : ?>
 					<?php echo wp_kses_post( $field['label'] ); ?>
 				</td>
 				<td class="detail-value" style="text-align:<?php echo $text_align; ?>;">
-					<?php echo wp_kses_post( $field['value'] ); ?>
+					<?php
+					if ( ! empty( $field['url'] ) ) {
+						echo sprintf( '<a href="%s">%s</a>', esc_url( $field['url'] ), wp_kses_post( $field['value'] ) );
+					} else {
+						echo wp_kses_post( $field['value'] );
+					}
+					?>
 				</td>
 			</tr>
 			<?php endforeach; ?>

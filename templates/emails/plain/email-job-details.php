@@ -19,6 +19,10 @@ echo "\n\n";
 
 if ( ! empty( $fields ) ) {
 	foreach ( $fields as $field ) {
-		echo strip_tags( $field[ 'label' ] )  .': '. strip_tags( $field[ 'value' ] ) . "\n";
+		echo strip_tags( $field[ 'label' ] )  .': '. strip_tags( $field[ 'value' ] );
+		if ( ! empty( $field['url'] ) ) {
+			echo ' (' . esc_url( $field['url'] ) . ')';
+		}
+		echo "\n";
 	}
 }
