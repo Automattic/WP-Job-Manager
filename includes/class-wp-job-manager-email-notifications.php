@@ -262,6 +262,17 @@ final class WP_Job_Manager_Email_Notifications {
 			);
 		}
 
+		if ( $sent_to_admin ) {
+			$author = get_user_by( 'ID', $job->post_author );
+			if ( $author instanceof WP_User ) {
+				$fields[ 'author' ] = array(
+					'label' => __( 'Posted by', 'wp-job-manager' ),
+					'value' => $author->user_nicename,
+					'url'   => 'mailto:' . $author->user_email,
+				);
+			}
+		}
+
 		/**
 		 * Modify the fields shown in email notifications in the details summary a job listing.
 		 *
