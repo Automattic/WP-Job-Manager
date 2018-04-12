@@ -42,6 +42,7 @@ final class WP_Job_Manager_Email_Notifications {
 	private static function core_email_notifications() {
 		return array(
 			'WP_Job_Manager_Email_Admin_New_Job',
+			'WP_Job_Manager_Email_Admin_Updated_Job',
 		);
 	}
 
@@ -101,6 +102,8 @@ final class WP_Job_Manager_Email_Notifications {
 		add_action( 'shutdown', array( __CLASS__, '_send_deferred_notifications' ) );
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-updated-job.php';
+
 		if ( ! class_exists( 'Emogrifier' ) && class_exists( 'DOMDocument' ) ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/lib/emogrifier/class-emogrifier.php';
 		}
