@@ -387,7 +387,7 @@ class WP_Job_Manager_Settings {
 		$this->init_settings();
 		?>
 		<div class="wrap job-manager-settings-wrap">
-			<form method="post" action="options.php">
+			<form class="job-manager-options" method="post" action="options.php">
 
 				<?php settings_fields( $this->settings_group ); ?>
 
@@ -546,13 +546,21 @@ class WP_Job_Manager_Settings {
 		</div>
 		<script type="text/javascript">
 			jQuery('.nav-tab-wrapper a').click(function() {
+				if ( '#' !== jQuery(this).attr( 'href' ).substr( 0, 1 ) ) {
+					return false;
+				}
 				jQuery('.settings_panel').hide();
 				jQuery('.nav-tab-active').removeClass('nav-tab-active');
 				jQuery( jQuery(this).attr('href') ).show();
 				jQuery(this).addClass('nav-tab-active');
+				window.location.hash = jQuery(this).attr('href');
+				jQuery( 'form.job-manager-options' ).attr( 'action', 'options.php' + jQuery(this).attr( 'href' ) );
 				return false;
 			});
 			var goto_hash = window.location.hash;
+			if ( '#' === goto_hash.substr( 0, 1 ) ) {
+				jQuery( 'form.job-manager-options' ).attr( 'action', 'options.php' + jQuery(this).attr( 'href' ) );
+			}
 			if ( goto_hash ) {
 				var the_tab = jQuery( 'a[href="' + goto_hash + '"]' );
 				if ( the_tab.length > 0 ) {
