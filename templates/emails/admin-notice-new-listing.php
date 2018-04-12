@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $job = $args['job'];
 ?>
 	<p><?php
-		printf( __( 'A new job listing has been submitted titled <em>%s</em>.', 'wp-job-manager' ), esc_html( $job->post_title ) );
+		printf( __( 'A new job listing has been submitted to <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
 		switch ( $job->post_status ) {
 			case 'publish':
 				printf( ' ' . __( 'It has been published and is now available to the public.', 'wp-job-manager' ) );
