@@ -81,4 +81,3 @@ td.detail-label {
  * @param array $style_vars Variables used in style generation.
  */
 do_action( 'job_manager_email_style_after', $style_vars );
-?>
