@@ -124,10 +124,11 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 */
 	public function test_get_email_notifications() {
 		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		$core_email_notifications = array( 'admin-notice-new-listing' );
+		$core_email_notifications = WP_Job_Manager_Email_Notifications::core_email_notifications();
 		$this->assertEquals( count( $core_email_notifications ), count( $emails ) );
 
-		foreach ( $core_email_notifications as $email_notification_key ) {
+		foreach ( $core_email_notifications as $email_notification_class ) {
+			$email_notification_key = call_user_func( array( $email_notification_class, 'get_key' ) );
 			$this->assertArrayHasKey( $email_notification_key, $emails );
 			$this->assertValidEmailNotificationConfig( $emails[ $email_notification_key ] );
 		}

@@ -39,7 +39,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @return array
 	 */
-	private static function core_email_notifications() {
+	public static function core_email_notifications() {
 		return array(
 			'WP_Job_Manager_Email_Admin_New_Job',
 			'WP_Job_Manager_Email_Admin_Updated_Job',
