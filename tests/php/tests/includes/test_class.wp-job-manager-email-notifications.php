@@ -34,18 +34,14 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 */
 	public function test_schedule_notification() {
 		$this->assertEquals( 0, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
-		$this->assertEquals( 0, did_action( 'job_manager_email_init' ) );
 
 		WP_Job_Manager_Email_Notifications::_schedule_notification( 'test-notification' );
-		$this->assertEquals( 1, did_action( 'job_manager_email_init' ) );
 		$this->assertEquals( 1, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
 
 		WP_Job_Manager_Email_Notifications::_schedule_notification( 'test-notification', array( 'test' => 'test' ) );
-		$this->assertEquals( 1, did_action( 'job_manager_email_init' ) );
 		$this->assertEquals( 2, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
 
 		do_action( 'job_manager_send_notification', 'test-notification-action', array( 'test' => 'test' ) );
-		$this->assertEquals( 1, did_action( 'job_manager_email_init' ) );
 		$this->assertEquals( 3, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
 	}
 
