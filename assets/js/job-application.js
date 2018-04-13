@@ -4,7 +4,7 @@ jQuery(document).ready(function($) {
 		$( '.application_details' ).hide();
 	}
 
-	$( 'body' ).on( 'click', '.job_application .application_button', function() {
+	$( document.body ).on( 'click', '.job_application .application_button', function() {
 		var $details = $(this).siblings('.application_details').first();
 		var $button = $(this);
 		$details.slideToggle( 400, function() {
