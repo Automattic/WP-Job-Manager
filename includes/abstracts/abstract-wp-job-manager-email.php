@@ -55,6 +55,36 @@ abstract class WP_Job_Manager_Email {
 	}
 
 	/**
+	 * Is this email notification enabled by default?
+	 *
+	 * @return bool
+	 */
+	public static function is_default_enabled() {
+		return true;
+	}
+
+	/**
+	 * Get the settings for this email notifications.
+	 *
+	 * @return array
+	 */
+	public static function get_setting_fields() {
+		$settings = array(
+			array(
+				'name'    => 'plain_text',
+				'std'     => '0',
+				'label'   => __( 'Email Type', 'wp-job-manager' ),
+				'type'    => 'radio',
+				'options' => array(
+					'1' => __( 'Send plain text email', 'wp-job-manager' ),
+					'0' => __( 'Send rich text email', 'wp-job-manager' ),
+				),
+			),
+		);
+		return $settings;
+	}
+
+	/**
 	 * Get the friendly name for this email notification.
 	 *
 	 * @type abstract

@@ -17,11 +17,6 @@ final class WP_Job_Manager_Email_Notifications {
 	private static $deferred_notifications = array();
 
 	/**
-	 * @var bool
-	 */
-	private static $initialized = false;
-
-	/**
 	 * Sets up initial hooks.
 	 *
 	 * @static
@@ -32,6 +27,7 @@ final class WP_Job_Manager_Email_Notifications {
 		add_action( 'job_manager_email_job_details', array( __CLASS__, 'output_job_details'), 10, 4 );
 		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
 		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
+		add_filter( 'job_manager_settings', array( __CLASS__, 'add_email_settings' ), 1 );
 	}
 
 	/**
@@ -53,16 +49,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param array  $args
 	 */
 	public static function _schedule_notification( $notification, $args = array() ) {
-		if ( ! self::$initialized ) {
-			/**
-			 * Lazily load remaining files needed for email notifications. Do this here instead of in
-			 * `shutdown` for proper logging in case of syntax errors.
-			 *
-			 * @since 1.31.0
-			 */
-			do_action( 'job_manager_email_init' );
-			self::$initialized = true;
-		}
+		self::maybe_init();
 
 		self::$deferred_notifications[] = array( $notification, $args );
 	}
@@ -88,6 +75,24 @@ final class WP_Job_Manager_Email_Notifications {
 			$email_args = is_array( $email[1] ) ? $email[1] : array();
 
 			self::send_email( $email[0], new $class_name( $email_args ) );
+		}
+	}
+
+	/**
+	 * Initialize if necessary.
+	 */
+	private static function maybe_init() {
+		static $initialized = false;
+
+		if ( ! $initialized ) {
+			/**
+			 * Lazily load remaining files needed for email notifications. Do this here instead of in
+			 * `shutdown` for proper logging in case of syntax errors.
+			 *
+			 * @since 1.31.0
+			 */
+			do_action( 'job_manager_email_init' );
+			$initialized = true;
 		}
 	}
 
@@ -324,6 +329,78 @@ final class WP_Job_Manager_Email_Notifications {
 			return;
 		}
 		include $template_segment;
+	}
+
+	/**
+	 * Add email notification settings.
+	 *
+	 * @param array $settings
+	 * @return array
+	 */
+	static public function add_email_settings( $settings ) {
+		self::maybe_init();
+
+		$email_notifications = self::get_email_notifications( false );
+		$email_settings = array();
+
+		foreach ( $email_notifications as $email_class ) {
+			$email_settings[] = array(
+				'type'       => 'multi',
+				'name'       => 'job_manager_email_'. call_user_func( array( $email_class, 'get_key' ) ),
+				'label'      => call_user_func( array( $email_class, 'get_name' ) ),
+				'std'        => self::get_email_setting_defaults( $email_class ),
+				'settings'   => self::get_email_setting_fields( $email_class ),
+			);
+		}
+
+		$settings['email_notifications'] = array(
+			__( 'Email Notifications', 'wp-job-manager' ),
+			$email_settings,
+		);
+
+		return $settings;
+	}
+
+	/**
+	 * Get the setting fields for an email.
+	 *
+	 * @param string $email_class
+	 * @return array
+	 */
+	static private function get_email_setting_fields( $email_class ) {
+		$core_settings = array(
+			array(
+				'name'       => 'enabled',
+				'type'       => 'checkbox',
+				'label'      => __( 'Enabled', 'wp-job-manager' ),
+				'cb_label'   => sprintf( __( 'Send the notification <em>%s</em>', 'wp-job-manager' ), call_user_func( array( $email_class, 'get_name' ) ) ),
+				'desc'       => '',
+				'std'        => call_user_func( array( $email_class, 'is_default_enabled' ) ) ? '1' : '0',
+				'attributes' => array()
+			),
+		);
+		$email_settings = call_user_func( array( $email_class, 'get_setting_fields' ) );
+		return array_merge( $core_settings, $email_settings );
+	}
+
+	/**
+	 * Gets the default values for the email notification.
+	 *
+	 * @param string $email_class
+	 * @return array
+	 */
+	static private function get_email_setting_defaults( $email_class ) {
+		$settings = self::get_email_setting_fields( $email_class );
+
+		$defaults = array();
+		foreach ( $settings as $setting ) {
+			$defaults[ $setting['name'] ] = null;
+			if ( isset( $setting['std'] ) ) {
+				$defaults[ $setting['name'] ] = $setting['std'];
+			}
+		}
+
+		return $defaults;
 	}
 
 	/**
