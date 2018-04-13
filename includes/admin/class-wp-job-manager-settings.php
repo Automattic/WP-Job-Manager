@@ -497,7 +497,9 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder (Ignored).
 	 */
 	protected function input_checkbox( $option, $attributes, $value, $placeholder ) {
-		?><label><input id="setting-<?php echo $option['name']; ?>" name="<?php echo $option['name']; ?>" type="checkbox" value="1" <?php echo implode( ' ', $attributes ); ?> <?php checked( '1', $value ); ?> /> <?php echo $option['cb_label']; ?></label><?php
+		?><label>
+		<input type="hidden" name="<?php echo $option['name']; ?>" value="0" />
+		<input id="setting-<?php echo $option['name']; ?>" name="<?php echo $option['name']; ?>" type="checkbox" value="1" <?php echo implode( ' ', $attributes ); ?> <?php checked( '1', $value ); ?> /> <?php echo $option['cb_label']; ?></label><?php
 
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . $option['desc'] . '</p>';
