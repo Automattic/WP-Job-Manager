@@ -391,13 +391,13 @@ class WP_Job_Manager_Settings {
 
 				<?php settings_fields( $this->settings_group ); ?>
 
-			    <h2 class="nav-tab-wrapper">
-			    	<?php
-			    		foreach ( $this->settings as $key => $section ) {
-			    			echo '<a href="#settings-' . sanitize_title( $key ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
-			    		}
-			    	?>
-			    </h2>
+				<h2 class="nav-tab-wrapper">
+					<?php
+						foreach ( $this->settings as $key => $section ) {
+							echo '<a href="#settings-' . sanitize_title( $key ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
+						}
+					?>
+				</h2>
 
 				<?php
 					if ( ! empty( $_GET['settings-updated'] ) ) {
@@ -416,7 +416,7 @@ class WP_Job_Manager_Settings {
 							$placeholder    = ( ! empty( $option['placeholder'] ) ) ? 'placeholder="' . $option['placeholder'] . '"' : '';
 							$class          = ! empty( $option['class'] ) ? $option['class'] : '';
 							$value          = get_option( $option['name'] );
-							$option['type'] = ! empty( $option['type'] ) ? $option['type'] : '';
+							$option['type'] = ! empty( $option['type'] ) ? $option['type'] : 'text';
 							$attributes     = array();
 
 							if ( ! empty( $option['attributes'] ) && is_array( $option['attributes'] ) )
@@ -425,113 +425,12 @@ class WP_Job_Manager_Settings {
 
 							echo '<tr valign="top" class="' . $class . '"><th scope="row"><label for="setting-' . $option['name'] . '">' . $option['label'] . '</a></th><td>';
 
-							switch ( $option['type'] ) {
-
-								case "checkbox" :
-
-									?><label><input id="setting-<?php echo $option['name']; ?>" name="<?php echo $option['name']; ?>" type="checkbox" value="1" <?php echo implode( ' ', $attributes ); ?> <?php checked( '1', $value ); ?> /> <?php echo $option['cb_label']; ?></label><?php
-
-									if ( $option['desc'] )
-										echo ' <p class="description">' . $option['desc'] . '</p>';
-
-								break;
-								case "textarea" :
-
-									?><textarea id="setting-<?php echo $option['name']; ?>" class="large-text" cols="50" rows="3" name="<?php echo $option['name']; ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?>><?php echo esc_textarea( $value ); ?></textarea><?php
-
-									if ( $option['desc'] )
-										echo ' <p class="description">' . $option['desc'] . '</p>';
-
-								break;
-								case "select" :
-
-									?><select id="setting-<?php echo $option['name']; ?>" class="regular-text" name="<?php echo $option['name']; ?>" <?php echo implode( ' ', $attributes ); ?>><?php
-										foreach( $option['options'] as $key => $name )
-											echo '<option value="' . esc_attr( $key ) . '" ' . selected( $value, $key, false ) . '>' . esc_html( $name ) . '</option>';
-									?></select><?php
-
-									if ( $option['desc'] ) {
-										echo ' <p class="description">' . $option['desc'] . '</p>';
-									}
-
-								break;
-								case "radio":
-									?><fieldset>
-										<legend class="screen-reader-text">
-											<span><?php echo esc_html( $option['label'] ); ?></span>
-										</legend><?php
-
-									if ( $option['desc'] ) {
-										echo '<p class="description">' . $option['desc'] . '</p>';
-									}
-
-									foreach( $option['options'] as $key => $name )
-										echo '<label><input name="' . esc_attr( $option['name'] ) . '" type="radio" value="' . esc_attr( $key ) . '" ' . checked( $value, $key, false ) . ' />' . esc_html( $name ) . '</label><br>';
-
-									?></fieldset><?php
-
-								break;
-								case "page" :
-
-									$args = array(
-										'name'             => $option['name'],
-										'id'               => $option['name'],
-										'sort_column'      => 'menu_order',
-										'sort_order'       => 'ASC',
-										'show_option_none' => __( '--no page--', 'wp-job-manager' ),
-										'echo'             => false,
-										'selected'         => absint( $value )
-									);
-
-									echo str_replace(' id=', " data-placeholder='" . __( 'Select a page&hellip;', 'wp-job-manager' ) .  "' id=", wp_dropdown_pages( $args ) );
-
-									if ( $option['desc'] ) {
-										echo ' <p class="description">' . $option['desc'] . '</p>';
-									}
-
-								break;
-								case "hidden" :
-									$human_value = $value;
-									if( $option['human_value'] ) {
-										$human_value = $option['human_value'];
-									}
-									?><input id="setting-<?php echo $option['name']; ?>" type="hidden" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> /><strong><?php echo esc_html( $human_value ) ?></strong><?php
-
-									if ( $option['desc'] ) {
-										echo ' <p class="description">' . $option['desc'] . '</p>';
-									}
-                                break;
-								case "password" :
-
-									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
-
-									if ( $option['desc'] ) {
-										echo ' <p class="description">' . $option['desc'] . '</p>';
-									}
-
-								break;
-								case "number" :
-									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="number" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
-
-									if ( $option['desc'] ) {
-										echo ' <p class="description">' . $option['desc'] . '</p>';
-									}
-								break;
-								case "" :
-								case "input" :
-								case "text" :
-									?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="text" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
-
-									if ( $option['desc'] ) {
-										echo ' <p class="description">' . $option['desc'] . '</p>';
-									}
-								break;
-								default :
-									do_action( 'wp_job_manager_admin_field_' . $option['type'], $option, $attributes, $value, $placeholder );
-								break;
-
+							$method_name = 'input_' . $option['type'];
+							if ( method_exists( $this, $method_name ) ) {
+								$this->$method_name( $option, $attributes, $value, $placeholder );
+							} else {
+								do_action( 'wp_job_manager_admin_field_' . $option['type'], $option, $attributes, $value, $placeholder );
 							}
-
 							echo '</td></tr>';
 						}
 
@@ -542,7 +441,7 @@ class WP_Job_Manager_Settings {
 				<p class="submit">
 					<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'wp-job-manager' ); ?>" />
 				</p>
-		    </form>
+			</form>
 		</div>
 		<script type="text/javascript">
 			jQuery('.nav-tab-wrapper a').click(function() {
@@ -595,7 +494,7 @@ class WP_Job_Manager_Settings {
 
 			$generate_username_from_email.change(function() {
 				if ( jQuery( this ).is(':checked') ) {
-				    $use_standard_password_setup_email.data('original-state', $use_standard_password_setup_email.is(':checked')).prop('checked', true).prop('disabled', true);
+					$use_standard_password_setup_email.data('original-state', $use_standard_password_setup_email.is(':checked')).prop('checked', true).prop('disabled', true);
 				} else {
 					$use_standard_password_setup_email.prop('disabled', false);
 					if ( undefined !== $use_standard_password_setup_email.data('original-state') ) {
@@ -605,5 +504,190 @@ class WP_Job_Manager_Settings {
 			}).change();
 		</script>
 		<?php
+	}
+
+	/**
+	 * Checkbox input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder (Ignored).
+	 */
+	protected function input_checkbox( $option, $attributes, $value, $placeholder ) {
+		?><label><input id="setting-<?php echo $option['name']; ?>" name="<?php echo $option['name']; ?>" type="checkbox" value="1" <?php echo implode( ' ', $attributes ); ?> <?php checked( '1', $value ); ?> /> <?php echo $option['cb_label']; ?></label><?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Text area input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder
+	 */
+	protected function input_textarea ( $option, $attributes, $value, $placeholder ) {
+		?><textarea id="setting-<?php echo $option['name']; ?>" class="large-text" cols="50" rows="3" name="<?php echo $option['name']; ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?>><?php echo esc_textarea( $value ); ?></textarea><?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Select input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder (Ignored).
+	 */
+	protected function input_select( $option, $attributes, $value, $placeholder ) {
+		?><select id="setting-<?php echo $option['name']; ?>" class="regular-text" name="<?php echo $option['name']; ?>" <?php echo implode( ' ', $attributes ); ?>><?php
+		foreach( $option['options'] as $key => $name )
+			echo '<option value="' . esc_attr( $key ) . '" ' . selected( $value, $key, false ) . '>' . esc_html( $name ) . '</option>';
+		?></select><?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Radio input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder (Ignored).
+	 */
+	protected function input_radio( $option, $attributes, $value, $placeholder ) {
+		?><fieldset>
+		<legend class="screen-reader-text">
+		<span><?php echo esc_html( $option['label'] ); ?></span>
+		</legend><?php
+
+		if ( $option['desc'] ) {
+			echo '<p class="description">' . $option['desc'] . '</p>';
+		}
+
+		foreach( $option['options'] as $key => $name )
+			echo '<label><input name="' . esc_attr( $option['name'] ) . '" type="radio" value="' . esc_attr( $key ) . '" ' . checked( $value, $key, false ) . ' />' . esc_html( $name ) . '</label><br>';
+
+		?></fieldset><?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Page input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder (Ignored).
+	 */
+	protected function input_page( $option, $attributes, $value, $placeholder ) {
+		$args = array(
+			'name'             => $option['name'],
+			'id'               => $option['name'],
+			'sort_column'      => 'menu_order',
+			'sort_order'       => 'ASC',
+			'show_option_none' => __( '--no page--', 'wp-job-manager' ),
+			'echo'             => false,
+			'selected'         => absint( $value )
+		);
+
+		echo str_replace(' id=', " data-placeholder='" . __( 'Select a page&hellip;', 'wp-job-manager' ) .  "' id=", wp_dropdown_pages( $args ) );
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Hidden input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder (Ignored).
+	 */
+	protected function input_hidden( $option, $attributes, $value, $placeholder ) {
+		$human_value = $value;
+		if( $option['human_value'] ) {
+			$human_value = $option['human_value'];
+		}
+		?><input id="setting-<?php echo $option['name']; ?>" type="hidden" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> /><strong><?php echo esc_html( $human_value ) ?></strong><?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Password input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder
+	 */
+	protected function input_password( $option, $attributes, $value, $placeholder ) {
+		?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Number input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder
+	 */
+	protected function input_number( $option, $attributes, $value, $placeholder ) {
+		?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="number" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Text input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder
+	 */
+	protected function input_text( $option, $attributes, $value, $placeholder ) {
+		?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="text" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . $option['desc'] . '</p>';
+		}
+	}
+
+	/**
+	 * Proxy for text input field.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param mixed  $value
+	 * @param string $placeholder
+	 */
+	protected function input_input( $option, $attributes, $value, $placeholder ) {
+		$this->input_text( $option, $attributes, $value, $placeholder );
 	}
 }
