@@ -183,6 +183,24 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Gets the instance with the default values for all settings.
+	 *
+	 * @return array
+	 */
+	protected function get_default_instance() {
+		$defaults = array();
+		if ( ! empty( $this->settings ) ) {
+			foreach ( $this->settings as $key => $setting ) {
+				$defaults[ $key ] = null;
+				if ( isset( $setting['std'] ) ) {
+					$defaults[ $key ] = $setting['std'];
+				}
+			}
+		}
+		return $defaults;
+	}
+
+	/**
 	 * Echoes the widget content.
 	 *
 	 * @see    WP_Widget
