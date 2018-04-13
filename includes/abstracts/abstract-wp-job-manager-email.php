@@ -158,19 +158,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return array
 	 */
 	public static function get_setting_fields() {
-		$settings = array(
-			array(
-				'name'    => 'plain_text',
-				'std'     => '0',
-				'label'   => __( 'Email Type', 'wp-job-manager' ),
-				'type'    => 'radio',
-				'options' => array(
-					'1' => __( 'Send plain text email', 'wp-job-manager' ),
-					'0' => __( 'Send rich text email', 'wp-job-manager' ),
-				),
-			),
-		);
-		return $settings;
+		return array();
 	}
 
 	/**

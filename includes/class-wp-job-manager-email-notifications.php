@@ -428,6 +428,16 @@ final class WP_Job_Manager_Email_Notifications {
 				'std'        => call_user_func( array( $email_class, 'is_default_enabled' ) ) ? '1' : '0',
 				'attributes' => array()
 			),
+			array(
+				'name'    => 'plain_text',
+				'std'     => '0',
+				'label'   => __( 'Format', 'wp-job-manager' ),
+				'type'    => 'radio',
+				'options' => array(
+					'1' => __( 'Send plain text email', 'wp-job-manager' ),
+					'0' => __( 'Send rich text email', 'wp-job-manager' ),
+				),
+			),
 		);
 		$email_settings = call_user_func( array( $email_class, 'get_setting_fields' ) );
 		return array_merge( $core_settings, $email_settings );
