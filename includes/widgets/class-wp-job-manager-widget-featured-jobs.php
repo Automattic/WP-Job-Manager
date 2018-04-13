@@ -73,13 +73,15 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 			return;
 		}
 
+		$instance = array_merge( $this->get_default_instance(), $instance );
+
 		ob_start();
 
 		extract( $args );
-		$titleInstance = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
-		$number  = isset( $instance['number'] ) ? absint( $instance['number'] ) : '';
-		$orderby = isset( $instance['orderby'] ) ? esc_attr( $instance['orderby'] ) : 'date';
-		$order   = isset( $instance['order'] ) ? esc_attr( $instance['order'] ) : 'DESC';
+		$titleInstance = esc_attr( $instance['title'] );
+		$number  = absint( $instance['number'] );
+		$orderby = esc_attr( $instance['orderby'] );
+		$order   = esc_attr( $instance['order'] );
 		$title   = apply_filters( 'widget_title', $titleInstance, $instance, $this->id_base );
 		$jobs    = get_job_listings( array(
 			'posts_per_page' => $number,

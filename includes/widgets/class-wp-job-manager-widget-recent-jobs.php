@@ -63,6 +63,8 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 			return;
 		}
 
+		$instance = array_merge( $this->get_default_instance(), $instance );
+
 		ob_start();
 
 		extract( $args );
@@ -70,8 +72,8 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 		$title  = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 		$number = absint( $instance['number'] );
 		$jobs   = get_job_listings( array(
-			'search_location'   => isset( $instance['location'] ) ? $instance['location'] : '',
-			'search_keywords'   => isset( $instance['keyword'] ) ? $instance['keyword'] : '',
+			'search_location'   => $instance['location'],
+			'search_keywords'   => $instance['keyword'],
 			'posts_per_page'    => $number,
 			'orderby'           => 'date',
 			'order'             => 'DESC',
