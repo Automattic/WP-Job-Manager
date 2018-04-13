@@ -409,29 +409,11 @@ class WP_Job_Manager_Settings {
 
 						echo '<div id="settings-' . sanitize_title( $key ) . '" class="settings_panel">';
 
-						echo '<table class="form-table">';
+						echo '<table class="form-table settings parent-settings">';
 
 						foreach ( $section[1] as $option ) {
-
-							$placeholder    = ( ! empty( $option['placeholder'] ) ) ? 'placeholder="' . $option['placeholder'] . '"' : '';
-							$class          = ! empty( $option['class'] ) ? $option['class'] : '';
-							$value          = get_option( $option['name'] );
-							$option['type'] = ! empty( $option['type'] ) ? $option['type'] : 'text';
-							$attributes     = array();
-
-							if ( ! empty( $option['attributes'] ) && is_array( $option['attributes'] ) )
-								foreach ( $option['attributes'] as $attribute_name => $attribute_value )
-									$attributes[] = esc_attr( $attribute_name ) . '="' . esc_attr( $attribute_value ) . '"';
-
-							echo '<tr valign="top" class="' . $class . '"><th scope="row"><label for="setting-' . $option['name'] . '">' . $option['label'] . '</a></th><td>';
-
-							$method_name = 'input_' . $option['type'];
-							if ( method_exists( $this, $method_name ) ) {
-								$this->$method_name( $option, $attributes, $value, $placeholder );
-							} else {
-								do_action( 'wp_job_manager_admin_field_' . $option['type'], $option, $attributes, $value, $placeholder );
-							}
-							echo '</td></tr>';
+							$value = get_option( $option['name'] );
+							$this->output_field( $option, $value );
 						}
 
 						echo '</table></div>';
@@ -570,19 +552,14 @@ class WP_Job_Manager_Settings {
 		<legend class="screen-reader-text">
 		<span><?php echo esc_html( $option['label'] ); ?></span>
 		</legend><?php
-
-		if ( $option['desc'] ) {
-			echo '<p class="description">' . $option['desc'] . '</p>';
-		}
-
-		foreach( $option['options'] as $key => $name )
-			echo '<label><input name="' . esc_attr( $option['name'] ) . '" type="radio" value="' . esc_attr( $key ) . '" ' . checked( $value, $key, false ) . ' />' . esc_html( $name ) . '</label><br>';
-
-		?></fieldset><?php
-
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . $option['desc'] . '</p>';
 		}
+
+		foreach( $option['options'] as $key => $name ) {
+			echo '<label><input name="' . esc_attr( $option['name'] ) . '" type="radio" value="' . esc_attr( $key ) . '" ' . checked( $value, $key, false ) . ' />' . esc_html( $name ) . '</label><br>';
+		}
+		?></fieldset><?php
 	}
 
 	/**
@@ -677,6 +654,52 @@ class WP_Job_Manager_Settings {
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . $option['desc'] . '</p>';
 		}
+	}
+
+	/**
+     * Outputs the field row.
+     *
+	 * @param array $option
+	 * @param mixed $value
+	 */
+	protected function output_field( $option, $value ) {
+		$placeholder    = ( ! empty( $option['placeholder'] ) ) ? 'placeholder="' . $option['placeholder'] . '"' : '';
+		$class          = ! empty( $option['class'] ) ? $option['class'] : '';
+		$option['type'] = ! empty( $option['type'] ) ? $option['type'] : 'text';
+		$attributes     = array();
+		if ( ! empty( $option['attributes'] ) && is_array( $option['attributes'] ) ) {
+			foreach ( $option['attributes'] as $attribute_name => $attribute_value ) {
+				$attributes[] = esc_attr( $attribute_name ) . '="' . esc_attr( $attribute_value ) . '"';
+			}
+		}
+
+		echo '<tr valign="top" class="' . $class . '"><th scope="row"><label for="setting-' . $option['name'] . '">' . $option['label'] . '</a></th><td>';
+
+		$method_name = 'input_' . $option['type'];
+		if ( method_exists( $this, $method_name ) ) {
+			$this->$method_name( $option, $attributes, $value, $placeholder );
+		} else {
+			do_action( 'wp_job_manager_admin_field_' . $option['type'], $option, $attributes, $value, $placeholder );
+		}
+		echo '</td></tr>';
+	}
+
+	/**
+	 * Multiple settings stored in one setting array.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param array  $values
+	 * @param string $placeholder
+	 */
+	protected function input_multi( $option, $attributes, $values, $placeholder ) {
+		echo '<table class="form-table settings child-settings">';
+		foreach ( $option['settings'] as $sub_option ) {
+			$value = isset( $values[ $sub_option['name'] ] ) ? $values[ $sub_option['name'] ] : '';
+			$sub_option['name'] = $option['name'] . '[' . $sub_option['name'] . ']';
+			$this->output_field( $sub_option, $value );
+		}
+		echo '</table>';
 	}
 
 	/**
