@@ -29,23 +29,6 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @covers WP_Job_Manager_Email_Notifications::_lazy_init()
-	 * @covers WP_Job_Manager_Email_Notifications::_schedule_notification()
-	 * @runInSeparateProcess
-	 */
-	public function test_lazy_init() {
-		$this->assertFalse( class_exists( 'WP_Job_Manager_Email_Admin_New_Job' ) );
-		$this->assertEquals( 0, did_action( 'job_manager_email_init' ) );
-		$this->assertFalse( has_action( 'shutdown', array( 'WP_Job_Manager_Email_Notifications', '_send_deferred_notifications' ) ) );
-
-		WP_Job_Manager_Email_Notifications::_schedule_notification( 'test-notification' );
-
-		$this->assertTrue( class_exists( 'WP_Job_Manager_Email_Admin_New_Job' ) );
-		$this->assertEquals( 1, did_action( 'job_manager_email_init' ) );
-		$this->assertEquals( 10, has_action( 'shutdown', array( 'WP_Job_Manager_Email_Notifications', '_send_deferred_notifications' ) ) );
-	}
-
-	/**
 	 * @covers WP_Job_Manager_Email_Notifications::_schedule_notification()
 	 * @covers WP_Job_Manager_Email_Notifications::_get_deferred_notification_count()
 	 */
