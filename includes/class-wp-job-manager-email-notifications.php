@@ -350,12 +350,14 @@ final class WP_Job_Manager_Email_Notifications {
 
 		foreach ( $email_notifications as $email_notification_key => $email_class ) {
 			$email_settings[] = array(
-				'type'         => 'mutli_enable_expand',
-				'class'        => 'email-setting-row',
-				'name'         => self::EMAIL_SETTING_ENABLED,
-				'base_name'    => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
-				'label_enable' => call_user_func( array( $email_class, 'get_name' ) ),
-				'desc'         => call_user_func( array( $email_class, 'get_description' ) ),
+				'type'           => 'mutli_enable_expand',
+				'class'          => 'email-setting-row',
+				'name'           => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
+				'enable_field'   => array(
+					'name'  => self::EMAIL_SETTING_ENABLED,
+					'cb_label' => call_user_func( array( $email_class, 'get_name' ) ),
+					'desc'  => call_user_func( array( $email_class, 'get_description' ) ),
+				),
 				'label'        => false,
 				'std'          => self::get_email_setting_defaults( $email_notification_key ),
 				'settings'     => self::get_email_setting_fields( $email_notification_key ),

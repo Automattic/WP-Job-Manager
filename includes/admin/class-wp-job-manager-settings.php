@@ -718,15 +718,12 @@ class WP_Job_Manager_Settings {
 	 */
 	protected function input_mutli_enable_expand( $option, $attributes, $values, $placeholder ) {
 		echo '<div class="setting-enable-expand">';
-		$enable_option = array(
-			'name'       => $option['base_name'] .'[' . $option['name'] . ']',
-			'std'        => $values[ $option['name'] ],
-			'cb_label'   => $option['label_enable'],
-			'desc'       => $option['desc'],
-			'type'       => 'checkbox',
-			'attributes' => array( 'class="sub-settings-expander"' ),
-		);
-		$this->input_checkbox( $enable_option, $enable_option['attributes'], $values[ $option['name'] ], null );
+		$enable_option               = $option['enable_field'];
+		$enable_option['name']       = $option['name'] . '[' . $enable_option['name'] . ']';
+		$enable_option['type']       = 'checkbox';
+		$enable_option['attributes'] = array( 'class="sub-settings-expander"' );
+		$this->input_checkbox( $enable_option, $enable_option['attributes'], $values[ $option['enable_field']['name'] ], null );
+
 		echo '<div class="sub-settings-expandable">';
 		$this->input_multi( $option, $attributes, $values, $placeholder );
 		echo '</div>';
@@ -745,7 +742,7 @@ class WP_Job_Manager_Settings {
 		echo '<table class="form-table settings child-settings">';
 		foreach ( $option['settings'] as $sub_option ) {
 			$value = isset( $values[ $sub_option['name'] ] ) ? $values[ $sub_option['name'] ] : '';
-			$sub_option['name'] = $option['base_name'] . '[' . $sub_option['name'] . ']';
+			$sub_option['name'] = $option['name'] . '[' . $sub_option['name'] . ']';
 			$this->output_field( $sub_option, $value );
 		}
 		echo '</table>';
