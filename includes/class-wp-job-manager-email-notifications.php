@@ -350,14 +350,15 @@ final class WP_Job_Manager_Email_Notifications {
 
 		foreach ( $email_notifications as $email_notification_key => $email_class ) {
 			$email_settings[] = array(
-				'type'       => 'enable_expand',
-				'class'      => 'email-setting-row',
-				'name'       => 'enable',
-				'base_name'  => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
-				'email_name' => call_user_func( array( $email_class, 'get_name' ) ),
-				'label'      => false,
-				'std'        => self::get_email_setting_defaults( $email_notification_key ),
-				'settings'   => self::get_email_setting_fields( $email_notification_key ),
+				'type'         => 'mutli_enable_expand',
+				'class'        => 'email-setting-row',
+				'name'         => self::EMAIL_SETTING_ENABLED,
+				'base_name'    => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
+				'label_enable' => call_user_func( array( $email_class, 'get_name' ) ),
+				'desc' => call_user_func( array( $email_class, 'get_description' ) ),
+				'label'        => false,
+				'std'          => self::get_email_setting_defaults( $email_notification_key ),
+				'settings'     => self::get_email_setting_fields( $email_notification_key ),
 			);
 		}
 
@@ -365,8 +366,8 @@ final class WP_Job_Manager_Email_Notifications {
 			__( 'Email Notifications', 'wp-job-manager' ),
 			$email_settings,
 			array(
-				'before' => __( 'Select the email notifications you would like sent.', 'wp-job-manager' ),
-			)
+				'before' => __( 'Select the email notifications to enable.', 'wp-job-manager' ),
+			),
 		);
 
 		return $settings;
@@ -426,15 +427,6 @@ final class WP_Job_Manager_Email_Notifications {
 		$email_class = self::get_email_class( $email_notification_key );
 		$core_settings = array(
 			array(
-				'name'       => self::EMAIL_SETTING_ENABLED,
-				'type'       => 'checkbox',
-				'label'      => __( 'Enabled', 'wp-job-manager' ),
-				'cb_label'   => sprintf( __( 'Send the notification <em>%s</em>', 'wp-job-manager' ), call_user_func( array( $email_class, 'get_name' ) ) ),
-				'desc'       => '',
-				'std'        => call_user_func( array( $email_class, 'is_default_enabled' ) ) ? '1' : '0',
-				'attributes' => array()
-			),
-			array(
 				'name'    => 'plain_text',
 				'std'     => '0',
 				'label'   => __( 'Format', 'wp-job-manager' ),
@@ -474,8 +466,11 @@ final class WP_Job_Manager_Email_Notifications {
 	 */
 	static private function get_email_setting_defaults( $email_notification_key ) {
 		$settings = self::get_email_setting_fields( $email_notification_key );
+		$email_class = self::get_email_class( $email_notification_key );
 
 		$defaults = array();
+		$defaults[ self::EMAIL_SETTING_ENABLED ] = call_user_func( array( $email_class, 'is_default_enabled' ) ) ? '1' : '0';
+
 		foreach ( $settings as $setting ) {
 			$defaults[ $setting['name'] ] = null;
 			if ( isset( $setting['std'] ) ) {

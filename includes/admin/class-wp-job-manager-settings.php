@@ -490,6 +490,16 @@ class WP_Job_Manager_Settings {
 					}
 				}
 			}).change();
+
+			jQuery( '.sub-settings-expander' ).on( 'change', function() {
+				var $expandable = jQuery(this).parent().siblings( '.sub-settings-expandable' );
+				var checked = jQuery(this).is(':checked');
+				if ( checked ) {
+					$expandable.addClass('expanded');
+				} else {
+					$expandable.removeClass('expanded');
+				}
+			} ).trigger( 'change' );
 		</script>
 		<?php
 	}
@@ -699,6 +709,31 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
+	 * Multiple settings stored in one setting array that are shown when the `enable` setting is checked.
+	 *
+	 * @param array  $option
+	 * @param array  $attributes
+	 * @param array  $values
+	 * @param string $placeholder
+	 */
+	protected function input_mutli_enable_expand( $option, $attributes, $values, $placeholder ) {
+		echo '<div class="setting-enable-expand">';
+		$enable_option = array(
+			'name'       => $option['base_name'] .'[' . $option['name'] . ']',
+			'std'        => $values[ $option['name'] ],
+			'cb_label'   => $option['label_enable'],
+			'desc'       => $option['desc'],
+			'type'       => 'checkbox',
+			'attributes' => array( 'class="sub-settings-expander"' ),
+		);
+		$this->input_checkbox( $enable_option, $enable_option['attributes'], $values[ $option['name'] ], null );
+		echo '<div class="sub-settings-expandable">';
+		$this->input_multi( $option, $attributes, $values, $placeholder );
+		echo '</div>';
+		echo '</div>';
+	}
+
+	/**
 	 * Multiple settings stored in one setting array.
 	 *
 	 * @param array  $option
@@ -710,7 +745,7 @@ class WP_Job_Manager_Settings {
 		echo '<table class="form-table settings child-settings">';
 		foreach ( $option['settings'] as $sub_option ) {
 			$value = isset( $values[ $sub_option['name'] ] ) ? $values[ $sub_option['name'] ] : '';
-			$sub_option['name'] = $option['name'] . '[' . $sub_option['name'] . ']';
+			$sub_option['name'] = $option['base_name'] . '[' . $sub_option['name'] . ']';
 			$this->output_field( $sub_option, $value );
 		}
 		echo '</table>';

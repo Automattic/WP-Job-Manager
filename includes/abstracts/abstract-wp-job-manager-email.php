@@ -72,6 +72,16 @@ abstract class WP_Job_Manager_Email {
 	}
 
 	/**
+	 * Get the description for this email notification.
+	 *
+	 * @type abstract
+	 * @return string
+	 */
+	public static function get_description() {
+		return '';
+	}
+
+	/**
 	 * Get the email subject.
 	 *
 	 * @return string
