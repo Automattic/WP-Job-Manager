@@ -31,6 +31,16 @@ class WP_Job_Manager_Email_Admin_New_Job extends WP_Job_Manager_Email_Template {
 	}
 
 	/**
+	 * Get the description for this email notification.
+	 *
+	 * @type abstract
+	 * @return string
+	 */
+	public static function get_description() {
+		return __( 'This notice is sent to the site administrator when a new job is submitted on the frontend.', 'wp-job-manager' );
+	}
+
+	/**
 	 * Expand arguments as necessary for the generation of the email.
 	 *
 	 * @param $args
