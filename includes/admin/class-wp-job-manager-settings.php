@@ -493,11 +493,11 @@ class WP_Job_Manager_Settings {
 
 			jQuery( '.sub-settings-expander' ).on( 'change', function() {
 				var $expandable = jQuery(this).parent().siblings( '.sub-settings-expandable' );
-				var checked = jQuery(this).is(':checked');
+				var checked = jQuery(this).is( ':checked' );
 				if ( checked ) {
-					$expandable.addClass('expanded');
+					$expandable.addClass( 'expanded' );
 				} else {
-					$expandable.removeClass('expanded');
+					$expandable.removeClass( 'expanded' );
 				}
 			} ).trigger( 'change' );
 		</script>

@@ -354,9 +354,9 @@ final class WP_Job_Manager_Email_Notifications {
 				'class'          => 'email-setting-row no-separator',
 				'name'           => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
 				'enable_field'   => array(
-					'name'  => self::EMAIL_SETTING_ENABLED,
+					'name'     => self::EMAIL_SETTING_ENABLED,
 					'cb_label' => call_user_func( array( $email_class, 'get_name' ) ),
-					'desc'  => call_user_func( array( $email_class, 'get_description' ) ),
+					'desc'     => call_user_func( array( $email_class, 'get_description' ) ),
 				),
 				'label'        => false,
 				'std'          => self::get_email_setting_defaults( $email_notification_key ),
