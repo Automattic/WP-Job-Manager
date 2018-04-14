@@ -351,7 +351,7 @@ final class WP_Job_Manager_Email_Notifications {
 		foreach ( $email_notifications as $email_notification_key => $email_class ) {
 			$email_settings[] = array(
 				'type'           => 'mutli_enable_expand',
-				'class'          => 'email-setting-row',
+				'class'          => 'email-setting-row no-separator',
 				'name'           => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
 				'enable_field'   => array(
 					'name'  => self::EMAIL_SETTING_ENABLED,
