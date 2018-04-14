@@ -350,9 +350,12 @@ final class WP_Job_Manager_Email_Notifications {
 
 		foreach ( $email_notifications as $email_notification_key => $email_class ) {
 			$email_settings[] = array(
-				'type'       => 'multi',
-				'name'       => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
-				'label'      => call_user_func( array( $email_class, 'get_name' ) ),
+				'type'       => 'enable_expand',
+				'class'      => 'email-setting-row',
+				'name'       => 'enable',
+				'base_name'  => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
+				'email_name' => call_user_func( array( $email_class, 'get_name' ) ),
+				'label'      => false,
 				'std'        => self::get_email_setting_defaults( $email_notification_key ),
 				'settings'   => self::get_email_setting_fields( $email_notification_key ),
 			);
@@ -361,6 +364,9 @@ final class WP_Job_Manager_Email_Notifications {
 		$settings['email_notifications'] = array(
 			__( 'Email Notifications', 'wp-job-manager' ),
 			$email_settings,
+			array(
+				'before' => __( 'Select the email notifications you would like sent.', 'wp-job-manager' ),
+			)
 		);
 
 		return $settings;

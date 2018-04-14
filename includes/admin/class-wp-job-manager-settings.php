@@ -406,9 +406,11 @@ class WP_Job_Manager_Settings {
 					}
 
 					foreach ( $this->settings as $key => $section ) {
-
+						$section_args = isset( $section[2] ) ? (array) $section[2] : array();
 						echo '<div id="settings-' . sanitize_title( $key ) . '" class="settings_panel">';
-
+						if ( ! empty( $section_args['before'] ) ) {
+							echo '<p class="before-settings">' . $section_args['before'] . '</p>';
+						}
 						echo '<table class="form-table settings parent-settings">';
 
 						foreach ( $section[1] as $option ) {
@@ -416,7 +418,11 @@ class WP_Job_Manager_Settings {
 							$this->output_field( $option, $value );
 						}
 
-						echo '</table></div>';
+						echo '</table>';
+						if ( ! empty( $section_args['after'] ) ) {
+							echo '<p class="after-settings">' . $section_args['after'] . '</p>';
+						}
+						echo '</div>';
 
 					}
 				?>
@@ -659,8 +665,8 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-     * Outputs the field row.
-     *
+	 * Outputs the field row.
+	 *
 	 * @param array $option
 	 * @param mixed $value
 	 */
@@ -675,7 +681,13 @@ class WP_Job_Manager_Settings {
 			}
 		}
 
-		echo '<tr valign="top" class="' . $class . '"><th scope="row"><label for="setting-' . $option['name'] . '">' . $option['label'] . '</a></th><td>';
+		echo '<tr valign="top" class="' . $class . '">';
+
+		if ( ! empty( $option['label'] ) ) {
+			echo '<th scope="row"><label for="setting-' . $option[ 'name' ] . '">' . $option[ 'label' ] . '</a></th><td>';
+		} else {
+			echo '<td colspan="2">';
+		}
 
 		$method_name = 'input_' . $option['type'];
 		if ( method_exists( $this, $method_name ) ) {
