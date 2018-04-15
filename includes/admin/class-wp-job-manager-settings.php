@@ -741,7 +741,7 @@ class WP_Job_Manager_Settings {
 	protected function input_multi( $option, $attributes, $values, $placeholder ) {
 		echo '<table class="form-table settings child-settings">';
 		foreach ( $option['settings'] as $sub_option ) {
-			$value = isset( $values[ $sub_option['name'] ] ) ? $values[ $sub_option['name'] ] : '';
+			$value = isset( $values[ $sub_option['name'] ] ) ? $values[ $sub_option['name'] ] : $sub_option['std'];
 			$sub_option['name'] = $option['name'] . '[' . $sub_option['name'] . ']';
 			$this->output_field( $sub_option, $value );
 		}
