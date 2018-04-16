@@ -86,7 +86,7 @@ final class WP_Job_Manager_Email_Notifications {
 	/**
 	 * Initialize if necessary.
 	 */
-	private static function maybe_init() {
+	public static function maybe_init() {
 		if ( 0 === did_action( 'job_manager_email_init' ) ) {
 			/**
 			 * Lazily load remaining files needed for email notifications. Do this here instead of in
