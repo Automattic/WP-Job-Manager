@@ -274,6 +274,15 @@ final class WP_Job_Manager_Email_Notifications {
 			);
 		}
 
+		$job_expires = get_post_meta( $job->ID, '_job_expires', true );
+		if ( ! empty( $job_expires ) ) {
+			$job_expires_str = date_i18n( get_option( 'date_format' ), strtotime( $job_expires ) );
+			$fields['job_expires'] = array(
+				'label' => __( 'Listing expires', 'wp-job-manager' ),
+				'value' => $job_expires_str,
+			);
+		}
+
 		if ( $sent_to_admin ) {
 			$author = get_user_by( 'ID', $job->post_author );
 			if ( $author instanceof WP_User ) {
