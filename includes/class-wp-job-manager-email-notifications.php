@@ -197,7 +197,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
 	 * @param bool                 $plain_text     True if the email is being sent as plain text.
 	 */
-	static public function output_job_details( $job, $email, $sent_to_admin, $plain_text = false ) {
+	public static function output_job_details( $job, $email, $sent_to_admin, $plain_text = false ) {
 		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-job-details', $plain_text ) );
 		if ( ! file_exists( $template_segment ) ) {
 			return;
@@ -216,7 +216,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param bool    $plain_text
 	 * @return array
 	 */
-	static private function get_job_detail_fields( WP_Post $job, $sent_to_admin, $plain_text = false ) {
+	private static function get_job_detail_fields( WP_Post $job, $sent_to_admin, $plain_text = false ) {
 		$fields = array();
 
 		$fields['job_title'] = array(
@@ -310,7 +310,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
 	 * @param bool                 $plain_text     True if the email is being sent as plain text.
 	 */
-	static public function output_header( $email, $sent_to_admin, $plain_text = false ) {
+	public static function output_header( $email, $sent_to_admin, $plain_text = false ) {
 		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-header', $plain_text ) );
 		if ( ! file_exists( $template_segment ) ) {
 			return;
@@ -325,7 +325,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
 	 * @param bool                 $plain_text     True if the email is being sent as plain text.
 	 */
-	static public function output_footer( $email, $sent_to_admin, $plain_text = false ) {
+	public static function output_footer( $email, $sent_to_admin, $plain_text = false ) {
 		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-footer', $plain_text ) );
 		if ( ! file_exists( $template_segment ) ) {
 			return;
@@ -339,7 +339,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param array $settings
 	 * @return array
 	 */
-	static public function add_email_settings( $settings ) {
+	public static function add_email_settings( $settings ) {
 		self::maybe_init();
 
 		$email_notifications = self::get_email_notifications( false );
@@ -422,7 +422,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param string $email_notification_key
 	 * @return array
 	 */
-	static private function get_email_setting_fields( $email_notification_key ) {
+	private static function get_email_setting_fields( $email_notification_key ) {
 		$email_class = self::get_email_class( $email_notification_key );
 		$core_settings = array(
 			array(
@@ -446,7 +446,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param string $email_notification_key
 	 * @return array
 	 */
-	static private function get_email_settings( $email_notification_key ) {
+	private static function get_email_settings( $email_notification_key ) {
 		$option_name = self::EMAIL_SETTING_PREFIX . $email_notification_key;
 		$option_value = get_option( $option_name );
 		if ( empty( $option_value ) || ! is_array( $option_value ) ) {
@@ -463,7 +463,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param string $email_notification_key
 	 * @return array
 	 */
-	static private function get_email_setting_defaults( $email_notification_key ) {
+	private static function get_email_setting_defaults( $email_notification_key ) {
 		$settings = self::get_email_setting_fields( $email_notification_key );
 		$email_class = self::get_email_class( $email_notification_key );
 
