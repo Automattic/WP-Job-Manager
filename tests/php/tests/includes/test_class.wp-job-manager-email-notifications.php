@@ -253,7 +253,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 			}
 
 			$this->assertArrayHasKey( 'type', $setting );
-			$this->assertEquals( 'mutli_enable_expand', $setting['type'] );
+			$this->assertEquals( 'multi_enable_expand', $setting['type'] );
 			$this->assertArrayHasKey( 'class', $setting );
 			$this->assertArrayHasKey( 'name', $setting );
 			$this->assertEquals( WP_Job_Manager_Email_Notifications::EMAIL_SETTING_PREFIX . $email_key, $setting['name'] );

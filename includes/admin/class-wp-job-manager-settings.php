@@ -716,7 +716,7 @@ class WP_Job_Manager_Settings {
 	 * @param array  $values
 	 * @param string $placeholder
 	 */
-	protected function input_mutli_enable_expand( $option, $attributes, $values, $placeholder ) {
+	protected function input_multi_enable_expand( $option, $attributes, $values, $placeholder ) {
 		echo '<div class="setting-enable-expand">';
 		$enable_option               = $option['enable_field'];
 		$enable_option['name']       = $option['name'] . '[' . $enable_option['name'] . ']';
