@@ -179,10 +179,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email_Notifications::get_job_detail_fields()
 	 */
 	public function test_output_job_details() {
-		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$email = $emails['valid-email'];
+		$email = $this->get_valid_email();
 		$job = $this->get_valid_job();
 
 		ob_start();
@@ -200,10 +197,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email_Notifications::output_header()
 	 */
 	public function test_output_header() {
-		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$email = $emails['valid-email'];
+		$email = $this->get_valid_email();
 		ob_start();
 		WP_Job_Manager_Email_Notifications::output_header( $email, true, false );
 		$content = ob_get_clean();
@@ -214,14 +208,21 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email_Notifications::output_footer()
 	 */
 	public function test_output_footer() {
-		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$email = $emails['valid-email'];
+		$email = $this->get_valid_email();
 		ob_start();
 		WP_Job_Manager_Email_Notifications::output_footer( $email, true, false );
 		$content = ob_get_clean();
 		$this->assertContains( '</html>', $content );
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Email_Notifications::add_email_settings()
+	 * @covers WP_Job_Manager_Email_Notifications::get_email_setting_fields()
+	 * @covers WP_Job_Manager_Email_Notifications::get_email_setting_defaults()
+	 * @group wip
+	 */
+	public function test_add_email_settings() {
+
 	}
 
 	/**
@@ -245,6 +246,13 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	public function inject_email_config_valid_email( $emails ) {
 		$emails[] = 'WP_Job_Manager_Email_Valid';
 		return $emails;
+	}
+
+	protected function get_valid_email() {
+		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
+		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		return $emails['valid-email'];
 	}
 
 	protected function get_valid_job() {
