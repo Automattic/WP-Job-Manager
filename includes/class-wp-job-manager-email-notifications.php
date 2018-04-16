@@ -432,6 +432,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 * Sending notices to employers for expiring job listings.
 	 */
 	public static function send_employer_expiring_notice() {
+		self::maybe_init();
+
 		$email_key   = call_user_func( array( 'WP_Job_Manager_Email_Employer_Expiring_Job', 'get_key' ) );
 		if ( ! self::is_email_notification_enabled( $email_key ) ) {
 			return;
