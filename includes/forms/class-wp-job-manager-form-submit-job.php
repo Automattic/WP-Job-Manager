@@ -803,11 +803,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Continue = change job status then show next screen
 		if ( ! empty( $_POST['continue'] ) ) {
-			$job = get_post( $this->job_id );
+			$job       = get_post( $this->job_id );
+			$relisting = job_manager_job_can_be_relisted( $this->job_id );
 
-			if ( in_array( $job->post_status, array( 'preview', 'expired' ) ) ) {
-				// Reset expiry
-				delete_post_meta( $job->ID, '_job_expires' );
+			if ( in_array( $job->post_status, array( 'preview', 'expired' ) ) || $relisting ) {
+				if ( $relisting ) {
+					$old_expiry = strtotime( get_post_meta( $job->ID, '_job_expires', true ) );
+					$new_expiry = calculate_job_expiry( $job->ID, $old_expiry );
+					update_post_meta( $job->ID, '_job_expires', $new_expiry );
+				} else {
+					// Reset expiry
+					delete_post_meta( $job->ID, '_job_expires' );
+				}
 
 				// Update job listing
 				$update_job                  = array();

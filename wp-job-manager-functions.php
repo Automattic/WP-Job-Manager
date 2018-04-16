@@ -1332,9 +1332,10 @@ function job_manager_get_allowed_mime_types( $field = '' ){
  *
  * @since 1.22.0
  * @param  int $job_id
+ * @param  int $from_timestamp
  * @return string
  */
-function calculate_job_expiry( $job_id ) {
+function calculate_job_expiry( $job_id, $from_timestamp = null ) {
 	// Get duration from the product if set...
 	$duration = get_post_meta( $job_id, '_job_duration', true );
 
@@ -1344,7 +1345,10 @@ function calculate_job_expiry( $job_id ) {
 	}
 
 	if ( $duration ) {
-		return date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
+		if ( ! $from_timestamp ) {
+			$from_timestamp = current_time( 'timestamp' );
+		}
+		return date( 'Y-m-d', strtotime( "+{$duration} days", $from_timestamp ) );
 	}
 
 	return '';
