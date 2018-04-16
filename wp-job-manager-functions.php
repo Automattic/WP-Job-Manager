@@ -674,8 +674,15 @@ function job_manager_user_can_edit_job( $job_id ) {
  * @return bool
  */
 function job_manager_job_can_be_relisted( $job ) {
-	$status             = get_post_status( $job );
-	$expiry             = strtotime( get_post_meta( $job, '_job_expires', true ) );
+	$job    = get_post( $job );
+	$status = get_post_status( $job );
+	$expiry = strtotime( get_post_meta( $job->ID, '_job_expires', true ) );
+
+	// If there is no expiry, then relisting is not necessary.
+	if ( ! $expiry ) {
+		return false;
+	}
+
 	$expiring_soon_days = apply_filters( 'job_manager_expiring_soon_days', 5 );
 
 	return 'publish' === $status && $expiry - current_time( 'timestamp' ) < $expiring_soon_days * DAY_IN_SECONDS;
