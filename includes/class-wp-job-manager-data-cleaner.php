@@ -92,6 +92,8 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_submit_page_slug',
 		'job_manager_job_dashboard_page_slug',
 		'job_manager_delete_data_on_uninstall',
+		'job_manager_email_admin_notice_updated_listing',
+		'job_manager_email_admin_notice_new_listing',
 	);
 
 	/**

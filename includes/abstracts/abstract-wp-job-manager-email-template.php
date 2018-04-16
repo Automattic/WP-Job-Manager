@@ -85,6 +85,7 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 		$class_name = get_class( $this );
 		// PHP 5.2: Using `call_user_func()` but `$class_name::get_key()` preferred.
 		$email_notification_key = call_user_func( array( $class_name, 'get_key') );
-		return WP_Job_Manager_Email_Notifications::get_template_file_name( $email_notification_key, $plain_text );
+		$template_name = str_replace( '_', '-', $email_notification_key );
+		return WP_Job_Manager_Email_Notifications::get_template_file_name( $template_name, $plain_text );
 	}
 }

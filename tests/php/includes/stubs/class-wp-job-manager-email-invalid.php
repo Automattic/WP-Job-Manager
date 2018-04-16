@@ -6,7 +6,7 @@ class WP_Job_Manager_Email_Invalid extends WP_Job_Manager_Email {
 	 * @return string
 	 */
 	public static function get_key() {
-		return 'invalid-email';
+		return 'invalid_email';
 	}
 
 	/**

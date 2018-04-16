@@ -18,7 +18,7 @@ class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Templa
 	 * @return string
 	 */
 	public static function get_key() {
-		return 'admin-notice-updated-listing';
+		return 'admin_notice_updated_listing';
 	}
 
 	/**
@@ -28,6 +28,16 @@ class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Templa
 	 */
 	public static function get_name() {
 		return __( 'Admin Notice of Updated Listing', 'wp-job-manager' );
+	}
+
+	/**
+	 * Get the description for this email notification.
+	 *
+	 * @type abstract
+	 * @return string
+	 */
+	public static function get_description() {
+		return __( 'This notice is sent to the site administrator when a job is updated on the frontend.', 'wp-job-manager' );
 	}
 
 	/**

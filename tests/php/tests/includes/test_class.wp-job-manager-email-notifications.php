@@ -19,6 +19,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$post_type_instance = WP_Job_Manager_Post_Types::instance();
 		$post_type_instance->register_post_types();
 		WP_Job_Manager_Email_Notifications::_clear_deferred_notifications();
+		WP_Job_Manager_Email_Notifications::maybe_init();
 	}
 
 	public function tearDown() {
@@ -29,40 +30,19 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @covers WP_Job_Manager_Email_Notifications::_lazy_init()
-	 * @covers WP_Job_Manager_Email_Notifications::_schedule_notification()
-	 * @runInSeparateProcess
-	 */
-	public function test_lazy_init() {
-		$this->assertFalse( class_exists( 'WP_Job_Manager_Email_Admin_New_Job' ) );
-		$this->assertEquals( 0, did_action( 'job_manager_email_init' ) );
-		$this->assertFalse( has_action( 'shutdown', array( 'WP_Job_Manager_Email_Notifications', '_send_deferred_notifications' ) ) );
-
-		WP_Job_Manager_Email_Notifications::_schedule_notification( 'test-notification' );
-
-		$this->assertTrue( class_exists( 'WP_Job_Manager_Email_Admin_New_Job' ) );
-		$this->assertEquals( 1, did_action( 'job_manager_email_init' ) );
-		$this->assertEquals( 10, has_action( 'shutdown', array( 'WP_Job_Manager_Email_Notifications', '_send_deferred_notifications' ) ) );
-	}
-
-	/**
 	 * @covers WP_Job_Manager_Email_Notifications::_schedule_notification()
 	 * @covers WP_Job_Manager_Email_Notifications::_get_deferred_notification_count()
 	 */
 	public function test_schedule_notification() {
 		$this->assertEquals( 0, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
-		$this->assertEquals( 0, did_action( 'job_manager_email_init' ) );
 
 		WP_Job_Manager_Email_Notifications::_schedule_notification( 'test-notification' );
-		$this->assertEquals( 1, did_action( 'job_manager_email_init' ) );
 		$this->assertEquals( 1, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
 
 		WP_Job_Manager_Email_Notifications::_schedule_notification( 'test-notification', array( 'test' => 'test' ) );
-		$this->assertEquals( 1, did_action( 'job_manager_email_init' ) );
 		$this->assertEquals( 2, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
 
 		do_action( 'job_manager_send_notification', 'test-notification-action', array( 'test' => 'test' ) );
-		$this->assertEquals( 1, did_action( 'job_manager_email_init' ) );
 		$this->assertEquals( 3, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
 	}
 
@@ -74,7 +54,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$mailer = tests_retrieve_phpmailer_instance();
 		$this->assertFalse( $mailer->get_sent() );
 		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		do_action( 'job_manager_send_notification', 'valid-email', array( 'test' => 'test' ) );
+		do_action( 'job_manager_send_notification', 'valid_email', array( 'test' => 'test' ) );
 		WP_Job_Manager_Email_Notifications::_send_deferred_notifications();
 		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
 
@@ -98,7 +78,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$mailer = tests_retrieve_phpmailer_instance();
 		$this->assertFalse( $mailer->get_sent() );
 		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_invalid_class_ordinary' ) );
-		do_action( 'job_manager_send_notification', 'invalid-email', array( 'test' => 'test' ) );
+		do_action( 'job_manager_send_notification', 'invalid_email', array( 'test' => 'test' ) );
 		WP_Job_Manager_Email_Notifications::_send_deferred_notifications();
 		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_invalid_class_ordinary' ) );
 		$this->assertFalse( $mailer->get_sent() );
@@ -112,7 +92,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$mailer = tests_retrieve_phpmailer_instance();
 		$this->assertFalse( $mailer->get_sent() );
 		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		do_action( 'job_manager_send_notification', 'valid-email', array( 'nope' => 'test' ) );
+		do_action( 'job_manager_send_notification', 'valid_email', array( 'nope' => 'test' ) );
 		WP_Job_Manager_Email_Notifications::_send_deferred_notifications();
 		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
 		$this->assertFalse( $mailer->get_sent() );
@@ -142,7 +122,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_invalid_class_ordinary' ) );
 		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
 		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_invalid_class_ordinary' ) );
-		$this->assertArrayNotHasKey( 'invalid-email', $emails );
+		$this->assertArrayNotHasKey( 'invalid_email', $emails );
 	}
 
 	/**
@@ -153,7 +133,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_invalid_class_unknown' ) );
 		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
 		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_invalid_class_unknown' ) );
-		$this->assertArrayNotHasKey( 'invalid-email', $emails );
+		$this->assertArrayNotHasKey( 'invalid_email', $emails );
 	}
 
 	/**
@@ -164,7 +144,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_invalid_class_setup' ) );
 		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
 		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_invalid_class_setup' ) );
-		$this->assertArrayNotHasKey( 'invalid-email', $emails );
+		$this->assertArrayNotHasKey( 'invalid_email', $emails );
 	}
 
 	/**
@@ -172,11 +152,9 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email_Notifications::is_email_notification_valid()
 	 */
 	public function test_get_email_notifications_inject_valid_email() {
-		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$this->assertArrayHasKey( 'valid-email', $emails );
-		$this->assertValidEmailNotificationConfig( $emails['valid-email'] );
+		$emails = $this->get_valid_emails();
+		$this->assertArrayHasKey( 'valid_email', $emails );
+		$this->assertValidEmailNotificationConfig( $emails['valid_email'] );
 	}
 
 	/**
@@ -200,10 +178,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email_Notifications::get_job_detail_fields()
 	 */
 	public function test_output_job_details() {
-		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$email = $emails['valid-email'];
+		$email = $this->get_valid_email();
 		$job = $this->get_valid_job();
 
 		ob_start();
@@ -221,10 +196,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email_Notifications::output_header()
 	 */
 	public function test_output_header() {
-		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$email = $emails['valid-email'];
+		$email = $this->get_valid_email();
 		ob_start();
 		WP_Job_Manager_Email_Notifications::output_header( $email, true, false );
 		$content = ob_get_clean();
@@ -235,14 +207,64 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email_Notifications::output_footer()
 	 */
 	public function test_output_footer() {
-		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
-		$email = $emails['valid-email'];
+		$email = $this->get_valid_email();
 		ob_start();
 		WP_Job_Manager_Email_Notifications::output_footer( $email, true, false );
 		$content = ob_get_clean();
 		$this->assertContains( '</html>', $content );
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Email_Notifications::add_email_settings()
+	 * @covers WP_Job_Manager_Email_Notifications::get_email_setting_fields()
+	 * @covers WP_Job_Manager_Email_Notifications::get_email_setting_defaults()
+	 */
+	public function test_add_email_settings() {
+
+		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$emails   = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
+		$settings = WP_Job_Manager_Email_Notifications::add_email_settings( array() );
+		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+
+		$this->assertArrayHasKey( 'email_notifications', $settings );
+		$email_notifications_settings = $settings['email_notifications'];
+
+		$this->assertTrue( isset( $email_notifications_settings[0] ) );
+		$this->assertInternalType( 'string', $email_notifications_settings[0] );
+		$this->assertTrue( isset( $email_notifications_settings[1] ) );
+		$this->assertInternalType( 'array', $email_notifications_settings[1] );
+
+		$settings      = $email_notifications_settings[1];
+		$email_keys    = array_keys( $emails );
+		$email_classes = array_values( $emails );
+		$this->assertEquals( count( $emails ), count( $settings ) );
+
+		foreach ( $settings as $key => $setting ) {
+			$email_class              = $email_classes[ $key ];
+			$email_key                = $email_keys[ $key ];
+			$email_settings           = call_user_func( array( $email_class, 'get_setting_fields' ) );
+			$email_is_default_enabled = call_user_func( array( $email_class, 'is_default_enabled' ) );
+			$defaults = array(
+				'enabled'    => $email_is_default_enabled,
+				'plain_text' => '0',
+			);
+			foreach ( $email_settings as $email_setting ) {
+				$defaults[ $email_setting['name'] ] = $email_setting['std'];
+			}
+
+			$this->assertArrayHasKey( 'type', $setting );
+			$this->assertEquals( 'multi_enable_expand', $setting['type'] );
+			$this->assertArrayHasKey( 'class', $setting );
+			$this->assertArrayHasKey( 'name', $setting );
+			$this->assertEquals( WP_Job_Manager_Email_Notifications::EMAIL_SETTING_PREFIX . $email_key, $setting['name'] );
+			$this->assertArrayHasKey( 'enable_field', $setting );
+			$this->assertInternalType( 'array', $setting['enable_field'] );
+			$this->assertArrayHasKey( 'label', $setting );
+			$this->assertArrayHasKey( 'std', $setting );
+			$this->assertEquals( $setting['std'], $defaults );
+			$this->assertArrayHasKey( 'settings', $setting );
+			$this->assertEquals( count( $setting['settings'] ), count( $email_settings ) + 1 );
+		}
 	}
 
 	/**
@@ -265,6 +287,18 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 
 	public function inject_email_config_valid_email( $emails ) {
 		$emails[] = 'WP_Job_Manager_Email_Valid';
+		return $emails;
+	}
+
+	protected function get_valid_email() {
+		$emails = $this->get_valid_emails();
+		return $emails['valid_email'];
+	}
+
+	protected function get_valid_emails() {
+		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
+		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
 		return $emails;
 	}
 

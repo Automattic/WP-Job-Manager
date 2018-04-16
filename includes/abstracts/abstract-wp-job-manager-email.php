@@ -35,12 +35,19 @@ abstract class WP_Job_Manager_Email {
 	private $args = array();
 
 	/**
+	 * @var array
+	 */
+	private $settings = array();
+
+	/**
 	 * WP_Job_Manager_Email constructor.
 	 *
-	 * @param array $args Arguments used in forming email notification.
+	 * @param array $args     Arguments used in forming email notification.
+	 * @param array $settings Settings for this notification.
 	 */
-	final public function __construct( $args ) {
-		$this->args = $this->prepare_args( (array) $args );
+	final public function __construct( $args, $settings ) {
+		$this->args     = $this->prepare_args( (array) $args );
+		$this->settings = (array) $settings;
 	}
 
 	/**
@@ -65,13 +72,13 @@ abstract class WP_Job_Manager_Email {
 	}
 
 	/**
-	 * Expand arguments as necessary for the generation of the email.
+	 * Get the description for this email notification.
 	 *
-	 * @param $args
-	 * @return mixed
+	 * @type abstract
+	 * @return string
 	 */
-	protected function prepare_args( $args ) {
-		return $args;
+	public static function get_description() {
+		return '';
 	}
 
 	/**
@@ -103,12 +110,13 @@ abstract class WP_Job_Manager_Email {
 	abstract public function get_rich_content();
 
 	/**
-	 * Returns the list of file paths to attach to an email.
+	 * Expand arguments as necessary for the generation of the email.
 	 *
-	 * @return array
+	 * @param $args
+	 * @return mixed
 	 */
-	public function get_attachments() {
-		return array();
+	protected function prepare_args( $args ) {
+		return $args;
 	}
 
 	/**
@@ -117,6 +125,15 @@ abstract class WP_Job_Manager_Email {
 	 * @return bool
 	 */
 	abstract public function is_valid();
+
+	/**
+	 * Returns the list of file paths to attach to an email.
+	 *
+	 * @return array
+	 */
+	public function get_attachments() {
+		return array();
+	}
 
 	/**
 	 * Returns the value of the CC header, if needed.
@@ -146,12 +163,39 @@ abstract class WP_Job_Manager_Email {
 	}
 
 	/**
+	 * Get the settings for this email notifications.
+	 *
+	 * @return array
+	 */
+	public static function get_setting_fields() {
+		return array();
+	}
+
+	/**
+	 * Is this email notification enabled by default?
+	 *
+	 * @return bool
+	 */
+	public static function is_default_enabled() {
+		return true;
+	}
+
+	/**
 	 * Returns the args that the email notification was sent with.
 	 *
 	 * @return array
 	 */
 	final protected function get_args() {
 		return $this->args;
+	}
+
+	/**
+	 * Returns the settings values.
+	 *
+	 * @return array
+	 */
+	final protected function get_settings() {
+		return $this->settings;
 	}
 
 }

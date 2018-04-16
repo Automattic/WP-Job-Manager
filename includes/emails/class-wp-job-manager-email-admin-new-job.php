@@ -18,7 +18,7 @@ class WP_Job_Manager_Email_Admin_New_Job extends WP_Job_Manager_Email_Template {
 	 * @return string
 	 */
 	public static function get_key() {
-		return 'admin-notice-new-listing';
+		return 'admin_notice_new_listing';
 	}
 
 	/**
@@ -28,6 +28,16 @@ class WP_Job_Manager_Email_Admin_New_Job extends WP_Job_Manager_Email_Template {
 	 */
 	public static function get_name() {
 		return __( 'Admin Notice of New Listing', 'wp-job-manager' );
+	}
+
+	/**
+	 * Get the description for this email notification.
+	 *
+	 * @type abstract
+	 * @return string
+	 */
+	public static function get_description() {
+		return __( 'This notice is sent to the site administrator when a new job is submitted on the frontend.', 'wp-job-manager' );
 	}
 
 	/**

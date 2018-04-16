@@ -11,15 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.31.0
  */
 final class WP_Job_Manager_Email_Notifications {
+	const EMAIL_SETTING_PREFIX = 'job_manager_email_';
+	const EMAIL_SETTING_ENABLED = 'enabled';
+	const EMAIL_SETTING_PLAIN_TEXT = 'plain_text';
+
 	/**
 	 * @var array
 	 */
 	private static $deferred_notifications = array();
-
-	/**
-	 * @var bool
-	 */
-	private static $initialized = false;
 
 	/**
 	 * Sets up initial hooks.
@@ -32,6 +31,7 @@ final class WP_Job_Manager_Email_Notifications {
 		add_action( 'job_manager_email_job_details', array( __CLASS__, 'output_job_details'), 10, 4 );
 		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
 		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
+		add_filter( 'job_manager_settings', array( __CLASS__, 'add_email_settings' ), 1 );
 	}
 
 	/**
@@ -53,16 +53,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param array  $args
 	 */
 	public static function _schedule_notification( $notification, $args = array() ) {
-		if ( ! self::$initialized ) {
-			/**
-			 * Lazily load remaining files needed for email notifications. Do this here instead of in
-			 * `shutdown` for proper logging in case of syntax errors.
-			 *
-			 * @since 1.31.0
-			 */
-			do_action( 'job_manager_email_init' );
-			self::$initialized = true;
-		}
+		self::maybe_init();
 
 		self::$deferred_notifications[] = array( $notification, $args );
 	}
@@ -84,10 +75,26 @@ final class WP_Job_Manager_Email_Notifications {
 				continue;
 			}
 
-			$class_name = $email_notifications[ $email[0] ];
+			$email_class = $email_notifications[ $email[0] ];
+			$email_notification_key = $email[0];
 			$email_args = is_array( $email[1] ) ? $email[1] : array();
 
-			self::send_email( $email[0], new $class_name( $email_args ) );
+			self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_notification_key ) ) );
+		}
+	}
+
+	/**
+	 * Initialize if necessary.
+	 */
+	public static function maybe_init() {
+		if ( 0 === did_action( 'job_manager_email_init' ) ) {
+			/**
+			 * Lazily load remaining files needed for email notifications. Do this here instead of in
+			 * `shutdown` for proper logging in case of syntax errors.
+			 *
+			 * @since 1.31.0
+			 */
+			do_action( 'job_manager_email_init' );
 		}
 	}
 
@@ -130,6 +137,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	public static function get_email_notifications( $enabled_notifications_only = false ) {
+		self::maybe_init();
+
 		/**
 		 * Retrieves all email notifications to be sent.
 		 *
@@ -190,7 +199,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
 	 * @param bool                 $plain_text     True if the email is being sent as plain text.
 	 */
-	static public function output_job_details( $job, $email, $sent_to_admin, $plain_text = false ) {
+	public static function output_job_details( $job, $email, $sent_to_admin, $plain_text = false ) {
 		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-job-details', $plain_text ) );
 		if ( ! file_exists( $template_segment ) ) {
 			return;
@@ -209,7 +218,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param bool    $plain_text
 	 * @return array
 	 */
-	static private function get_job_detail_fields( WP_Post $job, $sent_to_admin, $plain_text = false ) {
+	private static function get_job_detail_fields( WP_Post $job, $sent_to_admin, $plain_text = false ) {
 		$fields = array();
 
 		$fields['job_title'] = array(
@@ -268,7 +277,7 @@ final class WP_Job_Manager_Email_Notifications {
 		if ( $sent_to_admin ) {
 			$author = get_user_by( 'ID', $job->post_author );
 			if ( $author instanceof WP_User ) {
-				$fields[ 'author' ] = array(
+				$fields['author'] = array(
 					'label' => __( 'Posted by', 'wp-job-manager' ),
 					'value' => $author->user_nicename,
 					'url'   => 'mailto:' . $author->user_email,
@@ -303,7 +312,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
 	 * @param bool                 $plain_text     True if the email is being sent as plain text.
 	 */
-	static public function output_header( $email, $sent_to_admin, $plain_text = false ) {
+	public static function output_header( $email, $sent_to_admin, $plain_text = false ) {
 		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-header', $plain_text ) );
 		if ( ! file_exists( $template_segment ) ) {
 			return;
@@ -318,12 +327,169 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param bool                 $sent_to_admin  True if this is being sent to an administrator.
 	 * @param bool                 $plain_text     True if the email is being sent as plain text.
 	 */
-	static public function output_footer( $email, $sent_to_admin, $plain_text = false ) {
+	public static function output_footer( $email, $sent_to_admin, $plain_text = false ) {
 		$template_segment = locate_job_manager_template( self::get_template_file_name( 'email-footer', $plain_text ) );
 		if ( ! file_exists( $template_segment ) ) {
 			return;
 		}
 		include $template_segment;
+	}
+
+	/**
+	 * Add email notification settings.
+	 *
+	 * @param array $settings
+	 * @return array
+	 */
+	public static function add_email_settings( $settings ) {
+		$email_notifications = self::get_email_notifications( false );
+		$email_settings = array();
+
+		foreach ( $email_notifications as $email_notification_key => $email_class ) {
+			$email_settings[] = array(
+				'type'           => 'multi_enable_expand',
+				'class'          => 'email-setting-row no-separator',
+				'name'           => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
+				'enable_field'   => array(
+					'name'     => self::EMAIL_SETTING_ENABLED,
+					'cb_label' => call_user_func( array( $email_class, 'get_name' ) ),
+					'desc'     => call_user_func( array( $email_class, 'get_description' ) ),
+				),
+				'label'        => false,
+				'std'          => self::get_email_setting_defaults( $email_notification_key ),
+				'settings'     => self::get_email_setting_fields( $email_notification_key ),
+			);
+		}
+
+		$settings['email_notifications'] = array(
+			__( 'Email Notifications', 'wp-job-manager' ),
+			$email_settings,
+			array(
+				'before' => __( 'Select the email notifications to enable.', 'wp-job-manager' ),
+			),
+		);
+
+		return $settings;
+	}
+
+	/**
+	 * Checks if a particular notification is enabled or not.
+	 *
+	 * @param string $email_notification_key
+	 * @return bool
+	 */
+	public static function is_email_notification_enabled( $email_notification_key ) {
+		$settings = self::get_email_settings( $email_notification_key );
+
+		$is_email_notification_enabled = ! empty( $settings[ self::EMAIL_SETTING_ENABLED ] );
+
+		/**
+		 * Filter whether an notification email is enabled.
+		 *
+		 * @since 1.31.0
+		 *
+		 * @param bool   $is_email_notification_enabled
+		 * @param string $email_notification_key
+		 */
+		return apply_filters( 'job_manager_email_is_email_notification_enabled', $is_email_notification_enabled, $email_notification_key );
+	}
+
+	/**
+	 * Checks if we should send emails using plain text.
+	 *
+	 * @param string $email_notification_key
+	 * @return bool
+	 */
+	public static function send_as_plain_text( $email_notification_key ) {
+		$settings = self::get_email_settings( $email_notification_key );
+
+		$send_as_plain_text = ! empty( $settings[ self::EMAIL_SETTING_PLAIN_TEXT ] );
+
+		/**
+		 * Filter whether to send emails as plain text.
+		 *
+		 * @since 1.31.0
+		 *
+		 * @param bool   $send_as_plain_text
+		 * @param string $email_notification_key
+		 */
+		return apply_filters( 'job_manager_email_send_as_plain_text', $send_as_plain_text, $email_notification_key );
+	}
+
+	/**
+	 * Get the setting fields for an email.
+	 *
+	 * @param string $email_notification_key
+	 * @return array
+	 */
+	private static function get_email_setting_fields( $email_notification_key ) {
+		$email_class = self::get_email_class( $email_notification_key );
+		$core_settings = array(
+			array(
+				'name'    => 'plain_text',
+				'std'     => '0',
+				'label'   => __( 'Format', 'wp-job-manager' ),
+				'type'    => 'radio',
+				'options' => array(
+					'1' => __( 'Send plain text email', 'wp-job-manager' ),
+					'0' => __( 'Send rich text email', 'wp-job-manager' ),
+				),
+			),
+		);
+		$email_settings = call_user_func( array( $email_class, 'get_setting_fields' ) );
+		return array_merge( $core_settings, $email_settings );
+	}
+
+	/**
+	 * Get the settings for the email.
+	 *
+	 * @param string $email_notification_key
+	 * @return array
+	 */
+	private static function get_email_settings( $email_notification_key ) {
+		$option_name = self::EMAIL_SETTING_PREFIX . $email_notification_key;
+		$option_value = get_option( $option_name );
+		if ( empty( $option_value ) || ! is_array( $option_value ) ) {
+			$option_value = array();
+		}
+		$default_settings = self::get_email_setting_defaults( $email_notification_key );
+
+		return array_merge( $default_settings, $option_value );
+	}
+
+	/**
+	 * Gets the default values for the email notification.
+	 *
+	 * @param string $email_notification_key
+	 * @return array
+	 */
+	private static function get_email_setting_defaults( $email_notification_key ) {
+		$settings = self::get_email_setting_fields( $email_notification_key );
+		$email_class = self::get_email_class( $email_notification_key );
+
+		$defaults = array();
+		$defaults[ self::EMAIL_SETTING_ENABLED ] = call_user_func( array( $email_class, 'is_default_enabled' ) ) ? '1' : '0';
+
+		foreach ( $settings as $setting ) {
+			$defaults[ $setting['name'] ] = null;
+			if ( isset( $setting['std'] ) ) {
+				$defaults[ $setting['name'] ] = $setting['std'];
+			}
+		}
+
+		return $defaults;
+	}
+
+	/**
+	 * Get the email class from the unique key.
+	 *
+	 * @param string $email_notification_key
+	 * @return bool|string
+	 */
+	private static function get_email_class( $email_notification_key ) {
+		$email_notifications = self::get_email_notifications( false );
+
+		return isset( $email_notifications[ $email_notification_key ] ) ? $email_notifications[ $email_notification_key ] : false;
 	}
 
 	/**
@@ -507,43 +673,4 @@ final class WP_Job_Manager_Email_Notifications {
 		return ob_get_clean();
 	}
 
-	/**
-	 * Checks if a particular notification is enabled or not.
-	 *
-	 * @access private
-	 *
-	 * @param string $email_notification_key
-	 * @return bool
-	 */
-	private static function is_email_notification_enabled( $email_notification_key ) {
-		/**
-		 * Filter whether to send a notification email.
-		 *
-		 * @since 1.31.0
-		 *
-		 * @param bool   $send_notification
-		 * @param string $email_notification_key
-		 */
-		return apply_filters( 'job_manager_email_is_email_notification_enabled', true, $email_notification_key );
-	}
-
-	/**
-	 * Checks if we should send emails using plain text.
-	 *
-	 * @access private
-	 *
-	 * @param string $email_notification_key
-	 * @return bool
-	 */
-	private static function send_as_plain_text( $email_notification_key ) {
-		/**
-		 * Filter whether to send emails as plain text.
-		 *
-		 * @since 1.31.0
-		 *
-		 * @param bool   $send_as_plain_text
-		 * @param string $email_notification_key
-		 */
-		return apply_filters( 'job_manager_email_send_as_plain_text', false, $email_notification_key );
-	}
 }
