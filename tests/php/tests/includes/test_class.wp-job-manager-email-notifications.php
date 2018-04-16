@@ -245,7 +245,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 			$email_settings           = call_user_func( array( $email_class, 'get_setting_fields' ) );
 			$email_is_default_enabled = call_user_func( array( $email_class, 'is_default_enabled' ) );
 			$defaults = array(
-				'enabled'    => $email_is_default_enabled,
+				'enabled'    => $email_is_default_enabled ? '1' : '0',
 				'plain_text' => '0',
 			);
 			foreach ( $email_settings as $email_setting ) {
