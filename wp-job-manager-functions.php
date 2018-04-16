@@ -683,6 +683,13 @@ function job_manager_job_can_be_relisted( $job ) {
 		return false;
 	}
 
+	/**
+	 * Number of days before a job expires to allow relisting it.
+	 *
+	 * @since 1.31.0
+	 *
+	 * @param int $expiring_soon_days The default number of days.
+	 */
 	$expiring_soon_days = apply_filters( 'job_manager_expiring_soon_days', 5 );
 
 	return 'publish' === $status && $expiry - current_time( 'timestamp' ) < $expiring_soon_days * DAY_IN_SECONDS;
