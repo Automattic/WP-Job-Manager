@@ -137,6 +137,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	public static function get_email_notifications( $enabled_notifications_only = false ) {
+		self::maybe_init();
+
 		/**
 		 * Retrieves all email notifications to be sent.
 		 *
@@ -275,7 +277,7 @@ final class WP_Job_Manager_Email_Notifications {
 		if ( $sent_to_admin ) {
 			$author = get_user_by( 'ID', $job->post_author );
 			if ( $author instanceof WP_User ) {
-				$fields[ 'author' ] = array(
+				$fields['author'] = array(
 					'label' => __( 'Posted by', 'wp-job-manager' ),
 					'value' => $author->user_nicename,
 					'url'   => 'mailto:' . $author->user_email,
@@ -340,8 +342,6 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	public static function add_email_settings( $settings ) {
-		self::maybe_init();
-
 		$email_notifications = self::get_email_notifications( false );
 		$email_settings = array();
 
