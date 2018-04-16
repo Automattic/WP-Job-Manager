@@ -72,6 +72,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 												break;
 											}
 
+											// Add relist action if the job is going to expire soon.
+											$expiry = strtotime( wpjm_get_job_listing_structured_data( $job )['validThrough'] );
+											$early_relisting_period_days =
+												apply_filters( 'job_manager_early_relisting_period_days', 5 );
+											if ( ! isset( $actions['relist'] ) && $expiry - current_time( 'timestamp' ) < $early_relisting_period_days * DAY_IN_SECONDS ) {
+												$actions['relist'] = array( 'label' => __( 'Relist', 'wp-job-manager' ), 'nonce' => true );
+											}
+
 											$actions['delete'] = array( 'label' => __( 'Delete', 'wp-job-manager' ), 'nonce' => true );
 											$actions           = apply_filters( 'job_manager_my_job_actions', $actions, $job );
 
