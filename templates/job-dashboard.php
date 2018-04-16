@@ -73,7 +73,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 											}
 
 											// Add relist action if the job is going to expire soon.
-											if ( ! isset( $actions['relist'] ) && job_manager_job_expiring_soon( $job ) ) {
+											if ( ! isset( $actions['relist'] ) && job_manager_job_can_be_relisted( $job ) ) {
 												$actions['relist'] = array( 'label' => __( 'Relist', 'wp-job-manager' ), 'nonce' => true );
 											}
 

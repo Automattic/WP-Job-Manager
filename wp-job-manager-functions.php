@@ -666,18 +666,19 @@ function job_manager_user_can_edit_job( $job_id ) {
 }
 
 /**
- * Checks if the job is expiring soon. By default this is true if the job
- * expires within 5 days.
+ * Checks if the job can be relisted. By default this is true if the job
+ * is public and expires within 5 days.
  *
  * @since 1.31.0
  * @param int|WP_Post $job_id
  * @return bool
  */
-function job_manager_job_expiring_soon( $job ) {
-	$expiry             = strtotime( wpjm_get_job_listing_structured_data( $job )['validThrough'] );
+function job_manager_job_can_be_relisted( $job ) {
+	$status             = get_post_status( $job );
+	$expiry             = strtotime( get_post_meta( $job, '_job_expires', true ) );
 	$expiring_soon_days = apply_filters( 'job_manager_expiring_soon_days', 5 );
 
-	return $expiry - current_time( 'timestamp' ) < $expiring_soon_days * DAY_IN_SECONDS;
+	return 'publish' === $status && $expiry - current_time( 'timestamp' ) < $expiring_soon_days * DAY_IN_SECONDS;
 }
 
 /**

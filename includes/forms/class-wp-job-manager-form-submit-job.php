@@ -112,7 +112,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Load job details
 		if ( $this->job_id ) {
 			$job_status = get_post_status( $this->job_id );
-			if ( 'expired' === $job_status || 'publish' === $job_status && job_manager_job_expiring_soon( $this->job_id ) ) {
+			if ( 'expired' === $job_status || job_manager_job_can_be_relisted( $this->job_id ) ) {
 				if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
 					$this->job_id = 0;
 					$this->step   = 0;
