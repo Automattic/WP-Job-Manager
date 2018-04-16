@@ -215,6 +215,59 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @covers WP_Job_Manager_Email_Notifications::add_email_settings()
+	 * @covers WP_Job_Manager_Email_Notifications::get_email_setting_fields()
+	 * @covers WP_Job_Manager_Email_Notifications::get_email_setting_defaults()
+	 */
+	public function test_add_email_settings() {
+
+		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+		$emails   = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
+		$settings = WP_Job_Manager_Email_Notifications::add_email_settings( array() );
+		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
+
+		$this->assertArrayHasKey( 'email_notifications', $settings );
+		$email_notifications_settings = $settings['email_notifications'];
+
+		$this->assertTrue( isset( $email_notifications_settings[0] ) );
+		$this->assertInternalType( 'string', $email_notifications_settings[0] );
+		$this->assertTrue( isset( $email_notifications_settings[1] ) );
+		$this->assertInternalType( 'array', $email_notifications_settings[1] );
+
+		$settings      = $email_notifications_settings[1];
+		$email_keys    = array_keys( $emails );
+		$email_classes = array_values( $emails );
+		$this->assertEquals( count( $emails ), count( $settings ) );
+
+		foreach ( $settings as $key => $setting ) {
+			$email_class              = $email_classes[ $key ];
+			$email_key                = $email_keys[ $key ];
+			$email_settings           = call_user_func( array( $email_class, 'get_setting_fields' ) );
+			$email_is_default_enabled = call_user_func( array( $email_class, 'is_default_enabled' ) );
+			$defaults = array(
+				'enabled'    => $email_is_default_enabled,
+				'plain_text' => '0',
+			);
+			foreach ( $email_settings as $email_setting ) {
+				$defaults[ $email_setting['name'] ] = $email_setting['std'];
+			}
+
+			$this->assertArrayHasKey( 'type', $setting );
+			$this->assertEquals( 'mutli_enable_expand', $setting['type'] );
+			$this->assertArrayHasKey( 'class', $setting );
+			$this->assertArrayHasKey( 'name', $setting );
+			$this->assertEquals( WP_Job_Manager_Email_Notifications::EMAIL_SETTING_PREFIX . $email_key, $setting['name'] );
+			$this->assertArrayHasKey( 'enable_field', $setting );
+			$this->assertInternalType( 'array', $setting['enable_field'] );
+			$this->assertArrayHasKey( 'label', $setting );
+			$this->assertArrayHasKey( 'std', $setting );
+			$this->assertEquals( $setting['std'], $defaults );
+			$this->assertArrayHasKey( 'settings', $setting );
+			$this->assertEquals( count( $setting['settings'] ), count( $email_settings ) + 1 );
+		}
+	}
+
+	/**
 	 * Helper Methods
 	 */
 	public function inject_email_config_invalid_class_unknown( $emails ) {
