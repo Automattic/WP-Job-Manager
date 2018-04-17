@@ -41,12 +41,13 @@ class WP_Test_WP_Job_Manager_Cache_Walker extends WPJM_BaseTest {
 	private function get_terms() {
 		$terms = $this->setup_terms();
 		$args                 = array();
+		$args['taxonomy']     = WP_UnitTest_Factory_For_Term::DEFAULT_TAXONOMY;
 		$args['pad_counts']   = 1;
 		$args['hierarchical'] = 1;
 		$args['hide_empty']   = 0;
 		$args['show_count']   = 1;
 		$args['selected']     = array_pop( $terms );
 		$args['menu_order']   = false;
-		return get_terms( WP_UnitTest_Factory_For_Term::DEFAULT_TAXONOMY, $args );
+		return get_terms( $args );
 	}
 }
