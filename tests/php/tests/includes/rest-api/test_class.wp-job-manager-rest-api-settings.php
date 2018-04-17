@@ -11,7 +11,7 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 		$this->login_as( $this->default_user_id );
 		$response = $this->get( '/wpjm/v1/settings' );
 
-		$this->assertResponseStatus( $response, WPJM_REST_TestCase::$unauthorized_response_code );
+		$this->assertResponseStatus( $response, 401 );
 	}
 
 	/**

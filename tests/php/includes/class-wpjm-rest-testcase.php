@@ -24,22 +24,9 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 */
 	protected $default_user_id;
 
-	/**
-	 * Unauthenticated response code.
-	 *
-	 * @var int
-	 */
-	public static $unauthorized_response_code = 401;
-
 	public static function setUpBeforeClass() {
 		/** @var WP_REST_Server $wp_rest_server */
-		global $wp_rest_server, $wp_version;
-
-		// We have a logged in user so post-4.9.1 versions of WordPress will correctly return 401.
-		// See https://core.trac.wordpress.org/changeset/42421
-		if ( version_compare( $wp_version, '4.9.1', '<=' ) ) {
-			self::$unauthorized_response_code = 403;
-		}
+		global $wp_rest_server;
 
 		if ( ! isset( $wp_rest_server ) ) {
 			$wp_rest_server = new WP_REST_Server();
@@ -83,8 +70,16 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 */
 	function setUp() {
 		/** @var WP_REST_Server $wp_rest_server */
-		global $wp_rest_server;
+		global $wp_rest_server, $wp_version;
 		parent::setUp();
+
+		// We have a logged in user so post-4.9.1 versions of WordPress will correctly return 401.
+		// See https://core.trac.wordpress.org/changeset/42421
+		if ( version_compare( $wp_version, '4.9.1', '<=' ) ) {
+			$this->markTestSkipped( 'Older versions of WordPress have REST API authorization issues.' );
+			return;
+		}
+
 		$this->disable_manage_job_listings_cap();
 
 		// Ensure the role gets created.

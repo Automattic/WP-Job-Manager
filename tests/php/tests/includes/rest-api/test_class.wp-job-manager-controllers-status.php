@@ -7,13 +7,13 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 	function test_get_fail_when_guest() {
 		$this->logout();
 		$response = $this->get( '/wpjm/v1/status' );
-		$this->assertResponseStatus( $response, WPJM_REST_TestCase::$unauthorized_response_code );
+		$this->assertResponseStatus( $response, 401 );
 	}
 
 	function test_post_fail_when_guest() {
 		$this->logout();
 		$response = $this->post( '/wpjm/v1/status/run_page_setup', 'true' );
-		$this->assertResponseStatus( $response, WPJM_REST_TestCase::$unauthorized_response_code );
+		$this->assertResponseStatus( $response, 401 );
 	}
 
 	function test_put_fail_when_guest() {
@@ -21,13 +21,13 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 		$response = $this->put( '/wpjm/v1/status/run_page_setup', array(
 			'value' => true,
 		) );
-		$this->assertResponseStatus( $response, WPJM_REST_TestCase::$unauthorized_response_code );
+		$this->assertResponseStatus( $response, 401 );
 	}
 
 	function test_get_fail_when_user_not_admin() {
 		$this->login_as( $this->default_user_id );
 		$response = $this->get( '/wpjm/v1/status' );
-		$this->assertResponseStatus( $response, WPJM_REST_TestCase::$unauthorized_response_code );
+		$this->assertResponseStatus( $response, 401 );
 	}
 
 	function test_get_succeed_when_user_admin() {
@@ -115,7 +115,7 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 		// We have a logged in user so post-4.9.1 versions of WordPress will correctly return 401.
 		// See https://core.trac.wordpress.org/changeset/42421
 		if ( version_compare( $wp_version, '4.9.1', '>' ) ) {
-			$this->assertResponseStatus( $response, WPJM_REST_TestCase::$unauthorized_response_code );
+			$this->assertResponseStatus( $response, 401 );
 		} else {
 			$this->assertResponseStatus( $response, 403 );
 		}

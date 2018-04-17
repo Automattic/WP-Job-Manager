@@ -47,7 +47,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$first_listing['fields']['_application'] = 'foo@example.com';
 
 		$response = $this->put( '/wp/v2/job-listings/' . $first_listing['id'], $first_listing );
-		$this->assertResponseStatus( $response, WPJM_REST_TestCase::$unauthorized_response_code );
+		$this->assertResponseStatus( $response, 401 );
 	}
 
 	function test_update_update_fields_success() {

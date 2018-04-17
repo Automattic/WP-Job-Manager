@@ -15,7 +15,7 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 		$response = $this->post( '/wp/v2/job-categories', array(
 			'name' => 'REST Test' . microtime( true ),
 		) );
-		$this->assertResponseStatus( $response, WPJM_REST_TestCase::$unauthorized_response_code );
+		$this->assertResponseStatus( $response, 401 );
 	}
 
 	function test_post_success_when_admin() {
