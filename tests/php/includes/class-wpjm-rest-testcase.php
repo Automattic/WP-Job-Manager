@@ -71,6 +71,12 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
 		parent::setUp();
+
+		// Ensure the role gets created.
+		WP_Job_Manager_Install::install();
+		wp_roles()->init_roles();
+		wp_cache_flush();
+
 		$admin = get_user_by( 'email', 'rest_api_admin_user@test.com' );
 		if ( false === $admin ){
 			$this->admin_id = wp_create_user(
