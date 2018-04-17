@@ -71,6 +71,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
 		parent::setUp();
+		$this->disable_manage_job_listings_cap();
 
 		// Ensure the role gets created.
 		WP_Job_Manager_Install::install();
@@ -105,7 +106,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	}
 
 	function logout() {
-		$this->login_as( null );
+		$this->login_as( 0 );
 		wp_logout();
 		return $this;
 	}
