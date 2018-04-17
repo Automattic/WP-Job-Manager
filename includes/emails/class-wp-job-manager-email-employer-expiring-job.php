@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Email notification to employers when a job is updated.
+ * Email notification to employers when a job is expiring.
  *
  * @package wp-job-manager
  * @since 1.31.0
@@ -97,18 +97,9 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 	 * @return mixed
 	 */
 	protected function prepare_args( $args ) {
-		if ( isset( $args['job_id'] ) ) {
-			$job = get_post( $args['job_id'] );
-			if ( $job instanceof WP_Post ) {
-				$args['job'] = $job;
-			}
-		}
-		if ( isset( $args['job'] ) ) {
-			$author = get_user_by( 'ID', $job->post_author );
-			if ( $author instanceof WP_User ) {
-				$args['author'] = $author;
-			}
+		$args = parent::prepare_args( $args );
 
+		if ( isset( $args['job'] ) ) {
 			$args['expiring_today'] = false;
 			$today         = date( 'Y-m-d', current_time( 'timestamp' ) );
 			$expiring_date = date( 'Y-m-d', strtotime( $args['job']->_job_expires ) );
@@ -116,7 +107,8 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 				$args['expiring_today'] = true;
 			}
 		}
-		return parent::prepare_args( $args );
+
+		return $args;
 	}
 
 	/**
@@ -154,10 +146,10 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 	public function is_valid() {
 		$args = $this->get_args();
 		return isset( $args['job'] )
-			   && $args['job'] instanceof WP_Post
-			   && isset( $args['author'] )
-			   && $args['author'] instanceof WP_User
-			   && ! empty( $args['author']->user_email );
+					&& $args['job'] instanceof WP_Post
+					&& isset( $args['author'] )
+					&& $args['author'] instanceof WP_User
+					&& ! empty( $args['author']->user_email );
 	}
 
 }
