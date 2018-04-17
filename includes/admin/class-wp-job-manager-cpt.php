@@ -282,13 +282,14 @@ class WP_Job_Manager_CPT {
 	    include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php' );
 
 		$r                 = array();
+		$r['taxonomy']     = 'job_listing_category';
 		$r['pad_counts']   = 1;
 		$r['hierarchical'] = 1;
 		$r['hide_empty']   = 0;
 		$r['show_count']   = 1;
 		$r['selected']     = ( isset( $wp_query->query['job_listing_category'] ) ) ? $wp_query->query['job_listing_category'] : '';
 		$r['menu_order']   = false;
-		$terms             = get_terms( 'job_listing_category', $r );
+		$terms             = get_terms( $r );
 		$walker            = new WP_Job_Manager_Category_Walker;
 
 		if ( ! $terms ) {

@@ -382,11 +382,25 @@ function get_job_listing_categories() {
 		return array();
 	}
 
-	return get_terms( "job_listing_category", array(
+	$args = array(
 		'orderby'       => 'name',
-	    'order'         => 'ASC',
-	    'hide_empty'    => false,
-	) );
+		'order'         => 'ASC',
+		'hide_empty'    => false,
+	);
+
+	/**
+	 * Change the category query arguments.
+	 *
+	 * @since 1.31.0
+	 *
+	 * @param array $args
+	 */
+	$args = apply_filters( 'get_job_listing_category_args', $args );
+
+	// Prevent users from filtering the taxonomy
+	$args['taxonomy'] = 'job_listing_category';
+
+	return get_terms( $args );
 }
 endif;
 
@@ -1046,14 +1060,15 @@ function job_manager_dropdown_categories( $args = '' ) {
 	$categories      = get_transient( $categories_hash );
 
 	if ( empty( $categories ) ) {
-		$categories = get_terms( $taxonomy, array(
+		$categories = get_terms( array(
+			'taxonomy'        => $r['taxonomy'],
 			'orderby'         => $r['orderby'],
 			'order'           => $r['order'],
 			'hide_empty'      => $r['hide_empty'],
 			'parent'          => $r['parent'],
 			'child_of'        => $r['child_of'],
 			'exclude'         => $r['exclude'],
-			'hierarchical'    => $r['hierarchical']
+			'hierarchical'    => $r['hierarchical'],
 		) );
 		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 7 );
 	}

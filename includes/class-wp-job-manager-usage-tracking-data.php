@@ -102,7 +102,8 @@ class WP_Job_Manager_Usage_Tracking_Data {
 
 		$count = 0;
 		$terms = get_terms(
-			'job_listing_category', array(
+			array(
+				'taxonomy'   => 'job_listing_category',
 				'hide_empty' => false,
 			)
 		);
@@ -128,7 +129,8 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_job_type_has_description_count() {
 		$count = 0;
 		$terms = get_terms(
-			'job_listing_type', array(
+			array(
+				'taxonomy'   => 'job_listing_type',
 				'hide_empty' => false,
 			)
 		);
