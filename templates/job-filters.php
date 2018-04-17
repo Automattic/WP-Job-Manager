@@ -40,7 +40,7 @@ do_action( 'job_manager_job_filters_before', $atts );
 			<?php foreach ( $categories as $category ) : ?>
 				<input type="hidden" name="search_categories[]" value="<?php echo sanitize_title( $category ); ?>" />
 			<?php endforeach; ?>
-		<?php elseif ( $show_categories && ! is_tax( 'job_listing_category' ) && get_terms( 'job_listing_category' ) ) : ?>
+		<?php elseif ( $show_categories && ! is_tax( 'job_listing_category' ) && get_terms( array( 'taxonomy' => 'job_listing_category' ) ) ) : ?>
 			<div class="search_categories">
 				<label for="search_categories"><?php _e( 'Category', 'wp-job-manager' ); ?></label>
 				<?php if ( $show_category_multiselect ) : ?>
