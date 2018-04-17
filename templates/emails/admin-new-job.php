@@ -2,7 +2,7 @@
 /**
  * Email content when notifying admin of a new job listing.
  *
- * This template can be overridden by copying it to yourtheme/job_manager/emails/admin-notice-new-listing.php.
+ * This template can be overridden by copying it to yourtheme/job_manager/emails/admin-new-job.php.
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
@@ -14,20 +14,24 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
 /**
  * @var WP_Post $job
  */
 $job = $args['job'];
-
-printf( __( 'A new job listing has been submitted to %s (%s).', 'wp-job-manager' ), get_bloginfo( 'name' ), home_url() );
-switch ( $job->post_status ) {
-	case 'publish':
-		printf( ' ' . __( 'It has been published and is now available to the public.', 'wp-job-manager' ) );
-		break;
-	case 'pending':
-		printf( ' ' . __( 'It is awaiting approval by an administrator in WordPress admin (%s).', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
-		break;
-}
+?>
+	<p><?php
+		printf( __( 'A new job listing has been submitted to <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
+		switch ( $job->post_status ) {
+			case 'publish':
+				printf( ' ' . __( 'It has been published and is now available to the public.', 'wp-job-manager' ) );
+				break;
+			case 'pending':
+				printf( ' ' . __( 'It is awaiting approval by an administrator in <a href="%s">WordPress admin</a>.', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
+				break;
+		}
+		?></p>
+<?php
 
 /**
  * Show details about the job listing.
