@@ -14,6 +14,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
 /**
  * @var WP_Post $job
  */
