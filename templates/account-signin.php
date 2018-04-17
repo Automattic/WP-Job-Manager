@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <?php if ( is_user_logged_in() ) : ?>
 
-	<fieldset>
+	<fieldset class="fieldset-logged_in">
 		<label><?php _e( 'Your account', 'wp-job-manager' ); ?></label>
 		<div class="field account-sign-in">
 			<?php
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	$registration_fields         = wpjm_get_registration_fields();
 	$use_standard_password_email = wpjm_use_standard_password_setup_email();
 	?>
-	<fieldset>
+	<fieldset class="fieldset-login_required">
 		<label><?php _e( 'Have an account?', 'wp-job-manager' ); ?></label>
 		<div class="field account-sign-in">
 			<a class="button" href="<?php echo apply_filters( 'submit_job_form_login_url', wp_login_url( get_permalink() ) ); ?>"><?php _e( 'Sign in', 'wp-job-manager' ); ?></a>
