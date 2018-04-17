@@ -32,6 +32,7 @@ final class WP_Job_Manager_Email_Notifications {
 		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
 		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
 		add_action( 'job_manager_email_daily_notices', array( __CLASS__, 'send_employer_expiring_notice' ) );
+		add_action( 'job_manager_email_daily_notices', array( __CLASS__, 'send_admin_expiring_notice' ) );
 		add_filter( 'job_manager_settings', array( __CLASS__, 'add_email_settings' ), 1 );
 	}
 
@@ -44,6 +45,7 @@ final class WP_Job_Manager_Email_Notifications {
 		return array(
 			'WP_Job_Manager_Email_Admin_New_Job',
 			'WP_Job_Manager_Email_Admin_Updated_Job',
+			'WP_Job_Manager_Email_Admin_Expiring_Job',
 			'WP_Job_Manager_Email_Employer_Expiring_Job',
 		);
 	}
@@ -113,6 +115,7 @@ final class WP_Job_Manager_Email_Notifications {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-updated-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-employer-expiring-job.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-expiring-job.php';
 
 		if ( ! class_exists( 'Emogrifier' ) && class_exists( 'DOMDocument' ) ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/lib/emogrifier/class-emogrifier.php';
@@ -440,6 +443,21 @@ final class WP_Job_Manager_Email_Notifications {
 		}
 		$settings    = self::get_email_settings( $email_key );
 		$days_notice = WP_Job_Manager_Email_Employer_Expiring_Job::get_notice_period( $settings );
+		self::send_expiring_notice( $email_key, $days_notice );
+	}
+
+	/**
+	 * Sending notices to the site administrator for expiring job listings.
+	 */
+	public static function send_admin_expiring_notice() {
+		self::maybe_init();
+
+		$email_key   = WP_Job_Manager_Email_Admin_Expiring_Job::get_key();
+		if ( ! self::is_email_notification_enabled( $email_key ) ) {
+			return;
+		}
+		$settings    = self::get_email_settings( $email_key );
+		$days_notice = WP_Job_Manager_Email_Admin_Expiring_Job::get_notice_period( $settings );
 		self::send_expiring_notice( $email_key, $days_notice );
 	}
 
