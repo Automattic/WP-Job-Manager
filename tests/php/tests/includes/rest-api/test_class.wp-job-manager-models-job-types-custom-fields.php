@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @group rest
+ */
 class WP_Test_WP_Job_Manager_Models_Job_Types_Custom_Fields extends WPJM_REST_TestCase {
 
     /**

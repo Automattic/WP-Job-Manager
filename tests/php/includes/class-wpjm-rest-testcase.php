@@ -98,6 +98,12 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		return $this;
 	}
 
+	function logout() {
+		$this->login_as( null );
+		wp_logout();
+		return $this;
+	}
+
 	/**
 	 * Expect a clas Exists.
 	 *

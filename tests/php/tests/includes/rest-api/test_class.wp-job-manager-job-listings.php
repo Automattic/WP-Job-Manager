@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @group rest
+ */
 class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
 	/**
@@ -52,9 +54,6 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 403 );
 	}
 
-	/**
-	 * @group rest
-	 */
 	function test_update_update_fields_success() {
 		$this->markTestSkipped( 'Skip for now, need to figure out why this does not pass while working on the frontend' );
 		$user_id = $this->factory->user->create( array(

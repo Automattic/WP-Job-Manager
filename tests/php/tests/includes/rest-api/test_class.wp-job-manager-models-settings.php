@@ -1,17 +1,13 @@
 <?php
-
+/**
+ * @group rest
+ */
 class WP_Test_WP_Job_Manager_Models_Settings extends WPJM_REST_TestCase {
 
-	/**
-	 * @group rest
-	 */
 	function test_exists() {
 		$this->assertClassExists( 'WP_Job_Manager_Models_Settings' );
 	}
 
-	/**
-	 * @group rest
-	 */
 	function test_validate_fail_when_invalid_page_id_settings() {
 		$setting_definition = $this->environment()->model( 'WP_Job_Manager_Models_Settings' );
 		$settings = $setting_definition->get_data_store()->get_entity( null );
@@ -31,9 +27,6 @@ class WP_Test_WP_Job_Manager_Models_Settings extends WPJM_REST_TestCase {
 		}
 	}
 
-	/**
-	 * @group rest
-	 */
 	function test_dto_name_for_field_does_not_remove_job_manager_prefix() {
 		$setting_definition = $this->environment()->model( 'WP_Job_Manager_Models_Settings' );
 		$settings = $setting_definition->get_data_store()->get_entity( null );
