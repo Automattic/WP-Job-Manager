@@ -1,0 +1,1531 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: WP Job Manager
+basePath: /wp-json
+schemes:
+  - http
+consumes:
+  - multipart/form-data
+produces:
+  - application/json
+paths:
+  /wp/v2/job-listings:
+    get:
+      parameters:
+        - name: context
+          type: string
+          in: query
+          description: Scope under which the request is made; determines fields present in response.
+          default: view
+          enum:
+            - view
+            - embed
+            - edit
+        - name: page
+          type: integer
+          in: query
+          description: Current page of the collection.
+          default: 1
+          minimum: 1
+          format: number
+        - name: per_page
+          type: integer
+          in: query
+          description: Maximum number of items to be returned in result set.
+          default: 10
+          minimum: 1
+          format: number
+          maximum: 100
+        - name: search
+          type: string
+          in: query
+          description: Limit results to those matching a string.
+        - name: after
+          type: string
+          in: query
+          description: Limit response to posts published after a given ISO8601 compliant date.
+          format: date-time
+        - name: before
+          type: string
+          in: query
+          description: Limit response to posts published before a given ISO8601 compliant date.
+          format: date-time
+        - name: exclude
+          type: array
+          in: query
+          description: Ensure result set excludes specific IDs.
+          items:
+            type: string
+        - name: include
+          type: array
+          in: query
+          description: Limit result set to specific IDs.
+          items:
+            type: string
+        - name: offset
+          type: integer
+          in: query
+          description: Offset the result set by a specific number of items.
+        - name: order
+          type: string
+          in: query
+          description: Order sort attribute ascending or descending.
+          default: desc
+          enum:
+            - asc
+            - desc
+        - name: orderby
+          type: string
+          in: query
+          description: Sort collection by object attribute.
+          default: date
+          enum:
+            - author
+            - date
+            - id
+            - include
+            - modified
+            - parent
+            - relevance
+            - slug
+            - include_slugs
+            - title
+        - name: slug
+          type: array
+          in: query
+          description: Limit result set to posts with one or more specific slugs.
+          items:
+            type: string
+        - name: status
+          type: array
+          in: query
+          description: Limit result set to posts assigned one or more statuses.
+          default: publish
+          items:
+            type: string
+        - name: job-categories
+          type: array
+          in: query
+          description: Limit result set to all items that have the specified term assigned in the job-categories taxonomy.
+          items:
+            type: string
+        - name: job-categories_exclude
+          type: array
+          in: query
+          description: Limit result set to all items except those that have the specified term assigned in the job-categories taxonomy.
+          items:
+            type: string
+        - name: job-types
+          type: array
+          in: query
+          description: Limit result set to all items that have the specified term assigned in the job-types taxonomy.
+          items:
+            type: string
+        - name: job-types_exclude
+          type: array
+          in: query
+          description: Limit result set to all items except those that have the specified term assigned in the job-types taxonomy.
+          items:
+            type: string
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/job_listing'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: GetWpV2Job-listings
+    post:
+      parameters:
+        - name: date
+          type: string
+          in: formData
+          description: 'The date the object was published, in the site''s timezone.'
+          format: date-time
+        - name: date_gmt
+          type: string
+          in: formData
+          description: 'The date the object was published, as GMT.'
+          format: date-time
+        - name: slug
+          type: string
+          in: formData
+          description: An alphanumeric identifier for the object unique to its type.
+        - name: status
+          type: string
+          in: formData
+          description: A named status for the object.
+          enum:
+            - publish
+            - future
+            - draft
+            - pending
+            - private
+            - expired
+            - preview
+            - new
+            - interviewed
+            - offer
+            - hired
+            - rejected
+            - archived
+        - name: password
+          type: string
+          in: formData
+          description: A password to protect access to the content and excerpt.
+        - name: title
+          type: string
+          in: formData
+          description: The title for the object.
+        - name: content
+          type: string
+          in: formData
+          description: The content for the object.
+        - name: featured_media
+          type: integer
+          in: formData
+          description: The ID of the featured media for the object.
+        - name: meta
+          type: string
+          in: formData
+          description: Meta fields.
+        - name: template
+          type: string
+          in: formData
+          description: The theme file to use to display the object.
+        - name: job-categories
+          type: array
+          in: formData
+          description: The terms assigned to the object in the job_listing_category taxonomy.
+          items:
+            type: string
+        - name: job-types
+          type: array
+          in: formData
+          description: The terms assigned to the object in the job_listing_type taxonomy.
+          items:
+            type: string
+        - name: fields
+          type: string
+          in: formData
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing'
+        '201':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: PostWpV2Job-listings
+  '/wp/v2/job-listings/{id}':
+    get:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: query
+          description: Unique identifier for the object.
+        - name: context
+          type: string
+          in: query
+          description: Scope under which the request is made; determines fields present in response.
+          default: view
+          enum:
+            - view
+            - embed
+            - edit
+        - name: password
+          type: string
+          in: query
+          description: The password for the post if it is password protected.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: GetWpV2Job-listingsById
+    post:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: formData
+          description: Unique identifier for the object.
+        - name: date
+          type: string
+          in: formData
+          description: 'The date the object was published, in the site''s timezone.'
+          format: date-time
+        - name: date_gmt
+          type: string
+          in: formData
+          description: 'The date the object was published, as GMT.'
+          format: date-time
+        - name: slug
+          type: string
+          in: formData
+          description: An alphanumeric identifier for the object unique to its type.
+        - name: status
+          type: string
+          in: formData
+          description: A named status for the object.
+          enum:
+            - publish
+            - future
+            - draft
+            - pending
+            - private
+            - expired
+            - preview
+            - new
+            - interviewed
+            - offer
+            - hired
+            - rejected
+            - archived
+        - name: password
+          type: string
+          in: formData
+          description: A password to protect access to the content and excerpt.
+        - name: title
+          type: string
+          in: formData
+          description: The title for the object.
+        - name: content
+          type: string
+          in: formData
+          description: The content for the object.
+        - name: featured_media
+          type: integer
+          in: formData
+          description: The ID of the featured media for the object.
+        - name: meta
+          type: string
+          in: formData
+          description: Meta fields.
+        - name: template
+          type: string
+          in: formData
+          description: The theme file to use to display the object.
+        - name: job-categories
+          type: array
+          in: formData
+          description: The terms assigned to the object in the job_listing_category taxonomy.
+          items:
+            type: string
+        - name: job-types
+          type: array
+          in: formData
+          description: The terms assigned to the object in the job_listing_type taxonomy.
+          items:
+            type: string
+        - name: fields
+          type: string
+          in: formData
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: PostWpV2Job-listingsById
+    delete:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: query
+          description: Unique identifier for the object.
+        - name: force
+          type: boolean
+          in: query
+          description: Whether to bypass trash and force deletion.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: DeleteWpV2Job-listingsById
+  /wp/v2/job-categories:
+    get:
+      parameters:
+        - name: context
+          type: string
+          in: query
+          description: Scope under which the request is made; determines fields present in response.
+          default: view
+          enum:
+            - view
+            - embed
+            - edit
+        - name: page
+          type: integer
+          in: query
+          description: Current page of the collection.
+          default: 1
+          minimum: 1
+          format: number
+        - name: per_page
+          type: integer
+          in: query
+          description: Maximum number of items to be returned in result set.
+          default: 10
+          minimum: 1
+          format: number
+          maximum: 100
+        - name: search
+          type: string
+          in: query
+          description: Limit results to those matching a string.
+        - name: exclude
+          type: array
+          in: query
+          description: Ensure result set excludes specific IDs.
+          items:
+            type: string
+        - name: include
+          type: array
+          in: query
+          description: Limit result set to specific IDs.
+          items:
+            type: string
+        - name: order
+          type: string
+          in: query
+          description: Order sort attribute ascending or descending.
+          default: asc
+          enum:
+            - asc
+            - desc
+        - name: orderby
+          type: string
+          in: query
+          description: Sort collection by term attribute.
+          default: name
+          enum:
+            - id
+            - include
+            - name
+            - slug
+            - include_slugs
+            - term_group
+            - description
+            - count
+        - name: hide_empty
+          type: boolean
+          in: query
+          description: Whether to hide terms not assigned to any posts.
+        - name: parent
+          type: integer
+          in: query
+          description: Limit result set to terms assigned to a specific parent.
+        - name: post
+          type: integer
+          in: query
+          description: Limit result set to terms assigned to a specific post.
+        - name: slug
+          type: array
+          in: query
+          description: Limit result set to terms with one or more specific slugs.
+          items:
+            type: string
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/job_listing_category'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: GetWpV2Job-categories
+    post:
+      parameters:
+        - name: description
+          type: string
+          in: formData
+          description: HTML description of the term.
+        - name: name
+          type: string
+          in: formData
+          description: HTML title for the term.
+          required: true
+        - name: slug
+          type: string
+          in: formData
+          description: An alphanumeric identifier for the term unique to its type.
+        - name: parent
+          type: integer
+          in: formData
+          description: The parent term ID.
+        - name: meta
+          type: string
+          in: formData
+          description: Meta fields.
+        - name: fields
+          type: string
+          in: formData
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_category'
+        '201':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_category'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: PostWpV2Job-categories
+  '/wp/v2/job-categories/{id}':
+    get:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: query
+          description: Unique identifier for the term.
+        - name: context
+          type: string
+          in: query
+          description: Scope under which the request is made; determines fields present in response.
+          default: view
+          enum:
+            - view
+            - embed
+            - edit
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_category'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: GetWpV2Job-categoriesById
+    post:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: formData
+          description: Unique identifier for the term.
+        - name: description
+          type: string
+          in: formData
+          description: HTML description of the term.
+        - name: name
+          type: string
+          in: formData
+          description: HTML title for the term.
+        - name: slug
+          type: string
+          in: formData
+          description: An alphanumeric identifier for the term unique to its type.
+        - name: parent
+          type: integer
+          in: formData
+          description: The parent term ID.
+        - name: meta
+          type: string
+          in: formData
+          description: Meta fields.
+        - name: fields
+          type: string
+          in: formData
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_category'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: PostWpV2Job-categoriesById
+    delete:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: query
+          description: Unique identifier for the term.
+        - name: force
+          type: boolean
+          in: query
+          description: 'Required to be true, as terms do not support trashing.'
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_category'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: DeleteWpV2Job-categoriesById
+  /wp/v2/job-types:
+    get:
+      parameters:
+        - name: context
+          type: string
+          in: query
+          description: Scope under which the request is made; determines fields present in response.
+          default: view
+          enum:
+            - view
+            - embed
+            - edit
+        - name: page
+          type: integer
+          in: query
+          description: Current page of the collection.
+          default: 1
+          minimum: 1
+          format: number
+        - name: per_page
+          type: integer
+          in: query
+          description: Maximum number of items to be returned in result set.
+          default: 10
+          minimum: 1
+          format: number
+          maximum: 100
+        - name: search
+          type: string
+          in: query
+          description: Limit results to those matching a string.
+        - name: exclude
+          type: array
+          in: query
+          description: Ensure result set excludes specific IDs.
+          items:
+            type: string
+        - name: include
+          type: array
+          in: query
+          description: Limit result set to specific IDs.
+          items:
+            type: string
+        - name: order
+          type: string
+          in: query
+          description: Order sort attribute ascending or descending.
+          default: asc
+          enum:
+            - asc
+            - desc
+        - name: orderby
+          type: string
+          in: query
+          description: Sort collection by term attribute.
+          default: name
+          enum:
+            - id
+            - include
+            - name
+            - slug
+            - include_slugs
+            - term_group
+            - description
+            - count
+        - name: hide_empty
+          type: boolean
+          in: query
+          description: Whether to hide terms not assigned to any posts.
+        - name: parent
+          type: integer
+          in: query
+          description: Limit result set to terms assigned to a specific parent.
+        - name: post
+          type: integer
+          in: query
+          description: Limit result set to terms assigned to a specific post.
+        - name: slug
+          type: array
+          in: query
+          description: Limit result set to terms with one or more specific slugs.
+          items:
+            type: string
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/job_listing_type'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: GetWpV2Job-types
+    post:
+      parameters:
+        - name: description
+          type: string
+          in: formData
+          description: HTML description of the term.
+        - name: name
+          type: string
+          in: formData
+          description: HTML title for the term.
+          required: true
+        - name: slug
+          type: string
+          in: formData
+          description: An alphanumeric identifier for the term unique to its type.
+        - name: parent
+          type: integer
+          in: formData
+          description: The parent term ID.
+        - name: meta
+          type: string
+          in: formData
+          description: Meta fields.
+        - name: fields
+          type: string
+          in: formData
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_type'
+        '201':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_type'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: PostWpV2Job-types
+  '/wp/v2/job-types/{id}':
+    get:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: query
+          description: Unique identifier for the term.
+        - name: context
+          type: string
+          in: query
+          description: Scope under which the request is made; determines fields present in response.
+          default: view
+          enum:
+            - view
+            - embed
+            - edit
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_type'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: GetWpV2Job-typesById
+    post:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: formData
+          description: Unique identifier for the term.
+        - name: description
+          type: string
+          in: formData
+          description: HTML description of the term.
+        - name: name
+          type: string
+          in: formData
+          description: HTML title for the term.
+        - name: slug
+          type: string
+          in: formData
+          description: An alphanumeric identifier for the term unique to its type.
+        - name: parent
+          type: integer
+          in: formData
+          description: The parent term ID.
+        - name: meta
+          type: string
+          in: formData
+          description: Meta fields.
+        - name: fields
+          type: string
+          in: formData
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_type'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: PostWpV2Job-typesById
+    delete:
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: id
+          type: integer
+          in: query
+          description: Unique identifier for the term.
+        - name: force
+          type: boolean
+          in: query
+          description: 'Required to be true, as terms do not support trashing.'
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/job_listing_type'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+      operationId: DeleteWpV2Job-typesById
+definitions:
+  error:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      data:
+        type: object
+        properties:
+          status:
+            type: integer
+  job_listing:
+    type: object
+    properties:
+      date:
+        description: 'The date the object was published, in the site''s timezone.'
+        type: string
+        format: date-time
+      date_gmt:
+        description: 'The date the object was published, as GMT.'
+        type: string
+        format: date-time
+      guid:
+        description: The globally unique identifier for the object.
+        type: object
+        properties:
+          raw:
+            description: 'GUID for the object, as it exists in the database.'
+            type: string
+          rendered:
+            description: 'GUID for the object, transformed for display.'
+            type: string
+      id:
+        description: Unique identifier for the object.
+        type: integer
+      link:
+        description: URL to the object.
+        type: string
+        format: uri
+      modified:
+        description: 'The date the object was last modified, in the site''s timezone.'
+        type: string
+        format: date-time
+      modified_gmt:
+        description: 'The date the object was last modified, as GMT.'
+        type: string
+        format: date-time
+      slug:
+        description: An alphanumeric identifier for the object unique to its type.
+        type: string
+      status:
+        description: A named status for the object.
+        type: string
+        enum:
+          - publish
+          - future
+          - draft
+          - pending
+          - private
+          - expired
+          - preview
+          - new
+          - interviewed
+          - offer
+          - hired
+          - rejected
+          - archived
+      type:
+        description: Type of Post for the object.
+        type: string
+      password:
+        description: A password to protect access to the content and excerpt.
+        type: string
+      title:
+        description: The title for the object.
+        type: object
+        properties:
+          raw:
+            description: 'Title for the object, as it exists in the database.'
+            type: string
+          rendered:
+            description: 'HTML title for the object, transformed for display.'
+            type: string
+      content:
+        description: The content for the object.
+        type: object
+        properties:
+          raw:
+            description: 'Content for the object, as it exists in the database.'
+            type: string
+          rendered:
+            description: 'HTML content for the object, transformed for display.'
+            type: string
+          protected:
+            description: Whether the content is protected with a password.
+            type: boolean
+      featured_media:
+        description: The ID of the featured media for the object.
+        type: integer
+      meta:
+        description: Meta fields.
+        type: object
+        properties: {}
+      template:
+        description: The theme file to use to display the object.
+        type: string
+      job-categories:
+        description: The terms assigned to the object in the job_listing_category taxonomy.
+        type: array
+        items:
+          type: string
+      job-types:
+        description: The terms assigned to the object in the job_listing_type taxonomy.
+        type: array
+        items:
+          type: string
+      fields:
+        type: object
+        properties:
+          _job_location:
+            type: string
+            description: Leave this blank if the location is not important.
+          _application:
+            type: string
+            description: Application Email or URL
+          _company_name:
+            type: string
+            description: Company Name
+          _company_website:
+            type: string
+            description: Company Website
+          _company_tagline:
+            type: string
+            description: Company Tagline
+          _company_twitter:
+            type: string
+            description: Company Twitter
+          _company_video:
+            type: string
+            description: Company Video
+          _filled:
+            type: boolean
+            description: Position Filled
+          _featured:
+            type: boolean
+            description: Featured Listing
+          _job_expires:
+            type: string
+            description: Listing Expiry Date
+          _job_author:
+            type: string
+            description: Posted by
+  type:
+    type: object
+    properties:
+      capabilities:
+        description: All capabilities used by the post type.
+        type: object
+      description:
+        description: A human-readable description of the post type.
+        type: string
+      hierarchical:
+        description: Whether or not the post type should have children.
+        type: boolean
+      labels:
+        description: Human-readable labels for the post type for various contexts.
+        type: object
+      name:
+        description: The title for the post type.
+        type: string
+      slug:
+        description: An alphanumeric identifier for the post type.
+        type: string
+      supports:
+        description: 'All features, supported by the post type.'
+        type: object
+      taxonomies:
+        description: Taxonomies associated with post type.
+        type: array
+        items:
+          type: string
+      rest_base:
+        description: REST base route for the post type.
+        type: string
+  status:
+    type: object
+    properties:
+      name:
+        description: The title for the status.
+        type: string
+      private:
+        description: Whether posts with this status should be private.
+        type: boolean
+      protected:
+        description: Whether posts with this status should be protected.
+        type: boolean
+      public:
+        description: Whether posts of this status should be shown in the front end of the site.
+        type: boolean
+      queryable:
+        description: Whether posts with this status should be publicly-queryable.
+        type: boolean
+      show_in_list:
+        description: Whether to include posts in the edit listing for their post type.
+        type: boolean
+      slug:
+        description: An alphanumeric identifier for the status.
+        type: string
+  taxonomy:
+    type: object
+    properties:
+      capabilities:
+        description: All capabilities used by the taxonomy.
+        type: object
+      description:
+        description: A human-readable description of the taxonomy.
+        type: string
+      hierarchical:
+        description: Whether or not the taxonomy should have children.
+        type: boolean
+      labels:
+        description: Human-readable labels for the taxonomy for various contexts.
+        type: object
+      name:
+        description: The title for the taxonomy.
+        type: string
+      slug:
+        description: An alphanumeric identifier for the taxonomy.
+        type: string
+      show_cloud:
+        description: Whether or not the term cloud should be displayed.
+        type: boolean
+      types:
+        description: Types associated with the taxonomy.
+        type: array
+        items:
+          type: string
+      rest_base:
+        description: REST base route for the taxonomy.
+        type: string
+  category:
+    type: object
+    properties:
+      id:
+        description: Unique identifier for the term.
+        type: integer
+      count:
+        description: Number of published posts for the term.
+        type: integer
+      description:
+        description: HTML description of the term.
+        type: string
+      link:
+        description: URL of the term.
+        type: string
+        format: uri
+      name:
+        description: HTML title for the term.
+        type: string
+      slug:
+        description: An alphanumeric identifier for the term unique to its type.
+        type: string
+      taxonomy:
+        description: Type attribution for the term.
+        type: string
+        enum:
+          - category
+          - post_tag
+          - nav_menu
+          - link_category
+          - post_format
+          - job_listing_category
+          - job_listing_type
+      parent:
+        description: The parent term ID.
+        type: integer
+      meta:
+        description: Meta fields.
+        type: object
+        properties: {}
+  tag:
+    type: object
+    properties:
+      id:
+        description: Unique identifier for the term.
+        type: integer
+      count:
+        description: Number of published posts for the term.
+        type: integer
+      description:
+        description: HTML description of the term.
+        type: string
+      link:
+        description: URL of the term.
+        type: string
+        format: uri
+      name:
+        description: HTML title for the term.
+        type: string
+      slug:
+        description: An alphanumeric identifier for the term unique to its type.
+        type: string
+      taxonomy:
+        description: Type attribution for the term.
+        type: string
+        enum:
+          - category
+          - post_tag
+          - nav_menu
+          - link_category
+          - post_format
+          - job_listing_category
+          - job_listing_type
+      meta:
+        description: Meta fields.
+        type: object
+        properties: {}
+  job_listing_category:
+    type: object
+    properties:
+      id:
+        description: Unique identifier for the term.
+        type: integer
+      count:
+        description: Number of published posts for the term.
+        type: integer
+      description:
+        description: HTML description of the term.
+        type: string
+      link:
+        description: URL of the term.
+        type: string
+        format: uri
+      name:
+        description: HTML title for the term.
+        type: string
+      slug:
+        description: An alphanumeric identifier for the term unique to its type.
+        type: string
+      taxonomy:
+        description: Type attribution for the term.
+        type: string
+        enum:
+          - category
+          - post_tag
+          - nav_menu
+          - link_category
+          - post_format
+          - job_listing_category
+          - job_listing_type
+      parent:
+        description: The parent term ID.
+        type: integer
+      meta:
+        description: Meta fields.
+        type: object
+        properties: {}
+      fields:
+        title: wp_job_manager_models_job_categories_custom_fields
+        type: object
+        properties: {}
+  job_listing_type:
+    type: object
+    properties:
+      id:
+        description: Unique identifier for the term.
+        type: integer
+      count:
+        description: Number of published posts for the term.
+        type: integer
+      description:
+        description: HTML description of the term.
+        type: string
+      link:
+        description: URL of the term.
+        type: string
+        format: uri
+      name:
+        description: HTML title for the term.
+        type: string
+      slug:
+        description: An alphanumeric identifier for the term unique to its type.
+        type: string
+      taxonomy:
+        description: Type attribution for the term.
+        type: string
+        enum:
+          - category
+          - post_tag
+          - nav_menu
+          - link_category
+          - post_format
+          - job_listing_category
+          - job_listing_type
+      parent:
+        description: The parent term ID.
+        type: integer
+      meta:
+        description: Meta fields.
+        type: object
+        properties: {}
+      fields:
+        type: object
+        properties:
+          employment_type:
+            type: string
+            description: Employment Type
+            enum:
+              - FULL_TIME
+              - PART_TIME
+              - CONTRACTOR
+              - TEMPORARY
+              - INTERN
+              - VOLUNTEER
+              - PER_DIEM
+              - OTHER
+  user:
+    type: object
+    properties:
+      id:
+        description: Unique identifier for the user.
+        type: integer
+      username:
+        description: Login name for the user.
+        type: string
+      name:
+        description: Display name for the user.
+        type: string
+      first_name:
+        description: First name for the user.
+        type: string
+      last_name:
+        description: Last name for the user.
+        type: string
+      email:
+        description: The email address for the user.
+        type: string
+        format: email
+      url:
+        description: URL of the user.
+        type: string
+        format: uri
+      description:
+        description: Description of the user.
+        type: string
+      link:
+        description: Author URL of the user.
+        type: string
+        format: uri
+      locale:
+        description: Locale for the user.
+        type: string
+        enum:
+          - en_US
+      nickname:
+        description: The nickname for the user.
+        type: string
+      slug:
+        description: An alphanumeric identifier for the user.
+        type: string
+      registered_date:
+        description: Registration date for the user.
+        type: string
+        format: date-time
+      roles:
+        description: Roles assigned to the user.
+        type: array
+        items:
+          type: string
+      password:
+        description: Password for the user (never included).
+        type: string
+      capabilities:
+        description: All capabilities assigned to the user.
+        type: object
+      extra_capabilities:
+        description: Any extra capabilities assigned to the user.
+        type: object
+      avatar_urls:
+        description: Avatar URLs for the user.
+        type: object
+        properties:
+          '24':
+            description: Avatar URL with image size of 24 pixels.
+            type: string
+            format: uri
+          '48':
+            description: Avatar URL with image size of 48 pixels.
+            type: string
+            format: uri
+          '96':
+            description: Avatar URL with image size of 96 pixels.
+            type: string
+            format: uri
+      meta:
+        description: Meta fields.
+        type: object
+        properties: {}
+  comment:
+    type: object
+    properties:
+      id:
+        description: Unique identifier for the object.
+        type: integer
+      author:
+        description: 'The ID of the user object, if author was a user.'
+        type: integer
+      author_email:
+        description: Email address for the object author.
+        type: string
+        format: email
+      author_ip:
+        description: IP address for the object author.
+        type: string
+        format: ip
+      author_name:
+        description: Display name for the object author.
+        type: string
+      author_url:
+        description: URL for the object author.
+        type: string
+        format: uri
+      author_user_agent:
+        description: User agent for the object author.
+        type: string
+      content:
+        description: The content for the object.
+        type: object
+        properties:
+          raw:
+            description: 'Content for the object, as it exists in the database.'
+            type: string
+          rendered:
+            description: 'HTML content for the object, transformed for display.'
+            type: string
+      date:
+        description: 'The date the object was published, in the site''s timezone.'
+        type: string
+        format: date-time
+      date_gmt:
+        description: 'The date the object was published, as GMT.'
+        type: string
+        format: date-time
+      link:
+        description: URL to the object.
+        type: string
+        format: uri
+      parent:
+        description: The ID for the parent of the object.
+        type: integer
+        default: 0
+      post:
+        description: The ID of the associated post object.
+        type: integer
+        default: 0
+      status:
+        description: State of the object.
+        type: string
+      type:
+        description: Type of Comment for the object.
+        type: string
+      author_avatar_urls:
+        description: Avatar URLs for the object author.
+        type: object
+        properties:
+          '24':
+            description: Avatar URL with image size of 24 pixels.
+            type: string
+            format: uri
+          '48':
+            description: Avatar URL with image size of 48 pixels.
+            type: string
+            format: uri
+          '96':
+            description: Avatar URL with image size of 96 pixels.
+            type: string
+            format: uri
+      meta:
+        description: Meta fields.
+        type: object
+        properties: {}
+  settings:
+    type: object
+    properties:
+      title:
+        type: string
+        description: Site title.
+        default: null
+      description:
+        type: string
+        description: Site tagline.
+        default: null
+      url:
+        type: string
+        description: Site URL.
+        default: null
+        format: uri
+      email:
+        type: string
+        description: 'This address is used for admin purposes, like new user notification.'
+        default: null
+        format: email
+      timezone:
+        type: string
+        description: A city in the same timezone as you.
+        default: null
+      date_format:
+        type: string
+        description: A date format for all date strings.
+        default: null
+      time_format:
+        type: string
+        description: A time format for all time strings.
+        default: null
+      start_of_week:
+        type: integer
+        description: A day number of the week that the week should start on.
+        default: null
+      language:
+        type: string
+        description: WordPress locale code.
+        default: en_US
+      use_smilies:
+        type: boolean
+        description: 'Convert emoticons like :-) and :-P to graphics on display.'
+        default: true
+      default_category:
+        type: integer
+        description: Default post category.
+        default: null
+      default_post_format:
+        type: string
+        description: Default post format.
+        default: null
+      posts_per_page:
+        type: integer
+        description: Blog pages show at most.
+        default: 10
+      default_ping_status:
+        type: string
+        description: Allow link notifications from other blogs (pingbacks and trackbacks) on new articles.
+        default: null
+        enum:
+          - open
+          - closed
+      default_comment_status:
+        type: string
+        description: Allow people to post comments on new articles.
+        default: null
+        enum:
+          - open
+          - closed
+securityDefinitions:
+  cookieAuth:
+    type: apiKey
+    name: X-WP-Nonce
+    in: header
+    description: 'Please see http://v2.wp-api.org/guide/authentication/'
