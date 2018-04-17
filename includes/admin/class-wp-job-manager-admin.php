@@ -83,7 +83,7 @@ class WP_Job_Manager_Admin {
 		}
 
 		echo '<div class="error">';
-		echo '<p>' . sprintf( __( 'The upcoming release of <strong>WP Job Manager 1.31.0</strong> will require a more recent version of WordPress. <a href="%s">Please update WordPress</a> before updating WP Job Manager.', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) ) . '</p>';
+		echo '<p>' . sprintf( __( '<strong>WP Job Manager</strong> requires a more recent version of WordPress. <a href="%s">Please update WordPresse</a> to avoid issues.', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) ) . '</p>';
 		echo '</div>';
 	}
 
