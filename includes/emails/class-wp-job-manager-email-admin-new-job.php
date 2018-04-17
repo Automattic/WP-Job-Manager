@@ -18,7 +18,7 @@ class WP_Job_Manager_Email_Admin_New_Job extends WP_Job_Manager_Email_Template {
 	 * @return string
 	 */
 	public static function get_key() {
-		return 'admin_notice_new_listing';
+		return 'admin_new_job';
 	}
 
 	/**
