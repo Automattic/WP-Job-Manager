@@ -15,4 +15,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 ?>
-<p><?php _e( 'To apply for this job please visit the following URL:', 'wp-job-manager' ); ?> <a href="<?php echo esc_url( $apply->url ); ?>" target="_blank" rel="nofollow"><?php echo esc_html( $apply->url ); ?> &rarr;</a></p>
+<p><?php esc_html_e( 'To apply for this job please visit', 'wp-job-manager' ); ?> <a href="<?php echo esc_url( $apply->url ); ?>" target="_blank" rel="nofollow"><?php echo esc_html( wp_parse_url( $apply->url, PHP_URL_HOST ) ); ?></a>.</p>
