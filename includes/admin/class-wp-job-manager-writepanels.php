@@ -181,12 +181,12 @@ class WP_Job_Manager_Writepanels {
 		$name = 'tax_input[' . $taxonomy . ']';
 
 		// Get all the terms for this taxonomy
-		$terms = get_terms( $taxonomy, array( 'hide_empty' => 0 ) );
+		$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => 0 ) );
 		$postterms = get_the_terms( $post->ID, $taxonomy );
 		$current = ( $postterms ? array_pop( $postterms ) : false );
 		$current = ( $current ? $current->term_id : 0 );
 		// Get current and popular terms
-		$popular = get_terms( $taxonomy, array( 'orderby' => 'count', 'order' => 'DESC', 'number' => 10, 'hierarchical' => false ) );
+		$popular = get_terms( array( 'taxonomy' => $taxonomy, 'orderby' => 'count', 'order' => 'DESC', 'number' => 10, 'hierarchical' => false ) );
 		$postterms = get_the_terms( $post->ID,$taxonomy );
 		$current = ($postterms ? array_pop($postterms) : false);
 		$current = ($current ? $current->term_id : 0);
