@@ -322,15 +322,15 @@ class WP_Job_Manager_CPT {
 		$this->jobs_filter_dropdown( 'job_listing_filled', array(
 			array(
 				'value' => '',
-				'text'  => 'Select Filled',
+				'text'  => __( 'Select Filled', 'wp-job-manager' ),
 			),
 			array(
 				'value' => '1',
-				'text'  => 'Filled',
+				'text'  => __( 'Filled', 'wp-job-manager' ),
 			),
 			array(
 				'value' => '0',
-				'text'  => 'Not Filled',
+				'text'  => __( 'Not Filled', 'wp-job-manager' ),
 			),
 		) );
 
@@ -338,15 +338,15 @@ class WP_Job_Manager_CPT {
 		$this->jobs_filter_dropdown( 'job_listing_featured', array(
 			array(
 				'value' => '',
-				'text'  => 'Select Featured',
+				'text'  => __( 'Select Featured', 'wp-job-manager' ),
 			),
 			array(
 				'value' => '1',
-				'text'  => 'Featured',
+				'text'  => __( 'Featured', 'wp-job-manager' ),
 			),
 			array(
 				'value' => '0',
-				'text'  => 'Not Featured',
+				'text'  => __( 'Not Featured', 'wp-job-manager' ),
 			),
 		) );
 	}
