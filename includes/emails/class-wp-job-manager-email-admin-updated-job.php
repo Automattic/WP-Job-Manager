@@ -41,28 +41,6 @@ class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Templa
 	}
 
 	/**
-	 * Expand arguments as necessary for the generation of the email.
-	 *
-	 * @param $args
-	 * @return mixed
-	 */
-	protected function prepare_args( $args ) {
-		if ( isset( $args['job_id'] ) ) {
-			$job = get_post( $args['job_id'] );
-			if ( $job instanceof WP_Post ) {
-				$args['job'] = $job;
-			}
-		}
-		if ( ! empty( $args['user_id'] ) ) {
-			$user = get_user_by( 'ID', $args['user_id'] );
-			if ( $user instanceof WP_User ) {
-				$args['user'] = $user;
-			}
-		}
-		return parent::prepare_args( $args );
-	}
-
-	/**
 	 * Get the email subject.
 	 *
 	 * @return string

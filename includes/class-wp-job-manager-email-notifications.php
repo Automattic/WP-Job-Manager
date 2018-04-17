@@ -31,6 +31,7 @@ final class WP_Job_Manager_Email_Notifications {
 		add_action( 'job_manager_email_job_details', array( __CLASS__, 'output_job_details'), 10, 4 );
 		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
 		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
+		add_action( 'job_manager_email_daily_notices', array( __CLASS__, 'send_employer_expiring_notice' ) );
 		add_filter( 'job_manager_settings', array( __CLASS__, 'add_email_settings' ), 1 );
 	}
 
@@ -43,6 +44,7 @@ final class WP_Job_Manager_Email_Notifications {
 		return array(
 			'WP_Job_Manager_Email_Admin_New_Job',
 			'WP_Job_Manager_Email_Admin_Updated_Job',
+			'WP_Job_Manager_Email_Employer_Expiring_Job',
 		);
 	}
 
@@ -110,6 +112,7 @@ final class WP_Job_Manager_Email_Notifications {
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-updated-job.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-employer-expiring-job.php';
 
 		if ( ! class_exists( 'Emogrifier' ) && class_exists( 'DOMDocument' ) ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/lib/emogrifier/class-emogrifier.php';
@@ -274,6 +277,15 @@ final class WP_Job_Manager_Email_Notifications {
 			);
 		}
 
+		$job_expires = get_post_meta( $job->ID, '_job_expires', true );
+		if ( ! empty( $job_expires ) ) {
+			$job_expires_str = date_i18n( get_option( 'date_format' ), strtotime( $job_expires ) );
+			$fields['job_expires'] = array(
+				'label' => __( 'Listing expires', 'wp-job-manager' ),
+				'value' => $job_expires_str,
+			);
+		}
+
 		if ( $sent_to_admin ) {
 			$author = get_user_by( 'ID', $job->post_author );
 			if ( $author instanceof WP_User ) {
@@ -414,6 +426,48 @@ final class WP_Job_Manager_Email_Notifications {
 		 * @param string $email_notification_key
 		 */
 		return apply_filters( 'job_manager_email_send_as_plain_text', $send_as_plain_text, $email_notification_key );
+	}
+
+	/**
+	 * Sending notices to employers for expiring job listings.
+	 */
+	public static function send_employer_expiring_notice() {
+		self::maybe_init();
+
+		$email_key   = WP_Job_Manager_Email_Employer_Expiring_Job::get_key();
+		if ( ! self::is_email_notification_enabled( $email_key ) ) {
+			return;
+		}
+		$settings    = self::get_email_settings( $email_key );
+		$days_notice = WP_Job_Manager_Email_Employer_Expiring_Job::get_notice_period( $settings );
+		self::send_expiring_notice( $email_key, $days_notice );
+	}
+
+	/**
+	 * Send notice based on job expiration date.
+	 *
+	 * @param string $email_notification_key
+	 * @param int    $days_notice
+	 */
+	private static function send_expiring_notice( $email_notification_key, $days_notice ) {
+		global $wpdb;
+
+		$notice_before_ts = current_time( 'timestamp' ) + ( DAY_IN_SECONDS * $days_notice );
+		$job_ids_sql      = $wpdb->prepare( "
+			SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
+			LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
+			WHERE postmeta.meta_key = '_job_expires'
+			AND postmeta.meta_value = %s
+			AND posts.post_status = 'publish'
+			AND posts.post_type = 'job_listing'
+		", date( 'Y-m-d', $notice_before_ts ) );
+		$job_ids = $wpdb->get_col( $job_ids_sql );
+
+		if ( $job_ids ) {
+			foreach ( $job_ids as $job_id ) {
+				do_action( 'job_manager_send_notification', $email_notification_key, array( 'job_id' => $job_id ) );
+			}
+		}
 	}
 
 	/**

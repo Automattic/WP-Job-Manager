@@ -217,6 +217,9 @@ class WP_Job_Manager {
 		if ( ! wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
 			wp_schedule_event( time(), 'twicedaily', 'job_manager_clear_expired_transients' );
 		}
+		if ( ! wp_next_scheduled( 'job_manager_email_daily_notices' ) ) {
+			wp_schedule_event( time(), 'daily', 'job_manager_email_daily_notices' );
+		}
 	}
 
 	/**

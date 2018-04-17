@@ -651,8 +651,9 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder
 	 */
 	protected function input_number( $option, $attributes, $value, $placeholder ) {
-		?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="number" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
-
+		echo isset( $option['before'] ) ? $option['before'] : '';
+		?><input id="setting-<?php echo $option['name']; ?>" class="small-text" type="number" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+		echo isset( $option['after'] ) ? $option['after'] : '';
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . $option['desc'] . '</p>';
 		}
