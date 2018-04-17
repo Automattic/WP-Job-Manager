@@ -2,7 +2,7 @@
 /**
  * Email content when notifying admin of an updated job listing.
  *
- * This template can be overridden by copying it to yourtheme/job_manager/emails/admin-notice-new-listing.php.
+ * This template can be overridden by copying it to yourtheme/job_manager/emails/plain/admin-updated-job.php.
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
@@ -14,6 +14,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
 /**
  * @var WP_Post $job
  */

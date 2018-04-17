@@ -173,7 +173,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			$save_message = __( 'Your changes have been saved.', 'wp-job-manager' );
 			$post_status = get_post_status( $this->job_id );
 
-			do_action( 'job_manager_send_notification', 'admin_notice_updated_listing', array( 'job_id' => $this->job_id, 'user_id' => get_current_user_id() ) );
+			do_action( 'job_manager_send_notification', 'admin_updated_job', array( 'job_id' => $this->job_id, 'user_id' => get_current_user_id() ) );
 
 			update_post_meta( $this->job_id, '_job_edited', time() );
 
