@@ -122,7 +122,7 @@ abstract class WP_Job_Manager_Email {
 				$args['job'] = $job;
 			}
 		}
-		if ( $args['job'] instanceof WP_Post ) {
+		if ( isset( $args['job'] ) && $args['job'] instanceof WP_Post ) {
 			$author = get_user_by( 'ID', $args['job']->post_author );
 			if ( $author instanceof WP_User ) {
 				$args['author'] = $author;
