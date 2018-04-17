@@ -655,8 +655,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		include_once( ABSPATH . 'wp-admin/includes/image.php' );
 		include_once( ABSPATH . 'wp-admin/includes/media.php' );
 
-		$upload_dir     = wp_upload_dir();
-		$attachment_url = str_replace( array( $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ), array( $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ), $attachment_url );
+		$attachment_url = ABSPATH . substr(wp_parse_url($attachment_url)['path'], 1);
 
 		if ( empty( $attachment_url ) || ! is_string( $attachment_url ) ) {
 			return 0;
