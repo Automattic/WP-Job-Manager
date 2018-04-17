@@ -44,6 +44,7 @@ class WP_Job_Manager_CPT {
 		add_filter( 'manage_edit-job_listing_sortable_columns', array( $this, 'sortable_columns' ) );
 		add_filter( 'request', array( $this, 'sort_columns' ) );
 		add_action( 'parse_query', array( $this, 'search_meta' ) );
+		add_action( 'parse_query', array( $this, 'filter_meta' ) );
 		add_filter( 'get_search_query', array( $this, 'search_meta_label' ) );
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
 		add_action( 'bulk_actions-edit-job_listing', array( $this, 'add_bulk_actions' ) );
@@ -55,6 +56,7 @@ class WP_Job_Manager_CPT {
 		if ( get_option( 'job_manager_enable_categories' ) ) {
 			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
 		}
+		add_action( "restrict_manage_posts", array( $this, "jobs_meta_filters" ) );
 
 		foreach ( array( 'post', 'post-new' ) as $hook ) {
 			add_action( "admin_footer-{$hook}.php", array( $this,'extend_submitdiv_post_status' ) );
@@ -300,6 +302,84 @@ class WP_Job_Manager_CPT {
 		$output .= '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . __( 'Select category', 'wp-job-manager' ) . '</option>';
 		$output .= $walker->walk( $terms, 0, $r );
 		$output .= "</select>";
+
+		echo $output;
+	}
+
+	/**
+	 * Output dropdowns for filters based on post meta.
+	 *
+	 * @since 1.31.0
+	 */
+	public function jobs_meta_filters() {
+		global $typenow;
+
+		// Only add the filters for job_listings
+		if ( 'job_listing' !== $typenow  ) {
+			return;
+		}
+
+		// Filter by Filled.
+		$this->jobs_filter_dropdown( 'job_listing_filled', array(
+			array(
+				'value' => '',
+				'text'  => __( 'Select Filled', 'wp-job-manager' ),
+			),
+			array(
+				'value' => '1',
+				'text'  => __( 'Filled', 'wp-job-manager' ),
+			),
+			array(
+				'value' => '0',
+				'text'  => __( 'Not Filled', 'wp-job-manager' ),
+			),
+		) );
+
+		// Filter by Featured.
+		$this->jobs_filter_dropdown( 'job_listing_featured', array(
+			array(
+				'value' => '',
+				'text'  => __( 'Select Featured', 'wp-job-manager' ),
+			),
+			array(
+				'value' => '1',
+				'text'  => __( 'Featured', 'wp-job-manager' ),
+			),
+			array(
+				'value' => '0',
+				'text'  => __( 'Not Featured', 'wp-job-manager' ),
+			),
+		) );
+	}
+
+	/**
+	 * Shows dropdown to filter by the given URL parameter. The dropdown will
+	 * have three options: "Select $name", "$name", and "Not $name".
+	 *
+	 * The $options element should be an array of arrays, each with the
+	 * attributes needed to create an <option> HTML element. The attributes are
+	 * as follows:
+	 *
+	 * $options[i]['value']  The value for the <option> HTML element.
+	 * $options[i]['text']   The text for the <option> HTML element.
+	 *
+	 * @since 1.31.0
+	 *
+	 * @param string $param        The URL parameter.
+	 * @param array  $options      The options for the dropdown. See the
+	 *                             description above.
+	 */
+	private function jobs_filter_dropdown( $param, $options ) {
+		$selected = isset( $_GET[ $param ] ) ? $_GET[ $param ] : '';
+
+		$output = "<select name=\"$param\" id=\"dropdown_$param\">";
+
+		foreach ( $options as $option ) {
+			$output .= '<option value="' . esc_attr( $option['value'] ) . '"'
+				. ( $selected === $option['value'] ? ' selected' : '' )
+				. '>' . esc_html( $option['text'] ) . '</option>';
+		}
+		$output .= '</select>';
 
 		echo $output;
 	}
@@ -596,6 +676,45 @@ class WP_Job_Manager_CPT {
 		unset( $wp->query_vars['s'] );
 		$wp->query_vars['job_listing_search'] = true;
 		$wp->query_vars['post__in'] = $post_ids;
+	}
+
+	/**
+	 * Filters by meta fields.
+	 *
+	 * @param WP_Query $wp
+	 */
+	public function filter_meta( $wp ) {
+		global $pagenow;
+
+		if ( 'edit.php' !== $pagenow || 'job_listing' !== $wp->query_vars['post_type'] ) {
+			return;
+		}
+
+		$meta_query = $wp->get( 'meta_query' );
+		if ( ! is_array( $meta_query ) ) {
+			$meta_query = array();
+		}
+
+		// Filter on _filled meta.
+		if ( isset( $_GET['job_listing_filled'] ) && '' !== $_GET['job_listing_filled'] ) {
+			$meta_query[] = array(
+				'key' => '_filled',
+				'value' => $_GET['job_listing_filled'],
+			);
+		}
+
+		// Filter on _featured meta.
+		if ( isset( $_GET['job_listing_featured'] ) && '' !== $_GET['job_listing_featured'] ) {
+			$meta_query[] = array(
+				'key' => '_featured',
+				'value' => $_GET['job_listing_featured'],
+			);
+		}
+
+		// Set new meta query.
+		if ( ! empty( $meta_query ) ) {
+			$wp->set( 'meta_query', $meta_query );
+		}
 	}
 
 	/**
