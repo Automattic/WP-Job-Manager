@@ -94,8 +94,9 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 			->get_data_store()->get_entity( '' )
 			->get( 'run_page_setup' );
 		$response = $this->put( '/wpjm/v1/status/run_page_setup', array(
-			'value' => ! $value,
+			'value' => ! $value ? 1 : 0,
 		) );
+
 		$this->assertResponseStatus( $response, 200 );
 		$model = $this->environment()
 			->model( 'WP_Job_Manager_Models_Status' )

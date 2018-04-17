@@ -37,6 +37,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	function test_update_update_fields_fail_if_no_permissions() {
+		$this->logout();
 		$published = $this->factory->job_listing->create_many( 2 );
 		$first_id = $published[0];
 		$response = $this->get( '/wp/v2/job-listings/' . $first_id );
@@ -46,7 +47,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$first_listing['fields']['_application'] = 'foo@example.com';
 
 		$response = $this->put( '/wp/v2/job-listings/' . $first_listing['id'], $first_listing );
-		$this->assertResponseStatus( $response, 403 );
+		$this->assertResponseStatus( $response, 401 );
 	}
 
 	function test_update_update_fields_success() {

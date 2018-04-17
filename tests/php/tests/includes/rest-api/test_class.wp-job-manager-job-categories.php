@@ -1,6 +1,6 @@
 <?php
 /**
- * @group rest-wip
+ * @group rest
  */
 class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 
@@ -19,11 +19,11 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 	}
 
 	function test_post_success_when_admin() {
-		$this->logout();
+		$this->login_as_admin();
 		$response = $this->post( '/wp/v2/job-categories', array(
 			'name' => 'REST Test' . microtime( true ),
 		) );
-		$this->assertResponseStatus( $response, 200 );
+		$this->assertResponseStatus( $response, 201 );
 	}
 
 	function test_wp_v2_has_job_categories_route() {
