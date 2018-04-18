@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.7.0
 Tested up to: 4.9
-Stable tag: 1.30.2
+Stable tag: 1.31.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -140,6 +140,25 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.31.0 =
+* Change: Minimum WordPress version is now 4.7.0.
+* Enhancement: Add email notifications with initial support for new jobs, updated jobs, and expiring listings.
+* Enhancement: For GDPR, scrub WPJM data from database on uninstall if option is enabled.
+* Enhancement: Filter by Filled and Featured status in WP admin.
+* Enhancement: Simplify the display of application URLs.
+* Enhancement: When using WPML, prevent changes to page options when on a non-default language. (@vukvukovich) 
+* Enhancement: Include company logo in structured data. (@RajeebTheGreat)
+* Enhancement: Use more efficient jQuery selectors in scripts. (@RajeebTheGreat)
+* Enhancement: Use proper `<h2>` tag in `content-summary-job_listing.php` template for the job title. (@abdullah1908)
+* Enhancement: Hide empty categories on `[job]` filter.
+* Fix: Update calls to `get_terms()` to use the new format.
+* Fix: Maintain the current tab when saving settings in WP Admin.
+* Fix: Enqueue the date picker CSS when used on the front-end.
+* Fix: Remove errors when widget instance was created without setting defaults.
+* REST API Pre-release: Add support for job category taxonomy endpoints.
+* Dev: Add `$job_id` parameter to `job_manager_job_dashboard_do_action_{$action}` action hook. (@jonasvogel)
+* Dev: Add support for hidden WPJM settings in WP Admin.
 
 = 1.30.2 =
 * Enhancement: Show notice when user is using an older version of WordPress.
