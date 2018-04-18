@@ -73,7 +73,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		global $wp_rest_server, $wp_version;
 		parent::setUp();
 
-		// We have a logged in user so post-4.9.1 versions of WordPress will correctly return 401.
+		// Only post-4.9.1 versions of WordPress will correctly return 401 for unauthorized requests.
 		// See https://core.trac.wordpress.org/changeset/42421
 		if ( version_compare( $wp_version, '4.9.1', '<=' ) ) {
 			$this->markTestSkipped( 'Older versions of WordPress have REST API authorization issues.' );
@@ -107,6 +107,10 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 
 	function login_as_admin() {
 		return $this->login_as( $this->admin_id );
+	}
+
+	function login_as_default_user() {
+		return $this->login_as( $this->default_user_id );
 	}
 
 	function login_as( $user_id ) {
@@ -153,7 +157,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * Have WP_REST_Server Dispatch an HTTP request
 	 *
 	 * @param string $endpoint The Endpoint.
-	 * @param string $method Http mehod.
+	 * @param string $method Http method.
 	 * @param array  $args_or_body Any Data/Args.
 	 * @return WP_REST_Response
 	 */

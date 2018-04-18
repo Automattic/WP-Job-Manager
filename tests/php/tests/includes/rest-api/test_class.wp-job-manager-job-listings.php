@@ -1,5 +1,18 @@
 <?php
 /**
+ * Routes:
+ * OPTIONS /wp-json/wp/v2/job-listings
+ * GET /wp-json/wp/v2/job-listings
+ * POST /wp-json/wp/v2/job-listings
+ *
+ * OPTIONS /wp-json/wp/v2/job-listings/{id}
+ * GET /wp-json/wp/v2/job-listings/{id}
+ * POST /wp-json/wp/v2/job-listings/{id}
+ * PATCH /wp-json/wp/v2/job-listings/{id} (Alias for `POST /wp-json/wp/v2/job-listings/{id}`)
+ * PUT /wp-json/wp/v2/job-listings/{id} (Alias for `POST /wp-json/wp/v2/job-listings/{id}`)
+ * DELETE /wp-json/wp/v2/job-listings/{id}
+ *
+ * @see https://developer.wordpress.org/rest-api/reference/posts/
  * @group rest
  */
 class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
@@ -7,8 +20,14 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	/**
 	 * @covers WP_Job_Manager_Registrable_Job_Listings::get_fields
 	 */
-	function test_get_job_listings_success() {
-		$this->login_as( $this->default_user_id );
+	public function test_get_job_listings_success() {
+		$this->login_as_default_user();
+		$response = $this->get( '/wp/v2/job-listings' );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_get_job_listings_success_guest() {
+		$this->logout();
 		$response = $this->get( '/wp/v2/job-listings' );
 		$this->assertResponseStatus( $response, 200 );
 	}
@@ -16,7 +35,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	/**
 	 * @covers WP_Job_Manager_Registrable_Job_Listings::get_fields
 	 */
-	function test_get_job_listings_add_fields() {
+	public function test_get_job_listings_add_fields() {
 		$published = $this->factory->job_listing->create_many( 2 );
 		$response = $this->get( '/wp/v2/job-listings' );
 		$this->assertResponseStatus( $response, 200 );
@@ -36,7 +55,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertArrayHasKey( '_filled', $fields );
 	}
 
-	function test_update_update_fields_fail_if_no_permissions() {
+	public function test_update_update_fields_fail_if_no_permissions() {
 		$this->logout();
 		$published = $this->factory->job_listing->create_many( 2 );
 		$first_id = $published[0];
@@ -50,7 +69,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 401 );
 	}
 
-	function test_update_update_fields_success() {
+	public function test_update_update_fields_success() {
 		$user_id = $this->factory->user->create( array(
 			'role'       => 'administrator',
 			'user_login' => 'superadmin',

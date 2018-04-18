@@ -154,7 +154,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_categories() {
-		$this->assertTrue(  taxonomy_exists('job_listing_category') );
+		$this->assertTrue( taxonomy_exists('job_listing_category') );
 		$this->assertTrue( current_user_can( get_taxonomy( 'job_listing_category' )->cap->assign_terms ) );
 		$categories = array( 'main' => array(), 'weird' => array(), 'happy' => array(), 'all' => array(), 'none' => array() );
 		$terms = array();
