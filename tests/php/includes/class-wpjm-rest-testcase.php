@@ -27,6 +27,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	public static function setUpBeforeClass() {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
+
 		if ( ! isset( $wp_rest_server ) ) {
 			$wp_rest_server = new WP_REST_Server();
 			do_action( 'rest_api_init' );
@@ -69,8 +70,23 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 */
 	function setUp() {
 		/** @var WP_REST_Server $wp_rest_server */
-		global $wp_rest_server;
+		global $wp_rest_server, $wp_version;
 		parent::setUp();
+
+		// Only post-4.9.1 versions of WordPress will correctly return 401 for unauthorized requests.
+		// See https://core.trac.wordpress.org/changeset/42421
+		if ( version_compare( $wp_version, '4.9.1', '<=' ) ) {
+			$this->markTestSkipped( 'Older versions of WordPress have REST API authorization issues.' );
+			return;
+		}
+
+		$this->disable_manage_job_listings_cap();
+
+		// Ensure the role gets created.
+		WP_Job_Manager_Install::install();
+		wp_roles()->init_roles();
+		wp_cache_flush();
+
 		$admin = get_user_by( 'email', 'rest_api_admin_user@test.com' );
 		if ( false === $admin ){
 			$this->admin_id = wp_create_user(
@@ -93,8 +109,18 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		return $this->login_as( $this->admin_id );
 	}
 
+	function login_as_default_user() {
+		return $this->login_as( $this->default_user_id );
+	}
+
 	function login_as( $user_id ) {
 		wp_set_current_user( $user_id );
+		return $this;
+	}
+
+	function logout() {
+		$this->login_as( 0 );
+		wp_logout();
 		return $this;
 	}
 
@@ -131,7 +157,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * Have WP_REST_Server Dispatch an HTTP request
 	 *
 	 * @param string $endpoint The Endpoint.
-	 * @param string $method Http mehod.
+	 * @param string $method Http method.
 	 * @param array  $args_or_body Any Data/Args.
 	 * @return WP_REST_Response
 	 */
