@@ -80,6 +80,7 @@ module.exports = function( grunt ){
 					'!tests/**', '!bin/**', '!phpunit.xml', '!phpunit.xml.dist', // Unit Tests
 					'!vendor/**', '!composer.lock', '!composer.phar', '!composer.json', // Composer
 					'!.*', '!**/*~', '!tmp/**', //hidden/tmp files
+					'!docs/**',
 					'!CONTRIBUTING.md',
 					'!readme.md',
 					'!phpcs.ruleset.xml',
