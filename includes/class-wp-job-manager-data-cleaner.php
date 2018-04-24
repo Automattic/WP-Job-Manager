@@ -227,6 +227,10 @@ class WP_Job_Manager_Data_Cleaner {
 				$wpdb->delete( $wpdb->terms, array( 'term_id' => $term->term_id ) );
 				$wpdb->delete( $wpdb->termmeta, array( 'term_id' => $term->term_id ) );
 			}
+
+			if ( function_exists( 'clean_taxonomy_cache' ) ) {
+				clean_taxonomy_cache( $taxonomy );
+			}
 		}
 	}
 
