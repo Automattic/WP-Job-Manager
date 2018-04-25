@@ -829,7 +829,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function done() {
 		do_action( 'job_manager_job_submitted', $this->job_id );
-		do_action( 'job_manager_send_notification', 'admin_new_job', array( 'job_id' => $this->job_id ) );
 		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( $this->job_id ) ) );
 	}
 }
