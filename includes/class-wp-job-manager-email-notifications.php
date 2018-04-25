@@ -34,6 +34,8 @@ final class WP_Job_Manager_Email_Notifications {
 		add_action( 'job_manager_email_daily_notices', array( __CLASS__, 'send_employer_expiring_notice' ) );
 		add_action( 'job_manager_email_daily_notices', array( __CLASS__, 'send_admin_expiring_notice' ) );
 		add_filter( 'job_manager_settings', array( __CLASS__, 'add_job_manager_email_settings' ), 1 );
+		add_action( 'job_manager_job_submitted', array( __CLASS__, 'send_new_job_notification' ) );
+		add_action( 'job_manager_user_edit_job_listing', array( __CLASS__, 'send_updated_job_notification' ) );
 	}
 
 	/**
@@ -505,6 +507,24 @@ final class WP_Job_Manager_Email_Notifications {
 		$settings    = self::get_email_settings( $email_key );
 		$days_notice = WP_Job_Manager_Email_Admin_Expiring_Job::get_notice_period( $settings );
 		self::send_expiring_notice( $email_key, $days_notice );
+	}
+
+	/**
+	 * Fire the action to send a new job notification to the admin.
+	 *
+	 * @param int $job_id
+	 */
+	public static function send_new_job_notification( $job_id ) {
+		do_action( 'job_manager_send_notification', 'admin_new_job', array( 'job_id' => $job_id ) );
+	}
+
+	/**
+	 * Fire the action to send a updated job notification to the admin.
+	 *
+	 * @param int $job_id
+	 */
+	public static function send_updated_job_notification( $job_id ) {
+		do_action( 'job_manager_send_notification', 'admin_updated_job', array( 'job_id' => $job_id ) );
 	}
 
 	/**
