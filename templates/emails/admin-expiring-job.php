@@ -31,7 +31,8 @@ if ( $expiring_today ) {
 } else {
 	printf( __( 'The following job listing is expiring soon from <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
 }
-printf( ' ' . __( 'Visit the <a href="%s">job listing dashboard</a> to manage the listing.', 'wp-job-manager' ), esc_url( job_manager_get_permalink( 'job_dashboard' ) ) );
+$edit_post_link = admin_url( sprintf( 'post.php?post=%d&amp;action=edit', $job->ID ) );
+printf( ' ' . __( 'Visit <a href="%s">WordPress admin</a> to manage the listing.', 'wp-job-manager' ), esc_url( $edit_post_link ) );
 echo '</p>';
 
 /**
