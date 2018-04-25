@@ -91,6 +91,22 @@ class WP_Test_WP_Job_Manager_Email_Template extends WPJM_BaseTest {
 		$this->assertFalse( $test_value );
 	}
 
+	/**
+	 * @covers WP_Job_Manager_Email_Template::generate_template_file_name()
+	 */
+	public function test_get_template_file_name_plain() {
+		$template_name = md5( microtime( true ) );
+		$this->assertEquals( "emails/plain/{$template_name}.php", WP_Job_Manager_Email_Template::generate_template_file_name( $template_name, true ) );
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Email_Template::generate_template_file_name()
+	 */
+	public function test_get_template_file_name_rich() {
+		$template_name = md5( microtime( true ) );
+		$this->assertEquals( "emails/{$template_name}.php", WP_Job_Manager_Email_Template::generate_template_file_name( $template_name, false ) );
+	}
+
 	public function use_rich_test_template( $template ) {
 		return WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/test-template.php';
 	}

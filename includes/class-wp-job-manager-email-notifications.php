@@ -394,7 +394,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * Add email notification settings for a context.
 	 *
 	 * @param array  $settings
-	 * @param string $context (Defaults to Job Manager core)
+	 * @param string $context
 	 * @return array
 	 */
 	public static function add_email_settings( $settings, $context ) {
