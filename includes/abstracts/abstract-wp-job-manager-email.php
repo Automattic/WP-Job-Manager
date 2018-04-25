@@ -82,6 +82,16 @@ abstract class WP_Job_Manager_Email {
 	}
 
 	/**
+	 * Get the context for where this email notification is used. Used to direct which admin settings to show.
+	 *
+	 * @type abstract
+	 * @return string
+	 */
+	public static function get_context() {
+		return 'job_manager';
+	}
+
+	/**
 	 * Get the email subject.
 	 *
 	 * @return string
@@ -210,5 +220,4 @@ abstract class WP_Job_Manager_Email {
 	final protected function get_settings() {
 		return $this->settings;
 	}
-
 }

@@ -158,22 +158,6 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @covers WP_Job_Manager_Email_Notifications::get_template_file_name()
-	 */
-	public function test_get_template_file_name_plain() {
-		$template_name = md5( microtime( true ) );
-		$this->assertEquals( "emails/plain/{$template_name}.php", WP_Job_Manager_Email_Notifications::get_template_file_name( $template_name, true ) );
-	}
-
-	/**
-	 * @covers WP_Job_Manager_Email_Notifications::get_template_file_name()
-	 */
-	public function test_get_template_file_name_rich() {
-		$template_name = md5( microtime( true ) );
-		$this->assertEquals( "emails/{$template_name}.php", WP_Job_Manager_Email_Notifications::get_template_file_name( $template_name, false ) );
-	}
-
-	/**
 	 * @covers WP_Job_Manager_Email_Notifications::output_job_details()
 	 * @covers WP_Job_Manager_Email_Notifications::get_job_detail_fields()
 	 */
@@ -223,7 +207,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 
 		add_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
 		$emails   = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
-		$settings = WP_Job_Manager_Email_Notifications::add_email_settings( array() );
+		$settings = WP_Job_Manager_Email_Notifications::add_email_settings( array(), WP_Job_Manager_Email::get_context() );
 		remove_filter( 'job_manager_email_notifications', array( $this, 'inject_email_config_valid_email' ) );
 
 		$this->assertArrayHasKey( 'email_notifications', $settings );

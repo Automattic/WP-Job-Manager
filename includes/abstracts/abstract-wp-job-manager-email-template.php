@@ -13,6 +13,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
+	/**
+	 * Get the template path for overriding templates.
+	 *
+	 * @type abstract
+	 * @return string
+	 */
+	public static function get_template_path() {
+		return 'job_manager';
+	}
+
+	/**
+	 * Get the default template path that WP Job Manager should look for the templates.
+	 *
+	 * @type abstract
+	 * @return string
+	 */
+	public static function get_template_default_path() {
+		return '';
+	}
 
 	/**
 	 * Get the rich text version of the email content.
@@ -42,15 +61,15 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 	 * @return string
 	 */
 	public function get_template( $plain_text = false ) {
-		$template = $this->locate_template( $plain_text );
-		if ( ! $template ) {
+		$template_file = $this->locate_template( $plain_text );
+		if ( ! $template_file ) {
 			return '';
 		}
 		$args = $this->get_args();
 		$email = $this;
 
 		ob_start();
-		include $template;
+		include $template_file;
 		return ob_get_clean();
 	}
 
@@ -72,7 +91,10 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 	 * @return string
 	 */
 	protected function locate_template( $plain_text ) {
-		return locate_job_manager_template( $this->get_template_file_name( $plain_text ) );
+		$class_name = get_class( $this );
+		$template_path = call_user_func( array( $class_name, 'get_template_path' ) );
+		$template_default_path = call_user_func( array( $class_name, 'get_template_default_path' ) );
+		return locate_job_manager_template( $this->get_template_file_name( $plain_text ), $template_path, $template_default_path );
 	}
 
 	/**
@@ -86,6 +108,24 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 		// PHP 5.2: Using `call_user_func()` but `$class_name::get_key()` preferred.
 		$email_notification_key = call_user_func( array( $class_name, 'get_key') );
 		$template_name = str_replace( '_', '-', $email_notification_key );
-		return WP_Job_Manager_Email_Notifications::get_template_file_name( $template_name, $plain_text );
+		return self::generate_template_file_name( $template_name, $plain_text );
+	}
+
+	/**
+	 * Generate the file name for the email template.
+	 *
+	 * @param string $template_name
+	 * @param bool   $plain_text
+	 * @return string
+	 */
+	public static function generate_template_file_name( $template_name, $plain_text = false ) {
+		$file_name_parts = array( 'emails' );
+		if ( $plain_text ) {
+			$file_name_parts[] = 'plain';
+		}
+
+		$file_name_parts[] = $template_name . '.php';
+
+		return implode( '/', $file_name_parts );
 	}
 }
