@@ -307,7 +307,7 @@ final class WP_Job_Manager_Email_Notifications {
 	/**
 	 * Output email header.
 	 *
-	 * @param string $email_notification_key  Email object for the notification.
+	 * @param string $email_notification_key  Email notification key for email being sent.
 	 * @param bool   $sent_to_admin           True if this is being sent to an administrator.
 	 * @param bool   $plain_text              True if the email is being sent as plain text.
 	 */
@@ -325,7 +325,7 @@ final class WP_Job_Manager_Email_Notifications {
 	/**
 	 * Output email footer.
 	 *
-	 * @param string $email_notification_key  Email object for the notification.
+	 * @param string $email_notification_key  Email notification key for email being sent.
 	 * @param bool   $sent_to_admin           True if this is being sent to an administrator.
 	 * @param bool   $plain_text              True if the email is being sent as plain text.
 	 */
@@ -344,7 +344,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * Checks for an alternative email template segment in the template path specified by the current email.
 	 * Useful to provide alternative email headers and footers for a specific WPJM extension plugin.
 	 *
-	 * @param string  $email_notification_key  Email object for the notification.
+	 * @param string  $email_notification_key  Email notification key for email being sent.
 	 * @param string  $template_name           Name of the template to check
 	 * @param bool    $plain_text              True if the email is being sent as plain text.
 	 * @return bool|string Returns path to template path alternative or false if none exists.
