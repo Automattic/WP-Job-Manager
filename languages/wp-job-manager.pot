@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Job Manager 1.31.0\n"
 "Report-Msgid-Bugs-To: https://github.com/Automattic/WP-Job-Manager/issues\n"
-"POT-Creation-Date: 2018-04-18 18:04:54+00:00\n"
+"POT-Creation-Date: 2018-04-26 10:23:25+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -168,7 +168,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:442
 #: includes/admin/class-wp-job-manager-writepanels.php:55
-#: includes/class-wp-job-manager-email-notifications.php:242
+#: includes/class-wp-job-manager-email-notifications.php:226
 #: includes/forms/class-wp-job-manager-form-submit-job.php:178
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:38
 #: templates/job-filters.php:35 templates/job-filters.php:36
@@ -950,7 +950,7 @@ msgid "Listing Expiry Date"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:118
-#: includes/class-wp-job-manager-email-notifications.php:296
+#: includes/class-wp-job-manager-email-notifications.php:280
 #: includes/rest-api/class-wp-job-manager-models-job-listings-custom-fields.php:75
 msgid "Posted by"
 msgstr ""
@@ -1013,52 +1013,52 @@ msgstr[1] ""
 msgid "You must be logged in to upload files using this method."
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:231
+#: includes/class-wp-job-manager-email-notifications.php:215
 msgid "Job title"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:251
+#: includes/class-wp-job-manager-email-notifications.php:235
 #: includes/class-wp-job-manager-post-types.php:139
 #: includes/forms/class-wp-job-manager-form-submit-job.php:186
 msgid "Job type"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:261
+#: includes/class-wp-job-manager-email-notifications.php:245
 #: includes/class-wp-job-manager-post-types.php:90
 #: includes/forms/class-wp-job-manager-form-submit-job.php:195
 msgid "Job category"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:270
+#: includes/class-wp-job-manager-email-notifications.php:254
 #: includes/forms/class-wp-job-manager-form-submit-job.php:220
 msgid "Company name"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:278
+#: includes/class-wp-job-manager-email-notifications.php:262
 msgid "Company website"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:287
+#: includes/class-wp-job-manager-email-notifications.php:271
 msgid "Listing expires"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:380
+#: includes/class-wp-job-manager-email-notifications.php:427
 msgid "Email Notifications"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:383
+#: includes/class-wp-job-manager-email-notifications.php:430
 msgid "Select the email notifications to enable."
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:503
+#: includes/class-wp-job-manager-email-notifications.php:569
 msgid "Format"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:506
+#: includes/class-wp-job-manager-email-notifications.php:572
 msgid "Send plain text email"
 msgstr ""
 
-#: includes/class-wp-job-manager-email-notifications.php:507
+#: includes/class-wp-job-manager-email-notifications.php:573
 msgid "Send rich text email"
 msgstr ""
 
@@ -1341,11 +1341,11 @@ msgstr ""
 msgid "Your changes have been saved."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:181
+#: includes/forms/class-wp-job-manager-form-edit-job.php:179
 msgid "View &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-edit-job.php:183
+#: includes/forms/class-wp-job-manager-form-edit-job.php:181
 msgid ""
 "Your changes have been submitted and your listing will be visible again "
 "once approved."
@@ -1734,9 +1734,8 @@ msgstr ""
 msgid "The following job listing is expiring soon from <a href=\"%s\">%s</a>."
 msgstr ""
 
-#: templates/emails/admin-expiring-job.php:34
-#: templates/emails/employer-expiring-job.php:34
-msgid "Visit the <a href=\"%s\">job listing dashboard</a> to manage the listing."
+#: templates/emails/admin-expiring-job.php:35
+msgid "Visit <a href=\"%s\">WordPress admin</a> to manage the listing."
 msgstr ""
 
 #: templates/emails/admin-new-job.php:24
@@ -1769,6 +1768,10 @@ msgid ""
 "an administrator in the site's <a href=\"%s\">WordPress admin</a>."
 msgstr ""
 
+#: templates/emails/employer-expiring-job.php:34
+msgid "Visit the <a href=\"%s\">job listing dashboard</a> to manage the listing."
+msgstr ""
+
 #: templates/emails/plain/admin-expiring-job.php:29
 #: templates/emails/plain/employer-expiring-job.php:29
 msgid "The following job listing is expiring today from %s (%s)."
@@ -1779,9 +1782,8 @@ msgstr ""
 msgid "The following job listing is expiring soon from %s (%s)."
 msgstr ""
 
-#: templates/emails/plain/admin-expiring-job.php:33
-#: templates/emails/plain/employer-expiring-job.php:33
-msgid "Visit the job listing dashboard (%s) to manage the listing."
+#: templates/emails/plain/admin-expiring-job.php:34
+msgid "Visit WordPress admin (%s) to manage the listing."
 msgstr ""
 
 #: templates/emails/plain/admin-new-job.php:23
@@ -1800,6 +1802,10 @@ msgstr ""
 msgid ""
 "The job listing is not publicly available until the changes are approved by "
 "an administrator in the site's WordPress admin (%s)."
+msgstr ""
+
+#: templates/emails/plain/employer-expiring-job.php:33
+msgid "Visit the job listing dashboard (%s) to manage the listing."
 msgstr ""
 
 #: templates/form-fields/file-field.php:45
@@ -2013,15 +2019,15 @@ msgstr ""
 msgid "Anywhere"
 msgstr ""
 
-#: wp-job-manager.php:300
+#: wp-job-manager.php:301
 msgid "Load previous listings"
 msgstr ""
 
-#: wp-job-manager.php:363
+#: wp-job-manager.php:364
 msgid "Invalid file type. Accepted types:"
 msgstr ""
 
-#: wp-job-manager.php:374
+#: wp-job-manager.php:375
 msgid "Are you sure you want to delete this listing?"
 msgstr ""
 
