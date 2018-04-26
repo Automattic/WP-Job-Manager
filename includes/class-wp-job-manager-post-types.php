@@ -244,7 +244,8 @@ class WP_Job_Manager_Post_Types {
 				'query_var' 			=> true,
 				'supports' 				=> array( 'title', 'editor', 'custom-fields', 'publicize', 'thumbnail' ),
 				'has_archive' 			=> $has_archive,
-				'show_in_nav_menus' 	=> false
+				'show_in_nav_menus' 	=> false,
+				'delete_with_user'		=> true,
 			) )
 		);
 
