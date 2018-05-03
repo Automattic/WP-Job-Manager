@@ -158,6 +158,17 @@ class WP_Job_Manager_Shortcodes {
 
 				do_action( 'job_manager_my_job_do_action', $action, $job_id );
 
+				/**
+				 * Set a success message for a custom dashboard action handler.
+				 *
+				 * When left empty, no success message will be shown.
+				 *
+				 * @since 1.x.x
+				 *
+				 * @param string  $message  Text for the success message. Default: empty string.
+				 * @param string  $action   The name of the custom action.
+				 * @param int     $job_id   The ID for the job that's been altered.
+				 */
 				$success_message = apply_filters( 'job_manager_job_dashboard_success_message', '', $action, $job_id );
 				if ( $success_message ) {
 					$this->job_dashboard_message = '<div class="job-manager-message">' . $success_message . '</div>';
