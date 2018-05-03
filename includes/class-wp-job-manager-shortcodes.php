@@ -162,7 +162,7 @@ class WP_Job_Manager_Shortcodes {
 				$success_message = apply_filters( 'job_manager_job_dashboard_do_action', '', $action, $job_id );
 				if ( $success_message ) {
 					$this->job_dashboard_message = '<div class="job-manager-message">' . $success_message . '</div>';
-                }
+				}
 
 			} catch ( Exception $e ) {
 				$this->job_dashboard_message = '<div class="job-manager-error">' . $e->getMessage() . '</div>';
