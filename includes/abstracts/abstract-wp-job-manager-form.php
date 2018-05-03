@@ -356,6 +356,16 @@ abstract class WP_Job_Manager_Form {
 			}
 		}
 
+		/**
+		 * Alter values for posted fields.
+		 *
+		 * Before submitting or editing a job, alter the posted values before they get stored into the database.
+		 *
+		 * @since 1.x.x
+		 *
+		 * @param array  $values  The values that have been submitted.
+		 * @param array  $fields  The form fields.
+		 */
 		return apply_filters( 'job_manager_get_posted_fields', $values, $this->fields );
 	}
 
