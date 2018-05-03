@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.29.1
+ * @version     1.31.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <?php if ( is_user_logged_in() ) : ?>
 
-	<fieldset>
+	<fieldset class="fieldset-logged_in">
 		<label><?php _e( 'Your account', 'wp-job-manager' ); ?></label>
 		<div class="field account-sign-in">
 			<?php
@@ -35,14 +35,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	$registration_fields         = wpjm_get_registration_fields();
 	$use_standard_password_email = wpjm_use_standard_password_setup_email();
 	?>
-	<fieldset>
+	<fieldset class="fieldset-login_required">
 		<label><?php _e( 'Have an account?', 'wp-job-manager' ); ?></label>
 		<div class="field account-sign-in">
 			<a class="button" href="<?php echo apply_filters( 'submit_job_form_login_url', wp_login_url( get_permalink() ) ); ?>"><?php _e( 'Sign in', 'wp-job-manager' ); ?></a>
 
 			<?php if ( $registration_enabled ) : ?>
 
-				<?php printf( __( 'If you don&rsquo;t have an account you can %screate one below by entering your email address/username.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
+				<?php printf( __( 'If you don\'t have an account you can %screate one below by entering your email address/username.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
 				<?php if ( $use_standard_password_email ) : ?>
 					<?php printf( __( 'Your account details will be confirmed via email.', 'wp-job-manager' ) ); ?>
 				<?php endif; ?>

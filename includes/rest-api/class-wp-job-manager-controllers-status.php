@@ -95,7 +95,7 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 	public function update( $request ) {
 		$key = $request->get_param( 'key' );
 		$value = $request->get_param( 'value' );
-		if ( empty( $value ) ) {
+		if ( ! isset( $value ) ) {
 			if ( ! function_exists( 'json_decode' ) ) {
 				include_once ABSPATH . WPINC . 'compat.php';
 			}

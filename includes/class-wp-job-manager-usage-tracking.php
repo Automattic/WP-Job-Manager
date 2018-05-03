@@ -123,7 +123,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 			'std'      => '0',
 			'type'     => 'checkbox',
 			'desc'     => '',
-			'label'    => __( 'Enable usage tracking', 'wp-job-manager' ),
+			'label'    => __( 'Enable Usage Tracking', 'wp-job-manager' ),
 			'cb_label' => $this->opt_in_checkbox_text(),
 		);
 

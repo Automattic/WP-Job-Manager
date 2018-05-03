@@ -38,8 +38,11 @@ class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model
 	 * @return bool
 	 */
 	public function permissions_check( $request, $action ) {
+		if ( ! is_user_logged_in() ) {
+			return false;
+		}
 		if ( in_array( $action, array( 'index', 'show' ), true ) ) {
-			return true;
+			return current_user_can( 'manage_job_listings' );
 		}
 		return current_user_can( 'manage_options' );
 	}
