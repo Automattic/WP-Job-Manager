@@ -152,7 +152,7 @@ class WP_Job_Manager_Shortcodes {
 
 						break;
 					default :
-						do_action( 'job_manager_job_dashboard_do_action_' . $action );
+						do_action( 'job_manager_job_dashboard_do_action_' . $action, $job_id );
 						break;
 				}
 

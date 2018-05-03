@@ -382,11 +382,25 @@ function get_job_listing_categories() {
 		return array();
 	}
 
-	return get_terms( "job_listing_category", array(
+	$args = array(
 		'orderby'       => 'name',
-	    'order'         => 'ASC',
-	    'hide_empty'    => false,
-	) );
+		'order'         => 'ASC',
+		'hide_empty'    => false,
+	);
+
+	/**
+	 * Change the category query arguments.
+	 *
+	 * @since 1.31.0
+	 *
+	 * @param array $args
+	 */
+	$args = apply_filters( 'get_job_listing_category_args', $args );
+
+	// Prevent users from filtering the taxonomy
+	$args['taxonomy'] = 'job_listing_category';
+
+	return get_terms( $args );
 }
 endif;
 
@@ -432,7 +446,12 @@ function job_manager_get_filtered_links( $args = array() ) {
 		)
 	), $args );
 
-	if ( sizeof( $args['filter_job_types'] ) === sizeof( $types ) && ! $args['search_keywords'] && ! $args['search_location'] && ! $args['search_categories'] && ! apply_filters( 'job_manager_get_listings_custom_filter', false ) ) {
+	if ( count( (array) $args['filter_job_types'] ) === count( $types )
+		 && empty( $args['search_keywords'] )
+		 && empty( $args['search_location'] )
+		 && empty( $args['search_categories'] )
+		 && ! apply_filters( 'job_manager_get_listings_custom_filter', false )
+	) {
 		unset( $links['reset'] );
 	}
 
@@ -1006,6 +1025,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 		'order'           => 'ASC',
 		'show_count'      => 0,
 		'hide_empty'      => 1,
+		'parent'          => '',
 		'child_of'        => 0,
 		'exclude'         => '',
 		'echo'            => 1,
@@ -1040,13 +1060,15 @@ function job_manager_dropdown_categories( $args = '' ) {
 	$categories      = get_transient( $categories_hash );
 
 	if ( empty( $categories ) ) {
-		$categories = get_terms( $taxonomy, array(
+		$categories = get_terms( array(
+			'taxonomy'        => $r['taxonomy'],
 			'orderby'         => $r['orderby'],
 			'order'           => $r['order'],
 			'hide_empty'      => $r['hide_empty'],
+			'parent'          => $r['parent'],
 			'child_of'        => $r['child_of'],
 			'exclude'         => $r['exclude'],
-			'hierarchical'    => $r['hierarchical']
+			'hierarchical'    => $r['hierarchical'],
 		) );
 		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 7 );
 	}

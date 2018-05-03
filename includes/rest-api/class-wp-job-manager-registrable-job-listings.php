@@ -7,6 +7,10 @@
  * @package WPJM/REST
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Class MT_Controller_Extension
  */

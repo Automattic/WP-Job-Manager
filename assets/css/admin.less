@@ -452,6 +452,41 @@ a.wpjm-activate-licence-link:active {
 }
 
 /**
+ * Settings
+ */
+
+table.form-table.settings {
+	tr {
+		border-bottom: 1px solid rgba( 0, 0, 0, .1);
+
+		&:last-child,
+		&.no-separator {
+			border-bottom: 0;
+		}
+	}
+}
+
+div.setting-enable-expand {
+	border: 1px solid rgba( 0, 0, 0, .1);
+	padding: 15px 10px;
+
+	.sub-settings-expandable {
+		display: none;
+		padding-left: 25px;
+
+		&.expanded {
+			display: block;
+		}
+	}
+}
+
+tr.email-setting-row {
+	td {
+		padding: 5px;
+	}
+}
+
+/**
  * Mobile styles
  */
 @media only screen and (max-width: 782px) {

@@ -92,8 +92,11 @@ class WP_Job_Manager_REST_API {
 		include_once 'class-wp-job-manager-controllers-status.php';
 		include_once 'class-wp-job-manager-models-job-listings-custom-fields.php';
 		include_once 'class-wp-job-manager-models-job-types-custom-fields.php';
+		include_once 'class-wp-job-manager-models-job-categories-custom-fields.php';
 		include_once 'class-wp-job-manager-registrable-job-listings.php';
+		include_once 'class-wp-job-manager-registrable-taxonomy-type.php';
 		include_once 'class-wp-job-manager-registrable-job-types.php';
+		include_once 'class-wp-job-manager-registrable-job-categories.php';
 
 		// Models.
 		$env->define_model( 'WP_Job_Manager_Models_Settings' )
@@ -103,6 +106,7 @@ class WP_Job_Manager_REST_API {
 		$env->define_model( 'WP_Job_Manager_Filters_Status' );
 		$env->define_model( 'WP_Job_Manager_Models_Job_Listings_Custom_Fields' );
 		$env->define_model( 'WP_Job_Manager_Models_Job_Types_Custom_Fields' );
+		$env->define_model( 'WP_Job_Manager_Models_Job_Categories_Custom_Fields' );
 
 		// Endpoints.
 		$env->rest_api( 'wpjm/v1' )
@@ -113,6 +117,7 @@ class WP_Job_Manager_REST_API {
 			'WP_Job_Manager_Models_Job_Listings_Custom_Fields',
 		'fields' ) );
 		$env->add_registrable( new WP_Job_Manager_Registrable_Job_Types() );
+		$env->add_registrable( new WP_Job_Manager_Registrable_Job_Categories() );
 	}
 }
 

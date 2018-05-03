@@ -3,10 +3,10 @@
  * Plugin Name: WP Job Manager
  * Plugin URI: https://wpjobmanager.com/
  * Description: Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
- * Version: 1.30.1
+ * Version: 1.31.0
  * Author: Automattic
  * Author URI: https://wpjobmanager.com/
- * Requires at least: 4.1
+ * Requires at least: 4.7.0
  * Tested up to: 4.9
  * Text Domain: wp-job-manager
  * Domain Path: /languages/
@@ -58,9 +58,11 @@ class WP_Job_Manager {
 	 */
 	public function __construct() {
 		// Define constants
-		define( 'JOB_MANAGER_VERSION', '1.30.1' );
+		define( 'JOB_MANAGER_VERSION', '1.31.0' );
+		define( 'JOB_MANAGER_MINIMUM_WP_VERSION', '4.7.0' );
 		define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+		define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 		// Includes
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-install.php' );
@@ -72,6 +74,9 @@ class WP_Job_Manager {
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-geocode.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-cache-helper.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email-template.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-email-notifications.php' );
 
 		add_action( 'rest_api_init', array( $this, 'rest_api' ) );
 
@@ -101,12 +106,17 @@ class WP_Job_Manager {
 		add_action( 'after_setup_theme', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'after_setup_theme', array( $this, 'include_template_functions' ), 11 );
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
+		add_action( 'wp_loaded', array( $this, 'register_shared_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
+		add_action( 'init', array( 'WP_Job_Manager_Email_Notifications', 'init' ) );
 
 		add_action( 'init', array( $this, 'usage_tracking_init' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'usage_tracking_cleanup' ) );
+
+		// Other cleanup
+		register_deactivation_hook( __FILE__, array( $this, 'unschedule_cron_jobs' ) );
 
 		// Defaults for WPJM core actions
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
@@ -207,6 +217,19 @@ class WP_Job_Manager {
 		if ( ! wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
 			wp_schedule_event( time(), 'twicedaily', 'job_manager_clear_expired_transients' );
 		}
+		if ( ! wp_next_scheduled( 'job_manager_email_daily_notices' ) ) {
+			wp_schedule_event( time(), 'daily', 'job_manager_email_daily_notices' );
+		}
+	}
+
+	/**
+	 * Unschedule cron jobs. This is run on plugin deactivation.
+	 */
+	public static function unschedule_cron_jobs() {
+		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
+		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
+		wp_clear_scheduled_hook( 'job_manager_clear_expired_transients' );
+		wp_clear_scheduled_hook( 'job_manager_email_daily_notices' );
 	}
 
 	/**
@@ -219,6 +242,16 @@ class WP_Job_Manager {
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
 			setcookie( 'wp-job-manager-submitting-job-key', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
 		}
+	}
+
+	/**
+	 * Registers assets used in both the frontend and WP admin.
+	 */
+	public function register_shared_assets() {
+		global $wp_scripts;
+
+		$jquery_version = isset( $wp_scripts->registered['jquery-ui-core']->ver ) ? $wp_scripts->registered['jquery-ui-core']->ver : '1.9.2';
+		wp_register_style( 'jquery-ui', '//code.jquery.com/ui/' . $jquery_version . '/themes/smoothness/jquery-ui.css', array(), $jquery_version );
 	}
 
 	/**
