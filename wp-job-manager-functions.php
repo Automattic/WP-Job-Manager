@@ -1288,18 +1288,18 @@ function job_manager_upload_file( $file, $args = array() ) {
 function job_manager_get_allowed_mime_types( $field = '' ){
 	if ( 'company_logo' === $field ) {
 		$allowed_mime_types = array(
-			'jpg|jpeg|jpe' => 'image/jpeg',
-			'gif'          => 'image/gif',
-			'png'          => 'image/png',
+			'jpg | jpeg | jpe' => 'image/jpeg',
+			'gif'              => 'image/gif',
+			'png'              => 'image/png',
 		);
 	} else {
 		$allowed_mime_types = array(
-			'jpg|jpeg|jpe' => 'image/jpeg',
-			'gif'          => 'image/gif',
-			'png'          => 'image/png',
-			'pdf'          => 'application/pdf',
-			'doc'          => 'application/msword',
-			'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'jpg | jpeg | jpe' => 'image/jpeg',
+			'gif'              => 'image/gif',
+			'png'              => 'image/png',
+			'pdf'              => 'application/pdf',
+			'doc'              => 'application/msword',
+			'docx'             => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 		);
 	}
 
