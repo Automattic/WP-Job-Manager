@@ -532,7 +532,7 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 		extract( $args );
 	}
 
-	$username = sanitize_user( $username );
+	$username = sanitize_user( $username, true );
 	$email    = apply_filters( 'user_registration_email', sanitize_email( $email ) );
 
 	if ( empty( $email ) ) {
@@ -540,7 +540,7 @@ function wp_job_manager_create_account( $args, $deprecated = '' ) {
 	}
 
 	if ( empty( $username ) ) {
-		$username = sanitize_user( current( explode( '@', $email ) ) );
+		$username = sanitize_user( current( explode( '@', $email ) ), true );
 	}
 
 	if ( ! is_email( $email ) ) {
