@@ -502,7 +502,7 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 	}
 endif;
 
-if ( ! function_exists( 'job_manager_create_account' ) ) :
+if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 /**
  * Handles account creation.
  *
