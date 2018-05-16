@@ -48,18 +48,23 @@ class WP_Job_Manager_CPT_Legacy extends WP_Job_Manager_CPT {
 	public function add_bulk_actions_legacy() {
 		global $post_type, $wp_post_types;
 
+		$bulk_actions = [];
+		foreach( $this->get_bulk_actions() as $key => $bulk_action ) {
+			$bulk_actions[] = [
+				'key' => $key,
+				'label' => sprintf( $bulk_action[ 'label' ], $wp_post_types[ 'job_listing' ]->labels->name )
+			];
+		}
+
 		if ( $post_type === 'job_listing' ) {
 			?>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-				    <?php
-					foreach( $this->get_bulk_actions() as $key => $bulk_action ) {
-						if ( isset( $bulk_action[ 'label' ] ) ) {
-							echo 'jQuery(\'<option>\').val(\'' . $key . '\').text(\'' . addslashes( sprintf( $bulk_action[ 'label' ], $wp_post_types[ 'job_listing' ]->labels->name ) ) . '\').appendTo("select[name=\'action\']");';
-							echo 'jQuery(\'<option>\').val(\'' . $key . '\').text(\'' . addslashes( sprintf( $bulk_action[ 'label' ], $wp_post_types[ 'job_listing' ]->labels->name ) ) . '\').appendTo("select[name=\'action2\']");';
-						}
-					}
-					?>
+					var actions = <?php echo wp_json_encode( $bulk_actions ); ?>;
+					actions.forEach(function(el){
+						jQuery( '<option>').val( el.key ).text(el.label).appendTo("select[name='action']");
+						jQuery( '<option>').val( el.key ).text(el.label).appendTo("select[name='action2']");
+					});
 				});
 			</script>
 			<?php
@@ -75,7 +80,7 @@ class WP_Job_Manager_CPT_Legacy extends WP_Job_Manager_CPT {
 		$actions_handled = $this->get_bulk_actions();
 		if ( isset ( $actions_handled[ $action ] ) && isset ( $actions_handled[ $action ]['handler'] ) ) {
 			check_admin_referer( 'bulk-posts' );
-			$post_ids     = array_map( 'absint', array_filter( (array) $_GET['post'] ) );
+			$post_ids     = array_map( 'absint', array_filter( (array)$_GET['post'] ) );
 			if ( ! empty( $post_ids ) ) {
 				$this->do_bulk_actions( admin_url( 'edit.php?post_type=job_listing' ), $action, $post_ids );
 			}
