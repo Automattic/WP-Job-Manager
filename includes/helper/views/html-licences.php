@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 ?>
-<h1 class="screen-reader-text"><?php _e( 'Licenses', 'wp-job-manager' ); ?></h1>
+<h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
 <div class="wpjm-licences">
 	<?php if ( ! empty( $licenced_plugins ) ) : ?>
 	<?php foreach ( $licenced_plugins as $product_slug => $plugin_data ) : ?>
@@ -12,14 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 		?>
 		<div class="licence-row">
 			<div class="plugin-info">
-				<?php echo $plugin_data['Name']; ?>
+				<?php echo esc_html( $plugin_data['Name'] ); ?>
 				<div class="plugin-author">
 					<?php
 					$author = $plugin_data['Author'];
 					if ( !empty( $plugin_data['AuthorURI'] ) ) {
-						$author = '<a href="' . $plugin_data['AuthorURI'] . '">' . $plugin_data['Author'] . '</a>';
+						$author = '<a href="' . esc_url( $plugin_data['AuthorURI'] ) . '">' . wp_kses_post( $plugin_data['Author'] ) . '</a>';
 					}
-					echo $author;
+					echo wp_kses_post( $author );
 					?>
 				</div>
 			</div>
@@ -44,29 +44,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				if ( ! empty( $licence['licence_key'] ) && ! empty( $licence['email'] ) ) {
 					?>
-					<input type="hidden" id="<?php echo sanitize_title( $product_slug ); ?>_action" name="action" value="deactivate"/>
-					<input type="hidden" id="<?php echo sanitize_title( $product_slug ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
+					<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="deactivate"/>
+					<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
 
-					<label for="<?php echo sanitize_title( $product_slug ); ?>_licence_key"><?php _e( 'License' ); ?>:
-						<input type="text" disabled="disabled" id="<?php echo sanitize_title( $product_slug ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX" value="<?php echo esc_attr( $licence['licence_key'] ); ?>"/>
+					<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key"><?php esc_html_e( 'License' ); ?>:
+						<input type="text" disabled="disabled" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX" value="<?php echo esc_attr( $licence['licence_key'] ); ?>"/>
 					</label>
-					<label for="<?php echo sanitize_title( $product_slug ); ?>_email"><?php _e( 'Email' ); ?>:
-						<input type="email" disabled="disabled" id="<?php echo sanitize_title( $product_slug ); ?>_email" name="email" placeholder="Email address" value="<?php echo esc_attr( $licence['email'] ); ?>"/>
+					<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email"><?php esc_html_e( 'Email' ); ?>:
+						<input type="email" disabled="disabled" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email" name="email" placeholder="Email address" value="<?php echo esc_attr( $licence['email'] ); ?>"/>
 					</label>
 
-					<input type="submit" class="button" name="submit" value="<?php _e( 'Deactivate License' ); ?>" />
+					<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Deactivate License' ); ?>" />
 					<?php
 				} else { // licence is not active
 					?>
-					<input type="hidden" id="<?php echo sanitize_title( $product_slug ); ?>_action" name="action" value="activate"/>
-					<input type="hidden" id="<?php echo sanitize_title( $product_slug ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
-					<label for="<?php echo sanitize_title( $product_slug ); ?>_licence_key"><?php _e( 'License' ); ?>:
-						<input type="text" id="<?php echo sanitize_title( $product_slug ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
+					<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="activate"/>
+					<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
+					<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key"><?php esc_html_e( 'License' ); ?>:
+						<input type="text" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
 					</label>
-					<label for="<?php echo sanitize_title( $product_slug ); ?>_email"><?php _e( 'Email' ); ?>:
-						<input type="email" id="<?php echo sanitize_title( $product_slug ); ?>_email" name="email" placeholder="Email address" value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>"/>
+					<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email"><?php esc_html_e( 'Email' ); ?>:
+						<input type="email" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email" name="email" placeholder="Email address" value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>"/>
 					</label>
-					<input type="submit" class="button" name="submit" value="<?php _e( 'Activate License' ); ?>" />
+					<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Activate License' ); ?>" />
 					<?php
 				} // end if : else licence is not active
 				?>
@@ -74,8 +74,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 		</div>
 	<?php endforeach; ?>
-		<div class="notice notice-info inline"><p><?php printf( 'Lost your license key? <a href="%s">Retrieve it here</a>.', esc_url( 'https://wpjobmanager.com/lost-licence-key/' ) ); ?></p></div>
+		<div class="notice notice-info inline"><p><?php printf( 'Lost your license key? <a href="%s">Retrieve it here</a>.', 'https://wpjobmanager.com/lost-licence-key/' ); ?></p></div>
 	<?php else: ?>
-		<div class="notice notice-warning inline"><p><?php _e( 'No plugins are activated that have licenses managed by WP Job Manager.', 'wp-job-manager' ); ?></p></div>
+		<div class="notice notice-warning inline"><p><?php esc_html_e( 'No plugins are activated that have licenses managed by WP Job Manager.', 'wp-job-manager' ); ?></p></div>
 	<?php endif; ?>
 </div>
