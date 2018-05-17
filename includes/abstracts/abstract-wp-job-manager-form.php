@@ -132,7 +132,7 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function show_errors() {
 		foreach ( $this->errors as $error ) {
-			echo '<div class="job-manager-error">' . $error . '</div>';
+			echo '<div class="job-manager-error">' . wp_kses_post( $error ) . '</div>';
 		}
 	}
 
