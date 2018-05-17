@@ -264,9 +264,9 @@ class WP_Job_Manager_CPT {
 				foreach ( $handled_jobs as $job_id ) {
 					$titles[] = wpjm_get_the_job_title( $job_id );
 				}
-				echo '<div class="updated"><p>' . sprintf( $actions_handled[ $action ]['notice'], '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) . '</p></div>';
+				echo '<div class="updated"><p>' . wp_kses_post( sprintf( $actions_handled[ $action ]['notice'], '&quot;' . implode( '&quot;, &quot;', $titles ) . '&quot;' ) ) . '</p></div>';
 			} else {
-				echo '<div class="updated"><p>' . sprintf( $actions_handled[ $action ]['notice'], '&quot;' . wpjm_get_the_job_title( absint( $handled_jobs ) ) . '&quot;' ) . '</p></div>';
+				echo '<div class="updated"><p>' . wp_kses_post( sprintf( $actions_handled[ $action ]['notice'], '&quot;' . wpjm_get_the_job_title( absint( $handled_jobs ) ) . '&quot;' ) ) . '</p></div>';
 			}
 		}
 	}
@@ -298,12 +298,11 @@ class WP_Job_Manager_CPT {
 			return;
 		}
 
-		$output  = "<select name='job_listing_category' id='dropdown_job_listing_category'>";
-		$output .= '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . __( 'Select category', 'wp-job-manager' ) . '</option>';
-		$output .= $walker->walk( $terms, 0, $r );
-		$output .= "</select>";
+		echo "<select name='job_listing_category' id='dropdown_job_listing_category'>";
+		echo '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
+		echo $walker->walk( $terms, 0, $r );
+		echo "</select>";
 
-		echo $output;
 	}
 
 	/**
@@ -372,16 +371,15 @@ class WP_Job_Manager_CPT {
 	private function jobs_filter_dropdown( $param, $options ) {
 		$selected = isset( $_GET[ $param ] ) ? $_GET[ $param ] : '';
 
-		$output = "<select name=\"$param\" id=\"dropdown_$param\">";
+		echo '<select name="'.esc_attr( $param ).'" id="dropdown_'.esc_attr( $param ).'">';
 
 		foreach ( $options as $option ) {
-			$output .= '<option value="' . esc_attr( $option['value'] ) . '"'
+			echo '<option value="' . esc_attr( $option['value'] ) . '"'
 				. ( $selected === $option['value'] ? ' selected' : '' )
 				. '>' . esc_html( $option['text'] ) . '</option>';
 		}
-		$output .= '</select>';
+		echo '</select>';
 
-		echo $output;
 	}
 
 	/**
@@ -393,7 +391,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function enter_title_here( $text, $post ) {
 		if ( $post->post_type == 'job_listing' )
-			return __( 'Position', 'wp-job-manager' );
+			return esc_html__( 'Position', 'wp-job-manager' );
 		return $text;
 	}
 
@@ -411,10 +409,10 @@ class WP_Job_Manager_CPT {
 			1 => sprintf( __( '%s updated. <a href="%s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
 			2 => __( 'Custom field updated.', 'wp-job-manager' ),
 			3 => __( 'Custom field deleted.', 'wp-job-manager' ),
-			4 => sprintf( __( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			4 => sprintf( esc_html__( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
 			5 => isset( $_GET['revision'] ) ? sprintf( __( '%s restored to revision from %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
 			6 => sprintf( __( '%s published. <a href="%s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
-			7 => sprintf( __( '%s saved.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			7 => sprintf( esc_html__( '%s saved.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
 			8 => sprintf( __( '%s submitted. <a target="_blank" href="%s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
 			9 => sprintf( __( '%s scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name,
 			  date_i18n( get_option( 'date_format' ) . ' @ '. get_option( 'time_format' ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) ) ),
@@ -504,13 +502,13 @@ class WP_Job_Manager_CPT {
 
 				if ( $types && ! empty( $types ) ) {
 					foreach ( $types as $type ) {
-						echo '<span class="job-type ' . $type->slug . '">' . $type->name . '</span>';
+						echo '<span class="job-type ' . esc_attr( $type->slug ) . '">' . esc_html( $type->name ) . '</span>';
 					}
 				}
 			break;
 			case "job_position" :
 				echo '<div class="job_position">';
-				echo '<a href="' . admin_url('post.php?post=' . $post->ID . '&action=edit') . '" class="tips job_title" data-tip="' . sprintf( __( 'ID: %d', 'wp-job-manager' ), $post->ID ) . '">' . wpjm_get_the_job_title() . '</a>';
+				echo '<a href="' . esc_url( admin_url('post.php?post=' . $post->ID . '&action=edit') ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . esc_html( wpjm_get_the_job_title() ) . '</a>';
 
 				echo '<div class="company">';
 
@@ -530,7 +528,11 @@ class WP_Job_Manager_CPT {
 				the_job_location( $post );
 			break;
 			case "job_listing_category" :
-				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) echo '<span class="na">&ndash;</span>'; else echo $terms;
+				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) {
+					echo '<span class="na">&ndash;</span>';
+				} else {
+					echo wp_kses_post( $terms );
+				}
 			break;
 			case "filled" :
 				if ( is_position_filled( $post ) ) echo '&#10004;'; else echo '&ndash;';
@@ -539,17 +541,17 @@ class WP_Job_Manager_CPT {
 				if ( is_position_featured( $post ) ) echo '&#10004;'; else echo '&ndash;';
 			break;
 			case "job_posted" :
-				echo '<strong>' . date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) . '</strong><span>';
-				echo ( empty( $post->post_author ) ? __( 'by a guest', 'wp-job-manager' ) : sprintf( __( 'by %s', 'wp-job-manager' ), '<a href="' . esc_url( add_query_arg( 'author', $post->post_author ) ) . '">' . get_the_author() . '</a>' ) ) . '</span>';
+				echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) ) . '</strong><span>';
+				echo ( empty( $post->post_author ) ? esc_html__( 'by a guest', 'wp-job-manager' ) : sprintf( esc_html__( 'by %s', 'wp-job-manager' ), '<a href="' . esc_url( add_query_arg( 'author', $post->post_author ) ) . '">' . esc_html( get_the_author() ) . '</a>' ) ) . '</span>';
 			break;
 			case "job_expires" :
 				if ( $post->_job_expires )
-					echo '<strong>' . date_i18n( get_option( 'date_format' ), strtotime( $post->_job_expires ) ) . '</strong>';
+					echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->_job_expires ) ) ) . '</strong>';
 				else
 					echo '&ndash;';
 			break;
 			case "job_status" :
-				echo '<span data-tip="' . esc_attr( get_the_job_status( $post ) ) . '" class="tips status-' . esc_attr( $post->post_status ) . '">' . get_the_job_status( $post ) . '</span>';
+				echo '<span data-tip="' . esc_attr( get_the_job_status( $post ) ) . '" class="tips status-' . esc_attr( $post->post_status ) . '">' . esc_html( get_the_job_status( $post ) ) . '</span>';
 			break;
 			case "job_actions" :
 				echo '<div class="actions">';
@@ -590,9 +592,9 @@ class WP_Job_Manager_CPT {
 
 				foreach ( $admin_actions as $action ) {
 					if ( is_array( $action ) ) {
-						printf( '<a class="button button-icon tips icon-%1$s" href="%2$s" data-tip="%3$s">%4$s</a>', $action['action'], esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_html( $action['name'] ) );
+						printf( '<a class="button button-icon tips icon-%1$s" href="%2$s" data-tip="%3$s">%4$s</a>', esc_attr( $action['action'] ), esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_html( $action['name'] ) );
 					} else {
-						echo str_replace( 'class="', 'class="button ', $action );
+						echo wp_kses_post( str_replace( 'class="', 'class="button ', $action ) );
 					}
 				}
 
@@ -753,17 +755,17 @@ class WP_Job_Manager_CPT {
 			$selected AND $display = $name;
 
 			// Build the options
-			$options .= "<option{$selected} value='{$status}'>{$name}</option>";
+			$options .= "<option{$selected} value='{$status}'>".esc_html( $name )."</option>";
 		}
 		?>
 		<script type="text/javascript">
 			jQuery( document ).ready( function($) {
 				<?php if ( ! empty( $display ) ) : ?>
-					jQuery( '#post-status-display' ).html( '<?php echo $display; ?>' );
+					jQuery( '#post-status-display' ).html( <?php echo wp_json_encode( $display ); ?> );
 				<?php endif; ?>
 
 				var select = jQuery( '#post-status-select' ).find( 'select' );
-				jQuery( select ).html( "<?php echo $options; ?>" );
+				jQuery( select ).html( <?php echo wp_json_encode($options); ?> );
 			} );
 		</script>
 		<?php
