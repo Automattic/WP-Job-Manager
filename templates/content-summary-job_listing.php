@@ -29,7 +29,7 @@ global $job_manager;
 	<?php } ?>
 
 	<?php if ( $logo = get_the_company_logo() ) : ?>
-		<img src="<?php echo esc_attr( $logo ); ?>" alt="<?php the_company_name(); ?>" title="<?php the_company_name(); ?> - <?php the_company_tagline(); ?>" />
+		<img src="<?php echo esc_url( $logo ); ?>" alt="<?php the_company_name(); ?>" title="<?php the_company_name(); ?> - <?php the_company_tagline(); ?>" />
 	<?php endif; ?>
 
 	<div class="job_summary_content">
