@@ -41,4 +41,4 @@ if ( isset( $field['placeholder'] ) && ! empty( $field['placeholder'] ) ) $args[
 
 job_manager_dropdown_categories( apply_filters( 'job_manager_term_multiselect_field_args', $args ) );
 
-if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
+if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo wp_kses_post( $field['description'] ); ?></small><?php endif; ?>

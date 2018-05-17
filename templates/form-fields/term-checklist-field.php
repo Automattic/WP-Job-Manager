@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 ?>
-<ul class="job-manager-term-checklist job-manager-term-checklist-<?php echo $key ?>">
+<ul class="job-manager-term-checklist job-manager-term-checklist-<?php echo esc_attr( $key ); ?>">
 <?php
 	require_once( ABSPATH . '/wp-admin/includes/template.php' );
 
@@ -38,4 +38,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 	echo str_replace( "disabled='disabled'", '', $checklist );
 ?>
 </ul>
-<?php if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
+<?php if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo wp_kses_post( $field['description'] ); ?></small><?php endif; ?>

@@ -94,7 +94,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 			<?php echo $before_widget; ?>
 
-			<?php if ( $title ) { echo $before_title . $title . $after_title;} ?>
+			<?php if ( $title ) { echo $before_title . esc_html( $title ) . $after_title;} ?>
 
 			<ul class="job_listings">
 

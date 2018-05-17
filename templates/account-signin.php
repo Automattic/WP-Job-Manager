@@ -18,14 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php if ( is_user_logged_in() ) : ?>
 
 	<fieldset class="fieldset-logged_in">
-		<label><?php _e( 'Your account', 'wp-job-manager' ); ?></label>
+		<label><?php esc_html_e( 'Your account', 'wp-job-manager' ); ?></label>
 		<div class="field account-sign-in">
 			<?php
 				$user = wp_get_current_user();
-				printf( __( 'You are currently signed in as <strong>%s</strong>.', 'wp-job-manager' ), $user->user_login );
+				printf( esc_html__( 'You are currently signed in as <strong>%s</strong>.', 'wp-job-manager' ), esc_html( $user->user_login ) );
 			?>
 
-			<a class="button" href="<?php echo apply_filters( 'submit_job_form_logout_url', wp_logout_url( get_permalink() ) ); ?>"><?php _e( 'Sign out', 'wp-job-manager' ); ?></a>
+			<a class="button" href="<?php echo esc_url( apply_filters( 'submit_job_form_logout_url', wp_logout_url( get_permalink() ) ) ); ?>"><?php esc_html_e( 'Sign out', 'wp-job-manager' ); ?></a>
 		</div>
 	</fieldset>
 
@@ -36,20 +36,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	$use_standard_password_email = wpjm_use_standard_password_setup_email();
 	?>
 	<fieldset class="fieldset-login_required">
-		<label><?php _e( 'Have an account?', 'wp-job-manager' ); ?></label>
+		<label><?php esc_html_e( 'Have an account?', 'wp-job-manager' ); ?></label>
 		<div class="field account-sign-in">
-			<a class="button" href="<?php echo apply_filters( 'submit_job_form_login_url', wp_login_url( get_permalink() ) ); ?>"><?php _e( 'Sign in', 'wp-job-manager' ); ?></a>
+			<a class="button" href="<?php echo esc_url( apply_filters( 'submit_job_form_login_url', wp_login_url( get_permalink() ) ) ); ?>"><?php esc_html_e( 'Sign in', 'wp-job-manager' ); ?></a>
 
 			<?php if ( $registration_enabled ) : ?>
 
-				<?php printf( __( 'If you don\'t have an account you can %screate one below by entering your email address/username.', 'wp-job-manager' ), $account_required ? '' : __( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
+				<?php printf( esc_html__( 'If you don\'t have an account you can %screate one below by entering your email address/username.', 'wp-job-manager' ), $account_required ? '' : esc_html__( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
 				<?php if ( $use_standard_password_email ) : ?>
-					<?php printf( __( 'Your account details will be confirmed via email.', 'wp-job-manager' ) ); ?>
+					<?php printf( esc_html__( 'Your account details will be confirmed via email.', 'wp-job-manager' ) ); ?>
 				<?php endif; ?>
 
 			<?php elseif ( $account_required ) : ?>
 
-				<?php echo apply_filters( 'submit_job_form_login_required_message',  __('You must sign in to create a new listing.', 'wp-job-manager' ) ); ?>
+				<?php echo wp_kses_post( apply_filters( 'submit_job_form_login_required_message',  __('You must sign in to create a new listing.', 'wp-job-manager' ) ) ); ?>
 
 			<?php endif; ?>
 		</div>
@@ -60,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
 				<label
-					for="<?php echo esc_attr( $key ); ?>"><?php echo $field[ 'label' ] . apply_filters( 'submit_job_form_required_label', $field[ 'required' ] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>
+					for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field[ 'label' ] ) . wp_kses_post( apply_filters( 'submit_job_form_required_label', $field[ 'required' ] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ) ); ?></label>
 				<div class="field <?php echo $field[ 'required' ] ? 'required-field' : ''; ?>">
 					<?php get_job_manager_template( 'form-fields/' . $field[ 'type' ] . '-field.php', array( 'key'   => $key, 'field' => $field ) ); ?>
 				</div>
