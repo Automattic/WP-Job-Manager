@@ -39,7 +39,8 @@
 
 	 	// Setup tip tip elements and render them to the DOM
 	 	if($("#tiptip_holder").length <= 0){
-	 		var tiptip_holder = $('<div id="tiptip_holder" style="max-width:'+ opts.maxWidth +';"></div>');
+	 		var tiptip_holder = $('<div id="tiptip_holder"></div>');
+	 		tiptip_holder.css('max-width',opts.maxWidth);
 			var tiptip_content = $('<div id="tiptip_content"></div>');
 			var tiptip_arrow = $('<div id="tiptip_arrow"></div>');
 			$("body").append(tiptip_holder.html(tiptip_content).prepend(tiptip_arrow.html('<div id="tiptip_arrow_inner"></div>')));
