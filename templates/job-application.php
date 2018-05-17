@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="job_application application">
 		<?php do_action( 'job_application_start', $apply ); ?>
 		
-		<input type="button" class="application_button button" value="<?php _e( 'Apply for job', 'wp-job-manager' ); ?>" />
+		<input type="button" class="application_button button" value="<?php esc_attr_e( 'Apply for job', 'wp-job-manager' ); ?>" />
 		
 		<div class="application_details">
 			<?php
