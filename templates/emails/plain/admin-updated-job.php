@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 $job = $args['job'];
 
-printf( __( 'A job listing has been updated on %s (%s).', 'wp-job-manager' ), get_bloginfo( 'name' ), home_url() );
+printf( esc_html__( 'A job listing has been updated on %s (%s).', 'wp-job-manager' ), esc_html( get_bloginfo( 'name' ) ), esc_url( home_url() ) );
 switch ( $job->post_status ) {
 	case 'publish':
-		printf( ' ' . __( 'The changes have been published and are now available to the public.', 'wp-job-manager' ) );
+		printf( ' ' . esc_html__( 'The changes have been published and are now available to the public.', 'wp-job-manager' ) );
 		break;
 	case 'pending':
-		printf( ' ' . __( 'The job listing is not publicly available until the changes are approved by an administrator in the site\'s WordPress admin (%s).', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
+		printf( ' ' . esc_html__( 'The job listing is not publicly available until the changes are approved by an administrator in the site\'s WordPress admin (%s).', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
 		break;
 }
 
