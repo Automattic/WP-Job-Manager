@@ -21,13 +21,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 $job = $args['job'];
 ?>
 	<p><?php
-		printf( __( 'A new job listing has been submitted to <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
+		echo wp_kses_post(
+			sprintf(
+				__( 'A new job listing has been submitted to <a href="%s">%s</a>.', 'wp-job-manager' ),
+				home_url(),
+				get_bloginfo( 'name' )
+			)
+		);
 		switch ( $job->post_status ) {
 			case 'publish':
 				printf( ' ' . esc_html__( 'It has been published and is now available to the public.', 'wp-job-manager' ) );
 				break;
 			case 'pending':
-				printf( ' ' . __( 'It is awaiting approval by an administrator in <a href="%s">WordPress admin</a>.', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
+				echo wp_kses_post(
+					sprintf(
+						' ' . __( 'It is awaiting approval by an administrator in <a href="%s">WordPress admin</a>.','wp-job-manager' ),
+						esc_url( admin_url( 'edit.php?post_type=job_listing' ) )
+					)
+				);
 				break;
 		}
 		?></p>
