@@ -1388,10 +1388,9 @@ function job_manager_duplicate_listing( $post_id ) {
 	/*
 	 * Duplicate post meta, aside from some reserved fields.
 	 */
-	$post_meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id=%d", $post_id ) );
+	$post_meta = get_post_meta( $post_id );
 
 	if ( ! empty( $post_meta ) ) {
-		$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
 		foreach ( $post_meta as $meta_key => $meta_value ) {
 			if ( in_array( $meta_key, apply_filters( 'job_manager_duplicate_listing_ignore_keys', array( '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' ) ) ) ) {
 				continue;
