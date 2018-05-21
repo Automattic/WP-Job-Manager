@@ -106,7 +106,7 @@ class WP_Job_Manager_Shortcodes {
 						update_post_meta( $job_id, '_filled', 1 );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 						break;
 					case 'mark_not_filled' :
 						// Check status
@@ -118,14 +118,14 @@ class WP_Job_Manager_Shortcodes {
 						update_post_meta( $job_id, '_filled', 0 );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 						break;
 					case 'delete' :
 						// Trash it
 						wp_trash_post( $job_id );
 
 						// Message
-						$this->job_dashboard_message = '<div class="job-manager-message">' . sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 
 						break;
 					case 'duplicate' :
@@ -159,7 +159,7 @@ class WP_Job_Manager_Shortcodes {
 				do_action( 'job_manager_my_job_do_action', $action, $job_id );
 
 			} catch ( Exception $e ) {
-				$this->job_dashboard_message = '<div class="job-manager-error">' . $e->getMessage() . '</div>';
+				$this->job_dashboard_message = '<div class="job-manager-error">' . wp_kses_post( $e->getMessage() ) . '</div>';
 			}
 		}
 	}
@@ -177,9 +177,10 @@ class WP_Job_Manager_Shortcodes {
 			return ob_get_clean();
 		}
 
-		extract( shortcode_atts( array(
+		$new_atts = shortcode_atts( array(
 			'posts_per_page' => '25',
-		), $atts ) );
+		), $atts );
+		$posts_per_page = $new_atts['posts_per_page'];
 
 		wp_enqueue_script( 'wp-job-manager-job-dashboard' );
 
@@ -211,7 +212,7 @@ class WP_Job_Manager_Shortcodes {
 
 		$jobs = new WP_Query;
 
-		echo $this->job_dashboard_message;
+		echo wp_kses_post( $this->job_dashboard_message );
 
 		$job_dashboard_columns = apply_filters( 'job_manager_job_dashboard_columns', array(
 			'job_title' => __( 'Title', 'wp-job-manager' ),
@@ -323,7 +324,7 @@ class WP_Job_Manager_Shortcodes {
 			get_job_manager_template( 'job-listings-end.php' );
 
 			if ( ! $show_pagination && $show_more ) {
-				echo '<a class="load_more_jobs" href="#" style="display:none;"><strong>' . __( 'Load more listings', 'wp-job-manager' ) . '</strong></a>';
+				echo '<a class="load_more_jobs" href="#" style="display:none;"><strong>' . esc_html__( 'Load more listings', 'wp-job-manager' ) . '</strong></a>';
 			}
 
 		} else {
@@ -361,7 +362,7 @@ class WP_Job_Manager_Shortcodes {
 					<?php if ( $show_pagination ) : ?>
 						<?php echo get_job_listing_pagination( $jobs->max_num_pages ); ?>
 					<?php else : ?>
-						<a class="load_more_jobs" href="#"><strong><?php _e( 'Load more listings', 'wp-job-manager' ); ?></strong></a>
+						<a class="load_more_jobs" href="#"><strong><?php esc_html_e( 'Load more listings', 'wp-job-manager' ); ?></strong></a>
 					<?php endif; ?>
 
 				<?php endif; ?>
@@ -415,10 +416,9 @@ class WP_Job_Manager_Shortcodes {
 	 * @param  array $atts
 	 */
 	public function job_filter_job_types( $atts ) {
-		extract( $atts );
 
-		$job_types          = array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
-		$selected_job_types = array_filter( array_map( 'trim', explode( ',', $selected_job_types ) ) );
+		$job_types          = array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
+		$selected_job_types = array_filter( array_map( 'trim', explode( ',', $atts['selected_job_types'] ) ) );
 
 		get_job_manager_template( 'job-filter-job-types.php', array( 'job_types' => $job_types, 'atts' => $atts, 'selected_job_types' => $selected_job_types ) );
 	}
@@ -514,7 +514,7 @@ class WP_Job_Manager_Shortcodes {
 
 			<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
 
-				<div class="job_summary_shortcode align<?php echo $align ?>" style="width: <?php echo $width ? $width : auto; ?>">
+				<div class="job_summary_shortcode align<?php echo esc_attr( $align ) ?>" style="width: <?php echo $width ? esc_attr($width) : 'auto'; ?>">
 
 					<?php get_job_manager_template_part( 'content-summary', 'job_listing' ); ?>
 
@@ -536,9 +536,10 @@ class WP_Job_Manager_Shortcodes {
 	 * @return string
 	 */
 	public function output_job_apply( $atts ) {
-		extract( shortcode_atts( array(
+		$new_atts = shortcode_atts( array(
 			'id'       => ''
-		), $atts ) );
+		), $atts );
+		$id = $new_atts['id'];
 
 		ob_start();
 
@@ -555,28 +556,21 @@ class WP_Job_Manager_Shortcodes {
 
 		$jobs = new WP_Query( $args );
 
-		if ( $jobs->have_posts() ) : ?>
-
-			<?php while ( $jobs->have_posts() ) :
+		if ( $jobs->have_posts() ) :
+			while ( $jobs->have_posts() ) :
 				$jobs->the_post();
 				$apply = get_the_job_application_method();
-				?>
-
-				<?php do_action( 'job_manager_before_job_apply_' . absint( $id ) ); ?>
-
-				<?php if ( apply_filters( 'job_manager_show_job_apply_' . absint( $id ), true ) ) : ?>
+				do_action( 'job_manager_before_job_apply_' . absint( $id ) );
+				if ( apply_filters( 'job_manager_show_job_apply_' . absint( $id ), true ) ) : ?>
 					<div class="job-manager-application-wrapper">
 						<?php do_action( 'job_manager_application_details_' . $apply->type, $apply ); ?>
 					</div>
-				<?php endif; ?>
-
-				<?php do_action( 'job_manager_after_job_apply_' . absint( $id ) ); ?>
-
-			<?php endwhile; ?>
-
-		<?php endif;
-
-		wp_reset_postdata();
+				<?php
+				endif;
+				do_action( 'job_manager_after_job_apply_' . absint( $id ) );
+			endwhile;
+			wp_reset_postdata();
+		endif;
 
 		return ob_get_clean();
 	}
