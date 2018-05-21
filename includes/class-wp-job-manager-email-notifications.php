@@ -744,9 +744,9 @@ final class WP_Job_Manager_Email_Notifications {
 		do_action( 'job_manager_email_header', $email_notification_key, $args, $plain_text );
 
 		if ( $plain_text ) {
-			echo html_entity_decode( wptexturize( $args['plain_content'] ) );
+			echo wp_kses_post( html_entity_decode( wptexturize( $args['plain_content'] ) ) );
 		} else {
-			echo wpautop( wptexturize( $args['rich_content'] ) );
+			echo wp_kses_post( wpautop( wptexturize( $args['rich_content'] ) ) );
 		}
 
 		/**
