@@ -331,12 +331,13 @@ if ( ! function_exists( 'get_featured_job_ids' ) ) :
  */
 function get_featured_job_ids() {
 	return get_posts( array(
-		'posts_per_page' => -1,
-		'post_type'      => 'job_listing',
-		'post_status'    => 'publish',
-		'meta_key'       => '_featured',
-		'meta_value'     => '1',
-		'fields'         => 'ids'
+		'posts_per_page'   => -1,
+		'suppress_filters' => false,
+		'post_type'        => 'job_listing',
+		'post_status'      => 'publish',
+		'meta_key'         => '_featured',
+		'meta_value'       => '1',
+		'fields'           => 'ids'
 	) );
 }
 endif;
@@ -458,7 +459,7 @@ function job_manager_get_filtered_links( $args = array() ) {
 	$return = '';
 
 	foreach ( $links as $key => $link ) {
-		$return .= '<a href="' . esc_url( $link['url'] ) . '" class="' . esc_attr( $key ) . '">' . $link['name'] . '</a>';
+		$return .= '<a href="' . esc_url( $link['url'] ) . '" class="' . esc_attr( $key ) . '">' . wp_kses_post( $link['name'] ) . '</a>';
 	}
 
 	return $return;
@@ -1073,9 +1074,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 7 );
 	}
 
-	$name       = esc_attr( $name );
-	$class      = esc_attr( $class );
-	$id         = $id ? esc_attr( $id ) : $name;
+	$id         = $id ? $id : $name;
 
 	$output = "<select name='" . esc_attr( $name ) . "[]' id='" . esc_attr( $id ) . "' class='" . esc_attr( $class ) . "' " . ( $multiple ? "multiple='multiple'" : '' ) . " data-placeholder='" . esc_attr( $placeholder ) . "' data-no_results_text='" . esc_attr( $no_results_text ) . "' data-multiple_text='" . esc_attr( $multiple_text ) . "'>\n";
 
@@ -1391,8 +1390,8 @@ function job_manager_duplicate_listing( $post_id ) {
 	$post_meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id=%d", $post_id ) );
 
 	if ( ! empty( $post_meta ) ) {
-		$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
 		foreach ( $post_meta as $meta_key => $meta_value ) {
+			$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
 			if ( in_array( $meta_key, apply_filters( 'job_manager_duplicate_listing_ignore_keys', array( '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' ) ) ) ) {
 				continue;
 			}
