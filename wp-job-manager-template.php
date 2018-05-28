@@ -399,6 +399,17 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		}
 	}
 
+
+	$salary = get_the_job_salary( $post );
+	if ( ! empty( $salary ) ) {
+		$data['baseSalary'] = array();
+		$data['baseSalary']['@type'] = 'MonetaryAmount';
+		$data['baseSalary']['currency'] = apply_filters( 'wpjm_job_salary_currency', 'USD' );
+		$data['baseSalary']['value']['@type'] = 'QuantitativeValue';
+		$data['baseSalary']['value']['value'] = $salary;
+		$data['baseSalary']['value']['unitText'] = apply_filters( 'wpjm_job_salary_unit', 'MONTH' );
+	}
+
 	/**
 	 * Filter the structured data for a job listing.
 	 *
