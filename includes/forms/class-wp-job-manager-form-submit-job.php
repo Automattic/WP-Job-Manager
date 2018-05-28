@@ -191,12 +191,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'default'     => 'full-time',
 					'taxonomy'    => 'job_listing_type'
 				),
+				'job_salary' => array(
+					'label'       => __( 'Salary', 'wp-job-manager' ),
+					'type'        => 'text',
+					'required'    => false,
+					'placeholder' => __( 'e.g. $4000', 'wp-job-manager' ),
+					'priority'    => 4
+				),
 				'job_category' => array(
 					'label'       => __( 'Job category', 'wp-job-manager' ),
 					'type'        => 'term-multiselect',
 					'required'    => true,
 					'placeholder' => '',
-					'priority'    => 4,
+					'priority'    => 5,
 					'default'     => '',
 					'taxonomy'    => 'job_listing_category'
 				),
@@ -204,7 +211,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'label'       => __( 'Description', 'wp-job-manager' ),
 					'type'        => 'wp-editor',
 					'required'    => true,
-					'priority'    => 5
+					'priority'    => 6
 				),
 				'application' => array(
 					'label'       => $application_method_label,
@@ -212,7 +219,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'sanitizer'   => $application_method_sanitizer,
 					'required'    => true,
 					'placeholder' => $application_method_placeholder,
-					'priority'    => 6
+					'priority'    => 7
 				)
 			),
 			'company' => array(

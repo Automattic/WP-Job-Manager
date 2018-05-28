@@ -1099,6 +1099,48 @@ function get_the_company_twitter( $post = null ) {
 }
 
 /**
+ * Gets the job salary.
+ *
+ * @since 1.0.0
+ * @param int|WP_Post|null $post (default: null)
+ * @return string|null
+ */
+function get_the_job_salary( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type )
+		return;
+
+	$job_salary = $post->_job_salary;
+
+	return apply_filters( 'the_job_salary', $job_salary, $post );
+}
+
+/**
+ * Displays or retrieves the current company name with optional content.
+ *
+ * @since 1.0.0
+ * @param string           $before (default: '')
+ * @param string           $after (default: '')
+ * @param bool             $echo (default: true)
+ * @param int|WP_Post|null $post (default: null)
+ * @return string|void
+ */
+function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
+	$job_salary = get_the_job_salary( $post );
+
+	if ( strlen( $job_salary ) == 0 )
+		return;
+
+	$job_salary = esc_attr( strip_tags( $job_salary ) );
+	$job_salary = $before . $job_salary . $after;
+
+	if ( $echo )
+		echo $job_salary;
+	else
+		return $job_salary;
+}
+
+/**
  * Outputs the job listing class.
  *
  * @since 1.0.0
