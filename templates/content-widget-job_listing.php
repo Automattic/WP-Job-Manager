@@ -14,12 +14,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
 ?>
 <li <?php job_listing_class(); ?>>
 	<a href="<?php the_job_permalink(); ?>">
+		<?php if( $logo ) { ?>
 		<div class="image">
 			<?php the_company_logo(); ?>
 		</div>
+		<?php } ?>
 		<div class="content">
 			<div class="position">
 				<h3><?php wpjm_the_job_title(); ?></h3>

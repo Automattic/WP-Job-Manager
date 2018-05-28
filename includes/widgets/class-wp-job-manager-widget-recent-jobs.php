@@ -105,7 +105,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 				<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
 
-					<?php get_job_manager_template_part( 'content-widget', 'job_listing' ); ?>
+					<?php get_job_manager_template( 'content-widget-job_listing.php', array( 'logo' => $instance['show_logo'] ) ); ?>
 
 				<?php endwhile; ?>
 
