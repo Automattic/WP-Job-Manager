@@ -45,6 +45,11 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 				'std'   => 10,
 				'label' => __( 'Number of listings to show', 'wp-job-manager' ),
 			),
+			'show_logo' => array(
+				'type'  => 'checkbox',
+				'std'   => 0,
+				'label' => __( 'Show Company Logo', 'woocommerce' ),
+			),
 		);
 		$this->register();
 	}
