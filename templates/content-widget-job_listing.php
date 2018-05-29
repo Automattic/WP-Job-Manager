@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <li <?php job_listing_class(); ?>>
 	<a href="<?php the_job_permalink(); ?>">
-		<?php if( $logo ) { ?>
+		<?php if ( $show_logo ) { ?>
 		<div class="image">
 			<?php the_company_logo(); ?>
 		</div>

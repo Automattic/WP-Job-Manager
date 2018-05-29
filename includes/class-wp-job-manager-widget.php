@@ -181,11 +181,11 @@ class WP_Job_Manager_Widget extends WP_Widget {
 				case 'checkbox':
 					?>
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo $setting['label']; ?></label>
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 						<input class="checkbox" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="checkbox" value="1" <?php checked( $value, 1 ); ?> />
 					</p>
 					<?php
-				break;
+					break;
 			}
 		}
 	}
