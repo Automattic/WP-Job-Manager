@@ -192,11 +192,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'taxonomy'    => 'job_listing_type'
 				),
 				'job_salary' => array(
-					'label'       => __( 'Salary', 'wp-job-manager' ),
+					'label'       => esc_html__( 'Salary', 'wp-job-manager' ),
 					'type'        => 'text',
 					'required'    => false,
-					'placeholder' => __( 'e.g. $4000', 'wp-job-manager' ),
-					'priority'    => 4
+					'placeholder' => esc_html__( 'e.g. $4000 ', 'wp-job-manager' ),
+					'priority'    => 4,
 				),
 				'job_category' => array(
 					'label'       => __( 'Job category', 'wp-job-manager' ),

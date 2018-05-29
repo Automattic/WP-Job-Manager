@@ -404,9 +404,21 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 	if ( ! empty( $salary ) ) {
 		$data['baseSalary'] = array();
 		$data['baseSalary']['@type'] = 'MonetaryAmount';
+		/**
+		 * Filter for the salary currency.
+		 *
+		 * @since 1.0.0
+		 * @param string     job salary currency.
+		 */
 		$data['baseSalary']['currency'] = apply_filters( 'wpjm_job_salary_currency', 'USD' );
 		$data['baseSalary']['value']['@type'] = 'QuantitativeValue';
 		$data['baseSalary']['value']['value'] = $salary;
+		/**
+		 * Filter for the salary unit.
+		 *
+		 * @since 1.0.0
+		 * @param string     job salary unit.
+		 */
 		$data['baseSalary']['value']['unitText'] = apply_filters( 'wpjm_job_salary_unit', 'MONTH' );
 	}
 
@@ -1118,11 +1130,20 @@ function get_the_company_twitter( $post = null ) {
  */
 function get_the_job_salary( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type )
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
 		return;
+	}
 
 	$job_salary = $post->_job_salary;
 
+	/**
+	 * Filter the returned job salary.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string  $job_salary
+	 * @param WP_Post $post
+	 */
 	return apply_filters( 'the_job_salary', $job_salary, $post );
 }
 
@@ -1139,16 +1160,17 @@ function get_the_job_salary( $post = null ) {
 function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
 	$job_salary = get_the_job_salary( $post );
 
-	if ( strlen( $job_salary ) == 0 )
+	if ( strlen( $job_salary ) == 0 ) {
 		return;
+	}
 
-	$job_salary = esc_attr( strip_tags( $job_salary ) );
 	$job_salary = $before . $job_salary . $after;
 
-	if ( $echo )
-		echo $job_salary;
-	else
+	if ( $echo ) {
+		echo esc_html( $job_salary );
+	} else {
 		return $job_salary;
+	}
 }
 
 /**

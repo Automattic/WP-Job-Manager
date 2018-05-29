@@ -466,7 +466,7 @@ class WP_Job_Manager_Post_Types {
 			echo "<job_listing:company><![CDATA[" . esc_html( $company ) . "]]></job_listing:company>\n";
 		}
 		if ( $salary ) {
-			echo "<job_listing:salary><![CDATA[" . esc_html( $salary ) . "]]></job_listing:salary>\n";
+			echo '<job_listing:salary><![CDATA[' . esc_html( $salary ) . ']]></job_listing:salary>\n';
 		}
 
 		/**
