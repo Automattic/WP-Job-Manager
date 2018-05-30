@@ -1,6 +1,6 @@
 <?php
 
-class WP_Test_WP_Job_Manager_Cache_Walker extends WPJM_BaseTest {
+class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 	private $terms;
 
 	public function setUp() {
@@ -10,7 +10,7 @@ class WP_Test_WP_Job_Manager_Cache_Walker extends WPJM_BaseTest {
 
 	/**
 	 * @since 1.27.0
-	 * @covers WP_Job_Manager_Cache_Walker::start_el
+	 * @covers WP_Job_Manager_Category_Walker::start_el
 	 */
 	public function test_start_el() {
 		$terms = $this->get_terms();
