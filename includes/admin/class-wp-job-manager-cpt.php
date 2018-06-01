@@ -686,7 +686,7 @@ class WP_Job_Manager_CPT {
 	public function filter_meta( $wp ) {
 		global $pagenow;
 
-		if ( 'edit.php' !== $pagenow || 'job_listing' !== $wp->query_vars['post_type'] ) {
+		if ( 'edit.php' !== $pagenow || empty( $wp->query_vars['post_type'] ) || 'job_listing' !== $wp->query_vars['post_type'] ) {
 			return;
 		}
 
