@@ -1072,7 +1072,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 	if ( strlen( $company_twitter ) == 0 )
 		return;
 
-	$company_twitter = $before . '<a href="'.esc_url( 'https://twitter.com/' . $company_twitter ) . '" class="company_twitter" target="_blank">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
+	$company_twitter = $before . '<a href="' . esc_url( 'https://twitter.com/' . $company_twitter ) . '" class="company_twitter" target="_blank">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
 
 	if ( $echo )
 		echo wp_kses_post( $company_twitter );
