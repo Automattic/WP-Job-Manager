@@ -371,7 +371,7 @@ class WP_Job_Manager_CPT {
 	private function jobs_filter_dropdown( $param, $options ) {
 		$selected = isset( $_GET[ $param ] ) ? $_GET[ $param ] : '';
 
-		echo '<select name="'.esc_attr( $param ).'" id="dropdown_'.esc_attr( $param ).'">';
+		echo '<select name="' . esc_attr( $param ) . '" id="dropdown_' . esc_attr( $param ) . '">';
 
 		foreach ( $options as $option ) {
 			echo '<option value="' . esc_attr( $option['value'] ) . '"'
