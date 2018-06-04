@@ -203,11 +203,12 @@ class WP_Job_Manager_Writepanels {
 			<!-- Display taxonomy terms -->
 			<div id="<?php echo esc_attr( $taxonomy ); ?>-all" class="tabs-panel">
 				<ul id="<?php echo esc_attr( $taxonomy ); ?>checklist" class="list:<?php echo esc_attr( $taxonomy ); ?> categorychecklist form-no-clear">
-					<?php   foreach($terms as $term){
-						$id = $taxonomy.'-'.$term->term_id;
-						echo '<li id="'.esc_attr( $id )."\"><label class='selectit'>";
-						echo '<input type="radio" id="in-'.esc_attr( $id ).' name="'.esc_attr( $name ).'" '.checked($current,$term->term_id).' value="'.esc_attr( $term->term_id ).'" />'.esc_attr( $term->name ).'<br />';
-					   echo "</label></li>";
+					<?php
+					foreach ( $terms as $term ) {
+						$id = $taxonomy.'-' . $term->term_id;
+						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
+						echo '<input type="radio" id="in-' . esc_attr( $id ).' name="' . esc_attr( $name ) . '" ' . checked( $current, $term->term_id ).' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
+						echo "</label></li>";
 					}?>
 			   </ul>
 			</div>
@@ -215,12 +216,14 @@ class WP_Job_Manager_Writepanels {
 			<!-- Display popular taxonomy terms -->
 			<div id="<?php echo esc_attr( $taxonomy ); ?>-pop" class="tabs-panel" style="display: none;">
 				<ul id="<?php echo esc_attr( $taxonomy ); ?>checklist-pop" class="categorychecklist form-no-clear" >
-					<?php   foreach($popular as $term){
-						$id = 'popular-'.$taxonomy.'-'.$term->term_id;
-						echo '<li id="'.esc_attr( $id )."\"><label class='selectit'>";
-						echo '<input type="radio" id="in-'.esc_attr( $id ).'" '.checked($current,$term->term_id,false).' value="'.esc_attr( $term->term_id ).'" />'.esc_attr( $term->name ).'<br />';
+					<?php
+					foreach ( $popular as $term ) {
+						$id = 'popular-' . $taxonomy . '-' . $term->term_id;
+						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
+						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ).'<br />';
 						echo "</label></li>";
-					}?>
+					}
+					?>
 			   </ul>
 		   </div>
 
