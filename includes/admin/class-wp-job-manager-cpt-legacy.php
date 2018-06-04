@@ -48,12 +48,12 @@ class WP_Job_Manager_CPT_Legacy extends WP_Job_Manager_CPT {
 	public function add_bulk_actions_legacy() {
 		global $post_type, $wp_post_types;
 
-		$bulk_actions = [];
+		$bulk_actions = array();
 		foreach( $this->get_bulk_actions() as $key => $bulk_action ) {
-			$bulk_actions[] = [
+			$bulk_actions[] = array(
 				'key' => $key,
 				'label' => sprintf( $bulk_action[ 'label' ], $wp_post_types[ 'job_listing' ]->labels->name )
-			];
+			);
 		}
 
 		if ( $post_type === 'job_listing' ) {
