@@ -26,12 +26,23 @@ $job = $args['job'];
 $expiring_today = $args['expiring_today'];
 
 if ( $expiring_today ) {
-	printf( esc_html__( 'The following job listing is expiring today from %s (%s).', 'wp-job-manager' ), esc_html(get_bloginfo( 'name' )), esc_url(home_url()) );
+	printf(
+		esc_html__( 'The following job listing is expiring today from %s (%s).', 'wp-job-manager' ),
+		esc_html( get_bloginfo( 'name' ) ),
+		esc_url( home_url() )
+	);
 } else {
-	printf( esc_html__( 'The following job listing is expiring soon from %s (%s).', 'wp-job-manager' ), esc_html(get_bloginfo( 'name' )), esc_url(home_url()) );
+	printf(
+		esc_html__( 'The following job listing is expiring soon from %s (%s).', 'wp-job-manager' ),
+		esc_html( get_bloginfo( 'name' ) ),
+		esc_url( home_url() )
+	);
 }
 $edit_post_link = admin_url( sprintf( 'post.php?post=%d&amp;action=edit', $job->ID ) );
-printf( ' ' . esc_html__( 'Visit WordPress admin (%s) to manage the listing.', 'wp-job-manager' ), esc_url( $edit_post_link ) );
+printf(
+	' ' . esc_html__( 'Visit WordPress admin (%s) to manage the listing.', 'wp-job-manager' ),
+	esc_url( $edit_post_link )
+);
 
 /**
  * Show details about the job listing.
