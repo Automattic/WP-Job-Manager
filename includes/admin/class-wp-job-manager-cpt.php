@@ -755,7 +755,7 @@ class WP_Job_Manager_CPT {
 			$selected AND $display = $name;
 
 			// Build the options
-			$options .= "<option{$selected} value='{$status}'>".esc_html( $name )."</option>";
+			$options .= "<option{$selected} value='{$status}'>" . esc_html( $name ) . "</option>";
 		}
 		?>
 		<script type="text/javascript">
@@ -765,7 +765,7 @@ class WP_Job_Manager_CPT {
 				<?php endif; ?>
 
 				var select = jQuery( '#post-status-select' ).find( 'select' );
-				jQuery( select ).html( <?php echo wp_json_encode($options); ?> );
+				jQuery( select ).html( <?php echo wp_json_encode( $options ); ?> );
 			} );
 		</script>
 		<?php
