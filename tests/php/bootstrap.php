@@ -144,7 +144,7 @@ class WPJM_Unit_Tests_Bootstrap {
 
 		// PHP 5.2 doesn't show the error from Exceptions.
 		if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
-			echo "Error (".esc_html( $errno ) ."( - ".esc_html( $description )."\n";
+			echo "Error (" . esc_html( $errno ) . "( - " . esc_html( $description ) . "\n";
 		}
 
 		throw new Exception( $description );
