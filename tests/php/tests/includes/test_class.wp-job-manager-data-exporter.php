@@ -3,6 +3,7 @@
 require 'includes/class-wp-job-manager-data-exporter.php';
 
 class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
+	private $attachment_id;
 	/**
 	 * Setup user meta
 	 *
@@ -18,11 +19,11 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 		);
 
 		if ( isset( $args['_company_logo' ] ) ) {
-			$args['_company_logo'] = $this->factory()->post->create(
-				array(
-					'post_type' => 'attachment'
-				)
-			);
+			$this->attachment_id = $args['_company_logo'] = $this->factory()->post->create(
+																	array(
+																			'post_type' => 'attachment'
+																		)
+																	);
 		}
 
 		foreach ( $args as $key => $value ) {
@@ -33,13 +34,23 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 	/**
 	 * @dataProvider data_provider
 	 */
-	public function test_user_data_exporter( $args, $expected ) {
+	public function test_user_metadata_to_be_exported( $args, $expected ) {
 		$this->setupUserMeta( $args );
 		$exporter = new WP_Job_Manager_Data_Exporter();
 
 		$result = $exporter->user_data_exporter( 'johndoe@example.com' );
+		if ( array_key_exists( '_company_logo', $args ) ) {
+			/**
+			 * This is required because the logo is saved as an attachment and
+			 * its ID is stored in the user_meta table.
+			 * Since the ID of the post can't be determined in the dataProvider,
+			 * it's value is set to true to indicate that a dummy attachment
+			 * needs to be created.
+			 */
+			$expected['data']['data']['Company Logo']['value'] = wp_get_attachment_url( $this->attachment_id );
+		}
 
-		$this->assertEquals( $expected, $result );
+		$this->assertEquals( $expected['data']['data'], $result['data']['data'] );
 	}
 
 	public function data_provider(){
@@ -60,7 +71,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 						'data'			 => array(
 							'Company Logo' => array(
 								'name' => 'Label',
-								'value' => 'https://example.com/company/logo',
+								'value' => true, //specify that attachment should be created
 								),
 							'Company Name' => array(
 								'name' => 'Label',
