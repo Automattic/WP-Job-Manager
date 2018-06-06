@@ -45,15 +45,15 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 
 			$user_data_to_export = array();
 			$user_meta_keys = array(
-				'_company_logo',
-				'_company_name',
-				'_company_website',
-				'_company_tagline',
-				'_company_twitter',
-				'_company_video',
+				'_company_logo' => __( 'Company Logo' ),
+				'_company_name' => __( 'Company Name' ),
+				'_company_website' => __( 'Company Website' ),
+				'_company_tagline' => __( 'Company Tagline' ),
+				'_company_twitter' => __( 'Company Twitter' ),
+				'_company_video' => __( 'Company Video' ),
 			);
 
-			foreach ( $user_meta_keys as $user_meta_key ) {	
+			foreach ( $user_meta_keys as $user_meta_key => $name) {
 				$user_meta = get_user_meta( $user->ID, $user_meta_key, true );
 
 				if ( empty( $user_meta ) ) {
@@ -64,8 +64,8 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 					$user_meta  = wp_get_attachment_url( $user_meta );
 				}
 
-				$user_data_to_export[] = array(
-					'name'	 => __( $user_meta_key ),
+				$user_data_to_export["$name"] = array(
+					'name'	 => __( 'Label', 'wp-job-manager' ),
 					'value'	 => $user_meta,
 				);
 			}

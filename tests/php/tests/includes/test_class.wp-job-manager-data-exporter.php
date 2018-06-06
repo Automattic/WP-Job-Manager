@@ -39,7 +39,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 
 		$result = $exporter->user_data_exporter( 'johndoe@example.com' );
 
-		$this->assertEqual( $expec, $result );
+		$this->assertEquals( $expected, $result );
 	}
 
 	public function data_provider(){
@@ -58,30 +58,30 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 						'group_id'		 => 'wpjm-user-data',
 						'group_label'	 => __( 'WP Job Manager User Data' ),
 						'data'			 => array(
-							array(
-								'name' => '_company_logo',
+							'Company Logo' => array(
+								'name' => 'Label',
 								'value' => 'https://example.com/company/logo',
-							),
-							array(
-								'name' => '_company_name',
+								),
+							'Company Name' => array(
+								'name' => 'Label',
 								'value' => 'Example',
-							),
-							array(
-								'name' => '_company_website',
+								),
+							'Company Website' => array(
+								'name' => 'Label',
 								'value' => 'https://example.com/',
-							),
-							array(
-								'name' => '_company_tagline',
+								),
+							'Company Tagline' => array(
+								'name' => 'Label',
 								'value' => 'Just another tagline',
-							),
-							array(
-								'name' => '_company_twitter',
+								),
+							'Company Twitter' => array(
+								'name' => 'Label',
 								'value' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
-							),
-							array(
-								'name' => '_company_video',
+								),
+							'Company Video' => array(
+								'name' => 'Label',
 								'value' => 'https://example.com/company/video',
-							),
+								),
 						)
 					),
 					'done' => true,
@@ -92,25 +92,24 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 					'_company_name' => 'Example',
 					'_company_website' => 'https://example.com/',
 					'_company_tagline' => 'Just another tagline',
-
 				),
 				array(
 					'data' => array(
 						'group_id'		 => 'wpjm-user-data',
 						'group_label'	 => __( 'WP Job Manager User Data' ),
 						'data'			 => array(
-							array(
-								'name' => '_company_name',
+							'Company Name' => array(
+								'name' => 'Label',
 								'value' => 'Example',
-							),
-							array(
-								'name' => '_company_website',
+								),
+							'Company Website' => array(
+								'name' => 'Label',
 								'value' => 'https://example.com/',
-							),
-							array(
-								'name' => '_company_tagline',
+								),
+							'Company Tagline' => array(
+								'name' => 'Label',
 								'value' => 'Just another tagline',
-							),
+								),
 						)
 					),
 					'done' => true,
