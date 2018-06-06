@@ -38,6 +38,11 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 		 * @return array
 		 */
 		public function user_data_exporter( $email_address ) {
+			$user = get_user_by( 'email', $email_address );
+			if ( false === $user ) {
+				return;
+			}
+
 			$export_items = array();
 			$user_data_to_export = array();
 			$user_meta_keys = array(
@@ -49,16 +54,13 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 				'_company_video',
 			);
 
-			$user_id = get_user_by( 'email', $email_address );
-			
-
 			foreach ( $user_meta_keys as $user_meta_key ) {	
-				$user_meta = get_user_meta( $user_id, $user_meta_key, true );
+				$user_meta = get_user_meta( $user->ID, $user_meta_key, true );
 
 				if ( empty( $user_meta ) ) {
 					continue;
 				}
-				
+
 				if ( '_company_logo' === $user_meta_key) {
 					$user_meta  = wp_get_attachment_url( $user_meta );
 				}
@@ -72,7 +74,7 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 			$export_items[] = array(
 				'group_id'		 => 'wpjm-user-data',
 				'group_label'	 => __( 'WP Job Manager User Data' ),
-				'item_id'		 => "wpjm-user-data-{$user_id}",
+				'item_id'		 => "wpjm-user-data-{$user->ID}",
 				'data'			 => $user_data_to_export,
 			);
 
