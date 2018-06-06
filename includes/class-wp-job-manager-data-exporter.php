@@ -43,7 +43,6 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 				return;
 			}
 
-			$export_items = array();
 			$user_data_to_export = array();
 			$user_meta_keys = array(
 				'_company_logo',
@@ -71,7 +70,7 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 				);
 			}
 
-			$export_items[] = array(
+			$export_items = array(
 				'group_id'		 => 'wpjm-user-data',
 				'group_label'	 => __( 'WP Job Manager User Data' ),
 				'item_id'		 => "wpjm-user-data-{$user->ID}",
