@@ -39,6 +39,7 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 		 */
 		public function user_data_exporter( $email_address ) {
 			$export_items = array();
+			$user_data_to_export = array();
 			$user_meta_keys = array(
 				'_company_logo',
 				'_company_name',
@@ -49,6 +50,7 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 			);
 
 			$user_id = get_user_by( 'email', $email_address );
+			
 
 			foreach ( $user_meta_keys as $user_meta_key ) {	
 				$user_meta = get_user_meta( $user_id, $user_meta_key, true );
@@ -61,18 +63,18 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 					$user_meta  = wp_get_attachment_url( $user_meta );
 				}
 
-				$user_data_to_export = array(
+				$user_data_to_export[] = array(
 					'name'	 => __( $user_meta_key ),
 					'value'	 => $user_meta,
 				);
-
-				$export_items[] = array(
-					'group_id'		 => 'wpjm-user-data',
-					'group_label'	 => __( 'WP Job Manager User Data' ),
-					'item_id'		 => "wpjm-user-{$user_id}-{$user_meta_key}",
-					'data'			 => $user_data_to_export,
-				);
 			}
+
+			$export_items[] = array(
+				'group_id'		 => 'wpjm-user-data',
+				'group_label'	 => __( 'WP Job Manager User Data' ),
+				'item_id'		 => "wpjm-user-data-{$user_id}",
+				'data'			 => $user_data_to_export,
+			);
 
 			return array(
 				'data' =>$export_items,
