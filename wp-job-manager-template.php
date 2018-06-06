@@ -407,7 +407,7 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		/**
 		 * Filter for the salary currency.
 		 *
-		 * @since 1.0.0
+		 * @since TBD
 		 * @param string     job salary currency.
 		 */
 		$data['baseSalary']['currency'] = apply_filters( 'wpjm_job_salary_currency', 'USD' );
@@ -416,7 +416,7 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		/**
 		 * Filter for the salary unit.
 		 *
-		 * @since 1.0.0
+		 * @since TBD
 		 * @param string     job salary unit.
 		 */
 		$data['baseSalary']['value']['unitText'] = apply_filters( 'wpjm_job_salary_unit', 'MONTH' );
@@ -1124,7 +1124,7 @@ function get_the_company_twitter( $post = null ) {
 /**
  * Gets the job salary.
  *
- * @since 1.0.0
+ * @since TBD
  * @param int|WP_Post|null $post (default: null)
  * @return string|null
  */
@@ -1139,7 +1139,7 @@ function get_the_job_salary( $post = null ) {
 	/**
 	 * Filter the returned job salary.
 	 *
-	 * @since 1.0.0
+	 * @since TBD
 	 *
 	 * @param string  $job_salary
 	 * @param WP_Post $post
@@ -1148,9 +1148,9 @@ function get_the_job_salary( $post = null ) {
 }
 
 /**
- * Displays or retrieves the current company name with optional content.
+ * Displays or retrieves the job salaray with optional content.
  *
- * @since 1.0.0
+ * @since TBD
  * @param string           $before (default: '')
  * @param string           $after (default: '')
  * @param bool             $echo (default: true)
