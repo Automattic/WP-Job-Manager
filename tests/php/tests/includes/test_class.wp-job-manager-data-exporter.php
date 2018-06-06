@@ -1,6 +1,6 @@
 <?php
 
-require 'includes/class-wp-job-manager-data-exporter';
+require 'includes/class-wp-job-manager-data-exporter.php';
 
 class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 	/**
