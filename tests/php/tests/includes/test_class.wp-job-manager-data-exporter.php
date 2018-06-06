@@ -29,4 +29,16 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 			update_user_meta( $user_id, $key, $value );
 		}
 	}
+
+	/**
+	 * @dataProvider data_provider
+	 */
+	public function test_user_data_exporter( $args, $expected ) {
+		$this->setupUserMeta( $args );
+		$exporter = new WP_Job_Manager_Data_Exporter();
+
+		$result = $exporter->user_data_exporter( 'johndoe@example.com' );
+
+		$this->assertEqual( $expec, $result );
+	}
 }
