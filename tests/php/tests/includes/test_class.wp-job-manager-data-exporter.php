@@ -3,13 +3,12 @@
 require 'includes/class-wp-job-manager-data-exporter.php';
 
 class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
-	private $attachment_id;
 	/**
 	 * Setup user meta
 	 *
 	 * @param array $args
 	 */
-	private function setupUserMeta( $args ) {
+	private function setupUserMeta( $args, &$expected ) {
 		$user_id = $this->factory()->user->create(
 			array(
 				'user_login' => 'johndoe',
@@ -19,11 +18,10 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 		);
 
 		if ( isset( $args['_company_logo' ] ) ) {
-			$this->attachment_id = $args['_company_logo'] = $this->factory()->post->create(
-																	array(
-																			'post_type' => 'attachment'
-																		)
-																	);
+			$args['_company_logo'] = $this->factory()->post->create(
+				array( 'post_type' => 'attachment' )
+			);
+			$expected['data']['data']['Company Logo']['value'] = $args['_company_logo'];
 		}
 
 		foreach ( $args as $key => $value ) {
@@ -36,7 +34,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 	 */
 	public function test_user_data_exporter( $args, $expected ) {
 		// ARRANGE
-		$this->setupUserMeta( $args );
+		$this->setupUserMeta( $args, $expected );
 		$exporter = new WP_Job_Manager_Data_Exporter();
 		if ( $ID = email_exists( 'johndoe@example.com' ) ) {
 			/**
@@ -54,7 +52,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 			 * it's value is set to true to indicate that a dummy attachment
 			 * needs to be created.
 			 */
-			$expected['data']['data']['Company Logo']['value'] = wp_get_attachment_url( $this->attachment_id );
+			$expected['data']['data']['Company Logo']['value'] = wp_get_attachment_url( $expected['data']['data']['Company Logo']['value'] );
 		}
 
 		// ACT
