@@ -1,23 +1,36 @@
 <?php
+/**
+ * Defines a class to test the data exporter
+ *
+ * @package wp-job-manager-test
+ * @since 1.31.1
+ */
 
 require 'includes/class-wp-job-manager-data-exporter.php';
 
+/**
+ * Handles the user data export.
+ *
+ * @package
+ * @since
+ */
 class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 	/**
-	 * Setup user meta
+	 * Setup user metadata
 	 *
-	 * @param array $args
+	 * @param array $args The metadata to be added.
+	 * @param array $expected The expected output.
 	 */
 	private function setupUserMeta( $args, &$expected ) {
 		$user_id = $this->factory()->user->create(
 			array(
 				'user_login' => 'johndoe',
 				'user_email' => 'johndoe@example.com',
-				'role' => 'subscriber',
+				'role'       => 'subscriber',
 			)
 		);
 
-		if ( isset( $args['_company_logo' ] ) ) {
+		if ( isset( $args['_company_logo'] ) ) {
 			$args['_company_logo'] = $this->factory()->post->create(
 				array( 'post_type' => 'attachment' )
 			);
@@ -30,19 +43,23 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test the user data exporter method
+	 *
 	 * @dataProvider data_provider
+	 * @param array $args The metadata to be added.
+	 * @param array $expected The expected output.
 	 */
 	public function test_user_data_exporter( $args, $expected ) {
-		// ARRANGE
+		// ARRANGE.
 		$this->setupUserMeta( $args, $expected );
 		$exporter = new WP_Job_Manager_Data_Exporter();
-		if ( $ID = email_exists( 'johndoe@example.com' ) ) {
+		if ( $id = email_exists( 'johndoe@example.com' ) ) {
 			/**
 			 * We need to do this because the item_id depends on the user ID
 			 * which can't be provided by the dataProvider before the dummy
 			 * user is created.
 			 */
-			$expected['data']['item_id'] = "wpjm-user-data-{$ID}";
+			$expected['data']['item_id'] = "wpjm-user-data-{$id}";
 		}
 		if ( array_key_exists( '_company_logo', $args ) ) {
 			/**
@@ -55,87 +72,92 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 			$expected['data']['data']['Company Logo']['value'] = wp_get_attachment_url( $expected['data']['data']['Company Logo']['value'] );
 		}
 
-		// ACT
+		// ACT.
 		$result = $exporter->user_data_exporter( 'johndoe@example.com' );
 
-		// ASSERT
+		// ASSERT.
 		$this->assertEquals( $expected, $result );
 	}
 
-	public function data_provider(){
+	/**
+	 * The data provider method
+	 *
+	 * @return array
+	 */
+	public function data_provider() {
 		return [
 			[
 				array(
-					'_company_logo' => 'https://example.com/company/logo',
-					'_company_name' => 'Example',
+					'_company_logo'    => 'https://example.com/company/logo',
+					'_company_name'    => 'Example',
 					'_company_website' => 'https://example.com/',
 					'_company_tagline' => 'Just another tagline',
 					'_company_twitter' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
-					'_company_video' => 'https://example.com/company/video', 
+					'_company_video'   => 'https://example.com/company/video',
 				),
 				array(
 					'data' => array(
-						'group_id'		 => 'wpjm-user-data',
-						'group_label'	 => __( 'WP Job Manager User Data' ),
-						'item_id'		=> '', // the item_id depends on the ID of the user.
-						'data'			 => array(
-							'Company Logo' => array(
-								'name' => 'Label',
-								'value' => true, //specify that attachment should be created
-								),
-							'Company Name' => array(
-								'name' => 'Label',
+						'group_id'    => 'wpjm-user-data',
+						'group_label' => __( 'WP Job Manager User Data' ),
+						'item_id'     => '', // the item_id depends on the ID of the user.
+						'data'        => array(
+							'Company Logo'    => array(
+								'name'  => 'Label',
+								'value' => true, // specify that attachment should be created.
+							),
+							'Company Name'    => array(
+								'name'  => 'Label',
 								'value' => 'Example',
-								),
+							),
 							'Company Website' => array(
-								'name' => 'Label',
+								'name'  => 'Label',
 								'value' => 'https://example.com/',
-								),
+							),
 							'Company Tagline' => array(
-								'name' => 'Label',
+								'name'  => 'Label',
 								'value' => 'Just another tagline',
-								),
+							),
 							'Company Twitter' => array(
-								'name' => 'Label',
+								'name'  => 'Label',
 								'value' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
-								),
-							'Company Video' => array(
-								'name' => 'Label',
+							),
+							'Company Video'   => array(
+								'name'  => 'Label',
 								'value' => 'https://example.com/company/video',
-								),
-						)
+							),
+						),
 					),
 					'done' => true,
-				)
-			], // End of first set of parameters
+				),
+			], // End of first set of parameters.
 			[
 				array(
-					'_company_name' => 'Example',
+					'_company_name'    => 'Example',
 					'_company_website' => 'https://example.com/',
 					'_company_tagline' => 'Just another tagline',
 				),
 				array(
 					'data' => array(
-						'group_id'		 => 'wpjm-user-data',
-						'group_label'	 => __( 'WP Job Manager User Data' ),
-						'data'			 => array(
-							'Company Name' => array(
-								'name' => 'Label',
+						'group_id'    => 'wpjm-user-data',
+						'group_label' => __( 'WP Job Manager User Data' ),
+						'data'        => array(
+							'Company Name'    => array(
+								'name'  => 'Label',
 								'value' => 'Example',
-								),
+							),
 							'Company Website' => array(
-								'name' => 'Label',
+								'name'  => 'Label',
 								'value' => 'https://example.com/',
-								),
+							),
 							'Company Tagline' => array(
-								'name' => 'Label',
+								'name'  => 'Label',
 								'value' => 'Just another tagline',
-								),
-						)
+							),
+						),
 					),
 					'done' => true,
-				)
-			] // End of second set of parameters
+				),
+			], // End of second set of parameters.
 		];
 	}
 }
