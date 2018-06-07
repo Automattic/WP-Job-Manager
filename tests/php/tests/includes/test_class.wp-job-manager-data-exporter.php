@@ -43,6 +43,20 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test the data exporter for an invalid email
+	 */
+	public function test_data_exporter_for_invalid_email() {
+		// ARRANGE.
+		$exporter = new WP_Job_Manager_Data_Exporter();
+
+		// ASSERT.
+		$result = $exporter->user_data_exporter( 'this-is-an-invalid-email' );
+
+		// ACT.
+		$this->assertEmpty( $result );
+	}
+
+	/**
 	 * Test the user data exporter method
 	 *
 	 * @dataProvider data_provider
