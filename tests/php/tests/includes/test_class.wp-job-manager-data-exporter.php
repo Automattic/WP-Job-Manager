@@ -34,11 +34,18 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 	/**
 	 * @dataProvider data_provider
 	 */
-	public function test_user_metadata_to_be_exported( $args, $expected ) {
+	public function test_user_data_exporter( $args, $expected ) {
+		// ARRANGE
 		$this->setupUserMeta( $args );
 		$exporter = new WP_Job_Manager_Data_Exporter();
-
-		$result = $exporter->user_data_exporter( 'johndoe@example.com' );
+		if ( $ID = email_exists( 'johndoe@example.com' ) ) {
+			/**
+			 * We need to do this because the item_id depends on the user ID
+			 * which can't be provided by the dataProvider before the dummy
+			 * user is created.
+			 */
+			$expected['data']['item_id'] = "wpjm-user-data-{$ID}";
+		}
 		if ( array_key_exists( '_company_logo', $args ) ) {
 			/**
 			 * This is required because the logo is saved as an attachment and
@@ -50,7 +57,11 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 			$expected['data']['data']['Company Logo']['value'] = wp_get_attachment_url( $this->attachment_id );
 		}
 
-		$this->assertEquals( $expected['data']['data'], $result['data']['data'] );
+		// ACT
+		$result = $exporter->user_data_exporter( 'johndoe@example.com' );
+
+		// ASSERT
+		$this->assertEquals( $expected, $result );
 	}
 
 	public function data_provider(){
@@ -68,6 +79,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
 					'data' => array(
 						'group_id'		 => 'wpjm-user-data',
 						'group_label'	 => __( 'WP Job Manager User Data' ),
+						'item_id'		=> '', // the item_id depends on the ID of the user.
 						'data'			 => array(
 							'Company Logo' => array(
 								'name' => 'Label',
