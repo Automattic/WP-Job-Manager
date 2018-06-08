@@ -170,6 +170,25 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 					'done' => true,
 				),
 			], // End of second set of parameters.
+			[
+				array(
+					'_company_logo',
+					'_company_name',
+					'_company_website',
+					'_company_tagline',
+					'_company_twitter',
+					'_company_video',
+				),
+				array(
+					'data' => array(
+						'group_id'    => 'wpjm-user-data',
+						'group_label' => __( 'WP Job Manager User Data' ),
+						'item_id'     => '', // the item_id depends on the ID of the user.
+						'data'        => array(),
+					),
+					'done' => true,
+				),
+			], // End of third set of parameters.
 		];
 	}
 }
