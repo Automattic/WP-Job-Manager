@@ -77,7 +77,7 @@ class WP_Job_Manager {
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email-template.php' );
 		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-email-notifications.php' );
-		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-user-data-exporter.php' );
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-data-exporter.php' );
 
 		add_action( 'rest_api_init', array( $this, 'rest_api' ) );
 
