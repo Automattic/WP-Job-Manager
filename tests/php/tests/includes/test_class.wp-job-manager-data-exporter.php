@@ -6,15 +6,13 @@
  * @since 1.31.1
  */
 
-require 'includes/class-wp-job-manager-data-exporter.php';
-
 /**
  * Handles the user data export.
  *
  * @package
  * @since
  */
-class WP_Job_Manager_Data_Exporter_Test extends WP_UnitTestCase {
+class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 	/**
 	 * Setup user metadata
 	 *
