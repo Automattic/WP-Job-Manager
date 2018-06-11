@@ -97,8 +97,8 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 	 * @return array
 	 */
 	public function data_provider() {
-		return [
-			[
+		return array(
+			array(
 				array(
 					'_company_logo'    => 'https://example.com/company/logo',
 					'_company_name'    => 'Example',
@@ -141,8 +141,8 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 					),
 					'done' => true,
 				),
-			], // End of first set of parameters.
-			[
+			), // End of first set of parameters.
+			array(
 				array(
 					'_company_name'    => 'Example',
 					'_company_website' => 'https://example.com/',
@@ -169,8 +169,8 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 					),
 					'done' => true,
 				),
-			], // End of second set of parameters.
-			[
+			), // End of second set of parameters.
+			array(
 				array(
 					'_company_logo',
 					'_company_name',
@@ -188,7 +188,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 					),
 					'done' => true,
 				),
-			], // End of third set of parameters.
-		];
+			), // End of third set of parameters.
+		);
 	}
 }
