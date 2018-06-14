@@ -130,6 +130,17 @@ If you wish to be notified of new postings on your site you can use a plugin suc
 ### What language files are available? ###
 You can view (and contribute) translations via the [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager).
 
+## Unit Testing ##
+
+The plugin contains all the files needed for running tests.
+Developers who would like to run the existing tests or add their tests to the test suite and execute them will have to follow these steps:
+1. `cd` into the plugin directory.
+2. Run the install script(you will need to have `wget` installed) - `bash bin/install-wp-tests.sh <db-name> <db-user> <db-pass> <db-host> <wp-version>`.
+3. Run the plugin tests - `phpunit`
+
+The install script installs a copy of WordPress in the `/tmp` directory along with the WordPress unit testing tools. 
+It then creates a database based on the parameters passed to it.
+
 ## Screenshots ##
 
 1. The submit job form.
