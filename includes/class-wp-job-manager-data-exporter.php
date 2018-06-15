@@ -62,12 +62,13 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 				}
 
 				if ( '_company_logo' === $user_meta_key ) {
-					if ( !$user_meta = wp_get_attachment_url( $user_meta ) ) {
+					$user_meta = wp_get_attachment_url( $user_meta );
+					if ( false === $user_meta ) {
 						continue;
 					}
 				}
 
-				$user_data_to_export[ "$name" ] = array(
+				$user_data_to_export[ $name ] = array(
 					'name'  => __( 'Label', 'wp-job-manager' ),
 					'value' => $user_meta,
 				);
