@@ -65,7 +65,8 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 		// ARRANGE.
 		$this->setupUserMeta( $args, $expected );
 		$exporter = new WP_Job_Manager_Data_Exporter();
-		if ( $id = email_exists( 'johndoe@example.com' ) ) {
+		$id = email_exists( 'johndoe@example.com' );
+		if ( false !== $id ) {
 			/**
 			 * We need to do this because the item_id depends on the user ID
 			 * which can't be provided by the dataProvider before the dummy
