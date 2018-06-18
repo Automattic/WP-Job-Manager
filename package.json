@@ -7,6 +7,16 @@
   "repository": "automattic/wp-job-manager",
   "main": "Gruntfile.js",
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "cross-env": "^5.2.0",
+    "css-loader": "^0.28.11",
     "grunt": "~1.0.1",
     "grunt-checkbranch": "^1.0.4",
     "grunt-checkrepo": "^0.1.0",
@@ -31,10 +41,20 @@
     "grunt-wp-i18n": "~0.5.4",
     "grunt-wp-readme-to-markdown": "^2.0.0",
     "grunt-zip": "^0.17.1",
-    "mixtape": "git+https://github.com/Automattic/mixtape.git#faca4e486ae88661bd642c1b44e058b9bc461fa2"
+    "lodash-webpack-plugin": "^0.11.5",
+    "mixtape": "git+https://github.com/Automattic/mixtape.git#faca4e486ae88661bd642c1b44e058b9bc461fa2",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "uglifyjs-webpack-plugin": "^1.2.5",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8"
   },
   "engines": {
     "node": ">=0.8.0",
     "npm": ">=1.1.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.10"
   }
 }

@@ -1,3 +1,4 @@
+
 /* jshint node:true */
 module.exports = function( grunt ){
 	'use strict';
@@ -9,6 +10,7 @@ module.exports = function( grunt ){
 			fonts: 'assets/font',
 			images: 'assets/images',
 			js: 'assets/js',
+			blocks: 'assets/blocks',
 			build: 'tmp/build',
 			svn: 'tmp/release-svn'
 		},
@@ -16,6 +18,12 @@ module.exports = function( grunt ){
 		shell: {
 			buildMixtape: {
 				command: 'node_modules/.bin/mixtape build'
+			},
+			webpack: {
+				command: 'cross-env BABEL_ENV=default NODE_ENV=production webpack'
+			},
+			webpackDev: {
+				command: 'cross-env BABEL_ENV=default webpack --watch'
 			}
 		},
 
@@ -273,6 +281,9 @@ module.exports = function( grunt ){
 	});
 
 	grunt.registerTask( 'build-mixtape', [ 'shell:buildMixtape' ] );
+
+	grunt.registerTask( 'build-blocks', [ 'shell:webpack' ] );
+	grunt.registerTask( 'build-blocks:dev', [ 'shell:webpackDev' ] );
 
 	grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'check-mixtape', 'check-mixtape-fatal', 'test', 'copy' ] );
 
