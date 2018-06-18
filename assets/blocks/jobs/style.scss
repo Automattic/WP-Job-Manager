@@ -1,0 +1,101 @@
+
+.wp-block-wp-job-manager-jobs {
+	&__show-filters {
+		.components-toggle-control {
+			margin-bottom: 0;
+		}
+	}
+
+	&__search-boxes {
+		display: block;
+		background: #eee;
+		padding: 1em;
+
+		.components-base-control {
+			width: 50%;
+			margin-bottom: 0;
+
+			input {
+				padding: 0.7em;
+			}
+		}
+
+		.components-base-control__help {
+			margin-top: 0.2em;
+			margin-bottom: 0;
+			font-size: 80%;
+		}
+	}
+
+	&__keywords {
+		padding-right: 1em;
+		float: left;
+	}
+
+	&__location {
+		float: right;
+	}
+
+	&__types {
+		clear: both;
+		background: #f9f9f9;
+		border-top: #e5e5e5;
+		padding: 1em;
+		margin-top: 0;
+
+		.components-toggle-control {
+			font-style: italic;
+			margin-bottom: 0.1em;
+		}
+
+		ul {
+			display: flex;
+			flex-wrap: wrap;
+
+			li {
+				display: inline-block;
+				padding: 0 0.5em;
+				border-right: 1px solid #eee;
+
+				.components-base-control {
+					margin: 0;
+				}
+			}
+		}
+	}
+
+	.job-placeholder-list__job {
+		padding: 1em;
+		display: flex;
+		border-bottom: 1px solid #333;
+		background-color: #fdfdfd;
+
+		&:first-child {
+			border-top: 1px solid #333;
+		}
+
+		.job-placeholder-list__icon {
+			flex-grow: 1;
+		}
+		.job-placeholder-list__name {
+			flex-grow: 6;
+		}
+		.job-placeholder-list__place {
+			flex-grow: 2;
+			color: #999;
+		}
+		.job-placeholder-list__type-date {
+			flex-grow: 2;
+			color: #999;
+
+			p {
+				margin: 0;
+
+				&.job-placeholder-list__type {
+					font-weight: bold;
+					color: #39c;
+				}
+			}
+		}
+	}
+}
