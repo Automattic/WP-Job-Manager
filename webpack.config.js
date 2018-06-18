@@ -5,7 +5,7 @@ const LodashModuleReplacementPlugin = require( 'lodash-webpack-plugin' );
 const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
 
 const blockNames = [
-	// Add the name of the block as a directory in the assets/blocks directory.
+	'jobs',
 ];
 
 const webpackConfig = {

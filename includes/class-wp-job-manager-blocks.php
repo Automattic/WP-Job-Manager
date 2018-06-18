@@ -38,10 +38,6 @@ class WP_Job_Manager_Blocks {
 	 * Instance constructor
 	 */
 	private function __construct() {
-		if ( ! function_exists( 'register_block_type' ) ) {
-			return;
-		}
-
 		add_action( 'init', array( $this, 'register_blocks' ) );
 	}
 
@@ -49,7 +45,14 @@ class WP_Job_Manager_Blocks {
 	 * Register all Gutenblocks
 	 */
 	public function register_blocks() {
-		// Add script includes for gutenblocks.
+		if ( ! function_exists( 'register_block_type' ) ) {
+			return;
+		}
+
+		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/blocks/class-wp-job-manager-block-jobs-shortcode.php' );
+		register_block_type(
+			WP_Job_Manager_Block_Jobs_Shortcode::get_block_type()
+		);
 	}
 }
 
