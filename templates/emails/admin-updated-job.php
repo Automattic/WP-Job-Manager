@@ -28,8 +28,10 @@ $job = $args['job'];
 				printf( ' ' . esc_html__( 'The changes have been published and are now available to the public.', 'wp-job-manager' ) );
 				break;
 			case 'pending':
-				echo wp_kses_post(
-					sprintf( ' ' . __( 'The job listing is not publicly available until the changes are approved by an administrator in the site\'s <a href="%s">WordPress admin</a>.', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) ) );
+				echo wp_kses_post( sprintf(
+					' ' . __( 'The job listing is not publicly available until the changes are approved by an administrator in the site\'s <a href="%s">WordPress admin</a>.', 'wp-job-manager' ),
+					esc_url( admin_url( 'edit.php?post_type=job_listing' ) )
+				) );
 				break;
 		}
 		?></p>

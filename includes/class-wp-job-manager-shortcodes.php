@@ -514,7 +514,7 @@ class WP_Job_Manager_Shortcodes {
 
 			<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
 
-				<div class="job_summary_shortcode align<?php echo esc_attr( $align ) ?>" style="width: <?php echo $width ? esc_attr($width) : 'auto'; ?>">
+				<div class="job_summary_shortcode align<?php echo esc_attr( $align ) ?>" style="width: <?php echo $width ? esc_attr( $width ) : 'auto'; ?>">
 
 					<?php get_job_manager_template_part( 'content-summary', 'job_listing' ); ?>
 

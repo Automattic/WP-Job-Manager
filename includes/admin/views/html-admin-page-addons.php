@@ -15,7 +15,7 @@ if ( ! empty( $messages ) ) {
 		$action_target = isset( $message->action_target ) && 'self' === $message->action_target ? '_self' : '_blank';
 		$action_str = '';
 		if ( $action_url ) {
-			$action_str = ' <a href="' . esc_url( $action_url )  . '" target="' . esc_attr( $action_target ) . '" class="button">' . esc_html( $action_label ) . '</a>';
+			$action_str = ' <a href="' . esc_url( $action_url ) . '" target="' . esc_attr( $action_target ) . '" class="button">' . esc_html( $action_label ) . '</a>';
 		}
 
 		echo '<div class="notice notice-' . esc_attr( $type ) . ' below-h2"><p><strong>' . esc_html( $message->message ) . '</strong>' . $action_str . '</p></div>';
