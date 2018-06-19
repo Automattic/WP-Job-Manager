@@ -109,6 +109,7 @@ class WP_Job_Manager {
 		add_action( 'wp_loaded', array( $this, 'register_shared_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
+		add_action( 'admin_init', array( $this, 'add_privacy_policy_content' ) );
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
 		add_action( 'init', array( 'WP_Job_Manager_Email_Notifications', 'init' ) );
 
@@ -143,6 +144,28 @@ class WP_Job_Manager {
 			WP_Job_Manager_Install::install();
 			flush_rewrite_rules();
 		}
+	}
+
+	/**
+	 * Adds Privacy Policy suggested content.
+	 */
+	public function add_privacy_policy_content() {
+		if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
+			return;
+		}
+
+		$content = sprintf(
+			__( 'This site adds the following cookies to help users resume job
+				submissions that they have started but have not completed: %s
+				and %s',
+				'wp-job-manager' ),
+			'<code>wp-job-manager-submitting-job-id</code>', '<code>wp-job-manager-submitting-job-key</code>'
+		);
+
+		wp_add_privacy_policy_content(
+			'WP Job Manager',
+			wp_kses_post( wpautop( $content, false ) )
+		);
 	}
 
 	/**
