@@ -26,7 +26,7 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 		 */
 		public function register_wpjm_user_data_exporter( $exporters ) {
 			$exporters['wp-job-manager'] = array(
-				'exporter_friendly_name' => __( 'WP Job Manager' ),
+				'exporter_friendly_name' => __( 'WP Job Manager', 'wp-job-manager' ),
 				'callback'               => array( $this, 'user_data_exporter' ),
 			);
 			return $exporters;
@@ -46,12 +46,12 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 
 			$user_data_to_export = array();
 			$user_meta_keys      = array(
-				'_company_logo'    => __( 'Company Logo' ),
-				'_company_name'    => __( 'Company Name' ),
-				'_company_website' => __( 'Company Website' ),
-				'_company_tagline' => __( 'Company Tagline' ),
-				'_company_twitter' => __( 'Company Twitter' ),
-				'_company_video'   => __( 'Company Video' ),
+				'_company_logo'    => __( 'Company Logo', 'wp-job-manager' ),
+				'_company_name'    => __( 'Company Name', 'wp-job-manager' ),
+				'_company_website' => __( 'Company Website', 'wp-job-manager' ),
+				'_company_tagline' => __( 'Company Tagline', 'wp-job-manager' ),
+				'_company_twitter' => __( 'Company Twitter', 'wp-job-manager' ),
+				'_company_video'   => __( 'Company Video', 'wp-job-manager' ),
 			);
 
 			foreach ( $user_meta_keys as $user_meta_key => $name ) {
@@ -76,7 +76,7 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 
 			$export_items = array(
 				'group_id'    => 'wpjm-user-data',
-				'group_label' => __( 'WP Job Manager User Data' ),
+				'group_label' => __( 'WP Job Manager User Data', 'wp-job-manager' ),
 				'item_id'     => "wpjm-user-data-{$user->ID}",
 				'data'        => $user_data_to_export,
 			);
