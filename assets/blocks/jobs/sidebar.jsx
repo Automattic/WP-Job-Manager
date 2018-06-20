@@ -72,16 +72,17 @@ function getShortcodeParameters( shortcodeParams, attributes ) {
 			'featured',
 			'filled',
 		];
+	const newShortcodeParams = { ...shortcodeParams };
 
 	shortcodeParamNames.forEach( ( paramName ) => {
 		const value = attributes[ _.camelCase( paramName ) ];
 
 		if ( null !== value && '' !== value ) {
-			shortcodeParams[ paramName ] = value;
+			newShortcodeParams[ paramName ] = value;
 		}
 	} )
 
-	return shortcodeParams;
+	return newShortcodeParams;
 }
 addFilter( 'wpjm_block_jobs_shortcode_params', 'getShortcodeParameters', getShortcodeParameters );
 

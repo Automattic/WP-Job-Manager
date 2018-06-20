@@ -64,13 +64,13 @@ function transformJobTypeValue( value ) {
 	const keysToInclude = _.pickBy( obj, ( val ) => val );
 
 	// Create a comma-separated string.
-	value = Object.keys( keysToInclude ).join( ',' );
+	let strValue = Object.keys( keysToInclude ).join( ',' );
 
-	if ( ! value ) {
-		value = null;
+	if ( ! strValue ) {
+		strValue = null;
 	}
 
-	return value;
+	return strValue;
 }
 
 /**
@@ -83,22 +83,23 @@ function transformJobTypeValue( value ) {
  */
 function getShortcodeParameters( shortcodeParams, attributes ) {
 	const jobTypes = transformJobTypeValue( attributes.includedJobTypes );
+	const newShortcodeParams = { ...shortcodeParams };
 
 	if ( attributes.showJobTypeFilters ) {
 		if ( jobTypes ) {
-			shortcodeParams.selected_job_types = jobTypes;
+			newShortcodeParams.selected_job_types = jobTypes;
 		}
 	} else {
 		if ( jobTypes ) {
-			shortcodeParams.job_types = jobTypes;
+			newShortcodeParams.job_types = jobTypes;
 		} else {
 			// To make sure the checkboxes are not shown, add all job types to
 			// the list if jobTypes is empty
-			shortcodeParams.job_types = JSON.parse( attributes.allJobTypes ).join( ',' );
+			newShortcodeParams.job_types = JSON.parse( attributes.allJobTypes ).join( ',' );
 		}
 	}
 
-	return shortcodeParams;
+	return newShortcodeParams;
 }
 addFilter( 'wpjm_block_jobs_shortcode_params', 'getShortcodeParameters', getShortcodeParameters );
 
