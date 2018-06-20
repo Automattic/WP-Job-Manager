@@ -52,11 +52,12 @@ addFilter(
  * @return {?string} Comma-separated value string for the attribute, or null.
  */
 function transformJobTypeValue( value ) {
-	let obj = {};
+	let obj;
 	try {
 		obj = JSON.parse( value );
 	} catch ( error ) {
-		// On error, just use the empty object.
+		// If we cannot parse the value, give up.
+		return null;
 	}
 
 	// Get the keys whose values are truthy.
