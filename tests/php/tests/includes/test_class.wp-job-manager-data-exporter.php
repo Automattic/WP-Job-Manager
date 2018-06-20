@@ -44,13 +44,10 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 	 * Test the data exporter for an invalid email
 	 */
 	public function test_data_exporter_for_invalid_email() {
-		// ARRANGE.
-		$exporter = new WP_Job_Manager_Data_Exporter();
+		// ACT.
+		$result = WP_Job_Manager_Data_Exporter::user_data_exporter( 'this-is-an-invalid-email' );
 
 		// ASSERT.
-		$result = $exporter->user_data_exporter( 'this-is-an-invalid-email' );
-
-		// ACT.
 		$this->assertEmpty( $result );
 	}
 
@@ -64,7 +61,6 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 	public function test_user_data_exporter( $args, $expected ) {
 		// ARRANGE.
 		$this->setupUserMeta( $args, $expected );
-		$exporter = new WP_Job_Manager_Data_Exporter();
 		$id = email_exists( 'johndoe@example.com' );
 		if ( false !== $id ) {
 			/**
@@ -86,7 +82,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 		}
 
 		// ACT.
-		$result = $exporter->user_data_exporter( 'johndoe@example.com' );
+		$result = WP_Job_Manager_Data_Exporter::user_data_exporter( 'johndoe@example.com' );
 
 		// ASSERT.
 		$this->assertEquals( $expected, $result );
