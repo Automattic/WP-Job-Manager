@@ -1,15 +1,15 @@
 
 /**
- * WordPress Dependencies.
- */
-const { registerBlockType } = wp.blocks,
-	{ applyFilters } = wp.hooks;
-
-/**
  * Internal Dependencies.
  */
 import './style.scss';
 import edit from './edit.jsx';
+
+/**
+ * WordPress Dependencies.
+ */
+const { registerBlockType } = wp.blocks,
+	{ applyFilters } = wp.hooks;
 
 
 /**

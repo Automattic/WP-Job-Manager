@@ -1,18 +1,18 @@
 
 /**
+ * Internal Dependencies.
+ */
+import Sidebar from './sidebar.jsx';
+import Types from './types.jsx';
+import JobPlaceholderList from './job-placeholder-list.jsx';
+
+/**
  * WordPress Dependencies.
  */
 const { Component } = wp.element,
 	{ InspectorControls } = wp.editor,
 	{ __ } = wp.i18n,
 	{ TextControl, ToggleControl } = wp.components;
-
-/**
- * Internal Dependencies.
- */
-import Sidebar from './sidebar.jsx';
-import Types from './types.jsx';
-import JobPlaceholderList from './job-placeholder-list.jsx';
 
 /**
  * Edit UI for Jobs block.

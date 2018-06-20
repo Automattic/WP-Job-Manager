@@ -1,15 +1,15 @@
 
 /**
+ * External Dependencies.
+ */
+import _ from 'lodash';
+
+/**
  * WordPress Dependencies.
  */
 const { addFilter } = wp.hooks,
 	{ __ } = wp.i18n,
 	{ TextControl, SelectControl, CheckboxControl } = wp.components;
-
-/**
- * External Dependencies.
- */
-import _ from 'lodash';
 
 
 /**

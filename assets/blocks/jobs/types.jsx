@@ -1,5 +1,10 @@
 
 /**
+ * External Dependencies.
+ */
+import _ from 'lodash';
+
+/**
  * WordPress Dependencies.
  */
 const { Component } = wp.element,
@@ -10,11 +15,6 @@ const { Component } = wp.element,
 		CheckboxControl,
 		ToggleControl,
 	} = wp.components;
-
-/**
- * External Dependencies.
- */
-import _ from 'lodash';
 
 
 /**
