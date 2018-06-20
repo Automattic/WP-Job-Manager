@@ -24,10 +24,10 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 		 * @param array $exporters The exporter array.
 		 * @return array $exporters The exporter array.
 		 */
-		public function register_wpjm_user_data_exporter( $exporters ) {
+		public static function register_wpjm_user_data_exporter( $exporters ) {
 			$exporters['wp-job-manager'] = array(
 				'exporter_friendly_name' => __( 'WP Job Manager', 'wp-job-manager' ),
-				'callback'               => array( $this, 'user_data_exporter' ),
+				'callback'               => array( __CLASS__, 'user_data_exporter' ),
 			);
 			return $exporters;
 		}
@@ -38,7 +38,7 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 		 * @param string $email_address User email address.
 		 * @return array
 		 */
-		public function user_data_exporter( $email_address ) {
+		public static function user_data_exporter( $email_address ) {
 			$user = get_user_by( 'email', $email_address );
 			if ( false === $user ) {
 				return;
