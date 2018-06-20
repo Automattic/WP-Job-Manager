@@ -85,7 +85,7 @@ function getShortcodeParameters( shortcodeParams, attributes ) {
 	const jobTypes = transformJobTypeValue( attributes.includedJobTypes );
 	const newShortcodeParams = { ...shortcodeParams };
 
-	if ( attributes.showJobTypeFilters ) {
+	if ( attributes.showFilters && attributes.showJobTypeFilters ) {
 		if ( jobTypes ) {
 			newShortcodeParams.selected_job_types = jobTypes;
 		}
