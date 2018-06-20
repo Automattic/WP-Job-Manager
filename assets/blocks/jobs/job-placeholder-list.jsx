@@ -9,9 +9,9 @@ const { __, sprintf } = wp.i18n,
  * JobPlaceholder component.
  */
 export default function JobPlaceholderList( { number, className } ) {
-	let placeholders = [];
+	const placeholders = [];
 
-	let classPrefix = 'job-placeholder-list';
+	const classPrefix = 'job-placeholder-list';
 
 	for ( let i = 1; i <= number; i++ ) {
 		placeholders.push(

@@ -45,23 +45,23 @@ registerBlockType( 'wp-job-manager/jobs', {
 	edit,
 
 	save: function( { attributes } ) {
-		let shortcodeParams = {};
+		const initialShortcodeParams = {};
 
 		if ( attributes.keywords ) {
-			shortcodeParams.keywords = attributes.keywords;
+			initialShortcodeParams.keywords = attributes.keywords;
 		}
 		if ( attributes.location ) {
-			shortcodeParams.location = attributes.location;
+			initialShortcodeParams.location = attributes.location;
 		}
-		shortcodeParams.show_filters = attributes.showFilters;
+		initialShortcodeParams.show_filters = attributes.showFilters;
 
-		shortcodeParams = applyFilters(
+		const shortcodeParams = applyFilters(
 			'wpjm_block_jobs_shortcode_params',
-			shortcodeParams,
+			initialShortcodeParams,
 			attributes
 		);
 
-		let paramsString = Object.entries( shortcodeParams ).map(
+		const paramsString = Object.entries( shortcodeParams ).map(
 			( [ attr, value ] ) => `${attr}="${value}"`
 		).join( ' ' );
 

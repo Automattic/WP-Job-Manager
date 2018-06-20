@@ -60,7 +60,7 @@ function transformJobTypeValue( value ) {
 	}
 
 	// Get the keys whose values are truthy.
-	let keysToInclude = _.pickBy( obj, ( val ) => val );
+	const keysToInclude = _.pickBy( obj, ( val ) => val );
 
 	// Create a comma-separated string.
 	value = Object.keys( keysToInclude ).join( ',' );
@@ -81,7 +81,7 @@ function transformJobTypeValue( value ) {
  * @return {Object} The new shortcode parameters.
  */
 function getShortcodeParameters( shortcodeParams, attributes ) {
-	let jobTypes = transformJobTypeValue( attributes.includedJobTypes );
+	const jobTypes = transformJobTypeValue( attributes.includedJobTypes );
 
 	if ( attributes.showJobTypeFilters ) {
 		if ( jobTypes ) {
@@ -127,7 +127,7 @@ class Types extends Component {
 	 */
 	haveAPIData() {
 		if ( ! this.state.haveAPIData ) {
-			let { types } = this.props;
+			const { types } = this.props;
 
 			if ( types && ! types.isLoading && 'undefined' !== typeof types.data ) {
 				// We have received the data
@@ -150,7 +150,7 @@ class Types extends Component {
 	 *                          otherwise.
 	 */
 	isIncluded( typeSlug ) {
-		let { includedJobTypes } = this.state;
+		const { includedJobTypes } = this.state;
 		return _.isEmpty( includedJobTypes ) || includedJobTypes[ typeSlug ];
 	}
 
@@ -198,7 +198,7 @@ class Types extends Component {
 	 * Render the component.
 	 */
 	render() {
-		let { types, attributes, setAttributes, isSelected, className } = this.props;
+		const { types, attributes, setAttributes, isSelected, className } = this.props;
 
 		if ( ! this.haveAPIData() ) {
 			return <p className={ className }>{ __( 'Loading Job Types...' ) }</p>

@@ -63,7 +63,7 @@ addFilter(
  * @return {Object} The new shortcode parameters.
  */
 function getShortcodeParameters( shortcodeParams, attributes ) {
-	let shortcodeParamNames = [
+	const shortcodeParamNames = [
 			'per_page',
 			'order_by',
 			'order',
@@ -74,7 +74,7 @@ function getShortcodeParameters( shortcodeParams, attributes ) {
 		];
 
 	shortcodeParamNames.forEach( ( paramName ) => {
-		let value = attributes[ _.camelCase( paramName ) ];
+		const value = attributes[ _.camelCase( paramName ) ];
 
 		if ( null !== value && '' !== value ) {
 			shortcodeParams[ paramName ] = value;
