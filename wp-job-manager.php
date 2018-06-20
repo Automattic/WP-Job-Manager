@@ -114,7 +114,7 @@ class WP_Job_Manager {
 		add_action( 'init', array( 'WP_Job_Manager_Email_Notifications', 'init' ) );
 
 		// Filters
-		add_filter( 'wp_privacy_personal_data_exporters', array( 'WP_Job_Manager_User_Data_Exporter', 'register_wpjm_user_data_exporter' ) );
+		add_filter( 'wp_privacy_personal_data_exporters', array( 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ) );
 
 		add_action( 'init', array( $this, 'usage_tracking_init' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'usage_tracking_cleanup' ) );
