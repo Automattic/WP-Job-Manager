@@ -71,7 +71,9 @@ class JobsEdit extends Component {
 			(
 				<div className={ className }>
 					{ isSelected && this.renderShowFiltersControl() }
-					{ this.renderFilters() }
+					{ ( isSelected || attributes.showFilters )
+							&& this.renderFilters()
+					}
 					<JobPlaceholderList number={ 3 } />
 				</div>
 			),
