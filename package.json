@@ -28,7 +28,7 @@
     "grunt-shell": "^2.1.0",
     "grunt-stylelint": "^0.6.0",
     "grunt-wp-deploy": "^1.2.1",
-    "grunt-wp-i18n": "~0.5.4",
+    "grunt-wp-i18n": "^1.0.2",
     "grunt-wp-readme-to-markdown": "^2.0.0",
     "grunt-zip": "^0.17.1",
     "mixtape": "git+https://github.com/Automattic/mixtape.git#faca4e486ae88661bd642c1b44e058b9bc461fa2"
