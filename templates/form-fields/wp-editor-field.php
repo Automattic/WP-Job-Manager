@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.23.9
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -35,4 +35,4 @@ $editor = apply_filters( 'submit_job_form_wp_editor_args', array(
 	),
 ) );
 wp_editor( isset( $field['value'] ) ? wp_kses_post( $field['value'] ) : '', $key, $editor );
-if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
+if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo wp_kses_post( $field['description'] ); ?></small><?php endif; ?>

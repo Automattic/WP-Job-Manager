@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.31.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,10 +22,10 @@ if ( ! empty( $fields ) ) : ?>
 		<table border="0" cellpadding="10" cellspacing="0" width="100%" class="job-manager-email-job-details details">
 			<?php foreach ( $fields as $field ) : ?>
 			<tr>
-				<td class="detail-label" style="text-align:<?php echo $text_align; ?>;">
+				<td class="detail-label" style="text-align:<?php echo esc_attr( $text_align ); ?>;">
 					<?php echo wp_kses_post( $field['label'] ); ?>
 				</td>
-				<td class="detail-value" style="text-align:<?php echo $text_align; ?>;">
+				<td class="detail-value" style="text-align:<?php echo esc_attr( $text_align ); ?>;">
 					<?php
 					if ( ! empty( $field['url'] ) ) {
 						echo sprintf( '<a href="%s">%s</a>', esc_url( $field['url'] ), wp_kses_post( $field['value'] ) );

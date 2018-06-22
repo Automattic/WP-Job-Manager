@@ -394,7 +394,7 @@ class WP_Job_Manager_Settings {
 				<h2 class="nav-tab-wrapper">
 					<?php
 						foreach ( $this->settings as $key => $section ) {
-							echo '<a href="#settings-' . sanitize_title( $key ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
+							echo '<a href="#settings-' . esc_attr( sanitize_title( $key ) ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
 						}
 					?>
 				</h2>
@@ -402,14 +402,14 @@ class WP_Job_Manager_Settings {
 				<?php
 					if ( ! empty( $_GET['settings-updated'] ) ) {
 						flush_rewrite_rules();
-						echo '<div class="updated fade job-manager-updated"><p>' . __( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
+						echo '<div class="updated fade job-manager-updated"><p>' . esc_html__( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
 					}
 
 					foreach ( $this->settings as $key => $section ) {
 						$section_args = isset( $section[2] ) ? (array) $section[2] : array();
-						echo '<div id="settings-' . sanitize_title( $key ) . '" class="settings_panel">';
+						echo '<div id="settings-' . esc_attr( sanitize_title( $key ) ) . '" class="settings_panel">';
 						if ( ! empty( $section_args['before'] ) ) {
-							echo '<p class="before-settings">' . $section_args['before'] . '</p>';
+							echo '<p class="before-settings">' . wp_kses_post( $section_args['before'] ) . '</p>';
 						}
 						echo '<table class="form-table settings parent-settings">';
 
@@ -420,14 +420,14 @@ class WP_Job_Manager_Settings {
 
 						echo '</table>';
 						if ( ! empty( $section_args['after'] ) ) {
-							echo '<p class="after-settings">' . $section_args['after'] . '</p>';
+							echo '<p class="after-settings">' . wp_kses_post( $section_args['after'] ) . '</p>';
 						}
 						echo '</div>';
 
 					}
 				?>
 				<p class="submit">
-					<input type="submit" class="button-primary" value="<?php _e( 'Save Changes', 'wp-job-manager' ); ?>" />
+					<input type="submit" class="button-primary" value="<?php esc_attr_e( 'Save Changes', 'wp-job-manager' ); ?>" />
 				</p>
 			</form>
 		</div>
@@ -514,11 +514,11 @@ class WP_Job_Manager_Settings {
 	 */
 	protected function input_checkbox( $option, $attributes, $value, $placeholder ) {
 		?><label>
-		<input type="hidden" name="<?php echo $option['name']; ?>" value="0" />
-		<input id="setting-<?php echo $option['name']; ?>" name="<?php echo $option['name']; ?>" type="checkbox" value="1" <?php echo implode( ' ', $attributes ); ?> <?php checked( '1', $value ); ?> /> <?php echo $option['cb_label']; ?></label><?php
+		<input type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="0" />
+		<input id="setting-<?php echo esc_attr( $option['name'] ); ?>" name="<?php echo esc_attr( $option['name'] ); ?>" type="checkbox" value="1" <?php echo implode( ' ', $attributes ); ?> <?php checked( '1', $value ); ?> /> <?php echo esc_html( $option['cb_label'] ); ?></label><?php
 
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 	}
 
@@ -531,10 +531,10 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder
 	 */
 	protected function input_textarea ( $option, $attributes, $value, $placeholder ) {
-		?><textarea id="setting-<?php echo $option['name']; ?>" class="large-text" cols="50" rows="3" name="<?php echo $option['name']; ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?>><?php echo esc_textarea( $value ); ?></textarea><?php
+		?><textarea id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="large-text" cols="50" rows="3" name="<?php echo esc_attr( $option['name'] ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?>><?php echo esc_textarea( $value ); ?></textarea><?php
 
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 	}
 
@@ -547,13 +547,13 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder (Ignored).
 	 */
 	protected function input_select( $option, $attributes, $value, $placeholder ) {
-		?><select id="setting-<?php echo $option['name']; ?>" class="regular-text" name="<?php echo $option['name']; ?>" <?php echo implode( ' ', $attributes ); ?>><?php
+		?><select id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="regular-text" name="<?php echo esc_attr( $option['name'] ); ?>" <?php echo implode( ' ', $attributes ); ?>><?php
 		foreach( $option['options'] as $key => $name )
 			echo '<option value="' . esc_attr( $key ) . '" ' . selected( $value, $key, false ) . '>' . esc_html( $name ) . '</option>';
 		?></select><?php
 
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 	}
 
@@ -571,7 +571,7 @@ class WP_Job_Manager_Settings {
 		<span><?php echo esc_html( $option['label'] ); ?></span>
 		</legend><?php
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 
 		foreach( $option['options'] as $key => $name ) {
@@ -602,7 +602,7 @@ class WP_Job_Manager_Settings {
 		echo str_replace(' id=', " data-placeholder='" . __( 'Select a page&hellip;', 'wp-job-manager' ) .  "' id=", wp_dropdown_pages( $args ) );
 
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 	}
 
@@ -619,10 +619,10 @@ class WP_Job_Manager_Settings {
 		if( $option['human_value'] ) {
 			$human_value = $option['human_value'];
 		}
-		?><input id="setting-<?php echo $option['name']; ?>" type="hidden" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> /><strong><?php echo esc_html( $human_value ) ?></strong><?php
+		?><input id="setting-<?php echo esc_attr( $option['name'] ); ?>" type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> /><strong><?php echo esc_html( $human_value ) ?></strong><?php
 
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 	}
 
@@ -635,10 +635,10 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder
 	 */
 	protected function input_password( $option, $attributes, $value, $placeholder ) {
-		?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="password" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+		?><input id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="regular-text" type="password" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 	}
 
@@ -651,11 +651,11 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder
 	 */
 	protected function input_number( $option, $attributes, $value, $placeholder ) {
-		echo isset( $option['before'] ) ? $option['before'] : '';
-		?><input id="setting-<?php echo $option['name']; ?>" class="small-text" type="number" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
-		echo isset( $option['after'] ) ? $option['after'] : '';
+		echo isset( $option['before'] ) ? wp_kses_post( $option['before'] ) : '';
+		?><input id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="small-text" type="number" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+		echo isset( $option['after'] ) ? wp_kses_post( $option['after'] )  : '';
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 	}
 
@@ -668,10 +668,10 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder
 	 */
 	protected function input_text( $option, $attributes, $value, $placeholder ) {
-		?><input id="setting-<?php echo $option['name']; ?>" class="regular-text" type="text" name="<?php echo $option['name']; ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
+		?><input id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="regular-text" type="text" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> /><?php
 
 		if ( ! empty( $option['desc'] ) ) {
-			echo ' <p class="description">' . $option['desc'] . '</p>';
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 	}
 
@@ -682,7 +682,7 @@ class WP_Job_Manager_Settings {
 	 * @param mixed $value
 	 */
 	protected function output_field( $option, $value ) {
-		$placeholder    = ( ! empty( $option['placeholder'] ) ) ? 'placeholder="' . $option['placeholder'] . '"' : '';
+		$placeholder    = ( ! empty( $option['placeholder'] ) ) ? 'placeholder="' . esc_attr( $option['placeholder'] ) . '"' : '';
 		$class          = ! empty( $option['class'] ) ? $option['class'] : '';
 		$option['type'] = ! empty( $option['type'] ) ? $option['type'] : 'text';
 		$attributes     = array();
@@ -692,10 +692,10 @@ class WP_Job_Manager_Settings {
 			}
 		}
 
-		echo '<tr valign="top" class="' . $class . '">';
+		echo '<tr valign="top" class="' . esc_attr( $class ) . '">';
 
 		if ( ! empty( $option['label'] ) ) {
-			echo '<th scope="row"><label for="setting-' . $option[ 'name' ] . '">' . $option[ 'label' ] . '</a></th><td>';
+			echo '<th scope="row"><label for="setting-' . esc_attr( $option[ 'name' ] ) . '">' . esc_html( $option[ 'label' ] ) . '</a></th><td>';
 		} else {
 			echo '<td colspan="2">';
 		}

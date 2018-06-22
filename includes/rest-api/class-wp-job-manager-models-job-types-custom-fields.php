@@ -32,7 +32,7 @@ class WP_Job_Manager_Models_Job_Types_Custom_Fields extends WP_Job_Manager_REST_
 		$employment_types = wpjm_job_listing_employment_type_options();
 		self::$accepted_employment_types = array_keys( $employment_types );
 		return array(
-			$env->field( 'employment_type', __( 'Employment Type', 'wp-job-manager' ) )
+			$env->field( 'employment_type', esc_html__( 'Employment Type', 'wp-job-manager' ) )
 				->with_kind( WP_Job_Manager_REST_Field_Declaration::META )
 				->with_type( $env->type( 'string' ) )
 				->with_choices( self::$accepted_employment_types ),
@@ -47,7 +47,7 @@ class WP_Job_Manager_Models_Job_Types_Custom_Fields extends WP_Job_Manager_REST_
 	public function validate() {
 		$employment_type = $this->get( 'employment_type' );
 		if ( ! empty( $employment_type ) && ! in_array( $employment_type, self::$accepted_employment_types, true ) ) {
-			return new WP_Error('invalid_employment_type', __( 'Invalid Employment Type', 'wp-job-manager' ), array(
+			return new WP_Error('invalid_employment_type', esc_html__( 'Invalid Employment Type', 'wp-job-manager' ), array(
 				'input' => $employment_type,
 				'acceptable_values' => self::$accepted_employment_types,
 				'status' => 400,

@@ -75,10 +75,10 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 */
 	public function output( $atts = array() ) {
 		if ( ! empty( $this->save_message ) ) {
-			echo '<div class="job-manager-message">' . $this->save_message . '</div>';
+			echo '<div class="job-manager-message">' . wp_kses_post( $this->save_message ) . '</div>';
 		}
 		if ( ! empty( $this->save_error ) ) {
-			echo '<div class="job-manager-error">' . $this->save_error . '</div>';
+			echo '<div class="job-manager-error">' . wp_kses_post( $this->save_error ) . '</div>';
 		}
 		$this->submit();
 	}
@@ -90,7 +90,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		$job = get_post( $this->job_id );
 
 		if ( empty( $this->job_id ) ) {
-			echo wpautop( __( 'Invalid listing', 'wp-job-manager' ) );
+			echo wpautop( esc_html__( 'Invalid listing', 'wp-job-manager' ) );
 			return;
 		}
 

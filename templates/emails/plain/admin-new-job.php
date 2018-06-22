@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.31.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 $job = $args['job'];
 
-printf( __( 'A new job listing has been submitted to %s (%s).', 'wp-job-manager' ), get_bloginfo( 'name' ), home_url() );
+printf( esc_html__( 'A new job listing has been submitted to %s (%s).', 'wp-job-manager' ), esc_html( get_bloginfo( 'name' ) ), esc_url( home_url() ) );
 switch ( $job->post_status ) {
 	case 'publish':
-		printf( ' ' . __( 'It has been published and is now available to the public.', 'wp-job-manager' ) );
+		printf( ' ' . esc_html__( 'It has been published and is now available to the public.', 'wp-job-manager' ) );
 		break;
 	case 'pending':
-		printf( ' ' . __( 'It is awaiting approval by an administrator in WordPress admin (%s).', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
+		printf( ' ' . esc_html__( 'It is awaiting approval by an administrator in WordPress admin (%s).', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
 		break;
 }
 

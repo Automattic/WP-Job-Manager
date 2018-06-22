@@ -83,7 +83,7 @@ class WP_Job_Manager_Admin {
 		}
 
 		echo '<div class="error">';
-		echo '<p>' . sprintf( __( '<strong>WP Job Manager</strong> requires a more recent version of WordPress. <a href="%s">Please update WordPresse</a> to avoid issues.', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) ) . '</p>';
+		echo '<p>' . wp_kses_post( sprintf( __( '<strong>WP Job Manager</strong> requires a more recent version of WordPress. <a href="%s">Please update WordPresse</a> to avoid issues.', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) ) ) . '</p>';
 		echo '</div>';
 	}
 
@@ -94,7 +94,7 @@ class WP_Job_Manager_Admin {
 	 * @return array
 	 */
 	public function wp_version_plugin_action_notice( $actions ) {
-		$actions[] = sprintf( __( '<a href="%s" style="color: red">WordPress Update Required</a>', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) );
+		$actions[] = wp_kses_post( sprintf( __( '<a href="%s" style="color: red">WordPress Update Required</a>', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) ) );
 		return $actions;
 	}
 

@@ -33,7 +33,8 @@ jQuery( document ).ready( function ( $ ) {
 
 			// Not appending. If page > 1, we should show a load previous button so the user can get to earlier-page listings if needed
 			if ( page > 1 && true !== target.data( 'show_pagination' ) ) {
-				$( results ).before( '<a class="load_more_jobs load_previous" href="#"><strong>' + job_manager_ajax_filters.i18n_load_prev_listings + '</strong></a>' );
+				var previous = jQuery('<strong>').text(job_manager_ajax_filters.i18n_load_prev_listings).wrap('<a class="load_more_jobs load_previous" href="#"></a>');
+				$( results ).before( previous );
 			} else {
 				target.find( '.load_previous' ).remove();
 			}
@@ -122,7 +123,8 @@ jQuery( document ).ready( function ( $ ) {
 				if ( result ) {
 					try {
 						if ( result.showing ) {
-							$( showing ).show().html( '<span>' + result.showing + '</span>' + result.showing_links );
+							var showing_el = jQuery('<span>').html(result.showing);
+							$( showing ).show().html( '').html(result.showing_links).prepend(showing_el);
 						} else {
 							$( showing ).hide();
 						}

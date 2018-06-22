@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.31.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,12 +27,12 @@ $expiring_today = $args['expiring_today'];
 
 echo '<p>';
 if ( $expiring_today ) {
-	printf( __( 'The following job listing is expiring today from <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
+	printf( esc_html__( 'The following job listing is expiring today from <a href="%s">%s</a>.', 'wp-job-manager' ), esc_url( home_url() ), esc_html( get_bloginfo( 'name' ) ) );
 } else {
-	printf( __( 'The following job listing is expiring soon from <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
+	printf( esc_html__( 'The following job listing is expiring soon from <a href="%s">%s</a>.', 'wp-job-manager' ), esc_url( home_url() ), esc_html( get_bloginfo( 'name' ) ) );
 }
 $edit_post_link = admin_url( sprintf( 'post.php?post=%d&amp;action=edit', $job->ID ) );
-printf( ' ' . __( 'Visit <a href="%s">WordPress admin</a> to manage the listing.', 'wp-job-manager' ), esc_url( $edit_post_link ) );
+printf( ' ' . esc_html__( 'Visit <a href="%s">WordPress admin</a> to manage the listing.', 'wp-job-manager' ), esc_url( $edit_post_link ) );
 echo '</p>';
 
 /**

@@ -260,7 +260,7 @@ class WP_Job_Manager_Helper {
 			$manage_licence_label = __( 'Activate License', 'wp-job-manager' );
 			$css_class = 'wpjm-activate-licence-link';
 		}
-		$actions[] = '<a class="' . $css_class . '" href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' )  ) . '">' . $manage_licence_label . '</a>';
+		$actions[] = '<a class="' . esc_attr( $css_class ) . '" href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' )  ) . '">' . esc_html( $manage_licence_label ) . '</a>';
 		return $actions;
 	}
 

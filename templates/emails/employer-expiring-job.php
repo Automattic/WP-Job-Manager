@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.31.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,11 +27,28 @@ $expiring_today = $args['expiring_today'];
 
 echo '<p>';
 if ( $expiring_today ) {
-	printf( __( 'The following job listing is expiring today from <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
+	echo wp_kses_post(
+		sprintf(
+			__( 'The following job listing is expiring today from <a href="%s">%s</a>.', 'wp-job-manager' ),
+			home_url(),
+			get_bloginfo( 'name' )
+		)
+	);
 } else {
-	printf( __( 'The following job listing is expiring soon from <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
+	echo wp_kses_post(
+		sprintf(
+			__( 'The following job listing is expiring soon from <a href="%s">%s</a>.', 'wp-job-manager' ),
+			home_url(),
+			get_bloginfo( 'name' )
+		)
+	);
 }
-printf( ' ' . __( 'Visit the <a href="%s">job listing dashboard</a> to manage the listing.', 'wp-job-manager' ), esc_url( job_manager_get_permalink( 'job_dashboard' ) ) );
+echo wp_kses_post(
+	sprintf(
+		' ' . __( 'Visit the <a href="%s">job listing dashboard</a> to manage the listing.', 'wp-job-manager' ),
+		esc_url( job_manager_get_permalink( 'job_dashboard' ) )
+	)
+);
 echo '</p>';
 
 /**

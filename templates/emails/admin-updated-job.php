@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.31.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,13 +21,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 $job = $args['job'];
 ?>
 	<p><?php
-		printf( __( 'A job listing has been updated on <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), get_bloginfo( 'name' ) );
+		echo wp_kses_post(
+			sprintf( __( 'A job listing has been updated on <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), esc_html( get_bloginfo( 'name' ) ) ) );
 		switch ( $job->post_status ) {
 			case 'publish':
-				printf( ' ' . __( 'The changes have been published and are now available to the public.', 'wp-job-manager' ) );
+				printf( ' ' . esc_html__( 'The changes have been published and are now available to the public.', 'wp-job-manager' ) );
 				break;
 			case 'pending':
-				printf( ' ' . __( 'The job listing is not publicly available until the changes are approved by an administrator in the site\'s <a href="%s">WordPress admin</a>.', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
+				echo wp_kses_post( sprintf(
+					' ' . __( 'The job listing is not publicly available until the changes are approved by an administrator in the site\'s <a href="%s">WordPress admin</a>.', 'wp-job-manager' ),
+					esc_url( admin_url( 'edit.php?post_type=job_listing' ) )
+				) );
 				break;
 		}
 		?></p>

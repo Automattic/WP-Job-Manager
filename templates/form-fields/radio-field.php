@@ -22,7 +22,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.23.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -37,4 +37,4 @@ foreach ( $field['options'] as $option_key => $value ) : ?>
 	<label><input type="radio" name="<?php echo esc_attr( isset( $field['name'] ) ? $field['name'] : $key ); ?>" value="<?php echo esc_attr( $option_key ); ?>" <?php checked( $default, $option_key ); ?> /> <?php echo esc_html( $value ); ?></label><br/>
 
 <?php endforeach; ?>
-<?php if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo $field['description']; ?></small><?php endif; ?>
+<?php if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo wp_kses_post( $field['description'] ); ?></small><?php endif; ?>

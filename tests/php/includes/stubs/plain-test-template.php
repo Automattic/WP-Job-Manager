@@ -1,1 +1,1 @@
-Plain Test Email: <?php echo $args['job']->post_title; ?>
+Plain Test Email: <?php echo esc_html( $args['job']->post_title ); ?>

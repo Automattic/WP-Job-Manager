@@ -132,7 +132,7 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function show_errors() {
 		foreach ( $this->errors as $error ) {
-			echo '<div class="job-manager-error">' . $error . '</div>';
+			echo '<div class="job-manager-error">' . wp_kses_post( $error ) . '</div>';
 		}
 	}
 
@@ -309,7 +309,7 @@ abstract class WP_Job_Manager_Form {
 	public function validate_recaptcha_field( $success ) {
 		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
 		if ( empty( $_POST['g-recaptcha-response'] ) ) {
-			return new WP_Error( 'validation-error', sprintf( __( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
 		$response = wp_remote_get( add_query_arg( array(
@@ -322,7 +322,7 @@ abstract class WP_Job_Manager_Form {
 		     || empty( $response['body'] )
 		     || ! ( $json = json_decode( $response['body'] ) )
 		     || ! $json->success ) {
-			return new WP_Error( 'validation-error', sprintf( __( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
 		return $success;

@@ -139,7 +139,7 @@ class WP_Job_Manager_Ajax {
 			'orderby'            => $orderby,
 			'order'              => sanitize_text_field( $_REQUEST['order'] ),
 			'offset'             => ( absint( $_REQUEST['page'] ) - 1 ) * absint( $_REQUEST['per_page'] ),
-			'posts_per_page'     => absint( $_REQUEST['per_page'] ),
+			'posts_per_page'     => max( 1, absint( $_REQUEST['per_page'] ) ),
 		);
 
 		if ( isset( $_REQUEST['filled'] ) && ( $_REQUEST['filled'] === 'true' || $_REQUEST['filled'] === 'false' ) ) {

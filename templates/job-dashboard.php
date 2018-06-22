@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.30.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div id="job-manager-job-dashboard">
-	<p><?php _e( 'Your listings are shown in the table below.', 'wp-job-manager' ); ?></p>
+	<p><?php esc_html_e( 'Your listings are shown in the table below.', 'wp-job-manager' ); ?></p>
 	<table class="job-manager-jobs">
 		<thead>
 			<tr>
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tbody>
 			<?php if ( ! $jobs ) : ?>
 				<tr>
-					<td colspan="<?php echo count( $job_dashboard_columns ); ?>"><?php _e( 'You do not have any active listings.', 'wp-job-manager' ); ?></td>
+					<td colspan="<?php echo intval( count( $job_dashboard_columns ) ); ?>"><?php esc_html_e( 'You do not have any active listings.', 'wp-job-manager' ); ?></td>
 				</tr>
 			<?php else : ?>
 				<?php foreach ( $jobs as $job ) : ?>
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<td class="<?php echo esc_attr( $key ); ?>">
 								<?php if ('job_title' === $key ) : ?>
 									<?php if ( $job->post_status == 'publish' ) : ?>
-										<a href="<?php echo get_permalink( $job->ID ); ?>"><?php wpjm_the_job_title( $job ); ?></a>
+										<a href="<?php echo esc_url( get_permalink( $job->ID ) ); ?>"><?php wpjm_the_job_title( $job ); ?></a>
 									<?php else : ?>
 										<?php wpjm_the_job_title( $job ); ?> <small>(<?php the_job_status( $job ); ?>)</small>
 									<?php endif; ?>
@@ -85,9 +85,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 										?>
 									</ul>
 								<?php elseif ('date' === $key ) : ?>
-									<?php echo date_i18n( get_option( 'date_format' ), strtotime( $job->post_date ) ); ?>
+									<?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $job->post_date ) ) ); ?>
 								<?php elseif ('expires' === $key ) : ?>
-									<?php echo $job->_job_expires ? date_i18n( get_option( 'date_format' ), strtotime( $job->_job_expires ) ) : '&ndash;'; ?>
+									<?php echo esc_html( $job->_job_expires ? date_i18n( get_option( 'date_format' ), strtotime( $job->_job_expires ) ) : '&ndash;' ); ?>
 								<?php elseif ('filled' === $key ) : ?>
 									<?php echo is_position_filled( $job ) ? '&#10004;' : '&ndash;'; ?>
 								<?php else : ?>

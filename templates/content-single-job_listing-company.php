@@ -11,7 +11,7 @@
  * @package     WP Job Manager
  * @category    Template
  * @since       1.14.0
- * @version     1.28.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,7 +27,7 @@ if ( ! get_the_company_name() ) {
 
 	<p class="name">
 		<?php if ( $website = get_the_company_website() ) : ?>
-			<a class="website" href="<?php echo esc_url( $website ); ?>" target="_blank" rel="nofollow"><?php _e( 'Website', 'wp-job-manager' ); ?></a>
+			<a class="website" href="<?php echo esc_url( $website ); ?>" target="_blank" rel="nofollow"><?php esc_html_e( 'Website', 'wp-job-manager' ); ?></a>
 		<?php endif; ?>
 		<?php the_company_twitter(); ?>
 		<?php the_company_name( '<strong>', '</strong>' ); ?>

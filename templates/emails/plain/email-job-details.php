@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.31.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,7 +19,7 @@ echo "\n\n";
 
 if ( ! empty( $fields ) ) {
 	foreach ( $fields as $field ) {
-		echo strip_tags( $field[ 'label' ] )  .': '. strip_tags( $field[ 'value' ] );
+		echo esc_html( wp_strip_all_tags( $field[ 'label' ] )  .': '. wp_strip_all_tags( $field[ 'value' ] ) );
 		if ( ! empty( $field['url'] ) ) {
 			echo ' (' . esc_url( $field['url'] ) . ')';
 		}

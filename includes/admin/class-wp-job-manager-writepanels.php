@@ -192,35 +192,38 @@ class WP_Job_Manager_Writepanels {
 		$current = ($current ? $current->term_id : 0);
 		?>
 
-		<div id="taxonomy-<?php echo $taxonomy; ?>" class="categorydiv">
+		<div id="taxonomy-<?php echo esc_attr( $taxonomy ); ?>" class="categorydiv">
 
 			<!-- Display tabs-->
-			<ul id="<?php echo $taxonomy; ?>-tabs" class="category-tabs">
-				<li class="tabs"><a href="#<?php echo $taxonomy; ?>-all" tabindex="3"><?php echo $tax->labels->all_items; ?></a></li>
-				<li class="hide-if-no-js"><a href="#<?php echo $taxonomy; ?>-pop" tabindex="3"><?php _e( 'Most Used', 'wp-job-manager' ); ?></a></li>
+			<ul id="<?php echo esc_attr( $taxonomy ); ?>-tabs" class="category-tabs">
+				<li class="tabs"><a href="#<?php echo esc_attr( $taxonomy ); ?>-all" tabindex="3"><?php echo esc_html( $tax->labels->all_items ); ?></a></li>
+				<li class="hide-if-no-js"><a href="#<?php echo esc_attr( $taxonomy ); ?>-pop" tabindex="3"><?php esc_html_e( 'Most Used', 'wp-job-manager' ); ?></a></li>
 			</ul>
 
 			<!-- Display taxonomy terms -->
-			<div id="<?php echo $taxonomy; ?>-all" class="tabs-panel">
-				<ul id="<?php echo $taxonomy; ?>checklist" class="list:<?php echo $taxonomy?> categorychecklist form-no-clear">
-					<?php   foreach($terms as $term){
-						$id = $taxonomy.'-'.$term->term_id;
-						echo "<li id='$id'><label class='selectit'>";
-						echo "<input type='radio' id='in-$id' name='{$name}'".checked($current,$term->term_id,false)."value='$term->term_id' />$term->name<br />";
-					   echo "</label></li>";
+			<div id="<?php echo esc_attr( $taxonomy ); ?>-all" class="tabs-panel">
+				<ul id="<?php echo esc_attr( $taxonomy ); ?>checklist" class="list:<?php echo esc_attr( $taxonomy ); ?> categorychecklist form-no-clear">
+					<?php
+					foreach ( $terms as $term ) {
+						$id = $taxonomy.'-' . $term->term_id;
+						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
+						echo '<input type="radio" id="in-' . esc_attr( $id ).' name="' . esc_attr( $name ) . '" ' . checked( $current, $term->term_id ).' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
+						echo "</label></li>";
 					}?>
 			   </ul>
 			</div>
 
 			<!-- Display popular taxonomy terms -->
-			<div id="<?php echo $taxonomy; ?>-pop" class="tabs-panel" style="display: none;">
-				<ul id="<?php echo $taxonomy; ?>checklist-pop" class="categorychecklist form-no-clear" >
-					<?php   foreach($popular as $term){
-						$id = 'popular-'.$taxonomy.'-'.$term->term_id;
-						echo "<li id='$id'><label class='selectit'>";
-						echo "<input type='radio' id='in-$id'".checked($current,$term->term_id,false)."value='$term->term_id' />$term->name<br />";
+			<div id="<?php echo esc_attr( $taxonomy ); ?>-pop" class="tabs-panel" style="display: none;">
+				<ul id="<?php echo esc_attr( $taxonomy ); ?>checklist-pop" class="categorychecklist form-no-clear" >
+					<?php
+					foreach ( $popular as $term ) {
+						$id = 'popular-' . $taxonomy . '-' . $term->term_id;
+						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
+						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ).'<br />';
 						echo "</label></li>";
-					}?>
+					}
+					?>
 			   </ul>
 		   </div>
 
@@ -250,17 +253,17 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_strip_all_tags( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
 			<?php
 			if ( ! empty( $field['multiple'] ) ) {
 				foreach ( (array) $field['value'] as $value ) {
-					?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php _e( 'View', 'wp-job-manager' ); ?></button></span><?php
+					?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php esc_html_e( 'View', 'wp-job-manager' ); ?></button></span><?php
 				}
 			} else {
-				?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>"><?php _e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php _e( 'View', 'wp-job-manager' ); ?></button></span><?php
+				?><span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php esc_html_e( 'View', 'wp-job-manager' ); ?></button></span><?php
 			}
 			if ( ! empty( $field['multiple'] ) ) {
-				?><button class="button button-small wp_job_manager_add_another_file_button" data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php _e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php _e( 'Upload', 'wp-job-manager' ); ?>" data-view_button="<?php _e( 'View', 'wp-job-manager' ); ?>"><?php _e( 'Add file', 'wp-job-manager' ); ?></button><?php
+				?><button class="button button-small wp_job_manager_add_another_file_button" data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php esc_attr_e( 'Upload', 'wp-job-manager' ); ?>" data-view_button="<?php esc_attr_e( 'View', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Add file', 'wp-job-manager' ); ?></button><?php
 			}
 			?>
 		</p>
@@ -291,7 +294,7 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_strip_all_tags( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
 			<input type="text" autocomplete="off" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
 		</p>
 		<?php
@@ -333,19 +336,17 @@ class WP_Job_Manager_Writepanels {
 		} else {
 			$classes = '';
 		}
-		$hidden_input = '';
 		if ( 'hidden' === $field['type'] ) {
-			$hidden_input = '<input type="hidden" name="' . esc_attr( $name ) . '" class="' . esc_attr( $classes ) . '" id="' . esc_attr( $key ) . '" value="' . esc_attr( $field['value'] ) . '" />';
 			if ( empty( $field['label'] ) ) {
-				echo $hidden_input;
+				echo '<input type="hidden" name="' . esc_attr( $name ) . '" class="' . esc_attr( $classes ) . '" id="' . esc_attr( $key ) . '" value="' . esc_attr( $field['value'] ) . '" />';
 				return;
 			}
 		}
 		?>
 		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_strip_all_tags( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
 			<?php if ( ! empty( $field['information'] ) ) : ?><span class="information"><?php echo wp_kses( $field['information'], array( 'a' => array( 'href' => array() ) ) ); ?></span><?php endif; ?>
-			<?php echo $hidden_input; ?>
+			<?php echo '<input type="hidden" name="' . esc_attr( $name ) . '" class="' . esc_attr( $classes ) . '" id="' . esc_attr( $key ) . '" value="' . esc_attr( $field['value'] ) . '" />'; ?>
 		</p>
 		<?php
 	}
@@ -369,7 +370,7 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_strip_all_tags( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
 			<textarea name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>"><?php echo esc_html( $field['value'] ); ?></textarea>
 		</p>
 		<?php
@@ -394,7 +395,7 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_strip_all_tags( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
 			<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>">
 				<?php foreach ( $field['options'] as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php if ( isset( $field['value'] ) ) selected( $field['value'], $key ); ?>><?php echo esc_html( $value ); ?></option>
@@ -423,7 +424,7 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_strip_all_tags( $field['label'] ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?>: <?php if ( ! empty( $field['description'] ) ) : ?><span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
 			<select multiple="multiple" name="<?php echo esc_attr( $name ); ?>[]" id="<?php echo esc_attr( $key ); ?>">
 				<?php foreach ( $field['options'] as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>" <?php if ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) selected( in_array( $key, $field['value'] ), true ); ?>><?php echo esc_html( $value ); ?></option>
@@ -452,9 +453,9 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<p class="form-field form-field-checkbox">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_strip_all_tags( $field['label'] ) ; ?></label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?></label>
 			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $field['value'], 1 ); ?> />
-			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo wp_kses_post( $field['description'] ); ?></span><?php endif; ?>
 		</p>
 		<?php
 	}
@@ -480,19 +481,19 @@ class WP_Job_Manager_Writepanels {
 		$name           = ! empty( $field['name'] ) ? $field['name'] : $key;
 		?>
 		<p class="form-field form-field-author">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_strip_all_tags( $field['label'] ) ; ?>:</label>
+			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?>:</label>
 			<span class="current-author">
 				<?php
 					if ( $posted_by ) {
-						echo '<a href="' . admin_url( 'user-edit.php?user_id=' . absint( $author_id ) ) . '">#' . absint( $author_id ) . ' &ndash; ' . $posted_by->user_login . '</a>';
+						echo '<a href="' . esc_url( admin_url( 'user-edit.php?user_id=' . absint( $author_id ) ) ) . '">#' . absint( $author_id ) . ' &ndash; ' . esc_html( $posted_by->user_login ) . '</a>';
 					} else {
-						 _e( 'Guest User', 'wp-job-manager' );
+						 esc_html_e( 'Guest User', 'wp-job-manager' );
 					}
-				?> <a href="#" class="change-author button button-small"><?php _e( 'Change', 'wp-job-manager' ); ?></a>
+				?> <a href="#" class="change-author button button-small"><?php esc_html_e( 'Change', 'wp-job-manager' ); ?></a>
 			</span>
 			<span class="hidden change-author">
 				<input type="number" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" step="1" value="<?php echo esc_attr( $author_id ); ?>" style="width: 4em;" />
-				<span class="description"><?php _e( 'Enter the ID of the user, or leave blank if submitted by a guest.', 'wp-job-manager' ) ?></span>
+				<span class="description"><?php esc_html_e( 'Enter the ID of the user, or leave blank if submitted by a guest.', 'wp-job-manager' ) ?></span>
 			</span>
 		</p>
 		<?php
@@ -517,11 +518,11 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<p class="form-field form-field-checkbox">
-			<label><?php echo wp_strip_all_tags( $field['label'] ) ; ?></label>
+			<label><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ) ; ?></label>
 			<?php foreach ( $field['options'] as $option_key => $value ) : ?>
 				<label><input type="radio" class="radio" name="<?php echo esc_attr( isset( $field['name'] ) ? $field['name'] : $key ); ?>" value="<?php echo esc_attr( $option_key ); ?>" <?php checked( $field['value'], $option_key ); ?> /> <?php echo esc_html( $value ); ?></label>
 			<?php endforeach; ?>
-			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
+			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo wp_kses_post( $field['description'] ); ?></span><?php endif; ?>
 		</p>
 		<?php
 	}
@@ -555,7 +556,7 @@ class WP_Job_Manager_Writepanels {
 		$user_edited_date = get_post_meta( $post->ID, '_job_edited', true );
 		if ( $user_edited_date ) {
 			echo '<p class="form-field">';
-			echo '<em>' . sprintf( __( '%s was last modified by the user on %s.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, date_i18n( get_option( 'date_format' ), $user_edited_date ) ) . '</em>';
+			echo '<em>' . sprintf( esc_html__( '%s was last modified by the user on %s.', 'wp-job-manager' ), esc_html( $wp_post_types['job_listing']->labels->singular_name ), esc_html(date_i18n( get_option( 'date_format' ), $user_edited_date ) ) ) . '</em>';
 			echo '</p>';
 		}
 

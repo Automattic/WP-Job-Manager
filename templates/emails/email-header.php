@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.31.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <html <?php language_attributes(); ?>>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo( 'charset' ); ?>" />
-	<title><?php echo get_bloginfo( 'name', 'display' ); ?></title>
+	<title><?php echo esc_html( get_bloginfo( 'name' ) ); ?></title>
 </head>
 <body <?php echo is_rtl() ? 'rightmargin' : 'leftmargin'; ?>="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
 <div id="wrapper" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'?>">

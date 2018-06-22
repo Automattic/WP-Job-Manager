@@ -45,17 +45,17 @@ class WP_Job_Manager_Category_Walker extends Walker {
 
 		$value = isset( $args['value'] ) && $args['value'] == 'id' ? $object->term_id : $object->slug;
 
-		$output .= "\t<option class=\"level-$depth\" value=\"" . $value . "\"";
+		$output .= "\t<option class=\"level-" . intval( $depth ) . "\" value=\"" . esc_attr( $value ) . "\"";
 
 		if ( isset( $args['selected'] ) && ( $value == $args['selected'] || ( is_array( $args['selected'] ) && in_array( $value, $args['selected'] ) ) ) )
 			$output .= ' selected="selected"';
 
 		$output .= '>';
 
-		$output .= $pad . $cat_name;
+		$output .= $pad . esc_html( $cat_name );
 
 		if ( ! empty( $args['show_count'] ) ) {
-			$output .= '&nbsp;(' . $object->count . ')';
+			$output .= '&nbsp;(' . intval( $object->count ) . ')';
 		}
 
 		$output .= "</option>\n";
