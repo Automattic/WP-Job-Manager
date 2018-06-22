@@ -32,7 +32,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 			$args['_company_logo'] = $this->factory()->post->create(
 				array( 'post_type' => 'attachment' )
 			);
-			$expected['data']['data']['Company Logo']['value'] = $args['_company_logo'];
+			$expected['data'][0]['data'][0]['value'] = $args['_company_logo'];
 		}
 
 		foreach ( $args as $key => $value ) {
@@ -68,7 +68,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 			 * which can't be provided by the dataProvider before the dummy
 			 * user is created.
 			 */
-			$expected['data']['item_id'] = "wpjm-user-data-{$id}";
+			$expected['data'][0]['item_id'] = "wpjm-user-data-{$id}";
 		}
 		if ( array_key_exists( '_company_logo', $args ) ) {
 			/**
@@ -78,7 +78,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 			 * it's value is set to true to indicate that a dummy attachment
 			 * needs to be created.
 			 */
-			$expected['data']['data']['Company Logo']['value'] = wp_get_attachment_url( $expected['data']['data']['Company Logo']['value'] );
+			$expected['data'][0]['data'][0]['value'] = wp_get_attachment_url( $expected['data'][0]['data'][0]['value'] );
 		}
 
 		// ACT.
@@ -106,33 +106,35 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 				),
 				array(
 					'data' => array(
-						'group_id'    => 'wpjm-user-data',
-						'group_label' => __( 'WP Job Manager User Data' ),
-						'item_id'     => '', // the item_id depends on the ID of the user.
-						'data'        => array(
-							'Company Logo'    => array(
-								'name'  => 'Label',
-								'value' => true, // specify that attachment should be created.
-							),
-							'Company Name'    => array(
-								'name'  => 'Label',
-								'value' => 'Example',
-							),
-							'Company Website' => array(
-								'name'  => 'Label',
-								'value' => 'https://example.com/',
-							),
-							'Company Tagline' => array(
-								'name'  => 'Label',
-								'value' => 'Just another tagline',
-							),
-							'Company Twitter' => array(
-								'name'  => 'Label',
-								'value' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
-							),
-							'Company Video'   => array(
-								'name'  => 'Label',
-								'value' => 'https://example.com/company/video',
+						array(
+							'group_id'    => 'wpjm-user-data',
+							'group_label' => __( 'WP Job Manager User Data' ),
+							'item_id'     => '', // the item_id depends on the ID of the user.
+							'data'        => array(
+								array(
+									'name'  => 'Company Logo',
+									'value' => true, // specify that attachment should be created.
+								),
+								array(
+									'name'  => 'Company Name',
+									'value' => 'Example',
+								),
+								array(
+									'name'  => 'Company Website',
+									'value' => 'https://example.com/',
+								),
+								array(
+									'name'  => 'Company Tagline',
+									'value' => 'Just another tagline',
+								),
+								array(
+									'name'  => 'Company Twitter',
+									'value' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
+								),
+								array(
+									'name'  => 'Company Video',
+									'value' => 'https://example.com/company/video',
+								),
 							),
 						),
 					),
@@ -147,20 +149,22 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 				),
 				array(
 					'data' => array(
-						'group_id'    => 'wpjm-user-data',
-						'group_label' => __( 'WP Job Manager User Data' ),
-						'data'        => array(
-							'Company Name'    => array(
-								'name'  => 'Label',
-								'value' => 'Example',
-							),
-							'Company Website' => array(
-								'name'  => 'Label',
-								'value' => 'https://example.com/',
-							),
-							'Company Tagline' => array(
-								'name'  => 'Label',
-								'value' => 'Just another tagline',
+						array(
+							'group_id'    => 'wpjm-user-data',
+							'group_label' => __( 'WP Job Manager User Data' ),
+							'data'        => array(
+								array(
+									'name'  => 'Company Name',
+									'value' => 'Example',
+								),
+								array(
+									'name'  => 'Company Website',
+									'value' => 'https://example.com/',
+								),
+								array(
+									'name'  => 'Company Tagline',
+									'value' => 'Just another tagline',
+								),
 							),
 						),
 					),
@@ -178,10 +182,12 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 				),
 				array(
 					'data' => array(
-						'group_id'    => 'wpjm-user-data',
-						'group_label' => __( 'WP Job Manager User Data' ),
-						'item_id'     => '', // the item_id depends on the ID of the user.
-						'data'        => array(),
+						array(
+							'group_id'    => 'wpjm-user-data',
+							'group_label' => __( 'WP Job Manager User Data' ),
+							'item_id'     => '', // the item_id depends on the ID of the user.
+							'data'        => array(),
+						),
 					),
 					'done' => true,
 				),

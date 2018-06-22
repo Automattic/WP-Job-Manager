@@ -68,13 +68,13 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 					}
 				}
 
-				$user_data_to_export[ $name ] = array(
-					'name'  => __( 'Label', 'wp-job-manager' ),
+				$user_data_to_export[] = array(
+					'name'  => $name,
 					'value' => $user_meta,
 				);
 			}
 
-			$export_items = array(
+			$export_items[] = array(
 				'group_id'    => 'wpjm-user-data',
 				'group_label' => __( 'WP Job Manager User Data', 'wp-job-manager' ),
 				'item_id'     => "wpjm-user-data-{$user->ID}",
