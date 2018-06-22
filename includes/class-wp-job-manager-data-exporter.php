@@ -44,6 +44,7 @@ if ( ! class_exists( 'WP_Job_Manager_Data_Exporter' ) ) {
 				return;
 			}
 
+			$export_items        = array();
 			$user_data_to_export = array();
 			$user_meta_keys      = array(
 				'_company_logo'    => __( 'Company Logo', 'wp-job-manager' ),
