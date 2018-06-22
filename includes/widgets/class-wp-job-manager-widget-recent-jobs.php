@@ -45,6 +45,11 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 				'std'   => 10,
 				'label' => __( 'Number of listings to show', 'wp-job-manager' ),
 			),
+			'show_logo' => array(
+				'type'  => 'checkbox',
+				'std'   => 0,
+				'label' => esc_html__( 'Show Company Logo', 'wp-job-manager' ),
+			),
 		);
 		$this->register();
 	}
@@ -78,6 +83,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 			'orderby'           => 'date',
 			'order'             => 'DESC',
 		) );
+		$show_logo = absint( $instance['show_logo'] );
 
 		/**
 		 * Runs before Recent Jobs widget content.
@@ -100,7 +106,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 				<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
 
-					<?php get_job_manager_template_part( 'content-widget', 'job_listing' ); ?>
+					<?php get_job_manager_template( 'content-widget-job_listing.php', array( 'show_logo' => $instance['show_logo'] ) ); ?>
 
 				<?php endwhile; ?>
 
