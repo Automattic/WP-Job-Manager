@@ -11,7 +11,7 @@
  * @package     WP Job Manager
  * @category    Template
  * @since       1.14.0
- * @version     1.28.0
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
