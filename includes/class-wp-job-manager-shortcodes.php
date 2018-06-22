@@ -163,7 +163,7 @@ class WP_Job_Manager_Shortcodes {
 				 *
 				 * When left empty, no success message will be shown.
 				 *
-				 * @since 1.x.x
+				 * @since 1.31.1
 				 *
 				 * @param string  $message  Text for the success message. Default: empty string.
 				 * @param string  $action   The name of the custom action.
