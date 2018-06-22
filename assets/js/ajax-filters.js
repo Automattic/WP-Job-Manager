@@ -123,8 +123,8 @@ jQuery( document ).ready( function ( $ ) {
 				if ( result ) {
 					try {
 						if ( result.showing ) {
-							var showing_el = jQuery('<span>').text(result.showing)
-							$( showing ).show().html( '').text(result.showing_links).prepend(showing_el);
+							var showing_el = jQuery('<span>').html(result.showing);
+							$( showing ).show().html( '').html(result.showing_links).prepend(showing_el);
 						} else {
 							$( showing ).hide();
 						}
