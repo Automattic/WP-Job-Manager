@@ -525,7 +525,7 @@ class WP_Job_Manager_CPT {
 				echo '<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>';
 			break;
 			case "job_location" :
-				the_job_location( $post );
+				the_job_location( true, $post );
 			break;
 			case "job_listing_category" :
 				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) {
