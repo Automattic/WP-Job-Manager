@@ -150,7 +150,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	}
 
 	protected function login_as_admin() {
-		$admin = get_user_by( 'email', 'wpjm_admin_user@test.com' );
+		$admin = get_user_by( 'email', 'wpjm_admin_user@example.com' );
 		if ( false === $admin ){
 			$admin_id = wp_create_user(
 				'wpjm_admin_user',
