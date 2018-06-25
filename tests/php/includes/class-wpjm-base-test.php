@@ -148,4 +148,17 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 		$this->assertNotEmpty( $post );
 		$this->assertNotEquals( $expected_post_type, $post->post_status );
 	}
+
+	protected function login_as_admin() {
+		$admin = get_user_by( 'email', 'wpjm_admin_user@test.com' );
+		if ( false === $admin ){
+			$admin_id = wp_create_user(
+				'wpjm_admin_user',
+				'wpjm_admin_user',
+				'wpjm_admin_user@example.com' );
+			$admin = get_user_by( 'ID', $admin_id );
+			$admin->set_role( 'administrator' );
+		}
+		wp_set_current_user( $admin->ID );
+	}
 }
