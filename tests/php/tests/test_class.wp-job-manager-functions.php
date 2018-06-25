@@ -24,12 +24,12 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_keywords() {
-		$keywords = array( 'saurkraut' => array(), 'dinosaur' => array(), 'saur' => array(), 'test' => array() );
-		$keywords['saurkraut'][] = $keywords['saur'][] = $keywords['test'][] = $this->factory->job_listing->create( array(
-			'post_title' => 'A Saurkraut Test',
+		$keywords = array( 'saurkraut' => array(), 'dinosaur' => array(), 'saur' => array(), 'boom' => array() );
+		$keywords['saurkraut'][] = $keywords['saur'][] = $keywords['boom'][] = $this->factory->job_listing->create( array(
+			'post_title' => 'A Saurkraut Boom',
 		) );
-		$keywords['dinosaur'][] = $keywords['saur'][] = $keywords['test'][] = $this->factory->job_listing->create( array(
-			'post_title' => 'Dinosaur Test',
+		$keywords['dinosaur'][] = $keywords['saur'][] = $keywords['boom'][] = $this->factory->job_listing->create( array(
+			'post_title' => 'Dinosaur Boom',
 		) );
 		$keywords['dinosaur'][] = $keywords['saur'][] = $this->factory->job_listing->create( array(
 			'post_title' => 'Dinosaur',
@@ -37,11 +37,11 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 
 		$dinosaur_job_listings = get_job_listings( array( 'search_keywords' => 'Dinosaur' ) );
 		$saur_job_listings = get_job_listings( array( 'search_keywords' => 'Saur' ) );
-		$test_job_listings = get_job_listings( array( 'search_keywords' => 'Test' ) );
+		$boom_job_listings = get_job_listings( array( 'search_keywords' => 'Boom' ) );
 
 		$this->assertEqualSets( $keywords['dinosaur'], wp_list_pluck( $dinosaur_job_listings->posts, 'ID' ) );
 		$this->assertEqualSets( $keywords['saur'], wp_list_pluck( $saur_job_listings->posts, 'ID' ) );
-		$this->assertEqualSets( $keywords['test'], wp_list_pluck( $test_job_listings->posts, 'ID' ) );
+		$this->assertEqualSets( $keywords['boom'], wp_list_pluck( $boom_job_listings->posts, 'ID' ) );
 	}
 
 	/**
