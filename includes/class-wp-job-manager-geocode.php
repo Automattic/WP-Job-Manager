@@ -178,7 +178,7 @@ class WP_Job_Manager_Geocode {
 	 * Based on code by Eyal Fitoussi.
 	 *
 	 * @param string $raw_address
-	 * @return array|bool location data
+	 * @return array|bool location data.
 	 */
 	public static function get_location_data( $raw_address ) {
 		$invalid_chars = array(

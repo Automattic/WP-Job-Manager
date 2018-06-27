@@ -340,7 +340,7 @@ abstract class WP_Job_Manager_Form {
 	/**
 	 * Gets post data for fields.
 	 *
-	 * @return array of data
+	 * @return array of data.
 	 */
 	protected function get_posted_fields() {
 		$this->init_fields();

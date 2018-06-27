@@ -799,7 +799,7 @@ class WP_Job_Manager_CPT {
 	 * Removes job_listing from the list of post types that support "View Mode" option
 	 *
 	 * @param array $post_types Array of post types that support view mode.
-	 * @return array            Array of post types that support view mode, without job_listing post type
+	 * @return array            Array of post types that support view mode, without job_listing post type.
 	 */
 	public function disable_view_mode( $post_types ) {
 		unset( $post_types['job_listing'] );

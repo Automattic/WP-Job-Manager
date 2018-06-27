@@ -49,7 +49,7 @@ class WP_Job_Manager_Forms {
 	 * Load a form's class
 	 *
 	 * @param  string $form_name
-	 * @return string class name on success, false on failure
+	 * @return string class name on success, false on failure.
 	 */
 	private function load_form_class( $form_name ) {
 		if ( ! class_exists( 'WP_Job_Manager_Form' ) ) {

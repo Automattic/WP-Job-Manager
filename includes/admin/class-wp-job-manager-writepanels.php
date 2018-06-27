@@ -761,7 +761,7 @@ class WP_Job_Manager_Writepanels {
 	 * @param string|null $from_status Status to test if it is changing from. NULL if anything.
 	 * @param string      $to_status   Status to test if it is changing to.
 	 *
-	 * @return bool True if status is changing from $from_status to $to_status
+	 * @return bool True if status is changing from $from_status to $to_status.
 	 */
 	private function is_job_listing_status_changing( $from_status, $to_status ) {
 		return isset( $_POST['post_status'] )

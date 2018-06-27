@@ -301,7 +301,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @param array $values
 	 * @throws Exception Uploaded file is not a valid mime-type or other validation error
-	 * @return bool|WP_Error True on success, WP_Error on failure
+	 * @return bool|WP_Error True on success, WP_Error on failure.
 	 */
 	protected function validate_fields( $values ) {
 		foreach ( $this->fields as $group_key => $group_fields ) {
@@ -659,7 +659,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Creates a file attachment.
 	 *
 	 * @param  string $attachment_url
-	 * @return int attachment id
+	 * @return int attachment id.
 	 */
 	protected function create_attachment( $attachment_url ) {
 		include_once ABSPATH . 'wp-admin/includes/image.php';

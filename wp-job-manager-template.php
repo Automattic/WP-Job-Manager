@@ -668,7 +668,7 @@ function wpjm_get_the_job_categories( $post = null ) {
  *
  * @since 1.27.0
  *
- * @return array $registration_fields
+ * @return array $registration_fields.
  */
 function wpjm_get_registration_fields() {
 	$generate_username_from_email      = job_manager_generate_username_from_email();
@@ -836,7 +836,7 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
  * @since 1.0.0
  * @param int|WP_Post $post (default: null).
  * @param string      $size
- * @return string Image SRC
+ * @return string Image SRC.
  */
 function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 	$post = get_post( $post );

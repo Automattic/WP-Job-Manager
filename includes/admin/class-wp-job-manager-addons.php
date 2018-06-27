@@ -45,7 +45,7 @@ class WP_Job_Manager_Addons {
 	 *
 	 * @param  string $category
 	 *
-	 * @return array of add-ons
+	 * @return array of add-ons.
 	 */
 	private function get_add_ons( $category = null ) {
 		$raw_add_ons = wp_remote_get(
@@ -62,7 +62,7 @@ class WP_Job_Manager_Addons {
 	 *
 	 * @since  1.30.0
 	 *
-	 * @return array of objects
+	 * @return array of objects.
 	 */
 	private function get_categories() {
 		$add_on_categories = get_transient( 'jm_wpjmcom_add_on_categories' );
@@ -83,7 +83,7 @@ class WP_Job_Manager_Addons {
 	 *
 	 * @since  1.30.0
 	 *
-	 * @return array of objects
+	 * @return array of objects.
 	 */
 	private function get_messages() {
 		$add_on_messages = get_transient( 'jm_wpjmcom_add_on_messages' );

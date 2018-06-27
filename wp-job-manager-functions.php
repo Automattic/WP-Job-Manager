@@ -521,7 +521,7 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 	 * @since 1.0.0
 	 * @param  string|array|object $args containing username, email, role.
 	 * @param  string              $deprecated role string.
-	 * @return WP_Error|bool was an account created?
+	 * @return WP_Error|bool True if account was created.
 	 */
 	function wp_job_manager_create_account( $args, $deprecated = '' ) {
 		global $current_user;
@@ -1225,7 +1225,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
  * @since 1.21.0
  * @param  array|WP_Error      $file Array of $_FILE data to upload.
  * @param  string|array|object $args Optional arguments.
- * @return stdClass|WP_Error Object containing file information, or error
+ * @return stdClass|WP_Error Object containing file information, or error.
  */
 function job_manager_upload_file( $file, $args = array() ) {
 	global $job_manager_upload, $job_manager_uploading_file;

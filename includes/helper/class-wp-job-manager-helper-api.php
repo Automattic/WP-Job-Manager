@@ -37,7 +37,7 @@ class WP_Job_Manager_Helper_API {
 	 * Sends and receives data to and from the server API
 	 *
 	 * @param array|string $args
-	 * @return object|bool $response
+	 * @return object|bool $response.
 	 */
 	public function plugin_update_check( $args ) {
 		$args            = wp_parse_args( $args );
@@ -50,7 +50,7 @@ class WP_Job_Manager_Helper_API {
 	 * Sends and receives data to and from the server API
 	 *
 	 * @param array|string $args
-	 * @return object $response
+	 * @return object $response.
 	 */
 	public function plugin_information( $args ) {
 		$args            = wp_parse_args( $args );

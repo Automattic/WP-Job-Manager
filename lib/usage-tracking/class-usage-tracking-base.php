@@ -78,7 +78,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Get prefix for actions and strings. Should be unique to this plugin.
 	 *
-	 * @return string The prefix string
+	 * @return string The prefix string.
 	 **/
 	abstract protected function get_prefix();
 
@@ -86,7 +86,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * Get the text domain used by this plugin. This class will add some
 	 * strings to be translated.
 	 *
-	 * @return string The text domain string
+	 * @return string The text domain string.
 	 **/
 	abstract protected function get_text_domain();
 
@@ -108,7 +108,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Determine whether current user can manage the tracking options.
 	 *
-	 * @return bool true if the current user is allowed to manage the tracking
+	 * @return bool true if the current user is allowed to manage the tracking.
 	 * options, false otherwise.
 	 **/
 	abstract protected function current_user_can_manage_tracking();
@@ -280,7 +280,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Check if tracking is enabled.
 	 *
-	 * @return bool true if tracking is enabled, false otherwise
+	 * @return bool true if tracking is enabled, false otherwise.
 	 **/
 	public function is_tracking_enabled() {
 		// Defer to the plugin-specific function.
