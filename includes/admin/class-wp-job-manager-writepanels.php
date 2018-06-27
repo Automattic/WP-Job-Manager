@@ -664,9 +664,9 @@ class WP_Job_Manager_Writepanels {
 		$expiry_date = get_post_meta( $post_id, '_job_expires', true );
 		$today_date  = date( 'Y-m-d', current_time( 'timestamp' ) );
 		$is_job_listing_expired = $expiry_date && $today_date > $expiry_date;
-		if( $is_job_listing_expired ) {
+		if( $is_job_listing_expired  && ! $this->is_job_listing_status_changing( null, 'draft' )) {
 			remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
-			if ( $this->is_job_listing_being_reactivated() ) {
+			if ( $this->is_job_listing_status_changing( 'expired', 'publish' ) ) {
 				update_post_meta( $post_id, '_job_expires', calculate_job_expiry( $post_id ) );
 			} else {
 				$job_data = array(
@@ -680,15 +680,22 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
-	 * Checks if the job listing is being reactivated from an expired state.
+	 * Checks if the job listing status is being changed from $from_status to $to_status.
 	 *
-	 * @return bool True if being reactivated.
+	 * @param string|null $from_status Status to test if it is changing from. NULL if anything.
+	 * @param string      $to_status   Status to test if it is changing to.
+	 *
+	 * @return bool True if status is changing from $from_status to $to_status
 	 */
-	protected function is_job_listing_being_reactivated() {
+	private function is_job_listing_status_changing( $from_status, $to_status ) {
 		return isset( $_POST['post_status'] )
 			   && isset( $_POST['original_post_status'] )
-			   && 'expired' === $_POST['original_post_status']
-			   && 'publish' === $_POST['post_status'];
+			   && $_POST['original_post_status'] !== $_POST['post_status']
+			   && (
+					null === $from_status
+					|| $from_status === $_POST['original_post_status']
+			   )
+			   && $to_status === $_POST['post_status'];
 	}
 }
 
