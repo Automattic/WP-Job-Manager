@@ -1,6 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -175,14 +175,14 @@ class WP_Job_Manager_Writepanels {
 	 * @param int|WP_Post $post
 	 */
 	public function job_listing_metabox( $post ) {
-		// Set up the taxonomy object and get terms
+		// Set up the taxonomy object and get terms.
 		$taxonomy = 'job_listing_type';
-		$tax      = get_taxonomy( $taxonomy );// This is the taxonomy object
+		$tax      = get_taxonomy( $taxonomy );// This is the taxonomy object.
 
-		// The name of the form
+		// The name of the form.
 		$name = 'tax_input[' . $taxonomy . ']';
 
-		// Get all the terms for this taxonomy
+		// Get all the terms for this taxonomy.
 		$terms     = get_terms(
 			array(
 				'taxonomy'   => $taxonomy,
@@ -192,7 +192,7 @@ class WP_Job_Manager_Writepanels {
 		$postterms = get_the_terms( $post->ID, $taxonomy );
 		$current   = ( $postterms ? array_pop( $postterms ) : false );
 		$current   = ( $current ? $current->term_id : 0 );
-		// Get current and popular terms
+		// Get current and popular terms.
 		$popular   = get_terms(
 			array(
 				'taxonomy'     => $taxonomy,
@@ -672,17 +672,17 @@ class WP_Job_Manager_Writepanels {
 	public function save_job_listing_data( $post_id, $post ) {
 		global $wpdb;
 
-		// These need to exist
+		// These need to exist.
 		add_post_meta( $post_id, '_filled', 0, true );
 		add_post_meta( $post_id, '_featured', 0, true );
 
-		// Save fields
+		// Save fields.
 		foreach ( $this->job_listing_fields() as $key => $field ) {
 			if ( isset( $field['type'] ) && 'info' === $field['type'] ) {
 				continue;
 			}
 
-			// Expirey date
+			// Expirey date.
 			if ( '_job_expires' === $key ) {
 				if ( empty( $_POST[ $key ] ) ) {
 					if ( get_option( 'job_manager_submission_duration' ) ) {
@@ -695,10 +695,10 @@ class WP_Job_Manager_Writepanels {
 				}
 			}
 
-			// Locations
+			// Locations.
 			elseif ( '_job_location' === $key ) {
 				if ( update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) ) ) {
-					// Location data will be updated by hooked in methods
+					// Location data will be updated by hooked in methods.
 				} elseif ( apply_filters( 'job_manager_geolocation_enabled', true ) && ! WP_Job_Manager_Geocode::has_location_data( $post_id ) ) {
 					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
 				}
@@ -708,7 +708,7 @@ class WP_Job_Manager_Writepanels {
 				update_post_meta( $post_id, $key, sanitize_text_field( is_email( $_POST[ $key ] ) ? $_POST[ $key ] : urldecode( $_POST[ $key ] ) ) );
 			}
 
-			// Everything else
+			// Everything else.
 			else {
 				$type = ! empty( $field['type'] ) ? $field['type'] : '';
 

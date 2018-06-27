@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -315,7 +315,7 @@ class WP_Job_Manager_CPT {
 	public function jobs_meta_filters() {
 		global $typenow;
 
-		// Only add the filters for job_listings
+		// Only add the filters for job_listings.
 		if ( 'job_listing' !== $typenow ) {
 			return;
 		}
@@ -699,7 +699,7 @@ class WP_Job_Manager_CPT {
 			)
 		);
 
-		// Adjust the query vars
+		// Adjust the query vars.
 		unset( $wp->query_vars['s'] );
 		$wp->query_vars['job_listing_search'] = true;
 		$wp->query_vars['post__in']           = $post_ids;
@@ -766,20 +766,20 @@ class WP_Job_Manager_CPT {
 	public function extend_submitdiv_post_status() {
 		global $post, $post_type;
 
-		// Abort if we're on the wrong post type, but only if we got a restriction
+		// Abort if we're on the wrong post type, but only if we got a restriction.
 		if ( 'job_listing' !== $post_type ) {
 			return;
 		}
 
-		// Get all non-builtin post status and add them as <option>
+		// Get all non-builtin post status and add them as <option>.
 		$options = $display = '';
 		foreach ( get_job_listing_post_statuses() as $status => $name ) {
 			$selected = selected( $post->post_status, $status, false );
 
-			// If we one of our custom post status is selected, remember it
+			// If we one of our custom post status is selected, remember it.
 			$selected and $display = $name;
 
-			// Build the options
+			// Build the options.
 			$options .= "<option{$selected} value='{$status}'>" . esc_html( $name ) . '</option>';
 		}
 		?>

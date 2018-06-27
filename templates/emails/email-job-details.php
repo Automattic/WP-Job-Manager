@@ -12,7 +12,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 $text_align = is_rtl() ? 'right' : 'left';

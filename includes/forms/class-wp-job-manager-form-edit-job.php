@@ -153,10 +153,10 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 		try {
 
-			// Get posted values
+			// Get posted values.
 			$values = $this->get_posted_fields();
 
-			// Validate required
+			// Validate required.
 			if ( is_wp_error( ( $return = $this->validate_fields( $values ) ) ) ) {
 				throw new Exception( $return->get_error_message() );
 			}
@@ -167,11 +167,11 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			}
 			$original_post_status = get_post_status( $this->job_id );
 
-			// Update the job
+			// Update the job.
 			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $save_post_status, $values, false );
 			$this->update_job_data( $values );
 
-			// Successful
+			// Successful.
 			$save_message = __( 'Your changes have been saved.', 'wp-job-manager' );
 			$post_status  = get_post_status( $this->job_id );
 

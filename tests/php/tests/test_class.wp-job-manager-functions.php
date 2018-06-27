@@ -330,7 +330,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			),
 		) );
 
-		// Try 10x, verfying first 5 are always job listings
+		// Try 10x, verfying first 5 are always job listings.
 		for ($i = 1; $i <= 10; $i++) {
 			$results = get_job_listings( array( 'search_keywords' => '', 'orderby' => 'rand_featured' ) );
 			$tc = 0;
@@ -368,7 +368,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			),
 		) );
 
-		// Try 10x, verifying first 5 are always job listings
+		// Try 10x, verifying first 5 are always job listings.
 		for ($i = 1; $i <= 10; $i++) {
 			$results = get_job_listings( array( 'search_keywords' => '', 'orderby' => 'rand_featured' ) );
 			$tc = 0;

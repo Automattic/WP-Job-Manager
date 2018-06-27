@@ -38,19 +38,19 @@ class WPJM_Unit_Tests_Bootstrap {
 		$this->plugin_dir   = dirname( dirname( dirname( $this->tests_dir ) ) );
 		$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ? getenv( 'WP_TESTS_DIR' ) : '/tmp/wordpress-tests-lib';
 
-		// load test function so tests_add_filter() is available
+		// load test function so tests_add_filter() is available.
 		require_once( $this->wp_tests_dir . '/includes/functions.php' );
 
-		// load WPJM
+		// load WPJM.
 		tests_add_filter( 'muplugins_loaded', array( $this, 'load_plugin' ) );
 
-		// install WPJM
+		// install WPJM.
 		tests_add_filter( 'setup_theme', array( $this, 'install_plugin' ) );
 
-		// load the WP testing environment
+		// load the WP testing environment.
 		require_once( $this->wp_tests_dir . '/includes/bootstrap.php' );
 
-		// load WPJM testing framework
+		// load WPJM testing framework.
 		$this->includes();
 		restore_error_handler();
 	}
@@ -76,7 +76,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	public function install_plugin() {
 		global $wp_version;
 
-		// reload capabilities after install, see https://core.trac.wordpress.org/ticket/28374
+		// reload capabilities after install, see https://core.trac.wordpress.org/ticket/28374.
 		if ( version_compare( $wp_version, '4.7.0' ) >= 0 ) {
 			$GLOBALS['wp_roles'] = new WP_Roles();
 		} else {
@@ -90,7 +90,7 @@ class WPJM_Unit_Tests_Bootstrap {
 	 * @since 1.26.0
 	 */
 	public function includes() {
-		// framework
+		// framework.
 		require_once( $this->includes_dir . '/factories/class-wpjm-factory.php' );
 		require_once( $this->includes_dir . '/class-wpjm-base-test.php' );
 		require_once( $this->includes_dir . '/class-wpjm-helper-base-test.php' );

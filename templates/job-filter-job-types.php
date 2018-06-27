@@ -12,7 +12,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 ?>
 <?php if ( ! is_tax( 'job_listing_type' ) && empty( $job_types ) ) : ?>

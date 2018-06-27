@@ -20,10 +20,10 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 */
 	public function test_wp_job_manager_api_instance() {
 		$instance = WP_Job_Manager_Geocode::instance();
-		// check the class
+		// check the class.
 		$this->assertInstanceOf( 'WP_Job_Manager_Geocode', $instance, 'Job Manager Geocode object is instance of WP_Job_Manager_Geocode class' );
 
-		// check it always returns the same object
+		// check it always returns the same object.
 		$this->assertSame( WP_Job_Manager_Geocode::instance(), $instance, 'WP_Job_Manager_Geocode::instance() must always return the same object' );
 	}
 
@@ -81,12 +81,12 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 		$instance = WP_Job_Manager_Geocode::instance();
 		$job_id = $this->factory->job_listing->create();
 
-		// Set the initial location data
+		// Set the initial location data.
 		$values = array( 'job' => array( 'job_location' => $other_test_data['location'] ) );
 		$instance->update_location_data( $job_id, $values );
 		$this->check_test_data( $job_id, $other_test_data );
 
-		// Set the new location data and verify that everything is valid
+		// Set the new location data and verify that everything is valid.
 		$instance->change_location_data( $job_id, $test_data['location'] );
 		$this->check_test_data( $job_id, $test_data );
 	}

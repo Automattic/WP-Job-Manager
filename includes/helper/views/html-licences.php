@@ -1,6 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 ?>
 <h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Deactivate License', 'wp-job-manager' ); ?>" />
 					<?php
-				} else { // licence is not active
+				} else { // licence is not active.
 					?>
 					<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="activate"/>
 					<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</label>
 					<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 					<?php
-				} // end if : else licence is not active
+				} // end if : else licence is not active.
 				?>
 				</form>
 			</div>

@@ -63,7 +63,7 @@ class WP_Job_Manager_Setup {
 	 * Sends user to the setup page on first activation.
 	 */
 	public function redirect() {
-		// Bail if no activation redirect transient is set
+		// Bail if no activation redirect transient is set.
 		if ( ! get_transient( '_job_manager_activation_redirect' ) ) {
 			return;
 		}
@@ -72,10 +72,10 @@ class WP_Job_Manager_Setup {
 			return;
 		}
 
-		// Delete the redirect transient
+		// Delete the redirect transient.
 		delete_transient( '_job_manager_activation_redirect' );
 
-		// Bail if activating from network, or bulk, or within an iFrame
+		// Bail if activating from network, or bulk, or within an iFrame.
 		if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) ) {
 			return;
 		}

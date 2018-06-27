@@ -1,5 +1,5 @@
 <?php
-// From Jetpack
+// From Jetpack.
 $ch = curl_init();
 curl_setopt( $ch, CURLOPT_URL, 'https://api.wordpress.org/core/version-check/1.7/' );
 
@@ -13,7 +13,7 @@ curl_close( $ch );
 $versions = json_decode( $response );
 $versions = $versions->offers;
 
-// Sorting available WordPress offers by version number
+// Sorting available WordPress offers by version number.
 function offer_version_sort( $first, $second ) {
 	return version_compare( $first->version, $second->version, '<' );
 }
@@ -31,7 +31,7 @@ foreach ( $versions as $offer ) {
 		! isset( $version_stack[ $base ] )
 		|| version_compare( $offer->version, $version_stack[ $base ] ) ) {
 
-		// There is no version like this yet or there is a newer patch to this major version
+		// There is no version like this yet or there is a newer patch to this major version.
 		$version_stack[ $base ] = $offer->version;
 	}
 

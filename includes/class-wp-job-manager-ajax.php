@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -41,11 +41,11 @@ class WP_Job_Manager_Ajax {
 		add_action( 'init', array( __CLASS__, 'add_endpoint' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'do_jm_ajax' ), 0 );
 
-		// JM Ajax endpoints
+		// JM Ajax endpoints.
 		add_action( 'job_manager_ajax_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'job_manager_ajax_upload_file', array( $this, 'upload_file' ) );
 
-		// BW compatible handlers
+		// BW compatible handlers.
 		add_action( 'wp_ajax_nopriv_job_manager_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'wp_ajax_job_manager_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'wp_ajax_nopriv_job_manager_upload_file', array( $this, 'upload_file' ) );
@@ -94,7 +94,7 @@ class WP_Job_Manager_Ajax {
 				define( 'DOING_AJAX', true );
 			}
 
-			// Not home - this is an ajax endpoint
+			// Not home - this is an ajax endpoint.
 			$wp_query->is_home = false;
 
 			/**
@@ -195,7 +195,7 @@ class WP_Job_Manager_Ajax {
 		 */
 		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $message, $search_values );
 
-		// Generate RSS link
+		// Generate RSS link.
 		$result['showing_links'] = job_manager_get_filtered_links(
 			array(
 				'filter_job_types'  => $filter_job_types,
@@ -256,7 +256,7 @@ class WP_Job_Manager_Ajax {
 
 		$result['html'] = ob_get_clean();
 
-		// Generate pagination
+		// Generate pagination.
 if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
 	$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
 }

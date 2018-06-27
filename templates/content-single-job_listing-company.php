@@ -15,7 +15,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 if ( ! get_the_company_name() ) {

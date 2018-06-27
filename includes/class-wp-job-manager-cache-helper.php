@@ -159,7 +159,7 @@ class WP_Job_Manager_Cache_Helper {
 		 */
 		$post_types = apply_filters( 'wpjm_count_cache_supported_post_types', array( 'job_listing' ), $new_status, $old_status, $post );
 
-		// Only proceed when statuses do not match, and post type is supported post type
+		// Only proceed when statuses do not match, and post type is supported post type.
 		if ( $new_status === $old_status || ! in_array( $post->post_type, $post_types ) ) {
 			return;
 		}
@@ -177,11 +177,11 @@ class WP_Job_Manager_Cache_Helper {
 		$valid_statuses = apply_filters( 'wpjm_count_cache_supported_statuses', array( 'pending' ), $new_status, $old_status, $post );
 
 		$rlike = array();
-		// New status transient option name
+		// New status transient option name.
 		if ( in_array( $new_status, $valid_statuses ) ) {
 			$rlike[] = "^_transient_jm_{$new_status}_{$post->post_type}_count_user_";
 		}
-		// Old status transient option name
+		// Old status transient option name.
 		if ( in_array( $old_status, $valid_statuses ) ) {
 			$rlike[] = "^_transient_jm_{$old_status}_{$post->post_type}_count_user_";
 		}
@@ -201,7 +201,7 @@ class WP_Job_Manager_Cache_Helper {
 			delete_transient( $key );
 		}
 
-		// Sometimes transients are not in the DB, so we have to do this too:
+		// Sometimes transients are not in the DB, so we have to do this too:.
 		wp_cache_flush();
 	}
 
@@ -218,17 +218,17 @@ class WP_Job_Manager_Cache_Helper {
 	 */
 	public static function get_listings_count( $post_type = 'job_listing', $status = 'pending', $force = false ) {
 
-		// Get user based cache transient
+		// Get user based cache transient.
 		$user_id   = get_current_user_id();
 		$transient = "jm_{$status}_{$post_type}_count_user_{$user_id}";
 
-		// Set listings_count value from cache if exists, otherwise set to 0 as default
+		// Set listings_count value from cache if exists, otherwise set to 0 as default.
 		$status_count = ( $cached_count = get_transient( $transient ) ) ? $cached_count : 0;
 
-		// $cached_count will be false if transient does not exist
+		// $cached_count will be false if transient does not exist.
 		if ( $cached_count === false || $force ) {
 			$count_posts = wp_count_posts( $post_type, 'readable' );
-			// Default to 0 $status if object does not have a value
+			// Default to 0 $status if object does not have a value.
 			$status_count = isset( $count_posts->$status ) ? $count_posts->$status : 0;
 			set_transient( $transient, $status_count, DAY_IN_SECONDS * 7 );
 		}

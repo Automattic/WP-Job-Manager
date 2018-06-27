@@ -429,7 +429,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		// 2 expired + 1 publish
+		// 2 expired + 1 publish.
 		$this->assertEquals( 3, $data['jobs_logo'] );
 	}
 
@@ -454,7 +454,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		// 2 expired + 1 publish
+		// 2 expired + 1 publish.
 		$this->assertEquals( 3, $data['jobs_type'] );
 	}
 

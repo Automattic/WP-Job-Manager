@@ -9,10 +9,10 @@ class WP_Test_WP_Job_Manager_API extends WPJM_BaseTest {
 	 */
 	public function test_wp_job_manager_api_instance() {
 		$instance = WP_Job_Manager_API::instance();
-		// check the class
+		// check the class.
 		$this->assertInstanceOf( 'WP_Job_Manager_API', $instance, 'Job Manager API object is instance of WP_Job_Manager_API class' );
 
-		// check it always returns the same object
+		// check it always returns the same object.
 		$this->assertSame( WP_Job_Manager_API::instance(), $instance, 'WP_Job_Manager_API::instance() must always return the same object' );
 	}
 

@@ -219,7 +219,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$properties['admin_email'] = get_option( 'admin_email' );
 		$properties['_ut']         = $this->get_event_prefix() . ':site_url';
 		// Use site URL as the userid to enable usage tracking at the site level.
-		// Note that we would likely want to use site URL + user ID for userid if we were
+		// Note that we would likely want to use site URL + user ID for userid if we were.
 		// to ever add event tracking at the user level.
 		$properties['_ui'] = site_url();
 		$properties['_ul'] = $user->user_login;
@@ -547,7 +547,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 				jQuery( '#' + prefix + '-usage-tracking-notice' ).hide();
 			}
 
-			// Handle button clicks
+			// Handle button clicks.
 			jQuery( '#' + prefix + '-usage-tracking-notice button' ).click( function( event ) {
 				event.preventDefault();
 

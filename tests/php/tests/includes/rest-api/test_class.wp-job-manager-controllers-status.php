@@ -139,7 +139,7 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 			'value' => false,
 		) );
 		// We have a logged in user so post-4.9.1 versions of WordPress will correctly return 401.
-		// See https://core.trac.wordpress.org/changeset/42421
+		// See https://core.trac.wordpress.org/changeset/42421.
 		if ( version_compare( $wp_version, '4.9.1', '>' ) ) {
 			$this->assertResponseStatus( $response, 401 );
 		} else {

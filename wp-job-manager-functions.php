@@ -148,12 +148,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		/** This filter is documented in wp-job-manager.php */
 		$query_args['lang'] = apply_filters( 'wpjm_lang', null );
 
-		// Filter args
+		// Filter args.
 		$query_args = apply_filters( 'get_job_listings_query_args', $query_args, $args );
 
 		do_action( 'before_get_job_listings', $query_args, $args );
 
-		// Cache results
+		// Cache results.
 		if ( apply_filters( 'get_job_listings_cache_results', true ) ) {
 			$to_hash              = json_encode( $query_args );
 			$query_args_hash      = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
@@ -191,7 +191,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			}
 
 			if ( $cached_query_results ) {
-				// random order is cached so shuffle them
+				// random order is cached so shuffle them.
 				if ( 'rand_featured' === $args['orderby'] ) {
 					usort( $result->posts, '_wpjm_shuffle_featured_post_results_helper' );
 				} elseif ( 'rand' === $args['orderby'] ) {
@@ -221,11 +221,11 @@ if ( ! function_exists( '_wpjm_shuffle_featured_post_results_helper' ) ) :
 	 */
 	function _wpjm_shuffle_featured_post_results_helper( $a, $b ) {
 		if ( -1 === $a->menu_order || -1 === $b->menu_order ) {
-			// Left is featured
+			// Left is featured.
 			if ( 0 === $b->menu_order ) {
 				return -1;
 			}
-			// Right is featured
+			// Right is featured.
 			if ( 0 === $a->menu_order ) {
 				return 1;
 			}
@@ -247,7 +247,7 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	function get_job_listings_keyword_search( $search ) {
 		global $wpdb, $job_manager_keyword;
 
-		// Searchable Meta Keys: set to empty to search all meta keys
+		// Searchable Meta Keys: set to empty to search all meta keys.
 		$searchable_meta_keys = array(
 			'_job_location',
 			'_company_name',
@@ -260,22 +260,22 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 
 		$searchable_meta_keys = apply_filters( 'job_listing_searchable_meta_keys', $searchable_meta_keys );
 
-		// Set Search DB Conditions
+		// Set Search DB Conditions.
 		$conditions = array();
 
-		// Search Post Meta
+		// Search Post Meta.
 		if ( apply_filters( 'job_listing_search_post_meta', true ) ) {
 
-			// Only selected meta keys
+			// Only selected meta keys.
 			if ( $searchable_meta_keys ) {
 				$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ( '" . implode( "','", array_map( 'esc_sql', $searchable_meta_keys ) ) . "' ) AND meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
 			} else {
-				// No meta keys defined, search all post meta value
+				// No meta keys defined, search all post meta value.
 				$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
 			}
 		}
 
-		// Search taxonomy
+		// Search taxonomy.
 		$conditions[] = "{$wpdb->posts}.ID IN ( SELECT object_id FROM {$wpdb->term_relationships} AS tr LEFT JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id LEFT JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id WHERE t.name LIKE '%" . esc_sql( $job_manager_keyword ) . "%' )";
 
 		/**
@@ -368,7 +368,7 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
 
 			$args = apply_filters( 'get_job_listing_types_args', $args );
 
-			// Prevent users from filtering the taxonomy
+			// Prevent users from filtering the taxonomy.
 			$args['taxonomy'] = 'job_listing_type';
 
 			return get_terms( $args );
@@ -403,7 +403,7 @@ if ( ! function_exists( 'get_job_listing_categories' ) ) :
 		 */
 		$args = apply_filters( 'get_job_listing_category_args', $args );
 
-		// Prevent users from filtering the taxonomy
+		// Prevent users from filtering the taxonomy.
 		$args['taxonomy'] = 'job_listing_category';
 
 		return get_terms( $args );
@@ -422,7 +422,7 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 		$job_categories = array();
 		$types          = get_job_listing_types();
 
-		// Convert to slugs
+		// Convert to slugs.
 		if ( $args['search_categories'] ) {
 			foreach ( $args['search_categories'] as $category ) {
 				if ( is_numeric( $category ) ) {
@@ -526,7 +526,7 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 	function wp_job_manager_create_account( $args, $deprecated = '' ) {
 		global $current_user;
 
-		// Soft Deprecated in 1.20.0
+		// Soft Deprecated in 1.20.0.
 		if ( ! is_array( $args ) ) {
 			$username = '';
 			$password = false;
@@ -563,7 +563,7 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 			return new WP_Error( 'validation-error', __( 'This email is already registered, please choose another one.', 'wp-job-manager' ) );
 		}
 
-		// Ensure username is unique
+		// Ensure username is unique.
 		$append     = 1;
 		$o_username = $username;
 
@@ -572,7 +572,7 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 			$append ++;
 		}
 
-		// Final error checking
+		// Final error checking.
 		$reg_errors = new WP_Error();
 		$reg_errors = apply_filters( 'job_manager_registration_errors', $reg_errors, $username, $email );
 
@@ -582,7 +582,7 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 			return $reg_errors;
 		}
 
-		// Create account
+		// Create account.
 		$new_user = array(
 			'user_login' => $username,
 			'user_pass'  => $password,
@@ -619,7 +619,7 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 		 */
 		do_action( 'wpjm_notify_new_user', $user_id, $password, $new_user );
 
-		// Login
+		// Login.
 		wp_set_auth_cookie( $user_id, true, is_ssl() );
 		$current_user = get_user_by( 'id', $user_id );
 
@@ -1069,7 +1069,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 
 	extract( $r );
 
-	// Store in a transient to help sites with many cats
+	// Store in a transient to help sites with many cats.
 	$categories_hash = 'jm_cats_' . md5( json_encode( $r ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'jm_get_' . $r['taxonomy'] ) );
 	$categories      = get_transient( $categories_hash );
 
@@ -1200,7 +1200,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 	if ( is_array( $file_data['name'] ) ) {
 		foreach ( $file_data['name'] as $file_data_key => $file_data_value ) {
 			if ( $file_data['name'][ $file_data_key ] ) {
-				$type              = wp_check_filetype( $file_data['name'][ $file_data_key ] ); // Map mime type to one WordPress recognises
+				$type              = wp_check_filetype( $file_data['name'][ $file_data_key ] ); // Map mime type to one WordPress recognises.
 				$files_to_upload[] = array(
 					'name'     => $file_data['name'][ $file_data_key ],
 					'type'     => $type['type'],
@@ -1211,7 +1211,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 			}
 		}
 	} else {
-		$type              = wp_check_filetype( $file_data['name'] ); // Map mime type to one WordPress recognises
+		$type              = wp_check_filetype( $file_data['name'] ); // Map mime type to one WordPress recognises.
 		$file_data['type'] = $type['type'];
 		$files_to_upload[] = $file_data;
 	}
@@ -1346,7 +1346,7 @@ function calculate_job_expiry( $job_id ) {
 	// Get duration from the product if set...
 	$duration = get_post_meta( $job_id, '_job_duration', true );
 
-	// ...otherwise use the global option
+	// ...otherwise use the global option.
 	if ( ! $duration ) {
 		$duration = absint( get_option( 'job_manager_submission_duration' ) );
 	}

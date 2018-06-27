@@ -12,10 +12,10 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 */
 	public function test_wp_job_manager_instance() {
 		$instance = WP_Job_Manager_Helper::instance();
-		// check the class
+		// check the class.
 		$this->assertInstanceOf( 'WP_Job_Manager_Helper', $instance, 'Job Manager Helper object is instance of WP_Job_Manager_Helper class' );
 
-		// check it always returns the same object
+		// check it always returns the same object.
 		$this->assertSame( WP_Job_Manager_Helper::instance(), $instance, 'WP_Job_Manager_Helper::instance() must always return the same object' );
 	}
 
@@ -295,7 +295,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 * @requires PHP 5.3.0
 	 */
 	public function test_has_licenced_products_true() {
-		// Simulate no installed plugins
+		// Simulate no installed plugins.
 		$instance = $this->getMockHelper( array() );
 		$this->assertFalse( $instance->has_licenced_products() );
 	}
@@ -307,7 +307,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 * @requires PHP 5.3.0
 	 */
 	public function test_has_licenced_products_false() {
-		// Simulate a installed plugin
+		// Simulate a installed plugin.
 		$instance = $this->getMockHelper( array( 'test' => array() ) );
 		$this->assertTrue( $instance->has_licenced_products() );
 	}

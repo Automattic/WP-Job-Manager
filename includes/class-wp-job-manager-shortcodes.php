@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -90,44 +90,44 @@ class WP_Job_Manager_Shortcodes {
 			$job_id = absint( $_REQUEST['job_id'] );
 
 			try {
-				// Get Job
+				// Get Job.
 				$job = get_post( $job_id );
 
-				// Check ownership
+				// Check ownership.
 				if ( ! job_manager_user_can_edit_job( $job_id ) ) {
 					throw new Exception( __( 'Invalid ID', 'wp-job-manager' ) );
 				}
 
 				switch ( $action ) {
 					case 'mark_filled':
-						// Check status
+						// Check status.
 						if ( $job->_filled == 1 ) {
 							throw new Exception( __( 'This position has already been filled', 'wp-job-manager' ) );
 						}
 
-						// Update
+						// Update.
 						update_post_meta( $job_id, '_filled', 1 );
 
-						// Message
+						// Message.
 						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 						break;
 					case 'mark_not_filled':
-						// Check status
+						// Check status.
 						if ( $job->_filled != 1 ) {
 							throw new Exception( __( 'This position is not filled', 'wp-job-manager' ) );
 						}
 
-						// Update
+						// Update.
 						update_post_meta( $job_id, '_filled', 0 );
 
-						// Message
+						// Message.
 						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 						break;
 					case 'delete':
-						// Trash it
+						// Trash it.
 						wp_trash_post( $job_id );
 
-						// Message
+						// Message.
 						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 
 						break;
@@ -149,7 +149,7 @@ class WP_Job_Manager_Shortcodes {
 							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
 						}
 
-						// redirect to post page
+						// redirect to post page.
 						wp_redirect( add_query_arg( array( 'job_id' => absint( $job_id ) ), job_manager_get_permalink( 'submit_job_form' ) ) );
 						exit;
 
@@ -210,7 +210,7 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $_REQUEST['action'] ) ) {
 			$action = sanitize_title( $_REQUEST['action'] );
 
-			// Show alternative content if a plugin wants to
+			// Show alternative content if a plugin wants to.
 			if ( has_action( 'job_manager_job_dashboard_content_' . $action ) ) {
 				do_action( 'job_manager_job_dashboard_content_' . $action, $atts );
 
@@ -218,7 +218,7 @@ class WP_Job_Manager_Shortcodes {
 			}
 		}
 
-		// ....If not show the job dashboard
+		// ....If not show the job dashboard.
 		$args = apply_filters(
 			'job_manager_get_dashboard_jobs_args', array(
 				'post_type'           => 'job_listing',
@@ -282,21 +282,21 @@ class WP_Job_Manager_Shortcodes {
 						'orderby'                   => 'featured',
 						'order'                     => 'DESC',
 
-						// Filters + cats
+						// Filters + cats.
 						'show_filters'              => true,
 						'show_categories'           => true,
 						'show_category_multiselect' => get_option( 'job_manager_enable_default_category_multiselect', false ),
 						'show_pagination'           => false,
 						'show_more'                 => true,
 
-						// Limit what jobs are shown based on category, post status, and type
+						// Limit what jobs are shown based on category, post status, and type.
 						'categories'                => '',
 						'job_types'                 => '',
 						'post_status'               => '',
 						'featured'                  => null, // True to show only featured, false to hide featured, leave null to show both.
 						'filled'                    => null, // True to show only filled, false to hide filled, leave null to show both/use the settings.
 
-						// Default values for filters
+						// Default values for filters.
 						'location'                  => '',
 						'keywords'                  => '',
 						'selected_category'         => '',
@@ -310,7 +310,7 @@ class WP_Job_Manager_Shortcodes {
 			$show_categories = false;
 		}
 
-		// String and bool handling
+		// String and bool handling.
 		$show_filters              = $this->string_to_bool( $show_filters );
 		$show_categories           = $this->string_to_bool( $show_categories );
 		$show_category_multiselect = $this->string_to_bool( $show_category_multiselect );
@@ -325,13 +325,13 @@ class WP_Job_Manager_Shortcodes {
 			$filled = ( is_bool( $filled ) && $filled ) || in_array( $filled, array( '1', 'true', 'yes' ) ) ? true : false;
 		}
 
-		// Array handling
+		// Array handling.
 		$categories         = is_array( $categories ) ? $categories : array_filter( array_map( 'trim', explode( ',', $categories ) ) );
 		$job_types          = is_array( $job_types ) ? $job_types : array_filter( array_map( 'trim', explode( ',', $job_types ) ) );
 		$post_status        = is_array( $post_status ) ? $post_status : array_filter( array_map( 'trim', explode( ',', $post_status ) ) );
 		$selected_job_types = is_array( $selected_job_types ) ? $selected_job_types : array_filter( array_map( 'trim', explode( ',', $selected_job_types ) ) );
 
-		// Get keywords and location from querystring if set
+		// Get keywords and location from querystring if set.
 		if ( ! empty( $_GET['search_keywords'] ) ) {
 			$keywords = sanitize_text_field( $_GET['search_keywords'] );
 		}
@@ -558,7 +558,7 @@ class WP_Job_Manager_Shortcodes {
 					'id'       => '',
 					'width'    => '250px',
 					'align'    => 'left',
-					'featured' => null, // True to show only featured, false to hide featured, leave null to show both (when leaving out id)
+					'featured' => null, // True to show only featured, false to hide featured, leave null to show both (when leaving out id).
 					'limit'    => 1,
 				), $atts
 			)

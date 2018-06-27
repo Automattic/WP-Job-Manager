@@ -74,7 +74,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		parent::setUp();
 
 		// Only post-4.9.1 versions of WordPress will correctly return 401 for unauthorized requests.
-		// See https://core.trac.wordpress.org/changeset/42421
+		// See https://core.trac.wordpress.org/changeset/42421.
 		if ( version_compare( $wp_version, '4.9.1', '<=' ) ) {
 			$this->markTestSkipped( 'Older versions of WordPress have REST API authorization issues.' );
 			return;

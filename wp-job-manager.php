@@ -57,14 +57,14 @@ class WP_Job_Manager {
 	 * Constructor.
 	 */
 	public function __construct() {
-		// Define constants
+		// Define constants.
 		define( 'JOB_MANAGER_VERSION', '1.31.0' );
 		define( 'JOB_MANAGER_MINIMUM_WP_VERSION', '4.7.0' );
 		define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 		define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 		define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
-		// Includes
+		// Includes.
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-install.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-post-types.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ajax.php';
@@ -85,25 +85,25 @@ class WP_Job_Manager {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';
 		}
 
-		// Load 3rd party customizations
+		// Load 3rd party customizations.
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/3rd-party/3rd-party.php';
 
-		// Init classes
+		// Init classes.
 		$this->forms      = WP_Job_Manager_Forms::instance();
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
 
-		// Schedule cron jobs
+		// Schedule cron jobs.
 		self::maybe_schedule_cron_jobs();
 
-		// Activation - works with symlinks
+		// Activation - works with symlinks.
 		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this, 'activate' ) );
 
-		// Switch theme
+		// Switch theme.
 		add_action( 'after_switch_theme', array( 'WP_Job_Manager_Ajax', 'add_endpoint' ), 10 );
 		add_action( 'after_switch_theme', array( $this->post_types, 'register_post_types' ), 11 );
 		add_action( 'after_switch_theme', 'flush_rewrite_rules', 15 );
 
-		// Actions
+		// Actions.
 		add_action( 'after_setup_theme', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'after_setup_theme', array( $this, 'include_template_functions' ), 11 );
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
@@ -114,16 +114,16 @@ class WP_Job_Manager {
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
 		add_action( 'init', array( 'WP_Job_Manager_Email_Notifications', 'init' ) );
 
-		// Filters
+		// Filters.
 		add_filter( 'wp_privacy_personal_data_exporters', array( 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ) );
 
 		add_action( 'init', array( $this, 'usage_tracking_init' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'usage_tracking_cleanup' ) );
 
-		// Other cleanup
+		// Other cleanup.
 		register_deactivation_hook( __FILE__, array( $this, 'unschedule_cron_jobs' ) );
 
-		// Defaults for WPJM core actions
+		// Defaults for WPJM core actions.
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
 	}
 

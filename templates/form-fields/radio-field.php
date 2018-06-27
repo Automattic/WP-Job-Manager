@@ -26,7 +26,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 $field['default'] = empty( $field['default'] ) ? current( array_keys( $field['options'] ) ) : $field['default'];

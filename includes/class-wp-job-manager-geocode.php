@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -199,7 +199,7 @@ class WP_Job_Manager_Geocode {
 		$geocoded_address            = get_transient( $transient_name );
 		$jm_geocode_over_query_limit = get_transient( 'jm_geocode_over_query_limit' );
 
-		// Query limit reached - don't geocode for a while
+		// Query limit reached - don't geocode for a while.
 		if ( $jm_geocode_over_query_limit && false === $geocoded_address ) {
 			return false;
 		}

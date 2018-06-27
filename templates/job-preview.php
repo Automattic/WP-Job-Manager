@@ -12,7 +12,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 ?>
 <form method="post" id="job_preview" action="<?php echo esc_url( $form->get_action() ); ?>">

@@ -56,7 +56,7 @@ class WP_Job_Manager_Forms {
 			include 'abstracts/abstract-wp-job-manager-form.php';
 		}
 
-		// Now try to load the form_name
+		// Now try to load the form_name.
 		$form_class = 'WP_Job_Manager_Form_' . str_replace( '-', '_', $form_name );
 		$form_file  = JOB_MANAGER_PLUGIN_DIR . '/includes/forms/class-wp-job-manager-form-' . $form_name . '.php';
 
@@ -72,7 +72,7 @@ class WP_Job_Manager_Forms {
 			include $form_file;
 		}
 
-		// Init the form
+		// Init the form.
 		return call_user_func( array( $form_class, 'instance' ) );
 	}
 

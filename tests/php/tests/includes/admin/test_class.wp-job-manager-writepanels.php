@@ -84,7 +84,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 			 * Tests to make sure changes to draft is preserved.
 			*/
 			'draft_publish_draft' => array(
-				// From publish to draft (not touching expiration date) we should get a draft
+				// From publish to draft (not touching expiration date) we should get a draft.
 				array(
 					'original' => 'publish',
 					'new'      => 'draft',
@@ -93,7 +93,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 				null
 			),
 			'draft_expired_draft' => array(
-				// From expired to draft (not touching expiration date) we should get a draft
+				// From expired to draft (not touching expiration date) we should get a draft.
 				array(
 					'original' => 'expired',
 					'new'      => 'draft',
@@ -102,7 +102,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 				null
 			),
 			'draft_publish_draft_set_expired_date' => array(
-				// From publish to draft (setting an expired expiration date) we should get a draft
+				// From publish to draft (setting an expired expiration date) we should get a draft.
 				array(
 					'original' => 'publish',
 					'new'      => 'draft',
@@ -115,7 +115,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 				),
 			),
 			'draft_publish_draft_keep_expired_date' => array(
-				// From publish to draft (keeping an expired expiration date) we should get a draft
+				// From publish to draft (keeping an expired expiration date) we should get a draft.
 				array(
 					'original' => 'publish',
 					'new'      => 'draft',
@@ -128,7 +128,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 				),
 			),
 			'draft_expired_draft_set_expired' => array(
-				// From expired to draft (setting an expired expiration date) we should get a draft
+				// From expired to draft (setting an expired expiration date) we should get a draft.
 				array(
 					'original' => 'expired',
 					'new'      => 'draft',
@@ -141,7 +141,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 				),
 			),
 			'draft_expired_draft_keep_expired' => array(
-				// From expired to draft (keeping an expired expiration date) we should get a draft
+				// From expired to draft (keeping an expired expiration date) we should get a draft.
 				array(
 					'original' => 'expired',
 					'new'      => 'draft',

@@ -68,7 +68,7 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'parse_query', array( $this, 'add_feed_query_args' ) );
 
-		// Single job content
+		// Single job content.
 		$this->job_content_filter( true );
 	}
 
@@ -298,12 +298,12 @@ class WP_Job_Manager_Post_Types {
 
 		$pending_jobs = WP_Job_Manager_Cache_Helper::get_listings_count();
 
-		// No need to go further if no pending jobs, menu is not set, or is not an array
+		// No need to go further if no pending jobs, menu is not set, or is not an array.
 		if ( empty( $pending_jobs ) || empty( $menu ) || ! is_array( $menu ) ) {
 			return;
 		}
 
-		// Try to pull menu_name from post type object to support themes/plugins that change the menu string
+		// Try to pull menu_name from post type object to support themes/plugins that change the menu string.
 		$post_type = get_post_type_object( 'job_listing' );
 		$plural    = isset( $post_type->labels, $post_type->labels->menu_name ) ? $post_type->labels->menu_name : __( 'Job Listings', 'wp-job-manager' );
 
@@ -434,7 +434,7 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function add_feed_query_args( $wp ) {
 
-		// Let's leave if not the job feed
+		// Let's leave if not the job feed.
 		if ( ! isset( $wp->query_vars['feed'] ) || 'job_feed' !== $wp->query_vars['feed'] ) {
 			return;
 		}
@@ -493,7 +493,7 @@ class WP_Job_Manager_Post_Types {
 	public function check_for_expired_jobs() {
 		global $wpdb;
 
-		// Change status to expired
+		// Change status to expired.
 		$job_ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"
@@ -517,7 +517,7 @@ class WP_Job_Manager_Post_Types {
 			}
 		}
 
-		// Delete old expired jobs
+		// Delete old expired jobs.
 		if ( apply_filters( 'job_manager_delete_expired_jobs', false ) ) {
 			$job_ids = $wpdb->get_col(
 				$wpdb->prepare(
@@ -544,7 +544,7 @@ class WP_Job_Manager_Post_Types {
 	public function delete_old_previews() {
 		global $wpdb;
 
-		// Delete old expired jobs
+		// Delete old expired jobs.
 		$job_ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"
@@ -585,7 +585,7 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		// See if it is already set
+		// See if it is already set.
 		if ( metadata_exists( 'post', $post->ID, '_job_expires' ) ) {
 			$expires = get_post_meta( $post->ID, '_job_expires', true );
 			if ( $expires && strtotime( $expires ) < current_time( 'timestamp' ) ) {
@@ -593,16 +593,16 @@ class WP_Job_Manager_Post_Types {
 			}
 		}
 
-		// See if the user has set the expiry manually:
+		// See if the user has set the expiry manually:.
 		if ( ! empty( $_POST['_job_expires'] ) ) {
 			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( sanitize_text_field( $_POST['_job_expires'] ) ) ) );
 
-			// No manual setting? Lets generate a date if there isn't already one
+			// No manual setting? Lets generate a date if there isn't already one.
 		} elseif ( false == isset( $expires ) ) {
 			$expires = calculate_job_expiry( $post->ID );
 			update_post_meta( $post->ID, '_job_expires', $expires );
 
-			// In case we are saving a post, ensure post data is updated so the field is not overridden
+			// In case we are saving a post, ensure post data is updated so the field is not overridden.
 			if ( isset( $_POST['_job_expires'] ) ) {
 				$_POST['_job_expires'] = $expires;
 			}

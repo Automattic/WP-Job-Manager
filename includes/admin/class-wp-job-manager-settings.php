@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -135,7 +135,7 @@ class WP_Job_Manager_Settings {
 						),
 						array(
 							'name'       => 'job_manager_hide_expired',
-							'std'        => get_option( 'job_manager_hide_expired_content' ) ? '1' : '0', // back compat
+							'std'        => get_option( 'job_manager_hide_expired_content' ) ? '1' : '0', // back compat.
 							'label'      => __( 'Hide Expired Listings', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide expired listings in job archives/search', 'wp-job-manager' ),
 							'desc'       => __( 'Expired job listings will not be searchable.', 'wp-job-manager' ),

@@ -12,7 +12,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 wp_enqueue_script( 'wp-job-manager-ajax-filters' );

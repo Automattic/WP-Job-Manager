@@ -24,10 +24,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_wp_job_manager_post_types_instance() {
 		$instance = WP_Job_Manager_Post_Types::instance();
-		// check the class
+		// check the class.
 		$this->assertInstanceOf( 'WP_Job_Manager_Post_Types', $instance, 'Job Manager Post Types object is instance of WP_Job_Manager_Post_Types class' );
 
-		// check it always returns the same object
+		// check it always returns the same object.
 		$this->assertSame( WP_Job_Manager_Post_Types::instance(), $instance, 'WP_Job_Manager_Post_Types::instance() must always return the same object' );
 	}
 
@@ -80,7 +80,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$feed = $this->do_job_feed();
 		$xml = xml_to_array( $feed );
 		$this->assertNotEmpty( $xml );
-		// Get all the <item> child elements of the <channel> element
+		// Get all the <item> child elements of the <channel> element.
 		$items = xml_find( $xml, 'rss', 'channel', 'item' );
 		$this->assertEquals( 5, count( $items ) );
 	}
@@ -95,7 +95,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$feed = $this->do_job_feed();
 		$xml = xml_to_array( $feed );
 		$this->assertNotEmpty( $xml );
-		// Get all the <item> child elements of the <channel> element
+		// Get all the <item> child elements of the <channel> element.
 		$items = xml_find( $xml, 'rss', 'channel', 'item' );
 		$this->assertEquals( 5, count( $items ) );
 	}
@@ -129,7 +129,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		unset( $_GET['search_location'] );
 		$xml = xml_to_array( $feed );
 		$this->assertNotEmpty( $xml );
-		// Get all the <item> child elements of the <channel> element
+		// Get all the <item> child elements of the <channel> element.
 		$items = xml_find( $xml, 'rss', 'channel', 'item' );
 		$this->assertEquals( 1, count( $items ) );
 		$this->assertHasRssItem( $items, $seattle_job_id );
@@ -155,7 +155,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		unset( $_GET['search_keywords'] );
 		$xml = xml_to_array( $feed );
 		$this->assertNotEmpty( $xml );
-		// Get all the <item> child elements of the <channel> element
+		// Get all the <item> child elements of the <channel> element.
 		$items = xml_find( $xml, 'rss', 'channel', 'item' );
 		$this->assertEquals( 1, count( $items ) );
 		$this->assertHasRssItem( $items, $dino_job_id );
@@ -420,7 +420,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_fix_post_name() {
 		$instance = WP_Job_Manager_Post_Types::instance();
-		// Legit
+		// Legit.
 		$data = array(
 			'post_type'   => 'job_listing',
 			'post_status' => 'pending',
@@ -431,7 +431,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$data_fixed = $instance->fix_post_name( $data, $postarr );
 		$this->assertEquals( $postarr['post_name'], $data_fixed['post_name'] );
 
-		// Bad Post Type
+		// Bad Post Type.
 		$data = array(
 			'post_type'   => 'post',
 			'post_status' => 'pending',
@@ -442,7 +442,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$data_fixed = $instance->fix_post_name( $data, $postarr );
 		$this->assertEquals( $data['post_name'], $data_fixed['post_name'] );
 
-		// Bad Post Status
+		// Bad Post Status.
 		$data = array(
 			'post_type'   => 'job_listing',
 			'post_status' => 'publish',

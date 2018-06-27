@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -129,10 +129,10 @@ class WP_Job_Manager_Helper {
 	 * @return array
 	 */
 	public function check_for_updates( $check_for_updates_data ) {
-		// Set version variables
+		// Set version variables.
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			if ( $response = $this->get_plugin_version( $plugin_data['_filename'] ) ) {
-				// If there is a new version, modify the transient to reflect an update is available
+				// If there is a new version, modify the transient to reflect an update is available.
 				if ( $response !== false && isset( $response['new_version'] ) && version_compare( $response['new_version'], $plugin_data['Version'], '>' ) ) {
 					$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 				}
@@ -171,7 +171,7 @@ class WP_Job_Manager_Helper {
 
 		$this->handle_api_errors( $product_slug, $response );
 
-		// Set version variables
+		// Set version variables.
 		if ( ! empty( $response ) ) {
 			return $response;
 		}

@@ -76,7 +76,7 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function process() {
 
-		// reset cookie
+		// reset cookie.
 		if (
 			isset( $_GET['new'] ) &&
 			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
@@ -349,7 +349,7 @@ abstract class WP_Job_Manager_Form {
 
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
-				// Get the value
+				// Get the value.
 				$field_type = str_replace( '-', '_', $field['type'] );
 
 				if ( $handler = apply_filters( "job_manager_get_posted_{$field_type}_field", false ) ) {
@@ -360,7 +360,7 @@ abstract class WP_Job_Manager_Form {
 					$values[ $group_key ][ $key ] = $this->get_posted_field( $key, $field );
 				}
 
-				// Set fields value
+				// Set fields value.
 				$this->fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
 			}
 		}
@@ -380,7 +380,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return array|string   $value      The sanitized array (or string from the callback).
 	 */
 	protected function sanitize_posted_field( $value, $sanitizer = null ) {
-		// Sanitize value
+		// Sanitize value.
 		if ( is_array( $value ) ) {
 			foreach ( $value as $key => $val ) {
 				$value[ $key ] = $this->sanitize_posted_field( $val, $sanitizer );
@@ -397,17 +397,17 @@ abstract class WP_Job_Manager_Form {
 			return sanitize_email( $value );
 		} elseif ( 'url_or_email' === $sanitizer ) {
 			if ( null !== parse_url( $value, PHP_URL_HOST ) ) {
-				// Sanitize as URL
+				// Sanitize as URL.
 				return esc_url_raw( $value );
 			}
 
-			// Sanitize as email
+			// Sanitize as email.
 			return sanitize_email( $value );
 		} elseif ( is_callable( $sanitizer ) ) {
 			return call_user_func( $sanitizer, $value );
 		}
 
-		// Use standard text sanitizer
+		// Use standard text sanitizer.
 		return sanitize_text_field( stripslashes( $value ) );
 	}
 

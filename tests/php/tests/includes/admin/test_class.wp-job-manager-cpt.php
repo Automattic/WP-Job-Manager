@@ -80,7 +80,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 		// Simulate viewing some other page.
 		$pagenow = 'index.php';
 
-		// Filter should do nothing
+		// Filter should do nothing.
 		$_GET['job_listing_filled']   = '1';
 		$_GET['job_listing_featured'] = '1';
 		$query = new WP_Query( array( 'post_type' => 'job_listing', 'fields' => 'ids' ) );

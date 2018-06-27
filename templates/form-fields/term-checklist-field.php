@@ -12,7 +12,7 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 ?>
 <ul class="job-manager-term-checklist job-manager-term-checklist-<?php echo esc_attr( $key ); ?>">
@@ -31,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		'checked_ontop'         => false
 	);
 
-	// $field['post_id'] needs to be passed via the args so we can get the existing terms
+	// $field['post_id'] needs to be passed via the args so we can get the existing terms.
 	ob_start();
 	wp_terms_checklist( 0, $args );
 	$checklist = ob_get_clean();

@@ -42,7 +42,7 @@ function get_job_manager_template( $template_name, $args = array(), $template_pa
  * @return string
  */
 function locate_job_manager_template( $template_name, $template_path = 'job_manager', $default_path = '' ) {
-	// Look within passed path within the theme - this is priority
+	// Look within passed path within the theme - this is priority.
 	$template = locate_template(
 		array(
 			trailingslashit( $template_path ) . $template_name,
@@ -50,7 +50,7 @@ function locate_job_manager_template( $template_name, $template_path = 'job_mana
 		)
 	);
 
-	// Get default template
+	// Get default template.
 	if ( ! $template && $default_path !== false ) {
 		$default_path = $default_path ? $default_path : JOB_MANAGER_PLUGIN_DIR . '/templates/';
 		if ( file_exists( trailingslashit( $default_path ) . $template_name ) ) {
@@ -58,7 +58,7 @@ function locate_job_manager_template( $template_name, $template_path = 'job_mana
 		}
 	}
 
-	// Return what we found
+	// Return what we found.
 	return apply_filters( 'job_manager_locate_template', $template, $template_name, $template_path );
 }
 
@@ -78,7 +78,7 @@ function get_job_manager_template_part( $slug, $name = '', $template_path = 'job
 		$template = locate_job_manager_template( "{$slug}-{$name}.php", $template_path, $default_path );
 	}
 
-	// If template file doesn't exist, look in yourtheme/slug.php and yourtheme/job_manager/slug.php
+	// If template file doesn't exist, look in yourtheme/slug.php and yourtheme/job_manager/slug.php.
 	if ( ! $template ) {
 		$template = locate_job_manager_template( "{$slug}.php", $template_path, $default_path );
 	}
@@ -458,7 +458,7 @@ function wpjm_get_job_listing_location_structured_data( $post ) {
 		}
 	}
 
-	// No address parts were found
+	// No address parts were found.
 	if ( 1 === count( $address ) ) {
 		$address = false;
 	}
@@ -771,7 +771,7 @@ function the_job_location( $map_link = true, $post = null ) {
 
 	if ( $location ) {
 		if ( $map_link ) {
-			// If linking to google maps, we don't want anything but text here
+			// If linking to google maps, we don't want anything but text here.
 			echo wp_kses_post(
 				apply_filters(
 					'the_job_location_map_link',
@@ -925,7 +925,7 @@ function the_company_video( $post = null ) {
 	$filetype    = wp_check_filetype( $video );
 
 	if ( ! empty( $video ) ) {
-		// FV WordPress Flowplayer Support for advanced video formats
+		// FV WordPress Flowplayer Support for advanced video formats.
 		if ( shortcode_exists( 'flowplayer' ) ) {
 			$video_embed = '[flowplayer src="' . esc_url( $video ) . '"]';
 		} elseif ( ! empty( $filetype['ext'] ) ) {
@@ -1128,7 +1128,7 @@ function get_the_company_twitter( $post = null ) {
  * @param int|WP_Post $post_id (default: null)
  */
 function job_listing_class( $class = '', $post_id = null ) {
-	// Separates classes with a single space, collates classes for post DIV
+	// Separates classes with a single space, collates classes for post DIV.
 	echo 'class="' . esc_attr( join( ' ', get_job_listing_class( $class, $post_id ) ) ) . '"';
 }
 

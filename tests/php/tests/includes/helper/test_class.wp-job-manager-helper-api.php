@@ -25,10 +25,10 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 	 */
 	public function test_wp_job_manager_api_instance() {
 		$instance = WP_Job_Manager_Helper_API::instance();
-		// check the class
+		// check the class.
 		$this->assertInstanceOf( 'WP_Job_Manager_Helper_API', $instance, 'Job Manager Helper API object is instance of WP_Job_Manager_Helper_API class' );
 
-		// check it always returns the same object
+		// check it always returns the same object.
 		$this->assertSame( WP_Job_Manager_Helper_API::instance(), $instance, 'WP_Job_Manager_Helper_API::instance() must always return the same object' );
 	}
 
@@ -122,7 +122,7 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 		$instance = new WP_Job_Manager_Helper_API;
 		$response = $instance->activate( $base_args );
 
-		// For activation, we return the error from the request (if there was one)
+		// For activation, we return the error from the request (if there was one).
 		$this->assertEquals( $this->default_invalid_response(), $response );
 	}
 
@@ -192,7 +192,7 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 	}
 
 	protected function default_invalid_response() {
-		// Prebaked response in Requests_Transport_Faker
+		// Prebaked response in Requests_Transport_Faker.
 		return array( 'error_code' => 'http_request_failed', 'error' => 'Computer says no' );
 	}
 
