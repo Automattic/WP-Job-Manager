@@ -19,6 +19,11 @@
 	<config name="testVersion" value="5.2-"/>
 
 	<!-- Rules -->
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
+		<exclude-pattern>tests/*</exclude-pattern>
+		<exclude-pattern>wp-job-manager.php</exclude-pattern>
+	</rule>
 	<rule ref="PHPCompatibility">
 		<exclude name="PHPCompatibility.PHP.NewFunctions.hash_equalsFound" />
 		<exclude name="PHPCompatibility.PHP.NewInterfaces.jsonserializableFound" />
@@ -27,6 +32,8 @@
 	</rule>
 	<rule ref="WordPress">
 		<exclude name="WordPress.VIP" />
+		<exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found" />
+		<exclude name="Generic.Commenting.DocComment.SpacingBeforeTags" />
 	</rule>
 	<rule ref="WordPress.WP.I18n">
 		<properties>
@@ -37,6 +44,7 @@
 		<exclude-pattern>tests/</exclude-pattern>
 		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
 		<exclude name="Squiz.Commenting.PostStatementComment" />
+		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment" />
 	</rule>
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
