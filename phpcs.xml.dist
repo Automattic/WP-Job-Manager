@@ -6,14 +6,56 @@
 	<!-- Set a description for this ruleset. -->
 	<description>A custom set of code standard rules to check for WordPress themes and plugins.</description>
 
-	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs" />
+	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/wimg/php-compatibility" />
 
-	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
 
-	<!-- Include the WordPress ruleset, with exclusions. -->
+	<!-- Configs -->
+	<config name="minimum_supported_wp_version" value="4.7" />
+	<config name="testVersion" value="5.2-"/>
+
+	<!-- Rules -->
+	<rule ref="PHPCompatibility">
+		<exclude name="PHPCompatibility.PHP.NewFunctions.hash_equalsFound" />
+		<exclude name="PHPCompatibility.PHP.NewInterfaces.jsonserializableFound" />
+		<exclude name="PHPCompatibility.PHP.NewKeywords.t_namespaceFound" />
+		<exclude-pattern>tests/</exclude-pattern>
+	</rule>
 
 	<rule ref="WordPress">
-		<exclude name="WordPress.VIP" />
+		<exclude name="WordPress.VIP.DirectDatabaseQuery.NoCaching" />
+		<exclude name="WordPress.VIP.DirectDatabaseQuery.DirectQuery" />
+		<exclude name="WordPress.VIP.DirectDatabaseQuery.SchemaChange" />
+		<exclude name="WordPress.VIP.FileSystemWritesDisallow.file_ops_fwrite" />
+		<exclude name="WordPress.VIP.OrderByRand" />
+		<exclude name="WordPress.VIP.RestrictedFunctions" />
+		<exclude name="WordPress.VIP.RestrictedVariables.user_meta__wpdb__usermeta" />
+		<exclude name="WordPress.VIP.PostsPerPage.posts_per_page_posts_per_page" />
+		<exclude name="WordPress.VIP.RestrictedVariables.cache_constraints___COOKIE" />
+	</rule>
+	<rule ref="WordPress.VIP.ValidatedSanitizedInput">
+		<properties>
+			<property name="customSanitizingFunctions" type="array" value="wc_clean,wc_sanitize_tooltip,wc_format_decimal,wc_stock_amount,wc_sanitize_permalink,wc_sanitize_textarea" />
+		</properties>
+	</rule>
+	<rule ref="WordPress.XSS.EscapeOutput">
+		<properties>
+			<property name="customEscapingFunctions" type="array" value="wc_help_tip,wc_sanitize_tooltip,wc_selected" />
+		</properties>
+	</rule>
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="wp-job-manager" />
+		</properties>
+	</rule>
+	<rule ref="Squiz.Commenting">
+		<exclude-pattern>tests/</exclude-pattern>
+		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
+		<exclude name="Squiz.Commenting.PostStatementComment" />
+	</rule>
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
+		<exclude-pattern>tests/*</exclude-pattern>
 	</rule>
 </ruleset>
