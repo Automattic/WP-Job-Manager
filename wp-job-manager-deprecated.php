@@ -49,7 +49,7 @@ if ( ! function_exists( 'get_the_job_type' ) ) :
 	 * @since 1.0.0
 	 * @deprecated 1.27.0 Use `wpjm_get_the_job_types()` instead.
 	 *
-	 * @param int|WP_Post $post (default: null)
+	 * @param int|WP_Post $post (default: null).
 	 * @return string|bool|null
 	 */
 	function get_the_job_type( $post = null ) {

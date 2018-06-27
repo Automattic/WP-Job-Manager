@@ -716,9 +716,9 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Generates location data if a post is updated.
 	 *
-	 * @param int    $meta_id (Unused)
+	 * @param int    $meta_id (Unused).
 	 * @param int    $object_id
-	 * @param string $meta_key (Unused)
+	 * @param string $meta_key (Unused).
 	 * @param mixed  $meta_value
 	 */
 	public function maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
@@ -728,9 +728,9 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Maybe sets menu_order if the featured status of a job is changed.
 	 *
-	 * @param int    $meta_id (Unused)
+	 * @param int    $meta_id (Unused).
 	 * @param int    $object_id
-	 * @param string $meta_key (Unused)
+	 * @param string $meta_key (Unused).
 	 * @param mixed  $meta_value
 	 */
 	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {

@@ -157,7 +157,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk action to approve a single job listing.
 	 *
-	 * @param $post_id
+	 * @param int $post_id Post ID.
 	 *
 	 * @return bool
 	 */
@@ -166,7 +166,7 @@ class WP_Job_Manager_CPT {
 			'ID'          => $post_id,
 			'post_status' => 'publish',
 		);
-		if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ) )
+		if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ), true )
 			 && current_user_can( 'publish_post', $post_id )
 			 && wp_update_post( $job_data )
 		) {
@@ -178,7 +178,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk action to expire a single job listing.
 	 *
-	 * @param $post_id
+	 * @param int $post_id Post ID.
 	 *
 	 * @return bool
 	 */
@@ -198,7 +198,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk action to mark a single job listing as filled.
 	 *
-	 * @param $post_id
+	 * @param int $post_id Post ID.
 	 *
 	 * @return bool
 	 */
@@ -371,8 +371,7 @@ class WP_Job_Manager_CPT {
 	 * @since 1.31.0
 	 *
 	 * @param string $param        The URL parameter.
-	 * @param array  $options      The options for the dropdown. See the
-	 *                             description above.
+	 * @param array  $options      The options for the dropdown. See the description above.
 	 */
 	private function jobs_filter_dropdown( $param, $options ) {
 		$selected = isset( $_GET[ $param ] ) ? $_GET[ $param ] : '';
@@ -799,7 +798,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Removes job_listing from the list of post types that support "View Mode" option
 	 *
-	 * @param array $post_types Array of post types that support view mode
+	 * @param array $post_types Array of post types that support view mode.
 	 * @return array            Array of post types that support view mode, without job_listing post type
 	 */
 	public function disable_view_mode( $post_types ) {

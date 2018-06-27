@@ -64,8 +64,8 @@ class WP_Job_Manager_Ajax {
 	/**
 	 * Gets Job Manager's Ajax Endpoint.
 	 *
-	 * @param  string $request      Optional
-	 * @param  string $ssl (Unused) Optional
+	 * @param  string $request      Optional.
+	 * @param  string $ssl (Unused) Optional.
 	 * @return string
 	 */
 	public static function get_endpoint( $request = '%%endpoint%%', $ssl = null ) {
@@ -156,7 +156,7 @@ class WP_Job_Manager_Ajax {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param array $args Arguments used for generating Job Listing query (see `get_job_listings()`)
+		 * @param array $args Arguments used for generating Job Listing query (see `get_job_listings()`).
 		 */
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 

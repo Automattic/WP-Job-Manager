@@ -8,7 +8,7 @@ class Requests_Transport_Faker implements Requests_Transport {
 	/**
 	 * Adds a fake request and response.
 	 *
-	 * @param array|string $request Array (url, headers, data) or string of the signature (See: Requests_Transport_Faker::make_request_signature())
+	 * @param array|string $request Array (url, headers, data) or string of the signature (See: Requests_Transport_Faker::make_request_signature()).
 	 * @param array $response
 	 */
 	public function add_fake_request( $request, $response ) {

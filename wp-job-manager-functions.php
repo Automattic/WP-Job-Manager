@@ -519,8 +519,8 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 	 * Handles account creation.
 	 *
 	 * @since 1.0.0
-	 * @param  string|array|object $args containing username, email, role
-	 * @param  string              $deprecated role string
+	 * @param  string|array|object $args containing username, email, role.
+	 * @param  string              $deprecated role string.
 	 * @return WP_Error|bool was an account created?
 	 */
 	function wp_job_manager_create_account( $args, $deprecated = '' ) {
@@ -1124,7 +1124,7 @@ function job_manager_dropdown_categories( $args = '' ) {
  * Gets the page ID of a page if set.
  *
  * @since 1.23.12
- * @param  string $page e.g. job_dashboard, submit_job_form, jobs
+ * @param  string $page e.g. job_dashboard, submit_job_form, jobs.
  * @return int
  */
 function job_manager_get_page_id( $page ) {
@@ -1147,7 +1147,7 @@ function job_manager_get_page_id( $page ) {
  * Gets the permalink of a page if set.
  *
  * @since 1.16.0
- * @param  string $page e.g. job_dashboard, submit_job_form, jobs
+ * @param  string $page e.g. job_dashboard, submit_job_form, jobs.
  * @return string|bool
  */
 function job_manager_get_permalink( $page ) {
@@ -1224,7 +1224,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
  *
  * @since 1.21.0
  * @param  array|WP_Error      $file Array of $_FILE data to upload.
- * @param  string|array|object $args Optional arguments
+ * @param  string|array|object $args Optional arguments.
  * @return stdClass|WP_Error Object containing file information, or error
  */
 function job_manager_upload_file( $file, $args = array() ) {
@@ -1259,8 +1259,8 @@ function job_manager_upload_file( $file, $args = array() ) {
 	 * @since 1.25.2
 	 *
 	 * @param array $file               Array of $_FILE data to upload.
-	 * @param array $args               Optional file arguments
-	 * @param array $allowed_mime_types Array of allowed mime types from field config or defaults
+	 * @param array $args               Optional file arguments.
+	 * @param array $allowed_mime_types Array of allowed mime types from field config or defaults.
 	 */
 	$file = apply_filters( 'job_manager_upload_file_pre_upload', $file, $args, $allowed_mime_types );
 

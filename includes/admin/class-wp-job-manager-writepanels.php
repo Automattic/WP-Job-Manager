@@ -667,7 +667,7 @@ class WP_Job_Manager_Writepanels {
 	 * Handles the actual saving of job listing data fields.
 	 *
 	 * @param int     $post_id
-	 * @param WP_Post $post (Unused)
+	 * @param WP_Post $post (Unused).
 	 */
 	public function save_job_listing_data( $post_id, $post ) {
 		global $wpdb;

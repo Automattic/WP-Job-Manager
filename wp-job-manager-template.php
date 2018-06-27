@@ -15,9 +15,9 @@
  *
  * @since 1.0.0
  * @param mixed  $template_name
- * @param array  $args (default: array())
- * @param string $template_path (default: '')
- * @param string $default_path (default: '')
+ * @param array  $args (default: array()).
+ * @param string $template_path (default: '').
+ * @param string $default_path (default: '').
  */
 function get_job_manager_template( $template_name, $args = array(), $template_path = 'job_manager', $default_path = '' ) {
 	if ( $args && is_array( $args ) ) {
@@ -37,8 +37,8 @@ function get_job_manager_template( $template_name, $args = array(), $template_pa
  *
  * @since 1.0.0
  * @param string      $template_name
- * @param string      $template_path (default: 'job_manager')
- * @param string|bool $default_path (default: '') False to not load a default
+ * @param string      $template_path (default: 'job_manager').
+ * @param string|bool $default_path (default: '') False to not load a default.
  * @return string
  */
 function locate_job_manager_template( $template_name, $template_path = 'job_manager', $default_path = '' ) {
@@ -67,9 +67,9 @@ function locate_job_manager_template( $template_name, $template_path = 'job_mana
  *
  * @since 1.0.0
  * @param string      $slug
- * @param string      $name (default: '')
- * @param string      $template_path (default: 'job_manager')
- * @param string|bool $default_path (default: '') False to not load a default
+ * @param string      $name (default: '').
+ * @param string      $template_path (default: 'job_manager').
+ * @param string|bool $default_path (default: '') False to not load a default.
  */
 function get_job_manager_template_part( $slug, $name = '', $template_path = 'job_manager', $default_path = '' ) {
 	$template = '';
@@ -194,7 +194,7 @@ function candidates_can_apply( $post = null ) {
  * Displays the permalink for the job listing post.
  *
  * @since 1.0.0
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @return void
  */
 function the_job_permalink( $post = null ) {
@@ -205,7 +205,7 @@ function the_job_permalink( $post = null ) {
  * Gets the permalink for a job listing.
  *
  * @since 1.0.0
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @return string
  */
 function get_the_job_permalink( $post = null ) {
@@ -219,7 +219,7 @@ function get_the_job_permalink( $post = null ) {
  * Gets the application method for the job listing.
  *
  * @since 1.0.0
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @return stdClass|bool|null
  */
 function get_the_job_application_method( $post = null ) {
@@ -491,7 +491,7 @@ function wpjm_the_job_title( $post = null ) {
  * Gets the job title for the listing.
  *
  * @since 1.27.0
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @return string|bool|null
  */
 function wpjm_get_the_job_title( $post = null ) {
@@ -529,7 +529,7 @@ function wpjm_the_job_description( $post = null ) {
  * Gets the job description for the listing.
  *
  * @since 1.28.0
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @return string|bool|null
  */
 function wpjm_get_the_job_description( $post = null ) {
@@ -726,7 +726,7 @@ function wpjm_get_registration_fields() {
  * Displays the published date of the job listing.
  *
  * @since 1.25.3
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  */
 function the_job_publish_date( $post = null ) {
 	$date_format = get_option( 'job_manager_date_format' );
@@ -745,7 +745,7 @@ function the_job_publish_date( $post = null ) {
  * Gets the published date of the job listing.
  *
  * @since 1.25.3
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @return string|int|false
  */
 function get_the_job_publish_date( $post = null ) {
@@ -763,7 +763,7 @@ function get_the_job_publish_date( $post = null ) {
  * Displays the location for the job listing.
  *
  * @since 1.0.0
- * @param  bool        $map_link whether or not to link to Google Maps
+ * @param  bool        $map_link whether or not to link to Google Maps.
  * @param int|WP_Post $post
  */
 function the_job_location( $map_link = true, $post = null ) {
@@ -791,7 +791,7 @@ function the_job_location( $map_link = true, $post = null ) {
  * Gets the location for the job listing.
  *
  * @since 1.0.0
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @return string|null
  */
 function get_the_job_location( $post = null ) {
@@ -807,9 +807,9 @@ function get_the_job_location( $post = null ) {
  * Displays the company logo.
  *
  * @since 1.0.0
- * @param string      $size (default: 'full')
- * @param mixed       $default (default: null)
- * @param int|WP_Post $post (default: null)
+ * @param string      $size (default: 'full').
+ * @param mixed       $default (default: null).
+ * @param int|WP_Post $post (default: null).
  */
 function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) {
 	$logo = get_the_company_logo( $post, $size );
@@ -834,7 +834,7 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
  * Gets the company logo.
  *
  * @since 1.0.0
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @param string      $size
  * @return string Image SRC
  */
@@ -946,7 +946,7 @@ function the_company_video( $post = null ) {
  * Gets the company video URL.
  *
  * @since 1.14.0
- * @param int|WP_Post $post (default: null)
+ * @param int|WP_Post $post (default: null).
  * @return string|null
  */
 function get_the_company_video( $post = null ) {
@@ -962,10 +962,10 @@ function get_the_company_video( $post = null ) {
  *
  * @since 1.0.0
  * @since 1.0.1 Add the `$post` argument.
- * @param string           $before (default: '')
- * @param string           $after (default: '')
- * @param bool             $echo (default: true)
- * @param int|WP_Post|null $post (default: null)
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
  * @return string|void
  */
 function the_company_name( $before = '', $after = '', $echo = true, $post = null ) {
@@ -989,7 +989,7 @@ function the_company_name( $before = '', $after = '', $echo = true, $post = null
  * Gets the company name.
  *
  * @since 1.0.0
- * @param int $post (default: null)
+ * @param int $post (default: null).
  * @return string
  */
 function get_the_company_name( $post = null ) {
@@ -1005,7 +1005,7 @@ function get_the_company_name( $post = null ) {
  * Gets the company website.
  *
  * @since 1.0.0
- * @param int $post (default: null)
+ * @param int $post (default: null).
  * @return null|string
  */
 function get_the_company_website( $post = null ) {
@@ -1028,10 +1028,10 @@ function get_the_company_website( $post = null ) {
  * Displays or retrieves the current company tagline with optional content.
  *
  * @since 1.0.0
- * @param string           $before (default: '')
- * @param string           $after (default: '')
- * @param bool             $echo (default: true)
- * @param int|WP_Post|null $post (default: null)
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
  * @return string|void
  */
 function the_company_tagline( $before = '', $after = '', $echo = true, $post = null ) {
@@ -1055,7 +1055,7 @@ function the_company_tagline( $before = '', $after = '', $echo = true, $post = n
  * Gets the company tagline.
  *
  * @since 1.0.0
- * @param int|WP_Post|null $post (default: null)
+ * @param int|WP_Post|null $post (default: null).
  * @return string|null
  */
 function get_the_company_tagline( $post = null ) {
@@ -1072,10 +1072,10 @@ function get_the_company_tagline( $post = null ) {
  * Displays or retrieves the current company Twitter link with optional content.
  *
  * @since 1.0.0
- * @param string           $before (default: '')
- * @param string           $after (default: '')
- * @param bool             $echo (default: true)
- * @param int|WP_Post|null $post (default: null)
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
  * @return string|void
  */
 function the_company_twitter( $before = '', $after = '', $echo = true, $post = null ) {
@@ -1098,7 +1098,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
  * Gets the company Twitter link.
  *
  * @since 1.0.0
- * @param int|WP_Post|null $post (default: null)
+ * @param int|WP_Post|null $post (default: null).
  * @return string|null
  */
 function get_the_company_twitter( $post = null ) {
@@ -1124,8 +1124,8 @@ function get_the_company_twitter( $post = null ) {
  * Outputs the job listing class.
  *
  * @since 1.0.0
- * @param string      $class (default: '')
- * @param int|WP_Post $post_id (default: null)
+ * @param string      $class (default: '').
+ * @param int|WP_Post $post_id (default: null).
  */
 function job_listing_class( $class = '', $post_id = null ) {
 	// Separates classes with a single space, collates classes for post DIV.
@@ -1137,7 +1137,7 @@ function job_listing_class( $class = '', $post_id = null ) {
  *
  * @since 1.0.0
  * @param string      $class
- * @param int|WP_Post $post_id (default: null)
+ * @param int|WP_Post $post_id (default: null).
  * @return array
  */
 function get_job_listing_class( $class = '', $post_id = null ) {

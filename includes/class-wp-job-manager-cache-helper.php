@@ -212,7 +212,7 @@ class WP_Job_Manager_Cache_Helper {
 	 *
 	 * @param string $post_type
 	 * @param string $status
-	 * @param bool   $force Force update cache
+	 * @param bool   $force Force update cache.
 	 *
 	 * @return int
 	 */

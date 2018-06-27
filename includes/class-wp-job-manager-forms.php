@@ -80,7 +80,7 @@ class WP_Job_Manager_Forms {
 	 * Returns the form content.
 	 *
 	 * @param string $form_name
-	 * @param array  $atts Optional passed attributes
+	 * @param array  $atts Optional passed attributes.
 	 * @return string|null
 	 */
 	public function get_form( $form_name, $atts = array() ) {

@@ -45,7 +45,7 @@ class WP_Job_Manager_API {
 	/**
 	 * Adds query vars used in API calls.
 	 *
-	 * @param array $vars the query vars
+	 * @param array $vars the query vars.
 	 * @return array
 	 */
 	public function add_query_vars( $vars ) {

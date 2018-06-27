@@ -436,7 +436,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 * Update the capaility for the current user to be able to enable or
 	 * disable tracking.
 	 *
-	 * @param bool $allow true if the current user should be allowed to update
+	 * @param bool $allow true if the current user should be allowed to update.
 	 * the tracking setting, false otherwise. Default: true
 	 **/
 	private function allowCurrentUserToEnableTracking( $allow = true ) {

@@ -346,7 +346,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * Useful to provide alternative email headers and footers for a specific WPJM extension plugin.
 	 *
 	 * @param string $email_notification_key  Email notification key for email being sent.
-	 * @param string $template_name           Name of the template to check
+	 * @param string $template_name           Name of the template to check.
 	 * @param bool   $plain_text              True if the email is being sent as plain text.
 	 * @return bool|string Returns path to template path alternative or false if none exists.
 	 */

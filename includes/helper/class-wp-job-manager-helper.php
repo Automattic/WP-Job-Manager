@@ -358,7 +358,7 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Returns list of installed WPJM plugins with managed licenses indexed by product ID.
 	 *
-	 * @param bool $active_only Only return active plugins
+	 * @param bool $active_only Only return active plugins.
 	 * @return array
 	 */
 	protected function get_installed_plugins( $active_only = true ) {
