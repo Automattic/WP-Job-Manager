@@ -20,10 +20,10 @@ module.exports = {
 	globals: {
 		wp: true,
 		window: true,
-        document: true,
-        "jQuery": true,
-        "ajaxurl": true,
-        "woo_localized_data": true
+		document: true,
+		"jQuery": true,
+		"ajaxurl": true,
+		"woo_localized_data": true
 	},
 	plugins: [
 		'wordpress',
