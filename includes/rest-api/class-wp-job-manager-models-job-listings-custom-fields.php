@@ -21,7 +21,7 @@ class WP_Job_Manager_Models_Job_Listings_Custom_Fields extends WP_Job_Manager_RE
 	 * @throws WP_Job_Manager_REST_Exception Exc.
 	 */
 	public function declare_fields() {
-		$env = $this->get_environment();
+		$env          = $this->get_environment();
 		$current_user = wp_get_current_user();
 
 		$declarations = array(

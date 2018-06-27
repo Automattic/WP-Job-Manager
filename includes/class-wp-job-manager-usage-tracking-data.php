@@ -259,18 +259,20 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int the number of job listings.
 	 */
 	private static function get_jobs_count_with_meta( $meta_key ) {
-		$query = new WP_Query( array(
-			'post_type'   => 'job_listing',
-			'post_status' => array( 'publish', 'expired' ),
-			'fields'      => 'ids',
-			'meta_query'  => array(
-				array(
-					'key'     => $meta_key,
-					'value'   => '[^[:space:]]',
-					'compare' => 'REGEXP',
+		$query = new WP_Query(
+			array(
+				'post_type'   => 'job_listing',
+				'post_status' => array( 'publish', 'expired' ),
+				'fields'      => 'ids',
+				'meta_query'  => array(
+					array(
+						'key'     => $meta_key,
+						'value'   => '[^[:space:]]',
+						'compare' => 'REGEXP',
+					),
 				),
-			),
-		) );
+			)
+		);
 
 		return $query->found_posts;
 	}
@@ -284,17 +286,19 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int the number of job listings.
 	 */
 	private static function get_jobs_count_with_checked_meta( $meta_key ) {
-		$query = new WP_Query( array(
-			'post_type'   => 'job_listing',
-			'post_status' => array( 'publish', 'expired' ),
-			'fields'      => 'ids',
-			'meta_query'  => array(
-				array(
-					'key'   => $meta_key,
-					'value' => '1',
+		$query = new WP_Query(
+			array(
+				'post_type'   => 'job_listing',
+				'post_status' => array( 'publish', 'expired' ),
+				'fields'      => 'ids',
+				'meta_query'  => array(
+					array(
+						'key'   => $meta_key,
+						'value' => '1',
+					),
 				),
-			),
-		) );
+			)
+		);
 
 		return $query->found_posts;
 	}
@@ -305,12 +309,14 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int the number of job listings.
 	 */
 	private static function get_jobs_by_guests() {
-		$query = new WP_Query( array(
-			'post_type'   => 'job_listing',
-			'post_status' => array( 'publish', 'expired' ),
-			'fields'      => 'ids',
-			'author__in'  => array( 0 ),
-		) );
+		$query = new WP_Query(
+			array(
+				'post_type'   => 'job_listing',
+				'post_status' => array( 'publish', 'expired' ),
+				'fields'      => 'ids',
+				'author__in'  => array( 0 ),
+			)
+		);
 
 		return $query->found_posts;
 	}

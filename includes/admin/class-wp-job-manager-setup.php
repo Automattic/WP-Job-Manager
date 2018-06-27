@@ -40,8 +40,9 @@ class WP_Job_Manager_Setup {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_action( 'admin_init', array( $this, 'redirect' ) );
-		if ( isset( $_GET[ 'page' ] ) && $_GET[ 'page' ] == 'job-manager-setup' )
+		if ( isset( $_GET['page'] ) && $_GET['page'] == 'job-manager-setup' ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 12 );
+		}
 	}
 
 	/**
@@ -63,13 +64,13 @@ class WP_Job_Manager_Setup {
 	 */
 	public function redirect() {
 		// Bail if no activation redirect transient is set
-	    if ( ! get_transient( '_job_manager_activation_redirect' ) ) {
+		if ( ! get_transient( '_job_manager_activation_redirect' ) ) {
 			return;
-	    }
+		}
 
-	    if ( ! current_user_can( 'manage_options' ) ) {
-	    	return;
-	    }
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
 
 		// Delete the redirect transient
 		delete_transient( '_job_manager_activation_redirect' );
@@ -110,9 +111,9 @@ class WP_Job_Manager_Setup {
 			'post_title'     => $title,
 			'post_content'   => $content,
 			'post_parent'    => 0,
-			'comment_status' => 'closed'
+			'comment_status' => 'closed',
 		);
-		$page_id = wp_insert_post( $page_data );
+		$page_id   = wp_insert_post( $page_data );
 
 		if ( $option ) {
 			update_option( $option, $page_id );
@@ -181,14 +182,15 @@ class WP_Job_Manager_Setup {
 		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
 
 		if ( 3 === $step && ! empty( $_POST ) ) {
-			if ( false == wp_verify_nonce( $_REQUEST[ 'setup_wizard' ], 'step_3' ) )
+			if ( false == wp_verify_nonce( $_REQUEST['setup_wizard'], 'step_3' ) ) {
 				wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
+			}
 			$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? $_POST['wp-job-manager-create-page'] : array();
 			$page_titles     = $_POST['wp-job-manager-page-title'];
 			$pages_to_create = array(
 				'submit_job_form' => '[submit_job_form]',
 				'job_dashboard'   => '[job_dashboard]',
-				'jobs'            => '[jobs]'
+				'jobs'            => '[jobs]',
 			);
 
 			foreach ( $pages_to_create as $page => $content ) {
@@ -203,9 +205,24 @@ class WP_Job_Manager_Setup {
 			<h2><?php _e( 'WP Job Manager Setup', 'wp-job-manager' ); ?></h2>
 
 			<ul class="wp-job-manager-setup-steps">
-				<li class="<?php if ( $step === 1 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '1. Introduction', 'wp-job-manager' ); ?></li>
-				<li class="<?php if ( $step === 2 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '2. Page Setup', 'wp-job-manager' ); ?></li>
-				<li class="<?php if ( $step === 3 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '3. Done', 'wp-job-manager' ); ?></li>
+				<li class="
+				<?php
+				if ( $step === 1 ) {
+					echo 'wp-job-manager-setup-active-step';}
+				?>
+				"><?php _e( '1. Introduction', 'wp-job-manager' ); ?></li>
+				<li class="
+				<?php
+				if ( $step === 2 ) {
+					echo 'wp-job-manager-setup-active-step';}
+				?>
+				"><?php _e( '2. Page Setup', 'wp-job-manager' ); ?></li>
+				<li class="
+				<?php
+				if ( $step === 3 ) {
+					echo 'wp-job-manager-setup-active-step';}
+				?>
+				"><?php _e( '3. Done', 'wp-job-manager' ); ?></li>
 			</ul>
 
 			<?php if ( 1 === $step ) : ?>
@@ -214,7 +231,7 @@ class WP_Job_Manager_Setup {
 
 				<p><?php _e( 'Thanks for installing <em>WP Job Manager</em>! Let\'s get your site ready to accept job listings.', 'wp-job-manager' ); ?></p>
 				<p><?php _e( 'This setup wizard will walk you through the process of creating pages for job submissions, management, and listings.', 'wp-job-manager' ); ?></p>
-				<p><?php printf( __( 'If you\'d prefer to skip this and set up your pages manually, our %sdocumentation%s will walk you through each step.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
+				<p><?php printf( __( 'If you\'d prefer to skip this and set up your pages manually, our %1$sdocumentation%2$s will walk you through each step.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
 
 				<form method="post" action="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>">
 					<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'enable-usage-tracking' ) ); ?>" />

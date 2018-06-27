@@ -10,10 +10,10 @@ if ( ! empty( $messages ) ) {
 		&& in_array( $message->type, array( 'info', 'success', 'warning', 'error' ) ) ) {
 			$type = $message->type;
 		}
-		$action_label = isset( $message->action_label ) ? esc_attr( $message->action_label ) : __( 'More Information &rarr;', 'wp-job-manager' );
-		$action_url = isset( $message->action_url ) ? esc_url( $message->action_url, array( 'http', 'https' ) ) : false;
+		$action_label  = isset( $message->action_label ) ? esc_attr( $message->action_label ) : __( 'More Information &rarr;', 'wp-job-manager' );
+		$action_url    = isset( $message->action_url ) ? esc_url( $message->action_url, array( 'http', 'https' ) ) : false;
 		$action_target = isset( $message->action_target ) && 'self' === $message->action_target ? '_self' : '_blank';
-		$action_str = '';
+		$action_str    = '';
 		if ( $action_url ) {
 			$action_str = ' <a href="' . esc_url( $action_url ) . '" target="' . esc_attr( $action_target ) . '" class="button">' . esc_html( $action_label ) . '</a>';
 		}
@@ -44,12 +44,14 @@ if ( empty( $add_ons ) ) {
 } else {
 	echo '<ul class="products">';
 	foreach ( $add_ons as $add_on ) {
-		$url = add_query_arg( array(
-			'utm_source'   => 'product',
-			'utm_medium'   => 'addonpage',
-			'utm_campaign' => 'wpjmplugin',
-			'utm_content'  => 'listing',
-		), $add_on->link );
+		$url = add_query_arg(
+			array(
+				'utm_source'   => 'product',
+				'utm_medium'   => 'addonpage',
+				'utm_campaign' => 'wpjmplugin',
+				'utm_content'  => 'listing',
+			), $add_on->link
+		);
 		?>
 		<li class="product">
 			<a href="<?php echo esc_url( $url, array( 'http', 'https' ) ); ?>">

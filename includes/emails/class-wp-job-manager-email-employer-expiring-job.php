@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @extends WP_Job_Manager_Email
  */
 class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Template {
-	const SETTING_NOTICE_PERIOD_NAME = 'notice_period_days';
+	const SETTING_NOTICE_PERIOD_NAME    = 'notice_period_days';
 	const SETTING_NOTICE_PERIOD_DEFAULT = '1';
 
 	/**
@@ -65,6 +65,7 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 		$args = $this->get_args();
 
 		/**
+		 *
 		 * @var WP_Post $job
 		 */
 		$job = $args['job'];
@@ -101,8 +102,8 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 
 		if ( isset( $args['job'] ) ) {
 			$args['expiring_today'] = false;
-			$today         = date( 'Y-m-d', current_time( 'timestamp' ) );
-			$expiring_date = date( 'Y-m-d', strtotime( $args['job']->_job_expires ) );
+			$today                  = date( 'Y-m-d', current_time( 'timestamp' ) );
+			$expiring_date          = date( 'Y-m-d', strtotime( $args['job']->_job_expires ) );
 			if ( ! empty( $args['job']->_job_expires ) && $today === $expiring_date ) {
 				$args['expiring_today'] = true;
 			}
@@ -117,7 +118,7 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 	 * @return array
 	 */
 	public static function get_setting_fields() {
-		$fields = parent::get_setting_fields();
+		$fields   = parent::get_setting_fields();
 		$fields[] = array(
 			'name'       => self::SETTING_NOTICE_PERIOD_NAME,
 			'std'        => self::SETTING_NOTICE_PERIOD_DEFAULT,

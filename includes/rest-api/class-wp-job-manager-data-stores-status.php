@@ -33,8 +33,8 @@ class WP_Job_Manager_Data_Stores_Status extends WP_Job_Manager_REST_Data_Store_A
 	 */
 	public function get_entity( $id ) {
 		$should_run_page_setup = (bool) get_transient( '_job_manager_activation_redirect' );
-		$params = array(
-		 'run_page_setup' => $should_run_page_setup,
+		$params                = array(
+			'run_page_setup' => $should_run_page_setup,
 		);
 		return $this->get_model_prototype()->create( $params );
 	}

@@ -1,6 +1,8 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 /**
  * Handles legacy actions and filters specific to the custom post type for Job Listings.
@@ -49,10 +51,10 @@ class WP_Job_Manager_CPT_Legacy extends WP_Job_Manager_CPT {
 		global $post_type, $wp_post_types;
 
 		$bulk_actions = array();
-		foreach( $this->get_bulk_actions() as $key => $bulk_action ) {
+		foreach ( $this->get_bulk_actions() as $key => $bulk_action ) {
 			$bulk_actions[] = array(
-				'key' => $key,
-				'label' => sprintf( $bulk_action[ 'label' ], $wp_post_types[ 'job_listing' ]->labels->name )
+				'key'   => $key,
+				'label' => sprintf( $bulk_action['label'], $wp_post_types['job_listing']->labels->name ),
 			);
 		}
 
@@ -75,12 +77,12 @@ class WP_Job_Manager_CPT_Legacy extends WP_Job_Manager_CPT {
 	 * Performs bulk actions on Job Listing admin page.
 	 */
 	public function do_bulk_actions_legacy() {
-		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
-		$action        = $wp_list_table->current_action();
+		$wp_list_table   = _get_list_table( 'WP_Posts_List_Table' );
+		$action          = $wp_list_table->current_action();
 		$actions_handled = $this->get_bulk_actions();
-		if ( isset ( $actions_handled[ $action ] ) && isset ( $actions_handled[ $action ]['handler'] ) ) {
+		if ( isset( $actions_handled[ $action ] ) && isset( $actions_handled[ $action ]['handler'] ) ) {
 			check_admin_referer( 'bulk-posts' );
-			$post_ids     = array_map( 'absint', array_filter( (array)$_GET['post'] ) );
+			$post_ids = array_map( 'absint', array_filter( (array) $_GET['post'] ) );
 			if ( ! empty( $post_ids ) ) {
 				$this->do_bulk_actions( admin_url( 'edit.php?post_type=job_listing' ), $action, $post_ids );
 			}

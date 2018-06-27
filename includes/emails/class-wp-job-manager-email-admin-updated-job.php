@@ -49,6 +49,7 @@ class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Templa
 		$args = $this->get_args();
 
 		/**
+		 *
 		 * @var WP_Post $job
 		 */
 		$job = $args['job'];

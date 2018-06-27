@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Handles the installation of the WP Job Manager plugin.s
+ * Handles the installation of the WP Job Manager plugin.
  *
  * @package wp-job-manager
  * @since 1.0.0
@@ -62,11 +62,13 @@ class WP_Job_Manager_Install {
 		}
 
 		if ( is_object( $wp_roles ) ) {
-			add_role( 'employer', __( 'Employer', 'wp-job-manager' ), array(
-				'read'         => true,
-				'edit_posts'   => false,
-				'delete_posts' => false
-			) );
+			add_role(
+				'employer', __( 'Employer', 'wp-job-manager' ), array(
+					'read'         => true,
+					'edit_posts'   => false,
+					'delete_posts' => false,
+				)
+			);
 
 			$capabilities = self::get_core_capabilities();
 
@@ -85,28 +87,28 @@ class WP_Job_Manager_Install {
 	 */
 	private static function get_core_capabilities() {
 		return array(
-			'core' => array(
-				'manage_job_listings'
+			'core'        => array(
+				'manage_job_listings',
 			),
 			'job_listing' => array(
-				"edit_job_listing",
-				"read_job_listing",
-				"delete_job_listing",
-				"edit_job_listings",
-				"edit_others_job_listings",
-				"publish_job_listings",
-				"read_private_job_listings",
-				"delete_job_listings",
-				"delete_private_job_listings",
-				"delete_published_job_listings",
-				"delete_others_job_listings",
-				"edit_private_job_listings",
-				"edit_published_job_listings",
-				"manage_job_listing_terms",
-				"edit_job_listing_terms",
-				"delete_job_listing_terms",
-				"assign_job_listing_terms"
-			)
+				'edit_job_listing',
+				'read_job_listing',
+				'delete_job_listing',
+				'edit_job_listings',
+				'edit_others_job_listings',
+				'publish_job_listings',
+				'read_private_job_listings',
+				'delete_job_listings',
+				'delete_private_job_listings',
+				'delete_published_job_listings',
+				'delete_others_job_listings',
+				'edit_private_job_listings',
+				'edit_published_job_listings',
+				'manage_job_listing_terms',
+				'edit_job_listing_terms',
+				'delete_job_listing_terms',
+				'assign_job_listing_terms',
+			),
 		);
 	}
 
@@ -143,22 +145,22 @@ class WP_Job_Manager_Install {
 	private static function get_default_taxonomy_terms() {
 		return array(
 			'job_listing_type' => array(
-				'Full Time' => array(
+				'Full Time'  => array(
 					'employment_type' => 'FULL_TIME',
 				),
-				'Part Time' => array(
+				'Part Time'  => array(
 					'employment_type' => 'PART_TIME',
 				),
-				'Temporary' => array(
+				'Temporary'  => array(
 					'employment_type' => 'TEMPORARY',
 				),
-				'Freelance' => array(
+				'Freelance'  => array(
 					'employment_type' => 'CONTRACTOR',
 				),
 				'Internship' => array(
 					'employment_type' => 'INTERN',
 				),
-			)
+			),
 		);
 	}
 
@@ -167,7 +169,7 @@ class WP_Job_Manager_Install {
 	 */
 	private static function add_employment_types() {
 		$taxonomies = self::get_default_taxonomy_terms();
-		$terms = $taxonomies['job_listing_type'];
+		$terms      = $taxonomies['job_listing_type'];
 
 		foreach ( $terms as $term => $meta ) {
 			$term = get_term_by( 'slug', sanitize_title( $term ), 'job_listing_type' );

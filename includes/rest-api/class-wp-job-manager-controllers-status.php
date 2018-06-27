@@ -52,7 +52,7 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 			return $this->not_found( __( 'Not Found', 'wp-job-manager' ) );
 		}
 
-		$dto = $this->prepare_dto( $configuration );
+		$dto  = $this->prepare_dto( $configuration );
 		$keys = $filter->get( 'keys' );
 		if ( empty( $keys ) ) {
 			return $this->ok( $dto );
@@ -74,7 +74,7 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 	 * @return WP_REST_Response
 	 */
 	public function show( $request ) {
-		$key = $request->get_param( 'key' );
+		$key           = $request->get_param( 'key' );
 		$configuration = $this->get_model_prototype()
 			->get_data_store()
 			->get_entity( null );
@@ -93,17 +93,17 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 	 * @return WP_REST_Response
 	 */
 	public function update( $request ) {
-		$key = $request->get_param( 'key' );
+		$key   = $request->get_param( 'key' );
 		$value = $request->get_param( 'value' );
 		if ( ! isset( $value ) ) {
 			if ( ! function_exists( 'json_decode' ) ) {
 				include_once ABSPATH . WPINC . 'compat.php';
 			}
-			$body = $request->get_body();
+			$body  = $request->get_body();
 			$value = json_decode( $body, true );
 		}
 		$thing_to_update = array(
-		 $key => $value,
+			$key => $value,
 		);
 
 		$configuration = $this->get_model_prototype()

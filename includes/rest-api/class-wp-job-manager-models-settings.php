@@ -94,9 +94,9 @@ class WP_Job_Manager_Models_Settings extends WP_Job_Manager_REST_Model_Settings
 			self::$fields_requiring_page_id_validation = (array) apply_filters(
 				'wpjm_rest_api_settings_fields_requiring_page_id_validation',
 				array(
-				'job_manager_submit_job_form_page_id',
-				'job_manager_job_dashboard_page_id',
-				'job_manager_jobs_page_id',
+					'job_manager_submit_job_form_page_id',
+					'job_manager_job_dashboard_page_id',
+					'job_manager_jobs_page_id',
 				)
 			);
 		}

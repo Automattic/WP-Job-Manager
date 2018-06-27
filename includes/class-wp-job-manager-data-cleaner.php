@@ -191,12 +191,14 @@ class WP_Job_Manager_Data_Cleaner {
 	 */
 	private static function cleanup_custom_post_types() {
 		foreach ( self::$custom_post_types as $post_type ) {
-			$items = get_posts( array(
-				'post_type'   => $post_type,
-				'post_status' => 'any',
-				'numberposts' => -1,
-				'fields'      => 'ids',
-			) );
+			$items = get_posts(
+				array(
+					'post_type'   => $post_type,
+					'post_status' => 'any',
+					'numberposts' => -1,
+					'fields'      => 'ids',
+				)
+			);
 
 			foreach ( $items as $item ) {
 				wp_trash_post( $item );

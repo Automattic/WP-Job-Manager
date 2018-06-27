@@ -1,6 +1,6 @@
 <?php
 
-include_once( 'class-wp-job-manager-form-submit-job.php' );
+require_once 'class-wp-job-manager-form-submit-job.php';
 
 /**
  * Handles the editing of Job Listings from the public facing frontend (from within `[job_dashboard]` shortcode).
@@ -51,9 +51,9 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 */
 	public function __construct() {
 		add_action( 'wp', array( $this, 'submit_handler' ) );
-		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
+		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
 
-		if  ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
+		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
 			$this->job_id = 0;
 		}
 
@@ -130,15 +130,17 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 		$save_button_text = apply_filters( 'update_job_form_submit_button_text', $save_button_text );
 
-		get_job_manager_template( 'job-submit.php', array(
-			'form'               => $this->form_name,
-			'job_id'             => $this->get_job_id(),
-			'action'             => $this->get_action(),
-			'job_fields'         => $this->get_fields( 'job' ),
-			'company_fields'     => $this->get_fields( 'company' ),
-			'step'               => $this->get_step(),
-			'submit_button_text' => $save_button_text,
-		) );
+		get_job_manager_template(
+			'job-submit.php', array(
+				'form'               => $this->form_name,
+				'job_id'             => $this->get_job_id(),
+				'action'             => $this->get_action(),
+				'job_fields'         => $this->get_fields( 'job' ),
+				'company_fields'     => $this->get_fields( 'company' ),
+				'step'               => $this->get_step(),
+				'submit_button_text' => $save_button_text,
+			)
+		);
 	}
 
 	/**
@@ -171,7 +173,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 			// Successful
 			$save_message = __( 'Your changes have been saved.', 'wp-job-manager' );
-			$post_status = get_post_status( $this->job_id );
+			$post_status  = get_post_status( $this->job_id );
 
 			update_post_meta( $this->job_id, '_job_edited', time() );
 

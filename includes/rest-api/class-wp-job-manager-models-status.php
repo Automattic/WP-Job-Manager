@@ -25,8 +25,8 @@ class WP_Job_Manager_Models_Status extends WP_Job_Manager_REST_Model
 	public function declare_fields() {
 		$env = $this->get_environment();
 		return array(
-		 $env->field( 'run_page_setup', 'Should we run page setup' )
-			 ->with_type( $env->type( 'boolean' ) ),
+			$env->field( 'run_page_setup', 'Should we run page setup' )
+				->with_type( $env->type( 'boolean' ) ),
 		);
 	}
 

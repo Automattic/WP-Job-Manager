@@ -131,15 +131,15 @@ class WP_Job_Manager_Ajax {
 		}
 
 		$args = array(
-			'search_location'    => $search_location,
-			'search_keywords'    => $search_keywords,
-			'search_categories'  => $search_categories,
-			'job_types'          => is_null( $filter_job_types ) || sizeof( $types ) === sizeof( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
-			'post_status'        => $filter_post_status,
-			'orderby'            => $orderby,
-			'order'              => sanitize_text_field( $_REQUEST['order'] ),
-			'offset'             => ( absint( $_REQUEST['page'] ) - 1 ) * absint( $_REQUEST['per_page'] ),
-			'posts_per_page'     => max( 1, absint( $_REQUEST['per_page'] ) ),
+			'search_location'   => $search_location,
+			'search_keywords'   => $search_keywords,
+			'search_categories' => $search_categories,
+			'job_types'         => is_null( $filter_job_types ) || sizeof( $types ) === sizeof( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
+			'post_status'       => $filter_post_status,
+			'orderby'           => $orderby,
+			'order'             => sanitize_text_field( $_REQUEST['order'] ),
+			'offset'            => ( absint( $_REQUEST['page'] ) - 1 ) * absint( $_REQUEST['per_page'] ),
+			'posts_per_page'    => max( 1, absint( $_REQUEST['per_page'] ) ),
 		);
 
 		if ( isset( $_REQUEST['filled'] ) && ( $_REQUEST['filled'] === 'true' || $_REQUEST['filled'] === 'false' ) ) {
@@ -161,13 +161,13 @@ class WP_Job_Manager_Ajax {
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 
 		$result = array(
-			'found_jobs' => $jobs->have_posts(),
-			'showing' => '',
+			'found_jobs'    => $jobs->have_posts(),
+			'showing'       => '',
 			'max_num_pages' => $jobs->max_num_pages,
 		);
 
 		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
-			$message = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
+			$message               = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
 			$result['showing_all'] = true;
 		} else {
 			$message = '';
@@ -196,12 +196,14 @@ class WP_Job_Manager_Ajax {
 		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $message, $search_values );
 
 		// Generate RSS link
-		$result['showing_links'] = job_manager_get_filtered_links( array(
-			'filter_job_types'  => $filter_job_types,
-			'search_location'   => $search_location,
-			'search_categories' => $search_categories,
-			'search_keywords'   => $search_keywords,
-		) );
+		$result['showing_links'] = job_manager_get_filtered_links(
+			array(
+				'filter_job_types'  => $filter_job_types,
+				'search_location'   => $search_location,
+				'search_categories' => $search_categories,
+				'search_keywords'   => $search_keywords,
+			)
+		);
 
 		/**
 		 * Send back a response to the AJAX request without creating HTML.
@@ -236,7 +238,10 @@ class WP_Job_Manager_Ajax {
 
 		if ( $result['found_jobs'] ) : ?>
 
-			<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
+			<?php
+			while ( $jobs->have_posts() ) :
+				$jobs->the_post();
+				?>
 
 				<?php get_job_manager_template_part( 'content', 'job_listing' ); ?>
 
@@ -246,14 +251,15 @@ class WP_Job_Manager_Ajax {
 
 			<?php get_job_manager_template_part( 'content', 'no-jobs-found' ); ?>
 
-		<?php endif;
+		<?php
+		endif;
 
 		$result['html'] = ob_get_clean();
 
 		// Generate pagination
-		if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
-			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
-		}
+if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
+	$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
+}
 
 		/** This filter is documented in includes/class-wp-job-manager-ajax.php (above) */
 		wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
@@ -277,9 +283,11 @@ class WP_Job_Manager_Ajax {
 			foreach ( $_FILES as $file_key => $file ) {
 				$files_to_upload = job_manager_prepare_uploaded_files( $file );
 				foreach ( $files_to_upload as $file_to_upload ) {
-					$uploaded_file = job_manager_upload_file( $file_to_upload, array(
-						'file_key' => $file_key,
-					) );
+					$uploaded_file = job_manager_upload_file(
+						$file_to_upload, array(
+							'file_key' => $file_key,
+						)
+					);
 
 					if ( is_wp_error( $uploaded_file ) ) {
 						$data['files'][] = array(

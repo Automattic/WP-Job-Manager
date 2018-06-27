@@ -4,11 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-include dirname( __FILE__ ) . '/../lib/usage-tracking/class-usage-tracking-base.php';
+require dirname( __FILE__ ) . '/../lib/usage-tracking/class-usage-tracking-base.php';
 
 /**
  * WPJM Usage Tracking subclass.
- **/
+ */
 class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 
 	const WPJM_SETTING_NAME = 'job_manager_usage_tracking_enabled';
@@ -27,7 +27,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		}
 	}
 
-	/*
+	/**
 	 * Implementation for abstract functions.
 	 */
 
@@ -60,10 +60,14 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	protected function opt_in_dialog_text() {
-		return sprintf( __( "We'd love if you helped us make WP Job Manager better by allowing us to collect
-			<a href=\"%s\" target=\"_blank\">usage tracking data</a>.
-			No sensitive information is collected, and you can opt out at any time.",
-			'wp-job-manager' ), self::WPJM_TRACKING_INFO_URL );
+		return sprintf(
+			__(
+				"We'd love if you helped us make WP Job Manager better by allowing us to collect " .
+				"<a href=\"%s\" target=\"_blank\">usage tracking data</a>. " .
+				"No sensitive information is collected, and you can opt out at any time.",
+				'wp-job-manager'
+			), self::WPJM_TRACKING_INFO_URL
+		);
 	}
 
 	protected function do_track_plugin( $plugin_slug ) {
@@ -113,7 +117,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 
-	/*
+	/**
 	 * Hooks.
 	 */
 
@@ -131,7 +135,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 
-	/*
+	/**
 	 * Helpers.
 	 */
 

@@ -111,7 +111,7 @@ class WP_Job_Manager_Cache_Helper {
 	private static function delete_version_transients( $version ) {
 		if ( ! wp_using_ext_object_cache() && ! empty( $version ) ) {
 			global $wpdb;
-			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s;", "\_transient\_%" . $version ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s;", '\_transient\_%' . $version ) );
 		}
 	}
 
@@ -122,7 +122,7 @@ class WP_Job_Manager_Cache_Helper {
 		global $wpdb;
 
 		if ( ! wp_using_ext_object_cache() && ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-			$sql   = "
+			$sql = "
 				DELETE a, b FROM $wpdb->options a, $wpdb->options b
 				WHERE a.option_name LIKE %s
 				AND a.option_name NOT LIKE %s
@@ -178,11 +178,11 @@ class WP_Job_Manager_Cache_Helper {
 
 		$rlike = array();
 		// New status transient option name
-		if( in_array( $new_status, $valid_statuses ) ){
+		if ( in_array( $new_status, $valid_statuses ) ) {
 			$rlike[] = "^_transient_jm_{$new_status}_{$post->post_type}_count_user_";
 		}
 		// Old status transient option name
-		if( in_array( $old_status, $valid_statuses ) ){
+		if ( in_array( $old_status, $valid_statuses ) ) {
 			$rlike[] = "^_transient_jm_{$old_status}_{$post->post_type}_count_user_";
 		}
 
@@ -190,7 +190,7 @@ class WP_Job_Manager_Cache_Helper {
 			return;
 		}
 
-		$sql        = $wpdb->prepare( "SELECT option_name FROM $wpdb->options WHERE option_name RLIKE '%s'", implode('|', $rlike ) );
+		$sql        = $wpdb->prepare( "SELECT option_name FROM $wpdb->options WHERE option_name RLIKE '%s'", implode( '|', $rlike ) );
 		$transients = $wpdb->get_col( $sql );
 
 		// For each transient...

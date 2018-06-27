@@ -28,8 +28,8 @@ class WP_Job_Manager_Models_Job_Types_Custom_Fields extends WP_Job_Manager_REST_
 	 * @return array
 	 */
 	public function declare_fields() {
-		$env = $this->get_environment();
-		$employment_types = wpjm_job_listing_employment_type_options();
+		$env                             = $this->get_environment();
+		$employment_types                = wpjm_job_listing_employment_type_options();
 		self::$accepted_employment_types = array_keys( $employment_types );
 		return array(
 			$env->field( 'employment_type', esc_html__( 'Employment Type', 'wp-job-manager' ) )
@@ -47,11 +47,13 @@ class WP_Job_Manager_Models_Job_Types_Custom_Fields extends WP_Job_Manager_REST_
 	public function validate() {
 		$employment_type = $this->get( 'employment_type' );
 		if ( ! empty( $employment_type ) && ! in_array( $employment_type, self::$accepted_employment_types, true ) ) {
-			return new WP_Error('invalid_employment_type', esc_html__( 'Invalid Employment Type', 'wp-job-manager' ), array(
-				'input' => $employment_type,
-				'acceptable_values' => self::$accepted_employment_types,
-				'status' => 400,
-			) );
+			return new WP_Error(
+				'invalid_employment_type', esc_html__( 'Invalid Employment Type', 'wp-job-manager' ), array(
+					'input'             => $employment_type,
+					'acceptable_values' => self::$accepted_employment_types,
+					'status'            => 400,
+				)
+			);
 		}
 		return parent::validate();
 	}

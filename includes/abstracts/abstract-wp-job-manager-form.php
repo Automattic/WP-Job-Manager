@@ -78,15 +78,15 @@ abstract class WP_Job_Manager_Form {
 
 		// reset cookie
 		if (
-			isset( $_GET[ 'new' ] ) &&
-			isset( $_COOKIE[ 'wp-job-manager-submitting-job-id' ] ) &&
-			isset( $_COOKIE[ 'wp-job-manager-submitting-job-key' ] ) &&
-			get_post_meta( $_COOKIE[ 'wp-job-manager-submitting-job-id' ], '_submitting_key', true ) == $_COOKIE['wp-job-manager-submitting-job-key']
+			isset( $_GET['new'] ) &&
+			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
+			isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) &&
+			get_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key', true ) == $_COOKIE['wp-job-manager-submitting-job-key']
 		) {
-			delete_post_meta( $_COOKIE[ 'wp-job-manager-submitting-job-id' ], '_submitting_key' );
+			delete_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key' );
 			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
 			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
-			wp_redirect( remove_query_arg( array( 'new', 'key' ), $_SERVER[ 'REQUEST_URI' ] ) );
+			wp_redirect( remove_query_arg( array( 'new', 'key' ), $_SERVER['REQUEST_URI'] ) );
 		}
 
 		$step_key = $this->get_step_key( $this->step );
@@ -237,10 +237,10 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function sort_by_priority( $a, $b ) {
-	    if ( $a['priority'] == $b['priority'] ) {
-	        return 0;
-	    }
-	    return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
+		if ( $a['priority'] == $b['priority'] ) {
+			return 0;
+		}
+		return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
 	}
 
 	/**
@@ -265,8 +265,8 @@ abstract class WP_Job_Manager_Form {
 	 * @return bool
 	 */
 	public function is_recaptcha_available() {
-		$site_key = get_option( 'job_manager_recaptcha_site_key' );
-		$secret_key = get_option( 'job_manager_recaptcha_secret_key' );
+		$site_key               = get_option( 'job_manager_recaptcha_site_key' );
+		$secret_key             = get_option( 'job_manager_recaptcha_secret_key' );
 		$is_recaptcha_available = ! empty( $site_key ) && ! empty( $secret_key );
 
 		/**
@@ -292,11 +292,16 @@ abstract class WP_Job_Manager_Form {
 	 * Output the reCAPTCHA field.
 	 */
 	public function display_recaptcha_field() {
-		$field = array();
-		$field['label'] = get_option( 'job_manager_recaptcha_label' );
+		$field             = array();
+		$field['label']    = get_option( 'job_manager_recaptcha_label' );
 		$field['required'] = true;
 		$field['site_key'] = get_option( 'job_manager_recaptcha_site_key' );
-		get_job_manager_template( 'form-fields/recaptcha-field.php', array( 'key' => 'recaptcha', 'field' => $field ) );
+		get_job_manager_template(
+			'form-fields/recaptcha-field.php', array(
+				'key'   => 'recaptcha',
+				'field' => $field,
+			)
+		);
 	}
 
 	/**
@@ -312,16 +317,20 @@ abstract class WP_Job_Manager_Form {
 			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
-		$response = wp_remote_get( add_query_arg( array(
-			'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
-			'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
-			'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']
-		), 'https://www.google.com/recaptcha/api/siteverify' ) );
+		$response = wp_remote_get(
+			add_query_arg(
+				array(
+					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
+					'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
+					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],
+				), 'https://www.google.com/recaptcha/api/siteverify'
+			)
+		);
 
 		if ( is_wp_error( $response )
-		     || empty( $response['body'] )
-		     || ! ( $json = json_decode( $response['body'] ) )
-		     || ! $json->success ) {
+			 || empty( $response['body'] )
+			 || ! ( $json = json_decode( $response['body'] ) )
+			 || ! $json->success ) {
 			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
@@ -477,8 +486,8 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_checklist_field( $key, $field ) {
-		if ( isset( $_POST[ 'tax_input' ] ) && isset( $_POST[ 'tax_input' ][ $field['taxonomy'] ] ) ) {
-			return array_map( 'absint', $_POST[ 'tax_input' ][ $field['taxonomy'] ] );
+		if ( isset( $_POST['tax_input'] ) && isset( $_POST['tax_input'][ $field['taxonomy'] ] ) ) {
+			return array_map( 'absint', $_POST['tax_input'][ $field['taxonomy'] ] );
 		} else {
 			return array();
 		}
@@ -526,10 +535,12 @@ abstract class WP_Job_Manager_Form {
 			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] );
 
 			foreach ( $files_to_upload as $file_to_upload ) {
-				$uploaded_file = job_manager_upload_file( $file_to_upload, array(
-					'file_key'           => $field_key,
-					'allowed_mime_types' => $allowed_mime_types,
-					) );
+				$uploaded_file = job_manager_upload_file(
+					$file_to_upload, array(
+						'file_key'           => $field_key,
+						'allowed_mime_types' => $allowed_mime_types,
+					)
+				);
 
 				if ( is_wp_error( $uploaded_file ) ) {
 					throw new Exception( $uploaded_file->get_error_message() );
