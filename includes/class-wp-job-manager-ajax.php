@@ -236,30 +236,21 @@ class WP_Job_Manager_Ajax {
 
 		ob_start();
 
-		if ( $result['found_jobs'] ) : ?>
-
-			<?php
-			while ( $jobs->have_posts() ) :
+		if ( $result['found_jobs'] ) {
+			while ( $jobs->have_posts() ) {
 				$jobs->the_post();
-				?>
-
-				<?php get_job_manager_template_part( 'content', 'job_listing' ); ?>
-
-			<?php endwhile; ?>
-
-		<?php else : ?>
-
-			<?php get_job_manager_template_part( 'content', 'no-jobs-found' ); ?>
-
-		<?php
-		endif;
+				get_job_manager_template_part( 'content', 'job_listing' );
+			}
+		} else {
+			get_job_manager_template_part( 'content', 'no-jobs-found' );
+		}
 
 		$result['html'] = ob_get_clean();
 
 		// Generate pagination.
-if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
-	$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
-}
+		if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
+			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
+		}
 
 		/** This filter is documented in includes/class-wp-job-manager-ajax.php (above) */
 		wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );

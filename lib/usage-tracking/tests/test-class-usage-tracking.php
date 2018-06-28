@@ -202,8 +202,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		// Enable tracking.
 		$this->usage_tracking->set_tracking_enabled( true );
 
-		// Capture the network request, save the request URL and arguments, and.
-		// simulate a WP_Error.
+		// Capture the network request, save the request URL and arguments, and simulate a WP_Error.
 		$this->track_http_request['request_params'] = null;
 		$this->track_http_request['request_url']    = null;
 		add_filter( 'pre_http_request', array( $this, 'trackHttpRequest' ), 10, 3 );

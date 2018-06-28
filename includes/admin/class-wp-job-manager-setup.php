@@ -205,24 +205,9 @@ class WP_Job_Manager_Setup {
 			<h2><?php _e( 'WP Job Manager Setup', 'wp-job-manager' ); ?></h2>
 
 			<ul class="wp-job-manager-setup-steps">
-				<li class="
-				<?php
-				if ( $step === 1 ) {
-					echo 'wp-job-manager-setup-active-step';}
-				?>
-				"><?php _e( '1. Introduction', 'wp-job-manager' ); ?></li>
-				<li class="
-				<?php
-				if ( $step === 2 ) {
-					echo 'wp-job-manager-setup-active-step';}
-				?>
-				"><?php _e( '2. Page Setup', 'wp-job-manager' ); ?></li>
-				<li class="
-				<?php
-				if ( $step === 3 ) {
-					echo 'wp-job-manager-setup-active-step';}
-				?>
-				"><?php _e( '3. Done', 'wp-job-manager' ); ?></li>
+				<li class="<?php if ( $step === 1 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '1. Introduction', 'wp-job-manager' ); ?></li>
+				<li class="<?php if ( $step === 2 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '2. Page Setup', 'wp-job-manager' ); ?></li>
+				<li class="<?php if ( $step === 3 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '3. Done', 'wp-job-manager' ); ?></li>
 			</ul>
 
 			<?php if ( 1 === $step ) : ?>
