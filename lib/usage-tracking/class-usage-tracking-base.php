@@ -167,6 +167,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * subclass.
 	 *
 	 * @param string $subclass the name of the subclass.
+	 * @return object Instance of $subclass.
 	 */
 	protected static function get_instance_for_subclass( $subclass ) {
 		if ( ! isset( self::$instances[ $subclass ] ) ) {
@@ -325,6 +326,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * externally.
 	 *
 	 * @param array $schedules the existing cron schedules.
+	 * @return array of $schedules.
 	 **/
 	public function add_usage_tracking_two_week_schedule( $schedules ) {
 		$day_in_seconds = 86400;

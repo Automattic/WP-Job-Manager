@@ -5,11 +5,12 @@
 
 if ( ! function_exists( 'order_featured_job_listing' ) ) :
 	/**
-	 Was used for sorting.
-
-	 @deprecated 1.22.4
-	 @param array $args
-	 @return array
+	 * Was used for sorting.
+	 *
+	 * @deprecated 1.22.4
+	 *
+	 * @param array $args
+	 * @return array
 	 */
 	function order_featured_job_listing( $args ) {
 		global $wpdb;

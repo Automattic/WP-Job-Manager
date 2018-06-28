@@ -32,7 +32,9 @@ class WP_Job_Manager_Controllers_Status extends WP_Job_Manager_REST_Controller_M
 	 * Index handler
 	 *
 	 * @param  WP_REST_Request $request The request.
+	 *
 	 * @return WP_REST_Response
+	 * @throws WP_Job_Manager_REST_Exception
 	 */
 	public function index( $request ) {
 		$params = $request->get_params();

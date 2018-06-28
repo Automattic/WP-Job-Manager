@@ -347,7 +347,7 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Adds newly recognized data header in WordPress plugin files.
 	 *
-	 * @params array $headers
+	 * @param array $headers
 	 * @return array
 	 */
 	public function extra_headers( $headers ) {

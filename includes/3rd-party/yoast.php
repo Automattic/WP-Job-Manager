@@ -10,7 +10,7 @@
  *
  * @param array  $url  Array of URL parts.
  * @param string $type URL type.
- * @param object $user Data object for the URL.
+ * @param object $post Post object.
  * @return string|bool False if we're skipping.
  */
 function wpjm_yoast_skip_filled_job_listings( $url, $type, $post ) {

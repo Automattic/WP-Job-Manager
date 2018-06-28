@@ -79,6 +79,8 @@ class WP_Job_Manager_REST_API {
 	 * Define our REST API Models and Controllers
 	 *
 	 * @param WP_Job_Manager_REST_Environment $env The Environment.
+	 *
+	 * @throws WP_Job_Manager_REST_Exception
 	 */
 	public function define_api( $env ) {
 		if ( ! is_a( $env, 'WP_Job_Manager_REST_Environment' ) ) {

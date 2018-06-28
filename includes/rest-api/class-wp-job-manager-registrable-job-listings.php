@@ -168,7 +168,6 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 	 *
 	 * @param int $object_id Object ID.
 	 * @return WP_Job_Manager_REST_Interfaces_Model
-	 * @throws WP_Job_Manager_REST_Exception On Error.
 	 */
 	private function get_model( $object_id ) {
 		$data = array();

@@ -137,6 +137,8 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * Expect a model is valid
 	 *
 	 * @param WP_Job_Manager_REST_Interfaces_Model $model The model.
+	 *
+	 * @throws WP_Job_Manager_REST_Exception
 	 */
 	function assertModelValid( $model ) {
 		$this->assertTrue( $model->validate() );

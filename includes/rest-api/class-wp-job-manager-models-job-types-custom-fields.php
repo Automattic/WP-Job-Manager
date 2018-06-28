@@ -26,6 +26,7 @@ class WP_Job_Manager_Models_Job_Types_Custom_Fields extends WP_Job_Manager_REST_
 	 * Declare Fields
 	 *
 	 * @return array
+	 * @throws WP_Job_Manager_REST_Exception
 	 */
 	public function declare_fields() {
 		$env                             = $this->get_environment();
@@ -43,6 +44,7 @@ class WP_Job_Manager_Models_Job_Types_Custom_Fields extends WP_Job_Manager_REST_
 	 * Validate this
 	 *
 	 * @return bool|WP_Error
+	 * @throws WP_Job_Manager_REST_Exception
 	 */
 	public function validate() {
 		$employment_type = $this->get( 'employment_type' );

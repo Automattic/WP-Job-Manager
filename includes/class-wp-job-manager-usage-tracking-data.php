@@ -180,7 +180,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 *
 	 * @param string $job_type Job type to search for.
 	 *
-	 * @return array Number of published or expired jobs for a particular job type.
+	 * @return int Number of published or expired jobs for a particular job type.
 	 **/
 	private static function get_jobs_by_type_count( $job_type ) {
 		$query = new WP_Query(
@@ -231,7 +231,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 *
 	 * @since 1.30.0
 	 *
-	 * @return array Number of job listings associated with at least one job type.
+	 * @return int Number of job listings associated with at least one job type.
 	 **/
 	private static function get_job_type_count() {
 		$query = new WP_Query(

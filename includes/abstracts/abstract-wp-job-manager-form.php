@@ -441,8 +441,10 @@ abstract class WP_Job_Manager_Form {
 	 * Gets the value of a posted file field.
 	 *
 	 * @param  string $key
-	 * @param  array  $field
+	 * @param  array $field
+	 *
 	 * @return string|array
+	 * @throws Exception
 	 */
 	protected function get_posted_file_field( $key, $field ) {
 		$file = $this->upload_file( $key, $field );
@@ -498,7 +500,7 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
-	 * @return int
+	 * @return array
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
 		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : array();
