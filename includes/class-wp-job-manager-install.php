@@ -63,7 +63,9 @@ class WP_Job_Manager_Install {
 
 		if ( is_object( $wp_roles ) ) {
 			add_role(
-				'employer', __( 'Employer', 'wp-job-manager' ), array(
+				'employer',
+				__( 'Employer', 'wp-job-manager' ),
+				array(
 					'read'         => true,
 					'edit_posts'   => false,
 					'delete_posts' => false,

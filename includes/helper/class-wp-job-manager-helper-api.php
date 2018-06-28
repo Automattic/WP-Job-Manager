@@ -113,7 +113,8 @@ class WP_Job_Manager_Helper_API {
 
 		$args    = wp_parse_args( $args, $defaults );
 		$request = wp_safe_remote_get(
-			$this->get_api_base_url() . '?' . http_build_query( $args, '', '&' ), array(
+			$this->get_api_base_url() . '?' . http_build_query( $args, '', '&' ),
+			array(
 				'timeout' => 10,
 				'headers' => array(
 					'Accept' => 'application/json',

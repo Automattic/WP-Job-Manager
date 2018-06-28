@@ -115,7 +115,8 @@ add_filter( 'body_class', 'job_manager_body_class' );
 function get_job_listing_pagination( $max_num_pages, $current_page = 1 ) {
 	ob_start();
 	get_job_manager_template(
-		'job-pagination.php', array(
+		'job-pagination.php',
+		array(
 			'max_num_pages' => $max_num_pages,
 			'current_page'  => absint( $current_page ),
 		)

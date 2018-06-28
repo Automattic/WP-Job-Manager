@@ -131,7 +131,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		$save_button_text = apply_filters( 'update_job_form_submit_button_text', $save_button_text );
 
 		get_job_manager_template(
-			'job-submit.php', array(
+			'job-submit.php',
+			array(
 				'form'               => $this->form_name,
 				'job_id'             => $this->get_job_id(),
 				'action'             => $this->get_action(),

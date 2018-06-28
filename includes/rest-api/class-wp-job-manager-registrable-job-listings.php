@@ -94,7 +94,9 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 			return new WP_Error( 'model-not-found' );
 		}
 		register_rest_field(
-			$this->object_to_extend, $this->rest_field_name, array(
+			$this->object_to_extend,
+			$this->rest_field_name,
+			array(
 				'get_callback'    => array( $this, 'get_fields' ),
 				'update_callback' => array( $this, 'update_fields' ),
 				'schema'          => $this->get_item_schema(),
@@ -180,7 +182,8 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 		}
 
 		return $this->model_factory->create(
-			$data, array(
+			$data,
+			array(
 				'deserialize' => true,
 			)
 		);

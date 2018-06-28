@@ -107,7 +107,8 @@ class WP_Job_Manager_Post_Types {
 				'job_listing_category',
 				apply_filters( 'register_taxonomy_job_listing_category_object_type', array( 'job_listing' ) ),
 				apply_filters(
-					'register_taxonomy_job_listing_category_args', array(
+					'register_taxonomy_job_listing_category_args',
+					array(
 						'hierarchical'          => true,
 						'update_count_callback' => '_update_post_term_count',
 						'label'                 => $plural,
@@ -159,7 +160,8 @@ class WP_Job_Manager_Post_Types {
 				'job_listing_type',
 				apply_filters( 'register_taxonomy_job_listing_type_object_type', array( 'job_listing' ) ),
 				apply_filters(
-					'register_taxonomy_job_listing_type_args', array(
+					'register_taxonomy_job_listing_type_args',
+					array(
 						'hierarchical'  => true,
 						'label'         => $plural,
 						'labels'        => array(
@@ -219,7 +221,8 @@ class WP_Job_Manager_Post_Types {
 		register_post_type(
 			'job_listing',
 			apply_filters(
-				'register_post_type_job_listing', array(
+				'register_post_type_job_listing',
+				array(
 					'labels'              => array(
 						'name'                  => $plural,
 						'singular_name'         => $singular,
@@ -268,7 +271,8 @@ class WP_Job_Manager_Post_Types {
 		 * Post status
 		 */
 		register_post_status(
-			'expired', array(
+			'expired',
+			array(
 				'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
 				'public'                    => true,
 				'protected'                 => true,
@@ -279,7 +283,8 @@ class WP_Job_Manager_Post_Types {
 			)
 		);
 		register_post_status(
-			'preview', array(
+			'preview',
+			array(
 				'label'                     => _x( 'Preview', 'post status', 'wp-job-manager' ),
 				'public'                    => false,
 				'exclude_from_search'       => true,
@@ -659,7 +664,8 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$permalinks = wp_parse_args(
-			(array) get_option( 'wpjm_permalinks', array() ), array(
+			(array) get_option( 'wpjm_permalinks', array() ),
+			array(
 				'job_base'      => '',
 				'category_base' => '',
 				'type_base'     => '',

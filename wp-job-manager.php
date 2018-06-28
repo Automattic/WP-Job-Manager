@@ -373,7 +373,8 @@ class WP_Job_Manager {
 
 			ob_start();
 			get_job_manager_template(
-				'form-fields/uploaded-file-html.php', array(
+				'form-fields/uploaded-file-html.php',
+				array(
 					'name'      => '',
 					'value'     => '',
 					'extension' => 'jpg',
@@ -383,7 +384,8 @@ class WP_Job_Manager {
 
 			ob_start();
 			get_job_manager_template(
-				'form-fields/uploaded-file-html.php', array(
+				'form-fields/uploaded-file-html.php',
+				array(
 					'name'      => '',
 					'value'     => '',
 					'extension' => 'zip',
@@ -392,7 +394,9 @@ class WP_Job_Manager {
 			$js_field_html = ob_get_clean();
 
 			wp_localize_script(
-				'wp-job-manager-ajax-file-upload', 'job_manager_ajax_file_upload', array(
+				'wp-job-manager-ajax-file-upload',
+				'job_manager_ajax_file_upload',
+				array(
 					'ajax_url'               => $ajax_url,
 					'js_field_html_img'      => esc_js( str_replace( "\n", '', $js_field_html_img ) ),
 					'js_field_html'          => esc_js( str_replace( "\n", '', $js_field_html ) ),
@@ -408,7 +412,9 @@ class WP_Job_Manager {
 		wp_register_script( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-submission.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
 		wp_localize_script(
-			'wp-job-manager-job-dashboard', 'job_manager_job_dashboard', array(
+			'wp-job-manager-job-dashboard',
+			'job_manager_job_dashboard',
+			array(
 				'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 			)
 		);

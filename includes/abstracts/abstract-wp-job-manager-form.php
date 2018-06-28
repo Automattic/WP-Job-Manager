@@ -297,7 +297,8 @@ abstract class WP_Job_Manager_Form {
 		$field['required'] = true;
 		$field['site_key'] = get_option( 'job_manager_recaptcha_site_key' );
 		get_job_manager_template(
-			'form-fields/recaptcha-field.php', array(
+			'form-fields/recaptcha-field.php',
+			array(
 				'key'   => 'recaptcha',
 				'field' => $field,
 			)
@@ -538,7 +539,8 @@ abstract class WP_Job_Manager_Form {
 
 			foreach ( $files_to_upload as $file_to_upload ) {
 				$uploaded_file = job_manager_upload_file(
-					$file_to_upload, array(
+					$file_to_upload,
+					array(
 						'file_key'           => $field_key,
 						'allowed_mime_types' => $allowed_mime_types,
 					)

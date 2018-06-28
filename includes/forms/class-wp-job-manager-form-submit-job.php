@@ -63,7 +63,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		$this->steps = (array) apply_filters(
-			'submit_job_steps', array(
+			'submit_job_steps',
+			array(
 				'submit'  => array(
 					'name'     => __( 'Submit Details', 'wp-job-manager' ),
 					'view'     => array( $this, 'submit' ),
@@ -168,7 +169,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job_type = 'term-select';
 		}
 		$this->fields = apply_filters(
-			'submit_job_form_fields', array(
+			'submit_job_form_fields',
+			array(
 				'job'     => array(
 					'job_title'       => array(
 						'label'       => __( 'Job Title', 'wp-job-manager' ),
@@ -401,7 +403,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			wp_localize_jquery_ui_datepicker();
 		} else {
 			wp_localize_script(
-				'wp-job-manager-datepicker', 'job_manager_datepicker', array(
+				'wp-job-manager-datepicker',
+				'job_manager_datepicker',
+				array(
 					/* translators: jQuery date format, see http://api.jqueryui.com/datepicker/#utility-formatDate */
 					'date_format' => _x( 'yy-mm-dd', 'Date format for jQuery datepicker.', 'wp-job-manager' ),
 				)
@@ -481,7 +485,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		$this->enqueue_job_form_assets();
 		get_job_manager_template(
-			'job-submit.php', array(
+			'job-submit.php',
+			array(
 				'form'               => $this->form_name,
 				'job_id'             => $this->get_job_id(),
 				'resume_edit'        => $this->resume_edit,
@@ -791,7 +796,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			setup_postdata( $post );
 
 			get_job_manager_template(
-				'job-preview.php', array(
+				'job-preview.php',
+				array(
 					'form' => $this,
 				)
 			);

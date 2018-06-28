@@ -220,7 +220,8 @@ class WP_Job_Manager_Shortcodes {
 
 		// ....If not show the job dashboard.
 		$args = apply_filters(
-			'job_manager_get_dashboard_jobs_args', array(
+			'job_manager_get_dashboard_jobs_args',
+			array(
 				'post_type'           => 'job_listing',
 				'post_status'         => array( 'publish', 'expired', 'pending' ),
 				'ignore_sticky_posts' => 1,
@@ -237,7 +238,8 @@ class WP_Job_Manager_Shortcodes {
 		echo wp_kses_post( $this->job_dashboard_message );
 
 		$job_dashboard_columns = apply_filters(
-			'job_manager_job_dashboard_columns', array(
+			'job_manager_job_dashboard_columns',
+			array(
 				'job_title' => __( 'Title', 'wp-job-manager' ),
 				'filled'    => __( 'Filled?', 'wp-job-manager' ),
 				'date'      => __( 'Date Posted', 'wp-job-manager' ),
@@ -246,7 +248,8 @@ class WP_Job_Manager_Shortcodes {
 		);
 
 		get_job_manager_template(
-			'job-dashboard.php', array(
+			'job-dashboard.php',
+			array(
 				'jobs'                  => $jobs->query( $args ),
 				'max_num_pages'         => $jobs->max_num_pages,
 				'job_dashboard_columns' => $job_dashboard_columns,
@@ -276,7 +279,8 @@ class WP_Job_Manager_Shortcodes {
 
 		$atts = shortcode_atts(
 			apply_filters(
-				'job_manager_output_jobs_defaults', array(
+				'job_manager_output_jobs_defaults',
+				array(
 					'per_page'                  => get_option( 'job_manager_per_page' ),
 					'orderby'                   => 'featured',
 					'order'                     => 'DESC',
@@ -358,7 +362,8 @@ class WP_Job_Manager_Shortcodes {
 		if ( $atts['show_filters'] ) {
 
 			get_job_manager_template(
-				'job-filters.php', array(
+				'job-filters.php',
+				array(
 					'per_page'                  => $atts['per_page'],
 					'orderby'                   => $atts['orderby'],
 					'order'                     => $atts['order'],
@@ -383,7 +388,8 @@ class WP_Job_Manager_Shortcodes {
 		} else {
 			$jobs = get_job_listings(
 				apply_filters(
-					'job_manager_output_jobs_args', array(
+					'job_manager_output_jobs_args',
+					array(
 						'search_location'   => $atts['location'],
 						'search_keywords'   => $atts['keywords'],
 						'post_status'       => $atts['post_status'],
@@ -469,7 +475,8 @@ class WP_Job_Manager_Shortcodes {
 		$selected_job_types = is_array( $atts['selected_job_types'] ) ? $atts['selected_job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_job_types'] ) ) );
 
 		get_job_manager_template(
-			'job-filter-job-types.php', array(
+			'job-filter-job-types.php',
+			array(
 				'job_types'          => $job_types,
 				'atts'               => $atts,
 				'selected_job_types' => $selected_job_types,

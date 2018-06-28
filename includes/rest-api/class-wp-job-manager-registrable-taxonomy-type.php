@@ -80,7 +80,9 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 			return new WP_Error( 'model-not-found' );
 		}
 		register_rest_field(
-			$taxonomy_type, $this->rest_field_name, array(
+			$taxonomy_type,
+			$this->rest_field_name,
+			array(
 				'get_callback'    => array( $this, 'get_taxonomy_term' ),
 				'update_callback' => array( $this, 'update_taxonomy_term' ),
 				'schema'          => $this->get_item_schema(),
@@ -167,7 +169,8 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 		}
 
 		return $this->model_prototype->create(
-			$data, array(
+			$data,
+			array(
 				'deserialize' => true,
 			)
 		);
@@ -203,7 +206,8 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 		if ( ! $term_id ) {
 			// No way to update this. Bail.
 			return new WP_Error(
-				$rest_base . '-error-invalid-id', $rest_base . '-error-invalid-id', array(
+				$rest_base . '-error-invalid-id', $rest_base . '-error-invalid-id',
+				array(
 					'status' => 400,
 				)
 			);

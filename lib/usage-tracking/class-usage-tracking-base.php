@@ -235,7 +235,8 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 
 		$pixel   .= '?' . implode( '&', $p ) . '&_=_'; // EOF marker.
 		$response = wp_remote_get(
-			$pixel, array(
+			$pixel,
+			array(
 				'blocking'    => true,
 				'timeout'     => 1,
 				'redirection' => 2,

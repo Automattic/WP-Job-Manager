@@ -11,7 +11,8 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		global $wpdb, $job_manager_keyword;
 
 		$args = wp_parse_args(
-			$args, array(
+			$args,
+			array(
 				'search_location'   => '',
 				'search_keywords'   => '',
 				'search_categories' => array(),
@@ -313,7 +314,8 @@ if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
 	 */
 	function get_job_listing_post_statuses() {
 		return apply_filters(
-			'job_listing_post_statuses', array(
+			'job_listing_post_statuses',
+			array(
 				'draft'           => _x( 'Draft', 'post status', 'wp-job-manager' ),
 				'expired'         => _x( 'Expired', 'post status', 'wp-job-manager' ),
 				'preview'         => _x( 'Preview', 'post status', 'wp-job-manager' ),
@@ -437,7 +439,8 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 		}
 
 		$links = apply_filters(
-			'job_manager_job_filters_showing_jobs_links', array(
+			'job_manager_job_filters_showing_jobs_links',
+			array(
 				'reset'    => array(
 					'name' => __( 'Reset', 'wp-job-manager' ),
 					'url'  => '#',
@@ -446,7 +449,8 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 					'name' => __( 'RSS', 'wp-job-manager' ),
 					'url'  => get_job_listing_rss_link(
 						apply_filters(
-							'job_manager_get_listings_custom_filter_rss_args', array(
+							'job_manager_get_listings_custom_filter_rss_args',
+							array(
 								'job_types'       => isset( $args['filter_job_types'] ) ? implode( ',', $args['filter_job_types'] ) : '',
 								'search_location' => $args['search_location'],
 								'job_categories'  => implode( ',', $job_categories ),
@@ -1234,7 +1238,8 @@ function job_manager_upload_file( $file, $args = array() ) {
 	include_once ABSPATH . 'wp-admin/includes/media.php';
 
 	$args = wp_parse_args(
-		$args, array(
+		$args,
+		array(
 			'file_key'           => '',
 			'file_label'         => '',
 			'allowed_mime_types' => '',

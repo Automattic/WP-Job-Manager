@@ -50,7 +50,9 @@ class WP_Job_Manager_Models_Job_Types_Custom_Fields extends WP_Job_Manager_REST_
 		$employment_type = $this->get( 'employment_type' );
 		if ( ! empty( $employment_type ) && ! in_array( $employment_type, self::$accepted_employment_types, true ) ) {
 			return new WP_Error(
-				'invalid_employment_type', esc_html__( 'Invalid Employment Type', 'wp-job-manager' ), array(
+				'invalid_employment_type',
+				esc_html__( 'Invalid Employment Type', 'wp-job-manager' ),
+				array(
 					'input'             => $employment_type,
 					'acceptable_values' => self::$accepted_employment_types,
 					'status'            => 400,

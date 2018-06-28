@@ -322,7 +322,8 @@ class WP_Job_Manager_CPT {
 
 		// Filter by Filled.
 		$this->jobs_filter_dropdown(
-			'job_listing_filled', array(
+			'job_listing_filled',
+			array(
 				array(
 					'value' => '',
 					'text'  => __( 'Select Filled', 'wp-job-manager' ),
@@ -340,7 +341,8 @@ class WP_Job_Manager_CPT {
 
 		// Filter by Featured.
 		$this->jobs_filter_dropdown(
-			'job_listing_featured', array(
+			'job_listing_featured',
+			array(
 				array(
 					'value' => '',
 					'text'  => __( 'Select Featured', 'wp-job-manager' ),
@@ -647,14 +649,16 @@ class WP_Job_Manager_CPT {
 		if ( isset( $vars['orderby'] ) ) {
 			if ( 'job_expires' === $vars['orderby'] ) {
 				$vars = array_merge(
-					$vars, array(
+					$vars,
+					array(
 						'meta_key' => '_job_expires',
 						'orderby'  => 'meta_value',
 					)
 				);
 			} elseif ( 'job_location' === $vars['orderby'] ) {
 				$vars = array_merge(
-					$vars, array(
+					$vars,
+					array(
 						'meta_key' => '_job_location',
 						'orderby'  => 'meta_value',
 					)
