@@ -81,7 +81,7 @@ abstract class WP_Job_Manager_Form {
 			isset( $_GET['new'] ) &&
 			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
 			isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) &&
-			get_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key', true ) == $_COOKIE['wp-job-manager-submitting-job-key']
+			get_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
 		) {
 			delete_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key' );
 			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
@@ -237,10 +237,10 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function sort_by_priority( $a, $b ) {
-		if ( $a['priority'] == $b['priority'] ) {
+		if ( intval( $a['priority'] ) === intval( $b['priority'] ) ) {
 			return 0;
 		}
-		return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
+		return ( intval( $a['priority'] ) < intval( $b['priority'] ) ) ? -1 : 1;
 	}
 
 	/**
@@ -330,11 +330,12 @@ abstract class WP_Job_Manager_Form {
 			)
 		);
 
-		if ( is_wp_error( $response )
-			 || empty( $response['body'] )
-			 || ! ( $json = json_decode( $response['body'] ) )
-			 || ! $json->success ) {
-			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
+			$json = json_decode( $response['body'] );
+			if ( ! $json || ! $json->success ) {
+				// translators: %s is the name of the form validation that failed.
+				return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+			}
 		}
 
 		return $success;
@@ -354,8 +355,9 @@ abstract class WP_Job_Manager_Form {
 			foreach ( $group_fields as $key => $field ) {
 				// Get the value.
 				$field_type = str_replace( '-', '_', $field['type'] );
+				$handler    = apply_filters( "job_manager_get_posted_{$field_type}_field", false );
 
-				if ( $handler = apply_filters( "job_manager_get_posted_{$field_type}_field", false ) ) {
+				if ( $handler ) {
 					$values[ $group_key ][ $key ] = call_user_func( $handler, $key, $field );
 				} elseif ( method_exists( $this, "get_posted_{$field_type}_field" ) ) {
 					$values[ $group_key ][ $key ] = call_user_func( array( $this, "get_posted_{$field_type}_field" ), $key, $field );
@@ -444,10 +446,10 @@ abstract class WP_Job_Manager_Form {
 	 * Gets the value of a posted file field.
 	 *
 	 * @param  string $key
-	 * @param  array $field
+	 * @param  array  $field
 	 *
 	 * @return string|array
-	 * @throws Exception
+	 * @throws Exception When the upload fails.
 	 */
 	protected function get_posted_file_field( $key, $field ) {
 		$file = $this->upload_file( $key, $field );

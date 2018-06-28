@@ -1,4 +1,9 @@
 <?php
+/**
+ * Abstract email notification class.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -29,11 +34,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class WP_Job_Manager_Email {
 	/**
+	 * Arguments used in an instance of an email notification.
+	 *
 	 * @var array
 	 */
 	private $args = array();
 
 	/**
+	 * Settings for this email notification.
+	 *
 	 * @var array
 	 */
 	private $settings = array();
