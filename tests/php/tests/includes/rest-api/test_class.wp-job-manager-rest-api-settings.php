@@ -35,7 +35,7 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 		$previous_setting = $settings->get( 'job_manager_per_page' );
 
 		$new_settings = array(
-			'job_manager_per_page' => $previous_setting + 1
+			'job_manager_per_page' => $previous_setting + 1,
 		);
 
 		$response = $this->post( '/wpjm/v1/settings', $new_settings );
@@ -48,7 +48,7 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 		$previous_setting = $settings->get( 'job_manager_per_page' );
 
 		$new_settings = array(
-			'job_manager_per_page' => $previous_setting + 1
+			'job_manager_per_page' => $previous_setting + 1,
 		);
 
 		$response = $this->post( '/wpjm/v1/settings', $new_settings );
@@ -64,7 +64,7 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 		$previous_setting = $settings->get( 'job_manager_per_page' );
 
 		$new_settings = array(
-			'job_manager_per_page' => $previous_setting + 1
+			'job_manager_per_page' => $previous_setting + 1,
 		);
 
 		$response = $this->put( '/wpjm/v1/settings', $new_settings );
@@ -77,13 +77,13 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 		$previous_setting = $settings->get( 'job_manager_per_page' );
 
 		$new_settings = array(
-			'job_manager_per_page' => $previous_setting + 1
+			'job_manager_per_page' => $previous_setting + 1,
 		);
 
 		$this->post( '/wpjm/v1/settings', $new_settings );
 
 		$response = $this->get( '/wpjm/v1/settings' );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 		$this->assertArrayHasKey( 'job_manager_per_page', $data );
 		$this->assertEquals( $previous_setting + 1, $data['job_manager_per_page'] );
 	}
@@ -94,13 +94,13 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 		$previous_setting = $settings->get( 'job_manager_per_page' );
 
 		$new_settings = array(
-			'job_manager_per_page' => $previous_setting + 1
+			'job_manager_per_page' => $previous_setting + 1,
 		);
 
 		$this->put( '/wpjm/v1/settings', $new_settings );
 
 		$response = $this->get( '/wpjm/v1/settings' );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 		$this->assertArrayHasKey( 'job_manager_per_page', $data );
 		$this->assertEquals( $previous_setting + 1, $data['job_manager_per_page'] );
 	}
@@ -111,21 +111,20 @@ class WP_Test_WP_Job_Manager_REST_API_Settings extends WPJM_REST_TestCase {
 		$previous_setting = $settings->get( 'job_manager_job_dashboard_page_id' );
 
 		$new_settings = array(
-			'job_manager_job_dashboard_page_id' => -1
+			'job_manager_job_dashboard_page_id' => -1,
 		);
 
 		$response = $this->put( '/wpjm/v1/settings', $new_settings );
 		$this->assertResponseStatus( $response, 400 );
 
-
 		$response = $this->get( '/wpjm/v1/settings' );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 		$this->assertArrayHasKey( 'job_manager_job_dashboard_page_id', $data );
 		$this->assertEquals( $previous_setting, $data['job_manager_job_dashboard_page_id'] );
 	}
 
 	private function get_settings() {
 		return $this->environment()->model( 'WP_Job_Manager_Models_Settings' )
-			->get_data_store()->get_entity(-1);
+			->get_data_store()->get_entity( -1 );
 	}
 }

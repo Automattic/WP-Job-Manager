@@ -1,6 +1,6 @@
 <?php
-include_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-valid.php';
-include_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-invalid.php';
+require_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-valid.php';
+require_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-invalid.php';
 
 /**
  * Tests for WP_Job_Manager_Email_Notifications.
@@ -103,7 +103,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email_Notifications::is_email_notification_valid()
 	 */
 	public function test_get_email_notifications() {
-		$emails = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
+		$emails                   = WP_Job_Manager_Email_Notifications::get_email_notifications( false );
 		$core_email_notifications = WP_Job_Manager_Email_Notifications::core_email_notifications();
 		$this->assertEquals( count( $core_email_notifications ), count( $emails ) );
 
@@ -163,7 +163,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 */
 	public function test_output_job_details() {
 		$email = $this->get_valid_email();
-		$job = $this->get_valid_job();
+		$job   = $this->get_valid_job();
 
 		ob_start();
 		WP_Job_Manager_Email_Notifications::output_job_details( $job, $email, true, true );
@@ -228,7 +228,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 			$email_key                = $email_keys[ $key ];
 			$email_settings           = call_user_func( array( $email_class, 'get_setting_fields' ) );
 			$email_is_default_enabled = call_user_func( array( $email_class, 'is_default_enabled' ) );
-			$defaults = array(
+			$defaults                 = array(
 				'enabled'    => $email_is_default_enabled ? '1' : '0',
 				'plain_text' => '0',
 			);
@@ -289,15 +289,15 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	protected function get_valid_job() {
 		$full_time_term = wp_create_term( 'Full Time', 'job_listing_type' );
 		$weird_cat_term = wp_create_term( 'Weird', 'job_listing_category' );
-		$job_args = array(
+		$job_args       = array(
 			'post_title'   => 'Job Post-' . md5( microtime( true ) ),
 			'post_content' => 'Job Description-' . md5( microtime( true ) ),
 			'meta_input'   => array(
 				'_job_location'    => 'Job Location-' . md5( microtime( true ) ),
 				'_company_name'    => 'Company-' . md5( microtime( true ) ),
-				'_company_website' => 'http://' . md5( microtime( true ) ) .'.com',
+				'_company_website' => 'http://' . md5( microtime( true ) ) . '.com',
 			),
-			'tax_input' => array(
+			'tax_input'    => array(
 				'job_listing_type'     => $full_time_term['term_id'],
 				'job_listing_category' => $weird_cat_term['term_id'],
 			),
@@ -314,7 +314,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$this->assertTrue( is_subclass_of( $core_email_class, 'WP_Job_Manager_Email' ) );
 
 		// // PHP 5.2: Using `call_user_func()` but `$core_email_class::get_key()` preferred.
-		$this->assertTrue( is_string( call_user_func( array( $core_email_class, 'get_key') ) ) );
-		$this->assertTrue( is_string( call_user_func( array( $core_email_class, 'get_name') ) ) );
+		$this->assertTrue( is_string( call_user_func( array( $core_email_class, 'get_key' ) ) ) );
+		$this->assertTrue( is_string( call_user_func( array( $core_email_class, 'get_name' ) ) ) );
 	}
 }

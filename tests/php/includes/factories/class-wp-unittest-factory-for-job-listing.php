@@ -5,25 +5,25 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 
 	function __construct( $factory = null ) {
 		parent::__construct( $factory );
-		$this->default_job_listing_meta = array(
-			'_job_location' => '',
-			'_job_type' => 'full-time',
-			'_application' => 'test@example.com',
-			'_company_name' => new WP_UnitTest_Generator_Sequence( 'Job Listing company name %s' ),
+		$this->default_job_listing_meta       = array(
+			'_job_location'    => '',
+			'_job_type'        => 'full-time',
+			'_application'     => 'test@example.com',
+			'_company_name'    => new WP_UnitTest_Generator_Sequence( 'Job Listing company name %s' ),
 			'_company_website' => new WP_UnitTest_Generator_Sequence( 'Job Listing company website %s' ),
 			'_company_tagline' => new WP_UnitTest_Generator_Sequence( 'Job Listing company tagline %s' ),
-			'_company_video' => '',
+			'_company_video'   => '',
 			'_company_twitter' => '',
-			'_company_logo' => '',
-			'_filled' => '0',
-			'_featured' => '0',
+			'_company_logo'    => '',
+			'_filled'          => '0',
+			'_featured'        => '0',
 		);
 		$this->default_generation_definitions = array(
-			'post_status' => 'publish',
-			'post_title' => new WP_UnitTest_Generator_Sequence( 'Job Listing title %s' ),
+			'post_status'  => 'publish',
+			'post_title'   => new WP_UnitTest_Generator_Sequence( 'Job Listing title %s' ),
 			'post_content' => new WP_UnitTest_Generator_Sequence( 'Job Listing content %s' ),
 			'post_excerpt' => new WP_UnitTest_Generator_Sequence( 'Job Listing excerpt %s' ),
-			'post_type' => 'job_listing',
+			'post_type'    => 'job_listing',
 		);
 	}
 
@@ -50,6 +50,11 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 	public function set_post_age( $post_id, $age ) {
 		global $wpdb;
 		$mod_date = date( 'Y-m-d', strtotime( $age ) );
-		$wpdb->update( $wpdb->posts, array( 'post_modified' => $mod_date, 'post_modified_gmt' => $mod_date), array( 'ID' => $post_id ) );
+		$wpdb->update(
+			$wpdb->posts, array(
+				'post_modified'     => $mod_date,
+				'post_modified_gmt' => $mod_date,
+			), array( 'ID' => $post_id )
+		);
 	}
 }

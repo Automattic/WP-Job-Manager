@@ -37,7 +37,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	 */
 	public function test_get_job_listings_add_fields() {
 		$published = $this->factory->job_listing->create_many( 2 );
-		$response = $this->get( '/wp/v2/job-listings' );
+		$response  = $this->get( '/wp/v2/job-listings' );
 		$this->assertResponseStatus( $response, 200 );
 		$response_data = $response->get_data();
 		$this->assertInternalType( 'array', $response_data );
@@ -58,11 +58,11 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	public function test_update_update_fields_fail_if_no_permissions() {
 		$this->logout();
 		$published = $this->factory->job_listing->create_many( 2 );
-		$first_id = $published[0];
-		$response = $this->get( '/wp/v2/job-listings/' . $first_id );
+		$first_id  = $published[0];
+		$response  = $this->get( '/wp/v2/job-listings/' . $first_id );
 		$this->assertResponseStatus( $response, 200 );
-		$response_data = $response->get_data();
-		$first_listing = $response_data;
+		$response_data                           = $response->get_data();
+		$first_listing                           = $response_data;
 		$first_listing['fields']['_application'] = 'foo@example.com';
 
 		$response = $this->put( '/wp/v2/job-listings/' . $first_listing['id'], $first_listing );
@@ -70,22 +70,26 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_update_update_fields_success() {
-		$user_id = $this->factory->user->create( array(
-			'role'       => 'administrator',
-			'user_login' => 'superadmin',
-		) );
+		$user_id = $this->factory->user->create(
+			array(
+				'role'       => 'administrator',
+				'user_login' => 'superadmin',
+			)
+		);
 		wp_set_current_user( $user_id );
-		$published = $this->factory->job_listing->create_many( 2, array(
-			'post_author' => $user_id,
-		) );
+		$published = $this->factory->job_listing->create_many(
+			2, array(
+				'post_author' => $user_id,
+			)
+		);
 		$this->login_as_admin();
 		$first_id = $published[0];
 		$response = $this->get( '/wp/v2/job-listings/' . $first_id );
 		$this->assertResponseStatus( $response, 200 );
-		$response_data = $response->get_data();
-		$first_listing = $response_data;
+		$response_data                           = $response->get_data();
+		$first_listing                           = $response_data;
 		$first_listing['fields']['_application'] = 'foo@example.com';
-		$request = array(
+		$request                                 = array(
 			'fields' => $first_listing['fields'],
 		);
 

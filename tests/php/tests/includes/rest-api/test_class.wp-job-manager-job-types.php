@@ -23,7 +23,7 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 200 );
 		$data = $response->get_data();
 
-		$routes =  array_keys( $data['routes'] );
+		$routes = array_keys( $data['routes'] );
 		$this->assertTrue( in_array( '/wp/v2/job-types', $routes ) );
 	}
 
@@ -35,52 +35,58 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 
 	public function test_post_job_types_fail_if_invalid_employment_type() {
 		$this->login_as_admin();
-		$response = $this->post( '/wp/v2/job-types', array(
-			'name' => 'Software Engineer',
-			'slug' => 'software-engineer',
-			'fields' => array(
-				'employment_type' => 'invalid',
-			),
-		) );
+		$response = $this->post(
+			'/wp/v2/job-types', array(
+				'name'   => 'Software Engineer',
+				'slug'   => 'software-engineer',
+				'fields' => array(
+					'employment_type' => 'invalid',
+				),
+			)
+		);
 		$this->assertResponseStatus( $response, 400 );
 	}
 
 	public function test_delete_fail_as_default_user() {
 		$this->login_as_default_user();
-		$term_id = $this->get_job_type();
+		$term_id  = $this->get_job_type();
 		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), array( 'force' => 1 ) );
 		$this->assertResponseStatus( $response, 401 );
 	}
 
 	public function test_delete_succeed_as_admin_user() {
 		$this->login_as_admin();
-		$term_id = $this->get_job_type();
+		$term_id  = $this->get_job_type();
 		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), array( 'force' => 1 ) );
 		$this->assertResponseStatus( $response, 200 );
 	}
 
 	public function test_post_job_types_succeed_if_valid_employment_type() {
 		$this->login_as_admin();
-		$response = $this->post( '/wp/v2/job-types', array(
-			'name' => 'Software Engineer',
-			'slug' => 'software-engineer',
-			'fields' => array(
-				'employment_type' => 'FULL_TIME',
-			),
-		) );
+		$response = $this->post(
+			'/wp/v2/job-types', array(
+				'name'   => 'Software Engineer',
+				'slug'   => 'software-engineer',
+				'fields' => array(
+					'employment_type' => 'FULL_TIME',
+				),
+			)
+		);
 
 		$this->assertResponseStatus( $response, 201 );
 	}
 
 	public function test_post_job_types_save_employment_type() {
 		$this->login_as_admin();
-		$response = $this->post( '/wp/v2/job-types', array(
-			'name' => 'Software Engineer',
-			'slug' => 'software-engineer',
-			'fields' => array(
-				'employment_type' => 'FULL_TIME',
-			),
-		) );
+		$response = $this->post(
+			'/wp/v2/job-types', array(
+				'name'   => 'Software Engineer',
+				'slug'   => 'software-engineer',
+				'fields' => array(
+					'employment_type' => 'FULL_TIME',
+				),
+			)
+		);
 
 		$this->assertResponseStatus( $response, 201 );
 		$data = $response->get_data();

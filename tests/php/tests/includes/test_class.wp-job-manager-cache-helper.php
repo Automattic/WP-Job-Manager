@@ -1,7 +1,7 @@
 <?php
 
 class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
-	const GROUP_CACHE_KEY_JOB_LISTINGS = 'get_job_listings';
+	const GROUP_CACHE_KEY_JOB_LISTINGS     = 'get_job_listings';
 	const GROUP_CACHE_KEY_PREFIX_JOB_TERMS = 'jm_get_';
 
 
@@ -46,7 +46,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 		$this->assertEquals( $initial_version, $middle_version );
 
 		// This should trigger `WP_Job_Manager_Cache_Helper::flush_get_job_listings_cache()`.
-		$post->post_title = "Cool Dinosaur";
+		$post->post_title = 'Cool Dinosaur';
 		wp_update_post( $post );
 
 		$after_version = WP_Job_Manager_Cache_Helper::get_transient_version( self::GROUP_CACHE_KEY_JOB_LISTINGS );
@@ -72,7 +72,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 		$this->assertEquals( $initial_version, $middle_version );
 
 		// This should NOT trigger `WP_Job_Manager_Cache_Helper::flush_get_job_listings_cache()`.
-		$post->post_title = "Cool Dinosaur";
+		$post->post_title = 'Cool Dinosaur';
 		wp_update_post( $post );
 
 		$after_version = WP_Job_Manager_Cache_Helper::get_transient_version( self::GROUP_CACHE_KEY_JOB_LISTINGS );
@@ -93,19 +93,19 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 		$this->assertEquals( $initial_version, $middle_version );
 
 		// Manually trigger with bad action.
-		WP_Job_Manager_Cache_Helper::job_manager_my_job_do_action(  'bad_action' );
+		WP_Job_Manager_Cache_Helper::job_manager_my_job_do_action( 'bad_action' );
 		$after_version = WP_Job_Manager_Cache_Helper::get_transient_version( self::GROUP_CACHE_KEY_JOB_LISTINGS );
 		$this->assertEquals( $after_version, $initial_version );
 
 		// Manually trigger with good action 'mark_filled'.
-		WP_Job_Manager_Cache_Helper::job_manager_my_job_do_action(  'mark_filled' );
+		WP_Job_Manager_Cache_Helper::job_manager_my_job_do_action( 'mark_filled' );
 		$after_version_mark_filled = WP_Job_Manager_Cache_Helper::get_transient_version( self::GROUP_CACHE_KEY_JOB_LISTINGS );
 		$this->assertLessThan( $after_version_mark_filled, $initial_version );
 
 		$this->wee_sleep();
 
 		// Manually trigger with good action 'mark_not_filled'.
-		WP_Job_Manager_Cache_Helper::job_manager_my_job_do_action(  'mark_not_filled' );
+		WP_Job_Manager_Cache_Helper::job_manager_my_job_do_action( 'mark_not_filled' );
 		$after_version_mark_not_filled = WP_Job_Manager_Cache_Helper::get_transient_version( self::GROUP_CACHE_KEY_JOB_LISTINGS );
 		$this->assertLessThan( $after_version_mark_not_filled, $after_version_mark_filled );
 	}
@@ -113,7 +113,6 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	/**
 	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Cache_Helper::set_term
-	 *
 	 */
 	public function test_set_term() {
 		/**
@@ -126,8 +125,8 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 		 */
 		$term = get_term( $this->factory->term->create() );
 
-		$taxonomy_slug = 'post_tag';
-		$cache_key = self::GROUP_CACHE_KEY_PREFIX_JOB_TERMS . sanitize_text_field( $taxonomy_slug );
+		$taxonomy_slug     = 'post_tag';
+		$cache_key         = self::GROUP_CACHE_KEY_PREFIX_JOB_TERMS . sanitize_text_field( $taxonomy_slug );
 		$taxonomy_term_ids = array( $term->ID );
 
 		$initial_version = WP_Job_Manager_Cache_Helper::get_transient_version( $cache_key );
@@ -160,8 +159,8 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 		 */
 		$term = get_term( $this->factory->term->create() );
 
-		$taxonomy_slug = 'post_tag';
-		$cache_key = self::GROUP_CACHE_KEY_PREFIX_JOB_TERMS . sanitize_text_field( $taxonomy_slug );
+		$taxonomy_slug     = 'post_tag';
+		$cache_key         = self::GROUP_CACHE_KEY_PREFIX_JOB_TERMS . sanitize_text_field( $taxonomy_slug );
 		$taxonomy_term_ids = array( $term->ID );
 
 		$initial_version = WP_Job_Manager_Cache_Helper::get_transient_version( $cache_key );
@@ -183,7 +182,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Cache_Helper::get_transient_version
 	 */
 	public function test_get_transient_version() {
-		$test_group = 'test_group';
+		$test_group      = 'test_group';
 		$initial_version = WP_Job_Manager_Cache_Helper::get_transient_version( $test_group );
 		$this->assertGreaterThanOrEqual( time() - 1, $initial_version );
 		$this->assertLessThanOrEqual( time(), $initial_version );
@@ -202,9 +201,9 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	 */
 	public function test_get_listings_count_default_args() {
 		global $wpdb;
-		$posts_pending = $this->factory->job_listing->create_many( 3, array( 'post_status' => 'pending' ) );
+		$posts_pending   = $this->factory->job_listing->create_many( 3, array( 'post_status' => 'pending' ) );
 		$posts_published = $this->factory->job_listing->create_many( 5, array( 'post_status' => 'publish' ) );
-		$posts_shifted = array();
+		$posts_shifted   = array();
 
 		$initial_count = WP_Job_Manager_Cache_Helper::get_listings_count();
 		$this->assertEquals( count( $posts_pending ), $initial_count );
@@ -239,10 +238,10 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	public function test_get_listings_count_nonstandard_args() {
 		global $wpdb;
 		add_filter( 'wpjm_count_cache_supported_post_types', array( $this, 'helper_add_post_type' ) );
-		add_filter( 'wpjm_count_cache_supported_statuses', array( $this, 'helper_add_pending_status') );
-		$posts_pending = $this->factory->post->create_many( 4, array( 'post_status' => 'pending' ) );
+		add_filter( 'wpjm_count_cache_supported_statuses', array( $this, 'helper_add_pending_status' ) );
+		$posts_pending   = $this->factory->post->create_many( 4, array( 'post_status' => 'pending' ) );
 		$posts_published = $this->factory->post->create_many( 2, array( 'post_status' => 'publish' ) );
-		$posts_shifted = array();
+		$posts_shifted   = array();
 
 		$initial_count = WP_Job_Manager_Cache_Helper::get_listings_count( 'post', 'publish' );
 		$this->assertEquals( count( $posts_published ), $initial_count );
@@ -252,7 +251,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 		// Create posts with normal actions fired.
 		$posts_published_round_two = $this->factory->post->create_many( 2, array( 'post_status' => 'publish' ) );
 
-		$middle_count = WP_Job_Manager_Cache_Helper::get_listings_count('post', 'publish' );
+		$middle_count = WP_Job_Manager_Cache_Helper::get_listings_count( 'post', 'publish' );
 		$this->assertEquals( count( $posts_published ) + count( $posts_published_round_two ), $middle_count );
 
 		// Covertly change post from published to pending.
@@ -273,21 +272,20 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	 */
 	public function test_maybe_clear_count_transients() {
 		global $wpdb;
-		$posts_pending = $this->factory->job_listing->create_many( 3, array( 'post_status' => 'pending' ) );
+		$posts_pending   = $this->factory->job_listing->create_many( 3, array( 'post_status' => 'pending' ) );
 		$posts_published = $this->factory->job_listing->create_many( 5, array( 'post_status' => 'publish' ) );
-		$posts_expired = $this->factory->job_listing->create_many( 5, array( 'post_status' => 'expired' ) );
-		$posts_shifted = array();
+		$posts_expired   = $this->factory->job_listing->create_many( 5, array( 'post_status' => 'expired' ) );
+		$posts_shifted   = array();
 
-		$expired_count = WP_Job_Manager_Cache_Helper::get_listings_count( 'job_listing', 'expired' );
+		$expired_count   = WP_Job_Manager_Cache_Helper::get_listings_count( 'job_listing', 'expired' );
 		$published_count = WP_Job_Manager_Cache_Helper::get_listings_count( 'job_listing', 'publish' );
-		$initial_count = WP_Job_Manager_Cache_Helper::get_listings_count();
+		$initial_count   = WP_Job_Manager_Cache_Helper::get_listings_count();
 		$this->assertEquals( count( $posts_pending ), $initial_count );
 
 		// Covertly change post from published to pending.
 		$this->wee_sleep();
 		$published_post_id = $posts_shifted[] = array_pop( $posts_published );
 		$wpdb->update( $wpdb->posts, array( 'post_status' => 'pending' ), array( 'ID' => $published_post_id ) );
-
 
 		$published_to_expired_post_id = array_pop( $posts_published );
 		$wpdb->update( $wpdb->posts, array( 'post_status' => 'expired' ), array( 'ID' => $published_to_expired_post_id ) );
@@ -332,7 +330,7 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 	private function wee_sleep() {
 		$sec = $bump_sec = time();
 		while ( $sec === $bump_sec ) {
-			usleep(10000 );
+			usleep( 10000 );
 			$bump_sec = time();
 		}
 	}

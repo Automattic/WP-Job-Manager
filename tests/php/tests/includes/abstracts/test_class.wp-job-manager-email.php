@@ -1,5 +1,5 @@
 <?php
-include_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-valid.php';
+require_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-valid.php';
 
 /**
  * Tests for WP_Job_Manager_Email.
@@ -35,12 +35,15 @@ class WP_Test_WP_Job_Manager_Email extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Email::get_plain_content()
 	 */
 	public function test_get_plain_contents() {
-		$args =  array( 'test' => md5( microtime( true ) ) );
+		$args = array( 'test' => md5( microtime( true ) ) );
 		$test = new WP_Job_Manager_Email_Valid( $args, $this->get_base_settings() );
 		$this->assertEquals( $args['test'], $test->get_plain_content() );
 	}
 
 	protected function get_base_settings() {
-		return array( 'enabled' => '1', 'plain_text' => '0' );
+		return array(
+			'enabled'    => '1',
+			'plain_text' => '0',
+		);
 	}
 }

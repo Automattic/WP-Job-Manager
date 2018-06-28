@@ -643,15 +643,19 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$expired_by_guest   = 2;
 
 		// Create published listings.
-		$this->factory->job_listing->create_many( $published_by_guest, array(
-			'post_author' => '0',
-		) );
+		$this->factory->job_listing->create_many(
+			$published_by_guest, array(
+				'post_author' => '0',
+			)
+		);
 
 		// Create expired listings.
-		$this->factory->job_listing->create_many( $expired_by_guest, array(
-			'post_author' => '0',
-			'post_status' => 'expired',
-		) );
+		$this->factory->job_listing->create_many(
+			$expired_by_guest, array(
+				'post_author' => '0',
+				'post_status' => 'expired',
+			)
+		);
 
 		// Create guest listings with other statuses.
 		$statuses = array( 'future', 'draft', 'pending', 'private', 'trash' );

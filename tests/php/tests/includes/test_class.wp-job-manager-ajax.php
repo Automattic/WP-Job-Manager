@@ -46,7 +46,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	public function test_do_jm_ajax() {
 		global $wp_query;
 		$bootstrap = WPJM_Unit_Tests_Bootstrap::instance();
-		include_once( $bootstrap->includes_dir . '/stubs/class-wpjm-ajax-action-stub.php' );
+		include_once $bootstrap->includes_dir . '/stubs/class-wpjm-ajax-action-stub.php';
 		$this->assertTrue( class_exists( 'WPJM_Ajax_Action_Stub' ) );
 		$handler = new WPJM_Ajax_Action_Stub();
 		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
@@ -64,11 +64,13 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	public function test_get_listings() {
 		$this->set_up_job_listing_search_request();
 		$published = $this->factory->job_listing->create_many( 2 );
-		$draft = $this->factory->job_listing->create_many( 2, array(
-			'post_status' => 'expired',
-			'meta_input' => array(),
-		) );
-		$instance = WP_Job_Manager_Ajax::instance();
+		$draft     = $this->factory->job_listing->create_many(
+			2, array(
+				'post_status' => 'expired',
+				'meta_input'  => array(),
+			)
+		);
+		$instance  = WP_Job_Manager_Ajax::instance();
 
 		// Run the action.
 		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
@@ -104,11 +106,13 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	public function test_get_listings_no_html() {
 		$this->set_up_job_listing_search_request();
 		$published = $this->factory->job_listing->create_many( 2 );
-		$draft = $this->factory->job_listing->create_many( 2, array(
-			'post_status' => 'expired',
-			'meta_input' => array(),
-		) );
-		$instance = WP_Job_Manager_Ajax::instance();
+		$draft     = $this->factory->job_listing->create_many(
+			2, array(
+				'post_status' => 'expired',
+				'meta_input'  => array(),
+			)
+		);
+		$instance  = WP_Job_Manager_Ajax::instance();
 
 		// Add no extra filters.
 		add_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
@@ -147,7 +151,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Ajax::upload_file
 	 */
 	public function test_upload_file() {
-		$instance = WP_Job_Manager_Ajax::instance();
+		$instance  = WP_Job_Manager_Ajax::instance();
 		$iptc_file = DIR_TESTDATA . '/images/test-image-iptc.jpg';
 
 		// Make a copy of this file as it gets moved during the file upload.
@@ -194,7 +198,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Ajax::upload_file
 	 */
 	public function test_upload_file_without_permission() {
-		$instance = WP_Job_Manager_Ajax::instance();
+		$instance  = WP_Job_Manager_Ajax::instance();
 		$iptc_file = DIR_TESTDATA . '/images/test-image-iptc.jpg';
 
 		// Make a copy of this file as it gets moved during the file upload.
@@ -235,7 +239,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Ajax::upload_file
 	 */
 	public function test_upload_bad_file() {
-		$instance  = WP_Job_Manager_Ajax::instance();
+		$instance = WP_Job_Manager_Ajax::instance();
 
 		$_FILES['upload'] = array(
 			'tmp_name' => null,
@@ -274,14 +278,14 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	}
 
 	private function set_up_job_listing_search_request() {
-		$_REQUEST['search_location'] = null;
-		$_REQUEST['search_keywords'] = null;
+		$_REQUEST['search_location']   = null;
+		$_REQUEST['search_keywords']   = null;
 		$_REQUEST['search_categories'] = null;
-		$_REQUEST['filter_job_type'] = null;
-		$_REQUEST['orderby'] = null;
-		$_REQUEST['order'] = null;
-		$_REQUEST['page'] = 1;
-		$_REQUEST['per_page'] = 100;
+		$_REQUEST['filter_job_type']   = null;
+		$_REQUEST['orderby']           = null;
+		$_REQUEST['order']             = null;
+		$_REQUEST['page']              = 1;
+		$_REQUEST['per_page']          = 100;
 	}
 
 	private function tear_down_job_listing_search_request() {
