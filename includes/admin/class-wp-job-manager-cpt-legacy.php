@@ -58,7 +58,7 @@ class WP_Job_Manager_CPT_Legacy extends WP_Job_Manager_CPT {
 			);
 		}
 
-		if ( $post_type === 'job_listing' ) {
+		if ( 'job_listing' === $post_type ) {
 			?>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {

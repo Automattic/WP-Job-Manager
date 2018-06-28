@@ -73,22 +73,30 @@ class WP_Job_Manager_CPT {
 	public function get_bulk_actions() {
 		$actions_handled                         = array();
 		$actions_handled['approve_jobs']         = array(
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Approve %s', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'notice'  => __( '%s approved', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_approve_job' ),
 		);
 		$actions_handled['expire_jobs']          = array(
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Expire %s', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'notice'  => __( '%s expired', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_expire_job' ),
 		);
 		$actions_handled['mark_jobs_filled']     = array(
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Mark %s Filled', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'notice'  => __( '%s marked as filled', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_mark_job_filled' ),
 		);
 		$actions_handled['mark_jobs_not_filled'] = array(
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Mark %s Not Filled', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'notice'  => __( '%s marked as not filled', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_mark_job_not_filled' ),
 		);
@@ -179,7 +187,6 @@ class WP_Job_Manager_CPT {
 	 * Performs bulk action to expire a single job listing.
 	 *
 	 * @param int $post_id Post ID.
-	 *
 	 * @return bool
 	 */
 	public function bulk_action_handle_expire_job( $post_id ) {
@@ -253,8 +260,8 @@ class WP_Job_Manager_CPT {
 		$action          = isset( $_REQUEST['action_performed'] ) ? $_REQUEST['action_performed'] : false;
 		$actions_handled = $this->get_bulk_actions();
 
-		if ( $pagenow == 'edit.php'
-			 && $post_type == 'job_listing'
+		if ( 'edit.php' === $pagenow
+			 && 'job_listing' === $post_type
 			 && $action
 			 && ! empty( $handled_jobs )
 			 && isset( $actions_handled[ $action ] )
@@ -279,7 +286,7 @@ class WP_Job_Manager_CPT {
 	public function jobs_by_category() {
 		global $typenow, $wp_query;
 
-		if ( $typenow != 'job_listing' || ! taxonomy_exists( 'job_listing_category' ) ) {
+		if ( 'job_listing' !== $typenow || ! taxonomy_exists( 'job_listing_category' ) ) {
 			return;
 		}
 
@@ -397,7 +404,7 @@ class WP_Job_Manager_CPT {
 	 * @return string
 	 */
 	public function enter_title_here( $text, $post ) {
-		if ( $post->post_type == 'job_listing' ) {
+		if ( 'job_listing' === $post->post_type ) {
 			return esc_html__( 'Position', 'wp-job-manager' );
 		}
 		return $text;
@@ -414,18 +421,28 @@ class WP_Job_Manager_CPT {
 
 		$messages['job_listing'] = array(
 			0  => '',
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 			1  => sprintf( __( '%1$s updated. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
 			2  => __( 'Custom field updated.', 'wp-job-manager' ),
 			3  => __( 'Custom field deleted.', 'wp-job-manager' ),
+			// translators: %s is the singular name of the job listing post type.
 			4  => sprintf( esc_html__( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the revision number.
 			5  => isset( $_GET['revision'] ) ? sprintf( __( '%1$s restored to revision from %2$s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 			6  => sprintf( __( '%1$s published. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 			7  => sprintf( esc_html__( '%s saved.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to preview the listing.
 			8  => sprintf( __( '%1$s submitted. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 			9  => sprintf(
-				__( '%s scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name,
-				date_i18n( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) )
+				// translators: %1$s is the singular name of the post type; %2$s is the date the post will be published; %3$s is the URL to preview the listing.
+				__( '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview</a>', 'wp-job-manager' ),
+				$wp_post_types['job_listing']->labels->singular_name,
+				date_i18n( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), strtotime( $post->post_date ) ),
+				esc_url( get_permalink( $post_ID ) )
 			),
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 			10 => sprintf( __( '%1$s draft updated. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 		);
 

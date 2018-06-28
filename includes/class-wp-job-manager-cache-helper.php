@@ -160,7 +160,7 @@ class WP_Job_Manager_Cache_Helper {
 		$post_types = apply_filters( 'wpjm_count_cache_supported_post_types', array( 'job_listing' ), $new_status, $old_status, $post );
 
 		// Only proceed when statuses do not match, and post type is supported post type.
-		if ( $new_status === $old_status || ! in_array( $post->post_type, $post_types ) ) {
+		if ( $new_status === $old_status || ! in_array( $post->post_type, $post_types, true ) ) {
 			return;
 		}
 
@@ -178,11 +178,11 @@ class WP_Job_Manager_Cache_Helper {
 
 		$rlike = array();
 		// New status transient option name.
-		if ( in_array( $new_status, $valid_statuses ) ) {
+		if ( in_array( $new_status, $valid_statuses, true ) ) {
 			$rlike[] = "^_transient_jm_{$new_status}_{$post->post_type}_count_user_";
 		}
 		// Old status transient option name.
-		if ( in_array( $old_status, $valid_statuses ) ) {
+		if ( in_array( $old_status, $valid_statuses, true ) ) {
 			$rlike[] = "^_transient_jm_{$old_status}_{$post->post_type}_count_user_";
 		}
 
@@ -223,10 +223,11 @@ class WP_Job_Manager_Cache_Helper {
 		$transient = "jm_{$status}_{$post_type}_count_user_{$user_id}";
 
 		// Set listings_count value from cache if exists, otherwise set to 0 as default.
-		$status_count = ( $cached_count = get_transient( $transient ) ) ? $cached_count : 0;
+		$cached_count = get_transient( $transient );
+		$status_count = $cached_count ? $cached_count : 0;
 
 		// $cached_count will be false if transient does not exist.
-		if ( $cached_count === false || $force ) {
+		if ( false === $cached_count || $force ) {
 			$count_posts = wp_count_posts( $post_type, 'readable' );
 			// Default to 0 $status if object does not have a value.
 			$status_count = isset( $count_posts->$status ) ? $count_posts->$status : 0;

@@ -50,7 +50,7 @@ class WP_Job_Manager_Category_Walker extends Walker {
 
 		$cat_name = apply_filters( 'list_product_cats', $object->name, $object );
 
-		$value = isset( $args['value'] ) && $args['value'] == 'id' ? $object->term_id : $object->slug;
+		$value = isset( $args['value'] ) && 'id' === $args['value'] ? $object->term_id : $object->slug;
 
 		$output .= "\t<option class=\"level-" . intval( $depth ) . '" value="' . esc_attr( $value ) . '"';
 

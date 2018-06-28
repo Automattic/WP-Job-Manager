@@ -1,6 +1,8 @@
 <?php
 /**
- * Addons Page
+ * Addons Page.
+ *
+ * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

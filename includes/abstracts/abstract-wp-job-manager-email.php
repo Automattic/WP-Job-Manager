@@ -27,7 +27,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.31.0
  */
-
 abstract class WP_Job_Manager_Email {
 	/**
 	 * @var array
@@ -122,8 +121,8 @@ abstract class WP_Job_Manager_Email {
 	/**
 	 * Expand arguments as necessary for the generation of the email.
 	 *
-	 * @param $args
-	 * @return mixed
+	 * @param array $args Arguments used to generate the email.
+	 * @return array
 	 */
 	protected function prepare_args( $args ) {
 		if ( isset( $args['job_id'] ) ) {

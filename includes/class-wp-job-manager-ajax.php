@@ -89,7 +89,8 @@ class WP_Job_Manager_Ajax {
 			 $wp_query->set( 'jm-ajax', sanitize_text_field( $_GET['jm-ajax'] ) );
 		}
 
-		if ( $action = $wp_query->get( 'jm-ajax' ) ) {
+		$action = $wp_query->get( 'jm-ajax' );
+		if ( $action ) {
 			if ( ! defined( 'DOING_AJAX' ) ) {
 				define( 'DOING_AJAX', true );
 			}
@@ -134,7 +135,7 @@ class WP_Job_Manager_Ajax {
 			'search_location'   => $search_location,
 			'search_keywords'   => $search_keywords,
 			'search_categories' => $search_categories,
-			'job_types'         => is_null( $filter_job_types ) || sizeof( $types ) === sizeof( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
+			'job_types'         => is_null( $filter_job_types ) || count( $types ) === count( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
 			'post_status'       => $filter_post_status,
 			'orderby'           => $orderby,
 			'order'             => sanitize_text_field( $_REQUEST['order'] ),
@@ -142,12 +143,12 @@ class WP_Job_Manager_Ajax {
 			'posts_per_page'    => max( 1, absint( $_REQUEST['per_page'] ) ),
 		);
 
-		if ( isset( $_REQUEST['filled'] ) && ( $_REQUEST['filled'] === 'true' || $_REQUEST['filled'] === 'false' ) ) {
+		if ( isset( $_REQUEST['filled'] ) && ( 'true' === $_REQUEST['filled'] || 'false' === $_REQUEST['filled'] ) ) {
 			$args['filled'] = $_REQUEST['filled'] === 'true' ? true : false;
 		}
 
-		if ( isset( $_REQUEST['featured'] ) && ( $_REQUEST['featured'] === 'true' || $_REQUEST['featured'] === 'false' ) ) {
-			$args['featured'] = $_REQUEST['featured'] === 'true' ? true : false;
+		if ( isset( $_REQUEST['featured'] ) && ( 'true' === $_REQUEST['featured'] || 'false' === $_REQUEST['featured'] ) ) {
+			$args['featured'] = 'true' === $_REQUEST['featured'] ? true : false;
 			$args['orderby']  = 'featured' === $orderby ? 'date' : $orderby;
 		}
 
@@ -248,7 +249,7 @@ class WP_Job_Manager_Ajax {
 		$result['html'] = ob_get_clean();
 
 		// Generate pagination.
-		if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
+		if ( isset( $_REQUEST['show_pagination'] ) && 'true' === $_REQUEST['show_pagination'] ) {
 			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
 		}
 

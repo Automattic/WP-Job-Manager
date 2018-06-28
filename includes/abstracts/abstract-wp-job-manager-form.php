@@ -315,6 +315,7 @@ abstract class WP_Job_Manager_Form {
 	public function validate_recaptcha_field( $success ) {
 		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
 		if ( empty( $_POST['g-recaptcha-response'] ) ) {
+			// translators: Placeholder is for the label of the reCAPTCHA field.
 			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
@@ -324,7 +325,8 @@ abstract class WP_Job_Manager_Form {
 					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
 					'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
 					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],
-				), 'https://www.google.com/recaptcha/api/siteverify'
+				),
+				'https://www.google.com/recaptcha/api/siteverify'
 			)
 		);
 
@@ -397,7 +399,7 @@ abstract class WP_Job_Manager_Form {
 		} elseif ( 'email' === $sanitizer ) {
 			return sanitize_email( $value );
 		} elseif ( 'url_or_email' === $sanitizer ) {
-			if ( null !== parse_url( $value, PHP_URL_HOST ) ) {
+			if ( null !== wp_parse_url( $value, PHP_URL_HOST ) ) {
 				// Sanitize as URL.
 				return esc_url_raw( $value );
 			}
@@ -523,7 +525,7 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param string $field_key
 	 * @param array  $field
-	 * @throws Exception When file upload failed
+	 * @throws Exception When file upload failed.
 	 * @return  string|array
 	 */
 	protected function upload_file( $field_key, $field ) {

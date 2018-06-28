@@ -1,9 +1,4 @@
 <?php
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
-}
-
 /**
  * Abstract class for an email notification built using templates.
  *
@@ -12,6 +7,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.31.0
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+/**
+ * Class WP_Job_Manager_Email_Template
+ */
 abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 	/**
 	 * Get the template path for overriding templates.
