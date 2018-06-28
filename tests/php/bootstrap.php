@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpCSValidationInspection */
+
 /**
  * WPJM Unit Tests Bootstrap
  *
@@ -28,18 +29,18 @@ class WPJM_Unit_Tests_Bootstrap {
 	public function __construct() {
 		define( 'DOING_AJAX', true );
 		define( 'WPJM_REST_API_ENABLED', true );
-		ini_set( 'display_errors','on' );
+		ini_set( 'display_errors', 'on' );
 
 		error_reporting( E_ALL );
 		set_error_handler( array( $this, 'convert_to_exception' ), E_ALL );
 
 		$this->tests_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'tests';
-		$this->includes_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes';
+		$this->includes_dir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes';
 		$this->plugin_dir   = dirname( dirname( dirname( $this->tests_dir ) ) );
 		$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ? getenv( 'WP_TESTS_DIR' ) : '/tmp/wordpress-tests-lib';
 
 		// load test function so tests_add_filter() is available.
-		require_once( $this->wp_tests_dir . '/includes/functions.php' );
+		require_once $this->wp_tests_dir . '/includes/functions.php';
 
 		// load WPJM.
 		tests_add_filter( 'muplugins_loaded', array( $this, 'load_plugin' ) );
@@ -48,7 +49,7 @@ class WPJM_Unit_Tests_Bootstrap {
 		tests_add_filter( 'setup_theme', array( $this, 'install_plugin' ) );
 
 		// load the WP testing environment.
-		require_once( $this->wp_tests_dir . '/includes/bootstrap.php' );
+		require_once $this->wp_tests_dir . '/includes/bootstrap.php';
 
 		// load WPJM testing framework.
 		$this->includes();
@@ -65,7 +66,7 @@ class WPJM_Unit_Tests_Bootstrap {
 		update_option( 'job_manager_enable_types', true );
 		update_option( 'job_manager_enable_categories', true );
 
-		require_once( $this->plugin_dir . '/wp-job-manager.php' );
+		require_once $this->plugin_dir . '/wp-job-manager.php';
 	}
 
 	/**
@@ -91,10 +92,10 @@ class WPJM_Unit_Tests_Bootstrap {
 	 */
 	public function includes() {
 		// framework.
-		require_once( $this->includes_dir . '/factories/class-wpjm-factory.php' );
-		require_once( $this->includes_dir . '/class-wpjm-base-test.php' );
-		require_once( $this->includes_dir . '/class-wpjm-helper-base-test.php' );
-		require_once( $this->includes_dir . '/class-wpjm-rest-testcase.php' );
+		require_once $this->includes_dir . '/factories/class-wpjm-factory.php';
+		require_once $this->includes_dir . '/class-wpjm-base-test.php';
+		require_once $this->includes_dir . '/class-wpjm-helper-base-test.php';
+		require_once $this->includes_dir . '/class-wpjm-rest-testcase.php';
 	}
 
 	/**
@@ -126,11 +127,11 @@ class WPJM_Unit_Tests_Bootstrap {
 		}
 
 		$error_descriptions = array(
-			E_WARNING => 'Warning',
-			E_ERROR => 'Error',
-			E_PARSE => 'Parse Error',
-			E_NOTICE => 'Notice',
-			E_STRICT => 'Strict Notice',
+			E_WARNING    => 'Warning',
+			E_ERROR      => 'Error',
+			E_PARSE      => 'Parse Error',
+			E_NOTICE     => 'Notice',
+			E_STRICT     => 'Strict Notice',
 			E_DEPRECATED => 'PHP Deprecated',
 		);
 		if ( in_array( $errno, array( E_RECOVERABLE_ERROR ) ) ) {
@@ -144,7 +145,7 @@ class WPJM_Unit_Tests_Bootstrap {
 
 		// PHP 5.2 doesn't show the error from Exceptions.
 		if ( version_compare( phpversion(), '5.3.0', '<' ) ) {
-			echo "Error (" . esc_html( $errno ) . "( - " . esc_html( $description ) . "\n";
+			echo 'Error (' . esc_html( $errno ) . '( - ' . esc_html( $description ) . "\n";
 		}
 
 		throw new Exception( $description );
