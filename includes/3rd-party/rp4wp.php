@@ -1,6 +1,8 @@
 <?php
 /**
  * Adds additional compatibility with Related Post for WordPress.
+ *
+ * @package wp-job-manager
  */
 
 add_filter( 'rp4wp_get_template', 'wpjm_rp4wp_template', 10, 3 );
