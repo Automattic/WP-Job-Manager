@@ -51,7 +51,8 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 				'label' => esc_html__( 'Show Company Logo', 'wp-job-manager' ),
 			),
 		);
-		$this->register();
+
+		parent::__construct();
 	}
 
 	/**

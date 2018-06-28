@@ -56,7 +56,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 				),
 			),
 		);
-		$this->register();
+		parent::__construct();
 	}
 
 	/**
