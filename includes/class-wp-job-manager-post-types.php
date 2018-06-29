@@ -116,13 +116,21 @@ class WP_Job_Manager_Post_Types {
 							'name'              => $plural,
 							'singular_name'     => $singular,
 							'menu_name'         => ucwords( $plural ),
+							// translators: Placeholder %s is the plural label of the job listing category taxonomy type.
 							'search_items'      => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+							// translators: Placeholder %s is the plural label of the job listing category taxonomy type.
 							'all_items'         => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
+							// translators: Placeholder %s is the singular label of the job listing category taxonomy type.
 							'parent_item'       => sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing category taxonomy type.
 							'parent_item_colon' => sprintf( __( 'Parent %s:', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing category taxonomy type.
 							'edit_item'         => sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing category taxonomy type.
 							'update_item'       => sprintf( __( 'Update %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing category taxonomy type.
 							'add_new_item'      => sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing category taxonomy type.
 							'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ), $singular ),
 						),
 						'show_ui'               => true,
@@ -168,13 +176,21 @@ class WP_Job_Manager_Post_Types {
 							'name'              => $plural,
 							'singular_name'     => $singular,
 							'menu_name'         => ucwords( $plural ),
+							// translators: Placeholder %s is the plural label of the job listing job type taxonomy type.
 							'search_items'      => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+							// translators: Placeholder %s is the plural label of the job listing job type taxonomy type.
 							'all_items'         => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
+							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'parent_item'       => sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'parent_item_colon' => sprintf( __( 'Parent %s:', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'edit_item'         => sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'update_item'       => sprintf( __( 'Update %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'add_new_item'      => sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ), $singular ),
 						),
 						'show_ui'       => true,
@@ -227,23 +243,34 @@ class WP_Job_Manager_Post_Types {
 						'name'                  => $plural,
 						'singular_name'         => $singular,
 						'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
+						// translators: Placeholder %s is the plural label of the job listing post type.
 						'all_items'             => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
 						'add_new'               => __( 'Add New', 'wp-job-manager' ),
+						// translators: Placeholder %s is the singular label of the job listing post type.
 						'add_new_item'          => sprintf( __( 'Add %s', 'wp-job-manager' ), $singular ),
 						'edit'                  => __( 'Edit', 'wp-job-manager' ),
+						// translators: Placeholder %s is the singular label of the job listing post type.
 						'edit_item'             => sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+						// translators: Placeholder %s is the singular label of the job listing post type.
 						'new_item'              => sprintf( __( 'New %s', 'wp-job-manager' ), $singular ),
+						// translators: Placeholder %s is the singular label of the job listing post type.
 						'view'                  => sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
+						// translators: Placeholder %s is the singular label of the job listing post type.
 						'view_item'             => sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
+						// translators: Placeholder %s is the singular label of the job listing post type.
 						'search_items'          => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+						// translators: Placeholder %s is the singular label of the job listing post type.
 						'not_found'             => sprintf( __( 'No %s found', 'wp-job-manager' ), $plural ),
+						// translators: Placeholder %s is the plural label of the job listing post type.
 						'not_found_in_trash'    => sprintf( __( 'No %s found in trash', 'wp-job-manager' ), $plural ),
+						// translators: Placeholder %s is the singular label of the job listing post type.
 						'parent'                => sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
 						'featured_image'        => __( 'Company Logo', 'wp-job-manager' ),
 						'set_featured_image'    => __( 'Set company logo', 'wp-job-manager' ),
 						'remove_featured_image' => __( 'Remove company logo', 'wp-job-manager' ),
 						'use_featured_image'    => __( 'Use as company logo', 'wp-job-manager' ),
 					),
+					// translators: Placeholder %s is the plural label of the job listing post type.
 					'description'         => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
 					'public'              => true,
 					'show_ui'             => true,
@@ -279,6 +306,7 @@ class WP_Job_Manager_Post_Types {
 				'exclude_from_search'       => true,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
+				// translators: Placeholder %s is the number of expired posts of this type.
 				'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'wp-job-manager' ),
 			)
 		);
@@ -290,6 +318,7 @@ class WP_Job_Manager_Post_Types {
 				'exclude_from_search'       => true,
 				'show_in_admin_all_list'    => false,
 				'show_in_admin_status_list' => true,
+				// translators: Placeholder %s is the number of posts in a preview state.
 				'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
 			)
 		);
@@ -314,7 +343,7 @@ class WP_Job_Manager_Post_Types {
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( strpos( $menu_item[0], $plural ) === 0 ) {
-				$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-" . esc_attr( $pending_jobs ) . "'><span class='pending-count'>" . absint( number_format_i18n( $pending_jobs ) ) . '</span></span>';
+				$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-" . esc_attr( $pending_jobs ) . "'><span class='pending-count'>" . absint( number_format_i18n( $pending_jobs ) ) . '</span></span>'; // WPCS: override ok.
 				break;
 			}
 		}
@@ -401,12 +430,12 @@ class WP_Job_Manager_Post_Types {
 		if ( ! empty( $_GET['job_categories'] ) ) {
 			$cats                      = explode( ',', sanitize_text_field( $_GET['job_categories'] ) ) + array( 0 );
 			$field                     = is_numeric( $cats ) ? 'term_id' : 'slug';
-			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && sizeof( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
+			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $cats ) > 1 ? 'AND' : 'IN';
 			$query_args['tax_query'][] = array(
 				'taxonomy'         => 'job_listing_category',
 				'field'            => $field,
 				'terms'            => $cats,
-				'include_children' => $operator !== 'AND',
+				'include_children' => 'AND' !== $operator,
 				'operator'         => $operator,
 			);
 		}
@@ -425,7 +454,7 @@ class WP_Job_Manager_Post_Types {
 			unset( $query_args['tax_query'] );
 		}
 
-		query_posts( apply_filters( 'job_feed_args', $query_args ) );
+		query_posts( apply_filters( 'job_feed_args', $query_args ) ); // phpcs:ignore WordPress.WP.DiscouragedFunctions
 		add_action( 'rss2_ns', array( $this, 'job_feed_namespace' ) );
 		add_action( 'rss2_item', array( $this, 'job_feed_item' ) );
 		do_feed_rss2( false );
@@ -461,7 +490,7 @@ class WP_Job_Manager_Post_Types {
 	 * Adds a custom namespace to the job feed.
 	 */
 	public function job_feed_namespace() {
-		echo 'xmlns:job_listing="' . site_url() . '"' . "\n";
+		echo 'xmlns:job_listing="' . esc_url( site_url() ) . '"' . "\n";
 	}
 
 	/**
@@ -586,7 +615,7 @@ class WP_Job_Manager_Post_Types {
 	 * @param WP_Post $post
 	 */
 	public function set_expiry( $post ) {
-		if ( $post->post_type !== 'job_listing' ) {
+		if ( 'job_listing' !== $post->post_type ) {
 			return;
 		}
 
@@ -603,7 +632,7 @@ class WP_Job_Manager_Post_Types {
 			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( sanitize_text_field( $_POST['_job_expires'] ) ) ) );
 
 			// No manual setting? Lets generate a date if there isn't already one.
-		} elseif ( false == isset( $expires ) ) {
+		} elseif ( ! isset( $expires ) ) {
 			$expires = calculate_job_expiry( $post->ID );
 			update_post_meta( $post->ID, '_job_expires', $expires );
 
@@ -742,7 +771,7 @@ class WP_Job_Manager_Post_Types {
 	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {
 		global $wpdb;
 
-		if ( '1' == $meta_value ) {
+		if ( 1 === intval( $meta_value ) ) {
 			$wpdb->update(
 				$wpdb->posts,
 				array( 'menu_order' => -1 ),
