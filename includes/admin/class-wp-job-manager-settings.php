@@ -516,18 +516,26 @@ class WP_Job_Manager_Settings {
 	 * @param array  $option
 	 * @param array  $attributes
 	 * @param mixed  $value
-	 * @param string $placeholder (Ignored).
+	 * @param string $ignored_placeholder
 	 */
-	protected function input_checkbox( $option, $attributes, $value, $placeholder ) {
+	protected function input_checkbox( $option, $attributes, $value, $ignored_placeholder ) {
 		?>
 		<label>
 		<input type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="0" />
-		<input id="setting-<?php echo esc_attr( $option['name'] ); ?>" name="<?php echo esc_attr( $option['name'] ); ?>" type="checkbox" value="1" <?php echo implode( ' ', $attributes ); ?> <?php checked( '1', $value ); ?> /> <?php echo esc_html( $option['cb_label'] ); ?></label>
-									  <?php
-
-										if ( ! empty( $option['desc'] ) ) {
-											echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
-										}
+		<input
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			name="<?php echo esc_attr( $option['name'] ); ?>"
+			type="checkbox"
+			value="1"
+			<?php
+			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
+			checked( '1', $value );
+			?>
+		/> <?php echo esc_html( $option['cb_label'] ); ?></label>
+		<?php
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
+		}
 	}
 
 	/**
@@ -540,7 +548,19 @@ class WP_Job_Manager_Settings {
 	 */
 	protected function input_textarea( $option, $attributes, $value, $placeholder ) {
 		?>
-		<textarea id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="large-text" cols="50" rows="3" name="<?php echo esc_attr( $option['name'] ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?>><?php echo esc_textarea( $value ); ?></textarea>
+		<textarea
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			class="large-text"
+			cols="50"
+			rows="3"
+			name="<?php echo esc_attr( $option['name'] ); ?>"
+			<?php
+			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
+			echo $placeholder; // WPCS: XSS ok.
+			?>
+		>
+			<?php echo esc_textarea( $value ); ?>
+		</textarea>
 		<?php
 
 		if ( ! empty( $option['desc'] ) ) {
@@ -554,11 +574,18 @@ class WP_Job_Manager_Settings {
 	 * @param array  $option
 	 * @param array  $attributes
 	 * @param mixed  $value
-	 * @param string $placeholder (Ignored).
+	 * @param string $ignored_placeholder
 	 */
-	protected function input_select( $option, $attributes, $value, $placeholder ) {
+	protected function input_select( $option, $attributes, $value, $ignored_placeholder ) {
 		?>
-		<select id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="regular-text" name="<?php echo esc_attr( $option['name'] ); ?>" <?php echo implode( ' ', $attributes ); ?>>
+		<select
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			class="regular-text"
+			name="<?php echo esc_attr( $option['name'] ); ?>"
+			<?php
+			echo implode( ' ', $attributes ); // WPCS: XSS ok.
+			?>
+		>
 		<?php
 		foreach ( $option['options'] as $key => $name ) {
 			echo '<option value="' . esc_attr( $key ) . '" ' . selected( $value, $key, false ) . '>' . esc_html( $name ) . '</option>';
@@ -576,11 +603,11 @@ class WP_Job_Manager_Settings {
 	 * Radio input field.
 	 *
 	 * @param array  $option
-	 * @param array  $attributes
+	 * @param array  $ignored_attributes
 	 * @param mixed  $value
-	 * @param string $placeholder (Ignored).
+	 * @param string $ignored_placeholder
 	 */
-	protected function input_radio( $option, $attributes, $value, $placeholder ) {
+	protected function input_radio( $option, $ignored_attributes, $value, $ignored_placeholder ) {
 		?>
 		<fieldset>
 		<legend class="screen-reader-text">
@@ -603,11 +630,11 @@ class WP_Job_Manager_Settings {
 	 * Page input field.
 	 *
 	 * @param array  $option
-	 * @param array  $attributes
+	 * @param array  $ignored_attributes
 	 * @param mixed  $value
-	 * @param string $placeholder (Ignored).
+	 * @param string $ignored_placeholder
 	 */
-	protected function input_page( $option, $attributes, $value, $placeholder ) {
+	protected function input_page( $option, $ignored_attributes, $value, $ignored_placeholder ) {
 		$args = array(
 			'name'             => $option['name'],
 			'id'               => $option['name'],
@@ -618,7 +645,7 @@ class WP_Job_Manager_Settings {
 			'selected'         => absint( $value ),
 		);
 
-		echo str_replace( ' id=', " data-placeholder='" . __( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) );
+		echo wp_kses_post( str_replace( ' id=', " data-placeholder='" . __( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) ) );
 
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
@@ -631,15 +658,23 @@ class WP_Job_Manager_Settings {
 	 * @param array  $option
 	 * @param array  $attributes
 	 * @param mixed  $value
-	 * @param string $placeholder (Ignored).
+	 * @param string $ignored_placeholder
 	 */
-	protected function input_hidden( $option, $attributes, $value, $placeholder ) {
+	protected function input_hidden( $option, $attributes, $value, $ignored_placeholder ) {
 		$human_value = $value;
 		if ( $option['human_value'] ) {
 			$human_value = $option['human_value'];
 		}
 		?>
-		<input id="setting-<?php echo esc_attr( $option['name'] ); ?>" type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> /><strong><?php echo esc_html( $human_value ); ?></strong>
+		<input
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			type="hidden"
+			name="<?php echo esc_attr( $option['name'] ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+			<?php
+			echo implode( ' ', $attributes ); // WPCS: XSS ok.
+			?>
+		/><strong><?php echo esc_html( $human_value ); ?></strong>
 		<?php
 
 		if ( ! empty( $option['desc'] ) ) {
@@ -657,7 +692,17 @@ class WP_Job_Manager_Settings {
 	 */
 	protected function input_password( $option, $attributes, $value, $placeholder ) {
 		?>
-		<input id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="regular-text" type="password" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> />
+		<input
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			class="regular-text"
+			type="password"
+			name="<?php echo esc_attr( $option['name'] ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+			<?php
+			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
+			echo $placeholder; // WPCS: XSS ok.
+			?>
+		/>
 		<?php
 
 		if ( ! empty( $option['desc'] ) ) {
@@ -676,7 +721,17 @@ class WP_Job_Manager_Settings {
 	protected function input_number( $option, $attributes, $value, $placeholder ) {
 		echo isset( $option['before'] ) ? wp_kses_post( $option['before'] ) : '';
 		?>
-		<input id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="small-text" type="number" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> />
+		<input
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			class="small-text"
+			type="number"
+			name="<?php echo esc_attr( $option['name'] ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+			<?php
+			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
+			echo $placeholder; // WPCS: XSS ok.
+			?>
+		/>
 		<?php
 		echo isset( $option['after'] ) ? wp_kses_post( $option['after'] ) : '';
 		if ( ! empty( $option['desc'] ) ) {
@@ -694,7 +749,17 @@ class WP_Job_Manager_Settings {
 	 */
 	protected function input_text( $option, $attributes, $value, $placeholder ) {
 		?>
-		<input id="setting-<?php echo esc_attr( $option['name'] ); ?>" class="regular-text" type="text" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php echo implode( ' ', $attributes ); ?> <?php echo $placeholder; ?> />
+		<input
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			class="regular-text"
+			type="text"
+			name="<?php echo esc_attr( $option['name'] ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+			<?php
+			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
+			echo $placeholder; // WPCS: XSS ok.
+			?>
+		/>
 		<?php
 
 		if ( ! empty( $option['desc'] ) ) {
@@ -731,6 +796,16 @@ class WP_Job_Manager_Settings {
 		if ( method_exists( $this, $method_name ) ) {
 			$this->$method_name( $option, $attributes, $value, $placeholder );
 		} else {
+			/**
+			 * Allows for custom fields in admin setting panes.
+			 *
+			 * @since 1.14.0
+			 *
+			 * @param string $option     Field name.
+			 * @param array  $attributes Array of attributes.
+			 * @param mixed  $value      Field value.
+			 * @param string $value      Placeholder text.
+			 */
 			do_action( 'wp_job_manager_admin_field_' . $option['type'], $option, $attributes, $value, $placeholder );
 		}
 		echo '</td></tr>';
@@ -762,11 +837,11 @@ class WP_Job_Manager_Settings {
 	 * Multiple settings stored in one setting array.
 	 *
 	 * @param array  $option
-	 * @param array  $attributes
+	 * @param array  $ignored_attributes
 	 * @param array  $values
-	 * @param string $placeholder
+	 * @param string $ignored_placeholder
 	 */
-	protected function input_multi( $option, $attributes, $values, $placeholder ) {
+	protected function input_multi( $option, $ignored_attributes, $values, $ignored_placeholder ) {
 		echo '<table class="form-table settings child-settings">';
 		foreach ( $option['settings'] as $sub_option ) {
 			$value              = isset( $values[ $sub_option['name'] ] ) ? $values[ $sub_option['name'] ] : $sub_option['std'];
