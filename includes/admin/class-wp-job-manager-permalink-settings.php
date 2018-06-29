@@ -51,6 +51,9 @@ class WP_Job_Manager_Permalink_Settings {
 		$this->permalinks = WP_Job_Manager_Post_Types::get_permalink_structure();
 	}
 
+	/**
+	 * Add setting fields related to permalinks.
+	 */
 	public function setup_fields() {
 		add_settings_field(
 			'wpjm_job_base_slug',

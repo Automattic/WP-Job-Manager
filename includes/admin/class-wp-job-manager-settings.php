@@ -1,5 +1,4 @@
 <?php
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -99,6 +98,7 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_google_maps_api_key',
 							'std'        => '',
 							'label'      => __( 'Google Maps API Key', 'wp-job-manager' ),
+							// translators: Placeholder %s is URL to set up a Google Maps API key.
 							'desc'       => sprintf( __( 'Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href="%s">Google Maps API developer site</a>.', 'wp-job-manager' ), 'https://developers.google.com/maps/documentation/geocoding/get-api-key' ),
 							'attributes' => array(),
 						),
@@ -316,6 +316,7 @@ class WP_Job_Manager_Settings {
 							'std'         => '',
 							'placeholder' => '',
 							'label'       => __( 'Site Key', 'wp-job-manager' ),
+							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
 							'desc'        => sprintf( __( 'You can retrieve your site key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'attributes'  => array(),
 						),
@@ -324,6 +325,7 @@ class WP_Job_Manager_Settings {
 							'std'         => '',
 							'placeholder' => '',
 							'label'       => __( 'Secret Key', 'wp-job-manager' ),
+							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
 							'desc'        => sprintf( __( 'You can retrieve your secret key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'attributes'  => array(),
 						),

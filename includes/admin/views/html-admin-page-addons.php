@@ -7,7 +7,7 @@ if ( ! empty( $messages ) ) {
 		}
 		$type = 'info';
 		if ( isset( $message->type )
-		&& in_array( $message->type, array( 'info', 'success', 'warning', 'error' ) ) ) {
+		&& in_array( $message->type, array( 'info', 'success', 'warning', 'error' ), true ) ) {
 			$type = $message->type;
 		}
 		$action_label  = isset( $message->action_label ) ? esc_attr( $message->action_label ) : __( 'More Information &rarr;', 'wp-job-manager' );
@@ -18,7 +18,7 @@ if ( ! empty( $messages ) ) {
 			$action_str = ' <a href="' . esc_url( $action_url ) . '" target="' . esc_attr( $action_target ) . '" class="button">' . esc_html( $action_label ) . '</a>';
 		}
 
-		echo '<div class="notice notice-' . esc_attr( $type ) . ' below-h2"><p><strong>' . esc_html( $message->message ) . '</strong>' . $action_str . '</p></div>';
+		echo '<div class="notice notice-' . esc_attr( $type ) . ' below-h2"><p><strong>' . esc_html( $message->message ) . '</strong>' . wp_kses_post( $action_str ) . '</p></div>';
 	}
 }
 if ( ! empty( $categories ) ) {
