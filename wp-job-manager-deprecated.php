@@ -1,6 +1,8 @@
 <?php
 /**
  * Deprecated functions. Do not use these.
+ *
+ * @package wp-job-manager
  */
 
 if ( ! function_exists( 'order_featured_job_listing' ) ) :
@@ -37,8 +39,9 @@ if ( ! function_exists( 'the_job_type' ) ) :
 		if ( ! get_option( 'job_manager_enable_types' ) ) {
 			return '';
 		}
-		if ( $job_type = get_the_job_type( $post ) ) {
-			echo $job_type->name;
+		$job_type = get_the_job_type( $post );
+		if ( $job_type ) {
+			echo esc_html( $job_type->name );
 		}
 	}
 endif;
@@ -57,7 +60,7 @@ if ( ! function_exists( 'get_the_job_type' ) ) :
 		_deprecated_function( __FUNCTION__, '1.27.0', 'wpjm_get_the_job_types' );
 
 		$post = get_post( $post );
-		if ( $post->post_type !== 'job_listing' ) {
+		if ( 'job_listing' !== $post->post_type ) {
 			return;
 		}
 
