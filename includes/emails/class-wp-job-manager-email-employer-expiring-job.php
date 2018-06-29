@@ -65,10 +65,13 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 		$args = $this->get_args();
 
 		/**
+		 * Job listing post object.
 		 *
 		 * @var WP_Post $job
 		 */
 		$job = $args['job'];
+
+		// translators: Placeholder %s is the job listing post title.
 		return sprintf( __( 'Job Listing Expiring: %s', 'wp-job-manager' ), $job->post_title );
 	}
 
@@ -94,7 +97,7 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 	/**
 	 * Expand arguments as necessary for the generation of the email.
 	 *
-	 * @param $args
+	 * @param array $args
 	 * @return mixed
 	 */
 	protected function prepare_args( $args ) {

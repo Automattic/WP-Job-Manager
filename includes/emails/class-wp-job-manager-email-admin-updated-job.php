@@ -49,10 +49,13 @@ class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Templa
 		$args = $this->get_args();
 
 		/**
+		 * Job listing post object.
 		 *
 		 * @var WP_Post $job
 		 */
 		$job = $args['job'];
+
+		// translators: Placeholder %s is the job listing post title.
 		return sprintf( __( 'Job Listing Updated: %s', 'wp-job-manager' ), $job->post_title );
 	}
 
