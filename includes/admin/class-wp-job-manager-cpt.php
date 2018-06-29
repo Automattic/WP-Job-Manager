@@ -711,7 +711,6 @@ class WP_Job_Manager_CPT {
 					OR posts.post_title LIKE %s
 					OR posts.post_content LIKE %s
 					AND posts.post_type = 'job_listing'
-					AND 0=1
 					",
 						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
 						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
