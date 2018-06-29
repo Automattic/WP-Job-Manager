@@ -221,8 +221,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk action to mark a single job listing as not filled.
 	 *
-	 * @param $post_id
-	 *
+	 * @param int $post_id Post ID.
 	 * @return bool
 	 */
 	public function bulk_action_handle_mark_job_not_filled( $post_id ) {
@@ -309,7 +308,7 @@ class WP_Job_Manager_CPT {
 
 		echo "<select name='job_listing_category' id='dropdown_job_listing_category'>";
 		echo '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
-		echo $walker->walk( $terms, 0, $r );
+		echo wp_kses_post( $walker->walk( $terms, 0, $r ) );
 		echo '</select>';
 
 	}
@@ -509,7 +508,7 @@ class WP_Job_Manager_CPT {
 	 * @return array
 	 */
 	public function row_actions( $actions ) {
-		if ( 'job_listing' == get_post_type() ) {
+		if ( 'job_listing' === get_post_type() ) {
 			return array();
 		}
 		return $actions;
@@ -535,6 +534,7 @@ class WP_Job_Manager_CPT {
 				break;
 			case 'job_position':
 				echo '<div class="job_position">';
+				// translators: %d is the post ID for the job listing.
 				echo '<a href="' . esc_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . esc_html( wpjm_get_the_job_title() ) . '</a>';
 
 				echo '<div class="company">';
@@ -555,7 +555,8 @@ class WP_Job_Manager_CPT {
 				the_job_location( true, $post );
 				break;
 			case 'job_listing_category':
-				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) {
+				$terms = get_the_term_list( $post->ID, $column, '', ', ', '' );
+				if ( ! $terms ) {
 					echo '<span class="na">&ndash;</span>';
 				} else {
 					echo wp_kses_post( $terms );
@@ -577,6 +578,7 @@ class WP_Job_Manager_CPT {
 				break;
 			case 'job_posted':
 				echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) ) . '</strong><span>';
+				// translators: %s placeholder is the username of the user.
 				echo ( empty( $post->post_author ) ? esc_html__( 'by a guest', 'wp-job-manager' ) : sprintf( esc_html__( 'by %s', 'wp-job-manager' ), '<a href="' . esc_url( add_query_arg( 'author', $post->post_author ) ) . '">' . esc_html( get_the_author() ) . '</a>' ) ) . '</span>';
 				break;
 			case 'job_expires':
@@ -593,14 +595,14 @@ class WP_Job_Manager_CPT {
 				echo '<div class="actions">';
 				$admin_actions = apply_filters( 'post_row_actions', array(), $post );
 
-				if ( in_array( $post->post_status, array( 'pending', 'pending_payment' ) ) && current_user_can( 'publish_post', $post->ID ) ) {
+				if ( in_array( $post->post_status, array( 'pending', 'pending_payment' ), true ) && current_user_can( 'publish_post', $post->ID ) ) {
 					$admin_actions['approve'] = array(
 						'action' => 'approve',
 						'name'   => __( 'Approve', 'wp-job-manager' ),
 						'url'    => wp_nonce_url( add_query_arg( 'approve_job', $post->ID ), 'approve_job' ),
 					);
 				}
-				if ( $post->post_status !== 'trash' ) {
+				if ( 'trash' !== $post->post_status ) {
 					if ( current_user_can( 'read_post', $post->ID ) ) {
 						$admin_actions['view'] = array(
 							'action' => 'view',
@@ -659,7 +661,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Sorts the admin listing of Job Listings by updating the main query in the request.
 	 *
-	 * @param mixed $vars
+	 * @param mixed $vars Variables with sort arguments.
 	 * @return array
 	 */
 	public function sort_columns( $vars ) {
@@ -705,14 +707,15 @@ class WP_Job_Manager_CPT {
 					SELECT posts.ID
 					FROM {$wpdb->posts} posts
 					INNER JOIN {$wpdb->postmeta} p1 ON posts.ID = p1.post_id
-					WHERE p1.meta_value LIKE '%%%s%%'
-					OR posts.post_title LIKE '%%%s%%'
-					OR posts.post_content LIKE '%%%s%%'
+					WHERE p1.meta_value LIKE %s
+					OR posts.post_title LIKE %s
+					OR posts.post_content LIKE %s
 					AND posts.post_type = 'job_listing'
+					AND 0=1
 					",
-						esc_sql( $wp->query_vars['s'] ),
-						esc_sql( $wp->query_vars['s'] ),
-						esc_sql( $wp->query_vars['s'] )
+						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
+						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
+						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%'
 					)
 				),
 				array( 0 )
@@ -773,7 +776,7 @@ class WP_Job_Manager_CPT {
 	public function search_meta_label( $query ) {
 		global $pagenow, $typenow;
 
-		if ( 'edit.php' !== $pagenow || $typenow !== 'job_listing' || ! get_query_var( 'job_listing_search' ) ) {
+		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) ) {
 			return $query;
 		}
 
@@ -792,12 +795,15 @@ class WP_Job_Manager_CPT {
 		}
 
 		// Get all non-builtin post status and add them as <option>.
-		$options = $display = '';
+		$options = '';
+		$display = '';
 		foreach ( get_job_listing_post_statuses() as $status => $name ) {
 			$selected = selected( $post->post_status, $status, false );
 
 			// If we one of our custom post status is selected, remember it.
-			$selected and $display = $name;
+			if ( $selected ) {
+				$display = $name;
+			}
 
 			// Build the options.
 			$options .= "<option{$selected} value='{$status}'>" . esc_html( $name ) . '</option>';
