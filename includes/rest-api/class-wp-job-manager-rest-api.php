@@ -80,7 +80,7 @@ class WP_Job_Manager_REST_API {
 	 *
 	 * @param WP_Job_Manager_REST_Environment $env The Environment.
 	 *
-	 * @throws WP_Job_Manager_REST_Exception
+	 * @throws WP_Job_Manager_REST_Exception Thrown during error while processing of request.
 	 */
 	public function define_api( $env ) {
 		if ( ! is_a( $env, 'WP_Job_Manager_REST_Environment' ) ) {

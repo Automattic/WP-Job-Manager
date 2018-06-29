@@ -72,7 +72,7 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 	 *
 	 * @return bool|WP_Error true if valid otherwise error.
 	 */
-	function register( $environment ) {
+	public function register( $environment ) {
 		global $wp_post_types;
 		$post_type_name = $this->object_to_extend;
 		if ( ! isset( $wp_post_types[ $post_type_name ] ) ) {

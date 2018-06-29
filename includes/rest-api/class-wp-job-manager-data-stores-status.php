@@ -20,6 +20,7 @@ class WP_Job_Manager_Data_Stores_Status extends WP_Job_Manager_REST_Data_Store_A
 	 *
 	 * @param  WP_Job_Manager_REST_Interfaces_Model|null $filter A filter.
 	 * @return WP_Job_Manager_REST_Model_Collection
+	 * @throws WP_Job_Manager_REST_Exception Thrown during error while processing of request.
 	 */
 	public function get_entities( $filter = null ) {
 		return new WP_Job_Manager_REST_Model_Collection( array( $this->get_entity( null ) ) );
@@ -31,7 +32,7 @@ class WP_Job_Manager_Data_Stores_Status extends WP_Job_Manager_REST_Data_Store_A
 	 * @param  mixed $id The id of the entity.
 	 *
 	 * @return WP_Job_Manager_REST_Interfaces_Model
-	 * @throws WP_Job_Manager_REST_Exception
+	 * @throws WP_Job_Manager_REST_Exception Thrown during error while processing of request.
 	 */
 	public function get_entity( $id ) {
 		$should_run_page_setup = (bool) get_transient( '_job_manager_activation_redirect' );
