@@ -17,13 +17,15 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	public function __construct() {
 		global $wp_post_types;
 
+		// translators: Placeholder %s is the plural label for the job listing post type.
+		$this->widget_name        = sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name );
 		$this->widget_cssclass    = 'job_manager widget_recent_jobs';
 		$this->widget_description = __( 'Display a list of recent listings on your site, optionally matching a keyword and location.', 'wp-job-manager' );
 		$this->widget_id          = 'widget_recent_jobs';
-		$this->widget_name        = sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name );
 		$this->settings           = array(
 			'title'     => array(
 				'type'  => 'text',
+				// translators: Placeholder %s is the plural label for the job listing post type.
 				'std'   => sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ),
 				'label' => __( 'Title', 'wp-job-manager' ),
 			),
@@ -73,8 +75,6 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		ob_start();
 
-		extract( $args );
-
 		$title     = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 		$number    = absint( $instance['number'] );
 		$jobs      = get_job_listings(
@@ -101,11 +101,12 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		if ( $jobs->have_posts() ) : ?>
 
-			<?php echo $before_widget; ?>
+			<?php echo wp_kses_post( $args['before_widget'] ); ?>
 
 			<?php
 			if ( $title ) {
-				echo $before_title . esc_html( $title ) . $after_title;}
+				echo wp_kses_post( $args['before_title'] ) . esc_html( $title ) . wp_kses_post( $args['after_title'] );
+			}
 			?>
 
 			<ul class="job_listings">
@@ -121,7 +122,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 			</ul>
 
-			<?php echo $after_widget; ?>
+			<?php echo wp_kses_post( $args['after_widget'] ); ?>
 
 		<?php else : ?>
 
@@ -145,7 +146,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		$content = ob_get_clean();
 
-		echo $content;
+		echo $content; // WPCS: XSS ok.
 
 		$this->cache_widget( $args, $content );
 	}
