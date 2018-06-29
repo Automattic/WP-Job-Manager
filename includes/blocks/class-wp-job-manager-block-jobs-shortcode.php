@@ -48,56 +48,56 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 	private static function get_block_attributes() {
 		// TODO: these need to be changed to match the shortcode.
 		return array(
-			'showFilters' => array(
-				'type'	=> 'boolean',
+			'showFilters'        => array(
+				'type'    => 'boolean',
 				'default' => true,
 			),
-			'keywords'   => array(
-				'type'	=> 'string',
+			'keywords'           => array(
+				'type'    => 'string',
 				'default' => '',
 			),
-			'location'		   => array(
-				'type'	=> 'string',
+			'location'           => array(
+				'type'    => 'string',
 				'default' => '',
 			),
-			'perPage'			=> array(
-				'type'	=> 'string',
+			'perPage'            => array(
+				'type'    => 'string',
 				'default' => '',
 			),
-			'orderBy'			=> array(
-				'type'	=> 'string',
+			'orderBy'            => array(
+				'type'    => 'string',
 				'default' => 'featured',
 			),
-			'order'			  => array(
-				'type'	=> 'string',
+			'order'              => array(
+				'type'    => 'string',
 				'default' => 'desc',
 			),
-			'showPagination'	 => array(
-				'type'	=> 'boolean',
+			'showPagination'     => array(
+				'type'    => 'boolean',
 				'default' => false,
 			),
-			'showCategories'	 => array(
-				'type'	=> 'boolean',
+			'showCategories'     => array(
+				'type'    => 'boolean',
 				'default' => true,
 			),
-			'featured'		   => array(
-				'type'	=> 'string',
+			'featured'           => array(
+				'type'    => 'string',
 				'default' => '',
 			),
-			'filled'			 => array(
-				'type'	=> 'string',
+			'filled'             => array(
+				'type'    => 'string',
 				'default' => '',
 			),
 			'showJobTypeFilters' => array(
-				'type'	=> 'boolean',
+				'type'    => 'boolean',
 				'default' => true,
 			),
 			'includedJobTypes'   => array(
-				'type'	=> 'string', // JSON object
+				'type'    => 'string', // JSON object
 				'default' => '{}',
 			),
-			'allJobTypes'		=> array(
-				'type'	=> 'string', // JSON array
+			'allJobTypes'        => array(
+				'type'    => 'string', // JSON array
 				'default' => '[]',
 			)
 		);
