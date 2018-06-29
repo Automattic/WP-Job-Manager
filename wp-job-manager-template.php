@@ -993,9 +993,9 @@ function the_company_name( $before = '', $after = '', $echo = true, $post = null
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_name );
+	} else {
+		return $company_name;
 	}
-
-	return $company_name;
 }
 
 /**
@@ -1059,8 +1059,9 @@ function the_company_tagline( $before = '', $after = '', $echo = true, $post = n
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_tagline );
+	} else {
+		return $company_tagline;
 	}
-	return $company_tagline;
 }
 
 /**
@@ -1101,8 +1102,9 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_twitter );
+	} else {
+		return $company_twitter;
 	}
-	return $company_twitter;
 }
 
 /**
