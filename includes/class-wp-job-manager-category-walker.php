@@ -31,6 +31,8 @@ class WP_Job_Manager_Category_Walker extends Walker {
 	);
 
 	/**
+	 * Start the list walker.
+	 *
 	 * @see Walker::start_el()
 	 * @since 2.1.0
 	 *
@@ -54,7 +56,11 @@ class WP_Job_Manager_Category_Walker extends Walker {
 
 		$output .= "\t<option class=\"level-" . intval( $depth ) . '" value="' . esc_attr( $value ) . '"';
 
-		if ( isset( $args['selected'] ) && ( $value == $args['selected'] || ( is_array( $args['selected'] ) && in_array( $value, $args['selected'] ) ) ) ) {
+		if ( isset( $args['selected'] ) && (
+				$value == $args['selected'] // phpcs:ignore WordPress.PHP.StrictComparisons
+				|| ( is_array( $args['selected'] ) && in_array( $value, $args['selected'] ) ) // phpcs:ignore WordPress.PHP.StrictInArray
+			 )
+		) {
 			$output .= ' selected="selected"';
 		}
 
