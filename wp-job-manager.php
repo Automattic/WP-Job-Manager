@@ -11,7 +11,10 @@
  * Text Domain: wp-job-manager
  * Domain Path: /languages/
  * License: GPL2+
+ *
+ * @package wp-job-manager
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -32,6 +35,8 @@ class WP_Job_Manager {
 	private static $_instance = null;
 
 	/**
+	 * REST API instance.
+	 *
 	 * @var WP_Job_Manager_REST_API
 	 */
 	private $rest_api = null;
@@ -160,9 +165,9 @@ class WP_Job_Manager {
 		}
 
 		$content = sprintf(
-			__(
-				'This site adds the following cookies to help users resume job submissions that they ' .
-				'have started but have not completed: %1$s and %2$s', 'wp-job-manager'
+			// translators: Placeholders %1$s and %2$s are the names of the two cookies used in WP Job Manager.
+			__( 'This site adds the following cookies to help users resume job submissions that they 
+				have started but have not completed: %1$s and %2$s', 'wp-job-manager'
 			),
 			'<code>wp-job-manager-submitting-job-id</code>', '<code>wp-job-manager-submitting-job-key</code>'
 		);
@@ -457,7 +462,7 @@ add_filter( 'post_types_to_delete_with_user', 'job_manager_add_post_types', 10 )
  * @since  1.26
  * @return WP_Job_Manager
  */
-function WPJM() {
+function WPJM() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
 	return WP_Job_Manager::instance();
 }
 
