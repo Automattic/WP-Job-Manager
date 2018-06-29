@@ -118,7 +118,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @access private
 	 */
 	public static function lazy_init() {
-		add_action( 'shutdown', array( __CLASS__, '_send_deferred_notifications' ) );
+		add_action( 'shutdown', array( __CLASS__, 'send_deferred_notifications' ) );
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-updated-job.php';

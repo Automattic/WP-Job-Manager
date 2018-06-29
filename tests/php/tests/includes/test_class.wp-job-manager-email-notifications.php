@@ -25,7 +25,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	public function tearDown() {
 		reset_phpmailer_instance();
 		WP_Job_Manager_Email_Notifications::clear_deferred_notifications();
-		remove_action( 'shutdown', array( 'WP_Job_Manager_Email_Notifications', '_send_deferred_notifications' ) );
+		remove_action( 'shutdown', array( 'WP_Job_Manager_Email_Notifications', 'send_deferred_notifications' ) );
 		parent::tearDown();
 	}
 
