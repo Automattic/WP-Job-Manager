@@ -83,7 +83,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 		}
 
 		if ( isset( $cache[ $args['widget_id'] ] ) ) {
-			echo $cache[ $args['widget_id'] ];
+			echo $cache[ $args['widget_id'] ]; // WPCS: XSS ok.
 			return true;
 		}
 

@@ -84,7 +84,8 @@ class WP_Job_Manager_Forms {
 	 * @return string|null
 	 */
 	public function get_form( $form_name, $atts = array() ) {
-		if ( $form = $this->load_form_class( $form_name ) ) {
+		$form = $this->load_form_class( $form_name );
+		if ( $form ) {
 			ob_start();
 			$form->output( $atts );
 			return ob_get_clean();

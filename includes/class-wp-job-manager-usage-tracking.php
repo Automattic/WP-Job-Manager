@@ -104,10 +104,11 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 */
 	protected function opt_in_dialog_text() {
 		return sprintf(
+			// translators: Placeholder %s is a URL to the document on wpjobmanager.com with info on usage tracking.
 			__(
-				"We'd love if you helped us make WP Job Manager better by allowing us to collect " .
-				"<a href=\"%s\" target=\"_blank\">usage tracking data</a>. " .
-				"No sensitive information is collected, and you can opt out at any time.",
+				'We\'d love if you helped us make WP Job Manager better by allowing us to collect
+				<a href="%s" target="_blank">usage tracking data</a>. No sensitive information is 
+				collected, and you can opt out at any time.',
 				'wp-job-manager'
 			), self::WPJM_TRACKING_INFO_URL
 		);
@@ -143,16 +144,19 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 */
 
 	/**
-	 * @inheritdoc
-	 */
-	public function hide_tracking_opt_in() {
+	 * Hide the opt-in for enabling usage tracking.
+	 **/
+	public function hide_tracking_opt_in() { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod
 		parent::hide_tracking_opt_in();
 	}
 
 	/**
-	 * @inheritdoc
-	 */
-	public function opt_in_dialog_text_allowed_html() {
+	 * Allowed html tags, used by wp_kses, for the translated opt-in dialog
+	 * text.
+	 *
+	 * @return array the html tags.
+	 **/
+	public function opt_in_dialog_text_allowed_html() { // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod
 		return parent::opt_in_dialog_text_allowed_html();
 	}
 

@@ -144,7 +144,7 @@ class WP_Job_Manager_Ajax {
 		);
 
 		if ( isset( $_REQUEST['filled'] ) && ( 'true' === $_REQUEST['filled'] || 'false' === $_REQUEST['filled'] ) ) {
-			$args['filled'] = $_REQUEST['filled'] === 'true' ? true : false;
+			$args['filled'] = 'true' === $_REQUEST['filled'] ? true : false;
 		}
 
 		if ( isset( $_REQUEST['featured'] ) && ( 'true' === $_REQUEST['featured'] || 'false' === $_REQUEST['featured'] ) ) {
@@ -168,6 +168,7 @@ class WP_Job_Manager_Ajax {
 		);
 
 		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
+			// translators: Placeholder %d is the number of found search results.
 			$message               = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
 			$result['showing_all'] = true;
 		} else {

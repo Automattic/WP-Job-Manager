@@ -18,32 +18,32 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		unregister_post_type( 'job_listing' );
 		$post_type_instance = WP_Job_Manager_Post_Types::instance();
 		$post_type_instance->register_post_types();
-		WP_Job_Manager_Email_Notifications::_clear_deferred_notifications();
+		WP_Job_Manager_Email_Notifications::clear_deferred_notifications();
 		WP_Job_Manager_Email_Notifications::maybe_init();
 	}
 
 	public function tearDown() {
 		reset_phpmailer_instance();
-		WP_Job_Manager_Email_Notifications::_clear_deferred_notifications();
+		WP_Job_Manager_Email_Notifications::clear_deferred_notifications();
 		remove_action( 'shutdown', array( 'WP_Job_Manager_Email_Notifications', '_send_deferred_notifications' ) );
 		parent::tearDown();
 	}
 
 	/**
 	 * @covers WP_Job_Manager_Email_Notifications::_schedule_notification()
-	 * @covers WP_Job_Manager_Email_Notifications::_get_deferred_notification_count()
+	 * @covers WP_Job_Manager_Email_Notifications::get_deferred_notification_count()
 	 */
 	public function test_schedule_notification() {
-		$this->assertEquals( 0, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
+		$this->assertEquals( 0, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
 
 		WP_Job_Manager_Email_Notifications::_schedule_notification( 'test-notification' );
-		$this->assertEquals( 1, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
+		$this->assertEquals( 1, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
 
 		WP_Job_Manager_Email_Notifications::_schedule_notification( 'test-notification', array( 'test' => 'test' ) );
-		$this->assertEquals( 2, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
+		$this->assertEquals( 2, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
 
 		do_action( 'job_manager_send_notification', 'test-notification-action', array( 'test' => 'test' ) );
-		$this->assertEquals( 3, WP_Job_Manager_Email_Notifications::_get_deferred_notification_count() );
+		$this->assertEquals( 3, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
 	}
 
 	/**

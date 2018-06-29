@@ -58,7 +58,7 @@ class WP_Job_Manager_Install {
 		global $wp_roles;
 
 		if ( class_exists( 'WP_Roles' ) && ! isset( $wp_roles ) ) {
-			$wp_roles = new WP_Roles();
+			$wp_roles = new WP_Roles(); // WPCS: override ok.
 		}
 
 		if ( is_object( $wp_roles ) ) {
@@ -118,7 +118,7 @@ class WP_Job_Manager_Install {
 	 * Sets up the default WP Job Manager terms.
 	 */
 	private static function default_terms() {
-		if ( get_option( 'job_manager_installed_terms' ) == 1 ) {
+		if ( 1 === intval( get_option( 'job_manager_installed_terms' ) ) ) {
 			return;
 		}
 

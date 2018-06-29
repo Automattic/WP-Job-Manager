@@ -16,6 +16,8 @@ final class WP_Job_Manager_Email_Notifications {
 	const EMAIL_SETTING_PLAIN_TEXT = 'plain_text';
 
 	/**
+	 * Notifications to be scheduled.
+	 *
 	 * @var array
 	 */
 	private static $deferred_notifications = array();
@@ -26,8 +28,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @static
 	 */
 	public static function init() {
-		add_action( 'job_manager_send_notification', array( __CLASS__, '_schedule_notification' ), 10, 2 );
-		add_action( 'job_manager_email_init', array( __CLASS__, '_lazy_init' ) );
+		add_action( 'job_manager_send_notification', array( __CLASS__, 'schedule_notification' ), 10, 2 );
+		add_action( 'job_manager_email_init', array( __CLASS__, 'lazy_init' ) );
 		add_action( 'job_manager_email_job_details', array( __CLASS__, 'output_job_details' ), 10, 4 );
 		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
 		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
@@ -55,10 +57,14 @@ final class WP_Job_Manager_Email_Notifications {
 	/**
 	 * Sets up an email notification to be sent at the end of the script's execution.
 	 *
+	 * Do not call manually.
+	 *
+	 * @access private
+	 *
 	 * @param string $notification
 	 * @param array  $args
 	 */
-	public static function _schedule_notification( $notification, $args = array() ) {
+	public static function schedule_notification( $notification, $args = array() ) {
 		self::maybe_init();
 
 		self::$deferred_notifications[] = array( $notification, $args );
@@ -71,7 +77,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 */
-	public static function _send_deferred_notifications() {
+	public static function send_deferred_notifications() {
 		$email_notifications = self::get_email_notifications( true );
 		foreach ( self::$deferred_notifications as $email ) {
 			if (
@@ -111,7 +117,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 */
-	public static function _lazy_init() {
+	public static function lazy_init() {
 		add_action( 'shutdown', array( __CLASS__, '_send_deferred_notifications' ) );
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
@@ -131,7 +137,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 */
-	public static function _clear_deferred_notifications() {
+	public static function clear_deferred_notifications() {
 		if ( ! defined( 'PHPUNIT_WPJM_TESTSUITE' ) || ! PHPUNIT_WPJM_TESTSUITE ) {
 			die( 'This is just for use while testing' );
 		}
@@ -158,6 +164,7 @@ final class WP_Job_Manager_Email_Notifications {
 		$email_notifications        = array();
 
 		/**
+		 * Email class in loop.
 		 *
 		 * @var WP_Job_Manager_Email $email_class
 		 */
@@ -539,7 +546,7 @@ final class WP_Job_Manager_Email_Notifications {
 		global $wpdb;
 
 		$notice_before_ts = current_time( 'timestamp' ) + ( DAY_IN_SECONDS * $days_notice );
-		$job_ids_sql      = $wpdb->prepare(
+		$job_ids          = $wpdb->get_col( $wpdb->prepare(
 			"
 			SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
 			LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
@@ -548,8 +555,7 @@ final class WP_Job_Manager_Email_Notifications {
 			AND posts.post_status = 'publish'
 			AND posts.post_type = 'job_listing'
 		", date( 'Y-m-d', $notice_before_ts )
-		);
-		$job_ids          = $wpdb->get_col( $job_ids_sql );
+		) );
 
 		if ( $job_ids ) {
 			foreach ( $job_ids as $job_id ) {
@@ -635,13 +641,15 @@ final class WP_Job_Manager_Email_Notifications {
 	}
 
 	/**
-	 * Returns the total number of deferred notifications to be sent. Used in unit tests.
+	 * Returns the total number of deferred notifications to be sent.
+	 *
+	 * Do not use. Used just in unit tests.
 	 *
 	 * @access private
 	 *
 	 * @return int
 	 */
-	public static function _get_deferred_notification_count() {
+	public static function get_deferred_notification_count() {
 		return count( self::$deferred_notifications );
 	}
 
@@ -794,7 +802,7 @@ final class WP_Job_Manager_Email_Notifications {
 				$emogrifier = new Emogrifier( $content, self::get_styles() );
 				$content    = $emogrifier->emogrify();
 			} catch ( Exception $e ) {
-				trigger_error( 'Unable to inject styles into email notification: ' . $e->getMessage() );
+				trigger_error( 'Unable to inject styles into email notification: ' . $e->getMessage() ); // @codingStandardsIgnoreLine
 			}
 		}
 		return $content;
