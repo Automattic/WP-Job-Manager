@@ -645,7 +645,7 @@ class WP_Job_Manager_Settings {
 			'selected'         => absint( $value ),
 		);
 
-		echo wp_kses_post( str_replace( ' id=', " data-placeholder='" . __( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) ) );
+		echo str_replace( ' id=', " data-placeholder='" . __( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) ); // WPCS: XSS ok.
 
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
