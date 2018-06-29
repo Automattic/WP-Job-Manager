@@ -32,13 +32,6 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 	}
 
 	private static function register_block_assets() {
-		wp_register_style(
-			'wp-job-manager-frontend',
-			JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css',
-			array(),
-			JOB_MANAGER_VERSION
-		);
-
 		wp_register_script(
 			'wp-job-manager-block-jobs',
 			JOB_MANAGER_PLUGIN_URL . '/assets/build/blocks/jobs.js',
