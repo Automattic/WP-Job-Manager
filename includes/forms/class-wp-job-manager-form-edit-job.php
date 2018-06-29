@@ -19,11 +19,15 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	public $form_name = 'edit-job';
 
 	/**
+	 * Messaged shown on save.
+	 *
 	 * @var bool|string
 	 */
 	private $save_message = false;
 
 	/**
+	 * Message shown on error.
+	 *
 	 * @var bool|string
 	 */
 	private $save_error = false;
@@ -69,7 +73,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	}
 
 	/**
-	 * output function.
+	 * Output function.
 	 *
 	 * @param array $atts
 	 */
@@ -90,7 +94,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		$job = get_post( $this->job_id );
 
 		if ( empty( $this->job_id ) ) {
-			echo wpautop( esc_html__( 'Invalid listing', 'wp-job-manager' ) );
+			echo wp_kses_post( wpautop( __( 'Invalid listing', 'wp-job-manager' ) ) );
 			return;
 		}
 
@@ -145,7 +149,9 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	}
 
 	/**
-	 * Submit Step is posted
+	 * Submit Step is posted.
+	 *
+	 * @throws Exception When invalid fields are submitted.
 	 */
 	public function submit_handler() {
 		if ( empty( $_POST['submit_job'] ) ) {
@@ -158,8 +164,9 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			$values = $this->get_posted_fields();
 
 			// Validate required.
-			if ( is_wp_error( ( $return = $this->validate_fields( $values ) ) ) ) {
-				throw new Exception( $return->get_error_message() );
+			$validation_result = $this->validate_fields( $values );
+			if ( is_wp_error( $validation_result ) ) {
+				throw new Exception( $validation_result->get_error_message() );
 			}
 
 			$save_post_status = '';

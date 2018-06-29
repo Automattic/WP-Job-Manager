@@ -161,7 +161,7 @@ class WP_Job_Manager_Writepanels {
 
 		// translators: Placeholder %s is the singular name for a job listing post type.
 		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
-		if ( ! get_option( 'job_manager_enable_types' ) || 0 === wp_count_terms( 'job_listing_type' ) ) {
+		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
 		} elseif ( false === job_manager_multi_job_type() ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );

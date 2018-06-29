@@ -138,7 +138,7 @@ class WP_Job_Manager_Helper_API {
 			return false;
 		}
 
-		$response = @json_decode( wp_remote_retrieve_body( $request ), true );
+		$response = json_decode( wp_remote_retrieve_body( $request ), true );
 
 		if ( is_array( $response ) ) {
 			return $response;

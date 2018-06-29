@@ -12,11 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Helper {
 	/**
+	 * License messages to display to the user.
+	 *
 	 * @var array Messages when updating licences.
 	 */
 	protected $licence_messages = array();
 
 	/**
+	 * API object.
+	 *
 	 * @var WP_Job_Manager_Helper_API
 	 */
 	protected $api;
@@ -30,6 +34,8 @@ class WP_Job_Manager_Helper {
 	private static $_instance = null;
 
 	/**
+	 * True if the plugin cache has already been cleared.
+	 *
 	 * @var bool
 	 * @since 1.29.1
 	 */
@@ -106,14 +112,14 @@ class WP_Job_Manager_Helper {
 
 		// We only want to show the notices on the plugins page and main job listing admin page.
 		$screen = get_current_screen();
-		if ( null === $screen || ! in_array( $screen->id, array( 'plugins', 'edit-job_listing' ) ) ) {
+		if ( null === $screen || ! in_array( $screen->id, array( 'plugins', 'edit-job_listing' ), true ) ) {
 			return false;
 		}
 
 		$dev_version_loc = strpos( JOB_MANAGER_VERSION, '-dev' );
 		if (
 			false !== $dev_version_loc
-			&& $minimum_required_core_version === substr( JOB_MANAGER_VERSION, 0, $dev_version_loc )
+			&& substr( JOB_MANAGER_VERSION, 0, $dev_version_loc ) === $minimum_required_core_version
 		) {
 			return false;
 		}
@@ -131,9 +137,13 @@ class WP_Job_Manager_Helper {
 	public function check_for_updates( $check_for_updates_data ) {
 		// Set version variables.
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
-			if ( $response = $this->get_plugin_version( $plugin_data['_filename'] ) ) {
+			$response = $this->get_plugin_version( $plugin_data['_filename'] );
+			if ( $response ) {
 				// If there is a new version, modify the transient to reflect an update is available.
-				if ( $response !== false && isset( $response['new_version'] ) && version_compare( $response['new_version'], $plugin_data['Version'], '>' ) ) {
+				if ( false !== $response
+					 && isset( $response['new_version'] )
+					 && version_compare( $response['new_version'], $plugin_data['Version'], '>' )
+				) {
 					$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 				}
 			}
@@ -229,7 +239,8 @@ class WP_Job_Manager_Helper {
 			return $response;
 		}
 
-		if ( ( $plugin_info = $this->get_plugin_info( $args->slug ) ) ) {
+		$plugin_info = $this->get_plugin_info( $args->slug );
+		if ( $plugin_info ) {
 			$response = (object) $plugin_info;
 		}
 
@@ -314,7 +325,7 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Returns the plugin data for plugin with a `WPJM-Product` tag by plugin filename.
 	 *
-	 * @param $plugin_filename
+	 * @param string $plugin_filename
 	 * @return bool|array
 	 */
 	private function get_licence_managed_plugin( $plugin_filename ) {
@@ -415,7 +426,7 @@ class WP_Job_Manager_Helper {
 	 */
 	public function licence_error_notices() {
 		$screen = get_current_screen();
-		if ( null === $screen || in_array( $screen->id, array( 'job_listing_page_job-manager-addons' ) ) ) {
+		if ( null === $screen || in_array( $screen->id, array( 'job_listing_page_job-manager-addons' ), true ) ) {
 			return;
 		}
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {

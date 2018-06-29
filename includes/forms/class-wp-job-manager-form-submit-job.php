@@ -89,9 +89,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Get step/job.
 		if ( isset( $_POST['step'] ) ) {
-			$this->step = is_numeric( $_POST['step'] ) ? max( absint( $_POST['step'] ), 0 ) : array_search( $_POST['step'], array_keys( $this->steps ) );
+			$this->step = is_numeric( $_POST['step'] ) ? max( absint( $_POST['step'] ), 0 ) : array_search( intval( $_POST['step'] ), array_keys( $this->steps ), true );
 		} elseif ( ! empty( $_GET['step'] ) ) {
-			$this->step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( $_GET['step'], array_keys( $this->steps ) );
+			$this->step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( intval( $_GET['step'] ), array_keys( $this->steps ), true );
 		}
 
 		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
@@ -120,7 +120,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					$this->job_id = 0;
 					$this->step   = 0;
 				}
-			} elseif ( ! in_array( $job_status, apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ) ) ) {
+			} elseif ( ! in_array( $job_status, apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ), true ) ) {
 				$this->job_id = 0;
 				$this->step   = 0;
 			}
@@ -278,10 +278,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			)
 		);
 
-		if ( ! get_option( 'job_manager_enable_categories' ) || wp_count_terms( 'job_listing_category' ) == 0 ) {
+		if ( ! get_option( 'job_manager_enable_categories' ) || 0 === intval( wp_count_terms( 'job_listing_category' ) ) ) {
 			unset( $this->fields['job']['job_category'] );
 		}
-		if ( ! get_option( 'job_manager_enable_types' ) || wp_count_terms( 'job_listing_type' ) == 0 ) {
+		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
 			unset( $this->fields['job']['job_type'] );
 		}
 	}
@@ -302,16 +302,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Validates the posted fields.
 	 *
 	 * @param array $values
-	 * @throws Exception Uploaded file is not a valid mime-type or other validation error
 	 * @return bool|WP_Error True on success, WP_Error on failure.
+	 * @throws Exception Uploaded file is not a valid mime-type or other validation error.
 	 */
 	protected function validate_fields( $values ) {
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
 				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) ) {
+					// translators: Placeholder %s is the label for the required field.
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
 				}
-				if ( ! empty( $field['taxonomy'] ) && in_array( $field['type'], array( 'term-checklist', 'term-select', 'term-multiselect' ) ) ) {
+				if ( ! empty( $field['taxonomy'] ) && in_array( $field['type'], array( 'term-checklist', 'term-select', 'term-multiselect' ), true ) ) {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
 						$check_value = $values[ $group_key ][ $key ];
 					} else {
@@ -319,6 +320,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					}
 					foreach ( $check_value as $term ) {
 						if ( ! term_exists( $term, $field['taxonomy'] ) ) {
+							// translators: Placeholder %s is the field label that is did not validate.
 							return new WP_Error( 'validation-error', sprintf( __( '%s is invalid', 'wp-job-manager' ), $field['label'] ) );
 						}
 					}
@@ -334,7 +336,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							$file_url  = current( explode( '?', $file_url ) );
 							$file_info = wp_check_filetype( $file_url );
 
-							if ( ! is_numeric( $file_url ) && $file_info && ! in_array( $file_info['type'], $field['allowed_mime_types'] ) ) {
+							if ( ! is_numeric( $file_url ) && $file_info && ! in_array( $file_info['type'], $field['allowed_mime_types'], true ) ) {
+								// translators: Placeholder %1$s is field label; %2$s is the file mime type; %3$s is the allowed mime-types.
 								throw new Exception( sprintf( __( '"%1$s" (filetype %2$s) needs to be one of the following file types: %3$s', 'wp-job-manager' ), $field['label'], $file_info['ext'], implode( ', ', array_keys( $field['allowed_mime_types'] ) ) ) );
 							}
 						}
@@ -475,7 +478,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 			if ( ! empty( $this->fields['job']['application'] ) ) {
 				$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
-				if ( $allowed_application_method !== 'url' ) {
+				if ( 'url' !== $allowed_application_method ) {
 					$current_user                                = wp_get_current_user();
 					$this->fields['job']['application']['value'] = $current_user->user_email;
 				}
@@ -501,6 +504,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 	/**
 	 * Handles the submission of form data.
+	 *
+	 * @throws Exception On validation error.
 	 */
 	public function submit_handler() {
 		try {
@@ -515,8 +520,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 
 			// Validate required.
-			if ( is_wp_error( ( $return = $this->validate_fields( $values ) ) ) ) {
-				throw new Exception( $return->get_error_message() );
+			$validation_status = $this->validate_fields( $values );
+			if ( is_wp_error( $validation_status ) ) {
+				throw new Exception( $validation_status->get_error_message() );
 			}
 
 			// Account creation.
@@ -545,6 +551,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						if ( ! wpjm_validate_new_password( $_POST['create_account_password'] ) ) {
 							$password_hint = wpjm_get_password_rules_hint();
 							if ( $password_hint ) {
+								// translators: Placeholder %s is the password hint.
 								throw new Exception( sprintf( __( 'Invalid Password: %s', 'wp-job-manager' ), $password_hint ) );
 							} else {
 								throw new Exception( __( 'Password is not valid.', 'wp-job-manager' ) );
@@ -685,7 +692,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'guid'         => $attachment_url,
 		);
 
-		if ( $info = wp_check_filetype( $attachment_url ) ) {
+		$info = wp_check_filetype( $attachment_url );
+		if ( $info ) {
 			$attachment['post_mime_type'] = $info['type'];
 		}
 
@@ -753,7 +761,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$maybe_attach = array_filter( $maybe_attach );
 
 		// Handle attachments.
-		if ( sizeof( $maybe_attach ) && apply_filters( 'job_manager_attach_uploaded_files', true ) ) {
+		if ( count( $maybe_attach ) && apply_filters( 'job_manager_attach_uploaded_files', true ) ) {
 			// Get attachments.
 			$attachments     = get_posts( 'post_parent=' . $this->job_id . '&post_type=attachment&fields=ids&numberposts=-1' );
 			$attachment_urls = array();
@@ -764,7 +772,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 
 			foreach ( $maybe_attach as $attachment_url ) {
-				if ( ! in_array( $attachment_url, $attachment_urls ) ) {
+				if ( ! in_array( $attachment_url, $attachment_urls, true ) ) {
 					$this->create_attachment( $attachment_url );
 				}
 			}
@@ -790,7 +798,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		if ( $this->job_id ) {
 			$job_preview       = true;
-			$post              = get_post( $this->job_id );
+			$post              = get_post( $this->job_id ); // WPCS: override ok.
 			$post->post_status = 'preview';
 
 			setup_postdata( $post );
@@ -823,7 +831,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! empty( $_POST['continue'] ) ) {
 			$job = get_post( $this->job_id );
 
-			if ( in_array( $job->post_status, array( 'preview', 'expired' ) ) ) {
+			if ( in_array( $job->post_status, array( 'preview', 'expired' ), true ) ) {
 				// Reset expiry.
 				delete_post_meta( $job->ID, '_job_expires' );
 
