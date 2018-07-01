@@ -1,21 +1,18 @@
 /* global require, module, process, __dirname */
-
 const CleanWebpackPlugin = require( 'clean-webpack-plugin' );
 const LodashModuleReplacementPlugin = require( 'lodash-webpack-plugin' );
 const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
+const glob = require( 'glob' );
+const entryArray = glob.sync( './assets/blocks/**/index.jsx' );
+const entryObject = entryArray.reduce( ( acc, item ) => {
+	let name = item.replace( './assets/blocks/', '' ).replace( '/index.jsx', '' );
+	acc[name] = item;
 
-const blockNames = [
-	// Add the name of the block as a directory in the assets/blocks directory.
-];
+	return acc;
+}, {} );
 
 const webpackConfig = {
-	entry: Object.assign(
-		blockNames.reduce( ( blocks, blockName ) => {
-			const path = `./assets/blocks/${ blockName }/index.jsx`;
-			blocks[ blockName ] = path;
-			return blocks;
-		}, {} )
-	),
+	entry: entryObject,
 	output: {
 		filename: 'assets/build/blocks/[name].js',
 		path: __dirname,
