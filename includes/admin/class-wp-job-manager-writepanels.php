@@ -271,10 +271,12 @@ class WP_Job_Manager_Writepanels {
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:
-								   <?php
-									if ( ! empty( $field['description'] ) ) :
-										?>
-				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<?php
+			if ( ! empty( $field['description'] ) ) :
+				?>
+				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
+			<?php endif; ?>
+			</label>
 			<?php
 			if ( ! empty( $field['multiple'] ) ) {
 				foreach ( (array) $field['value'] as $value ) {
@@ -322,10 +324,12 @@ class WP_Job_Manager_Writepanels {
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:
-								   <?php
-									if ( ! empty( $field['description'] ) ) :
-										?>
-				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<?php
+			if ( ! empty( $field['description'] ) ) :
+				?>
+				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
+			<?php endif; ?>
+			</label>
 			<input type="text" autocomplete="off" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
 		</p>
 		<?php
@@ -376,10 +380,12 @@ class WP_Job_Manager_Writepanels {
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:
-								   <?php
-									if ( ! empty( $field['description'] ) ) :
-										?>
-				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<?php
+			if ( ! empty( $field['description'] ) ) :
+				?>
+			<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
+			<?php endif; ?>
+			</label>
 			<?php
 			if ( ! empty( $field['information'] ) ) :
 				?>
@@ -409,10 +415,11 @@ class WP_Job_Manager_Writepanels {
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:
-								   <?php
-									if ( ! empty( $field['description'] ) ) :
-										?>
-				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+		<?php
+		if ( ! empty( $field['description'] ) ) :
+			?>
+			<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
+		<?php endif; ?></label>
 			<textarea name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>"><?php echo esc_html( $field['value'] ); ?></textarea>
 		</p>
 		<?php
@@ -437,19 +444,24 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:
-								   <?php
-									if ( ! empty( $field['description'] ) ) :
-										?>
-				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<label or="<?php echo esc_attr( $key ); ?>">
+				<?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:
+				<?php
+				if ( ! empty( $field['description'] ) ) :
+					?>
+				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
+				<?php endif; ?>
+			</label>
 			<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>">
 				<?php foreach ( $field['options'] as $key => $value ) : ?>
-				<option value="<?php echo esc_attr( $key ); ?>"
-										  <?php
-											if ( isset( $field['value'] ) ) {
-												selected( $field['value'], $key );}
-											?>
-											><?php echo esc_html( $value ); ?></option>
+				<option
+					value="<?php echo esc_attr( $key ); ?>"
+					<?php
+					if ( isset( $field['value'] ) ) {
+						selected( $field['value'], $key );
+					}
+					?>
+				><?php echo esc_html( $value ); ?></option>
 				<?php endforeach; ?>
 			</select>
 		</p>
@@ -476,20 +488,22 @@ class WP_Job_Manager_Writepanels {
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:
-								   <?php
-									if ( ! empty( $field['description'] ) ) :
-										?>
-				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span><?php endif; ?></label>
+			<?php
+			if ( ! empty( $field['description'] ) ) :
+				?>
+				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
+			<?php endif; ?>
+			</label>
 			<select multiple="multiple" name="<?php echo esc_attr( $name ); ?>[]" id="<?php echo esc_attr( $key ); ?>">
 				<?php foreach ( $field['options'] as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>"
-										  <?php
-											if ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) {
-												// phpcs:ignore WordPress.PHP.StrictInArray
-												selected( in_array( $key, $field['value'] ), true );
-											}
-											?>
-											><?php echo esc_html( $value ); ?></option>
+					<?php
+					if ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) {
+						// phpcs:ignore WordPress.PHP.StrictInArray
+						selected( in_array( $key, $field['value'] ), true );
+					}
+					?>
+				><?php echo esc_html( $value ); ?></option>
 				<?php endforeach; ?>
 			</select>
 		</p>
