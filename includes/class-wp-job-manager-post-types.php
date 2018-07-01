@@ -529,16 +529,15 @@ class WP_Job_Manager_Post_Types {
 
 		// Change status to expired.
 		$job_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-			SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
-			LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
-			WHERE postmeta.meta_key = '_job_expires'
-			AND postmeta.meta_value > 0
-			AND postmeta.meta_value < %s
-			AND posts.post_status = 'publish'
-			AND posts.post_type = 'job_listing'
-		", date( 'Y-m-d', current_time( 'timestamp' ) )
+			$wpdb->prepare( "
+				SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
+				LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
+				WHERE postmeta.meta_key = '_job_expires'
+				AND postmeta.meta_value > 0
+				AND postmeta.meta_value < %s
+				AND posts.post_status = 'publish'
+				AND posts.post_type = 'job_listing'",
+				date( 'Y-m-d', current_time( 'timestamp' ) )
 			)
 		);
 
@@ -554,13 +553,12 @@ class WP_Job_Manager_Post_Types {
 		// Delete old expired jobs.
 		if ( apply_filters( 'job_manager_delete_expired_jobs', false ) ) {
 			$job_ids = $wpdb->get_col(
-				$wpdb->prepare(
-					"
-				SELECT posts.ID FROM {$wpdb->posts} as posts
-				WHERE posts.post_type = 'job_listing'
-				AND posts.post_modified < %s
-				AND posts.post_status = 'expired'
-			", date( 'Y-m-d', strtotime( '-' . apply_filters( 'job_manager_delete_expired_jobs_days', 30 ) . ' days', current_time( 'timestamp' ) ) )
+				$wpdb->prepare( "
+					SELECT posts.ID FROM {$wpdb->posts} as posts
+					WHERE posts.post_type = 'job_listing'
+					AND posts.post_modified < %s
+					AND posts.post_status = 'expired'",
+					date( 'Y-m-d', strtotime( '-' . apply_filters( 'job_manager_delete_expired_jobs_days', 30 ) . ' days', current_time( 'timestamp' ) ) )
 				)
 			);
 
@@ -580,13 +578,12 @@ class WP_Job_Manager_Post_Types {
 
 		// Delete old expired jobs.
 		$job_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-			SELECT posts.ID FROM {$wpdb->posts} as posts
-			WHERE posts.post_type = 'job_listing'
-			AND posts.post_modified < %s
-			AND posts.post_status = 'preview'
-		", date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) )
+			$wpdb->prepare( "
+				SELECT posts.ID FROM {$wpdb->posts} as posts
+				WHERE posts.post_type = 'job_listing'
+				AND posts.post_modified < %s
+				AND posts.post_status = 'preview'",
+				date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) )
 			)
 		);
 
