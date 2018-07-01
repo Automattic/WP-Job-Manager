@@ -95,11 +95,11 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 
 		if ( $jobs->have_posts() ) : ?>
 
-			<?php echo wp_kses_post( $args['before_widget'] ); ?>
+			<?php echo $args['before_widget']; // WPCS: XSS ok. ?>
 
 			<?php
 			if ( $title ) {
-				echo wp_kses_post( $args['before_title'] ) . esc_html( $title ) . wp_kses_post( $args['after_title'] );
+				echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // WPCS: XSS ok.
 			}
 			?>
 
@@ -116,7 +116,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 
 			</ul>
 
-			<?php echo wp_kses_post( $args['after_widget'] ); ?>
+			<?php echo $args['after_widget']; // WPCS: XSS ok. ?>
 
 		<?php else : ?>
 
