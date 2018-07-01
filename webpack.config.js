@@ -1,6 +1,6 @@
 /* global require, module, process, __dirname */
-const CleanWebpackPlugin = require( 'clean-webpack-plugin' );
-const LodashModuleReplacementPlugin = require( 'lodash-webpack-plugin' );
+const cleanWebpackPlugin = require( 'clean-webpack-plugin' );
+const lodashModuleReplacementPlugin = require( 'lodash-webpack-plugin' );
 const miniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const glob = require( 'glob' );
 const entryArray = glob.sync( './assets/blocks/**/index.jsx' );
@@ -39,8 +39,8 @@ const webpackConfig = ( env, argv ) => {
 			],
 		},
 		plugins: [
-			new CleanWebpackPlugin( [ 'build' ] ),
-			new LodashModuleReplacementPlugin(),
+			new cleanWebpackPlugin( [ 'build' ] ),
+			new lodashModuleReplacementPlugin(),
 			new miniCssExtractPlugin( {
 				filename: 'build/[name]/style.css'
 			} ),
