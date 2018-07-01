@@ -709,7 +709,7 @@ function is_wpjm() {
 	 *
 	 * @param bool $is_wpjm
 	 */
-	return apply_filters( 'is_wpjm', ( is_wpjm_page() || has_wpjm_shortcode() || is_wpjm_job_listing() || is_wpjm_taxonomy() ) ? true : false );
+	return apply_filters( 'is_wpjm', ( is_wpjm_page() || has_wpjm_shortcode() || is_wpjm_job_listing() || is_wpjm_taxonomy() ) );
 }
 
 /**
@@ -840,7 +840,7 @@ function wpjm_use_standard_password_setup_email() {
 
 	// If username is being automatically generated, force them to send password setup email.
 	if ( ! job_manager_generate_username_from_email() ) {
-		$use_standard_password_setup_email = 1 === intval( get_option( 'job_manager_use_standard_password_setup_email' ) ) ? true : false;
+		$use_standard_password_setup_email = 1 === intval( get_option( 'job_manager_use_standard_password_setup_email' ) );
 	}
 
 	/**
@@ -898,7 +898,7 @@ function wpjm_job_listing_employment_type_enabled() {
 	 *
 	 * @param bool True if employment type meta field is enabled on job type terms.
 	 */
-	return apply_filters( 'wpjm_job_listing_employment_type_enabled', get_option( 'job_manager_enable_types' ) ? true : false );
+	return apply_filters( 'wpjm_job_listing_employment_type_enabled', (bool) get_option( 'job_manager_enable_types' ) );
 }
 
 /**

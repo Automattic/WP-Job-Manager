@@ -323,11 +323,11 @@ class WP_Job_Manager_Shortcodes {
 		$atts['show_pagination']           = $this->string_to_bool( $atts['show_pagination'] );
 
 		if ( ! is_null( $atts['featured'] ) ) {
-			$atts['featured'] = ( is_bool( $atts['featured'] ) && $atts['featured'] ) || in_array( $atts['featured'], array( 1, '1', 'true', 'yes' ), true ) ? true : false;
+			$atts['featured'] = ( is_bool( $atts['featured'] ) && $atts['featured'] ) || in_array( $atts['featured'], array( 1, '1', 'true', 'yes' ), true );
 		}
 
 		if ( ! is_null( $atts['filled'] ) ) {
-			$atts['filled'] = ( is_bool( $atts['filled'] ) && $atts['filled'] ) || in_array( $atts['filled'], array( 1, '1', 'true', 'yes' ), true ) ? true : false;
+			$atts['filled'] = ( is_bool( $atts['filled'] ) && $atts['filled'] ) || in_array( $atts['filled'], array( 1, '1', 'true', 'yes' ), true );
 		}
 
 		if ( empty( $atts['selected_category'] ) ) {
@@ -465,7 +465,7 @@ class WP_Job_Manager_Shortcodes {
 	 * @return bool
 	 */
 	public function string_to_bool( $value ) {
-		return ( is_bool( $value ) && $value ) || in_array( $value, array( 1, '1', 'true', 'yes' ), true ) ? true : false;
+		return ( is_bool( $value ) && $value ) || in_array( $value, array( 1, '1', 'true', 'yes' ), true );
 	}
 
 	/**

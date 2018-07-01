@@ -165,7 +165,7 @@ function get_the_job_status( $post = null ) {
  */
 function is_position_filled( $post = null ) {
 	$post = get_post( $post );
-	return $post->_filled ? true : false;
+	return (bool) $post->_filled;
 }
 
 /**
@@ -177,7 +177,7 @@ function is_position_filled( $post = null ) {
  */
 function is_position_featured( $post = null ) {
 	$post = get_post( $post );
-	return $post->_featured ? true : false;
+	return (bool) $post->_featured;
 }
 
 /**

@@ -144,11 +144,11 @@ class WP_Job_Manager_Ajax {
 		);
 
 		if ( isset( $_REQUEST['filled'] ) && ( 'true' === $_REQUEST['filled'] || 'false' === $_REQUEST['filled'] ) ) {
-			$args['filled'] = 'true' === $_REQUEST['filled'] ? true : false;
+			$args['filled'] = 'true' === $_REQUEST['filled'];
 		}
 
 		if ( isset( $_REQUEST['featured'] ) && ( 'true' === $_REQUEST['featured'] || 'false' === $_REQUEST['featured'] ) ) {
-			$args['featured'] = 'true' === $_REQUEST['featured'] ? true : false;
+			$args['featured'] = 'true' === $_REQUEST['featured'];
 			$args['orderby']  = 'featured' === $orderby ? 'date' : $orderby;
 		}
 
