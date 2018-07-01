@@ -7,9 +7,9 @@
   "repository": "automattic/wp-job-manager",
   "main": "Gruntfile.js",
   "scripts": {
-    "build": "BABEL_ENV=default NODE_ENV=production webpack",
+    "build": "cross-env BABEL_ENV=default webpack --mode=production",
     "clean": "rimraf assets/build",
-    "dev": "BABEL_ENV=default webpack --watch",
+    "dev": "cross-env BABEL_ENV=default webpack --mode=development --watch",
     "lint": "eslint --ext js,jsx assets/blocks"
   },
   "devDependencies": {

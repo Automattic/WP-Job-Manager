@@ -9,8 +9,6 @@ const blockNames = [
 ];
 
 const webpackConfig = {
-	mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-
 	entry: Object.assign(
 		blockNames.reduce( ( blocks, blockName ) => {
 			const path = `./assets/blocks/${ blockName }/index.jsx`;
