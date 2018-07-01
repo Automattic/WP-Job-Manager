@@ -4,9 +4,50 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d72b2f7bb6571a13aacefd6d0f8be6bd",
+    "content-hash": "cf8ddbe0e0d55e1651a8b3958b98911b",
     "packages": [],
     "packages-dev": [
+        {
+            "name": "bjornjohansen/wp-pre-commit-hook",
+            "version": "0.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bjornjohansen/wp-pre-commit-hook.git",
+                "reference": "03b4682cb70ee4c1cace73fc0d26775c5eebbf0e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bjornjohansen/wp-pre-commit-hook/zipball/03b4682cb70ee4c1cace73fc0d26775c5eebbf0e",
+                "reference": "03b4682cb70ee4c1cace73fc0d26775c5eebbf0e",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "*",
+                "wp-coding-standards/wpcs": "*"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "BjornJohansen\\WPPreCommitHook\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "BjornJohansen\\WPPreCommitHook\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Bjørn Johansen",
+                    "email": "post@bjornjohansen.no"
+                }
+            ],
+            "description": "Pre-commit hook for WordPress projects",
+            "time": "2018-03-15T13:54:08+00:00"
+        },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
             "version": "v0.4.4",

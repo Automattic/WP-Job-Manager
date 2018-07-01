@@ -8,6 +8,7 @@
     "phpunit/phpunit": "^5.7",
     "wp-coding-standards/wpcs": "^0.14.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
-    "wimg/php-compatibility": "^8.1"
+    "wimg/php-compatibility": "^8.1",
+    "bjornjohansen/wp-pre-commit-hook": "^0.2.2"
   }
 }

@@ -33,7 +33,6 @@
 	<rule ref="WordPress">
 		<exclude name="WordPress.VIP" />
 		<exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found" />
-		<exclude name="Generic.Commenting.DocComment.SpacingBeforeTags" />
 		<exclude name="WordPress.CSRF.NonceVerification.NoNonceVerification" />
 	</rule>
 	<rule ref="WordPress.WP.I18n">
