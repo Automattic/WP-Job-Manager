@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 			<div class="plugin-licence">
 				<?php
-					$notices = WP_Job_Manager_Helper::get_messages( $product_slug );
+				$notices = WP_Job_Manager_Helper::get_messages( $product_slug );
 				if ( empty( $notices ) && ! empty( $licence['errors'] ) ) {
 					$notices = array();
 					foreach ( $licence['errors'] as $key => $error ) {
