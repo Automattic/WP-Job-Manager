@@ -8,7 +8,7 @@
   "main": "Gruntfile.js",
   "scripts": {
     "build": "cross-env BABEL_ENV=default webpack --mode=production",
-    "clean": "rimraf assets/build",
+    "clean": "rimraf build",
     "dev": "cross-env BABEL_ENV=default webpack --mode=development --watch",
     "lint": "eslint --ext js,jsx assets/blocks"
   },

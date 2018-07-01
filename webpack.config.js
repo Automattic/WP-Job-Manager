@@ -14,7 +14,7 @@ const entryObject = entryArray.reduce( ( acc, item ) => {
 const webpackConfig = {
 	entry: entryObject,
 	output: {
-		filename: 'assets/build/blocks/[name].js',
+		filename: 'build/[name]/index.js',
 		path: __dirname,
 	},
 	module: {
