@@ -132,7 +132,8 @@ class WP_Job_Manager_Admin {
 
 			if ( ! function_exists( 'wp_localize_jquery_ui_datepicker' ) || ! has_action( 'admin_enqueue_scripts', 'wp_localize_jquery_ui_datepicker' ) ) {
 				wp_localize_script(
-					'job_manager_datepicker_js', 'job_manager_datepicker',
+					'job_manager_datepicker_js',
+					'job_manager_datepicker',
 					array(
 						/* translators: jQuery date format, see http://api.jqueryui.com/datepicker/#utility-formatDate */
 						'date_format' => _x( 'yy-mm-dd', 'Date format for jQuery datepicker.', 'wp-job-manager' ),
