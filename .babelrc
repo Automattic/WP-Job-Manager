@@ -1,5 +1,5 @@
 {
-	"presets": [
+	'presets': [
 		[ 'env', {
 			'targets': {
 				'browsers': [
@@ -16,14 +16,14 @@
 				]
 			}
 		} ],
-		"@wordpress/default"
+		'@wordpress/default'
 	],
-	"plugins": [
-		[ "transform-react-jsx", {
-			"pragma": "wp.element.createElement"
+	'plugins': [
+		[ 'transform-react-jsx', {
+			'pragma': 'wp.element.createElement'
 		} ],
-		"transform-class-properties",
-		"transform-object-rest-spread",
-		"lodash"
+		'transform-class-properties',
+		'transform-object-rest-spread',
+		'lodash'
 	]
 }
