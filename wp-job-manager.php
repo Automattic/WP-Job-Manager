@@ -273,6 +273,20 @@ class WP_Job_Manager {
 		}
 	}
 
+	private function using_chosen() {
+		$chosen_shortcodes   = array( 'submit_job_form', 'job_dashboard', 'jobs' );
+		$chosen_used_on_page = has_wpjm_shortcode( null, $chosen_shortcodes );
+
+		/**
+		 * Filter the use of the chosen library.
+		 *
+		 * @since 1.19.0
+		 *
+		 * @param bool $chosen_used_on_page Defaults to only when there are known shortcodes on the page.
+		 */
+		return apply_filters( 'job_manager_chosen_enabled', $chosen_used_on_page );
+	}
+
 	/**
 	 * Registers assets used in both the frontend and WP admin.
 	 */
@@ -282,8 +296,33 @@ class WP_Job_Manager {
 		$jquery_version = isset( $wp_scripts->registered['jquery-ui-core']->ver ) ? $wp_scripts->registered['jquery-ui-core']->ver : '1.9.2';
 		wp_register_style( 'jquery-ui', '//code.jquery.com/ui/' . $jquery_version . '/themes/smoothness/jquery-ui.css', array(), $jquery_version );
 
-		// Used for some Gutenberg blocks.
+		/**
+		 * Retrieves the current language for use when caching requests.
+		 *
+		 * @since 1.26.0
+		 *
+		 * @param string|null $lang
+		 */
+		$ajax_data['lang'] = apply_filters( 'wpjm_lang', null );
+
+		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
+		if ( $this->using_chosen() ) {
+			$ajax_filter_deps[] = 'chosen';
+		}
+
+		// Used in Gutenberg.
+		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-deserialize/jquery.deserialize.js', array( 'jquery' ), '1.2.1', true );
+		wp_register_script( 'wp-job-manager-ajax-filters', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.js', $ajax_filter_deps, JOB_MANAGER_VERSION, true );
 		wp_register_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
+
+		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
+		$ajax_data        = array(
+			'ajax_url'                => $ajax_url,
+			'is_rtl'                  => is_rtl() ? 1 : 0,
+			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' ),
+		);
+
+		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
 	}
 
 	/**
@@ -325,41 +364,16 @@ class WP_Job_Manager {
 			add_filter( 'job_manager_enqueue_frontend_style', '__return_true' );
 		}
 
-		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
-		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
-		$ajax_data 		  = array(
-			'ajax_url'                => $ajax_url,
-			'is_rtl'                  => is_rtl() ? 1 : 0,
-			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' ),
-		);
+		$ajax_url = WP_Job_Manager_Ajax::get_endpoint();
 
 		/**
-		 * Retrieves the current language for use when caching requests.
-		 *
-		 * @since 1.26.0
-		 *
-		 * @param string|null $lang
-		 */
-		$ajax_data['lang'] = apply_filters( 'wpjm_lang', null );
-
-		$chosen_shortcodes = array( 'submit_job_form', 'job_dashboard', 'jobs' );
-		$chosen_used_on_page = has_wpjm_shortcode( null, $chosen_shortcodes );
-
-		/**
-		 * Filter the use of the chosen library.
-		 *
 		 * NOTE: See above. Before WP Job Manager 1.32.0 is released, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
-		 *
-		 * @since 1.19.0
-		 *
-		 * @param bool $chosen_used_on_page Defaults to only when there are known shortcodes on the page.
 		 */
-		if ( apply_filters( 'job_manager_chosen_enabled', $chosen_used_on_page ) ) {
+		if ( $this->using_chosen() ) {
 			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
 			wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
 			wp_register_script( 'wp-job-manager-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
 			wp_enqueue_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/css/chosen.css', array(), '1.1.0' );
-			$ajax_filter_deps[] = 'chosen';
 
 			wp_localize_script( 'chosen', 'job_manager_chosen_multiselect_args',
 				apply_filters( 'job_manager_chosen_multiselect_args', array(
@@ -397,12 +411,9 @@ class WP_Job_Manager {
 			) );
 		}
 
-		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-deserialize/jquery.deserialize.js', array( 'jquery' ), '1.2.1', true );
-		wp_register_script( 'wp-job-manager-ajax-filters', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.min.js', $ajax_filter_deps, JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-dashboard', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-dashboard.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-application', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-application.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-submission.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
-		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
 		wp_localize_script( 'wp-job-manager-job-dashboard', 'job_manager_job_dashboard', array(
 			'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 		) );

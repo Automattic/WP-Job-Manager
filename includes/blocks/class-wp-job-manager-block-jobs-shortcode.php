@@ -22,7 +22,10 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 
 		// Jobs block
 		return new WP_Block_Type( 'wp-job-manager/jobs', array(
-			'editor_script'   => 'wp-job-manager-block-jobs',
+			'editor_script'   => array(
+				'wp-job-manager-block-jobs',
+				'wp-job-manager-ajax-filters',
+			),
 			'editor_style'    => 'wp-job-manager-frontend',
 			'render_callback' => array(
 				'WP_Job_Manager_Block_Jobs_Shortcode', 'render'
