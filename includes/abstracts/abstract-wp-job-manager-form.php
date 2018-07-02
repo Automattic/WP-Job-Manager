@@ -330,12 +330,16 @@ abstract class WP_Job_Manager_Form {
 			)
 		);
 
+		// translators: %s is the name of the form validation that failed.
+		$validation_error = new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+
 		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
-			$json = json_decode( $response['body'] );
-			if ( ! $json || ! $json->success ) {
-				// translators: %s is the name of the form validation that failed.
-				return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
-			}
+			return $validation_error;
+		}
+
+		$json = json_decode( $response['body'] );
+		if ( ! $json || ! $json->success ) {
+			return $validation_error;
 		}
 
 		return $success;
