@@ -118,7 +118,8 @@ class WP_Job_Manager_Addons {
 				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ) ); ?>" class="nav-tab
 									<?php
 									if ( ! isset( $_GET['section'] ) || 'helper' !== $_GET['section'] ) {
-										echo ' nav-tab-active'; }
+										echo ' nav-tab-active';
+									}
 									?>
 				"><?php esc_html_e( 'WP Job Manager Add-ons', 'wp-job-manager' ); ?></a>
 				<?php if ( current_user_can( 'update_plugins' ) ) : ?>
