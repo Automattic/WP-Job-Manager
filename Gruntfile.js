@@ -20,10 +20,10 @@ module.exports = function( grunt ) {
 				command: 'node_modules/.bin/mixtape build'
 			},
 			webpack: {
-				command: 'cross-env BABEL_ENV=default NODE_ENV=production webpack'
+				command: 'npm run build'
 			},
 			webpackDev: {
-				command: 'cross-env BABEL_ENV=default webpack --watch'
+				command: 'npm run dev'
 			}
 		},
 
