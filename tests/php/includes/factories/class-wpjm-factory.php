@@ -13,9 +13,9 @@ class WPJM_Factory extends WP_UnitTest_Factory {
 	 * Constructor
 	 */
 	public function __construct() {
-		// construct the parent
+		// construct the parent.
 		parent::__construct();
-		require_once( dirname( __FILE__ ) . '/class-wp-unittest-factory-for-job-listing.php' );
+		require_once dirname( __FILE__ ) . '/class-wp-unittest-factory-for-job-listing.php';
 		$this->job_listing = new WP_UnitTest_Factory_For_Job_Listing( $this );
 	}
 }

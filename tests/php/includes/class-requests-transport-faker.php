@@ -2,20 +2,20 @@
 
 class Requests_Transport_Faker implements Requests_Transport {
 	public $headers_matter = false;
-	private $_log = array();
-	private $_responses = array();
+	private $_log          = array();
+	private $_responses    = array();
 
 	/**
 	 * Adds a fake request and response.
 	 *
-	 * @param array|string $request Array (url, headers, data) or string of the signature (See: Requests_Transport_Faker::make_request_signature())
+	 * @param array|string $request Array (url, headers, data) or string of the signature (See: Requests_Transport_Faker::make_request_signature()).
 	 * @param array $response
 	 */
 	public function add_fake_request( $request, $response ) {
 		$response_arr = array();
 		if ( is_array( $request ) ) {
 			$response_arr['request'] = $request;
-			$request = self::make_request_signature(
+			$request                 = self::make_request_signature(
 				isset( $request['url'] ) ? $request['url'] : '',
 				isset( $request['headers'] ) ? $request['headers'] : array(),
 				isset( $request['data'] ) ? $request['data'] : array()
@@ -24,7 +24,7 @@ class Requests_Transport_Faker implements Requests_Transport {
 		if ( is_array( $response ) ) {
 			$response = self::build_response( $response );
 		}
-		$response_arr['response'] = $response;
+		$response_arr['response']     = $response;
 		$this->_responses[ $request ] = $response_arr;
 	}
 
@@ -102,7 +102,11 @@ class Requests_Transport_Faker implements Requests_Transport {
 		} else {
 			$signature = self::make_request_signature( $url, array(), $data );
 		}
-		$this->_log[ $signature ] = array( 'url' => $url, 'headers' => $headers, 'data' => $data );
+		$this->_log[ $signature ] = array(
+			'url'     => $url,
+			'headers' => $headers,
+			'data'    => $data,
+		);
 		if ( ! isset( $this->_responses[ $signature ] ) ) {
 			throw new Requests_Exception( 'Computer says no', 'test' );
 		}
@@ -114,20 +118,19 @@ class Requests_Transport_Faker implements Requests_Transport {
 	 */
 	public function request_multiple( $requests, $options ) {
 		$responses = array();
-		$class = get_class($this);
-		foreach ($requests as $id => $request) {
+		$class     = get_class( $this );
+		foreach ( $requests as $id => $request ) {
 			try {
-				$handler = new $class();
-				$responses[$id] = $handler->request($request['url'], $request['headers'], $request['data'], $request['options']);
+				$handler          = new $class();
+				$responses[ $id ] = $handler->request( $request['url'], $request['headers'], $request['data'], $request['options'] );
 
-				$request['options']['hooks']->dispatch('transport.internal.parse_response', array(&$responses[$id], $request));
-			}
-			catch (Requests_Exception $e) {
-				$responses[$id] = $e;
+				$request['options']['hooks']->dispatch( 'transport.internal.parse_response', array( &$responses[ $id ], $request ) );
+			} catch ( Requests_Exception $e ) {
+				$responses[ $id ] = $e;
 			}
 
-			if (!is_string($responses[$id])) {
-				$request['options']['hooks']->dispatch('multiple.request.complete', array(&$responses[$id], $id));
+			if ( ! is_string( $responses[ $id ] ) ) {
+				$request['options']['hooks']->dispatch( 'multiple.request.complete', array( &$responses[ $id ], $id ) );
 			}
 		}
 

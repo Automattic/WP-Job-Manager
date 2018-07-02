@@ -74,7 +74,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		parent::setUp();
 
 		// Only post-4.9.1 versions of WordPress will correctly return 401 for unauthorized requests.
-		// See https://core.trac.wordpress.org/changeset/42421
+		// See https://core.trac.wordpress.org/changeset/42421.
 		if ( version_compare( $wp_version, '4.9.1', '<=' ) ) {
 			$this->markTestSkipped( 'Older versions of WordPress have REST API authorization issues.' );
 			return;
@@ -88,20 +88,21 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		wp_cache_flush();
 
 		$admin = get_user_by( 'email', 'rest_api_admin_user@test.com' );
-		if ( false === $admin ){
+		if ( false === $admin ) {
 			$this->admin_id = wp_create_user(
 				'rest_api_admin_user',
 				'rest_api_admin_user',
-				'rest_api_admin_user@test.com' );
-			$admin = get_user_by( 'ID', $this->admin_id );
+				'rest_api_admin_user@test.com'
+			);
+			$admin          = get_user_by( 'ID', $this->admin_id );
 			$admin->set_role( 'administrator' );
 		}
 
 		$this->default_user_id = get_current_user_id();
 		$this->login_as_admin();
 		$this->rest_server = $wp_rest_server;
-		$bootstrap = WPJM()->rest_api()->get_bootstrap();
-		$this->bootstrap = WPJM()->rest_api()->get_bootstrap();
+		$bootstrap         = WPJM()->rest_api()->get_bootstrap();
+		$this->bootstrap   = WPJM()->rest_api()->get_bootstrap();
 		$this->environment = $bootstrap->environment();
 	}
 
@@ -137,6 +138,8 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * Expect a model is valid
 	 *
 	 * @param WP_Job_Manager_REST_Interfaces_Model $model The model.
+	 *
+	 * @throws WP_Job_Manager_REST_Exception
 	 */
 	function assertModelValid( $model ) {
 		$this->assertTrue( $model->validate() );

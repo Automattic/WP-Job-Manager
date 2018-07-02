@@ -40,8 +40,9 @@ class WP_Job_Manager_Setup {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_action( 'admin_init', array( $this, 'redirect' ) );
-		if ( isset( $_GET[ 'page' ] ) && $_GET[ 'page' ] == 'job-manager-setup' )
+		if ( isset( $_GET['page'] ) && 'job-manager-setup' === $_GET['page'] ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 12 );
+		}
 	}
 
 	/**
@@ -62,24 +63,24 @@ class WP_Job_Manager_Setup {
 	 * Sends user to the setup page on first activation.
 	 */
 	public function redirect() {
-		// Bail if no activation redirect transient is set
-	    if ( ! get_transient( '_job_manager_activation_redirect' ) ) {
+		// Bail if no activation redirect transient is set.
+		if ( ! get_transient( '_job_manager_activation_redirect' ) ) {
 			return;
-	    }
+		}
 
-	    if ( ! current_user_can( 'manage_options' ) ) {
-	    	return;
-	    }
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
 
-		// Delete the redirect transient
+		// Delete the redirect transient.
 		delete_transient( '_job_manager_activation_redirect' );
 
-		// Bail if activating from network, or bulk, or within an iFrame
+		// Bail if activating from network, or bulk, or within an iFrame.
 		if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) ) {
 			return;
 		}
 
-		if ( ( isset( $_GET['action'] ) && 'upgrade-plugin' == $_GET['action'] ) && ( isset( $_GET['plugin'] ) && strstr( $_GET['plugin'], 'wp-job-manager.php' ) ) ) {
+		if ( ( isset( $_GET['action'] ) && 'upgrade-plugin' === $_GET['action'] ) && ( isset( $_GET['plugin'] ) && strstr( $_GET['plugin'], 'wp-job-manager.php' ) ) ) {
 			return;
 		}
 
@@ -110,9 +111,9 @@ class WP_Job_Manager_Setup {
 			'post_title'     => $title,
 			'post_content'   => $content,
 			'post_parent'    => 0,
-			'comment_status' => 'closed'
+			'comment_status' => 'closed',
 		);
-		$page_id = wp_insert_post( $page_data );
+		$page_id   = wp_insert_post( $page_data );
 
 		if ( $option ) {
 			update_option( $option, $page_id );
@@ -181,14 +182,15 @@ class WP_Job_Manager_Setup {
 		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
 
 		if ( 3 === $step && ! empty( $_POST ) ) {
-			if ( false == wp_verify_nonce( $_REQUEST[ 'setup_wizard' ], 'step_3' ) )
+			if ( false === wp_verify_nonce( $_REQUEST['setup_wizard'], 'step_3' ) ) {
 				wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
+			}
 			$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? $_POST['wp-job-manager-create-page'] : array();
 			$page_titles     = $_POST['wp-job-manager-page-title'];
 			$pages_to_create = array(
 				'submit_job_form' => '[submit_job_form]',
 				'job_dashboard'   => '[job_dashboard]',
-				'jobs'            => '[jobs]'
+				'jobs'            => '[jobs]',
 			);
 
 			foreach ( $pages_to_create as $page => $content ) {
@@ -200,21 +202,30 @@ class WP_Job_Manager_Setup {
 		}
 		?>
 		<div class="wrap wp_job_manager wp_job_manager_addons_wrap">
-			<h2><?php _e( 'WP Job Manager Setup', 'wp-job-manager' ); ?></h2>
+			<h2><?php esc_html_e( 'WP Job Manager Setup', 'wp-job-manager' ); ?></h2>
 
 			<ul class="wp-job-manager-setup-steps">
-				<li class="<?php if ( $step === 1 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '1. Introduction', 'wp-job-manager' ); ?></li>
-				<li class="<?php if ( $step === 2 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '2. Page Setup', 'wp-job-manager' ); ?></li>
-				<li class="<?php if ( $step === 3 ) echo 'wp-job-manager-setup-active-step'; ?>"><?php _e( '3. Done', 'wp-job-manager' ); ?></li>
+				<?php
+					$step_classes          = array_fill( 1, 3, '' );
+					$step_classes[ $step ] = 'wp-job-manager-setup-active-step';
+				?>
+				<li class="<?php echo sanitize_html_class( $step_classes[1] ); ?>"><?php esc_html_e( '1. Introduction', 'wp-job-manager' ); ?></li>
+				<li class="<?php echo sanitize_html_class( $step_classes[2] ); ?>"><?php esc_html_e( '2. Page Setup', 'wp-job-manager' ); ?></li>
+				<li class="<?php echo sanitize_html_class( $step_classes[3] ); ?>"><?php esc_html_e( '3. Done', 'wp-job-manager' ); ?></li>
 			</ul>
 
 			<?php if ( 1 === $step ) : ?>
 
-				<h3><?php _e( 'Welcome to the Setup Wizard!', 'wp-job-manager' ); ?></h3>
+				<h3><?php esc_html_e( 'Welcome to the Setup Wizard!', 'wp-job-manager' ); ?></h3>
 
-				<p><?php _e( 'Thanks for installing <em>WP Job Manager</em>! Let\'s get your site ready to accept job listings.', 'wp-job-manager' ); ?></p>
-				<p><?php _e( 'This setup wizard will walk you through the process of creating pages for job submissions, management, and listings.', 'wp-job-manager' ); ?></p>
-				<p><?php printf( __( 'If you\'d prefer to skip this and set up your pages manually, our %sdocumentation%s will walk you through each step.', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>' ); ?></p>
+				<p><?php echo wp_kses_post( __( 'Thanks for installing <em>WP Job Manager</em>! Let\'s get your site ready to accept job listings.', 'wp-job-manager' ) ); ?></p>
+				<p><?php echo wp_kses_post( __( 'This setup wizard will walk you through the process of creating pages for job submissions, management, and listings.', 'wp-job-manager' ) ); ?></p>
+				<p>
+					<?php
+					// translators: Placeholder %s is the path to WPJM documentation site.
+					echo wp_kses_post( sprintf( __( 'If you\'d prefer to skip this and set up your pages manually, our <a href="%s">documentation</a> will walk you through each step.', 'wp-job-manager' ), 'https://wpjobmanager.com/documentation/' ) );
+					?>
+				</p>
 
 				<form method="post" action="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>">
 					<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'enable-usage-tracking' ) ); ?>" />
@@ -230,10 +241,21 @@ class WP_Job_Manager_Setup {
 			<?php endif; ?>
 			<?php if ( 2 === $step ) : ?>
 
-				<h3><?php _e( 'Page Setup', 'wp-job-manager' ); ?></h3>
+				<h3><?php esc_html_e( 'Page Setup', 'wp-job-manager' ); ?></h3>
 
-				<p><?php _e( 'With WP Job Manager, employers and applicants can post, manage, and browse job listings right on your website. Tell us which of these common pages you\'d like your site to have and we\'ll create and configure them for you.', 'wp-job-manager' ); ?></p>
-				<p><?php printf( __( '(These pages are created using %1$sshortcodes%2$s, which we take care of in this step. If you\'d like to build these pages yourself or want to add one of these options to an existing page on your site, you can skip this step and take a look at %4$sshortcode documentation%2$s for detailed instructions.)', 'wp-job-manager' ), '<a href="http://codex.wordpress.org/Shortcode" title="What is a shortcode?" target="_blank" class="help-page-link">', '</a>', '<a href="http://codex.wordpress.org/Pages" target="_blank" class="help-page-link">', '<a href="https://wpjobmanager.com/document/shortcode-reference/" target="_blank" class="help-page-link">' ); ?></p>
+				<p><?php esc_html_e( 'With WP Job Manager, employers and applicants can post, manage, and browse job listings right on your website. Tell us which of these common pages you\'d like your site to have and we\'ll create and configure them for you.', 'wp-job-manager' ); ?></p>
+				<p>
+					<?php
+					echo wp_kses_post( sprintf(
+						// translators: %1$s is URL to WordPress core shortcode documentation. %2$s is URL to WPJM specific shortcode reference.
+						__( '(These pages are created using <a href="%1$s" title="What is a shortcode?" target="_blank" class="help-page-link">shortcodes</a>, 
+								which we take care of in this step. If you\'d like to build these pages yourself or want to add one of these options to an existing 
+								page on your site, you can skip this step and take a look at <a href="%2$s" target="_blank" class="help-page-link">shortcode documentation</a> for detailed instructions.)', 'wp-job-manager' ),
+						'http://codex.wordpress.org/Shortcode',
+						'https://wpjobmanager.com/document/shortcode-reference/'
+					) );
+					?>
+				</p>
 
 				<form action="<?php echo esc_url( add_query_arg( 'step', 3 ) ); ?>" method="post">
 				<?php wp_nonce_field( 'step_3', 'setup_wizard' ); ?>
@@ -241,9 +263,9 @@ class WP_Job_Manager_Setup {
 						<thead>
 							<tr>
 								<th>&nbsp;</th>
-								<th><?php _e( 'Page Title', 'wp-job-manager' ); ?></th>
-								<th><?php _e( 'Page Description', 'wp-job-manager' ); ?></th>
-								<th><?php _e( 'Content Shortcode', 'wp-job-manager' ); ?></th>
+								<th><?php esc_html_e( 'Page Title', 'wp-job-manager' ); ?></th>
+								<th><?php esc_html_e( 'Page Description', 'wp-job-manager' ); ?></th>
+								<th><?php esc_html_e( 'Content Shortcode', 'wp-job-manager' ); ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -251,7 +273,7 @@ class WP_Job_Manager_Setup {
 								<td><input type="checkbox" checked="checked" name="wp-job-manager-create-page[submit_job_form]" /></td>
 								<td><input type="text" value="<?php echo esc_attr( _x( 'Post a Job', 'Default page title (wizard)', 'wp-job-manager' ) ); ?>" name="wp-job-manager-page-title[submit_job_form]" /></td>
 								<td>
-									<p><?php _e( 'Creates a page that allows employers to post new jobs directly from a page on your website, instead of requiring them to log in to an admin area. If you\'d rather not allow this -- for example, if you want employers to use the admin dashboard only -- you can uncheck this setting.', 'wp-job-manager' ); ?></p>
+									<p><?php esc_html_e( 'Creates a page that allows employers to post new jobs directly from a page on your website, instead of requiring them to log in to an admin area. If you\'d rather not allow this -- for example, if you want employers to use the admin dashboard only -- you can uncheck this setting.', 'wp-job-manager' ); ?></p>
 								</td>
 								<td><code>[submit_job_form]</code></td>
 							</tr>
@@ -259,14 +281,14 @@ class WP_Job_Manager_Setup {
 								<td><input type="checkbox" checked="checked" name="wp-job-manager-create-page[job_dashboard]" /></td>
 								<td><input type="text" value="<?php echo esc_attr( _x( 'Job Dashboard', 'Default page title (wizard)', 'wp-job-manager' ) ); ?>" name="wp-job-manager-page-title[job_dashboard]" /></td>
 								<td>
-									<p><?php _e( 'Creates a page that allows employers to manage their job listings directly from a page on your website, instead of requiring them to log in to an admin area. If you want to manage all job listings from the admin dashboard only, you can uncheck this setting.', 'wp-job-manager' ); ?></p>
+									<p><?php esc_html_e( 'Creates a page that allows employers to manage their job listings directly from a page on your website, instead of requiring them to log in to an admin area. If you want to manage all job listings from the admin dashboard only, you can uncheck this setting.', 'wp-job-manager' ); ?></p>
 								</td>
 								<td><code>[job_dashboard]</code></td>
 							</tr>
 							<tr>
 								<td><input type="checkbox" checked="checked" name="wp-job-manager-create-page[jobs]" /></td>
 								<td><input type="text" value="<?php echo esc_attr( _x( 'Jobs', 'Default page title (wizard)', 'wp-job-manager' ) ); ?>" name="wp-job-manager-page-title[jobs]" /></td>
-								<td><?php _e( 'Creates a page where visitors can browse, search, and filter job listings.', 'wp-job-manager' ); ?></td>
+								<td><?php esc_html_e( 'Creates a page where visitors can browse, search, and filter job listings.', 'wp-job-manager' ); ?></td>
 								<td><code>[jobs]</code></td>
 							</tr>
 						</tbody>
@@ -274,7 +296,7 @@ class WP_Job_Manager_Setup {
 							<tr>
 								<th colspan="4">
 									<input type="submit" class="button button-primary" value="Create selected pages" />
-									<a href="<?php echo esc_url( add_query_arg( 'step', 3 ) ); ?>" class="button"><?php _e( 'Skip this step', 'wp-job-manager' ); ?></a>
+									<a href="<?php echo esc_url( add_query_arg( 'step', 3 ) ); ?>" class="button"><?php esc_html_e( 'Skip this step', 'wp-job-manager' ); ?></a>
 								</th>
 							</tr>
 						</tfoot>
@@ -284,43 +306,64 @@ class WP_Job_Manager_Setup {
 			<?php endif; ?>
 			<?php if ( 3 === $step ) : ?>
 
-				<h3><?php _e( 'You\'re ready to start using WP Job Manager!', 'wp-job-manager' ); ?></h3>
+				<h3><?php esc_html_e( 'You\'re ready to start using WP Job Manager!', 'wp-job-manager' ); ?></h3>
 
-				<p><?php _e( 'Wondering what to do now? Here are some of the most common next steps:', 'wp-job-manager' ); ?></p>
+				<p><?php esc_html_e( 'Wondering what to do now? Here are some of the most common next steps:', 'wp-job-manager' ); ?></p>
 
 				<ul class="wp-job-manager-next-steps">
-					<li><a href="<?php echo admin_url( 'edit.php?post_type=job_listing&page=job-manager-settings' ); ?>"><?php _e( 'Tweak your settings', 'wp-job-manager' ); ?></a></li>
-					<li><a href="<?php echo admin_url( 'post-new.php?post_type=job_listing' ); ?>"><?php _e( 'Add a job using the admin dashboard', 'wp-job-manager' ); ?></a></li>
+					<li><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-settings' ) ); ?>"><?php esc_html_e( 'Tweak your settings', 'wp-job-manager' ); ?></a></li>
+					<li><a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=job_listing' ) ); ?>"><?php esc_html_e( 'Add a job using the admin dashboard', 'wp-job-manager' ); ?></a></li>
+					<?php
+					$permalink = job_manager_get_permalink( 'jobs' );
+					if ( $permalink ) {
+						?>
+						<li><a href="<?php echo esc_url( $permalink ); ?>"><?php esc_html_e( 'View submitted job listings', 'wp-job-manager' ); ?></a></li>
+					<?php } else { ?>
+						<li><a href="https://wpjobmanager.com/document/shortcode-reference/#section-1"><?php esc_html_e( 'Add job listings to a page using the [jobs] shortcode', 'wp-job-manager' ); ?></a></li>
+					<?php } ?>
 
-					<?php if ( $permalink = job_manager_get_permalink( 'jobs' ) ) : ?>
-						<li><a href="<?php echo esc_url( $permalink ); ?>"><?php _e( 'View submitted job listings', 'wp-job-manager' ); ?></a></li>
-					<?php else : ?>
-						<li><a href="https://wpjobmanager.com/document/shortcode-reference/#section-1"><?php _e( 'Add job listings to a page using the [jobs] shortcode', 'wp-job-manager' ); ?></a></li>
-					<?php endif; ?>
+					<?php
+					$permalink = job_manager_get_permalink( 'submit_job_form' );
+					if ( $permalink ) {
+						?>
+						<li><a href="<?php echo esc_url( $permalink ); ?>"><?php esc_html_e( 'Add a job via the front-end', 'wp-job-manager' ); ?></a></li>
+					<?php } else { ?>
+						<li><a href="https://wpjobmanager.com/document/the-job-submission-form/"><?php esc_html_e( 'Learn to use the front-end job submission board', 'wp-job-manager' ); ?></a></li>
+					<?php } ?>
 
-					<?php if ( $permalink = job_manager_get_permalink( 'submit_job_form' ) ) : ?>
-						<li><a href="<?php echo esc_url( $permalink ); ?>"><?php _e( 'Add a job via the front-end', 'wp-job-manager' ); ?></a></li>
-					<?php else : ?>
-						<li><a href="https://wpjobmanager.com/document/the-job-submission-form/"><?php _e( 'Learn to use the front-end job submission board', 'wp-job-manager' ); ?></a></li>
-					<?php endif; ?>
-
-					<?php if ( $permalink = job_manager_get_permalink( 'job_dashboard' ) ) : ?>
-						<li><a href="<?php echo esc_url( $permalink ); ?>"><?php _e( 'View the job dashboard', 'wp-job-manager' ); ?></a></li>
-					<?php else : ?>
-						<li><a href="https://wpjobmanager.com/document/the-job-dashboard/"><?php _e( 'Learn to use the front-end job dashboard', 'wp-job-manager' ); ?></a></li>
-					<?php endif; ?>
+					<?php
+					$permalink = job_manager_get_permalink( 'job_dashboard' );
+					if ( $permalink ) {
+						?>
+						<li><a href="<?php echo esc_url( $permalink ); ?>"><?php esc_html_e( 'View the job dashboard', 'wp-job-manager' ); ?></a></li>
+					<?php } else { ?>
+						<li><a href="https://wpjobmanager.com/document/the-job-dashboard/"><?php esc_html_e( 'Learn to use the front-end job dashboard', 'wp-job-manager' ); ?></a></li>
+					<?php } ?>
 				</ul>
 
-				<p><?php printf( __( 'If you need help, you can find more detail in our %1$ssupport documentation%2$s or post your question on the %3$sWP Job Manager support forums%2$s. Happy hiring!', 'wp-job-manager' ), '<a href="https://wpjobmanager.com/documentation/">', '</a>', '<a href="https://wordpress.org/support/plugin/wp-job-manager">' ); ?></p>
+				<p>
+					<?php
+					echo wp_kses_post(
+						sprintf(
+							// translators: %1$s is the URL to WPJM support documentation; %2$s is the URL to WPJM support forums.
+							__( 'If you need help, you can find more detail in our 
+							<a href="%1$s">support documentation</a> or post your question on the
+							<a href="%2$s">WP Job Manager support forums</a>. Happy hiring!', 'wp-job-manager' ),
+							'https://wpjobmanager.com/documentation/',
+							'https://wordpress.org/support/plugin/wp-job-manager'
+						)
+					);
+					?>
+				</p>
 
 				<div class="wp-job-manager-support-the-plugin">
-					<h3><?php _e( 'Support WP Job Manager\'s Ongoing Development', 'wp-job-manager' ); ?></h3>
-					<p><?php _e( 'There are lots of ways you can support open source software projects like this one: contributing code, fixing a bug, assisting with non-English translation, or just telling your friends about WP Job Manager to help spread the word. We appreciate your support!', 'wp-job-manager' ); ?></p>
+					<h3><?php esc_html_e( 'Support WP Job Manager\'s Ongoing Development', 'wp-job-manager' ); ?></h3>
+					<p><?php esc_html_e( 'There are lots of ways you can support open source software projects like this one: contributing code, fixing a bug, assisting with non-English translation, or just telling your friends about WP Job Manager to help spread the word. We appreciate your support!', 'wp-job-manager' ); ?></p>
 					<ul>
-						<li class="icon-review"><a href="https://wordpress.org/support/view/plugin-reviews/wp-job-manager#postform"><?php _e( 'Leave a positive review', 'wp-job-manager' ); ?></a></li>
-						<li class="icon-localization"><a href="https://translate.wordpress.org/projects/wp-plugins/wp-job-manager"><?php _e( 'Contribute a localization', 'wp-job-manager' ); ?></a></li>
-						<li class="icon-code"><a href="https://github.com/mikejolley/WP-Job-Manager"><?php _e( 'Contribute code or report a bug', 'wp-job-manager' ); ?></a></li>
-						<li class="icon-forum"><a href="https://wordpress.org/support/plugin/wp-job-manager"><?php _e( 'Help other users on the forums', 'wp-job-manager' ); ?></a></li>
+						<li class="icon-review"><a href="https://wordpress.org/support/view/plugin-reviews/wp-job-manager#postform"><?php esc_html_e( 'Leave a positive review', 'wp-job-manager' ); ?></a></li>
+						<li class="icon-localization"><a href="https://translate.wordpress.org/projects/wp-plugins/wp-job-manager"><?php esc_html_e( 'Contribute a localization', 'wp-job-manager' ); ?></a></li>
+						<li class="icon-code"><a href="https://github.com/mikejolley/WP-Job-Manager"><?php esc_html_e( 'Contribute code or report a bug', 'wp-job-manager' ); ?></a></li>
+						<li class="icon-forum"><a href="https://wordpress.org/support/plugin/wp-job-manager"><?php esc_html_e( 'Help other users on the forums', 'wp-job-manager' ); ?></a></li>
 					</ul>
 				</div>
 

@@ -103,6 +103,7 @@ class WP_Job_Manager_Helper_Options {
 	/**
 	 * Update the master option.
 	 *
+	 * @param array $value Master license container array.
 	 * @return bool
 	 */
 	private static function update_master_option( $value ) {

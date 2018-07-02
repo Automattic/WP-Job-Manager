@@ -1,6 +1,8 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Handles front admin page for WP Job Manager.
@@ -49,6 +51,9 @@ class WP_Job_Manager_Permalink_Settings {
 		$this->permalinks = WP_Job_Manager_Post_Types::get_permalink_structure();
 	}
 
+	/**
+	 * Add setting fields related to permalinks.
+	 */
 	public function setup_fields() {
 		add_settings_field(
 			'wpjm_job_base_slug',
@@ -78,7 +83,7 @@ class WP_Job_Manager_Permalink_Settings {
 	 */
 	public function job_base_slug_input() {
 		?>
-		<input name="wpjm_job_base_slug" type="text" class="regular-text code" value="<?php echo esc_attr( $this->permalinks['job_base'] ); ?>" placeholder="<?php echo esc_attr_x( 'job', 'Job permalink - resave permalinks after changing this', 'wp-job-manager' ) ?>" />
+		<input name="wpjm_job_base_slug" type="text" class="regular-text code" value="<?php echo esc_attr( $this->permalinks['job_base'] ); ?>" placeholder="<?php echo esc_attr_x( 'job', 'Job permalink - resave permalinks after changing this', 'wp-job-manager' ); ?>" />
 		<?php
 	}
 
@@ -87,7 +92,7 @@ class WP_Job_Manager_Permalink_Settings {
 	 */
 	public function job_category_slug_input() {
 		?>
-		<input name="wpjm_job_category_slug" type="text" class="regular-text code" value="<?php echo esc_attr( $this->permalinks['category_base'] ); ?>" placeholder="<?php echo esc_attr_x( 'job-category', 'Job category slug - resave permalinks after changing this', 'wp-job-manager' ) ?>" />
+		<input name="wpjm_job_category_slug" type="text" class="regular-text code" value="<?php echo esc_attr( $this->permalinks['category_base'] ); ?>" placeholder="<?php echo esc_attr_x( 'job-category', 'Job category slug - resave permalinks after changing this', 'wp-job-manager' ); ?>" />
 		<?php
 	}
 
@@ -96,7 +101,7 @@ class WP_Job_Manager_Permalink_Settings {
 	 */
 	public function job_type_slug_input() {
 		?>
-		<input name="wpjm_job_type_slug" type="text" class="regular-text code" value="<?php echo esc_attr( $this->permalinks['type_base'] ); ?>" placeholder="<?php echo esc_attr_x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ) ?>" />
+		<input name="wpjm_job_type_slug" type="text" class="regular-text code" value="<?php echo esc_attr( $this->permalinks['type_base'] ); ?>" placeholder="<?php echo esc_attr_x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ); ?>" />
 		<?php
 	}
 
@@ -113,10 +118,10 @@ class WP_Job_Manager_Permalink_Settings {
 				switch_to_locale( get_locale() );
 			}
 
-			$permalinks                   = (array) get_option( 'wpjm_permalinks', array() );
-			$permalinks['job_base']       = sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] );
-			$permalinks['category_base']  = sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] );
-			$permalinks['type_base']      = sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] );
+			$permalinks                  = (array) get_option( 'wpjm_permalinks', array() );
+			$permalinks['job_base']      = sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] );
+			$permalinks['category_base'] = sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] );
+			$permalinks['type_base']     = sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] );
 
 			update_option( 'wpjm_permalinks', $permalinks );
 

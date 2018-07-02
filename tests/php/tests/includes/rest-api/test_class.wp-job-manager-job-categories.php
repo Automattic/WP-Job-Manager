@@ -25,45 +25,51 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 
 	public function test_post_fail_when_guest() {
 		$this->logout();
-		$response = $this->post( '/wp/v2/job-categories', array(
-			'name' => 'REST Test' . microtime( true ),
-		) );
+		$response = $this->post(
+			'/wp/v2/job-categories', array(
+				'name' => 'REST Test' . microtime( true ),
+			)
+		);
 		$this->assertResponseStatus( $response, 401 );
 	}
 
 	public function test_post_success_when_admin() {
 		$this->login_as_admin();
-		$response = $this->post( '/wp/v2/job-categories', array(
-			'name' => 'REST Test' . microtime( true ),
-		) );
+		$response = $this->post(
+			'/wp/v2/job-categories', array(
+				'name' => 'REST Test' . microtime( true ),
+			)
+		);
 		$this->assertResponseStatus( $response, 201 );
 	}
 
 	public function test_post_fail_when_default_user() {
 		$this->login_as_default_user();
-		$response = $this->post( '/wp/v2/job-categories', array(
-			'name' => 'REST Test' . microtime( true ),
-		) );
+		$response = $this->post(
+			'/wp/v2/job-categories', array(
+				'name' => 'REST Test' . microtime( true ),
+			)
+		);
 		$this->assertResponseStatus( $response, 401 );
 	}
 
 	public function test_delete_fail_not_implemented() {
 		$this->login_as_admin();
-		$term_id = $this->get_job_category();
+		$term_id  = $this->get_job_category();
 		$response = $this->delete( '/wp/v2/job-categories/' . $term_id );
 		$this->assertResponseStatus( $response, 501 );
 	}
 
 	public function test_delete_fail_as_default_user() {
 		$this->login_as_default_user();
-		$term_id = $this->get_job_category();
+		$term_id  = $this->get_job_category();
 		$response = $this->delete( sprintf( '/wp/v2/job-categories/%d', $term_id ), array( 'force' => 1 ) );
 		$this->assertResponseStatus( $response, 401 );
 	}
 
 	public function test_delete_succeed_as_admin_user() {
 		$this->login_as_admin();
-		$term_id = $this->get_job_category();
+		$term_id  = $this->get_job_category();
 		$response = $this->delete( sprintf( '/wp/v2/job-categories/%d', $term_id ), array( 'force' => 1 ) );
 		$this->assertResponseStatus( $response, 200 );
 	}
@@ -74,7 +80,7 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 200 );
 		$data = $response->get_data();
 
-		$routes =  array_keys( $data['routes'] );
+		$routes = array_keys( $data['routes'] );
 		$this->assertTrue( in_array( '/wp/v2/job-categories', $routes ) );
 	}
 

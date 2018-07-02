@@ -44,7 +44,7 @@ class WP_Job_Manager_Taxonomy_Meta {
 			add_filter( 'manage_edit-job_listing_type_columns', array( $this, 'add_employment_type_column' ) );
 			add_filter( 'manage_job_listing_type_custom_column', array( $this, 'add_employment_type_column_content' ), 10, 3 );
 			add_filter( 'manage_edit-job_listing_type_sortable_columns', array( $this, 'add_employment_type_column_sortable' ) );
-	    }
+		}
 	}
 
 	/**
@@ -55,7 +55,7 @@ class WP_Job_Manager_Taxonomy_Meta {
 	 */
 	public function set_schema_org_employment_type_field( $term_id, $tt_id ) {
 		$employment_types = wpjm_job_listing_employment_type_options();
-		if( isset( $_POST['employment_type'] ) && isset( $employment_types[ $_POST['employment_type'] ] ) ){
+		if ( isset( $_POST['employment_type'] ) && isset( $employment_types[ $_POST['employment_type'] ] ) ) {
 			update_term_meta( $term_id, 'employment_type', $_POST['employment_type'] );
 		} elseif ( isset( $_POST['employment_type'] ) ) {
 			delete_term_meta( $term_id, 'employment_type' );
@@ -69,27 +69,28 @@ class WP_Job_Manager_Taxonomy_Meta {
 	 * @param string  $taxonomy Taxonomy slug.
 	 */
 	public function display_schema_org_employment_type_field( $term, $taxonomy ) {
-		$employment_types = wpjm_job_listing_employment_type_options();
+		$employment_types        = wpjm_job_listing_employment_type_options();
 		$current_employment_type = get_term_meta( $term->term_id, 'employment_type', true );
 
 		if ( ! empty( $employment_types ) ) {
 			?>
 			<tr class="form-field term-group-wrap">
-			<th scope="row"><label for="feature-group"><?php _e( 'Employment Type', 'wp-job-manager' ); ?></label></th>
+			<th scope="row"><label for="feature-group"><?php esc_html_e( 'Employment Type', 'wp-job-manager' ); ?></label></th>
 			<td><select class="postform" id="employment_type" name="employment_type">
 					<option value=""></option>
 					<?php foreach ( $employment_types as $key => $employment_type ) : ?>
 						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $current_employment_type, $key ); ?>><?php echo esc_html( $employment_type ); ?></option>
 					<?php endforeach; ?>
 				</select></td>
-			</tr><?php
+			</tr>
+			<?php
 		}
 	}
 
 	/**
 	 * Add the option to select schema.org employmentType for job type on the add meta field form.
 	 *
-	 * @param string       $taxonomy Taxonomy slug.
+	 * @param string $taxonomy Taxonomy slug.
 	 */
 	public function add_form_display_schema_org_employment_type_field( $taxonomy ) {
 		$employment_types = wpjm_job_listing_employment_type_options();
@@ -97,14 +98,15 @@ class WP_Job_Manager_Taxonomy_Meta {
 		if ( ! empty( $employment_types ) ) {
 			?>
 			<div class="form-field term-group">
-			<label for="feature-group"><?php _e( 'Employment Type', 'wp-job-manager' ); ?></label>
+			<label for="feature-group"><?php esc_html_e( 'Employment Type', 'wp-job-manager' ); ?></label>
 			<select class="postform" id="employment_type" name="employment_type">
 					<option value=""></option>
 					<?php foreach ( $employment_types as $key => $employment_type ) : ?>
 						<option value="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $employment_type ); ?></option>
 					<?php endforeach; ?>
 				</select>
-			</div><?php
+			</div>
+			<?php
 		}
 	}
 
@@ -139,11 +141,11 @@ class WP_Job_Manager_Taxonomy_Meta {
 	 * @return string
 	 */
 	public function add_employment_type_column_content( $content, $column_name, $term_id ) {
-		if( 'employment_type' !== $column_name ){
+		if ( 'employment_type' !== $column_name ) {
 			return $content;
 		}
-		$employment_types = wpjm_job_listing_employment_type_options();
-		$term_id = absint( $term_id );
+		$employment_types     = wpjm_job_listing_employment_type_options();
+		$term_id              = absint( $term_id );
 		$term_employment_type = get_term_meta( $term_id, 'employment_type', true );
 
 		if ( ! empty( $term_employment_type ) && isset( $employment_types[ $term_employment_type ] ) ) {

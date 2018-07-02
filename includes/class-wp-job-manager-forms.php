@@ -49,16 +49,16 @@ class WP_Job_Manager_Forms {
 	 * Load a form's class
 	 *
 	 * @param  string $form_name
-	 * @return string class name on success, false on failure
+	 * @return string class name on success, false on failure.
 	 */
 	private function load_form_class( $form_name ) {
 		if ( ! class_exists( 'WP_Job_Manager_Form' ) ) {
-			include( 'abstracts/abstract-wp-job-manager-form.php' );
+			include 'abstracts/abstract-wp-job-manager-form.php';
 		}
 
-		// Now try to load the form_name
-		$form_class  = 'WP_Job_Manager_Form_' . str_replace( '-', '_', $form_name );
-		$form_file   = JOB_MANAGER_PLUGIN_DIR . '/includes/forms/class-wp-job-manager-form-' . $form_name . '.php';
+		// Now try to load the form_name.
+		$form_class = 'WP_Job_Manager_Form_' . str_replace( '-', '_', $form_name );
+		$form_file  = JOB_MANAGER_PLUGIN_DIR . '/includes/forms/class-wp-job-manager-form-' . $form_name . '.php';
 
 		if ( class_exists( $form_class ) ) {
 			return call_user_func( array( $form_class, 'instance' ) );
@@ -72,7 +72,7 @@ class WP_Job_Manager_Forms {
 			include $form_file;
 		}
 
-		// Init the form
+		// Init the form.
 		return call_user_func( array( $form_class, 'instance' ) );
 	}
 
@@ -80,11 +80,12 @@ class WP_Job_Manager_Forms {
 	 * Returns the form content.
 	 *
 	 * @param string $form_name
-	 * @param array  $atts Optional passed attributes
+	 * @param array  $atts Optional passed attributes.
 	 * @return string|null
 	 */
 	public function get_form( $form_name, $atts = array() ) {
-		if ( $form = $this->load_form_class( $form_name ) ) {
+		$form = $this->load_form_class( $form_name );
+		if ( $form ) {
 			ob_start();
 			$form->output( $atts );
 			return ob_get_clean();

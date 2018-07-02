@@ -59,9 +59,9 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 	 * @param string $rest_field_name The REST field name.
 	 */
 	public function __construct( $object_to_extend, $model_class, $rest_field_name ) {
-		$this->model_class = $model_class;
+		$this->model_class      = $model_class;
 		$this->object_to_extend = $object_to_extend;
-		$this->rest_field_name = $rest_field_name;
+		$this->rest_field_name  = $rest_field_name;
 	}
 
 	/**
@@ -72,7 +72,7 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 	 *
 	 * @return bool|WP_Error true if valid otherwise error.
 	 */
-	function register( $environment ) {
+	public function register( $environment ) {
 		global $wp_post_types;
 		$post_type_name = $this->object_to_extend;
 		if ( ! isset( $wp_post_types[ $post_type_name ] ) ) {
@@ -84,20 +84,24 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 		}
 
 		// Optionally customize the rest_base or controller class.
-		$wp_post_types[ $post_type_name ]->show_in_rest = true;
-		$wp_post_types[ $post_type_name ]->rest_base = 'job-listings';
+		$wp_post_types[ $post_type_name ]->show_in_rest          = true;
+		$wp_post_types[ $post_type_name ]->rest_base             = 'job-listings';
 		$wp_post_types[ $post_type_name ]->rest_controller_class = 'WP_REST_Posts_Controller';
 
-		$this->environment = $environment;
+		$this->environment   = $environment;
 		$this->model_factory = $this->environment->model( $this->model_class );
 		if ( ! $this->model_factory ) {
 			return new WP_Error( 'model-not-found' );
 		}
-		register_rest_field( $this->object_to_extend, $this->rest_field_name, array(
-			'get_callback' => array( $this, 'get_fields' ),
-			'update_callback' => array( $this, 'update_fields' ),
-			'schema' => $this->get_item_schema(),
-		) );
+		register_rest_field(
+			$this->object_to_extend,
+			$this->rest_field_name,
+			array(
+				'get_callback'    => array( $this, 'get_fields' ),
+				'update_callback' => array( $this, 'update_fields' ),
+				'schema'          => $this->get_item_schema(),
+			)
+		);
 
 		return true;
 	}
@@ -108,9 +112,9 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 	 * @return array
 	 */
 	public function get_item_schema() {
-		$fields = $this->model_factory->get_fields();
+		$fields     = $this->model_factory->get_fields();
 		$properties = array();
-		$required = array();
+		$required   = array();
 		foreach ( $fields as $field_declaration ) {
 			/**
 			 * Our declaration
@@ -123,9 +127,9 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 			}
 		}
 		$schema = array(
-			'$schema' => 'http://json-schema.org/schema#',
-			'title' => $this->model_factory->get_name(),
-			'type' => 'object',
+			'$schema'    => 'http://json-schema.org/schema#',
+			'title'      => $this->model_factory->get_name(),
+			'type'       => 'object',
 			'properties' => (array) apply_filters( 'mixtape_rest_api_schema_properties', $properties, $this->model_factory ),
 		);
 
@@ -157,7 +161,7 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 		}
 
 		$object_id = absint( $object['id'] );
-		$model = $this->get_model( $object_id );
+		$model     = $this->get_model( $object_id );
 		return $model->to_dto();
 	}
 
@@ -166,21 +170,23 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 	 *
 	 * @param int $object_id Object ID.
 	 * @return WP_Job_Manager_REST_Interfaces_Model
-	 * @throws WP_Job_Manager_REST_Exception On Error.
 	 */
 	private function get_model( $object_id ) {
 		$data = array();
 		foreach ( $this->model_factory->get_fields() as $field_declaration ) {
 			$field_name = $field_declaration->get_name();
 			if ( metadata_exists( 'post', $object_id, $field_name ) ) {
-				$meta = get_post_meta( $object_id, $field_name, true );
+				$meta                = get_post_meta( $object_id, $field_name, true );
 				$data[ $field_name ] = $meta;
 			}
 		}
 
-		return $this->model_factory->create( $data, array(
-			'deserialize' => true,
-		) );
+		return $this->model_factory->create(
+			$data,
+			array(
+				'deserialize' => true,
+			)
+		);
 	}
 
 	/**
@@ -204,7 +210,7 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 			return null;
 		}
 
-		$object_id = absint( $object->ID );
+		$object_id      = absint( $object->ID );
 		$existing_model = $this->get_model( $object_id );
 
 		$updated = $existing_model->update_from_array( $data );

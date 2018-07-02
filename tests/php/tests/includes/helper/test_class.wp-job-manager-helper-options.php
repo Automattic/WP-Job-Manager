@@ -22,7 +22,7 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_Helper_Base_Test {
 	 */
 	public function test_get_return_default() {
 		$result_expected = 'simple';
-		$result = WP_Job_Manager_Helper_Options::get( 'test', 'licence_key', $result_expected );
+		$result          = WP_Job_Manager_Helper_Options::get( 'test', 'licence_key', $result_expected );
 		$this->assertEquals( $result_expected, $result );
 	}
 
@@ -79,9 +79,9 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_Helper_Base_Test {
 		if ( null === $value ) {
 			$value = array(
 				'test' => array(
-					'licence_key' => 'abcd',
-					'email' => 'local@local.dev',
-					'errors' => null,
+					'licence_key'     => 'abcd',
+					'email'           => 'local@local.dev',
+					'errors'          => null,
 					'hide_key_notice' => false,
 				),
 			);

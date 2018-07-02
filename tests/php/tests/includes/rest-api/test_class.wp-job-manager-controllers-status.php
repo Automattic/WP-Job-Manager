@@ -26,9 +26,11 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 
 	public function test_put_fail_when_guest() {
 		$this->logout();
-		$response = $this->put( '/wpjm/v1/status/run_page_setup', array(
-			'value' => true,
-		) );
+		$response = $this->put(
+			'/wpjm/v1/status/run_page_setup', array(
+				'value' => true,
+			)
+		);
 		$this->assertResponseStatus( $response, 401 );
 	}
 
@@ -99,29 +101,35 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 
 	public function test_post_created_key_value_from_value_param() {
 		$this->login_as_admin();
-		$response = $this->post( '/wpjm/v1/status/run_page_setup', array(
-			'value' => true,
-		) );
+		$response = $this->post(
+			'/wpjm/v1/status/run_page_setup', array(
+				'value' => true,
+			)
+		);
 		$this->assertResponseStatus( $response, 201 );
 	}
 
 	public function test_put_ok_key_value_from_value_param() {
 		$this->login_as_admin();
-		$response = $this->put( '/wpjm/v1/status/run_page_setup', array(
-			'value' => true,
-		) );
+		$response = $this->put(
+			'/wpjm/v1/status/run_page_setup', array(
+				'value' => true,
+			)
+		);
 		$this->assertResponseStatus( $response, 200 );
 	}
 
 	public function test_put_updates_key_value_from_value_param() {
 		$this->login_as_admin();
-		$value = $this->environment()
+		$value    = $this->environment()
 			->model( 'WP_Job_Manager_Models_Status' )
 			->get_data_store()->get_entity( '' )
 			->get( 'run_page_setup' );
-		$response = $this->put( '/wpjm/v1/status/run_page_setup', array(
-			'value' => ! $value ? 1 : 0,
-		) );
+		$response = $this->put(
+			'/wpjm/v1/status/run_page_setup', array(
+				'value' => ! $value ? 1 : 0,
+			)
+		);
 
 		$this->assertResponseStatus( $response, 200 );
 		$model = $this->environment()
@@ -135,11 +143,13 @@ class WP_Test_WP_Job_Manager_Controllers_Status extends WPJM_REST_TestCase {
 
 		$this->login_as_default_user();
 
-		$response = $this->put( '/wpjm/v1/status/run_page_setup', array(
-			'value' => false,
-		) );
+		$response = $this->put(
+			'/wpjm/v1/status/run_page_setup', array(
+				'value' => false,
+			)
+		);
 		// We have a logged in user so post-4.9.1 versions of WordPress will correctly return 401.
-		// See https://core.trac.wordpress.org/changeset/42421
+		// See https://core.trac.wordpress.org/changeset/42421.
 		if ( version_compare( $wp_version, '4.9.1', '>' ) ) {
 			$this->assertResponseStatus( $response, 401 );
 		} else {

@@ -29,7 +29,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 		);
 
 		if ( isset( $args['_company_logo'] ) ) {
-			$args['_company_logo'] = $this->factory()->post->create(
+			$args['_company_logo']                   = $this->factory()->post->create(
 				array( 'post_type' => 'attachment' )
 			);
 			$expected['data'][0]['data'][0]['value'] = $args['_company_logo'];

@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @extends WP_Job_Manager_Email
  */
 class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Template {
-	const SETTING_NOTICE_PERIOD_NAME = 'notice_period_days';
+	const SETTING_NOTICE_PERIOD_NAME    = 'notice_period_days';
 	const SETTING_NOTICE_PERIOD_DEFAULT = '1';
 
 	/**
@@ -65,9 +65,13 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 		$args = $this->get_args();
 
 		/**
+		 * Job listing post object.
+		 *
 		 * @var WP_Post $job
 		 */
 		$job = $args['job'];
+
+		// translators: Placeholder %s is the job listing post title.
 		return sprintf( __( 'Job Listing Expiring: %s', 'wp-job-manager' ), $job->post_title );
 	}
 
@@ -93,7 +97,7 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 	/**
 	 * Expand arguments as necessary for the generation of the email.
 	 *
-	 * @param $args
+	 * @param array $args
 	 * @return mixed
 	 */
 	protected function prepare_args( $args ) {
@@ -101,8 +105,8 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 
 		if ( isset( $args['job'] ) ) {
 			$args['expiring_today'] = false;
-			$today         = date( 'Y-m-d', current_time( 'timestamp' ) );
-			$expiring_date = date( 'Y-m-d', strtotime( $args['job']->_job_expires ) );
+			$today                  = date( 'Y-m-d', current_time( 'timestamp' ) );
+			$expiring_date          = date( 'Y-m-d', strtotime( $args['job']->_job_expires ) );
 			if ( ! empty( $args['job']->_job_expires ) && $today === $expiring_date ) {
 				$args['expiring_today'] = true;
 			}
@@ -117,7 +121,7 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 	 * @return array
 	 */
 	public static function get_setting_fields() {
-		$fields = parent::get_setting_fields();
+		$fields   = parent::get_setting_fields();
 		$fields[] = array(
 			'name'       => self::SETTING_NOTICE_PERIOD_NAME,
 			'std'        => self::SETTING_NOTICE_PERIOD_DEFAULT,

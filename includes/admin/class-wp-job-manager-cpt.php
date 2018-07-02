@@ -1,6 +1,8 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 /**
  * Handles actions and filters specific to the custom post type for Job Listings.
@@ -54,12 +56,12 @@ class WP_Job_Manager_CPT {
 		add_action( 'view_mode_post_types', array( $this, 'disable_view_mode' ) );
 
 		if ( get_option( 'job_manager_enable_categories' ) ) {
-			add_action( "restrict_manage_posts", array( $this, "jobs_by_category" ) );
+			add_action( 'restrict_manage_posts', array( $this, 'jobs_by_category' ) );
 		}
-		add_action( "restrict_manage_posts", array( $this, "jobs_meta_filters" ) );
+		add_action( 'restrict_manage_posts', array( $this, 'jobs_meta_filters' ) );
 
 		foreach ( array( 'post', 'post-new' ) as $hook ) {
-			add_action( "admin_footer-{$hook}.php", array( $this,'extend_submitdiv_post_status' ) );
+			add_action( "admin_footer-{$hook}.php", array( $this, 'extend_submitdiv_post_status' ) );
 		}
 	}
 
@@ -69,25 +71,33 @@ class WP_Job_Manager_CPT {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$actions_handled = array();
-		$actions_handled['approve_jobs'] = array(
-			'label' => __( 'Approve %s', 'wp-job-manager' ),
-			'notice' => __( '%s approved', 'wp-job-manager' ),
+		$actions_handled                         = array();
+		$actions_handled['approve_jobs']         = array(
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'label'   => __( 'Approve %s', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'notice'  => __( '%s approved', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_approve_job' ),
 		);
-		$actions_handled['expire_jobs'] = array(
-			'label' => __( 'Expire %s', 'wp-job-manager' ),
-			'notice' => __( '%s expired', 'wp-job-manager' ),
+		$actions_handled['expire_jobs']          = array(
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'label'   => __( 'Expire %s', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'notice'  => __( '%s expired', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_expire_job' ),
 		);
-		$actions_handled['mark_jobs_filled'] = array(
-			'label' => __( 'Mark %s Filled', 'wp-job-manager' ),
-			'notice' => __( '%s marked as filled', 'wp-job-manager' ),
+		$actions_handled['mark_jobs_filled']     = array(
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'label'   => __( 'Mark %s Filled', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'notice'  => __( '%s marked as filled', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_mark_job_filled' ),
 		);
 		$actions_handled['mark_jobs_not_filled'] = array(
-			'label' => __( 'Mark %s Not Filled', 'wp-job-manager' ),
-			'notice' => __( '%s marked as not filled', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'label'   => __( 'Mark %s Not Filled', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'notice'  => __( '%s marked as not filled', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_mark_job_not_filled' ),
 		);
 
@@ -137,12 +147,12 @@ class WP_Job_Manager_CPT {
 	 */
 	public function do_bulk_actions( $redirect_url, $action, $post_ids ) {
 		$actions_handled = $this->get_bulk_actions();
-		if ( isset ( $actions_handled[ $action ] ) && isset ( $actions_handled[ $action ]['handler'] ) ) {
+		if ( isset( $actions_handled[ $action ] ) && isset( $actions_handled[ $action ]['handler'] ) ) {
 			$handled_jobs = array();
 			if ( ! empty( $post_ids ) ) {
 				foreach ( $post_ids as $post_id ) {
 					if ( 'job_listing' === get_post_type( $post_id )
-					     && call_user_func( $actions_handled[ $action ]['handler'], $post_id ) ) {
+						 && call_user_func( $actions_handled[ $action ]['handler'], $post_id ) ) {
 						$handled_jobs[] = $post_id;
 					}
 				}
@@ -155,7 +165,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk action to approve a single job listing.
 	 *
-	 * @param $post_id
+	 * @param int $post_id Post ID.
 	 *
 	 * @return bool
 	 */
@@ -164,9 +174,9 @@ class WP_Job_Manager_CPT {
 			'ID'          => $post_id,
 			'post_status' => 'publish',
 		);
-		if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ) )
-		     && current_user_can( 'publish_post', $post_id )
-		     && wp_update_post( $job_data )
+		if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ), true )
+			 && current_user_can( 'publish_post', $post_id )
+			 && wp_update_post( $job_data )
 		) {
 			return true;
 		}
@@ -176,8 +186,7 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk action to expire a single job listing.
 	 *
-	 * @param $post_id
-	 *
+	 * @param int $post_id Post ID.
 	 * @return bool
 	 */
 	public function bulk_action_handle_expire_job( $post_id ) {
@@ -186,7 +195,7 @@ class WP_Job_Manager_CPT {
 			'post_status' => 'expired',
 		);
 		if ( current_user_can( 'manage_job_listings', $post_id )
-		     && wp_update_post( $job_data )
+			 && wp_update_post( $job_data )
 		) {
 			return true;
 		}
@@ -196,13 +205,13 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk action to mark a single job listing as filled.
 	 *
-	 * @param $post_id
+	 * @param int $post_id Post ID.
 	 *
 	 * @return bool
 	 */
 	public function bulk_action_handle_mark_job_filled( $post_id ) {
 		if ( current_user_can( 'manage_job_listings', $post_id )
-		     && update_post_meta( $post_id, '_filled', 1 )
+			 && update_post_meta( $post_id, '_filled', 1 )
 		) {
 			return true;
 		}
@@ -212,13 +221,12 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Performs bulk action to mark a single job listing as not filled.
 	 *
-	 * @param $post_id
-	 *
+	 * @param int $post_id Post ID.
 	 * @return bool
 	 */
 	public function bulk_action_handle_mark_job_not_filled( $post_id ) {
 		if ( current_user_can( 'manage_job_listings', $post_id )
-		     && update_post_meta( $post_id, '_filled', 0 )
+			 && update_post_meta( $post_id, '_filled', 0 )
 		) {
 			return true;
 		}
@@ -230,10 +238,10 @@ class WP_Job_Manager_CPT {
 	 */
 	public function approve_job() {
 		if ( ! empty( $_GET['approve_job'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'approve_job' ) && current_user_can( 'publish_post', $_GET['approve_job'] ) ) {
-			$post_id = absint( $_GET['approve_job'] );
+			$post_id  = absint( $_GET['approve_job'] );
 			$job_data = array(
 				'ID'          => $post_id,
-				'post_status' => 'publish'
+				'post_status' => 'publish',
 			);
 			wp_update_post( $job_data );
 			wp_redirect( remove_query_arg( 'approve_job', add_query_arg( 'handled_jobs', $post_id, add_query_arg( 'action_performed', 'approve_jobs', admin_url( 'edit.php?post_type=job_listing' ) ) ) ) );
@@ -247,16 +255,16 @@ class WP_Job_Manager_CPT {
 	public function action_notices() {
 		global $post_type, $pagenow;
 
-		$handled_jobs = isset ( $_REQUEST['handled_jobs'] ) ? $_REQUEST['handled_jobs'] : false;
-		$action = isset ( $_REQUEST['action_performed'] ) ? $_REQUEST['action_performed'] : false;
+		$handled_jobs    = isset( $_REQUEST['handled_jobs'] ) ? $_REQUEST['handled_jobs'] : false;
+		$action          = isset( $_REQUEST['action_performed'] ) ? $_REQUEST['action_performed'] : false;
 		$actions_handled = $this->get_bulk_actions();
 
-		if ( $pagenow == 'edit.php'
-			 && $post_type == 'job_listing'
+		if ( 'edit.php' === $pagenow
+			 && 'job_listing' === $post_type
 			 && $action
 			 && ! empty( $handled_jobs )
-			 && isset ( $actions_handled[ $action ] )
-			 && isset ( $actions_handled[ $action ]['notice'] )
+			 && isset( $actions_handled[ $action ] )
+			 && isset( $actions_handled[ $action ]['notice'] )
 		) {
 			if ( is_array( $handled_jobs ) ) {
 				$handled_jobs = array_map( 'absint', $handled_jobs );
@@ -277,11 +285,11 @@ class WP_Job_Manager_CPT {
 	public function jobs_by_category() {
 		global $typenow, $wp_query;
 
-	    if ( $typenow != 'job_listing' || ! taxonomy_exists( 'job_listing_category' ) ) {
-	    	return;
-	    }
+		if ( 'job_listing' !== $typenow || ! taxonomy_exists( 'job_listing_category' ) ) {
+			return;
+		}
 
-	    include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php' );
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php';
 
 		$r                 = array();
 		$r['taxonomy']     = 'job_listing_category';
@@ -292,7 +300,7 @@ class WP_Job_Manager_CPT {
 		$r['selected']     = ( isset( $wp_query->query['job_listing_category'] ) ) ? $wp_query->query['job_listing_category'] : '';
 		$r['menu_order']   = false;
 		$terms             = get_terms( $r );
-		$walker            = new WP_Job_Manager_Category_Walker;
+		$walker            = new WP_Job_Manager_Category_Walker();
 
 		if ( ! $terms ) {
 			return;
@@ -300,8 +308,8 @@ class WP_Job_Manager_CPT {
 
 		echo "<select name='job_listing_category' id='dropdown_job_listing_category'>";
 		echo '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
-		echo $walker->walk( $terms, 0, $r );
-		echo "</select>";
+		echo wp_kses_post( $walker->walk( $terms, 0, $r ) );
+		echo '</select>';
 
 	}
 
@@ -313,42 +321,48 @@ class WP_Job_Manager_CPT {
 	public function jobs_meta_filters() {
 		global $typenow;
 
-		// Only add the filters for job_listings
-		if ( 'job_listing' !== $typenow  ) {
+		// Only add the filters for job_listings.
+		if ( 'job_listing' !== $typenow ) {
 			return;
 		}
 
 		// Filter by Filled.
-		$this->jobs_filter_dropdown( 'job_listing_filled', array(
+		$this->jobs_filter_dropdown(
+			'job_listing_filled',
 			array(
-				'value' => '',
-				'text'  => __( 'Select Filled', 'wp-job-manager' ),
-			),
-			array(
-				'value' => '1',
-				'text'  => __( 'Filled', 'wp-job-manager' ),
-			),
-			array(
-				'value' => '0',
-				'text'  => __( 'Not Filled', 'wp-job-manager' ),
-			),
-		) );
+				array(
+					'value' => '',
+					'text'  => __( 'Select Filled', 'wp-job-manager' ),
+				),
+				array(
+					'value' => '1',
+					'text'  => __( 'Filled', 'wp-job-manager' ),
+				),
+				array(
+					'value' => '0',
+					'text'  => __( 'Not Filled', 'wp-job-manager' ),
+				),
+			)
+		);
 
 		// Filter by Featured.
-		$this->jobs_filter_dropdown( 'job_listing_featured', array(
+		$this->jobs_filter_dropdown(
+			'job_listing_featured',
 			array(
-				'value' => '',
-				'text'  => __( 'Select Featured', 'wp-job-manager' ),
-			),
-			array(
-				'value' => '1',
-				'text'  => __( 'Featured', 'wp-job-manager' ),
-			),
-			array(
-				'value' => '0',
-				'text'  => __( 'Not Featured', 'wp-job-manager' ),
-			),
-		) );
+				array(
+					'value' => '',
+					'text'  => __( 'Select Featured', 'wp-job-manager' ),
+				),
+				array(
+					'value' => '1',
+					'text'  => __( 'Featured', 'wp-job-manager' ),
+				),
+				array(
+					'value' => '0',
+					'text'  => __( 'Not Featured', 'wp-job-manager' ),
+				),
+			)
+		);
 	}
 
 	/**
@@ -365,8 +379,7 @@ class WP_Job_Manager_CPT {
 	 * @since 1.31.0
 	 *
 	 * @param string $param        The URL parameter.
-	 * @param array  $options      The options for the dropdown. See the
-	 *                             description above.
+	 * @param array  $options      The options for the dropdown. See the description above.
 	 */
 	private function jobs_filter_dropdown( $param, $options ) {
 		$selected = isset( $_GET[ $param ] ) ? $_GET[ $param ] : '';
@@ -390,8 +403,9 @@ class WP_Job_Manager_CPT {
 	 * @return string
 	 */
 	public function enter_title_here( $text, $post ) {
-		if ( $post->post_type == 'job_listing' )
+		if ( 'job_listing' === $post->post_type ) {
 			return esc_html__( 'Position', 'wp-job-manager' );
+		}
 		return $text;
 	}
 
@@ -405,18 +419,30 @@ class WP_Job_Manager_CPT {
 		global $post, $post_ID, $wp_post_types;
 
 		$messages['job_listing'] = array(
-			0 => '',
-			1 => sprintf( __( '%s updated. <a href="%s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
-			2 => __( 'Custom field updated.', 'wp-job-manager' ),
-			3 => __( 'Custom field deleted.', 'wp-job-manager' ),
-			4 => sprintf( esc_html__( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
-			5 => isset( $_GET['revision'] ) ? sprintf( __( '%s restored to revision from %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-			6 => sprintf( __( '%s published. <a href="%s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
-			7 => sprintf( esc_html__( '%s saved.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
-			8 => sprintf( __( '%s submitted. <a target="_blank" href="%s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-			9 => sprintf( __( '%s scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name,
-			  date_i18n( get_option( 'date_format' ) . ' @ '. get_option( 'time_format' ), strtotime( $post->post_date ) ), esc_url( get_permalink( $post_ID ) ) ),
-			10 => sprintf( __( '%s draft updated. <a target="_blank" href="%s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
+			0  => '',
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
+			1  => sprintf( __( '%1$s updated. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
+			2  => __( 'Custom field updated.', 'wp-job-manager' ),
+			3  => __( 'Custom field deleted.', 'wp-job-manager' ),
+			// translators: %s is the singular name of the job listing post type.
+			4  => sprintf( esc_html__( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the revision number.
+			5  => isset( $_GET['revision'] ) ? sprintf( __( '%1$s restored to revision from %2$s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
+			6  => sprintf( __( '%1$s published. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
+			7  => sprintf( esc_html__( '%s saved.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to preview the listing.
+			8  => sprintf( __( '%1$s submitted. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
+			9  => sprintf(
+				// translators: %1$s is the singular name of the post type; %2$s is the date the post will be published; %3$s is the URL to preview the listing.
+				__( '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview</a>', 'wp-job-manager' ),
+				$wp_post_types['job_listing']->labels->singular_name,
+				date_i18n( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), strtotime( $post->post_date ) ),
+				esc_url( get_permalink( $post_ID ) )
+			),
+			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
+			10 => sprintf( __( '%1$s draft updated. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 		);
 
 		return $messages;
@@ -435,23 +461,23 @@ class WP_Job_Manager_CPT {
 
 		unset( $columns['title'], $columns['date'], $columns['author'] );
 
-		$columns["job_position"]         = __( "Position", 'wp-job-manager' );
-		$columns["job_listing_type"]     = __( "Type", 'wp-job-manager' );
-		$columns["job_location"]         = __( "Location", 'wp-job-manager' );
-		$columns['job_status']           = '<span class="tips" data-tip="' . __( "Status", 'wp-job-manager' ) . '">' . __( "Status", 'wp-job-manager' ) . '</span>';
-		$columns["job_posted"]           = __( "Posted", 'wp-job-manager' );
-		$columns["job_expires"]          = __( "Expires", 'wp-job-manager' );
-		$columns["job_listing_category"] = __( "Categories", 'wp-job-manager' );
-		$columns['featured_job']         = '<span class="tips" data-tip="' . __( "Featured?", 'wp-job-manager' ) . '">' . __( "Featured?", 'wp-job-manager' ) . '</span>';
-		$columns['filled']               = '<span class="tips" data-tip="' . __( "Filled?", 'wp-job-manager' ) . '">' . __( "Filled?", 'wp-job-manager' ) . '</span>';
-		$columns['job_actions']          = __( "Actions", 'wp-job-manager' );
+		$columns['job_position']         = __( 'Position', 'wp-job-manager' );
+		$columns['job_listing_type']     = __( 'Type', 'wp-job-manager' );
+		$columns['job_location']         = __( 'Location', 'wp-job-manager' );
+		$columns['job_status']           = '<span class="tips" data-tip="' . __( 'Status', 'wp-job-manager' ) . '">' . __( 'Status', 'wp-job-manager' ) . '</span>';
+		$columns['job_posted']           = __( 'Posted', 'wp-job-manager' );
+		$columns['job_expires']          = __( 'Expires', 'wp-job-manager' );
+		$columns['job_listing_category'] = __( 'Categories', 'wp-job-manager' );
+		$columns['featured_job']         = '<span class="tips" data-tip="' . __( 'Featured?', 'wp-job-manager' ) . '">' . __( 'Featured?', 'wp-job-manager' ) . '</span>';
+		$columns['filled']               = '<span class="tips" data-tip="' . __( 'Filled?', 'wp-job-manager' ) . '">' . __( 'Filled?', 'wp-job-manager' ) . '</span>';
+		$columns['job_actions']          = __( 'Actions', 'wp-job-manager' );
 
 		if ( ! get_option( 'job_manager_enable_categories' ) ) {
-			unset( $columns["job_listing_category"] );
+			unset( $columns['job_listing_category'] );
 		}
 
 		if ( ! get_option( 'job_manager_enable_types' ) ) {
-			unset( $columns["job_listing_type"] );
+			unset( $columns['job_listing_type'] );
 		}
 
 		return $columns;
@@ -482,7 +508,7 @@ class WP_Job_Manager_CPT {
 	 * @return array
 	 */
 	public function row_actions( $actions ) {
-		if ( 'job_listing' == get_post_type() ) {
+		if ( 'job_listing' === get_post_type() ) {
 			return array();
 		}
 		return $actions;
@@ -497,7 +523,7 @@ class WP_Job_Manager_CPT {
 		global $post;
 
 		switch ( $column ) {
-			case "job_listing_type" :
+			case 'job_listing_type':
 				$types = wpjm_get_the_job_types( $post );
 
 				if ( $types && ! empty( $types ) ) {
@@ -505,10 +531,11 @@ class WP_Job_Manager_CPT {
 						echo '<span class="job-type ' . esc_attr( $type->slug ) . '">' . esc_html( $type->name ) . '</span>';
 					}
 				}
-			break;
-			case "job_position" :
+				break;
+			case 'job_position':
 				echo '<div class="job_position">';
-				echo '<a href="' . esc_url( admin_url('post.php?post=' . $post->ID . '&action=edit') ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . esc_html( wpjm_get_the_job_title() ) . '</a>';
+				// translators: %d is the post ID for the job listing.
+				echo '<a href="' . esc_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . esc_html( wpjm_get_the_job_title() ) . '</a>';
 
 				echo '<div class="company">';
 
@@ -523,67 +550,78 @@ class WP_Job_Manager_CPT {
 				the_company_logo();
 				echo '</div>';
 				echo '<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>';
-			break;
-			case "job_location" :
+				break;
+			case 'job_location':
 				the_job_location( true, $post );
-			break;
-			case "job_listing_category" :
-				if ( ! $terms = get_the_term_list( $post->ID, $column, '', ', ', '' ) ) {
+				break;
+			case 'job_listing_category':
+				$terms = get_the_term_list( $post->ID, $column, '', ', ', '' );
+				if ( ! $terms ) {
 					echo '<span class="na">&ndash;</span>';
 				} else {
 					echo wp_kses_post( $terms );
 				}
-			break;
-			case "filled" :
-				if ( is_position_filled( $post ) ) echo '&#10004;'; else echo '&ndash;';
-			break;
-			case "featured_job" :
-				if ( is_position_featured( $post ) ) echo '&#10004;'; else echo '&ndash;';
-			break;
-			case "job_posted" :
-				echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) ) . '</strong><span>';
-				echo ( empty( $post->post_author ) ? esc_html__( 'by a guest', 'wp-job-manager' ) : sprintf( esc_html__( 'by %s', 'wp-job-manager' ), '<a href="' . esc_url( add_query_arg( 'author', $post->post_author ) ) . '">' . esc_html( get_the_author() ) . '</a>' ) ) . '</span>';
-			break;
-			case "job_expires" :
-				if ( $post->_job_expires )
-					echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->_job_expires ) ) ) . '</strong>';
-				else
+				break;
+			case 'filled':
+				if ( is_position_filled( $post ) ) {
+					echo '&#10004;';
+				} else {
 					echo '&ndash;';
-			break;
-			case "job_status" :
+				}
+				break;
+			case 'featured_job':
+				if ( is_position_featured( $post ) ) {
+					echo '&#10004;';
+				} else {
+					echo '&ndash;';
+				}
+				break;
+			case 'job_posted':
+				echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) ) . '</strong><span>';
+				// translators: %s placeholder is the username of the user.
+				echo ( empty( $post->post_author ) ? esc_html__( 'by a guest', 'wp-job-manager' ) : sprintf( esc_html__( 'by %s', 'wp-job-manager' ), '<a href="' . esc_url( add_query_arg( 'author', $post->post_author ) ) . '">' . esc_html( get_the_author() ) . '</a>' ) ) . '</span>';
+				break;
+			case 'job_expires':
+				if ( $post->_job_expires ) {
+					echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->_job_expires ) ) ) . '</strong>';
+				} else {
+					echo '&ndash;';
+				}
+				break;
+			case 'job_status':
 				echo '<span data-tip="' . esc_attr( get_the_job_status( $post ) ) . '" class="tips status-' . esc_attr( $post->post_status ) . '">' . esc_html( get_the_job_status( $post ) ) . '</span>';
-			break;
-			case "job_actions" :
+				break;
+			case 'job_actions':
 				echo '<div class="actions">';
 				$admin_actions = apply_filters( 'post_row_actions', array(), $post );
 
-				if ( in_array( $post->post_status, array( 'pending', 'pending_payment' ) ) && current_user_can ( 'publish_post', $post->ID ) ) {
-					$admin_actions['approve']   = array(
-						'action'  => 'approve',
-						'name'    => __( 'Approve', 'wp-job-manager' ),
-						'url'     =>  wp_nonce_url( add_query_arg( 'approve_job', $post->ID ), 'approve_job' )
+				if ( in_array( $post->post_status, array( 'pending', 'pending_payment' ), true ) && current_user_can( 'publish_post', $post->ID ) ) {
+					$admin_actions['approve'] = array(
+						'action' => 'approve',
+						'name'   => __( 'Approve', 'wp-job-manager' ),
+						'url'    => wp_nonce_url( add_query_arg( 'approve_job', $post->ID ), 'approve_job' ),
 					);
 				}
-				if ( $post->post_status !== 'trash' ) {
+				if ( 'trash' !== $post->post_status ) {
 					if ( current_user_can( 'read_post', $post->ID ) ) {
-						$admin_actions['view']   = array(
-							'action'  => 'view',
-							'name'    => __( 'View', 'wp-job-manager' ),
-							'url'     => get_permalink( $post->ID )
+						$admin_actions['view'] = array(
+							'action' => 'view',
+							'name'   => __( 'View', 'wp-job-manager' ),
+							'url'    => get_permalink( $post->ID ),
 						);
 					}
 					if ( current_user_can( 'edit_post', $post->ID ) ) {
-						$admin_actions['edit']   = array(
-							'action'  => 'edit',
-							'name'    => __( 'Edit', 'wp-job-manager' ),
-							'url'     => get_edit_post_link( $post->ID )
+						$admin_actions['edit'] = array(
+							'action' => 'edit',
+							'name'   => __( 'Edit', 'wp-job-manager' ),
+							'url'    => get_edit_post_link( $post->ID ),
 						);
 					}
 					if ( current_user_can( 'delete_post', $post->ID ) ) {
 						$admin_actions['delete'] = array(
-							'action'  => 'delete',
-							'name'    => __( 'Delete', 'wp-job-manager' ),
-							'url'     => get_delete_post_link( $post->ID )
+							'action' => 'delete',
+							'name'   => __( 'Delete', 'wp-job-manager' ),
+							'url'    => get_delete_post_link( $post->ID ),
 						);
 					}
 				}
@@ -600,7 +638,7 @@ class WP_Job_Manager_CPT {
 
 				echo '</div>';
 
-			break;
+				break;
 		}
 	}
 
@@ -615,7 +653,7 @@ class WP_Job_Manager_CPT {
 			'job_posted'   => 'date',
 			'job_position' => 'title',
 			'job_location' => 'job_location',
-			'job_expires'  => 'job_expires'
+			'job_expires'  => 'job_expires',
 		);
 		return wp_parse_args( $custom, $columns );
 	}
@@ -623,21 +661,27 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Sorts the admin listing of Job Listings by updating the main query in the request.
 	 *
-	 * @param mixed $vars
+	 * @param mixed $vars Variables with sort arguments.
 	 * @return array
 	 */
 	public function sort_columns( $vars ) {
 		if ( isset( $vars['orderby'] ) ) {
 			if ( 'job_expires' === $vars['orderby'] ) {
-				$vars = array_merge( $vars, array(
-					'meta_key' 	=> '_job_expires',
-					'orderby' 	=> 'meta_value'
-				) );
+				$vars = array_merge(
+					$vars,
+					array(
+						'meta_key' => '_job_expires',
+						'orderby'  => 'meta_value',
+					)
+				);
 			} elseif ( 'job_location' === $vars['orderby'] ) {
-				$vars = array_merge( $vars, array(
-					'meta_key' 	=> '_job_location',
-					'orderby' 	=> 'meta_value'
-				) );
+				$vars = array_merge(
+					$vars,
+					array(
+						'meta_key' => '_job_location',
+						'orderby'  => 'meta_value',
+					)
+				);
 			}
 		}
 		return $vars;
@@ -655,29 +699,32 @@ class WP_Job_Manager_CPT {
 			return;
 		}
 
-		$post_ids = array_unique( array_merge(
-			$wpdb->get_col(
-				$wpdb->prepare( "
+		$post_ids = array_unique(
+			array_merge(
+				$wpdb->get_col(
+					$wpdb->prepare(
+						"
 					SELECT posts.ID
 					FROM {$wpdb->posts} posts
 					INNER JOIN {$wpdb->postmeta} p1 ON posts.ID = p1.post_id
-					WHERE p1.meta_value LIKE '%%%s%%'
-					OR posts.post_title LIKE '%%%s%%'
-					OR posts.post_content LIKE '%%%s%%'
+					WHERE p1.meta_value LIKE %s
+					OR posts.post_title LIKE %s
+					OR posts.post_content LIKE %s
 					AND posts.post_type = 'job_listing'
 					",
-					esc_sql( $wp->query_vars['s'] ),
-					esc_sql( $wp->query_vars['s'] ),
-					esc_sql( $wp->query_vars['s'] )
-				)
-			),
-			array( 0 )
-		) );
+						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
+						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
+						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%'
+					)
+				),
+				array( 0 )
+			)
+		);
 
-		// Adjust the query vars
+		// Adjust the query vars.
 		unset( $wp->query_vars['s'] );
 		$wp->query_vars['job_listing_search'] = true;
-		$wp->query_vars['post__in'] = $post_ids;
+		$wp->query_vars['post__in']           = $post_ids;
 	}
 
 	/**
@@ -700,7 +747,7 @@ class WP_Job_Manager_CPT {
 		// Filter on _filled meta.
 		if ( isset( $_GET['job_listing_filled'] ) && '' !== $_GET['job_listing_filled'] ) {
 			$meta_query[] = array(
-				'key' => '_filled',
+				'key'   => '_filled',
 				'value' => $_GET['job_listing_filled'],
 			);
 		}
@@ -708,7 +755,7 @@ class WP_Job_Manager_CPT {
 		// Filter on _featured meta.
 		if ( isset( $_GET['job_listing_featured'] ) && '' !== $_GET['job_listing_featured'] ) {
 			$meta_query[] = array(
-				'key' => '_featured',
+				'key'   => '_featured',
 				'value' => $_GET['job_listing_featured'],
 			);
 		}
@@ -728,7 +775,7 @@ class WP_Job_Manager_CPT {
 	public function search_meta_label( $query ) {
 		global $pagenow, $typenow;
 
-		if ( 'edit.php' !== $pagenow || $typenow !== 'job_listing' || ! get_query_var( 'job_listing_search' ) ) {
+		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) ) {
 			return $query;
 		}
 
@@ -741,21 +788,24 @@ class WP_Job_Manager_CPT {
 	public function extend_submitdiv_post_status() {
 		global $post, $post_type;
 
-		// Abort if we're on the wrong post type, but only if we got a restriction
+		// Abort if we're on the wrong post type, but only if we got a restriction.
 		if ( 'job_listing' !== $post_type ) {
 			return;
 		}
 
-		// Get all non-builtin post status and add them as <option>
-		$options = $display = '';
+		// Get all non-builtin post status and add them as <option>.
+		$options = '';
+		$display = '';
 		foreach ( get_job_listing_post_statuses() as $status => $name ) {
 			$selected = selected( $post->post_status, $status, false );
 
-			// If we one of our custom post status is selected, remember it
-			$selected AND $display = $name;
+			// If we one of our custom post status is selected, remember it.
+			if ( $selected ) {
+				$display = $name;
+			}
 
-			// Build the options
-			$options .= "<option{$selected} value='{$status}'>" . esc_html( $name ) . "</option>";
+			// Build the options.
+			$options .= "<option{$selected} value='{$status}'>" . esc_html( $name ) . '</option>';
 		}
 		?>
 		<script type="text/javascript">
@@ -774,8 +824,8 @@ class WP_Job_Manager_CPT {
 	/**
 	 * Removes job_listing from the list of post types that support "View Mode" option
 	 *
-	 * @param array $post_types Array of post types that support view mode
-	 * @return array            Array of post types that support view mode, without job_listing post type
+	 * @param array $post_types Array of post types that support view mode.
+	 * @return array            Array of post types that support view mode, without job_listing post type.
 	 */
 	public function disable_view_mode( $post_types ) {
 		unset( $post_types['job_listing'] );

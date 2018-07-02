@@ -58,16 +58,8 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_freelance'              => self::get_jobs_by_type_count( 'freelance' ),
 			'jobs_full_time'              => self::get_jobs_by_type_count( 'full-time' ),
 			'jobs_intern'                 => self::get_jobs_by_type_count( 'internship' ),
-			'jobs_location'               => self::get_jobs_count_with_meta( '_job_location' ),
-			'jobs_logo'                   => self::get_company_logo_count(),
 			'jobs_part_time'              => self::get_jobs_by_type_count( 'part-time' ),
-			'jobs_status_expired'         => isset( $count_posts->expired ) ? $count_posts->expired : 0,
-			'jobs_status_pending'         => $count_posts->pending,
-			'jobs_status_pending_payment' => isset( $count_posts->pending_payment ) ? $count_posts->pending_payment : 0,
-			'jobs_status_preview'         => isset( $count_posts->preview ) ? $count_posts->preview : 0,
-			'jobs_status_publish'         => $count_posts->publish,
 			'jobs_temp'                   => self::get_jobs_by_type_count( 'temporary' ),
-			'jobs_type'                   => self::get_job_type_count(),
 			'jobs_by_guests'              => self::get_jobs_by_guests(),
 		);
 	}
@@ -180,7 +172,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 *
 	 * @param string $job_type Job type to search for.
 	 *
-	 * @return array Number of published or expired jobs for a particular job type.
+	 * @return int Number of published or expired jobs for a particular job type.
 	 **/
 	private static function get_jobs_by_type_count( $job_type ) {
 		$query = new WP_Query(
@@ -231,7 +223,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 *
 	 * @since 1.30.0
 	 *
-	 * @return array Number of job listings associated with at least one job type.
+	 * @return int Number of job listings associated with at least one job type.
 	 **/
 	private static function get_job_type_count() {
 		$query = new WP_Query(
@@ -259,18 +251,20 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int the number of job listings.
 	 */
 	private static function get_jobs_count_with_meta( $meta_key ) {
-		$query = new WP_Query( array(
-			'post_type'   => 'job_listing',
-			'post_status' => array( 'publish', 'expired' ),
-			'fields'      => 'ids',
-			'meta_query'  => array(
-				array(
-					'key'     => $meta_key,
-					'value'   => '[^[:space:]]',
-					'compare' => 'REGEXP',
+		$query = new WP_Query(
+			array(
+				'post_type'   => 'job_listing',
+				'post_status' => array( 'publish', 'expired' ),
+				'fields'      => 'ids',
+				'meta_query'  => array(
+					array(
+						'key'     => $meta_key,
+						'value'   => '[^[:space:]]',
+						'compare' => 'REGEXP',
+					),
 				),
-			),
-		) );
+			)
+		);
 
 		return $query->found_posts;
 	}
@@ -284,17 +278,19 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int the number of job listings.
 	 */
 	private static function get_jobs_count_with_checked_meta( $meta_key ) {
-		$query = new WP_Query( array(
-			'post_type'   => 'job_listing',
-			'post_status' => array( 'publish', 'expired' ),
-			'fields'      => 'ids',
-			'meta_query'  => array(
-				array(
-					'key'   => $meta_key,
-					'value' => '1',
+		$query = new WP_Query(
+			array(
+				'post_type'   => 'job_listing',
+				'post_status' => array( 'publish', 'expired' ),
+				'fields'      => 'ids',
+				'meta_query'  => array(
+					array(
+						'key'   => $meta_key,
+						'value' => '1',
+					),
 				),
-			),
-		) );
+			)
+		);
 
 		return $query->found_posts;
 	}
@@ -305,12 +301,14 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int the number of job listings.
 	 */
 	private static function get_jobs_by_guests() {
-		$query = new WP_Query( array(
-			'post_type'   => 'job_listing',
-			'post_status' => array( 'publish', 'expired' ),
-			'fields'      => 'ids',
-			'author__in'  => array( 0 ),
-		) );
+		$query = new WP_Query(
+			array(
+				'post_type'   => 'job_listing',
+				'post_status' => array( 'publish', 'expired' ),
+				'fields'      => 'ids',
+				'author__in'  => array( 0 ),
+			)
+		);
 
 		return $query->found_posts;
 	}

@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -45,7 +45,7 @@ class WP_Job_Manager_API {
 	/**
 	 * Adds query vars used in API calls.
 	 *
-	 * @param array $vars the query vars
+	 * @param array $vars the query vars.
 	 * @return array
 	 */
 	public function add_query_vars( $vars ) {
@@ -71,13 +71,13 @@ class WP_Job_Manager_API {
 		}
 
 		if ( ! empty( $wp->query_vars['job-manager-api'] ) ) {
-			// Buffer, we won't want any output here
+			// Buffer, we won't want any output here.
 			ob_start();
 
-			// Get API trigger
+			// Get API trigger.
 			$api = strtolower( esc_attr( $wp->query_vars['job-manager-api'] ) );
 
-			// Load class if exists
+			// Load class if exists.
 			if ( has_action( 'job_manager_api_' . $api ) && class_exists( $api ) ) {
 				$api_class = new $api();
 			}
@@ -90,7 +90,7 @@ class WP_Job_Manager_API {
 			 */
 			do_action( 'job_manager_api_' . $api );
 
-			// Done, clear buffer and exit
+			// Done, clear buffer and exit.
 			ob_end_clean();
 			wp_die();
 		}

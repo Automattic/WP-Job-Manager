@@ -135,7 +135,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_job_category_has_description_count() {
 		// Create some terms with varying descriptions.
 		$valid   = $this->factory->term->create_many(
-			2, array(
+			2,
+			array(
 				'taxonomy'    => 'job_listing_category',
 				'description' => ' Valid description ',
 			)
@@ -189,7 +190,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_job_type_has_description_count() {
 		// Create some terms with varying descriptions.
 		$valid   = $this->factory->term->create_many(
-			2, array(
+			2,
+			array(
 				'taxonomy'    => 'job_listing_type',
 				'description' => ' Valid description ',
 			)
@@ -413,7 +415,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		// Create some media attachments.
 		$media = $this->factory->attachment->create_many(
-			6, array(
+			6,
+			array(
 				'post_type'   => 'job_listing',
 				'post_status' => 'publish',
 			)
@@ -429,7 +432,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		// 2 expired + 1 publish
+		// 2 expired + 1 publish.
 		$this->assertEquals( 3, $data['jobs_logo'] );
 	}
 
@@ -454,7 +457,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
-		// 2 expired + 1 publish
+		// 2 expired + 1 publish.
 		$this->assertEquals( 3, $data['jobs_type'] );
 	}
 
@@ -640,15 +643,19 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$expired_by_guest   = 2;
 
 		// Create published listings.
-		$this->factory->job_listing->create_many( $published_by_guest, array(
-			'post_author' => '0',
-		) );
+		$this->factory->job_listing->create_many(
+			$published_by_guest, array(
+				'post_author' => '0',
+			)
+		);
 
 		// Create expired listings.
-		$this->factory->job_listing->create_many( $expired_by_guest, array(
-			'post_author' => '0',
-			'post_status' => 'expired',
-		) );
+		$this->factory->job_listing->create_many(
+			$expired_by_guest, array(
+				'post_author' => '0',
+				'post_status' => 'expired',
+			)
+		);
 
 		// Create guest listings with other statuses.
 		$statuses = array( 'future', 'draft', 'pending', 'private', 'trash' );
@@ -702,7 +709,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	private function create_job_listings_with_meta( $meta_name, $meta_value, $published, $expired, $other_values = array() ) {
 		// Create published listings.
 		$this->factory->job_listing->create_many(
-			$published, array(
+			$published,
+			array(
 				'meta_input' => array(
 					$meta_name => $meta_value,
 				),

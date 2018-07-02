@@ -76,17 +76,17 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function process() {
 
-		// reset cookie
+		// reset cookie.
 		if (
-			isset( $_GET[ 'new' ] ) &&
-			isset( $_COOKIE[ 'wp-job-manager-submitting-job-id' ] ) &&
-			isset( $_COOKIE[ 'wp-job-manager-submitting-job-key' ] ) &&
-			get_post_meta( $_COOKIE[ 'wp-job-manager-submitting-job-id' ], '_submitting_key', true ) == $_COOKIE['wp-job-manager-submitting-job-key']
+			isset( $_GET['new'] ) &&
+			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
+			isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) &&
+			get_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
 		) {
-			delete_post_meta( $_COOKIE[ 'wp-job-manager-submitting-job-id' ], '_submitting_key' );
+			delete_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key' );
 			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
 			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
-			wp_redirect( remove_query_arg( array( 'new', 'key' ), $_SERVER[ 'REQUEST_URI' ] ) );
+			wp_redirect( remove_query_arg( array( 'new', 'key' ), $_SERVER['REQUEST_URI'] ) );
 		}
 
 		$step_key = $this->get_step_key( $this->step );
@@ -237,10 +237,10 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function sort_by_priority( $a, $b ) {
-	    if ( $a['priority'] == $b['priority'] ) {
-	        return 0;
-	    }
-	    return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
+		if ( intval( $a['priority'] ) === intval( $b['priority'] ) ) {
+			return 0;
+		}
+		return ( intval( $a['priority'] ) < intval( $b['priority'] ) ) ? -1 : 1;
 	}
 
 	/**
@@ -265,8 +265,8 @@ abstract class WP_Job_Manager_Form {
 	 * @return bool
 	 */
 	public function is_recaptcha_available() {
-		$site_key = get_option( 'job_manager_recaptcha_site_key' );
-		$secret_key = get_option( 'job_manager_recaptcha_secret_key' );
+		$site_key               = get_option( 'job_manager_recaptcha_site_key' );
+		$secret_key             = get_option( 'job_manager_recaptcha_secret_key' );
 		$is_recaptcha_available = ! empty( $site_key ) && ! empty( $secret_key );
 
 		/**
@@ -292,11 +292,17 @@ abstract class WP_Job_Manager_Form {
 	 * Output the reCAPTCHA field.
 	 */
 	public function display_recaptcha_field() {
-		$field = array();
-		$field['label'] = get_option( 'job_manager_recaptcha_label' );
+		$field             = array();
+		$field['label']    = get_option( 'job_manager_recaptcha_label' );
 		$field['required'] = true;
 		$field['site_key'] = get_option( 'job_manager_recaptcha_site_key' );
-		get_job_manager_template( 'form-fields/recaptcha-field.php', array( 'key' => 'recaptcha', 'field' => $field ) );
+		get_job_manager_template(
+			'form-fields/recaptcha-field.php',
+			array(
+				'key'   => 'recaptcha',
+				'field' => $field,
+			)
+		);
 	}
 
 	/**
@@ -309,20 +315,31 @@ abstract class WP_Job_Manager_Form {
 	public function validate_recaptcha_field( $success ) {
 		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
 		if ( empty( $_POST['g-recaptcha-response'] ) ) {
+			// translators: Placeholder is for the label of the reCAPTCHA field.
 			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
-		$response = wp_remote_get( add_query_arg( array(
-			'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
-			'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
-			'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']
-		), 'https://www.google.com/recaptcha/api/siteverify' ) );
+		$response = wp_remote_get(
+			add_query_arg(
+				array(
+					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
+					'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
+					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],
+				),
+				'https://www.google.com/recaptcha/api/siteverify'
+			)
+		);
 
-		if ( is_wp_error( $response )
-		     || empty( $response['body'] )
-		     || ! ( $json = json_decode( $response['body'] ) )
-		     || ! $json->success ) {
-			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+		// translators: %s is the name of the form validation that failed.
+		$validation_error = new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+
+		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
+			return $validation_error;
+		}
+
+		$json = json_decode( $response['body'] );
+		if ( ! $json || ! $json->success ) {
+			return $validation_error;
 		}
 
 		return $success;
@@ -331,7 +348,7 @@ abstract class WP_Job_Manager_Form {
 	/**
 	 * Gets post data for fields.
 	 *
-	 * @return array of data
+	 * @return array of data.
 	 */
 	protected function get_posted_fields() {
 		$this->init_fields();
@@ -340,10 +357,11 @@ abstract class WP_Job_Manager_Form {
 
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
-				// Get the value
+				// Get the value.
 				$field_type = str_replace( '-', '_', $field['type'] );
+				$handler    = apply_filters( "job_manager_get_posted_{$field_type}_field", false );
 
-				if ( $handler = apply_filters( "job_manager_get_posted_{$field_type}_field", false ) ) {
+				if ( $handler ) {
 					$values[ $group_key ][ $key ] = call_user_func( $handler, $key, $field );
 				} elseif ( method_exists( $this, "get_posted_{$field_type}_field" ) ) {
 					$values[ $group_key ][ $key ] = call_user_func( array( $this, "get_posted_{$field_type}_field" ), $key, $field );
@@ -351,7 +369,7 @@ abstract class WP_Job_Manager_Form {
 					$values[ $group_key ][ $key ] = $this->get_posted_field( $key, $field );
 				}
 
-				// Set fields value
+				// Set fields value.
 				$this->fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
 			}
 		}
@@ -371,7 +389,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return array|string   $value      The sanitized array (or string from the callback).
 	 */
 	protected function sanitize_posted_field( $value, $sanitizer = null ) {
-		// Sanitize value
+		// Sanitize value.
 		if ( is_array( $value ) ) {
 			foreach ( $value as $key => $val ) {
 				$value[ $key ] = $this->sanitize_posted_field( $val, $sanitizer );
@@ -387,18 +405,18 @@ abstract class WP_Job_Manager_Form {
 		} elseif ( 'email' === $sanitizer ) {
 			return sanitize_email( $value );
 		} elseif ( 'url_or_email' === $sanitizer ) {
-			if ( null !== parse_url( $value, PHP_URL_HOST ) ) {
-				// Sanitize as URL
+			if ( null !== wp_parse_url( $value, PHP_URL_HOST ) ) {
+				// Sanitize as URL.
 				return esc_url_raw( $value );
 			}
 
-			// Sanitize as email
+			// Sanitize as email.
 			return sanitize_email( $value );
 		} elseif ( is_callable( $sanitizer ) ) {
 			return call_user_func( $sanitizer, $value );
 		}
 
-		// Use standard text sanitizer
+		// Use standard text sanitizer.
 		return sanitize_text_field( stripslashes( $value ) );
 	}
 
@@ -433,7 +451,9 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
+	 *
 	 * @return string|array
+	 * @throws Exception When the upload fails.
 	 */
 	protected function get_posted_file_field( $key, $field ) {
 		$file = $this->upload_file( $key, $field );
@@ -477,8 +497,8 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_checklist_field( $key, $field ) {
-		if ( isset( $_POST[ 'tax_input' ] ) && isset( $_POST[ 'tax_input' ][ $field['taxonomy'] ] ) ) {
-			return array_map( 'absint', $_POST[ 'tax_input' ][ $field['taxonomy'] ] );
+		if ( isset( $_POST['tax_input'] ) && isset( $_POST['tax_input'][ $field['taxonomy'] ] ) ) {
+			return array_map( 'absint', $_POST['tax_input'][ $field['taxonomy'] ] );
 		} else {
 			return array();
 		}
@@ -489,7 +509,7 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
-	 * @return int
+	 * @return array
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
 		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : array();
@@ -511,7 +531,7 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param string $field_key
 	 * @param array  $field
-	 * @throws Exception When file upload failed
+	 * @throws Exception When file upload failed.
 	 * @return  string|array
 	 */
 	protected function upload_file( $field_key, $field ) {
@@ -526,10 +546,13 @@ abstract class WP_Job_Manager_Form {
 			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] );
 
 			foreach ( $files_to_upload as $file_to_upload ) {
-				$uploaded_file = job_manager_upload_file( $file_to_upload, array(
-					'file_key'           => $field_key,
-					'allowed_mime_types' => $allowed_mime_types,
-					) );
+				$uploaded_file = job_manager_upload_file(
+					$file_to_upload,
+					array(
+						'file_key'           => $field_key,
+						'allowed_mime_types' => $allowed_mime_types,
+					)
+				);
 
 				if ( is_wp_error( $uploaded_file ) ) {
 					throw new Exception( $uploaded_file->get_error_message() );

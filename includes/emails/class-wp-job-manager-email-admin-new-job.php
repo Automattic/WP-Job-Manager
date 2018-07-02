@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -49,9 +49,13 @@ class WP_Job_Manager_Email_Admin_New_Job extends WP_Job_Manager_Email_Template {
 		$args = $this->get_args();
 
 		/**
+		 * Job listing post object.
+		 *
 		 * @var WP_Post $job
 		 */
 		$job = $args['job'];
+
+		// translators: Placeholder %s is the job listing post title.
 		return sprintf( __( 'New Job Listing Submitted: %s', 'wp-job-manager' ), $job->post_title );
 	}
 

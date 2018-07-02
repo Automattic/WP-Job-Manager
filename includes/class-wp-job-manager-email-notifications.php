@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -11,11 +11,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.31.0
  */
 final class WP_Job_Manager_Email_Notifications {
-	const EMAIL_SETTING_PREFIX = 'job_manager_email_';
-	const EMAIL_SETTING_ENABLED = 'enabled';
+	const EMAIL_SETTING_PREFIX     = 'job_manager_email_';
+	const EMAIL_SETTING_ENABLED    = 'enabled';
 	const EMAIL_SETTING_PLAIN_TEXT = 'plain_text';
 
 	/**
+	 * Notifications to be scheduled.
+	 *
 	 * @var array
 	 */
 	private static $deferred_notifications = array();
@@ -26,8 +28,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @static
 	 */
 	public static function init() {
-		add_action( 'job_manager_send_notification', array( __CLASS__, '_schedule_notification' ), 10, 2 );
-		add_action( 'job_manager_email_init', array( __CLASS__, '_lazy_init' ) );
+		add_action( 'job_manager_send_notification', array( __CLASS__, 'schedule_notification' ), 10, 2 );
+		add_action( 'job_manager_email_init', array( __CLASS__, 'lazy_init' ) );
 		add_action( 'job_manager_email_job_details', array( __CLASS__, 'output_job_details' ), 10, 4 );
 		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
 		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
@@ -55,10 +57,14 @@ final class WP_Job_Manager_Email_Notifications {
 	/**
 	 * Sets up an email notification to be sent at the end of the script's execution.
 	 *
+	 * Do not call manually.
+	 *
+	 * @access private
+	 *
 	 * @param string $notification
 	 * @param array  $args
 	 */
-	public static function _schedule_notification( $notification, $args = array() ) {
+	public static function schedule_notification( $notification, $args = array() ) {
 		self::maybe_init();
 
 		self::$deferred_notifications[] = array( $notification, $args );
@@ -71,7 +77,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 */
-	public static function _send_deferred_notifications() {
+	public static function send_deferred_notifications() {
 		$email_notifications = self::get_email_notifications( true );
 		foreach ( self::$deferred_notifications as $email ) {
 			if (
@@ -81,9 +87,9 @@ final class WP_Job_Manager_Email_Notifications {
 				continue;
 			}
 
-			$email_class = $email_notifications[ $email[0] ];
+			$email_class            = $email_notifications[ $email[0] ];
 			$email_notification_key = $email[0];
-			$email_args = is_array( $email[1] ) ? $email[1] : array();
+			$email_args             = is_array( $email[1] ) ? $email[1] : array();
 
 			self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_notification_key ) ) );
 		}
@@ -111,8 +117,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 */
-	public static function _lazy_init() {
-		add_action( 'shutdown', array( __CLASS__, '_send_deferred_notifications' ) );
+	public static function lazy_init() {
+		add_action( 'shutdown', array( __CLASS__, 'send_deferred_notifications' ) );
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-updated-job.php';
@@ -131,9 +137,9 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 */
-	public static function _clear_deferred_notifications() {
+	public static function clear_deferred_notifications() {
 		if ( ! defined( 'PHPUNIT_WPJM_TESTSUITE' ) || ! PHPUNIT_WPJM_TESTSUITE ) {
-			die( "This is just for use while testing" );
+			die( 'This is just for use while testing' );
 		}
 		self::$deferred_notifications = array();
 	}
@@ -155,9 +161,11 @@ final class WP_Job_Manager_Email_Notifications {
 		 * @param array $email_notifications All the email notifications to be registered.
 		 */
 		$email_notification_classes = array_unique( apply_filters( 'job_manager_email_notifications', self::core_email_notifications() ) );
-		$email_notifications = array();
+		$email_notifications        = array();
 
 		/**
+		 * Email class in loop.
+		 *
 		 * @var WP_Job_Manager_Email $email_class
 		 */
 		foreach ( $email_notification_classes as $email_class ) {
@@ -167,7 +175,7 @@ final class WP_Job_Manager_Email_Notifications {
 			}
 
 			// PHP 5.2: Using `call_user_func()` but `$email_class::get_key()` preferred.
-			$email_notification_key = call_user_func( array( $email_class, 'get_key') );
+			$email_notification_key = call_user_func( array( $email_class, 'get_key' ) );
 			if (
 				isset( $email_notifications[ $email_notification_key ] )
 				|| ( $enabled_notifications_only && ! self::is_email_notification_enabled( $email_notification_key ) )
@@ -231,7 +239,7 @@ final class WP_Job_Manager_Email_Notifications {
 		if ( get_option( 'job_manager_enable_types' ) && wp_count_terms( 'job_listing_type' ) > 0 ) {
 			$job_types = wpjm_get_the_job_types( $job );
 			if ( ! empty( $job_types ) ) {
-				$fields[ 'job_type' ] = array(
+				$fields['job_type'] = array(
 					'label' => __( 'Job type', 'wp-job-manager' ),
 					'value' => implode( ', ', wp_list_pluck( $job_types, 'name' ) ),
 				);
@@ -241,7 +249,7 @@ final class WP_Job_Manager_Email_Notifications {
 		if ( get_option( 'job_manager_enable_categories' ) && wp_count_terms( 'job_listing_category' ) > 0 ) {
 			$job_categories = wpjm_get_the_job_categories( $job );
 			if ( ! empty( $job_categories ) ) {
-				$fields[ 'job_category' ] = array(
+				$fields['job_category'] = array(
 					'label' => __( 'Job category', 'wp-job-manager' ),
 					'value' => implode( ', ', wp_list_pluck( $job_categories, 'name' ) ),
 				);
@@ -266,7 +274,7 @@ final class WP_Job_Manager_Email_Notifications {
 
 		$job_expires = get_post_meta( $job->ID, '_job_expires', true );
 		if ( ! empty( $job_expires ) ) {
-			$job_expires_str = date_i18n( get_option( 'date_format' ), strtotime( $job_expires ) );
+			$job_expires_str       = date_i18n( get_option( 'date_format' ), strtotime( $job_expires ) );
 			$fields['job_expires'] = array(
 				'label' => __( 'Listing expires', 'wp-job-manager' ),
 				'value' => $job_expires_str,
@@ -344,9 +352,9 @@ final class WP_Job_Manager_Email_Notifications {
 	 * Checks for an alternative email template segment in the template path specified by the current email.
 	 * Useful to provide alternative email headers and footers for a specific WPJM extension plugin.
 	 *
-	 * @param string  $email_notification_key  Email notification key for email being sent.
-	 * @param string  $template_name           Name of the template to check
-	 * @param bool    $plain_text              True if the email is being sent as plain text.
+	 * @param string $email_notification_key  Email notification key for email being sent.
+	 * @param string $template_name           Name of the template to check.
+	 * @param bool   $plain_text              True if the email is being sent as plain text.
 	 * @return bool|string Returns path to template path alternative or false if none exists.
 	 */
 	private static function email_template_path_alternative( $email_notification_key, $template_name, $plain_text ) {
@@ -361,7 +369,7 @@ final class WP_Job_Manager_Email_Notifications {
 		}
 
 		$template_path = call_user_func( array( $email_class, 'get_template_path' ) );
-		$template = self::locate_template_file( $template_name, $plain_text, $template_path, $template_default_path );
+		$template      = self::locate_template_file( $template_name, $plain_text, $template_path, $template_default_path );
 		if ( '' === $template ) {
 			return false;
 		}
@@ -385,7 +393,7 @@ final class WP_Job_Manager_Email_Notifications {
 	/**
 	 * Add email notification settings for the job manager context.
 	 *
-	 * @param array  $settings
+	 * @param array $settings
 	 * @return array
 	 */
 	public static function add_job_manager_email_settings( $settings ) {
@@ -401,17 +409,19 @@ final class WP_Job_Manager_Email_Notifications {
 	 */
 	public static function add_email_settings( $settings, $context ) {
 		$email_notifications = self::get_email_notifications( false );
-		$email_settings = array();
+		$email_settings      = array();
 
 		foreach ( $email_notifications as $email_notification_key => $email_class ) {
 			$email_notification_context = call_user_func( array( $email_class, 'get_context' ) );
-			if ( $context !== $email_notification_context ) { continue; }
+			if ( $context !== $email_notification_context ) {
+				continue;
+			}
 
 			$email_settings[] = array(
-				'type'           => 'multi_enable_expand',
-				'class'          => 'email-setting-row no-separator',
-				'name'           => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
-				'enable_field'   => array(
+				'type'         => 'multi_enable_expand',
+				'class'        => 'email-setting-row no-separator',
+				'name'         => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
+				'enable_field' => array(
 					'name'     => self::EMAIL_SETTING_ENABLED,
 					'cb_label' => call_user_func( array( $email_class, 'get_name' ) ),
 					'desc'     => call_user_func( array( $email_class, 'get_description' ) ),
@@ -485,7 +495,7 @@ final class WP_Job_Manager_Email_Notifications {
 	public static function send_employer_expiring_notice() {
 		self::maybe_init();
 
-		$email_key   = WP_Job_Manager_Email_Employer_Expiring_Job::get_key();
+		$email_key = WP_Job_Manager_Email_Employer_Expiring_Job::get_key();
 		if ( ! self::is_email_notification_enabled( $email_key ) ) {
 			return;
 		}
@@ -500,7 +510,7 @@ final class WP_Job_Manager_Email_Notifications {
 	public static function send_admin_expiring_notice() {
 		self::maybe_init();
 
-		$email_key   = WP_Job_Manager_Email_Admin_Expiring_Job::get_key();
+		$email_key = WP_Job_Manager_Email_Admin_Expiring_Job::get_key();
 		if ( ! self::is_email_notification_enabled( $email_key ) ) {
 			return;
 		}
@@ -537,15 +547,16 @@ final class WP_Job_Manager_Email_Notifications {
 		global $wpdb;
 
 		$notice_before_ts = current_time( 'timestamp' ) + ( DAY_IN_SECONDS * $days_notice );
-		$job_ids_sql      = $wpdb->prepare( "
+		$job_ids          = $wpdb->get_col( $wpdb->prepare(
+			"
 			SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
 			LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
 			WHERE postmeta.meta_key = '_job_expires'
 			AND postmeta.meta_value = %s
 			AND posts.post_status = 'publish'
 			AND posts.post_type = 'job_listing'
-		", date( 'Y-m-d', $notice_before_ts ) );
-		$job_ids = $wpdb->get_col( $job_ids_sql );
+		", date( 'Y-m-d', $notice_before_ts )
+		) );
 
 		if ( $job_ids ) {
 			foreach ( $job_ids as $job_id ) {
@@ -561,8 +572,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	private static function get_email_setting_fields( $email_notification_key ) {
-		$email_class = self::get_email_class( $email_notification_key );
-		$core_settings = array(
+		$email_class    = self::get_email_class( $email_notification_key );
+		$core_settings  = array(
 			array(
 				'name'    => 'plain_text',
 				'std'     => '0',
@@ -585,7 +596,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	private static function get_email_settings( $email_notification_key ) {
-		$option_name = self::EMAIL_SETTING_PREFIX . $email_notification_key;
+		$option_name  = self::EMAIL_SETTING_PREFIX . $email_notification_key;
 		$option_value = get_option( $option_name );
 		if ( empty( $option_value ) || ! is_array( $option_value ) ) {
 			$option_value = array();
@@ -602,10 +613,10 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	private static function get_email_setting_defaults( $email_notification_key ) {
-		$settings = self::get_email_setting_fields( $email_notification_key );
+		$settings    = self::get_email_setting_fields( $email_notification_key );
 		$email_class = self::get_email_class( $email_notification_key );
 
-		$defaults = array();
+		$defaults                                = array();
 		$defaults[ self::EMAIL_SETTING_ENABLED ] = call_user_func( array( $email_class, 'is_default_enabled' ) ) ? '1' : '0';
 
 		foreach ( $settings as $setting ) {
@@ -631,13 +642,15 @@ final class WP_Job_Manager_Email_Notifications {
 	}
 
 	/**
-	 * Returns the total number of deferred notifications to be sent. Used in unit tests.
+	 * Returns the total number of deferred notifications to be sent.
+	 *
+	 * Do not use. Used just in unit tests.
 	 *
 	 * @access private
 	 *
 	 * @return int
 	 */
-	public static function _get_deferred_notification_count() {
+	public static function get_deferred_notification_count() {
 		return count( self::$deferred_notifications );
 	}
 
@@ -654,8 +667,8 @@ final class WP_Job_Manager_Email_Notifications {
 		return is_string( $email_class )
 				&& class_exists( $email_class )
 				&& is_subclass_of( $email_class, 'WP_Job_Manager_Email' )
-				&& false !== call_user_func( array( $email_class, 'get_key') )
-				&& false !== call_user_func( array( $email_class, 'get_name') );
+				&& false !== call_user_func( array( $email_class, 'get_key' ) )
+				&& false !== call_user_func( array( $email_class, 'get_name' ) );
 	}
 
 	/**
@@ -673,7 +686,7 @@ final class WP_Job_Manager_Email_Notifications {
 		}
 
 		$fields = array( 'to', 'from', 'subject', 'rich_content', 'plain_content', 'attachments', 'cc', 'headers' );
-		$args = array();
+		$args   = array();
 		foreach ( $fields as $field ) {
 			$method = 'get_' . $field;
 
@@ -790,7 +803,7 @@ final class WP_Job_Manager_Email_Notifications {
 				$emogrifier = new Emogrifier( $content, self::get_styles() );
 				$content    = $emogrifier->emogrify();
 			} catch ( Exception $e ) {
-				trigger_error( 'Unable to inject styles into email notification: ' . $e->getMessage() );
+				trigger_error( 'Unable to inject styles into email notification: ' . $e->getMessage() ); // @codingStandardsIgnoreLine
 			}
 		}
 		return $content;

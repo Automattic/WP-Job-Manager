@@ -12,10 +12,10 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
-// Get selected value
+// Get selected value.
 if ( isset( $field['value'] ) ) {
 	$selected = $field['value'];
 } elseif (  ! empty( $field['default'] ) && is_int( $field['default'] ) ) {

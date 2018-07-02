@@ -7,18 +7,18 @@ if ( ! empty( $messages ) ) {
 		}
 		$type = 'info';
 		if ( isset( $message->type )
-		&& in_array( $message->type, array( 'info', 'success', 'warning', 'error' ) ) ) {
+		&& in_array( $message->type, array( 'info', 'success', 'warning', 'error' ), true ) ) {
 			$type = $message->type;
 		}
-		$action_label = isset( $message->action_label ) ? esc_attr( $message->action_label ) : __( 'More Information &rarr;', 'wp-job-manager' );
-		$action_url = isset( $message->action_url ) ? esc_url( $message->action_url, array( 'http', 'https' ) ) : false;
+		$action_label  = isset( $message->action_label ) ? esc_attr( $message->action_label ) : __( 'More Information &rarr;', 'wp-job-manager' );
+		$action_url    = isset( $message->action_url ) ? esc_url( $message->action_url, array( 'http', 'https' ) ) : false;
 		$action_target = isset( $message->action_target ) && 'self' === $message->action_target ? '_self' : '_blank';
-		$action_str = '';
+		$action_str    = '';
 		if ( $action_url ) {
 			$action_str = ' <a href="' . esc_url( $action_url ) . '" target="' . esc_attr( $action_target ) . '" class="button">' . esc_html( $action_label ) . '</a>';
 		}
 
-		echo '<div class="notice notice-' . esc_attr( $type ) . ' below-h2"><p><strong>' . esc_html( $message->message ) . '</strong>' . $action_str . '</p></div>';
+		echo '<div class="notice notice-' . esc_attr( $type ) . ' below-h2"><p><strong>' . esc_html( $message->message ) . '</strong>' . wp_kses_post( $action_str ) . '</p></div>';
 	}
 }
 if ( ! empty( $categories ) ) {
@@ -44,12 +44,14 @@ if ( empty( $add_ons ) ) {
 } else {
 	echo '<ul class="products">';
 	foreach ( $add_ons as $add_on ) {
-		$url = add_query_arg( array(
-			'utm_source'   => 'product',
-			'utm_medium'   => 'addonpage',
-			'utm_campaign' => 'wpjmplugin',
-			'utm_content'  => 'listing',
-		), $add_on->link );
+		$url = add_query_arg(
+			array(
+				'utm_source'   => 'product',
+				'utm_medium'   => 'addonpage',
+				'utm_campaign' => 'wpjmplugin',
+				'utm_content'  => 'listing',
+			), $add_on->link
+		);
 		?>
 		<li class="product">
 			<a href="<?php echo esc_url( $url, array( 'http', 'https' ) ); ?>">

@@ -32,5 +32,5 @@ if ( ! is_multisite() ) {
 	switch_to_blog( $original_blog_id );
 }
 
-include dirname( __FILE__ ) . '/includes/class-wp-job-manager-usage-tracking.php';
+require dirname( __FILE__ ) . '/includes/class-wp-job-manager-usage-tracking.php';
 WP_Job_Manager_Usage_Tracking::get_instance()->clear_options();

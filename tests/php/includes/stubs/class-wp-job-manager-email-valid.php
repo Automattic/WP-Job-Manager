@@ -53,7 +53,7 @@ class WP_Job_Manager_Email_Valid extends WP_Job_Manager_Email {
 	 */
 	public function get_rich_content() {
 		$args = $this->get_args();
-		return "<strong>" . wp_kses_post( $args['test'] ) . "</strong>";
+		return '<strong>' . wp_kses_post( $args['test'] ) . '</strong>';
 	}
 
 	/**

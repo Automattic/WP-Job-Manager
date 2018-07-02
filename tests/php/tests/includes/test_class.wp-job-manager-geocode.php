@@ -20,10 +20,10 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 */
 	public function test_wp_job_manager_api_instance() {
 		$instance = WP_Job_Manager_Geocode::instance();
-		// check the class
+		// check the class.
 		$this->assertInstanceOf( 'WP_Job_Manager_Geocode', $instance, 'Job Manager Geocode object is instance of WP_Job_Manager_Geocode class' );
 
-		// check it always returns the same object
+		// check it always returns the same object.
 		$this->assertSame( WP_Job_Manager_Geocode::instance(), $instance, 'WP_Job_Manager_Geocode::instance() must always return the same object' );
 	}
 
@@ -35,8 +35,8 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	public function test_update_location_data( $test_data ) {
 		$this->set_expected_responses( $test_data );
 		$instance = WP_Job_Manager_Geocode::instance();
-		$job_id = $this->factory->job_listing->create();
-		$values = array( 'job' => array( 'job_location' => $test_data['location'] ) );
+		$job_id   = $this->factory->job_listing->create();
+		$values   = array( 'job' => array( 'job_location' => $test_data['location'] ) );
 		$instance->update_location_data( $job_id, $values );
 		$this->check_test_data( $job_id, $test_data );
 	}
@@ -49,8 +49,8 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 		$test_data = $this->get_valid_location_data();
 		$this->set_expected_responses( $test_data );
 		$instance = WP_Job_Manager_Geocode::instance();
-		$job_id = $this->factory->job_listing->create();
-		$values = array( 'job' => array( 'job_location' => $test_data['location'] ) );
+		$job_id   = $this->factory->job_listing->create();
+		$values   = array( 'job' => array( 'job_location' => $test_data['location'] ) );
 		add_filter( 'job_manager_geolocation_enabled', '__return_false' );
 		$instance->update_location_data( $job_id, $values );
 		add_filter( 'job_manager_geolocation_enabled', '__return_true' );
@@ -63,8 +63,8 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 */
 	public function test_update_location_data_not_set() {
 		$instance = WP_Job_Manager_Geocode::instance();
-		$job_id = $this->factory->job_listing->create();
-		$values = array( 'job' => array() );
+		$job_id   = $this->factory->job_listing->create();
+		$values   = array( 'job' => array() );
 		$instance->update_location_data( $job_id, $values );
 		$this->check_test_data( $job_id, $this->get_invalid_location_data() );
 	}
@@ -79,14 +79,14 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 		$this->set_expected_responses( $test_data );
 		$this->set_expected_responses( $other_test_data );
 		$instance = WP_Job_Manager_Geocode::instance();
-		$job_id = $this->factory->job_listing->create();
+		$job_id   = $this->factory->job_listing->create();
 
-		// Set the initial location data
+		// Set the initial location data.
 		$values = array( 'job' => array( 'job_location' => $other_test_data['location'] ) );
 		$instance->update_location_data( $job_id, $values );
 		$this->check_test_data( $job_id, $other_test_data );
 
-		// Set the new location data and verify that everything is valid
+		// Set the new location data and verify that everything is valid.
 		$instance->change_location_data( $job_id, $test_data['location'] );
 		$this->check_test_data( $job_id, $test_data );
 	}
@@ -99,8 +99,8 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 		$test_data = $this->get_valid_location_data();
 		$this->set_expected_responses( $test_data );
 		$instance = WP_Job_Manager_Geocode::instance();
-		$job_id = $this->factory->job_listing->create();
-		$values = array( 'job' => array( 'job_location' => $test_data['location'] ) );
+		$job_id   = $this->factory->job_listing->create();
+		$values   = array( 'job' => array( 'job_location' => $test_data['location'] ) );
 		$instance->update_location_data( $job_id, $values );
 		$this->assertNotEmpty( get_post_meta( $job_id, 'geolocation_city', true ) );
 		$this->assertTrue( WP_Job_Manager_Geocode::has_location_data( $job_id ) );
@@ -147,24 +147,24 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Geocode::save_location_data
 	 */
 	public function test_save_location_data() {
-		$job_id = $this->factory->job_listing->create();
+		$job_id    = $this->factory->job_listing->create();
 		$test_data = array(
-			'city' => 'City',
-			'country_long' => 'Country Long',
-			'country_short' => 'Country',
+			'city'              => 'City',
+			'country_long'      => 'Country Long',
+			'country_short'     => 'Country',
 			'formatted_address' => 'Formatted',
-			'lat' => '111',
-			'long' => '222',
-			'state_long' => 'Washington',
-			'state_short' => 'WA',
-			'street' => 'Test St.',
-			'street_number' => '30',
-			'zipcode' => '11111',
-			'postcode' => '22222',
+			'lat'               => '111',
+			'long'              => '222',
+			'state_long'        => 'Washington',
+			'state_short'       => 'WA',
+			'street'            => 'Test St.',
+			'street_number'     => '30',
+			'zipcode'           => '11111',
+			'postcode'          => '22222',
 		);
 		WP_Job_Manager_Geocode::save_location_data( $job_id, $test_data );
 		foreach ( $test_data as $key => $value ) {
-			$this->assertEquals( $value, get_post_meta( $job_id, 'geolocation_' . $key, true) );
+			$this->assertEquals( $value, get_post_meta( $job_id, 'geolocation_' . $key, true ) );
 		}
 	}
 
@@ -185,20 +185,21 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Geocode::add_geolocation_endpoint_query_args
 	 */
 	public function test_add_geolocation_endpoint_query_args() {
-		$test_url = 'http://www.example.com/provider';
+		$test_url      = 'http://www.example.com/provider';
 		$test_location = 'Mars 00000';
-		$instance = WP_Job_Manager_Geocode::instance();
+		$instance      = WP_Job_Manager_Geocode::instance();
 		add_filter( 'job_manager_geolocation_api_key', array( $this, 'helper_add_api_key' ) );
 		add_filter( 'job_manager_geolocation_region_cctld', array( $this, 'helper_add_region_cctld' ) );
-		$result = $instance->add_geolocation_endpoint_query_args( $test_url, $test_location );;
+		$result = $instance->add_geolocation_endpoint_query_args( $test_url, $test_location );
+
 		remove_filter( 'job_manager_geolocation_api_key', array( $this, 'helper_add_api_key' ) );
 		remove_filter( 'job_manager_geolocation_region_cctld', array( $this, 'helper_add_region_cctld' ) );
 		$this->assertContains( $test_url, $result );
 		$this->assertContains( urlencode( $test_location ), $result );
-		$this->assertContains( 'key=' .  urlencode( $this->helper_add_api_key('') ), $result );
-		$this->assertContains( 'region=' . urlencode( $this->helper_add_region_cctld('') ), $result );
+		$this->assertContains( 'key=' . urlencode( $this->helper_add_api_key( '' ) ), $result );
+		$this->assertContains( 'region=' . urlencode( $this->helper_add_region_cctld( '' ) ), $result );
 		$locale = get_locale();
-		$this->assertContains( 'language=' . urlencode(  substr( $locale, 0, 2 ) ), $result );
+		$this->assertContains( 'language=' . urlencode( substr( $locale, 0, 2 ) ), $result );
 
 	}
 
@@ -268,7 +269,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 *
 	 * @return string
 	 */
-	public function helper_add_region_cctld( $region ){
+	public function helper_add_region_cctld( $region ) {
 		return 'TESTREGION';
 	}
 
@@ -278,7 +279,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 *
 	 * @return string
 	 */
-	public function helper_add_api_key( $key ){
+	public function helper_add_api_key( $key ) {
 		return 'TESTAPIKEY';
 	}
 
@@ -318,17 +319,17 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 				$test_data['fake_response']['response'] = array(
 					'results' => array(
 						array(
-							"address_components" => $test_data['fake_response']['data'],
-							"formatted_address" => $test_data["location"],
-							'geometry' => array(
+							'address_components' => $test_data['fake_response']['data'],
+							'formatted_address'  => $test_data['location'],
+							'geometry'           => array(
 								'location' => array(
 									'lat' => 0,
 									'lng' => 0,
-								)
+								),
 							),
 						),
 					),
-					'status' => 'OK'
+					'status'  => 'OK',
 				);
 			}
 			$transport->add_fake_request( $test_data['fake_response']['request'], array( 'body' => $test_data['fake_response']['response'] ) );
@@ -344,54 +345,61 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 
 	protected function get_invalid_location_data() {
 		return array(
-			'location' => '',
+			'location'              => '',
 			'expects_location_data' => false,
-			'location_data' => array(
-				'city' => '',
-				'country_long' => '',
-				'country_short' => '',
+			'location_data'         => array(
+				'city'              => '',
+				'country_long'      => '',
+				'country_short'     => '',
 				'formatted_address' => '',
-				'lat' => '',
-				'long' => '',
-				'state_long' => '',
-				'state_short' => '',
-				'street' => '',
-				'street_number' => '',
-				'zipcode' => '',
-				'postcode' => '',
+				'lat'               => '',
+				'long'              => '',
+				'state_long'        => '',
+				'state_short'       => '',
+				'street'            => '',
+				'street_number'     => '',
+				'zipcode'           => '',
+				'postcode'          => '',
 			),
 		);
 	}
 
 	private function build_geocode_url( $location ) {
-		$invalid_chars = array( " " => "+", "," => "", "?" => "", "&" => "", "=" => "" , "#" => "" );
-		$location   = trim( strtolower( str_replace( array_keys( $invalid_chars ), array_values( $invalid_chars ), $location ) ) );
+		$invalid_chars = array(
+			' ' => '+',
+			',' => '',
+			'?' => '',
+			'&' => '',
+			'=' => '',
+			'#' => '',
+		);
+		$location      = trim( strtolower( str_replace( array_keys( $invalid_chars ), array_values( $invalid_chars ), $location ) ) );
 		return apply_filters( 'job_manager_geolocation_endpoint', WP_Job_Manager_Geocode::GOOGLE_MAPS_GEOCODE_API_URL, $location );
 	}
 
 	protected function get_valid_location_data() {
 		return array(
-			'location' => 'Seattle, WA, USA',
+			'location'              => 'Seattle, WA, USA',
 			'expects_location_data' => true,
-			'location_data' => array(
+			'location_data'         => array(
 				'city' => 'Seattle',
 			),
-			'fake_response' => array(
+			'fake_response'         => array(
 				'data' => array(
 					array(
-						"short_name" => "Seattle",
-						"long_name" => "Seattle",
-						"types" => array( "locality", "political" ),
+						'short_name' => 'Seattle',
+						'long_name'  => 'Seattle',
+						'types'      => array( 'locality', 'political' ),
 					),
 					array(
-						"short_name" => "WA",
-						"long_name" => "Washington",
-						"types" => array( "administrative_area_level_1", "political" ),
+						'short_name' => 'WA',
+						'long_name'  => 'Washington',
+						'types'      => array( 'administrative_area_level_1', 'political' ),
 					),
 					array(
-						"short_name" => "US",
-						"long_name" => "United States",
-						"types" => array( "country", "political" ),
+						'short_name' => 'US',
+						'long_name'  => 'United States',
+						'types'      => array( 'country', 'political' ),
 					),
 				),
 			),
@@ -400,27 +408,27 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 
 	protected function get_other_valid_location_data() {
 		return array(
-			'location' => 'Chicago, IL, USA',
+			'location'              => 'Chicago, IL, USA',
 			'expects_location_data' => true,
-			'location_data' => array(
+			'location_data'         => array(
 				'city' => 'Chicago',
 			),
-			'fake_response' => array(
+			'fake_response'         => array(
 				'data' => array(
 					array(
-						"short_name" => "Chicago",
-						"long_name" => "Chicago",
-						"types" => array( "locality", "political" ),
+						'short_name' => 'Chicago',
+						'long_name'  => 'Chicago',
+						'types'      => array( 'locality', 'political' ),
 					),
 					array(
-						"short_name" => "IL",
-						"long_name" => "Illinois",
-						"types" => array( "administrative_area_level_1", "political" ),
+						'short_name' => 'IL',
+						'long_name'  => 'Illinois',
+						'types'      => array( 'administrative_area_level_1', 'political' ),
 					),
 					array(
-						"short_name" => "US",
-						"long_name" => "United States",
-						"types" => array( "country", "political" ),
+						'short_name' => 'US',
+						'long_name'  => 'United States',
+						'types'      => array( 'country', 'political' ),
 					),
 				),
 			),

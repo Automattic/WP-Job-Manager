@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -41,11 +41,11 @@ class WP_Job_Manager_Ajax {
 		add_action( 'init', array( __CLASS__, 'add_endpoint' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'do_jm_ajax' ), 0 );
 
-		// JM Ajax endpoints
+		// JM Ajax endpoints.
 		add_action( 'job_manager_ajax_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'job_manager_ajax_upload_file', array( $this, 'upload_file' ) );
 
-		// BW compatible handlers
+		// BW compatible handlers.
 		add_action( 'wp_ajax_nopriv_job_manager_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'wp_ajax_job_manager_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'wp_ajax_nopriv_job_manager_upload_file', array( $this, 'upload_file' ) );
@@ -64,8 +64,8 @@ class WP_Job_Manager_Ajax {
 	/**
 	 * Gets Job Manager's Ajax Endpoint.
 	 *
-	 * @param  string $request      Optional
-	 * @param  string $ssl (Unused) Optional
+	 * @param  string $request      Optional.
+	 * @param  string $ssl (Unused) Optional.
 	 * @return string
 	 */
 	public static function get_endpoint( $request = '%%endpoint%%', $ssl = null ) {
@@ -89,12 +89,13 @@ class WP_Job_Manager_Ajax {
 			 $wp_query->set( 'jm-ajax', sanitize_text_field( $_GET['jm-ajax'] ) );
 		}
 
-		if ( $action = $wp_query->get( 'jm-ajax' ) ) {
+		$action = $wp_query->get( 'jm-ajax' );
+		if ( $action ) {
 			if ( ! defined( 'DOING_AJAX' ) ) {
 				define( 'DOING_AJAX', true );
 			}
 
-			// Not home - this is an ajax endpoint
+			// Not home - this is an ajax endpoint.
 			$wp_query->is_home = false;
 
 			/**
@@ -131,23 +132,23 @@ class WP_Job_Manager_Ajax {
 		}
 
 		$args = array(
-			'search_location'    => $search_location,
-			'search_keywords'    => $search_keywords,
-			'search_categories'  => $search_categories,
-			'job_types'          => is_null( $filter_job_types ) || sizeof( $types ) === sizeof( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
-			'post_status'        => $filter_post_status,
-			'orderby'            => $orderby,
-			'order'              => sanitize_text_field( $_REQUEST['order'] ),
-			'offset'             => ( absint( $_REQUEST['page'] ) - 1 ) * absint( $_REQUEST['per_page'] ),
-			'posts_per_page'     => max( 1, absint( $_REQUEST['per_page'] ) ),
+			'search_location'   => $search_location,
+			'search_keywords'   => $search_keywords,
+			'search_categories' => $search_categories,
+			'job_types'         => is_null( $filter_job_types ) || count( $types ) === count( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
+			'post_status'       => $filter_post_status,
+			'orderby'           => $orderby,
+			'order'             => sanitize_text_field( $_REQUEST['order'] ),
+			'offset'            => ( absint( $_REQUEST['page'] ) - 1 ) * absint( $_REQUEST['per_page'] ),
+			'posts_per_page'    => max( 1, absint( $_REQUEST['per_page'] ) ),
 		);
 
-		if ( isset( $_REQUEST['filled'] ) && ( $_REQUEST['filled'] === 'true' || $_REQUEST['filled'] === 'false' ) ) {
-			$args['filled'] = $_REQUEST['filled'] === 'true' ? true : false;
+		if ( isset( $_REQUEST['filled'] ) && ( 'true' === $_REQUEST['filled'] || 'false' === $_REQUEST['filled'] ) ) {
+			$args['filled'] = 'true' === $_REQUEST['filled'];
 		}
 
-		if ( isset( $_REQUEST['featured'] ) && ( $_REQUEST['featured'] === 'true' || $_REQUEST['featured'] === 'false' ) ) {
-			$args['featured'] = $_REQUEST['featured'] === 'true' ? true : false;
+		if ( isset( $_REQUEST['featured'] ) && ( 'true' === $_REQUEST['featured'] || 'false' === $_REQUEST['featured'] ) ) {
+			$args['featured'] = 'true' === $_REQUEST['featured'];
 			$args['orderby']  = 'featured' === $orderby ? 'date' : $orderby;
 		}
 
@@ -156,18 +157,19 @@ class WP_Job_Manager_Ajax {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param array $args Arguments used for generating Job Listing query (see `get_job_listings()`)
+		 * @param array $args Arguments used for generating Job Listing query (see `get_job_listings()`).
 		 */
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 
 		$result = array(
-			'found_jobs' => $jobs->have_posts(),
-			'showing' => '',
+			'found_jobs'    => $jobs->have_posts(),
+			'showing'       => '',
 			'max_num_pages' => $jobs->max_num_pages,
 		);
 
 		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
-			$message = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
+			// translators: Placeholder %d is the number of found search results.
+			$message               = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
 			$result['showing_all'] = true;
 		} else {
 			$message = '';
@@ -195,13 +197,15 @@ class WP_Job_Manager_Ajax {
 		 */
 		$result['showing'] = apply_filters( 'job_manager_get_listings_custom_filter_text', $message, $search_values );
 
-		// Generate RSS link
-		$result['showing_links'] = job_manager_get_filtered_links( array(
-			'filter_job_types'  => $filter_job_types,
-			'search_location'   => $search_location,
-			'search_categories' => $search_categories,
-			'search_keywords'   => $search_keywords,
-		) );
+		// Generate RSS link.
+		$result['showing_links'] = job_manager_get_filtered_links(
+			array(
+				'filter_job_types'  => $filter_job_types,
+				'search_location'   => $search_location,
+				'search_categories' => $search_categories,
+				'search_keywords'   => $search_keywords,
+			)
+		);
 
 		/**
 		 * Send back a response to the AJAX request without creating HTML.
@@ -234,24 +238,19 @@ class WP_Job_Manager_Ajax {
 
 		ob_start();
 
-		if ( $result['found_jobs'] ) : ?>
-
-			<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
-
-				<?php get_job_manager_template_part( 'content', 'job_listing' ); ?>
-
-			<?php endwhile; ?>
-
-		<?php else : ?>
-
-			<?php get_job_manager_template_part( 'content', 'no-jobs-found' ); ?>
-
-		<?php endif;
+		if ( $result['found_jobs'] ) {
+			while ( $jobs->have_posts() ) {
+				$jobs->the_post();
+				get_job_manager_template_part( 'content', 'job_listing' );
+			}
+		} else {
+			get_job_manager_template_part( 'content', 'no-jobs-found' );
+		}
 
 		$result['html'] = ob_get_clean();
 
-		// Generate pagination
-		if ( isset( $_REQUEST['show_pagination'] ) && $_REQUEST['show_pagination'] === 'true' ) {
+		// Generate pagination.
+		if ( isset( $_REQUEST['show_pagination'] ) && 'true' === $_REQUEST['show_pagination'] ) {
 			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
 		}
 
@@ -277,9 +276,12 @@ class WP_Job_Manager_Ajax {
 			foreach ( $_FILES as $file_key => $file ) {
 				$files_to_upload = job_manager_prepare_uploaded_files( $file );
 				foreach ( $files_to_upload as $file_to_upload ) {
-					$uploaded_file = job_manager_upload_file( $file_to_upload, array(
-						'file_key' => $file_key,
-					) );
+					$uploaded_file = job_manager_upload_file(
+						$file_to_upload,
+						array(
+							'file_key' => $file_key,
+						)
+					);
 
 					if ( is_wp_error( $uploaded_file ) ) {
 						$data['files'][] = array(

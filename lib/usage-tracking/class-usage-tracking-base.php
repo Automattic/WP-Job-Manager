@@ -78,7 +78,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Get prefix for actions and strings. Should be unique to this plugin.
 	 *
-	 * @return string The prefix string
+	 * @return string The prefix string.
 	 **/
 	abstract protected function get_prefix();
 
@@ -86,7 +86,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * Get the text domain used by this plugin. This class will add some
 	 * strings to be translated.
 	 *
-	 * @return string The text domain string
+	 * @return string The text domain string.
 	 **/
 	abstract protected function get_text_domain();
 
@@ -108,7 +108,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Determine whether current user can manage the tracking options.
 	 *
-	 * @return bool true if the current user is allowed to manage the tracking
+	 * @return bool true if the current user is allowed to manage the tracking.
 	 * options, false otherwise.
 	 **/
 	abstract protected function current_user_can_manage_tracking();
@@ -167,6 +167,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * subclass.
 	 *
 	 * @param string $subclass the name of the subclass.
+	 * @return object Instance of $subclass.
 	 */
 	protected static function get_instance_for_subclass( $subclass ) {
 		if ( ! isset( self::$instances[ $subclass ] ) ) {
@@ -219,7 +220,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$properties['admin_email'] = get_option( 'admin_email' );
 		$properties['_ut']         = $this->get_event_prefix() . ':site_url';
 		// Use site URL as the userid to enable usage tracking at the site level.
-		// Note that we would likely want to use site URL + user ID for userid if we were
+		// Note that we would likely want to use site URL + user ID for userid if we were.
 		// to ever add event tracking at the user level.
 		$properties['_ui'] = site_url();
 		$properties['_ul'] = $user->user_login;
@@ -234,7 +235,8 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 
 		$pixel   .= '?' . implode( '&', $p ) . '&_=_'; // EOF marker.
 		$response = wp_remote_get(
-			$pixel, array(
+			$pixel,
+			array(
 				'blocking'    => true,
 				'timeout'     => 1,
 				'redirection' => 2,
@@ -280,7 +282,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Check if tracking is enabled.
 	 *
-	 * @return bool true if tracking is enabled, false otherwise
+	 * @return bool true if tracking is enabled, false otherwise.
 	 **/
 	public function is_tracking_enabled() {
 		// Defer to the plugin-specific function.
@@ -325,6 +327,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * externally.
 	 *
 	 * @param array $schedules the existing cron schedules.
+	 * @return array of $schedules.
 	 **/
 	public function add_usage_tracking_two_week_schedule( $schedules ) {
 		$day_in_seconds = 86400;
@@ -547,7 +550,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 				jQuery( '#' + prefix + '-usage-tracking-notice' ).hide();
 			}
 
-			// Handle button clicks
+			// Handle button clicks.
 			jQuery( '#' + prefix + '-usage-tracking-notice button' ).click( function( event ) {
 				event.preventDefault();
 

@@ -23,10 +23,10 @@ class WP_Job_Manager_Filters_Status extends WP_Job_Manager_REST_Model {
 	public function declare_fields() {
 		$env = $this->get_environment();
 		return array(
-		 $env->field( 'keys', 'The status keys to return' )
-			 ->with_type( $env->type( 'array:string' ) )
-			 ->with_before_set( 'explode_keys' )
-			 ->with_default( array() ),
+			$env->field( 'keys', 'The status keys to return' )
+				->with_type( $env->type( 'array:string' ) )
+				->with_before_set( 'explode_keys' )
+				->with_default( array() ),
 		);
 	}
 

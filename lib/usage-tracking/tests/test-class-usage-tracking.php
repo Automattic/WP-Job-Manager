@@ -38,20 +38,20 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 * @covers {Prefix}_Usage_Tracking::schedule_tracking_task
 	 */
 	public function testScheduleTrackingTask() {
-		// Make sure it's cleared initially
+		// Make sure it's cleared initially.
 		wp_clear_scheduled_hook( $this->usage_tracking->get_prefix() . '_usage_tracking_send_usage_data' );
 
-		// Record how many times the event is scheduled
+		// Record how many times the event is scheduled.
 		$this->event_counts['schedule_event'] = 0;
 		add_filter( 'schedule_event', array( $this, 'countScheduleEvent' ) );
 
-		// Should successfully schedule the task
+		// Should successfully schedule the task.
 		$this->assertFalse( wp_get_schedule( $this->usage_tracking->get_prefix() . '_usage_tracking_send_usage_data' ), 'Not scheduled initial' );
 		$this->usage_tracking->schedule_tracking_task();
 		$this->assertNotFalse( wp_get_schedule( $this->usage_tracking->get_prefix() . '_usage_tracking_send_usage_data' ), 'Schedules a job' );
 		$this->assertEquals( 1, $this->event_counts['schedule_event'], 'Schedules only one job' );
 
-		// Should not duplicate when called again
+		// Should not duplicate when called again.
 		$this->usage_tracking->schedule_tracking_task();
 		$this->assertEquals( 1, $this->event_counts['schedule_event'], 'Does not schedule an additional job' );
 	}
@@ -99,7 +99,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->setupAjaxRequest();
 		$_POST['enable_tracking'] = '1';
 
-		// Count the number of network requests
+		// Count the number of network requests.
 		$this->event_counts['http_request'] = 0;
 		add_filter( 'pre_http_request', array( $this, 'countHttpRequest' ) );
 
@@ -167,7 +167,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	public function testAjaxRequestFailedAuth() {
 		$this->setupAjaxRequest();
 
-		// Current user cannot enable tracking
+		// Current user cannot enable tracking.
 		$this->allowCurrentUserToEnableTracking( false );
 
 		$this->assertFalse( !! $this->usage_tracking->is_tracking_enabled(), 'Usage tracking initially disabled' );
@@ -199,11 +199,10 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		);
 		$timestamp  = '1234';
 
-		// Enable tracking
+		// Enable tracking.
 		$this->usage_tracking->set_tracking_enabled( true );
 
-		// Capture the network request, save the request URL and arguments, and
-		// simulate a WP_Error
+		// Capture the network request, save the request URL and arguments, and simulate a WP_Error.
 		$this->track_http_request['request_params'] = null;
 		$this->track_http_request['request_url']    = null;
 		add_filter( 'pre_http_request', array( $this, 'trackHttpRequest' ), 10, 3 );
@@ -218,7 +217,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$query = array();
 		parse_str( $parsed_url['query'], $query );
 
-		// Older versions (for PHP 5.2) of PHPUnit do not have this method
+		// Older versions (for PHP 5.2) of PHPUnit do not have this method.
 		if ( method_exists( $this, 'assertArraySubset' ) ) {
 			$this->assertArraySubset(
 				array(
@@ -248,10 +247,10 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		);
 		$timestamp  = '1234';
 
-		// Disable tracking
+		// Disable tracking.
 		$this->usage_tracking->set_tracking_enabled( false );
 
-		// Count network requests
+		// Count network requests.
 		$this->event_counts['http_request'] = 0;
 		add_filter( 'pre_http_request', array( $this, 'countHttpRequest' ) );
 
@@ -265,7 +264,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 * @covers {Prefix}_Usage_Tracking::maybe_send_usage_data
 	 */
 	public function testSendUsageData() {
-		// Count the number of network requests
+		// Count the number of network requests.
 		$this->event_counts['http_request'] = 0;
 		add_filter( 'pre_http_request', array( $this, 'countHttpRequest' ) );
 
@@ -407,16 +406,16 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 * Helper method for ajax request.
 	 */
 	private function setupAjaxRequest() {
-		// Simulate an ajax request
+		// Simulate an ajax request.
 		add_filter( 'wp_doing_ajax', '__return_true' );
 
-		// Set up nonce
+		// Set up nonce.
 		$_REQUEST['nonce'] = wp_create_nonce( 'tracking-opt-in' );
 
-		// Ensure current user can enable tracking
+		// Ensure current user can enable tracking.
 		$this->allowCurrentUserToEnableTracking();
 
-		// When wp_die is called, save the args and throw an exception to stop
+		// When wp_die is called, save the args and throw an exception to stop.
 		// execution.
 		add_filter( 'wp_die_ajax_handler', array( $this, 'ajaxDieHandler' ) );
 	}
@@ -425,10 +424,10 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 * Helper method to set up tracking opt-in dialog.
 	 */
 	private function setupOptInDialog() {
-		// Ensure current user can enable tracking
+		// Ensure current user can enable tracking.
 		$this->allowCurrentUserToEnableTracking();
 
-		// Ensure setting is not set
+		// Ensure setting is not set.
 		$this->usage_tracking->set_tracking_enabled( false );
 	}
 
@@ -436,7 +435,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 * Update the capaility for the current user to be able to enable or
 	 * disable tracking.
 	 *
-	 * @param bool $allow true if the current user should be allowed to update
+	 * @param bool $allow true if the current user should be allowed to update.
 	 * the tracking setting, false otherwise. Default: true
 	 **/
 	private function allowCurrentUserToEnableTracking( $allow = true ) {

@@ -111,7 +111,7 @@ class WP_Job_Manager_Cache_Helper {
 	private static function delete_version_transients( $version ) {
 		if ( ! wp_using_ext_object_cache() && ! empty( $version ) ) {
 			global $wpdb;
-			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s;", "\_transient\_%" . $version ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s;", '\_transient\_%' . $version ) );
 		}
 	}
 
@@ -122,13 +122,16 @@ class WP_Job_Manager_Cache_Helper {
 		global $wpdb;
 
 		if ( ! wp_using_ext_object_cache() && ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-			$sql   = "
+			$wpdb->query( $wpdb->prepare( "
 				DELETE a, b FROM $wpdb->options a, $wpdb->options b
 				WHERE a.option_name LIKE %s
 				AND a.option_name NOT LIKE %s
 				AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
-				AND b.option_value < %s;";
-			$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_jm_' ) . '%', $wpdb->esc_like( '_transient_timeout_jm_' ) . '%', time() ) );
+				AND b.option_value < %s;",
+				$wpdb->esc_like( '_transient_jm_' ) . '%',
+				$wpdb->esc_like( '_transient_timeout_jm_' ) . '%',
+				time()
+			) );
 		}
 	}
 
@@ -159,8 +162,8 @@ class WP_Job_Manager_Cache_Helper {
 		 */
 		$post_types = apply_filters( 'wpjm_count_cache_supported_post_types', array( 'job_listing' ), $new_status, $old_status, $post );
 
-		// Only proceed when statuses do not match, and post type is supported post type
-		if ( $new_status === $old_status || ! in_array( $post->post_type, $post_types ) ) {
+		// Only proceed when statuses do not match, and post type is supported post type.
+		if ( $new_status === $old_status || ! in_array( $post->post_type, $post_types, true ) ) {
 			return;
 		}
 
@@ -177,12 +180,12 @@ class WP_Job_Manager_Cache_Helper {
 		$valid_statuses = apply_filters( 'wpjm_count_cache_supported_statuses', array( 'pending' ), $new_status, $old_status, $post );
 
 		$rlike = array();
-		// New status transient option name
-		if( in_array( $new_status, $valid_statuses ) ){
+		// New status transient option name.
+		if ( in_array( $new_status, $valid_statuses, true ) ) {
 			$rlike[] = "^_transient_jm_{$new_status}_{$post->post_type}_count_user_";
 		}
-		// Old status transient option name
-		if( in_array( $old_status, $valid_statuses ) ){
+		// Old status transient option name.
+		if ( in_array( $old_status, $valid_statuses, true ) ) {
 			$rlike[] = "^_transient_jm_{$old_status}_{$post->post_type}_count_user_";
 		}
 
@@ -190,8 +193,10 @@ class WP_Job_Manager_Cache_Helper {
 			return;
 		}
 
-		$sql        = $wpdb->prepare( "SELECT option_name FROM $wpdb->options WHERE option_name RLIKE '%s'", implode('|', $rlike ) );
-		$transients = $wpdb->get_col( $sql );
+		$transients = $wpdb->get_col( $wpdb->prepare(
+			"SELECT option_name FROM $wpdb->options WHERE option_name RLIKE %s",
+			implode( '|', $rlike )
+		) );
 
 		// For each transient...
 		foreach ( $transients as $transient ) {
@@ -201,7 +206,7 @@ class WP_Job_Manager_Cache_Helper {
 			delete_transient( $key );
 		}
 
-		// Sometimes transients are not in the DB, so we have to do this too:
+		// Sometimes transients are not in the DB, so we have to do this too:.
 		wp_cache_flush();
 	}
 
@@ -212,23 +217,24 @@ class WP_Job_Manager_Cache_Helper {
 	 *
 	 * @param string $post_type
 	 * @param string $status
-	 * @param bool   $force Force update cache
+	 * @param bool   $force Force update cache.
 	 *
 	 * @return int
 	 */
 	public static function get_listings_count( $post_type = 'job_listing', $status = 'pending', $force = false ) {
 
-		// Get user based cache transient
+		// Get user based cache transient.
 		$user_id   = get_current_user_id();
 		$transient = "jm_{$status}_{$post_type}_count_user_{$user_id}";
 
-		// Set listings_count value from cache if exists, otherwise set to 0 as default
-		$status_count = ( $cached_count = get_transient( $transient ) ) ? $cached_count : 0;
+		// Set listings_count value from cache if exists, otherwise set to 0 as default.
+		$cached_count = get_transient( $transient );
+		$status_count = $cached_count ? $cached_count : 0;
 
-		// $cached_count will be false if transient does not exist
-		if ( $cached_count === false || $force ) {
+		// $cached_count will be false if transient does not exist.
+		if ( false === $cached_count || $force ) {
 			$count_posts = wp_count_posts( $post_type, 'readable' );
-			// Default to 0 $status if object does not have a value
+			// Default to 0 $status if object does not have a value.
 			$status_count = isset( $count_posts->$status ) ? $count_posts->$status : 0;
 			set_transient( $transient, $status_count, DAY_IN_SECONDS * 7 );
 		}

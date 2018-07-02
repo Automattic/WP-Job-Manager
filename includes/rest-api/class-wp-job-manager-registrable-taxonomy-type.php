@@ -48,7 +48,7 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 	 * @return string Class name for the taxonomy type's model.
 	 */
 	abstract public function get_model_class_name();
-	
+
 	/**
 	 * Register Job Categories
 	 *
@@ -60,7 +60,7 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 	public function register( $environment ) {
 		global $wp_taxonomies;
 
-		$taxonomy_type = $this->get_taxonomy_type();
+		$taxonomy_type         = $this->get_taxonomy_type();
 		$this->rest_field_name = 'fields';
 
 		if ( ! isset( $wp_taxonomies[ $taxonomy_type ] ) ) {
@@ -72,18 +72,22 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 		}
 
 		$wp_taxonomies[ $taxonomy_type ]->show_in_rest = true;
-		$wp_taxonomies[ $taxonomy_type ]->rest_base = $this->get_rest_base();
+		$wp_taxonomies[ $taxonomy_type ]->rest_base    = $this->get_rest_base();
 
 		$this->model_prototype = $environment->model( $this->get_model_class_name() );
 
 		if ( ! $this->model_prototype ) {
 			return new WP_Error( 'model-not-found' );
 		}
-		register_rest_field( $taxonomy_type, $this->rest_field_name, array(
-			'get_callback' => array( $this, 'get_taxonomy_term' ),
-			'update_callback' => array( $this, 'update_taxonomy_term' ),
-			'schema' => $this->get_item_schema(),
-		) );
+		register_rest_field(
+			$taxonomy_type,
+			$this->rest_field_name,
+			array(
+				'get_callback'    => array( $this, 'get_taxonomy_term' ),
+				'update_callback' => array( $this, 'update_taxonomy_term' ),
+				'schema'          => $this->get_item_schema(),
+			)
+		);
 
 		return true;
 	}
@@ -94,9 +98,9 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 	 * @return array
 	 */
 	public function get_item_schema() {
-		$fields = $this->model_prototype->get_fields();
+		$fields     = $this->model_prototype->get_fields();
 		$properties = array();
-		$required = array();
+		$required   = array();
 		foreach ( $fields as $field_declaration ) {
 			/**
 			 * Our declaration
@@ -109,9 +113,9 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 			}
 		}
 		$schema = array(
-			'$schema' => 'http://json-schema.org/schema#',
-			'title' => $this->model_prototype->get_name(),
-			'type' => 'object',
+			'$schema'    => 'http://json-schema.org/schema#',
+			'title'      => $this->model_prototype->get_name(),
+			'type'       => 'object',
 			'properties' => (array) apply_filters( 'mixtape_rest_api_schema_properties', $properties, $this->model_prototype ),
 		);
 
@@ -143,7 +147,7 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 		}
 
 		$object_id = absint( $object['id'] );
-		$model = $this->get_model( $object_id );
+		$model     = $this->get_model( $object_id );
 		return $model->to_dto();
 	}
 
@@ -159,20 +163,23 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 		foreach ( $this->model_prototype->get_fields( WP_Job_Manager_REST_Field_Declaration::META ) as $field_declaration ) {
 			$field_name = $field_declaration->get_name();
 			if ( metadata_exists( 'term', $object_id, $field_name ) ) {
-				$meta = get_term_meta( $object_id, $field_name, true );
+				$meta                = get_term_meta( $object_id, $field_name, true );
 				$data[ $field_name ] = $meta;
 			}
 		}
 
-		return $this->model_prototype->create( $data, array(
-			'deserialize' => true,
-		) );
+		return $this->model_prototype->create(
+			$data,
+			array(
+				'deserialize' => true,
+			)
+		);
 	}
 
 	/**
 	 * Our Reader.
 	 *
-	 * @param mixed 		  $data Data.
+	 * @param mixed           $data Data.
 	 * @param object          $object Object.
 	 * @param string          $field_name Field Name.
 	 * @param WP_REST_Request $request Request.
@@ -195,12 +202,15 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 		}
 
 		$rest_base = $this->get_rest_base();
-		$term_id = absint( $object->term_id );
+		$term_id   = absint( $object->term_id );
 		if ( ! $term_id ) {
 			// No way to update this. Bail.
-			return new WP_Error( $rest_base . '-error-invalid-id', $rest_base . '-error-invalid-id', array(
-				'status' => 400,
-			) );
+			return new WP_Error(
+				$rest_base . '-error-invalid-id', $rest_base . '-error-invalid-id',
+				array(
+					'status' => 400,
+				)
+			);
 		}
 		$existing_model = $this->get_model( $term_id );
 

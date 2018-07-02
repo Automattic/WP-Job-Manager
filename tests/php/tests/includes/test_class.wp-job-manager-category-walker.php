@@ -5,7 +5,7 @@ class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 
 	public function setUp() {
 		parent::setUp();
-		include_once( JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php' );
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php';
 	}
 
 	/**
@@ -15,20 +15,25 @@ class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 	public function test_start_el() {
 		$terms = $this->get_terms();
 		$this->assertCount( 1, $terms );
-		$walker = new WP_Job_Manager_Category_Walker;
-		// Typical call
+		$walker = new WP_Job_Manager_Category_Walker();
+		// Typical call.
 		$test_output_a = '';
 		$walker->start_el( $test_output_a, $terms[0], 11 );
 		$this->assertContains( $terms[0]->name, $test_output_a );
 		$this->assertContains( 'level-11', $test_output_a );
 
-		// With empty county
+		// With empty county.
 		$test_output_b = '';
-		$walker->start_el( $test_output_b, $terms[0], 11, array( 'show_count' => true, 'hierarchical' => true ) );
+		$walker->start_el(
+			$test_output_b, $terms[0], 11, array(
+				'show_count'   => true,
+				'hierarchical' => true,
+			)
+		);
 		$this->assertContains( '&nbsp;(0)', $test_output_b );
-		$this->assertContains( str_repeat('&nbsp;', 33 ), $test_output_b );
+		$this->assertContains( str_repeat( '&nbsp;', 33 ), $test_output_b );
 
-		// With selected
+		// With selected.
 		$test_output_c = '';
 		$walker->start_el( $test_output_c, $terms[0], 0, array( 'selected' => $terms[0]->slug ) );
 		$this->assertContains( 'selected="selected"', $test_output_c );
@@ -39,7 +44,7 @@ class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 	}
 
 	private function get_terms() {
-		$terms = $this->setup_terms();
+		$terms                = $this->setup_terms();
 		$args                 = array();
 		$args['taxonomy']     = WP_UnitTest_Factory_For_Term::DEFAULT_TAXONOMY;
 		$args['pad_counts']   = 1;

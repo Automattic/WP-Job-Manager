@@ -12,10 +12,10 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
-// Get selected value
+// Get selected value.
 if ( isset( $field['value'] ) ) {
 	$selected = $field['value'];
 } elseif ( is_int( $field['default'] ) ) {
@@ -26,7 +26,7 @@ if ( isset( $field['value'] ) ) {
 	$selected = '';
 }
 
-// Select only supports 1 value
+// Select only supports 1 value.
 if ( is_array( $selected ) ) {
 	$selected = current( $selected );
 }

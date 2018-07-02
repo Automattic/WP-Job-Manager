@@ -14,7 +14,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 			/**
 			 * Tests to make sure auto-expiring works.
 			 */
-			'autoexpire_publish_future_publish' => array(
+			'autoexpire_publish_future_publish'      => array(
 				// On published post, set to future date and expect published.
 				array(
 					'original' => 'publish',
@@ -27,7 +27,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 					'expected' => $future_date,
 				),
 			),
-			'autoexpire_publish_past_expired' => array(
+			'autoexpire_publish_past_expired'        => array(
 				// On published post, set to past date and expect expired.
 				array(
 					'original' => 'publish',
@@ -40,7 +40,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 					'expected' => $expired_date,
 				),
 			),
-			'autoexpire_draft_past_expired' => array(
+			'autoexpire_draft_past_expired'          => array(
 				// On draft post, set to past date and expect expired.
 				array(
 					'original' => 'draft',
@@ -53,7 +53,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 					'expected' => $expired_date,
 				),
 			),
-			'autoexpire_draft_future_publish' => array(
+			'autoexpire_draft_future_publish'        => array(
 				// On draft post, set to future date and expect expired.
 				array(
 					'original' => 'draft',
@@ -83,26 +83,26 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 			/**
 			 * Tests to make sure changes to draft is preserved.
 			*/
-			'draft_publish_draft' => array(
-				// From publish to draft (not touching expiration date) we should get a draft
+			'draft_publish_draft'                    => array(
+				// From publish to draft (not touching expiration date) we should get a draft.
 				array(
 					'original' => 'publish',
 					'new'      => 'draft',
 					'expected' => 'draft',
 				),
-				null
+				null,
 			),
-			'draft_expired_draft' => array(
-				// From expired to draft (not touching expiration date) we should get a draft
+			'draft_expired_draft'                    => array(
+				// From expired to draft (not touching expiration date) we should get a draft.
 				array(
 					'original' => 'expired',
 					'new'      => 'draft',
 					'expected' => 'draft',
 				),
-				null
+				null,
 			),
-			'draft_publish_draft_set_expired_date' => array(
-				// From publish to draft (setting an expired expiration date) we should get a draft
+			'draft_publish_draft_set_expired_date'   => array(
+				// From publish to draft (setting an expired expiration date) we should get a draft.
 				array(
 					'original' => 'publish',
 					'new'      => 'draft',
@@ -114,8 +114,8 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 					'expected' => $expired_date,
 				),
 			),
-			'draft_publish_draft_keep_expired_date' => array(
-				// From publish to draft (keeping an expired expiration date) we should get a draft
+			'draft_publish_draft_keep_expired_date'  => array(
+				// From publish to draft (keeping an expired expiration date) we should get a draft.
 				array(
 					'original' => 'publish',
 					'new'      => 'draft',
@@ -127,8 +127,8 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 					'expected' => $expired_date,
 				),
 			),
-			'draft_expired_draft_set_expired' => array(
-				// From expired to draft (setting an expired expiration date) we should get a draft
+			'draft_expired_draft_set_expired'        => array(
+				// From expired to draft (setting an expired expiration date) we should get a draft.
 				array(
 					'original' => 'expired',
 					'new'      => 'draft',
@@ -140,8 +140,8 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 					'expected' => $expired_date,
 				),
 			),
-			'draft_expired_draft_keep_expired' => array(
-				// From expired to draft (keeping an expired expiration date) we should get a draft
+			'draft_expired_draft_keep_expired'       => array(
+				// From expired to draft (keeping an expired expiration date) we should get a draft.
 				array(
 					'original' => 'expired',
 					'new'      => 'draft',
@@ -169,7 +169,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 			$original_job_data['post_status'] = $status_data['original'];
 		}
 		if ( null !== $expires_data && null !== $expires_data['original'] ) {
-			$original_job_data['meta_input']  = array( '_job_expires' => $expires_data['original'] );
+			$original_job_data['meta_input'] = array( '_job_expires' => $expires_data['original'] );
 		}
 		if ( null !== $status_data ) {
 			$new_job_data = array(
@@ -182,10 +182,12 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 		}
 		$job = $this->mock_writepanel_save_request( $new_job_data, $original_job_data );
 		if ( null !== $status_data && null !== $status_data['new'] ) {
-			wp_update_post( array(
-				'ID'          => $job->ID,
-				'post_status' => $status_data['new'],
-			) );
+			wp_update_post(
+				array(
+					'ID'          => $job->ID,
+					'post_status' => $status_data['new'],
+				)
+			);
 		}
 
 		$writepanels->save_job_listing_data( $job->ID, $job );

@@ -83,7 +83,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 		}
 
 		if ( isset( $cache[ $args['widget_id'] ] ) ) {
-			echo $cache[ $args['widget_id'] ];
+			echo $cache[ $args['widget_id'] ]; // WPCS: XSS ok.
 			return true;
 		}
 
@@ -151,33 +151,33 @@ class WP_Job_Manager_Widget extends WP_Widget {
 			$value = isset( $instance[ $key ] ) ? $instance[ $key ] : $setting['std'];
 
 			switch ( $setting['type'] ) {
-				case 'text' :
+				case 'text':
 					?>
 					<p>
 						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" />
 					</p>
 					<?php
-				break;
-				case 'number' :
+					break;
+				case 'number':
 					?>
 					<p>
 						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="number" step="<?php echo esc_attr( $setting['step'] ); ?>" min="<?php echo esc_attr( $setting['min'] ); ?>" max="<?php echo esc_attr( $setting['max'] ); ?>" value="<?php echo esc_attr( $value ); ?>" />
 					</p>
 					<?php
-				break;
-				case 'select' :
+					break;
+				case 'select':
 					?>
 					<p>
 						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 						<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>">
-							<?php foreach ( $setting['options'] as $key => $label ) : ?>
-								<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $value, $key ); ?>><?php echo esc_html( $label ); ?></option>
+							<?php foreach ( $setting['options'] as $option_key => $option_label ) : ?>
+								<option value="<?php echo esc_attr( $option_key ); ?>" <?php selected( $value, $option_key ); ?>><?php echo esc_html( $option_label ); ?></option>
 							<?php endforeach; ?></select>
 					</p>
 					<?php
-				break;
+					break;
 				case 'checkbox':
 					?>
 					<p>

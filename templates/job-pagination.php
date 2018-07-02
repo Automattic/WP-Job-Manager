@@ -12,14 +12,14 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 if ( $max_num_pages <= 1 ) {
 	return;
 }
 
-// Calculate pages to output
+// Calculate pages to output.
 $end_size    = 3;
 $mid_size    = 3;
 $start_pages = range( 1, $end_size );
