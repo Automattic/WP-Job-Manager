@@ -82,16 +82,20 @@ module.exports = function( grunt ) {
 			main: {
 				src: [
 					'**',
+					'!assets/js/**/*.js', 'assets/js/**/*.min.js', 'assets/js/jquery-fileupload/*.js', 'assets/js/jquery-deserialize/*.js',
+					'!assets/css/*.less',
 					'!*.log', // Log Files
-					'!node_modules/**', '!Gruntfile.js', '!package.json','!package-lock.json', // NPM/Grunt
+					'!assets/blocks/**', // Block source files
+					'!node_modules/**', '!Gruntfile.js', '!package.json','!package-lock.json', '!webpack.config.js', // JS build/package files
 					'!.git/**', '!.github/**', // Git / Github
 					'!tests/**', '!bin/**', '!phpunit.xml', '!phpunit.xml.dist', // Unit Tests
 					'!vendor/**', '!composer.lock', '!composer.phar', '!composer.json', // Composer
 					'!.*', '!**/*~', '!tmp/**', //hidden/tmp files
+					'!*.code-workspace', // IDE files
 					'!docs/**',
 					'!CONTRIBUTING.md',
 					'!readme.md',
-					'!phpcs.ruleset.xml',
+					'!phpcs.xml.dist',
 					'!tools/**',
 					'!mixtape.json'
 				],
