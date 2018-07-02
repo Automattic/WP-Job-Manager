@@ -86,7 +86,8 @@ module.exports = function( grunt ) {
 					'!assets/css/*.less',
 					'!*.log', // Log Files
 					'!assets/blocks/**', // Block source files
-					'!node_modules/**', '!Gruntfile.js', '!package.json','!package-lock.json', '!webpack.config.js', // JS build/package files
+					'!node_modules/**', '!Gruntfile.js', '!package.json', '!jest.config.json',
+					'!package-lock.json', '!webpack.config.js', // JS build/package files
 					'!.git/**', '!.github/**', // Git / Github
 					'!tests/**', '!bin/**', '!phpunit.xml', '!phpunit.xml.dist', // Unit Tests
 					'!vendor/**', '!composer.lock', '!composer.phar', '!composer.json', // Composer
