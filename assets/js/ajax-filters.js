@@ -1,9 +1,14 @@
 /* global job_manager_ajax_filters */
-jQuery( document ).ready( function ( $ ) {
+function wpjmSetupAjaxFilters( $, parent_selector ) {
 
-	var xhr = [];
+	var parent = undefined;
+	var xhr    = [];
 
-	$( '.job_listings' ).on( 'update_results', function ( event, page, append, loading_previous ) {
+	if ( parent_selector ) {
+		parent = $( parent_selector );
+	}
+
+	$( '.job_listings', parent ).on( 'update_results', function ( event, page, append, loading_previous ) {
 		var data         = '';
 		var target       = $( this );
 		var form         = target.find( '.job_filters' );
@@ -16,7 +21,7 @@ jQuery( document ).ready( function ( $ ) {
 		var filled       = target.data( 'filled' );
 		var job_types    = target.data( 'job_types' );
 		var post_status  = target.data( 'post_status' );
-		var index        = $( 'div.job_listings' ).index(this);
+		var index        = $( 'div.job_listings', parent ).index(this);
 		var categories, keywords, location;
 
 		if ( index < 0 ) {
@@ -187,8 +192,8 @@ jQuery( document ).ready( function ( $ ) {
 		} );
 	} );
 
-	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' ).change( function() {
-		var target   = $( this ).closest( 'div.job_listings' );
+	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter', parent ).change( function() {
+		var target   = $( this ).closest( 'div.job_listings', parent );
 		target.triggerHandler( 'update_results', [ 1, false ] );
 		job_manager_store_state( target, 1 );
 	} )
@@ -199,9 +204,9 @@ jQuery( document ).ready( function ( $ ) {
 		}
 	} );
 
-	$( '.job_filters' ).on( 'click', '.reset', function () {
-		var target = $( this ).closest( 'div.job_listings' );
-		var form = $( this ).closest( 'form' );
+	$( '.job_filters', parent ).on( 'click', '.reset', function () {
+		var target = $( this ).closest( 'div.job_listings', parent );
+		var form = $( this ).closest( 'form', parent );
 
 		form.find( ':input[name="search_keywords"], :input[name="search_location"], .job-manager-filter' ).not(':input[type="hidden"]').val( '' ).trigger( 'chosen:updated' );
 		form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').val( '' ).trigger( 'chosen:updated' );
@@ -214,6 +219,7 @@ jQuery( document ).ready( function ( $ ) {
 		return false;
 	} );
 
+	// TODO: move outside of setup function.
 	$( document.body ).on( 'click', '.load_more_jobs', function() {
 		var target           = $( this ).closest( 'div.job_listings' );
 		var page             = parseInt( ( $( this ).data( 'page' ) || 1 ), 10 );
@@ -239,8 +245,8 @@ jQuery( document ).ready( function ( $ ) {
 		return false;
 	} );
 
-	$( 'div.job_listings' ).on( 'click', '.job-manager-pagination a', function() {
-		var target = $( this ).closest( 'div.job_listings' );
+	$( 'div.job_listings', parent ).on( 'click', '.job-manager-pagination a', function() {
+		var target = $( this ).closest( 'div.job_listings', parent );
 		var page   = $( this ).data( 'page' );
 
 		job_manager_store_state( target, page );
@@ -256,9 +262,9 @@ jQuery( document ).ready( function ( $ ) {
 
 	if ( $.isFunction( $.fn.chosen ) ) {
 		if ( job_manager_ajax_filters.is_rtl === 1 ) {
-			$( 'select[name^="search_categories"]' ).addClass( 'chosen-rtl' );
+			$( 'select[name^="search_categories"]', parent ).addClass( 'chosen-rtl' );
 		}
-		$( 'select[name^="search_categories"]' ).chosen({ search_contains: true });
+		$( 'select[name^="search_categories"]', parent ).chosen({ search_contains: true });
 	}
 
 	var $supports_html5_history = false;
@@ -279,11 +285,11 @@ jQuery( document ).ready( function ( $ ) {
 
 	// Inital job and form population
 	$(window).on( 'load', function() {
-		$( '.job_filters' ).each( function() {
-			var target      = $( this ).closest( 'div.job_listings' );
+		$( '.job_filters', parent ).each( function() {
+			var target      = $( this ).closest( 'div.job_listings', parent );
 			var form        = target.find( '.job_filters' );
 			var inital_page = 1;
-			var index       = $( 'div.job_listings' ).index( target );
+			var index       = $( 'div.job_listings', parent ).index( target );
 
 			if ( window.history.state && window.location.hash ) {
 				var state = window.history.state;
@@ -297,4 +303,8 @@ jQuery( document ).ready( function ( $ ) {
 			target.triggerHandler( 'update_results', [ inital_page, false ] );
 		});
 	});
+};
+
+jQuery( document ).ready( function( $ ) {
+	wpjmSetupAjaxFilters( $ );
 } );
