@@ -12,7 +12,8 @@
 					"last 1 ChromeAndroid version"
 				]
 			}
-		} ]
+		} ],
+		"@wordpress/default"
 	],
 	"plugins": [
 		[ "transform-react-jsx", {
