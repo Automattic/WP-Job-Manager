@@ -138,14 +138,12 @@ class WP_Job_Manager_Helper {
 		// Set version variables.
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$response = $this->get_plugin_version( $plugin_data['_filename'] );
-			if ( $response ) {
-				// If there is a new version, modify the transient to reflect an update is available.
-				if ( false !== $response
-					 && isset( $response['new_version'] )
-					 && version_compare( $response['new_version'], $plugin_data['Version'], '>' )
-				) {
-					$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
-				}
+			// If there is a new version, modify the transient to reflect an update is available.
+			if ( $response
+				 && isset( $response['new_version'] )
+				 && version_compare( $response['new_version'], $plugin_data['Version'], '>' )
+			) {
+				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 			}
 		}
 		return $check_for_updates_data;
