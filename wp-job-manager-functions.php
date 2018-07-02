@@ -507,7 +507,7 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 		global $wp_version;
 
 		if ( version_compare( $wp_version, '4.3.1', '<' ) ) {
-			wp_new_user_notification( $user_id, $password ); // phpcs:ignore
+			wp_new_user_notification( $user_id, $password ); // phpcs:ignore WordPress.WP.DeprecatedParameters.Wp_new_user_notificationParam2Found
 		} else {
 			$notify = 'admin';
 			if ( empty( $password ) ) {
