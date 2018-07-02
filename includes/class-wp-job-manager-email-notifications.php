@@ -414,7 +414,8 @@ final class WP_Job_Manager_Email_Notifications {
 		foreach ( $email_notifications as $email_notification_key => $email_class ) {
 			$email_notification_context = call_user_func( array( $email_class, 'get_context' ) );
 			if ( $context !== $email_notification_context ) {
-				continue; }
+				continue;
+			}
 
 			$email_settings[] = array(
 				'type'         => 'multi_enable_expand',
