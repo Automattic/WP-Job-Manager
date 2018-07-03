@@ -307,4 +307,21 @@ function wpjmSetupAjaxFilters( $, parent_selector ) {
 
 jQuery( document ).ready( function( $ ) {
 	wpjmSetupAjaxFilters( $ );
+
+	// Create Observer for Gutenberg.
+	var targetNode = $( '.gutenberg__editor' )[0];
+	var config     = { subtree: true, childList: true };
+	var observer  = new MutationObserver( function( mutationsList ) {
+		for ( var mutation of mutationsList ) {
+			if ( 'childList' === mutation.type ) {
+				for ( var node of mutation.addedNodes ) {
+					var jqNode = $( node.firstElementChild );
+					if ( jqNode.hasClass( 'jobs-shortcode-block' ) ) {
+						wpjmSetupAjaxFilters( $, '#' + jqNode.attr( 'id' ) );
+					}
+				}
+			}
+		}
+	} );
+	observer.observe( targetNode, config );
 } );

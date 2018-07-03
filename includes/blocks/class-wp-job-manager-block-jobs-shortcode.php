@@ -110,6 +110,10 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 	 * Render the jobs block.
 	 */
 	public static function render( $attributes ) {
-		return do_shortcode( '[jobs]' );
+		$tmp_block_id = uniqid( 'jobs-block-' );
+
+		return "<div id='$tmp_block_id' class='jobs-shortcode-block'>"
+			. do_shortcode( '[jobs]' )
+			. '</div>';
 	}
 }
