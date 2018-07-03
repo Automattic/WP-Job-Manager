@@ -15,7 +15,7 @@ const webpackConfig = ( env, argv ) => {
 	return {
 		entry: entryObject,
 		output: {
-			filename: 'build/[name]/index.js',
+			filename: 'build/blocks/[name]/index.js',
 			path: __dirname,
 		},
 		module: {
@@ -39,10 +39,10 @@ const webpackConfig = ( env, argv ) => {
 			],
 		},
 		plugins: [
-			new cleanWebpackPlugin( [ 'build' ] ),
+			new cleanWebpackPlugin( [ 'build/blocks' ] ),
 			new lodashModuleReplacementPlugin(),
 			new miniCssExtractPlugin( {
-				filename: 'build/[name]/style.css'
+				filename: 'build/blocks/[name]/style.css'
 			} ),
 		],
 	};
