@@ -219,32 +219,6 @@ function wpjmSetupAjaxFilters( $, parent_selector ) {
 		return false;
 	} );
 
-	// TODO: move outside of setup function.
-	$( document.body ).on( 'click', '.load_more_jobs', function() {
-		var target           = $( this ).closest( 'div.job_listings' );
-		var page             = parseInt( ( $( this ).data( 'page' ) || 1 ), 10 );
-		var loading_previous = false;
-
-		$(this).addClass( 'loading' );
-
-		if ( $(this).is('.load_previous') ) {
-			page             = page - 1;
-			loading_previous = true;
-			if ( page === 1 ) {
-				$(this).remove();
-			} else {
-				$( this ).data( 'page', page );
-			}
-		} else {
-			page = page + 1;
-			$( this ).data( 'page', page );
-			job_manager_store_state( target, page );
-		}
-
-		target.triggerHandler( 'update_results', [ page, true, loading_previous ] );
-		return false;
-	} );
-
 	$( 'div.job_listings', parent ).on( 'click', '.job-manager-pagination a', function() {
 		var target = $( this ).closest( 'div.job_listings', parent );
 		var page   = $( this ).data( 'page' );
@@ -307,6 +281,32 @@ function wpjmSetupAjaxFilters( $, parent_selector ) {
 
 jQuery( document ).ready( function( $ ) {
 	wpjmSetupAjaxFilters( $ );
+
+	$( document.body ).on( 'click', '.load_more_jobs', function() {
+		var target           = $( this ).closest( 'div.job_listings' );
+		var page             = parseInt( ( $( this ).data( 'page' ) || 1 ), 10 );
+		var loading_previous = false;
+
+		$(this).addClass( 'loading' );
+
+		if ( $(this).is('.load_previous') ) {
+			page             = page - 1;
+			loading_previous = true;
+			if ( page === 1 ) {
+				$(this).remove();
+			} else {
+				$( this ).data( 'page', page );
+			}
+		} else {
+			page = page + 1;
+			$( this ).data( 'page', page );
+			job_manager_store_state( target, page );
+		}
+
+		target.triggerHandler( 'update_results', [ page, true, loading_previous ] );
+		return false;
+	} );
+
 
 	// Create Observer for Gutenberg.
 	var targetNode = $( '.gutenberg__editor' )[0];
