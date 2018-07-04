@@ -42,7 +42,9 @@ matrix:
     env: WP_VERSION=latest
 
 before_install:
+  - nvm install && nvm use
   - npm install npm -g
+  - npm install
 
 # Clones WordPress and configures our testing environment.
 before_script:
@@ -58,8 +60,6 @@ before_script:
         elif [[ ${TRAVIS_PHP_VERSION:0:3} != "5.2" ]]; then
             composer global require "phpunit/phpunit=4.8.*"
         fi
-    - nvm install 6
-    - nvm use 6
     - ./tests/prepare-wordpress.sh
     - mysql -e "set global wait_timeout = 3600;"
 
