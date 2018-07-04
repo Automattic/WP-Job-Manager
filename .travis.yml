@@ -62,5 +62,6 @@ before_script:
 
 script:
     - ./tests/run-travis.sh
+    - npm test
 
 sudo: false
