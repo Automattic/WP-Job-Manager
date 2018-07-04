@@ -448,6 +448,7 @@ class WP_Job_Manager_Settings {
 				jQuery(this).addClass('nav-tab-active');
 				window.location.hash = jQuery(this).attr('href');
 				jQuery( 'form.job-manager-options' ).attr( 'action', 'options.php' + jQuery(this).attr( 'href' ) );
+				window.scrollTo( 0, 0 );
 				return false;
 			});
 			var goto_hash = window.location.hash;
