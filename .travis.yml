@@ -41,8 +41,8 @@ matrix:
   - php: "7.2"
     env: WP_VERSION=latest
 
-install:
-  - npm install
+before_install:
+  - npm install npm -g
 
 # Clones WordPress and configures our testing environment.
 before_script:
