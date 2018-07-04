@@ -531,7 +531,7 @@ class WP_Job_Manager_Settings {
 			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
 			checked( '1', $value );
 			?>
-		/> <?php echo esc_html( $option['cb_label'] ); ?></label>
+		/> <?php echo wp_kses_post( $option['cb_label'] ); ?></label>
 		<?php
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
