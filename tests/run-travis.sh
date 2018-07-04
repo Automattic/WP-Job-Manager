@@ -32,10 +32,9 @@ if [ "$WP_TRAVISCI" == "phpunit" ]; then
 	done
 else
 
-    gem install less
-    rm -rf ~/.yarn
-    curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 0.20.3
-    yarn
+	npm install npm -g
+	npm install
+	npm test
 
     if $WP_TRAVISCI; then
 	# Everything is fine
