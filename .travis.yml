@@ -41,6 +41,9 @@ matrix:
   - php: "7.2"
     env: WP_VERSION=latest
 
+install:
+  - npm install
+
 # Clones WordPress and configures our testing environment.
 before_script:
     - phpenv config-rm xdebug.ini
