@@ -34,7 +34,6 @@ else
 
 	npm install npm -g
 	npm install
-	npm test
 
 		if $WP_TRAVISCI; then
 	# Everything is fine
