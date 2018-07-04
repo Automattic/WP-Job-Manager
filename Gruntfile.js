@@ -24,10 +24,7 @@ module.exports = function( grunt ) {
 			},
 			webpackDev: {
 				command: 'npm run dev'
-			},
-			testJS: {
-				command: 'npm run test'
-			},
+			}
 		},
 
 		// Compile all .less files.
@@ -314,7 +311,6 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( 'test', [
-		'shell:testJS',
 		'phpunit'
 	] );
 
