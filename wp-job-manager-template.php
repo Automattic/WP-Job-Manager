@@ -491,7 +491,7 @@ function wpjm_get_job_listing_location_structured_data( $post ) {
 function wpjm_the_job_title( $post = null ) {
 	$job_title = wpjm_get_the_job_title( $post );
 	if ( $job_title ) {
-		echo esc_html( $job_title );
+		echo wp_kses_post( $job_title );
 	}
 }
 
