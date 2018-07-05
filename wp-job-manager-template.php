@@ -951,7 +951,7 @@ function the_company_video( $post = null ) {
 	$video_embed = apply_filters( 'the_company_video_embed', $video_embed, $post );
 
 	if ( $video_embed ) {
-		echo '<div class="company_video">' . wp_kses_post( $video_embed ) . '</div>';
+		echo '<div class="company_video">' . $video_embed . '</div>'; // WPCS: XSS ok.
 	}
 }
 
