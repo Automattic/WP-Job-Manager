@@ -33,10 +33,10 @@ fi
 
 export PATH=$HOME/phpunit-bin/:$PATH
 
-if [[ ${SWITCH_TO_PHP:0:3} == "5.2" ]]; then
+if [[ ${SWITCH_TO_PHP:0:3} == "5.2" ]] || [[ ${SWITCH_TO_PHP:0:3} == "5.3" ]]; then
   PHPBREW_BUILT_CHECK=$HOME/.phpbrew/bashrc
 
-  # directory to store phpbrew and old phpunit in
+  # directory to install phpbrew into
   mkdir -p $HOME/php-utils-bin
 
   # install phpbrew
@@ -54,11 +54,16 @@ if [[ ${SWITCH_TO_PHP:0:3} == "5.2" ]]; then
     $HOME/php-utils-bin/phpbrew known --old
 
     # build PHP5.2
-    tail -F $HOME/.phpbrew/build/php-5.2.17/build.log &
-    TAIL_PID=$!
+    echo 'Installing PHP 5.2...'
     $HOME/php-utils-bin/phpbrew install --patch ${THIS_DIR}/patches/node.patch --patch ${THIS_DIR}/patches/openssl.patch 5.2 +default +mysql +pdo \
-    +gettext +phar +openssl -- --with-openssl-dir=/usr/include/openssl --enable-spl --with-mysql --with-mysqli=/usr/bin/mysql_config --with-pdo-mysql=/usr
-    kill -TERM $TAIL_PID
+    +gettext +phar +openssl -- --with-openssl-dir=/usr/include/openssl --enable-spl --with-mysql --with-mysqli=/usr/bin/mysql_config --with-pdo-mysql=/usr \
+    > /dev/null
+
+    # build PHP5.3
+    echo 'Installing PHP 5.3...'
+    $HOME/php-utils-bin/phpbrew install --patch ${THIS_DIR}/patches/node.patch --patch ${THIS_DIR}/patches/openssl.patch 5.3 +default +mysql +pdo \
+    +gettext +phar +openssl -- --with-openssl-dir=/usr/include/openssl --enable-spl --with-mysql --with-mysqli=/usr/bin/mysql_config --with-pdo-mysql=/usr \
+    > /dev/null
 
     # install PHPUnit 3.6. The only install method available is from source, using git branches old
     # enough that they don't rely on any PHP5.3+ features. This clones each needed dependency
@@ -92,8 +97,8 @@ if [[ ${SWITCH_TO_PHP:0:3} == "5.2" ]]; then
     export PHPBREW_RC_ENABLE=1
     source $HOME/.phpbrew/bashrc
     phpbrew use 5.2.17
-    pear channel-discover pear.symfony.com
-    pear install symfony2/YAML-2.0.0
+    pear channel-discover pear.symfony-project.com
+    pear install pear.symfony-project.com/YAML-1.0.2
 
     # manually go back to the system php, we can't use `phpbrew switch-off`
     # because we're running a version of php that phpbrew doesn't work with at this point
@@ -114,7 +119,9 @@ if [[ ${SWITCH_TO_PHP:0:3} == "5.2" ]]; then
   source $HOME/.phpbrew/bashrc
 
   if [[ ${SWITCH_TO_PHP:0:3} == "5.2" ]]; then
-      phpbrew use 5.2.17
+    phpbrew use 5.2.17
+  else
+    phpbrew use 5.3.29
   fi
 fi
 
