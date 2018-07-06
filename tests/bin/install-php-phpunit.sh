@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "$WP_TRAVISCI" != "phpunit" ]; then
+	exit 0;
+fi
+
 # Copy of the original file located at: https://github.com/WordPress/gutenberg/tree/master/bin
 
 # Uses phpbrew to install older php versions on modern(ish) distros.
