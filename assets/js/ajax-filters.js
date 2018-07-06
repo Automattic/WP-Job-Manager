@@ -258,7 +258,7 @@ function wpjmSetupAjaxFilters( $, parent_selector ) {
 	}
 
 	// Inital job and form population
-	$(window).on( 'load', function() {
+	function initial_job_load() {
 		$( '.job_filters', parent ).each( function() {
 			var target      = $( this ).closest( 'div.job_listings', parent );
 			var form        = target.find( '.job_filters' );
@@ -276,7 +276,16 @@ function wpjmSetupAjaxFilters( $, parent_selector ) {
 
 			target.triggerHandler( 'update_results', [ inital_page, false ] );
 		});
-	});
+	}
+
+	if ( window.wpjm_window_loaded ) {
+		initial_job_load();
+	} else {
+		$(window).on( 'load', function() {
+			initial_job_load();
+			window.wpjm_window_loaded = true;
+		});
+	}
 };
 
 jQuery( document ).ready( function( $ ) {
@@ -317,8 +326,8 @@ jQuery( document ).ready( function( $ ) {
 			for ( var mutation of mutationsList ) {
 				if ( 'childList' === mutation.type ) {
 					for ( var node of mutation.addedNodes ) {
-						var jqNode = $( node.firstElementChild );
-						if ( jqNode.hasClass( 'jobs-shortcode-block' ) ) {
+						var jqNode = $( node ).find( '.jobs-shortcode-block' );
+						if ( jqNode.length ) {
 							wpjmSetupAjaxFilters( $, '#' + jqNode.attr( 'id' ) );
 						}
 					}
