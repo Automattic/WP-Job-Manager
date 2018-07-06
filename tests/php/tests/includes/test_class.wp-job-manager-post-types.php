@@ -79,6 +79,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @requires PHP 5.3.0
 	 */
 	public function test_job_feed_rss2() {
 		$this->factory->job_listing->create_many( 5 );
@@ -94,6 +95,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @requires PHP 5.3.0
 	 */
 	public function test_job_feed_rss2_2inrow() {
 		$this->factory->job_listing->create_many( 5 );
@@ -109,6 +111,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @requires PHP 5.3.0
 	 */
 	public function test_job_feed_location_search() {
 		$this->factory->job_listing->create_many(
@@ -150,6 +153,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @requires PHP 5.3.0
 	 */
 	public function test_job_feed_keyword_search() {
 		$this->factory->job_listing->create_many( 3 );
@@ -412,7 +416,6 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::set_expirey
-	 * @runInSeparateProcess
 	 */
 	public function test_set_expirey() {
 		$post = get_post( $this->factory->job_listing->create() );
@@ -603,6 +606,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::maybe_generate_geolocation_data
 	 * @runInSeparateProcess
+	 * @requires PHP 5.3.0
 	 */
 	public function test_maybe_generate_geolocation_data() {
 		$post = get_post( $this->factory->job_listing->create() );

@@ -35,6 +35,7 @@
 		<exclude name="WordPress.VIP" />
 		<exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found" />
 		<exclude name="WordPress.CSRF.NonceVerification.NoNonceVerification" />
+		<exclude-pattern>tests/*</exclude-pattern>
 	</rule>
 	<rule ref="WordPress.WP.I18n">
 		<properties>
@@ -47,6 +48,7 @@
 		<exclude name="Squiz.Commenting.PostStatementComment" />
 		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment" />
 		<exclude name="Squiz.Commenting.FileComment.Missing" />
+		<exclude-pattern>tests/*</exclude-pattern>
 	</rule>
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
