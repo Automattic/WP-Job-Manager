@@ -30,12 +30,20 @@ if [ "$WP_TRAVISCI" == "phpunit" ]; then
 	for WP_SLUG in "${WP_SLUGS[@]}"; do
 		run_phpunit_for "wordpress-$WP_SLUG"
 	done
+elif [ "$WP_TRAVISCI" == "phpcs" ]; then
+	composer install
+
+	echo "Testing PHP code formatting..."
+
+	bash ./tests/bin/phpcs.sh
+
+	if [ $? -ne 0 ]; then
+		exit 1
+	fi
 else
 
 	npm install npm -g
 	npm install
-
-	echo $(pwd)
 
 		if $WP_TRAVISCI; then
 	# Everything is fine
