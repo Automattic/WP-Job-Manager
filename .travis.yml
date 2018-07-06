@@ -59,8 +59,11 @@ before_script:
 
 script:
     - echo "Running with the following versions:"
-    - echo "$(which php): $(php -v)"
-    - echo "$(which phpunit): $(phpunit --version)"
+    - which php
+    - php -v
+    - which phpunit
+    - phpunit --version
+    - echo "Starting tests:"
     - ./tests/bin/run-travis.sh
 
 sudo: false
