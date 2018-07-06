@@ -59,10 +59,10 @@ before_script:
         fi
     - nvm install 6
     - nvm use 6
-    - ./tests/prepare-wordpress.sh
+    - ./tests/bin/prepare-wordpress.sh
     - mysql -e "set global wait_timeout = 3600;"
 
 script:
-    - ./tests/run-travis.sh
+    - ./tests/bin/run-travis.sh
 
 sudo: false

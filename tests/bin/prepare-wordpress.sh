@@ -30,10 +30,10 @@ for WP_SLUG in "${WP_SLUGS[@]}"; do
 		git clone --depth=1 --branch master https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-master
 		;;
 	latest)
-		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/get-wp-version.php` https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-latest
+		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/bin/get-wp-version.php` https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-latest
 		;;
 	previous)
-		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/get-wp-version.php --previous` https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-previous
+		git clone --depth=1 --branch `php ./$PLUGIN_BASE_DIR/tests/bin/get-wp-version.php --previous` https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-previous
 		;;
 	*)
 		git clone --depth=1 --branch $WP_SLUG https://github.com/WordPress/wordpress-develop.git /tmp/wordpress-$WP_SLUG
