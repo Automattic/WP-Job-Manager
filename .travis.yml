@@ -26,7 +26,7 @@ matrix:
   # Uncomment this once there are JavaScript tests.
   # - env: WP_TRAVISCI="npm test"
   - php: "7.2"
-    env: WP_TRAVISCI="./phpcs.sh"
+    env: WP_TRAVISCI="bash ./tests/bin/phpcs.sh"
   - php: "5.2"
     dist: precise
     env: WP_VERSION=latest

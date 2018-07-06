@@ -35,6 +35,8 @@ else
 	npm install npm -g
 	npm install
 
+	echo $(pwd)
+
 		if $WP_TRAVISCI; then
 	# Everything is fine
 	:
