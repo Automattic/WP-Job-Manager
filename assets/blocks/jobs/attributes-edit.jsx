@@ -2,9 +2,7 @@
 /**
  * WordPress Dependencies.
  */
-const { Component } = wp.element,
-	{ __ } = wp.i18n,
-	{ ServerSideRender, Toolbar } = wp.components;
+const { Component } = wp.element;
 
 /**
  * UI for editing the shortcode attributes.

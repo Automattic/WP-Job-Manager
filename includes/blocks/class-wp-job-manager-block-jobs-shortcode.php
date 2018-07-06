@@ -20,20 +20,21 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 	public static function get_block_type() {
 		self::register_block_assets();
 
-		// Jobs block
+		// Jobs block.
 		return new WP_Block_Type( 'wp-job-manager/jobs', array(
 			'editor_script'   => array(
 				'wp-job-manager-block-jobs',
 				'wp-job-manager-ajax-filters',
 			),
 			'editor_style'    => 'wp-job-manager-frontend',
-			'render_callback' => array(
-				'WP_Job_Manager_Block_Jobs_Shortcode', 'render'
-			),
+			'render_callback' => array( 'WP_Job_Manager_Block_Jobs_Shortcode', 'render' ),
 			'attributes'      => self::get_block_attributes(),
 		) );
 	}
 
+	/**
+	 * Register assets needed for the block.
+	 */
 	private static function register_block_assets() {
 		wp_register_script(
 			'wp-job-manager-block-jobs',
@@ -48,6 +49,9 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 		);
 	}
 
+	/**
+	 * Set up the attributes for the block.
+	 */
 	private static function get_block_attributes() {
 		// TODO: these need to be changed to match the shortcode.
 		return array(
@@ -96,18 +100,20 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 				'default' => true,
 			),
 			'includedJobTypes'   => array(
-				'type'    => 'string', // JSON object
+				'type'    => 'string', // JSON object.
 				'default' => '{}',
 			),
 			'allJobTypes'        => array(
-				'type'    => 'string', // JSON array
+				'type'    => 'string', // JSON array.
 				'default' => '[]',
-			)
+			),
 		);
 	}
 
 	/**
 	 * Render the jobs block.
+	 *
+	 * @param array $attributes The attributes for the block.
 	 */
 	public static function render( $attributes ) {
 		$tmp_block_id = uniqid( 'jobs-block-' );

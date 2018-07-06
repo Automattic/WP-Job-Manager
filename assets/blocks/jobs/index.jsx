@@ -10,7 +10,6 @@ import edit from './edit.jsx';
  */
 const { registerBlockType } = wp.blocks;
 
-
 /**
  * Register the Jobs block.
  */

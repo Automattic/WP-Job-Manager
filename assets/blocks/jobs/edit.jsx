@@ -10,7 +10,6 @@ import AttributesEdit from './attributes-edit.jsx';
  */
 const { Component } = wp.element,
 	{ InspectorControls, BlockControls } = wp.editor,
-	{ __ } = wp.i18n,
 	{ ServerSideRender, Toolbar } = wp.components;
 
 /**
@@ -26,10 +25,11 @@ class JobsEdit extends Component {
 		const { editing } = this.state;
 
 		return [
-			<div className={ className }>
-				{ editing && <AttributesEdit />
-					|| <ServerSideRender
-						block='wp-job-manager/jobs'
+			<div className={ className } key="edit-ui">
+				{ editing ?
+					<AttributesEdit /> :
+					<ServerSideRender
+						block="wp-job-manager/jobs"
 						attributes={ attributes }
 					/>
 				}
@@ -49,9 +49,9 @@ class JobsEdit extends Component {
 						onClick: () => this.setState( {
 							editing: ! editing,
 						} ),
-					}
+					},
 				] } />
-			</BlockControls>
+			</BlockControls>,
 		];
 	}
 }
