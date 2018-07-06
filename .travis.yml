@@ -26,9 +26,8 @@ matrix:
   include:
   # Uncomment this once there are JavaScript tests.
   # - env: WP_TRAVISCI="npm test"
-  - php: "7.0"
-    env: WP_VERSION=latest SWITCH_TO_PHP=5.2
-    dist: precise
+  - php: "7.1"
+    env: SWITCH_TO_PHP=5.2 WP_VERSION=latest
   - php: "5.6"
     env: WP_VERSION=latest
   - php: "5.6"
@@ -57,8 +56,11 @@ before_script:
     - nvm use 8
     - ./tests/bin/prepare-wordpress.sh
     - mysql -e "set global wait_timeout = 3600;"
-    
+
 script:
+    - echo "Running with the following versions:"
+    - echo "$(which php): $(php -v)"
+    - echo "$(which phpunit): $(phpunit --version)"
     - ./tests/bin/run-travis.sh
 
 sudo: false
