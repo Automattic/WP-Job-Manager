@@ -9,7 +9,7 @@ run_phpunit_for() {
 	echo "Testing on $test_branch..."
 	export WP_TESTS_DIR="/tmp/$test_branch/tests/phpunit"
 	cd "/tmp/$test_branch/src/wp-content/plugins/$PLUGIN_SLUG"
-	nvm use 6
+	nvm use 8
 	npm install >/dev/null
 	./node_modules/.bin/mixtape build >/dev/null
 
@@ -30,6 +30,16 @@ if [ "$WP_TRAVISCI" == "phpunit" ]; then
 	for WP_SLUG in "${WP_SLUGS[@]}"; do
 		run_phpunit_for "wordpress-$WP_SLUG"
 	done
+elif [ "$WP_TRAVISCI" == "phpcs" ]; then
+	composer install
+
+	echo "Testing PHP code formatting..."
+
+	bash ./tests/bin/phpcs.sh
+
+	if [ $? -ne 0 ]; then
+		exit 1
+	fi
 else
 
 	npm install npm -g

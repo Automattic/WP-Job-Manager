@@ -412,7 +412,6 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::set_expirey
-	 * @runInSeparateProcess
 	 */
 	public function test_set_expirey() {
 		$post = get_post( $this->factory->job_listing->create() );
@@ -602,7 +601,6 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::maybe_generate_geolocation_data
-	 * @runInSeparateProcess
 	 */
 	public function test_maybe_generate_geolocation_data() {
 		$post = get_post( $this->factory->job_listing->create() );
