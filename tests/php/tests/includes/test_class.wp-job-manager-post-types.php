@@ -78,6 +78,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 * @requires PHP 5.3.0
 	 * @runInSeparateProcess
 	 */
 	public function test_job_feed_rss2() {
@@ -93,6 +94,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 * @requires PHP 5.3.0
 	 * @runInSeparateProcess
 	 */
 	public function test_job_feed_rss2_2inrow() {
@@ -108,6 +110,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 * @requires PHP 5.3.0
 	 * @runInSeparateProcess
 	 */
 	public function test_job_feed_location_search() {
@@ -149,6 +152,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 * @requires PHP 5.3.0
 	 * @runInSeparateProcess
 	 */
 	public function test_job_feed_keyword_search() {

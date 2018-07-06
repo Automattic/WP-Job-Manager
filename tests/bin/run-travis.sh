@@ -12,8 +12,8 @@ run_phpunit_for() {
 	nvm use 8
 	npm install >/dev/null
 	./node_modules/.bin/mixtape build >/dev/null
-	phpunit_path=$(which phpunit)
-	php -d detect_unicode=Off $phpunit_path
+
+	phpunit
 
 	if [ $? -ne 0 ]; then
 		exit 1
