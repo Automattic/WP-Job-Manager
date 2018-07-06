@@ -27,7 +27,7 @@ class WP_Job_Manager_Install {
 		}
 
 		$okay = array();
-		$bad=array('wpdb'=>false);
+		$bad=array('cool'=>false);
 		extract($bad);
 
 		// Update featured posts ordering.
