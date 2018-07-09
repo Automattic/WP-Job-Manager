@@ -14,9 +14,6 @@ import { withSelect } from '@wordpress/data';
 import JobListing from './job-listing.jsx';
 import SelectJobListing from './select-job-listing.jsx';
 
-/**
- * Edit UI for the Job block.
- */
 const EditJob = ( { attributes, isSelected, jobListings, jobTypes, setAttributes } ) => {
 	const listing = find( jobListings, { id: attributes.jobId } );
 
@@ -27,7 +24,7 @@ const EditJob = ( { attributes, isSelected, jobListings, jobTypes, setAttributes
 	return <SelectJobListing attributes={ attributes } jobListings={ jobListings } setAttributes={ setAttributes } />;
 };
 
-export default withSelect( ( select, props ) => ( {
+export default withSelect( ( select ) => ( {
 	jobListings: select( 'wp-job-manager' ).getAllJobListings(),
-	jobTypes: select( 'wp-job-manager' ).getAllJobTypes()
+	jobTypes: select( 'wp-job-manager' ).getAllJobTypes(),
 } ) )( EditJob );

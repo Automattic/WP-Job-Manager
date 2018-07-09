@@ -18,5 +18,5 @@ const jobTypes = combineReducers( {
 
 export default combineReducers( {
 	jobListings,
-	jobTypes
+	jobTypes,
 } );

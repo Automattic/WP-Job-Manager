@@ -15,7 +15,7 @@ const attributesConfig = {
 	jobId: {
 		type: 'integer',
 		default: 0,
-	}
+	},
 };
 
 const edit = ( { className, ...props } ) => (
@@ -40,5 +40,5 @@ registerBlockType( 'wp-job-manager/job', {
 	category: 'common',
 	attributes: applyFilters( 'wpjm_block_job_attributes_config', attributesConfig ),
 	edit,
-	save
+	save,
 } );

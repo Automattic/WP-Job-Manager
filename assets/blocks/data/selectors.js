@@ -2,14 +2,14 @@
  * Returns all job listings
  *
  * @param  {Object} state
- * @return {Array}
+ * @return {Array}  All job listings
  */
-export const getAllJobListings = state => state.jobListings.items || [];
+export const getAllJobListings = ( state ) => state.jobListings.items || [];
 
 /**
  * Returns all job types
  *
  * @param  {Object} state
- * @return {Array}
+ * @return {Array}  All job types
  */
-export const getAllJobTypes = state => state.jobTypes.items || [];
+export const getAllJobTypes = ( state ) => state.jobTypes.items || [];

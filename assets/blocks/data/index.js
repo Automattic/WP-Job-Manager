@@ -16,5 +16,5 @@ export default () => registerStore( STORE_KEY, {
 	actions,
 	reducer,
 	resolvers,
-	selectors
+	selectors,
 } );

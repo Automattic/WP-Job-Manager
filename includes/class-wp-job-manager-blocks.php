@@ -52,7 +52,7 @@ class WP_Job_Manager_Blocks {
 		// Add script includes for gutenblocks.
 		wp_register_script(
 			'wp-job-manager-block-job',
-			JOB_MANAGER_PLUGIN_URL . '/assets/build/blocks/job.js',
+			JOB_MANAGER_PLUGIN_URL . '/build/blocks/job.js',
 			array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-hooks' ),
 			'0.1.0'
 		);
