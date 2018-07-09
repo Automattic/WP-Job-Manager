@@ -40,7 +40,7 @@ const webpackConfig = ( env, argv ) => {
 		},
 		plugins: [
 			new cleanWebpackPlugin( [ 'build/blocks' ] ),
-			new lodashModuleReplacementPlugin(),
+			new lodashModuleReplacementPlugin( { shorthands: true } ),
 			new miniCssExtractPlugin( {
 				filename: 'build/blocks/[name]/style.css'
 			} ),
