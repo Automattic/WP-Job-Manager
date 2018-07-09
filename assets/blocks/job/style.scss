@@ -1,0 +1,149 @@
+.wp-block-wp-job-manager-job {
+	.single_job_listing {
+		display: flex;
+		flex-direction: column;
+
+		ul.job-listing-meta {
+			display: flex;
+			flex-direction: row;
+			list-style-type: none;
+			margin-bottom: 16px;
+			width: 100%;
+
+			li {
+				color: #999;
+				margin-right: 16px;
+
+				&:last-child {
+					margin-right: 0;
+				}			
+			}
+
+			.job-type {
+				background-color: #1a1a1a;
+				box-sizing: border-box;
+				color: #fff;
+				height: 32px;
+				line-height: 16px;
+				padding: 8px;
+			}
+
+			.date-posted::before, .location::before {
+				display: inline-block;
+				font-family: job-manager;
+				-webkit-font-smoothing: antialiased;
+				font-size: 16px;
+				font-style: normal;
+				font-weight: 400;
+				height: 16px;
+				margin: 0 2px 0 0;
+				text-decoration: none;
+				vertical-align: top;
+				width: 16px;
+			}
+
+			.date-posted::before {
+				content: '\e80f';
+			}
+
+			.location::before {
+				content: '\e81d';
+			}
+		}
+
+		.company {
+			border: 1px solid #eee;
+			box-shadow: 0 1px 1px rgba(0,0,0,.1);
+			box-sizing: border-box;
+			clear: both;
+			display: block;
+			margin: 0 0 2em;
+			min-height: 3em;
+			padding: 1em;
+			poisition: relative;
+			width: 100%;
+
+			img {
+				box-shadow: none;
+				float: left;
+				height: 3em;
+				left: 1em;
+				position: absolute;
+				vertical-align: middle;
+				width: 3em;
+			}
+
+			.name {
+				line-height: 1.5em;
+				margin: 0 0 0 3em;
+				padding: 0 0 0 1em;
+
+				a {
+					float: right;
+					margin-left: 1em;
+
+					&::before {
+						display: inline-block;
+						font-family: job-manager;
+						-webkit-font-smoothing: antialiased;
+						font-size: 16px;
+						font-style: normal;
+						font-weight: 400;
+						height: 16px;
+						margin: 0 2px 0 0;
+						text-decoration: none;
+						vertical-align: top;
+						width: 16px;
+					}
+				}
+
+				.website::before {
+					content: '\e809';
+				}
+
+				.company_twitter::before {
+					content: '\e80a';
+				}
+			}
+
+			.tagline {
+				color: #999;
+				display: block;
+				font-style: italic;
+				line-height: 1.5em;
+				margin: 0 0 0 42px;
+				padding: 0 0 0 1em;
+			}
+		}
+
+		.job_description {
+			margin: 0 0 1.5em;
+
+			> * {
+				margin-top: 0;
+			}
+		}
+
+		.application {
+			margin: 0 0 1em;
+			overflow: hidden;
+			padding: 0;
+
+			.application_button {
+				background-color: #1a1a1a;
+				border-radius: 2px;
+				color: #fff;
+				display: inline-block;
+				font-size: 1.1em;
+				font-weight: bold;
+				height: 50px;
+				line-height: 1em;
+				margin: 0 .5em 0 0;
+				outline: 0;
+				padding: .90909091em 2em;
+				text-align: center;
+				text-transform: uppercase;
+			}
+		}
+	}
+}
