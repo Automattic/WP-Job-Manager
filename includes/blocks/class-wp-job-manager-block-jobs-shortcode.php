@@ -110,6 +110,19 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 		);
 	}
 
+	private static function get_shortcode_attributes( $attributes ) {
+		$shortcode_attrs = array();
+
+		$shortcode_attrs[] = 'show_filters=' . $attributes['showFilters'];
+
+		if ( ! $attributes['showFilters'] ) {
+			$shortcode_attrs[] = 'keywords=' . $attributes['keywords'];
+			$shortcode_attrs[] = 'location=' . $attributes['location'];
+		}
+
+		return join( ' ', $shortcode_attrs );
+	}
+
 	/**
 	 * Render the jobs block.
 	 *
@@ -118,8 +131,12 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 	public static function render( $attributes ) {
 		$tmp_block_id = uniqid( 'jobs-block-' );
 
+		$shortcode = '[jobs '
+			. self::get_shortcode_attributes( $attributes )
+			. ' ]';
+
 		return "<div id='$tmp_block_id' class='jobs-shortcode-block'>"
-			. do_shortcode( '[jobs]' )
+			. do_shortcode( $shortcode )
 			. '</div>';
 	}
 }

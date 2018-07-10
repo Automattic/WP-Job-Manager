@@ -27,7 +27,11 @@ class JobsEdit extends Component {
 		return [
 			<div className={ className } key="edit-ui">
 				{ editing ?
-					<AttributesEdit /> :
+					<AttributesEdit
+						className={ `${className}__attributes-edit` }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+					/> :
 					<ServerSideRender
 						block="wp-job-manager/jobs"
 						attributes={ attributes }
