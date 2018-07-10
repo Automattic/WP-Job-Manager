@@ -320,6 +320,12 @@ jQuery( document ).ready( function( $ ) {
 	// Create Observer for Gutenberg.
 	var targetNode = $( '.gutenberg__editor' )[0];
 
+	// Create event capture handler that prevents the event from going any further.
+	function stopEvent( event ) {
+		event.preventDefault();
+		event.stopPropagation();
+	}
+
 	if ( targetNode ) {
 		var config   = { subtree: true, childList: true };
 		var observer = new MutationObserver( function( mutationsList ) {
@@ -329,6 +335,21 @@ jQuery( document ).ready( function( $ ) {
 						var jqNode = $( node ).find( '.jobs-shortcode-block' );
 						if ( jqNode.length ) {
 							wpjmSetupAjaxFilters( $, '#' + jqNode.attr( 'id' ) );
+
+							// Prevent interaction within Gutenberg.
+							var eventTypes = [
+								'click',
+								'keydown',
+								'keyup',
+								'keypress',
+							];
+							for ( var eventType of eventTypes ) {
+								/*
+								 * Prevent the event at the "capture" phase, so
+								 * it doesn't propagate to the child nodes.
+								 */
+								jqNode[0].addEventListener( eventType, stopEvent, true );
+							}
 						}
 					}
 				}
