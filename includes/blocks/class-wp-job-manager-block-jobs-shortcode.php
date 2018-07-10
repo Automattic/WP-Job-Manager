@@ -113,11 +113,11 @@ class WP_Job_Manager_Block_Jobs_Shortcode {
 	private static function get_shortcode_attributes( $attributes ) {
 		$shortcode_attrs = array();
 
-		$shortcode_attrs[] = 'show_filters=' . $attributes['showFilters'];
+		$shortcode_attrs[] = 'show_filters="' . $attributes['showFilters'] . '"';
 
 		if ( ! $attributes['showFilters'] ) {
-			$shortcode_attrs[] = 'keywords=' . $attributes['keywords'];
-			$shortcode_attrs[] = 'location=' . $attributes['location'];
+			$shortcode_attrs[] = 'keywords="' . $attributes['keywords'] . '"';
+			$shortcode_attrs[] = 'location="' . $attributes['location'] . '"';
 		}
 
 		return join( ' ', $shortcode_attrs );

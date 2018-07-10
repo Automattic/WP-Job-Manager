@@ -258,6 +258,7 @@ class WP_Job_Manager_Shortcodes {
 	 * @return string
 	 */
 	public function output_jobs( $atts ) {
+		global $post;
 		ob_start();
 
 		extract( $atts = shortcode_atts( apply_filters( 'job_manager_output_jobs_defaults', array(
@@ -365,9 +366,13 @@ class WP_Job_Manager_Shortcodes {
 
 				<?php get_job_manager_template( 'job-listings-start.php' ); ?>
 
-				<?php while ( $jobs->have_posts() ) : $jobs->the_post(); ?>
-					<?php get_job_manager_template_part( 'content', 'job_listing' ); ?>
-				<?php endwhile; ?>
+<?php
+				$old_post = $post;
+				while ( $jobs->have_posts() ) : $jobs->the_post();
+					get_job_manager_template_part( 'content', 'job_listing' );
+				endwhile;
+				$post = $old_post;
+?>
 
 				<?php get_job_manager_template( 'job-listings-end.php' ); ?>
 
