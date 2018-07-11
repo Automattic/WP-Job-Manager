@@ -1425,7 +1425,6 @@ function job_manager_duplicate_listing( $post_id ) {
 		$duplicate_ignore_keys         = apply_filters( 'job_manager_duplicate_listing_ignore_keys', $default_duplicate_ignore_keys, true );
 
 		foreach ( $post_meta as $meta_key => $meta_value ) {
-			$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
 			if ( in_array( $meta_key, $duplicate_ignore_keys, true ) ) {
 				continue;
 			}
