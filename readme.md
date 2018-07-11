@@ -3,7 +3,7 @@
 **Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent  
 **Requires at least:** 4.7.0  
 **Tested up to:** 4.9  
-**Stable tag:** 1.31.0  
+**Stable tag:** 1.31.1  
 **License:** GPLv3  
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -151,6 +151,17 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 ## Changelog ##
+
+### 1.31.1 ###
+* Enhancement: Add option to show company logo in Recent Jobs widget. (@RajeebTheGreat)
+* Enhancement: Suggest additional cookie information on Privacy Policy page.
+* Enhancement: Add WPJM related meta data to user data extract.
+* Fix: Tightened the security of the plugin with additional string escaping.
+* Fix: Issue with map link in admin backend. (@RajeebTheGreat)
+* Fix: No longer auto-expire job listings in Draft status.
+* Fix: Issue with undefined index error in WP admin. (@albionselimaj)
+* Fix: Issue with duplicate usernames preventing submission of job listings. (@timothyjensen)
+* Dev: Widespread code formatting cleanup throughout the plugin. 
 
 ### 1.31.0 ###
 * Change: Minimum WordPress version is now 4.7.0.

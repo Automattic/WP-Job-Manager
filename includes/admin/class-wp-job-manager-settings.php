@@ -448,6 +448,7 @@ class WP_Job_Manager_Settings {
 				jQuery(this).addClass('nav-tab-active');
 				window.location.hash = jQuery(this).attr('href');
 				jQuery( 'form.job-manager-options' ).attr( 'action', 'options.php' + jQuery(this).attr( 'href' ) );
+				window.scrollTo( 0, 0 );
 				return false;
 			});
 			var goto_hash = window.location.hash;
@@ -531,7 +532,7 @@ class WP_Job_Manager_Settings {
 			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
 			checked( '1', $value );
 			?>
-		/> <?php echo esc_html( $option['cb_label'] ); ?></label>
+		/> <?php echo wp_kses_post( $option['cb_label'] ); ?></label>
 		<?php
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
