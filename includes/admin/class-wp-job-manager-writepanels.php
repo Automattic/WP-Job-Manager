@@ -223,7 +223,7 @@ class WP_Job_Manager_Writepanels {
 					foreach ( $terms as $term ) {
 						$id = $taxonomy . '-' . $term->term_id;
 						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
-						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" ' . checked( $current, $term->term_id ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
+						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
 						echo '</label></li>';
 					}
 					?>
