@@ -199,7 +199,8 @@ module.exports = function( grunt ){
 			'main': {
 				cwd: '<%= dirs.build %>/',
 				src: [ '<%= dirs.build %>/**' ],
-				dest: 'tmp/wp-job-manager.zip'
+				dest: 'tmp/wp-job-manager.zip',
+				compression: 'DEFLATE'
 			}
 		},
 
@@ -214,7 +215,7 @@ module.exports = function( grunt ){
 		},
 
 		clean: {
-			main: [ 'tmp/', 'lib/wpjm_rest' ], //Clean up build folder
+			main: [ 'tmp/*.zip', 'lib/wpjm_rest', '<%= dirs.build %>' ], //Clean up build folder
 		},
 
 		jshint: {
@@ -280,11 +281,13 @@ module.exports = function( grunt ){
 	grunt.registerTask( 'build-mixtape', [ 'shell:buildMixtape' ] );
 
 	grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'check-mixtape', 'check-mixtape-fatal', 'test', 'copy' ] );
+	grunt.registerTask( 'build-unsafe', [ 'clean', 'check-mixtape', 'check-mixtape-fatal', 'copy' ] );
 
 	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'checkrepo', 'build', 'wp_deploy' ] );
 	grunt.registerTask( 'deploy-unsafe', [ 'build', 'wp_deploy' ] );
 
 	grunt.registerTask( 'package', [ 'build', 'zip' ] );
+	grunt.registerTask( 'package-unsafe', [ 'build-unsafe', 'zip' ] );
 
 	// Register tasks
 	grunt.registerTask( 'default', [
