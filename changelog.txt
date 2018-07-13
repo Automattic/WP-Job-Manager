@@ -1,3 +1,6 @@
+= 1.31.2 =
+* Fix: Adds missing quote from WP admin taxonomy fields. (@redpik)
+
 = 1.31.1 =
 * Enhancement: Add option to show company logo in Recent Jobs widget. (@RajeebTheGreat)
 * Enhancement: Suggest additional cookie information on Privacy Policy page.
