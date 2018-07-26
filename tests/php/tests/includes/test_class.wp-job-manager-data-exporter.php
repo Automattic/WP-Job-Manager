@@ -48,7 +48,10 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 		$result = WP_Job_Manager_Data_Exporter::user_data_exporter( 'this-is-an-invalid-email' );
 
 		// ASSERT.
-		$this->assertEmpty( $result );
+		$this->assertTrue( is_array( $result ) );
+		$this->assertArrayHasKey( 'data', $result );
+		$this->assertArrayHasKey( 'done', $result );
+		$this->assertEmpty( $result['data'] );
 	}
 
 	/**

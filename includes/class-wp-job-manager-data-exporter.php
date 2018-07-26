@@ -38,12 +38,15 @@ class WP_Job_Manager_Data_Exporter {
 	 * @return array
 	 */
 	public static function user_data_exporter( $email_address ) {
-		$user = get_user_by( 'email', $email_address );
+		$export_items = array();
+		$user         = get_user_by( 'email', $email_address );
 		if ( false === $user ) {
-			return;
+			return array(
+				'data' => $export_items,
+				'done' => true,
+			);
 		}
 
-		$export_items        = array();
 		$user_data_to_export = array();
 		$user_meta_keys      = array(
 			'_company_logo'    => __( 'Company Logo', 'wp-job-manager' ),
