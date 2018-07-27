@@ -86,6 +86,13 @@ class WP_Job_Manager_CPT {
 			'notice'  => __( '%s expired', 'wp-job-manager' ),
 			'handler' => array( $this, 'bulk_action_handle_expire_job' ),
 		);
+		$actions_handled['relist_jobs']          = array(
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'label'   => __( 'Relist Expired %s', 'wp-job-manager' ),
+			// translators: Placeholder (%s) is the plural name of the job listings post type.
+			'notice'  => __( '%s has been relisted', 'wp-job-manager' ),
+			'handler' => array( $this, 'bulk_action_handle_relist_job' ),
+		);
 		$actions_handled['mark_jobs_filled']     = array(
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Mark %s Filled', 'wp-job-manager' ),
@@ -201,7 +208,19 @@ class WP_Job_Manager_CPT {
 		}
 		return false;
 	}
-
+	public function bulk_action_handle_relist_job( $post_id ) {
+		$job_data = array(
+			'ID'          => $post_id,
+			'post_status' => 'publish',
+		);
+		if ( in_array( get_post_status( $post_id ), array( 'expired' ), true )
+			 && current_user_can( 'publish_post', $post_id )
+			 && wp_update_post( $job_data )
+		) {
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * Performs bulk action to mark a single job listing as filled.
 	 *
