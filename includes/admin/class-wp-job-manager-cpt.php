@@ -208,6 +208,13 @@ class WP_Job_Manager_CPT {
 		}
 		return false;
 	}
+	
+	/**
+	 * Performs bulk action to relist a single expired job.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return bool
+	 */
 	public function bulk_action_handle_relist_job( $post_id ) {
 		$job_data = array(
 			'ID'          => $post_id,
@@ -221,6 +228,7 @@ class WP_Job_Manager_CPT {
 		}
 		return false;
 	}
+
 	/**
 	 * Performs bulk action to mark a single job listing as filled.
 	 *
