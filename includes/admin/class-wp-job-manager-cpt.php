@@ -208,7 +208,7 @@ class WP_Job_Manager_CPT {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Performs bulk action to relist a single expired job.
 	 *
