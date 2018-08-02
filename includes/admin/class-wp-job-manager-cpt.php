@@ -308,7 +308,7 @@ class WP_Job_Manager_CPT {
 
 		echo "<select name='job_listing_category' id='dropdown_job_listing_category'>";
 		echo '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
-		echo wp_kses_post( $walker->walk( $terms, 0, $r ) );
+		echo  $walker->walk( $terms, 0, $r );
 		echo '</select>';
 
 	}
