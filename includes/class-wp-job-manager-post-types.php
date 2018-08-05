@@ -66,6 +66,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 
+		add_action( 'parse_query', array( $this, 'public_search_handler' ) );
 		add_action( 'parse_query', array( $this, 'add_feed_query_args' ) );
 
 		// Single job content.
@@ -301,7 +302,7 @@ class WP_Job_Manager_Post_Types {
 			'expired',
 			array(
 				'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
-				'public'                    => true,
+				'public'                    => ! isset( $_GET['s'] ),
 				'protected'                 => true,
 				'exclude_from_search'       => true,
 				'show_in_admin_all_list'    => true,
@@ -459,6 +460,35 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'rss2_item', array( $this, 'job_feed_item' ) );
 		do_feed_rss2( false );
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search' );
+	}
+
+	/**
+	 * Modifies WordPress Query of public search.
+	 *
+	 * @param WP_Query $query Query being processed.
+	 */
+	public function public_search_handler( $query ) {
+		if ( ! $query->is_search() ) {
+			return;
+		}
+
+		// Remove filled positions, if necessary.
+		if ( 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
+			$meta_query = $query->get( 'meta_query' );
+			if ( ! is_array( $meta_query ) ) {
+				$meta_query = array();
+			}
+
+			$meta_query[] = [
+				'key'     => '_filled',
+				'value'   => '1',
+				'compare' => '!=',
+			];
+
+			if ( ! empty( $meta_query ) ) {
+				$query->set( 'meta_query', $meta_query );
+			}
+		}
 	}
 
 	/**
