@@ -479,11 +479,11 @@ class WP_Job_Manager_Post_Types {
 				$meta_query = array();
 			}
 
-			$meta_query[] = [
+			$meta_query[] = array(
 				'key'     => '_filled',
 				'value'   => '1',
 				'compare' => '!=',
-			];
+			);
 
 			if ( ! empty( $meta_query ) ) {
 				$query->set( 'meta_query', $meta_query );
