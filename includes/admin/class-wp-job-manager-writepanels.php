@@ -482,6 +482,7 @@ class WP_Job_Manager_Writepanels {
 				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
 			<?php endif; ?>
 			</label>
+			<input type="hidden" name="<?php echo esc_attr( $name ); ?>" value="">
 			<select multiple="multiple" name="<?php echo esc_attr( $name ); ?>[]" id="<?php echo esc_attr( $key ); ?>">
 				<?php foreach ( $field['options'] as $key => $value ) : ?>
 				<option value="<?php echo esc_attr( $key ); ?>"
