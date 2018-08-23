@@ -325,6 +325,24 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						}
 					}
 				}
+				if ( 'file' === $field['type'] ) {
+					if ( is_array( $values[ $group_key ][ $key ] ) ) {
+						$check_value = array_filter( $values[ $group_key ][ $key ] );
+					} else {
+						$check_value = array_filter( array( $values[ $group_key ][ $key ] ) );
+					}
+					if ( ! empty( $check_value ) ) {
+						foreach ( $check_value as $file_url ) {
+							if ( is_numeric( $file_url ) ) {
+								continue;
+							}
+							$file_url = esc_url( $file_url, array( 'http', 'https' ) );
+							if ( empty( $file_url ) ) {
+								throw new Exception( __( 'Invalid attachment provided.', 'wp-job-manager' ) );
+							}
+						}
+					}
+				}
 				if ( 'file' === $field['type'] && ! empty( $field['allowed_mime_types'] ) ) {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
 						$check_value = array_filter( $values[ $group_key ][ $key ] );
@@ -678,8 +696,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		include_once ABSPATH . 'wp-admin/includes/media.php';
 
 		$upload_dir     = wp_upload_dir();
-		$attachment_url = str_replace( array( $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ), array( $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ), $attachment_url );
+		$attachment_url = esc_url( $attachment_url, array( 'http', 'https' ) );
+		if ( empty( $attachment_url ) ) {
+			return 0;
+		}
 
+		$attachment_url = str_replace( array( $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ), array( $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ), $attachment_url );
 		if ( empty( $attachment_url ) || ! is_string( $attachment_url ) ) {
 			return 0;
 		}
