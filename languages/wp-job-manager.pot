@@ -2,9 +2,9 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.31.2\n"
+"Project-Id-Version: WP Job Manager 1.31.3\n"
 "Report-Msgid-Bugs-To: https://github.com/Automattic/WP-Job-Manager/issues\n"
-"POT-Creation-Date: 2018-07-12 16:24:59+00:00\n"
+"POT-Creation-Date: 2018-08-23 10:19:58+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -945,19 +945,19 @@ msgid ""
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:70
-#: includes/class-wp-job-manager-data-exporter.php:50
+#: includes/class-wp-job-manager-data-exporter.php:53
 #: includes/rest-api/class-wp-job-manager-models-job-listings-custom-fields.php:37
 msgid "Company Name"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:75
-#: includes/class-wp-job-manager-data-exporter.php:51
+#: includes/class-wp-job-manager-data-exporter.php:54
 #: includes/rest-api/class-wp-job-manager-models-job-listings-custom-fields.php:41
 msgid "Company Website"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:80
-#: includes/class-wp-job-manager-data-exporter.php:52
+#: includes/class-wp-job-manager-data-exporter.php:55
 #: includes/rest-api/class-wp-job-manager-models-job-listings-custom-fields.php:45
 msgid "Company Tagline"
 msgstr ""
@@ -967,13 +967,13 @@ msgid "Brief description about the company"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:85
-#: includes/class-wp-job-manager-data-exporter.php:53
+#: includes/class-wp-job-manager-data-exporter.php:56
 #: includes/rest-api/class-wp-job-manager-models-job-listings-custom-fields.php:49
 msgid "Company Twitter"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:90
-#: includes/class-wp-job-manager-data-exporter.php:54
+#: includes/class-wp-job-manager-data-exporter.php:57
 #: includes/rest-api/class-wp-job-manager-models-job-listings-custom-fields.php:53
 msgid "Company Video"
 msgstr ""
@@ -1039,19 +1039,19 @@ msgstr ""
 msgid "Add file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:556
+#: includes/admin/class-wp-job-manager-writepanels.php:557
 msgid "Guest User"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:559
+#: includes/admin/class-wp-job-manager-writepanels.php:560
 msgid "Change"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:563
+#: includes/admin/class-wp-job-manager-writepanels.php:564
 msgid "Enter the ID of the user, or leave blank if submitted by a guest."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:629
+#: includes/admin/class-wp-job-manager-writepanels.php:630
 #. translators: %1$s is placeholder for singular name of the job listing post
 #. type; %2$s is the intl formatted date the listing was last modified.
 msgid "%1$s was last modified by the user on %2$s."
@@ -1080,12 +1080,12 @@ msgstr ""
 msgid "WP Job Manager"
 msgstr ""
 
-#: includes/class-wp-job-manager-data-exporter.php:49
+#: includes/class-wp-job-manager-data-exporter.php:52
 #: includes/class-wp-job-manager-post-types.php:268
 msgid "Company Logo"
 msgstr ""
 
-#: includes/class-wp-job-manager-data-exporter.php:79
+#: includes/class-wp-job-manager-data-exporter.php:82
 msgid "WP Job Manager User Data"
 msgstr ""
 
@@ -1489,7 +1489,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:75
-#: includes/forms/class-wp-job-manager-form-submit-job.php:500
+#: includes/forms/class-wp-job-manager-form-submit-job.php:518
 #: templates/job-preview.php:22
 msgid "Preview"
 msgstr ""
@@ -1588,6 +1588,10 @@ msgid "%s is invalid"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:341
+msgid "Invalid attachment provided."
+msgstr ""
+
+#: includes/forms/class-wp-job-manager-form-submit-job.php:359
 #: wp-job-manager-functions.php:1277
 #. translators: Placeholder %1$s is field label; %2$s is the file mime type;
 #. %3$s is the allowed mime-types.
@@ -1596,44 +1600,44 @@ msgstr ""
 msgid "\"%1$s\" (filetype %2$s) needs to be one of the following file types: %3$s"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:356
+#: includes/forms/class-wp-job-manager-form-submit-job.php:374
 msgid "Please enter a valid application email address"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:365
+#: includes/forms/class-wp-job-manager-form-submit-job.php:383
 msgid "Please enter a valid application URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:375
+#: includes/forms/class-wp-job-manager-form-submit-job.php:393
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:535
+#: includes/forms/class-wp-job-manager-form-submit-job.php:553
 msgid "Please enter a username."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:539
+#: includes/forms/class-wp-job-manager-form-submit-job.php:557
 msgid "Please enter a password."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:543
+#: includes/forms/class-wp-job-manager-form-submit-job.php:561
 msgid "Please enter your email address."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:549
+#: includes/forms/class-wp-job-manager-form-submit-job.php:567
 msgid "Passwords must match."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:555
+#: includes/forms/class-wp-job-manager-form-submit-job.php:573
 #. translators: Placeholder %s is the password hint.
 msgid "Invalid Password: %s"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:557
+#: includes/forms/class-wp-job-manager-form-submit-job.php:575
 msgid "Password is not valid."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:580
+#: includes/forms/class-wp-job-manager-form-submit-job.php:598
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
@@ -2208,7 +2212,7 @@ msgid "Automattic"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-admin.php:139
-#: includes/forms/class-wp-job-manager-form-submit-job.php:413
+#: includes/forms/class-wp-job-manager-form-submit-job.php:431
 #. translators: jQuery date format, see
 #. http:api.jqueryui.com/datepicker/#utility-formatDate
 msgctxt "Date format for jQuery datepicker."

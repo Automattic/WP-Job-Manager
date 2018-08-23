@@ -1,7 +1,7 @@
 {
   "name": "wp-job-manager",
   "title": "WP Job Manager",
-  "version": "1.31.2",
+  "version": "1.31.3",
   "homepage": "http://wordpress.org/plugins/wp-job-manager/",
   "license": "GPL-2.0+",
   "repository": "automattic/wp-job-manager",

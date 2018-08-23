@@ -1,3 +1,10 @@
+= 1.31.3 =
+* Fix: Escape the attachment URL. (Props to karimeo)
+* Fix: Custom job field priority fix when using decimals. (@tripflex)
+* Fix: Fix issue with empty mutli-select in WP admin jobs page. (@felipeelia)
+* Fix: Issue with data export when email doesn't have any job listings. 
+* Third Party: Improved WPML support. (@vukvukovich)
+
 = 1.31.2 =
 * Fix: Adds missing quote from WP admin taxonomy fields. (@redpik)
 
