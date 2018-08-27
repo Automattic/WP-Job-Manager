@@ -10,10 +10,12 @@
     "build": "npm run lint && cross-env BABEL_ENV=default webpack --mode=production",
     "clean": "rimraf build",
     "dev": "npm run lint && cross-env BABEL_ENV=default webpack --mode=development --watch",
-    "lint": "eslint --ext js,jsx assets/blocks"
+    "lint": "eslint --ext js,jsx assets/blocks",
+    "test": "jest"
   },
   "devDependencies": {
     "@wordpress/babel-preset-default": "^1.3.0",
+    "@wordpress/jest-preset-default": "^1.0.6",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.5",
     "babel-loader": "^7.1.4",
@@ -51,6 +53,7 @@
     "grunt-wp-i18n": "^1.0.2",
     "grunt-wp-readme-to-markdown": "^2.0.0",
     "grunt-zip": "^0.17.1",
+    "jest": "^23.2.0",
     "lodash-webpack-plugin": "^0.11.5",
     "mini-css-extract-plugin": "^0.4.0",
     "mixtape": "git+https://github.com/Automattic/mixtape.git#faca4e486ae88661bd642c1b44e058b9bc461fa2",
