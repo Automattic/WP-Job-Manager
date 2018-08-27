@@ -86,7 +86,7 @@ class WP_Job_Manager_Admin {
 
 		echo '<div class="error">';
 		// translators: %s is the URL for the page where users can go to update WordPress.
-		echo '<p>' . wp_kses_post( sprintf( __( '<strong>WP Job Manager</strong> requires a more recent version of WordPress. <a href="%s">Please update WordPresse</a> to avoid issues.', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) ) ) . '</p>';
+		echo '<p>' . wp_kses_post( sprintf( __( '<strong>WP Job Manager</strong> requires a more recent version of WordPress. <a href="%s">Please update WordPress</a> to avoid issues.', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) ) ) . '</p>';
 		echo '</div>';
 	}
 
