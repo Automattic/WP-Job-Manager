@@ -65,3 +65,16 @@ function polylang_wpjm_page_id( $page_id ) {
 	return absint( $page_id );
 }
 
+/**
+ * Tells Polylang about ajax requests
+ * The filter is applied *before* the action 'pll_init'
+ *
+ * @since 1.32.0
+ *
+ * @param bool $is_ajax
+ * @return bool
+ */
+function polylang_wpjm_doing_ajax( $is_ajax ) {
+	return false === strpos( $_SERVER['REQUEST_URI'], '/jm-ajax/' ) ? $is_ajax : true;
+}
+add_filter( 'pll_is_ajax_on_front', 'polylang_wpjm_doing_ajax' );
