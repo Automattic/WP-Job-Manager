@@ -361,7 +361,7 @@ abstract class WP_Job_Manager_Form {
 		 *
 		 * Before submitting or editing a job, alter the posted values before they get stored into the database.
 		 *
-		 * @since 1.x.x
+		 * @since 1.32.0
 		 *
 		 * @param array  $values  The values that have been submitted.
 		 * @param array  $fields  The form fields.
