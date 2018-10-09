@@ -11,7 +11,6 @@ const { Component } = wp.element,
 	{ __ } = wp.i18n,
 	{ addFilter } = wp.hooks,
 	{
-		withAPIData,
 		CheckboxControl,
 		ToggleControl,
 	} = wp.components;
@@ -119,6 +118,22 @@ class Types extends Component {
 		 * Keep track of whether we have the API data.
 		 */
 		haveAPIData: false,
+
+		/**
+		 * The Job Types from the API.
+		 */
+		types: {},
+	}
+
+	componentDidMount() {
+		wp.apiFetch( { path: '/wp/v2/job-types' } ).then( ( data ) => {
+			this.setState( { types: {
+				isLoading: false,
+				data,
+			} } );
+		} );
+
+		this.setState( { types: { isLoading: true } } );
 	}
 
 	/**
@@ -129,7 +144,7 @@ class Types extends Component {
 	 */
 	haveAPIData() {
 		if ( ! this.state.haveAPIData ) {
-			const { types } = this.props;
+			const { types } = this.state;
 
 			if ( types && ! types.isLoading && 'undefined' !== typeof types.data ) {
 				// We have received the data
@@ -177,7 +192,7 @@ class Types extends Component {
 
 		// If selectedTypes is empty, fill it up.
 		if ( _.isEmpty( includedJobTypes ) ) {
-			this.props.types.data.forEach( ( type ) => {
+			this.state.types.data.forEach( ( type ) => {
 				includedJobTypes[ type.slug ] = true;
 			} );
 		}
@@ -200,7 +215,8 @@ class Types extends Component {
 	 * Render the component.
 	 */
 	render() {
-		const { types, attributes, setAttributes, isSelected, className } = this.props;
+		const { attributes, setAttributes, isSelected, className } = this.props;
+		const { types } = this.state;
 
 		if ( ! this.haveAPIData() ) {
 			return <p className={ className }>{ __( 'Loading Job Types...' ) }</p>
@@ -237,9 +253,4 @@ class Types extends Component {
 	}
 }
 
-/**
- * Export the component using the `withAPIData` Higher Order Component.
- */
-export default withAPIData( () => ( {
-	types: '/wp/v2/job-types',
-} ) )( Types );
+export default Types;
