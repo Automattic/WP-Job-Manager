@@ -37,7 +37,7 @@ if ( ! get_the_company_name() ) {
         <?php if ( get_option( 'job_manager_show_job_category') == 1) :
             the_job_category('Category: ', '');
         endif;?>
-        <?php the_company_tagline( '<p class="tagline">', '</p>' ); ?>
     </p>
+    <?php the_company_tagline( '<p class="tagline">', '</p>' ); ?>
 	<?php the_company_video(); ?>
 </div>
