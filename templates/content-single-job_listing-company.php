@@ -31,7 +31,13 @@ if ( ! get_the_company_name() ) {
 		<?php endif; ?>
 		<?php the_company_twitter(); ?>
 		<?php the_company_name( '<strong>', '</strong>' ); ?>
+
 	</p>
-	<?php the_company_tagline( '<p class="tagline">', '</p>' ); ?>
+    <p class="category">
+        <?php if ( get_option( 'job_manager_show_job_category') == 1) :
+            the_job_category('Category: ', '');
+        endif;?>
+        <?php the_company_tagline( '<p class="tagline">', '</p>' ); ?>
+    </p>
 	<?php the_company_video(); ?>
 </div>

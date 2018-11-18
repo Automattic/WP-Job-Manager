@@ -1082,6 +1082,33 @@ function get_the_company_tagline( $post = null ) {
 }
 
 /**
+ *	Retrieves the current job category.
+ *
+ */
+function the_job_category( $before = '', $after = '', $echo = true, $post = null ){
+    $job_category = get_the_job_category($post);
+    $job_category = esc_attr( wp_strip_all_tags( $job_category ) );
+    $job_category = $before . $job_category . $after;
+    if ( $echo ) {
+        echo wp_kses_post( $job_category );
+    } else {
+        return $job_category;
+    }
+}
+
+/**
+ *	Gets the job category
+ *
+ */
+function get_the_job_category($post = null){
+    $post = get_post ( $post );
+    if ( ! $post || 'job_listing' !== $post->post_type ) {
+        return null;
+    }
+    return get_the_term_list( $post->ID, 'job_listing_category', '', ' / ' );
+}
+
+/**
  * Displays or retrieves the current company Twitter link with optional content.
  *
  * @since 1.0.0
