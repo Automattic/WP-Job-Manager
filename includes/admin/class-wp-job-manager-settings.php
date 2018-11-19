@@ -198,6 +198,15 @@ class WP_Job_Manager_Settings {
 							'type'       => 'checkbox',
 							'attributes' => array(),
 						),
+                        array(
+                            'name'       => 'job_manager_show_job_category',
+                            'std'        => '0',
+                            'label'      => __( 'Display Job Category', 'wp-job-manager' ),
+                            'cb_label'   => __( 'Display Job Category in Job Listing', 'wp-job-manager' ),
+                            'desc'       => __( 'This allows users to view the category of the job.', 'wp-job-manager' ),
+                            'type'       => 'checkbox',
+                            'attributes' => array(),
+                        ),
 					),
 				),
 				'job_submission' => array(
