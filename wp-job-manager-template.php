@@ -786,7 +786,8 @@ function the_job_location( $map_link = true, $post = null ) {
 				apply_filters(
 					'the_job_location_map_link',
 					'<a class="google_map_link" href="' . esc_url( 'http://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
-					$location, $post
+					$location,
+					$post
 				)
 			);
 		} else {
@@ -1082,35 +1083,35 @@ function get_the_company_tagline( $post = null ) {
 }
 
 /**
- *	Retrieves the current job category.
+ *  Retrieves the current job category.
  *  @param string           $before (default: '').
  *  @param string           $after (default: '').
  *  @param bool             $echo (default: true).
  *  @param int|WP_Post|null $post (default: null).
  *  @return string|void
  */
-function the_job_category( $before = '', $after = '', $echo = true, $post = null ){
-    $job_category = get_the_job_category($post);
-    $job_category = esc_attr( wp_strip_all_tags( $job_category ) );
-    $job_category = $before . $job_category . $after;
-    if ( $echo ) {
-        echo wp_kses_post( $job_category );
-    } else {
-        return $job_category;
-    }
+function the_job_category( $before = '', $after = '', $echo = true, $post = null ) {
+	$job_category = get_the_job_category( $post );
+	$job_category = esc_attr( wp_strip_all_tags( $job_category ) );
+	$job_category = $before . $job_category . $after;
+	if ( $echo ) {
+		echo wp_kses_post( $job_category );
+	} else {
+		return $job_category;
+	}
 }
 
 /**
- *	Gets the job category
+ *  Gets the job category
  *  @param int|WP_Post|null $post (default: null).
  *  @return string|null
  */
-function get_the_job_category($post = null){
-    $post = get_post ( $post );
-    if ( ! $post || 'job_listing' !== $post->post_type ) {
-        return null;
-    }
-    return get_the_term_list( $post->ID, 'job_listing_category', '', ' / ' );
+function get_the_job_category( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return null;
+	}
+	return get_the_term_list( $post->ID, 'job_listing_category', '', ' / ' );
 }
 
 /**

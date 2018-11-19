@@ -459,7 +459,8 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 						)
 					),
 				),
-			), $args
+			),
+			$args
 		);
 
 		if ( count( (array) $args['filter_job_types'] ) === count( $types )
@@ -951,11 +952,11 @@ function job_manager_multi_job_type() {
 }
 
 /**
- *	Checks if the job listing should display the category
+ *  Checks if the job listing should display the category
  *
  */
-function job_manager_show_job_category(){
-    return apply_filters( 'job_manager_show_job_category', 1 === intval( get_option( 'job_manager_show_job_category' ) ) );
+function job_manager_show_job_category() {
+	return apply_filters( 'job_manager_show_job_category', 1 === intval( get_option( 'job_manager_show_job_category' ) ) );
 }
 
 /**
