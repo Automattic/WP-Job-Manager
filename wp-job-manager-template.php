@@ -1083,7 +1083,11 @@ function get_the_company_tagline( $post = null ) {
 
 /**
  *	Retrieves the current job category.
- *
+ *  @param string           $before (default: '').
+ *  @param string           $after (default: '').
+ *  @param bool             $echo (default: true).
+ *  @param int|WP_Post|null $post (default: null).
+ *  @return string|void
  */
 function the_job_category( $before = '', $after = '', $echo = true, $post = null ){
     $job_category = get_the_job_category($post);
@@ -1098,7 +1102,8 @@ function the_job_category( $before = '', $after = '', $echo = true, $post = null
 
 /**
  *	Gets the job category
- *
+ *  @param int|WP_Post|null $post (default: null).
+ *  @return string|null
  */
 function get_the_job_category($post = null){
     $post = get_post ( $post );
