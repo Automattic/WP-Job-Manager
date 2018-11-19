@@ -1084,6 +1084,7 @@ function get_the_company_tagline( $post = null ) {
 
 /**
  *  Retrieves the current job category.
+ *
  *  @param string           $before (default: '').
  *  @param string           $after (default: '').
  *  @param bool             $echo (default: true).
@@ -1103,6 +1104,7 @@ function the_job_category( $before = '', $after = '', $echo = true, $post = null
 
 /**
  *  Gets the job category
+ *
  *  @param int|WP_Post|null $post (default: null).
  *  @return string|null
  */

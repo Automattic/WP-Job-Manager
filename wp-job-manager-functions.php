@@ -953,7 +953,6 @@ function job_manager_multi_job_type() {
 
 /**
  *  Checks if the job listing should display the category
- *
  */
 function job_manager_show_job_category() {
 	return apply_filters( 'job_manager_show_job_category', 1 === intval( get_option( 'job_manager_show_job_category' ) ) );
