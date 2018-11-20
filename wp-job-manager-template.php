@@ -784,6 +784,10 @@ function get_the_job_publish_date( $post = null ) {
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
 
+	if ( 1 == $location ) {
+		echo wp_kses_post( apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) ) );
+		return;
+	}
 	if ( $location ) {
 		if ( $map_link ) {
 			// If linking to google maps, we don't want anything but text here.
@@ -816,7 +820,11 @@ function get_the_job_location( $post = null ) {
 		return null;
 	}
 
-	return apply_filters( 'the_job_location', $post->_job_location, $post );
+	if ( $post->_remote_position ) {
+		return apply_filters( 'the_job_location', $post->_remote_position, $post );
+	} else {
+		return apply_filters( 'the_job_location', $post->_job_location, $post );
+	}
 }
 
 /**
