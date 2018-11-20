@@ -784,7 +784,7 @@ function get_the_job_publish_date( $post = null ) {
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
 
-	if ( 1 == $location ) {
+	if ( '1' === $location ) {
 		echo wp_kses_post( apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) ) );
 		return;
 	}
