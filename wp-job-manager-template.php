@@ -408,6 +408,11 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['jobLocation']            = array();
 		$data['jobLocation']['@type']   = 'Place';
 		$data['jobLocation']['address'] = wpjm_get_job_listing_location_structured_data( $post );
+		if ( $post->_remote_position ) {
+			$data['additionalProperty']          = array();
+			$data['additionalProperty']['@type'] = 'PropertyValue';
+			$data['additionalProperty']['value'] = 'TELECOMMUTE';
+		}
 		if ( empty( $data['jobLocation']['address'] ) ) {
 			$data['jobLocation']['address'] = $location;
 		}
@@ -786,7 +791,8 @@ function the_job_location( $map_link = true, $post = null ) {
 				apply_filters(
 					'the_job_location_map_link',
 					'<a class="google_map_link" href="' . esc_url( 'http://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
-					$location, $post
+					$location,
+					$post
 				)
 			);
 		} else {
