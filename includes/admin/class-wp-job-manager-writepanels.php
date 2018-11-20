@@ -59,32 +59,38 @@ class WP_Job_Manager_Writepanels {
 				'description' => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
 				'priority'    => 1,
 			),
+			'_remote_position' => array(
+				'label'       => __( 'Remote Position', 'wp-job-manager' ),
+				'description' => __( 'Check if is a remote position.', 'wp-job-manager' ),
+				'type'        => 'checkbox',
+				'priority'    => 2,
+			),
 			'_application'     => array(
 				'label'       => __( 'Application Email or URL', 'wp-job-manager' ),
 				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
 				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
 				'value'       => metadata_exists( 'post', $post->ID, '_application' ) ? get_post_meta( $post->ID, '_application', true ) : $current_user->user_email,
-				'priority'    => 2,
+				'priority'    => 3,
 			),
 			'_company_name'    => array(
 				'label'       => __( 'Company Name', 'wp-job-manager' ),
 				'placeholder' => '',
-				'priority'    => 3,
+				'priority'    => 4,
 			),
 			'_company_website' => array(
 				'label'       => __( 'Company Website', 'wp-job-manager' ),
 				'placeholder' => '',
-				'priority'    => 4,
+				'priority'    => 5,
 			),
 			'_company_tagline' => array(
 				'label'       => __( 'Company Tagline', 'wp-job-manager' ),
 				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' ),
-				'priority'    => 5,
+				'priority'    => 6,
 			),
 			'_company_twitter' => array(
 				'label'       => __( 'Company Twitter', 'wp-job-manager' ),
 				'placeholder' => '@yourcompany',
-				'priority'    => 6,
+				'priority'    => 7,
 			),
 			'_company_video'   => array(
 				'label'       => __( 'Company Video', 'wp-job-manager' ),
