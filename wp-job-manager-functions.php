@@ -66,7 +66,10 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_location'] ) ) {
-			$location_meta_keys = array( 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' );
+			if ( 'remote' === $args['search_location'] || 'Remote' === $args['search_location'] ) {
+				$args['search_location'] = '1';
+			}
+			$location_meta_keys = array( 'geolocation_formatted_address', '_job_location', 'geolocation_state_long', '_remote_position' );
 			$location_search    = array( 'relation' => 'OR' );
 			foreach ( $location_meta_keys as $meta_key ) {
 				$location_search[] = array(
