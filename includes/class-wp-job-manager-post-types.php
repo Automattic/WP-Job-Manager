@@ -143,6 +143,8 @@ class WP_Job_Manager_Post_Types {
 							'assign_terms' => $admin_capability,
 						),
 						'rewrite'               => $rewrite,
+						'show_in_rest'          => true,
+
 					)
 				)
 			);
@@ -203,6 +205,7 @@ class WP_Job_Manager_Post_Types {
 							'assign_terms' => $admin_capability,
 						),
 						'rewrite'       => $rewrite,
+						'show_in_rest'  => true,
 					)
 				)
 			);
@@ -239,7 +242,7 @@ class WP_Job_Manager_Post_Types {
 			apply_filters(
 				'register_post_type_job_listing',
 				array(
-					'labels'              => array(
+					'labels'                => array(
 						'name'                  => $plural,
 						'singular_name'         => $singular,
 						'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
@@ -271,20 +274,23 @@ class WP_Job_Manager_Post_Types {
 						'use_featured_image'    => __( 'Use as company logo', 'wp-job-manager' ),
 					),
 					// translators: Placeholder %s is the plural label of the job listing post type.
-					'description'         => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
-					'public'              => true,
-					'show_ui'             => true,
-					'capability_type'     => 'job_listing',
-					'map_meta_cap'        => true,
-					'publicly_queryable'  => true,
-					'exclude_from_search' => false,
-					'hierarchical'        => false,
-					'rewrite'             => $rewrite,
-					'query_var'           => true,
-					'supports'            => array( 'title', 'editor', 'custom-fields', 'publicize', 'thumbnail' ),
-					'has_archive'         => $has_archive,
-					'show_in_nav_menus'   => false,
-					'delete_with_user'    => true,
+					'description'           => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
+					'public'                => true,
+					'show_ui'               => true,
+					'capability_type'       => 'job_listing',
+					'map_meta_cap'          => true,
+					'publicly_queryable'    => true,
+					'exclude_from_search'   => false,
+					'hierarchical'          => false,
+					'rewrite'               => $rewrite,
+					'query_var'             => true,
+					'supports'              => array( 'title', 'editor', 'custom-fields', 'publicize', 'thumbnail' ),
+					'has_archive'           => $has_archive,
+					'show_in_nav_menus'     => false,
+					'delete_with_user'      => true,
+					'show_in_rest'          => true,
+					'rest_base'             => 'job-listings',
+					'rest_controller_class' => 'WP_REST_Posts_Controller',
 				)
 			)
 		);
