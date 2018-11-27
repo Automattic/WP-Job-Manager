@@ -244,7 +244,7 @@ function get_the_job_application_method( $post = null ) {
 		$method->email     = antispambot( $apply );
 
 		// translators: %1$s is the job listing title; %2$s is the URL for the current WordPress instance.
-		$method->subject = apply_filters( 'job_manager_application_email_subject', sprintf( esc_html__( 'Application via "%1$s" listing on %2$s', 'wp-job-manager' ), esc_html( $post->post_title ), esc_url( home_url() ) ), $post );
+		$method->subject = apply_filters( 'job_manager_application_email_subject', sprintf( esc_html__( 'Application via %1$s listing on %2$s', 'wp-job-manager' ), esc_html( $post->post_title ), esc_url( home_url() ) ), $post );
 	} else {
 		if ( strpos( $apply, 'http' ) !== 0 ) {
 			$apply = 'http://' . $apply;
