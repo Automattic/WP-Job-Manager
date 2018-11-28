@@ -79,6 +79,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				),
 				'done'    => array(
 					'name'     => __( 'Done', 'wp-job-manager' ),
+					'before'   => array( $this, 'done_before' ),
 					'view'     => array( $this, 'done' ),
 					'priority' => 30,
 				),
@@ -876,7 +877,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Displays the final screen after a job listing has been submitted.
 	 */
 	public function done() {
-		do_action( 'job_manager_job_submitted', $this->job_id );
 		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( $this->job_id ) ) );
+	}
+
+	/**
+	 * Handles the job submissions before the view is called.
+	 */
+	public function done_before() {
+		do_action( 'job_manager_job_submitted', $this->job_id );
 	}
 }
