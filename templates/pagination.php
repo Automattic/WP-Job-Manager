@@ -21,6 +21,13 @@ if ( $max_num_pages <= 1 ) {
 ?>
 <nav class="job-manager-pagination">
 	<?php
+		/**
+	 	 * Filter the pagination arguments
+	 	 * 
+	 	 * @since 1.4.0
+	 	 *
+	 	 * @param array $args The pagination arguments
+	 	 */
 		echo paginate_links( apply_filters( 'job_manager_pagination_args', array(
 			'base'      => esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) ),
 			'format'    => '',
