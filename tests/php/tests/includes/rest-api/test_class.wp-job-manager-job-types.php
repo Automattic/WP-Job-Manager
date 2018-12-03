@@ -48,6 +48,14 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_post_job_types_succeed_if_valid_employment_type() {
+		/**
+		 * @see https://core.trac.wordpress.org/ticket/44834
+		 */
+		if ( version_compare( '4.9.7', $GLOBALS['wp_version'], '<' ) && version_compare( '4.9.9', $GLOBALS['wp_version'], '>' ) ) {
+			$this->markTestSkipped( 'Bug in 4.9.8 prevents correct role check for term editing.' );
+			return;
+		}
+
 		$this->login_as_admin();
 		$response = $this->post(
 			'/wp/v2/job-types', array(
@@ -63,6 +71,13 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_post_job_types_save_employment_type() {
+		/**
+		 * @see https://core.trac.wordpress.org/ticket/44834
+		 */
+		if ( version_compare( '4.9.7', $GLOBALS['wp_version'], '<' ) && version_compare( '4.9.9', $GLOBALS['wp_version'], '>' ) ) {
+			$this->markTestSkipped( 'Bug in 4.9.8 prevents correct role check for term editing.' );
+			return;
+		}
 		$this->login_as_admin();
 		$response = $this->post(
 			'/wp/v2/job-types', array(
