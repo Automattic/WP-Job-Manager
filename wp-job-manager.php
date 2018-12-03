@@ -191,22 +191,19 @@ class WP_Job_Manager {
 	/**
 	 * Initialize our REST API.
 	 *
+	 * NOTE: This custom, unsupported REST API implementation be removed in 1.33.0 and the constant `WPJM_REST_API_ENABLED`
+	 * will have no effect.
+	 *
+	 * @see https://developer.wordpress.org/rest-api/
+	 *
 	 * @deprecated 1.32.0 Please use standard WP core REST API.
 	 * @return WP_Job_Manager_REST_API|WP_Error
 	 */
 	public function rest_api() {
 		_deprecated_function(
-			__CLASS__ . ':' . __FUNCTION__,
+			__CLASS__ . ':' . __FUNCTION__ . '()',
 			'1.32.0',
-			sprintf(
-				// translators: %s is the URL to WordPress.org's REST API documentation.
-				esc_html__(
-					'The constant `WPJM_REST_API_ENABLED` and unreleased custom REST API implementation no longer used. 
-					It will be removed in 1.33.0. WPJM CPT and taxonomies now use standard implementation from WP core. See %s',
-					'wp-job-manager'
-				),
-				'https://developer.wordpress.org/rest-api/'
-			)
+			esc_html__( 'Standard REST API implementation from WP core', 'wp-job-manager' )
 		);
 		if ( null === $this->rest_api ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/rest-api/class-wp-job-manager-rest-api.php';

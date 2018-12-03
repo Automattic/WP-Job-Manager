@@ -79,11 +79,12 @@ class WP_Job_Manager_Registrable_Job_Listings implements WP_Job_Manager_REST_Int
 			return false;
 		}
 
-		if ( $wp_post_types[ $post_type_name ]->show_in_rest ) {
+		if ( ! empty( $wp_post_types[ $post_type_name ]->mixtape_show_in_rest ) ) {
 			return true;
 		}
 
 		// Optionally customize the rest_base or controller class.
+		$wp_post_types[ $post_type_name ]->mixtape_show_in_rest  = true;
 		$wp_post_types[ $post_type_name ]->show_in_rest          = true;
 		$wp_post_types[ $post_type_name ]->rest_base             = 'job-listings';
 		$wp_post_types[ $post_type_name ]->rest_controller_class = 'WP_REST_Posts_Controller';
