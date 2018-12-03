@@ -85,7 +85,14 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-email-notifications.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-data-exporter.php';
 
+		/**
+		 * This custom REST API implementation is deprecated and will be removed in 1.33.0.
+		 *
+		 * @see WP_Job_Manager::rest_api()
+		 * @see https://github.com/Automattic/WP-Job-Manager/issues/1625
+		 */
 		if ( defined( 'WPJM_REST_API_ENABLED' ) && WPJM_REST_API_ENABLED ) {
+			trigger_error( esc_html__( 'Constant `WPJM_REST_API_ENABLED` and custom REST API implementation is deprecated and will be removed in 1.33.0. Please use standard WP Core\'s implementation.', 'wp-job-manager' ) );
 			add_action( 'rest_api_init', array( $this, 'rest_api' ) );
 		}
 
@@ -195,6 +202,7 @@ class WP_Job_Manager {
 	 * will have no effect.
 	 *
 	 * @see https://developer.wordpress.org/rest-api/
+	 * @see https://github.com/Automattic/WP-Job-Manager/issues/1625
 	 *
 	 * @deprecated 1.32.0 Please use standard WP core REST API.
 	 * @return WP_Job_Manager_REST_API|WP_Error
