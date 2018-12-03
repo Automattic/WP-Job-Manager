@@ -211,8 +211,9 @@ class WP_Job_Manager_Post_Types {
 					)
 				)
 			);
-			if ( function_exists( 'register_term_meta' ) && wpjm_job_listing_employment_type_enabled() ) {
-				register_term_meta( 'job_listing_type', 'employment_type', array(
+			if ( function_exists( 'register_meta' ) && wpjm_job_listing_employment_type_enabled() ) {
+				register_meta( 'term', 'employment_type', array(
+					'object_subtype'    => 'job_listing_type',
 					'show_in_rest'      => true,
 					'type'              => 'string',
 					'single'            => true,
