@@ -11,18 +11,27 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	 */
 	protected $factory;
 
+	/**
+	 * Default User ID
+	 *
+	 * @var int
+	 */
+	protected $default_user_id;
+
 	function setUp() {
 		parent::setUp();
 		include_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/class-requests-transport-faker.php';
 		$this->_transport = null;
 
 		$this->factory = self::factory();
-		$this->enable_manage_job_listings_cap();
+
+		$this->default_user_id = get_current_user_id();
 	}
 
 	public function tearDown() {
 		parent::tearDown();
 		$this->disable_manage_job_listings_cap();
+		$this->logout();
 	}
 
 	protected static function factory() {
@@ -149,17 +158,46 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 		$this->assertNotEquals( $expected_post_type, $post->post_status );
 	}
 
-	protected function login_as_admin() {
-		$admin = get_user_by( 'email', 'wpjm_admin_user@example.com' );
-		if ( false === $admin ) {
-			$admin_id = wp_create_user(
-				'wpjm_admin_user',
-				'wpjm_admin_user',
-				'wpjm_admin_user@example.com'
-			);
-			$admin    = get_user_by( 'ID', $admin_id );
-			$admin->set_role( 'administrator' );
+	protected function get_user_by_role( $role ) {
+		if ( ! wp_roles()->is_role( 'employer' ) ) {
+			// Ensure the role gets created.
+			WP_Job_Manager_Install::install();
+			wp_roles()->init_roles();
+			wp_cache_flush();
 		}
-		wp_set_current_user( $admin->ID );
+		$user = get_user_by( 'email', 'wpjm_' . $role . '_user@example.com' );
+		if ( empty( $user ) ) {
+			$user_id = wp_create_user(
+				'wpjm_' . $role . '_user',
+				'wpjm_' . $role . '_user',
+				'wpjm_' . $role . '_user@example.com'
+			);
+			$user = get_user_by( 'ID', $user_id );
+			$user->set_role( $role );
+		}
+		return $user->ID;
+	}
+
+	protected function login_as_admin() {
+		return $this->login_as( $this->get_user_by_role( 'administrator' ) );
+	}
+
+	protected function login_as_employer() {
+		return $this->login_as( $this->get_user_by_role( 'employer' ) );
+	}
+
+	protected function login_as_default_user() {
+		return $this->login_as( $this->default_user_id );
+	}
+
+	protected function login_as( $user_id ) {
+		wp_set_current_user( $user_id );
+		return $this;
+	}
+
+	protected function logout() {
+		$this->login_as( 0 );
+		wp_logout();
+		return $this;
 	}
 }
