@@ -33,20 +33,6 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 200 );
 	}
 
-	public function test_post_job_types_fail_if_invalid_employment_type() {
-		$this->login_as_admin();
-		$response = $this->post(
-			'/wp/v2/job-types', array(
-				'name'   => 'Software Engineer',
-				'slug'   => 'software-engineer',
-				'fields' => array(
-					'employment_type' => 'invalid',
-				),
-			)
-		);
-		$this->assertResponseStatus( $response, 400 );
-	}
-
 	public function test_delete_fail_as_default_user() {
 		$this->login_as_default_user();
 		$term_id  = $this->get_job_type();
@@ -62,12 +48,20 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_post_job_types_succeed_if_valid_employment_type() {
+		/**
+		 * @see https://core.trac.wordpress.org/ticket/44834
+		 */
+		if ( version_compare( '4.9.7', $GLOBALS['wp_version'], '<' ) && version_compare( '4.9.9', $GLOBALS['wp_version'], '>' ) ) {
+			$this->markTestSkipped( 'Bug in 4.9.8 prevents correct role check for term editing.' );
+			return;
+		}
+
 		$this->login_as_admin();
 		$response = $this->post(
 			'/wp/v2/job-types', array(
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
-				'fields' => array(
+				'meta' => array(
 					'employment_type' => 'FULL_TIME',
 				),
 			)
@@ -77,12 +71,19 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_post_job_types_save_employment_type() {
+		/**
+		 * @see https://core.trac.wordpress.org/ticket/44834
+		 */
+		if ( version_compare( '4.9.7', $GLOBALS['wp_version'], '<' ) && version_compare( '4.9.9', $GLOBALS['wp_version'], '>' ) ) {
+			$this->markTestSkipped( 'Bug in 4.9.8 prevents correct role check for term editing.' );
+			return;
+		}
 		$this->login_as_admin();
 		$response = $this->post(
 			'/wp/v2/job-types', array(
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
-				'fields' => array(
+				'meta' => array(
 					'employment_type' => 'FULL_TIME',
 				),
 			)
@@ -90,10 +91,10 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 
 		$this->assertResponseStatus( $response, 201 );
 		$data = $response->get_data();
-		$this->assertTrue( array_key_exists( 'fields', $data ) );
-		$fields = $data['fields'];
-		$this->assertTrue( array_key_exists( 'employment_type', $fields ) );
-		$job_type_employment_type = $fields['employment_type'];
+		$this->assertTrue( array_key_exists( 'meta', $data ) );
+		$meta = $data['meta'];
+		$this->assertTrue( array_key_exists( 'employment_type', $meta ) );
+		$job_type_employment_type = $meta['employment_type'];
 		$this->assertSame( 'FULL_TIME', $job_type_employment_type );
 	}
 

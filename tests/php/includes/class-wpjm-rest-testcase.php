@@ -41,22 +41,6 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	private $rest_server;
 
 	/**
-	 * An Environment
-	 *
-	 * @var WP_Job_Manager_REST_Environment
-	 */
-	private $environment;
-
-	/**
-	 * Get Environment
-	 *
-	 * @return WP_Job_Manager_REST_Environment
-	 */
-	protected function environment() {
-		return $this->environment;
-	}
-
-	/**
 	 * Get REST Server
 	 *
 	 * @return WP_REST_Server
@@ -101,9 +85,6 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		$this->default_user_id = get_current_user_id();
 		$this->login_as_admin();
 		$this->rest_server = $wp_rest_server;
-		$bootstrap         = WPJM()->rest_api()->get_bootstrap();
-		$this->bootstrap   = WPJM()->rest_api()->get_bootstrap();
-		$this->environment = $bootstrap->environment();
 	}
 
 	function login_as_admin() {
