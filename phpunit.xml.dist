@@ -20,7 +20,6 @@
 		<testsuite name="WPJM Test Suite">
 			<directory prefix="test_class." suffix=".php">tests/php/tests</directory>
 			<directory prefix="test-class-" suffix=".php">lib/usage-tracking/tests</directory>
-			<directory prefix="test_class." suffix=".php" phpVersion="5.3.0" phpVersionOperator=">=">tests/php/tests/includes/rest-api</directory>
 		</testsuite>
 	</testsuites>
 	<filter>
