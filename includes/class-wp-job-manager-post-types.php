@@ -144,6 +144,7 @@ class WP_Job_Manager_Post_Types {
 						),
 						'rewrite'               => $rewrite,
 						'show_in_rest'          => true,
+						'rest_base'             => 'job-categories',
 
 					)
 				)
@@ -206,6 +207,7 @@ class WP_Job_Manager_Post_Types {
 						),
 						'rewrite'       => $rewrite,
 						'show_in_rest'  => true,
+						'rest_base'     => 'job-types',
 					)
 				)
 			);
