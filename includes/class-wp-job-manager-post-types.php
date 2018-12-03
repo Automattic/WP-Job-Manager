@@ -211,6 +211,15 @@ class WP_Job_Manager_Post_Types {
 					)
 				)
 			);
+			if ( function_exists( 'register_term_meta' ) && wpjm_job_listing_employment_type_enabled() ) {
+				register_term_meta( 'job_listing_type', 'employment_type', array(
+					'show_in_rest'      => true,
+					'type'              => 'string',
+					'single'            => true,
+					'description'       => esc_html__( 'Employment Type', 'wp-job-manager' ),
+					'sanitize_callback' => array( $this, 'sanitize_employment_type' ),
+				) );
+			}
 		}
 
 		/**
@@ -859,5 +868,19 @@ class WP_Job_Manager_Post_Types {
 			echo '<!-- WP Job Manager Structured Data -->' . "\r\n";
 			echo '<script type="application/ld+json">' . wp_json_encode( $structured_data ) . '</script>';
 		}
+	}
+
+	/**
+	 * Sanitize and verify employment type.
+	 *
+	 * @param string $employment_type
+	 * @return string
+	 */
+	public function sanitize_employment_type( $employment_type ) {
+		$employment_types = wpjm_job_listing_employment_type_options();
+		if ( ! isset( $employment_types[ $employment_type ] ) ) {
+			return null;
+		}
+		return $employment_type;
 	}
 }
