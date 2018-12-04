@@ -30,6 +30,13 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 200 );
 	}
 
+	public function test_guest_get_unpublished_job_listing_fail() {
+		$this->logout();
+		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response, 401 );
+	}
+
 	public function test_guest_delete_job_listings_fail() {
 		$this->logout();
 		$post_id  = $this->get_job_listing();
@@ -74,6 +81,35 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 200 );
 	}
 
+	public function test_employer_get_unpublished_job_listing_fail() {
+		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$this->login_as_employer();
+		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response, 403 );
+	}
+
+	public function test_employer_get_their_own_unpublished_job_listing_success() {
+		$this->login_as_employer();
+		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_employer_publish_their_own_unpublished_job_listing_success() {
+		$this->login_as_employer();
+		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$response_get = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response_get, 200 );
+
+		$response_post = $this->put(
+			sprintf( '/wp/v2/job-listings/%d', $post_id ), array(
+				'post_status' => 'publish',
+			)
+		);
+
+		$this->assertResponseStatus( $response_post, 403 );
+	}
+
 	public function test_employer_delete_job_listings_fail() {
 		$this->login_as_employer();
 		$post_id  = $this->get_job_listing();
@@ -94,11 +130,11 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_employer_put_job_listings_fail() {
-		$term_id  = $this->get_job_listing();
+		$post_id  = $this->get_job_listing();
 		$this->login_as_employer();
 		$response = $this->put(
-			sprintf( '/wp/v2/job-listings/%d', $term_id ), array(
-				'name'   => 'Software Engineer 2',
+			sprintf( '/wp/v2/job-listings/%d', $post_id ), array(
+				'post_title' => 'Software Engineer 2',
 			)
 		);
 
@@ -120,7 +156,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 200 );
 	}
 
-	private function get_job_listing() {
-		return $this->factory()->job_listing->create_and_get()->ID;
+	private function get_job_listing( $args = array() ) {
+		return $this->factory()->job_listing->create_and_get( $args )->ID;
 	}
 }
