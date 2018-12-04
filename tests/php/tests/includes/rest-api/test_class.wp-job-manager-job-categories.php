@@ -16,6 +16,94 @@
  * @group rest
  */
 class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
+	
+	public function test_guest_get_job_categories_success() {
+		$this->logout();
+		$response = $this->get( '/wp/v2/job-categories' );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_guest_get_job_category_success() {
+		$this->logout();
+		$term_id  = $this->get_job_category();
+		$response = $this->get( sprintf( '/wp/v2/job-categories/%d', $term_id ) );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_guest_delete_job_categories_fail() {
+		$this->logout();
+		$term_id  = $this->get_job_category();
+		$response = $this->delete( sprintf( '/wp/v2/job-categories/%d', $term_id ), array( 'force' => 1 ) );
+		$this->assertResponseStatus( $response, 401 );
+	}
+
+	public function test_guest_post_job_categories_fail() {
+		$this->logout();
+		$response = $this->post(
+			'/wp/v2/job-categories', array(
+				'name'   => 'Software Engineer',
+				'slug'   => 'software-engineer',
+			)
+		);
+
+		$this->assertResponseStatus( $response, 401 );
+	}
+
+	public function test_guest_put_job_categories_fail() {
+		$term_id  = $this->get_job_category();
+		$this->logout();
+		$response = $this->put(
+			sprintf( '/wp/v2/job-categories/%d', $term_id ), array(
+				'name'   => 'Software Engineer 2',
+			)
+		);
+
+		$this->assertResponseStatus( $response, 401 );
+	}
+
+	public function test_employer_get_job_categories_success() {
+		$this->login_as_employer();
+		$response = $this->get( '/wp/v2/job-categories' );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_employer_get_job_category_success() {
+		$this->login_as_employer();
+		$term_id  = $this->get_job_category();
+		$response = $this->get( sprintf( '/wp/v2/job-categories/%d', $term_id ) );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_employer_delete_job_categories_fail() {
+		$this->login_as_employer();
+		$term_id  = $this->get_job_category();
+		$response = $this->delete( sprintf( '/wp/v2/job-categories/%d', $term_id ), array( 'force' => 1 ) );
+		$this->assertResponseStatus( $response, 403 );
+	}
+
+	public function test_employer_post_job_categories_fail() {
+		$this->login_as_employer();
+		$response = $this->post(
+			'/wp/v2/job-categories', array(
+				'name'   => 'Software Engineer',
+				'slug'   => 'software-engineer',
+			)
+		);
+
+		$this->assertResponseStatus( $response, 403 );
+	}
+
+	public function test_employer_put_job_categories_fail() {
+		$term_id  = $this->get_job_category();
+		$this->login_as_employer();
+		$response = $this->put(
+			sprintf( '/wp/v2/job-categories/%d', $term_id ), array(
+				'name'   => 'Software Engineer 2',
+			)
+		);
+
+		$this->assertResponseStatus( $response, 403 );
+	}
 
 	public function test_get_success_when_guest() {
 		$this->logout();
