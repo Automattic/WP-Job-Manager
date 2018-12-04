@@ -12,6 +12,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		defined( 'PHPUNIT_WPJM_TESTSUITE' ) || define( 'PHPUNIT_WPJM_TESTSUITE', true );
 		parent::setUp();
 		reset_phpmailer_instance();
+		$this->enable_manage_job_listings_cap();
 		update_option( 'job_manager_enable_categories', 1 );
 		update_option( 'job_manager_enable_types', 1 );
 		add_theme_support( 'job-manager-templates' );
