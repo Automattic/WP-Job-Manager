@@ -785,7 +785,7 @@ function the_job_location( $map_link = true, $post = null ) {
 			echo wp_kses_post(
 				apply_filters(
 					'the_job_location_map_link',
-					'<a class="google_map_link" href="' . esc_url( 'http://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
+					'<a class="google_map_link" href="' . esc_url( 'http://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
 					$location, $post
 				)
 			);
@@ -1098,7 +1098,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 		return null;
 	}
 
-	$company_twitter = $before . '<a href="' . esc_url( 'https://twitter.com/' . $company_twitter ) . '" class="company_twitter" target="_blank">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
+	$company_twitter = $before . '<a href="' . esc_url( 'https://twitter.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_twitter );
