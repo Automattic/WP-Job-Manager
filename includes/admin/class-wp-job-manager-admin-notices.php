@@ -42,10 +42,10 @@ class WP_Job_Manager_Admin_Notices {
 	 * @param string $notice Name of the notice.
 	 */
 	public static function add_notice( $notice ) {
-		$notice       = sanitize_key( $notice );
+		$notice = sanitize_key( $notice );
 
 		if ( ! in_array( $notice, self::get_notice_state() ) ) {
-			self::$notice_state[]       = $notice;
+			self::$notice_state[] = $notice;
 			self::save_notice_state();
 		}
 	}
@@ -64,9 +64,30 @@ class WP_Job_Manager_Admin_Notices {
 		$notice_key = array_search( $notice, $notice_state, true );
 		if ( false !== $notice_key ) {
 			unset( $notice_state[ $notice_key ] );
-			self::$notice_state         = array_values( $notice_state );
+			self::$notice_state = array_values( $notice_state );
 			self::save_notice_state();
 		}
+	}
+
+	/**
+	 * Clears all enqueued notices.
+	 */
+	public static function reset_notices() {
+		self::$notice_state = array();
+		self::save_notice_state();
+	}
+
+	/**
+	 * Check for a notice to be displayed in WP admin.
+	 *
+	 * @since 1.32.0
+	 *
+	 * @param string $notice Name of the notice. Name is not sanitized for this method.
+	 * @return bool
+	 */
+	public static function has_notice( $notice ) {
+		$notice_state = self::get_notice_state();
+		return in_array( $notice, $notice_state, true );
 	}
 
 	/**
