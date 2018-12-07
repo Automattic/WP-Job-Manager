@@ -294,7 +294,8 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'build-blocks', [ 'shell:webpack' ] );
 	grunt.registerTask( 'build-blocks:dev', [ 'shell:webpackDev' ] );
 
-	grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'check-mixtape', 'check-mixtape-fatal', 'test', 'build-blocks', 'copy' ] );
+	// grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'check-mixtape', 'check-mixtape-fatal', 'test', 'build-blocks', 'copy' ] );
+	grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'check-mixtape', 'check-mixtape-fatal', 'test', 'copy' ] );
 	grunt.registerTask( 'build-unsafe', [ 'clean', 'check-mixtape', 'check-mixtape-fatal', 'build-blocks', 'copy' ] );
 
 	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'checkrepo', 'build', 'wp_deploy' ] );
