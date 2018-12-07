@@ -39,7 +39,6 @@ class WP_Job_Manager_Setup {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
-		add_action( 'admin_init', array( $this, 'redirect' ) );
 		if ( isset( $_GET['page'] ) && 'job-manager-setup' === $_GET['page'] ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 12 );
 		}
@@ -57,35 +56,6 @@ class WP_Job_Manager_Setup {
 	 */
 	public function admin_head() {
 		remove_submenu_page( 'index.php', 'job-manager-setup' );
-	}
-
-	/**
-	 * Sends user to the setup page on first activation.
-	 */
-	public function redirect() {
-		// Bail if no activation redirect transient is set.
-		if ( ! get_transient( '_job_manager_activation_redirect' ) ) {
-			return;
-		}
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-
-		// Delete the redirect transient.
-		delete_transient( '_job_manager_activation_redirect' );
-
-		// Bail if activating from network, or bulk, or within an iFrame.
-		if ( is_network_admin() || isset( $_GET['activate-multi'] ) || defined( 'IFRAME_REQUEST' ) ) {
-			return;
-		}
-
-		if ( ( isset( $_GET['action'] ) && 'upgrade-plugin' === $_GET['action'] ) && ( isset( $_GET['plugin'] ) && strstr( $_GET['plugin'], 'wp-job-manager.php' ) ) ) {
-			return;
-		}
-
-		wp_redirect( admin_url( 'index.php?page=job-manager-setup' ) );
-		exit;
 	}
 
 	/**
@@ -160,6 +130,11 @@ class WP_Job_Manager_Setup {
 					$this->create_page( sanitize_text_field( $page_titles[ $page ] ), $content, 'job_manager_' . $page . '_page_id' );
 				}
 			}
+		}
+
+		// Handle step 3 (from step 1 or 2).
+		if ( 3 === $step ) {
+			WP_Job_Manager_Admin_Notices::remove_notice( WP_Job_Manager_Admin_Notices::NOTICE_CORE_SETUP );
 		}
 
 		$this->output();

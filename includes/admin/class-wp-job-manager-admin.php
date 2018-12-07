@@ -40,6 +40,7 @@ class WP_Job_Manager_Admin {
 	public function __construct() {
 		global $wp_version;
 
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-admin-notices.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-cpt.php';
 		if ( version_compare( $wp_version, '4.7.0', '<' ) ) {
 			include_once dirname( __FILE__ ) . '/class-wp-job-manager-cpt-legacy.php';
