@@ -125,8 +125,10 @@ class WP_Job_Manager_Setup {
 	 */
 	public function setup_page() {
 		$usage_tracking = WP_Job_Manager_Usage_Tracking::get_instance();
+		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
 
 		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+			// Handle step 1 (usage tracking).
 			$enable = isset( $_POST['job_manager_usage_tracking_enabled'] )
 				&& '1' === $_POST['job_manager_usage_tracking_enabled'];
 
@@ -137,6 +139,27 @@ class WP_Job_Manager_Setup {
 				$usage_tracking->set_tracking_enabled( $enable );
 				$usage_tracking->hide_tracking_opt_in();
 			}
+
+			// Handle step 2 -> step 3 (setting up pages).
+			if ( 3 === $step && ! empty( $_POST ) ) {
+				if ( false === wp_verify_nonce( $_REQUEST['setup_wizard'], 'step_3' ) ) {
+					wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
+				}
+				$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? $_POST['wp-job-manager-create-page'] : array();
+				$page_titles     = $_POST['wp-job-manager-page-title'];
+				$pages_to_create = array(
+					'submit_job_form' => '[submit_job_form]',
+					'job_dashboard'   => '[job_dashboard]',
+					'jobs'            => '[jobs]',
+				);
+
+				foreach ( $pages_to_create as $page => $content ) {
+					if ( ! isset( $create_pages[ $page ] ) || empty( $page_titles[ $page ] ) ) {
+						continue;
+					}
+					$this->create_page( sanitize_text_field( $page_titles[ $page ] ), $content, 'job_manager_' . $page . '_page_id' );
+				}
+			}
 		}
 
 		$this->output();
@@ -144,6 +167,8 @@ class WP_Job_Manager_Setup {
 
 	/**
 	 * Usage tracking opt in text for setup page.
+	 *
+	 * Used in `views/html-admin-setup-opt-in-usage-tracking.php`
 	 */
 	private function opt_in_text() {
 		return WP_Job_Manager_Usage_Tracking::get_instance()->opt_in_checkbox_text();
@@ -151,27 +176,14 @@ class WP_Job_Manager_Setup {
 
 	/**
 	 * Output opt-in checkbox if usage tracking isn't already enabled.
+	 *
+	 * Used in `views/html-admin-setup-step-1.php`
 	 */
 	private function maybe_output_opt_in_checkbox() {
 		// Only show the checkbox if we aren't already opted in.
 		$usage_tracking = WP_Job_Manager_Usage_Tracking::get_instance();
 		if ( ! $usage_tracking->get_tracking_enabled() ) {
-			?>
-			<p>
-				<label>
-					<input
-						type="checkbox"
-						name="job_manager_usage_tracking_enabled"
-						value="1" />
-					<?php
-					echo wp_kses(
-						$this->opt_in_text(),
-						$usage_tracking->opt_in_dialog_text_allowed_html()
-					);
-					?>
-				</label>
-			</p>
-			<?php
+			include dirname( __FILE__ ) . '/views/html-admin-setup-opt-in-usage-tracking.php';
 		}
 	}
 
@@ -180,26 +192,6 @@ class WP_Job_Manager_Setup {
 	 */
 	public function output() {
 		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
-
-		if ( 3 === $step && ! empty( $_POST ) ) {
-			if ( false === wp_verify_nonce( $_REQUEST['setup_wizard'], 'step_3' ) ) {
-				wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
-			}
-			$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? $_POST['wp-job-manager-create-page'] : array();
-			$page_titles     = $_POST['wp-job-manager-page-title'];
-			$pages_to_create = array(
-				'submit_job_form' => '[submit_job_form]',
-				'job_dashboard'   => '[job_dashboard]',
-				'jobs'            => '[jobs]',
-			);
-
-			foreach ( $pages_to_create as $page => $content ) {
-				if ( ! isset( $create_pages[ $page ] ) || empty( $page_titles[ $page ] ) ) {
-					continue;
-				}
-				$this->create_page( sanitize_text_field( $page_titles[ $page ] ), $content, 'job_manager_' . $page . '_page_id' );
-			}
-		}
 
 		include dirname( __FILE__ ) . '/views/html-admin-setup-header.php';
 		if ( 1 === $step ) {
