@@ -311,7 +311,7 @@ class WP_Job_Manager_Post_Types {
 		/**
 		 * Feeds
 		 */
-		add_feed( 'job_feed', array( $this, 'job_feed' ) );
+		add_feed( self::get_job_feed_name(), array( $this, 'job_feed' ) );
 
 		/**
 		 * Post status
@@ -517,7 +517,7 @@ class WP_Job_Manager_Post_Types {
 	public function add_feed_query_args( $wp ) {
 
 		// Let's leave if not the job feed.
-		if ( ! isset( $wp->query_vars['feed'] ) || 'job_feed' !== $wp->query_vars['feed'] ) {
+		if ( ! isset( $wp->query_vars['feed'] ) || self::get_job_feed_name() !== $wp->query_vars['feed'] ) {
 			return;
 		}
 
@@ -721,6 +721,24 @@ class WP_Job_Manager_Post_Types {
 			$data['post_name'] = $postarr['post_name'];
 		}
 		return $data;
+	}
+
+	/**
+	 * Returns the name of the job RSS feed.
+	 *
+	 * @return string
+	 */
+	public static function get_job_feed_name() {
+		/**
+		 * Change the name of the job feed.
+		 *
+		 * NOTE: When you override this, you must re-save permalink settings to clear the rewrite cache.
+		 *
+		 * @since 1.32.0
+		 *
+		 * @param string $job_feed_name Slug used for the job feed.
+		 */
+		return apply_filters( 'job_manager_job_feed_name', 'job_feed' );
 	}
 
 	/**
