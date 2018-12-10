@@ -118,12 +118,17 @@ class WP_Job_Manager_Permalink_Settings {
 				switch_to_locale( get_locale() );
 			}
 
-			$permalinks                  = (array) get_option( 'wpjm_permalinks', array() );
+			/**
+			 * Option `wpjm_permalink` was renamed to match other options in 1.32.0.
+			 *
+			 * Reference to the old option will be removed in 1.34.0.
+			 */
+			$permalinks                  = (array) get_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, get_option( 'wpjm_permalink', array() ) );
 			$permalinks['job_base']      = sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] );
 			$permalinks['category_base'] = sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] );
 			$permalinks['type_base']     = sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] );
 
-			update_option( 'wpjm_permalinks', $permalinks );
+			update_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, $permalinks );
 
 			if ( function_exists( 'restore_current_locale' ) ) {
 				restore_current_locale();

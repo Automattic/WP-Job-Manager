@@ -7,6 +7,8 @@
  */
 class WP_Job_Manager_Post_Types {
 
+	const PERMALINK_OPTION_NAME = 'job_manager_permalinks';
+
 	/**
 	 * The single instance of the class.
 	 *
@@ -804,8 +806,13 @@ class WP_Job_Manager_Post_Types {
 			switch_to_locale( get_locale() );
 		}
 
+		/**
+		 * Option `wpjm_permalink` was renamed to match other options in 1.32.0.
+		 *
+		 * Reference to the old option will be removed in 1.34.0.
+		 */
 		$permalinks = wp_parse_args(
-			(array) get_option( 'wpjm_permalinks', array() ),
+			(array) get_option( self::PERMALINK_OPTION_NAME, get_option( 'wpjm_permalink', array() ) ),
 			array(
 				'job_base'      => '',
 				'category_base' => '',

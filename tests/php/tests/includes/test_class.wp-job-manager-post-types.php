@@ -509,9 +509,9 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			'category_base' => 'job-cat-b',
 			'type_base'     => 'job-type-c',
 		);
-		update_option( 'wpjm_permalinks', $permalink_test );
+		update_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, $permalink_test );
 		$permalinks = WP_Job_Manager_Post_Types::get_permalink_structure();
-		delete_option( 'wpjm_permalinks' );
+		delete_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME );
 		$this->assertEquals( 'job-test-a', $permalinks['job_rewrite_slug'] );
 		$this->assertEquals( 'job-cat-b', $permalinks['category_rewrite_slug'] );
 		$this->assertEquals( 'job-type-c', $permalinks['type_rewrite_slug'] );
