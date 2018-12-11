@@ -248,9 +248,9 @@ class WP_Job_Manager_Setup {
 					<?php
 					echo wp_kses_post( sprintf(
 						// translators: %1$s is URL to WordPress core shortcode documentation. %2$s is URL to WPJM specific shortcode reference.
-						__( '(These pages are created using <a href="%1$s" title="What is a shortcode?" target="_blank" class="help-page-link">shortcodes</a>, 
-								which we take care of in this step. If you\'d like to build these pages yourself or want to add one of these options to an existing 
-								page on your site, you can skip this step and take a look at <a href="%2$s" target="_blank" class="help-page-link">shortcode documentation</a> for detailed instructions.)', 'wp-job-manager' ),
+						__( '(These pages are created using <a href="%1$s" title="What is a shortcode?" class="help-page-link">shortcodes</a>,
+								which we take care of in this step. If you\'d like to build these pages yourself or want to add one of these options to an existing
+								page on your site, you can skip this step and take a look at <a href="%2$s" class="help-page-link">shortcode documentation</a> for detailed instructions.)', 'wp-job-manager' ),
 						'http://codex.wordpress.org/Shortcode',
 						'https://wpjobmanager.com/document/shortcode-reference/'
 					) );
@@ -346,7 +346,7 @@ class WP_Job_Manager_Setup {
 					echo wp_kses_post(
 						sprintf(
 							// translators: %1$s is the URL to WPJM support documentation; %2$s is the URL to WPJM support forums.
-							__( 'If you need help, you can find more detail in our 
+							__( 'If you need help, you can find more detail in our
 							<a href="%1$s">support documentation</a> or post your question on the
 							<a href="%2$s">WP Job Manager support forums</a>. Happy hiring!', 'wp-job-manager' ),
 							'https://wpjobmanager.com/documentation/',

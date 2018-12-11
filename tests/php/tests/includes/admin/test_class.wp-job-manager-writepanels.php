@@ -4,6 +4,11 @@ require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-writepane
 
 class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 
+	public function setUp() {
+		parent::setUp();
+		$this->enable_manage_job_listings_cap();
+	}
+
 	public function data_provider_test_save_job_data_auto_expire() {
 		$expired_date = date( 'Y-m-d', strtotime( '-2 months', current_time( 'timestamp' ) ) );
 		$future_date  = date( 'Y-m-d', strtotime( '+2 months', current_time( 'timestamp' ) ) );

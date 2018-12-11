@@ -3,6 +3,7 @@
 class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	public function setUp() {
 		parent::setUp();
+		$this->enable_manage_job_listings_cap();
 		update_option( 'job_manager_enable_categories', 1 );
 		update_option( 'job_manager_enable_types', 1 );
 		add_theme_support( 'job-manager-templates' );

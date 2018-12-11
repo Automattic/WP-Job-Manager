@@ -17,13 +17,6 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 */
 	protected $admin_id;
 
-	/**
-	 * Default User ID
-	 *
-	 * @var int
-	 */
-	protected $default_user_id;
-
 	public static function setUpBeforeClass() {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
@@ -39,22 +32,6 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @var WP_REST_Server
 	 */
 	private $rest_server;
-
-	/**
-	 * An Environment
-	 *
-	 * @var WP_Job_Manager_REST_Environment
-	 */
-	private $environment;
-
-	/**
-	 * Get Environment
-	 *
-	 * @return WP_Job_Manager_REST_Environment
-	 */
-	protected function environment() {
-		return $this->environment;
-	}
 
 	/**
 	 * Get REST Server
@@ -87,42 +64,9 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 		wp_roles()->init_roles();
 		wp_cache_flush();
 
-		$admin = get_user_by( 'email', 'rest_api_admin_user@test.com' );
-		if ( false === $admin ) {
-			$this->admin_id = wp_create_user(
-				'rest_api_admin_user',
-				'rest_api_admin_user',
-				'rest_api_admin_user@test.com'
-			);
-			$admin          = get_user_by( 'ID', $this->admin_id );
-			$admin->set_role( 'administrator' );
-		}
-
 		$this->default_user_id = get_current_user_id();
 		$this->login_as_admin();
 		$this->rest_server = $wp_rest_server;
-		$bootstrap         = WPJM()->rest_api()->get_bootstrap();
-		$this->bootstrap   = WPJM()->rest_api()->get_bootstrap();
-		$this->environment = $bootstrap->environment();
-	}
-
-	function login_as_admin() {
-		return $this->login_as( $this->admin_id );
-	}
-
-	function login_as_default_user() {
-		return $this->login_as( $this->default_user_id );
-	}
-
-	function login_as( $user_id ) {
-		wp_set_current_user( $user_id );
-		return $this;
-	}
-
-	function logout() {
-		$this->login_as( 0 );
-		wp_logout();
-		return $this;
 	}
 
 	/**
