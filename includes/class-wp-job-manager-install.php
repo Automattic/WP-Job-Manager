@@ -47,7 +47,7 @@ class WP_Job_Manager_Install {
 			update_option( 'job_manager_job_dashboard_page_id', $page_id );
 		}
 		if ( false === get_option( 'job_manager_permalinks', false ) && get_option( 'wpjm_permalinks' ) ) {
-			update_option( 'job_manager_permalinks', (array) get_option( 'wpjm_permalinks', array() ) );
+			update_option( 'job_manager_permalinks', wp_json_encode( (array) get_option( 'wpjm_permalinks', array() ) ) );
 		}
 
 		delete_transient( 'wp_job_manager_addons_html' );

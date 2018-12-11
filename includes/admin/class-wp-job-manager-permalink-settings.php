@@ -123,12 +123,14 @@ class WP_Job_Manager_Permalink_Settings {
 			 *
 			 * Reference to the old option will be removed in 1.34.0.
 			 */
-			$permalinks                  = (array) get_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, get_option( 'wpjm_permalink', array() ) );
-			$permalinks['job_base']      = sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] );
-			$permalinks['category_base'] = sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] );
-			$permalinks['type_base']     = sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] );
+			$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalink', array() ) );
+			$permalink_settings = (array) json_decode( get_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, $legacy_permalink_settings ), true );
 
-			update_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, $permalinks );
+			$permalink_settings['job_base']      = sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] );
+			$permalink_settings['category_base'] = sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] );
+			$permalink_settings['type_base']     = sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] );
+
+			update_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, wp_json_encode( $permalink_settings ) );
 
 			if ( function_exists( 'restore_current_locale' ) ) {
 				restore_current_locale();
