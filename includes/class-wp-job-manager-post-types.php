@@ -34,6 +34,7 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_types' ), 0 );
+		add_action( 'init', array( $this, 'add_content_filters' ) );
 		add_filter( 'admin_head', array( $this, 'admin_head' ) );
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
 		add_action( 'job_manager_delete_old_previews', array( $this, 'delete_old_previews' ) );
@@ -341,6 +342,35 @@ class WP_Job_Manager_Post_Types {
 				'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
 			)
 		);
+	}
+
+	/**
+	 * Adds content filters for job listings.
+	 */
+	public function add_content_filters() {
+		/**
+		 * If enabled, this removes the shortcodes from job listing content.
+		 *
+		 * @since 1.32.0
+		 *
+		 * @param bool $do_remove_shortcodes True to remove them.
+		 */
+		if ( apply_filters( 'job_manager_strip_job_shortcodes', false ) ) {
+			add_filter( 'the_content', array( $this, 'strip_shortcodes' ) );
+		}
+	}
+
+	/**
+	 * Strip shortcodes from content.
+	 *
+	 * @param string $content Post content to filter.
+	 * @return string
+	 */
+	public function strip_shortcodes( $content ) {
+		if ( 'job_listing' !== get_post_type() ) {
+			return $content;
+		}
+		return strip_shortcodes( $content );
 	}
 
 	/**
