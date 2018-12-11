@@ -203,8 +203,8 @@ jQuery( document ).ready( function ( $ ) {
 		var target = $( this ).closest( 'div.job_listings' );
 		var form = $( this ).closest( 'form' );
 
-		form.find( ':input[name="search_keywords"], :input[name="search_location"], .job-manager-filter' ).not(':input[type="hidden"]').val( '' ).trigger( 'chosen:updated' );
-		form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').val( '' ).trigger( 'chosen:updated' );
+		form.find( ':input[name="search_keywords"], :input[name="search_location"], .job-manager-filter' ).not(':input[type="hidden"]').val( '' ).trigger( 'change.select2' );
+		form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').val( '' ).trigger( 'change.select2' );
 		$( ':input[name="filter_job_type[]"]', form ).not(':input[type="hidden"]').attr( 'checked', 'checked' );
 
 		target.triggerHandler( 'reset' );
@@ -254,11 +254,15 @@ jQuery( document ).ready( function ( $ ) {
 		return false;
 	} );
 
-	if ( $.isFunction( $.fn.chosen ) ) {
+	if ( $.isFunction( $.fn.select2 ) ) {
+		var select2_args = {
+			allowClear: true,
+			minimumResultsForSearch: 10
+		};
 		if ( job_manager_ajax_filters.is_rtl === 1 ) {
-			$( 'select[name^="search_categories"]' ).addClass( 'chosen-rtl' );
+			select2_args.dir = 'rtl';
 		}
-		$( 'select[name^="search_categories"]' ).chosen({ search_contains: true });
+		$( 'select[name^="search_categories"]' ).select2( select2_args );
 	}
 
 	var $supports_html5_history = false;
@@ -290,7 +294,7 @@ jQuery( document ).ready( function ( $ ) {
 				if ( state.id && 'job_manager_state' === state.id && index === state.index ) {
 					inital_page = state.page;
 					form.deserialize( state.data );
-					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'chosen:updated' );
+					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'change.select2' );
 				}
 			}
 

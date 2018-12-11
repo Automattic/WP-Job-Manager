@@ -315,34 +315,33 @@ class WP_Job_Manager {
 		global $post;
 
 		/**
-		 * Starting in WP Job Manager 1.32.0, the chosen JS library and core frontend WPJM CSS will only be enqueued
+		 * Starting in WP Job Manager 1.33.0, the core frontend WPJM CSS will only be enqueued
 		 * when used on a particular page. Theme and plugin authors as well as people who have overloaded WPJM's default
 		 * template files should test this upcoming behavior.
 		 *
-		 * To test this behavior before 1.32.0, add this to your `wp-config.php`:
+		 * To test this behavior before 1.33.0, add this to your `wp-config.php`:
 		 * define( 'JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR', true );
 		 *
-		 * Unless this constant is defined, WP Job Manager will default to its old behavior: chosen JS library and
-		 * frontend styles are always enqueued.
+		 * Unless this constant is defined, WP Job Manager will default to its old behavior: frontend styles
+		 * are always enqueued.
 		 *
-		 * If your theme or plugin depend on the `frontend.css` or chosen JS library from WPJM core, you can use the
-		 * `job_manager_chosen_enabled` and `job_manager_enqueue_frontend_style` filters.
+		 * If your theme or plugin depend on `frontend.css` from WPJM core, you can use the
+		 * `job_manager_enqueue_frontend_style` filter.
 		 *
-		 * Example code for a custom shortcode that depends on the chosen library:
+		 * Example code for a custom shortcode that depends on the frontend style:
 		 *
-		 * add_filter( 'job_manager_chosen_enabled', function( $chosen_used_on_page ) {
+		 * add_filter( 'job_manager_enqueue_frontend_style', function( $frontend_used_on_page ) {
 		 *   global $post;
 		 *   if ( is_singular()
 		 *        && is_a( $post, 'WP_Post' )
 		 *        && has_shortcode( $post->post_content, 'resumes' )
 		 *   ) {
-		 *     $chosen_used_on_page = true;
+		 *     $frontend_used_on_page = true;
 		 *   }
-		 *   return $chosen_used_on_page;
+		 *   return $frontend_used_on_page;
 		 * } );
 		 */
 		if ( ! defined( 'JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR' ) || true !== JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR ) {
-			add_filter( 'job_manager_chosen_enabled', '__return_true' );
 			add_filter( 'job_manager_enqueue_frontend_style', '__return_true' );
 		}
 
@@ -363,32 +362,37 @@ class WP_Job_Manager {
 		 */
 		$ajax_data['lang'] = apply_filters( 'wpjm_lang', null );
 
-		$chosen_shortcodes   = array( 'submit_job_form', 'job_dashboard', 'jobs' );
-		$chosen_used_on_page = has_wpjm_shortcode( null, $chosen_shortcodes );
+		// Register the script for dependencies that still require it.
+		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
+			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
+		}
+
+		$select2_shortcodes   = array( 'submit_job_form', 'job_dashboard', 'jobs' );
+		$select2_used_on_page = has_wpjm_shortcode( null, $select2_shortcodes );
 
 		/**
-		 * Filter the use of the chosen library.
+		 * Filter the use of the select2 library.
 		 *
-		 * NOTE: See above. Before WP Job Manager 1.32.0 is released, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
+		 * @since 1.32.0
 		 *
-		 * @since 1.19.0
-		 *
-		 * @param bool $chosen_used_on_page Defaults to only when there are known shortcodes on the page.
+		 * @param bool $select2_used_on_page Defaults to only when there are known shortcodes on the page.
 		 */
-		if ( apply_filters( 'job_manager_chosen_enabled', $chosen_used_on_page ) ) {
-			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
-			wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
-			wp_register_script( 'wp-job-manager-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/multiselect.min.js', array( 'jquery', 'chosen' ), JOB_MANAGER_VERSION, true );
-			wp_enqueue_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/css/chosen.css', array(), '1.1.0' );
-			$ajax_filter_deps[] = 'chosen';
+		if ( apply_filters( 'job_manager_select2_enabled', $select2_used_on_page ) ) {
+			wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', array( 'jquery' ), '4.0.5' );
+			wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'select2' ), JOB_MANAGER_VERSION, true );
+			wp_register_script( 'wp-job-manager-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/multiselect.min.js', array( 'jquery', 'select2' ), JOB_MANAGER_VERSION, true );
+			wp_enqueue_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', array(), '4.0.5' );
+
+			$ajax_filter_deps[] = 'select2';
+
+			$select2_args = array();
+			if ( is_rtl() ) {
+				$select2_args['dir'] = 'rtl';
+			}
 
 			wp_localize_script(
-				'chosen', 'job_manager_chosen_multiselect_args',
-				apply_filters(
-					'job_manager_chosen_multiselect_args', array(
-						'search_contains' => true,
-					)
-				)
+				'select2', 'job_manager_select2_multiselect_args',
+				apply_filters( 'job_manager_select2_multiselect_args', $select2_args )
 			);
 		}
 
