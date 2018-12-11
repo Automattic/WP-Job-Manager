@@ -57,8 +57,8 @@ class WP_Job_Manager_Install {
 			} else {
 				$permalink_options['jobs_archive'] = '';
 			}
+			update_option( 'job_manager_permalinks', wp_json_encode( $permalink_options ) );
 		}
-		update_option( 'job_manager_permalinks', wp_json_encode( $permalink_options ) );
 
 		delete_transient( 'wp_job_manager_addons_html' );
 		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );
