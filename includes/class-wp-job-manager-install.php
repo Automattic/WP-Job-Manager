@@ -48,6 +48,7 @@ class WP_Job_Manager_Install {
 		}
 		if ( false === get_option( 'job_manager_permalinks', false ) && get_option( 'wpjm_permalinks' ) ) {
 			update_option( 'job_manager_permalinks', wp_json_encode( (array) get_option( 'wpjm_permalinks', array() ) ) );
+			delete_option( 'wpjm_permalinks' );
 		}
 
 		$permalink_options = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
