@@ -50,6 +50,16 @@ class WP_Job_Manager_Install {
 			update_option( 'job_manager_permalinks', wp_json_encode( (array) get_option( 'wpjm_permalinks', array() ) ) );
 		}
 
+		$permalink_options = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
+		if ( ! array_key_exists( 'jobs_archive', $permalink_options ) ) {
+			if ( current_theme_supports( 'job-manager-templates' ) ) {
+				$permalink_options['jobs_archive'] = _x( 'jobs', 'Post type archive slug - resave permalinks after changing this', 'wp-job-manager' );
+			} else {
+				$permalink_options['jobs_archive'] = '';
+			}
+		}
+		update_option( 'job_manager_permalinks', wp_json_encode( $permalink_options ) );
+
 		delete_transient( 'wp_job_manager_addons_html' );
 		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );
 	}

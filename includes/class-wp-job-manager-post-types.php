@@ -288,7 +288,7 @@ class WP_Job_Manager_Post_Types {
 		 * @param bool $enable_job_archive_page
 		 */
 		if ( apply_filters( 'job_manager_enable_job_archive_page', current_theme_supports( 'job-manager-templates' ) ) ) {
-			$has_archive = _x( 'jobs', 'Post type archive slug - resave permalinks after changing this', 'wp-job-manager' );
+			$has_archive = $permalink_structure['jobs_archive_rewrite_slug'];
 		} else {
 			$has_archive = false;
 		}
@@ -809,10 +809,21 @@ class WP_Job_Manager_Post_Types {
 		/**
 		 * Option `wpjm_permalink` was renamed to match other options in 1.32.0.
 		 *
-		 * Reference to the old option will be removed in 1.34.0.
+		 * Reference to the old option and support for non-standard plugin updates will be removed in 1.34.0.
 		 */
 		$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalink', array() ) );
 		$permalink_settings = (array) json_decode( get_option( self::PERMALINK_OPTION_NAME, $legacy_permalink_settings ), true );
+
+		// Check if migration happened on upgrade, if not, do it manually.
+		if ( ! array_key_exists( 'jobs_archive', $permalink_settings ) ) {
+			// Create entry to prevent future checks.
+			$permalink_settings['jobs_archive'] = '';
+			if ( current_theme_supports( 'job-manager-templates' ) ) {
+				// If the user has a theme that declares support, assume they are using the old archive page from the translation.
+				$permalink_settings['jobs_archive'] = _x( 'jobs', 'Post type archive slug - resave permalinks after changing this', 'wp-job-manager' );
+			}
+			update_option( self::PERMALINK_OPTION_NAME, wp_json_encode( $permalink_settings ) );
+		}
 
 		$permalinks         = wp_parse_args(
 			$permalink_settings,
@@ -820,13 +831,15 @@ class WP_Job_Manager_Post_Types {
 				'job_base'      => '',
 				'category_base' => '',
 				'type_base'     => '',
+				'jobs_archive'  => '',
 			)
 		);
 
 		// Ensure rewrite slugs are set. Use legacy translation options if not.
-		$permalinks['job_rewrite_slug']      = untrailingslashit( empty( $permalinks['job_base'] ) ? _x( 'job', 'Job permalink - resave permalinks after changing this', 'wp-job-manager' ) : $permalinks['job_base'] );
-		$permalinks['category_rewrite_slug'] = untrailingslashit( empty( $permalinks['category_base'] ) ? _x( 'job-category', 'Job category slug - resave permalinks after changing this', 'wp-job-manager' ) : $permalinks['category_base'] );
-		$permalinks['type_rewrite_slug']     = untrailingslashit( empty( $permalinks['type_base'] ) ? _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ) : $permalinks['type_base'] );
+		$permalinks['job_rewrite_slug']          = untrailingslashit( empty( $permalinks['job_base'] ) ? _x( 'job', 'Job permalink - resave permalinks after changing this', 'wp-job-manager' ) : $permalinks['job_base'] );
+		$permalinks['category_rewrite_slug']     = untrailingslashit( empty( $permalinks['category_base'] ) ? _x( 'job-category', 'Job category slug - resave permalinks after changing this', 'wp-job-manager' ) : $permalinks['category_base'] );
+		$permalinks['type_rewrite_slug']         = untrailingslashit( empty( $permalinks['type_base'] ) ? _x( 'job-type', 'Job type slug - resave permalinks after changing this', 'wp-job-manager' ) : $permalinks['type_base'] );
+		$permalinks['jobs_archive_rewrite_slug'] = untrailingslashit( empty( $permalinks['jobs_archive'] ) ? 'job-listings' : $permalinks['jobs_archive'] );
 
 		// Restore the original locale.
 		if ( function_exists( 'restore_current_locale' ) && did_action( 'admin_init' ) ) {
