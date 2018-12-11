@@ -365,6 +365,7 @@ class WP_Job_Manager {
 		// Register the script for dependencies that still require it.
 		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
 			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
+			wp_register_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/css/chosen.css', array(), '1.1.0' );
 		}
 
 		$select2_shortcodes   = array( 'submit_job_form', 'job_dashboard', 'jobs' );
