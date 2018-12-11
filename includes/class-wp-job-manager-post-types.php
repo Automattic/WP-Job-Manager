@@ -34,6 +34,7 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_types' ), 0 );
+		add_action( 'init', array( $this, 'prepare_block_editor' ) );
 		add_filter( 'admin_head', array( $this, 'admin_head' ) );
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
 		add_action( 'job_manager_delete_old_previews', array( $this, 'delete_old_previews' ) );
@@ -71,6 +72,28 @@ class WP_Job_Manager_Post_Types {
 
 		// Single job content.
 		$this->job_content_filter( true );
+	}
+
+	/**
+	 * Prepare CPTs for special block editor situations.
+	 */
+	public function prepare_block_editor() {
+		add_filter( 'allowed_block_types', array( $this, 'force_classic_block' ), 10, 2 );
+	}
+
+	/**
+	 * Forces job listings to just have the classic block. This is necessary with the use of the classic editor on
+	 * the frontend.
+	 *
+	 * @param array   $allowed_block_types
+	 * @param WP_Post $post
+	 * @return array
+	 */
+	public function force_classic_block( $allowed_block_types, $post ) {
+		if ( 'job_listing' === $post->post_type ) {
+			return array( 'core/freeform' );
+		}
+		return $allowed_block_types;
 	}
 
 	/**
@@ -304,6 +327,8 @@ class WP_Job_Manager_Post_Types {
 					'show_in_rest'          => true,
 					'rest_base'             => 'job-listings',
 					'rest_controller_class' => 'WP_REST_Posts_Controller',
+					'template'              => array( array( 'core/freeform' ) ),
+					'template_lock'         => 'all',
 				)
 			)
 		);
