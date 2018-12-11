@@ -108,6 +108,7 @@ module.exports = function( grunt ) {
 			},
 			select2: {
 				expand: true,
+				flatten: true,
 				src: [
 					'node_modules/select2/dist/js/select2.full.min.js',
 					'node_modules/select2/dist/css/select2.min.css'
