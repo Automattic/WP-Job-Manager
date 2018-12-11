@@ -259,7 +259,7 @@ jQuery( document ).ready( function ( $ ) {
 			allowClear: true,
 			minimumResultsForSearch: 10
 		};
-		if ( job_manager_ajax_filters.is_rtl === 1 ) {
+		if ( 1 === parseInt( job_manager_ajax_filters.is_rtl, 10 ) ) {
 			select2_args.dir = 'rtl';
 		}
 		$( 'select[name^="search_categories"]' ).select2( select2_args );
