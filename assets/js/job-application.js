@@ -13,6 +13,8 @@ jQuery(document).ready(function($) {
 				return;
 			}
 
+			$details.trigger('visible');
+
 			// If max(33% height, 200px) of the application details aren't shown, scroll.
 			var minimum_details_threshold = Math.max( Math.min( $details.outerHeight(), 200 ), $details.outerHeight() * .33 );
 			var details_visible_threshold = $details.offset().top + minimum_details_threshold;
