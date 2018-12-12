@@ -112,7 +112,10 @@ class WP_Job_Manager_Post_Types {
 	 * @return WP_REST_Response
 	 */
 	public function hide_job_type_block_editor_selector( $response, $taxonomy, $request ) {
-		if ( 'job_listing_type' === $taxonomy->name && 'edit' === $request->get_param( 'context' ) ) {
+		if (
+			'job_listing_type' === $taxonomy->name
+			 && 'edit' === $request->get_param( 'context' )
+		) {
 			$response->data['visibility']['show_ui'] = false;
 		}
 		return $response;
