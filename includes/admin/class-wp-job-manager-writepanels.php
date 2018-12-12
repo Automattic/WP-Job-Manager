@@ -194,12 +194,8 @@ class WP_Job_Manager_Writepanels {
 			)
 		);
 		$postterms = get_the_terms( $post->ID, $taxonomy_name );
-		$current   = ( $postterms ? array_pop( $postterms ) : false );
-		$current   = ( $current ? $current->term_id : 0 );
-
-		$postterms = get_the_terms( $post->ID, $taxonomy_name );
-		$current   = ( $postterms ? array_pop( $postterms ) : false );
-		$current   = ( $current ? $current->term_id : 0 );
+		$current   = $postterms ? array_pop( $postterms ) : false;
+		$current   = $current ? $current->term_id : 0;
 
 		if ( $is_block_editor ) {
 			$this->output_job_type_single_meta_box_block( $tax, $terms, $current );
