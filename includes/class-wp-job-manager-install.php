@@ -46,10 +46,6 @@ class WP_Job_Manager_Install {
 			$page_id = get_page_by_path( get_option( 'job_manager_job_dashboard_page_slug' ) )->ID;
 			update_option( 'job_manager_job_dashboard_page_id', $page_id );
 		}
-		if ( false === get_option( 'job_manager_permalinks', false ) && get_option( 'wpjm_permalinks' ) ) {
-			update_option( 'job_manager_permalinks', wp_json_encode( (array) get_option( 'wpjm_permalinks', array() ) ) );
-			delete_option( 'wpjm_permalinks' );
-		}
 
 		$permalink_options = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
 		if ( ! array_key_exists( 'jobs_archive', $permalink_options ) ) {

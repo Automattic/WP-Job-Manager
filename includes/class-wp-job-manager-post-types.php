@@ -811,7 +811,12 @@ class WP_Job_Manager_Post_Types {
 		 *
 		 * Reference to the old option and support for non-standard plugin updates will be removed in 1.34.0.
 		 */
-		$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalinks', array() ) );
+		$legacy_permalink_settings = '[]';
+		if ( false !== get_option( 'wpjm_permalinks', false ) ) {
+			$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalinks', array() ) );
+			delete_option( 'wpjm_permalinks' );
+		}
+
 		$permalink_settings = (array) json_decode( get_option( self::PERMALINK_OPTION_NAME, $legacy_permalink_settings ), true );
 
 		// Check if migration happened on upgrade, if not, do it manually.
