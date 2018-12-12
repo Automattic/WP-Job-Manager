@@ -312,39 +312,6 @@ class WP_Job_Manager {
 	 * Registers and enqueues scripts and CSS.
 	 */
 	public function frontend_scripts() {
-		global $post;
-
-		/**
-		 * Starting in WP Job Manager 1.33.0, the core frontend WPJM CSS will only be enqueued
-		 * when used on a particular page. Theme and plugin authors as well as people who have overloaded WPJM's default
-		 * template files should test this upcoming behavior.
-		 *
-		 * To test this behavior before 1.33.0, add this to your `wp-config.php`:
-		 * define( 'JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR', true );
-		 *
-		 * Unless this constant is defined, WP Job Manager will default to its old behavior: frontend styles
-		 * are always enqueued.
-		 *
-		 * If your theme or plugin depend on `frontend.css` from WPJM core, you can use the
-		 * `job_manager_enqueue_frontend_style` filter.
-		 *
-		 * Example code for a custom shortcode that depends on the frontend style:
-		 *
-		 * add_filter( 'job_manager_enqueue_frontend_style', function( $frontend_used_on_page ) {
-		 *   global $post;
-		 *   if ( is_singular()
-		 *        && is_a( $post, 'WP_Post' )
-		 *        && has_shortcode( $post->post_content, 'resumes' )
-		 *   ) {
-		 *     $frontend_used_on_page = true;
-		 *   }
-		 *   return $frontend_used_on_page;
-		 * } );
-		 */
-		if ( ! defined( 'JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR' ) || true !== JOB_MANAGER_TEST_NEW_ASSET_BEHAVIOR ) {
-			add_filter( 'job_manager_enqueue_frontend_style', '__return_true' );
-		}
-
 		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
 		$ajax_filter_deps = array( 'jquery', 'jquery-deserialize' );
 		$ajax_data        = array(
@@ -472,7 +439,21 @@ class WP_Job_Manager {
 		 * Filter whether to enqueue WPJM core's frontend scripts. By default, they will only be enqueued on WPJM related
 		 * pages.
 		 *
-		 * NOTE: See above. Before WP Job Manager 1.32.0 is released, `job_manager_enqueue_frontend_style` will be filtered to `true` by default.
+		 * If your theme or plugin depend on `frontend.css` from WPJM core, you can use the
+		 * `job_manager_enqueue_frontend_style` filter.
+		 *
+		 * Example code for a custom shortcode that depends on the frontend style:
+		 *
+		 * add_filter( 'job_manager_enqueue_frontend_style', function( $frontend_used_on_page ) {
+		 *   global $post;
+		 *   if ( is_singular()
+		 *        && is_a( $post, 'WP_Post' )
+		 *        && has_shortcode( $post->post_content, 'resumes' )
+		 *   ) {
+		 *     $frontend_used_on_page = true;
+		 *   }
+		 *   return $frontend_used_on_page;
+		 * } );
 		 *
 		 * @since 1.30.0
 		 *
