@@ -337,8 +337,8 @@ class WP_Job_Manager {
 		 */
 		$ajax_data['lang'] = apply_filters( 'wpjm_lang', null );
 
-		$select2_shortcodes   = array( 'submit_job_form', 'job_dashboard', 'jobs' );
-		$select2_used_on_page = has_wpjm_shortcode( null, $select2_shortcodes );
+		$enhanced_select_shortcodes   = array( 'submit_job_form', 'job_dashboard', 'jobs' );
+		$enhanced_select_used_on_page = has_wpjm_shortcode( null, $enhanced_select_shortcodes );
 
 		// Register the script for dependencies that still require it.
 		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
@@ -358,20 +358,22 @@ class WP_Job_Manager {
 			_deprecated_hook( 'job_manager_chosen_enabled', '1.32.0', 'job_manager_select2_enabled' );
 
 			// Assume if this filter returns true that the current page should have the multi-select scripts.
-			$select2_used_on_page = true;
+			$enhanced_select_used_on_page = true;
 
 			wp_enqueue_script( 'chosen' );
 			wp_enqueue_style( 'chosen' );
 		}
 
 		/**
-		 * Filter the use of the select2 library.
+		 * Filter the use of the enhanced select.
+		 *
+		 * Note: Don't depend on `select2` being registered/enqueued in customizations.
 		 *
 		 * @since 1.32.0
 		 *
-		 * @param bool $select2_used_on_page Defaults to only when there are known shortcodes on the page.
+		 * @param bool $enhanced_select_used_on_page Defaults to only when there are known shortcodes on the page.
 		 */
-		if ( apply_filters( 'job_manager_select2_enabled', $select2_used_on_page ) ) {
+		if ( apply_filters( 'job_manager_enhanced_select_enabled', $enhanced_select_used_on_page ) ) {
 			self::register_select2_assets();
 			wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'select2' ), JOB_MANAGER_VERSION, true );
 			wp_register_script( 'wp-job-manager-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/multiselect.min.js', array( 'jquery', 'select2' ), JOB_MANAGER_VERSION, true );
