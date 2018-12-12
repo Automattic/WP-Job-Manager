@@ -807,11 +807,11 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		/**
-		 * Option `wpjm_permalink` was renamed to match other options in 1.32.0.
+		 * Option `wpjm_permalinks` was renamed to match other options in 1.32.0.
 		 *
 		 * Reference to the old option and support for non-standard plugin updates will be removed in 1.34.0.
 		 */
-		$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalink', array() ) );
+		$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalinks', array() ) );
 		$permalink_settings = (array) json_decode( get_option( self::PERMALINK_OPTION_NAME, $legacy_permalink_settings ), true );
 
 		// Check if migration happened on upgrade, if not, do it manually.
