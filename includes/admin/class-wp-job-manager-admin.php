@@ -143,6 +143,8 @@ class WP_Job_Manager_Admin {
 		}
 
 		wp_enqueue_style( 'job_manager_admin_menu_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/menu.css', array(), JOB_MANAGER_VERSION );
+
+		WP_Job_Manager::register_select2_assets();
 	}
 
 	/**

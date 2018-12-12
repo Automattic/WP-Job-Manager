@@ -309,6 +309,14 @@ class WP_Job_Manager {
 	}
 
 	/**
+	 * Registers select2 assets when needed.
+	 */
+	public static function register_select2_assets() {
+		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', array( 'jquery' ), '4.0.5' );
+		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', array(), '4.0.5' );
+	}
+
+	/**
 	 * Registers and enqueues scripts and CSS.
 	 */
 	public function frontend_scripts() {
@@ -364,10 +372,10 @@ class WP_Job_Manager {
 		 * @param bool $select2_used_on_page Defaults to only when there are known shortcodes on the page.
 		 */
 		if ( apply_filters( 'job_manager_select2_enabled', $select2_used_on_page ) ) {
-			wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', array( 'jquery' ), '4.0.5' );
+			self::register_select2_assets();
 			wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', array( 'jquery', 'select2' ), JOB_MANAGER_VERSION, true );
 			wp_register_script( 'wp-job-manager-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/multiselect.min.js', array( 'jquery', 'select2' ), JOB_MANAGER_VERSION, true );
-			wp_enqueue_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', array(), '4.0.5' );
+			wp_enqueue_style( 'select2' );
 
 			$ajax_filter_deps[] = 'select2';
 
