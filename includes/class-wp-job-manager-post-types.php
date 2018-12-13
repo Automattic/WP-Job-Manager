@@ -79,6 +79,10 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function prepare_block_editor() {
 		add_filter( 'allowed_block_types', array( $this, 'force_classic_block' ), 10, 2 );
+
+		if ( false === job_manager_multi_job_type() ) {
+			add_filter( 'rest_prepare_taxonomy', array( $this, 'hide_job_type_block_editor_selector' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -94,6 +98,27 @@ class WP_Job_Manager_Post_Types {
 			return array( 'core/freeform' );
 		}
 		return $allowed_block_types;
+	}
+
+	/**
+	 * Filters a taxonomy returned from the REST API.
+	 *
+	 * Allows modification of the taxonomy data right before it is returned.
+	 *
+	 * @param WP_REST_Response $response  The response object.
+	 * @param object           $taxonomy  The original taxonomy object.
+	 * @param WP_REST_Request  $request   Request used to generate the response.
+	 *
+	 * @return WP_REST_Response
+	 */
+	public function hide_job_type_block_editor_selector( $response, $taxonomy, $request ) {
+		if (
+			'job_listing_type' === $taxonomy->name
+			 && 'edit' === $request->get_param( 'context' )
+		) {
+			$response->data['visibility']['show_ui'] = false;
+		}
+		return $response;
 	}
 
 	/**

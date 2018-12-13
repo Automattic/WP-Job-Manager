@@ -166,7 +166,7 @@ class WP_Job_Manager_Writepanels {
 		} elseif ( false === job_manager_multi_job_type() ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
 			$job_listing_type = get_taxonomy( 'job_listing_type' );
-			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, array( $this, 'job_listing_metabox' ), 'job_listing', 'side', 'core' );
+			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, array( $this, 'job_type_single_meta_box' ), 'job_listing', 'side', 'core' );
 		}
 	}
 
@@ -175,74 +175,37 @@ class WP_Job_Manager_Writepanels {
 	 *
 	 * @param int|WP_Post $post
 	 */
-	public function job_listing_metabox( $post ) {
+	public function job_type_single_meta_box( $post ) {
 		// Set up the taxonomy object and get terms.
-		$taxonomy = 'job_listing_type';
-		$tax      = get_taxonomy( $taxonomy );// This is the taxonomy object.
-
-		// The name of the form.
-		$name = 'tax_input[' . $taxonomy . ']';
+		$taxonomy_name = 'job_listing_type';
 
 		// Get all the terms for this taxonomy.
 		$terms     = get_terms(
 			array(
-				'taxonomy'   => $taxonomy,
+				'taxonomy'   => $taxonomy_name,
 				'hide_empty' => 0,
 			)
 		);
-		$postterms = get_the_terms( $post->ID, $taxonomy );
-		$current   = ( $postterms ? array_pop( $postterms ) : false );
-		$current   = ( $current ? $current->term_id : 0 );
-		// Get current and popular terms.
-		$popular   = get_terms(
-			array(
-				'taxonomy'     => $taxonomy,
-				'orderby'      => 'count',
-				'order'        => 'DESC',
-				'number'       => 10,
-				'hierarchical' => false,
-			)
-		);
-		$postterms = get_the_terms( $post->ID, $taxonomy );
-		$current   = ( $postterms ? array_pop( $postterms ) : false );
-		$current   = ( $current ? $current->term_id : 0 );
+		$postterms = get_the_terms( $post->ID, $taxonomy_name );
+		$current   = $postterms ? array_pop( $postterms ) : false;
+		$current   = $current ? $current->term_id : 0;
+
+		$field_name = 'tax_input[' . $taxonomy_name . ']';
 		?>
-
-		<div id="taxonomy-<?php echo esc_attr( $taxonomy ); ?>" class="categorydiv">
-
-			<!-- Display tabs-->
-			<ul id="<?php echo esc_attr( $taxonomy ); ?>-tabs" class="category-tabs">
-				<li class="tabs"><a href="#<?php echo esc_attr( $taxonomy ); ?>-all" tabindex="3"><?php echo esc_html( $tax->labels->all_items ); ?></a></li>
-				<li class="hide-if-no-js"><a href="#<?php echo esc_attr( $taxonomy ); ?>-pop" tabindex="3"><?php esc_html_e( 'Most Used', 'wp-job-manager' ); ?></a></li>
-			</ul>
-
+		<div id="taxonomy-<?php echo esc_attr( $taxonomy_name ); ?>" class="categorydiv">
 			<!-- Display taxonomy terms -->
-			<div id="<?php echo esc_attr( $taxonomy ); ?>-all" class="tabs-panel">
-				<ul id="<?php echo esc_attr( $taxonomy ); ?>checklist" class="list:<?php echo esc_attr( $taxonomy ); ?> categorychecklist form-no-clear">
+			<div id="<?php echo esc_attr( $taxonomy_name ); ?>-all" class="editor-post-taxonomies__hierarchical-terms-list">
+				<ul id="<?php echo esc_attr( $taxonomy_name ); ?>checklist" class="list:<?php echo esc_attr( $taxonomy_name ); ?> categorychecklist form-no-clear">
 					<?php
 					foreach ( $terms as $term ) {
-						$id = $taxonomy . '-' . $term->term_id;
+						$id = $taxonomy_name . '-' . $term->term_id;
 						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
-						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
+						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" name="' . esc_attr( $field_name ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
 						echo '</label></li>';
 					}
 					?>
-			   </ul>
+				</ul>
 			</div>
-
-			<!-- Display popular taxonomy terms -->
-			<div id="<?php echo esc_attr( $taxonomy ); ?>-pop" class="tabs-panel" style="display: none;">
-				<ul id="<?php echo esc_attr( $taxonomy ); ?>checklist-pop" class="categorychecklist form-no-clear" >
-					<?php
-					foreach ( $popular as $term ) {
-						$id = 'popular-' . $taxonomy . '-' . $term->term_id;
-						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
-						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
-						echo '</label></li>';
-					}
-					?>
-			   </ul>
-		   </div>
 
 		</div>
 		<?php
