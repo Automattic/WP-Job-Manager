@@ -819,12 +819,12 @@ class WP_Job_Manager_Post_Types {
 
 		$permalink_settings = (array) json_decode( get_option( self::PERMALINK_OPTION_NAME, $legacy_permalink_settings ), true );
 
-		// Check if migration happened on upgrade, if not, do it manually.
+		// First-time activations will get this cleared on activation.
 		if ( ! array_key_exists( 'jobs_archive', $permalink_settings ) ) {
 			// Create entry to prevent future checks.
 			$permalink_settings['jobs_archive'] = '';
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
-				// If the user has a theme that declares support, assume they are using the old archive page from the translation.
+				// This isn't the first activation and the theme supports it. Set the default to legacy value.
 				$permalink_settings['jobs_archive'] = _x( 'jobs', 'Post type archive slug - resave permalinks after changing this', 'wp-job-manager' );
 			}
 			update_option( self::PERMALINK_OPTION_NAME, wp_json_encode( $permalink_settings ) );
