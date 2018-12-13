@@ -168,6 +168,9 @@ class WP_Job_Manager_Admin_Notices {
 		$screen_id       = $screen ? $screen->id : '';
 		$show_on_screens = array_merge( array(
 			'edit-job_listing',
+			'edit-job_listing_category',
+			'edit-job_listing_type',
+			'job_listing_page_job-manager-addons',
 		), $additional_screens );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
