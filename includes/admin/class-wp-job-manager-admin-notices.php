@@ -137,6 +137,18 @@ class WP_Job_Manager_Admin_Notices {
 		$notice_state = self::get_notice_state();
 		foreach ( $notice_state as $notice ) {
 			/**
+			 * Allows suppression of individual admin notices.
+			 *
+			 * @since 1.32.0
+			 *
+			 * @param bool $do_show_notice Set to false to prevent an admin notice from showing up.
+			 */
+
+			if ( ! apply_filters( 'job_manager_show_admin_notice_' . $notice, true ) ) {
+				continue;
+			}
+
+			/**
 			 * Handle the display of the admin notice.
 			 *
 			 * @since 1.32.0
