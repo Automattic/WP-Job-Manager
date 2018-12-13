@@ -10,6 +10,7 @@ module.exports = function( grunt ) {
 			fonts: 'assets/font',
 			images: 'assets/images',
 			js: 'assets/js',
+			select2: 'assets/js/select2',
 			blocks: 'assets/blocks',
 			build: 'tmp/build',
 			svn: 'tmp/release-svn'
@@ -104,6 +105,15 @@ module.exports = function( grunt ) {
 					'!mixtape.json'
 				],
 				dest: '<%= dirs.build %>/'
+			},
+			select2: {
+				expand: true,
+				flatten: true,
+				src: [
+					'node_modules/select2/dist/js/select2.full.min.js',
+					'node_modules/select2/dist/css/select2.min.css'
+				],
+				dest: '<%= dirs.select2 %>/'
 			}
 		},
 
@@ -276,6 +286,8 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( 'grunt-wp-i18n' );
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown');
 	grunt.loadNpmTasks( 'grunt-zip' );
+
+	grunt.registerTask( 'update-assets', [ 'copy:select2' ] );
 
 	grunt.registerTask( 'check-mixtape', 'Checking for WPJM\'s REST library (Mixtape) and building if necessary', function() {
 		if ( ! grunt.file.exists( 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php' ) ) {

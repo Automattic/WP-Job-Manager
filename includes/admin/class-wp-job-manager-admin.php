@@ -121,8 +121,9 @@ class WP_Job_Manager_Admin {
 	 * Enqueues CSS and JS assets.
 	 */
 	public function admin_enqueue_scripts() {
-		$screen = get_current_screen();
+		WP_Job_Manager::register_select2_assets();
 
+		$screen = get_current_screen();
 		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', array( 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-addons' ) ), true ) ) {
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'job_manager_admin_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/admin.css', array(), JOB_MANAGER_VERSION );
