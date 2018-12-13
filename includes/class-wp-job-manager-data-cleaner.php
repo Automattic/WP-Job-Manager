@@ -98,6 +98,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_email_admin_new_job',
 		'job_manager_email_admin_expiring_job',
 		'job_manager_email_employer_expiring_job',
+		'job_manager_admin_notices',
 	);
 
 	/**
