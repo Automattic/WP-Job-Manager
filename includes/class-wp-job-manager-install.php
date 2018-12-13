@@ -21,7 +21,7 @@ class WP_Job_Manager_Install {
 		self::init_user_roles();
 		self::default_terms();
 
-		$is_fresh_install = false;
+		$is_new_install = false;
 
 		// Redirect to setup screen for new installs.
 		if ( ! get_option( 'wp_job_manager_version' ) ) {
