@@ -335,8 +335,6 @@ class WP_Job_Manager_Ajax {
 	 * Search for users and return json.
 	 */
 	public static function ajax_search_users() {
-		ob_start();
-
 		check_ajax_referer( 'search-users', 'security' );
 
 		if ( ! self::user_can_search_users() ) {
