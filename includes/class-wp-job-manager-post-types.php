@@ -794,6 +794,26 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Get the permalink settings directly from the option.
+	 *
+	 * @return array Permalink settings option.
+	 */
+	public static function get_raw_permalink_settings() {
+		/**
+		 * Option `wpjm_permalinks` was renamed to match other options in 1.32.0.
+		 *
+		 * Reference to the old option and support for non-standard plugin updates will be removed in 1.34.0.
+		 */
+		$legacy_permalink_settings = '[]';
+		if ( false !== get_option( 'wpjm_permalinks', false ) ) {
+			$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalinks', array() ) );
+			delete_option( 'wpjm_permalinks' );
+		}
+
+		return (array) json_decode( get_option( self::PERMALINK_OPTION_NAME, $legacy_permalink_settings ), true );
+	}
+
+	/**
 	 * Retrieves permalink settings.
 	 *
 	 * @see https://github.com/woocommerce/woocommerce/blob/3.0.8/includes/wc-core-functions.php#L1573
@@ -806,18 +826,7 @@ class WP_Job_Manager_Post_Types {
 			switch_to_locale( get_locale() );
 		}
 
-		/**
-		 * Option `wpjm_permalinks` was renamed to match other options in 1.32.0.
-		 *
-		 * Reference to the old option and support for non-standard plugin updates will be removed in 1.34.0.
-		 */
-		$legacy_permalink_settings = '[]';
-		if ( false !== get_option( 'wpjm_permalinks', false ) ) {
-			$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalinks', array() ) );
-			delete_option( 'wpjm_permalinks' );
-		}
-
-		$permalink_settings = (array) json_decode( get_option( self::PERMALINK_OPTION_NAME, $legacy_permalink_settings ), true );
+		$permalink_settings = self::get_raw_permalink_settings();
 
 		// First-time activations will get this cleared on activation.
 		if ( ! array_key_exists( 'jobs_archive', $permalink_settings ) ) {
