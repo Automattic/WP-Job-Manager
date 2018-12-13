@@ -374,7 +374,7 @@ class WP_Job_Manager_Ajax {
 				'search_columns' => array( 'user_login', 'user_email', 'user_nicename', 'display_name' ),
 				'number'         => $per_page,
 				'paged'          => $page,
-				'orderby'        => 'ID',
+				'orderby'        => 'display_name',
 				'order'          => 'ASC',
 			);
 
