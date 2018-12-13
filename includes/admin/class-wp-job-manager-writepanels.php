@@ -119,7 +119,7 @@ class WP_Job_Manager_Writepanels {
 			$fields['_job_author'] = array(
 				'label'    => __( 'Posted by', 'wp-job-manager' ),
 				'type'     => 'author',
-				'priority' => 12,
+				'priority' => 0,
 			);
 		}
 
