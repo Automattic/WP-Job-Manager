@@ -828,7 +828,6 @@ class WP_Job_Manager_Post_Types {
 				$permalink_settings['jobs_archive'] = _x( 'jobs', 'Post type archive slug - resave permalinks after changing this', 'wp-job-manager' );
 			}
 			update_option( self::PERMALINK_OPTION_NAME, wp_json_encode( $permalink_settings ) );
-			flush_rewrite_rules();
 		}
 
 		$permalinks         = wp_parse_args(
