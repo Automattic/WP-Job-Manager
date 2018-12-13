@@ -19,7 +19,6 @@ jQuery(document).ready(function($) {
 
 	// User search box. Inspired by WooCommerce's approach.
 	$( '#wpbody' ).on( 'init.user_search', ':input.wpjm-user-search', function() {
-		console.log([$(this), 'init.user_search']);
 		var select2_args = {
 			allowClear:  !! $( this ).data( 'allow_clear' ),
 			placeholder: $( this ).data( 'placeholder' ),
