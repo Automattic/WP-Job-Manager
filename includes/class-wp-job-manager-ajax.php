@@ -50,6 +50,7 @@ class WP_Job_Manager_Ajax {
 		add_action( 'wp_ajax_job_manager_get_listings', array( $this, 'get_listings' ) );
 		add_action( 'wp_ajax_nopriv_job_manager_upload_file', array( $this, 'upload_file' ) );
 		add_action( 'wp_ajax_job_manager_upload_file', array( $this, 'upload_file' ) );
+		add_action( 'wp_ajax_job_manager_search_users', array( $this, 'ajax_search_users' ) );
 	}
 
 	/**
@@ -295,6 +296,139 @@ class WP_Job_Manager_Ajax {
 		}
 
 		wp_send_json( $data );
+	}
+
+	/**
+	 * Checks if user can search for other users in ajax call.
+	 *
+	 * @return bool
+	 */
+	private static function user_can_search_users() {
+		$user_can_search_users = false;
+
+		/**
+		 * Filter the capabilities that are allowed to search for users in ajax call.
+		 *
+		 * @since 1.32.0
+		 *
+		 * @params array $user_caps Array of capabilities/roles that are allowed to search for users.
+		 */
+		$allowed_capabilities = apply_filters( 'job_manager_caps_can_search_users', array( 'edit_job_listings' ) );
+		foreach ( $allowed_capabilities as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$user_can_search_users = true;
+				break;
+			}
+		}
+
+		/**
+		 * Filters whether the current user can search for users in ajax call.
+		 *
+		 * @since 1.32.0
+		 *
+		 * @params bool $user_can_search_users True if they are allowed, false if not.
+		 */
+		return apply_filters( 'job_manager_user_can_search_users', $user_can_search_users );
+	}
+
+	/**
+	 * Search for users and return json.
+	 */
+	public static function ajax_search_users() {
+		check_ajax_referer( 'search-users', 'security' );
+
+		if ( ! self::user_can_search_users() ) {
+			wp_die( -1 );
+		}
+
+		$term     = sanitize_text_field( wp_unslash( $_GET['term'] ) );
+		$page     = isset( $_GET['page'] ) ? intval( $_GET['page'] ) : 1;
+		$per_page = 20;
+
+		$exclude = array();
+		if ( ! empty( $_GET['exclude'] ) ) {
+			$exclude = array_map( 'intval', $_GET['exclude'] );
+		}
+
+		if ( empty( $term ) ) {
+			wp_die();
+		}
+
+		$more_exist = false;
+		$users      = array();
+
+		// Search by ID.
+		if ( is_numeric( $term ) && ! in_array( intval( $term ), $exclude, true ) ) {
+			$user = get_user_by( 'ID', intval( $term ) );
+			if ( $user instanceof WP_User ) {
+				$users[ $user->ID ] = $user;
+			}
+		}
+
+		if ( empty( $users ) ) {
+			$search_args = array(
+				'exclude'        => $exclude,
+				'search'         => '*' . esc_attr( $term ) . '*',
+				'search_columns' => array( 'user_login', 'user_email', 'user_nicename', 'display_name' ),
+				'number'         => $per_page,
+				'paged'          => $page,
+				'orderby'        => 'display_name',
+				'order'          => 'ASC',
+			);
+
+			/**
+			 * Modify the arguments used for `WP_User_Query` constructor.
+			 *
+			 * @since 1.32.0
+			 *
+			 * @see https://codex.wordpress.org/Class_Reference/WP_User_Query
+			 *
+			 * @params array  $search_args Argument array used in `WP_User_Query` constructor.
+			 * @params string $term        Search term.
+			 * @params int[]  $exclude     Array of IDs to exclude.
+			 * @params int    $page        Current page.
+			 */
+			$search_args = apply_filters( 'job_manager_search_users_args', $search_args, $term, $exclude, $page );
+
+			$user_query  = new WP_User_Query( $search_args );
+			$users       = $user_query->get_results();
+			$total_pages = ceil( $user_query->get_total() / $per_page );
+			$more_exist  = $total_pages > $page;
+		}
+
+		$found_users = array();
+
+		foreach ( $users as $user ) {
+			$found_users[ $user->ID ] = sprintf(
+				// translators: Used in user select. %1$s is the user's display name; #%2$s is the user ID; %3$s is the user email.
+				esc_html__( '%1$s (#%2$s &ndash; %3$s)', 'wp-job-manager' ),
+				$user->display_name,
+				absint( $user->ID ),
+				$user->user_email
+			);
+		}
+
+		$response = array(
+			'results' => $found_users,
+			'more'    => $more_exist,
+		);
+
+		/**
+		 * Modify the search results response for users in ajax call.
+		 *
+		 * @since 1.32.0
+		 *
+		 * @params array  $response    {
+		 *      @type $results Array of all found users; id => string descriptor
+		 *      @type $more    True if there is an additional page.
+		 * }
+		 * @params string $term        Search term.
+		 * @params int[]  $exclude     Array of IDs to exclude.
+		 * @params int    $page        Current page.
+		 */
+		$response = apply_filters( 'job_manager_search_users_response', $response, $term, $exclude, $page );
+
+		wp_send_json( $response );
 	}
 }
 

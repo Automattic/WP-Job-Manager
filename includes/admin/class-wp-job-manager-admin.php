@@ -127,10 +127,28 @@ class WP_Job_Manager_Admin {
 		$screen = get_current_screen();
 		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', array( 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-addons' ) ), true ) ) {
 			wp_enqueue_style( 'jquery-ui' );
+			wp_enqueue_style( 'select2' );
 			wp_enqueue_style( 'job_manager_admin_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/admin.css', array(), JOB_MANAGER_VERSION );
 			wp_register_script( 'jquery-tiptip', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-tiptip/jquery.tipTip.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 			wp_enqueue_script( 'job_manager_datepicker_js', JOB_MANAGER_PLUGIN_URL . '/assets/js/datepicker.min.js', array( 'jquery', 'jquery-ui-datepicker' ), JOB_MANAGER_VERSION, true );
-			wp_enqueue_script( 'job_manager_admin_js', JOB_MANAGER_PLUGIN_URL . '/assets/js/admin.min.js', array( 'jquery', 'jquery-tiptip' ), JOB_MANAGER_VERSION, true );
+			wp_enqueue_script( 'job_manager_admin_js', JOB_MANAGER_PLUGIN_URL . '/assets/js/admin.min.js', array( 'jquery', 'jquery-tiptip', 'select2' ), JOB_MANAGER_VERSION, true );
+
+			wp_localize_script(
+				'job_manager_admin_js',
+				'job_manager_admin_params',
+				array(
+					'user_selection_strings'     => array(
+						'no_matches'           => _x( 'No matches found', 'user selection', 'wp-job-manager' ),
+						'ajax_error'           => _x( 'Loading failed', 'user selection', 'wp-job-manager' ),
+						'input_too_short_1'    => _x( 'Please enter 1 or more characters', 'user selection', 'wp-job-manager' ),
+						'input_too_short_n'    => _x( 'Please enter %qty% or more characters', 'user selection', 'wp-job-manager' ),
+						'load_more'            => _x( 'Loading more results&hellip;', 'user selection', 'wp-job-manager' ),
+						'searching'            => _x( 'Searching&hellip;', 'user selection', 'wp-job-manager' ),
+					),
+					'ajax_url'                  => admin_url( 'admin-ajax.php' ),
+					'search_users_nonce'        => wp_create_nonce( 'search-users' ),
+				)
+			);
 
 			if ( ! function_exists( 'wp_localize_jquery_ui_datepicker' ) || ! has_action( 'admin_enqueue_scripts', 'wp_localize_jquery_ui_datepicker' ) ) {
 				wp_localize_script(

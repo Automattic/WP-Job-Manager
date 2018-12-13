@@ -10,9 +10,78 @@ jQuery(document).ready(function($) {
 	// Author
 	$( 'p.form-field-author' ).on( 'click', 'a.change-author', function() {
 		$(this).closest( 'p' ).find('.current-author').hide();
-		$(this).closest( 'p' ).find('.change-author').show();
+		var $changeAuthor = $(this).closest( 'p' ).find('.change-author');
+		$changeAuthor.show();
+		$changeAuthor.find(':input.wpjm-user-search').trigger( 'init.user_search' );
+
 		return false;
 	});
+
+	// User search box. Inspired by WooCommerce's approach.
+	$( '#wpbody' ).on( 'init.user_search', ':input.wpjm-user-search', function() {
+		var select2_args = {
+			allowClear:  !! $( this ).data( 'allow_clear' ),
+			placeholder: $( this ).data( 'placeholder' ),
+			minimumInputLength: $( this ).data( 'minimum_input_length' ) ? $( this ).data( 'minimum_input_length' ) : '1',
+			errorLoading: job_manager_admin_params.user_selection_strings.searching,
+			inputTooShort: function( args ) {
+				var remainingChars = args.minimum - args.input.length;
+
+				if ( 1 === remainingChars ) {
+					return job_manager_admin_params.user_selection_strings.input_too_short_1;
+				}
+
+				return job_manager_admin_params.user_selection_strings.input_too_short_n.replace( '%qty%', remainingChars );
+			},
+			loadingMore: function() {
+				return job_manager_admin_params.user_selection_strings.load_more;
+			},
+			noResults: function() {
+				return job_manager_admin_params.user_selection_strings.no_matches;
+			},
+			searching: function() {
+				return job_manager_admin_params.user_selection_strings.searching;
+			},
+			escapeMarkup: function( m ) {
+				return m;
+			},
+			width: '100%',
+			ajax: {
+				url:         job_manager_admin_params.ajax_url,
+				dataType:    'json',
+				delay:       1000,
+				data:        function( params ) {
+					return {
+						term:     params.term,
+						action:   'job_manager_search_users',
+						security: job_manager_admin_params.search_users_nonce,
+						page:     params.page
+					};
+				},
+				processResults: function( data ) {
+					var terms = [];
+					if ( data && data.results ) {
+						$.each( data.results, function( id, text ) {
+							terms.push({
+								id: id,
+								text: text
+							});
+						});
+					}
+					return {
+						results: terms,
+						pagination: {
+							more: data.more
+						}
+					};
+				},
+				cache: true
+			}
+		};
+
+		$( this ).select2( select2_args );
+	});
+	$( ':input.wpjm-user-search:visible' ).trigger( 'init.user_search' );
 
 	// Uploading files
 	var file_frame;

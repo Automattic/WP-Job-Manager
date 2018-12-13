@@ -119,7 +119,7 @@ class WP_Job_Manager_Writepanels {
 			$fields['_job_author'] = array(
 				'label'    => __( 'Posted by', 'wp-job-manager' ),
 				'type'     => 'author',
-				'priority' => 12,
+				'priority' => 0,
 			);
 		}
 
@@ -515,16 +515,25 @@ class WP_Job_Manager_Writepanels {
 			<span class="current-author">
 				<?php
 				if ( $posted_by ) {
+					$user_string = sprintf(
+						// translators: Used in user select. %1$s is the user's display name; #%2$s is the user ID; %3$s is the user email.
+						esc_html__( '%1$s (#%2$s &ndash; %3$s)', 'wp-job-manager' ),
+						$posted_by->display_name,
+						absint( $posted_by->ID ),
+						$posted_by->user_email
+					);
 					echo '<a href="' . esc_url( admin_url( 'user-edit.php?user_id=' . absint( $author_id ) ) ) . '">#' . absint( $author_id ) . ' &ndash; ' . esc_html( $posted_by->user_login ) . '</a>';
 				} else {
-					esc_html_e( 'Guest User', 'wp-job-manager' );
+					$user_string = __( 'Guest User', 'wp-job-manager' );
+					echo esc_html( $user_string );
 				}
 				?>
 				 <a href="#" class="change-author button button-small"><?php esc_html_e( 'Change', 'wp-job-manager' ); ?></a>
 			</span>
 			<span class="hidden change-author">
-				<input type="number" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" step="1" value="<?php echo esc_attr( $author_id ); ?>" style="width: 4em;" />
-				<span class="description"><?php esc_html_e( 'Enter the ID of the user, or leave blank if submitted by a guest.', 'wp-job-manager' ); ?></span>
+				<select class="wpjm-user-search" id="job_manager_user_search" name="<?php echo esc_attr( $name ); ?>" data-placeholder="<?php esc_attr_e( 'Guest', 'wp-job-manager' ); ?>" data-allow_clear="true">
+					<option value="<?php echo esc_attr( $author_id ); ?>" selected="selected"><?php echo esc_html( htmlspecialchars( $user_string ) ); ?></option>
+				</select>
 			</span>
 		</p>
 		<?php
@@ -669,6 +678,9 @@ class WP_Job_Manager_Writepanels {
 					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
 				}
 			} elseif ( '_job_author' === $key ) {
+				if ( empty( $_POST[ $key ] ) ) {
+					$_POST[ $key ] = 0;
+				}
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
 			} elseif ( '_application' === $key ) {
 				update_post_meta( $post_id, $key, sanitize_text_field( is_email( $_POST[ $key ] ) ? $_POST[ $key ] : urldecode( $_POST[ $key ] ) ) );
