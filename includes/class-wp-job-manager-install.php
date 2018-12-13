@@ -21,8 +21,11 @@ class WP_Job_Manager_Install {
 		self::init_user_roles();
 		self::default_terms();
 
+		$is_new_install = false;
+
 		// Redirect to setup screen for new installs.
 		if ( ! get_option( 'wp_job_manager_version' ) ) {
+			$is_new_install = true;
 			set_transient( '_job_manager_activation_redirect', 1, HOUR_IN_SECONDS );
 		}
 
@@ -45,6 +48,12 @@ class WP_Job_Manager_Install {
 		if ( false === get_option( 'job_manager_job_dashboard_page_id', false ) && get_option( 'job_manager_job_dashboard_page_slug' ) ) {
 			$page_id = get_page_by_path( get_option( 'job_manager_job_dashboard_page_slug' ) )->ID;
 			update_option( 'job_manager_job_dashboard_page_id', $page_id );
+		}
+
+		if ( $is_new_install ) {
+			$permalink_options = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
+			$permalink_options['jobs_archive'] = '';
+			update_option( 'job_manager_permalinks', wp_json_encode( $permalink_options ) );
 		}
 
 		delete_transient( 'wp_job_manager_addons_html' );
