@@ -72,7 +72,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 												break;
 												case 'draft' :
 												case 'preview' :
-													$actions['resume'] = array( 'label' => __( 'Resume Submission', 'wp-job-manager' ), 'nonce' => true );
+													$actions['continue'] = array( 'label' => __( 'Continue Submission', 'wp-job-manager' ), 'nonce' => true );
 													break;
 											}
 

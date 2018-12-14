@@ -150,7 +150,7 @@ class WP_Job_Manager_Shortcodes {
 
 						break;
 					case 'relist':
-					case 'resume':
+					case 'continue':
 						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
 							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
 						}
