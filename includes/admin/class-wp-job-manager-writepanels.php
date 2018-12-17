@@ -119,7 +119,7 @@ class WP_Job_Manager_Writepanels {
 			$fields['_job_author'] = array(
 				'label'    => __( 'Posted by', 'wp-job-manager' ),
 				'type'     => 'author',
-				'priority' => 12,
+				'priority' => 0,
 			);
 		}
 
@@ -166,7 +166,7 @@ class WP_Job_Manager_Writepanels {
 		} elseif ( false === job_manager_multi_job_type() ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
 			$job_listing_type = get_taxonomy( 'job_listing_type' );
-			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, array( $this, 'job_listing_metabox' ), 'job_listing', 'side', 'core' );
+			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, array( $this, 'job_type_single_meta_box' ), 'job_listing', 'side', 'core' );
 		}
 	}
 
@@ -175,74 +175,37 @@ class WP_Job_Manager_Writepanels {
 	 *
 	 * @param int|WP_Post $post
 	 */
-	public function job_listing_metabox( $post ) {
+	public function job_type_single_meta_box( $post ) {
 		// Set up the taxonomy object and get terms.
-		$taxonomy = 'job_listing_type';
-		$tax      = get_taxonomy( $taxonomy );// This is the taxonomy object.
-
-		// The name of the form.
-		$name = 'tax_input[' . $taxonomy . ']';
+		$taxonomy_name = 'job_listing_type';
 
 		// Get all the terms for this taxonomy.
 		$terms     = get_terms(
 			array(
-				'taxonomy'   => $taxonomy,
+				'taxonomy'   => $taxonomy_name,
 				'hide_empty' => 0,
 			)
 		);
-		$postterms = get_the_terms( $post->ID, $taxonomy );
-		$current   = ( $postterms ? array_pop( $postterms ) : false );
-		$current   = ( $current ? $current->term_id : 0 );
-		// Get current and popular terms.
-		$popular   = get_terms(
-			array(
-				'taxonomy'     => $taxonomy,
-				'orderby'      => 'count',
-				'order'        => 'DESC',
-				'number'       => 10,
-				'hierarchical' => false,
-			)
-		);
-		$postterms = get_the_terms( $post->ID, $taxonomy );
-		$current   = ( $postterms ? array_pop( $postterms ) : false );
-		$current   = ( $current ? $current->term_id : 0 );
+		$postterms = get_the_terms( $post->ID, $taxonomy_name );
+		$current   = $postterms ? array_pop( $postterms ) : false;
+		$current   = $current ? $current->term_id : 0;
+
+		$field_name = 'tax_input[' . $taxonomy_name . ']';
 		?>
-
-		<div id="taxonomy-<?php echo esc_attr( $taxonomy ); ?>" class="categorydiv">
-
-			<!-- Display tabs-->
-			<ul id="<?php echo esc_attr( $taxonomy ); ?>-tabs" class="category-tabs">
-				<li class="tabs"><a href="#<?php echo esc_attr( $taxonomy ); ?>-all" tabindex="3"><?php echo esc_html( $tax->labels->all_items ); ?></a></li>
-				<li class="hide-if-no-js"><a href="#<?php echo esc_attr( $taxonomy ); ?>-pop" tabindex="3"><?php esc_html_e( 'Most Used', 'wp-job-manager' ); ?></a></li>
-			</ul>
-
+		<div id="taxonomy-<?php echo esc_attr( $taxonomy_name ); ?>" class="categorydiv">
 			<!-- Display taxonomy terms -->
-			<div id="<?php echo esc_attr( $taxonomy ); ?>-all" class="tabs-panel">
-				<ul id="<?php echo esc_attr( $taxonomy ); ?>checklist" class="list:<?php echo esc_attr( $taxonomy ); ?> categorychecklist form-no-clear">
+			<div id="<?php echo esc_attr( $taxonomy_name ); ?>-all" class="editor-post-taxonomies__hierarchical-terms-list">
+				<ul id="<?php echo esc_attr( $taxonomy_name ); ?>checklist" class="list:<?php echo esc_attr( $taxonomy_name ); ?> categorychecklist form-no-clear">
 					<?php
 					foreach ( $terms as $term ) {
-						$id = $taxonomy . '-' . $term->term_id;
+						$id = $taxonomy_name . '-' . $term->term_id;
 						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
-						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
+						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" name="' . esc_attr( $field_name ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
 						echo '</label></li>';
 					}
 					?>
-			   </ul>
+				</ul>
 			</div>
-
-			<!-- Display popular taxonomy terms -->
-			<div id="<?php echo esc_attr( $taxonomy ); ?>-pop" class="tabs-panel" style="display: none;">
-				<ul id="<?php echo esc_attr( $taxonomy ); ?>checklist-pop" class="categorychecklist form-no-clear" >
-					<?php
-					foreach ( $popular as $term ) {
-						$id = 'popular-' . $taxonomy . '-' . $term->term_id;
-						echo '<li id="' . esc_attr( $id ) . '"><label class="selectit">';
-						echo '<input type="radio" id="in-' . esc_attr( $id ) . '" ' . checked( $current, $term->term_id, false ) . ' value="' . esc_attr( $term->term_id ) . '" />' . esc_attr( $term->name ) . '<br />';
-						echo '</label></li>';
-					}
-					?>
-			   </ul>
-		   </div>
 
 		</div>
 		<?php
@@ -552,16 +515,25 @@ class WP_Job_Manager_Writepanels {
 			<span class="current-author">
 				<?php
 				if ( $posted_by ) {
+					$user_string = sprintf(
+						// translators: Used in user select. %1$s is the user's display name; #%2$s is the user ID; %3$s is the user email.
+						esc_html__( '%1$s (#%2$s &ndash; %3$s)', 'wp-job-manager' ),
+						$posted_by->display_name,
+						absint( $posted_by->ID ),
+						$posted_by->user_email
+					);
 					echo '<a href="' . esc_url( admin_url( 'user-edit.php?user_id=' . absint( $author_id ) ) ) . '">#' . absint( $author_id ) . ' &ndash; ' . esc_html( $posted_by->user_login ) . '</a>';
 				} else {
-					esc_html_e( 'Guest User', 'wp-job-manager' );
+					$user_string = __( 'Guest User', 'wp-job-manager' );
+					echo esc_html( $user_string );
 				}
 				?>
 				 <a href="#" class="change-author button button-small"><?php esc_html_e( 'Change', 'wp-job-manager' ); ?></a>
 			</span>
 			<span class="hidden change-author">
-				<input type="number" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" step="1" value="<?php echo esc_attr( $author_id ); ?>" style="width: 4em;" />
-				<span class="description"><?php esc_html_e( 'Enter the ID of the user, or leave blank if submitted by a guest.', 'wp-job-manager' ); ?></span>
+				<select class="wpjm-user-search" id="job_manager_user_search" name="<?php echo esc_attr( $name ); ?>" data-placeholder="<?php esc_attr_e( 'Guest', 'wp-job-manager' ); ?>" data-allow_clear="true">
+					<option value="<?php echo esc_attr( $author_id ); ?>" selected="selected"><?php echo esc_html( htmlspecialchars( $user_string ) ); ?></option>
+				</select>
 			</span>
 		</p>
 		<?php
@@ -706,6 +678,9 @@ class WP_Job_Manager_Writepanels {
 					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
 				}
 			} elseif ( '_job_author' === $key ) {
+				if ( empty( $_POST[ $key ] ) ) {
+					$_POST[ $key ] = 0;
+				}
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
 			} elseif ( '_application' === $key ) {
 				update_post_meta( $post_id, $key, sanitize_text_field( is_email( $_POST[ $key ] ) ? $_POST[ $key ] : urldecode( $_POST[ $key ] ) ) );
