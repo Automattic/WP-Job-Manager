@@ -150,6 +150,7 @@ class WP_Job_Manager_Shortcodes {
 
 						break;
 					case 'relist':
+					case 'continue':
 						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
 							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
 						}
@@ -226,7 +227,7 @@ class WP_Job_Manager_Shortcodes {
 			'job_manager_get_dashboard_jobs_args',
 			array(
 				'post_type'           => 'job_listing',
-				'post_status'         => array( 'publish', 'expired', 'pending' ),
+				'post_status'         => array( 'publish', 'expired', 'pending', 'draft', 'preview' ),
 				'ignore_sticky_posts' => 1,
 				'posts_per_page'      => $posts_per_page,
 				'offset'              => ( max( 1, get_query_var( 'paged' ) ) - 1 ) * $posts_per_page,

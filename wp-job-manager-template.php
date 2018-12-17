@@ -146,7 +146,9 @@ function get_the_job_status( $post = null ) {
 	$post     = get_post( $post );
 	$status   = $post->post_status;
 	$statuses = get_job_listing_post_statuses();
-
+	if ( 'preview' === $status ) {
+		$status = 'draft';
+	}
 	if ( isset( $statuses[ $status ] ) ) {
 		$status = $statuses[ $status ];
 	} else {
