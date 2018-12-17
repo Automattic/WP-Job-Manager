@@ -2,8 +2,8 @@
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.7.0
-Tested up to: 4.9
-Stable tag: 1.31.3
+Tested up to: 5.0
+Stable tag: 1.32.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,25 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.32.0 =
+* Enhancement: Switched from Chosen to Select2 for enhanced dropdown handling and better mobile support. May require theme update.
+* Enhancement: Draft and unsubmitted job listings now appear in `[job_dashboard]`, allowing users to complete their submission.
+* Enhancement: Filled and expired positions are now hidden from WordPress search. (@felipeelia)
+* Enhancement: Adds additional support for the new block editor. Restricted to classic block for compatibility with frontend editor.
+* Enhancement: Job types can be preselected in `[jobs]` shortcode with `?search_job_type=term-slug`. (@felipeelia)
+* Enhancement: Author selection in WP admin now uses a searchable dropdown.
+* Enhancement: Setup wizard is accessed with a flash message instead of an automatic redirect upon activation.
+* Enhancement: When using supported themes, job listing archive slug can be changed in Permalink settings.
+* Fix: Company tagline alignment issue with company name. (@0xDELS)
+* Fix: "Load Previous Listings" link unnecessarily shows up on `[jobs]` shortcode. (@tonytettinger)
+* Fix: Category selector fixed in the job listings page in WP Admin. (@AmandaJBell)
+* Fix: Issue with quote encoding on Apply for Job email link.
+* Fix: Link `target` attributes have been removed in templates.
+* Dev: Allow for job submission flow to be interrupted using `before` argument on form steps.
+* Dev: HTML allowed in custom company field labels. (@tripflex)
+* Dev: Job feed slug name can be customized with the `job_manager_job_feed_name` filter.
+* Deprecated: Unreleased REST API implementation using `WPJM_REST_API_ENABLED` was replaced with standard WP REST API.
 
 = 1.31.3 =
 * Fix: Escape the attachment URL. (Props to karimeo)
