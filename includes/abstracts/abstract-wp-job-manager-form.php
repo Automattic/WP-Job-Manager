@@ -98,7 +98,11 @@ abstract class WP_Job_Manager_Form {
 		$next_step_key = $this->get_step_key( $this->step );
 
 		// If the next step has a handler to call before going to the view, run it now.
-		if ( $next_step_key && $step_key !== $next_step_key && is_callable( $this->steps[ $next_step_key ]['before'] ) ) {
+		if ( $next_step_key
+			 && $step_key !== $next_step_key
+			 && isset( $this->steps[ $next_step_key ]['before'] )
+			 && is_callable( $this->steps[ $next_step_key ]['before'] )
+		) {
 			call_user_func( $this->steps[ $next_step_key ]['before'] );
 		}
 
