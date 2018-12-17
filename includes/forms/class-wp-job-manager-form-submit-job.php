@@ -599,8 +599,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				throw new Exception( __( 'You must be signed in to post a new listing.', 'wp-job-manager' ) );
 			}
 
+			$post_status = '';
+			if ( ! $this->job_id || 'draft' === get_post_status( $this->job_id ) ) {
+				$post_status = 'preview';
+			}
+
 			// Update the job.
-			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $this->job_id ? '' : 'preview', $values );
+			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $post_status, $values );
 			$this->update_job_data( $values );
 
 			// Successful, show next step.
