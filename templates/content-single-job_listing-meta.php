@@ -20,10 +20,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $post;
 
+/**
+ * Runs before the job-listing-meta class wrapper.
+ *
+ * @since 1.21.1
+ */
 do_action( 'single_job_listing_meta_before' ); ?>
 
 <ul class="job-listing-meta meta">
-	<?php do_action( 'single_job_listing_meta_start' ); ?>
+	<?php 
+	/**
+	 * Runs before meta list items on single job page.
+	 *
+	 * @since 1.15.0
+	 */
+	do_action( 'single_job_listing_meta_start' ); ?>
 
 	<?php if ( get_option( 'job_manager_enable_types' ) ) { ?>
 		<?php $types = wpjm_get_the_job_types(); ?>
@@ -44,7 +55,19 @@ do_action( 'single_job_listing_meta_before' ); ?>
 		<li class="listing-expired"><?php _e( 'Applications have closed', 'wp-job-manager' ); ?></li>
 	<?php endif; ?>
 
-	<?php do_action( 'single_job_listing_meta_end' ); ?>
+	<?php 
+	/**
+	 * Runs after meta list items on single job page.
+	 *
+	 * @since 1.15.0
+	 */
+	do_action( 'single_job_listing_meta_end' ); ?>
 </ul>
 
-<?php do_action( 'single_job_listing_meta_after' ); ?>
+<?php 
+/**
+ * Runs after the job-listing-meta class wrapper.
+ *
+ * @since 1.23.12
+ */
+do_action( 'single_job_listing_meta_after' ); ?>

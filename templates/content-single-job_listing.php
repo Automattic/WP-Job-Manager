@@ -24,10 +24,12 @@ global $post;
 	<?php else : ?>
 		<?php
 			/**
-			 * single_job_listing_start hook
+			 * Runs before the job description of single job listing.
 			 *
 			 * @hooked job_listing_meta_display - 20
 			 * @hooked job_listing_company_display - 30
+			 *
+			 * @since 1.21.0
 			 */
 			do_action( 'single_job_listing_start' );
 		?>
@@ -42,7 +44,9 @@ global $post;
 
 		<?php
 			/**
-			 * single_job_listing_end hook
+			 * Runs after the end of single job listing.
+			 * 
+			 * @since 1.21.0
 			 */
 			do_action( 'single_job_listing_end' );
 		?>

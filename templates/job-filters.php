@@ -16,15 +16,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 wp_enqueue_script( 'wp-job-manager-ajax-filters' );
-
+/**
+ * Runs before the job_filters class on [jobs] page.
+ *
+ * @since 1.28.0
+ *
+ * @param array $atts Filter attributes.
+ */
 do_action( 'job_manager_job_filters_before', $atts );
 ?>
 
 <form class="job_filters">
-	<?php do_action( 'job_manager_job_filters_start', $atts ); ?>
+	<?php 
+	/**
+	 * Runs inside the job_filters class on [jobs] page.
+	 *
+	 * @since 1.15.0
+	 *
+	 * @param array $atts Filter attributes.
+	 */
+	do_action( 'job_manager_job_filters_start', $atts ); ?>
 
 	<div class="search_jobs">
-		<?php do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
+		<?php 
+		/**
+		 * Runs inside the search_jobs class on [jobs] page.
+		 *
+		 * @since 1.15.0
+		 *
+		 * @param array $atts Filter attributes.
+		 */
+		do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
 
 		<div class="search_keywords">
 			<label for="search_keywords"><?php esc_html_e( 'Keywords', 'wp-job-manager' ); ?></label>
@@ -51,12 +73,36 @@ do_action( 'job_manager_job_filters_before', $atts );
 			</div>
 		<?php endif; ?>
 
-		<?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
+		<?php 
+		/**
+		 * Runs after the search_jobs class on [jobs] page.
+		 *
+		 * @since 1.15.0
+		 *
+		 * @param array $atts Filter attributes.
+		 */
+		do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
 	</div>
 
-	<?php do_action( 'job_manager_job_filters_end', $atts ); ?>
+	<?php 
+	/**
+	 * Runs at the end of job_filters class on [jobs] page.
+	 *
+	 * @since 1.15.0
+	 *
+	 * @param array $atts Filter attributes.
+	 */
+	do_action( 'job_manager_job_filters_end', $atts ); ?>
 </form>
 
-<?php do_action( 'job_manager_job_filters_after', $atts ); ?>
+<?php 
+/**
+ * Runs after the job_filters class on [jobs] page.
+ *
+ * @since 1.15.0
+ *
+ * @param array $atts Filter attributes.
+ */
+do_action( 'job_manager_job_filters_after', $atts ); ?>
 
 <noscript><?php esc_html_e( 'Your browser does not support JavaScript, or it is disabled. JavaScript must be enabled in order to view listings.', 'wp-job-manager' ); ?></noscript>

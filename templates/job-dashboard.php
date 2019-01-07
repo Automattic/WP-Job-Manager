@@ -73,6 +73,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 											}
 
 											$actions['delete'] = array( 'label' => __( 'Delete', 'wp-job-manager' ), 'nonce' => true );
+											/**
+											 * Filter the actions on jobs dashboard for each $job in the loop.
+											 *
+											 * @since 1.15.0
+											 *
+											 * @param array $actions The array of actions.
+											 * @param array $job The job in the loop.
+											 */
 											$actions           = apply_filters( 'job_manager_my_job_actions', $actions, $job );
 
 											foreach ( $actions as $action => $value ) {
@@ -91,7 +99,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php elseif ('filled' === $key ) : ?>
 									<?php echo is_position_filled( $job ) ? '&#10004;' : '&ndash;'; ?>
 								<?php else : ?>
-									<?php do_action( 'job_manager_job_dashboard_column_' . $key, $job ); ?>
+									<?php 
+									/**
+									 * Runs after all the default columns on the jobs dashboard page.
+									 *
+									 * @since 1.15.0
+									 * 
+									 * @param string $key The column class (job_title/filled/date/expires). 
+									 */
+									do_action( 'job_manager_job_dashboard_column_' . $key, $job ); ?>
 								<?php endif; ?>
 							</td>
 						<?php endforeach; ?>

@@ -37,8 +37,23 @@ switch ( $job->post_status ) :
 		);
 	break;
 	default :
+		/**
+		 * Runs when the submitted jobs status is not 'publish' or 'pending'
+		 *
+		 * @since 1.15.0
+		 *
+		 * @param array $job The job.
+		 */
 		do_action( 'job_manager_job_submitted_content_' . str_replace( '-', '_', sanitize_title( $job->post_status ) ), $job );
 	break;
 endswitch;
 
+/**
+ * Runs after the job is submitted.
+ *
+ * @since 1.20.0
+ *
+ * @param string $status The post status.
+ * @param array $job The job.
+ */
 do_action( 'job_manager_job_submitted_content_after', sanitize_title( $job->post_status ), $job );

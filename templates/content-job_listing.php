@@ -32,7 +32,13 @@ global $post;
 			<?php the_job_location( false ); ?>
 		</div>
 		<ul class="meta">
-			<?php do_action( 'job_listing_meta_start' ); ?>
+			<?php 
+			/**
+			 * Runs before job listing meta on [jobs] page.
+			 *
+			 * @since 1.18.0
+			 */
+			do_action( 'job_listing_meta_start' ); ?>
 
 			<?php if ( get_option( 'job_manager_enable_types' ) ) { ?>
 				<?php $types = wpjm_get_the_job_types(); ?>
@@ -43,7 +49,13 @@ global $post;
 
 			<li class="date"><?php the_job_publish_date(); ?></li>
 
-			<?php do_action( 'job_listing_meta_end' ); ?>
+			<?php 
+			/**
+			 * Runs after job listing meta on [jobs] page.
+			 *
+			 * @since 1.18.0
+			 */
+			do_action( 'job_listing_meta_end' ); ?>
 		</ul>
 	</a>
 </li>

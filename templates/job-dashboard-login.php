@@ -17,6 +17,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <div id="job-manager-job-dashboard">
 
-	<p class="account-sign-in"><?php esc_html_e( 'You need to be signed in to manage your listings.', 'wp-job-manager' ); ?> <a class="button" href="<?php echo esc_url( apply_filters( 'job_manager_job_dashboard_login_url', wp_login_url( get_permalink() ) ) ); ?>"><?php esc_html_e( 'Sign in', 'wp-job-manager' ); ?></a></p>
+	<p class="account-sign-in"><?php esc_html_e( 'You need to be signed in to manage your listings.', 'wp-job-manager' ); ?> <a class="button" href="<?php 
+	/**
+	 * Filter the login URL on jobs dashboard when user is not logged in.
+	 *
+	 * @since 1.31.1
+	 *
+	 * @param string $url The login URL.
+	 */
+	echo esc_url( apply_filters( 'job_manager_job_dashboard_login_url', wp_login_url( get_permalink() ) ) ); 
+	?>"><?php esc_html_e( 'Sign in', 'wp-job-manager' ); ?></a></p>
 
 </div>
