@@ -76,6 +76,24 @@ class WP_Job_Manager_Permalink_Settings {
 			'permalink',
 			'optional'
 		);
+		if ( current_theme_supports( 'job-manager-templates' ) ) {
+			add_settings_field(
+				'wpjm_job_listings_archive_slug',
+				__( 'Job listing archive page', 'wp-job-manager' ),
+				array( $this, 'job_listings_archive_slug_input' ),
+				'permalink',
+				'optional'
+			);
+		}
+	}
+
+	/**
+	 * Show a slug input box for job listing archive slug.
+	 */
+	public function job_listings_archive_slug_input() {
+		?>
+		<input name="wpjm_job_listings_archive_slug" type="text" class="regular-text code" value="<?php echo esc_attr( $this->permalinks['jobs_archive'] ); ?>" placeholder="<?php echo esc_attr( $this->permalinks['jobs_archive_rewrite_slug'] ); ?>" />
+		<?php
 	}
 
 	/**
@@ -118,12 +136,17 @@ class WP_Job_Manager_Permalink_Settings {
 				switch_to_locale( get_locale() );
 			}
 
-			$permalinks                  = (array) get_option( 'wpjm_permalinks', array() );
-			$permalinks['job_base']      = sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] );
-			$permalinks['category_base'] = sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] );
-			$permalinks['type_base']     = sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] );
+			$permalink_settings = WP_Job_Manager_Post_Types::get_raw_permalink_settings();
 
-			update_option( 'wpjm_permalinks', $permalinks );
+			$permalink_settings['job_base']      = sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] );
+			$permalink_settings['category_base'] = sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] );
+			$permalink_settings['type_base']     = sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] );
+
+			if ( isset( $_POST['wpjm_job_listings_archive_slug'] ) ) {
+				$permalink_settings['jobs_archive'] = sanitize_title_with_dashes( $_POST['wpjm_job_listings_archive_slug'] );
+			}
+
+			update_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, wp_json_encode( $permalink_settings ) );
 
 			if ( function_exists( 'restore_current_locale' ) ) {
 				restore_current_locale();

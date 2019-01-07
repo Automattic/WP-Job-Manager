@@ -40,6 +40,7 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 		if ( ! empty( $args['meta_input']['_featured'] ) ) {
 			$args['menu_order'] = -1;
 		}
+
 		$post = wp_insert_post( $args );
 		if ( isset( $args['age'] ) ) {
 			$this->set_post_age( $post, $args['age'] );

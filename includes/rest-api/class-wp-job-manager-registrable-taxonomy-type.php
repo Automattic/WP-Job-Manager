@@ -67,12 +67,13 @@ abstract class WP_Job_Manager_Registrable_Taxonomy_Type implements WP_Job_Manage
 			return false;
 		}
 
-		if ( $wp_taxonomies[ $taxonomy_type ]->show_in_rest ) {
+		if ( ! empty( $wp_taxonomies[ $taxonomy_type ]->mixtape_show_in_rest ) ) {
 			return true;
 		}
 
-		$wp_taxonomies[ $taxonomy_type ]->show_in_rest = true;
-		$wp_taxonomies[ $taxonomy_type ]->rest_base    = $this->get_rest_base();
+		$wp_taxonomies[ $taxonomy_type ]->mixtape_show_in_rest = true;
+		$wp_taxonomies[ $taxonomy_type ]->show_in_rest         = true;
+		$wp_taxonomies[ $taxonomy_type ]->rest_base            = $this->get_rest_base();
 
 		$this->model_prototype = $environment->model( $this->get_model_class_name() );
 

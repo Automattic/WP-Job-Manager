@@ -28,7 +28,6 @@ class WPJM_Unit_Tests_Bootstrap {
 	 */
 	public function __construct() {
 		define( 'DOING_AJAX', true );
-		define( 'WPJM_REST_API_ENABLED', true );
 		ini_set( 'display_errors', 'on' );
 
 		error_reporting( E_ALL );

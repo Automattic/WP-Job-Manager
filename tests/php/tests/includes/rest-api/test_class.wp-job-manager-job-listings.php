@@ -17,6 +17,130 @@
  */
 class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
+	public function test_guest_get_job_listings_success() {
+		$this->logout();
+		$response = $this->get( '/wp/v2/job-listings' );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_guest_get_job_listing_success() {
+		$this->logout();
+		$post_id  = $this->get_job_listing();
+		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_guest_get_unpublished_job_listing_fail() {
+		$this->logout();
+		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response, 401 );
+	}
+
+	public function test_guest_delete_job_listings_fail() {
+		$this->logout();
+		$post_id  = $this->get_job_listing();
+		$response = $this->delete( sprintf( '/wp/v2/job-listings/%d', $post_id ), array( 'force' => 1 ) );
+		$this->assertResponseStatus( $response, 401 );
+	}
+
+	public function test_guest_post_job_listings_fail() {
+		$this->logout();
+		$response = $this->post(
+			'/wp/v2/job-listings', array(
+				'post_title' => 'Software Engineer',
+				'post_name'  => 'software-engineer',
+			)
+		);
+
+		$this->assertResponseStatus( $response, 401 );
+	}
+
+	public function test_guest_put_job_listings_fail() {
+		$post_id  = $this->get_job_listing();
+		$this->logout();
+		$response = $this->put(
+			sprintf( '/wp/v2/job-listings/%d', $post_id ), array(
+				'post_title' => 'Software Engineer 2',
+			)
+		);
+
+		$this->assertResponseStatus( $response, 401 );
+	}
+
+	public function test_employer_get_job_listings_success() {
+		$this->login_as_employer();
+		$response = $this->get( '/wp/v2/job-listings' );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_employer_get_job_listing_success() {
+		$this->login_as_employer();
+		$post_id  = $this->get_job_listing();
+		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_employer_get_unpublished_job_listing_fail() {
+		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$this->login_as_employer();
+		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response, 403 );
+	}
+
+	public function test_employer_get_their_own_unpublished_job_listing_success() {
+		$this->login_as_employer();
+		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response, 200 );
+	}
+
+	public function test_employer_publish_their_own_unpublished_job_listing_success() {
+		$this->login_as_employer();
+		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$response_get = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
+		$this->assertResponseStatus( $response_get, 200 );
+
+		$response_post = $this->put(
+			sprintf( '/wp/v2/job-listings/%d', $post_id ), array(
+				'post_status' => 'publish',
+			)
+		);
+
+		$this->assertResponseStatus( $response_post, 403 );
+	}
+
+	public function test_employer_delete_job_listings_fail() {
+		$this->login_as_employer();
+		$post_id  = $this->get_job_listing();
+		$response = $this->delete( sprintf( '/wp/v2/job-listings/%d', $post_id ), array( 'force' => 1 ) );
+		$this->assertResponseStatus( $response, 403 );
+	}
+
+	public function test_employer_post_job_listings_fail() {
+		$this->login_as_employer();
+		$response = $this->post(
+			'/wp/v2/job-listings', array(
+				'post_title' => 'Software Engineer',
+				'post_name'  => 'software-engineer',
+			)
+		);
+
+		$this->assertResponseStatus( $response, 403 );
+	}
+
+	public function test_employer_put_job_listings_fail() {
+		$post_id  = $this->get_job_listing();
+		$this->login_as_employer();
+		$response = $this->put(
+			sprintf( '/wp/v2/job-listings/%d', $post_id ), array(
+				'post_title' => 'Software Engineer 2',
+			)
+		);
+
+		$this->assertResponseStatus( $response, 403 );
+	}
+	
 	/**
 	 * @covers WP_Job_Manager_Registrable_Job_Listings::get_fields
 	 */
@@ -32,68 +156,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertResponseStatus( $response, 200 );
 	}
 
-	/**
-	 * @covers WP_Job_Manager_Registrable_Job_Listings::get_fields
-	 */
-	public function test_get_job_listings_add_fields() {
-		$published = $this->factory->job_listing->create_many( 2 );
-		$response  = $this->get( '/wp/v2/job-listings' );
-		$this->assertResponseStatus( $response, 200 );
-		$response_data = $response->get_data();
-		$this->assertInternalType( 'array', $response_data );
-		$this->assertSame( 2, count( $response_data ) );
-		$first_listing = $response_data[0];
-		$this->assertArrayHasKey( 'fields', $first_listing );
-		$fields = $first_listing['fields'];
-		$this->assertArrayHasKey( '_job_location', $fields );
-		$this->assertArrayHasKey( '_application', $fields );
-		$this->assertArrayHasKey( '_company_name', $fields );
-		$this->assertArrayHasKey( '_company_website', $fields );
-		$this->assertArrayHasKey( '_company_tagline', $fields );
-		$this->assertArrayHasKey( '_company_twitter', $fields );
-		$this->assertArrayHasKey( '_company_video', $fields );
-		$this->assertArrayHasKey( '_filled', $fields );
-	}
-
-	public function test_update_update_fields_fail_if_no_permissions() {
-		$this->logout();
-		$published = $this->factory->job_listing->create_many( 2 );
-		$first_id  = $published[0];
-		$response  = $this->get( '/wp/v2/job-listings/' . $first_id );
-		$this->assertResponseStatus( $response, 200 );
-		$response_data                           = $response->get_data();
-		$first_listing                           = $response_data;
-		$first_listing['fields']['_application'] = 'foo@example.com';
-
-		$response = $this->put( '/wp/v2/job-listings/' . $first_listing['id'], $first_listing );
-		$this->assertResponseStatus( $response, 401 );
-	}
-
-	public function test_update_update_fields_success() {
-		$user_id = $this->factory->user->create(
-			array(
-				'role'       => 'administrator',
-				'user_login' => 'superadmin',
-			)
-		);
-		wp_set_current_user( $user_id );
-		$published = $this->factory->job_listing->create_many(
-			2, array(
-				'post_author' => $user_id,
-			)
-		);
-		$this->login_as_admin();
-		$first_id = $published[0];
-		$response = $this->get( '/wp/v2/job-listings/' . $first_id );
-		$this->assertResponseStatus( $response, 200 );
-		$response_data                           = $response->get_data();
-		$first_listing                           = $response_data;
-		$first_listing['fields']['_application'] = 'foo@example.com';
-		$request                                 = array(
-			'fields' => $first_listing['fields'],
-		);
-
-		$response = $this->put( sprintf( '/wp/v2/job-listings/%d', $first_id ), $request );
-		$this->assertResponseStatus( $response, 200 );
+	private function get_job_listing( $args = array() ) {
+		return $this->factory()->job_listing->create_and_get( $args )->ID;
 	}
 }

@@ -150,6 +150,7 @@ class WP_Job_Manager_Shortcodes {
 
 						break;
 					case 'relist':
+					case 'continue':
 						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
 							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
 						}
@@ -226,7 +227,7 @@ class WP_Job_Manager_Shortcodes {
 			'job_manager_get_dashboard_jobs_args',
 			array(
 				'post_type'           => 'job_listing',
-				'post_status'         => array( 'publish', 'expired', 'pending' ),
+				'post_status'         => array( 'publish', 'expired', 'pending', 'draft', 'preview' ),
 				'ignore_sticky_posts' => 1,
 				'posts_per_page'      => $posts_per_page,
 				'offset'              => ( max( 1, get_query_var( 'paged' ) ) - 1 ) * $posts_per_page,
@@ -330,7 +331,13 @@ class WP_Job_Manager_Shortcodes {
 			$atts['filled'] = ( is_bool( $atts['filled'] ) && $atts['filled'] ) || in_array( $atts['filled'], array( 1, '1', 'true', 'yes' ), true );
 		}
 
-		// Get keywords, location, category and type from querystring if set.
+		// Array handling.
+		$atts['categories']         = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
+		$atts['job_types']          = is_array( $atts['job_types'] ) ? $atts['job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
+		$atts['post_status']        = is_array( $atts['post_status'] ) ? $atts['post_status'] : array_filter( array_map( 'trim', explode( ',', $atts['post_status'] ) ) );
+		$atts['selected_job_types'] = is_array( $atts['selected_job_types'] ) ? $atts['selected_job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_job_types'] ) ) );
+
+		// Get keywords and location from querystring if set.
 		if ( ! empty( $_GET['search_keywords'] ) ) {
 			$atts['keywords'] = sanitize_text_field( $_GET['search_keywords'] );
 		}
@@ -340,15 +347,6 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $_GET['search_category'] ) ) {
 			$atts['selected_category'] = sanitize_text_field( $_GET['search_category'] );
 		}
-		if ( ! empty( $_GET['search_job_type'] ) ) {
-			$atts['selected_job_types'] = sanitize_text_field( $_GET['search_job_type'] );
-		}
-
-		// Array handling.
-		$atts['categories']         = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
-		$atts['job_types']          = is_array( $atts['job_types'] ) ? $atts['job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
-		$atts['post_status']        = is_array( $atts['post_status'] ) ? $atts['post_status'] : array_filter( array_map( 'trim', explode( ',', $atts['post_status'] ) ) );
-		$atts['selected_job_types'] = is_array( $atts['selected_job_types'] ) ? $atts['selected_job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_job_types'] ) ) );
 
 		$data_attributes = array(
 			'location'        => $atts['location'],

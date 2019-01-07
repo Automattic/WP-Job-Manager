@@ -27,21 +27,6 @@ jQuery( document ).ready( function ( $ ) {
 			xhr[index].abort();
 		}
 
-		if ( ! append ) {
-			$( results ).addClass( 'loading' );
-			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
-
-			// Not appending. If page > 1, we should show a load previous button so the user can get to earlier-page listings if needed
-			if ( page > 1 && true !== target.data( 'show_pagination' ) ) {
-				var previous = jQuery('<strong>').text(job_manager_ajax_filters.i18n_load_prev_listings).wrap('<a class="load_more_jobs load_previous" href="#"></a>');
-				$( results ).before( previous );
-			} else {
-				target.find( '.load_previous' ).remove();
-			}
-
-			target.find( '.load_more_jobs' ).data( 'page', page );
-		}
-
 		if ( true === target.data( 'show_filters' ) ) {
 
 			var filter_job_type = [];
@@ -203,8 +188,8 @@ jQuery( document ).ready( function ( $ ) {
 		var target = $( this ).closest( 'div.job_listings' );
 		var form = $( this ).closest( 'form' );
 
-		form.find( ':input[name="search_keywords"], :input[name="search_location"], .job-manager-filter' ).not(':input[type="hidden"]').val( '' ).trigger( 'chosen:updated' );
-		form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').val( '' ).trigger( 'chosen:updated' );
+		form.find( ':input[name="search_keywords"], :input[name="search_location"], .job-manager-filter' ).not(':input[type="hidden"]').val( '' ).trigger( 'change.select2' );
+		form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').val( '' ).trigger( 'change.select2' );
 		$( ':input[name="filter_job_type[]"]', form ).not(':input[type="hidden"]').attr( 'checked', 'checked' );
 
 		target.triggerHandler( 'reset' );
@@ -254,11 +239,15 @@ jQuery( document ).ready( function ( $ ) {
 		return false;
 	} );
 
-	if ( $.isFunction( $.fn.chosen ) ) {
-		if ( job_manager_ajax_filters.is_rtl === 1 ) {
-			$( 'select[name^="search_categories"]' ).addClass( 'chosen-rtl' );
+	if ( $.isFunction( $.fn.select2 ) ) {
+		var select2_args = {
+			allowClear: true,
+			minimumResultsForSearch: 10
+		};
+		if ( 1 === parseInt( job_manager_ajax_filters.is_rtl, 10 ) ) {
+			select2_args.dir = 'rtl';
 		}
-		$( 'select[name^="search_categories"]' ).chosen({ search_contains: true });
+		$( 'select[name^="search_categories"]' ).select2( select2_args );
 	}
 
 	var $supports_html5_history = false;
@@ -290,7 +279,7 @@ jQuery( document ).ready( function ( $ ) {
 				if ( state.id && 'job_manager_state' === state.id && index === state.index ) {
 					inital_page = state.page;
 					form.deserialize( state.data );
-					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'chosen:updated' );
+					form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'change.select2' );
 				}
 			}
 

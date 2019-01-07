@@ -1,4 +1,4 @@
-/* global job_manager_chosen_multiselect_args */
+/* global job_manager_select2_multiselect_args */
 jQuery(function(){
-	jQuery( '.job-manager-category-dropdown' ).chosen( job_manager_chosen_multiselect_args );
+	jQuery( '.job-manager-category-dropdown' ).select2( job_manager_select2_multiselect_args );
 });

@@ -21,8 +21,13 @@ class WP_Job_Manager_Install {
 		self::init_user_roles();
 		self::default_terms();
 
-		// Redirect to setup screen for new installs.
+		$is_new_install = false;
+
+		// Fresh installs should be prompted to set up their instance.
 		if ( ! get_option( 'wp_job_manager_version' ) ) {
+			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin-notices.php';
+			WP_Job_Manager_Admin_Notices::add_notice( WP_Job_Manager_Admin_Notices::NOTICE_CORE_SETUP );
+			$is_new_install = true;
 			set_transient( '_job_manager_activation_redirect', 1, HOUR_IN_SECONDS );
 		}
 
@@ -45,6 +50,12 @@ class WP_Job_Manager_Install {
 		if ( false === get_option( 'job_manager_job_dashboard_page_id', false ) && get_option( 'job_manager_job_dashboard_page_slug' ) ) {
 			$page_id = get_page_by_path( get_option( 'job_manager_job_dashboard_page_slug' ) )->ID;
 			update_option( 'job_manager_job_dashboard_page_id', $page_id );
+		}
+
+		if ( $is_new_install ) {
+			$permalink_options = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
+			$permalink_options['jobs_archive'] = '';
+			update_option( 'job_manager_permalinks', wp_json_encode( $permalink_options ) );
 		}
 
 		delete_transient( 'wp_job_manager_addons_html' );

@@ -70,6 +70,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.10",
-    "react": "^16.4.1"
+    "react": "^16.4.1",
+    "select2": "^4.0.5"
   }
 }

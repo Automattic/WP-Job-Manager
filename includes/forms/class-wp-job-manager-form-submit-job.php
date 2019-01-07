@@ -79,6 +79,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				),
 				'done'    => array(
 					'name'     => __( 'Done', 'wp-job-manager' ),
+					'before'   => array( $this, 'done_before' ),
 					'view'     => array( $this, 'done' ),
 					'priority' => 30,
 				),
@@ -120,7 +121,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					$this->job_id = 0;
 					$this->step   = 0;
 				}
-			} elseif ( ! in_array( $job_status, apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview' ) ), true ) ) {
+			} elseif ( ! in_array( $job_status, apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview', 'draft' ) ), true ) ) {
 				$this->job_id = 0;
 				$this->step   = 0;
 			}
@@ -598,8 +599,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				throw new Exception( __( 'You must be signed in to post a new listing.', 'wp-job-manager' ) );
 			}
 
+			$post_status = '';
+			if ( ! $this->job_id || 'draft' === get_post_status( $this->job_id ) ) {
+				$post_status = 'preview';
+			}
+
 			// Update the job.
-			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $this->job_id ? '' : 'preview', $values );
+			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $post_status, $values );
 			$this->update_job_data( $values );
 
 			// Successful, show next step.
@@ -876,7 +882,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Displays the final screen after a job listing has been submitted.
 	 */
 	public function done() {
-		do_action( 'job_manager_job_submitted', $this->job_id );
 		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( $this->job_id ) ) );
+	}
+
+	/**
+	 * Handles the job submissions before the view is called.
+	 */
+	public function done_before() {
+		do_action( 'job_manager_job_submitted', $this->job_id );
 	}
 }

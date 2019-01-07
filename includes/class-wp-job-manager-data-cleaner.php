@@ -59,6 +59,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'wp_job_manager_version',
 		'job_manager_installed_terms',
 		'wpjm_permalinks',
+		'job_manager_permalinks',
 		'job_manager_helper',
 		'job_manager_date_format',
 		'job_manager_google_maps_api_key',
@@ -97,6 +98,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_email_admin_new_job',
 		'job_manager_email_admin_expiring_job',
 		'job_manager_email_employer_expiring_job',
+		'job_manager_admin_notices',
 	);
 
 	/**
