@@ -318,6 +318,9 @@ class WP_Job_Manager {
 
 	/**
 	 * Registers and enqueues scripts and CSS.
+	 *
+	 * Note: For enhanced select, 1.32.0 moved to Select2. Chosen is currently packaged but will be removed in an
+	 * upcoming release.
 	 */
 	public function frontend_scripts() {
 		$ajax_url         = WP_Job_Manager_Ajax::get_endpoint();
@@ -340,28 +343,49 @@ class WP_Job_Manager {
 		$enhanced_select_shortcodes   = array( 'submit_job_form', 'job_dashboard', 'jobs' );
 		$enhanced_select_used_on_page = has_wpjm_shortcode( null, $enhanced_select_shortcodes );
 
-		// Register the script for dependencies that still require it.
-		if ( ! wp_script_is( 'chosen', 'registered' ) ) {
-			wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
-			wp_register_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/css/chosen.css', array(), '1.1.0' );
-		}
-
 		/**
-		 * Filter the use of the deprecated chosen library. Themes and plugins should migrate to Select2.
-		 *
-		 * @since 1.19.0
-		 * @deprecated 1.32.0 Migrate to job_manager_select2_enabled and enable only on pages that need it.
-		 *
-		 * @param bool $chosen_used_on_page
+		 * Set the constant `JOB_MANAGER_DISABLE_CHOSEN_LEGACY_COMPAT` to true to test for future behavior once
+		 * this legacy code is removed and `chosen` is no longer packaged with the plugin.
 		 */
-		if ( apply_filters( 'job_manager_chosen_enabled', false ) ) {
-			_deprecated_hook( 'job_manager_chosen_enabled', '1.32.0', 'job_manager_select2_enabled' );
+		if ( ! defined( 'JOB_MANAGER_DISABLE_CHOSEN_LEGACY_COMPAT' ) || ! JOB_MANAGER_DISABLE_CHOSEN_LEGACY_COMPAT ) {
+			if ( is_wpjm_taxonomy() || is_wpjm_job_listing() || is_wpjm_page() ) {
+				$enhanced_select_used_on_page = true;
+			}
 
-			// Assume if this filter returns true that the current page should have the multi-select scripts.
-			$enhanced_select_used_on_page = true;
+			// Register the script for dependencies that still require it.
+			if ( ! wp_script_is( 'chosen', 'registered' ) ) {
+				wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', array( 'jquery' ), '1.1.0', true );
+				wp_register_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/css/chosen.css', array(), '1.1.0' );
+			}
 
-			wp_enqueue_script( 'chosen' );
-			wp_enqueue_style( 'chosen' );
+			// Backwards compatibility for third-party themes/plugins while they transition to Select2.
+			wp_localize_script(
+				'chosen', 'job_manager_chosen_multiselect_args',
+				apply_filters(
+					'job_manager_chosen_multiselect_args', array(
+						'search_contains' => true,
+					)
+				)
+			);
+
+			/**
+			 * Filter the use of the deprecated chosen library. Themes and plugins should migrate to Select2. This will be
+			 * removed in an upcoming major release.
+			 *
+			 * @since 1.19.0
+			 * @deprecated 1.32.0 Migrate to job_manager_select2_enabled and enable only on pages that need it.
+			 *
+			 * @param bool $chosen_used_on_page
+			 */
+			if ( apply_filters( 'job_manager_chosen_enabled', false ) ) {
+				_deprecated_hook( 'job_manager_chosen_enabled', '1.32.0', 'job_manager_select2_enabled' );
+
+				// Assume if this filter returns true that the current page should have the multi-select scripts.
+				$enhanced_select_used_on_page = true;
+
+				wp_enqueue_script( 'chosen' );
+				wp_enqueue_style( 'chosen' );
+			}
 		}
 
 		/**
