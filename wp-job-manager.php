@@ -410,9 +410,11 @@ class WP_Job_Manager {
 				$select2_args['dir'] = 'rtl';
 			}
 
+			$select2_args['width'] = '100%';
+
 			wp_localize_script(
-				'select2', 'job_manager_select2_multiselect_args',
-				apply_filters( 'job_manager_select2_multiselect_args', $select2_args )
+				'select2', 'job_manager_select2_args',
+				apply_filters( 'job_manager_select2_args', $select2_args )
 			);
 		}
 

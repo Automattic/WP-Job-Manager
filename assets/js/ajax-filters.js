@@ -239,14 +239,11 @@ jQuery( document ).ready( function ( $ ) {
 		return false;
 	} );
 
-	if ( $.isFunction( $.fn.select2 ) ) {
-		var select2_args = {
-			allowClear: true,
-			minimumResultsForSearch: 10
-		};
-		if ( 1 === parseInt( job_manager_ajax_filters.is_rtl, 10 ) ) {
-			select2_args.dir = 'rtl';
-		}
+	if ( $.isFunction( $.fn.select2 ) && typeof job_manager_select2_args !== 'undefined' ) {
+		var select2_args = job_manager_select2_args;
+		select2_args['allowClear']              = true;
+		select2_args['minimumResultsForSearch'] = 10;
+
 		$( 'select[name^="search_categories"]:visible' ).select2( select2_args );
 	}
 
