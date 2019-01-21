@@ -42,6 +42,8 @@ matrix:
     env: WP_VERSION=latest
   - php: "7.2"
     env: WP_VERSION=latest
+  - php: "7.3"
+    env: WP_VERSION=latest
 
 # Clones WordPress and configures our testing environment.
 before_script:
