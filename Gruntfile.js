@@ -102,7 +102,8 @@ module.exports = function( grunt ) {
 					'!readme.md',
 					'!phpcs.xml.dist',
 					'!tools/**',
-					'!mixtape.json'
+					'!mixtape.json',
+					'!jest.config.js'
 				],
 				dest: '<%= dirs.build %>/'
 			},
