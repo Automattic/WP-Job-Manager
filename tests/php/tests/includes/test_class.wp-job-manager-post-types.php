@@ -6,9 +6,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$this->enable_manage_job_listings_cap();
 		update_option( 'job_manager_enable_categories', 1 );
 		update_option( 'job_manager_enable_types', 1 );
-		unregister_post_type( 'job_listing' );
-		$post_type_instance = WP_Job_Manager_Post_Types::instance();
-		$post_type_instance->register_post_types();
+		$this->reregister_post_type();
 		add_filter( 'job_manager_geolocation_enabled', '__return_false' );
 	}
 

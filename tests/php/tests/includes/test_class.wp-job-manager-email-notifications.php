@@ -16,9 +16,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		update_option( 'job_manager_enable_categories', 1 );
 		update_option( 'job_manager_enable_types', 1 );
 		add_theme_support( 'job-manager-templates' );
-		unregister_post_type( 'job_listing' );
-		$post_type_instance = WP_Job_Manager_Post_Types::instance();
-		$post_type_instance->register_post_types();
+		$this->reregister_post_type();
 		WP_Job_Manager_Email_Notifications::clear_deferred_notifications();
 		WP_Job_Manager_Email_Notifications::maybe_init();
 	}
