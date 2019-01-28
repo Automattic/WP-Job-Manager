@@ -1,14 +1,14 @@
-# Copyright (C) 2018 Automattic
+# Copyright (C) 2019 Automattic
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.32.0\n"
+"Project-Id-Version: WP Job Manager 1.32.1\n"
 "Report-Msgid-Bugs-To: https://github.com/Automattic/WP-Job-Manager/issues\n"
-"POT-Creation-Date: 2018-12-17 17:26:39+00:00\n"
+"POT-Creation-Date: 2019-01-28 10:55:14+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
 "X-Generator: grunt-wp-i18n1.0.2\n"
@@ -278,7 +278,7 @@ msgid "View"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:624
-#: includes/class-wp-job-manager-post-types.php:317
+#: includes/class-wp-job-manager-post-types.php:316
 #: templates/job-dashboard.php:52 templates/job-dashboard.php:70
 msgid "Edit"
 msgstr ""
@@ -349,8 +349,8 @@ msgid ""
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:117
-#: includes/class-wp-job-manager-post-types.php:311
-#: includes/class-wp-job-manager-post-types.php:413
+#: includes/class-wp-job-manager-post-types.php:310
+#: includes/class-wp-job-manager-post-types.php:412
 msgid "Job Listings"
 msgstr ""
 
@@ -741,7 +741,7 @@ msgstr ""
 #: includes/admin/class-wp-job-manager-taxonomy-meta.php:78
 #: includes/admin/class-wp-job-manager-taxonomy-meta.php:101
 #: includes/admin/class-wp-job-manager-taxonomy-meta.php:120
-#: includes/class-wp-job-manager-post-types.php:271
+#: includes/class-wp-job-manager-post-types.php:270
 #: includes/rest-api/class-wp-job-manager-models-job-types-custom-fields.php:36
 msgid "Employment Type"
 msgstr ""
@@ -1111,7 +1111,7 @@ msgid "WP Job Manager"
 msgstr ""
 
 #: includes/class-wp-job-manager-data-exporter.php:52
-#: includes/class-wp-job-manager-post-types.php:334
+#: includes/class-wp-job-manager-post-types.php:333
 msgid "Company Logo"
 msgstr ""
 
@@ -1124,13 +1124,13 @@ msgid "Job title"
 msgstr ""
 
 #: includes/class-wp-job-manager-email-notifications.php:243
-#: includes/class-wp-job-manager-post-types.php:206
+#: includes/class-wp-job-manager-post-types.php:205
 #: includes/forms/class-wp-job-manager-form-submit-job.php:192
 msgid "Job type"
 msgstr ""
 
 #: includes/class-wp-job-manager-email-notifications.php:253
-#: includes/class-wp-job-manager-post-types.php:142
+#: includes/class-wp-job-manager-post-types.php:141
 #: includes/forms/class-wp-job-manager-form-submit-job.php:201
 msgid "Job category"
 msgstr ""
@@ -1185,13 +1185,13 @@ msgstr ""
 msgid "Employer"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:143
+#: includes/class-wp-job-manager-post-types.php:142
 msgid "Job categories"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:171
-#: includes/class-wp-job-manager-post-types.php:234
-#: includes/class-wp-job-manager-post-types.php:327
+#: includes/class-wp-job-manager-post-types.php:170
+#: includes/class-wp-job-manager-post-types.php:233
+#: includes/class-wp-job-manager-post-types.php:326
 #. translators: Placeholder %s is the plural label of the job listing category
 #. taxonomy type.
 #. translators: Placeholder %s is the plural label of the job listing job type
@@ -1201,9 +1201,9 @@ msgstr ""
 msgid "Search %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:173
-#: includes/class-wp-job-manager-post-types.php:236
-#: includes/class-wp-job-manager-post-types.php:313
+#: includes/class-wp-job-manager-post-types.php:172
+#: includes/class-wp-job-manager-post-types.php:235
+#: includes/class-wp-job-manager-post-types.php:312
 #. translators: Placeholder %s is the plural label of the job listing category
 #. taxonomy type.
 #. translators: Placeholder %s is the plural label of the job listing job type
@@ -1213,9 +1213,9 @@ msgstr ""
 msgid "All %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:175
-#: includes/class-wp-job-manager-post-types.php:238
-#: includes/class-wp-job-manager-post-types.php:333
+#: includes/class-wp-job-manager-post-types.php:174
+#: includes/class-wp-job-manager-post-types.php:237
+#: includes/class-wp-job-manager-post-types.php:332
 #. translators: Placeholder %s is the singular label of the job listing
 #. category taxonomy type.
 #. translators: Placeholder %s is the singular label of the job listing job
@@ -1225,8 +1225,8 @@ msgstr ""
 msgid "Parent %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:177
-#: includes/class-wp-job-manager-post-types.php:240
+#: includes/class-wp-job-manager-post-types.php:176
+#: includes/class-wp-job-manager-post-types.php:239
 #. translators: Placeholder %s is the singular label of the job listing
 #. category taxonomy type.
 #. translators: Placeholder %s is the singular label of the job listing job
@@ -1234,9 +1234,9 @@ msgstr ""
 msgid "Parent %s:"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:179
-#: includes/class-wp-job-manager-post-types.php:242
-#: includes/class-wp-job-manager-post-types.php:319
+#: includes/class-wp-job-manager-post-types.php:178
+#: includes/class-wp-job-manager-post-types.php:241
+#: includes/class-wp-job-manager-post-types.php:318
 #. translators: Placeholder %s is the singular label of the job listing
 #. category taxonomy type.
 #. translators: Placeholder %s is the singular label of the job listing job
@@ -1246,8 +1246,8 @@ msgstr ""
 msgid "Edit %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:181
-#: includes/class-wp-job-manager-post-types.php:244
+#: includes/class-wp-job-manager-post-types.php:180
+#: includes/class-wp-job-manager-post-types.php:243
 #. translators: Placeholder %s is the singular label of the job listing
 #. category taxonomy type.
 #. translators: Placeholder %s is the singular label of the job listing job
@@ -1255,8 +1255,8 @@ msgstr ""
 msgid "Update %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:183
-#: includes/class-wp-job-manager-post-types.php:246
+#: includes/class-wp-job-manager-post-types.php:182
+#: includes/class-wp-job-manager-post-types.php:245
 #. translators: Placeholder %s is the singular label of the job listing
 #. category taxonomy type.
 #. translators: Placeholder %s is the singular label of the job listing job
@@ -1264,8 +1264,8 @@ msgstr ""
 msgid "Add New %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:185
-#: includes/class-wp-job-manager-post-types.php:248
+#: includes/class-wp-job-manager-post-types.php:184
+#: includes/class-wp-job-manager-post-types.php:247
 #. translators: Placeholder %s is the singular label of the job listing
 #. category taxonomy type.
 #. translators: Placeholder %s is the singular label of the job listing job
@@ -1273,79 +1273,79 @@ msgstr ""
 msgid "New %s Name"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:207
+#: includes/class-wp-job-manager-post-types.php:206
 msgid "Job types"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:280
+#: includes/class-wp-job-manager-post-types.php:279
 msgid "Job"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:281
+#: includes/class-wp-job-manager-post-types.php:280
 msgid "Jobs"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:314
+#: includes/class-wp-job-manager-post-types.php:313
 msgid "Add New"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:316
+#: includes/class-wp-job-manager-post-types.php:315
 #. translators: Placeholder %s is the singular label of the job listing post
 #. type.
 msgid "Add %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:321
+#: includes/class-wp-job-manager-post-types.php:320
 #. translators: Placeholder %s is the singular label of the job listing post
 #. type.
 msgid "New %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:323
-#: includes/class-wp-job-manager-post-types.php:325
+#: includes/class-wp-job-manager-post-types.php:322
+#: includes/class-wp-job-manager-post-types.php:324
 #. translators: Placeholder %s is the singular label of the job listing post
 #. type.
 msgid "View %s"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:329
+#: includes/class-wp-job-manager-post-types.php:328
 #. translators: Placeholder %s is the singular label of the job listing post
 #. type.
 msgid "No %s found"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:331
+#: includes/class-wp-job-manager-post-types.php:330
 #. translators: Placeholder %s is the plural label of the job listing post
 #. type.
 msgid "No %s found in trash"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:335
+#: includes/class-wp-job-manager-post-types.php:334
 msgid "Set company logo"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:336
+#: includes/class-wp-job-manager-post-types.php:335
 msgid "Remove company logo"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:337
+#: includes/class-wp-job-manager-post-types.php:336
 msgid "Use as company logo"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:340
+#: includes/class-wp-job-manager-post-types.php:339
 #. translators: Placeholder %s is the plural label of the job listing post
 #. type.
 msgid "This is where you can create and manage %s."
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:381
+#: includes/class-wp-job-manager-post-types.php:380
 #. translators: Placeholder %s is the number of expired posts of this type.
 msgid "Expired <span class=\"count\">(%s)</span>"
 msgid_plural "Expired <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-wp-job-manager-post-types.php:393
+#: includes/class-wp-job-manager-post-types.php:392
 #. translators: Placeholder %s is the number of posts in a preview state.
 msgid "Preview <span class=\"count\">(%s)</span>"
 msgid_plural "Preview <span class=\"count\">(%s)</span>"
@@ -2229,15 +2229,15 @@ msgstr ""
 msgid "Standard REST API implementation from WP core"
 msgstr ""
 
-#: wp-job-manager.php:328
+#: wp-job-manager.php:331
 msgid "Load previous listings"
 msgstr ""
 
-#: wp-job-manager.php:429
+#: wp-job-manager.php:455
 msgid "Invalid file type. Accepted types:"
 msgstr ""
 
-#: wp-job-manager.php:444
+#: wp-job-manager.php:470
 msgid "Are you sure you want to delete this listing?"
 msgstr ""
 
@@ -2294,19 +2294,19 @@ msgid "yy-mm-dd"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-permalink-settings.php:104
-#: includes/class-wp-job-manager-post-types.php:853
+#: includes/class-wp-job-manager-post-types.php:823
 msgctxt "Job permalink - resave permalinks after changing this"
 msgid "job"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-permalink-settings.php:113
-#: includes/class-wp-job-manager-post-types.php:854
+#: includes/class-wp-job-manager-post-types.php:824
 msgctxt "Job category slug - resave permalinks after changing this"
 msgid "job-category"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-permalink-settings.php:122
-#: includes/class-wp-job-manager-post-types.php:855
+#: includes/class-wp-job-manager-post-types.php:825
 msgctxt "Job type slug - resave permalinks after changing this"
 msgid "job-type"
 msgstr ""
@@ -2326,13 +2326,13 @@ msgctxt "Default page title (wizard)"
 msgid "Jobs"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:374
+#: includes/class-wp-job-manager-post-types.php:373
 #: wp-job-manager-functions.php:320
 msgctxt "post status"
 msgid "Expired"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:387
+#: includes/class-wp-job-manager-post-types.php:386
 #: wp-job-manager-functions.php:321
 msgctxt "post status"
 msgid "Preview"
@@ -2358,7 +2358,7 @@ msgctxt "post status"
 msgid "Active"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:837
+#: includes/class-wp-job-manager-post-types.php:807
 msgctxt "Post type archive slug - resave permalinks after changing this"
 msgid "jobs"
 msgstr ""
