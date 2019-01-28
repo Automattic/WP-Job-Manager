@@ -57,6 +57,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 			return;
 		}
 
+		$this->reregister_post_type();
 		$this->disable_manage_job_listings_cap();
 
 		// Ensure the role gets created.

@@ -43,6 +43,14 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * When needed, this allows you to re-register post type.
+	 */
+	protected function reregister_post_type() {
+		unregister_post_type( 'job_listing' );
+		WP_Job_Manager_Post_Types::instance()->register_post_types();
+	}
+
+	/**
 	 * Helps to prevent `wp_die()` from ending execution during API call.
 	 *
 	 * Example setting of hook: add_action( 'wp_die_handler', array( $this, 'return_do_not_die' ) )

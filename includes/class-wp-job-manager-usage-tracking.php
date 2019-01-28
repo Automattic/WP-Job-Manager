@@ -121,7 +121,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 * @return bool
 	 */
 	protected function do_track_plugin( $plugin_slug ) {
-		if ( 1 === preg_match( '/^wp-job-manager/', $plugin_slug ) ) {
+		if ( 1 === preg_match( '/^wp\-job\-manager/', $plugin_slug ) ) {
 			return true;
 		}
 		$third_party_plugins = array(
