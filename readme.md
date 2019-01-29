@@ -3,7 +3,7 @@
 **Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent  
 **Requires at least:** 4.7.0  
 **Tested up to:** 5.0  
-**Stable tag:** 1.32.0  
+**Stable tag:** 1.32.1  
 **License:** GPLv3  
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -152,10 +152,14 @@ It then creates a database based on the parameters passed to it.
 
 ## Changelog ##
 
+### 1.32.1 ###
+* Fix: Adds compatibility with PHP 7.3
+* Fix: Restores original site search functionality.
+
 ### 1.32.0 ###
 * Enhancement: Switched from Chosen to Select2 for enhanced dropdown handling and better mobile support. May require theme update.
 * Enhancement: Draft and unsubmitted job listings now appear in `[job_dashboard]`, allowing users to complete their submission.
-* Enhancement: Filled and expired positions are now hidden from WordPress search. (@felipeelia)
+* Enhancement: [REVERTED IN 1.32.1] Filled and expired positions are now hidden from WordPress search. (@felipeelia) 
 * Enhancement: Adds additional support for the new block editor. Restricted to classic block for compatibility with frontend editor.
 * Enhancement: Job types can be preselected in `[jobs]` shortcode with `?search_job_type=term-slug`. (@felipeelia)
 * Enhancement: Author selection in WP admin now uses a searchable dropdown.
