@@ -58,6 +58,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	public function __construct() {
 		add_action( 'wp', array( $this, 'process' ) );
 		add_action( 'submit_job_form_start', array( $this, 'output_submit_form_nonce_field' ) );
+		add_action( 'preview_job_form_start', array( $this, 'output_preview_form_nonce_field' ) );
 
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', array( $this, 'display_recaptcha_field' ) );
@@ -863,6 +864,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return;
 		}
 
+		$this->check_preview_form_nonce_field();
+
 		// Edit = show submit form again.
 		if ( ! empty( $_POST['edit_job'] ) ) {
 			$this->step --;
@@ -910,6 +913,29 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 		if ( empty( $_REQUEST['_wpjm_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpjm_nonce'], 'submit-job-' . $this->job_id ) ) {
 			wp_nonce_ays( 'submit-job-' . $this->job_id );
+			die();
+		}
+	}
+
+	/**
+	 * Output the nonce field on job preview form.
+	 */
+	public function output_preview_form_nonce_field() {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+		wp_nonce_field( 'preview-job-' . $this->job_id, '_wpjm_nonce' );
+	}
+
+	/**
+	 * Check the nonce field on the submit form.
+	 */
+	public function check_preview_form_nonce_field() {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+		if ( empty( $_REQUEST['_wpjm_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpjm_nonce'], 'preview-job-' . $this->job_id ) ) {
+			wp_nonce_ays( 'preview-job-' . $this->job_id );
 			die();
 		}
 	}
