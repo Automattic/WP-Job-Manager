@@ -57,6 +57,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function __construct() {
 		add_action( 'wp', array( $this, 'process' ) );
+		add_action( 'submit_job_form_start', array( $this, 'output_submit_form_nonce_field' ) );
+
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', array( $this, 'display_recaptcha_field' ) );
 			add_action( 'submit_job_form_validate_fields', array( $this, 'validate_recaptcha_field' ) );
@@ -455,7 +457,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	public function submit() {
 		$this->init_fields();
 
-		// Load data if neccessary.
+		// Load data if necessary.
 		if ( $this->job_id ) {
 			$job = get_post( $this->job_id );
 			foreach ( $this->fields as $group_key => $group_fields ) {
@@ -537,6 +539,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( empty( $_POST['submit_job'] ) ) {
 				return;
 			}
+
+			$this->check_submit_form_nonce_field();
 
 			// Validate required.
 			$validation_status = $this->validate_fields( $values );
@@ -884,6 +888,29 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 
 			$this->step ++;
+		}
+	}
+
+	/**
+	 * Output the nonce field on job submission form.
+	 */
+	public function output_submit_form_nonce_field() {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+		wp_nonce_field( 'submit-job-' . $this->job_id, '_wpjm_nonce' );
+	}
+
+	/**
+	 * Check the nonce field on the submit form.
+	 */
+	public function check_submit_form_nonce_field() {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+		if ( empty( $_REQUEST['_wpjm_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpjm_nonce'], 'submit-job-' . $this->job_id ) ) {
+			wp_nonce_ays( 'submit-job-' . $this->job_id );
+			die();
 		}
 	}
 
