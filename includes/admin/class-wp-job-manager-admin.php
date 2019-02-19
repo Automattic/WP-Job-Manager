@@ -42,12 +42,8 @@ class WP_Job_Manager_Admin {
 
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-admin-notices.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-cpt.php';
-		if ( version_compare( $wp_version, '4.7.0', '<' ) ) {
-			include_once dirname( __FILE__ ) . '/class-wp-job-manager-cpt-legacy.php';
-			WP_Job_Manager_CPT_Legacy::instance();
-		} else {
-			WP_Job_Manager_CPT::instance();
-		}
+		WP_Job_Manager_CPT::instance();
+
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-settings.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-writepanels.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-setup.php';
