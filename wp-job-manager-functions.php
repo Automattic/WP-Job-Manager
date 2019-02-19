@@ -1438,3 +1438,20 @@ function job_manager_duplicate_listing( $post_id ) {
 	return $new_post_id;
 }
 
+/**
+ * Escape JSON for use on HTML or attribute text nodes.
+ *
+ * @since 1.32.2
+ *
+ * @param string $json JSON to escape.
+ * @param bool   $html True if escaping for HTML text node, false for attributes. Determines how quotes are handled.
+ * @return string Escaped JSON.
+ */
+function wpjm_esc_json( $json, $html = false ) {
+	return _wp_specialchars(
+		$json,
+		$html ? ENT_NOQUOTES : ENT_QUOTES, // Escape quotes in attribute nodes only.
+		'UTF-8',                           // json_encode() outputs UTF-8 (really just ASCII), not the blog's charset.
+		true                               // Double escape entities: `&amp;` -> `&amp;amp;`.
+	);
+}
