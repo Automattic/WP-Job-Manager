@@ -928,7 +928,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Check the nonce field on the submit form.
+	 * Check the nonce field on the preview form.
 	 */
 	public function check_preview_form_nonce_field() {
 		if ( ! is_user_logged_in() ) {
