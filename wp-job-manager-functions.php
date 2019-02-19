@@ -623,12 +623,26 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 		do_action( 'wpjm_notify_new_user', $user_id, $args['password'], $new_user );
 
 		// Login.
+		add_action( 'set_logged_in_cookie', '_wpjm_update_global_login_cookie' );
 		wp_set_auth_cookie( $user_id, true, is_ssl() );
 		wp_set_current_user( $user_id );
+		remove_action( 'set_logged_in_cookie', '_wpjm_update_global_login_cookie' );
 
 		return true;
 	}
 endif;
+
+/**
+ * Allows for immediate access to the logged in cookie after mid-request login.
+ *
+ * @since 1.32.2
+ * @access private
+ *
+ * @param string $logged_in_cookie Logged in cookie.
+ */
+function _wpjm_update_global_login_cookie( $logged_in_cookie ) {
+	$_COOKIE[ LOGGED_IN_COOKIE ] = $logged_in_cookie;
+}
 
 /**
  * Checks if the user can upload a file via the Ajax endpoint.
