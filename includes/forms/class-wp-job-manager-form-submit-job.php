@@ -707,6 +707,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return 0;
 		}
 
+		$attachment_url_parts = parse_url( $attachment_url );
+
+		// Relative paths aren't allowed.
+		if ( false !== strpos( $attachment_url_parts['path'], '../' ) ) {
+			return 0;
+		}
+
+		$attachment_url = sprintf( '%s://%s%s', $attachment_url_parts['scheme'], $attachment_url_parts['host'], $attachment_url_parts['path'] );
+
 		$attachment_url = str_replace( array( $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ), array( $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ), $attachment_url );
 		if ( empty( $attachment_url ) || ! is_string( $attachment_url ) ) {
 			return 0;
