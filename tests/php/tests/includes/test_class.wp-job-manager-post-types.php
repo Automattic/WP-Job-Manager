@@ -730,7 +730,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			$jobs->the_post();
 			$post            = get_post();
 			$structured_data = wpjm_get_job_listing_structured_data( $post );
-			$json_data       = wp_json_encode( $structured_data );
+			$json_data       = wpjm_esc_json( wp_json_encode( $structured_data ), true );
 			ob_start();
 			$instance->output_structured_data();
 			$result = ob_get_clean();
