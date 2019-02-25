@@ -223,9 +223,9 @@ class WP_Job_Manager_Post_Types {
 				apply_filters(
 					'register_taxonomy_job_listing_type_args',
 					array(
-						'hierarchical'  => true,
-						'label'         => $plural,
-						'labels'        => array(
+						'hierarchical'         => true,
+						'label'                => $plural,
+						'labels'               => array(
 							'name'              => $plural,
 							'singular_name'     => $singular,
 							'menu_name'         => ucwords( $plural ),
@@ -246,18 +246,19 @@ class WP_Job_Manager_Post_Types {
 							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ), $singular ),
 						),
-						'show_ui'       => true,
-						'show_tagcloud' => false,
-						'public'        => $public,
-						'capabilities'  => array(
+						'show_ui'              => true,
+						'show_tagcloud'        => false,
+						'public'               => $public,
+						'capabilities'         => array(
 							'manage_terms' => $admin_capability,
 							'edit_terms'   => $admin_capability,
 							'delete_terms' => $admin_capability,
 							'assign_terms' => $admin_capability,
 						),
-						'rewrite'       => $rewrite,
-						'show_in_rest'  => true,
-						'rest_base'     => 'job-types',
+						'rewrite'              => $rewrite,
+						'show_in_rest'         => true,
+						'rest_base'            => 'job-types',
+						'meta_box_sanitize_cb' => array( $this, 'sanitize_job_type_meta_box_input' ),
 					)
 				)
 			);
@@ -417,6 +418,20 @@ class WP_Job_Manager_Post_Types {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Sanitize job type meta box input data from WP admin.
+	 *
+	 * @param WP_Taxonomy $taxonomy  Taxonomy being sterilized.
+	 * @param mixed       $input     Raw term data from the 'tax_input' field.
+	 * @return int[]|int
+	 */
+	public function sanitize_job_type_meta_box_input( $taxonomy, $input ) {
+		if ( is_array( $input ) ) {
+			return array_map( 'intval', $input );
+		}
+		return intval( $input );
 	}
 
 	/**
