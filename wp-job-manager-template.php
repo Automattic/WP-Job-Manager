@@ -196,6 +196,7 @@ function candidates_can_apply( $post = null ) {
 
 /**
  * Checks if logged user role is 'employer'
+ *
  * @since
  * @return boolean
  */
