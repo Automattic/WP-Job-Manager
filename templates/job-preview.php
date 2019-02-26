@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     WP Job Manager
  * @category    Template
- * @version     1.31.1
+ * @version     1.32.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,6 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <form method="post" id="job_preview" action="<?php echo esc_url( $form->get_action() ); ?>">
+	<?php
+	/**
+	 * Fires at the top of the preview job form.
+	 *
+	 * @since 1.32.2
+	 */
+	do_action( 'preview_job_form_start' );
+	?>
 	<div class="job_listing_preview_title">
 		<input type="submit" name="continue" id="job_preview_submit_button" class="button job-manager-button-submit-listing" value="<?php echo esc_attr( apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing', 'wp-job-manager' ) ) ); ?>" />
 		<input type="submit" name="edit_job" class="button job-manager-button-edit-listing" value="<?php esc_attr_e( 'Edit listing', 'wp-job-manager' ); ?>" />
@@ -30,4 +38,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<input type="hidden" name="step" value="<?php echo esc_attr( $form->get_step() ); ?>" />
 		<input type="hidden" name="job_manager_form" value="<?php echo esc_attr( $form->get_form_name() ); ?>" />
 	</div>
+	<?php
+	/**
+	 * Fires at the bottom of the preview job form.
+	 *
+	 * @since 1.32.2
+	 */
+	do_action( 'preview_job_form_end' );
+	?>
 </form>

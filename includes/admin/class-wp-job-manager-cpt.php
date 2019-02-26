@@ -819,11 +819,11 @@ class WP_Job_Manager_CPT {
 		<script type="text/javascript">
 			jQuery( document ).ready( function($) {
 				<?php if ( ! empty( $display ) ) : ?>
-					jQuery( '#post-status-display' ).html( <?php echo wp_json_encode( $display ); ?> );
+					jQuery( '#post-status-display' ).html( decodeURIComponent( '<?php echo rawurlencode( (string) wp_specialchars_decode( $display ) ); ?>' ) );
 				<?php endif; ?>
 
 				var select = jQuery( '#post-status-select' ).find( 'select' );
-				jQuery( select ).html( <?php echo wp_json_encode( $options ); ?> );
+				jQuery( select ).html( decodeURIComponent( '<?php echo rawurlencode( (string) wp_specialchars_decode( $options ) ); ?>' ) );
 			} );
 		</script>
 		<?php

@@ -1,3 +1,9 @@
+= 1.32.2 =
+* Fix: Issue saving job types for job listings in WordPress admin after WordPress 5.1 update.
+* Fix: Add nonce checks on edit/submit forms for logged in users. Will require updates to `templates/job-preview.php` if overridden in theme. (Props to foobar7)
+* Fix: Escape JSON encoded strings.
+* Fix: Add additional sanitization for file attachment fields.
+
 = 1.32.1 =
 * Fix: Adds compatibility with PHP 7.3
 * Fix: Restores original site search functionality.

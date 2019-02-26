@@ -55,6 +55,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 */
 	public function __construct() {
 		add_action( 'wp', array( $this, 'submit_handler' ) );
+		add_action( 'submit_job_form_start', array( $this, 'output_submit_form_nonce_field' ) );
+
 		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
 
 		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
@@ -157,6 +159,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		if ( empty( $_POST['submit_job'] ) ) {
 			return;
 		}
+
+		$this->check_submit_form_nonce_field();
 
 		try {
 
