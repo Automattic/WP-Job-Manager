@@ -195,6 +195,21 @@ function candidates_can_apply( $post = null ) {
 }
 
 /**
+ * Checks if logged user role is 'employer'
+ * @since
+ * @return boolean
+ */
+function is_employer() {
+	if ( get_current_user_id() ) {
+		$user = get_userdata( get_current_user_id() );
+		if ( in_array( 'employer', (array) $user->roles ) ){
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * Displays the permalink for the job listing post.
  *
  * @since 1.0.0

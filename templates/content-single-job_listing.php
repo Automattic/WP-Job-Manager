@@ -36,7 +36,7 @@ global $post;
 			<?php wpjm_the_job_description(); ?>
 		</div>
 
-		<?php if ( candidates_can_apply() ) : ?>
+		<?php if ( candidates_can_apply() && ! is_employer() ) : ?>
 			<?php get_job_manager_template( 'job-application.php' ); ?>
 		<?php endif; ?>
 
