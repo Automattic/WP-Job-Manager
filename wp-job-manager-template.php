@@ -202,7 +202,7 @@ function candidates_can_apply( $post = null ) {
 function is_employer() {
 	if ( get_current_user_id() ) {
 		$user = get_userdata( get_current_user_id() );
-		if ( in_array( 'employer', (array) $user->roles ) ){
+		if ( in_array( 'employer', (array) $user->roles ) ) {
 			return true;
 		}
 	}
@@ -803,7 +803,8 @@ function the_job_location( $map_link = true, $post = null ) {
 				apply_filters(
 					'the_job_location_map_link',
 					'<a class="google_map_link" href="' . esc_url( 'http://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
-					$location, $post
+					$location,
+					$post
 				)
 			);
 		} else {
