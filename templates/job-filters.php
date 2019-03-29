@@ -51,6 +51,12 @@ do_action( 'job_manager_job_filters_before', $atts );
 			</div>
 		<?php endif; ?>
 
+		<?php if ( apply_filters( 'job_manager_job_filters_show_submit_button', true ) ) : ?>
+			<div class="search_submit">
+				<input type="submit" value="<?php esc_attr_e( 'Search Jobs', 'wp-job-manager' ); ?>">
+			</div>
+		<?php endif; ?>
+
 		<?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
 	</div>
 
