@@ -52,8 +52,11 @@ jQuery(document).ready(function($) {
 			searching: function() {
 				return job_manager_admin_params.user_selection_strings.searching;
 			},
-			escapeMarkup: function( m ) {
-				return m;
+			templateResult: function (result) {
+				return result.text;
+			},
+			templateSelection: function (selection) {
+				return selection.text;
 			},
 			width: '100%',
 			ajax: {
