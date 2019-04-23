@@ -1,11 +1,21 @@
 jQuery(document).ready(function($) {
 	// Tooltips
-	$( '.tips, .help_tip' ).tipTip({
-		'attribute' : 'data-tip',
-		'fadeIn' : 50,
-		'fadeOut' : 50,
-		'delay' : 200
-	});
+	$( '.tips, .help_tip' ).each( function() {
+		var $self = $(this);
+		var tipText = $self.attr( 'data-tip' );
+
+		if ( tipText ) {
+			$(this).tipTip( {
+				'content': '',
+				'fadeIn': 50,
+				'fadeOut': 50,
+				'delay': 200,
+				'enter': function () {
+					$(tiptip_content).text( tipText );
+				}
+			} );
+		}
+	} );
 
 	// Author
 	$( 'p.form-field-author' ).on( 'click', 'a.change-author', function() {
