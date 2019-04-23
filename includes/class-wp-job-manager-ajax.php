@@ -401,8 +401,8 @@ class WP_Job_Manager_Ajax {
 		foreach ( $users as $user ) {
 			$found_users[ $user->ID ] = sprintf(
 				// translators: Used in user select. %1$s is the user's display name; #%2$s is the user ID; %3$s is the user email.
-				esc_html__( '%1$s (#%2$s &ndash; %3$s)', 'wp-job-manager' ),
-				$user->display_name,
+				esc_html__( '%1$s (#%2$s – %3$s)', 'wp-job-manager' ),
+				htmlentities( $user->display_name ),
 				absint( $user->ID ),
 				$user->user_email
 			);

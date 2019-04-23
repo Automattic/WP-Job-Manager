@@ -517,8 +517,8 @@ class WP_Job_Manager_Writepanels {
 				if ( $posted_by ) {
 					$user_string = sprintf(
 						// translators: Used in user select. %1$s is the user's display name; #%2$s is the user ID; %3$s is the user email.
-						esc_html__( '%1$s (#%2$s &ndash; %3$s)', 'wp-job-manager' ),
-						$posted_by->display_name,
+						esc_html__( '%1$s (#%2$s – %3$s)', 'wp-job-manager' ),
+						htmlentities( $posted_by->display_name ),
 						absint( $posted_by->ID ),
 						$posted_by->user_email
 					);

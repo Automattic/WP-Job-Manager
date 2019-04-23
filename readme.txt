@@ -3,7 +3,7 @@ Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.7.0
 Tested up to: 5.1
-Stable tag: 1.32.2
+Stable tag: 1.32.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,10 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.32.3 =
+* Fix: Escape tooltip text in WordPress admin. (Props hd7exploit)
+* Fix: Escape user display names on author selector while editing job listings. (Props hd7exploit)
 
 = 1.32.2 =
 * Fix: Issue saving job types for job listings in WordPress admin after WordPress 5.1 update.
