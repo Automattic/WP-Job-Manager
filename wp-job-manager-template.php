@@ -548,7 +548,7 @@ function wpjm_get_the_job_description( $post = null ) {
 		return null;
 	}
 
-	$description = apply_filters( 'the_job_description', get_the_content( $post ) );
+	$description = apply_filters( 'the_job_description', $post->post_content );
 
 	/**
 	 * Filter for the job description.
