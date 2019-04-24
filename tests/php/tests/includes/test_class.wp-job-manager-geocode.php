@@ -259,7 +259,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	 */
 	public function test_get_location_data_error_live() {
 		$this->use_live_google_api();
-		$location_data = WP_Job_Manager_Geocode::get_location_data( 'Fake Moon Town, The Sun 00000' );
+		$location_data = WP_Job_Manager_Geocode::get_location_data( md5( 'Brigadoon' ) );
 		$this->assertTrue( $location_data instanceof  WP_Error );
 	}
 
