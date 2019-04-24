@@ -531,7 +531,7 @@ function wpjm_get_the_job_title( $post = null ) {
 function wpjm_the_job_description( $post = null ) {
 	$job_description = wpjm_get_the_job_description( $post );
 	if ( $job_description ) {
-		echo wp_kses_post( $job_description );
+		WP_Job_Manager_Post_Types::output_kses_post( $job_description );
 	}
 }
 

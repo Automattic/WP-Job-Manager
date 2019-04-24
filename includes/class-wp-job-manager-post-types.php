@@ -421,6 +421,52 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Filter the post content of job listings.
+	 *
+	 * @since 1.33.0
+	 * @param string $post_content Post content to filter.
+	 */
+	public static function output_kses_post( $post_content ) {
+		echo wp_kses( $post_content, self::kses_allowed_html() );
+	}
+
+	/**
+	 * Returns the expanded set of tags allowed in job listing content.
+	 *
+	 * @since 1.33.0
+	 * @return string
+	 */
+	private static function kses_allowed_html() {
+		/**
+		 * Change the allowed tags in job listing content.
+		 *
+		 * @since 1.33.0
+		 *
+		 * @param array $allowed_html Tags allowed in job listing posts.
+		 */
+		return apply_filters(
+			'job_manager_kses_allowed_html',
+			array_replace_recursive( // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.array_replace_recursiveFound
+				wp_kses_allowed_html( 'post' ),
+				array(
+					'iframe' => array(
+						'src'             => true,
+						'width'           => true,
+						'height'          => true,
+						'frameborder'     => true,
+						'marginwidth'     => true,
+						'marginheight'    => true,
+						'scrolling'       => true,
+						'title'           => true,
+						'allow'           => true,
+						'allowfullscreen' => true,
+					),
+				)
+			)
+		);
+	}
+
+	/**
 	 * Sanitize job type meta box input data from WP admin.
 	 *
 	 * @param WP_Taxonomy $taxonomy  Taxonomy being sterilized.
@@ -824,7 +870,7 @@ class WP_Job_Manager_Post_Types {
 			update_option( self::PERMALINK_OPTION_NAME, wp_json_encode( $permalink_settings ) );
 		}
 
-		$permalinks         = wp_parse_args(
+		$permalinks = wp_parse_args(
 			$permalink_settings,
 			array(
 				'job_base'      => '',
