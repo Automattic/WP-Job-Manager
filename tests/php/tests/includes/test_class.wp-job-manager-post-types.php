@@ -16,6 +16,44 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Post_Types::output_kses_post
+	 */
+	public function test_output_kses_post_simple() {
+		$job_id = $this->factory->job_listing->create( array(
+			'post_content' => '<p>This is a simple job listing</p>',
+		) );
+
+		$test_content = wpjm_get_the_job_description( $job_id );
+
+		ob_start();
+		WP_Job_Manager_Post_Types::output_kses_post( $test_content );
+		$actual_content = ob_get_clean();
+
+		$this->assertEquals( $test_content, $actual_content, 'No HTML should have been removed from this test.' );
+	}
+
+	/**
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Post_Types::output_kses_post
+	 */
+	public function test_output_kses_post_allow_embeds() {
+		$job_id = $this->factory->job_listing->create( array(
+			'post_content' => '<p>This is a simple job listing</p><p>https://www.youtube.com/watch?v=S_GVbuddri8</p>',
+		) );
+
+		$test_content = wpjm_get_the_job_description( $job_id );
+
+		ob_start();
+		WP_Job_Manager_Post_Types::output_kses_post( $test_content );
+		$actual_content = ob_get_clean();
+
+		$this->assertFalse( strpos( $actual_content, '<p>https://www.youtube.com/watch?v=S_GVbuddri8</p>' ), 'The YouTube link should have been expanded to an iframe' );
+		$this->assertGreaterThan( 0, strpos( $actual_content, '<iframe ' ), 'The iframe should not have been filtered out' );
+		$this->assertGreaterThan( 0, strpos( $actual_content, 'src="https://www.youtube.com' ), 'The iframe source should not have been filtered out' );
+	}
+
+	/**
 	 * Tests the WP_Job_Manager_Post_Types::instance() always returns the same `WP_Job_Manager_API` instance.
 	 *
 	 * @since 1.28.0
