@@ -51,7 +51,17 @@ do_action( 'job_manager_job_filters_before', $atts );
 			</div>
 		<?php endif; ?>
 
-		<?php if ( apply_filters( 'job_manager_job_filters_show_submit_button', true ) ) : ?>
+		<?php
+		/**
+		 * Show the submit button on the job filters form.
+		 *
+		 * @since 1.33.0
+		 *
+		 * @param bool $show_submit_button Whether to show the button. Defaults to true.
+		 * @return bool
+		 */
+		if ( apply_filters( 'job_manager_job_filters_show_submit_button', true ) ) :
+		?>
 			<div class="search_submit">
 				<input type="submit" value="<?php esc_attr_e( 'Search Jobs', 'wp-job-manager' ); ?>">
 			</div>
