@@ -531,7 +531,7 @@ function wpjm_get_the_job_title( $post = null ) {
 function wpjm_the_job_description( $post = null ) {
 	$job_description = wpjm_get_the_job_description( $post );
 	if ( $job_description ) {
-		echo wp_kses_post( $job_description );
+		WP_Job_Manager_Post_Types::output_kses_post( $job_description );
 	}
 }
 
@@ -548,13 +548,13 @@ function wpjm_get_the_job_description( $post = null ) {
 		return null;
 	}
 
-	$description = apply_filters( 'the_job_description', get_the_content( $post ) );
+	$description = apply_filters( 'the_job_description', wp_kses_post( $post->post_content ) );
 
 	/**
 	 * Filter for the job description.
 	 *
 	 * @since 1.28.0
-	 * @param string      $title Title to be filtered.
+	 * @param string      $job_description Job description to be filtered.
 	 * @param int|WP_Post $post
 	 */
 	return apply_filters( 'wpjm_the_job_description', $description, $post );
