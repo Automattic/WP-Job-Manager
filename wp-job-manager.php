@@ -452,7 +452,7 @@ class WP_Job_Manager {
 					'ajax_url'               => $ajax_url,
 					'js_field_html_img'      => esc_js( str_replace( "\n", '', $js_field_html_img ) ),
 					'js_field_html'          => esc_js( str_replace( "\n", '', $js_field_html ) ),
-					'i18n_invalid_file_type' => __( 'Invalid file type. Accepted types:', 'wp-job-manager' ),
+					'i18n_invalid_file_type' => esc_html__( 'Invalid file type. Accepted types:', 'wp-job-manager' ),
 				)
 			);
 		}
@@ -469,7 +469,7 @@ class WP_Job_Manager {
 			'job_manager_job_submission',
 			array(
 				// translators: Placeholder %d is the number of files to that users are limited to.
-				'i18n_over_upload_limit' => __( 'You are only allowed to upload a maximum of %d files.', 'wp-job-manager' ),
+				'i18n_over_upload_limit' => esc_html__( 'You are only allowed to upload a maximum of %d files.', 'wp-job-manager' ),
 			)
 		);
 
@@ -477,7 +477,7 @@ class WP_Job_Manager {
 			'wp-job-manager-job-dashboard',
 			'job_manager_job_dashboard',
 			array(
-				'i18n_confirm_delete' => __( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
+				'i18n_confirm_delete' => esc_html__( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 			)
 		);
 
