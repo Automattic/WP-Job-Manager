@@ -8,6 +8,9 @@ jQuery(function($) {
 			formData: {
 				script: true
 			},
+			change: function( e, data ) {
+				this.validation_errors = [];
+			},
 			add: function (e, data) {
 				var $file_field      = $( this );
 				var $form            = $file_field.closest( 'form' );
@@ -48,7 +51,8 @@ jQuery(function($) {
 				}
 
 				if ( uploadErrors.length > 0 ) {
-					window.alert( uploadErrors.join( '\n' ) );
+					// window.alert( uploadErrors.join( '\n' ) );
+					this.validation_errors = this.validation_errors.concat( uploadErrors );
 				} else {
 					if ( false !== fileLimitLeft ) {
 						$file_field.data( 'file_limit_left', fileLimitLeft - 1 );
@@ -59,7 +63,7 @@ jQuery(function($) {
 				}
 			},
 			progress: function (e, data) {
-				var progress        = parseInt(data.loaded / data.total * 100, 10);
+				var progress = parseInt(data.loaded / data.total * 100, 10);
 				data.context.val( progress );
 			},
 			fail: function (e, data) {
@@ -86,12 +90,12 @@ jQuery(function($) {
 
 				// Handle JSON errors when success is false
 				if( typeof data.result.success !== 'undefined' && ! data.result.success ){
-					window.alert( data.result.data );
+					this.validation_errors.push( data.result.data );
 				}
 
 				$.each(data.result.files, function(index, file) {
 					if ( file.error ) {
-						window.alert( file.error );
+						this.validation_errors.push( file.error );
 					} else {
 						var html;
 						if ( $.inArray( file.extension, image_types ) >= 0 ) {
@@ -112,6 +116,13 @@ jQuery(function($) {
 						}
 					}
 				});
+
+				if ( this.validation_errors.length > 0 ) {
+					this.validation_errors = this.validation_errors.filter( function( value, index, self ) {
+						return self.indexOf(value) === index;
+					} );
+					window.alert( this.validation_errors.join( '\n' ) );
+				}
 
 				$form.find(':input[type="submit"]').removeAttr( 'disabled' );
 				$file_field.trigger( 'update_status' );
