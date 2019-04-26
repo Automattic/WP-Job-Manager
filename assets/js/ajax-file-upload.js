@@ -51,7 +51,6 @@ jQuery(function($) {
 				}
 
 				if ( uploadErrors.length > 0 ) {
-					// window.alert( uploadErrors.join( '\n' ) );
 					this.validation_errors = this.validation_errors.concat( uploadErrors );
 				} else {
 					if ( false !== fileLimitLeft ) {
