@@ -419,8 +419,8 @@ class WP_Job_Manager {
 		}
 
 		if ( job_manager_user_can_upload_file_via_ajax() ) {
-			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', array( 'jquery' ), '1.8.3', true );
-			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', array( 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ), '9.11.2', true );
+			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', array( 'jquery' ), '9.30.0', true );
+			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', array( 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ), '9.30.0', true );
 			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', array( 'jquery', 'jquery-fileupload' ), JOB_MANAGER_VERSION, true );
 
 			ob_start();
@@ -463,6 +463,16 @@ class WP_Job_Manager {
 		wp_register_script( 'wp-job-manager-job-application', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-application.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-submission.min.js', array( 'jquery' ), JOB_MANAGER_VERSION, true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
+
+		wp_localize_script(
+			'wp-job-manager-job-submission',
+			'job_manager_job_submission',
+			array(
+				// translators: Placeholder %d is the number of files to that users are limited to.
+				'i18n_over_upload_limit' => __( 'You are only allowed to upload a maximum of %d files.', 'wp-job-manager' ),
+			)
+		);
+
 		wp_localize_script(
 			'wp-job-manager-job-dashboard',
 			'job_manager_job_dashboard',

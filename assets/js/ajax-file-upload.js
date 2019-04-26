@@ -5,15 +5,36 @@ jQuery(function($) {
 			dataType: 'json',
 			dropZone: $(this),
 			url: job_manager_ajax_file_upload.ajax_url.toString().replace( '%%endpoint%%', 'upload_file' ),
-			maxNumberOfFiles: 1,
 			formData: {
 				script: true
 			},
 			add: function (e, data) {
-				var $file_field     = $( this );
-				var $form           = $file_field.closest( 'form' );
-				var $uploaded_files = $file_field.parent().find('.job-manager-uploaded-files');
-				var uploadErrors    = [];
+				var $file_field      = $( this );
+				var $form            = $file_field.closest( 'form' );
+				var $uploaded_files  = $file_field.parent().find('.job-manager-uploaded-files');
+				var uploadErrors     = [];
+				var fileLimitLeft    = false;
+				var fileLimit        = parseInt( $file_field.data( 'file_limit' ), 10 );
+
+				if ( typeof $file_field.data( 'file_limit_left' ) !== 'undefined' ) {
+					fileLimitLeft = parseInt( $file_field.data( 'file_limit_left' ), 10 );
+				} else if ( typeof fileLimit !== 'undefined' ) {
+					var currentFiles = parseInt( $uploaded_files.children( '.job-manager-uploaded-file' ).length, 10);
+					fileLimitLeft = fileLimit - currentFiles;
+					$file_field.data( 'file_limit_left', fileLimitLeft );
+				}
+
+				if ( false !== fileLimitLeft && fileLimitLeft <= 0 ) {
+					var message = 'Exceeded upload limit';
+					if( $file_field.data( 'file_limit_message' ) ) {
+						message = $file_field.data( 'file_limit_message' );
+					} else if ( typeof job_manager_job_submission !== 'undefined' ) {
+						message = job_manager_job_submission.i18n_over_upload_limit;
+					}
+					message = message.replace( '%d', fileLimit );
+
+					uploadErrors.push( message );
+				}
 
 				// Validate type
 				var allowed_types = $(this).data('file_types');
@@ -29,6 +50,9 @@ jQuery(function($) {
 				if ( uploadErrors.length > 0 ) {
 					window.alert( uploadErrors.join( '\n' ) );
 				} else {
+					if ( false !== fileLimitLeft ) {
+						$file_field.data( 'file_limit_left', fileLimitLeft - 1 );
+					}
 					$form.find(':input[type="submit"]').attr( 'disabled', 'disabled' );
 					data.context = $('<progress value="" max="100"></progress>').appendTo( $uploaded_files );
 					data.submit();
@@ -49,6 +73,7 @@ jQuery(function($) {
 				data.context.remove();
 
 				$form.find(':input[type="submit"]').removeAttr( 'disabled' );
+				$file_field.trigger( 'update_status' );
 			},
 			done: function (e, data) {
 				var $file_field     = $( this );
@@ -89,6 +114,7 @@ jQuery(function($) {
 				});
 
 				$form.find(':input[type="submit"]').removeAttr( 'disabled' );
+				$file_field.trigger( 'update_status' );
 			}
 		});
 	});
