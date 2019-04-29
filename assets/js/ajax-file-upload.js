@@ -8,7 +8,7 @@ jQuery(function($) {
 			formData: {
 				script: true
 			},
-			change: function( e, data ) {
+			change: function() {
 				this.validation_errors = [];
 			},
 			add: function (e, data) {
@@ -62,7 +62,7 @@ jQuery(function($) {
 				}
 			},
 			progress: function (e, data) {
-				var progress = parseInt(data.loaded / data.total * 100, 10);
+				var progress = parseInt( data.loaded / data.total * 100, 10 );
 				data.context.val( progress );
 			},
 			fail: function (e, data) {
