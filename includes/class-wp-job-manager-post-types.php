@@ -1080,7 +1080,7 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Returns configuration for custom fields on Job Listing posts.
 	 *
-	 * @param int $post_id Post ID for job listing.
+	 * @param int|null $post_id Post ID for job listing when available.
 	 * @return array
 	 */
 	public static function get_job_listing_fields( $post_id ) {
@@ -1106,6 +1106,7 @@ class WP_Job_Manager_Post_Types {
 				'priority'          => 0,
 				'data_type'         => 'integer',
 				'show_in_admin'     => true,
+				'show_in_rest'      => true,
 				'auth_callback'     => array( __CLASS__, 'auth_check_can_edit_others_job_listings' ),
 				'sanitize_callback' => 'intval',
 			),
@@ -1116,15 +1117,17 @@ class WP_Job_Manager_Post_Types {
 				'priority'      => 1,
 				'data_type'     => 'string',
 				'show_in_admin' => true,
+				'show_in_rest'  => true,
 			),
 			'_application'     => array(
-				'label'         => __( 'Application Email or URL', 'wp-job-manager' ),
-				'placeholder'   => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
-				'description'   => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
-				'priority'      => 2,
-				'data_type'     => 'string',
-				'show_in_admin' => true,
-				'sanitize_callback' => 'sanitize_meta_field_application',
+				'label'             => __( 'Application Email or URL', 'wp-job-manager' ),
+				'placeholder'       => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
+				'description'       => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
+				'priority'          => 2,
+				'data_type'         => 'string',
+				'show_in_admin'     => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_application' ),
 			),
 			'_company_name'    => array(
 				'label'         => __( 'Company Name', 'wp-job-manager' ),
@@ -1132,6 +1135,7 @@ class WP_Job_Manager_Post_Types {
 				'priority'      => 3,
 				'data_type'     => 'string',
 				'show_in_admin' => true,
+				'show_in_rest'  => true,
 			),
 			'_company_website' => array(
 				'label'             => __( 'Company Website', 'wp-job-manager' ),
@@ -1139,7 +1143,8 @@ class WP_Job_Manager_Post_Types {
 				'priority'          => 4,
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
-				'sanitize_callback' => 'esc_url_raw',
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_url' ),
 			),
 			'_company_tagline' => array(
 				'label'         => __( 'Company Tagline', 'wp-job-manager' ),
@@ -1147,6 +1152,7 @@ class WP_Job_Manager_Post_Types {
 				'priority'      => 5,
 				'data_type'     => 'string',
 				'show_in_admin' => true,
+				'show_in_rest'  => true,
 			),
 			'_company_twitter' => array(
 				'label'         => __( 'Company Twitter', 'wp-job-manager' ),
@@ -1154,6 +1160,7 @@ class WP_Job_Manager_Post_Types {
 				'priority'      => 6,
 				'data_type'     => 'string',
 				'show_in_admin' => true,
+				'show_in_rest'  => true,
 			),
 			'_company_video'   => array(
 				'label'             => __( 'Company Video', 'wp-job-manager' ),
@@ -1162,7 +1169,8 @@ class WP_Job_Manager_Post_Types {
 				'priority'          => 8,
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
-				'sanitize_callback' => 'esc_url_raw',
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_url' ),
 			),
 			'_filled'          => array(
 				'label'         => __( 'Position Filled', 'wp-job-manager' ),
@@ -1170,6 +1178,7 @@ class WP_Job_Manager_Post_Types {
 				'priority'      => 9,
 				'data_type'     => 'integer',
 				'show_in_admin' => true,
+				'show_in_rest'  => true,
 				'description'   => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
 			),
 			'_featured'        => array(
@@ -1179,12 +1188,14 @@ class WP_Job_Manager_Post_Types {
 				'priority'      => 10,
 				'data_type'     => 'integer',
 				'show_in_admin' => true,
+				'show_in_rest'  => true,
 				'auth_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
 			),
 			'_job_expires'     => array(
 				'label'         => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'priority'      => 11,
 				'show_in_admin' => true,
+				'show_in_rest'  => true,
 				'data_type'     => 'string',
 				'classes'       => array( 'job-manager-datepicker' ),
 				'auth_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
@@ -1200,8 +1211,8 @@ class WP_Job_Manager_Post_Types {
 		 * @since 1.27.0 $post_id was added.
 		 * @since 1.33.0 Used both in WP admin and REST API.
 		 *
-		 * @param array $fields  Job listing fields for REST API and WP admin.
-		 * @param int   $post_id Post ID to get fields for.
+		 * @param array    $fields  Job listing fields for REST API and WP admin.
+		 * @param int|null $post_id Post ID to get fields for. May be null.
 		 */
 		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields, $post_id );
 
@@ -1223,11 +1234,13 @@ class WP_Job_Manager_Post_Types {
 	 * @return mixed
 	 */
 	public static function sanitize_meta_field_based_on_input_type( $meta_value, $meta_key ) {
-		global $post;
+		global $post_id;
 
-		$fields = self::get_job_listing_fields( $post->ID );
+		$fields = self::get_job_listing_fields( $post_id );
 
 		$type = 'text';
+
+		$meta_value = trim( $meta_value );
 
 		if ( isset( $fields[ $meta_key ] ) ) {
 			$type = $fields[ $meta_key ]['type'];
@@ -1238,7 +1251,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		if ( 'checkbox' === $type ) {
-			if ( $meta_value ) {
+			if ( $meta_value && '0' !== $meta_value ) {
 				return 1;
 			}
 
@@ -1263,27 +1276,22 @@ class WP_Job_Manager_Post_Types {
 			return sanitize_email( $meta_value );
 		}
 
-		return sanitize_text_field( urldecode( $meta_value ) );
+		return self::sanitize_meta_url( $meta_value );
 	}
 
 	/**
-	 * Sanitize `_job_expires` meta field.
+	 * Sanitize URL meta fields.
 	 *
 	 * @param string $meta_value Value of meta field that needs sanitization.
 	 * @return string
 	 */
-	public static function sanitize_meta_field_job_expires( $meta_value ) {
-		global $post;
-
-		if ( empty( $meta_value ) ) {
-			if ( get_option( 'job_manager_submission_duration' ) && ! empty( $post->ID ) ) {
-				return calculate_job_expiry( $post->ID );
-			} else {
-				return null;
-			}
+	public static function sanitize_meta_url( $meta_value ) {
+		$meta_value = trim( $meta_value );
+		if ( '' === $meta_value ) {
+			return $meta_value;
 		}
 
-		return date( 'Y-m-d', strtotime( sanitize_text_field( $meta_value ) ) );
+		return esc_url_raw( $meta_value );
 	}
 
 	/**
@@ -1345,6 +1353,7 @@ class WP_Job_Manager_Post_Types {
 		if ( ! isset( $a['priority'] ) || ! isset( $b['priority'] ) || $a['priority'] === $b['priority'] ) {
 			return 0;
 		}
+
 		return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
 	}
 

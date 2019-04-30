@@ -48,10 +48,10 @@ class WP_Job_Manager_Writepanels {
 	 * @return array
 	 */
 	public function job_listing_fields() {
-		global $post;
+		global $post_id;
 
 		$current_user = wp_get_current_user();
-		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields( $post->ID );
+		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields( $post_id );
 		$fields       = array();
 
 		foreach ( $fields_raw as $meta_key => $field ) {
@@ -67,7 +67,7 @@ class WP_Job_Manager_Writepanels {
 			 * @param int    $object_id Object ID.
 			 * @param int    $user_id   User ID.
 			 */
-			if ( ! call_user_func( $field['auth_callback'], false, $meta_key, $post->ID, $current_user->ID ) ) {
+			if ( ! call_user_func( $field['auth_callback'], false, $meta_key, $post_id, $current_user->ID ) ) {
 				continue;
 			}
 
@@ -75,13 +75,13 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		if ( isset( $fields['_job_expires'] ) && ! isset( $fields['_job_expires']['value'] ) ) {
-			$job_expires = get_post_meta( $post->ID, '_job_expires', true );
+			$job_expires = get_post_meta( $post_id, '_job_expires', true );
 
 			if ( ! empty( $job_expires ) ) {
 				$fields['_job_expires']['placeholder'] = null;
 				$fields['_job_expires']['value']       = date( 'Y-m-d', strtotime( $job_expires ) );
 			} else {
-				$fields['_job_expires']['placeholder'] = date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post->ID ) ) );
+				$fields['_job_expires']['placeholder'] = date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post_id ) ) );
 				$fields['_job_expires']['value']       = '';
 			}
 		}
