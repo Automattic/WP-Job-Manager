@@ -45,14 +45,52 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * Returns configuration for custom fields on Job Listing posts.
 	 *
-	 * @deprecated 1.33.0 Moved to `WP_Job_Manager_Post_Types::get_job_listing_fields()`.
-	 *
 	 * @return array
 	 */
 	public function job_listing_fields() {
-		_deprecated_function( __METHOD__, '1.33.0', 'WP_Job_Manager_Post_Types::get_job_listing_fields' );
+		global $post;
 
-		return WP_Job_Manager_Post_Types::get_job_listing_fields();
+		$current_user = wp_get_current_user();
+		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields( $post->ID );
+		$fields       = array();
+
+		foreach ( $fields_raw as $meta_key => $field ) {
+			if ( ! $field['show_in_admin'] ) {
+				continue;
+			}
+
+			/**
+			 * Check auth callback. Mirrors first 4 params of WordPress core's `auth_{$object_type}_meta_{$meta_key}` filter.
+			 *
+			 * @param bool   $allowed   Whether the user can edit the job listing meta. Default false.
+			 * @param string $meta_key  The meta key.
+			 * @param int    $object_id Object ID.
+			 * @param int    $user_id   User ID.
+			 */
+			if ( ! call_user_func( $field['auth_callback'], false, $meta_key, $post->ID, $current_user->ID ) ) {
+				continue;
+			}
+
+			$fields[ $meta_key ] = $field;
+		}
+
+		if ( isset( $fields['_job_expires'] ) && ! isset( $fields['_job_expires']['value'] ) ) {
+			$job_expires = get_post_meta( $post->ID, '_job_expires', true );
+
+			if ( ! empty( $job_expires ) ) {
+				$fields['_job_expires']['placeholder'] = null;
+				$fields['_job_expires']['value']       = date( 'Y-m-d', strtotime( $job_expires ) );
+			} else {
+				$fields['_job_expires']['placeholder'] = date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post->ID ) ) );
+				$fields['_job_expires']['value']       = '';
+			}
+		}
+
+		if ( isset( $fields['_application'] ) && ! isset( $fields['_application']['default'] ) ) {
+			$fields['_application']['default'] = $current_user->user_email;
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -487,9 +525,7 @@ class WP_Job_Manager_Writepanels {
 
 		do_action( 'job_manager_job_listing_data_start', $thepostid );
 
-		$fields = WP_Job_Manager_Post_Types::get_job_listing_fields();
-
-		foreach ( $fields as $key => $field ) {
+		foreach ( $this->job_listing_fields() as $key => $field ) {
 			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
 
 			if ( has_action( 'job_manager_input_' . $type ) ) {
@@ -558,8 +594,7 @@ class WP_Job_Manager_Writepanels {
 		add_post_meta( $post_id, '_featured', 0, true );
 
 		// Save fields.
-		$fields = WP_Job_Manager_Post_Types::get_job_listing_fields();
-		foreach ( $fields as $key => $field ) {
+		foreach ( $this->job_listing_fields() as $key => $field ) {
 			if ( isset( $field['type'] ) && 'info' === $field['type'] ) {
 				continue;
 			}

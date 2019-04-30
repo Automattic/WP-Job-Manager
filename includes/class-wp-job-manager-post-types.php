@@ -1054,100 +1054,181 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Returns configuration for custom fields on Job Listing posts.
 	 *
+	 * @param int $post_id Post ID for job listing.
 	 * @return array
 	 */
-	public static function get_job_listing_fields() {
-		global $post;
-
-		$current_user = wp_get_current_user();
+	public static function get_job_listing_fields( $post_id ) {
+		$default_field = array(
+			'label'         => null,
+			'placeholder'   => null,
+			'description'   => null,
+			'priority'      => 10,
+			'value'         => null,
+			'default'       => null,
+			'type'          => 'text',
+			'data_type'     => 'string',
+			'show_in_admin' => true,
+			'auth_callback' => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
+		);
 
 		$fields = array(
+			'_job_author'      => array(
+				'label'         => __( 'Posted by', 'wp-job-manager' ),
+				'type'          => 'author',
+				'priority'      => 0,
+				'data_type'     => 'integer',
+				'show_in_admin' => true,
+				'auth_callback' => array( __CLASS__, 'auth_check_can_edit_others_job_listings' ),
+			),
 			'_job_location'    => array(
-				'label'       => __( 'Location', 'wp-job-manager' ),
-				'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
-				'description' => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
-				'priority'    => 1,
+				'label'         => __( 'Location', 'wp-job-manager' ),
+				'placeholder'   => __( 'e.g. "London"', 'wp-job-manager' ),
+				'description'   => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
+				'priority'      => 1,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
 			),
 			'_application'     => array(
-				'label'       => __( 'Application Email or URL', 'wp-job-manager' ),
-				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
-				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
-				'value'       => metadata_exists( 'post', $post->ID, '_application' ) ? get_post_meta( $post->ID, '_application', true ) : $current_user->user_email,
-				'priority'    => 2,
+				'label'         => __( 'Application Email or URL', 'wp-job-manager' ),
+				'placeholder'   => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
+				'description'   => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
+				'priority'      => 2,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
 			),
 			'_company_name'    => array(
-				'label'       => __( 'Company Name', 'wp-job-manager' ),
-				'placeholder' => '',
-				'priority'    => 3,
+				'label'         => __( 'Company Name', 'wp-job-manager' ),
+				'placeholder'   => '',
+				'priority'      => 3,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
 			),
 			'_company_website' => array(
-				'label'       => __( 'Company Website', 'wp-job-manager' ),
-				'placeholder' => '',
-				'priority'    => 4,
+				'label'         => __( 'Company Website', 'wp-job-manager' ),
+				'placeholder'   => '',
+				'priority'      => 4,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
 			),
 			'_company_tagline' => array(
-				'label'       => __( 'Company Tagline', 'wp-job-manager' ),
-				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' ),
-				'priority'    => 5,
+				'label'         => __( 'Company Tagline', 'wp-job-manager' ),
+				'placeholder'   => __( 'Brief description about the company', 'wp-job-manager' ),
+				'priority'      => 5,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
 			),
 			'_company_twitter' => array(
-				'label'       => __( 'Company Twitter', 'wp-job-manager' ),
-				'placeholder' => '@yourcompany',
-				'priority'    => 6,
+				'label'         => __( 'Company Twitter', 'wp-job-manager' ),
+				'placeholder'   => '@yourcompany',
+				'priority'      => 6,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
 			),
 			'_company_video'   => array(
-				'label'       => __( 'Company Video', 'wp-job-manager' ),
-				'placeholder' => __( 'URL to the company video', 'wp-job-manager' ),
-				'type'        => 'file',
-				'priority'    => 8,
+				'label'         => __( 'Company Video', 'wp-job-manager' ),
+				'placeholder'   => __( 'URL to the company video', 'wp-job-manager' ),
+				'type'          => 'file',
+				'priority'      => 8,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
 			),
 			'_filled'          => array(
-				'label'       => __( 'Position Filled', 'wp-job-manager' ),
-				'type'        => 'checkbox',
-				'priority'    => 9,
-				'description' => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
+				'label'         => __( 'Position Filled', 'wp-job-manager' ),
+				'type'          => 'checkbox',
+				'priority'      => 9,
+				'data_type'     => 'integer',
+				'show_in_admin' => true,
+				'description'   => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
+			),
+			'_featured'        => array(
+				'label'         => __( 'Featured Listing', 'wp-job-manager' ),
+				'type'          => 'checkbox',
+				'description'   => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
+				'priority'      => 10,
+				'data_type'     => 'integer',
+				'show_in_admin' => true,
+				'auth_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
+			),
+			'_job_expires'     => array(
+				'label'         => __( 'Listing Expiry Date', 'wp-job-manager' ),
+				'priority'      => 11,
+				'show_in_admin' => true,
+				'data_type'     => 'string',
+				'classes'       => array( 'job-manager-datepicker' ),
+				'auth_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
 			),
 		);
 
-		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
-			$fields['_featured']    = array(
-				'label'       => __( 'Featured Listing', 'wp-job-manager' ),
-				'type'        => 'checkbox',
-				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
-				'priority'    => 10,
-			);
-			$job_expires            = get_post_meta( $post->ID, '_job_expires', true );
-			$fields['_job_expires'] = array(
-				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
-				'priority'    => 11,
-				'classes'     => array( 'job-manager-datepicker' ),
-				'placeholder' => ! empty( $job_expires ) ? null : date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post->ID ) ) ),
-				'value'       => ! empty( $job_expires ) ? date( 'Y-m-d', strtotime( $job_expires ) ) : '',
-			);
-		}
-
-		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
-			$fields['_job_author'] = array(
-				'label'    => __( 'Posted by', 'wp-job-manager' ),
-				'type'     => 'author',
-				'priority' => 0,
-			);
-		}
-
 		/**
-		 * Filters job listing data fields for WP Admin post editor.
+		 * Filters visible job listing data fields.
+		 *
+		 * For the REST API, do not pass fields you don't want to be visible to the current visitor when `show_in_rest` is `true`.
 		 *
 		 * @since 1.0.0
-		 * @since 1.27.0 $post_id was added
+		 * @since 1.27.0 $post_id was added.
+		 * @since 1.33.0 Used both in WP admin and REST API.
 		 *
-		 * @param array $fields
-		 * @param int   $post_id
+		 * @param array $fields  Job listing fields for REST API and WP admin.
+		 * @param int   $post_id Post ID to get fields for.
 		 */
-		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields, $post->ID );
+		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields, $post_id );
+
+		// Ensure default fields are set.
+		foreach ( $fields as $key => $field ) {
+			$fields[ $key ] = array_merge( $default_field, $field );
+		}
 
 		uasort( $fields, array( __CLASS__, 'sort_by_priority' ) );
 
 		return $fields;
+	}
+
+	/**
+	 * Checks if user can manage job listings.
+	 *
+	 * @param bool   $allowed   Whether the user can edit the job listing meta.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Job listing's post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool Whether the user can edit the job listing meta.
+	 */
+	public static function auth_check_can_manage_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
+		$user = get_user_by( 'ID', $user_id );
+
+		return $user->has_cap( 'manage_job_listings' );
+	}
+
+	/**
+	 * Checks if user can edit job listings.
+	 *
+	 * @param bool   $allowed   Whether the user can edit the job listing meta.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Job listing's post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool Whether the user can edit the job listing meta.
+	 */
+	public static function auth_check_can_edit_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
+		$user = get_user_by( 'ID', $user_id );
+
+		return $user->has_cap( 'edit_job_listings' );
+	}
+
+	/**
+	 * Checks if user can edit other's job listings.
+	 *
+	 * @param bool   $allowed   Whether the user can edit the job listing meta.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Job listing's post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool Whether the user can edit the job listing meta.
+	 */
+	public static function auth_check_can_edit_others_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
+		$user = get_user_by( 'ID', $user_id );
+
+		return $user->has_cap( 'edit_others_job_listings' );
 	}
 
 	/**
