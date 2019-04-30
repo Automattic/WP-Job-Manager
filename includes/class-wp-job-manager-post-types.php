@@ -37,6 +37,7 @@ class WP_Job_Manager_Post_Types {
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_types' ), 0 );
 		add_action( 'init', array( $this, 'prepare_block_editor' ) );
+		add_action( 'init', array( $this, 'register_meta_fields' ) );
 		add_filter( 'admin_head', array( $this, 'admin_head' ) );
 		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
 		add_action( 'job_manager_delete_old_previews', array( $this, 'delete_old_previews' ) );
@@ -1052,6 +1053,31 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Registers job listing meta fields.
+	 */
+	public function register_meta_fields() {
+		global $post_id;
+
+		$fields = WP_Job_Manager_Post_Types::get_job_listing_fields( $post_id );
+
+		foreach ( $fields as $meta_key => $field ) {
+			register_meta(
+				'post',
+				$meta_key,
+				array(
+					'type'              => $field['data_type'],
+					'show_in_rest'      => $field['show_in_rest'],
+					'description'       => $field['description'],
+					'sanitize_callback' => $field['sanitize_callback'],
+					'auth_callback'     => $field['auth_callback'],
+					'single'            => true,
+					'object_subtype'    => 'job_listing',
+				)
+			);
+		}
+	}
+
+	/**
 	 * Returns configuration for custom fields on Job Listing posts.
 	 *
 	 * @param int $post_id Post ID for job listing.
@@ -1059,26 +1085,29 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public static function get_job_listing_fields( $post_id ) {
 		$default_field = array(
-			'label'         => null,
-			'placeholder'   => null,
-			'description'   => null,
-			'priority'      => 10,
-			'value'         => null,
-			'default'       => null,
-			'type'          => 'text',
-			'data_type'     => 'string',
-			'show_in_admin' => true,
-			'auth_callback' => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
+			'label'             => null,
+			'placeholder'       => null,
+			'description'       => null,
+			'priority'          => 10,
+			'value'             => null,
+			'default'           => null,
+			'type'              => 'text',
+			'data_type'         => 'string',
+			'show_in_admin'     => true,
+			'show_in_rest'      => false,
+			'auth_callback'     => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
+			'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_based_on_input_type' ),
 		);
 
 		$fields = array(
 			'_job_author'      => array(
-				'label'         => __( 'Posted by', 'wp-job-manager' ),
-				'type'          => 'author',
-				'priority'      => 0,
-				'data_type'     => 'integer',
-				'show_in_admin' => true,
-				'auth_callback' => array( __CLASS__, 'auth_check_can_edit_others_job_listings' ),
+				'label'             => __( 'Posted by', 'wp-job-manager' ),
+				'type'              => 'author',
+				'priority'          => 0,
+				'data_type'         => 'integer',
+				'show_in_admin'     => true,
+				'auth_callback'     => array( __CLASS__, 'auth_check_can_edit_others_job_listings' ),
+				'sanitize_callback' => 'intval',
 			),
 			'_job_location'    => array(
 				'label'         => __( 'Location', 'wp-job-manager' ),
@@ -1095,6 +1124,7 @@ class WP_Job_Manager_Post_Types {
 				'priority'      => 2,
 				'data_type'     => 'string',
 				'show_in_admin' => true,
+				'sanitize_callback' => 'sanitize_meta_field_application',
 			),
 			'_company_name'    => array(
 				'label'         => __( 'Company Name', 'wp-job-manager' ),
@@ -1104,11 +1134,12 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 			),
 			'_company_website' => array(
-				'label'         => __( 'Company Website', 'wp-job-manager' ),
-				'placeholder'   => '',
-				'priority'      => 4,
-				'data_type'     => 'string',
-				'show_in_admin' => true,
+				'label'             => __( 'Company Website', 'wp-job-manager' ),
+				'placeholder'       => '',
+				'priority'          => 4,
+				'data_type'         => 'string',
+				'show_in_admin'     => true,
+				'sanitize_callback' => 'esc_url_raw',
 			),
 			'_company_tagline' => array(
 				'label'         => __( 'Company Tagline', 'wp-job-manager' ),
@@ -1125,12 +1156,13 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 			),
 			'_company_video'   => array(
-				'label'         => __( 'Company Video', 'wp-job-manager' ),
-				'placeholder'   => __( 'URL to the company video', 'wp-job-manager' ),
-				'type'          => 'file',
-				'priority'      => 8,
-				'data_type'     => 'string',
-				'show_in_admin' => true,
+				'label'             => __( 'Company Video', 'wp-job-manager' ),
+				'placeholder'       => __( 'URL to the company video', 'wp-job-manager' ),
+				'type'              => 'file',
+				'priority'          => 8,
+				'data_type'         => 'string',
+				'show_in_admin'     => true,
+				'sanitize_callback' => 'esc_url_raw',
 			),
 			'_filled'          => array(
 				'label'         => __( 'Position Filled', 'wp-job-manager' ),
@@ -1181,6 +1213,77 @@ class WP_Job_Manager_Post_Types {
 		uasort( $fields, array( __CLASS__, 'sort_by_priority' ) );
 
 		return $fields;
+	}
+
+	/**
+	 * Sanitize meta fields based on input type.
+	 *
+	 * @param mixed  $meta_value Value of meta field that needs sanitization.
+	 * @param string $meta_key   Meta key that is being sanitized.
+	 * @return mixed
+	 */
+	public static function sanitize_meta_field_based_on_input_type( $meta_value, $meta_key ) {
+		global $post;
+
+		$fields = self::get_job_listing_fields( $post->ID );
+
+		$type = 'text';
+
+		if ( isset( $fields[ $meta_key ] ) ) {
+			$type = $fields[ $meta_key ]['type'];
+		}
+
+		if ( 'textarea' === $type ) {
+			return wp_kses_post( stripslashes( $meta_value ) );
+		}
+
+		if ( 'checkbox' === $type ) {
+			if ( $meta_value ) {
+				return 1;
+			}
+
+			return 0;
+		}
+
+		if ( is_array( $meta_value ) ) {
+			return array_filter( array_map( 'sanitize_text_field', $meta_value ) );
+		}
+
+		return sanitize_text_field( $meta_value );
+	}
+
+	/**
+	 * Sanitize `_application` meta field.
+	 *
+	 * @param string $meta_value Value of meta field that needs sanitization.
+	 * @return string
+	 */
+	public static function sanitize_meta_field_application( $meta_value ) {
+		if ( is_email( $meta_value ) ) {
+			return sanitize_email( $meta_value );
+		}
+
+		return sanitize_text_field( urldecode( $meta_value ) );
+	}
+
+	/**
+	 * Sanitize `_job_expires` meta field.
+	 *
+	 * @param string $meta_value Value of meta field that needs sanitization.
+	 * @return string
+	 */
+	public static function sanitize_meta_field_job_expires( $meta_value ) {
+		global $post;
+
+		if ( empty( $meta_value ) ) {
+			if ( get_option( 'job_manager_submission_duration' ) && ! empty( $post->ID ) ) {
+				return calculate_job_expiry( $post->ID );
+			} else {
+				return null;
+			}
+		}
+
+		return date( 'Y-m-d', strtotime( sanitize_text_field( $meta_value ) ) );
 	}
 
 	/**

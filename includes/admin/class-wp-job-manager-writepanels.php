@@ -612,7 +612,7 @@ class WP_Job_Manager_Writepanels {
 				}
 			} elseif ( '_job_location' === $key ) {
 				// Locations.
-				$updated_result = update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
+				$updated_result = update_post_meta( $post_id, $key, $_POST[ $key ] );
 				if ( ! $updated_result && apply_filters( 'job_manager_geolocation_enabled', true ) && ! WP_Job_Manager_Geocode::has_location_data( $post_id ) ) {
 					// First time generation for job location data.
 					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
@@ -622,33 +622,14 @@ class WP_Job_Manager_Writepanels {
 					$_POST[ $key ] = 0;
 				}
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
-			} elseif ( '_application' === $key ) {
-				update_post_meta( $post_id, $key, sanitize_text_field( is_email( $_POST[ $key ] ) ? $_POST[ $key ] : urldecode( $_POST[ $key ] ) ) );
-			} else {
-				// Everything else.
-				$type = ! empty( $field['type'] ) ? $field['type'] : '';
-
-				switch ( $type ) {
-					case 'textarea':
-						update_post_meta( $post_id, $key, wp_kses_post( stripslashes( $_POST[ $key ] ) ) );
-						break;
-					case 'checkbox':
-						if ( isset( $_POST[ $key ] ) ) {
-							update_post_meta( $post_id, $key, 1 );
-						} else {
-							update_post_meta( $post_id, $key, 0 );
-						}
-						break;
-					default:
-						if ( ! isset( $_POST[ $key ] ) ) {
-							break;
-						} elseif ( is_array( $_POST[ $key ] ) ) {
-							update_post_meta( $post_id, $key, array_filter( array_map( 'sanitize_text_field', $_POST[ $key ] ) ) );
-						} else {
-							update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
-						}
-						break;
+			} elseif ( 'checkbox' === $field['type'] ) {
+				if ( ! empty( $_POST[ $key ] ) ) {
+					update_post_meta( $post_id, $key, 1 );
+				} else {
+					update_post_meta( $post_id, $key, 0 );
 				}
+			} elseif ( isset( $_POST[ $key ] ) ) {
+				update_post_meta( $post_id, $key, $_POST[ $key ] );
 			}
 		}
 
