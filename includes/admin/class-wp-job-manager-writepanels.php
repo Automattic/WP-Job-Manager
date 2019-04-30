@@ -45,112 +45,14 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * Returns configuration for custom fields on Job Listing posts.
 	 *
+	 * @deprecated 1.33.0 Moved to `WP_Job_Manager_Post_Types::get_job_listing_fields()`.
+	 *
 	 * @return array
 	 */
 	public function job_listing_fields() {
-		global $post;
+		_deprecated_function( __METHOD__, '1.33.0', 'WP_Job_Manager_Post_Types::get_job_listing_fields' );
 
-		$current_user = wp_get_current_user();
-
-		$fields = array(
-			'_job_location'    => array(
-				'label'       => __( 'Location', 'wp-job-manager' ),
-				'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
-				'description' => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
-				'priority'    => 1,
-			),
-			'_application'     => array(
-				'label'       => __( 'Application Email or URL', 'wp-job-manager' ),
-				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
-				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
-				'value'       => metadata_exists( 'post', $post->ID, '_application' ) ? get_post_meta( $post->ID, '_application', true ) : $current_user->user_email,
-				'priority'    => 2,
-			),
-			'_company_name'    => array(
-				'label'       => __( 'Company Name', 'wp-job-manager' ),
-				'placeholder' => '',
-				'priority'    => 3,
-			),
-			'_company_website' => array(
-				'label'       => __( 'Company Website', 'wp-job-manager' ),
-				'placeholder' => '',
-				'priority'    => 4,
-			),
-			'_company_tagline' => array(
-				'label'       => __( 'Company Tagline', 'wp-job-manager' ),
-				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' ),
-				'priority'    => 5,
-			),
-			'_company_twitter' => array(
-				'label'       => __( 'Company Twitter', 'wp-job-manager' ),
-				'placeholder' => '@yourcompany',
-				'priority'    => 6,
-			),
-			'_company_video'   => array(
-				'label'       => __( 'Company Video', 'wp-job-manager' ),
-				'placeholder' => __( 'URL to the company video', 'wp-job-manager' ),
-				'type'        => 'file',
-				'priority'    => 8,
-			),
-			'_filled'          => array(
-				'label'       => __( 'Position Filled', 'wp-job-manager' ),
-				'type'        => 'checkbox',
-				'priority'    => 9,
-				'description' => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
-			),
-		);
-		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
-			$fields['_featured']    = array(
-				'label'       => __( 'Featured Listing', 'wp-job-manager' ),
-				'type'        => 'checkbox',
-				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
-				'priority'    => 10,
-			);
-			$job_expires            = get_post_meta( $post->ID, '_job_expires', true );
-			$fields['_job_expires'] = array(
-				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
-				'priority'    => 11,
-				'classes'     => array( 'job-manager-datepicker' ),
-				'placeholder' => ! empty( $job_expires ) ? null : date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post->ID ) ) ),
-				'value'       => ! empty( $job_expires ) ? date( 'Y-m-d', strtotime( $job_expires ) ) : '',
-			);
-		}
-		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
-			$fields['_job_author'] = array(
-				'label'    => __( 'Posted by', 'wp-job-manager' ),
-				'type'     => 'author',
-				'priority' => 0,
-			);
-		}
-
-		/**
-		 * Filters job listing data fields for WP Admin post editor.
-		 *
-		 * @since 1.0.0
-		 * @since 1.27.0 $post_id was added
-		 *
-		 * @param array $fields
-		 * @param int   $post_id
-		 */
-		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields, $post->ID );
-
-		uasort( $fields, array( $this, 'sort_by_priority' ) );
-
-		return $fields;
-	}
-
-	/**
-	 * Sorts array of custom fields by priority value.
-	 *
-	 * @param array $a
-	 * @param array $b
-	 * @return int
-	 */
-	protected function sort_by_priority( $a, $b ) {
-		if ( ! isset( $a['priority'] ) || ! isset( $b['priority'] ) || $a['priority'] === $b['priority'] ) {
-			return 0;
-		}
-		return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
+		return WP_Job_Manager_Post_Types::get_job_listing_fields();
 	}
 
 	/**
@@ -585,7 +487,9 @@ class WP_Job_Manager_Writepanels {
 
 		do_action( 'job_manager_job_listing_data_start', $thepostid );
 
-		foreach ( $this->job_listing_fields() as $key => $field ) {
+		$fields = WP_Job_Manager_Post_Types::get_job_listing_fields();
+
+		foreach ( $fields as $key => $field ) {
 			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
 
 			if ( has_action( 'job_manager_input_' . $type ) ) {
@@ -654,7 +558,8 @@ class WP_Job_Manager_Writepanels {
 		add_post_meta( $post_id, '_featured', 0, true );
 
 		// Save fields.
-		foreach ( $this->job_listing_fields() as $key => $field ) {
+		$fields = WP_Job_Manager_Post_Types::get_job_listing_fields();
+		foreach ( $fields as $key => $field ) {
 			if ( isset( $field['type'] ) && 'info' === $field['type'] ) {
 				continue;
 			}
