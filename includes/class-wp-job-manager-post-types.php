@@ -1056,15 +1056,21 @@ class WP_Job_Manager_Post_Types {
 	 * Registers job listing meta fields.
 	 */
 	public function register_meta_fields() {
-		$fields = WP_Job_Manager_Post_Types::get_job_listing_fields();
+		$current_user = wp_get_current_user();
+		$fields       = WP_Job_Manager_Post_Types::get_job_listing_fields();
 
 		foreach ( $fields as $meta_key => $field ) {
+			$show_in_rest = $field['show_in_rest'];
+			if ( is_callable( $show_in_rest ) ) {
+				$show_in_rest = (bool) call_user_func( $show_in_rest, false, $meta_key, null, $current_user->ID );
+			}
+
 			register_meta(
 				'post',
 				$meta_key,
 				array(
 					'type'              => $field['data_type'],
-					'show_in_rest'      => $field['show_in_rest'],
+					'show_in_rest'      => $show_in_rest,
 					'description'       => $field['description'],
 					'sanitize_callback' => $field['sanitize_callback'],
 					'auth_callback'     => $field['auth_callback'],
@@ -1182,7 +1188,7 @@ class WP_Job_Manager_Post_Types {
 				'label'         => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'priority'      => 11,
 				'show_in_admin' => true,
-				'show_in_rest'  => true,
+				'show_in_rest'  => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
 				'data_type'     => 'string',
 				'classes'       => array( 'job-manager-datepicker' ),
 				'auth_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
@@ -1293,6 +1299,10 @@ class WP_Job_Manager_Post_Types {
 	public static function auth_check_can_manage_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
 		$user = get_user_by( 'ID', $user_id );
 
+		if ( ! $user ) {
+			return false;
+		}
+
 		return $user->has_cap( 'manage_job_listings' );
 	}
 
@@ -1309,6 +1319,10 @@ class WP_Job_Manager_Post_Types {
 	public static function auth_check_can_edit_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
 		$user = get_user_by( 'ID', $user_id );
 
+		if ( ! $user ) {
+			return false;
+		}
+
 		return $user->has_cap( 'edit_job_listings' );
 	}
 
@@ -1324,6 +1338,10 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public static function auth_check_can_edit_others_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
 		$user = get_user_by( 'ID', $user_id );
+
+		if ( ! $user ) {
+			return false;
+		}
 
 		return $user->has_cap( 'edit_others_job_listings' );
 	}
