@@ -51,8 +51,14 @@ class WP_Job_Manager_Writepanels {
 		global $post_id;
 
 		$current_user = wp_get_current_user();
-		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields( $post_id );
-		$fields       = array();
+		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields();
+		$fields       = array(
+			'_job_author'      => array(
+				'label'             => __( 'Posted by', 'wp-job-manager' ),
+				'type'              => 'author',
+				'priority'          => 0,
+			),
+		);
 
 		foreach ( $fields_raw as $meta_key => $field ) {
 			if ( ! $field['show_in_admin'] ) {
@@ -90,7 +96,24 @@ class WP_Job_Manager_Writepanels {
 			$fields['_application']['default'] = $current_user->user_email;
 		}
 
+		uasort( $fields, array( __CLASS__, 'sort_by_priority' ) );
+
 		return $fields;
+	}
+
+	/**
+	 * Sorts array of custom fields by priority value.
+	 *
+	 * @param array $a
+	 * @param array $b
+	 * @return int
+	 */
+	protected static function sort_by_priority( $a, $b ) {
+		if ( ! isset( $a['priority'] ) || ! isset( $b['priority'] ) || $a['priority'] === $b['priority'] ) {
+			return 0;
+		}
+
+		return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
 	}
 
 	/**

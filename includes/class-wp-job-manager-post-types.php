@@ -1056,9 +1056,7 @@ class WP_Job_Manager_Post_Types {
 	 * Registers job listing meta fields.
 	 */
 	public function register_meta_fields() {
-		global $post_id;
-
-		$fields = WP_Job_Manager_Post_Types::get_job_listing_fields( $post_id );
+		$fields = WP_Job_Manager_Post_Types::get_job_listing_fields();
 
 		foreach ( $fields as $meta_key => $field ) {
 			register_meta(
@@ -1080,10 +1078,9 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Returns configuration for custom fields on Job Listing posts.
 	 *
-	 * @param int|null $post_id Post ID for job listing when available.
 	 * @return array
 	 */
-	public static function get_job_listing_fields( $post_id ) {
+	public static function get_job_listing_fields() {
 		$default_field = array(
 			'label'             => null,
 			'placeholder'       => null,
@@ -1100,16 +1097,6 @@ class WP_Job_Manager_Post_Types {
 		);
 
 		$fields = array(
-			'_job_author'      => array(
-				'label'             => __( 'Posted by', 'wp-job-manager' ),
-				'type'              => 'author',
-				'priority'          => 0,
-				'data_type'         => 'integer',
-				'show_in_admin'     => true,
-				'show_in_rest'      => true,
-				'auth_callback'     => array( __CLASS__, 'auth_check_can_edit_others_job_listings' ),
-				'sanitize_callback' => 'intval',
-			),
 			'_job_location'    => array(
 				'label'         => __( 'Location', 'wp-job-manager' ),
 				'placeholder'   => __( 'e.g. "London"', 'wp-job-manager' ),
@@ -1203,7 +1190,7 @@ class WP_Job_Manager_Post_Types {
 		);
 
 		/**
-		 * Filters visible job listing data fields.
+		 * Filters job listing data fields.
 		 *
 		 * For the REST API, do not pass fields you don't want to be visible to the current visitor when `show_in_rest` is `true`.
 		 *
@@ -1212,16 +1199,13 @@ class WP_Job_Manager_Post_Types {
 		 * @since 1.33.0 Used both in WP admin and REST API.
 		 *
 		 * @param array    $fields  Job listing fields for REST API and WP admin.
-		 * @param int|null $post_id Post ID to get fields for. May be null.
 		 */
-		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields, $post_id );
+		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields );
 
 		// Ensure default fields are set.
 		foreach ( $fields as $key => $field ) {
 			$fields[ $key ] = array_merge( $default_field, $field );
 		}
-
-		uasort( $fields, array( __CLASS__, 'sort_by_priority' ) );
 
 		return $fields;
 	}
@@ -1234,9 +1218,11 @@ class WP_Job_Manager_Post_Types {
 	 * @return mixed
 	 */
 	public static function sanitize_meta_field_based_on_input_type( $meta_value, $meta_key ) {
-		global $post_id;
+		static $fields;
 
-		$fields = self::get_job_listing_fields( $post_id );
+		if ( empty( $fields ) ) {
+			$fields = self::get_job_listing_fields();
+		}
 
 		$type = 'text';
 
@@ -1340,21 +1326,6 @@ class WP_Job_Manager_Post_Types {
 		$user = get_user_by( 'ID', $user_id );
 
 		return $user->has_cap( 'edit_others_job_listings' );
-	}
-
-	/**
-	 * Sorts array of custom fields by priority value.
-	 *
-	 * @param array $a
-	 * @param array $b
-	 * @return int
-	 */
-	protected static function sort_by_priority( $a, $b ) {
-		if ( ! isset( $a['priority'] ) || ! isset( $b['priority'] ) || $a['priority'] === $b['priority'] ) {
-			return 0;
-		}
-
-		return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
 	}
 
 }
