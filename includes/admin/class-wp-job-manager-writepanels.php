@@ -52,13 +52,15 @@ class WP_Job_Manager_Writepanels {
 
 		$current_user = wp_get_current_user();
 		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields();
-		$fields       = array(
-			'_job_author'      => array(
-				'label'             => __( 'Posted by', 'wp-job-manager' ),
-				'type'              => 'author',
-				'priority'          => 0,
-			),
-		);
+		$fields       = array();
+
+		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
+			$fields['_job_author'] = array(
+				'label'    => __( 'Posted by', 'wp-job-manager' ),
+				'type'     => 'author',
+				'priority' => 0,
+			);
+		}
 
 		foreach ( $fields_raw as $meta_key => $field ) {
 			$show_in_admin = $field['show_in_admin'];
