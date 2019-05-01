@@ -13,7 +13,7 @@
  * DELETE /wp-json/wp/v2/job-types/{id}?force=1
  *
  * @see https://developer.wordpress.org/rest-api/reference/categories/
- * @group rest
+ * @group rest-api
  */
 class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 

@@ -166,19 +166,21 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 		$this->assertNotEquals( $expected_post_type, $post->post_status );
 	}
 
-	protected function get_user_by_role( $role ) {
+	protected function get_user_by_role( $role, $variant = '' ) {
 		if ( ! wp_roles()->is_role( 'employer' ) ) {
 			// Ensure the role gets created.
 			WP_Job_Manager_Install::install();
 			wp_roles()->init_roles();
 			wp_cache_flush();
 		}
-		$user = get_user_by( 'email', 'wpjm_' . $role . '_user@example.com' );
+
+		$slug = $role . $variant;
+		$user = get_user_by( 'email', 'wpjm_' . $slug . '_user@example.com' );
 		if ( empty( $user ) ) {
 			$user_id = wp_create_user(
-				'wpjm_' . $role . '_user',
-				'wpjm_' . $role . '_user',
-				'wpjm_' . $role . '_user@example.com'
+				'wpjm_' . $slug . '_user',
+				'wpjm_' . $slug . '_user',
+				'wpjm_' . $slug . '_user@example.com'
 			);
 			$user = get_user_by( 'ID', $user_id );
 			$user->set_role( $role );
@@ -192,6 +194,10 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 
 	protected function login_as_employer() {
 		return $this->login_as( $this->get_user_by_role( 'employer' ) );
+	}
+
+	protected function login_as_employer_b() {
+		return $this->login_as( $this->get_user_by_role( 'employer', '_b' ) );
 	}
 
 	protected function login_as_default_user() {

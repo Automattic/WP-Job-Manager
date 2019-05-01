@@ -17,6 +17,13 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 */
 	protected $admin_id;
 
+	/**
+	 * A REST Server.
+	 *
+	 * @var WP_REST_Server
+	 */
+	private $rest_server;
+
 	public static function setUpBeforeClass() {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
@@ -25,13 +32,9 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 			$wp_rest_server = new WP_REST_Server();
 			do_action( 'rest_api_init' );
 		}
+
+		parent::setUpBeforeClass();
 	}
-	/**
-	 * A REST Server.
-	 *
-	 * @var WP_REST_Server
-	 */
-	private $rest_server;
 
 	/**
 	 * Get REST Server
@@ -45,7 +48,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	/**
 	 * Set this up.
 	 */
-	function setUp() {
+	public function setUp() {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server, $wp_version;
 		parent::setUp();
@@ -59,6 +62,8 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 
 		$this->reregister_post_type();
 		$this->disable_manage_job_listings_cap();
+
+		WP_Job_Manager_REST_API::init();
 
 		// Ensure the role gets created.
 		WP_Job_Manager_Install::install();
@@ -75,7 +80,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 *
 	 * @param string $cls Class Name.
 	 */
-	function assertClassExists( $cls ) {
+	protected function assertClassExists( $cls ) {
 		$this->assertNotFalse( class_exists( $cls ), $cls . ': should exist' );
 	}
 
@@ -86,7 +91,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 *
 	 * @throws WP_Job_Manager_REST_Exception
 	 */
-	function assertModelValid( $model ) {
+	protected function assertModelValid( $model ) {
 		$this->assertTrue( $model->validate() );
 	}
 
@@ -96,7 +101,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param WP_REST_Response $response The Response.
 	 * @param int              $status_code Expected status code.
 	 */
-	function assertResponseStatus( $response, $status_code ) {
+	protected function assertResponseStatus( $response, $status_code ) {
 		$this->assertInstanceOf( 'WP_REST_Response', $response );
 		$this->assertEquals( $status_code, $response->get_status() );
 	}
@@ -109,7 +114,9 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args_or_body Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function request( $endpoint, $method, $args_or_body = array() ) {
+	protected function request( $endpoint, $method, $args_or_body = array() ) {
+		$this->beforeRequest();
+
 		$request = new WP_REST_Request( $method, $endpoint );
 		if ( is_array( $args_or_body ) ) {
 			foreach ( $args_or_body as $key => $value ) {
@@ -128,7 +135,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function get( $endpoint, $args = array() ) {
+	protected function get( $endpoint, $args = array() ) {
 		return $this->request( $endpoint, 'GET', $args );
 	}
 
@@ -139,7 +146,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function post( $endpoint, $args = array() ) {
+	protected function post( $endpoint, $args = array() ) {
 		return $this->request( $endpoint, 'POST', $args );
 	}
 
@@ -150,7 +157,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function put( $endpoint, $args = array() ) {
+	protected function put( $endpoint, $args = array() ) {
 		return $this->request( $endpoint, 'PUT', $args );
 	}
 
@@ -161,8 +168,15 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function delete( $endpoint, $args = array() ) {
+	protected function delete( $endpoint, $args = array() ) {
 		return $this->request( $endpoint, 'DELETE', $args );
+	}
+
+	/**
+	 * Runs before requests.
+	 */
+	protected function beforeRequest() {
+		// Overload.
 	}
 }
 

@@ -13,10 +13,10 @@
  * DELETE /wp-json/wp/v2/job-categories/{id}?force=1
  *
  * @see https://developer.wordpress.org/rest-api/reference/categories/
- * @group rest
+ * @group rest-api
  */
 class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
-	
+
 	public function test_guest_get_job_categories_success() {
 		$this->logout();
 		$response = $this->get( '/wp/v2/job-categories' );
