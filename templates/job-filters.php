@@ -36,6 +36,8 @@ do_action( 'job_manager_job_filters_before', $atts );
 			<input type="text" name="search_location" id="search_location" placeholder="<?php esc_attr_e( 'Location', 'wp-job-manager' ); ?>" value="<?php echo esc_attr( $location ); ?>" />
 		</div>
 
+		<div style="clear: both"></div>
+
 		<?php if ( $categories ) : ?>
 			<?php foreach ( $categories as $category ) : ?>
 				<input type="hidden" name="search_categories[]" value="<?php echo esc_attr( sanitize_title( $category ) ); ?>" />
