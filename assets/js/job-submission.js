@@ -4,7 +4,8 @@ jQuery(document).ready(function($) {
 		return false;
 	});
 	$( document.body ).on( 'submit', '.job-manager-form:not(.prevent-spinner-behavior)', function( event ) {
-		if ( specialFieldsAreInvalid( event ) ) {
+		if ( specialFieldsAreInvalid() ) {
+			event.preventDefault();
 			return;
 		}
 
@@ -15,10 +16,9 @@ jQuery(document).ready(function($) {
 	/* Performs validation for required fields that don't support HTML 5 validation.
 	 * Returns true if any field was found to be invalid.
 	 */
-	function specialFieldsAreInvalid( event ) {
+	function specialFieldsAreInvalid() {
 		// Validate the job category field if present
 		if ( jobCategoryFieldIsInvalid() ) {
-			event.preventDefault();
 			$(this).find( 'input[type=submit]' ).blur();
 
 			var jobCategoryInput = $( '.select2-search__field' )[0];
@@ -30,7 +30,6 @@ jQuery(document).ready(function($) {
 
 		// Validate the description field if present and required
 		if ( descriptionFieldIsInvalid() ) {
-			event.preventDefault();
 			$(this).find( 'input[type=submit]' ).blur();
 
 			/* Hack: The textarea must be displayed in order to show the
