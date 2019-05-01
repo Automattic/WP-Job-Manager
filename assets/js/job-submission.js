@@ -50,11 +50,11 @@ jQuery(document).ready(function($) {
 	// Returns true if required job category field is empty and a select2 dropdown exists
 	function jobCategoryFieldIsInvalid() {
 		var jobCategory = $( '#job_category' );
-		return jobCategory.length
-				&& !jobCategory.val()
-				&& jobCategory.parent().hasClass( 'required-field' )
-				&& jobCategory.next().hasClass('select2');
-	};
+		return jobCategory.length &&
+				!jobCategory.val() &&
+				jobCategory.parent().hasClass( 'required-field' ) &&
+				jobCategory.next().hasClass('select2');
+	}
 
 	function descriptionFieldIsInvalid() {
 		if ( !descriptionFieldIsPresent() ) {
@@ -64,17 +64,17 @@ jQuery(document).ready(function($) {
 		var jobDescription = tinymce.get('job_description').getContent();
 		var editorTextArea = $( '#job_description' );
 
-		return jobDescription.length === 0
-				&& editorTextArea.parents( '.required-field' ).length
+		return jobDescription.length === 0 &&
+				editorTextArea.parents( '.required-field' ).length;
 	}
 
 	function descriptionFieldIsPresent() {
-		return typeof tinymce !== undefined
-				|| tinymce.get( 'job_description' ) != null;
-	};
+		return typeof tinymce !== undefined ||
+				tinymce.get( 'job_description' ) != null;
+	}
 
 	// Listen for changes to the category field to clear validity
-	$( '#job_category' ).on( 'select2:select', function( event ) {
+	$( '#job_category' ).on( 'select2:select', function() {
 		var jobCategoryInput = $( '.select2-search__field' )[0];
 		jobCategoryInput.setCustomValidity( '' );
 		jobCategoryInput.reportValidity();
@@ -86,7 +86,7 @@ jQuery(document).ready(function($) {
 			return;
 		}
 
-		tinymce.get( 'job_description' ).on( 'Change', function ( editor, event ) {
+		tinymce.get( 'job_description' ).on( 'Change', function () {
 			var editorTextArea = $( '#job_description' );
 			editorTextArea.hide();
 			editorTextArea[0].setCustomValidity( '' );
