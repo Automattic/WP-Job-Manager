@@ -17,9 +17,6 @@ module.exports = function( grunt ) {
 		},
 
 		shell: {
-			buildMixtape: {
-				command: 'node_modules/.bin/mixtape build'
-			},
 			webpack: {
 				command: 'npm run build'
 			},
@@ -102,7 +99,6 @@ module.exports = function( grunt ) {
 					'!readme.md',
 					'!phpcs.xml.dist',
 					'!tools/**',
-					'!mixtape.json',
 					'!jest.config.js'
 				],
 				dest: '<%= dirs.build %>/'
@@ -290,27 +286,13 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( 'update-assets', [ 'copy:select2' ] );
 
-	grunt.registerTask( 'check-mixtape', 'Checking for WPJM\'s REST library (Mixtape) and building if necessary', function() {
-		if ( ! grunt.file.exists( 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php' ) ) {
-			grunt.task.run( [ 'build-mixtape' ] );
-		}
-	});
-
-	grunt.registerTask( 'check-mixtape-fatal', 'Checking for WPJM\'s REST library (Mixtape)', function() {
-		if ( ! grunt.file.exists( 'lib/wpjm_rest/class-wp-job-manager-rest-bootstrap.php' ) ) {
-			grunt.fail.fatal( 'Unable to build WPJM\'s REST library (Mixtape).' );
-		}
-	});
-
-	grunt.registerTask( 'build-mixtape', [ 'shell:buildMixtape' ] );
-
 	grunt.registerTask( 'build-blocks', [ 'shell:webpack' ] );
 	grunt.registerTask( 'build-blocks:dev', [ 'shell:webpackDev' ] );
 
-	// grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'check-mixtape', 'check-mixtape-fatal', 'test', 'build-blocks', 'copy' ] );
-	grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'check-mixtape', 'check-mixtape-fatal', 'test', 'copy' ] );
-	// grunt.registerTask( 'build-unsafe', [ 'clean', 'check-mixtape', 'check-mixtape-fatal', 'build-blocks', 'copy' ] );
-	grunt.registerTask( 'build-unsafe', [ 'clean', 'check-mixtape', 'check-mixtape-fatal', 'copy' ] );
+	// grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'test', 'build-blocks', 'copy' ] );
+	grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'test', 'copy' ] );
+	// grunt.registerTask( 'build-unsafe', [ 'clean', 'build-blocks', 'copy' ] );
+	grunt.registerTask( 'build-unsafe', [ 'clean', 'copy' ] );
 
 	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'checkrepo', 'build', 'wp_deploy' ] );
 	grunt.registerTask( 'deploy-unsafe', [ 'build', 'wp_deploy' ] );
