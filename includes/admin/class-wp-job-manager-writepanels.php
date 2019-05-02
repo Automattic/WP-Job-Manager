@@ -80,7 +80,7 @@ class WP_Job_Manager_Writepanels {
 			 * @param int    $object_id Object ID.
 			 * @param int    $user_id   User ID.
 			 */
-			if ( ! call_user_func( $field['auth_callback'], false, $meta_key, $post_id, $current_user->ID ) ) {
+			if ( ! call_user_func( $field['auth_edit_callback'], false, $meta_key, $post_id, $current_user->ID ) ) {
 				continue;
 			}
 

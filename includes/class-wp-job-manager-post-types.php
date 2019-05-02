@@ -1056,7 +1056,6 @@ class WP_Job_Manager_Post_Types {
 	 * Registers job listing meta fields.
 	 */
 	public function register_meta_fields() {
-		$current_user = wp_get_current_user();
 		$fields       = WP_Job_Manager_Post_Types::get_job_listing_fields();
 
 		foreach ( $fields as $meta_key => $field ) {
@@ -1068,7 +1067,7 @@ class WP_Job_Manager_Post_Types {
 					'show_in_rest'      => $field['show_in_rest'],
 					'description'       => $field['description'],
 					'sanitize_callback' => $field['sanitize_callback'],
-					'auth_callback'     => $field['auth_callback'],
+					'auth_callback'     => $field['auth_edit_callback'],
 					'single'            => true,
 					'object_subtype'    => 'job_listing',
 				)
@@ -1083,18 +1082,19 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public static function get_job_listing_fields() {
 		$default_field = array(
-			'label'             => null,
-			'placeholder'       => null,
-			'description'       => null,
-			'priority'          => 10,
-			'value'             => null,
-			'default'           => null,
-			'type'              => 'text',
-			'data_type'         => 'string',
-			'show_in_admin'     => true,
-			'show_in_rest'      => false,
-			'auth_callback'     => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
-			'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_based_on_input_type' ),
+			'label'              => null,
+			'placeholder'        => null,
+			'description'        => null,
+			'priority'           => 10,
+			'value'              => null,
+			'default'            => null,
+			'type'               => 'text',
+			'data_type'          => 'string',
+			'show_in_admin'      => true,
+			'show_in_rest'       => false,
+			'auth_edit_callback' => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
+			'auth_view_callback' => null,
+			'sanitize_callback'  => array( __CLASS__, 'sanitize_meta_field_based_on_input_type' ),
 		);
 
 		$fields = array(
@@ -1170,23 +1170,24 @@ class WP_Job_Manager_Post_Types {
 				'description'   => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
 			),
 			'_featured'        => array(
-				'label'         => __( 'Featured Listing', 'wp-job-manager' ),
-				'type'          => 'checkbox',
-				'description'   => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
-				'priority'      => 10,
-				'data_type'     => 'integer',
-				'show_in_admin' => true,
-				'show_in_rest'  => true,
-				'auth_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
+				'label'              => __( 'Featured Listing', 'wp-job-manager' ),
+				'type'               => 'checkbox',
+				'description'        => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
+				'priority'           => 10,
+				'data_type'          => 'integer',
+				'show_in_admin'      => true,
+				'show_in_rest'       => true,
+				'auth_edit_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
 			),
 			'_job_expires'     => array(
-				'label'         => __( 'Listing Expiry Date', 'wp-job-manager' ),
-				'priority'      => 11,
-				'show_in_admin' => true,
-				'show_in_rest'  => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
-				'data_type'     => 'string',
-				'classes'       => array( 'job-manager-datepicker' ),
-				'auth_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
+				'label'              => __( 'Listing Expiry Date', 'wp-job-manager' ),
+				'priority'           => 11,
+				'show_in_admin'      => true,
+				'show_in_rest'       => true,
+				'data_type'          => 'string',
+				'classes'            => array( 'job-manager-datepicker' ),
+				'auth_edit_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
+				'auth_view_callback' => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
 			),
 		);
 
@@ -1318,7 +1319,7 @@ class WP_Job_Manager_Post_Types {
 			return false;
 		}
 
-		return $user->has_cap( 'edit_job_listings' );
+		return job_manager_user_can_edit_job( $post_id );
 	}
 
 	/**

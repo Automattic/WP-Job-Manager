@@ -110,6 +110,7 @@ class WP_Job_Manager {
 		add_action( 'admin_init', array( $this, 'add_privacy_policy_content' ) );
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
 		add_action( 'init', array( 'WP_Job_Manager_Email_Notifications', 'init' ) );
+		add_action( 'rest_api_init', array( $this, 'rest_init' ) );
 
 		// Filters.
 		add_filter( 'wp_privacy_personal_data_exporters', array( 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ) );
@@ -184,6 +185,14 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/wp-job-manager-deprecated.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/wp-job-manager-functions.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/wp-job-manager-template.php';
+	}
+
+	/**
+	 * Loads the REST API functionality.
+	 */
+	public function rest_init() {
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-rest-api.php';
+		WP_Job_Manager_REST_API::init();
 	}
 
 	/**
