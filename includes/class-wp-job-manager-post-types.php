@@ -1065,7 +1065,7 @@ class WP_Job_Manager_Post_Types {
 				array(
 					'type'              => $field['data_type'],
 					'show_in_rest'      => $field['show_in_rest'],
-					'description'       => $field['description'],
+					'description'       => $field['label'],
 					'sanitize_callback' => $field['sanitize_callback'],
 					'auth_callback'     => $field['auth_edit_callback'],
 					'single'            => true,
