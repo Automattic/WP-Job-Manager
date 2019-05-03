@@ -641,6 +641,15 @@ class WP_Job_Manager_Writepanels {
 				continue;
 			}
 
+			// Checkboxes that aren't sent are unchecked.
+			if ( 'checkbox' === $field['type'] ) {
+				if ( ! empty( $_POST[ $key ] ) ) {
+					$_POST[ $key ] = 1;
+				} else {
+					$_POST[ $key ] = 0;
+				}
+			}
+
 			// Expirey date.
 			if ( '_job_expires' === $key ) {
 				if ( empty( $_POST[ $key ] ) ) {
@@ -657,12 +666,6 @@ class WP_Job_Manager_Writepanels {
 					$_POST[ $key ] = 0;
 				}
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
-			} elseif ( 'checkbox' === $field['type'] ) {
-				if ( ! empty( $_POST[ $key ] ) ) {
-					update_post_meta( $post_id, $key, 1 );
-				} else {
-					update_post_meta( $post_id, $key, 0 );
-				}
 			} elseif ( isset( $_POST[ $key ] ) ) {
 				update_post_meta( $post_id, $key, $_POST[ $key ] );
 			}
