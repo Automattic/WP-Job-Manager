@@ -652,13 +652,6 @@ class WP_Job_Manager_Writepanels {
 				} else {
 					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
 				}
-			} elseif ( '_job_location' === $key ) {
-				// Locations.
-				$updated_result = update_post_meta( $post_id, $key, $_POST[ $key ] );
-				if ( ! $updated_result && apply_filters( 'job_manager_geolocation_enabled', true ) && ! WP_Job_Manager_Geocode::has_location_data( $post_id ) ) {
-					// First time generation for job location data.
-					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
-				}
 			} elseif ( '_job_author' === $key ) {
 				if ( empty( $_POST[ $key ] ) ) {
 					$_POST[ $key ] = 0;
