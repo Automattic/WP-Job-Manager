@@ -110,7 +110,7 @@ class WP_Job_Manager_Writepanels {
 		 *
 		 * @since 1.33.0
 		 *
-		 * @param array    $fields  Job listing fields for WP admin.
+		 * @param array    $fields  Job listing fields for WP admin. See `job_manager_job_listing_data_fields` filter for more information.
 		 * @param int|null $post_id Post ID to get fields for. May be null.
 		 */
 		$fields = apply_filters( 'job_manager_job_listing_wp_admin_fields', $fields, $post_id );
