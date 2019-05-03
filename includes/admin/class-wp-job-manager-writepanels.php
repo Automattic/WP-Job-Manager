@@ -200,13 +200,8 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_file( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( empty( $field['placeholder'] ) ) {
-			$field['placeholder'] = 'http://';
+			$field['placeholder'] = 'https://';
 		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
@@ -249,11 +244,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_text( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -297,11 +287,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_hidden( $key, $field ) {
-		global $thepostid;
-
-		if ( 'hidden' === $field['type'] && ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -340,11 +325,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_textarea( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -369,11 +349,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_select( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -410,11 +385,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_multiselect( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -451,11 +421,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_checkbox( $key, $field ) {
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -489,7 +454,6 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		$posted_by      = get_user_by( 'id', $author_id );
-		$field['value'] = ! isset( $field['value'] ) ? get_post_meta( $thepostid, $key, true ) : $field['value'];
 		$name           = ! empty( $field['name'] ) ? $field['name'] : $key;
 		?>
 		<p class="form-field form-field-author">
@@ -528,11 +492,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_radio( $key, $field ) {
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -569,6 +528,14 @@ class WP_Job_Manager_Writepanels {
 
 		foreach ( $this->job_listing_fields() as $key => $field ) {
 			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
+
+			if ( ! isset( $field['value'] ) ) {
+				$field['value'] = get_post_meta( $thepostid, $key, true );
+			}
+
+			if ( ! isset( $field['value'] ) && isset( $field['default'] ) ) {
+				$field['value'] = $field['default'];
+			}
 
 			if ( has_action( 'job_manager_input_' . $type ) ) {
 				do_action( 'job_manager_input_' . $type, $key, $field );
