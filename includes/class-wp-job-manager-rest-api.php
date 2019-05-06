@@ -12,7 +12,7 @@ class WP_Job_Manager_REST_API {
 	 * @static
 	 */
 	public static function init() {
-		add_action( 'rest_prepare_job_listing', array( __CLASS__, 'prepare_job_listing' ), 10, 3 );
+		add_action( 'rest_prepare_job_listing', array( __CLASS__, 'prepare_job_listing' ), 10, 2 );
 	}
 
 	/**
@@ -20,10 +20,9 @@ class WP_Job_Manager_REST_API {
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_Post          $post     Post object.
-	 * @param WP_REST_Request  $request  Request object.
 	 * @return WP_REST_Response
 	 */
-	public static function prepare_job_listing( $response, $post, $request ) {
+	public static function prepare_job_listing( $response, $post ) {
 		$current_user = wp_get_current_user();
 		$fields       = WP_Job_Manager_Post_Types::get_job_listing_fields();
 		$data         = $response->get_data();
