@@ -235,6 +235,154 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertArrayNotHasKey( '_favorite_dog', $response->data['meta'], 'Legacy custom fields should not be included in REST API responses.' );
 	}
 
+	public function test_admin_can_set_meta_fields() {
+		$this->login_as_admin();
+		$test_meta = array(
+			'_job_location'    => 'Location A',
+			'_application'     => 'example@example.com',
+			'_company_name'    => 'Test Company',
+			'_company_website' => 'https://www.example.com/awesome#nice',
+			'_company_tagline' => 'Best Example Money Can Buy',
+			'_company_twitter' => '@exampledotcom',
+			'_company_video'   => 'https://youtube.com/example',
+			'_filled'          => 0,
+			'_featured'        => 0,
+			'_job_expires'     => date( 'Y-m-d', strtotime( '+45 days' ) ),
+		);
+
+		$response = $this->post(
+			'/wp/v2/job-listings', array(
+				'post_title' => 'Software Engineer',
+				'post_name'  => 'software-engineer',
+				'meta'       => $test_meta,
+			)
+		);
+
+		$this->assertResponseStatus( $response, 201 );
+		$response_data = $response->get_data();
+
+		// Confirm data sent back matches.
+		foreach ( $test_meta as $meta_key => $expected_value ) {
+			$this->assertArrayHasKey( $meta_key, $response_data['meta'] );
+			$this->assertEquals( $expected_value, $response_data['meta'][ $meta_key ] );
+		}
+
+		// Confirm what is in database matches.
+		$this->assertArrayHasKey( 'id', $response_data );
+		foreach ( $test_meta as $meta_key => $expected_value ) {
+			$this->assertEquals( $expected_value, get_post_meta( $response_data['id'], $meta_key, true ) );
+		}
+	}
+
+	public function test_meta_input_sterilized() {
+		$this->login_as_admin();
+		$test_meta = array(
+			'_job_location'    => array(
+				'sent'     => '<a href="http://example.com">Location A</a>',
+				'expected' => 'Location A',
+			),
+			'_application'     => array(
+				'sent'     => 'chrome://net=internals',
+				'expected' => '',
+			),
+			'_company_name'    => array(
+				'sent'     => 'Test Company 🐵 🙈 🙉 🙊',
+				'expected' => 'Test Company 🐵 🙈 🙉 🙊',
+			),
+			'_company_website' => array(
+				'sent'     => 'https://www.example.com/awesome#nice',
+				'expected' => 'https://www.example.com/awesome#nice',
+			),
+			'_company_tagline' => array(
+				'sent'     => 'Best Example Money Can Buy<script\\x20type=\"text/javascript\">javascript:alert(1);</script>',
+				'expected' => 'Best Example Money Can Buy',
+			),
+			'_company_twitter' => array(
+				'sent'     => "    @exampledotcom ",
+				'expected' => '@exampledotcom',
+			),
+			'_company_video'   => array(
+				'sent'     => 'http://example.com/index.php?search="><script>alert(0)</script>',
+				'expected' => 'http://example.com/index.php?search=scriptalert(0)/script',
+			),
+			'_filled'          => array(
+				'sent'     => 11,
+				'expected' => 1,
+			),
+			'_featured'        => array(
+				'sent'     => 0x0,
+				'expected' => 0,
+			),
+			'_job_expires'     => array(
+				'sent'     => '01-01-2018',
+				'expected' => '',
+			),
+		);
+
+		$test_meta_values = array();
+		foreach ( $test_meta as $meta_key => $values ) {
+			$test_meta_values[ $meta_key ] = $values['sent'];
+		}
+
+		$response = $this->post(
+			'/wp/v2/job-listings', array(
+				'post_title' => 'Software Engineer',
+				'post_name'  => 'software-engineer',
+				'meta'       => $test_meta_values,
+			)
+		);
+
+		$this->assertResponseStatus( $response, 201 );
+		$response_data = $response->get_data();
+
+		// Confirm what is in database matches.
+		$this->assertArrayHasKey( 'id', $response_data );
+		foreach ( $test_meta as $meta_key => $values ) {
+			$this->assertEquals( $values['expected'], get_post_meta( $response_data['id'], $meta_key, true ) );
+		}
+	}
+
+	/**
+	 * Data provider for the `\WP_Test_WP_Job_Manager_Job_Listings_Test::test_meta_input_bad_data_type` test.
+	 * @return array
+	 */
+	public function data_provider_test_meta_input_bad_data_type() {
+		return array(
+			array(
+				array(
+					'_filled' => 'yes',
+				),
+			),
+			array(
+				array(
+					'_featured' => 'true',
+				),
+			),
+			array(
+				array(
+					'_job_location' => array( 'Seattle', 'WA' ),
+				),
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider data_provider_test_meta_input_bad_data_type
+	 */
+	public function test_meta_input_bad_data_type( $test_meta ) {
+		$this->login_as_admin();
+
+		$response = $this->post(
+			'/wp/v2/job-listings', array(
+				'post_title' => 'Software Engineer',
+				'post_name'  => 'software-engineer',
+				'meta'       => $test_meta,
+			)
+		);
+
+		$this->assertResponseStatus( $response, 400 );
+	}
+
 	public function add_legacy_field( $fields ) {
 		$fields['_favorite_dog'] = array(
 			'label'         => 'Favorite Dog',
