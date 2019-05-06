@@ -274,6 +274,28 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		}
 	}
 
+	public function test_admin_can_delete_meta_fields() {
+		$this->login_as_admin();
+		$post_id = $this->get_job_listing( array(
+			'meta_input' => array(
+				'_company_name' => 'Test Company',
+			)
+		) );
+
+		$this->assertEquals( 'Test Company', get_post_meta( $post_id, '_company_name', true ) );
+
+		$response = $this->put(
+			'/wp/v2/job-listings/' . $post_id, array(
+				'meta'       => array(
+					'_company_name' => null,
+				),
+			)
+		);
+
+		$this->assertResponseStatus( $response, 200 );
+		$this->assertFalse( metadata_exists( 'post', $post_id, '_company_name' ) );
+	}
+
 	public function test_meta_input_sterilized() {
 		$this->login_as_admin();
 		$test_meta = array(
