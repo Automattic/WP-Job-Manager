@@ -1189,6 +1189,7 @@ class WP_Job_Manager_Post_Types {
 				'classes'            => array( 'job-manager-datepicker' ),
 				'auth_edit_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
 				'auth_view_callback' => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
+				'sanitize_callback'  => array( __CLASS__, 'sanitize_meta_date' ),
 			),
 		);
 
@@ -1347,6 +1348,28 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		return esc_url_raw( $meta_value );
+	}
+
+	/**
+	 * Sanitize date meta fields.
+	 *
+	 * @param string $meta_value Value of meta field that needs sanitization.
+	 * @return string
+	 */
+	public static function sanitize_meta_date( $meta_value ) {
+		$meta_value = trim( $meta_value );
+
+		// Matches yyyy-mm-dd.
+		if ( ! preg_match( '/[\d]{4}\-[\d]{2}\-[\d]{2}/', $meta_value ) ) {
+			return '';
+		}
+
+		// Checks for valid date.
+		if ( date( 'Y-m-d', strtotime( $meta_value ) ) !== $meta_value ) {
+			return '';
+		}
+
+		return $meta_value;
 	}
 
 	/**
