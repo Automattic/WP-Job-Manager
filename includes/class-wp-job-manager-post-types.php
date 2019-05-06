@@ -1234,28 +1234,28 @@ class WP_Job_Manager_Post_Types {
 		 *                   @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`.
 		 *                   @since 1.33.0
 		 *
-		 *                   @param bool     $allowed   Whether the user can add the object meta. Default false.
-		 *                   @param string   $meta_key  The meta key.
-		 *                   @param int      $object_id Post ID for Job Listing.
-		 *                   @param int      $user_id   User ID.
+		 *                   @param bool   $allowed   Whether the user can add the object meta. Default false.
+		 *                   @param string $meta_key  The meta key.
+		 *                   @param int    $object_id Post ID for Job Listing.
+		 *                   @param int    $user_id   User ID.
 		 *
 		 *                   @return bool
 		 *         }
-		 *         @type callable $auth_view_callback      {
+		 *         @type callable      $auth_view_callback {
 		 *                   Decides if specific user can view value of the meta key. Used in: REST API.
 		 *                   Defaults to visible to all (if shown in REST API, which by default is false).
 		 *
 		 *                   @see WPJM method `WP_Job_Manager_REST_API::prepare_job_listing()`.
 		 *                   @since 1.33.0
 		 *
-		 *                   @param bool     $allowed   Whether the user can add the object meta. Default false.
-		 *                   @param string   $meta_key  The meta key.
-		 *                   @param int      $object_id Post ID for Job Listing.
-		 *                   @param int      $user_id   User ID.
+		 *                   @param bool   $allowed   Whether the user can add the object meta. Default false.
+		 *                   @param string $meta_key  The meta key.
+		 *                   @param int    $object_id Post ID for Job Listing.
+		 *                   @param int    $user_id   User ID.
 		 *
 		 *                   @return bool
 		 *         }
-		 *         @type callable $sanitize_callback       {
+		 *         @type callable      $sanitize_callback  {
 		 *                   Sanitizes the meta value before saving to database. Used in: WP Admin; REST API; Frontend.
 		 *                   Defaults to callable that sanitizes based on the field type.
 		 *
@@ -1294,10 +1294,9 @@ class WP_Job_Manager_Post_Types {
 			$fields = self::get_job_listing_fields();
 		}
 
-		$type = 'text';
-
 		$meta_value = trim( $meta_value );
 
+		$type = 'text';
 		if ( isset( $fields[ $meta_key ] ) ) {
 			$type = $fields[ $meta_key ]['type'];
 		}
