@@ -25,8 +25,13 @@ class WP_Job_Manager_Dependency_Checker {
 	 * @return bool True if we should continue to load the plugin.
 	 */
 	public static function check_dependencies() {
-		if ( self::check_php() ) {
+		if ( ! self::check_php() ) {
 			add_action( 'admin_notices', array( 'WP_Job_Manager_Dependency_Checker', 'add_php_notice' ) );
+		}
+
+		if ( ! self::check_wp() ) {
+			add_action( 'admin_notices', array( 'WP_Job_Manager_Dependency_Checker', 'add_wp_notice' ) );
+			add_filter( 'plugin_action_links_' . JOB_MANAGER_PLUGIN_BASENAME, array( 'WP_Job_Manager_Dependency_Checker', 'wp_version_plugin_action_notice' ) );
 		}
 
 		return true;
@@ -73,16 +78,15 @@ class WP_Job_Manager_Dependency_Checker {
 		echo '</p></div>';
 	}
 
-
 	/**
-	 * Checks for our PHP version requirement.
+	 * Checks for our WordPress version requirement.
 	 *
 	 * @return bool
 	 */
-	public static function check_wp() {
+	private static function check_wp() {
 		global $wp_version;
 
-		return version_compare( $wp_version, self::MINIMUM_PHP_VERSION, '>=' );
+		return version_compare( $wp_version, self::MINIMUM_WP_VERSION, '>=' );
 	}
 
 	/**
@@ -107,10 +111,12 @@ class WP_Job_Manager_Dependency_Checker {
 	/**
 	 * Add admin notice when WP upgrade is required.
 	 *
-	 * @param array $actions
+	 * @access private
+	 *
+	 * @param array $actions Actions to show in WordPress admin's plugin list.
 	 * @return array
 	 */
-	public function wp_version_plugin_action_notice( $actions ) {
+	public static function wp_version_plugin_action_notice( $actions ) {
 		// translators: Placeholder (%s) is the URL where users can go to update WordPress.
 		$actions[] = wp_kses_post( sprintf( __( '<a href="%s" style="color: red">WordPress Update Required</a>', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) ) );
 		return $actions;
