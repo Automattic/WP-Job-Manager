@@ -1,14 +1,13 @@
 <?php
 /**
- * Setup page: header content.
+ * File containing the view used in the header of the setup pages.
  *
- * @package WP Job Manager
+ * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 ?>
 <div class="wrap wp_job_manager wp_job_manager_addons_wrap">
 	<h2><?php esc_html_e( 'WP Job Manager Setup', 'wp-job-manager' ); ?></h2>

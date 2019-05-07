@@ -1,13 +1,12 @@
 <?php
 /**
- * Defines a class to handle the user data export
+ * File containing the class WP_Job_Manager_Data_Exporter.
  *
  * @package wp-job-manager
- * @since 1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**

@@ -1,8 +1,17 @@
 <?php
 /**
- * Handles displays and hooks for the Job Listing custom post type.
+ * File containing the class WP_Job_Manager_Post_Types.
  *
  * @package wp-job-manager
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Handles displays and hooks for the Job Listing custom post type.
+ *
  * @since 1.0.0
  */
 class WP_Job_Manager_Post_Types {

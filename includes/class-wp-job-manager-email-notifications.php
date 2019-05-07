@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Email_Notifications.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Base class for WP Job Manager's email notification system.
  *
- * @package wp-job-manager
  * @since 1.31.0
  */
 final class WP_Job_Manager_Email_Notifications {

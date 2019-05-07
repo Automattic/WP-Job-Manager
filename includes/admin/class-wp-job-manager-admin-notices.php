@@ -1,12 +1,12 @@
 <?php
 /**
- * Handles notices in WP admin.
+ * File containing the class WP_Job_Manager_Admin_Notices.
  *
  * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
