@@ -533,7 +533,7 @@ class WP_Job_Manager_Writepanels {
 				$field['value'] = get_post_meta( $thepostid, $key, true );
 			}
 
-			if ( ! isset( $field['value'] ) && isset( $field['default'] ) ) {
+			if ( ( ! isset( $field['value'] ) || '' === $field['value'] ) && isset( $field['default'] ) ) {
 				$field['value'] = $field['default'];
 			}
 
