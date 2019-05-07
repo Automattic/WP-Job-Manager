@@ -529,11 +529,11 @@ class WP_Job_Manager_Writepanels {
 		foreach ( $this->job_listing_fields() as $key => $field ) {
 			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
 
-			if ( ! isset( $field['value'] ) ) {
+			if ( ! isset( $field['value'] ) && metadata_exists( 'post', $thepostid, $key ) ) {
 				$field['value'] = get_post_meta( $thepostid, $key, true );
 			}
 
-			if ( ( ! isset( $field['value'] ) || '' === $field['value'] ) && isset( $field['default'] ) ) {
+			if ( ! isset( $field['value'] ) && isset( $field['default'] ) ) {
 				$field['value'] = $field['default'];
 			}
 
