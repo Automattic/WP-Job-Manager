@@ -312,4 +312,24 @@ class WP_Job_Manager_Usage_Tracking_Data {
 
 		return $query->found_posts;
 	}
+
+	/**
+	 * Get the base fields to be sent for event logging.
+	 *
+	 * @since 1.33.0
+	 *
+	 * @return array
+	 */
+	public static function get_event_logging_base_fields() {
+		$base_fields = array(
+			'job_listings' => wp_count_posts( 'job_listing' )->publish,
+		);
+
+		/**
+		 * Filter the fields that should be sent with every event that is logged.
+		 *
+		 * @param array $base_fields The default base fields.
+		 */
+		return apply_filters( 'job_manager_event_logging_base_fields', $base_fields );
+	}
 }
