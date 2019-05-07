@@ -1098,6 +1098,19 @@ class WP_Job_Manager_Post_Types {
 			'sanitize_callback'  => array( __CLASS__, 'sanitize_meta_field_based_on_input_type' ),
 		);
 
+		$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
+
+		$application_method_label       = __( 'Application email/URL', 'wp-job-manager' );
+		$application_method_placeholder = __( 'Enter an email address or website URL', 'wp-job-manager' );
+		if ( 'email' === $allowed_application_method ) {
+			$application_method_label       = __( 'Application email', 'wp-job-manager' );
+			$application_method_placeholder = __( 'you@example.com', 'wp-job-manager' );
+		}
+		if ( 'url' === $allowed_application_method ) {
+			$application_method_label       = __( 'Application URL', 'wp-job-manager' );
+			$application_method_placeholder = __( 'https://', 'wp-job-manager' );
+		}
+
 		$fields = array(
 			'_job_location'    => array(
 				'label'         => __( 'Location', 'wp-job-manager' ),
@@ -1109,8 +1122,8 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'  => true,
 			),
 			'_application'     => array(
-				'label'             => __( 'Application Email or URL', 'wp-job-manager' ),
-				'placeholder'       => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
+				'label'             => $application_method_label,
+				'placeholder'       => $application_method_placeholder,
 				'description'       => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
 				'priority'          => 2,
 				'data_type'         => 'string',
