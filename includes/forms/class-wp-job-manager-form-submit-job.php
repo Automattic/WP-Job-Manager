@@ -720,7 +720,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return 0;
 		}
 
-		$attachment_url_parts = parse_url( $attachment_url );
+		$attachment_url_parts = wp_parse_url( $attachment_url );
 
 		// Relative paths aren't allowed.
 		if ( false !== strpos( $attachment_url_parts['path'], '../' ) ) {
