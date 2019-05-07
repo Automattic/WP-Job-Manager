@@ -29,18 +29,6 @@ define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 require_once dirname( __FILE__ ) . '/includes/class-wp-job-manager.php';
 
 /**
- * Add post type for Job Manager.
- *
- * @param array $types
- * @return array
- */
-function job_manager_add_post_types( $types ) {
-	$types[] = 'job_listing';
-	return $types;
-}
-add_filter( 'post_types_to_delete_with_user', 'job_manager_add_post_types', 10 );
-
-/**
  * Main instance of WP Job Manager.
  *
  * Returns the main instance of WP Job Manager to prevent the need to use globals.
