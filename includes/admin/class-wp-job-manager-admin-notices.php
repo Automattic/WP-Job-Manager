@@ -44,7 +44,7 @@ class WP_Job_Manager_Admin_Notices {
 	public static function add_notice( $notice ) {
 		$notice = sanitize_key( $notice );
 
-		if ( ! in_array( $notice, self::get_notice_state() ) ) {
+		if ( ! in_array( $notice, self::get_notice_state(), true ) ) {
 			self::$notice_state[] = $notice;
 			self::save_notice_state();
 		}
