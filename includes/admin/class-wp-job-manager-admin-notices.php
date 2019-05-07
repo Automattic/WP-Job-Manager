@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.32.0
  */
 class WP_Job_Manager_Admin_Notices {
-	const STATE_OPTION = 'job_manager_admin_notices';
+	const STATE_OPTION      = 'job_manager_admin_notices';
 	const NOTICE_CORE_SETUP = 'core_setup';
 
 	/**
@@ -166,13 +166,16 @@ class WP_Job_Manager_Admin_Notices {
 	public static function is_admin_on_standard_job_manager_screen( $additional_screens = array() ) {
 		$screen          = get_current_screen();
 		$screen_id       = $screen ? $screen->id : '';
-		$show_on_screens = array_merge( array(
-			'edit-job_listing',
-			'edit-job_listing_category',
-			'edit-job_listing_type',
-			'job_listing_page_job-manager-addons',
-			'job_listing_page_job-manager-settings',
-		), $additional_screens );
+		$show_on_screens = array_merge(
+			array(
+				'edit-job_listing',
+				'edit-job_listing_category',
+				'edit-job_listing_type',
+				'job_listing_page_job-manager-addons',
+				'job_listing_page_job-manager-settings',
+			),
+			$additional_screens
+		);
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return false;

@@ -127,16 +127,18 @@ class WP_Job_Manager_Cache_Helper {
 		global $wpdb;
 
 		if ( ! wp_using_ext_object_cache() && ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-			$wpdb->query( $wpdb->prepare( "
-				DELETE a, b FROM $wpdb->options a, $wpdb->options b
-				WHERE a.option_name LIKE %s
-				AND a.option_name NOT LIKE %s
-				AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
-				AND b.option_value < %s;",
-				$wpdb->esc_like( '_transient_jm_' ) . '%',
-				$wpdb->esc_like( '_transient_timeout_jm_' ) . '%',
-				time()
-			) );
+			$wpdb->query(
+				$wpdb->prepare(
+					"DELETE a, b FROM $wpdb->options a, $wpdb->options b
+						WHERE a.option_name LIKE %s
+						AND a.option_name NOT LIKE %s
+						AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
+						AND b.option_value < %s;",
+					$wpdb->esc_like( '_transient_jm_' ) . '%',
+					$wpdb->esc_like( '_transient_timeout_jm_' ) . '%',
+					time()
+				)
+			);
 		}
 	}
 
@@ -198,10 +200,12 @@ class WP_Job_Manager_Cache_Helper {
 			return;
 		}
 
-		$transients = $wpdb->get_col( $wpdb->prepare(
-			"SELECT option_name FROM $wpdb->options WHERE option_name RLIKE %s",
-			implode( '|', $rlike )
-		) );
+		$transients = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT option_name FROM $wpdb->options WHERE option_name RLIKE %s",
+				implode( '|', $rlike )
+			)
+		);
 
 		// For each transient...
 		foreach ( $transients as $transient ) {

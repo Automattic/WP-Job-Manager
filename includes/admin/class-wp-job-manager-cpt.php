@@ -312,9 +312,9 @@ class WP_Job_Manager_CPT {
 
 		$allowed_html = array(
 			'option' => array(
-				'value' => array(),
+				'value'    => array(),
 				'selected' => array(),
-				'class' => array(),
+				'class'    => array(),
 			),
 		);
 

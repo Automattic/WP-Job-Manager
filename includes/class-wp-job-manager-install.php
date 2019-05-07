@@ -57,7 +57,7 @@ class WP_Job_Manager_Install {
 		}
 
 		if ( $is_new_install ) {
-			$permalink_options = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
+			$permalink_options                 = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
 			$permalink_options['jobs_archive'] = '';
 			update_option( 'job_manager_permalinks', wp_json_encode( $permalink_options ) );
 		}
