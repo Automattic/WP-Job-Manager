@@ -365,6 +365,26 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						}
 					}
 				}
+				if ( empty( $field['file_limit'] ) && ! empty( $field['multiple'] ) ) {
+					$field['file_limit'] = 1;
+				}
+				if ( 'file' === $field['type'] && ! empty( $field['file_limit'] ) ) {
+					$file_limit = intval( $field['file_limit'] );
+					if ( is_array( $values[ $group_key ][ $key ] ) ) {
+						$check_value = array_filter( $values[ $group_key ][ $key ] );
+					} else {
+						$check_value = array_filter( array( $values[ $group_key ][ $key ] ) );
+					}
+					if ( count( $check_value ) > $file_limit ) {
+						// translators: Placeholder %d is the number of files to that users are limited to.
+						$message = esc_html__( 'You are only allowed to upload a maximum of %d files.', 'wp-job-manager' );
+						if ( ! empty( $field['file_limit_message'] ) ) {
+							$message = $field['file_limit_message'];
+						}
+
+						throw new Exception( esc_html( sprintf( $message, $file_limit ) ) );
+					}
+				}
 			}
 		}
 
