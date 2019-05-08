@@ -1209,13 +1209,13 @@ class WP_Job_Manager_Post_Types {
 		/**
 		 * Filters job listing data fields.
 		 *
-		 * For the REST API, do not pass fields you don't want to be visible to the current visitor when `show_in_rest` is `true`.
-		 * To add values and other data when generating the WP admin form, use filter `job_manager_job_listing_wp_admin_fields`
-		 * which should have `$post_id` in context.
+		 * For the REST API, do not pass fields you don't want to be visible to the current visitor when `show_in_rest`
+		 * is `true`. To add values and other data when generating the WP admin form, use filter
+		 * `job_manager_job_listing_wp_admin_fields` which should have `$post_id` in context.
 		 *
 		 * @since 1.0.0
 		 * @since 1.27.0 $post_id was added.
-		 * @since 1.33.0 Used both in WP admin and REST API. Removed `$post_id` from callable. Added fields for REST API.
+		 * @since 1.33.0 Used both in WP admin and REST API. Removed `$post_id` attribute. Added fields for REST API.
 		 *
 		 * @param array    $fields  {
 		 *     Job listing meta fields for REST API and WP admin. Associative array with meta key as the index.
@@ -1224,61 +1224,67 @@ class WP_Job_Manager_Post_Types {
 		 *     @type array $meta_key {
 		 *         @type string        $label              Label to show for field. Used in: WP Admin; REST API.
 		 *         @type string        $placeholder        Placeholder to show in empty form fields. Used in: WP Admin.
-		 *         @type string        $description        Longer description to shown below form field. Used in: WP Admin.
+		 *         @type string        $description        Longer description to shown below form field.
+		 *                                                 Used in: WP Admin.
 		 *         @type array         $classes            Classes to apply to form input field. Used in: WP Admin.
 		 *         @type int           $priority           Field placement priority for WP admin. Lower is first.
-		 *                                                 Used in: WP Admin. (Default: 10).
+		 *                                                 Used in: WP Admin (Default: 10).
 		 *         @type string        $value              Override standard retrieval of meta value in form field.
 		 *                                                 Used in: WP Admin.
-		 *         @type string        $default            Default value on form field if no other value is set for field.
-		 *                                                 Used in: WP Admin. (Since 1.33.0)
-		 *         @type string        $type               Type of form field to render. Used in: WP Admin. (Default: 'text')
-		 *         @type string        $data_type          Data type to cast to. Options: 'string', 'boolean', 'integer', 'number'.
-		 *                                                 Used in: REST API. (Since 1.33.0; Default: 'string').
-		 *         @type bool|callable $show_in_admin      Whether field should be displayed in WP admin. Can be callable
-		 *                                                 that returns boolean. Used in: WP Admin. (Since 1.33.0; Default: true).
-		 *         @type bool|array    $show_in_rest       Whether data associated with this meta key can put in REST API
-		 *                                                 response for job listings. Can be used to pass REST API arguments
-		 *                                                 in `show_in_rest` parameter. Used in: REST API. (Since 1.33.0; Default: false).
+		 *         @type string        $default            Default value on form field if no other value is set for
+		 *                                                 field. Used in: WP Admin (Since 1.33.0).
+		 *         @type string        $type               Type of form field to render. Used in: WP Admin
+		 *                                                 (Default: 'text').
+		 *         @type string        $data_type          Data type to cast to. Options: 'string', 'boolean',
+		 *                                                 'integer', 'number'.  Used in: REST API. (Since 1.33.0;
+		 *                                                 Default: 'string').
+		 *         @type bool|callable $show_in_admin      Whether field should be displayed in WP admin. Can be
+		 *                                                 callable that returns boolean. Used in: WP Admin
+		 *                                                 (Since 1.33.0; Default: true).
+		 *         @type bool|array    $show_in_rest       Whether data associated with this meta key can put in REST
+		 *                                                 API response for job listings. Can be used to pass REST API
+		 *                                                 arguments in `show_in_rest` parameter. Used in: REST API
+		 *                                                 (Since 1.33.0; Default: false).
 		 *         @type callable      $auth_edit_callback {
-		 *                   Decides if specific user can edit the meta key. Used in: WP Admin; REST API.
-		 *                   Defaults to callable that limits to those who can edit specific the job listing (also limited by relevant endpoints).
+		 *             Decides if specific user can edit the meta key. Used in: WP Admin; REST API.
+		 *             Defaults to callable that limits to those who can edit specific the job listing (also limited
+		 *             by relevant endpoints).
 		 *
-		 *                   @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`.
-		 *                   @since 1.33.0
+		 *             @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`.
+		 *             @since 1.33.0
 		 *
-		 *                   @param bool   $allowed   Whether the user can add the object meta. Default false.
-		 *                   @param string $meta_key  The meta key.
-		 *                   @param int    $object_id Post ID for Job Listing.
-		 *                   @param int    $user_id   User ID.
+		 *             @param bool   $allowed   Whether the user can add the object meta. Default false.
+		 *             @param string $meta_key  The meta key.
+		 *             @param int    $object_id Post ID for Job Listing.
+		 *             @param int    $user_id   User ID.
 		 *
-		 *                   @return bool
+		 *             @return bool
 		 *         }
 		 *         @type callable      $auth_view_callback {
-		 *                   Decides if specific user can view value of the meta key. Used in: REST API.
-		 *                   Defaults to visible to all (if shown in REST API, which by default is false).
+		 *             Decides if specific user can view value of the meta key. Used in: REST API.
+		 *             Defaults to visible to all (if shown in REST API, which by default is false).
 		 *
-		 *                   @see WPJM method `WP_Job_Manager_REST_API::prepare_job_listing()`.
-		 *                   @since 1.33.0
+		 *             @see WPJM method `WP_Job_Manager_REST_API::prepare_job_listing()`.
+		 *             @since 1.33.0
 		 *
-		 *                   @param bool   $allowed   Whether the user can add the object meta. Default false.
-		 *                   @param string $meta_key  The meta key.
-		 *                   @param int    $object_id Post ID for Job Listing.
-		 *                   @param int    $user_id   User ID.
+		 *             @param bool   $allowed   Whether the user can add the object meta. Default false.
+		 *             @param string $meta_key  The meta key.
+		 *             @param int    $object_id Post ID for Job Listing.
+		 *             @param int    $user_id   User ID.
 		 *
-		 *                   @return bool
+		 *             @return bool
 		 *         }
 		 *         @type callable      $sanitize_callback  {
-		 *                   Sanitizes the meta value before saving to database. Used in: WP Admin; REST API; Frontend.
-		 *                   Defaults to callable that sanitizes based on the field type.
+		 *             Sanitizes the meta value before saving to database. Used in: WP Admin; REST API; Frontend.
+		 *             Defaults to callable that sanitizes based on the field type.
 		 *
-		 *                   @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`
-		 *                   @since 1.33.0
+		 *             @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`
+		 *             @since 1.33.0
 		 *
-		 *                   @param mixed  $meta_value Value of meta field that needs sanitization.
-		 *                   @param string $meta_key   Meta key that is being sanitized.
+		 *             @param mixed  $meta_value Value of meta field that needs sanitization.
+		 *             @param string $meta_key   Meta key that is being sanitized.
 		 *
-		 *                   @return mixed
+		 *             @return mixed
 		 *         }
 		 *     }
 		 * }
