@@ -1,4 +1,10 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Widget.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -6,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Job Manager Widget base.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Widget extends WP_Widget {

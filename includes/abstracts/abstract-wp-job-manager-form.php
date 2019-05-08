@@ -1,10 +1,18 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Form.
+ *
+ * @package wp-job-manager
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Parent abstract class for form classes.
  *
  * @abstract
- * @package wp-job-manager
  * @since 1.0.0
  */
 abstract class WP_Job_Manager_Form {

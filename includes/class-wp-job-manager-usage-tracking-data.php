@@ -1,9 +1,9 @@
 <?php
 /**
- * Usage tracking data
+ * File containing the class WP_Job_Manager_Usage_Tracking_Data.
  *
- * @package Usage Tracking
- **/
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -12,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Supplies the usage tracking data for logging.
  *
- * @package Usage Tracking
  * @since 1.30.0
  */
 class WP_Job_Manager_Usage_Tracking_Data {

@@ -1,4 +1,10 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Widget_Recent_Jobs.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

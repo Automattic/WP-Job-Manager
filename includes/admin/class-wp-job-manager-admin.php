@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Admin.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Handles front admin page for WP Job Manager.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Admin {
@@ -133,16 +137,16 @@ class WP_Job_Manager_Admin {
 				'job_manager_admin_js',
 				'job_manager_admin_params',
 				array(
-					'user_selection_strings'     => array(
-						'no_matches'           => _x( 'No matches found', 'user selection', 'wp-job-manager' ),
-						'ajax_error'           => _x( 'Loading failed', 'user selection', 'wp-job-manager' ),
-						'input_too_short_1'    => _x( 'Please enter 1 or more characters', 'user selection', 'wp-job-manager' ),
-						'input_too_short_n'    => _x( 'Please enter %qty% or more characters', 'user selection', 'wp-job-manager' ),
-						'load_more'            => _x( 'Loading more results&hellip;', 'user selection', 'wp-job-manager' ),
-						'searching'            => _x( 'Searching&hellip;', 'user selection', 'wp-job-manager' ),
+					'user_selection_strings' => array(
+						'no_matches'        => _x( 'No matches found', 'user selection', 'wp-job-manager' ),
+						'ajax_error'        => _x( 'Loading failed', 'user selection', 'wp-job-manager' ),
+						'input_too_short_1' => _x( 'Please enter 1 or more characters', 'user selection', 'wp-job-manager' ),
+						'input_too_short_n' => _x( 'Please enter %qty% or more characters', 'user selection', 'wp-job-manager' ),
+						'load_more'         => _x( 'Loading more results&hellip;', 'user selection', 'wp-job-manager' ),
+						'searching'         => _x( 'Searching&hellip;', 'user selection', 'wp-job-manager' ),
 					),
-					'ajax_url'                  => admin_url( 'admin-ajax.php' ),
-					'search_users_nonce'        => wp_create_nonce( 'search-users' ),
+					'ajax_url'               => admin_url( 'admin-ajax.php' ),
+					'search_users_nonce'     => wp_create_nonce( 'search-users' ),
 				)
 			);
 

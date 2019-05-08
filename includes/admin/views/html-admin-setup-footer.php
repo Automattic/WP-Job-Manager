@@ -1,13 +1,12 @@
 <?php
 /**
- * Setup page: footer content.
+ * File containing the view used in the footer of the setup pages.
  *
- * @package WP Job Manager
+ * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 ?>
 </div>

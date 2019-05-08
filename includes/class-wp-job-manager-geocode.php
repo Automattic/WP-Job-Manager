@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Geocode.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Obtains Geolocation data for posted jobs from Google.
  *
- * @package wp-job-manager
  * @since 1.6.1
  */
 class WP_Job_Manager_Geocode {

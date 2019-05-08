@@ -1,8 +1,17 @@
 <?php
 /**
- * Handles displays and hooks for the Job Listing custom post type.
+ * File containing the class WP_Job_Manager_Post_Types.
  *
  * @package wp-job-manager
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Handles displays and hooks for the Job Listing custom post type.
+ *
  * @since 1.0.0
  */
 class WP_Job_Manager_Post_Types {
@@ -68,6 +77,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'add_post_meta', array( $this, 'maybe_add_geolocation_data' ), 10, 3 );
 		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
+		add_filter( 'post_types_to_delete_with_user', array( $this, 'delete_user_add_job_listings_post_type' ) );
 
 		add_action( 'parse_query', array( $this, 'add_feed_query_args' ) );
 
@@ -263,14 +273,16 @@ class WP_Job_Manager_Post_Types {
 				)
 			);
 			if ( function_exists( 'wpjm_job_listing_employment_type_enabled' ) && wpjm_job_listing_employment_type_enabled() ) {
-				register_meta( 'term', 'employment_type', array(
-					'object_subtype'    => 'job_listing_type',
-					'show_in_rest'      => true,
-					'type'              => 'string',
-					'single'            => true,
-					'description'       => esc_html__( 'Employment Type', 'wp-job-manager' ),
-					'sanitize_callback' => array( $this, 'sanitize_employment_type' ),
-				) );
+				register_meta(
+					'term', 'employment_type', array(
+						'object_subtype'    => 'job_listing_type',
+						'show_in_rest'      => true,
+						'type'              => 'string',
+						'single'            => true,
+						'description'       => esc_html__( 'Employment Type', 'wp-job-manager' ),
+						'sanitize_callback' => array( $this, 'sanitize_employment_type' ),
+					)
+				);
 			}
 		}
 
@@ -660,14 +672,14 @@ class WP_Job_Manager_Post_Types {
 
 		// Change status to expired.
 		$job_ids = $wpdb->get_col(
-			$wpdb->prepare( "
-				SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
-				LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
-				WHERE postmeta.meta_key = '_job_expires'
-				AND postmeta.meta_value > 0
-				AND postmeta.meta_value < %s
-				AND posts.post_status = 'publish'
-				AND posts.post_type = 'job_listing'",
+			$wpdb->prepare(
+				"SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
+					LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
+					WHERE postmeta.meta_key = '_job_expires'
+					AND postmeta.meta_value > 0
+					AND postmeta.meta_value < %s
+					AND posts.post_status = 'publish'
+					AND posts.post_type = 'job_listing'",
 				date( 'Y-m-d', current_time( 'timestamp' ) )
 			)
 		);
@@ -684,11 +696,11 @@ class WP_Job_Manager_Post_Types {
 		// Delete old expired jobs.
 		if ( apply_filters( 'job_manager_delete_expired_jobs', false ) ) {
 			$job_ids = $wpdb->get_col(
-				$wpdb->prepare( "
-					SELECT posts.ID FROM {$wpdb->posts} as posts
-					WHERE posts.post_type = 'job_listing'
-					AND posts.post_modified < %s
-					AND posts.post_status = 'expired'",
+				$wpdb->prepare(
+					"SELECT posts.ID FROM {$wpdb->posts} as posts
+						WHERE posts.post_type = 'job_listing'
+						AND posts.post_modified < %s
+						AND posts.post_status = 'expired'",
 					date( 'Y-m-d', strtotime( '-' . apply_filters( 'job_manager_delete_expired_jobs_days', 30 ) . ' days', current_time( 'timestamp' ) ) )
 				)
 			);
@@ -709,11 +721,11 @@ class WP_Job_Manager_Post_Types {
 
 		// Delete old expired jobs.
 		$job_ids = $wpdb->get_col(
-			$wpdb->prepare( "
-				SELECT posts.ID FROM {$wpdb->posts} as posts
-				WHERE posts.post_type = 'job_listing'
-				AND posts.post_modified < %s
-				AND posts.post_status = 'preview'",
+			$wpdb->prepare(
+				"SELECT posts.ID FROM {$wpdb->posts} as posts
+					WHERE posts.post_type = 'job_listing'
+					AND posts.post_modified < %s
+					AND posts.post_status = 'preview'",
 				date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) )
 			)
 		);
@@ -1049,5 +1061,19 @@ class WP_Job_Manager_Post_Types {
 			return null;
 		}
 		return $employment_type;
+	}
+
+	/**
+	 * Add post type for Job Manager to list of post types deleted with user.
+	 *
+	 * @since 1.33.0
+	 *
+	 * @param array $types
+	 * @return array
+	 */
+	public function delete_user_add_job_listings_post_type( $types ) {
+		$types[] = 'job_listing';
+
+		return $types;
 	}
 }
