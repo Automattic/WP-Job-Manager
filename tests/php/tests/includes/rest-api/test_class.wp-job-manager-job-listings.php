@@ -165,7 +165,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	/**
 	 * Tests to make sure public meta fields are exposed to guest users and private meta fields are hidden.
 	 */
-	public function test_guest_read_access_to_private_meta_fields() {
+	public function test_guest_can_read_only_public_fields() {
 		$public_fields  = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_video', '_filled', '_featured' );
 		$private_fields = array( '_job_expires' );
 		$this->logout();
