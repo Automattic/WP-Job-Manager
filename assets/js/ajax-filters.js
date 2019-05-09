@@ -47,7 +47,7 @@ jQuery( document ).ready( function( $ ) {
 		return false;
 	}
 
-	function job_manager_persist_results( $target ) {
+	function job_manager_persist_results( $target, persist ) {
 		if ( ! supports_html5_sessionStorage || ! $target ) {
 			return false;
 		}
@@ -57,7 +57,7 @@ jQuery( document ).ready( function( $ ) {
 			return false;
 		}
 
-		state.persist_results = true;
+		state.persist_results = persist;
 
 		return job_manager_store_state( $target, state );
 	}
@@ -170,7 +170,7 @@ jQuery( document ).ready( function( $ ) {
 	$( 'div.job_listings' )
 		.on( 'click', 'li.job_listing a', function() {
 			var $target = $( this ).closest( 'div.job_listings' );
-			job_manager_persist_results( $target );
+			job_manager_persist_results( $target, true );
 		} )
 		.on( 'click', '.job-manager-pagination a', function() {
 			var $target = $( this ).closest( 'div.job_listings' );
@@ -407,16 +407,16 @@ jQuery( document ).ready( function( $ ) {
 
 			if ( state && state.form ) {
 				if (state.results) {
-					$results_loaded = job_manager_handle_result($target, state.results);
-					job_manager_clear_results($target);
+					$results_loaded = job_manager_handle_result( $target, state.results );
+					job_manager_persist_results( $target, false );
 				}
 
-				$form.find('input[type=checkbox]').prop('checked', false);
-				$form.deserialize(state.form);
+				$form.find( 'input[type=checkbox]' ).prop( 'checked', false );
+				$form.deserialize( state.form );
 				$form
-					.find(':input[name^="search_categories"]')
-					.not(':input[type="hidden"]')
-					.trigger('change.select2');
+					.find( ':input[name^="search_categories"]' )
+					.not( ':input[type="hidden"]' )
+					.trigger( 'change.select2' );
 			}
 
 			if ( ! $results_loaded ) {
