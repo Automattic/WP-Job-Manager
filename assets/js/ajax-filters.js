@@ -68,7 +68,9 @@ jQuery( document ).ready( function( $ ) {
 		}
 		var state = job_manager_get_state( $target );
 		if ( ! state ) {
-			state = {};
+			state = {
+				persist_results: false
+			};
 		}
 
 		var $results = $target.find( '.job_listings' );
@@ -299,7 +301,6 @@ jQuery( document ).ready( function( $ ) {
 					if ( result ) {
 						try {
 							result.data = data;
-							result.persist_results = false;
 
 							job_manager_handle_result( $target, result, append );
 
