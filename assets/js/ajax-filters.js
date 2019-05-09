@@ -405,6 +405,10 @@ jQuery( document ).ready( function( $ ) {
 			var $results_loaded = false;
 			var state = job_manager_get_state( $target );
 
+			if ( ! state || ! state.form ) {
+				return;
+			}
+
 			if ( state.results ) {
 				$results_loaded = job_manager_handle_result( $target, state.results );
 				job_manager_clear_results( $target );
