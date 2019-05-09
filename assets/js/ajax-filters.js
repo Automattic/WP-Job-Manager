@@ -214,6 +214,10 @@ jQuery( document ).ready( function( $ ) {
 				xhr[ index ].abort();
 			}
 
+			if ( ! append || 1 === page ) {
+				$( 'li.job_listing, li.no_job_listings_found', $results ).css( 'visibility', 'hidden' );
+			}
+
 			$results.addClass( 'loading' );
 			$target.find( '.load_more_jobs' ).data( 'page', page );
 
