@@ -12,7 +12,7 @@ jQuery( document ).ready( function( $ ) {
 			return false;
 		}
 
-		if ( typeof state === 'undefined' ) {
+		if ( typeof state !== 'object' ) {
 			state = {};
 		}
 
@@ -405,21 +405,19 @@ jQuery( document ).ready( function( $ ) {
 			var $results_loaded = false;
 			var state = job_manager_get_state( $target );
 
-			if ( ! state || ! state.form ) {
-				return;
-			}
+			if ( state && state.form ) {
+				if (state.results) {
+					$results_loaded = job_manager_handle_result($target, state.results);
+					job_manager_clear_results($target);
+				}
 
-			if ( state.results ) {
-				$results_loaded = job_manager_handle_result( $target, state.results );
-				job_manager_clear_results( $target );
+				$form.find('input[type=checkbox]').prop('checked', false);
+				$form.deserialize(state.form);
+				$form
+					.find(':input[name^="search_categories"]')
+					.not(':input[type="hidden"]')
+					.trigger('change.select2');
 			}
-
-			$form.find( 'input[type=checkbox]' ).prop( 'checked', false );
-			$form.deserialize( state.form );
-			$form
-				.find( ':input[name^="search_categories"]' )
-				.not( ':input[type="hidden"]' )
-				.trigger( 'change.select2' );
 
 			if ( ! $results_loaded ) {
 				$target.triggerHandler( 'update_results', [ 1, false ] );
