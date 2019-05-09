@@ -1,5 +1,5 @@
 /* global job_manager_ajax_filters */
-jQuery( document ).ready( function ( $ ) {
+jQuery( document ).ready( function( $ ) {
 	var supports_html5_sessionStorage = false;
 	if ( window.localStorage && typeof window.localStorage.setItem === 'function' ) {
 		supports_html5_sessionStorage = true;
@@ -19,13 +19,13 @@ jQuery( document ).ready( function ( $ ) {
 		var $form = $target.find( '.job_filters' );
 		var index = $( 'div.job_listings' ).index( $target );
 
-		state.form  = $form.serialize();
+		state.form = $form.serialize();
 
 		var session_storage_key = session_storage_prefix + index;
 
 		try {
 			window.sessionStorage.setItem( session_storage_key, JSON.stringify( state ) );
-		} catch(e) {}
+		} catch ( e ) {}
 
 		return false;
 	}
@@ -34,7 +34,7 @@ jQuery( document ).ready( function ( $ ) {
 		if ( ! supports_html5_sessionStorage ) {
 			return false;
 		}
-		var index               = $( 'div.job_listings' ).index( $target );
+		var index = $( 'div.job_listings' ).index( $target );
 		var session_storage_key = session_storage_prefix + index;
 
 		try {
@@ -42,7 +42,7 @@ jQuery( document ).ready( function ( $ ) {
 			if ( state ) {
 				return JSON.parse( state );
 			}
-		} catch(e) {}
+		} catch ( e ) {}
 
 		return false;
 	}
@@ -86,12 +86,12 @@ jQuery( document ).ready( function ( $ ) {
 			return false;
 		}
 
-		var index               = $( 'div.job_listings' ).index( $target );
+		var index = $( 'div.job_listings' ).index( $target );
 		var session_storage_key = session_storage_prefix + index;
 
 		try {
 			window.sessionStorage.removeItem( session_storage_key );
-		} catch(e) {
+		} catch ( e ) {
 			return false;
 		}
 
@@ -121,8 +121,12 @@ jQuery( document ).ready( function ( $ ) {
 		}
 
 		if ( typeof result.showing === 'string' && result.showing ) {
-			var $showing_el = jQuery('<span>').html(result.showing);
-			$showing.show().html( '').html( result.showing_links ).prepend( $showing_el );
+			var $showing_el = jQuery( '<span>' ).html( result.showing );
+			$showing
+				.show()
+				.html( '' )
+				.html( result.showing_links )
+				.prepend( $showing_el );
 		} else {
 			$showing.hide();
 		}
@@ -142,7 +146,7 @@ jQuery( document ).ready( function ( $ ) {
 		}
 
 		if ( true === $target.data( 'show_pagination' ) ) {
-			$target.find('.job-manager-pagination').remove();
+			$target.find( '.job-manager-pagination' ).remove();
 
 			if ( result.pagination ) {
 				$target.append( result.pagination );
@@ -153,7 +157,9 @@ jQuery( document ).ready( function ( $ ) {
 			} else {
 				$( '.load_more_jobs', $target ).show();
 			}
-			$( '.load_more_jobs', $target ).removeClass( 'loading' ).data( 'page', result.data.page );
+			$( '.load_more_jobs', $target )
+				.removeClass( 'loading' )
+				.data( 'page', result.data.page );
 			$( 'li.job_listing', $results ).css( 'visibility', 'visible' );
 		}
 
@@ -163,195 +169,218 @@ jQuery( document ).ready( function ( $ ) {
 	var xhr = [];
 	$( 'div.job_listings' )
 		.on( 'click', 'li.job_listing a', function() {
-			var $target = $(this).closest( 'div.job_listings' );
+			var $target = $( this ).closest( 'div.job_listings' );
 			job_manager_persist_results( $target );
 		} )
 		.on( 'click', '.job-manager-pagination a', function() {
 			var $target = $( this ).closest( 'div.job_listings' );
-			var page    = $( this ).data( 'page' );
+			var page = $( this ).data( 'page' );
 
 			$target.triggerHandler( 'update_results', [ page, false ] );
 
-			$( 'body, html' ).animate({
-				scrollTop: $target.offset().top
-			}, 600 );
+			$( 'body, html' ).animate(
+				{
+					scrollTop: $target.offset().top,
+				},
+				600
+			);
 
 			return false;
 		} )
-		.on( 'update_results', function ( event, page, append ) {
-		var data        = '';
-		var $target     = $( this );
-		var $form       = $target.find( '.job_filters' );
-		var $results    = $target.find( '.job_listings' );
-		var per_page    = $target.data( 'per_page' );
-		var orderby     = $target.data( 'orderby' );
-		var order       = $target.data( 'order' );
-		var featured    = $target.data( 'featured' );
-		var filled      = $target.data( 'filled' );
-		var job_types   = $target.data( 'job_types' );
-		var post_status = $target.data( 'post_status' );
-		var index       = $( 'div.job_listings' ).index(this);
-		var categories, keywords, location;
+		.on( 'update_results', function( event, page, append ) {
+			var data = '';
+			var $target = $( this );
+			var $form = $target.find( '.job_filters' );
+			var $results = $target.find( '.job_listings' );
+			var per_page = $target.data( 'per_page' );
+			var orderby = $target.data( 'orderby' );
+			var order = $target.data( 'order' );
+			var featured = $target.data( 'featured' );
+			var filled = $target.data( 'filled' );
+			var job_types = $target.data( 'job_types' );
+			var post_status = $target.data( 'post_status' );
+			var index = $( 'div.job_listings' ).index( this );
+			var categories, keywords, location;
 
-		if ( index < 0 ) {
-			return;
-		}
-
-		job_manager_clear_state( $target );
-
-		if ( xhr[index] ) {
-			xhr[index].abort();
-		}
-
-		$results.addClass( 'loading' );
-		$target.find( '.load_more_jobs' ).data( 'page', page );
-
-		if ( true === $target.data( 'show_filters' ) ) {
-			var filter_job_type = [];
-
-			$( ':input[name="filter_job_type[]"]:checked, :input[name="filter_job_type[]"][type="hidden"], :input[name="filter_job_type"]', $form ).each( function () {
-				filter_job_type.push( $( this ).val() );
-			} );
-
-			categories = $form.find( ':input[name^="search_categories"]' ).map( function () {
-				return $( this ).val();
-			} ).get();
-
-			keywords       = '';
-			location       = '';
-			var $keywords  = $form.find( ':input[name="search_keywords"]' );
-			var $location  = $form.find( ':input[name="search_location"]' );
-
-			// Workaround placeholder scripts
-			if ( $keywords.val() !== $keywords.attr( 'placeholder' ) ) {
-				keywords = $keywords.val();
+			if ( index < 0 ) {
+				return;
 			}
 
-			if ( $location.val() !== $location.attr( 'placeholder' ) ) {
-				location = $location.val();
+			job_manager_clear_state( $target );
+
+			if ( xhr[ index ] ) {
+				xhr[ index ].abort();
 			}
 
-			data = {
-				lang: job_manager_ajax_filters.lang,
-				search_keywords: keywords,
-				search_location: location,
-				search_categories: categories,
-				filter_job_type: filter_job_type,
-				filter_post_status: post_status,
-				per_page: per_page,
-				orderby: orderby,
-				order: order,
-				page: page,
-				featured: featured,
-				filled: filled,
-				show_pagination: $target.data( 'show_pagination' ),
-				$form_data: $form.serialize()
-			};
+			$results.addClass( 'loading' );
+			$target.find( '.load_more_jobs' ).data( 'page', page );
 
-		} else {
+			if ( true === $target.data( 'show_filters' ) ) {
+				var filter_job_type = [];
 
-			categories = $target.data( 'categories' );
-			keywords   = $target.data( 'keywords' );
-			location   = $target.data( 'location' );
+				$(
+					':input[name="filter_job_type[]"]:checked, :input[name="filter_job_type[]"][type="hidden"], :input[name="filter_job_type"]',
+					$form
+				).each( function() {
+					filter_job_type.push( $( this ).val() );
+				} );
 
-			if ( categories ) {
-				if ( typeof categories !== 'string' ) {
-					categories = String( categories );
+				categories = $form
+					.find( ':input[name^="search_categories"]' )
+					.map( function() {
+						return $( this ).val();
+					} )
+					.get();
+
+				keywords = '';
+				location = '';
+				var $keywords = $form.find( ':input[name="search_keywords"]' );
+				var $location = $form.find( ':input[name="search_location"]' );
+
+				// Workaround placeholder scripts
+				if ( $keywords.val() !== $keywords.attr( 'placeholder' ) ) {
+					keywords = $keywords.val();
 				}
-				categories = categories.split( ',' );
+
+				if ( $location.val() !== $location.attr( 'placeholder' ) ) {
+					location = $location.val();
+				}
+
+				data = {
+					lang: job_manager_ajax_filters.lang,
+					search_keywords: keywords,
+					search_location: location,
+					search_categories: categories,
+					filter_job_type: filter_job_type,
+					filter_post_status: post_status,
+					per_page: per_page,
+					orderby: orderby,
+					order: order,
+					page: page,
+					featured: featured,
+					filled: filled,
+					show_pagination: $target.data( 'show_pagination' ),
+					$form_data: $form.serialize(),
+				};
+			} else {
+				categories = $target.data( 'categories' );
+				keywords = $target.data( 'keywords' );
+				location = $target.data( 'location' );
+
+				if ( categories ) {
+					if ( typeof categories !== 'string' ) {
+						categories = String( categories );
+					}
+					categories = categories.split( ',' );
+				}
+
+				data = {
+					lang: job_manager_ajax_filters.lang,
+					search_categories: categories,
+					search_keywords: keywords,
+					search_location: location,
+					filter_post_status: post_status,
+					filter_job_type: job_types,
+					per_page: per_page,
+					orderby: orderby,
+					order: order,
+					page: page,
+					featured: featured,
+					filled: filled,
+					show_pagination: $target.data( 'show_pagination' ),
+				};
 			}
 
-			data = {
-				lang: job_manager_ajax_filters.lang,
-				search_categories: categories,
-				search_keywords: keywords,
-				search_location: location,
-				filter_post_status: post_status,
-				filter_job_type: job_types,
-				per_page: per_page,
-				orderby: orderby,
-				order: order,
-				page: page,
-				featured: featured,
-				filled: filled,
-				show_pagination: $target.data( 'show_pagination' )
-			};
+			xhr[ index ] = $.ajax( {
+				type: 'POST',
+				url: job_manager_ajax_filters.ajax_url.toString().replace( '%%endpoint%%', 'get_listings' ),
+				data: data,
+				success: function( result ) {
+					if ( result ) {
+						try {
+							result.data = data;
+							result.persist_results = false;
 
-		}
+							job_manager_handle_result( $target, result, append );
 
-		xhr[index] = $.ajax( {
-			type: 'POST',
-			url: job_manager_ajax_filters.ajax_url.toString().replace( '%%endpoint%%', 'get_listings' ),
-			data: data,
-			success: function ( result ) {
-				if ( result ) {
-					try {
-						result.data            = data;
-						result.persist_results = false;
+							$results.removeClass( 'loading' );
 
-						job_manager_handle_result( $target, result, append );
-
-						$results.removeClass( 'loading' );
-
-						$target.triggerHandler( 'updated_results', result );
-						job_manager_save_results( $target, result );
-
-					} catch ( err ) {
-						if ( window.console ) {
-							window.console.log( err );
+							$target.triggerHandler( 'updated_results', result );
+							job_manager_save_results( $target, result );
+						} catch ( err ) {
+							if ( window.console ) {
+								window.console.log( err );
+							}
 						}
 					}
-				}
-			},
-			error: function ( jqXHR, textStatus, error ) {
-				if ( window.console && 'abort' !== textStatus ) {
-					window.console.log( textStatus + ': ' + error );
-				}
-			},
-			statusCode: {
-				404: function() {
-					if ( window.console ) {
-						window.console.log( 'Error 404: Ajax Endpoint cannot be reached. Go to Settings > Permalinks and save to resolve.' );
+				},
+				error: function( jqXHR, textStatus, error ) {
+					if ( window.console && 'abort' !== textStatus ) {
+						window.console.log( textStatus + ': ' + error );
 					}
-				}
-			}
+				},
+				statusCode: {
+					404: function() {
+						if ( window.console ) {
+							window.console.log(
+								'Error 404: Ajax Endpoint cannot be reached. Go to Settings > Permalinks and save to resolve.'
+							);
+						}
+					},
+				},
+			} );
 		} );
-	} );
 
-	$( '#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter' )
+	$(
+		'#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter'
+	)
 		.change( function() {
 			var $target = $( this ).closest( 'div.job_listings' );
 			$target.triggerHandler( 'update_results', [ 1, false ] );
 			job_manager_store_state( $target );
 		} )
-		.on( 'keyup', function(e) {
+		.on( 'keyup', function( e ) {
 			if ( e.which === 13 ) {
 				$( this ).trigger( 'change' );
 			}
 		} );
 
-	$( '.job_filters' ).on( 'click', '.reset', function () {
-		var $target = $( this ).closest( 'div.job_listings' );
-		var $form   = $( this ).closest( 'form' );
+	$( '.job_filters' )
+		.on( 'click', '.reset', function() {
+			var $target = $( this ).closest( 'div.job_listings' );
+			var $form = $( this ).closest( 'form' );
 
-		$form.find( ':input[name="search_keywords"], :input[name="search_location"], .job-manager-filter' ).not(':input[type="hidden"]').val( '' ).trigger( 'change.select2' );
-		$form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').val( '' ).trigger( 'change.select2' );
-		$( ':input[name="filter_job_type[]"]', $form ).not(':input[type="hidden"]').attr( 'checked', 'checked' );
+			$form
+				.find(
+					':input[name="search_keywords"], :input[name="search_location"], .job-manager-filter'
+				)
+				.not( ':input[type="hidden"]' )
+				.val( '' )
+				.trigger( 'change.select2' );
+			$form
+				.find( ':input[name^="search_categories"]' )
+				.not( ':input[type="hidden"]' )
+				.val( '' )
+				.trigger( 'change.select2' );
+			$( ':input[name="filter_job_type[]"]', $form )
+				.not( ':input[type="hidden"]' )
+				.attr( 'checked', 'checked' );
 
-		$target.triggerHandler( 'reset' );
-		$target.triggerHandler( 'update_results', [ 1, false ] );
-		job_manager_store_state( $target );
+			$target.triggerHandler( 'reset' );
+			$target.triggerHandler( 'update_results', [ 1, false ] );
+			job_manager_store_state( $target );
 
-		return false;
-	} ).on( 'submit', function() {
-		return false;
-	} );
+			return false;
+		} )
+		.on( 'submit', function() {
+			return false;
+		} );
 
 	$( document.body ).on( 'click', '.load_more_jobs', function() {
-		var $target           = $( this ).closest( 'div.job_listings' );
-		var page             = parseInt( ( $( this ).data( 'page' ) || 1 ), 10 );
+		var $target = $( this ).closest( 'div.job_listings' );
+		var page = parseInt( $( this ).data( 'page' ) || 1, 10 );
 
-		$(this).addClass( 'loading' );
+		$( this ).addClass( 'loading' );
 
 		page = page + 1;
 		$( this ).data( 'page', page );
@@ -362,19 +391,19 @@ jQuery( document ).ready( function ( $ ) {
 
 	if ( $.isFunction( $.fn.select2 ) && typeof job_manager_select2_args !== 'undefined' ) {
 		var select2_args = job_manager_select2_args;
-		select2_args['allowClear']              = true;
-		select2_args['minimum$resultsForSearch'] = 10;
+		select2_args[ 'allowClear' ] = true;
+		select2_args[ 'minimum$resultsForSearch' ] = 10;
 
 		$( 'select[name^="search_categories"]:visible' ).select2( select2_args );
 	}
 
 	// Initial job and $form population
-	$(window).on( 'load', function() {
+	$( window ).on( 'load', function() {
 		$( '.job_filters' ).each( function() {
-			var $target         = $( this ).closest( 'div.job_listings' );
-			var $form           = $target.find( '.job_filters' );
+			var $target = $( this ).closest( 'div.job_listings' );
+			var $form = $target.find( '.job_filters' );
 			var $results_loaded = false;
-			var state           = job_manager_get_state( $target );
+			var state = job_manager_get_state( $target );
 
 			if ( state.results ) {
 				$results_loaded = job_manager_handle_result( $target, state.results );
@@ -383,19 +412,22 @@ jQuery( document ).ready( function ( $ ) {
 
 			$form.find( 'input[type=checkbox]' ).prop( 'checked', false );
 			$form.deserialize( state.form );
-			$form.find( ':input[name^="search_categories"]' ).not(':input[type="hidden"]').trigger( 'change.select2' );
+			$form
+				.find( ':input[name^="search_categories"]' )
+				.not( ':input[type="hidden"]' )
+				.trigger( 'change.select2' );
 
 			if ( ! $results_loaded ) {
 				$target.triggerHandler( 'update_results', [ 1, false ] );
 			}
-		});
+		} );
 	} );
 
-	$(window).on( 'unload', function() {
+	$( window ).on( 'unload', function() {
 		$( 'div.job_listings' ).each( function() {
-			var state = job_manager_get_state( $(this) );
+			var state = job_manager_get_state( $( this ) );
 			if ( state && ! state.persist_results ) {
-				job_manager_clear_results( $(this) );
+				job_manager_clear_results( $( this ) );
 			}
 		} );
 
