@@ -404,24 +404,26 @@ jQuery( document ).ready( function( $ ) {
 
 	// Initial job and $form population
 	$( window ).on( 'load', function() {
-		$( '.job_filters' ).each( function() {
-			var $target = $( this ).closest( 'div.job_listings' );
+		$( 'div.job_listings' ).each( function() {
+			var $target = $( this );
 			var $form = $target.find( '.job_filters' );
 			var $results_loaded = false;
 			var state = job_manager_get_state( $target );
 
-			if ( state && state.form ) {
+			if ( state ) {
 				if (state.results) {
 					$results_loaded = job_manager_handle_result( $target, state.results );
 					job_manager_persist_results( $target, false );
 				}
 
-				$form.find( 'input[type=checkbox]' ).prop( 'checked', false );
-				$form.deserialize( state.form );
-				$form
-					.find( ':input[name^="search_categories"]' )
-					.not( ':input[type="hidden"]' )
-					.trigger( 'change.select2' );
+				if ( typeof state.form === 'string' ) {
+					$form.find('input[type=checkbox]').prop('checked', false);
+					$form.deserialize(state.form);
+					$form
+						.find(':input[name^="search_categories"]')
+						.not(':input[type="hidden"]')
+						.trigger('change.select2');
+				}
 			}
 
 			if ( ! $results_loaded ) {
