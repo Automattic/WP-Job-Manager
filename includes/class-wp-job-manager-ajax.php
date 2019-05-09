@@ -136,6 +136,8 @@ class WP_Job_Manager_Ajax {
 			$search_categories = array_filter( array( sanitize_text_field( stripslashes( $search_categories ) ) ) );
 		}
 
+		$job_types_filtered = ! is_null( $filter_job_types ) && count( $types ) !== count( $filter_job_types );
+
 		$args = array(
 			'search_location'   => $search_location,
 			'search_keywords'   => $search_keywords,
@@ -172,7 +174,7 @@ class WP_Job_Manager_Ajax {
 			'max_num_pages' => $jobs->max_num_pages,
 		);
 
-		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories ) ) {
+		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories || $job_types_filtered ) ) {
 			// translators: Placeholder %d is the number of found search results.
 			$message               = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
 			$result['showing_all'] = true;
