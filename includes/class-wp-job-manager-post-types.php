@@ -1468,7 +1468,6 @@ class WP_Job_Manager_Post_Types {
 		return $user->has_cap( 'edit_others_job_listings' );
 	}
 
-
 	/**
 	 * Add post type for Job Manager to list of post types deleted with user.
 	 *
