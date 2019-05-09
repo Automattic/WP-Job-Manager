@@ -1,11 +1,19 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Form_Edit_Job.
+ *
+ * @package wp-job-manager
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 require_once 'class-wp-job-manager-form-submit-job.php';
 
 /**
  * Handles the editing of Job Listings from the public facing frontend (from within `[job_dashboard]` shortcode).
  *
- * @package wp-job-manager
  * @since 1.0.0
  * @extends WP_Job_Manager_Form_Submit_Job
  */

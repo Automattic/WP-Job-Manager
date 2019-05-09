@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Email_Notifications.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Base class for WP Job Manager's email notification system.
  *
- * @package wp-job-manager
  * @since 1.31.0
  */
 final class WP_Job_Manager_Email_Notifications {
@@ -547,8 +551,9 @@ final class WP_Job_Manager_Email_Notifications {
 		global $wpdb;
 
 		$notice_before_ts = current_time( 'timestamp' ) + ( DAY_IN_SECONDS * $days_notice );
-		$job_ids          = $wpdb->get_col( $wpdb->prepare(
-			"
+		$job_ids          = $wpdb->get_col(
+			$wpdb->prepare(
+				"
 			SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
 			LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
 			WHERE postmeta.meta_key = '_job_expires'
@@ -556,7 +561,8 @@ final class WP_Job_Manager_Email_Notifications {
 			AND posts.post_status = 'publish'
 			AND posts.post_type = 'job_listing'
 		", date( 'Y-m-d', $notice_before_ts )
-		) );
+			)
+		);
 
 		if ( $job_ids ) {
 			foreach ( $job_ids as $job_id ) {

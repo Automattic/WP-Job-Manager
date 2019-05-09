@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Email_Admin_Updated_Job.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Email notification to administrator when a job is updated.
  *
- * @package wp-job-manager
  * @since 1.31.0
  * @extends WP_Job_Manager_Email
  */

@@ -1,14 +1,13 @@
 <?php
 /**
- * Display the admin notice when user first activates WPJM.
+ * File containing the view for displaying the admin notice when user first activates WPJM.
  *
- * @package WP Job Manager
+ * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 ?>
 <div class="updated wpjm-message">
 	<p>

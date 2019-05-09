@@ -197,6 +197,8 @@ jQuery( document ).ready( function ( $ ) {
 		job_manager_store_state( target, 1 );
 
 		return false;
+	} ).on( 'submit', function() {
+		return false;
 	} );
 
 	$( document.body ).on( 'click', '.load_more_jobs', function() {

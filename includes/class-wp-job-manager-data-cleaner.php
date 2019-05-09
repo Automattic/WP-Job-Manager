@@ -1,13 +1,11 @@
 <?php
 /**
- * Defines a class with methods for cleaning up plugin data. To be used when
- * the plugin is deleted.
+ * File containing the class WP_Job_Manager_Data_Cleaner.
  *
- * @package Core
+ * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	// Exit if accessed directly.
 	exit;
 }
 

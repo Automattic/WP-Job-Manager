@@ -6,7 +6,7 @@
  *
  * @author      Mike Jolley
  * @category    Core
- * @package     Job Manager/Template
+ * @package     wp-job-manager
  * @version     1.25.3
  */
 

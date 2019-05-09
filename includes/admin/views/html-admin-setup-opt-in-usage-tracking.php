@@ -1,14 +1,13 @@
 <?php
 /**
- * Setup page: Opt into usage tracking option.
+ * File containing the view asking users to opt-in to usage tracking.
  *
- * @package WP Job Manager
+ * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 ?>
 <p>
 	<label>

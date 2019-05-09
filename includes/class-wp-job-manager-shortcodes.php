@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Shortcodes.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Handles the shortcodes for WP Job Manager.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Shortcodes {
