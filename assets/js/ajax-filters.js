@@ -27,6 +27,21 @@ jQuery( document ).ready( function ( $ ) {
 			xhr[index].abort();
 		}
 
+		if ( ! append ) {
+			$( results ).addClass( 'loading' );
+			$( 'li.job_listing, li.no_job_listings_found', results ).css( 'visibility', 'hidden' );
+
+			// Not appending. If page > 1, we should show a load previous button so the user can get to earlier-page listings if needed
+			if ( page > 1 && true !== target.data( 'show_pagination' ) ) {
+				var previous = jQuery('<strong>').text(job_manager_ajax_filters.i18n_load_prev_listings).wrap('<a class="load_more_jobs load_previous" href="#"></a>');
+				$( results ).before( previous );
+			} else {
+				target.find( '.load_previous' ).remove();
+			}
+
+			target.find( '.load_more_jobs' ).data( 'page', page );
+		}
+
 		if ( true === target.data( 'show_filters' ) ) {
 
 			var filter_job_type = [];
