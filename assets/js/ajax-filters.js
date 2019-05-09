@@ -33,7 +33,7 @@ jQuery( document ).ready( function ( $ ) {
 
 			// Not appending. If page > 1, we should show a load previous button so the user can get to earlier-page listings if needed
 			if ( page > 1 && true !== target.data( 'show_pagination' ) ) {
-				var previous = jQuery('<strong>').text(job_manager_ajax_filters.i18n_load_prev_listings).wrap('<a class="load_more_jobs load_previous" href="#"></a>');
+				var previous = jQuery('<a class="load_more_jobs load_previous" href="#">').text( job_manager_ajax_filters.i18n_load_prev_listings );
 				$( results ).before( previous );
 			} else {
 				target.find( '.load_previous' ).remove();
