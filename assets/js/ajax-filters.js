@@ -24,7 +24,7 @@ jQuery( document ).ready( function( $ ) {
 		var session_storage_key = session_storage_prefix + index;
 
 		try {
-			window.sessionStorage.setItem( session_storage_key, JSON.stringify( state ) );
+			return window.sessionStorage.setItem( session_storage_key, JSON.stringify( state ) );
 		} catch ( e ) {}
 
 		return false;
@@ -34,6 +34,7 @@ jQuery( document ).ready( function( $ ) {
 		if ( ! supports_html5_sessionStorage ) {
 			return false;
 		}
+
 		var index = $( 'div.job_listings' ).index( $target );
 		var session_storage_key = session_storage_prefix + index;
 
@@ -66,6 +67,7 @@ jQuery( document ).ready( function( $ ) {
 		if ( ! supports_html5_sessionStorage ) {
 			return false;
 		}
+
 		var state = job_manager_get_state( $target );
 		if ( ! state ) {
 			state = {
@@ -104,6 +106,7 @@ jQuery( document ).ready( function( $ ) {
 		if ( ! supports_html5_sessionStorage ) {
 			return false;
 		}
+
 		var state = job_manager_get_state( $target );
 		if ( ! state ) {
 			state = {};
@@ -172,6 +175,8 @@ jQuery( document ).ready( function( $ ) {
 	$( 'div.job_listings' )
 		.on( 'click', 'li.job_listing a', function() {
 			var $target = $( this ).closest( 'div.job_listings' );
+
+			// We're moving away to a job listing. Let's make sure the results persist.
 			job_manager_persist_results( $target, true );
 		} )
 		.on( 'click', '.job-manager-pagination a', function() {
@@ -309,8 +314,8 @@ jQuery( document ).ready( function( $ ) {
 							job_manager_handle_result( $target, result, append );
 
 							$results.removeClass( 'loading' );
-
 							$target.triggerHandler( 'updated_results', result );
+
 							job_manager_save_results( $target, result );
 						} catch ( err ) {
 							if ( window.console ) {
@@ -411,12 +416,17 @@ jQuery( document ).ready( function( $ ) {
 			var state = job_manager_get_state( $target );
 
 			if ( state ) {
+				// Restore the results from cache.
 				if (state.results) {
 					$results_loaded = job_manager_handle_result( $target, state.results );
+
+					// We don't want this to continue to persist unless we click on another link.
 					job_manager_persist_results( $target, false );
 				}
 
+				// Restore the form state.
 				if ( typeof state.form === 'string' ) {
+					// When deserializing a form, we need to first uncheck the checkboxes that are by default checked.
 					$form.find('input[type=checkbox]').prop('checked', false);
 					$form.deserialize(state.form);
 					$form
@@ -427,6 +437,7 @@ jQuery( document ).ready( function( $ ) {
 			}
 
 			if ( ! $results_loaded ) {
+				// If we didn't load results from cache, load page 1.
 				$target.triggerHandler( 'update_results', [ 1, false ] );
 			}
 		} );
