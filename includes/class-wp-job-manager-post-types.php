@@ -1159,7 +1159,7 @@ class WP_Job_Manager_Post_Types {
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_url' ),
+				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_url' ),
 			),
 			'_company_tagline' => array(
 				'label'         => __( 'Company Tagline', 'wp-job-manager' ),
@@ -1185,7 +1185,7 @@ class WP_Job_Manager_Post_Types {
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_url' ),
+				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_url' ),
 			),
 			'_filled'          => array(
 				'label'         => __( 'Position Filled', 'wp-job-manager' ),
@@ -1215,7 +1215,7 @@ class WP_Job_Manager_Post_Types {
 				'classes'            => array( 'job-manager-datepicker' ),
 				'auth_edit_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
 				'auth_view_callback' => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
-				'sanitize_callback'  => array( __CLASS__, 'sanitize_meta_date' ),
+				'sanitize_callback'  => array( __CLASS__, 'sanitize_meta_field_date' ),
 			),
 		);
 
@@ -1326,7 +1326,9 @@ class WP_Job_Manager_Post_Types {
 			$fields = self::get_job_listing_fields();
 		}
 
-		$meta_value = trim( $meta_value );
+		if ( is_string( $meta_value ) ) {
+			$meta_value = trim( $meta_value );
+		}
 
 		$type = 'text';
 		if ( isset( $fields[ $meta_key ] ) ) {
@@ -1363,7 +1365,7 @@ class WP_Job_Manager_Post_Types {
 			return sanitize_email( $meta_value );
 		}
 
-		return self::sanitize_meta_url( $meta_value );
+		return self::sanitize_meta_field_url( $meta_value );
 	}
 
 	/**
@@ -1372,7 +1374,7 @@ class WP_Job_Manager_Post_Types {
 	 * @param string $meta_value Value of meta field that needs sanitization.
 	 * @return string
 	 */
-	public static function sanitize_meta_url( $meta_value ) {
+	public static function sanitize_meta_field_url( $meta_value ) {
 		$meta_value = trim( $meta_value );
 		if ( '' === $meta_value ) {
 			return $meta_value;
@@ -1387,7 +1389,7 @@ class WP_Job_Manager_Post_Types {
 	 * @param string $meta_value Value of meta field that needs sanitization.
 	 * @return string
 	 */
-	public static function sanitize_meta_date( $meta_value ) {
+	public static function sanitize_meta_field_date( $meta_value ) {
 		$meta_value = trim( $meta_value );
 
 		// Matches yyyy-mm-dd.
