@@ -849,4 +849,279 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		}
 		return $out;
 	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type
+	 */
+	public function test_sanitize_meta_field_based_on_input_type_text() {
+		$strings = array(
+			'<script>alert("bad");</script>',
+			0,
+			false,
+			new stdClass,
+			'%AB%BC%DE',
+			'САПР',
+			'Standard String'
+		);
+
+		$this->set_up_custom_job_listing_data_feilds();
+		$results = array();
+		foreach ( $strings as $str ) {
+			$results[] = [
+				'expected' => sanitize_text_field( $str ),
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str, '_text' ),
+			];
+		}
+		$this->remove_custom_job_listing_data_feilds();
+
+		foreach ( $results as $result ) {
+			$this->assertEquals( $result['expected'], $result['result'] );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type
+	 */
+	public function test_sanitize_meta_field_based_on_input_type_textarea() {
+		$strings = array(
+			'This is a test. <script>alert("bad");</script>',
+			0,
+			false,
+			'%AB%BC%DE',
+			'САПР',
+			'Standard String',
+			'My iframe: <iframe src="http://example.com"></iframe>'
+		);
+
+		$this->set_up_custom_job_listing_data_feilds();
+		$results = array();
+		foreach ( $strings as $str ) {
+			$results[] = array(
+				'expected' => wp_kses_post( stripslashes( $str ) ),
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str, '_textarea' ),
+			);
+		}
+		$this->remove_custom_job_listing_data_feilds();
+
+		foreach ( $results as $result ) {
+			$this->assertEquals( $result['expected'], $result['result'] );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type
+	 */
+	public function test_sanitize_meta_field_based_on_input_type_checkbox() {
+		$strings = array(
+			false,
+			true,
+			'1',
+			'0',
+			1,
+			0,
+			'true',
+			'false',
+		);
+
+		$this->set_up_custom_job_listing_data_feilds();
+		$results = array();
+		foreach ( $strings as $str ) {
+			$results[] = array(
+				'expected' => $str && '0' !== $str ? 1 : 0,
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str, '_checkbox' ),
+			);
+		}
+		$this->remove_custom_job_listing_data_feilds();
+
+		foreach ( $results as $result ) {
+			$this->assertEquals( $result['expected'], $result['result'] );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_application
+	 */
+	public function test_sanitize_meta_field_application() {
+		$strings = array(
+			array(
+				'expected' => 'http://test%20email@example.com',
+				'test'     => 'test email@example.com',
+			),
+			array(
+				'expected' => 'http://awesome',
+				'test'     => 'awesome',
+			),
+			array(
+				'expected' => 'https://example.com',
+				'test'     => 'https://example.com',
+			),
+			array(
+				'expected' => 'example@example.com',
+				'test'     => 'example@example.com',
+			),
+		);
+
+		$this->set_up_custom_job_listing_data_feilds();
+		$results = array();
+		foreach ( $strings as $str ) {
+			$results[] = array(
+				'expected' => $str['expected'],
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_application( $str['test'], '_application' ),
+			);
+		}
+		$this->remove_custom_job_listing_data_feilds();
+
+		foreach ( $results as $result ) {
+			$this->assertEquals( $result['expected'], $result['result'] );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_url
+	 */
+	public function test_sanitize_meta_field_url() {
+		$strings = array(
+			array(
+				'expected' => 'http://example.com',
+				'test'     => 'http://example.com',
+			),
+			array(
+				'expected' => '',
+				'test'     => 'slack://custom-url',
+			),
+			array(
+				'expected' => 'http://example.com',
+				'test'     => 'example.com',
+			),
+			array(
+				'expected' => 'http://example.com/?baz=bar&foo%5Bbar%5D=baz',
+				'test'     => 'http://example.com/?baz=bar&foo[bar]=baz',
+			),
+		);
+
+		$this->set_up_custom_job_listing_data_feilds();
+		$results = array();
+		foreach ( $strings as $str ) {
+			$results[] = array(
+				'expected' => $str['expected'],
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_url( $str['test'] ),
+			);
+		}
+		$this->remove_custom_job_listing_data_feilds();
+
+		foreach ( $results as $result ) {
+			$this->assertEquals( $result['expected'], $result['result'] );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_date
+	 */
+	public function test_sanitize_meta_field_date() {
+		$strings = array(
+			array(
+				'expected' => '',
+				'test'     => 'http://example.com',
+			),
+			array(
+				'expected' => '',
+				'test'     => 'January 1, 2019',
+			),
+			array(
+				'expected' => '',
+				'test'     => '01-01-2019',
+			),
+			array(
+				'expected' => '2019-01-01',
+				'test'     => '2019-01-01',
+			),
+		);
+
+		$this->set_up_custom_job_listing_data_feilds();
+		$results = array();
+		foreach ( $strings as $str ) {
+			$results[] = array(
+				'expected' => $str['expected'],
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_date( $str['test'] ),
+			);
+		}
+		$this->remove_custom_job_listing_data_feilds();
+
+		foreach ( $results as $result ) {
+			$this->assertEquals( $result['expected'], $result['result'] );
+		}
+	}
+
+	private function set_up_custom_job_listing_data_feilds() {
+		add_filter( 'job_manager_job_listing_data_fields', array( $this, 'custom_job_listing_data_fields' ) );
+	}
+
+	private function remove_custom_job_listing_data_feilds() {
+		remove_filter( 'job_manager_job_listing_data_fields', array( $this, 'custom_job_listing_data_fields' ) );
+	}
+
+	public function custom_job_listing_data_fields() {
+		return array(
+			'_text'    => array(
+				'label'         => 'Text Field',
+				'placeholder'   => 'Text Field',
+				'description'   => 'Text Field',
+				'priority'      => 1,
+				'type'          => 'textarea',
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			),
+			'_textarea'    => array(
+				'label'         => 'Textarea Field',
+				'placeholder'   => 'Textarea Field',
+				'description'   => 'Textarea Field',
+				'priority'      => 1,
+				'type'          => 'textarea',
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			),
+			'_url'    => array(
+				'label'         => 'URL Field',
+				'placeholder'   => 'URL Field',
+				'description'   => 'URL Field',
+				'priority'      => 1,
+				'type'          => 'text',
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+				'sanitize_callback' => array( 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_url' ),
+			),
+			'_checkbox'    => array(
+				'label'         => 'Checkbox Field',
+				'placeholder'   => 'Checkbox Field',
+				'description'   => 'Checkbox Field',
+				'priority'      => 1,
+				'type'          => 'checkbox',
+				'data_type'     => 'integer',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			),
+			'_date'    => array(
+				'label'             => 'Checkbox Field',
+				'placeholder'       => 'Checkbox Field',
+				'description'       => 'Checkbox Field',
+				'priority'          => 1,
+				'show_in_admin'     => true,
+				'show_in_rest'      => true,
+				'classes'           => array( 'job-manager-datepicker' ),
+				'sanitize_callback' => array( 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_date' ),
+			),
+			'_application'    => array(
+				'label'             => 'Application Field',
+				'placeholder'       => 'Application Field',
+				'description'       => 'Application Field',
+				'priority'          => 1,
+				'show_in_admin'     => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_application' ),
+			),
+		);
+	}
 }
