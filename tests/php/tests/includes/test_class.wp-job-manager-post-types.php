@@ -855,24 +855,44 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_sanitize_meta_field_based_on_input_type_text() {
 		$strings = array(
-			'<script>alert("bad");</script>',
-			0,
-			false,
-			new stdClass,
-			'%AB%BC%DE',
-			'САПР',
-			'Standard String'
+			array(
+				'expected' => 'This is a test.',
+				'test'     => 'This is a test. <script>alert("bad");</script>',
+			),
+			array(
+				'expected' => 0,
+				'test'     => 0,
+			),
+			array(
+				'expected' => '',
+				'test'     => false,
+			),
+			array(
+				'expected' => '',
+				'test'     => '%AB%BC%DE',
+			),
+			array(
+				'expected' => 'САПР',
+				'test'     => 'САПР',
+			),
+			array(
+				'expected' => 'Standard String',
+				'test'     => 'Standard String',
+			),
+			array(
+				'expected' => 'My iframe:',
+				'test'     => 'My iframe: <iframe src="http://example.com"></iframe>',
+			),
 		);
 
 		$this->set_up_custom_job_listing_data_feilds();
 		$results = array();
 		foreach ( $strings as $str ) {
 			$results[] = array(
-				'expected' => sanitize_text_field( $str ),
-				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str, '_text' ),
+				'expected' => $str['expected'],
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str['test'], '_text' ),
 			);
 		}
-		$this->remove_custom_job_listing_data_feilds();
 
 		foreach ( $results as $result ) {
 			$this->assertEquals( $result['expected'], $result['result'] );
@@ -884,24 +904,44 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_sanitize_meta_field_based_on_input_type_textarea() {
 		$strings = array(
-			'This is a test. <script>alert("bad");</script>',
-			0,
-			false,
-			'%AB%BC%DE',
-			'САПР',
-			'Standard String',
-			'My iframe: <iframe src="http://example.com"></iframe>'
+			array(
+				'expected' => 'This is a test. alert("bad");',
+				'test'     => 'This is a test. <script>alert("bad");</script>',
+			),
+			array(
+				'expected' => 0,
+				'test'     => 0,
+			),
+			array(
+				'expected' => '',
+				'test'     => false,
+			),
+			array(
+				'expected' => '%AB%BC%DE',
+				'test'     => '%AB%BC%DE',
+			),
+			array(
+				'expected' => 'САПР',
+				'test'     => 'САПР',
+			),
+			array(
+				'expected' => 'Standard String',
+				'test'     => 'Standard String',
+			),
+			array(
+				'expected' => 'My iframe: ',
+				'test'     => 'My iframe: <iframe src="http://example.com"></iframe>',
+			),
 		);
 
 		$this->set_up_custom_job_listing_data_feilds();
 		$results = array();
 		foreach ( $strings as $str ) {
 			$results[] = array(
-				'expected' => wp_kses_post( stripslashes( $str ) ),
-				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str, '_textarea' ),
+				'expected' => $str['expected'],
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str['test'], '_textarea' ),
 			);
 		}
-		$this->remove_custom_job_listing_data_feilds();
 
 		foreach ( $results as $result ) {
 			$this->assertEquals( $result['expected'], $result['result'] );
@@ -1075,7 +1115,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'placeholder'   => 'Text Field',
 				'description'   => 'Text Field',
 				'priority'      => 1,
-				'type'          => 'textarea',
+				'type'          => 'text',
 				'data_type'     => 'string',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
