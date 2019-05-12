@@ -913,22 +913,30 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_sanitize_meta_field_based_on_input_type_checkbox() {
 		$strings = array(
-			false,
-			true,
-			'1',
-			'0',
-			1,
-			0,
-			'true',
-			'false',
+			array(
+				'expected' => 1,
+				'test'     => 'false',
+			),
+			array(
+				'expected' => 0,
+				'test'     => '',
+			),
+			array(
+				'expected' => 0,
+				'test'     => false,
+			),
+			array(
+				'expected' => 1,
+				'test'     => true,
+			),
 		);
 
 		$this->set_up_custom_job_listing_data_feilds();
 		$results = array();
 		foreach ( $strings as $str ) {
 			$results[] = array(
-				'expected' => $str && '0' !== $str ? 1 : 0,
-				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str, '_checkbox' ),
+				'expected' => $str['expected'],
+				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str['test'], '_checkbox' ),
 			);
 		}
 		$this->remove_custom_job_listing_data_feilds();
