@@ -1,8 +1,17 @@
 <?php
 /**
- * Handles functionality related to the REST API.
+ * File containing the class WP_Job_Manager_REST_API.
  *
  * @package wp-job-manager
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Handles functionality related to the REST API.
+ *
  * @since 1.33.0
  */
 class WP_Job_Manager_REST_API {
