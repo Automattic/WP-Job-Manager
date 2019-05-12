@@ -867,10 +867,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$this->set_up_custom_job_listing_data_feilds();
 		$results = array();
 		foreach ( $strings as $str ) {
-			$results[] = [
+			$results[] = array(
 				'expected' => sanitize_text_field( $str ),
 				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str, '_text' ),
-			];
+			);
 		}
 		$this->remove_custom_job_listing_data_feilds();
 
