@@ -1320,11 +1320,7 @@ class WP_Job_Manager_Post_Types {
 	 * @return mixed
 	 */
 	public static function sanitize_meta_field_based_on_input_type( $meta_value, $meta_key ) {
-		static $fields;
-
-		if ( empty( $fields ) ) {
-			$fields = self::get_job_listing_fields();
-		}
+		$fields = self::get_job_listing_fields();
 
 		if ( is_string( $meta_value ) ) {
 			$meta_value = trim( $meta_value );
