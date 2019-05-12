@@ -1112,15 +1112,14 @@ class WP_Job_Manager_Post_Types {
 			'sanitize_callback'  => array( __CLASS__, 'sanitize_meta_field_based_on_input_type' ),
 		);
 
-		$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
-
+		$allowed_application_method     = get_option( 'job_manager_allowed_application_method', '' );
 		$application_method_label       = __( 'Application email/URL', 'wp-job-manager' );
 		$application_method_placeholder = __( 'Enter an email address or website URL', 'wp-job-manager' );
+
 		if ( 'email' === $allowed_application_method ) {
 			$application_method_label       = __( 'Application email', 'wp-job-manager' );
 			$application_method_placeholder = __( 'you@example.com', 'wp-job-manager' );
-		}
-		if ( 'url' === $allowed_application_method ) {
+		} elseif ( 'url' === $allowed_application_method ) {
 			$application_method_label       = __( 'Application URL', 'wp-job-manager' );
 			$application_method_placeholder = __( 'https://', 'wp-job-manager' );
 		}
