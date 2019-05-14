@@ -223,7 +223,10 @@ jQuery( document ).ready( function( $ ) {
 				$( 'li.job_listing, li.no_job_listings_found', $results ).css( 'visibility', 'hidden' );
 			}
 
-			$results.addClass( 'loading' );
+			if ( 0 === $results.find( 'li' ).length ) {
+				$results.addClass('loading');
+			}
+
 			$target.find( '.load_more_jobs' ).data( 'page', page );
 
 			if ( true === $target.data( 'show_filters' ) ) {
