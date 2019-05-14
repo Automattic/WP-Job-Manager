@@ -1,14 +1,13 @@
 /* global job_manager_ajax_filters */
 jQuery( document ).ready( function( $ ) {
-	var supports_html5_sessionStorage = false;
-	if ( window.localStorage && typeof window.localStorage.setItem === 'function' ) {
-		supports_html5_sessionStorage = true;
+	function job_manager_supports_html5_session_storage() {
+		return window.sessionStorage && typeof window.sessionStorage.setItem === 'function';
 	}
 
 	var session_storage_prefix = 'job_listing_';
 
 	function job_manager_store_state( $target, state ) {
-		if ( ! supports_html5_sessionStorage ) {
+		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
 		}
 
@@ -31,7 +30,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function job_manager_get_state( $target ) {
-		if ( ! supports_html5_sessionStorage ) {
+		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
 		}
 
@@ -49,7 +48,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function job_manager_persist_results( $target, persist ) {
-		if ( ! supports_html5_sessionStorage || ! $target ) {
+		if ( ! job_manager_supports_html5_session_storage() || ! $target ) {
 			return false;
 		}
 
@@ -64,7 +63,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function job_manager_save_results( $target, results ) {
-		if ( ! supports_html5_sessionStorage ) {
+		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
 		}
 
@@ -86,7 +85,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function job_manager_clear_state( $target ) {
-		if ( ! supports_html5_sessionStorage ) {
+		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
 		}
 
@@ -103,7 +102,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function job_manager_clear_results( $target ) {
-		if ( ! supports_html5_sessionStorage ) {
+		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
 		}
 
