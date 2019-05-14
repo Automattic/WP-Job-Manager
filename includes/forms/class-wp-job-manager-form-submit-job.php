@@ -575,10 +575,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			$this->check_submit_form_nonce_field();
 
-			// Validate required.
-			$validation_status = $this->validate_fields( $values );
-			if ( is_wp_error( $validation_status ) ) {
-				throw new Exception( $validation_status->get_error_message() );
+			if ( ! $is_saving_draft ) {
+				// Validate required.
+				$validation_status = $this->validate_fields( $values );
+				if ( is_wp_error( $validation_status ) ) {
+					throw new Exception( $validation_status->get_error_message() );
+				}
 			}
 
 			// Account creation.
