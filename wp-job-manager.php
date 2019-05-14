@@ -21,10 +21,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define constants.
 define( 'JOB_MANAGER_VERSION', '1.32.3' );
-define( 'JOB_MANAGER_MINIMUM_WP_VERSION', '4.7.0' );
 define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+
+require_once dirname( __FILE__ ) . '/includes/class-wp-job-manager-dependency-checker.php';
+if ( ! WP_Job_Manager_Dependency_Checker::check_dependencies() ) {
+	return;
+}
 
 require_once dirname( __FILE__ ) . '/includes/class-wp-job-manager.php';
 
