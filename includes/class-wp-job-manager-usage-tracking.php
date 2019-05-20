@@ -242,6 +242,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		if ( in_array( $plugin_slug, $third_party_plugins, true ) ) {
 			return true;
 		}
+
 		return false;
 	}
 

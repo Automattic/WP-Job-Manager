@@ -151,6 +151,7 @@ class WP_Job_Manager_Helper {
 				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 			}
 		}
+
 		return $check_for_updates_data;
 	}
 
@@ -277,6 +278,7 @@ class WP_Job_Manager_Helper {
 			$css_class            = 'wpjm-activate-licence-link';
 		}
 		$actions[] = '<a class="' . esc_attr( $css_class ) . '" href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' ) ) . '">' . esc_html( $manage_licence_label ) . '</a>';
+
 		return $actions;
 	}
 
@@ -312,6 +314,7 @@ class WP_Job_Manager_Helper {
 	 */
 	public function is_product_installed( $product_slug ) {
 		$product_plugins = $this->get_installed_plugins();
+
 		return isset( $product_plugins[ $product_slug ] );
 	}
 
@@ -322,6 +325,7 @@ class WP_Job_Manager_Helper {
 	 */
 	public function has_licenced_products() {
 		$product_plugins = $this->get_installed_plugins();
+
 		return ! empty( $product_plugins );
 	}
 
@@ -458,6 +462,7 @@ class WP_Job_Manager_Helper {
 		) {
 			return false;
 		}
+
 		$product_slug = sanitize_text_field( $_POST['product_slug'] );
 		switch ( $_POST['action'] ) {
 			case 'activate':
@@ -607,6 +612,7 @@ class WP_Job_Manager_Helper {
 		if ( ! isset( $this->licence_messages[ $product_slug ] ) ) {
 			$this->licence_messages[ $product_slug ] = array();
 		}
+
 		return $this->licence_messages[ $product_slug ];
 	}
 }
