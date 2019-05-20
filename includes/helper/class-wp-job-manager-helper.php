@@ -204,6 +204,7 @@ class WP_Job_Manager_Helper {
 			if ( $plugin_filename !== $plugin_data['_filename'] ) {
 				continue;
 			}
+
 			WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
 			break;
 		}
@@ -509,9 +510,12 @@ class WP_Job_Manager_Helper {
 			)
 		);
 
+		$error = false;
 		if ( false === $response ) {
+			$error = 'connection_failed';
 			$this->add_error( $product_slug, __( 'Connection failed to the License Key API server - possible server issue.', 'wp-job-manager' ) );
 		} elseif ( isset( $response['error_code'] ) && isset( $response['error'] ) ) {
+			$error = $response['error_code'];
 			$this->add_error( $product_slug, $response['error'] );
 		} elseif ( ! empty( $response['activated'] ) ) {
 			WP_Job_Manager_Helper_Options::update( $product_slug, 'licence_key', $licence_key );
@@ -520,7 +524,16 @@ class WP_Job_Manager_Helper {
 			WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
 			$this->add_success( $product_slug, __( 'Plugin license has been activated.', 'wp-job-manager' ) );
 		} else {
+			$error = 'unknown';
 			$this->add_error( $product_slug, __( 'An unknown error occurred while attempting to activate the license', 'wp-job-manager' ) );
+		}
+
+		$event_properties = array( 'slug' => $product_slug );
+		if ( false !== $error ) {
+			$event_properties['error'] = $error;
+			self::log_event( 'license_activation_error', $event_properties );
+		} else {
+			self::log_event( 'license_activated', $event_properties );
 		}
 	}
 
@@ -549,6 +562,13 @@ class WP_Job_Manager_Helper {
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
 		delete_site_transient( 'update_plugins' );
 		$this->add_success( $product_slug, __( 'Plugin license has been deactivated.', 'wp-job-manager' ) );
+
+		self::log_event(
+			'license_deactivated',
+			array(
+				'slug' => $product_slug,
+			)
+		);
 	}
 
 	/**
@@ -627,6 +647,20 @@ class WP_Job_Manager_Helper {
 		}
 
 		return $this->licence_messages[ $product_slug ];
+	}
+
+	/**
+	 * Thin wrapper for WP_Job_Manager_Usage_Tracking::log_event().
+	 *
+	 * @param string $event_name The name of the event, without the `wpjm` prefix.
+	 * @param array  $properties The event properties to be sent.
+	 */
+	private function log_event( $event_name, $properties = array() ) {
+		if ( ! class_exists( 'WP_Job_Manager_Usage_Tracking' ) ) {
+			return;
+		}
+
+		WP_Job_Manager_Usage_Tracking::log_event( $event_name, $properties );
 	}
 }
 
