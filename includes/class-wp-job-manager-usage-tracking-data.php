@@ -60,6 +60,8 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_part_time'              => self::get_jobs_by_type_count( 'part-time' ),
 			'jobs_temp'                   => self::get_jobs_by_type_count( 'temporary' ),
 			'jobs_by_guests'              => self::get_jobs_by_guests(),
+			'official_extensions'         => self::get_official_extensions_count(),
+			'licensed_extensions'         => self::get_licensed_extensions_count(),
 		);
 	}
 
@@ -310,6 +312,50 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		);
 
 		return $query->found_posts;
+	}
+
+	/**
+	 * Get the official extensions that are installed.
+	 *
+	 * @param bool $licensed_only Return only official extensions with an active license.
+	 *
+	 * @return array
+	 */
+	private static function get_official_extensions( $licensed_only ) {
+		if ( ! class_exists( 'WP_Job_Manager_Helper' ) ) {
+			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper.php';
+		}
+
+		$helper         = WP_Job_Manager_Helper::instance();
+		$active_plugins = $helper->get_installed_plugins( true );
+
+		if ( $licensed_only ) {
+			foreach ( $active_plugins as $plugin_slug => $data ) {
+				if ( ! $helper->has_plugin_licence( $plugin_slug ) ) {
+					unset( $active_plugins[ $plugin_slug ] );
+				}
+			}
+		}
+
+		return $active_plugins;
+	}
+
+	/**
+	 * Gets the count of all official extensions that are installed and activated.
+	 */
+	private static function get_official_extensions_count() {
+		$extensions = self::get_official_extensions( false );
+
+		return count( $extensions );
+	}
+
+	/**
+	 * Gets the count of all official extensions that are installed, activated, and have active license.
+	 */
+	private static function get_licensed_extensions_count() {
+		$extensions = self::get_official_extensions( true );
+
+		return count( $extensions );
 	}
 
 	/**
