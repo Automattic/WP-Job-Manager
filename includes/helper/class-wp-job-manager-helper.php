@@ -363,6 +363,19 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
+	 * Check if an official extension has an active license.
+	 *
+	 * @param string $product_slug
+	 *
+	 * @return bool
+	 */
+	public function has_plugin_licence( $product_slug ) {
+		$licence = $this->get_plugin_licence( $product_slug );
+
+		return ! empty( $licence['licence_key'] ) && ! empty( $licence['email'] );
+	}
+
+	/**
 	 * Adds newly recognized data header in WordPress plugin files.
 	 *
 	 * @param array $headers
@@ -379,7 +392,7 @@ class WP_Job_Manager_Helper {
 	 * @param bool $active_only Only return active plugins.
 	 * @return array
 	 */
-	protected function get_installed_plugins( $active_only = true ) {
+	public function get_installed_plugins( $active_only = true ) {
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
