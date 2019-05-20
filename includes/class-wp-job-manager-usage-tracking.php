@@ -41,7 +41,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 * @return array
 	 */
 	protected function get_base_system_data() {
-		$base_data = array();
+		$base_data            = array();
 		$base_data['version'] = JOB_MANAGER_VERSION;
 
 		return $base_data;
