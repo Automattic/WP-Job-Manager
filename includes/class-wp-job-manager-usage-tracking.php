@@ -36,6 +36,18 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	/**
+	 * Gets the base data returned with system information.
+	 *
+	 * @return array
+	 */
+	protected function get_base_system_data() {
+		$base_data = array();
+		$base_data['version'] = JOB_MANAGER_VERSION;
+
+		return $base_data;
+	}
+
+	/**
 	 * Track a WP Job Manager event.
 	 *
 	 * @since 1.33.0
