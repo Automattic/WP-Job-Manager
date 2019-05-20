@@ -359,6 +359,15 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	}
 
 	/**
+	 * Checks if we have paid extensions installed and activated. Right now, all of our official extensions are paid.
+	 *
+	 * @return bool
+	 */
+	private static function has_paid_extensions() {
+		return self::get_official_extensions_count() > 0;
+	}
+
+	/**
 	 * Get the base fields to be sent for event logging.
 	 *
 	 * @since 1.33.0
@@ -368,6 +377,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	public static function get_event_logging_base_fields() {
 		$base_fields = array(
 			'job_listings' => wp_count_posts( 'job_listing' )->publish,
+			'paid'         => self::has_paid_extensions() ? 1 : 0,
 		);
 
 		/**
