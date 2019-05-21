@@ -692,6 +692,136 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$this->assertEquals( $published_by_guest + $expired_by_guest, $data['jobs_by_guests'] );
 	}
 
+	/**
+	 * Checks count of official plugins and licensed extensions when none are licensed.
+	 *
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_official_extensions_count
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_licensed_extensions_count
+	 */
+	public function test_get_official_no_license_plugin_count() {
+		add_filter( 'job_manager_clear_plugin_cache', '__return_false' );
+		$this->set_fake_plugins();
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->restore_default_plugins();
+		remove_filter( 'job_manager_clear_plugin_cache', '__return_false' );
+
+		$this->assertEquals( 2, $data['official_extensions'] );
+		$this->assertEquals( 0, $data['licensed_extensions'] );
+	}
+
+	/**
+	 * Checks count of official plugins and licensed extensions when one of the two plugins are licensed.
+	 *
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_official_extensions_count
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_licensed_extensions_count
+	 */
+	public function test_get_official_with_license_plugin_count() {
+		add_filter( 'job_manager_clear_plugin_cache', '__return_false' );
+		$this->set_fake_plugins();
+		$this->set_fake_license();
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->restore_default_plugins();
+		$this->remove_fake_license();
+		remove_filter( 'job_manager_clear_plugin_cache', '__return_false' );
+
+		$this->assertEquals( 2, $data['official_extensions'] );
+		$this->assertEquals( 1, $data['licensed_extensions'] );
+	}
+
+	/**
+	 * Adds fake license to one of the products.
+	 */
+	private function set_fake_license() {
+		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'licence_key', 'FAKE-LICENSE' );
+		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'email', 'fake@example.com' );
+		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'errors', array() );
+	}
+
+	/**
+	 * Removes fake license to one of the products.
+	 */
+	private function remove_fake_license() {
+		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'licence_key' );
+		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'email' );
+		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'errors' );
+	}
+
+	/**
+	 * Restores the default plugins.
+	 */
+	private function restore_default_plugins() {
+		wp_clean_plugins_cache();
+		update_option( 'active_plugins', array() );
+	}
+
+	/**
+	 * Sets up some fake plugins, including fake official extensions.
+	 */
+	private function set_fake_plugins() {
+		$plugins = array (
+			'hello.php' => array (
+				'WPJM-Product' => '',
+				'Name' => 'Hello Dolly',
+				'PluginURI' => 'http://wordpress.org/plugins/hello-dolly/',
+				'Version' => '1.7.2',
+				'Description' => 'This is not just a plugin, it symbolizes the hope and enthusiasm of an entire generation summed up in two words sung most famously by Louis Armstrong: Hello, Dolly. When activated you will randomly see a lyric from <cite>Hello, Dolly</cite> in the upper right of your admin screen on every page.',
+				'Author' => 'Matt Mullenweg',
+				'AuthorURI' => 'http://ma.tt/',
+				'TextDomain' => '',
+				'DomainPath' => '',
+				'Network' => false,
+				'Title' => 'Hello Dolly',
+				'AuthorName' => 'Matt Mullenweg',
+			),
+			'wp-job-manager-tester/wp-job-manager-tester.php' => array (
+				'WPJM-Product' => '',
+				'Name' => 'WP Job Manager Tester',
+				'PluginURI' => 'http://wordpress.org/plugins/wp-job-manager-tester/',
+				'Version' => '1.0.0',
+				'Description' => 'Just a test plugin.',
+				'Author' => 'Example',
+				'AuthorURI' => 'http://example.com/',
+				'TextDomain' => 'wp-job-manager-tester',
+				'DomainPath' => '',
+				'Network' => false,
+				'Title' => 'WP Job Manager Tester',
+				'AuthorName' => 'Example',
+			),
+			'wp-job-manager-official-tester/wp-job-manager-official-tester.php' => array (
+				'WPJM-Product' => 'wp-job-manager-official-tester',
+				'Name' => 'WP Job Manager Official Tester',
+				'PluginURI' => 'http://wpjobmanager.com',
+				'Version' => '1.0.0',
+				'Description' => 'Just a test plugin.',
+				'Author' => 'Example',
+				'AuthorURI' => 'http://example.com/',
+				'TextDomain' => 'wp-job-manager-official-tester',
+				'DomainPath' => '',
+				'Network' => false,
+				'Title' => 'WP Job Manager Official Tester',
+				'AuthorName' => 'Example',
+			),
+			'wp-job-manager-official-licensed-tester/wp-job-manager-official-licensed-tester.php' => array (
+				'WPJM-Product' => 'wp-job-manager-official-licensed-tester',
+				'Name' => 'WP Job Manager Official Licensed Tester',
+				'PluginURI' => 'http://wpjobmanager.com',
+				'Version' => '1.0.0',
+				'Description' => 'Just a test plugin.',
+				'Author' => 'Example',
+				'AuthorURI' => 'http://example.com/',
+				'TextDomain' => 'wp-job-manager-official-licensed-tester',
+				'DomainPath' => '',
+				'Network' => false,
+				'Title' => 'WP Job Manager Official Licensed Tester',
+				'AuthorName' => 'Example',
+			),
+		);
+
+		update_option( 'active_plugins', array_keys( $plugins ) );
+		wp_cache_set( 'plugins', array( '' => $plugins ), 'plugins' );
+	}
 
 	/**
 	 * Creates job listings with the given meta values. This will also create
