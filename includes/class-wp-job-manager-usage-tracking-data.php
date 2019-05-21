@@ -344,18 +344,14 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * Gets the count of all official extensions that are installed and activated.
 	 */
 	private static function get_official_extensions_count() {
-		$extensions = self::get_official_extensions( false );
-
-		return count( $extensions );
+		return count( self::get_official_extensions( false ) );
 	}
 
 	/**
 	 * Gets the count of all official extensions that are installed, activated, and have active license.
 	 */
 	private static function get_licensed_extensions_count() {
-		$extensions = self::get_official_extensions( true );
-
-		return count( $extensions );
+		return count( self::get_official_extensions( true ) );
 	}
 
 	/**
