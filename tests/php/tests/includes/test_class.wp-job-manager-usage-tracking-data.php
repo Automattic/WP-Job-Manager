@@ -700,11 +700,9 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_licensed_extensions_count
 	 */
 	public function test_get_official_no_license_plugin_count() {
-		add_filter( 'job_manager_clear_plugin_cache', '__return_false' );
 		$this->set_fake_plugins();
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 		$this->restore_default_plugins();
-		remove_filter( 'job_manager_clear_plugin_cache', '__return_false' );
 
 		$this->assertEquals( 2, $data['official_extensions'] );
 		$this->assertEquals( 0, $data['licensed_extensions'] );
@@ -718,16 +716,40 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_licensed_extensions_count
 	 */
 	public function test_get_official_with_license_plugin_count() {
-		add_filter( 'job_manager_clear_plugin_cache', '__return_false' );
 		$this->set_fake_plugins();
 		$this->set_fake_license();
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 		$this->restore_default_plugins();
 		$this->remove_fake_license();
-		remove_filter( 'job_manager_clear_plugin_cache', '__return_false' );
 
 		$this->assertEquals( 2, $data['official_extensions'] );
 		$this->assertEquals( 1, $data['licensed_extensions'] );
+	}
+
+	/**
+	 * Checks paid flag is 0 when there are no official extensions.
+	 *
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields
+	 */
+	public function test_get_event_logging_base_fields_paid_without_extensions() {
+		$base_fields = WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields();
+
+		$this->assertEquals( 0, $base_fields['paid'] );
+	}
+
+	/**
+	 * Checks paid flag is 0 when there are official extensions.
+	 *
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields
+	 */
+	public function test_get_event_logging_base_fields_paid_with_extensions() {
+		$this->set_fake_plugins();
+		$base_fields = WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields();
+		$this->restore_default_plugins();
+
+		$this->assertEquals( 1, $base_fields['paid'] );
 	}
 
 	/**
@@ -754,12 +776,14 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	private function restore_default_plugins() {
 		wp_clean_plugins_cache();
 		update_option( 'active_plugins', array() );
+		remove_filter( 'job_manager_clear_plugin_cache', '__return_false' );
 	}
 
 	/**
 	 * Sets up some fake plugins, including fake official extensions.
 	 */
 	private function set_fake_plugins() {
+		add_filter( 'job_manager_clear_plugin_cache', '__return_false' );
 		$plugins = array (
 			'hello.php' => array (
 				'WPJM-Product' => '',
