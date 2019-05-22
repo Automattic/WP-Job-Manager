@@ -80,6 +80,8 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
 		add_filter( 'post_types_to_delete_with_user', array( $this, 'delete_user_add_job_listings_post_type' ) );
 
+		add_action( 'transition_post_status', array( $this, 'track_job_submission' ), 10, 3 );
+
 		add_action( 'parse_query', array( $this, 'add_feed_query_args' ) );
 
 		// Single job content.
@@ -1003,14 +1005,58 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Maybe sets default meta data for job listings.
 	 *
-	 * @param  int            $post_id
-	 * @param  WP_Post|string $post
+	 * @param int     $post_id Post ID.
+	 * @param WP_Post $post    Post object.
 	 */
-	public function maybe_add_default_meta_data( $post_id, $post = '' ) {
+	public function maybe_add_default_meta_data( $post_id, $post ) {
 		if ( empty( $post ) || 'job_listing' === $post->post_type ) {
 			add_post_meta( $post_id, '_filled', 0, true );
 			add_post_meta( $post_id, '_featured', 0, true );
 		}
+	}
+
+	/**
+	 * Track job submission from the backend.
+	 *
+	 * @param string  $new_status  New post status.
+	 * @param string  $old_status  Old status.
+	 * @param WP_Post $post        Post object.
+	 */
+	public function track_job_submission( $new_status, $old_status, $post ) {
+		if ( empty( $post ) || 'job_listing' !== get_post_type( $post ) ) {
+			return;
+		}
+
+		if ( $new_status === $old_status || 'publish' !== $new_status ) {
+			return;
+		}
+
+		// For the purpose of this event, we only care about admin requests and REST API requests.
+		if ( ! is_admin() && ! WP_Job_Manager_Usage_Tracking::is_rest_request() ) {
+			return;
+		}
+
+		$source = WP_Job_Manager_Usage_Tracking::is_rest_request() ? 'rest_api' : 'admin';
+
+		if ( 'pending' === $old_status ) {
+			// Track approving a new job listing.
+			WP_Job_Manager_Usage_Tracking::track_job_approval(
+				$post->ID,
+				array(
+					'source' => $source,
+				)
+			);
+
+			return;
+		}
+
+		WP_Job_Manager_Usage_Tracking::track_job_submission(
+			$post->ID,
+			array(
+				'source'     => $source,
+				'old_status' => $old_status,
+			)
+		);
 	}
 
 	/**

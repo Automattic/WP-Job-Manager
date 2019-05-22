@@ -67,6 +67,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'wp', array( $this, 'process' ) );
 		add_action( 'submit_job_form_start', array( $this, 'output_submit_form_nonce_field' ) );
 		add_action( 'preview_job_form_start', array( $this, 'output_preview_form_nonce_field' ) );
+		add_action( 'job_manager_job_submitted', array( $this, 'track_job_submission' ) );
 
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', array( $this, 'display_recaptcha_field' ) );
@@ -980,5 +981,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function done_before() {
 		do_action( 'job_manager_job_submitted', $this->job_id );
+	}
+
+	/**
+	 * Send usage tracking event for job submission.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public function track_job_submission( $post_id ) {
+		WP_Job_Manager_Usage_Tracking::track_job_submission(
+			$post_id,
+			array(
+				'source'     => 'frontend',
+				'old_status' => 'preview',
+			)
+		);
 	}
 }
