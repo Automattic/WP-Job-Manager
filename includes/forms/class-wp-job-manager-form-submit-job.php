@@ -160,12 +160,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		switch ( $allowed_application_method ) {
 			case 'email':
 				$application_method_label       = __( 'Application email', 'wp-job-manager' );
-				$application_method_placeholder = __( 'you@yourdomain.com', 'wp-job-manager' );
+				$application_method_placeholder = __( 'you@example.com', 'wp-job-manager' );
 				$application_method_sanitizer   = 'email';
 				break;
 			case 'url':
 				$application_method_label       = __( 'Application URL', 'wp-job-manager' );
-				$application_method_placeholder = __( 'http://', 'wp-job-manager' );
+				$application_method_placeholder = __( 'https://', 'wp-job-manager' );
 				$application_method_sanitizer   = 'url';
 				break;
 			default:
