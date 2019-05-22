@@ -1028,7 +1028,7 @@ class WP_Job_Manager_Post_Types {
 			WP_Job_Manager_Usage_Tracking::track_job_approval(
 				$post->ID,
 				array(
-					'source'     => $source,
+					'source' => $source,
 				)
 			);
 
