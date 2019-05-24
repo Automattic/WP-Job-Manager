@@ -198,7 +198,10 @@ class WP_Job_Manager {
 		WP_Job_Manager_Usage_Tracking::get_instance()->set_callback(
 			array( 'WP_Job_Manager_Usage_Tracking_Data', 'get_usage_data' )
 		);
-		WP_Job_Manager_Usage_Tracking::get_instance()->schedule_tracking_task();
+
+		if ( is_admin() ) {
+			WP_Job_Manager_Usage_Tracking::get_instance()->schedule_tracking_task();
+		}
 	}
 
 	/**
