@@ -6,6 +6,9 @@ jQuery( document ).ready( function( $ ) {
 
 	var session_storage_prefix = 'job_listing_';
 
+	/**
+	 * Store the filter form values and possibly the rendered results in sessionStorage.
+	 */
 	function job_manager_store_state( $target, state ) {
 		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
@@ -24,11 +27,15 @@ jQuery( document ).ready( function( $ ) {
 
 		try {
 			return window.sessionStorage.setItem( session_storage_key, JSON.stringify( state ) );
-		} catch ( e ) {}
+		} catch ( e ) {
+			// If the usage is full or the browser has denied us access, continue gracefully.
+		}
 
 		return false;
 	}
-
+	/**
+	 * Retrieve the stored form values and maybe the rendered results from sessionStorage.
+	 */
 	function job_manager_get_state( $target ) {
 		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
@@ -42,11 +49,16 @@ jQuery( document ).ready( function( $ ) {
 			if ( state ) {
 				return JSON.parse( state );
 			}
-		} catch ( e ) {}
+		} catch ( e ) {
+			// If the browser has denied us access, continue gracefully as if there wasn't any stored state.
+		}
 
 		return false;
 	}
 
+	/**
+	 * Toggle the `persist_results` boolean based on whether we not the rendered results to persist when moving away from page.
+	 */
 	function job_manager_persist_results( $target, persist ) {
 		if ( ! job_manager_supports_html5_session_storage() || ! $target ) {
 			return false;
@@ -62,6 +74,9 @@ jQuery( document ).ready( function( $ ) {
 		return job_manager_store_state( $target, state );
 	}
 
+	/**
+	 * Store the rendered results with the state in sessionStorage.
+	 */
 	function job_manager_save_results( $target, results ) {
 		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
@@ -84,6 +99,9 @@ jQuery( document ).ready( function( $ ) {
 		return job_manager_store_state( $target, state );
 	}
 
+	/**
+	 * Clear the stored state of the form values and possibly the rendered results from sessionStorage.
+	 */
 	function job_manager_clear_state( $target ) {
 		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
@@ -101,6 +119,9 @@ jQuery( document ).ready( function( $ ) {
 		return true;
 	}
 
+	/**
+	 * Clear just the rendered results from the stored state in sessionStorage.
+	 */
 	function job_manager_clear_results( $target ) {
 		if ( ! job_manager_supports_html5_session_storage() ) {
 			return false;
@@ -116,6 +137,9 @@ jQuery( document ).ready( function( $ ) {
 		return job_manager_store_state( $target, state );
 	}
 
+	/**
+	 * Handle restoring the results from sessionStorage or the Ajax call.
+	 */
 	function job_manager_handle_result( $target, result, append ) {
 		var $results = $target.find( '.job_listings' );
 		var $showing = $target.find( '.showing_jobs' );
@@ -419,7 +443,7 @@ jQuery( document ).ready( function( $ ) {
 
 			if ( state ) {
 				// Restore the results from cache.
-				if (state.results) {
+				if ( state.results ) {
 					$results_loaded = job_manager_handle_result( $target, state.results );
 
 					// We don't want this to continue to persist unless we click on another link.
