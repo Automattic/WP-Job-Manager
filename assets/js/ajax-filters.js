@@ -428,7 +428,7 @@ jQuery( document ).ready( function( $ ) {
 	if ( $.isFunction( $.fn.select2 ) && typeof job_manager_select2_args !== 'undefined' ) {
 		var select2_args = job_manager_select2_args;
 		select2_args[ 'allowClear' ] = true;
-		select2_args[ 'minimum$resultsForSearch' ] = 10;
+		select2_args[ 'minimumResultsForSearch' ] = 10;
 
 		$( 'select[name^="search_categories"]:visible' ).select2( select2_args );
 	}
