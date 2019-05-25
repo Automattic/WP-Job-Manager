@@ -75,7 +75,7 @@ global $job_manager;
 			<input type="hidden" name="step" value="<?php echo esc_attr( $step ); ?>" />
 			<input type="submit" name="submit_job" class="button" value="<?php echo esc_attr( $submit_button_text ); ?>" />
 			<?php
-			if ( $can_resume_later ) {
+			if ( $can_continue_later ) {
 				echo '<input type="submit" name="save_draft" class="button secondary save_draft" value="' . esc_attr__( 'Save Draft', 'wp-job-manager' ) . '" formnovalidate />';
 			}
 			?>
