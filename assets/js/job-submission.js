@@ -50,6 +50,23 @@ jQuery(document).ready(function($) {
 
 	$( '.fieldset-type-file input[type=file][multiple][data-file_limit]' ).trigger( 'update_status' );
 
+
+	$( document.body ).on( 'click', '#submit-job-form .button.save_draft', function() {
+		var $form    = $(this).closest( '#submit-job-form' );
+		var is_valid = true;
+
+		$form.find( 'div.draft-required input[required]').each( function() {
+			$(this).get( 0 ).reportValidity();
+			if ( $(this).is( ':invalid' ) ) {
+				is_valid = false;
+
+				return false;
+			}
+		} );
+
+		return is_valid;
+	});
+
 	$( document.body ).on( 'submit', '.job-manager-form:not(.prevent-spinner-behavior)', function() {
 		$(this).find( '.spinner' ).addClass( 'is-active' );
 		$(this).find( 'input[type=submit]' ).addClass( 'disabled' ).on( 'click', function() { return false; } );

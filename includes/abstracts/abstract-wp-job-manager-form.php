@@ -42,6 +42,14 @@ abstract class WP_Job_Manager_Form {
 	protected $errors = array();
 
 	/**
+	 * Form notices.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $messages = array();
+
+	/**
 	 * Form steps.
 	 *
 	 * @access protected
@@ -129,6 +137,7 @@ abstract class WP_Job_Manager_Form {
 		$this->enqueue_scripts();
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
+		$this->show_messages();
 
 		if ( $step_key && is_callable( $this->steps[ $step_key ]['view'] ) ) {
 			call_user_func( $this->steps[ $step_key ]['view'], $atts );
@@ -150,6 +159,24 @@ abstract class WP_Job_Manager_Form {
 	public function show_errors() {
 		foreach ( $this->errors as $error ) {
 			echo '<div class="job-manager-error">' . wp_kses_post( $error ) . '</div>';
+		}
+	}
+
+	/**
+	 * Adds an notice.
+	 *
+	 * @param string $message The notice message.
+	 */
+	public function add_message( $message ) {
+		$this->messages[] = $message;
+	}
+
+	/**
+	 * Displays notice messages.
+	 */
+	public function show_messages() {
+		foreach ( $this->messages as $message ) {
+			echo '<div class="job-manager-info">' . wp_kses_post( $message ) . '</div>';
 		}
 	}
 
