@@ -59,6 +59,8 @@ jQuery(document).ready(function($) {
 			$(this).get( 0 ).reportValidity();
 			if ( $(this).is( ':invalid' ) ) {
 				is_valid = false;
+
+				return false;
 			}
 		} );
 
