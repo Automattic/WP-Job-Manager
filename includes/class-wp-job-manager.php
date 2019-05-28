@@ -434,6 +434,14 @@ class WP_Job_Manager {
 			)
 		);
 
+		wp_localize_script(
+			'wp-job-manager-job-submission',
+			'job_manager_job_submission',
+			array(
+				'i18n_required_field' => __( 'This field is required.', 'wp-job-manager' ),
+			)
+		);
+
 		/**
 		 * Filter whether to enqueue WPJM core's frontend scripts. By default, they will only be enqueued on WPJM related
 		 * pages.
