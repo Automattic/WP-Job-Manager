@@ -1,12 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Settings.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Handles the management of plugin settings.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Settings {
@@ -165,7 +170,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '0',
 							'label'      => __( 'Multi-select Categories', 'wp-job-manager' ),
 							'cb_label'   => __( 'Default to category multiselect', 'wp-job-manager' ),
-							'desc'       => __( 'The category selection box will default to allowing multiple selections on the [jobs] shortcode. Without this, users will only be able to select a single category when submitting jobs.', 'wp-job-manager' ),
+							'desc'       => __( 'The category selection box will default to allowing multiple selections on the [jobs] shortcode. Without this, visitors will only be able to select a single category when filtering jobs.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => array(),
 						),

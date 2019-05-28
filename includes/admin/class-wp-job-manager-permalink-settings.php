@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Permalink_Settings.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Handles front admin page for WP Job Manager.
  *
- * @package wp-job-manager
  * @see https://github.com/woocommerce/woocommerce/blob/3.0.8/includes/admin/class-wc-admin-permalink-settings.php  Based on WooCommerce's implementation.
  * @since 1.27.0
  */

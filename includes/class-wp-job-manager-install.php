@@ -1,4 +1,9 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Install.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -7,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles the installation of the WP Job Manager plugin.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Install {
@@ -53,7 +57,7 @@ class WP_Job_Manager_Install {
 		}
 
 		if ( $is_new_install ) {
-			$permalink_options = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
+			$permalink_options                 = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
 			$permalink_options['jobs_archive'] = '';
 			update_option( 'job_manager_permalinks', wp_json_encode( $permalink_options ) );
 		}

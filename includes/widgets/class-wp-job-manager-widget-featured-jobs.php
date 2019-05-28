@@ -1,4 +1,10 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Widget_Featured_Jobs.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -23,13 +29,13 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 		$this->widget_description = __( 'Display a list of featured listings on your site.', 'wp-job-manager' );
 		$this->widget_id          = 'widget_featured_jobs';
 		$this->settings           = array(
-			'title'   => array(
+			'title'     => array(
 				'type'  => 'text',
 				// translators: Placeholder %s is the plural label for the job listing post type.
 				'std'   => sprintf( __( 'Featured %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ),
 				'label' => __( 'Title', 'wp-job-manager' ),
 			),
-			'number'  => array(
+			'number'    => array(
 				'type'  => 'number',
 				'step'  => 1,
 				'min'   => 1,
@@ -37,7 +43,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 				'std'   => 10,
 				'label' => __( 'Number of listings to show', 'wp-job-manager' ),
 			),
-			'orderby' => array(
+			'orderby'   => array(
 				'type'    => 'select',
 				'std'     => 'date',
 				'label'   => __( 'Sort By', 'wp-job-manager' ),
@@ -48,7 +54,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 					'rand_featured' => __( 'Random', 'wp-job-manager' ),
 				),
 			),
-			'order'   => array(
+			'order'     => array(
 				'type'    => 'select',
 				'std'     => 'DESC',
 				'label'   => __( 'Sort Direction', 'wp-job-manager' ),
@@ -56,6 +62,11 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 					'ASC'  => __( 'Ascending', 'wp-job-manager' ),
 					'DESC' => __( 'Descending', 'wp-job-manager' ),
 				),
+			),
+			'show_logo' => array(
+				'type'  => 'checkbox',
+				'std'   => 0,
+				'label' => esc_html__( 'Show Company Logo', 'wp-job-manager' ),
 			),
 		);
 		parent::__construct();
@@ -84,6 +95,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 		$orderby        = esc_attr( $instance['orderby'] );
 		$order          = esc_attr( $instance['order'] );
 		$title          = apply_filters( 'widget_title', $title_instance, $instance, $this->id_base );
+		$show_logo      = absint( $instance['show_logo'] );
 		$jobs           = get_job_listings(
 			array(
 				'posts_per_page' => $number,
@@ -110,7 +122,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 					$jobs->the_post();
 					?>
 
-					<?php get_job_manager_template_part( 'content-widget', 'job_listing' ); ?>
+					<?php get_job_manager_template( 'content-widget-job_listing.php', array( 'show_logo' => $show_logo ) ); ?>
 
 				<?php endwhile; ?>
 
@@ -122,7 +134,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 
 			<?php get_job_manager_template_part( 'content-widget', 'no-jobs-found' ); ?>
 
-		<?php
+			<?php
 		endif;
 
 		wp_reset_postdata();

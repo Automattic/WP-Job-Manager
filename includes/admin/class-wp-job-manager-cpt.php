@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_CPT.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Handles actions and filters specific to the custom post type for Job Listings.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_CPT {
@@ -308,9 +312,9 @@ class WP_Job_Manager_CPT {
 
 		$allowed_html = array(
 			'option' => array(
-				'value' => array(),
+				'value'    => array(),
 				'selected' => array(),
-				'class' => array(),
+				'class'    => array(),
 			),
 		);
 
@@ -711,15 +715,18 @@ class WP_Job_Manager_CPT {
 			array_merge(
 				$wpdb->get_col(
 					$wpdb->prepare(
-						"
-					SELECT posts.ID
-					FROM {$wpdb->posts} posts
-					INNER JOIN {$wpdb->postmeta} p1 ON posts.ID = p1.post_id
-					WHERE p1.meta_value LIKE %s
-					OR posts.post_title LIKE %s
-					OR posts.post_content LIKE %s
-					AND posts.post_type = 'job_listing'
-					",
+						"SELECT posts.ID
+						FROM {$wpdb->posts} posts
+						WHERE (
+							posts.ID IN (
+								SELECT post_id
+								FROM {$wpdb->postmeta}
+								WHERE meta_value LIKE %s
+							)
+							OR posts.post_title LIKE %s
+							OR posts.post_content LIKE %s
+						)
+						AND posts.post_type = 'job_listing'",
 						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
 						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
 						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%'

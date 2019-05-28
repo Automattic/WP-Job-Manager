@@ -1,4 +1,9 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Usage_Tracking.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -31,13 +36,127 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	/**
+	 * Gets the base data returned with system information.
+	 *
+	 * @return array
+	 */
+	protected function get_base_system_data() {
+		$base_data            = array();
+		$base_data['version'] = JOB_MANAGER_VERSION;
+
+		return $base_data;
+	}
+
+	/**
+	 * Track a WP Job Manager event.
+	 *
+	 * @since 1.33.0
+	 *
+	 * @param string $event_name The name of the event, without the `wpjm` prefix.
+	 * @param array  $properties The event properties to be sent.
+	 */
+	public static function log_event( $event_name, $properties = array() ) {
+		$properties = array_merge(
+			WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields(),
+			$properties
+		);
+
+		self::get_instance()->send_event( $event_name, $properties );
+	}
+
+	/**
+	 * Get the current user's primary role.
+	 *
+	 * @return string
+	 */
+	private static function get_current_role() {
+		$current_user = wp_get_current_user();
+		$roles        = $current_user->roles;
+
+		if ( empty( $roles ) ) {
+			return 'guest';
+		}
+
+		if ( in_array( 'administrator', $roles, true ) ) {
+			return 'administrator';
+		}
+
+		if ( in_array( 'employer', $roles, true ) ) {
+			return 'employer';
+		}
+
+		return array_shift( $roles );
+	}
+
+
+	/**
+	 * Check if current request is a REST API request.
+	 *
+	 * @todo move this to WP_Job_Manager_REST_API
+	 * @return bool
+	 */
+	public static function is_rest_request() {
+		return defined( 'REST_REQUEST' ) && REST_REQUEST;
+	}
+
+	/**
+	 * Track the job submission event.
+	 *
+	 * @param int   $post_id    Post ID.
+	 * @param array $properties Default properties to use.
+	 */
+	public static function track_job_submission( $post_id, $properties = array() ) {
+		// Only track the first time a job is submitted.
+		if ( get_post_meta( $post_id, '_tracked_submitted' ) ) {
+			return;
+		}
+		update_post_meta( $post_id, '_tracked_submitted', time() );
+
+		$properties['job_id']      = intval( $post_id );
+		$properties['post_status'] = get_post_status( $post_id );
+
+		$user_role  = self::get_current_role();
+		if ( $user_role ) {
+			$properties['user_role'] = $user_role;
+		}
+
+		WP_Job_Manager_Usage_Tracking::log_event( 'job_listing_submitted', $properties );
+	}
+
+	/**
+	 * Track the job approval event.
+	 *
+	 * @param int   $post_id    Post ID.
+	 * @param array $properties Default properties to use.
+	 */
+	public static function track_job_approval( $post_id, $properties = array() ) {
+		// Only track the first time a job is approved.
+		if ( get_post_meta( $post_id, '_tracked_approved' ) ) {
+			return;
+		}
+		update_post_meta( $post_id, '_tracked_approved', time() );
+
+		$post = get_post( $post_id );
+
+		$properties['job_id'] = intval( $post_id );
+		$properties['age']    = time() - strtotime( $post->post_date_gmt );
+
+		$user_role  = self::get_current_role();
+		if ( $user_role ) {
+			$properties['user_role'] = $user_role;
+		}
+
+		WP_Job_Manager_Usage_Tracking::log_event( 'job_listing_approved', $properties );
+	}
+
+	/**
 	 * Implementation for abstract functions.
 	 */
 
 	/**
 	 * Return the instance of this class.
 	 *
-	 * @return object
+	 * @return self
 	 */
 	public static function get_instance() {
 		return self::get_instance_for_subclass( get_class() );
@@ -135,6 +254,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		if ( in_array( $plugin_slug, $third_party_plugins, true ) ) {
 			return true;
 		}
+
 		return false;
 	}
 

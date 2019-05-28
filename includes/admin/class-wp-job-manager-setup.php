@@ -1,4 +1,10 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Setup.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -6,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles initial environment setup after plugin is first activated.
  *
- * @package wp-job-manager
  * @since 1.16.0
  */
 class WP_Job_Manager_Setup {
@@ -95,7 +100,7 @@ class WP_Job_Manager_Setup {
 	 */
 	public function setup_page() {
 		$usage_tracking = WP_Job_Manager_Usage_Tracking::get_instance();
-		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
+		$step           = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
 
 		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 			// Handle step 1 (usage tracking).

@@ -88,3 +88,20 @@ if ( ! function_exists( 'wpjm_get_permalink_structure' ) ) :
 		return WP_Job_Manager_Post_Types::get_permalink_structure();
 	}
 endif;
+
+
+if ( ! function_exists( 'job_manager_add_post_types' ) ) :
+	/**
+	 *  Adds job listing post types to list of types to be removed with user. Moved to `WP_Job_Manager_Post_Types` class in 1.33.0.
+	 *
+	 * @deprecated 1.33.0
+	 *
+	 * @param array $types
+	 * @return array
+	 */
+	function job_manager_add_post_types( $types ) {
+		_deprecated_function( __FUNCTION__, '1.33.0', 'WP_Job_Manager_Post_Types::delete_user_add_job_listings_post_type' );
+
+		return WP_Job_Manager_Post_Types::instance()->delete_user_add_job_listings_post_type( $types );
+	}
+endif;

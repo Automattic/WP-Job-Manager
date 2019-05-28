@@ -1,9 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Form_Submit_Job.
+ *
+ * @package wp-job-manager
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Handles the editing of Job Listings from the public facing frontend (from within `[submit_job_form]` shortcode).
  *
- * @package wp-job-manager
  * @extends WP_Job_Manager_Form
  * @since 1.0.0
  */
@@ -59,6 +67,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'wp', array( $this, 'process' ) );
 		add_action( 'submit_job_form_start', array( $this, 'output_submit_form_nonce_field' ) );
 		add_action( 'preview_job_form_start', array( $this, 'output_preview_form_nonce_field' ) );
+		add_action( 'job_manager_job_submitted', array( $this, 'track_job_submission' ) );
 
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', array( $this, 'display_recaptcha_field' ) );
@@ -152,12 +161,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		switch ( $allowed_application_method ) {
 			case 'email':
 				$application_method_label       = __( 'Application email', 'wp-job-manager' );
-				$application_method_placeholder = __( 'you@yourdomain.com', 'wp-job-manager' );
+				$application_method_placeholder = __( 'you@example.com', 'wp-job-manager' );
 				$application_method_sanitizer   = 'email';
 				break;
 			case 'url':
 				$application_method_label       = __( 'Application URL', 'wp-job-manager' );
-				$application_method_placeholder = __( 'http://', 'wp-job-manager' );
+				$application_method_placeholder = __( 'https://', 'wp-job-manager' );
 				$application_method_sanitizer   = 'url';
 				break;
 			default:
@@ -365,6 +374,26 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						}
 					}
 				}
+				if ( empty( $field['file_limit'] ) && ! empty( $field['multiple'] ) ) {
+					$field['file_limit'] = 1;
+				}
+				if ( 'file' === $field['type'] && ! empty( $field['file_limit'] ) ) {
+					$file_limit = intval( $field['file_limit'] );
+					if ( is_array( $values[ $group_key ][ $key ] ) ) {
+						$check_value = array_filter( $values[ $group_key ][ $key ] );
+					} else {
+						$check_value = array_filter( array( $values[ $group_key ][ $key ] ) );
+					}
+					if ( count( $check_value ) > $file_limit ) {
+						// translators: Placeholder %d is the number of files to that users are limited to.
+						$message = esc_html__( 'You are only allowed to upload a maximum of %d files.', 'wp-job-manager' );
+						if ( ! empty( $field['file_limit_message'] ) ) {
+							$message = $field['file_limit_message'];
+						}
+
+						throw new Exception( esc_html( sprintf( $message, $file_limit ) ) );
+					}
+				}
 			}
 		}
 
@@ -519,6 +548,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'job_fields'         => $this->get_fields( 'job' ),
 				'company_fields'     => $this->get_fields( 'company' ),
 				'step'               => $this->get_step(),
+				'can_continue_later'   => $this->can_continue_later(),
 				'submit_button_text' => apply_filters( 'submit_job_form_submit_button_text', __( 'Preview', 'wp-job-manager' ) ),
 			)
 		);
@@ -537,16 +567,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			// Get posted values.
 			$values = $this->get_posted_fields();
 
-			if ( empty( $_POST['submit_job'] ) ) {
+			$is_saving_draft = $this->can_continue_later() && ! empty( $_POST['save_draft'] );
+
+			if ( empty( $_POST['submit_job'] ) && ! $is_saving_draft ) {
 				return;
 			}
 
 			$this->check_submit_form_nonce_field();
 
-			// Validate required.
-			$validation_status = $this->validate_fields( $values );
-			if ( is_wp_error( $validation_status ) ) {
-				throw new Exception( $validation_status->get_error_message() );
+			if ( ! $is_saving_draft ) {
+				// Validate required.
+				$validation_status = $this->validate_fields( $values );
+				if ( is_wp_error( $validation_status ) ) {
+					throw new Exception( $validation_status->get_error_message() );
+				}
 			}
 
 			// Account creation.
@@ -605,7 +639,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 
 			$post_status = '';
-			if ( ! $this->job_id || 'draft' === get_post_status( $this->job_id ) ) {
+			if ( $is_saving_draft ) {
+				$post_status = 'draft';
+			} elseif ( ! $this->job_id || 'draft' === get_post_status( $this->job_id ) ) {
 				$post_status = 'preview';
 			}
 
@@ -613,9 +649,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $post_status, $values );
 			$this->update_job_data( $values );
 
-			// Successful, show next step.
-			$this->step ++;
+			if ( $is_saving_draft ) {
+				$job_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id', false );
 
+				// translators: placeholder is the URL to the job dashboard page.
+				$this->add_message( sprintf( __( 'Draft was saved. Job listing drafts can be resumed from the <a href="%s">job dashboard</a>.', 'wp-job-manager' ), get_permalink( $job_dashboard_page_id ) ) );
+			} else {
+				// Successful, show next step.
+				$this->step++;
+			}
 		} catch ( Exception $e ) {
 			$this->add_error( $e->getMessage() );
 			return;
@@ -712,7 +754,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return 0;
 		}
 
-		$attachment_url_parts = parse_url( $attachment_url );
+		$attachment_url_parts = wp_parse_url( $attachment_url );
 
 		// Relative paths aren't allowed.
 		if ( false !== strpos( $attachment_url_parts['path'], '../' ) ) {
@@ -952,5 +994,48 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function done_before() {
 		do_action( 'job_manager_job_submitted', $this->job_id );
+	}
+
+	/**
+	 * Checks if we can resume submission later.
+	 *
+	 * @return bool
+	 */
+	protected function can_continue_later() {
+		$can_continue_later = false;
+		$job_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id', false );
+
+		if ( ! $job_dashboard_page_id ) {
+			// For now, we're going to block resuming later if no job dashboard page has been set.
+			$can_continue_later = false;
+		} elseif ( is_user_logged_in() ) {
+			// If they're logged in, we can assume they can access the job dashboard to resume later.
+			$can_continue_later = true;
+		} elseif ( job_manager_user_requires_account() && job_manager_enable_registration() ) {
+			// If these are enabled, we know an account will be created on save.
+			$can_continue_later = true;
+		}
+
+		/**
+		 * Override if visitor can resume job submission later.
+		 *
+		 * @param bool $can_continue_later True if they can resume job later.
+		 */
+		return apply_filters( 'submit_job_form_can_continue_later', $can_continue_later );
+	}
+
+	/**
+	 * Send usage tracking event for job submission.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public function track_job_submission( $post_id ) {
+		WP_Job_Manager_Usage_Tracking::track_job_submission(
+			$post_id,
+			array(
+				'source'     => 'frontend',
+				'old_status' => 'preview',
+			)
+		);
 	}
 }

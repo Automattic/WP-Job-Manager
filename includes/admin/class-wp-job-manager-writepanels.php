@@ -1,12 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Writepanels.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Handles the management of Job Listing meta fields.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Writepanels {
@@ -48,73 +53,12 @@ class WP_Job_Manager_Writepanels {
 	 * @return array
 	 */
 	public function job_listing_fields() {
-		global $post;
+		global $post_id;
 
 		$current_user = wp_get_current_user();
+		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields();
+		$fields       = array();
 
-		$fields = array(
-			'_job_location'    => array(
-				'label'       => __( 'Location', 'wp-job-manager' ),
-				'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
-				'description' => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
-				'priority'    => 1,
-			),
-			'_application'     => array(
-				'label'       => __( 'Application Email or URL', 'wp-job-manager' ),
-				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
-				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
-				'value'       => metadata_exists( 'post', $post->ID, '_application' ) ? get_post_meta( $post->ID, '_application', true ) : $current_user->user_email,
-				'priority'    => 2,
-			),
-			'_company_name'    => array(
-				'label'       => __( 'Company Name', 'wp-job-manager' ),
-				'placeholder' => '',
-				'priority'    => 3,
-			),
-			'_company_website' => array(
-				'label'       => __( 'Company Website', 'wp-job-manager' ),
-				'placeholder' => '',
-				'priority'    => 4,
-			),
-			'_company_tagline' => array(
-				'label'       => __( 'Company Tagline', 'wp-job-manager' ),
-				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' ),
-				'priority'    => 5,
-			),
-			'_company_twitter' => array(
-				'label'       => __( 'Company Twitter', 'wp-job-manager' ),
-				'placeholder' => '@yourcompany',
-				'priority'    => 6,
-			),
-			'_company_video'   => array(
-				'label'       => __( 'Company Video', 'wp-job-manager' ),
-				'placeholder' => __( 'URL to the company video', 'wp-job-manager' ),
-				'type'        => 'file',
-				'priority'    => 8,
-			),
-			'_filled'          => array(
-				'label'       => __( 'Position Filled', 'wp-job-manager' ),
-				'type'        => 'checkbox',
-				'priority'    => 9,
-				'description' => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
-			),
-		);
-		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
-			$fields['_featured']    = array(
-				'label'       => __( 'Featured Listing', 'wp-job-manager' ),
-				'type'        => 'checkbox',
-				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
-				'priority'    => 10,
-			);
-			$job_expires            = get_post_meta( $post->ID, '_job_expires', true );
-			$fields['_job_expires'] = array(
-				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
-				'priority'    => 11,
-				'classes'     => array( 'job-manager-datepicker' ),
-				'placeholder' => ! empty( $job_expires ) ? null : date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post->ID ) ) ),
-				'value'       => ! empty( $job_expires ) ? date( 'Y-m-d', strtotime( $job_expires ) ) : '',
-			);
-		}
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
 			$fields['_job_author'] = array(
 				'label'    => __( 'Posted by', 'wp-job-manager' ),
@@ -123,18 +67,60 @@ class WP_Job_Manager_Writepanels {
 			);
 		}
 
-		/**
-		 * Filters job listing data fields for WP Admin post editor.
-		 *
-		 * @since 1.0.0
-		 * @since 1.27.0 $post_id was added
-		 *
-		 * @param array $fields
-		 * @param int   $post_id
-		 */
-		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields, $post->ID );
+		foreach ( $fields_raw as $meta_key => $field ) {
+			$show_in_admin = $field['show_in_admin'];
+			if ( is_callable( $show_in_admin ) ) {
+				$show_in_admin = (bool) call_user_func( $show_in_admin, true, $meta_key, $post_id, $current_user->ID );
+			}
 
-		uasort( $fields, array( $this, 'sort_by_priority' ) );
+			if ( ! $show_in_admin ) {
+				continue;
+			}
+
+			/**
+			 * Check auth callback. Mirrors first 4 params of WordPress core's `auth_{$object_type}_meta_{$meta_key}` filter.
+			 *
+			 * @param bool   $allowed   Whether the user can edit the job listing meta. Default false.
+			 * @param string $meta_key  The meta key.
+			 * @param int    $object_id Object ID.
+			 * @param int    $user_id   User ID.
+			 */
+			if ( ! call_user_func( $field['auth_edit_callback'], false, $meta_key, $post_id, $current_user->ID ) ) {
+				continue;
+			}
+
+			$fields[ $meta_key ] = $field;
+		}
+
+		if ( isset( $fields['_job_expires'] ) && ! isset( $fields['_job_expires']['value'] ) ) {
+			$job_expires = get_post_meta( $post_id, '_job_expires', true );
+
+			if ( ! empty( $job_expires ) ) {
+				$fields['_job_expires']['placeholder'] = null;
+				$fields['_job_expires']['value']       = date( 'Y-m-d', strtotime( $job_expires ) );
+			} else {
+				$fields['_job_expires']['placeholder'] = date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post_id ) ) );
+				$fields['_job_expires']['value']       = '';
+			}
+		}
+
+		if ( isset( $fields['_application'] ) && ! isset( $fields['_application']['default'] ) && 'url' !== get_option( 'job_manager_allowed_application_method' ) ) {
+			$fields['_application']['default'] = $current_user->user_email;
+		}
+
+		/**
+		 * Filters job listing data fields shown in WP admin.
+		 *
+		 * To add job listing data fields, use the `job_manager_job_listing_data_fields` found in `includes/class-wp-job-manager-post-types.php`.
+		 *
+		 * @since 1.33.0
+		 *
+		 * @param array    $fields  Job listing fields for WP admin. See `job_manager_job_listing_data_fields` filter for more information.
+		 * @param int|null $post_id Post ID to get fields for. May be null.
+		 */
+		$fields = apply_filters( 'job_manager_job_listing_wp_admin_fields', $fields, $post_id );
+
+		uasort( $fields, array( __CLASS__, 'sort_by_priority' ) );
 
 		return $fields;
 	}
@@ -146,10 +132,11 @@ class WP_Job_Manager_Writepanels {
 	 * @param array $b
 	 * @return int
 	 */
-	protected function sort_by_priority( $a, $b ) {
+	protected static function sort_by_priority( $a, $b ) {
 		if ( ! isset( $a['priority'] ) || ! isset( $b['priority'] ) || $a['priority'] === $b['priority'] ) {
 			return 0;
 		}
+
 		return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
 	}
 
@@ -218,13 +205,8 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_file( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( empty( $field['placeholder'] ) ) {
-			$field['placeholder'] = 'http://';
+			$field['placeholder'] = 'https://';
 		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
@@ -267,11 +249,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_text( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -315,11 +292,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_hidden( $key, $field ) {
-		global $thepostid;
-
-		if ( 'hidden' === $field['type'] && ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -358,11 +330,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_textarea( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -387,11 +354,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_select( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -428,11 +390,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_multiselect( $key, $field ) {
-		global $thepostid;
-
-		if ( ! isset( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -469,11 +426,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_checkbox( $key, $field ) {
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -507,7 +459,6 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		$posted_by      = get_user_by( 'id', $author_id );
-		$field['value'] = ! isset( $field['value'] ) ? get_post_meta( $thepostid, $key, true ) : $field['value'];
 		$name           = ! empty( $field['name'] ) ? $field['name'] : $key;
 		?>
 		<p class="form-field form-field-author">
@@ -546,11 +497,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_radio( $key, $field ) {
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
 		if ( ! empty( $field['name'] ) ) {
 			$name = $field['name'];
 		} else {
@@ -587,6 +533,14 @@ class WP_Job_Manager_Writepanels {
 
 		foreach ( $this->job_listing_fields() as $key => $field ) {
 			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
+
+			if ( ! isset( $field['value'] ) && metadata_exists( 'post', $thepostid, $key ) ) {
+				$field['value'] = get_post_meta( $thepostid, $key, true );
+			}
+
+			if ( ! isset( $field['value'] ) && isset( $field['default'] ) ) {
+				$field['value'] = $field['default'];
+			}
 
 			if ( has_action( 'job_manager_input_' . $type ) ) {
 				do_action( 'job_manager_input_' . $type, $key, $field );
@@ -659,6 +613,15 @@ class WP_Job_Manager_Writepanels {
 				continue;
 			}
 
+			// Checkboxes that aren't sent are unchecked.
+			if ( 'checkbox' === $field['type'] ) {
+				if ( ! empty( $_POST[ $key ] ) ) {
+					$_POST[ $key ] = 1;
+				} else {
+					$_POST[ $key ] = 0;
+				}
+			}
+
 			// Expirey date.
 			if ( '_job_expires' === $key ) {
 				if ( empty( $_POST[ $key ] ) ) {
@@ -670,45 +633,13 @@ class WP_Job_Manager_Writepanels {
 				} else {
 					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
 				}
-			} elseif ( '_job_location' === $key ) {
-				// Locations.
-				$updated_result = update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
-				if ( ! $updated_result && apply_filters( 'job_manager_geolocation_enabled', true ) && ! WP_Job_Manager_Geocode::has_location_data( $post_id ) ) {
-					// First time generation for job location data.
-					WP_Job_Manager_Geocode::generate_location_data( $post_id, sanitize_text_field( $_POST[ $key ] ) );
-				}
 			} elseif ( '_job_author' === $key ) {
 				if ( empty( $_POST[ $key ] ) ) {
 					$_POST[ $key ] = 0;
 				}
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
-			} elseif ( '_application' === $key ) {
-				update_post_meta( $post_id, $key, sanitize_text_field( is_email( $_POST[ $key ] ) ? $_POST[ $key ] : urldecode( $_POST[ $key ] ) ) );
-			} else {
-				// Everything else.
-				$type = ! empty( $field['type'] ) ? $field['type'] : '';
-
-				switch ( $type ) {
-					case 'textarea':
-						update_post_meta( $post_id, $key, wp_kses_post( stripslashes( $_POST[ $key ] ) ) );
-						break;
-					case 'checkbox':
-						if ( isset( $_POST[ $key ] ) ) {
-							update_post_meta( $post_id, $key, 1 );
-						} else {
-							update_post_meta( $post_id, $key, 0 );
-						}
-						break;
-					default:
-						if ( ! isset( $_POST[ $key ] ) ) {
-							break;
-						} elseif ( is_array( $_POST[ $key ] ) ) {
-							update_post_meta( $post_id, $key, array_filter( array_map( 'sanitize_text_field', $_POST[ $key ] ) ) );
-						} else {
-							update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
-						}
-						break;
-				}
+			} elseif ( isset( $_POST[ $key ] ) ) {
+				update_post_meta( $post_id, $key, $_POST[ $key ] );
 			}
 		}
 

@@ -1,4 +1,10 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Widget.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -6,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Job Manager Widget base.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Widget extends WP_Widget {
@@ -181,8 +186,8 @@ class WP_Job_Manager_Widget extends WP_Widget {
 				case 'checkbox':
 					?>
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 						<input class="checkbox" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="checkbox" value="1" <?php checked( $value, 1 ); ?> />
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 					</p>
 					<?php
 					break;

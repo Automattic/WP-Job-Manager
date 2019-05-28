@@ -1,14 +1,13 @@
 <?php
 /**
- * Setup page: Step 3 content.
+ * File containing the view for step 3 of the setup wizard.
  *
- * @package WP Job Manager
+ * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 ?>
 <h3><?php esc_html_e( 'You\'re ready to start using WP Job Manager!', 'wp-job-manager' ); ?></h3>
 

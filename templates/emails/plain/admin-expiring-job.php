@@ -6,7 +6,7 @@
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
- * @package     WP Job Manager
+ * @package     wp-job-manager
  * @category    Template
  * @version     1.31.1
  */

@@ -6,7 +6,7 @@ const glob = require( 'glob' );
 const entryArray = glob.sync( './assets/blocks/**/index.jsx' );
 const entryObject = entryArray.reduce( ( acc, item ) => {
 	let name = item.replace( './assets/blocks/', '' ).replace( '/index.jsx', '' );
-	acc[name] = item;
+	acc[ name ] = item;
 
 	return acc;
 }, {} );
@@ -27,14 +27,12 @@ const webpackConfig = ( env, argv ) => {
 				},
 				{
 					test: /\.scss$/,
-					include: [
-						/assets\/blocks/
-					],
+					include: [ /assets\/blocks/ ],
 					use: [
 						argv.mode !== 'production' ? 'style-loader' : miniCssExtractPlugin.loader,
 						'css-loader',
-						'sass-loader'
-					]
+						'sass-loader',
+					],
 				},
 			],
 		},
@@ -42,7 +40,7 @@ const webpackConfig = ( env, argv ) => {
 			new cleanWebpackPlugin( [ 'build/blocks' ] ),
 			new lodashModuleReplacementPlugin(),
 			new miniCssExtractPlugin( {
-				filename: 'build/blocks/[name]/style.css'
+				filename: 'build/blocks/[name]/style.css',
 			} ),
 		],
 	};
