@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
 		return is_valid;
 	});
 
-	$( document.body ).on( 'submit', function() {
+	$( document.body ).on( 'submit', '.job-manager-form', function() {
 		if ( specialFieldsAreInvalid() ) {
 			event.preventDefault();
 			return;
