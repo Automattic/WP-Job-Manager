@@ -67,14 +67,16 @@ jQuery(document).ready(function($) {
 		return is_valid;
 	});
 
-	$( document.body ).on( 'submit', '.job-manager-form:not(.prevent-spinner-behavior)', function() {
+	$( document.body ).on( 'submit', function() {
 		if ( specialFieldsAreInvalid() ) {
 			event.preventDefault();
 			return;
 		}
 
-		$(this).find( '.spinner' ).addClass( 'is-active' );
-		$(this).find( 'input[type=submit]' ).addClass( 'disabled' ).on( 'click', function() { return false; } );
+		if ( ! $(this).hasClass( 'prevent-spinner-behavior' ) ) {	
+			$(this).find( '.spinner' ).addClass( 'is-active' );
+			$(this).find( 'input[type=submit]' ).addClass( 'disabled' ).on( 'click', function() { return false; } );
+		}
 	});
 
 	/* Performs validation for required fields that don't support HTML 5 validation.
