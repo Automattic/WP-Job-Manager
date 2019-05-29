@@ -2,8 +2,8 @@
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 4.7.0
-Tested up to: 5.1
-Stable tag: 1.32.3
+Tested up to: 5.2
+Stable tag: 1.33.0-beta.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,24 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.33.0 =
+* Enhancement: Allow registered users to save drafts of job listings to be continued later from job dashboard.
+* Enhancement: Allow access to job listing fields in REST API.
+* Enhancement: Required job categories and job description fields are now checked before submit on frontend job submission form.
+* Enhancement: Optimized database query in WP admin job listings page.
+* Enhancement: Added submit button on job filter template for `[jobs]` shortcode to improve accessibility.
+* Enhancement: Added option to show company logo on Featured Jobs widget.
+* Enhancement: `[jobs]` filter form values are kept during a session and results cached when clicking on job listing.
+* Enhancement: Reintroduce change from 1.32.0 where job types can be preselected in `[jobs]` shortcode with `?search_job_type=term-slug`. (@felipeelia)
+* Fix: Embedded videos are no longer removed from job descriptions.
+* Fix: Company logo showing outside of box on job listing page.
+* Dev: Limit the number of files per multi-file upload field by passing `file_limit` to the field in the `submit_job_form_fields` filter.
+* Dev: Added field type class to fieldset on job submission fields. (@tripflex)
+* Deprecation: Removed unreleased REST API implementation hidden under `WPJM_REST_API_ENABLED` constant.
+* Deprecation: Added warning for upcoming minimum PHP version requirement of 5.6.20.
+* Usage Tracking: Track source of job submission (frontend vs WP admin) to better understand how jobs are entered.
+* Usage Tracking: Track official extension license events and activation to better compare types of usage between users and catch activation errors.
 
 = 1.32.3 =
 * Fix: Escape tooltip text in WordPress admin. (Props hd7exploit)
