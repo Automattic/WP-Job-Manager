@@ -93,7 +93,7 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'job_manager_my_job_actions' ) ) {
 
 			$action = sanitize_title( $_REQUEST['action'] );
-			$job_id = absint( $_REQUEST['job_id'] );
+			$job_id = isset( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
 
 			try {
 				// Get Job.
