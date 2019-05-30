@@ -24,7 +24,6 @@
 
 	<!-- Rules -->
 	<rule ref="PHPCompatibilityWP"/>
-	<rule ref="WordPress-Core" />
 	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-Extra" />
 
