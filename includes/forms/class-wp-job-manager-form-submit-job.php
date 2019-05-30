@@ -882,7 +882,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		if ( $this->job_id ) {
 			$job_preview       = true;
-			$post              = get_post( $this->job_id ); // WPCS: override ok.
+			$post              = get_post( $this->job_id );
 			$post->post_status = 'preview';
 
 			setup_postdata( $post );

@@ -107,11 +107,11 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 
 		if ( $jobs->have_posts() ) : ?>
 
-			<?php echo $args['before_widget']; // WPCS: XSS ok. ?>
+			<?php echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 			<?php
 			if ( $title ) {
-				echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // WPCS: XSS ok.
+				echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
 			?>
 
@@ -128,7 +128,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 
 			</ul>
 
-			<?php echo $args['after_widget']; // WPCS: XSS ok. ?>
+			<?php echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 		<?php else : ?>
 
@@ -141,7 +141,7 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 
 		$content = ob_get_clean();
 
-		echo $content; // WPCS: XSS ok.
+		echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		$this->cache_widget( $args, $content );
 	}

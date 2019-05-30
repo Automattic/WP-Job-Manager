@@ -1129,7 +1129,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 	$output .= "</select>\n";
 
 	if ( $r['echo'] ) {
-		echo $output; // WPCS: XSS ok.
+		echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	return $output;

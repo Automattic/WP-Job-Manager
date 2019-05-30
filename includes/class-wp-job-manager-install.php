@@ -73,7 +73,7 @@ class WP_Job_Manager_Install {
 		global $wp_roles;
 
 		if ( class_exists( 'WP_Roles' ) && ! isset( $wp_roles ) ) {
-			$wp_roles = new WP_Roles(); // WPCS: override ok.
+			$wp_roles = new WP_Roles();
 		}
 
 		if ( is_object( $wp_roles ) ) {

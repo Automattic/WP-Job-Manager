@@ -534,7 +534,7 @@ class WP_Job_Manager_Settings {
 			type="checkbox"
 			value="1"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			checked( '1', $value );
 			?>
 		/> <?php echo wp_kses_post( $option['cb_label'] ); ?></label>
@@ -561,8 +561,8 @@ class WP_Job_Manager_Settings {
 			rows="3"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
-			echo $placeholder; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		>
 			<?php echo esc_textarea( $value ); ?>
@@ -589,7 +589,7 @@ class WP_Job_Manager_Settings {
 			class="regular-text"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			<?php
-			echo implode( ' ', $attributes ); // WPCS: XSS ok.
+			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		>
 		<?php
@@ -651,7 +651,7 @@ class WP_Job_Manager_Settings {
 			'selected'         => absint( $value ),
 		);
 
-		echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) ); // WPCS: XSS ok.
+		echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
@@ -678,7 +678,7 @@ class WP_Job_Manager_Settings {
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
-			echo implode( ' ', $attributes ); // WPCS: XSS ok.
+			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		/><strong><?php echo esc_html( $human_value ); ?></strong>
 		<?php
@@ -705,8 +705,8 @@ class WP_Job_Manager_Settings {
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
-			echo $placeholder; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		/>
 		<?php
@@ -734,8 +734,8 @@ class WP_Job_Manager_Settings {
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
-			echo $placeholder; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		/>
 		<?php
@@ -762,8 +762,8 @@ class WP_Job_Manager_Settings {
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
-			echo $placeholder; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		/>
 		<?php

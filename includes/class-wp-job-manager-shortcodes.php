@@ -273,7 +273,7 @@ class WP_Job_Manager_Shortcodes {
 	public function edit_job() {
 		global $job_manager;
 
-		echo $job_manager->forms->get_form( 'edit-job' ); // WPCS: XSS ok.
+		echo $job_manager->forms->get_form( 'edit-job' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -424,7 +424,7 @@ class WP_Job_Manager_Shortcodes {
 				if ( $jobs->found_posts > $atts['per_page'] && $atts['show_more'] ) {
 					wp_enqueue_script( 'wp-job-manager-ajax-filters' );
 					if ( $atts['show_pagination'] ) {
-						echo get_job_listing_pagination( $jobs->max_num_pages ); // WPCS: XSS ok.
+						echo get_job_listing_pagination( $jobs->max_num_pages ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					} else {
 						echo '<a class="load_more_jobs" href="#"><strong>' . esc_html__( 'Load more listings', 'wp-job-manager' ) . '</strong></a>';
 					}
