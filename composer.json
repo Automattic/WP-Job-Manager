@@ -10,6 +10,7 @@
     "phpcompatibility/phpcompatibility-wp": "^2.0",
     "bjornjohansen/wp-pre-commit-hook": "^0.2.2",
     "squizlabs/php_codesniffer": "^3.3",
-    "wp-coding-standards/wpcs": "^2.1"
+    "wp-coding-standards/wpcs": "^2.1",
+    "sirbrillig/phpcs-variable-analysis": "^2.6"
   }
 }

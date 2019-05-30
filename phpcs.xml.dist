@@ -2,7 +2,7 @@
 <ruleset name="WP Job Manager">
 	<description>A custom set of code standard rules to check for WordPress themes and plugins.</description>
 
-	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/phpcompatibility-paragonie,vendor/phpcompatibility/php-compatibility,vendor/phpcompatibility/phpcompatibility-wp" />
+	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/phpcompatibility-paragonie,vendor/phpcompatibility/php-compatibility,vendor/phpcompatibility/phpcompatibility-wp,vendor/sirbrillig/phpcs-variable-analysis" />
 
 	<arg value="s"/>
 	<arg name="colors"/>
@@ -29,6 +29,7 @@
 	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-Extra" />
 
+	<!-- Temporary Rule Exclusions -->
 	<rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
 		<severity>4</severity>
 	</rule>
@@ -44,6 +45,13 @@
 	<rule ref="WordPress.DB.DirectDatabaseQuery">
 		<severity>4</severity>
 	</rule>
+	<rule ref="VariableAnalysis">
+		<exclude-pattern>includes/admin/views/</exclude-pattern>
+		<exclude-pattern>templates/</exclude-pattern>
+
+		<severity>4</severity>
+	</rule>
+	<!-- End of Temporary Rule Exclusions -->
 
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
