@@ -2,8 +2,6 @@
 <ruleset name="WP Job Manager">
 	<description>A custom set of code standard rules to check for WordPress themes and plugins.</description>
 
-	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/phpcompatibility-paragonie,vendor/phpcompatibility/php-compatibility,vendor/phpcompatibility/phpcompatibility-wp,vendor/sirbrillig/phpcs-variable-analysis" />
-
 	<arg value="s"/>
 	<arg name="colors"/>
 
