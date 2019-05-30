@@ -6,7 +6,7 @@
   "license"    : "GPL-3.0+",
   "require-dev"    : {
     "phpunit/phpunit": "^5.7",
-    "wp-coding-standards/wpcs": "^0.14.0",
+    "wp-coding-standards/wpcs": "^2.1",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
     "phpcompatibility/php-compatibility": "^9.1",
     "bjornjohansen/wp-pre-commit-hook": "^0.2.2",
