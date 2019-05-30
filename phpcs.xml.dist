@@ -20,19 +20,18 @@
 	<config name="testVersion" value="5.2-"/>
 
 	<!-- Rules -->
+	<rule ref="WordPress-Extra">
+		<exclude name="WordPress.Security.NonceVerification.Missing"/>
+	</rule>
+	<rule ref="WordPress-Docs"/>
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
 		<exclude-pattern>tests/*</exclude-pattern>
 	</rule>
 	<rule ref="PHPCompatibility">
-		<exclude name="PHPCompatibility.PHP.NewFunctions.hash_equalsFound" />
-		<exclude name="PHPCompatibility.PHP.NewInterfaces.jsonserializableFound" />
-		<exclude name="PHPCompatibility.PHP.NewKeywords.t_namespaceFound" />
 		<exclude-pattern>tests/</exclude-pattern>
 	</rule>
 	<rule ref="WordPress">
-		<exclude name="WordPress.VIP" />
-		<exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found" />
 		<exclude name="WordPress.CSRF.NonceVerification.NoNonceVerification" />
 		<exclude-pattern>tests/*</exclude-pattern>
 	</rule>
@@ -41,6 +40,20 @@
 			<property name="text_domain" type="array" value="wp-job-manager" />
 		</properties>
 	</rule>
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
+		<exclude-pattern>tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.Security.EscapeOutput">
+		<properties>
+			<property name="customEscapingFunctions" type="array">
+				<element value="wpjm_esc_json"/>
+			</property>
+		</properties>
+	</rule>
+	<rule ref="WordPress.DB.DirectDatabaseQuery.NoCaching">
+		<exclude-pattern>tests/*</exclude-pattern>
+	</rule>
 	<rule ref="Squiz.Commenting">
 		<exclude-pattern>tests/</exclude-pattern>
 		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
@@ -48,15 +61,4 @@
 		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment" />
 		<exclude-pattern>tests/*</exclude-pattern>
 	</rule>
-	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
-		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
-		<exclude-pattern>tests/*</exclude-pattern>
-	</rule>
-	<rule ref="WordPress.XSS.EscapeOutput">
-    	<properties>
-    		<property name="customEscapingFunctions" type="array">
-    			<element value="wpjm_esc_json"/>
-    		</property>
-    	</properties>
-    </rule>
 </ruleset>
