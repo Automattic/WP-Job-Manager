@@ -22,7 +22,7 @@ class WP_Job_Manager_Permalink_Settings {
 	 * @var self
 	 * @since  1.27.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Permalink settings.
@@ -40,10 +40,10 @@ class WP_Job_Manager_Permalink_Settings {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**

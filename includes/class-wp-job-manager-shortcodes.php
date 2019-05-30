@@ -30,7 +30,7 @@ class WP_Job_Manager_Shortcodes {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -40,10 +40,10 @@ class WP_Job_Manager_Shortcodes {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**

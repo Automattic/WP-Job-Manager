@@ -36,7 +36,7 @@ class WP_Job_Manager_Helper {
 	 * @var self
 	 * @since  1.29.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * True if the plugin cache has already been cleared.
@@ -54,10 +54,10 @@ class WP_Job_Manager_Helper {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
