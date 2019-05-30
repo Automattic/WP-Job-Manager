@@ -116,7 +116,9 @@ class WP_Job_Manager_Admin_Notices {
 			$hide_notice = sanitize_key( wp_unslash( $_GET['wpjm_hide_notice'] ) );
 
 			self::remove_notice( $hide_notice );
-			wp_redirect( remove_query_arg( array( 'wpjm_hide_notice', '_wpjm_notice_nonce' ), $_SERVER['REQUEST_URI'] ) );
+
+			wp_safe_redirect( remove_query_arg( array( 'wpjm_hide_notice', '_wpjm_notice_nonce' ) ) );
+			exit;
 		}
 	}
 

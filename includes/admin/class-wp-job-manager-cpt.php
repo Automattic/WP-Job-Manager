@@ -160,7 +160,7 @@ class WP_Job_Manager_CPT {
 						$handled_jobs[] = $post_id;
 					}
 				}
-				wp_redirect( add_query_arg( 'handled_jobs', $handled_jobs, add_query_arg( 'action_performed', $action, $redirect_url ) ) );
+				wp_safe_redirect( add_query_arg( 'handled_jobs', $handled_jobs, add_query_arg( 'action_performed', $action, $redirect_url ) ) );
 				exit;
 			}
 		}
@@ -248,7 +248,7 @@ class WP_Job_Manager_CPT {
 				'post_status' => 'publish',
 			);
 			wp_update_post( $job_data );
-			wp_redirect( remove_query_arg( 'approve_job', add_query_arg( 'handled_jobs', $post_id, add_query_arg( 'action_performed', 'approve_jobs', admin_url( 'edit.php?post_type=job_listing' ) ) ) ) );
+			wp_safe_redirect( remove_query_arg( 'approve_job', add_query_arg( 'handled_jobs', $post_id, add_query_arg( 'action_performed', 'approve_jobs', admin_url( 'edit.php?post_type=job_listing' ) ) ) ) );
 			exit;
 		}
 	}

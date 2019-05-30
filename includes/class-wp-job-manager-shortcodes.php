@@ -148,7 +148,7 @@ class WP_Job_Manager_Shortcodes {
 						$new_job_id = job_manager_duplicate_listing( $job_id );
 
 						if ( $new_job_id ) {
-							wp_redirect( add_query_arg( array( 'job_id' => absint( $new_job_id ) ), job_manager_get_permalink( 'submit_job_form' ) ) );
+							wp_safe_redirect( add_query_arg( array( 'job_id' => absint( $new_job_id ) ), job_manager_get_permalink( 'submit_job_form' ) ) );
 							exit;
 						}
 
@@ -160,7 +160,7 @@ class WP_Job_Manager_Shortcodes {
 						}
 
 						// redirect to post page.
-						wp_redirect( add_query_arg( array( 'job_id' => absint( $job_id ) ), job_manager_get_permalink( 'submit_job_form' ) ) );
+						wp_safe_redirect( add_query_arg( array( 'job_id' => absint( $job_id ) ), job_manager_get_permalink( 'submit_job_form' ) ) );
 						exit;
 					default:
 						do_action( 'job_manager_job_dashboard_do_action_' . $action, $job_id );
