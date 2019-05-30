@@ -458,8 +458,8 @@ class WP_Job_Manager_Writepanels {
 			$author_id = $post->post_author;
 		}
 
-		$posted_by      = get_user_by( 'id', $author_id );
-		$name           = ! empty( $field['name'] ) ? $field['name'] : $key;
+		$posted_by = get_user_by( 'id', $author_id );
+		$name      = ! empty( $field['name'] ) ? $field['name'] : $key;
 		?>
 		<p class="form-field form-field-author">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:</label>

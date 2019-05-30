@@ -25,7 +25,10 @@ class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 		// With empty county.
 		$test_output_b = '';
 		$walker->start_el(
-			$test_output_b, $terms[0], 11, array(
+			$test_output_b,
+			$terms[0],
+			11,
+			array(
 				'show_count'   => true,
 				'hierarchical' => true,
 			)

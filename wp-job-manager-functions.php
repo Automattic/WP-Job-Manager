@@ -459,7 +459,8 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 						)
 					),
 				),
-			), $args
+			),
+			$args
 		);
 
 		if ( count( (array) $args['filter_job_types'] ) === count( $types )

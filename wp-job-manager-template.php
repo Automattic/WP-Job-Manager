@@ -788,7 +788,8 @@ function the_job_location( $map_link = true, $post = null ) {
 				apply_filters(
 					'the_job_location_map_link',
 					'<a class="google_map_link" href="' . esc_url( 'http://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
-					$location, $post
+					$location,
+					$post
 				)
 			);
 		} else {

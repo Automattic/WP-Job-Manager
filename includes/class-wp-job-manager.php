@@ -143,9 +143,11 @@ class WP_Job_Manager {
 			// translators: Placeholders %1$s and %2$s are the names of the two cookies used in WP Job Manager.
 			__(
 				'This site adds the following cookies to help users resume job submissions that they 
-				have started but have not completed: %1$s and %2$s', 'wp-job-manager'
+				have started but have not completed: %1$s and %2$s',
+				'wp-job-manager'
 			),
-			'<code>wp-job-manager-submitting-job-id</code>', '<code>wp-job-manager-submitting-job-key</code>'
+			'<code>wp-job-manager-submitting-job-id</code>',
+			'<code>wp-job-manager-submitting-job-key</code>'
 		);
 
 		wp_add_privacy_policy_content(
@@ -313,9 +315,11 @@ class WP_Job_Manager {
 
 			// Backwards compatibility for third-party themes/plugins while they transition to Select2.
 			wp_localize_script(
-				'chosen', 'job_manager_chosen_multiselect_args',
+				'chosen',
+				'job_manager_chosen_multiselect_args',
 				apply_filters(
-					'job_manager_chosen_multiselect_args', array(
+					'job_manager_chosen_multiselect_args',
+					array(
 						'search_contains' => true,
 					)
 				)
@@ -366,7 +370,8 @@ class WP_Job_Manager {
 			$select2_args['width'] = '100%';
 
 			wp_localize_script(
-				'select2', 'job_manager_select2_args',
+				'select2',
+				'job_manager_select2_args',
 				apply_filters( 'job_manager_select2_args', $select2_args )
 			);
 		}

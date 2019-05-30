@@ -30,7 +30,8 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	private function setupPosts() {
 		// Create some regular posts.
 		$this->post_ids = $this->factory->post->create_many(
-			2, array(
+			2,
+			array(
 				'post_status' => 'publish',
 				'post_type'   => 'post',
 			)
@@ -38,14 +39,16 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 		// Create an unrelated CPT to ensure its posts do not get deleted.
 		register_post_type(
-			'biography', array(
+			'biography',
+			array(
 				'label'       => 'Biographies',
 				'description' => 'A biography of a famous person (for testing)',
 				'public'      => true,
 			)
 		);
 		$this->biography_ids = $this->factory->post->create_many(
-			4, array(
+			4,
+			array(
 				'post_status' => 'publish',
 				'post_type'   => 'biography',
 			)
@@ -53,7 +56,8 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 		// Create some Job Listings.
 		$this->job_listing_ids = $this->factory->post->create_many(
-			8, array(
+			8,
+			array(
 				'post_status' => 'publish',
 				'post_type'   => 'job_listing',
 			)
@@ -158,7 +162,8 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	private function setupPages() {
 		// Create some regular pages.
 		$this->regular_page_ids = $this->factory->post->create_many(
-			2, array(
+			2,
+			array(
 				'post_type'  => 'page',
 				'post_title' => 'Normal page',
 			)
@@ -278,39 +283,47 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 			// Ensure the data is deleted from all the relevant DB tables.
 			$this->assertEquals(
-				array(), $wpdb->get_results(
+				array(),
+				$wpdb->get_results(
 					$wpdb->prepare(
 						"SELECT * from $wpdb->termmeta WHERE term_id = %s",
 						$term_id
 					)
-				), 'WPJM term meta should be deleted'
+				),
+				'WPJM term meta should be deleted'
 			);
 
 			$this->assertEquals(
-				array(), $wpdb->get_results(
+				array(),
+				$wpdb->get_results(
 					$wpdb->prepare(
 						"SELECT * from $wpdb->terms WHERE term_id = %s",
 						$term_id
 					)
-				), 'WPJM term should be deleted'
+				),
+				'WPJM term should be deleted'
 			);
 
 			$this->assertEquals(
-				array(), $wpdb->get_results(
+				array(),
+				$wpdb->get_results(
 					$wpdb->prepare(
 						"SELECT * from $wpdb->term_taxonomy WHERE term_taxonomy_id = %s",
 						$term_taxonomy_id
 					)
-				), 'WPJM term taxonomy should be deleted'
+				),
+				'WPJM term taxonomy should be deleted'
 			);
 
 			$this->assertEquals(
-				array(), $wpdb->get_results(
+				array(),
+				$wpdb->get_results(
 					$wpdb->prepare(
 						"SELECT * from $wpdb->term_relationships WHERE term_taxonomy_id = %s",
 						$term_taxonomy_id
 					)
-				), 'WPJM term relationships should be deleted'
+				),
+				'WPJM term relationships should be deleted'
 			);
 		}
 	}

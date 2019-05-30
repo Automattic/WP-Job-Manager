@@ -145,7 +145,7 @@ class WP_Job_Manager_Post_Types {
 
 		$admin_capability = 'manage_job_listings';
 
-		$permalink_structure = WP_Job_Manager_Post_Types::get_permalink_structure();
+		$permalink_structure = self::get_permalink_structure();
 
 		/**
 		 * Taxonomies
@@ -1116,7 +1116,7 @@ class WP_Job_Manager_Post_Types {
 	 * Registers job listing meta fields.
 	 */
 	public function register_meta_fields() {
-		$fields       = WP_Job_Manager_Post_Types::get_job_listing_fields();
+		$fields = self::get_job_listing_fields();
 
 		foreach ( $fields as $meta_key => $field ) {
 			register_meta(

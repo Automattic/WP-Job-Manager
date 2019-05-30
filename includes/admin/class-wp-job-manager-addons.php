@@ -94,7 +94,8 @@ class WP_Job_Manager_Addons {
 					array(
 						'version' => JOB_MANAGER_VERSION,
 						'lang'    => get_locale(),
-					), self::WPJM_COM_PRODUCTS_API_BASE_URL . '/messages'
+					),
+					self::WPJM_COM_PRODUCTS_API_BASE_URL . '/messages'
 				)
 			);
 			if ( ! is_wp_error( $raw_messages ) ) {

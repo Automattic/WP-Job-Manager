@@ -44,7 +44,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 					array(
 						'wc-api'  => 'wp_plugin_licencing_update_api',
 						'request' => 'pluginupdatecheck',
-					), $base_args
+					),
+					$base_args
 				),
 			)
 		);
@@ -79,7 +80,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 					array(
 						'wc-api'  => 'wp_plugin_licencing_update_api',
 						'request' => 'plugininformation',
-					), $base_args
+					),
+					$base_args
 				),
 			)
 		);
@@ -114,7 +116,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 					array(
 						'wc-api'  => 'wp_plugin_licencing_activation_api',
 						'request' => 'activate',
-					), $base_args
+					),
+					$base_args
 				),
 			)
 		);
@@ -150,7 +153,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 					array(
 						'wc-api'  => 'wp_plugin_licencing_activation_api',
 						'request' => 'deactivate',
-					), $base_args
+					),
+					$base_args
 				),
 			)
 		);

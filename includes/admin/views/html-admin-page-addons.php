@@ -60,7 +60,8 @@ if ( empty( $add_ons ) ) {
 				'utm_medium'   => 'addonpage',
 				'utm_campaign' => 'wpjmplugin',
 				'utm_content'  => 'listing',
-			), $add_on->link
+			),
+			$add_on->link
 		);
 		?>
 		<li class="product">

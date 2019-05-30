@@ -206,7 +206,8 @@ class WP_Job_Manager_Shortcodes {
 		$new_atts       = shortcode_atts(
 			array(
 				'posts_per_page' => '25',
-			), $atts
+			),
+			$atts
 		);
 		$posts_per_page = $new_atts['posts_per_page'];
 
@@ -313,7 +314,8 @@ class WP_Job_Manager_Shortcodes {
 					'selected_category'         => '',
 					'selected_job_types'        => implode( ',', array_values( get_job_listing_types( 'id=>slug' ) ) ),
 				)
-			), $atts
+			),
+			$atts
 		);
 
 		if ( ! get_option( 'job_manager_enable_categories' ) ) {
@@ -507,7 +509,8 @@ class WP_Job_Manager_Shortcodes {
 		$atts = shortcode_atts(
 			array(
 				'id' => '',
-			), $atts
+			),
+			$atts
 		);
 
 		if ( ! $atts['id'] ) {
@@ -551,7 +554,8 @@ class WP_Job_Manager_Shortcodes {
 				'align'    => 'left',
 				'featured' => null, // True to show only featured, false to hide featured, leave null to show both (when leaving out id).
 				'limit'    => 1,
-			), $atts
+			),
+			$atts
 		);
 
 		ob_start();
@@ -604,7 +608,8 @@ class WP_Job_Manager_Shortcodes {
 		$new_atts = shortcode_atts(
 			array(
 				'id' => '',
-			), $atts
+			),
+			$atts
 		);
 		$id       = $new_atts['id'];
 
