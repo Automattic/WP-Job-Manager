@@ -445,6 +445,9 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $atts['post_status'] ) ) {
 			$data_attributes['post_status'] = implode( ',', $atts['post_status'] );
 		}
+
+		$data_attributes['post_id'] = isset( $GLOBALS['post'] ) ? $GLOBALS['post']->ID : 0;
+
 		foreach ( $data_attributes as $key => $value ) {
 			$data_attributes_string .= 'data-' . esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
 		}
