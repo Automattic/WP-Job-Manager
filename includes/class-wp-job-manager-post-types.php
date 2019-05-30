@@ -128,7 +128,7 @@ class WP_Job_Manager_Post_Types {
 	public function hide_job_type_block_editor_selector( $response, $taxonomy, $request ) {
 		if (
 			'job_listing_type' === $taxonomy->name
-			 && 'edit' === $request->get_param( 'context' )
+			&& 'edit' === $request->get_param( 'context' )
 		) {
 			$response->data['visibility']['show_ui'] = false;
 		}
@@ -431,7 +431,7 @@ class WP_Job_Manager_Post_Types {
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( strpos( $menu_item[0], $plural ) === 0 ) {
-				$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-" . esc_attr( $pending_jobs ) . "'><span class='pending-count'>" . absint( number_format_i18n( $pending_jobs ) ) . '</span></span>'; // WPCS: override ok.
+				$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-" . esc_attr( $pending_jobs ) . "'><span class='pending-count'>" . absint( number_format_i18n( $pending_jobs ) ) . '</span></span>';
 				break;
 			}
 		}
@@ -666,7 +666,7 @@ class WP_Job_Manager_Post_Types {
 		 *
 		 * @param int $post_id The post ID of the job.
 		 */
-		 do_action( 'job_feed_item', $post_id );
+		do_action( 'job_feed_item', $post_id );
 	}
 
 	/**

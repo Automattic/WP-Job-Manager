@@ -170,9 +170,10 @@ class WP_Job_Manager_Helper_API {
 	 * @return string
 	 */
 	private function get_api_base_url() {
-		if ( defined( 'JOB_MANAGER_VERSION' )
-			 && defined( 'JOB_MANAGER_DEV_API_BASE_URL' )
-			 && '-dev' === substr( JOB_MANAGER_VERSION, -4 )
+		if (
+			defined( 'JOB_MANAGER_VERSION' )
+			&& defined( 'JOB_MANAGER_DEV_API_BASE_URL' )
+			&& '-dev' === substr( JOB_MANAGER_VERSION, -4 )
 		) {
 			return JOB_MANAGER_DEV_API_BASE_URL;
 		}

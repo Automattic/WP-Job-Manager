@@ -137,8 +137,10 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		$this->enqueue_job_form_assets();
 
 		$save_button_text = __( 'Save changes', 'wp-job-manager' );
-		if ( 'publish' === get_post_status( $this->job_id )
-			 && wpjm_published_submission_edits_require_moderation() ) {
+		if (
+			'publish' === get_post_status( $this->job_id )
+			&& wpjm_published_submission_edits_require_moderation()
+		) {
 			$save_button_text = __( 'Submit changes for approval', 'wp-job-manager' );
 		}
 

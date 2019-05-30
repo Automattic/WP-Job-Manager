@@ -155,8 +155,10 @@ class WP_Job_Manager_CPT {
 			$handled_jobs = array();
 			if ( ! empty( $post_ids ) ) {
 				foreach ( $post_ids as $post_id ) {
-					if ( 'job_listing' === get_post_type( $post_id )
-						 && call_user_func( $actions_handled[ $action ]['handler'], $post_id ) ) {
+					if (
+						'job_listing' === get_post_type( $post_id )
+						&& call_user_func( $actions_handled[ $action ]['handler'], $post_id )
+					) {
 						$handled_jobs[] = $post_id;
 					}
 				}
@@ -178,9 +180,10 @@ class WP_Job_Manager_CPT {
 			'ID'          => $post_id,
 			'post_status' => 'publish',
 		);
-		if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ), true )
-			 && current_user_can( 'publish_post', $post_id )
-			 && wp_update_post( $job_data )
+		if (
+			in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ), true )
+			&& current_user_can( 'publish_post', $post_id )
+			&& wp_update_post( $job_data )
 		) {
 			return true;
 		}
@@ -198,8 +201,9 @@ class WP_Job_Manager_CPT {
 			'ID'          => $post_id,
 			'post_status' => 'expired',
 		);
-		if ( current_user_can( 'manage_job_listings', $post_id )
-			 && wp_update_post( $job_data )
+		if (
+			current_user_can( 'manage_job_listings', $post_id )
+			&& wp_update_post( $job_data )
 		) {
 			return true;
 		}
@@ -214,8 +218,9 @@ class WP_Job_Manager_CPT {
 	 * @return bool
 	 */
 	public function bulk_action_handle_mark_job_filled( $post_id ) {
-		if ( current_user_can( 'manage_job_listings', $post_id )
-			 && update_post_meta( $post_id, '_filled', 1 )
+		if (
+			current_user_can( 'manage_job_listings', $post_id )
+			&& update_post_meta( $post_id, '_filled', 1 )
 		) {
 			return true;
 		}
@@ -229,8 +234,9 @@ class WP_Job_Manager_CPT {
 	 * @return bool
 	 */
 	public function bulk_action_handle_mark_job_not_filled( $post_id ) {
-		if ( current_user_can( 'manage_job_listings', $post_id )
-			 && update_post_meta( $post_id, '_filled', 0 )
+		if (
+			current_user_can( 'manage_job_listings', $post_id )
+			&& update_post_meta( $post_id, '_filled', 0 )
 		) {
 			return true;
 		}
@@ -241,7 +247,12 @@ class WP_Job_Manager_CPT {
 	 * Approves a single job.
 	 */
 	public function approve_job() {
-		if ( ! empty( $_GET['approve_job'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'approve_job' ) && current_user_can( 'publish_post', $_GET['approve_job'] ) ) {
+		if (
+			! empty( $_GET['approve_job'] )
+			&& ! empty( $_REQUEST['_wpnonce'] )
+			&& wp_verify_nonce( $_REQUEST['_wpnonce'], 'approve_job' )
+			&& current_user_can( 'publish_post', $_GET['approve_job'] )
+		) {
 			$post_id  = absint( $_GET['approve_job'] );
 			$job_data = array(
 				'ID'          => $post_id,
@@ -263,12 +274,13 @@ class WP_Job_Manager_CPT {
 		$action          = isset( $_REQUEST['action_performed'] ) ? $_REQUEST['action_performed'] : false;
 		$actions_handled = $this->get_bulk_actions();
 
-		if ( 'edit.php' === $pagenow
-			 && 'job_listing' === $post_type
-			 && $action
-			 && ! empty( $handled_jobs )
-			 && isset( $actions_handled[ $action ] )
-			 && isset( $actions_handled[ $action ]['notice'] )
+		if (
+			'edit.php' === $pagenow
+			&& 'job_listing' === $post_type
+			&& $action
+			&& ! empty( $handled_jobs )
+			&& isset( $actions_handled[ $action ] )
+			&& isset( $actions_handled[ $action ]['notice'] )
 		) {
 			if ( is_array( $handled_jobs ) ) {
 				$handled_jobs = array_map( 'absint', $handled_jobs );
@@ -790,7 +802,7 @@ class WP_Job_Manager_CPT {
 	public function search_meta_label( $query ) {
 		global $pagenow, $typenow;
 
-		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) ) {
+		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) || ! isset( $_GET['s'] ) ) {
 			return $query;
 		}
 
