@@ -1,4 +1,12 @@
 <?php
+/**
+ * Global WP Job Manager functions.
+ *
+ * New global functions are discouraged whenever possible.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! function_exists( 'get_job_listings' ) ) :
 	/**
 	 * Queries job listings with certain criteria and returns them.
@@ -163,12 +171,13 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$cached_query_posts   = get_transient( $query_args_hash );
 			if ( is_string( $cached_query_posts ) ) {
 				$cached_query_posts = json_decode( $cached_query_posts, false );
-				if ( $cached_query_posts
-				 && is_object( $cached_query_posts )
-				 && isset( $cached_query_posts->max_num_pages )
-				 && isset( $cached_query_posts->found_posts )
-				 && isset( $cached_query_posts->posts )
-				 && is_array( $cached_query_posts->posts )
+				if (
+					$cached_query_posts
+					&& is_object( $cached_query_posts )
+					&& isset( $cached_query_posts->max_num_pages )
+					&& isset( $cached_query_posts->found_posts )
+					&& isset( $cached_query_posts->posts )
+					&& is_array( $cached_query_posts->posts )
 				) {
 					$posts  = array_map( 'get_post', $cached_query_posts->posts );
 					$result = new WP_Query();
@@ -231,7 +240,7 @@ if ( ! function_exists( '_wpjm_shuffle_featured_post_results_helper' ) ) :
 				return 1;
 			}
 		}
-		return rand( -1, 1 );
+		return wp_rand( -1, 1 );
 	}
 endif;
 
@@ -463,11 +472,12 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 			$args
 		);
 
-		if ( count( (array) $args['filter_job_types'] ) === count( $types )
-			 && empty( $args['search_keywords'] )
-			 && empty( $args['search_location'] )
-			 && empty( $args['search_categories'] )
-			 && ! apply_filters( 'job_manager_get_listings_custom_filter', false )
+		if (
+			count( (array) $args['filter_job_types'] ) === count( $types )
+			&& empty( $args['search_keywords'] )
+			&& empty( $args['search_location'] )
+			&& empty( $args['search_categories'] )
+			&& ! apply_filters( 'job_manager_get_listings_custom_filter', false )
 		) {
 			unset( $links['reset'] );
 		}

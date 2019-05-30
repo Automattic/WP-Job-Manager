@@ -22,7 +22,7 @@
 function get_job_manager_template( $template_name, $args = array(), $template_path = 'job_manager', $default_path = '' ) {
 	if ( $args && is_array( $args ) ) {
 		// Please, forgive us.
-		extract( $args ); // phpcs:ignore WordPress.Functions.DontExtract.extract_extract
+		extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 	}
 	include locate_job_manager_template( $template_name, $template_path, $default_path );
 }
@@ -876,9 +876,10 @@ function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 function job_manager_get_resized_image( $logo, $size ) {
 	global $_wp_additional_image_sizes;
 
-	if ( 'full' !== $size
-		 && strstr( $logo, WP_CONTENT_URL )
-		 && ( isset( $_wp_additional_image_sizes[ $size ] ) || in_array( $size, array( 'thumbnail', 'medium', 'large' ), true ) )
+	if (
+		'full' !== $size
+		&& strstr( $logo, WP_CONTENT_URL )
+		&& ( isset( $_wp_additional_image_sizes[ $size ] ) || in_array( $size, array( 'thumbnail', 'medium', 'large' ), true ) )
 	) {
 
 		if ( in_array( $size, array( 'thumbnail', 'medium', 'large' ), true ) ) {
