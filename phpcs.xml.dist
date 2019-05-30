@@ -3,6 +3,7 @@
 	<description>A custom set of code standard rules to check for WordPress themes and plugins.</description>
 
 	<arg value="s"/>
+	<arg value="p"/>
 	<arg name="colors"/>
 
 	<arg name="extensions" value="php"/>
