@@ -303,8 +303,8 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function enqueue_scripts() {
 		if ( $this->use_recaptcha_field() ) {
-			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js' );
+			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NoExplicitVersion
+			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js', array(), false, false );
 		}
 	}
 
