@@ -7,6 +7,15 @@ jQuery( document ).ready( function( $ ) {
 	var session_storage_prefix = 'job_listing_';
 
 	/**
+	 * Get the session storage key for the job listings instance.
+	 */
+	function job_manager_get_session_storage_key( $target ) {
+		var index = $( 'div.job_listings' ).index( $target );
+
+		return session_storage_prefix + $target.data( 'post_id' ) + '_' + index;
+	}
+
+	/**
 	 * Store the filter form values and possibly the rendered results in sessionStorage.
 	 */
 	function job_manager_store_state( $target, state ) {
@@ -19,11 +28,10 @@ jQuery( document ).ready( function( $ ) {
 		}
 
 		var $form = $target.find( '.job_filters' );
-		var index = $( 'div.job_listings' ).index( $target );
 
 		state.form = $form.serialize();
 
-		var session_storage_key = session_storage_prefix + index;
+		var session_storage_key = job_manager_get_session_storage_key( $target );
 
 		try {
 			return window.sessionStorage.setItem( session_storage_key, JSON.stringify( state ) );
@@ -33,6 +41,7 @@ jQuery( document ).ready( function( $ ) {
 
 		return false;
 	}
+
 	/**
 	 * Retrieve the stored form values and maybe the rendered results from sessionStorage.
 	 */
@@ -41,8 +50,7 @@ jQuery( document ).ready( function( $ ) {
 			return false;
 		}
 
-		var index = $( 'div.job_listings' ).index( $target );
-		var session_storage_key = session_storage_prefix + index;
+		var session_storage_key = job_manager_get_session_storage_key( $target );
 
 		try {
 			var state = window.sessionStorage.getItem( session_storage_key );
@@ -107,8 +115,7 @@ jQuery( document ).ready( function( $ ) {
 			return false;
 		}
 
-		var index = $( 'div.job_listings' ).index( $target );
-		var session_storage_key = session_storage_prefix + index;
+		var session_storage_key = job_manager_get_session_storage_key( $target );
 
 		try {
 			window.sessionStorage.removeItem( session_storage_key );
