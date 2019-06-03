@@ -50,10 +50,14 @@ jQuery(document).ready(function($) {
 
 	$( '.fieldset-type-file input[type=file][multiple][data-file_limit]' ).trigger( 'update_status' );
 
-
 	$( document.body ).on( 'click', '#submit-job-form .button.save_draft', function() {
 		var $form    = $(this).closest( '#submit-job-form' );
 		var is_valid = true;
+
+		$form.addClass( 'disable-validation' );
+		setTimeout( function() {
+			$form.removeClass( 'disable-validation' );
+		}, 1000 );
 
 		$form.find( 'div.draft-required input[required]').each( function() {
 			$(this).get( 0 ).reportValidity();
@@ -67,13 +71,13 @@ jQuery(document).ready(function($) {
 		return is_valid;
 	});
 
-	$( document.body ).on( 'submit', '.job-manager-form', function() {
-		if ( specialFieldsAreInvalid() ) {
+	$( document.body ).on( 'submit', '.job-manager-form', function( event ) {
+		if ( ! $(this).hasClass( 'disable-validation' ) && specialFieldsAreInvalid() ) {
 			event.preventDefault();
 			return;
 		}
 
-		if ( ! $(this).hasClass( 'prevent-spinner-behavior' ) ) {	
+		if ( ! $(this).hasClass( 'prevent-spinner-behavior' ) ) {
 			$(this).find( '.spinner' ).addClass( 'is-active' );
 			$(this).find( 'input[type=submit]' ).addClass( 'disabled' ).on( 'click', function() { return false; } );
 		}
@@ -90,7 +94,7 @@ jQuery(document).ready(function($) {
 			var jobCategoryInput = $( '.select2-search__field' )[0];
 			jobCategoryInput.setCustomValidity( job_manager_job_submission.i18n_required_field );
 			jobCategoryInput.reportValidity();
-			
+
 			return true;
 		}
 
