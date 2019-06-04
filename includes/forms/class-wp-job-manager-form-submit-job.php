@@ -548,7 +548,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'job_fields'         => $this->get_fields( 'job' ),
 				'company_fields'     => $this->get_fields( 'company' ),
 				'step'               => $this->get_step(),
-				'can_continue_later'   => $this->can_continue_later(),
+				'can_continue_later' => $this->can_continue_later(),
 				'submit_button_text' => apply_filters( 'submit_job_form_submit_button_text', __( 'Preview', 'wp-job-manager' ) ),
 			)
 		);
@@ -1002,7 +1002,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return bool
 	 */
 	protected function can_continue_later() {
-		$can_continue_later = false;
+		$can_continue_later    = false;
 		$job_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id', false );
 
 		if ( ! $job_dashboard_page_id ) {
