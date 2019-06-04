@@ -251,9 +251,6 @@ jQuery( document ).ready( function( $ ) {
 
 			if ( ! append || 1 === page ) {
 				$( 'li.job_listing, li.no_job_listings_found', $results ).css( 'visibility', 'hidden' );
-			}
-
-			if ( 0 === $results.find( 'li' ).length ) {
 				$results.addClass('loading');
 			}
 
