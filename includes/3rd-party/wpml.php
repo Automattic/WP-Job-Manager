@@ -40,12 +40,12 @@ function wpml_wpjm_set_language() {
 	if (
 		isset( $_SERVER['REQUEST_URI'] )
 		&& (
-			strstr( $_SERVER['REQUEST_URI'], '/jm-ajax/' )
+			strstr( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '/jm-ajax/' )
 			|| ! empty( $_GET['jm-ajax'] )
 		)
 		&& isset( $_POST['lang'] )
 	) {
-		do_action( 'wpml_switch_language', sanitize_text_field( $_POST['lang'] ) );
+		do_action( 'wpml_switch_language', sanitize_text_field( wp_unslash( $_POST['lang'] ) ) );
 	}
 }
 
