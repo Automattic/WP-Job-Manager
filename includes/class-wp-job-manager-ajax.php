@@ -70,10 +70,9 @@ class WP_Job_Manager_Ajax {
 	 * Gets Job Manager's Ajax Endpoint.
 	 *
 	 * @param  string $request      Optional.
-	 * @param  string $ssl (Unused) Optional.
 	 * @return string
 	 */
-	public static function get_endpoint( $request = '%%endpoint%%', $ssl = null ) {
+	public static function get_endpoint( $request = '%%endpoint%%' ) {
 		if ( strstr( get_option( 'permalink_structure' ), '/index.php/' ) ) {
 			$endpoint = trailingslashit( home_url( '/index.php/jm-ajax/' . $request . '/', 'relative' ) );
 		} elseif ( get_option( 'permalink_structure' ) ) {
