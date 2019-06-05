@@ -77,14 +77,14 @@ abstract class WP_Job_Manager_Form {
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__ );
+		_doing_it_wrong( __FUNCTION__, 'Unable to clone ' . __CLASS__, '1.0.0' );
 	}
 
 	/**
 	 * Unserializes instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__ );
+		_doing_it_wrong( __FUNCTION__, 'Unable to wake up ' . __CLASS__, '1.0.0' );
 	}
 
 	/**
@@ -97,9 +97,9 @@ abstract class WP_Job_Manager_Form {
 			isset( $_GET['new'] ) &&
 			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
 			isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) &&
-			get_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
+			get_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
 		) {
-			delete_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key' );
+			delete_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key' );
 			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
 			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
 			wp_safe_redirect( remove_query_arg( array( 'new', 'key' ) ) );
@@ -189,7 +189,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return string
 	 */
 	public function get_action() {
-		$default_action = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+		$default_action = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 
 		return esc_url_raw( $this->action ? $this->action : $default_action );
 	}
@@ -368,13 +368,13 @@ abstract class WP_Job_Manager_Form {
 			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
-		$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
+		$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 		$response            = wp_remote_get(
 			add_query_arg(
 				array(
 					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
-					'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
-					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $default_remote_addr,
+					'response' => isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '',
+					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : $default_remote_addr,
 				),
 				'https://www.google.com/recaptcha/api/siteverify'
 			)
@@ -492,7 +492,9 @@ abstract class WP_Job_Manager_Form {
 		if ( ! isset( $field['sanitizer'] ) ) {
 			$field['sanitizer'] = null;
 		}
-		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( $_POST[ $key ], $field['sanitizer'] ) : '';
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( wp_unslash( $_POST[ $key ] ), $field['sanitizer'] ) : '';
 	}
 
 	/**
@@ -503,7 +505,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_multiselect_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', $_POST[ $key ] ) : array();
+		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST[ $key ] ) ) : array();
 	}
 
 	/**
@@ -535,7 +537,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected function get_posted_textarea_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? wp_kses_post( trim( wp_unslash( $_POST[ $key ] ) ) ) : '';
+		return isset( $_POST[ $key ] ) ? trim( wp_kses_post( wp_unslash( $_POST[ $key ] ) ) ) : '';
 	}
 
 	/**
@@ -603,7 +605,7 @@ abstract class WP_Job_Manager_Form {
 			}
 
 			$file_urls       = array();
-			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] );
+			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 
 			foreach ( $files_to_upload as $file_to_upload ) {
 				$uploaded_file = job_manager_upload_file(
