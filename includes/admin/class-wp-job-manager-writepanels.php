@@ -22,7 +22,7 @@ class WP_Job_Manager_Writepanels {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -32,10 +32,10 @@ class WP_Job_Manager_Writepanels {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -458,8 +458,8 @@ class WP_Job_Manager_Writepanels {
 			$author_id = $post->post_author;
 		}
 
-		$posted_by      = get_user_by( 'id', $author_id );
-		$name           = ! empty( $field['name'] ) ? $field['name'] : $key;
+		$posted_by = get_user_by( 'id', $author_id );
+		$name      = ! empty( $field['name'] ) ? $field['name'] : $key;
 		?>
 		<p class="form-field form-field-author">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?>:</label>
@@ -479,7 +479,7 @@ class WP_Job_Manager_Writepanels {
 					echo esc_html( $user_string );
 				}
 				?>
-				 <a href="#" class="change-author button button-small"><?php esc_html_e( 'Change', 'wp-job-manager' ); ?></a>
+				<a href="#" class="change-author button button-small"><?php esc_html_e( 'Change', 'wp-job-manager' ); ?></a>
 			</span>
 			<span class="hidden change-author">
 				<select class="wpjm-user-search" id="job_manager_user_search" name="<?php echo esc_attr( $name ); ?>" data-placeholder="<?php esc_attr_e( 'Guest', 'wp-job-manager' ); ?>" data-allow_clear="true">
@@ -672,13 +672,13 @@ class WP_Job_Manager_Writepanels {
 	 */
 	private function is_job_listing_status_changing( $from_status, $to_status ) {
 		return isset( $_POST['post_status'] )
-			   && isset( $_POST['original_post_status'] )
-			   && $_POST['original_post_status'] !== $_POST['post_status']
-			   && (
+				&& isset( $_POST['original_post_status'] )
+				&& $_POST['original_post_status'] !== $_POST['post_status']
+				&& (
 					null === $from_status
 					|| $from_status === $_POST['original_post_status']
-			   )
-			   && $to_status === $_POST['post_status'];
+				)
+				&& $to_status === $_POST['post_status'];
 	}
 }
 

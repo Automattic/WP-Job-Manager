@@ -22,7 +22,7 @@ class WP_Job_Manager {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Main WP Job Manager Instance.
@@ -35,10 +35,10 @@ class WP_Job_Manager {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -143,9 +143,11 @@ class WP_Job_Manager {
 			// translators: Placeholders %1$s and %2$s are the names of the two cookies used in WP Job Manager.
 			__(
 				'This site adds the following cookies to help users resume job submissions that they 
-				have started but have not completed: %1$s and %2$s', 'wp-job-manager'
+				have started but have not completed: %1$s and %2$s',
+				'wp-job-manager'
 			),
-			'<code>wp-job-manager-submitting-job-id</code>', '<code>wp-job-manager-submitting-job-key</code>'
+			'<code>wp-job-manager-submitting-job-id</code>',
+			'<code>wp-job-manager-submitting-job-key</code>'
 		);
 
 		wp_add_privacy_policy_content(
@@ -265,7 +267,7 @@ class WP_Job_Manager {
 	 * Registers select2 assets when needed.
 	 */
 	public static function register_select2_assets() {
-		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', array( 'jquery' ), '4.0.5' );
+		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', array( 'jquery' ), '4.0.5', false );
 		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', array(), '4.0.5' );
 	}
 
@@ -313,9 +315,11 @@ class WP_Job_Manager {
 
 			// Backwards compatibility for third-party themes/plugins while they transition to Select2.
 			wp_localize_script(
-				'chosen', 'job_manager_chosen_multiselect_args',
+				'chosen',
+				'job_manager_chosen_multiselect_args',
 				apply_filters(
-					'job_manager_chosen_multiselect_args', array(
+					'job_manager_chosen_multiselect_args',
+					array(
 						'search_contains' => true,
 					)
 				)
@@ -366,7 +370,8 @@ class WP_Job_Manager {
 			$select2_args['width'] = '100%';
 
 			wp_localize_script(
-				'select2', 'job_manager_select2_args',
+				'select2',
+				'job_manager_select2_args',
 				apply_filters( 'job_manager_select2_args', $select2_args )
 			);
 		}

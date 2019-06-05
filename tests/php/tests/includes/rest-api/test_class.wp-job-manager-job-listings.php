@@ -38,7 +38,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
 	public function test_guest_get_unpublished_job_listing_fail() {
 		$this->logout();
-		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$post_id  = $this->get_job_listing( array( 'post_status' => 'draft' ) );
 		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
 		$this->assertResponseStatus( $response, 401 );
 	}
@@ -53,7 +53,8 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	public function test_guest_post_job_listings_fail() {
 		$this->logout();
 		$response = $this->post(
-			'/wp/v2/job-listings', array(
+			'/wp/v2/job-listings',
+			array(
 				'post_title' => 'Software Engineer',
 				'post_name'  => 'software-engineer',
 			)
@@ -63,10 +64,11 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_guest_put_job_listings_fail() {
-		$post_id  = $this->get_job_listing();
+		$post_id = $this->get_job_listing();
 		$this->logout();
 		$response = $this->put(
-			sprintf( '/wp/v2/job-listings/%d', $post_id ), array(
+			sprintf( '/wp/v2/job-listings/%d', $post_id ),
+			array(
 				'post_title' => 'Software Engineer 2',
 			)
 		);
@@ -96,19 +98,20 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
 	public function test_employer_get_their_own_unpublished_job_listing_success() {
 		$this->login_as_employer();
-		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$post_id  = $this->get_job_listing( array( 'post_status' => 'draft' ) );
 		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
 		$this->assertResponseStatus( $response, 200 );
 	}
 
 	public function test_employer_publish_their_own_unpublished_job_listing_success() {
 		$this->login_as_employer();
-		$post_id = $this->get_job_listing( array( 'post_status' => 'draft' ) );
+		$post_id      = $this->get_job_listing( array( 'post_status' => 'draft' ) );
 		$response_get = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
 		$this->assertResponseStatus( $response_get, 200 );
 
 		$response_post = $this->put(
-			sprintf( '/wp/v2/job-listings/%d', $post_id ), array(
+			sprintf( '/wp/v2/job-listings/%d', $post_id ),
+			array(
 				'post_status' => 'publish',
 			)
 		);
@@ -126,7 +129,8 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	public function test_employer_post_job_listings_fail() {
 		$this->login_as_employer();
 		$response = $this->post(
-			'/wp/v2/job-listings', array(
+			'/wp/v2/job-listings',
+			array(
 				'post_title' => 'Software Engineer',
 				'post_name'  => 'software-engineer',
 			)
@@ -136,10 +140,11 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_employer_put_job_listings_fail() {
-		$post_id  = $this->get_job_listing();
+		$post_id = $this->get_job_listing();
 		$this->login_as_employer();
 		$response = $this->put(
-			sprintf( '/wp/v2/job-listings/%d', $post_id ), array(
+			sprintf( '/wp/v2/job-listings/%d', $post_id ),
+			array(
 				'post_title' => 'Software Engineer 2',
 			)
 		);
@@ -169,7 +174,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$public_fields  = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_video', '_filled', '_featured' );
 		$private_fields = array( '_job_expires' );
 		$this->logout();
-		$post_id  = $this->get_job_listing();
+		$post_id = $this->get_job_listing();
 
 		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
 
@@ -187,9 +192,9 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_same_employer_read_access_to_private_meta_fields() {
-		$available_fields  = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_video', '_filled', '_featured',  '_job_expires' );
+		$available_fields = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_video', '_filled', '_featured',  '_job_expires' );
 		$this->login_as_employer();
-		$post_id  = $this->get_job_listing();
+		$post_id = $this->get_job_listing();
 
 		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
 
@@ -205,7 +210,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$public_fields  = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_video', '_filled', '_featured' );
 		$private_fields = array( '_job_expires' );
 		$this->login_as_employer();
-		$post_id  = $this->get_job_listing();
+		$post_id = $this->get_job_listing();
 		$this->login_as_employer_b();
 
 		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
@@ -226,7 +231,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		add_filter( 'job_manager_job_listing_data_fields', array( $this, 'add_legacy_field' ) );
 		$this->reset_meta_keys();
 		$this->login_as_admin();
-		$post_id = $this->get_job_listing();
+		$post_id  = $this->get_job_listing();
 		$response = $this->get( sprintf( '/wp/v2/job-listings/%d', $post_id ) );
 		remove_filter( 'job_manager_job_listing_data_fields', array( $this, 'add_legacy_field' ) );
 
@@ -251,7 +256,8 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		);
 
 		$response = $this->post(
-			'/wp/v2/job-listings', array(
+			'/wp/v2/job-listings',
+			array(
 				'post_title' => 'Software Engineer',
 				'post_name'  => 'software-engineer',
 				'meta'       => $test_meta,
@@ -276,16 +282,19 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
 	public function test_admin_can_delete_meta_fields() {
 		$this->login_as_admin();
-		$post_id = $this->get_job_listing( array(
+		$post_id = $this->get_job_listing(
+			array(
 			'meta_input' => array(
 				'_company_name' => 'Test Company',
+			 )
 			)
-		) );
+		);
 
 		$this->assertEquals( 'Test Company', get_post_meta( $post_id, '_company_name', true ) );
 
 		$response = $this->put(
-			'/wp/v2/job-listings/' . $post_id, array(
+			'/wp/v2/job-listings/' . $post_id,
+			array(
 				'meta'       => array(
 					'_company_name' => null,
 				),
@@ -320,7 +329,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 				'expected' => 'Best Example Money Can Buy',
 			),
 			'_company_twitter' => array(
-				'sent'     => "    @exampledotcom ",
+				'sent'     => '    @exampledotcom ',
 				'expected' => '@exampledotcom',
 			),
 			'_company_video'   => array(
@@ -347,7 +356,8 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		}
 
 		$response = $this->post(
-			'/wp/v2/job-listings', array(
+			'/wp/v2/job-listings',
+			array(
 				'post_title' => 'Software Engineer',
 				'post_name'  => 'software-engineer',
 				'meta'       => $test_meta_values,
@@ -366,6 +376,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
 	/**
 	 * Data provider for the `\WP_Test_WP_Job_Manager_Job_Listings_Test::test_meta_input_bad_data_type` test.
+	 *
 	 * @return array
 	 */
 	public function data_provider_test_meta_input_bad_data_type() {
@@ -395,7 +406,8 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->login_as_admin();
 
 		$response = $this->post(
-			'/wp/v2/job-listings', array(
+			'/wp/v2/job-listings',
+			array(
 				'post_title' => 'Software Engineer',
 				'post_name'  => 'software-engineer',
 				'meta'       => $test_meta,

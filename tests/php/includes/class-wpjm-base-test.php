@@ -182,7 +182,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 				'wpjm_' . $slug . '_user',
 				'wpjm_' . $slug . '_user@example.com'
 			);
-			$user = get_user_by( 'ID', $user_id );
+			$user    = get_user_by( 'ID', $user_id );
 			$user->set_role( $role );
 		}
 		return $user->ID;

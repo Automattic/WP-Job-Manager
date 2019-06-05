@@ -23,7 +23,7 @@ class WP_Job_Manager_Addons {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -33,10 +33,10 @@ class WP_Job_Manager_Addons {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -94,7 +94,8 @@ class WP_Job_Manager_Addons {
 					array(
 						'version' => JOB_MANAGER_VERSION,
 						'lang'    => get_locale(),
-					), self::WPJM_COM_PRODUCTS_API_BASE_URL . '/messages'
+					),
+					self::WPJM_COM_PRODUCTS_API_BASE_URL . '/messages'
 				)
 			);
 			if ( ! is_wp_error( $raw_messages ) ) {

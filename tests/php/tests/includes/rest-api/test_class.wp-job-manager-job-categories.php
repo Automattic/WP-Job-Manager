@@ -40,7 +40,8 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 	public function test_guest_post_job_categories_fail() {
 		$this->logout();
 		$response = $this->post(
-			'/wp/v2/job-categories', array(
+			'/wp/v2/job-categories',
+			array(
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
 			)
@@ -50,10 +51,11 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_guest_put_job_categories_fail() {
-		$term_id  = $this->get_job_category();
+		$term_id = $this->get_job_category();
 		$this->logout();
 		$response = $this->put(
-			sprintf( '/wp/v2/job-categories/%d', $term_id ), array(
+			sprintf( '/wp/v2/job-categories/%d', $term_id ),
+			array(
 				'name'   => 'Software Engineer 2',
 			)
 		);
@@ -84,7 +86,8 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 	public function test_employer_post_job_categories_fail() {
 		$this->login_as_employer();
 		$response = $this->post(
-			'/wp/v2/job-categories', array(
+			'/wp/v2/job-categories',
+			array(
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
 			)
@@ -94,10 +97,11 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_employer_put_job_categories_fail() {
-		$term_id  = $this->get_job_category();
+		$term_id = $this->get_job_category();
 		$this->login_as_employer();
 		$response = $this->put(
-			sprintf( '/wp/v2/job-categories/%d', $term_id ), array(
+			sprintf( '/wp/v2/job-categories/%d', $term_id ),
+			array(
 				'name'   => 'Software Engineer 2',
 			)
 		);
@@ -114,7 +118,8 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 	public function test_post_fail_when_guest() {
 		$this->logout();
 		$response = $this->post(
-			'/wp/v2/job-categories', array(
+			'/wp/v2/job-categories',
+			array(
 				'name' => 'REST Test' . microtime( true ),
 			)
 		);
@@ -124,7 +129,8 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 	public function test_post_success_when_admin() {
 		$this->login_as_admin();
 		$response = $this->post(
-			'/wp/v2/job-categories', array(
+			'/wp/v2/job-categories',
+			array(
 				'name' => 'REST Test' . microtime( true ),
 			)
 		);
@@ -134,7 +140,8 @@ class WP_Test_WP_Job_Manager_Job_Categories_Test extends WPJM_REST_TestCase {
 	public function test_post_fail_when_default_user() {
 		$this->login_as_default_user();
 		$response = $this->post(
-			'/wp/v2/job-categories', array(
+			'/wp/v2/job-categories',
+			array(
 				'name' => 'REST Test' . microtime( true ),
 			)
 		);

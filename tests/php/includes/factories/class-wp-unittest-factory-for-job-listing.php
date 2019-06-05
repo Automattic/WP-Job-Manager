@@ -52,10 +52,12 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 		global $wpdb;
 		$mod_date = date( 'Y-m-d', strtotime( $age ) );
 		$wpdb->update(
-			$wpdb->posts, array(
+			$wpdb->posts,
+			array(
 				'post_modified'     => $mod_date,
 				'post_modified_gmt' => $mod_date,
-			), array( 'ID' => $post_id )
+			),
+			array( 'ID' => $post_id )
 		);
 	}
 }
