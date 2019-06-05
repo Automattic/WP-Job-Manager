@@ -250,8 +250,8 @@ class WP_Job_Manager_CPT {
 		if (
 			! empty( $_GET['approve_job'] )
 			&& ! empty( $_REQUEST['_wpnonce'] )
-			&& wp_verify_nonce( $_REQUEST['_wpnonce'], 'approve_job' )
-			&& current_user_can( 'publish_post', $_GET['approve_job'] )
+			&& wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'approve_job' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			&& current_user_can( 'publish_post', absint( $_GET['approve_job'] ) )
 		) {
 			$post_id  = absint( $_GET['approve_job'] );
 			$job_data = array(
@@ -270,8 +270,8 @@ class WP_Job_Manager_CPT {
 	public function action_notices() {
 		global $post_type, $pagenow;
 
-		$handled_jobs    = isset( $_REQUEST['handled_jobs'] ) ? $_REQUEST['handled_jobs'] : false;
-		$action          = isset( $_REQUEST['action_performed'] ) ? $_REQUEST['action_performed'] : false;
+		$handled_jobs    = isset( $_REQUEST['handled_jobs'] ) && is_array( $_REQUEST['handled_jobs'] ) ? array_map( 'absint', $_REQUEST['handled_jobs'] ) : false;
+		$action          = isset( $_REQUEST['action_performed'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action_performed'] ) ) : false;
 		$actions_handled = $this->get_bulk_actions();
 
 		if (
@@ -283,8 +283,7 @@ class WP_Job_Manager_CPT {
 			&& isset( $actions_handled[ $action ]['notice'] )
 		) {
 			if ( is_array( $handled_jobs ) ) {
-				$handled_jobs = array_map( 'absint', $handled_jobs );
-				$titles       = array();
+				$titles = array();
 				foreach ( $handled_jobs as $job_id ) {
 					$titles[] = wpjm_get_the_job_title( $job_id );
 				}
@@ -330,8 +329,9 @@ class WP_Job_Manager_CPT {
 			),
 		);
 
+		$selected_category = isset( $_GET['job_listing_category'] ) ? sanitize_text_field( wp_unslash( $_GET['job_listing_category'] ) ) : '';
 		echo "<select name='job_listing_category' id='dropdown_job_listing_category'>";
-		echo '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
+		echo '<option value="" ' . selected( $selected_category, '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
 		echo wp_kses( $walker->walk( $terms, 0, $r ), $allowed_html );
 		echo '</select>';
 
@@ -406,7 +406,7 @@ class WP_Job_Manager_CPT {
 	 * @param array  $options      The options for the dropdown. See the description above.
 	 */
 	private function jobs_filter_dropdown( $param, $options ) {
-		$selected = isset( $_GET[ $param ] ) ? $_GET[ $param ] : '';
+		$selected = isset( $_GET[ $param ] ) ? sanitize_text_field( wp_unslash( $_GET[ $param ] ) ) : '';
 
 		echo '<select name="' . esc_attr( $param ) . '" id="dropdown_' . esc_attr( $param ) . '">';
 
@@ -775,7 +775,7 @@ class WP_Job_Manager_CPT {
 		if ( isset( $_GET['job_listing_filled'] ) && '' !== $_GET['job_listing_filled'] ) {
 			$meta_query[] = array(
 				'key'   => '_filled',
-				'value' => $_GET['job_listing_filled'],
+				'value' => absint( $_GET['job_listing_filled'] ),
 			);
 		}
 
@@ -783,7 +783,7 @@ class WP_Job_Manager_CPT {
 		if ( isset( $_GET['job_listing_featured'] ) && '' !== $_GET['job_listing_featured'] ) {
 			$meta_query[] = array(
 				'key'   => '_featured',
-				'value' => $_GET['job_listing_featured'],
+				'value' => absint( $_GET['job_listing_featured'] ),
 			);
 		}
 
@@ -806,7 +806,7 @@ class WP_Job_Manager_CPT {
 			return $query;
 		}
 
-		return wp_unslash( sanitize_text_field( $_GET['s'] ) );
+		return sanitize_text_field( wp_unslash( $_GET['s'] ) );
 	}
 
 	/**
