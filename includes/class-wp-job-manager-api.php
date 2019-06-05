@@ -72,7 +72,7 @@ class WP_Job_Manager_API {
 		global $wp;
 
 		if ( ! empty( $_GET['job-manager-api'] ) ) {
-			$wp->query_vars['job-manager-api'] = $_GET['job-manager-api'];
+			$wp->query_vars['job-manager-api'] = sanitize_text_field( wp_unslash( $_GET['job-manager-api'] ) );
 		}
 
 		if ( ! empty( $wp->query_vars['job-manager-api'] ) ) {
