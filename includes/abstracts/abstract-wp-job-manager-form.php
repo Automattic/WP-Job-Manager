@@ -477,7 +477,7 @@ abstract class WP_Job_Manager_Form {
 		}
 
 		// Use standard text sanitizer.
-		return sanitize_text_field( stripslashes( $value ) );
+		return sanitize_text_field( wp_unslash( $value ) );
 	}
 
 	/**
@@ -535,7 +535,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected function get_posted_textarea_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? wp_kses_post( trim( stripslashes( $_POST[ $key ] ) ) ) : '';
+		return isset( $_POST[ $key ] ) ? wp_kses_post( trim( wp_unslash( $_POST[ $key ] ) ) ) : '';
 	}
 
 	/**

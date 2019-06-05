@@ -121,8 +121,8 @@ class WP_Job_Manager_Ajax {
 		global $wp_post_types;
 
 		$result             = array();
-		$search_location    = isset( $_REQUEST['search_location'] ) ? sanitize_text_field( stripslashes( $_REQUEST['search_location'] ) ) : '';
-		$search_keywords    = isset( $_REQUEST['search_keywords'] ) ? sanitize_text_field( stripslashes( $_REQUEST['search_keywords'] ) ) : '';
+		$search_location    = isset( $_REQUEST['search_location'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_location'] ) ) : '';
+		$search_keywords    = isset( $_REQUEST['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_keywords'] ) ) : '';
 		$search_categories  = isset( $_REQUEST['search_categories'] ) ? $_REQUEST['search_categories'] : '';
 		$filter_job_types   = isset( $_REQUEST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', (array) $_REQUEST['filter_job_type'] ) ) : null;
 		$filter_post_status = isset( $_REQUEST['filter_post_status'] ) ? array_filter( array_map( 'sanitize_title', (array) $_REQUEST['filter_post_status'] ) ) : null;
@@ -136,7 +136,7 @@ class WP_Job_Manager_Ajax {
 		if ( is_array( $search_categories ) ) {
 			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
 		} else {
-			$search_categories = array_filter( array( sanitize_text_field( stripslashes( $search_categories ) ) ) );
+			$search_categories = array_filter( array( sanitize_text_field( wp_unslash( $search_categories ) ) ) );
 		}
 
 		$job_types_filtered = ! is_null( $filter_job_types ) && count( $types ) !== count( $filter_job_types );

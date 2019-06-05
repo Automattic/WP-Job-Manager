@@ -1378,7 +1378,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		if ( 'textarea' === $type ) {
-			return wp_kses_post( stripslashes( $meta_value ) );
+			return wp_kses_post( wp_unslash( $meta_value ) );
 		}
 
 		if ( 'checkbox' === $type ) {
