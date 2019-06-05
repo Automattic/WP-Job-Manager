@@ -90,9 +90,9 @@ class WP_Job_Manager_Shortcodes {
 	 * @throws Exception On action handling error.
 	 */
 	public function job_dashboard_handler() {
-		if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'job_manager_my_job_actions' ) ) {
+		if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'job_manager_my_job_actions' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
-			$action = sanitize_title( $_REQUEST['action'] );
+			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
 			$job_id = isset( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
 
 			try {
@@ -217,7 +217,7 @@ class WP_Job_Manager_Shortcodes {
 
 		// If doing an action, show conditional content if needed....
 		if ( ! empty( $_REQUEST['action'] ) ) {
-			$action = sanitize_title( $_REQUEST['action'] );
+			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
 
 			// Show alternative content if a plugin wants to.
 			if ( has_action( 'job_manager_job_dashboard_content_' . $action ) ) {
@@ -339,16 +339,16 @@ class WP_Job_Manager_Shortcodes {
 
 		// Get keywords, location, category and type from querystring if set.
 		if ( ! empty( $_GET['search_keywords'] ) ) {
-			$atts['keywords'] = sanitize_text_field( $_GET['search_keywords'] );
+			$atts['keywords'] = sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) );
 		}
 		if ( ! empty( $_GET['search_location'] ) ) {
-			$atts['location'] = sanitize_text_field( $_GET['search_location'] );
+			$atts['location'] = sanitize_text_field( wp_unslash( $_GET['search_location'] ) );
 		}
 		if ( ! empty( $_GET['search_category'] ) ) {
-			$atts['selected_category'] = sanitize_text_field( $_GET['search_category'] );
+			$atts['selected_category'] = sanitize_text_field( wp_unslash( $_GET['search_category'] ) );
 		}
 		if ( ! empty( $_GET['search_job_type'] ) ) {
-			$atts['selected_job_types'] = sanitize_text_field( $_GET['search_job_type'] );
+			$atts['selected_job_types'] = sanitize_text_field( wp_unslash( $_GET['search_job_type'] ) );
 		}
 
 		// Array handling.
