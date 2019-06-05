@@ -50,7 +50,7 @@ class WP_Job_Manager_Forms {
 	 */
 	public function load_posted_form() {
 		if ( ! empty( $_POST['job_manager_form'] ) ) {
-			$this->load_form_class( sanitize_title( $_POST['job_manager_form'] ) );
+			$this->load_form_class( sanitize_title( wp_unslash( $_POST['job_manager_form'] ) ) );
 		}
 	}
 
