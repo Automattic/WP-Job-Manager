@@ -96,7 +96,7 @@ class WP_Job_Manager_Helper {
 	private function handle_admin_request() {
 		if ( ! empty( $_GET['dismiss-wpjm-licence-notice'] ) ) {
 			$product_plugins = $this->get_installed_plugins();
-			$product_slug    = sanitize_text_field( $_GET['dismiss-wpjm-licence-notice'] );
+			$product_slug    = sanitize_text_field( wp_unslash( $_GET['dismiss-wpjm-licence-notice'] ) );
 			if ( isset( $product_plugins[ $product_slug ] ) ) {
 				WP_Job_Manager_Helper_Options::update( $product_slug, 'hide_key_notice', true );
 			}
@@ -474,20 +474,20 @@ class WP_Job_Manager_Helper {
 			|| empty( $_POST['action'] )
 			|| empty( $_POST['product_slug'] )
 			|| ! isset( $licenced_plugins[ $_POST['product_slug'] ] )
-			|| ! wp_verify_nonce( $_POST['_wpnonce'], 'wpjm-manage-licence' )
+			|| ! wp_verify_nonce( wp_unslash( $_POST['_wpnonce'] ), 'wpjm-manage-licence' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		) {
 			return false;
 		}
 
-		$product_slug = sanitize_text_field( $_POST['product_slug'] );
+		$product_slug = sanitize_text_field( wp_unslash( $_POST['product_slug'] ) );
 		switch ( $_POST['action'] ) {
 			case 'activate':
 				if ( empty( $_POST['email'] ) || empty( $_POST['licence_key'] ) ) {
 					$this->add_error( $product_slug, __( 'Please enter a valid license key and email address in order to activate this plugin\'s license.', 'wp-job-manager' ) );
 					break;
 				}
-				$email       = sanitize_email( $_POST['email'] );
-				$licence_key = sanitize_text_field( $_POST['licence_key'] );
+				$email       = sanitize_email( wp_unslash( $_POST['email'] ) );
+				$licence_key = sanitize_text_field( wp_unslash( $_POST['licence_key'] ) );
 				$this->activate_licence( $product_slug, $licence_key, $email );
 				break;
 			case 'deactivate':
