@@ -493,7 +493,7 @@ abstract class WP_Job_Manager_Form {
 			$field['sanitizer'] = null;
 		}
 
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- WP_Job_Manager_Form::sanitize_posted_field handles the sanitization based on the type of data passed
 		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( wp_unslash( $_POST[ $key ] ), $field['sanitizer'] ) : '';
 	}
 

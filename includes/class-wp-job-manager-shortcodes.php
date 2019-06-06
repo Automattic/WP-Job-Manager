@@ -90,7 +90,11 @@ class WP_Job_Manager_Shortcodes {
 	 * @throws Exception On action handling error.
 	 */
 	public function job_dashboard_handler() {
-		if ( ! empty( $_REQUEST['action'] ) && ! empty( $_REQUEST['_wpnonce'] ) && wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'job_manager_my_job_actions' ) ) {  // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if (
+			! empty( $_REQUEST['action'] )
+			&& ! empty( $_REQUEST['_wpnonce'] )
+			&& wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'job_manager_my_job_actions' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Don't sterilize the nonce.
+		) {
 
 			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
 			$job_id = isset( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;

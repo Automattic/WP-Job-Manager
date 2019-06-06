@@ -250,7 +250,7 @@ class WP_Job_Manager_CPT {
 		if (
 			! empty( $_GET['approve_job'] )
 			&& ! empty( $_REQUEST['_wpnonce'] )
-			&& wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'approve_job' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			&& wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'approve_job' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Don't sterilize the nonce.
 			&& current_user_can( 'publish_post', absint( $_GET['approve_job'] ) )
 		) {
 			$post_id  = absint( $_GET['approve_job'] );

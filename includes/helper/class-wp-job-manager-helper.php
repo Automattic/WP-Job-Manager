@@ -474,7 +474,7 @@ class WP_Job_Manager_Helper {
 			|| empty( $_POST['action'] )
 			|| empty( $_POST['product_slug'] )
 			|| ! isset( $licenced_plugins[ $_POST['product_slug'] ] )
-			|| ! wp_verify_nonce( wp_unslash( $_POST['_wpnonce'] ), 'wpjm-manage-licence' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			|| ! wp_verify_nonce( wp_unslash( $_POST['_wpnonce'] ), 'wpjm-manage-licence' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Don't sterilize the nonce.
 		) {
 			return false;
 		}
