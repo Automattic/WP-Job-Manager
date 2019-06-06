@@ -447,13 +447,13 @@ jQuery( document ).ready( function( $ ) {
 		$( 'div.job_listings' ).each( function() {
 			var $target = $( this );
 			var $form = $target.find( '.job_filters' );
-			var $results_loaded = false;
+			var results_loaded = false;
 			var state = job_manager_get_state( $target );
 
 			if ( state ) {
 				// Restore the results from cache.
 				if ( state.results ) {
-					$results_loaded = job_manager_handle_result( $target, state.results );
+					results_loaded = job_manager_handle_result( $target, state.results );
 
 					// We don't want this to continue to persist unless we click on another link.
 					job_manager_persist_results( $target, false );
@@ -471,7 +471,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 			}
 
-			if ( ! $results_loaded && $form.length > 0 ) {
+			if ( ! results_loaded && $form.length > 0 ) {
 				// If we didn't load results from cache, load page 1.
 				$target.triggerHandler( 'update_results', [ 1, false ] );
 			}
