@@ -10,9 +10,14 @@ jQuery( document ).ready( function( $ ) {
 	 * Get the session storage key for the job listings instance.
 	 */
 	function job_manager_get_session_storage_key( $target ) {
-		var index = $( 'div.job_listings' ).index( $target );
+		var index          = $( 'div.job_listings' ).index( $target );
+		var unique_page_id = $target.data( 'post_id' );
 
-		return session_storage_prefix + $target.data( 'post_id' ) + '_' + index;
+		if ( typeof unique_page_id === 'undefined' || ! unique_page_id ) {
+			unique_page_id = window.location.href.replace( location.hash, '' );
+		}
+
+		return session_storage_prefix + unique_page_id + '_' + index;
 	}
 
 	/**
@@ -455,7 +460,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 
 				// Restore the form state.
-				if ( typeof state.form === 'string' ) {
+				if ( typeof state.form === 'string' && '' !== state.form ) {
 					// When deserializing a form, we need to first uncheck the checkboxes that are by default checked.
 					$form.find('input[type=checkbox]').prop('checked', false);
 					$form.deserialize(state.form);
