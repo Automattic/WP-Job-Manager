@@ -20,9 +20,11 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::output_kses_post
 	 */
 	public function test_output_kses_post_simple() {
-		$job_id = $this->factory->job_listing->create( array(
+		$job_id = $this->factory->job_listing->create(
+			array(
 			'post_content' => '<p>This is a simple job listing</p>',
-		) );
+			)
+		);
 
 		$test_content = wpjm_get_the_job_description( $job_id );
 
@@ -38,9 +40,11 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::output_kses_post
 	 */
 	public function test_output_kses_post_allow_embeds() {
-		$job_id = $this->factory->job_listing->create( array(
+		$job_id = $this->factory->job_listing->create(
+			array(
 			'post_content' => '<p>This is a simple job listing</p><p>https://www.youtube.com/watch?v=S_GVbuddri8</p>',
-		) );
+			)
+		);
 
 		$test_content = wpjm_get_the_job_description( $job_id );
 

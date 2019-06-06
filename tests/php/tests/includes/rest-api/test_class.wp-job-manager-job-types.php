@@ -50,7 +50,8 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	public function test_guest_post_job_types_fail() {
 		$this->logout();
 		$response = $this->post(
-			'/wp/v2/job-types', array(
+			'/wp/v2/job-types',
+			array(
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
 			)
@@ -60,10 +61,11 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_guest_put_job_types_fail() {
-		$term_id  = $this->get_job_type();
+		$term_id = $this->get_job_type();
 		$this->logout();
 		$response = $this->put(
-			sprintf( '/wp/v2/job-types/%d', $term_id ), array(
+			sprintf( '/wp/v2/job-types/%d', $term_id ),
+			array(
 				'name'   => 'Software Engineer 2',
 			)
 		);
@@ -94,7 +96,8 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	public function test_employer_post_job_types_fail() {
 		$this->login_as_employer();
 		$response = $this->post(
-			'/wp/v2/job-types', array(
+			'/wp/v2/job-types',
+			array(
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
 			)
@@ -104,10 +107,11 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_employer_put_job_types_fail() {
-		$term_id  = $this->get_job_type();
+		$term_id = $this->get_job_type();
 		$this->login_as_employer();
 		$response = $this->put(
-			sprintf( '/wp/v2/job-types/%d', $term_id ), array(
+			sprintf( '/wp/v2/job-types/%d', $term_id ),
+			array(
 				'name'   => 'Software Engineer 2',
 			)
 		);
@@ -146,7 +150,8 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 
 		$this->login_as_admin();
 		$response = $this->post(
-			'/wp/v2/job-types', array(
+			'/wp/v2/job-types',
+			array(
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
 				'meta' => array(
@@ -168,7 +173,8 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		}
 		$this->login_as_admin();
 		$response = $this->post(
-			'/wp/v2/job-types', array(
+			'/wp/v2/job-types',
+			array(
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
 				'meta' => array(

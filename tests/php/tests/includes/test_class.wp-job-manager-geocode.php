@@ -265,6 +265,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 
 	/**
 	 * Used in `test_add_geolocation_endpoint_query_args()`
+	 *
 	 * @param string $region
 	 *
 	 * @return string
@@ -275,6 +276,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 
 	/**
 	 * Used in `test_add_geolocation_endpoint_query_args()`
+	 *
 	 * @param string $key
 	 *
 	 * @return string

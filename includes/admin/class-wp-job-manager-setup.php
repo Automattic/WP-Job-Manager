@@ -22,7 +22,7 @@ class WP_Job_Manager_Setup {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -32,10 +32,10 @@ class WP_Job_Manager_Setup {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -102,7 +102,7 @@ class WP_Job_Manager_Setup {
 		$usage_tracking = WP_Job_Manager_Usage_Tracking::get_instance();
 		$step           = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
 
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 			// Handle step 1 (usage tracking).
 			$enable = isset( $_POST['job_manager_usage_tracking_enabled'] )
 				&& '1' === $_POST['job_manager_usage_tracking_enabled'];
@@ -117,11 +117,11 @@ class WP_Job_Manager_Setup {
 
 			// Handle step 2 -> step 3 (setting up pages).
 			if ( 3 === $step && ! empty( $_POST ) ) {
-				if ( false === wp_verify_nonce( $_REQUEST['setup_wizard'], 'step_3' ) ) {
+				if ( ! isset( $_REQUEST['setup_wizard'] ) || false === wp_verify_nonce( $_REQUEST['setup_wizard'], 'step_3' ) ) {
 					wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
 				}
 				$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? $_POST['wp-job-manager-create-page'] : array();
-				$page_titles     = $_POST['wp-job-manager-page-title'];
+				$page_titles     = isset( $_POST['wp-job-manager-page-title'] ) ? $_POST['wp-job-manager-page-title'] : array();
 				$pages_to_create = array(
 					'submit_job_form' => '[submit_job_form]',
 					'job_dashboard'   => '[job_dashboard]',

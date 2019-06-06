@@ -560,7 +560,8 @@ final class WP_Job_Manager_Email_Notifications {
 			AND postmeta.meta_value = %s
 			AND posts.post_status = 'publish'
 			AND posts.post_type = 'job_listing'
-		", date( 'Y-m-d', $notice_before_ts )
+		",
+				date( 'Y-m-d', $notice_before_ts )
 			)
 		);
 

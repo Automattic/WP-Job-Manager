@@ -20,7 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			__(
 				'(These pages are created using <a href="%1$s" title="What is a shortcode?" class="help-page-link">shortcodes</a>,
 								which we take care of in this step. If you\'d like to build these pages yourself or want to add one of these options to an existing
-								page on your site, you can skip this step and take a look at <a href="%2$s" class="help-page-link">shortcode documentation</a> for detailed instructions.)', 'wp-job-manager'
+								page on your site, you can skip this step and take a look at <a href="%2$s" class="help-page-link">shortcode documentation</a> for detailed instructions.)',
+				'wp-job-manager'
 			),
 			'http://codex.wordpress.org/Shortcode',
 			'https://wpjobmanager.com/document/shortcode-reference/'

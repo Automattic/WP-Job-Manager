@@ -58,22 +58,28 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 */
 	private function create_default_job_listings() {
 		$this->draft           = $this->factory->job_listing->create_many(
-			2, array( 'post_status' => 'draft' )
+			2,
+			array( 'post_status' => 'draft' )
 		);
 		$this->expired         = $this->factory->job_listing->create_many(
-			10, array( 'post_status' => 'expired' )
+			10,
+			array( 'post_status' => 'expired' )
 		);
 		$this->preview         = $this->factory->job_listing->create_many(
-			1, array( 'post_status' => 'preview' )
+			1,
+			array( 'post_status' => 'preview' )
 		);
 		$this->pending         = $this->factory->job_listing->create_many(
-			8, array( 'post_status' => 'pending' )
+			8,
+			array( 'post_status' => 'pending' )
 		);
 		$this->pending_payment = $this->factory->job_listing->create_many(
-			3, array( 'post_status' => 'pending_payment' )
+			3,
+			array( 'post_status' => 'pending_payment' )
 		);
 		$this->publish         = $this->factory->job_listing->create_many(
-			15, array( 'post_status' => 'publish' )
+			15,
+			array( 'post_status' => 'publish' )
 		);
 	}
 
@@ -89,10 +95,12 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$subscriber_count = 2;
 
 		$this->factory->user->create_many(
-			$employer_count, array( 'role' => 'employer' )
+			$employer_count,
+			array( 'role' => 'employer' )
 		);
 		$this->factory->user->create_many(
-			$subscriber_count, array( 'role' => 'subscriber' )
+			$subscriber_count,
+			array( 'role' => 'subscriber' )
 		);
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
@@ -644,14 +652,16 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		// Create published listings.
 		$this->factory->job_listing->create_many(
-			$published_by_guest, array(
+			$published_by_guest,
+			array(
 				'post_author' => '0',
 			)
 		);
 
 		// Create expired listings.
 		$this->factory->job_listing->create_many(
-			$expired_by_guest, array(
+			$expired_by_guest,
+			array(
 				'post_author' => '0',
 				'post_status' => 'expired',
 			)
@@ -873,7 +883,8 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		// Create expired listings.
 		$this->factory->job_listing->create_many(
-			$expired, array(
+			$expired,
+			array(
 				'post_status' => 'expired',
 				'meta_input'  => array(
 					$meta_name => $meta_value,

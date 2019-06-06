@@ -36,7 +36,7 @@ class WP_Job_Manager_Helper {
 	 * @var self
 	 * @since  1.29.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * True if the plugin cache has already been cleared.
@@ -54,10 +54,10 @@ class WP_Job_Manager_Helper {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -144,9 +144,10 @@ class WP_Job_Manager_Helper {
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$response = $this->get_plugin_version( $plugin_data['_filename'] );
 			// If there is a new version, modify the transient to reflect an update is available.
-			if ( $response
-				 && isset( $response['new_version'] )
-				 && version_compare( $response['new_version'], $plugin_data['Version'], '>' )
+			if (
+				$response
+				&& isset( $response['new_version'] )
+				&& version_compare( $response['new_version'], $plugin_data['Version'], '>' )
 			) {
 				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 			}
@@ -467,12 +468,13 @@ class WP_Job_Manager_Helper {
 	 */
 	private function handle_request() {
 		$licenced_plugins = $this->get_installed_plugins();
-		if ( empty( $_POST )
-			 || empty( $_POST['_wpnonce'] )
-			 || empty( $_POST['action'] )
-			 || empty( $_POST['product_slug'] )
-			 || ! isset( $licenced_plugins[ $_POST['product_slug'] ] )
-			 || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpjm-manage-licence' )
+		if (
+			empty( $_POST )
+			|| empty( $_POST['_wpnonce'] )
+			|| empty( $_POST['action'] )
+			|| empty( $_POST['product_slug'] )
+			|| ! isset( $licenced_plugins[ $_POST['product_slug'] ] )
+			|| ! wp_verify_nonce( $_POST['_wpnonce'], 'wpjm-manage-licence' )
 		) {
 			return false;
 		}

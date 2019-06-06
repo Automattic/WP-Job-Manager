@@ -1,46 +1,74 @@
 <?xml version="1.0"?>
 <ruleset name="WP Job Manager">
-	<!-- See https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml -->
-	<!-- See https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/blob/develop/WordPress-Core/ruleset.xml -->
-
-	<!-- Set a description for this ruleset. -->
 	<description>A custom set of code standard rules to check for WordPress themes and plugins.</description>
 
-	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility" />
+	<arg value="s"/>
+	<arg value="p"/>
+	<arg name="colors"/>
 
-	<exclude-pattern>*/node_modules/*</exclude-pattern>
-	<exclude-pattern>*/vendor/*</exclude-pattern>
-	<exclude-pattern>*/lib/*</exclude-pattern>
-	<exclude-pattern>*/tests/bin/*</exclude-pattern>
-	<!-- Exclude templates for now -->
-	<exclude-pattern>*/templates/*</exclude-pattern>
+	<arg name="extensions" value="php"/>
+	<file>.</file>
+
+	<exclude-pattern>node_modules/</exclude-pattern>
+	<exclude-pattern>vendor/</exclude-pattern>
+	<exclude-pattern>tests/</exclude-pattern>
+	<exclude-pattern>tmp/</exclude-pattern>
+
+	<!-- Temporarily exclude templates and lib for now -->
+	<exclude-pattern>templates/</exclude-pattern>
+	<exclude-pattern>lib/</exclude-pattern>
 
 	<!-- Configs -->
 	<config name="minimum_supported_wp_version" value="4.7" />
 	<config name="testVersion" value="5.2-"/>
 
 	<!-- Rules -->
+	<rule ref="PHPCompatibilityWP"/>
+	<rule ref="WordPress-Docs" />
+	<rule ref="WordPress-Extra" />
+
+	<!-- Temporary Rule Exclusions -->
+	<rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
+		<severity>4</severity>
+	</rule>
+	<rule ref="WordPress.Security.ValidatedSanitizedInput.MissingUnslash">
+		<severity>4</severity>
+	</rule>
+	<rule ref="WordPress.Security.NonceVerification">
+		<severity>4</severity>
+	</rule>
+	<rule ref="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized">
+		<severity>4</severity>
+	</rule>
+	<rule ref="WordPress.DB.DirectDatabaseQuery">
+		<severity>4</severity>
+	</rule>
+	<rule ref="VariableAnalysis">
+		<exclude-pattern>includes/admin/views/</exclude-pattern>
+		<exclude-pattern>templates/</exclude-pattern>
+
+		<severity>4</severity>
+	</rule>
+	<!-- End of Temporary Rule Exclusions -->
+
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
-		<exclude-pattern>tests/*</exclude-pattern>
 	</rule>
-	<rule ref="PHPCompatibility">
-		<exclude name="PHPCompatibility.PHP.NewFunctions.hash_equalsFound" />
-		<exclude name="PHPCompatibility.PHP.NewInterfaces.jsonserializableFound" />
-		<exclude name="PHPCompatibility.PHP.NewKeywords.t_namespaceFound" />
-		<exclude-pattern>tests/</exclude-pattern>
-	</rule>
-	<rule ref="WordPress">
-		<exclude name="WordPress.VIP" />
-		<exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found" />
-		<exclude name="WordPress.CSRF.NonceVerification.NoNonceVerification" />
-		<exclude-pattern>tests/*</exclude-pattern>
-	</rule>
+
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array" value="wp-job-manager" />
 		</properties>
 	</rule>
+
+	<rule ref="WordPress.Security.EscapeOutput">
+		<properties>
+			<property name="customEscapingFunctions" type="array">
+				<element value="wpjm_esc_json"/>
+			</property>
+		</properties>
+	</rule>
+
 	<rule ref="Squiz.Commenting">
 		<exclude-pattern>tests/</exclude-pattern>
 		<exclude name="Squiz.Commenting.LongConditionClosingComment" />
@@ -48,15 +76,4 @@
 		<exclude name="Squiz.Commenting.FunctionComment.MissingParamComment" />
 		<exclude-pattern>tests/*</exclude-pattern>
 	</rule>
-	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
-		<exclude-pattern>includes/**/abstract-*.php</exclude-pattern>
-		<exclude-pattern>tests/*</exclude-pattern>
-	</rule>
-	<rule ref="WordPress.XSS.EscapeOutput">
-    	<properties>
-    		<property name="customEscapingFunctions" type="array">
-    			<element value="wpjm_esc_json"/>
-    		</property>
-    	</properties>
-    </rule>
 </ruleset>

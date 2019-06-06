@@ -65,7 +65,8 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		$this->set_up_job_listing_search_request();
 		$published = $this->factory->job_listing->create_many( 2 );
 		$draft     = $this->factory->job_listing->create_many(
-			2, array(
+			2,
+			array(
 				'post_status' => 'expired',
 				'meta_input'  => array(),
 			)
@@ -107,7 +108,8 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		$this->set_up_job_listing_search_request();
 		$published = $this->factory->job_listing->create_many( 2 );
 		$draft     = $this->factory->job_listing->create_many(
-			2, array(
+			2,
+			array(
 				'post_status' => 'expired',
 				'meta_input'  => array(),
 			)

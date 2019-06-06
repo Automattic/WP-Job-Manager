@@ -115,12 +115,12 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		$properties['job_id']      = intval( $post_id );
 		$properties['post_status'] = get_post_status( $post_id );
 
-		$user_role  = self::get_current_role();
+		$user_role = self::get_current_role();
 		if ( $user_role ) {
 			$properties['user_role'] = $user_role;
 		}
 
-		WP_Job_Manager_Usage_Tracking::log_event( 'job_listing_submitted', $properties );
+		self::log_event( 'job_listing_submitted', $properties );
 	}
 
 	/**
@@ -141,12 +141,12 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		$properties['job_id'] = intval( $post_id );
 		$properties['age']    = time() - strtotime( $post->post_date_gmt );
 
-		$user_role  = self::get_current_role();
+		$user_role = self::get_current_role();
 		if ( $user_role ) {
 			$properties['user_role'] = $user_role;
 		}
 
-		WP_Job_Manager_Usage_Tracking::log_event( 'job_listing_approved', $properties );
+		self::log_event( 'job_listing_approved', $properties );
 	}
 
 	/**
@@ -229,7 +229,8 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 				<a href="%s">usage tracking data</a>. No sensitive information is
 				collected, and you can opt out at any time.',
 				'wp-job-manager'
-			), self::WPJM_TRACKING_INFO_URL
+			),
+			self::WPJM_TRACKING_INFO_URL
 		);
 	}
 
@@ -295,8 +296,10 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 			__(
 				'Help us make WP Job Manager better by allowing us to collect
 				<a href="%s">usage tracking data</a>.
-				No sensitive information is collected.', 'wp-job-manager'
-			), self::WPJM_TRACKING_INFO_URL
+				No sensitive information is collected.',
+				'wp-job-manager'
+			),
+			self::WPJM_TRACKING_INFO_URL
 		);
 	}
 

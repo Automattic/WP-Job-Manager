@@ -22,7 +22,7 @@ class WP_Job_Manager_Permalink_Settings {
 	 * @var self
 	 * @since  1.27.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Permalink settings.
@@ -40,10 +40,10 @@ class WP_Job_Manager_Permalink_Settings {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -142,9 +142,9 @@ class WP_Job_Manager_Permalink_Settings {
 
 			$permalink_settings = WP_Job_Manager_Post_Types::get_raw_permalink_settings();
 
-			$permalink_settings['job_base']      = sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] );
-			$permalink_settings['category_base'] = sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] );
-			$permalink_settings['type_base']     = sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] );
+			$permalink_settings['job_base']      = isset( $_POST['wpjm_job_base_slug'] ) ? sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] ) : '';
+			$permalink_settings['category_base'] = isset( $_POST['wpjm_job_category_slug'] ) ? sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] ) : '';
+			$permalink_settings['type_base']     = isset( $_POST['wpjm_job_type_slug'] ) ? sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] ) : '';
 
 			if ( isset( $_POST['wpjm_job_listings_archive_slug'] ) ) {
 				$permalink_settings['jobs_archive'] = sanitize_title_with_dashes( $_POST['wpjm_job_listings_archive_slug'] );
