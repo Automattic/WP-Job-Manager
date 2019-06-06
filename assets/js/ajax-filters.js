@@ -471,7 +471,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 			}
 
-			if ( ! $results_loaded ) {
+			if ( ! $results_loaded && $form.length > 0 ) {
 				// If we didn't load results from cache, load page 1.
 				$target.triggerHandler( 'update_results', [ 1, false ] );
 			}
