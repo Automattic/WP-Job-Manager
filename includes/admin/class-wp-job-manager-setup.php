@@ -107,7 +107,7 @@ class WP_Job_Manager_Setup {
 			$enable = isset( $_POST['job_manager_usage_tracking_enabled'] )
 				&& '1' === $_POST['job_manager_usage_tracking_enabled'];
 
-			$nonce       = isset( $_POST['nonce'] ) ? wp_unslash( $_POST['nonce'] ) : null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Don't sterilize the nonce.
+			$nonce       = isset( $_POST['nonce'] ) ? wp_unslash( $_POST['nonce'] ) : null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 			$valid_nonce = wp_verify_nonce( $nonce, 'enable-usage-tracking' );
 
 			if ( $valid_nonce ) {
@@ -119,7 +119,7 @@ class WP_Job_Manager_Setup {
 			if ( 3 === $step && ! empty( $_POST ) ) {
 				if (
 					! isset( $_REQUEST['setup_wizard'] )
-					|| false === wp_verify_nonce( wp_unslash( $_REQUEST['setup_wizard'] ), 'step_3' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Don't sterilize the nonce.
+					|| false === wp_verify_nonce( wp_unslash( $_REQUEST['setup_wizard'] ), 'step_3' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 				) {
 					wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
 				}
