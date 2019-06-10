@@ -10,9 +10,14 @@ jQuery( document ).ready( function( $ ) {
 	 * Get the session storage key for the job listings instance.
 	 */
 	function job_manager_get_session_storage_key( $target ) {
-		var index = $( 'div.job_listings' ).index( $target );
+		var index          = $( 'div.job_listings' ).index( $target );
+		var unique_page_id = $target.data( 'post_id' );
 
-		return session_storage_prefix + $target.data( 'post_id' ) + '_' + index;
+		if ( typeof unique_page_id === 'undefined' || ! unique_page_id ) {
+			unique_page_id = window.location.href.replace( location.hash, '' );
+		}
+
+		return session_storage_prefix + unique_page_id + '_' + index;
 	}
 
 	/**
@@ -442,20 +447,20 @@ jQuery( document ).ready( function( $ ) {
 		$( 'div.job_listings' ).each( function() {
 			var $target = $( this );
 			var $form = $target.find( '.job_filters' );
-			var $results_loaded = false;
+			var results_loaded = false;
 			var state = job_manager_get_state( $target );
 
 			if ( state ) {
 				// Restore the results from cache.
 				if ( state.results ) {
-					$results_loaded = job_manager_handle_result( $target, state.results );
+					results_loaded = job_manager_handle_result( $target, state.results );
 
 					// We don't want this to continue to persist unless we click on another link.
 					job_manager_persist_results( $target, false );
 				}
 
 				// Restore the form state.
-				if ( typeof state.form === 'string' ) {
+				if ( typeof state.form === 'string' && '' !== state.form ) {
 					// When deserializing a form, we need to first uncheck the checkboxes that are by default checked.
 					$form.find('input[type=checkbox]').prop('checked', false);
 					$form.deserialize(state.form);
@@ -466,7 +471,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 			}
 
-			if ( ! $results_loaded ) {
+			if ( ! results_loaded && $form.length > 0 ) {
 				// If we didn't load results from cache, load page 1.
 				$target.triggerHandler( 'update_results', [ 1, false ] );
 			}
