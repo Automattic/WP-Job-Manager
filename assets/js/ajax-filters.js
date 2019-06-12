@@ -306,7 +306,7 @@ jQuery( document ).ready( function( $ ) {
 					featured: featured,
 					filled: filled,
 					show_pagination: $target.data( 'show_pagination' ),
-					$form_data: $form.serialize(),
+					form_data: $form.serialize(),
 				};
 			} else {
 				categories = $target.data( 'categories' );
