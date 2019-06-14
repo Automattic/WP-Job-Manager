@@ -604,8 +604,6 @@ class WP_Job_Manager_Writepanels {
 	 * @param WP_Post $post (Unused).
 	 */
 	public function save_job_listing_data( $post_id, $post ) {
-		global $wpdb;
-
 		// These need to exist.
 		add_post_meta( $post_id, '_filled', 0, true );
 		add_post_meta( $post_id, '_featured', 0, true );
@@ -640,7 +638,13 @@ class WP_Job_Manager_Writepanels {
 				if ( empty( $_POST[ $key ] ) ) {
 					$_POST[ $key ] = 0;
 				}
-				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
+				$job_data                = array();
+				$job_data['ID']          = $post_id;
+				$job_data['post_author'] = $_POST[ $key ] > 0 ? intval( $_POST[ $key ] ) : 0;
+
+				remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20 );
+				wp_update_post( $job_data );
+				add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
 			} elseif ( isset( $_POST[ $key ] ) ) {
 				update_post_meta( $post_id, $key, wp_unslash( $_POST[ $key ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
 			}
@@ -651,7 +655,7 @@ class WP_Job_Manager_Writepanels {
 		$today_date             = date( 'Y-m-d', current_time( 'timestamp' ) );
 		$is_job_listing_expired = $expiry_date && $today_date > $expiry_date;
 		if ( $is_job_listing_expired && ! $this->is_job_listing_status_changing( null, 'draft' ) ) {
-			remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
+			remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20 );
 			if ( $this->is_job_listing_status_changing( 'expired', 'publish' ) ) {
 				update_post_meta( $post_id, '_job_expires', calculate_job_expiry( $post_id ) );
 			} else {
