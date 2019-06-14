@@ -22,7 +22,7 @@
 function get_job_manager_template( $template_name, $args = array(), $template_path = 'job_manager', $default_path = '' ) {
 	if ( $args && is_array( $args ) ) {
 		// Please, forgive us.
-		extract( $args ); // phpcs:ignore WordPress.Functions.DontExtract.extract_extract
+		extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 	}
 	include locate_job_manager_template( $template_name, $template_path, $default_path );
 }
@@ -788,7 +788,8 @@ function the_job_location( $map_link = true, $post = null ) {
 				apply_filters(
 					'the_job_location_map_link',
 					'<a class="google_map_link" href="' . esc_url( 'http://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
-					$location, $post
+					$location,
+					$post
 				)
 			);
 		} else {
@@ -875,9 +876,10 @@ function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 function job_manager_get_resized_image( $logo, $size ) {
 	global $_wp_additional_image_sizes;
 
-	if ( 'full' !== $size
-		 && strstr( $logo, WP_CONTENT_URL )
-		 && ( isset( $_wp_additional_image_sizes[ $size ] ) || in_array( $size, array( 'thumbnail', 'medium', 'large' ), true ) )
+	if (
+		'full' !== $size
+		&& strstr( $logo, WP_CONTENT_URL )
+		&& ( isset( $_wp_additional_image_sizes[ $size ] ) || in_array( $size, array( 'thumbnail', 'medium', 'large' ), true ) )
 	) {
 
 		if ( in_array( $size, array( 'thumbnail', 'medium', 'large' ), true ) ) {
@@ -953,7 +955,7 @@ function the_company_video( $post = null ) {
 	$video_embed = apply_filters( 'the_company_video_embed', $video_embed, $post );
 
 	if ( $video_embed ) {
-		echo '<div class="company_video">' . $video_embed . '</div>'; // WPCS: XSS ok.
+		echo '<div class="company_video">' . $video_embed . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }
 

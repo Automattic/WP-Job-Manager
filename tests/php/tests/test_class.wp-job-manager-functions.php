@@ -260,21 +260,24 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		);
 
 		$post_categories['main']  = $this->factory->job_listing->create_many(
-			3, array(
+			3,
+			array(
 				'tax_input' => array(
 					'job_listing_category' => $categories['main'],
 				),
 			)
 		);
 		$post_categories['weird'] = $this->factory->job_listing->create_many(
-			2, array(
+			2,
+			array(
 				'tax_input' => array(
 					'job_listing_category' => $categories['weird'],
 				),
 			)
 		);
 		$post_categories['happy'] = $this->factory->job_listing->create_many(
-			2, array(
+			2,
+			array(
 				'tax_input' => array(
 					'job_listing_category' => $categories['happy'],
 				),
@@ -376,21 +379,24 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		);
 
 		$post_job_types['main']   = $this->factory->job_listing->create_many(
-			3, array(
+			3,
+			array(
 				'tax_input' => array(
 					'job_listing_type' => $tags['main'],
 				),
 			)
 		);
 		$post_job_types['weird']  = $this->factory->job_listing->create_many(
-			2, array(
+			2,
+			array(
 				'tax_input' => array(
 					'job_listing_type' => $tags['weird'],
 				),
 			)
 		);
 		$post_job_types['happy']  = $this->factory->job_listing->create_many(
-			2, array(
+			2,
+			array(
 				'tax_input' => array(
 					'job_listing_type' => $tags['happy'],
 				),
@@ -451,14 +457,16 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		);
 
 		$featured_flag['featured']     = $this->factory->job_listing->create_many(
-			3, array(
+			3,
+			array(
 				'meta_input' => array(
 					'_featured' => 1,
 				),
 			)
 		);
 		$featured_flag['not-featured'] = $this->factory->job_listing->create_many(
-			2, array(
+			2,
+			array(
 				'meta_input' => array(
 					'_featured' => 0,
 				),
@@ -501,7 +509,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		);
 
 		$featured_flag['featured']     = $this->factory->job_listing->create_many(
-			5, array(
+			5,
+			array(
 				'post_title' => 'Featured Post',
 				'meta_input' => array(
 					'_featured' => 1,
@@ -509,7 +518,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			)
 		);
 		$featured_flag['not-featured'] = $this->factory->job_listing->create_many(
-			5, array(
+			5,
+			array(
 				'post_title' => 'Not Featured Post',
 				'meta_input' => array(
 					'_featured' => 0,
@@ -551,7 +561,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		);
 
 		$featured_flag['featured']     = $this->factory->job_listing->create_many(
-			5, array(
+			5,
+			array(
 				'post_title' => 'Featured Post',
 				'meta_input' => array(
 					'_featured' => 1,
@@ -559,7 +570,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			)
 		);
 		$featured_flag['not-featured'] = $this->factory->job_listing->create_many(
-			5, array(
+			5,
+			array(
 				'post_title' => 'Not Featured Post',
 				'meta_input' => array(
 					'_featured' => 0,
@@ -600,14 +612,16 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		);
 
 		$featured_flag['filled']     = $this->factory->job_listing->create_many(
-			3, array(
+			3,
+			array(
 				'meta_input' => array(
 					'_filled' => 1,
 				),
 			)
 		);
 		$featured_flag['not-filled'] = $this->factory->job_listing->create_many(
-			2, array(
+			2,
+			array(
 				'meta_input' => array(
 					'_filled' => 0,
 				),

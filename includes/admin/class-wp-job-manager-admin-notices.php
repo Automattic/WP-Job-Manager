@@ -104,8 +104,8 @@ class WP_Job_Manager_Admin_Notices {
 	 * Dismiss notices as requested by user. Inspired by WooCommerce's approach.
 	 */
 	public static function dismiss_notices() {
-		if ( isset( $_GET['wpjm_hide_notice'] ) && isset( $_GET['_wpjm_notice_nonce'] ) ) { // WPCS: input var ok, CSRF ok.
-			if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpjm_notice_nonce'] ) ), 'job_manager_hide_notices_nonce' ) ) { // WPCS: input var ok, CSRF ok.
+		if ( isset( $_GET['wpjm_hide_notice'] ) && isset( $_GET['_wpjm_notice_nonce'] ) ) {
+			if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpjm_notice_nonce'] ) ), 'job_manager_hide_notices_nonce' ) ) {
 				wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'wp-job-manager' ) );
 			}
 
@@ -113,10 +113,12 @@ class WP_Job_Manager_Admin_Notices {
 				wp_die( esc_html__( 'You don&#8217;t have permission to do this.', 'wp-job-manager' ) );
 			}
 
-			$hide_notice = sanitize_key( wp_unslash( $_GET['wpjm_hide_notice'] ) ); // WPCS: input var ok, CSRF ok.
+			$hide_notice = sanitize_key( wp_unslash( $_GET['wpjm_hide_notice'] ) );
 
 			self::remove_notice( $hide_notice );
-			wp_redirect( remove_query_arg( array( 'wpjm_hide_notice', '_wpjm_notice_nonce' ), $_SERVER['REQUEST_URI'] ) );
+
+			wp_safe_redirect( remove_query_arg( array( 'wpjm_hide_notice', '_wpjm_notice_nonce' ) ) );
+			exit;
 		}
 	}
 

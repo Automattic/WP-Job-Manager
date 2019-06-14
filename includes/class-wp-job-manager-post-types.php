@@ -24,7 +24,7 @@ class WP_Job_Manager_Post_Types {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -34,10 +34,10 @@ class WP_Job_Manager_Post_Types {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -128,7 +128,7 @@ class WP_Job_Manager_Post_Types {
 	public function hide_job_type_block_editor_selector( $response, $taxonomy, $request ) {
 		if (
 			'job_listing_type' === $taxonomy->name
-			 && 'edit' === $request->get_param( 'context' )
+			&& 'edit' === $request->get_param( 'context' )
 		) {
 			$response->data['visibility']['show_ui'] = false;
 		}
@@ -145,7 +145,7 @@ class WP_Job_Manager_Post_Types {
 
 		$admin_capability = 'manage_job_listings';
 
-		$permalink_structure = WP_Job_Manager_Post_Types::get_permalink_structure();
+		$permalink_structure = self::get_permalink_structure();
 
 		/**
 		 * Taxonomies
@@ -431,7 +431,7 @@ class WP_Job_Manager_Post_Types {
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( strpos( $menu_item[0], $plural ) === 0 ) {
-				$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-" . esc_attr( $pending_jobs ) . "'><span class='pending-count'>" . absint( number_format_i18n( $pending_jobs ) ) . '</span></span>'; // WPCS: override ok.
+				$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-" . esc_attr( $pending_jobs ) . "'><span class='pending-count'>" . absint( number_format_i18n( $pending_jobs ) ) . '</span></span>';
 				break;
 			}
 		}
@@ -666,7 +666,7 @@ class WP_Job_Manager_Post_Types {
 		 *
 		 * @param int $post_id The post ID of the job.
 		 */
-		 do_action( 'job_feed_item', $post_id );
+		do_action( 'job_feed_item', $post_id );
 	}
 
 	/**
@@ -1116,7 +1116,7 @@ class WP_Job_Manager_Post_Types {
 	 * Registers job listing meta fields.
 	 */
 	public function register_meta_fields() {
-		$fields       = WP_Job_Manager_Post_Types::get_job_listing_fields();
+		$fields = self::get_job_listing_fields();
 
 		foreach ( $fields as $meta_key => $field ) {
 			register_meta(

@@ -38,7 +38,7 @@ if ( ! empty( $categories ) ) {
 		?>
 		<li>
 			<a class="<?php echo $current_category === $category->slug ? 'current' : ''; ?>"
-			   href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&category=' . esc_attr( $category->slug ) ) ); ?>">
+				href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&category=' . esc_attr( $category->slug ) ) ); ?>">
 				<?php echo esc_html( $category->label ); ?>
 			</a>
 		</li>
@@ -60,7 +60,8 @@ if ( empty( $add_ons ) ) {
 				'utm_medium'   => 'addonpage',
 				'utm_campaign' => 'wpjmplugin',
 				'utm_content'  => 'listing',
-			), $add_on->link
+			),
+			$add_on->link
 		);
 		?>
 		<li class="product">

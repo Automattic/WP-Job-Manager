@@ -42,9 +42,11 @@ function polylang_wpjm_query_language( $query_args ) {
  * @return string
  */
 function polylang_wpjm_get_job_listings_lang( $lang ) {
-	if ( function_exists( 'pll_current_language' )
-		 && function_exists( 'pll_is_translated_post_type' )
-		 && pll_is_translated_post_type( 'job_listing' ) ) {
+	if (
+		function_exists( 'pll_current_language' )
+		&& function_exists( 'pll_is_translated_post_type' )
+		&& pll_is_translated_post_type( 'job_listing' )
+	) {
 		return pll_current_language();
 	}
 	return $lang;
@@ -75,6 +77,6 @@ function polylang_wpjm_page_id( $page_id ) {
  * @return bool
  */
 function polylang_wpjm_doing_ajax( $is_ajax ) {
-	return false === strpos( $_SERVER['REQUEST_URI'], '/jm-ajax/' ) ? $is_ajax : true;
+	return isset( $_SERVER['REQUEST_URI'] ) && false === strpos( $_SERVER['REQUEST_URI'], '/jm-ajax/' ) ? $is_ajax : true;
 }
 add_filter( 'pll_is_ajax_on_front', 'polylang_wpjm_doing_ajax' );

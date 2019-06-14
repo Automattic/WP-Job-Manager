@@ -102,7 +102,8 @@ abstract class WP_Job_Manager_Form {
 			delete_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key' );
 			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
 			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
-			wp_redirect( remove_query_arg( array( 'new', 'key' ), $_SERVER['REQUEST_URI'] ) );
+			wp_safe_redirect( remove_query_arg( array( 'new', 'key' ) ) );
+			exit;
 		}
 
 		$step_key = $this->get_step_key( $this->step );
@@ -114,10 +115,11 @@ abstract class WP_Job_Manager_Form {
 		$next_step_key = $this->get_step_key( $this->step );
 
 		// If the next step has a handler to call before going to the view, run it now.
-		if ( $next_step_key
-			 && $step_key !== $next_step_key
-			 && isset( $this->steps[ $next_step_key ]['before'] )
-			 && is_callable( $this->steps[ $next_step_key ]['before'] )
+		if (
+			$next_step_key
+			&& $step_key !== $next_step_key
+			&& isset( $this->steps[ $next_step_key ]['before'] )
+			&& is_callable( $this->steps[ $next_step_key ]['before'] )
 		) {
 			call_user_func( $this->steps[ $next_step_key ]['before'] );
 		}
@@ -187,7 +189,9 @@ abstract class WP_Job_Manager_Form {
 	 * @return string
 	 */
 	public function get_action() {
-		return esc_url_raw( $this->action ? $this->action : wp_unslash( $_SERVER['REQUEST_URI'] ) );
+		$default_action = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+
+		return esc_url_raw( $this->action ? $this->action : $default_action );
 	}
 
 	/**
@@ -299,7 +303,8 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function enqueue_scripts() {
 		if ( $this->use_recaptcha_field() ) {
-			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js' );
+			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NoExplicitVersion
+			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js', array(), false, false );
 		}
 	}
 
@@ -363,12 +368,13 @@ abstract class WP_Job_Manager_Form {
 			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
-		$response = wp_remote_get(
+		$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
+		$response            = wp_remote_get(
 			add_query_arg(
 				array(
 					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
 					'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
-					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],
+					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $default_remote_addr,
 				),
 				'https://www.google.com/recaptcha/api/siteverify'
 			)

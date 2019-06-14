@@ -115,7 +115,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @var $transients
 	 */
 	private static $transients = array(
-		'_job_manager_activation_redirect',
+		'_job_manager_activation_redirect', // Legacy transient that should still be removed.
 		'get_job_listings-transient-version',
 		'jm_.*',
 	);
@@ -214,6 +214,8 @@ class WP_Job_Manager_Data_Cleaner {
 	private static function cleanup_taxonomies() {
 		global $wpdb;
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
 		foreach ( self::$taxonomies as $taxonomy ) {
 			$terms = $wpdb->get_results(
 				$wpdb->prepare(
@@ -234,6 +236,9 @@ class WP_Job_Manager_Data_Cleaner {
 				clean_taxonomy_cache( $taxonomy );
 			}
 		}
+
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -291,6 +296,8 @@ class WP_Job_Manager_Data_Cleaner {
 	private static function cleanup_transients() {
 		global $wpdb;
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
 		foreach ( array( '_transient_', '_transient_timeout_' ) as $prefix ) {
 			foreach ( self::$transients as $transient ) {
 				$wpdb->query(
@@ -301,6 +308,8 @@ class WP_Job_Manager_Data_Cleaner {
 				);
 			}
 		}
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -349,6 +358,7 @@ class WP_Job_Manager_Data_Cleaner {
 		global $wpdb;
 
 		foreach ( self::$user_meta_keys as $meta_key ) {
+			// phpcs:ignore
 			$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => $meta_key ) );
 		}
 	}
