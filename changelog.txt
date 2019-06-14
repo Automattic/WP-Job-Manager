@@ -1,3 +1,6 @@
+= 1.33.2 =
+* Fix: Issue with `[jobs]` filter form on some themes and plugins.
+
 = 1.33.1 =
 * Fix: reCAPTCHA is checked when saving draft job listings.
 * Fix: Fix for fatal error encountered when importing jobs with WP All Import.
