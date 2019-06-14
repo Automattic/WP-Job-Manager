@@ -904,7 +904,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		if ( $this->job_id ) {
 			$job_preview       = true;
-			$post              = get_post( $this->job_id );
+			$post              = get_post( $this->job_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Job preview depends on temporary override. Reset below.
 			$post->post_status = 'preview';
 
 			setup_postdata( $post );
