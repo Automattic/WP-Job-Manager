@@ -692,7 +692,7 @@ function wpjm_get_registration_fields() {
 				'type'     => 'text',
 				'label'    => esc_html__( 'Username', 'wp-job-manager' ),
 				'required' => $account_required,
-				'value'    => isset( $_POST['create_account_username'] ) ? $_POST['create_account_username'] : '',
+				'value'    => isset( $_POST['create_account_username'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_username'] ) ) : '',
 			);
 		}
 		if ( ! $use_standard_password_setup_email ) {
@@ -718,7 +718,7 @@ function wpjm_get_registration_fields() {
 			'label'       => esc_html__( 'Your email', 'wp-job-manager' ),
 			'placeholder' => __( 'you@yourdomain.com', 'wp-job-manager' ),
 			'required'    => $account_required,
-			'value'       => isset( $_POST['create_account_email'] ) ? $_POST['create_account_email'] : '',
+			'value'       => isset( $_POST['create_account_email'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_email'] ) ) : '',
 		);
 	}
 

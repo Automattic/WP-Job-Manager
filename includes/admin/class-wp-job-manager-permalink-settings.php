@@ -142,12 +142,12 @@ class WP_Job_Manager_Permalink_Settings {
 
 			$permalink_settings = WP_Job_Manager_Post_Types::get_raw_permalink_settings();
 
-			$permalink_settings['job_base']      = isset( $_POST['wpjm_job_base_slug'] ) ? sanitize_title_with_dashes( $_POST['wpjm_job_base_slug'] ) : '';
-			$permalink_settings['category_base'] = isset( $_POST['wpjm_job_category_slug'] ) ? sanitize_title_with_dashes( $_POST['wpjm_job_category_slug'] ) : '';
-			$permalink_settings['type_base']     = isset( $_POST['wpjm_job_type_slug'] ) ? sanitize_title_with_dashes( $_POST['wpjm_job_type_slug'] ) : '';
+			$permalink_settings['job_base']      = isset( $_POST['wpjm_job_base_slug'] ) ? sanitize_title_with_dashes( wp_unslash( $_POST['wpjm_job_base_slug'] ) ) : '';
+			$permalink_settings['category_base'] = isset( $_POST['wpjm_job_category_slug'] ) ? sanitize_title_with_dashes( wp_unslash( $_POST['wpjm_job_category_slug'] ) ) : '';
+			$permalink_settings['type_base']     = isset( $_POST['wpjm_job_type_slug'] ) ? sanitize_title_with_dashes( wp_unslash( $_POST['wpjm_job_type_slug'] ) ) : '';
 
 			if ( isset( $_POST['wpjm_job_listings_archive_slug'] ) ) {
-				$permalink_settings['jobs_archive'] = sanitize_title_with_dashes( $_POST['wpjm_job_listings_archive_slug'] );
+				$permalink_settings['jobs_archive'] = sanitize_title_with_dashes( wp_unslash( $_POST['wpjm_job_listings_archive_slug'] ) );
 			}
 
 			update_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, wp_json_encode( $permalink_settings ) );

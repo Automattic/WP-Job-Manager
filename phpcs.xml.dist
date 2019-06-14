@@ -27,17 +27,13 @@
 	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-Extra" />
 
+	<rule ref="WordPress.Security.ValidatedSanitizedInput" />
+
 	<!-- Temporary Rule Exclusions -->
 	<rule ref="WordPress.WP.GlobalVariablesOverride.Prohibited">
 		<severity>4</severity>
 	</rule>
-	<rule ref="WordPress.Security.ValidatedSanitizedInput.MissingUnslash">
-		<severity>4</severity>
-	</rule>
 	<rule ref="WordPress.Security.NonceVerification">
-		<severity>4</severity>
-	</rule>
-	<rule ref="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized">
 		<severity>4</severity>
 	</rule>
 	<rule ref="WordPress.DB.DirectDatabaseQuery">

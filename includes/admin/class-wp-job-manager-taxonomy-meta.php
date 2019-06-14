@@ -61,7 +61,7 @@ class WP_Job_Manager_Taxonomy_Meta {
 	public function set_schema_org_employment_type_field( $term_id, $tt_id ) {
 		$employment_types = wpjm_job_listing_employment_type_options();
 		if ( isset( $_POST['employment_type'] ) && isset( $employment_types[ $_POST['employment_type'] ] ) ) {
-			update_term_meta( $term_id, 'employment_type', $_POST['employment_type'] );
+			update_term_meta( $term_id, 'employment_type', sanitize_text_field( wp_unslash( $_POST['employment_type'] ) ) );
 		} elseif ( isset( $_POST['employment_type'] ) ) {
 			delete_term_meta( $term_id, 'employment_type' );
 		}

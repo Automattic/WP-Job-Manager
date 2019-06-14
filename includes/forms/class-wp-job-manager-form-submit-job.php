@@ -628,7 +628,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						if ( empty( $_POST['create_account_password_verify'] ) || $_POST['create_account_password_verify'] !== $_POST['create_account_password'] ) {
 							throw new Exception( __( 'Passwords must match.', 'wp-job-manager' ) );
 						}
-						if ( ! wpjm_validate_new_password( $_POST['create_account_password'] ) ) {
+						if ( ! wpjm_validate_new_password( sanitize_text_field( wp_unslash( $_POST['create_account_password'] ) ) ) ) {
 							$password_hint = wpjm_get_password_rules_hint();
 							if ( $password_hint ) {
 								// translators: Placeholder %s is the password hint.
@@ -642,9 +642,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					if ( ! empty( $_POST['create_account_email'] ) ) {
 						$create_account = wp_job_manager_create_account(
 							array(
-								'username' => ( job_manager_generate_username_from_email() || empty( $_POST['create_account_username'] ) ) ? '' : $_POST['create_account_username'],
-								'password' => ( wpjm_use_standard_password_setup_email() || empty( $_POST['create_account_password'] ) ) ? '' : $_POST['create_account_password'],
-								'email'    => $_POST['create_account_email'],
+								'username' => ( job_manager_generate_username_from_email() || empty( $_POST['create_account_username'] ) ) ? '' : sanitize_text_field( wp_unslash( $_POST['create_account_username'] ) ),
+								'password' => ( wpjm_use_standard_password_setup_email() || empty( $_POST['create_account_password'] ) ) ? '' : sanitize_text_field( wp_unslash( $_POST['create_account_password'] ) ),
+								'email'    => sanitize_text_field( wp_unslash( $_POST['create_account_email'] ) ),
 								'role'     => get_option( 'job_manager_registration_role' ),
 							)
 						);
@@ -975,7 +975,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
-		if ( empty( $_REQUEST['_wpjm_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpjm_nonce'], 'submit-job-' . $this->job_id ) ) {
+		if (
+			empty( $_REQUEST['_wpjm_nonce'] )
+			|| ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpjm_nonce'] ), 'submit-job-' . $this->job_id ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		) {
 			wp_nonce_ays( 'submit-job-' . $this->job_id );
 			die();
 		}
@@ -998,7 +1001,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
-		if ( empty( $_REQUEST['_wpjm_nonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpjm_nonce'], 'preview-job-' . $this->job_id ) ) {
+
+		if (
+			empty( $_REQUEST['_wpjm_nonce'] )
+			|| ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpjm_nonce'] ), 'preview-job-' . $this->job_id ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		) {
 			wp_nonce_ays( 'preview-job-' . $this->job_id );
 			die();
 		}

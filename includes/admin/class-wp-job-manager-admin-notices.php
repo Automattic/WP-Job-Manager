@@ -105,7 +105,7 @@ class WP_Job_Manager_Admin_Notices {
 	 */
 	public static function dismiss_notices() {
 		if ( isset( $_GET['wpjm_hide_notice'] ) && isset( $_GET['_wpjm_notice_nonce'] ) ) {
-			if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpjm_notice_nonce'] ) ), 'job_manager_hide_notices_nonce' ) ) {
+			if ( ! wp_verify_nonce( wp_unslash( $_GET['_wpjm_notice_nonce'] ), 'job_manager_hide_notices_nonce' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 				wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'wp-job-manager' ) );
 			}
 

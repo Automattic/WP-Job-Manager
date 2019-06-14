@@ -28,7 +28,7 @@ add_action( 'pll_init', 'polylang_wpjm_init' );
  */
 function polylang_wpjm_query_language( $query_args ) {
 	if ( isset( $_POST['lang'] ) ) {
-		$query_args['lang'] = $_POST['lang'];
+		$query_args['lang'] = sanitize_text_field( wp_unslash( $_POST['lang'] ) );
 	}
 	return $query_args;
 }
@@ -77,6 +77,6 @@ function polylang_wpjm_page_id( $page_id ) {
  * @return bool
  */
 function polylang_wpjm_doing_ajax( $is_ajax ) {
-	return isset( $_SERVER['REQUEST_URI'] ) && false === strpos( $_SERVER['REQUEST_URI'], '/jm-ajax/' ) ? $is_ajax : true;
+	return isset( $_SERVER['REQUEST_URI'] ) && false === strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '/jm-ajax/' ) ? $is_ajax : true;
 }
 add_filter( 'pll_is_ajax_on_front', 'polylang_wpjm_doing_ajax' );

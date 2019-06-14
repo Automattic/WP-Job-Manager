@@ -581,7 +581,10 @@ class WP_Job_Manager_Writepanels {
 		if ( is_int( wp_is_post_autosave( $post ) ) ) {
 			return;
 		}
-		if ( empty( $_POST['job_manager_nonce'] ) || ! wp_verify_nonce( $_POST['job_manager_nonce'], 'save_meta_data' ) ) {
+		if (
+			empty( $_POST['job_manager_nonce'] )
+			|| ! wp_verify_nonce( wp_unslash( $_POST['job_manager_nonce'] ), 'save_meta_data' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		) {
 			return;
 		}
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
@@ -631,7 +634,7 @@ class WP_Job_Manager_Writepanels {
 						delete_post_meta( $post_id, $key );
 					}
 				} else {
-					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( $_POST[ $key ] ) ) ) );
+					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) ) ) );
 				}
 			} elseif ( '_job_author' === $key ) {
 				if ( empty( $_POST[ $key ] ) ) {
@@ -639,7 +642,7 @@ class WP_Job_Manager_Writepanels {
 				}
 				$wpdb->update( $wpdb->posts, array( 'post_author' => $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : 0 ), array( 'ID' => $post_id ) );
 			} elseif ( isset( $_POST[ $key ] ) ) {
-				update_post_meta( $post_id, $key, $_POST[ $key ] );
+				update_post_meta( $post_id, $key, wp_unslash( $_POST[ $key ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
 			}
 		}
 

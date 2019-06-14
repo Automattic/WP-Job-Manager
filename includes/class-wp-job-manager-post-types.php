@@ -560,7 +560,7 @@ class WP_Job_Manager_Post_Types {
 			foreach ( $location_meta_keys as $meta_key ) {
 				$location_search[] = array(
 					'key'     => $meta_key,
-					'value'   => sanitize_text_field( $_GET['search_location'] ),
+					'value'   => sanitize_text_field( wp_unslash( $_GET['search_location'] ) ),
 					'compare' => 'like',
 				);
 			}
@@ -571,12 +571,12 @@ class WP_Job_Manager_Post_Types {
 			$query_args['tax_query'][] = array(
 				'taxonomy' => 'job_listing_type',
 				'field'    => 'slug',
-				'terms'    => explode( ',', sanitize_text_field( $_GET['job_types'] ) ) + array( 0 ),
+				'terms'    => explode( ',', sanitize_text_field( wp_unslash( $_GET['job_types'] ) ) ) + array( 0 ),
 			);
 		}
 
 		if ( ! empty( $_GET['job_categories'] ) ) {
-			$cats                      = explode( ',', sanitize_text_field( $_GET['job_categories'] ) ) + array( 0 );
+			$cats                      = explode( ',', sanitize_text_field( wp_unslash( $_GET['job_categories'] ) ) ) + array( 0 );
 			$field                     = is_numeric( $cats ) ? 'term_id' : 'slug';
 			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $cats ) > 1 ? 'AND' : 'IN';
 			$query_args['tax_query'][] = array(
@@ -588,7 +588,7 @@ class WP_Job_Manager_Post_Types {
 			);
 		}
 
-		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( $_GET['search_keywords'] ) : '';
+		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
 		if ( ! empty( $job_manager_keyword ) ) {
 			$query_args['s'] = $job_manager_keyword;
 			add_filter( 'posts_search', 'get_job_listings_keyword_search' );
@@ -774,7 +774,7 @@ class WP_Job_Manager_Post_Types {
 
 		// See if the user has set the expiry manually.
 		if ( ! empty( $_POST['_job_expires'] ) ) {
-			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( sanitize_text_field( $_POST['_job_expires'] ) ) ) );
+			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) ) ) );
 		} elseif ( ! isset( $expires ) ) {
 			// No manual setting? Lets generate a date if there isn't already one.
 			$expires = calculate_job_expiry( $post->ID );

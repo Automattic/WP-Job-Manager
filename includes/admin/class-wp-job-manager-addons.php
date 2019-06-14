@@ -135,10 +135,11 @@ class WP_Job_Manager_Addons {
 			if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
 				do_action( 'job_manager_helper_output' );
 			} else {
-				$category   = isset( $_GET['category'] ) ? sanitize_text_field( $_GET['category'] ) : null;
+				$category   = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : null;
 				$messages   = $this->get_messages();
 				$categories = $this->get_categories();
 				$add_ons    = $this->get_add_ons( $category );
+
 				include_once dirname( __FILE__ ) . '/views/html-admin-page-addons.php';
 			}
 			?>
