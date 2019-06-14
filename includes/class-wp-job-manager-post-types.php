@@ -1377,7 +1377,7 @@ class WP_Job_Manager_Post_Types {
 			$type = $fields[ $meta_key ]['type'];
 		}
 
-		if ( 'textarea' === $type ) {
+		if ( 'textarea' === $type || 'wp_editor' === $type ) {
 			return wp_kses_post( wp_unslash( $meta_value ) );
 		}
 

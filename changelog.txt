@@ -1,3 +1,13 @@
+= 1.33.2 =
+* Fix: Issue with `[jobs]` filter form on some themes and plugins.
+
+= 1.33.1 =
+* Fix: reCAPTCHA is checked when saving draft job listings.
+* Fix: Fix for fatal error encountered when importing jobs with WP All Import.
+* Fix: Maximum file upload limit is now not set for multiple file upload fields.
+* Fix: Theme compatibility fix when job listings are shown outside of the `[jobs]` shortcode.
+* Fix: Custom rich text fields no longer have their HTML tags removed.
+
 = 1.33.0 =
 * Enhancement: Allow registered users to save drafts of job listings to be continued later from job dashboard.
 * Enhancement: Allow access to job listing fields in REST API.

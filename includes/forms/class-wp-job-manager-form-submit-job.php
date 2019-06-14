@@ -71,7 +71,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', array( $this, 'display_recaptcha_field' ) );
-			add_action( 'submit_job_form_validate_fields', array( $this, 'validate_recaptcha_field' ) );
+			add_filter( 'submit_job_form_validate_fields', array( $this, 'validate_recaptcha_field' ) );
+			add_filter( 'submit_draft_job_form_validate_fields', array( $this, 'validate_recaptcha_field' ) );
 		}
 
 		$this->steps = (array) apply_filters(
@@ -374,7 +375,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						}
 					}
 				}
-				if ( empty( $field['file_limit'] ) && ! empty( $field['multiple'] ) ) {
+				if ( empty( $field['file_limit'] ) && empty( $field['multiple'] ) ) {
 					$field['file_limit'] = 1;
 				}
 				if ( 'file' === $field['type'] && ! empty( $field['file_limit'] ) ) {
@@ -430,6 +431,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 		}
 
+		/**
+		 * Perform additional validation on the job submission fields.
+		 *
+		 * @since 1.0.4
+		 *
+		 * @param bool  $is_valid Whether the fields are valid.
+		 * @param array $fields   Array of all fields being validated.
+		 * @param array $values   Submitted input values.
+		 */
 		return apply_filters( 'submit_job_form_validate_fields', true, $this->fields, $values );
 	}
 
@@ -575,12 +585,24 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			$this->check_submit_form_nonce_field();
 
-			if ( ! $is_saving_draft ) {
-				// Validate required.
+			// Validate fields.
+			if ( $is_saving_draft ) {
+				/**
+				 * Perform additional validation on the job submission fields when saving drafts.
+				 *
+				 * @since 1.33.1
+				 *
+				 * @param bool  $is_valid Whether the fields are valid.
+				 * @param array $fields   Array of all fields being validated.
+				 * @param array $values   Submitted input values.
+				 */
+				$validation_status = apply_filters( 'submit_draft_job_form_validate_fields', true, $this->fields, $values );
+			} else {
 				$validation_status = $this->validate_fields( $values );
-				if ( is_wp_error( $validation_status ) ) {
-					throw new Exception( $validation_status->get_error_message() );
-				}
+			}
+
+			if ( is_wp_error( $validation_status ) ) {
+				throw new Exception( $validation_status->get_error_message() );
 			}
 
 			// Account creation.

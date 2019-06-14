@@ -32,7 +32,6 @@ class WP_Job_Manager_Install {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin-notices.php';
 			WP_Job_Manager_Admin_Notices::add_notice( WP_Job_Manager_Admin_Notices::NOTICE_CORE_SETUP );
 			$is_new_install = true;
-			set_transient( '_job_manager_activation_redirect', 1, HOUR_IN_SECONDS );
 		}
 
 		// Update featured posts ordering.
