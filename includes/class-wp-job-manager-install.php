@@ -69,13 +69,9 @@ class WP_Job_Manager_Install {
 	 * Initializes user roles.
 	 */
 	private static function init_user_roles() {
-		global $wp_roles;
+		$roles = wp_roles();
 
-		if ( class_exists( 'WP_Roles' ) && ! isset( $wp_roles ) ) {
-			$wp_roles = new WP_Roles();
-		}
-
-		if ( is_object( $wp_roles ) ) {
+		if ( is_object( $roles ) ) {
 			add_role(
 				'employer',
 				__( 'Employer', 'wp-job-manager' ),
@@ -90,7 +86,7 @@ class WP_Job_Manager_Install {
 
 			foreach ( $capabilities as $cap_group ) {
 				foreach ( $cap_group as $cap ) {
-					$wp_roles->add_cap( 'administrator', $cap );
+					$roles->add_cap( 'administrator', $cap );
 				}
 			}
 		}
