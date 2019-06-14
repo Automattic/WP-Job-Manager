@@ -241,7 +241,7 @@ class WP_Job_Manager_Ajax {
 			 */
 			wp_send_json( apply_filters( 'job_manager_get_listings_result', $result, $jobs ) );
 
-			exit;
+			return;
 		}
 
 		ob_start();
