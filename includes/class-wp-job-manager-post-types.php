@@ -735,16 +735,19 @@ class WP_Job_Manager_Post_Types {
 	 * Deletes old previewed jobs after 30 days to keep the DB clean.
 	 */
 	public function delete_old_previews() {
-		global $wpdb;
-
 		// Delete old expired jobs.
-		$job_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT posts.ID FROM {$wpdb->posts} as posts
-					WHERE posts.post_type = 'job_listing'
-					AND posts.post_modified < %s
-					AND posts.post_status = 'preview'",
-				date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) )
+		$job_ids = get_posts(
+			array(
+				'post_type'      => 'job_listing',
+				'post_status'    => 'preview',
+				'fields'         => 'ids',
+				'date_query'     => array(
+					array(
+						'column' => 'post_modified',
+						'before' => date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ),
+					),
+				),
+				'posts_per_page' => -1,
 			)
 		);
 
