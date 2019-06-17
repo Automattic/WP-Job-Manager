@@ -109,13 +109,15 @@ class WP_Job_Manager_Cache_Helper {
 	/**
 	 * When the transient version increases, this is used to remove all past transients to avoid filling the DB.
 	 *
-	 * Note; this only works on transients appended with the transient version, and when object caching is not being used.
+	 * Note: this only works on transients appended with the transient version, and when object caching is not being used.
 	 *
 	 * @param string $version
 	 */
 	private static function delete_version_transients( $version ) {
+		global $wpdb;
+
 		if ( ! wp_using_ext_object_cache() && ! empty( $version ) ) {
-			global $wpdb;
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Only used when object caching is disabled.
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s;", '\_transient\_%' . $version ) );
 		}
 	}
