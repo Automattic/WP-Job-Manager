@@ -43,9 +43,11 @@ class WP_Job_Manager_Data_Cleaner {
 	private static $cron_jobs = array(
 		'job_manager_check_for_expired_jobs',
 		'job_manager_delete_old_previews',
-		'job_manager_clear_expired_transients',
 		'job_manager_email_daily_notices',
 		'job_manager_usage_tracking_send_usage_data',
+
+		// Old cron jobs.
+		'job_manager_clear_expired_transients',
 	);
 
 	/**

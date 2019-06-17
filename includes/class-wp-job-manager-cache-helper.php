@@ -29,7 +29,6 @@ class WP_Job_Manager_Cache_Helper {
 		add_action( 'edited_term', array( __CLASS__, 'edited_term' ), 10, 3 );
 		add_action( 'create_term', array( __CLASS__, 'edited_term' ), 10, 3 );
 		add_action( 'delete_term', array( __CLASS__, 'edited_term' ), 10, 3 );
-		add_action( 'job_manager_clear_expired_transients', array( __CLASS__, 'clear_expired_transients' ), 10 );
 		add_action( 'transition_post_status', array( __CLASS__, 'maybe_clear_count_transients' ), 10, 3 );
 	}
 
@@ -124,24 +123,11 @@ class WP_Job_Manager_Cache_Helper {
 
 	/**
 	 * Clear expired transients.
+	 *
+	 * @deprecated 1.34.0 Handled by WordPress since 4.9.
 	 */
 	public static function clear_expired_transients() {
-		global $wpdb;
-
-		if ( ! wp_using_ext_object_cache() && ! defined( 'WP_SETUP_CONFIG' ) && ! defined( 'WP_INSTALLING' ) ) {
-			$wpdb->query(
-				$wpdb->prepare(
-					"DELETE a, b FROM $wpdb->options a, $wpdb->options b
-						WHERE a.option_name LIKE %s
-						AND a.option_name NOT LIKE %s
-						AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
-						AND b.option_value < %s;",
-					$wpdb->esc_like( '_transient_jm_' ) . '%',
-					$wpdb->esc_like( '_transient_timeout_jm_' ) . '%',
-					time()
-				)
-			);
-		}
+		_deprecated_function( __METHOD__, '1.34.0', 'handled by WordPress core since 4.9' );
 	}
 
 	/**

@@ -127,6 +127,7 @@ class WP_Job_Manager {
 	public function updater() {
 		if ( version_compare( JOB_MANAGER_VERSION, get_option( 'wp_job_manager_version' ), '>' ) ) {
 			WP_Job_Manager_Install::install();
+
 			flush_rewrite_rules();
 		}
 	}
@@ -223,9 +224,6 @@ class WP_Job_Manager {
 		if ( ! wp_next_scheduled( 'job_manager_delete_old_previews' ) ) {
 			wp_schedule_event( time(), 'daily', 'job_manager_delete_old_previews' );
 		}
-		if ( ! wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
-			wp_schedule_event( time(), 'twicedaily', 'job_manager_clear_expired_transients' );
-		}
 		if ( ! wp_next_scheduled( 'job_manager_email_daily_notices' ) ) {
 			wp_schedule_event( time(), 'daily', 'job_manager_email_daily_notices' );
 		}
@@ -237,7 +235,6 @@ class WP_Job_Manager {
 	public static function unschedule_cron_jobs() {
 		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
 		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
-		wp_clear_scheduled_hook( 'job_manager_clear_expired_transients' );
 		wp_clear_scheduled_hook( 'job_manager_email_daily_notices' );
 	}
 
