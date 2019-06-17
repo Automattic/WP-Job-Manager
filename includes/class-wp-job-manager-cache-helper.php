@@ -188,6 +188,7 @@ class WP_Job_Manager_Cache_Helper {
 			return;
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Fetches dynamic list of cached counts.
 		$transients = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT option_name FROM $wpdb->options WHERE option_name RLIKE %s",
