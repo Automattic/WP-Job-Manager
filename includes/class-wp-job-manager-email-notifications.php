@@ -557,8 +557,8 @@ final class WP_Job_Manager_Email_Notifications {
 				'posts_per_page' => -1,
 				'meta_query'     => array(
 					array(
-						'key'     => '_job_expires',
-						'value'   => date( 'Y-m-d', $notice_before_ts ),
+						'key'   => '_job_expires',
+						'value' => date( 'Y-m-d', $notice_before_ts ),
 					),
 				),
 			)
@@ -672,7 +672,7 @@ final class WP_Job_Manager_Email_Notifications {
 	public static function get_deferred_notification_hashes() {
 		return array_map(
 			function( $value ) {
-				return sha1( json_encode( $value ) );
+				return sha1( wp_json_encode( $value ) );
 			},
 			self::$deferred_notifications
 		);

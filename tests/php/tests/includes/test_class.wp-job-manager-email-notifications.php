@@ -386,7 +386,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	 * @param array  $args         Notification arguments sent.
 	 */
 	public function assertNotificationNotSent( $notification, $args ) {
-		$hash = sha1( json_encode( array( $notification, $args ) ) );
+		$hash = sha1( wp_json_encode( array( $notification, $args ) ) );
 
 		$this->assertNotContains( $hash, WP_Job_Manager_Email_Notifications::get_deferred_notification_hashes(), "Email '{$notification}' was NOT meant to be sent with arguments '" . json_encode( $args ) . "'" );
 	}
