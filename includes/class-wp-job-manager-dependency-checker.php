@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Dependency_Checker {
 	const MINIMUM_PHP_VERSION = '5.6.20';
-	const MINIMUM_WP_VERSION  = '4.7.0';
+	const MINIMUM_WP_VERSION  = '4.9.0';
 
 	/**
 	 * Check if WP Job Manager's dependencies have been met.
