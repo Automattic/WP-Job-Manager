@@ -985,12 +985,14 @@ class WP_Job_Manager_Post_Types {
 		global $wpdb;
 
 		if ( 1 === intval( $meta_value ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Update post menu order without firing actions.
 			$wpdb->update(
 				$wpdb->posts,
 				array( 'menu_order' => -1 ),
 				array( 'ID' => $object_id )
 			);
 		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Update post menu order without firing actions.
 			$wpdb->update(
 				$wpdb->posts,
 				array( 'menu_order' => 0 ),
