@@ -366,33 +366,56 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::check_for_expired_jobs
 	 */
 	public function test_check_for_expired_jobs() {
-		$new_jobs              = array();
-		$new_jobs['none']      = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => '' ) ) );
-		$new_jobs['yesterday'] = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-1 day' ) ) ) ) );
-		$new_jobs['ancient']   = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-100 day' ) ) ) ) );
-		$new_jobs['tomorrow']  = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ) ) );
+		$new_jobs                 = array();
+		$new_jobs['none']        = $this->factory->job_listing->create();
+		delete_post_meta( $new_jobs['none'], '_job_expires' );
+		$new_jobs['empty']         = $this->factory->job_listing->create();
+		update_post_meta( $new_jobs['empty'], '_job_expires', '' );
+		$new_jobs['invalid-none'] = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => '0000-00-00' ) ) );
+		$new_jobs['today']        = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d' ) ) ) );
+		$new_jobs['yesterday']    = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-1 day' ) ) ) ) );
+		$new_jobs['ancient']      = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-100 day' ) ) ) ) );
+		$new_jobs['tomorrow']     = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ) ) );
+		$new_jobs['30daysago']    = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-30 day' ) ) ) ) );
+		$new_jobs['31daysago']    = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-31 day' ) ) ) ) );
 
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$this->assertNotExpired( $new_jobs['none'] );
+		$this->assertNotExpired( $new_jobs['empty'] );
+		$this->assertNotExpired( $new_jobs['invalid-none'] );
 		$this->assertNotExpired( $new_jobs['yesterday'] );
+		$this->assertNotExpired( $new_jobs['today'] );
 		$this->assertNotExpired( $new_jobs['ancient'] );
 		$this->assertNotExpired( $new_jobs['tomorrow'] );
 		$instance->check_for_expired_jobs();
 		$this->assertNotExpired( $new_jobs['none'] );
+		$this->assertNotExpired( $new_jobs['empty'] );
+		$this->assertNotExpired( $new_jobs['invalid-none'] );
+		$this->assertNotExpired( $new_jobs['today'] );
 		$this->assertExpired( $new_jobs['yesterday'] );
 		$this->assertExpired( $new_jobs['ancient'] );
 		$this->assertNotExpired( $new_jobs['tomorrow'] );
 
 		$this->factory->job_listing->set_post_age( $new_jobs['ancient'], '-100 days' );
+		$this->factory->job_listing->set_post_age( $new_jobs['yesterday'], '-1 day' );
+		$this->factory->job_listing->set_post_age( $new_jobs['30daysago'], '-30 days' );
+		$this->factory->job_listing->set_post_age( $new_jobs['31daysago'], '-31 days' );
+		$this->factory->job_listing->set_post_age( $new_jobs['tomorrow'], '+1 day' );
 
 		$instance->check_for_expired_jobs();
 		$this->assertNotTrashed( $new_jobs['ancient'] );
 
+		$this->commit_transaction();
 		add_filter( 'job_manager_delete_expired_jobs', '__return_true' );
 		$instance->check_for_expired_jobs();
 		remove_filter( 'job_manager_delete_expired_jobs', '__return_true' );
 
 		$this->assertTrashed( $new_jobs['ancient'] );
+		$this->assertTrashed( $new_jobs['31daysago'] );
+		$this->assertNotTrashed( $new_jobs['yesterday'] );
+		$this->assertNotTrashed( $new_jobs['30daysago'] );
+		$this->assertNotTrashed( $new_jobs['today'] );
+		$this->assertNotTrashed( $new_jobs['tomorrow'] );
 	}
 
 	/**
