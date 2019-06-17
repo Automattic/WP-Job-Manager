@@ -431,6 +431,7 @@ class WP_Job_Manager_Post_Types {
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( strpos( $menu_item[0], $plural ) === 0 ) {
+				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Only way to add pending listing count.
 				$menu[ $key ][0] .= " <span class='awaiting-mod update-plugins count-" . esc_attr( $pending_jobs ) . "'><span class='pending-count'>" . absint( number_format_i18n( $pending_jobs ) ) . '</span></span>';
 				break;
 			}

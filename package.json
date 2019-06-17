@@ -74,6 +74,7 @@
 	},
 	"dependencies": {
 		"babel-preset-stage-3": "^6.24.1",
+		"diff": "^4.0.1",
 		"lodash": "^4.17.11",
 		"react": "^16.8.6",
 		"select2": "^4.0.7"
