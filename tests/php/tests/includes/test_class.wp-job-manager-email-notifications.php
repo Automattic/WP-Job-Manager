@@ -29,6 +29,56 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Tests to make sure employer expiration notices go out when they are supposed to.
+	 *
+	 * @covers \WP_Job_Manager_Email_Notifications::send_expiring_notice
+	 * @covers \WP_Job_Manager_Email_Notifications::send_employer_expiring_notice
+	 */
+	public function test_send_employer_expiring_notice() {
+		$new_jobs                 = array();
+		$new_jobs['none']        = $this->factory->job_listing->create();
+		delete_post_meta( $new_jobs['none'], '_job_expires' );
+		$new_jobs['empty']         = $this->factory->job_listing->create();
+		update_post_meta( $new_jobs['empty'], '_job_expires', '' );
+		$new_jobs['invalid-none'] = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => '0000-00-00' ) ) );
+		$new_jobs['today']        = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d' ) ) ) );
+		$new_jobs['tomorrow']    = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ) ) );
+
+		$this->assertEquals( 0, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
+		add_filter( 'job_manager_email_is_email_notification_enabled', '__return_true' );
+		WP_Job_Manager_Email_Notifications::send_employer_expiring_notice();
+		remove_filter( 'job_manager_email_is_email_notification_enabled', '__return_true' );
+		$this->assertEquals( 1, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
+
+		$this->assertNotificationSent( WP_Job_Manager_Email_Employer_Expiring_Job::get_key(), array( 'job_id' => $new_jobs['tomorrow'] ) );
+	}
+
+	/**
+	 * Tests to make sure admin expiration notices go out when they are supposed to.
+	 *
+	 * @covers \WP_Job_Manager_Email_Notifications::send_expiring_notice
+	 * @covers \WP_Job_Manager_Email_Notifications::send_employer_expiring_notice
+	 */
+	public function test_send_admin_expiring_notice() {
+		$new_jobs                 = array();
+		$new_jobs['none']        = $this->factory->job_listing->create();
+		delete_post_meta( $new_jobs['none'], '_job_expires' );
+		$new_jobs['empty']         = $this->factory->job_listing->create();
+		update_post_meta( $new_jobs['empty'], '_job_expires', '' );
+		$new_jobs['invalid-none'] = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => '0000-00-00' ) ) );
+		$new_jobs['today']        = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d' ) ) ) );
+		$new_jobs['tomorrow']    = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ) ) );
+
+		$this->assertEquals( 0, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
+		add_filter( 'job_manager_email_is_email_notification_enabled', '__return_true' );
+		WP_Job_Manager_Email_Notifications::send_admin_expiring_notice();
+		remove_filter( 'job_manager_email_is_email_notification_enabled', '__return_true' );
+		$this->assertEquals( 1, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
+
+		$this->assertNotificationSent( WP_Job_Manager_Email_Admin_Expiring_Job::get_key(), array( 'job_id' => $new_jobs['tomorrow'] ) );
+	}
+
+	/**
 	 * @covers WP_Job_Manager_Email_Notifications::schedule_notification()
 	 * @covers WP_Job_Manager_Email_Notifications::get_deferred_notification_count()
 	 */
@@ -315,5 +365,29 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		// // PHP 5.2: Using `call_user_func()` but `$core_email_class::get_key()` preferred.
 		$this->assertTrue( is_string( call_user_func( array( $core_email_class, 'get_key' ) ) ) );
 		$this->assertTrue( is_string( call_user_func( array( $core_email_class, 'get_name' ) ) ) );
+	}
+
+	/**
+	 * Asserts that a specific email was sent.
+	 *
+	 * @param string $notification Notification unique key.
+	 * @param array  $args         Notification arguments sent.
+	 */
+	public function assertNotificationSent( $notification, $args ) {
+		$hash = sha1( json_encode( array( $notification, $args ) ) );
+
+		$this->assertContains( $hash, WP_Job_Manager_Email_Notifications::get_deferred_notification_hashes(), "Email '{$notification}' was meant to be sent with arguments '" . json_encode( $args ) . "'" );
+	}
+
+	/**
+	 * Asserts that a specific email was sent.
+	 *
+	 * @param string $notification Notification unique key.
+	 * @param array  $args         Notification arguments sent.
+	 */
+	public function assertNotificationNotSent( $notification, $args ) {
+		$hash = sha1( json_encode( array( $notification, $args ) ) );
+
+		$this->assertNotContains( $hash, WP_Job_Manager_Email_Notifications::get_deferred_notification_hashes(), "Email '{$notification}' was NOT meant to be sent with arguments '" . json_encode( $args ) . "'" );
 	}
 }

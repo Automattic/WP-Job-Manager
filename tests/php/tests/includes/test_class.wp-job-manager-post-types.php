@@ -405,7 +405,6 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$instance->check_for_expired_jobs();
 		$this->assertNotTrashed( $new_jobs['ancient'] );
 
-		$this->commit_transaction();
 		add_filter( 'job_manager_delete_expired_jobs', '__return_true' );
 		$instance->check_for_expired_jobs();
 		remove_filter( 'job_manager_delete_expired_jobs', '__return_true' );
