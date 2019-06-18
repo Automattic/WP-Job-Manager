@@ -1004,18 +1004,22 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {
 		if ( 1 === intval( $meta_value ) ) {
-			wp_update_post( array(
-				'ID'         => $object_id,
-				'menu_order' => -1,
-			) );
+			wp_update_post(
+				array(
+					'ID'         => $object_id,
+					'menu_order' => -1,
+				)
+			);
 		} else {
 			$post = get_post( $object_id );
 
 			if ( -1 === intval( $post->menu_order ) ) {
-				wp_update_post( array(
-					'ID'         => $object_id,
-					'menu_order' => 0,
-				) );
+				wp_update_post(
+					array(
+						'ID'         => $object_id,
+						'menu_order' => 0,
+					)
+				);
 			}
 		}
 	}
