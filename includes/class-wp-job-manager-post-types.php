@@ -752,7 +752,7 @@ class WP_Job_Manager_Post_Types {
 	 * Deletes old previewed jobs after 30 days to keep the DB clean.
 	 */
 	public function delete_old_previews() {
-		// Delete old expired jobs.
+		// Delete old jobs stuck in preview.
 		$job_ids = get_posts(
 			array(
 				'post_type'      => 'job_listing',
