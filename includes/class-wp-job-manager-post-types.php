@@ -707,7 +707,24 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// Delete old expired jobs.
+
+		/**
+		 * Set whether or not we should delete expired jobs after a certain amount of time.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param bool $delete_expired_jobs Whether we should delete expired jobs after a certain amount of time. Defaults to false.
+		 */
 		if ( apply_filters( 'job_manager_delete_expired_jobs', false ) ) {
+			/**
+			 * Days to preserve expired job listings before deleting them.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param int $delete_expired_jobs_days Number of days to preserve expired job listings before deleting them.
+			 */
+			$delete_expired_jobs_days = apply_filters( 'job_manager_delete_expired_jobs_days', 30 );
+
 			$job_ids = get_posts(
 				array(
 					'post_type'      => 'job_listing',
@@ -716,7 +733,7 @@ class WP_Job_Manager_Post_Types {
 					'date_query'     => array(
 						array(
 							'column' => 'post_modified',
-							'before' => date( 'Y-m-d', strtotime( '-' . apply_filters( 'job_manager_delete_expired_jobs_days', 30 ) . ' days', current_time( 'timestamp' ) ) ),
+							'before' => date( 'Y-m-d', strtotime( '-' . $delete_expired_jobs_days . ' days', current_time( 'timestamp' ) ) ),
 						),
 					),
 					'posts_per_page' => -1,
