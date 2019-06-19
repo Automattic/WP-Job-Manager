@@ -30,7 +30,8 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		add_filter( 'job_manager_settings', array( $this, 'add_setting_field' ) );
 
 		// In the setup wizard, do not display the normal opt-in dialog.
-		if ( isset( $_GET['page'] ) && 'job-manager-setup' === $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No action taken based on input.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No action taken based on input.
+		if ( isset( $_GET['page'] ) && 'job-manager-setup' === $_GET['page'] ) {
 			remove_action( 'admin_notices', array( $this, 'maybe_display_tracking_opt_in' ) );
 		}
 	}
