@@ -358,7 +358,7 @@ class WP_Job_Manager_Data_Cleaner {
 		global $wpdb;
 
 		foreach ( self::$user_meta_keys as $meta_key ) {
-			// phpcs:ignore
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$wpdb->delete( $wpdb->usermeta, array( 'meta_key' => $meta_key ) );
 		}
 	}
