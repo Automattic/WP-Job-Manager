@@ -94,7 +94,7 @@ abstract class WP_Job_Manager_Form {
 
 		// reset cookie.
 		if (
-			isset( $_GET['new'] ) &&
+			isset( $_GET['new'] ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No action taken based on input.
 			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
 			isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) &&
 			get_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
@@ -362,8 +362,11 @@ abstract class WP_Job_Manager_Form {
 	 * @return bool|WP_Error
 	 */
 	public function validate_recaptcha_field( $success ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier (when possible).
+		$input_recaptcha_response = isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '';
+
 		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
-		if ( empty( $_POST['g-recaptcha-response'] ) ) {
+		if ( empty( $input_recaptcha_response ) ) {
 			// translators: Placeholder is for the label of the reCAPTCHA field.
 			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
@@ -373,7 +376,7 @@ abstract class WP_Job_Manager_Form {
 			add_query_arg(
 				array(
 					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
-					'response' => isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '',
+					'response' => $input_recaptcha_response,
 					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : $default_remote_addr,
 				),
 				'https://www.google.com/recaptcha/api/siteverify'
@@ -493,7 +496,7 @@ abstract class WP_Job_Manager_Form {
 			$field['sanitizer'] = null;
 		}
 
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- WP_Job_Manager_Form::sanitize_posted_field handles the sanitization based on the type of data passed
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- WP_Job_Manager_Form::sanitize_posted_field handles the sanitization based on the type of data passed; nonce check happens elsewhere.
 		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( wp_unslash( $_POST[ $key ] ), $field['sanitizer'] ) : '';
 	}
 
@@ -505,6 +508,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_multiselect_field( $key, $field ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST[ $key ] ) ) : array();
 	}
 
@@ -537,6 +541,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected function get_posted_textarea_field( $key, $field ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		return isset( $_POST[ $key ] ) ? trim( wp_kses_post( wp_unslash( $_POST[ $key ] ) ) ) : '';
 	}
 
@@ -559,7 +564,9 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_checklist_field( $key, $field ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		if ( isset( $_POST['tax_input'] ) && isset( $_POST['tax_input'][ $field['taxonomy'] ] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 			return array_map( 'absint', $_POST['tax_input'][ $field['taxonomy'] ] );
 		} else {
 			return array();
@@ -574,6 +581,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : array();
 	}
 
@@ -585,6 +593,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function get_posted_term_select_field( $key, $field ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		return ! empty( $_POST[ $key ] ) && $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : '';
 	}
 
