@@ -117,6 +117,7 @@ class WP_Job_Manager_Addons {
 			<nav class="nav-tab-wrapper woo-nav-tab-wrapper">
 				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ) ); ?>" class="nav-tab
 									<?php
+									// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes on based on input.
 									if ( ! isset( $_GET['section'] ) || 'helper' !== $_GET['section'] ) {
 										echo ' nav-tab-active';
 									}
@@ -125,6 +126,7 @@ class WP_Job_Manager_Addons {
 				<?php if ( current_user_can( 'update_plugins' ) ) : ?>
 				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' ) ); ?>" class="nav-tab
 									<?php
+									// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes on based on input.
 									if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
 										echo ' nav-tab-active'; }
 									?>
@@ -132,9 +134,11 @@ class WP_Job_Manager_Addons {
 				<?php endif; ?>
 			</nav>
 			<?php
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes on based on input.
 			if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
 				do_action( 'job_manager_helper_output' );
 			} else {
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes on based on input.
 				$category   = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : null;
 				$messages   = $this->get_messages();
 				$categories = $this->get_categories();
