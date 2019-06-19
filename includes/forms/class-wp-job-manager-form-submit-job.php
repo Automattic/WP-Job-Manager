@@ -101,6 +101,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		uasort( $this->steps, array( $this, 'sort_by_priority' ) );
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing,  WordPress.Security.NonceVerification.Recommended -- Check happens later when possible. Input used safely.
 		// Get step/job.
 		if ( isset( $_POST['step'] ) ) {
 			$this->step = is_numeric( $_POST['step'] ) ? max( absint( $_POST['step'] ), 0 ) : array_search( intval( $_POST['step'] ), array_keys( $this->steps ), true );
@@ -109,6 +110,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
+		// phpcs:enable WordPress.Security.NonceVerification.Missing,  WordPress.Security.NonceVerification.Recommended
 
 		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
 			$this->job_id = 0;
@@ -116,11 +118,25 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Allow resuming from cookie.
 		$this->resume_edit = false;
-		if ( ! isset( $_GET['new'] ) && ( 'before' === get_option( 'job_manager_paid_listings_flow' ) || ! $this->job_id ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] ) && ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
+		if (
+			! isset( $_GET['new'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input used safely.
+			&& (
+				'before' === get_option( 'job_manager_paid_listings_flow' )
+				|| ! $this->job_id
+			)
+			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] )
+			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] )
+		) {
 			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
 			$job_status = get_post_status( $job_id );
 
-			if ( ( 'preview' === $job_status || 'pending_payment' === $job_status ) && get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key'] ) {
+			if (
+				(
+					'preview' === $job_status
+					|| 'pending_payment' === $job_status
+				)
+				&& get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
+			) {
 				$this->job_id      = $job_id;
 				$this->resume_edit = get_post_meta( $job_id, '_submitting_key', true );
 			}
@@ -531,7 +547,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->fields = apply_filters( 'submit_job_form_fields_get_job_data', $this->fields, $job );
 
 			// Get user meta.
-		} elseif ( is_user_logged_in() && empty( $_POST['submit_job'] ) ) {
+		} elseif ( is_user_logged_in() && empty( $_POST['submit_job'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Safe input.
 			if ( ! empty( $this->fields['company'] ) ) {
 				foreach ( $this->fields['company'] as $key => $field ) {
 					$this->fields['company'][ $key ]['value'] = get_user_meta( get_current_user_id(), '_' . $key, true );
@@ -577,11 +593,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			// Get posted values.
 			$values = $this->get_posted_fields();
 
-			$is_saving_draft = $this->can_continue_later() && ! empty( $_POST['save_draft'] );
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Input used safely. Nonce checked below when possible.
+			$input_create_account_username        = isset( $_POST['create_account_username'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_username'] ) ) : false;
+			$input_create_account_password        = isset( $_POST['create_account_password'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_password'] ) ) : false;
+			$input_create_account_password_verify = isset( $_POST['create_account_password_verify'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_password_verify'] ) ) : false;
+			$input_create_account_email           = isset( $_POST['create_account_email'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_email'] ) ) : false;
+			$is_saving_draft                      = $this->can_continue_later() && ! empty( $_POST['save_draft'] );
 
 			if ( empty( $_POST['submit_job'] ) && ! $is_saving_draft ) {
 				return;
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 			$this->check_submit_form_nonce_field();
 
@@ -611,24 +633,24 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 				if ( job_manager_enable_registration() ) {
 					if ( job_manager_user_requires_account() ) {
-						if ( ! job_manager_generate_username_from_email() && empty( $_POST['create_account_username'] ) ) {
+						if ( ! job_manager_generate_username_from_email() && empty( $input_create_account_username ) ) {
 							throw new Exception( __( 'Please enter a username.', 'wp-job-manager' ) );
 						}
 						if ( ! wpjm_use_standard_password_setup_email() ) {
-							if ( empty( $_POST['create_account_password'] ) ) {
+							if ( empty( $input_create_account_password ) ) {
 								throw new Exception( __( 'Please enter a password.', 'wp-job-manager' ) );
 							}
 						}
-						if ( empty( $_POST['create_account_email'] ) ) {
+						if ( empty( $input_create_account_email ) ) {
 							throw new Exception( __( 'Please enter your email address.', 'wp-job-manager' ) );
 						}
 					}
 
-					if ( ! wpjm_use_standard_password_setup_email() && ! empty( $_POST['create_account_password'] ) ) {
-						if ( empty( $_POST['create_account_password_verify'] ) || $_POST['create_account_password_verify'] !== $_POST['create_account_password'] ) {
+					if ( ! wpjm_use_standard_password_setup_email() && ! empty( $input_create_account_password ) ) {
+						if ( empty( $input_create_account_password_verify ) || $input_create_account_password_verify !== $input_create_account_password ) {
 							throw new Exception( __( 'Passwords must match.', 'wp-job-manager' ) );
 						}
-						if ( ! wpjm_validate_new_password( sanitize_text_field( wp_unslash( $_POST['create_account_password'] ) ) ) ) {
+						if ( ! wpjm_validate_new_password( sanitize_text_field( wp_unslash( $input_create_account_password ) ) ) ) {
 							$password_hint = wpjm_get_password_rules_hint();
 							if ( $password_hint ) {
 								// translators: Placeholder %s is the password hint.
@@ -639,12 +661,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						}
 					}
 
-					if ( ! empty( $_POST['create_account_email'] ) ) {
+					if ( ! empty( $input_create_account_email ) ) {
 						$create_account = wp_job_manager_create_account(
 							array(
-								'username' => ( job_manager_generate_username_from_email() || empty( $_POST['create_account_username'] ) ) ? '' : sanitize_text_field( wp_unslash( $_POST['create_account_username'] ) ),
-								'password' => ( wpjm_use_standard_password_setup_email() || empty( $_POST['create_account_password'] ) ) ? '' : sanitize_text_field( wp_unslash( $_POST['create_account_password'] ) ),
-								'email'    => sanitize_text_field( wp_unslash( $_POST['create_account_email'] ) ),
+								'username' => ( job_manager_generate_username_from_email() || empty( $input_create_account_username ) ) ? '' : $input_create_account_username,
+								'password' => ( wpjm_use_standard_password_setup_email() || empty( $input_create_account_password ) ) ? '' : $input_create_account_password,
+								'email'    => sanitize_text_field( wp_unslash( $input_create_account_email ) ),
 								'role'     => get_option( 'job_manager_registration_role' ),
 							)
 						);
@@ -903,8 +925,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		global $post, $job_preview;
 
 		if ( $this->job_id ) {
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Job preview depends on temporary override. Reset below.
+			$post              = get_post( $this->job_id );
 			$job_preview       = true;
-			$post              = get_post( $this->job_id ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Job preview depends on temporary override. Reset below.
 			$post->post_status = 'preview';
 
 			setup_postdata( $post );
@@ -924,19 +947,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Handles the preview step form response.
 	 */
 	public function preview_handler() {
-		if ( ! $_POST ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input used safely.
+		if ( empty( $_POST ) ) {
 			return;
 		}
 
 		$this->check_preview_form_nonce_field();
 
 		// Edit = show submit form again.
-		if ( ! empty( $_POST['edit_job'] ) ) {
+		if ( ! empty( $_POST['edit_job'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input used safely.
 			$this->step --;
 		}
 
 		// Continue = change job status then show next screen.
-		if ( ! empty( $_POST['continue'] ) ) {
+		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input used safely.
 			$job = get_post( $this->job_id );
 
 			if ( in_array( $job->post_status, array( 'preview', 'expired' ), true ) ) {
