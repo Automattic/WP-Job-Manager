@@ -94,9 +94,14 @@ class WP_Job_Manager_Helper {
 	 * Handles special tasks on admin requests.
 	 */
 	private function handle_admin_request() {
-		if ( ! empty( $_GET['dismiss-wpjm-licence-notice'] ) ) {
+		if ( ! isset( $_GET['_wpjm_nonce'] ) || ! wp_verify_nonce( wp_unslash( $_GET['_wpjm_nonce'] ), 'dismiss-wpjm-licence-notice' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+			return;
+		}
+
+		$product_slug = isset( $_GET['dismiss-wpjm-licence-notice'] ) ? sanitize_text_field( wp_unslash( $_GET['dismiss-wpjm-licence-notice'] ) ) : false;
+
+		if ( ! empty( $product_slug ) ) {
 			$product_plugins = $this->get_installed_plugins();
-			$product_slug    = sanitize_text_field( wp_unslash( $_GET['dismiss-wpjm-licence-notice'] ) );
 			if ( isset( $product_plugins[ $product_slug ] ) ) {
 				WP_Job_Manager_Helper_Options::update( $product_slug, 'hide_key_notice', true );
 			}
@@ -436,6 +441,8 @@ class WP_Job_Manager_Helper {
 		if ( ! current_user_can( 'update_plugins' ) ) {
 			return;
 		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Flow use only. Method does nonce check.
 		if ( ! empty( $_POST ) ) {
 			$this->handle_request();
 		}
