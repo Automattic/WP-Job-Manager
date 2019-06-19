@@ -37,15 +37,18 @@ add_action( 'wpml_loaded', 'wpml_wpjm_set_language' );
  * @since 1.26.0
  */
 function wpml_wpjm_set_language() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
+	$input_lang = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( $_POST['lang'] ) ) : false;
+
 	if (
 		isset( $_SERVER['REQUEST_URI'] )
 		&& (
 			strstr( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '/jm-ajax/' )
-			|| ! empty( $_GET['jm-ajax'] )
+			|| ! empty( $_GET['jm-ajax'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Safe use of input.
 		)
-		&& isset( $_POST['lang'] )
+		&& $input_lang
 	) {
-		do_action( 'wpml_switch_language', sanitize_text_field( wp_unslash( $_POST['lang'] ) ) );
+		do_action( 'wpml_switch_language', $input_lang );
 	}
 }
 
