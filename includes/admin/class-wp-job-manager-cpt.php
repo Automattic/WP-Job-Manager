@@ -270,9 +270,11 @@ class WP_Job_Manager_CPT {
 	public function action_notices() {
 		global $post_type, $pagenow;
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- No changes made from input.
 		$handled_jobs    = isset( $_REQUEST['handled_jobs'] ) && is_array( $_REQUEST['handled_jobs'] ) ? array_map( 'absint', $_REQUEST['handled_jobs'] ) : false;
 		$action          = isset( $_REQUEST['action_performed'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action_performed'] ) ) : false;
 		$actions_handled = $this->get_bulk_actions();
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if (
 			'edit.php' === $pagenow
@@ -329,6 +331,7 @@ class WP_Job_Manager_CPT {
 			),
 		);
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes or data exposed based on input.
 		$selected_category = isset( $_GET['job_listing_category'] ) ? sanitize_text_field( wp_unslash( $_GET['job_listing_category'] ) ) : '';
 		echo "<select name='job_listing_category' id='dropdown_job_listing_category'>";
 		echo '<option value="" ' . selected( $selected_category, '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
@@ -406,6 +409,7 @@ class WP_Job_Manager_CPT {
 	 * @param array  $options      The options for the dropdown. See the description above.
 	 */
 	private function jobs_filter_dropdown( $param, $options ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes or data exposed based on input.
 		$selected = isset( $_GET[ $param ] ) ? sanitize_text_field( wp_unslash( $_GET[ $param ] ) ) : '';
 
 		echo '<select name="' . esc_attr( $param ) . '" id="dropdown_' . esc_attr( $param ) . '">';
@@ -442,6 +446,9 @@ class WP_Job_Manager_CPT {
 	public function post_updated_messages( $messages ) {
 		global $post, $post_ID, $wp_post_types;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes based on input.
+		$revision_title = isset( $_GET['revision'] ) ? wp_post_revision_title( (int) $_GET['revision'], false ) : false;
+
 		$messages['job_listing'] = array(
 			0  => '',
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
@@ -451,7 +458,7 @@ class WP_Job_Manager_CPT {
 			// translators: %s is the singular name of the job listing post type.
 			4  => sprintf( esc_html__( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the revision number.
-			5  => isset( $_GET['revision'] ) ? sprintf( __( '%1$s restored to revision from %2$s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			5  => $revision_title ? sprintf( __( '%1$s restored to revision from %2$s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, $revision_title ) : false,
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 			6  => sprintf( __( '%1$s published. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
@@ -766,24 +773,29 @@ class WP_Job_Manager_CPT {
 			return;
 		}
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- No changes made from input.
+		$input_job_listing_filled   = isset( $_GET['job_listing_filled'] ) && '' !== $_GET['job_listing_filled'] ? absint( $_GET['job_listing_filled'] ) : false;
+		$input_job_listing_featured = isset( $_GET['job_listing_featured'] ) && '' !== $_GET['job_listing_featured'] ? absint( $_GET['job_listing_featured'] ) : false;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
 		$meta_query = $wp->get( 'meta_query' );
 		if ( ! is_array( $meta_query ) ) {
 			$meta_query = array();
 		}
 
 		// Filter on _filled meta.
-		if ( isset( $_GET['job_listing_filled'] ) && '' !== $_GET['job_listing_filled'] ) {
+		if ( $input_job_listing_filled ) {
 			$meta_query[] = array(
 				'key'   => '_filled',
-				'value' => absint( $_GET['job_listing_filled'] ),
+				'value' => $input_job_listing_filled,
 			);
 		}
 
 		// Filter on _featured meta.
-		if ( isset( $_GET['job_listing_featured'] ) && '' !== $_GET['job_listing_featured'] ) {
+		if ( $input_job_listing_featured ) {
 			$meta_query[] = array(
 				'key'   => '_featured',
-				'value' => absint( $_GET['job_listing_featured'] ),
+				'value' => $input_job_listing_featured,
 			);
 		}
 
@@ -802,10 +814,12 @@ class WP_Job_Manager_CPT {
 	public function search_meta_label( $query ) {
 		global $pagenow, $typenow;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes made from input.
 		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) || ! isset( $_GET['s'] ) ) {
 			return $query;
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes made from input.
 		return sanitize_text_field( wp_unslash( $_GET['s'] ) );
 	}
 
