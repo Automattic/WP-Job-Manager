@@ -784,7 +784,7 @@ class WP_Job_Manager_CPT {
 		}
 
 		// Filter on _filled meta.
-		if ( $input_job_listing_filled ) {
+		if ( false !== $input_job_listing_filled ) {
 			$meta_query[] = array(
 				'key'   => '_filled',
 				'value' => $input_job_listing_filled,
@@ -792,7 +792,7 @@ class WP_Job_Manager_CPT {
 		}
 
 		// Filter on _featured meta.
-		if ( $input_job_listing_featured ) {
+		if ( false !== $input_job_listing_featured ) {
 			$meta_query[] = array(
 				'key'   => '_featured',
 				'value' => $input_job_listing_featured,
