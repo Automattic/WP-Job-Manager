@@ -94,7 +94,7 @@ abstract class WP_Job_Manager_Form {
 
 		// reset cookie.
 		if (
-			isset( $_GET['new'] ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No action taken based on input.
+			isset( $_GET['new'] ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
 			isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) &&
 			get_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']

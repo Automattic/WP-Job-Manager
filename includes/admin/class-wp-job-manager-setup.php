@@ -45,7 +45,7 @@ class WP_Job_Manager_Setup {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Safe use of input.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		if ( isset( $_GET['page'] ) && 'job-manager-setup' === $_GET['page'] ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 12 );
 		}
@@ -176,7 +176,7 @@ class WP_Job_Manager_Setup {
 	 * Displays setup page.
 	 */
 	public function output() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Safe use of input.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		$step = ! empty( $_GET['step'] ) ? absint( $_GET['step'] ) : 1;
 
 		include dirname( __FILE__ ) . '/views/html-admin-setup-header.php';

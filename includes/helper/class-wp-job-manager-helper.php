@@ -94,7 +94,8 @@ class WP_Job_Manager_Helper {
 	 * Handles special tasks on admin requests.
 	 */
 	private function handle_admin_request() {
-		if ( ! isset( $_GET['_wpjm_nonce'] ) || ! wp_verify_nonce( wp_unslash( $_GET['_wpjm_nonce'] ), 'dismiss-wpjm-licence-notice' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		if ( ! isset( $_GET['_wpjm_nonce'] ) || ! wp_verify_nonce( wp_unslash( $_GET['_wpjm_nonce'] ), 'dismiss-wpjm-licence-notice' ) ) {
 			return;
 		}
 

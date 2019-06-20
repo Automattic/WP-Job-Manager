@@ -49,7 +49,7 @@ class WP_Job_Manager_Forms {
 	 * If a form was posted, load its class so that it can be processed before display.
 	 */
 	public function load_posted_form() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Data not modified or exposed from input.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
 		$job_manager_form = ! empty( $_POST['job_manager_form'] ) ? sanitize_title( wp_unslash( $_POST['job_manager_form'] ) ) : false;
 
 		if ( ! empty( $job_manager_form ) ) {

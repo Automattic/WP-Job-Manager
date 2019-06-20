@@ -220,7 +220,7 @@ class WP_Job_Manager_Shortcodes {
 		ob_start();
 
 		// If doing an action, show conditional content if needed....
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Safe use of input.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		$action = isset( $_REQUEST['action'] ) ? sanitize_title( wp_unslash( $_REQUEST['action'] ) ) : false;
 		if ( ! empty( $action ) ) {
 			// Show alternative content if a plugin wants to.
@@ -343,7 +343,7 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		// Get keywords, location, category and type from querystring if set.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input used safely.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		if ( ! empty( $_GET['search_keywords'] ) ) {
 			$atts['keywords'] = sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) );
 		}

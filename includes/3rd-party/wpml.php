@@ -44,7 +44,7 @@ function wpml_wpjm_set_language() {
 		isset( $_SERVER['REQUEST_URI'] )
 		&& (
 			strstr( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '/jm-ajax/' )
-			|| ! empty( $_GET['jm-ajax'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Safe use of input.
+			|| ! empty( $_GET['jm-ajax'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		)
 		&& $input_lang
 	) {

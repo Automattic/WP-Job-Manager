@@ -270,7 +270,7 @@ class WP_Job_Manager_CPT {
 	public function action_notices() {
 		global $post_type, $pagenow;
 
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- No changes made from input.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		$handled_jobs    = isset( $_REQUEST['handled_jobs'] ) && is_array( $_REQUEST['handled_jobs'] ) ? array_map( 'absint', $_REQUEST['handled_jobs'] ) : false;
 		$action          = isset( $_REQUEST['action_performed'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action_performed'] ) ) : false;
 		$actions_handled = $this->get_bulk_actions();
@@ -773,7 +773,7 @@ class WP_Job_Manager_CPT {
 			return;
 		}
 
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- No changes made from input.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		$input_job_listing_filled   = isset( $_GET['job_listing_filled'] ) && '' !== $_GET['job_listing_filled'] ? absint( $_GET['job_listing_filled'] ) : false;
 		$input_job_listing_featured = isset( $_GET['job_listing_featured'] ) && '' !== $_GET['job_listing_featured'] ? absint( $_GET['job_listing_featured'] ) : false;
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
@@ -814,12 +814,12 @@ class WP_Job_Manager_CPT {
 	public function search_meta_label( $query ) {
 		global $pagenow, $typenow;
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes made from input.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) || ! isset( $_GET['s'] ) ) {
 			return $query;
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes made from input.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		return sanitize_text_field( wp_unslash( $_GET['s'] ) );
 	}
 
