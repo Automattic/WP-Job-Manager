@@ -682,19 +682,26 @@ class WP_Job_Manager_Post_Types {
 	 * Maintenance task to expire jobs.
 	 */
 	public function check_for_expired_jobs() {
-		global $wpdb;
-
 		// Change status to expired.
-		$job_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
-					LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
-					WHERE postmeta.meta_key = '_job_expires'
-					AND postmeta.meta_value > 0
-					AND postmeta.meta_value < %s
-					AND posts.post_status = 'publish'
-					AND posts.post_type = 'job_listing'",
-				date( 'Y-m-d', current_time( 'timestamp' ) )
+		$job_ids = get_posts(
+			array(
+				'post_type'      => 'job_listing',
+				'post_status'    => 'publish',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'meta_query'     => array(
+					'relation' => 'AND',
+					array(
+						'key'     => '_job_expires',
+						'value'   => 0,
+						'compare' => '>',
+					),
+					array(
+						'key'     => '_job_expires',
+						'value'   => date( 'Y-m-d', current_time( 'timestamp' ) ),
+						'compare' => '<',
+					),
+				),
 			)
 		);
 
@@ -708,14 +715,36 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// Delete old expired jobs.
+
+		/**
+		 * Set whether or not we should delete expired jobs after a certain amount of time.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param bool $delete_expired_jobs Whether we should delete expired jobs after a certain amount of time. Defaults to false.
+		 */
 		if ( apply_filters( 'job_manager_delete_expired_jobs', false ) ) {
-			$job_ids = $wpdb->get_col(
-				$wpdb->prepare(
-					"SELECT posts.ID FROM {$wpdb->posts} as posts
-						WHERE posts.post_type = 'job_listing'
-						AND posts.post_modified < %s
-						AND posts.post_status = 'expired'",
-					date( 'Y-m-d', strtotime( '-' . apply_filters( 'job_manager_delete_expired_jobs_days', 30 ) . ' days', current_time( 'timestamp' ) ) )
+			/**
+			 * Days to preserve expired job listings before deleting them.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param int $delete_expired_jobs_days Number of days to preserve expired job listings before deleting them.
+			 */
+			$delete_expired_jobs_days = apply_filters( 'job_manager_delete_expired_jobs_days', 30 );
+
+			$job_ids = get_posts(
+				array(
+					'post_type'      => 'job_listing',
+					'post_status'    => 'expired',
+					'fields'         => 'ids',
+					'date_query'     => array(
+						array(
+							'column' => 'post_modified',
+							'before' => date( 'Y-m-d', strtotime( '-' . $delete_expired_jobs_days . ' days', current_time( 'timestamp' ) ) ),
+						),
+					),
+					'posts_per_page' => -1,
 				)
 			);
 
@@ -731,16 +760,19 @@ class WP_Job_Manager_Post_Types {
 	 * Deletes old previewed jobs after 30 days to keep the DB clean.
 	 */
 	public function delete_old_previews() {
-		global $wpdb;
-
-		// Delete old expired jobs.
-		$job_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT posts.ID FROM {$wpdb->posts} as posts
-					WHERE posts.post_type = 'job_listing'
-					AND posts.post_modified < %s
-					AND posts.post_status = 'preview'",
-				date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) )
+		// Delete old jobs stuck in preview.
+		$job_ids = get_posts(
+			array(
+				'post_type'      => 'job_listing',
+				'post_status'    => 'preview',
+				'fields'         => 'ids',
+				'date_query'     => array(
+					array(
+						'column' => 'post_modified',
+						'before' => date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ),
+					),
+				),
+				'posts_per_page' => -1,
 			)
 		);
 
@@ -945,16 +977,20 @@ class WP_Job_Manager_Post_Types {
 	 * @param mixed  $meta_value
 	 */
 	public function update_post_meta( $meta_id, $object_id, $meta_key, $meta_value ) {
-		if ( 'job_listing' === get_post_type( $object_id ) ) {
-			switch ( $meta_key ) {
-				case '_job_location':
-					$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value );
-					break;
-				case '_featured':
-					$this->maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value );
-					break;
-			}
+		if ( 'job_listing' !== get_post_type( $object_id ) ) {
+			return;
 		}
+
+		remove_action( 'update_post_meta', array( $this, 'update_post_meta' ) );
+		switch ( $meta_key ) {
+			case '_job_location':
+				$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value );
+				break;
+			case '_featured':
+				$this->maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value );
+				break;
+		}
+		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 	}
 
 	/**
@@ -978,26 +1014,25 @@ class WP_Job_Manager_Post_Types {
 	 * @param mixed  $meta_value
 	 */
 	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {
-		global $wpdb;
-
 		if ( 1 === intval( $meta_value ) ) {
-			$wpdb->update(
-				$wpdb->posts,
-				array( 'menu_order' => -1 ),
-				array( 'ID' => $object_id )
-			);
-		} else {
-			$wpdb->update(
-				$wpdb->posts,
-				array( 'menu_order' => 0 ),
+			wp_update_post(
 				array(
 					'ID'         => $object_id,
 					'menu_order' => -1,
 				)
 			);
-		}
+		} else {
+			$post = get_post( $object_id );
 
-		clean_post_cache( $object_id );
+			if ( -1 === intval( $post->menu_order ) ) {
+				wp_update_post(
+					array(
+						'ID'         => $object_id,
+						'menu_order' => 0,
+					)
+				);
+			}
+		}
 	}
 
 	/**

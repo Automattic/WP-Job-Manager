@@ -1443,6 +1443,8 @@ function job_manager_duplicate_listing( $post_id ) {
 	/*
 	 * Duplicate post meta, aside from some reserved fields.
 	 */
+
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Easiest way to retrieve raw meta values without filters.
 	$post_meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id=%d", $post_id ) );
 
 	if ( ! empty( $post_meta ) ) {

@@ -36,7 +36,9 @@ class WP_Job_Manager_Install {
 
 		// Update featured posts ordering.
 		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '1.22.0', '<' ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One time data update.
 			$wpdb->query( "UPDATE {$wpdb->posts} p SET p.menu_order = 0 WHERE p.post_type='job_listing';" );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One time data update.
 			$wpdb->query( "UPDATE {$wpdb->posts} p LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id SET p.menu_order = -1 WHERE pm.meta_key = '_featured' AND pm.meta_value='1' AND p.post_type='job_listing';" );
 		}
 
@@ -53,6 +55,11 @@ class WP_Job_Manager_Install {
 		if ( false === get_option( 'job_manager_job_dashboard_page_id', false ) && get_option( 'job_manager_job_dashboard_page_slug' ) ) {
 			$page_id = get_page_by_path( get_option( 'job_manager_job_dashboard_page_slug' ) )->ID;
 			update_option( 'job_manager_job_dashboard_page_id', $page_id );
+		}
+
+		// Scheduled hook was removed in 1.34.0.
+		if ( wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
+			wp_clear_scheduled_hook( 'job_manager_clear_expired_transients' );
 		}
 
 		if ( $is_new_install ) {

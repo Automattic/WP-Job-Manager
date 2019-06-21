@@ -548,20 +548,19 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param int    $days_notice
 	 */
 	private static function send_expiring_notice( $email_notification_key, $days_notice ) {
-		global $wpdb;
-
 		$notice_before_ts = current_time( 'timestamp' ) + ( DAY_IN_SECONDS * $days_notice );
-		$job_ids          = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-			SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
-			LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
-			WHERE postmeta.meta_key = '_job_expires'
-			AND postmeta.meta_value = %s
-			AND posts.post_status = 'publish'
-			AND posts.post_type = 'job_listing'
-		",
-				date( 'Y-m-d', $notice_before_ts )
+		$job_ids          = get_posts(
+			array(
+				'post_type'      => 'job_listing',
+				'post_status'    => 'publish',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'meta_query'     => array(
+					array(
+						'key'   => '_job_expires',
+						'value' => date( 'Y-m-d', $notice_before_ts ),
+					),
+				),
 			)
 		);
 
@@ -659,6 +658,24 @@ final class WP_Job_Manager_Email_Notifications {
 	 */
 	public static function get_deferred_notification_count() {
 		return count( self::$deferred_notifications );
+	}
+
+	/**
+	 * Returns the hash representation of the notifications to be sent.
+	 *
+	 * Do not use. Used just in unit tests.
+	 *
+	 * @access private
+	 *
+	 * @return string[]
+	 */
+	public static function get_deferred_notification_hashes() {
+		return array_map(
+			function( $value ) {
+				return sha1( wp_json_encode( $value ) );
+			},
+			self::$deferred_notifications
+		);
 	}
 
 	/**

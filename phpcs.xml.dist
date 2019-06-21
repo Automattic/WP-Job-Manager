@@ -28,11 +28,9 @@
 	<rule ref="WordPress-Extra" />
 
 	<rule ref="WordPress.Security.ValidatedSanitizedInput" />
+	<rule ref="WordPress.DB.DirectDatabaseQuery" />
 
 	<!-- Temporary Rule Exclusions -->
-	<rule ref="WordPress.DB.DirectDatabaseQuery">
-		<severity>4</severity>
-	</rule>
 	<rule ref="VariableAnalysis">
 		<exclude-pattern>includes/admin/views/</exclude-pattern>
 		<exclude-pattern>templates/</exclude-pattern>

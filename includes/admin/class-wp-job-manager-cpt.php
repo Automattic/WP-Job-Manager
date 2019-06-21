@@ -732,6 +732,7 @@ class WP_Job_Manager_CPT {
 
 		$post_ids = array_unique(
 			array_merge(
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- WP_Query doesn't allow for meta query to be an optional match.
 				$wpdb->get_col(
 					$wpdb->prepare(
 						"SELECT posts.ID

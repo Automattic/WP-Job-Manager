@@ -19,10 +19,14 @@ if ( ! is_multisite() ) {
 	if ( $do_deletion ) {
 		WP_Job_Manager_Data_Cleaner::cleanup_all();
 	}
-} else {
-	global $wpdb;
+} elseif ( function_exists( 'get_sites' ) ) {
+	$blog_ids = get_sites(
+		array(
+			'fields'            => 'ids',
+			'update_site_cache' => false,
+		)
+	);
 
-	$blog_ids         = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
 	$original_blog_id = get_current_blog_id();
 
 	foreach ( $blog_ids as $current_blog_id ) {
