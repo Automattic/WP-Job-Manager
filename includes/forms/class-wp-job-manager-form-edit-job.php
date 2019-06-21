@@ -65,6 +65,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		add_action( 'wp', array( $this, 'submit_handler' ) );
 		add_action( 'submit_job_form_start', array( $this, 'output_submit_form_nonce_field' ) );
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Check happens later when possible.
 		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
 
 		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
@@ -166,6 +167,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * @throws Exception When invalid fields are submitted.
 	 */
 	public function submit_handler() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Check happens later when possible.
 		if ( empty( $_POST['submit_job'] ) ) {
 			return;
 		}

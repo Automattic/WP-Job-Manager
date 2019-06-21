@@ -27,8 +27,11 @@ add_action( 'pll_init', 'polylang_wpjm_init' );
  * @return array
  */
 function polylang_wpjm_query_language( $query_args ) {
-	if ( isset( $_POST['lang'] ) ) {
-		$query_args['lang'] = sanitize_text_field( wp_unslash( $_POST['lang'] ) );
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
+	$input_lang = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( $_POST['lang'] ) ) : false;
+
+	if ( $input_lang ) {
+		$query_args['lang'] = $input_lang;
 	}
 	return $query_args;
 }

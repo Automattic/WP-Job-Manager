@@ -71,7 +71,9 @@ class WP_Job_Manager_API {
 	public function api_requests() {
 		global $wp;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- If necessary/possible, nonce should be checked by API handler.
 		if ( ! empty( $_GET['job-manager-api'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- If necessary/possible, nonce should be checked by API handler.
 			$wp->query_vars['job-manager-api'] = sanitize_text_field( wp_unslash( $_GET['job-manager-api'] ) );
 		}
 

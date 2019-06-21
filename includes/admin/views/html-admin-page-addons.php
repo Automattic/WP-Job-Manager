@@ -32,6 +32,7 @@ if ( ! empty( $messages ) ) {
 	}
 }
 if ( ! empty( $categories ) ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 	$current_category = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : '_all';
 	echo '<ul class="subsubsub">';
 	foreach ( $categories as $category ) {
