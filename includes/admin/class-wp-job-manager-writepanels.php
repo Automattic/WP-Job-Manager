@@ -649,8 +649,8 @@ class WP_Job_Manager_Writepanels {
 				remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20 );
 				wp_update_post( $job_data );
 				add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
-			} elseif ( isset( $_POST[ $key ] ) ) {
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
+			} elseif ( isset( $_POST[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
 				update_post_meta( $post_id, $key, wp_unslash( $_POST[ $key ] ) );
 			}
 		}
