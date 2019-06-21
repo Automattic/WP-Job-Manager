@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.31.1
+ * @version     1.34.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,15 +24,21 @@ $job = $args['job'];
  * @var bool
  */
 $expiring_today = $args['expiring_today'];
+$edit_post_link = admin_url( sprintf( 'post.php?post=%d&amp;action=edit', $job->ID ) );
 
 echo '<p>';
 if ( $expiring_today ) {
-	printf( esc_html__( 'The following job listing is expiring today from <a href="%s">%s</a>.', 'wp-job-manager' ), esc_url( home_url() ), esc_html( get_bloginfo( 'name' ) ) );
+	// translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
+	echo wp_kses_post( sprintf( __( 'The following job listing is expiring today from <a href="%1$s">%2$s</a>.', 'wp-job-manager' ), esc_url( home_url() ), esc_html( get_bloginfo( 'name' ) ) ) );
 } else {
-	printf( esc_html__( 'The following job listing is expiring soon from <a href="%s">%s</a>.', 'wp-job-manager' ), esc_url( home_url() ), esc_html( get_bloginfo( 'name' ) ) );
+	// translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
+	echo wp_kses_post( sprintf( __( 'The following job listing is expiring soon from <a href="%1$s">%2$s</a>.', 'wp-job-manager' ), esc_url( home_url() ), esc_html( get_bloginfo( 'name' ) ) ) );
 }
-$edit_post_link = admin_url( sprintf( 'post.php?post=%d&amp;action=edit', $job->ID ) );
-printf( ' ' . esc_html__( 'Visit <a href="%s">WordPress admin</a> to manage the listing.', 'wp-job-manager' ), esc_url( $edit_post_link ) );
+
+echo ' ';
+
+// translators: Placeholder is URL to site's WP admin.
+echo wp_kses_post( sprintf( __( 'Visit <a href="%s">WordPress admin</a> to manage the listing.', 'wp-job-manager' ), esc_url( $edit_post_link ) ) );
 echo '</p>';
 
 /**
