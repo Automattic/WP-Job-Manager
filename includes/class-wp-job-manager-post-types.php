@@ -545,39 +545,47 @@ class WP_Job_Manager_Post_Types {
 	public function job_feed() {
 		global $job_manager_keyword;
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input used to filter public data in feed.
+		$input_posts_per_page  = isset( $_GET['posts_per_page'] ) ? absint( $_GET['posts_per_page'] ) : 10;
+		$input_search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : false;
+		$input_job_types       = isset( $_GET['job_types'] ) ? explode( ',', sanitize_text_field( wp_unslash( $_GET['job_types'] ) ) ) : false;
+		$input_job_categories  = isset( $_GET['job_categories'] ) ? explode( ',', sanitize_text_field( wp_unslash( $_GET['job_categories'] ) ) ) : false;
+		$job_manager_keyword   = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
 		$query_args = array(
 			'post_type'           => 'job_listing',
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => 1,
-			'posts_per_page'      => isset( $_GET['posts_per_page'] ) ? absint( $_GET['posts_per_page'] ) : 10,
+			'posts_per_page'      => $input_posts_per_page,
 			'paged'               => absint( get_query_var( 'paged', 1 ) ),
 			'tax_query'           => array(),
 			'meta_query'          => array(),
 		);
 
-		if ( ! empty( $_GET['search_location'] ) ) {
+		if ( ! empty( $input_search_location ) ) {
 			$location_meta_keys = array( 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' );
 			$location_search    = array( 'relation' => 'OR' );
 			foreach ( $location_meta_keys as $meta_key ) {
 				$location_search[] = array(
 					'key'     => $meta_key,
-					'value'   => sanitize_text_field( wp_unslash( $_GET['search_location'] ) ),
+					'value'   => $input_search_location,
 					'compare' => 'like',
 				);
 			}
 			$query_args['meta_query'][] = $location_search;
 		}
 
-		if ( ! empty( $_GET['job_types'] ) ) {
+		if ( ! empty( $input_job_types ) ) {
 			$query_args['tax_query'][] = array(
 				'taxonomy' => 'job_listing_type',
 				'field'    => 'slug',
-				'terms'    => explode( ',', sanitize_text_field( wp_unslash( $_GET['job_types'] ) ) ) + array( 0 ),
+				'terms'    => $input_job_types + array( 0 ),
 			);
 		}
 
-		if ( ! empty( $_GET['job_categories'] ) ) {
-			$cats                      = explode( ',', sanitize_text_field( wp_unslash( $_GET['job_categories'] ) ) ) + array( 0 );
+		if ( ! empty( $input_job_categories ) ) {
+			$cats                      = $input_job_categories + array( 0 );
 			$field                     = is_numeric( $cats ) ? 'term_id' : 'slug';
 			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $cats ) > 1 ? 'AND' : 'IN';
 			$query_args['tax_query'][] = array(
@@ -589,7 +597,6 @@ class WP_Job_Manager_Post_Types {
 			);
 		}
 
-		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
 		if ( ! empty( $job_manager_keyword ) ) {
 			$query_args['s'] = $job_manager_keyword;
 			add_filter( 'posts_search', 'get_job_listings_keyword_search' );
@@ -603,7 +610,8 @@ class WP_Job_Manager_Post_Types {
 			unset( $query_args['tax_query'] );
 		}
 
-		query_posts( apply_filters( 'job_feed_args', $query_args ) ); // phpcs:ignore WordPress.WP.DiscouragedFunctions
+		// phpcs:ignore WordPress.WP.DiscouragedFunctions
+		query_posts( apply_filters( 'job_feed_args', $query_args ) );
 		add_action( 'rss2_ns', array( $this, 'job_feed_namespace' ) );
 		add_action( 'rss2_item', array( $this, 'job_feed_item' ) );
 		do_feed_rss2( false );
@@ -805,16 +813,19 @@ class WP_Job_Manager_Post_Types {
 			}
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
+		$input_job_expires = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+
 		// See if the user has set the expiry manually.
-		if ( ! empty( $_POST['_job_expires'] ) ) {
-			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) ) ) );
+		if ( ! empty( $input_job_expires ) ) {
+			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( $input_job_expires ) ) );
 		} elseif ( ! isset( $expires ) ) {
 			// No manual setting? Lets generate a date if there isn't already one.
 			$expires = calculate_job_expiry( $post->ID );
 			update_post_meta( $post->ID, '_job_expires', $expires );
 
 			// In case we are saving a post, ensure post data is updated so the field is not overridden.
-			if ( isset( $_POST['_job_expires'] ) ) {
+			if ( null !== $input_job_expires ) {
 				$_POST['_job_expires'] = $expires;
 			}
 		}

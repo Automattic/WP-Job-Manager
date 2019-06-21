@@ -411,6 +411,7 @@ class WP_Job_Manager_Settings {
 				</h2>
 
 				<?php
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for basic flow.
 				if ( ! empty( $_GET['settings-updated'] ) ) {
 					flush_rewrite_rules();
 					echo '<div class="updated fade job-manager-updated"><p>' . esc_html__( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
@@ -651,7 +652,8 @@ class WP_Job_Manager_Settings {
 			'selected'         => absint( $value ),
 		);
 
-		echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe output.
+		echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) );
 
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';

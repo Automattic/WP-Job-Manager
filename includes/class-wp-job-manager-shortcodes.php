@@ -220,9 +220,9 @@ class WP_Job_Manager_Shortcodes {
 		ob_start();
 
 		// If doing an action, show conditional content if needed....
-		if ( ! empty( $_REQUEST['action'] ) ) {
-			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
-
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+		$action = isset( $_REQUEST['action'] ) ? sanitize_title( wp_unslash( $_REQUEST['action'] ) ) : false;
+		if ( ! empty( $action ) ) {
 			// Show alternative content if a plugin wants to.
 			if ( has_action( 'job_manager_job_dashboard_content_' . $action ) ) {
 				do_action( 'job_manager_job_dashboard_content_' . $action, $atts );
@@ -278,7 +278,8 @@ class WP_Job_Manager_Shortcodes {
 	public function edit_job() {
 		global $job_manager;
 
-		echo $job_manager->forms->get_form( 'edit-job' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output should be appropriately escaped in the form generator.
+		echo $job_manager->forms->get_form( 'edit-job' );
 	}
 
 	/**
@@ -342,6 +343,7 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		// Get keywords, location, category and type from querystring if set.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		if ( ! empty( $_GET['search_keywords'] ) ) {
 			$atts['keywords'] = sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) );
 		}
@@ -354,6 +356,7 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $_GET['search_job_type'] ) ) {
 			$atts['selected_job_types'] = sanitize_text_field( wp_unslash( $_GET['search_job_type'] ) );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		// Array handling.
 		$atts['categories']         = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
@@ -371,8 +374,8 @@ class WP_Job_Manager_Shortcodes {
 			'order'           => $atts['order'],
 			'categories'      => implode( ',', $atts['categories'] ),
 		);
-		if ( $atts['show_filters'] ) {
 
+		if ( $atts['show_filters'] ) {
 			get_job_manager_template(
 				'job-filters.php',
 				array(
@@ -430,7 +433,8 @@ class WP_Job_Manager_Shortcodes {
 				if ( $jobs->found_posts > $atts['per_page'] && $atts['show_more'] ) {
 					wp_enqueue_script( 'wp-job-manager-ajax-filters' );
 					if ( $atts['show_pagination'] ) {
-						echo get_job_listing_pagination( $jobs->max_num_pages ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Template output.
+						echo get_job_listing_pagination( $jobs->max_num_pages );
 					} else {
 						echo '<a class="load_more_jobs" href="#"><strong>' . esc_html__( 'Load more listings', 'wp-job-manager' ) . '</strong></a>';
 					}
@@ -521,7 +525,7 @@ class WP_Job_Manager_Shortcodes {
 		);
 
 		if ( ! $atts['id'] ) {
-			return;
+			return null;
 		}
 
 		ob_start();

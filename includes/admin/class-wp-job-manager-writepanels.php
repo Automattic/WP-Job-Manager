@@ -616,6 +616,7 @@ class WP_Job_Manager_Writepanels {
 
 			// Checkboxes that aren't sent are unchecked.
 			if ( 'checkbox' === $field['type'] ) {
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				if ( ! empty( $_POST[ $key ] ) ) {
 					$_POST[ $key ] = 1;
 				} else {
@@ -625,6 +626,7 @@ class WP_Job_Manager_Writepanels {
 
 			// Expirey date.
 			if ( '_job_expires' === $key ) {
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				if ( empty( $_POST[ $key ] ) ) {
 					if ( get_option( 'job_manager_submission_duration' ) ) {
 						update_post_meta( $post_id, $key, calculate_job_expiry( $post_id ) );
@@ -632,21 +634,24 @@ class WP_Job_Manager_Writepanels {
 						delete_post_meta( $post_id, $key );
 					}
 				} else {
+					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) ) ) );
 				}
 			} elseif ( '_job_author' === $key ) {
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				if ( empty( $_POST[ $key ] ) ) {
 					$_POST[ $key ] = 0;
 				}
 				$job_data                = array();
 				$job_data['ID']          = $post_id;
-				$job_data['post_author'] = $_POST[ $key ] > 0 ? intval( $_POST[ $key ] ) : 0;
+				$job_data['post_author'] = $_POST[ $key ] > 0 ? intval( $_POST[ $key ] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 
 				remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20 );
 				wp_update_post( $job_data );
 				add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
 			} elseif ( isset( $_POST[ $key ] ) ) {
-				update_post_meta( $post_id, $key, wp_unslash( $_POST[ $key ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
+				update_post_meta( $post_id, $key, wp_unslash( $_POST[ $key ] ) );
 			}
 		}
 
@@ -678,6 +683,7 @@ class WP_Job_Manager_Writepanels {
 	 * @return bool True if status is changing from $from_status to $to_status.
 	 */
 	private function is_job_listing_status_changing( $from_status, $to_status ) {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 		return isset( $_POST['post_status'] )
 				&& isset( $_POST['original_post_status'] )
 				&& $_POST['original_post_status'] !== $_POST['post_status']
@@ -686,6 +692,7 @@ class WP_Job_Manager_Writepanels {
 					|| $from_status === $_POST['original_post_status']
 				)
 				&& $to_status === $_POST['post_status'];
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 }
 

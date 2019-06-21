@@ -29,6 +29,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$product_slug = 'test';
 		$default      = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
 		$this->assertNull( $default );
+		$_GET['_wpjm_nonce'] = wp_create_nonce( 'dismiss-wpjm-licence-notice' );
 		unset( $_GET['dismiss-wpjm-licence-notice'] );
 		$instance->admin_init();
 		$key_notice_status = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
@@ -45,10 +46,45 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$product_slug = 'test';
 		$default      = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
 		$this->assertNull( $default );
+		$_GET['_wpjm_nonce']                 = wp_create_nonce( 'dismiss-wpjm-licence-notice' );
 		$_GET['dismiss-wpjm-licence-notice'] = $product_slug;
 		$instance->admin_init();
 		$key_notice_status = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
 		$this->assertTrue( $key_notice_status );
+	}
+
+	/**
+	 * @since 1.34.0
+	 * @covers WP_Job_Manager_Helper::admin_init
+	 * @requires PHP 5.3.0
+	 */
+	public function test_admin_init_with_bad_nonce() {
+		$instance     = $this->getMockHelper();
+		$product_slug = 'test';
+		$default      = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
+		$this->assertNull( $default );
+		$_GET['_wpjm_nonce']                 = wp_create_nonce( 'a-bad-nonce' );
+		$_GET['dismiss-wpjm-licence-notice'] = $product_slug;
+		$instance->admin_init();
+		$key_notice_status = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
+		$this->assertNull( $key_notice_status );
+	}
+
+	/**
+	 * @since 1.34.0
+	 * @covers WP_Job_Manager_Helper::admin_init
+	 * @requires PHP 5.3.0
+	 */
+	public function test_admin_init_with_no_nonce() {
+		$instance     = $this->getMockHelper();
+		$product_slug = 'test';
+		$default      = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
+		$this->assertNull( $default );
+		unset( $_GET['_wpjm_nonce'] );
+		$_GET['dismiss-wpjm-licence-notice'] = $product_slug;
+		$instance->admin_init();
+		$key_notice_status = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
+		$this->assertNull( $key_notice_status );
 	}
 
 	/**

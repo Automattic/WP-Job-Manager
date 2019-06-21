@@ -518,7 +518,8 @@ if ( ! function_exists( 'wp_job_manager_notify_new_user' ) ) :
 		global $wp_version;
 
 		if ( version_compare( $wp_version, '4.3.1', '<' ) ) {
-			wp_new_user_notification( $user_id, $password ); // phpcs:ignore WordPress.WP.DeprecatedParameters.Wp_new_user_notificationParam2Found
+			// phpcs:ignore WordPress.WP.DeprecatedParameters.Wp_new_user_notificationParam2Found
+			wp_new_user_notification( $user_id, $password );
 		} else {
 			$notify = 'admin';
 			if ( empty( $password ) ) {
@@ -1140,7 +1141,8 @@ function job_manager_dropdown_categories( $args = '' ) {
 	$output .= "</select>\n";
 
 	if ( $r['echo'] ) {
-		echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $output;
 	}
 
 	return $output;

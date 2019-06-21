@@ -60,9 +60,13 @@ class WP_Job_Manager_Taxonomy_Meta {
 	 */
 	public function set_schema_org_employment_type_field( $term_id, $tt_id ) {
 		$employment_types = wpjm_job_listing_employment_type_options();
-		if ( isset( $_POST['employment_type'] ) && isset( $employment_types[ $_POST['employment_type'] ] ) ) {
-			update_term_meta( $term_id, 'employment_type', sanitize_text_field( wp_unslash( $_POST['employment_type'] ) ) );
-		} elseif ( isset( $_POST['employment_type'] ) ) {
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
+		$input_employment_type = isset( $_POST['employment_type'] ) ? sanitize_text_field( wp_unslash( $_POST['employment_type'] ) ) : null;
+
+		if ( $input_employment_type && isset( $employment_types[ $input_employment_type ] ) ) {
+			update_term_meta( $term_id, 'employment_type', sanitize_text_field( wp_unslash( $input_employment_type ) ) );
+		} elseif ( null !== $input_employment_type ) {
 			delete_term_meta( $term_id, 'employment_type' );
 		}
 	}

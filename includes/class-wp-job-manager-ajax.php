@@ -89,7 +89,9 @@ class WP_Job_Manager_Ajax {
 	public static function do_jm_ajax() {
 		global $wp_query;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		if ( ! empty( $_GET['jm-ajax'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 			$wp_query->set( 'jm-ajax', sanitize_text_field( wp_unslash( $_GET['jm-ajax'] ) ) );
 		}
 
@@ -118,15 +120,20 @@ class WP_Job_Manager_Ajax {
 	 */
 	public function get_listings() {
 		// Get input variables.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Fetching data only; often for logged out visitors.
 		$search_location    = isset( $_REQUEST['search_location'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_location'] ) ) : '';
 		$search_keywords    = isset( $_REQUEST['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search_keywords'] ) ) : '';
-		$search_categories  = isset( $_REQUEST['search_categories'] ) ? wp_unslash( $_REQUEST['search_categories'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- done below
+		$search_categories  = isset( $_REQUEST['search_categories'] ) ? wp_unslash( $_REQUEST['search_categories'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input is sanitized below.
 		$filter_job_types   = isset( $_REQUEST['filter_job_type'] ) ? array_filter( array_map( 'sanitize_title', wp_unslash( (array) $_REQUEST['filter_job_type'] ) ) ) : null;
 		$filter_post_status = isset( $_REQUEST['filter_post_status'] ) ? array_filter( array_map( 'sanitize_title', wp_unslash( (array) $_REQUEST['filter_post_status'] ) ) ) : null;
 		$order              = isset( $_REQUEST['order'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['order'] ) ) : 'DESC';
 		$orderby            = isset( $_REQUEST['orderby'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['orderby'] ) ) : 'featured';
 		$page               = isset( $_REQUEST['page'] ) ? absint( $_REQUEST['page'] ) : 1;
 		$per_page           = isset( $_REQUEST['per_page'] ) ? absint( $_REQUEST['per_page'] ) : absint( get_option( 'job_manager_per_page' ) );
+		$filled             = isset( $_REQUEST['filled'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['filled'] ) ) : null;
+		$featured           = isset( $_REQUEST['featured'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured'] ) ) : null;
+		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( is_array( $search_categories ) ) {
 			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
@@ -149,12 +156,12 @@ class WP_Job_Manager_Ajax {
 			'posts_per_page'    => max( 1, $per_page ),
 		);
 
-		if ( isset( $_REQUEST['filled'] ) && ( 'true' === $_REQUEST['filled'] || 'false' === $_REQUEST['filled'] ) ) {
-			$args['filled'] = 'true' === $_REQUEST['filled'];
+		if ( 'true' === $filled || 'false' === $filled ) {
+			$args['filled'] = 'true' === $filled;
 		}
 
-		if ( isset( $_REQUEST['featured'] ) && ( 'true' === $_REQUEST['featured'] || 'false' === $_REQUEST['featured'] ) ) {
-			$args['featured'] = 'true' === $_REQUEST['featured'];
+		if ( 'true' === $featured || 'false' === $featured ) {
+			$args['featured'] = 'true' === $featured;
 			$args['orderby']  = 'featured' === $orderby ? 'date' : $orderby;
 		}
 
@@ -258,8 +265,8 @@ class WP_Job_Manager_Ajax {
 		$result['html'] = ob_get_clean();
 
 		// Generate pagination.
-		if ( isset( $_REQUEST['show_pagination'] ) && 'true' === $_REQUEST['show_pagination'] ) {
-			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, absint( $_REQUEST['page'] ) );
+		if ( 'true' === $show_pagination ) {
+			$result['pagination'] = get_job_listing_pagination( $jobs->max_num_pages, $page );
 		}
 
 		/** This filter is documented in includes/class-wp-job-manager-ajax.php (above) */

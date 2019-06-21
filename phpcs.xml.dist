@@ -31,9 +31,6 @@
 	<rule ref="WordPress.DB.DirectDatabaseQuery" />
 
 	<!-- Temporary Rule Exclusions -->
-	<rule ref="WordPress.Security.NonceVerification">
-		<severity>4</severity>
-	</rule>
 	<rule ref="VariableAnalysis">
 		<exclude-pattern>includes/admin/views/</exclude-pattern>
 		<exclude-pattern>templates/</exclude-pattern>

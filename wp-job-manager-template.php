@@ -21,8 +21,8 @@
  */
 function get_job_manager_template( $template_name, $args = array(), $template_path = 'job_manager', $default_path = '' ) {
 	if ( $args && is_array( $args ) ) {
-		// Please, forgive us.
-		extract( $args ); // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+		// phpcs:ignore WordPress.PHP.DontExtract.extract_extract -- Please, forgive us.
+		extract( $args );
 	}
 	include locate_job_manager_template( $template_name, $template_path, $default_path );
 }
@@ -692,6 +692,7 @@ function wpjm_get_registration_fields() {
 				'type'     => 'text',
 				'label'    => esc_html__( 'Username', 'wp-job-manager' ),
 				'required' => $account_required,
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Just used to populate value when validation failed.
 				'value'    => isset( $_POST['create_account_username'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_username'] ) ) : '',
 			);
 		}
@@ -718,6 +719,7 @@ function wpjm_get_registration_fields() {
 			'label'       => esc_html__( 'Your email', 'wp-job-manager' ),
 			'placeholder' => __( 'you@yourdomain.com', 'wp-job-manager' ),
 			'required'    => $account_required,
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Just used to populate value when validation failed.
 			'value'       => isset( $_POST['create_account_email'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_email'] ) ) : '',
 		);
 	}
@@ -955,7 +957,8 @@ function the_company_video( $post = null ) {
 	$video_embed = apply_filters( 'the_company_video_embed', $video_embed, $post );
 
 	if ( $video_embed ) {
-		echo '<div class="company_video">' . $video_embed . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<div class="company_video">' . $video_embed . '</div>';
 	}
 }
 

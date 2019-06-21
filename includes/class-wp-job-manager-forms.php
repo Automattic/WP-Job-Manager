@@ -49,8 +49,11 @@ class WP_Job_Manager_Forms {
 	 * If a form was posted, load its class so that it can be processed before display.
 	 */
 	public function load_posted_form() {
-		if ( ! empty( $_POST['job_manager_form'] ) ) {
-			$this->load_form_class( sanitize_title( wp_unslash( $_POST['job_manager_form'] ) ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
+		$job_manager_form = ! empty( $_POST['job_manager_form'] ) ? sanitize_title( wp_unslash( $_POST['job_manager_form'] ) ) : false;
+
+		if ( ! empty( $job_manager_form ) ) {
+			$this->load_form_class( $job_manager_form );
 		}
 	}
 
@@ -58,7 +61,7 @@ class WP_Job_Manager_Forms {
 	 * Load a form's class
 	 *
 	 * @param  string $form_name
-	 * @return string class name on success, false on failure.
+	 * @return bool|WP_Job_Manager_Form Class instance on success, false on failure.
 	 */
 	private function load_form_class( $form_name ) {
 		if ( ! class_exists( 'WP_Job_Manager_Form' ) ) {
