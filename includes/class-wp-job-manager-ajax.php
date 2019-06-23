@@ -325,7 +325,7 @@ class WP_Job_Manager_Ajax {
 		 *
 		 * @since 1.32.0
 		 *
-		 * @params array $user_caps Array of capabilities/roles that are allowed to search for users.
+		 * @param array $user_caps Array of capabilities/roles that are allowed to search for users.
 		 */
 		$allowed_capabilities = apply_filters( 'job_manager_caps_can_search_users', array( 'edit_job_listings' ) );
 		foreach ( $allowed_capabilities as $cap ) {
@@ -340,7 +340,7 @@ class WP_Job_Manager_Ajax {
 		 *
 		 * @since 1.32.0
 		 *
-		 * @params bool $user_can_search_users True if they are allowed, false if not.
+		 * @param bool $user_can_search_users True if they are allowed, false if not.
 		 */
 		return apply_filters( 'job_manager_user_can_search_users', $user_can_search_users );
 	}
@@ -397,10 +397,10 @@ class WP_Job_Manager_Ajax {
 			 *
 			 * @see https://codex.wordpress.org/Class_Reference/WP_User_Query
 			 *
-			 * @params array  $search_args Argument array used in `WP_User_Query` constructor.
-			 * @params string $term        Search term.
-			 * @params int[]  $exclude     Array of IDs to exclude.
-			 * @params int    $page        Current page.
+			 * @param array  $search_args Argument array used in `WP_User_Query` constructor.
+			 * @param string $term        Search term.
+			 * @param int[]  $exclude     Array of IDs to exclude.
+			 * @param int    $page        Current page.
 			 */
 			$search_args = apply_filters( 'job_manager_search_users_args', $search_args, $term, $exclude, $page );
 
@@ -432,13 +432,13 @@ class WP_Job_Manager_Ajax {
 		 *
 		 * @since 1.32.0
 		 *
-		 * @params array  $response    {
+		 * @param array  $response    {
 		 *      @type array   $results Array of all found users; id => string descriptor
 		 *      @type boolean $more    True if there is an additional page.
 		 * }
-		 * @params string $term        Search term.
-		 * @params int[]  $exclude     Array of IDs to exclude.
-		 * @params int    $page        Current page.
+		 * @param string $term        Search term.
+		 * @param int[]  $exclude     Array of IDs to exclude.
+		 * @param int    $page        Current page.
 		 */
 		$response = apply_filters( 'job_manager_search_users_response', $response, $term, $exclude, $page );
 
