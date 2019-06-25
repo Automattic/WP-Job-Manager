@@ -693,6 +693,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $post_status, $values );
 			$this->update_job_data( $values );
 
+			if ( $this->job_id ) {
+				// Reset the `_filled` flag.
+				update_post_meta( $this->job_id, '_filled', 0 );
+			}
+
 			if ( $is_saving_draft ) {
 				$job_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id', false );
 
