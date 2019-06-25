@@ -135,7 +135,8 @@ jQuery(document).ready(function($) {
 		var editorTextArea = $( '#job_description' );
 
 		return jobDescription.length === 0 &&
-				editorTextArea.parents( '.required-field' ).length;
+				editorTextArea.parents( '.required-field' ).length &&
+				editorTextArea.parents( '.required-field' ).is(':visible');
 	}
 
 	function descriptionFieldIsPresent() {
