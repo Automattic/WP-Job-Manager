@@ -16,7 +16,7 @@ jQuery( document ).ready( function( $ ) {
 		}
 
 		// Check if it is disabled on this specific element.
-		if ( $target.data( 'disable-form-state-storage' ) ) {
+		if ( $target.data( 'disable_form_state_storage' ) ) {
 			return false;
 		}
 
