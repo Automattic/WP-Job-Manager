@@ -1,10 +1,34 @@
 /* global job_manager_ajax_filters */
 jQuery( document ).ready( function( $ ) {
+	var session_storage_prefix = 'job_listing_';
+
+	/**
+	 * Check if we should maintain the state.
+	 */
+	function is_state_storage_enabled( $target ) {
+		if ( ! supports_html5_session_storage() ) {
+			return false;
+		}
+
+		// Check to see if it is globally disabled.
+		if ( $( document.body ).hasClass( 'disable-job-manager-form-state-storage' ) ) {
+			return false;
+		}
+
+		// Check if it is disabled on this specific element.
+		if ( $target.data( 'disable-form-state-storage' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if the sessionStorage object is available.
+	 */
 	function supports_html5_session_storage() {
 		return window.sessionStorage && typeof window.sessionStorage.setItem === 'function';
 	}
-
-	var session_storage_prefix = 'job_listing_';
 
 	/**
 	 * Get the session storage key for the job listings instance.
@@ -24,7 +48,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Store the filter form values and possibly the rendered results in sessionStorage.
 	 */
 	function store_state( $target, state ) {
-		if ( ! supports_html5_session_storage() ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
@@ -47,7 +71,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Retrieve the stored form values and maybe the rendered results from sessionStorage.
 	 */
 	function get_state( $target ) {
-		if ( ! supports_html5_session_storage() ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
@@ -69,7 +93,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Toggle the `persist_results` boolean based on whether we not the rendered results to persist when moving away from page.
 	 */
 	function persist_results( $target, persist ) {
-		if ( ! supports_html5_session_storage() || ! $target ) {
+		if ( ! is_state_storage_enabled( $target ) || ! $target ) {
 			return false;
 		}
 
@@ -87,7 +111,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Persist the state of the form.
 	 */
 	function persist_form( $target ) {
-		if ( ! supports_html5_session_storage() || ! $target ) {
+		if ( ! is_state_storage_enabled( $target ) || ! $target ) {
 			return false;
 		}
 
@@ -106,7 +130,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Store the rendered results with the state in sessionStorage.
 	 */
 	function save_results( $target, results ) {
-		if ( ! supports_html5_session_storage() ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
@@ -131,7 +155,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Clear the stored state of the form values and possibly the rendered results from sessionStorage.
 	 */
 	function clear_state( $target ) {
-		if ( ! supports_html5_session_storage() ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
@@ -150,7 +174,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Clear the rendered results from the stored state in sessionStorage.
 	 */
 	function clear_results( $target ) {
-		if ( ! supports_html5_session_storage() ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
@@ -168,7 +192,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Clear the form from the stored state in sessionStorage.
 	 */
 	function clear_form( $target ) {
-		if ( ! supports_html5_session_storage() ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
