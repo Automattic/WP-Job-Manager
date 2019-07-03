@@ -94,6 +94,7 @@ class WP_Job_Manager {
 		add_action( 'wp_logout', array( $this, 'cleanup_job_posting_cookies' ) );
 		add_action( 'init', array( 'WP_Job_Manager_Email_Notifications', 'init' ) );
 		add_action( 'rest_api_init', array( $this, 'rest_init' ) );
+		add_action( 'template_redirect', array( $this, 'send_frame_options_header' ) );
 
 		// Filters.
 		add_filter( 'wp_privacy_personal_data_exporters', array( 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ) );
@@ -142,7 +143,7 @@ class WP_Job_Manager {
 		$content = sprintf(
 			// translators: Placeholders %1$s and %2$s are the names of the two cookies used in WP Job Manager.
 			__(
-				'This site adds the following cookies to help users resume job submissions that they 
+				'This site adds the following cookies to help users resume job submissions that they
 				have started but have not completed: %1$s and %2$s', 'wp-job-manager'
 			),
 			'<code>wp-job-manager-submitting-job-id</code>', '<code>wp-job-manager-submitting-job-key</code>'
@@ -295,7 +296,6 @@ class WP_Job_Manager {
 
 		$enhanced_select_shortcodes   = array( 'submit_job_form', 'job_dashboard', 'jobs' );
 		$enhanced_select_used_on_page = has_wpjm_shortcode( null, $enhanced_select_shortcodes );
-
 		/**
 		 * Set the constant `JOB_MANAGER_DISABLE_CHOSEN_LEGACY_COMPAT` to true to test for future behavior once
 		 * this legacy code is removed and `chosen` is no longer packaged with the plugin.
@@ -470,6 +470,24 @@ class WP_Job_Manager {
 			wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), JOB_MANAGER_VERSION );
 		} else {
 			wp_register_style( 'wp-job-manager-job-listings', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-listings.css', array(), JOB_MANAGER_VERSION );
+		}
+	}
+
+	/**
+	 *
+	 * Ensure all user wpjm pages or pages containing wpjm shortcodes
+	 * get an X-Frame-Options header.
+	 *
+	 * Disabling is not recommended, but if you must you can
+	 *
+	 * remove_action( 'template_redirect', array( WPJM(), 'send_frame_options_header' ) )
+	 *
+	 * @since FIXME
+	 *
+	 **/
+	public function send_frame_options_header() {
+		if ( is_wpjm() ) {
+			send_frame_options_header();
 		}
 	}
 }
