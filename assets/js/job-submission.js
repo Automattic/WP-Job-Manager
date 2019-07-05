@@ -139,7 +139,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function descriptionFieldIsPresent() {
-		return typeof tinymce !== undefined ||
+		return typeof tinymce !== "undefined" ||
 				tinymce.get( 'job_description' ) != null;
 	}
 
@@ -152,7 +152,7 @@ jQuery(document).ready(function($) {
 
 	// Listen for changes to the description field to clear validity
 	setTimeout( function() {
-		if ( typeof tinymce === undefined || tinymce.get( 'job_description' ) == null ) {
+		if ( typeof tinymce === "undefined" || tinymce.get( 'job_description' ) == null ) {
 			return;
 		}
 
