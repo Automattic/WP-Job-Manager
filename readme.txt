@@ -152,6 +152,9 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+= 1.33.3 =
+* Fix: Upgrade jquery-fileupload to v9.32.0
+* Fix: Set frame origin on pages where shortcodes are embedded
 
 = 1.33.2 =
 * Fix: Issue with `[jobs]` filter form on some themes and plugins.
