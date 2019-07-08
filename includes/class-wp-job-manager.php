@@ -482,7 +482,7 @@ class WP_Job_Manager {
 	 *
 	 * remove_action( 'template_redirect', array( WPJM(), 'send_frame_options_header' ) )
 	 *
-	 * @since FIXME
+	 * @since 1.33.3
 	 *
 	 **/
 	public function send_frame_options_header() {
