@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 4.9
 Tested up to: 5.2
 Requires PHP: 5.6
-Stable tag: 1.33.2
+Stable tag: 1.33.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,6 +152,10 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+= 1.33.4 =
+* Fix: job-submission.js throws js error expects job_description to be WP Editor
+* Fix: checking typeof undefined should be in quotes (in job_submission.js)
+
 = 1.33.3 =
 * Fix: Upgrade jquery-fileupload to v9.32.0
 * Fix: Set frame origin on pages where shortcodes are embedded
