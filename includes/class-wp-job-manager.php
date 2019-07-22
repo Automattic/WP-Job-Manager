@@ -96,10 +96,6 @@ class WP_Job_Manager {
 		add_filter( 'wp_privacy_personal_data_exporters', array( 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ) );
 
 		add_action( 'init', array( $this, 'usage_tracking_init' ) );
-		register_deactivation_hook( __FILE__, array( $this, 'usage_tracking_cleanup' ) );
-
-		// Other cleanup.
-		register_deactivation_hook( __FILE__, array( $this, 'unschedule_cron_jobs' ) );
 
 		// Defaults for WPJM core actions.
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );

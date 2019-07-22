@@ -49,3 +49,7 @@ $GLOBALS['job_manager'] = WPJM();
 
 // Activation - works with symlinks.
 register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( WPJM(), 'activate' ) );
+
+// Cleanup on deactivation.
+register_deactivation_hook( __FILE__, array( WPJM(), 'unschedule_cron_jobs' ) );
+register_deactivation_hook( __FILE__, array( WPJM(), 'usage_tracking_cleanup' ) );
