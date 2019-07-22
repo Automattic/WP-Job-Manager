@@ -46,3 +46,6 @@ function WPJM() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
 }
 
 $GLOBALS['job_manager'] = WPJM();
+
+// Activation - works with symlinks.
+register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( WPJM(), 'activate' ) );

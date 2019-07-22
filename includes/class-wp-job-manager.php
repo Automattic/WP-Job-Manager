@@ -75,9 +75,6 @@ class WP_Job_Manager {
 		// Schedule cron jobs.
 		self::maybe_schedule_cron_jobs();
 
-		// Activation - works with symlinks.
-		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this, 'activate' ) );
-
 		// Switch theme.
 		add_action( 'after_switch_theme', array( 'WP_Job_Manager_Ajax', 'add_endpoint' ), 10 );
 		add_action( 'after_switch_theme', array( $this->post_types, 'register_post_types' ), 11 );
