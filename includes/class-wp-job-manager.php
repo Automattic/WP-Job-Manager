@@ -155,7 +155,7 @@ class WP_Job_Manager {
 	 */
 	public function load_plugin_textdomain() {
 		load_textdomain( 'wp-job-manager', WP_LANG_DIR . '/wp-job-manager/wp-job-manager-' . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . '.mo' );
-		load_plugin_textdomain( 'wp-job-manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'wp-job-manager', false, JOB_MANAGER_PLUGIN_DIR . '/languages/' );
 	}
 
 	/**
