@@ -75,9 +75,6 @@ class WP_Job_Manager {
 		// Schedule cron jobs.
 		self::maybe_schedule_cron_jobs();
 
-		// Activation - works with symlinks.
-		register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( $this, 'activate' ) );
-
 		// Switch theme.
 		add_action( 'after_switch_theme', array( 'WP_Job_Manager_Ajax', 'add_endpoint' ), 10 );
 		add_action( 'after_switch_theme', array( $this->post_types, 'register_post_types' ), 11 );
@@ -99,10 +96,6 @@ class WP_Job_Manager {
 		add_filter( 'wp_privacy_personal_data_exporters', array( 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ) );
 
 		add_action( 'init', array( $this, 'usage_tracking_init' ) );
-		register_deactivation_hook( __FILE__, array( $this, 'usage_tracking_cleanup' ) );
-
-		// Other cleanup.
-		register_deactivation_hook( __FILE__, array( $this, 'unschedule_cron_jobs' ) );
 
 		// Defaults for WPJM core actions.
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
@@ -162,7 +155,7 @@ class WP_Job_Manager {
 	 */
 	public function load_plugin_textdomain() {
 		load_textdomain( 'wp-job-manager', WP_LANG_DIR . '/wp-job-manager/wp-job-manager-' . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . '.mo' );
-		load_plugin_textdomain( 'wp-job-manager', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'wp-job-manager', false, JOB_MANAGER_PLUGIN_DIR . '/languages/' );
 	}
 
 	/**
