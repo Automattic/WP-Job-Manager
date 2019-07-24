@@ -142,7 +142,7 @@ class WP_Job_Manager_Ajax {
 		}
 
 		$types              = get_job_listing_types();
-		$job_types_filtered = ! is_null( $filter_job_types ) && count( $types ) !== count( $filter_job_types );
+		$job_types_filtered = ! is_null( $filter_job_types ) && count( $filter_job_types ) <= count( $types );
 
 		$args = array(
 			'search_location'   => $search_location,
