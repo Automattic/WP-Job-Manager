@@ -160,7 +160,7 @@ class WP_Job_Manager_Shortcodes {
 					case 'relist':
 					case 'continue':
 
-					    if( $action == 'relist' ) {
+					    if ( $action == 'relist' ) {
                             update_post_meta( $job_id, '_filled', 0 );
                         }
 
