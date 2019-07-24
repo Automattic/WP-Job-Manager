@@ -514,7 +514,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$this->init_fields();
 
 		// Load data if necessary.
-		if ( $this->job_id && !$this->errors ) {
+		if ( $this->job_id && ! $this->errors ) {
 			$job = get_post( $this->job_id );
 			foreach ( $this->fields as $group_key => $group_fields ) {
 				foreach ( $group_fields as $key => $field ) {
