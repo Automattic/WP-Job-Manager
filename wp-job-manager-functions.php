@@ -862,12 +862,7 @@ function is_wpjm_taxonomy() {
  * @return bool True if they are to use standard email, false to allow user to set password at first job creation.
  */
 function wpjm_use_standard_password_setup_email() {
-	$use_standard_password_setup_email = true;
-
-	// If username is being automatically generated, force them to send password setup email.
-	if ( ! job_manager_generate_username_from_email() ) {
-		$use_standard_password_setup_email = 1 === intval( get_option( 'job_manager_use_standard_password_setup_email' ) );
-	}
+	$use_standard_password_setup_email = 1 === intval( get_option( 'job_manager_use_standard_password_setup_email' ) );
 
 	/**
 	 * Allows an override of the setting for if a password should be auto-generated for new users.
