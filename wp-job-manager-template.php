@@ -687,6 +687,14 @@ function wpjm_get_registration_fields() {
 
 	$registration_fields = array();
 	if ( job_manager_enable_registration() ) {
+		$registration_fields['create_account_email'] = array(
+			'type'        => 'text',
+			'label'       => esc_html__( 'Your email', 'wp-job-manager' ),
+			'placeholder' => __( 'you@yourdomain.com', 'wp-job-manager' ),
+			'required'    => $account_required,
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Just used to populate value when validation failed.
+			'value'       => isset( $_POST['create_account_email'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_email'] ) ) : '',
+		);
 		if ( ! $generate_username_from_email ) {
 			$registration_fields['create_account_username'] = array(
 				'type'     => 'text',
@@ -714,14 +722,6 @@ function wpjm_get_registration_fields() {
 				'required'     => $account_required,
 			);
 		}
-		$registration_fields['create_account_email'] = array(
-			'type'        => 'text',
-			'label'       => esc_html__( 'Your email', 'wp-job-manager' ),
-			'placeholder' => __( 'you@yourdomain.com', 'wp-job-manager' ),
-			'required'    => $account_required,
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Just used to populate value when validation failed.
-			'value'       => isset( $_POST['create_account_email'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_email'] ) ) : '',
-		);
 	}
 
 	/**
