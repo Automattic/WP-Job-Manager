@@ -529,10 +529,7 @@ function wpjm_get_the_job_title( $post = null ) {
  * @param int|WP_Post $post
  */
 function wpjm_the_job_description( $post = null ) {
-	$job_description = wpjm_get_the_job_description( $post );
-	if ( $job_description ) {
-		WP_Job_Manager_Post_Types::output_kses_post( $job_description );
-	}
+	echo wpjm_get_the_job_description( $post );
 }
 
 /**
@@ -548,7 +545,8 @@ function wpjm_get_the_job_description( $post = null ) {
 		return null;
 	}
 
-	$description = apply_filters( 'the_job_description', wp_kses_post( $post->post_content ) );
+	$description = apply_filters( 'the_job_description', get_the_content( null, false, $post ) );
+	$description = WP_Job_Manager_Post_Types::output_kses_post( $description, false );
 
 	/**
 	 * Filter for the job description.

@@ -443,9 +443,15 @@ class WP_Job_Manager_Post_Types {
 	 *
 	 * @since 1.33.0
 	 * @param string $post_content Post content to filter.
+	 * @param bool   $echo         Whether to echo the content.
 	 */
-	public static function output_kses_post( $post_content ) {
-		echo wp_kses( $post_content, self::kses_allowed_html() );
+	public static function output_kses_post( $post_content, $echo = true ) {
+		$output = wp_kses( $post_content, self::kses_allowed_html() );
+		if ( $echo ) {
+			echo $output;
+		} else {
+			return $output;
+		}
 	}
 
 	/**
@@ -478,6 +484,25 @@ class WP_Job_Manager_Post_Types {
 						'title'           => true,
 						'allow'           => true,
 						'allowfullscreen' => true,
+					),
+					'form'   => array(
+						'action'         => true,
+						'accept'         => true,
+						'accept-charset' => true,
+						'enctype'        => true,
+						'method'         => true,
+						'name'           => true,
+						'class'          => true,
+						'target'         => true,
+					),
+					'input'  => array(
+						'name'  => true,
+						'id'    => true,
+						'type'  => true,
+						'value' => true,
+						'size'  => true,
+						'class' => true,
+						'style' => true,
 					),
 				)
 			)
