@@ -448,7 +448,7 @@ class WP_Job_Manager_Post_Types {
 	public static function output_kses_post( $post_content, $echo = true ) {
 		$output = wp_kses( $post_content, self::kses_allowed_html() );
 		if ( $echo ) {
-			echo $output;
+			echo $output; // phpcs:ignore WordPress.Security.EscapeOutput
 		} else {
 			return $output;
 		}
