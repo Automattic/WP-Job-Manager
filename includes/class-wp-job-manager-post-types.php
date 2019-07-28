@@ -1218,7 +1218,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$fields = array(
-			'_job_location'    => array(
+			'_job_location'     => array(
 				'label'         => __( 'Location', 'wp-job-manager' ),
 				'placeholder'   => __( 'e.g. "London"', 'wp-job-manager' ),
 				'description'   => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
@@ -1227,7 +1227,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			),
-			'_application'     => array(
+			'_application'      => array(
 				'label'             => $application_method_label,
 				'placeholder'       => $application_method_placeholder,
 				'description'       => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
@@ -1237,7 +1237,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_application' ),
 			),
-			'_company_name'    => array(
+			'_company_name'     => array(
 				'label'         => __( 'Company Name', 'wp-job-manager' ),
 				'placeholder'   => '',
 				'priority'      => 3,
@@ -1245,7 +1245,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			),
-			'_company_website' => array(
+			'_company_website'  => array(
 				'label'             => __( 'Company Website', 'wp-job-manager' ),
 				'placeholder'       => '',
 				'priority'          => 4,
@@ -1254,7 +1254,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_url' ),
 			),
-			'_company_tagline' => array(
+			'_company_tagline'  => array(
 				'label'         => __( 'Company Tagline', 'wp-job-manager' ),
 				'placeholder'   => __( 'Brief description about the company', 'wp-job-manager' ),
 				'priority'      => 5,
@@ -1262,7 +1262,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			),
-			'_company_twitter' => array(
+			'_company_twitter'  => array(
 				'label'         => __( 'Company Twitter', 'wp-job-manager' ),
 				'placeholder'   => '@yourcompany',
 				'priority'      => 6,
@@ -1270,38 +1270,54 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			),
-			'_company_video'   => array(
+			'_company_facebook' => array(
+				'label'         => __( 'Company Facebook', 'wp-job-manager' ),
+				'placeholder'   => __( 'yourcompany-page-slug', 'wp-job-manager' ),
+				'priority'      => 8,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			),
+			'_company_linkedin' => array(
+				'label'         => __( 'Company LinkedIn', 'wp-job-manager' ),
+				'placeholder'   => __( 'yourcompany-page-slug', 'wp-job-manager' ),
+				'priority'      => 9,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			),
+			'_company_video'    => array(
 				'label'             => __( 'Company Video', 'wp-job-manager' ),
 				'placeholder'       => __( 'URL to the company video', 'wp-job-manager' ),
 				'type'              => 'file',
-				'priority'          => 8,
+				'priority'          => 10,
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_url' ),
 			),
-			'_filled'          => array(
+			'_filled'           => array(
 				'label'         => __( 'Position Filled', 'wp-job-manager' ),
 				'type'          => 'checkbox',
-				'priority'      => 9,
+				'priority'      => 11,
 				'data_type'     => 'integer',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 				'description'   => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
 			),
-			'_featured'        => array(
+			'_featured'         => array(
 				'label'              => __( 'Featured Listing', 'wp-job-manager' ),
 				'type'               => 'checkbox',
 				'description'        => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
-				'priority'           => 10,
+				'priority'           => 12,
 				'data_type'          => 'integer',
 				'show_in_admin'      => true,
 				'show_in_rest'       => true,
 				'auth_edit_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
 			),
-			'_job_expires'     => array(
+			'_job_expires'      => array(
 				'label'              => __( 'Listing Expiry Date', 'wp-job-manager' ),
-				'priority'           => 11,
+				'priority'           => 13,
 				'show_in_admin'      => true,
 				'show_in_rest'       => true,
 				'data_type'          => 'string',

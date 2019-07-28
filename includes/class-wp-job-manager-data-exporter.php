@@ -48,12 +48,14 @@ class WP_Job_Manager_Data_Exporter {
 
 		$user_data_to_export = array();
 		$user_meta_keys      = array(
-			'_company_logo'    => __( 'Company Logo', 'wp-job-manager' ),
-			'_company_name'    => __( 'Company Name', 'wp-job-manager' ),
-			'_company_website' => __( 'Company Website', 'wp-job-manager' ),
-			'_company_tagline' => __( 'Company Tagline', 'wp-job-manager' ),
-			'_company_twitter' => __( 'Company Twitter', 'wp-job-manager' ),
-			'_company_video'   => __( 'Company Video', 'wp-job-manager' ),
+			'_company_logo'     => __( 'Company Logo', 'wp-job-manager' ),
+			'_company_name'     => __( 'Company Name', 'wp-job-manager' ),
+			'_company_website'  => __( 'Company Website', 'wp-job-manager' ),
+			'_company_tagline'  => __( 'Company Tagline', 'wp-job-manager' ),
+			'_company_twitter'  => __( 'Company Twitter', 'wp-job-manager' ),
+			'_company_facebook' => __( 'Company Facebook', 'wp-job-manager' ),
+			'_company_linkedin' => __( 'Company LinkedIn', 'wp-job-manager' ),
+			'_company_video'    => __( 'Company Video', 'wp-job-manager' ),
 		);
 
 		foreach ( $user_meta_keys as $user_meta_key => $name ) {

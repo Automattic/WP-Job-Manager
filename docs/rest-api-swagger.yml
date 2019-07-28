@@ -104,7 +104,7 @@ paths:
           type: array
           in: query
           description: Limit result set to posts assigned one or more statuses.
-          default: 
+          default:
             - publish
           items:
             type: string
@@ -1027,6 +1027,12 @@ definitions:
           _company_twitter:
             type: string
             description: Company Twitter
+          _company_facebook:
+            type: string
+            description: Company Facebook
+          _company_linkedin:
+            type: string
+            description: Company LinkedIn
           _company_video:
             type: string
             description: Company Video

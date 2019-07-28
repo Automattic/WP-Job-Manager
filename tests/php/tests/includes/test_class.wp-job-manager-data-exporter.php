@@ -100,12 +100,14 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 		return array(
 			array(
 				array(
-					'_company_logo'    => 'https://example.com/company/logo',
-					'_company_name'    => 'Example',
-					'_company_website' => 'https://example.com/',
-					'_company_tagline' => 'Just another tagline',
-					'_company_twitter' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
-					'_company_video'   => 'https://example.com/company/video',
+					'_company_logo'     => 'https://example.com/company/logo',
+					'_company_name'     => 'Example',
+					'_company_website'  => 'https://example.com/',
+					'_company_tagline'  => 'Just another tagline',
+					'_company_twitter'  => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
+					'_company_facebook' => 'https://www.facebook.com/examplecom',
+					'_company_linkedin' => 'https://www.linkedin.com/company/automattic/about/',
+					'_company_video'    => 'https://example.com/company/video',
 				),
 				array(
 					'data' => array(
@@ -133,6 +135,14 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 								array(
 									'name'  => 'Company Twitter',
 									'value' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
+								),
+								array(
+									'name'  => 'Company Facebook',
+									'value' => 'https://www.facebook.com/examplecom',
+								),
+								array(
+									'name'  => 'Company LinkedIn',
+									'value' => 'https://www.linkedin.com/company/automattic/about/',
 								),
 								array(
 									'name'  => 'Company Video',
@@ -181,6 +191,8 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 					'_company_website',
 					'_company_tagline',
 					'_company_twitter',
+					'_company_facebook',
+					'_company_linkedin',
 					'_company_video',
 				),
 				array(

@@ -210,18 +210,20 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 		$job    = get_post( $job_id );
 		$post   = $job;
 
-		$_POST                     = array();
-		$_POST['_job_expires']     = $job->_job_expires;
-		$_POST['_job_location']    = $job->_job_location;
-		$_POST['_job_author']      = $job->_job_author;
-		$_POST['_application']     = $job->_application;
-		$_POST['_company_name']    = $job->_company_name;
-		$_POST['_company_website'] = $job->_company_website;
-		$_POST['_company_tagline'] = $job->_company_tagline;
-		$_POST['_company_twitter'] = $job->_company_twitter;
-		$_POST['_company_video']   = $job->_company_video;
-		$_POST['_filled']          = $job->_filled;
-		$_POST['_featured']        = $job->_featured;
+		$_POST                      = array();
+		$_POST['_job_expires']      = $job->_job_expires;
+		$_POST['_job_location']     = $job->_job_location;
+		$_POST['_job_author']       = $job->_job_author;
+		$_POST['_application']      = $job->_application;
+		$_POST['_company_name']     = $job->_company_name;
+		$_POST['_company_website']  = $job->_company_website;
+		$_POST['_company_tagline']  = $job->_company_tagline;
+		$_POST['_company_twitter']  = $job->_company_twitter;
+		$_POST['_company_facebook'] = $job->_company_facebook;
+		$_POST['_company_linkedin'] = $job->_company_linkedin;
+		$_POST['_company_video']    = $job->_company_video;
+		$_POST['_filled']           = $job->_filled;
+		$_POST['_featured']         = $job->_featured;
 
 		$_POST['post_status']          = 'publish';
 		$_POST['original_post_status'] = $job->post_status;

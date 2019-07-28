@@ -1238,3 +1238,111 @@ function job_listing_company_display() {
 	get_job_manager_template( 'content-single-job_listing-company.php', array() );
 }
 add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
+
+/**
+ * Displays or retrieves the current company Facebook link with optional content.
+ *
+ * @since 1.34.0
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function the_company_facebook( $before = '', $after = '', $echo = true, $post = null ) {
+	$company_facebook = get_the_company_facebook( $post );
+
+	if ( 0 === strlen( $company_facebook ) ) {
+		return null;
+	}
+
+	$company_facebook = sprintf(
+		'%s<a href="%s" class="company_facebook">%s</a>%s',
+		$before,
+		esc_url( 'https://www.facebook.com/' . $company_facebook ),
+		esc_html( wp_strip_all_tags( $company_facebook ) ),
+		$after
+	);
+
+	if ( $echo ) {
+		echo wp_kses_post( $company_facebook );
+	} else {
+		return $company_facebook;
+	}
+}
+
+/**
+ * Gets the company Facebook link.
+ *
+ * @since 1.34.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_company_facebook( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return null;
+	}
+
+	$company_facebook = $post->_company_facebook;
+
+	if ( 0 === strlen( $company_facebook ) ) {
+		return null;
+	}
+
+	return apply_filters( 'the_company_facebook', $company_facebook, $post );
+}
+
+/**
+ * Displays or retrieves the current company LinkedIn link with optional content.
+ *
+ * @since 1.34.0
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function the_company_linkedin( $before = '', $after = '', $echo = true, $post = null ) {
+	$company_linkedin = get_the_company_linkedin( $post );
+
+	if ( 0 === strlen( $company_linkedin ) ) {
+		return null;
+	}
+
+	$company_linkedin = sprintf(
+		'%s<a href="%s" class="company_linkedin">%s</a>%s',
+		$before,
+		esc_url( 'https://www.linkedin.com/company/' . $company_linkedin ),
+		esc_html( wp_strip_all_tags( $company_linkedin ) ),
+		$after
+	);
+
+	if ( $echo ) {
+		echo wp_kses_post( $company_linkedin );
+	} else {
+		return $company_linkedin;
+	}
+}
+
+/**
+ * Gets the company LinkedIn link.
+ *
+ * @since 1.34.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_company_linkedin( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return null;
+	}
+
+	$company_linkedin = $post->_company_linkedin;
+
+	if ( 0 === strlen( $company_linkedin ) ) {
+		return null;
+	}
+
+	return apply_filters( 'the_company_linkedin', $company_linkedin, $post );
+}

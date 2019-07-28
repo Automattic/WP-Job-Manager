@@ -573,6 +573,40 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 	/**
 	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with a company facebook page.
+	 *
+	 * @since 1.34.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_company_facebook() {
+		$published = 3;
+		$expired   = 2;
+
+		$this->create_job_listings_with_meta( '_company_facebook', 'WordPress', $published, $expired );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $published + $expired, $data['jobs_company_facebook'] );
+	}
+
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
+	 * with a company linkedin page.
+	 *
+	 * @since 1.34.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
+	 */
+	public function test_jobs_company_linkedin() {
+		$published = 3;
+		$expired   = 2;
+
+		$this->create_job_listings_with_meta( '_company_linkedin', 'automattic', $published, $expired );
+
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->assertEquals( $published + $expired, $data['jobs_company_linkedin'] );
+	}
+
+	/**
+	 * Tests that get_usage_data() returns the correct number of job listings
 	 * with a company video.
 	 *
 	 * @since 1.30.0

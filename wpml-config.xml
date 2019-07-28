@@ -15,6 +15,8 @@
     <custom-field action="translate">_company_website</custom-field>
     <custom-field action="translate">_company_tagline</custom-field>
     <custom-field action="copy">_company_twitter</custom-field>
+    <custom-field action="copy">_company_facebook</custom-field>
+    <custom-field action="copy">_company_linkedin</custom-field>
     <custom-field action="translate">_company_video</custom-field>
   </custom-fields>
 </wpml-config>

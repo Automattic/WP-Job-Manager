@@ -266,6 +266,8 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 			'_company_tagline',
 			'_company_website',
 			'_company_twitter',
+			'_company_facebook',
+			'_company_linkedin',
 		);
 
 		$searchable_meta_keys = apply_filters( 'job_listing_searchable_meta_keys', $searchable_meta_keys );

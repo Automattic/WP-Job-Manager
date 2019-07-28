@@ -171,7 +171,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	 * Tests to make sure public meta fields are exposed to guest users and private meta fields are hidden.
 	 */
 	public function test_guest_can_read_only_public_fields() {
-		$public_fields  = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_video', '_filled', '_featured' );
+		$public_fields  = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_facebook', '_company_linkedin', '_company_video', '_filled', '_featured' );
 		$private_fields = array( '_job_expires' );
 		$this->logout();
 		$post_id = $this->get_job_listing();
@@ -192,7 +192,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_same_employer_read_access_to_private_meta_fields() {
-		$available_fields = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_video', '_filled', '_featured',  '_job_expires' );
+		$available_fields = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_facebook', '_company_linkedin', '_company_video', '_filled', '_featured',  '_job_expires' );
 		$this->login_as_employer();
 		$post_id = $this->get_job_listing();
 
@@ -207,7 +207,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	}
 
 	public function test_different_employer_read_access_to_private_meta_fields() {
-		$public_fields  = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_video', '_filled', '_featured' );
+		$public_fields  = array( '_job_location', '_application', '_company_name', '_company_website', '_company_tagline', '_company_twitter', '_company_facebook', '_company_linkedin', '_company_video', '_filled', '_featured' );
 		$private_fields = array( '_job_expires' );
 		$this->login_as_employer();
 		$post_id = $this->get_job_listing();
@@ -243,16 +243,18 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	public function test_admin_can_set_meta_fields() {
 		$this->login_as_admin();
 		$test_meta = array(
-			'_job_location'    => 'Location A',
-			'_application'     => 'example@example.com',
-			'_company_name'    => 'Test Company',
-			'_company_website' => 'https://www.example.com/awesome#nice',
-			'_company_tagline' => 'Best Example Money Can Buy',
-			'_company_twitter' => '@exampledotcom',
-			'_company_video'   => 'https://youtube.com/example',
-			'_filled'          => 0,
-			'_featured'        => 0,
-			'_job_expires'     => date( 'Y-m-d', strtotime( '+45 days' ) ),
+			'_job_location'     => 'Location A',
+			'_application'      => 'example@example.com',
+			'_company_name'     => 'Test Company',
+			'_company_website'  => 'https://www.example.com/awesome#nice',
+			'_company_tagline'  => 'Best Example Money Can Buy',
+			'_company_twitter'  => '@exampledotcom',
+			'_company_facebook' => 'examplecom',
+			'_company_linkedin' => 'example',
+			'_company_video'    => 'https://youtube.com/example',
+			'_filled'           => 0,
+			'_featured'         => 0,
+			'_job_expires'      => date( 'Y-m-d', strtotime( '+45 days' ) ),
 		);
 
 		$response = $this->post(
@@ -308,43 +310,51 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	public function test_meta_input_sterilized() {
 		$this->login_as_admin();
 		$test_meta = array(
-			'_job_location'    => array(
+			'_job_location'     => array(
 				'sent'     => '<a href="http://example.com">Location A</a>',
 				'expected' => 'Location A',
 			),
-			'_application'     => array(
+			'_application'      => array(
 				'sent'     => 'chrome://net=internals',
 				'expected' => '',
 			),
-			'_company_name'    => array(
+			'_company_name'     => array(
 				'sent'     => 'Test Company 🐵 🙈 🙉 🙊',
 				'expected' => 'Test Company 🐵 🙈 🙉 🙊',
 			),
-			'_company_website' => array(
+			'_company_website'  => array(
 				'sent'     => 'https://www.example.com/awesome#nice',
 				'expected' => 'https://www.example.com/awesome#nice',
 			),
-			'_company_tagline' => array(
+			'_company_tagline'  => array(
 				'sent'     => 'Best Example Money Can Buy<script\\x20type=\"text/javascript\">javascript:alert(1);</script>',
 				'expected' => 'Best Example Money Can Buy',
 			),
-			'_company_twitter' => array(
+			'_company_twitter'  => array(
 				'sent'     => '    @exampledotcom ',
 				'expected' => '@exampledotcom',
 			),
-			'_company_video'   => array(
+			'_company_facebook' => array(
+				'sent'     => '    examplecom ',
+				'expected' => 'examplecom',
+			),
+			'_company_linkedin' => array(
+				'sent'     => '    example ',
+				'expected' => 'example',
+			),
+			'_company_video'    => array(
 				'sent'     => 'http://example.com/index.php?search="><script>alert(0)</script>',
 				'expected' => 'http://example.com/index.php?search=scriptalert(0)/script',
 			),
-			'_filled'          => array(
+			'_filled'           => array(
 				'sent'     => 11,
 				'expected' => 1,
 			),
-			'_featured'        => array(
+			'_featured'         => array(
 				'sent'     => 0x0,
 				'expected' => 0,
 			),
-			'_job_expires'     => array(
+			'_job_expires'      => array(
 				'sent'     => '01-01-2018',
 				'expected' => '',
 			),
