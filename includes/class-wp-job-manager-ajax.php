@@ -156,6 +156,21 @@ class WP_Job_Manager_Ajax {
 			'posts_per_page'    => max( 1, $per_page ),
 		);
 
+		// Array of keys whose value is passed to `job_manager_before_search` action.
+		$allowed_arg_keys = [ 'search_keywords' ];
+
+		// Build an array with values of whitelisted keys.
+		$search_args = array_intersect_key( $args, array_flip( $allowed_arg_keys ) );
+
+		/**
+		 * This action is intended to be used by site owners to log search arguments.
+		 *
+		 * @since 1.34.0
+		 *
+		 * @param array $search_args Arguments to help owner identify type of job searches.
+		 */
+		do_action( 'job_manager_before_search', $search_args );
+
 		if ( 'true' === $filled || 'false' === $filled ) {
 			$args['filled'] = 'true' === $filled;
 		}
