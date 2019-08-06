@@ -164,8 +164,9 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 
 		// Cache results.
 		if ( apply_filters( 'get_job_listings_cache_results', true ) ) {
+			$pagePath = substr(parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), 1, -1);
 			$to_hash              = wp_json_encode( $query_args );
-			$query_args_hash      = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
+			$query_args_hash      = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION . $pagePath ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
 			$result               = false;
 			$cached_query_results = true;
 			$cached_query_posts   = get_transient( $query_args_hash );
