@@ -30,8 +30,10 @@ switch ( $job->post_status ) :
 	case 'pending' :
 		echo wp_kses_post(
 			sprintf(
-				esc_html__( '%s submitted successfully. Your listing will be visible once approved.', 'wp-job-manager' ),
+				__( '%s submitted successfully. Your listing will be visible once approved.<br>
+					<a href="%s">Click here</a> to go to the Jobs Dashboard.', 'wp-job-manager' ),
 				esc_html( $wp_post_types['job_listing']->labels->singular_name ),
+				get_permalink( get_option( 'job_manager_job_dashboard_page_id' ) ),
 				get_permalink( $job->ID )
 			)
 		);
