@@ -203,7 +203,11 @@ class WP_Job_Manager_Data_Cleaner {
 			);
 
 			foreach ( $items as $item ) {
-				wp_trash_post( $item );
+				if ( ! get_option( 'job_manager_bypass_trash_on_uninstall' ) ) {
+					wp_trash_post( $item );
+				} else {
+					wp_delete_post( $item, true );
+				}
 			}
 		}
 	}
