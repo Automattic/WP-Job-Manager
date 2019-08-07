@@ -117,6 +117,16 @@ class WP_Job_Manager_Settings {
 							'type'       => 'checkbox',
 							'attributes' => array(),
 						),
+						array(
+							'name'       => 'job_manager_bypass_trash_on_uninstall',
+							'std'        => '0',
+							'label'      => __( 'Bypass trash for job listings.', 'wp-job-manager' ),
+							'cb_label'   => __( 'If checked, when the plugin is uninstalled, job listings will be
+												permanently deleted immediately.', 'wp-job-manager' ),
+							'desc'       => '',
+							'type'       => 'checkbox',
+							'attributes' => array(),
+						),
 					),
 				),
 				'job_listings'   => array(
