@@ -35,6 +35,31 @@ switch ( $job->post_status ) :
 				get_permalink( $job->ID )
 			)
 		);
+
+		$permalink = job_manager_get_permalink('job_dashboard');
+		$title = get_the_title((job_manager_get_page_id('job_dashboard')));
+
+		// If job_dashboard page exists but there is no title
+		if ( $permalink && empty($title)) {
+			echo wp_kses_post(
+				sprintf(
+					// translators: %1$s is the URL to view the listing; %2$s is
+					// the plural name of the job listing post type
+					__( '  <a href="%1$s"> View your %2$s</a>', 'wp-job-manager' ),
+					$permalink,
+					esc_html( $wp_post_types['job_listing' ]->labels->name )
+				)
+			);
+
+		} elseif ($permalink && $title) { // If there is both a job_dashboard page and a title on the page
+			echo wp_kses_post(
+				sprintf(
+					__( '  <a href="%s"> %s</a>', 'wp-job-manager' ),
+					$permalink,
+					$title
+				)
+			);
+		}
 	break;
 	default :
 		do_action( 'job_manager_job_submitted_content_' . str_replace( '-', '_', sanitize_title( $job->post_status ) ), $job );
