@@ -176,7 +176,6 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				'ID'         => $args['order'],
 			);
 		}
-		
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
 
 		if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
