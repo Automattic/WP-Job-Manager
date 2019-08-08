@@ -141,7 +141,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$query_args['orderby'] = array(
 				'menu_order' => 'ASC',
 				'title'      => $args['order'],
-				'ID'		 =>	$args['order'],
+				'ID'         => $args['order'],
 
 			);
 		}
@@ -149,7 +149,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		if ( 'ID_featured' === $args['orderby'] ) {
 			$query_args['orderby'] = array(
 				'menu_order' => 'ASC',
-				'ID'		 =>	$args['order'],
+				'ID'         => $args['order'],
 			);
 		}
 
@@ -157,7 +157,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$query_args['orderby'] = array(
 				'menu_order' => 'ASC',
 				'name'       => $args['order'],
-				'ID'		 => $args['order'],
+				'ID'         => $args['order'],
 			);
 		}
 
@@ -165,7 +165,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$query_args['orderby'] = array(
 				'menu_order' => 'ASC',
 				'date'       => $args['order'],
-				'ID'		 =>	$args['order'],
+				'ID'         => $args['order'],
 			);
 		}
 
@@ -173,7 +173,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$query_args['orderby'] = array(
 				'menu_order' => 'ASC',
 				'modified'   => $args['order'],
-				'ID'		 =>	$args['order'],
+				'ID'         => $args['order'],
 			);
 		}
 		
