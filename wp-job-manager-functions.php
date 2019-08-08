@@ -137,6 +137,46 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			);
 		}
 
+		if ( 'title_featured' === $args['orderby'] ) {
+			$query_args['orderby'] = array(
+				'menu_order' => 'ASC',
+				'title'      => $args['order'],
+				'ID'		 =>	$args['order'],
+
+			);
+		}
+
+		if ( 'ID_featured' === $args['orderby'] ) {
+			$query_args['orderby'] = array(
+				'menu_order' => 'ASC',
+				'ID'		 =>	$args['order'],
+			);
+		}
+
+		if ( 'name_featured' === $args['orderby'] ) {
+			$query_args['orderby'] = array(
+				'menu_order' => 'ASC',
+				'name'       => $args['order'],
+				'ID'		 => $args['order'],
+			);
+		}
+
+		if ( 'date_featured' === $args['orderby'] ) {
+			$query_args['orderby'] = array(
+				'menu_order' => 'ASC',
+				'date'       => $args['order'],
+				'ID'		 =>	$args['order'],
+			);
+		}
+
+		if ( 'modified_featured' === $args['orderby'] ) {
+			$query_args['orderby'] = array(
+				'menu_order' => 'ASC',
+				'modified'   => $args['order'],
+				'ID'		 =>	$args['order'],
+			);
+		}
+		
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
 
 		if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
