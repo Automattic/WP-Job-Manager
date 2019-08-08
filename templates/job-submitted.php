@@ -50,7 +50,6 @@ switch ( $job->post_status ) :
 					esc_html( $wp_post_types['job_listing' ]->labels->name )
 				)
 			);
-
 		} elseif ($permalink && $title) { // If there is both a job_dashboard page and a title on the page
 			echo wp_kses_post(
 				sprintf(
