@@ -127,7 +127,7 @@ jQuery(document).ready(function($) {
 	}
 
 	function descriptionFieldIsInvalid() {
-		if ( !descriptionFieldIsPresent() ) {
+		if ( ! descriptionFieldIsPresent() ) {
 			return false;
 		}
 
@@ -153,7 +153,7 @@ jQuery(document).ready(function($) {
 
 	// Listen for changes to the description field to clear validity
 	setTimeout( function() {
-		if ( !descriptionFieldIsPresent() ) {
+		if ( ! descriptionFieldIsPresent() ) {
 			return;
 		}
 
