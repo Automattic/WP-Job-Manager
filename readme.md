@@ -4,7 +4,7 @@
 **Requires at least:** 4.9  
 **Tested up to:** 5.2  
 **Requires PHP:** 5.6  
-**Stable tag:** 1.33.2  
+**Stable tag:** 1.33.5  
 **License:** GPLv3  
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -183,6 +183,9 @@ It then creates a database based on the parameters passed to it.
 * Deprecation: Added warning for upcoming minimum PHP version requirement of 5.6.20.
 * Usage Tracking: Track source of job submission (frontend vs WP admin) to better understand how jobs are entered.
 * Usage Tracking: Track official extension license events and activation to better compare types of usage between users and catch activation errors.
+
+### 1.33.5 ###
+* Fix: Issue where a JS error could occur when submitting a job.
 
 ### 1.32.3 ###
 * Fix: Escape tooltip text in WordPress admin. (Props hd7exploit)
