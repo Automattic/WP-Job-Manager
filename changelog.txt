@@ -1,3 +1,6 @@
+= 1.33.5 =
+* Fix: Issue where a JS error could occur when submitting a job.
+
 = 1.33.3 =
 * Fix: Upgrade jquery-fileupload to v9.32.0
 * Fix: Set frame origin on pages where shortcodes are embedded
