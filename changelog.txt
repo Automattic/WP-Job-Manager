@@ -18,6 +18,7 @@
 * Dev: Adds the ability to completely disable the state saving functionality of `[jobs]` results.
 * Dev: Allows custom calls to `get_job_listings()` to just get `ids` and `id=>parent`. (@manzoorwanijk)
 * Dev: Switched to short-array syntax across plugin. 
+* Dev: Updated `jquery-fileupload` library to 10.2.0.
 
 = 1.33.5 =
 * Fix: Issue where a JS error could occur when submitting a job.
