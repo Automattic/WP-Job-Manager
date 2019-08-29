@@ -36,19 +36,8 @@ switch ( $job->post_status ) :
 			)
 		);
 
-		global $wpdb;
-
-		$id = $wpdb->get_var(
-			' SELECT ID
-				FROM ' . $wpdb->posts . '
-				WHERE
-					post_type = "page"
-					AND post_status = "publish"
-					AND post_content LIKE "%[job_dashboard]%"'
-		);
-
-		$permalink = get_permalink($id);
-		$title = get_the_title($id);
+		$permalink = job_manager_get_permalink('job_dashboard');
+		$title = get_the_title((job_manager_get_page_id('job_dashboard')));
 
 		// If job_dashboard page exists but there is no title
 		if ( $permalink && empty($title) ) {
@@ -61,8 +50,7 @@ switch ( $job->post_status ) :
 					esc_html( $wp_post_types['job_listing' ]->labels->name )
 				)
 			);
-		// If there is both a job_dashboard page and a title on the page
-		} elseif ( $permalink && $title ) { 
+		} elseif ( $permalink && $title ) { // If there is both a job_dashboard page and a title on the page
 			echo wp_kses_post(
 				sprintf(
 					__( '  <a href="%s"> %s</a>', 'wp-job-manager' ),
