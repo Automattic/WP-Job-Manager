@@ -184,6 +184,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 					} else {
 						$posts = array_map( 'get_post', $cached_query_posts->posts );
 					}
+
 					$result = new WP_Query();
 					$result->parse_query( $query_args );
 					$result->posts         = $posts;
