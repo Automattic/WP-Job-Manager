@@ -31,8 +31,7 @@ switch ( $job->post_status ) :
 		echo wp_kses_post(
 			sprintf(
 				esc_html__( '%s submitted successfully. Your listing will be visible once approved.', 'wp-job-manager' ),
-				esc_html( $wp_post_types['job_listing']->labels->singular_name ),
-				get_permalink( $job->ID )
+				esc_html( $wp_post_types['job_listing']->labels->singular_name )
 			)
 		);
 	break;
