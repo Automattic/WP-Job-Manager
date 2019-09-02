@@ -9,7 +9,7 @@
  * @package     wp-job-manager
  * @category    Template
  * @since       1.0.0
- * @version     1.27.0
+ * @version     1.34.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
