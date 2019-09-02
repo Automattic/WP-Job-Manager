@@ -152,9 +152,17 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 ## Changelog ##
+### 1.33.5 ###
+* Fix: Issue where a JS error could occur when submitting a job.
+
+### 1.33.4 ###
+* Fix: job-submission.js throws js error expects job_description to be WP Editor.
+* Fix: checking typeof undefined should be in quotes (in job_submission.js).
+* Fix: plugin activation issue.
+
 ### 1.33.3 ###
-* Fix: Upgrade jquery-fileupload to v9.32.0
-* Fix: Set frame origin on pages where shortcodes are embedded
+* Fix: Upgrade jquery-fileupload to v9.32.0.
+* Fix: Set frame origin on pages where shortcodes are embedded.
 
 ### 1.33.2 ###
 * Fix: Issue with `[jobs]` filter form on some themes and plugins.
