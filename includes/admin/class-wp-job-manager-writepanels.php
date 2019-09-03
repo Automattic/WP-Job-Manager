@@ -604,6 +604,8 @@ class WP_Job_Manager_Writepanels {
 	 * @param WP_Post $post (Unused).
 	 */
 	public function save_job_listing_data( $post_id, $post ) {
+		global $wpdb;
+
 		// These need to exist.
 		add_post_meta( $post_id, '_filled', 0, true );
 		add_post_meta( $post_id, '_featured', 0, true );
@@ -642,13 +644,12 @@ class WP_Job_Manager_Writepanels {
 				if ( empty( $_POST[ $key ] ) ) {
 					$_POST[ $key ] = 0;
 				}
-				$job_data                = array();
-				$job_data['ID']          = $post_id;
-				$job_data['post_author'] = $_POST[ $key ] > 0 ? intval( $_POST[ $key ] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 
-				remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20 );
-				wp_update_post( $job_data );
-				add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
+				$input_post_author = $_POST[ $key ] > 0 ? intval( $_POST[ $key ] ) : 0;
+
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Avoid update post within `save_post` action.
+				$wpdb->update( $wpdb->posts, array( 'post_author' => $input_post_author ), array( 'ID' => $post_id ) );
 			} elseif ( isset( $_POST[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
 				update_post_meta( $post_id, $key, wp_unslash( $_POST[ $key ] ) );
