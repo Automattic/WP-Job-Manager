@@ -487,23 +487,6 @@ class WP_Job_Manager_Settings {
 				}
 			}).change();
 
-			// If generate username is enabled on page load, assume use_standard_password_setup_email has been cleared.
-			// Default is true, so let's sneakily set it to that before it gets cleared and disabled.
-			if ( $generate_username_from_email.is(':checked') ) {
-				$use_standard_password_setup_email.prop('checked', true);
-			}
-
-			$generate_username_from_email.change(function() {
-				if ( jQuery( this ).is(':checked') ) {
-					$use_standard_password_setup_email.data('original-state', $use_standard_password_setup_email.is(':checked')).prop('checked', true).prop('disabled', true);
-				} else {
-					$use_standard_password_setup_email.prop('disabled', false);
-					if ( undefined !== $use_standard_password_setup_email.data('original-state') ) {
-						$use_standard_password_setup_email.prop('checked', $use_standard_password_setup_email.data('original-state'));
-					}
-				}
-			}).change();
-
 			jQuery( '.sub-settings-expander' ).on( 'change', function() {
 				var $expandable = jQuery(this).parent().siblings( '.sub-settings-expandable' );
 				var checked = jQuery(this).is( ':checked' );
