@@ -54,7 +54,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	}
 
 	/**
-	 * @since 1.34.0
+	 * @since 1.33.4
 	 * @covers WP_Job_Manager_Helper::admin_init
 	 * @requires PHP 5.3.0
 	 */
@@ -71,7 +71,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	}
 
 	/**
-	 * @since 1.34.0
+	 * @since 1.33.4
 	 * @covers WP_Job_Manager_Helper::admin_init
 	 * @requires PHP 5.3.0
 	 */

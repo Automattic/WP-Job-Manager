@@ -124,10 +124,10 @@ class WP_Job_Manager_Cache_Helper {
 	/**
 	 * Clear expired transients.
 	 *
-	 * @deprecated 1.34.0 Handled by WordPress since 4.9.
+	 * @deprecated 1.33.4 Handled by WordPress since 4.9.
 	 */
 	public static function clear_expired_transients() {
-		_deprecated_function( __METHOD__, '1.34.0', 'handled by WordPress core since 4.9' );
+		_deprecated_function( __METHOD__, '1.33.4', 'handled by WordPress core since 4.9' );
 	}
 
 	/**

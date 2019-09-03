@@ -57,7 +57,7 @@ class WP_Job_Manager_Install {
 			update_option( 'job_manager_job_dashboard_page_id', $page_id );
 		}
 
-		// Scheduled hook was removed in 1.34.0.
+		// Scheduled hook was removed in 1.33.4.
 		if ( wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
 			wp_clear_scheduled_hook( 'job_manager_clear_expired_transients' );
 		}
