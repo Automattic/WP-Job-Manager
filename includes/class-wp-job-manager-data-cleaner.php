@@ -99,6 +99,8 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_email_admin_expiring_job',
 		'job_manager_email_employer_expiring_job',
 		'job_manager_admin_notices',
+		'widget_widget_featured_jobs',
+		'widget_widget_recent_jobs',
 	);
 
 	/**
@@ -170,16 +172,6 @@ class WP_Job_Manager_Data_Cleaner {
 	);
 
 	/**
-	 * Widget options to be deleted.
-	 *
-	 * @var $widget_options
-	 */
-	private static $widget_options = array(
-		'widget_widget_featured_jobs',
-		'widget_widget_recent_jobs',
-	);
-
-	/**
 	 * Cleanup all data.
 	 *
 	 * @access public
@@ -194,7 +186,6 @@ class WP_Job_Manager_Data_Cleaner {
 		self::cleanup_user_meta();
 		self::cleanup_options();
 		self::cleanup_site_options();
-		self::cleanup_widget_options();
 	}
 
 	/**
@@ -386,17 +377,6 @@ class WP_Job_Manager_Data_Cleaner {
 	private static function cleanup_cron_jobs() {
 		foreach ( self::$cron_jobs as $job ) {
 			wp_clear_scheduled_hook( $job );
-		}
-	}
-
-	/**
-	 * Cleanup widget options.
-	 *
-	 * @access private
-	 */
-	private static function cleanup_widget_options() {
-		foreach ( self::$widget_options as $widget_option ) {
-			delete_option( $widget_option );
 		}
 	}
 }
