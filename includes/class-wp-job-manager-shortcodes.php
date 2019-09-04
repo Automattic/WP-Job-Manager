@@ -458,6 +458,20 @@ class WP_Job_Manager_Shortcodes {
 
 		$data_attributes['post_id'] = isset( $GLOBALS['post'] ) ? $GLOBALS['post']->ID : 0;
 
+		/**
+		 * Pass additional data to the job listings <div> wrapper.
+		 *
+		 * @since 1.34.0
+		 *
+		 * @param array $data_attributes {
+		 *     Key => Value array of data attributes to pass.
+		 *
+		 *     @type string $$key Value to pass as a data attribute.
+		 * }
+		 * @param array $atts            Attributes for the shortcode.
+		 */
+		$data_attributes = apply_filters( 'job_manager_jobs_shortcode_data_attributes', $data_attributes, $atts );
+
 		foreach ( $data_attributes as $key => $value ) {
 			$data_attributes_string .= 'data-' . esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
 		}
