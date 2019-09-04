@@ -156,9 +156,14 @@ It then creates a database based on the parameters passed to it.
 * Fix: Issue where a JS error could occur when submitting a job.
 
 = 1.33.4 =
-* Fix: job-submission.js throws js error expects job_description to be WP Editor.
-* Fix: checking typeof undefined should be in quotes (in job_submission.js).
-* Fix: plugin activation issue.
+* Note: WP Job Manager now requires a minimum PHP version of 5.6.20.
+* Fix: Javascript error in job-submission.js on custom job description fields.
+* Fix: Checking typeof undefined should be in quotes in job_submission.js.
+* Fix: Plugin activation issue that didn't set up roles correctly.
+* Fix: Escaped HTML issue in expiring jobs email notice.
+* Change: Added additional unslashing and sanitization of input variables from forms. 
+* Change: Limited direct database access within the plugin and migrated to WordPress core functions when possible.
+* Removed: Transient garbage collection. WordPress 4.9 and up handle this automatically.
 
 = 1.33.3 =
 * Fix: Upgrade jquery-fileupload to v9.32.0.
