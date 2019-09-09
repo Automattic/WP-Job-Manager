@@ -40,7 +40,7 @@ switch ( $job->post_status ) :
 		$title     = get_the_title( job_manager_get_page_id( 'job_dashboard' ) );
 
 		// If job_dashboard page exists but there is no title
-		if ( $permalink && empty($title) ) {
+		if ( $permalink && empty( $title ) ) {
 			echo wp_kses_post(
 				sprintf(
 					// translators: %1$s is the URL to view the listing; %2$s is
