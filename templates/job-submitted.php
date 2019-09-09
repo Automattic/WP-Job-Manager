@@ -37,7 +37,7 @@ switch ( $job->post_status ) :
 		);
 
 		$permalink = job_manager_get_permalink('job_dashboard');
-		$title = get_the_title((job_manager_get_page_id('job_dashboard')));
+		$title     = get_the_title( job_manager_get_page_id( 'job_dashboard' ) );
 
 		// If job_dashboard page exists but there is no title
 		if ( $permalink && empty($title) ) {
