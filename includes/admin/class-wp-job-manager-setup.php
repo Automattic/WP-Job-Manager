@@ -126,7 +126,7 @@ class WP_Job_Manager_Setup {
 					wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
 				}
 				$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wp-job-manager-create-page'] ) ) : array();
-				$page_titles     = isset( $_POST['wp-job-manager-page-title'] ) ? array_map( 'sanitize_title', wp_unslash( $_POST['wp-job-manager-page-title'] ) ) : array();
+				$page_titles     = isset( $_POST['wp-job-manager-page-title'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wp-job-manager-page-title'] ) ) : array();
 				$pages_to_create = array(
 					'submit_job_form' => '[submit_job_form]',
 					'job_dashboard'   => '[job_dashboard]',
