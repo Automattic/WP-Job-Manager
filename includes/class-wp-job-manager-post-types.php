@@ -982,7 +982,6 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		remove_action( 'update_post_meta', array( $this, 'update_post_meta' ) );
 		switch ( $meta_key ) {
 			case '_job_location':
 				$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value );
@@ -991,7 +990,6 @@ class WP_Job_Manager_Post_Types {
 				$this->maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value );
 				break;
 		}
-		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 	}
 
 	/**
@@ -1015,25 +1013,28 @@ class WP_Job_Manager_Post_Types {
 	 * @param mixed  $meta_value
 	 */
 	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {
+		global $wpdb;
+
 		if ( 1 === intval( $meta_value ) ) {
-			wp_update_post(
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Update post menu order without firing actions.
+			$wpdb->update(
+				$wpdb->posts,
+				array( 'menu_order' => -1 ),
+				array( 'ID' => $object_id )
+			);
+		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Update post menu order without firing actions.
+			$wpdb->update(
+				$wpdb->posts,
+				array( 'menu_order' => 0 ),
 				array(
 					'ID'         => $object_id,
 					'menu_order' => -1,
 				)
 			);
-		} else {
-			$post = get_post( $object_id );
-
-			if ( -1 === intval( $post->menu_order ) ) {
-				wp_update_post(
-					array(
-						'ID'         => $object_id,
-						'menu_order' => 0,
-					)
-				);
-			}
 		}
+
+		clean_post_cache( $object_id );
 	}
 
 	/**
