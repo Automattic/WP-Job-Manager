@@ -179,7 +179,8 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 					&& isset( $cached_query_posts->posts )
 					&& is_array( $cached_query_posts->posts )
 				) {
-					if ( 'ids' === $query_args['fields'] ) {
+					if ( in_array( $query_args['fields'], array( 'ids', 'id=>parent' ), true ) ) {
+						// For these special requests, just return the array of results as set.
 						$posts = $cached_query_posts->posts;
 					} else {
 						$posts = array_map( 'get_post', $cached_query_posts->posts );
