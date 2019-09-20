@@ -179,7 +179,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 					&& isset( $cached_query_posts->posts )
 					&& is_array( $cached_query_posts->posts )
 				) {
-					$posts  = array_map( 'get_post', $cached_query_posts->posts );
+					if ( 'ids' === $query_args['fields'] ) {
+						$posts = $cached_query_posts->posts;
+					} else {
+						$posts = array_map( 'get_post', $cached_query_posts->posts );
+					}
+
 					$result = new WP_Query();
 					$result->parse_query( $query_args );
 					$result->posts         = $posts;
