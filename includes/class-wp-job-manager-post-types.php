@@ -373,6 +373,7 @@ class WP_Job_Manager_Post_Types {
 					'rest_controller_class' => 'WP_REST_Posts_Controller',
 					'template'              => array( array( 'core/freeform' ) ),
 					'template_lock'         => 'all',
+					'menu_position'         => 30,
 				)
 			)
 		);
