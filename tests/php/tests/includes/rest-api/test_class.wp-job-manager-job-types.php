@@ -43,7 +43,7 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	public function test_guest_delete_job_types_fail() {
 		$this->logout();
 		$term_id  = $this->get_job_type();
-		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), array( 'force' => 1 ) );
+		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), [ 'force' => 1 ] );
 		$this->assertResponseStatus( $response, 401 );
 	}
 
@@ -51,10 +51,10 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		$this->logout();
 		$response = $this->post(
 			'/wp/v2/job-types',
-			array(
+			[
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
-			)
+			]
 		);
 
 		$this->assertResponseStatus( $response, 401 );
@@ -65,9 +65,9 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		$this->logout();
 		$response = $this->put(
 			sprintf( '/wp/v2/job-types/%d', $term_id ),
-			array(
+			[
 				'name'   => 'Software Engineer 2',
-			)
+			]
 		);
 
 		$this->assertResponseStatus( $response, 401 );
@@ -89,7 +89,7 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	public function test_employer_delete_job_types_fail() {
 		$this->login_as_employer();
 		$term_id  = $this->get_job_type();
-		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), array( 'force' => 1 ) );
+		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), [ 'force' => 1 ] );
 		$this->assertResponseStatus( $response, 403 );
 	}
 
@@ -97,10 +97,10 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		$this->login_as_employer();
 		$response = $this->post(
 			'/wp/v2/job-types',
-			array(
+			[
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
-			)
+			]
 		);
 
 		$this->assertResponseStatus( $response, 403 );
@@ -111,9 +111,9 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		$this->login_as_employer();
 		$response = $this->put(
 			sprintf( '/wp/v2/job-types/%d', $term_id ),
-			array(
+			[
 				'name'   => 'Software Engineer 2',
-			)
+			]
 		);
 
 		$this->assertResponseStatus( $response, 403 );
@@ -128,14 +128,14 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	public function test_delete_fail_as_default_user() {
 		$this->login_as_default_user();
 		$term_id  = $this->get_job_type();
-		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), array( 'force' => 1 ) );
+		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), [ 'force' => 1 ] );
 		$this->assertResponseStatus( $response, 401 );
 	}
 
 	public function test_delete_succeed_as_admin_user() {
 		$this->login_as_admin();
 		$term_id  = $this->get_job_type();
-		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), array( 'force' => 1 ) );
+		$response = $this->delete( sprintf( '/wp/v2/job-types/%d', $term_id ), [ 'force' => 1 ] );
 		$this->assertResponseStatus( $response, 200 );
 	}
 
@@ -151,13 +151,13 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		$this->login_as_admin();
 		$response = $this->post(
 			'/wp/v2/job-types',
-			array(
+			[
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
-				'meta' => array(
+				'meta' => [
 					'employment_type' => 'FULL_TIME',
-				),
-			)
+				],
+			]
 		);
 
 		$this->assertResponseStatus( $response, 201 );
@@ -174,13 +174,13 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 		$this->login_as_admin();
 		$response = $this->post(
 			'/wp/v2/job-types',
-			array(
+			[
 				'name'   => 'Software Engineer',
 				'slug'   => 'software-engineer',
-				'meta' => array(
+				'meta' => [
 					'employment_type' => 'FULL_TIME',
-				),
-			)
+				],
+			]
 		);
 
 		$this->assertResponseStatus( $response, 201 );
@@ -193,6 +193,6 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	}
 
 	protected function get_job_type() {
-		return $this->factory->term->create( array( 'taxonomy' => 'job_listing_type' ) );
+		return $this->factory->term->create( [ 'taxonomy' => 'job_listing_type' ] );
 	}
 }

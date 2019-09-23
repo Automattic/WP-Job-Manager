@@ -21,16 +21,16 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 	 */
 	private function setupUserMeta( $args, &$expected ) {
 		$user_id = $this->factory()->user->create(
-			array(
+			[
 				'user_login' => 'johndoe',
 				'user_email' => 'johndoe@example.com',
 				'role'       => 'subscriber',
-			)
+			]
 		);
 
 		if ( isset( $args['_company_logo'] ) ) {
 			$args['_company_logo']                   = $this->factory()->post->create(
-				array( 'post_type' => 'attachment' )
+				[ 'post_type' => 'attachment' ]
 			);
 			$expected['data'][0]['data'][0]['value'] = $args['_company_logo'];
 		}
@@ -97,104 +97,104 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 	 * @return array
 	 */
 	public function data_provider() {
-		return array(
-			array(
-				array(
+		return [
+			[
+				[
 					'_company_logo'    => 'https://example.com/company/logo',
 					'_company_name'    => 'Example',
 					'_company_website' => 'https://example.com/',
 					'_company_tagline' => 'Just another tagline',
 					'_company_twitter' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
 					'_company_video'   => 'https://example.com/company/video',
-				),
-				array(
-					'data' => array(
-						array(
+				],
+				[
+					'data' => [
+						[
 							'group_id'    => 'wpjm-user-data',
 							'group_label' => __( 'WP Job Manager User Data' ),
 							'item_id'     => '', // the item_id depends on the ID of the user.
-							'data'        => array(
-								array(
+							'data'        => [
+								[
 									'name'  => 'Company Logo',
 									'value' => true, // specify that attachment should be created.
-								),
-								array(
+								],
+								[
 									'name'  => 'Company Name',
 									'value' => 'Example',
-								),
-								array(
+								],
+								[
 									'name'  => 'Company Website',
 									'value' => 'https://example.com/',
-								),
-								array(
+								],
+								[
 									'name'  => 'Company Tagline',
 									'value' => 'Just another tagline',
-								),
-								array(
+								],
+								[
 									'name'  => 'Company Twitter',
 									'value' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
-								),
-								array(
+								],
+								[
 									'name'  => 'Company Video',
 									'value' => 'https://example.com/company/video',
-								),
-							),
-						),
-					),
+								],
+							],
+						],
+					],
 					'done' => true,
-				),
-			), // End of first set of parameters.
-			array(
-				array(
+				],
+			], // End of first set of parameters.
+			[
+				[
 					'_company_name'    => 'Example',
 					'_company_website' => 'https://example.com/',
 					'_company_tagline' => 'Just another tagline',
-				),
-				array(
-					'data' => array(
-						array(
+				],
+				[
+					'data' => [
+						[
 							'group_id'    => 'wpjm-user-data',
 							'group_label' => __( 'WP Job Manager User Data' ),
-							'data'        => array(
-								array(
+							'data'        => [
+								[
 									'name'  => 'Company Name',
 									'value' => 'Example',
-								),
-								array(
+								],
+								[
 									'name'  => 'Company Website',
 									'value' => 'https://example.com/',
-								),
-								array(
+								],
+								[
 									'name'  => 'Company Tagline',
 									'value' => 'Just another tagline',
-								),
-							),
-						),
-					),
+								],
+							],
+						],
+					],
 					'done' => true,
-				),
-			), // End of second set of parameters.
-			array(
-				array(
+				],
+			], // End of second set of parameters.
+			[
+				[
 					'_company_logo',
 					'_company_name',
 					'_company_website',
 					'_company_tagline',
 					'_company_twitter',
 					'_company_video',
-				),
-				array(
-					'data' => array(
-						array(
+				],
+				[
+					'data' => [
+						[
 							'group_id'    => 'wpjm-user-data',
 							'group_label' => __( 'WP Job Manager User Data' ),
 							'item_id'     => '', // the item_id depends on the ID of the user.
-							'data'        => array(),
-						),
-					),
+							'data'        => [],
+						],
+					],
 					'done' => true,
-				),
-			), // End of third set of parameters.
-		);
+				],
+			], // End of third set of parameters.
+		];
 	}
 }

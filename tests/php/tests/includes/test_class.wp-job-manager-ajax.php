@@ -49,12 +49,12 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		include_once $bootstrap->includes_dir . '/stubs/class-wpjm-ajax-action-stub.php';
 		$this->assertTrue( class_exists( 'WPJM_Ajax_Action_Stub' ) );
 		$handler = new WPJM_Ajax_Action_Stub();
-		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		$wp_query->set( 'jm-ajax', $handler->action );
 		$this->assertFalse( $handler->fired );
 		WP_Job_Manager_Ajax::do_jm_ajax();
 		$this->assertTrue( $handler->fired );
-		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 	}
 
 	/**
@@ -66,19 +66,19 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		$published = $this->factory->job_listing->create_many( 2 );
 		$draft     = $this->factory->job_listing->create_many(
 			2,
-			array(
+			[
 				'post_status' => 'expired',
-				'meta_input'  => array(),
-			)
+				'meta_input'  => [],
+			]
 		);
 		$instance  = WP_Job_Manager_Ajax::instance();
 
 		// Run the action.
-		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		ob_start();
 		$instance->get_listings();
 		$result = json_decode( ob_get_clean(), true );
-		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		$this->tear_down_job_listing_search_request();
 
 		// Check result.
@@ -109,23 +109,23 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		$published = $this->factory->job_listing->create_many( 2 );
 		$draft     = $this->factory->job_listing->create_many(
 			2,
-			array(
+			[
 				'post_status' => 'expired',
-				'meta_input'  => array(),
-			)
+				'meta_input'  => [],
+			]
 		);
 		$instance  = WP_Job_Manager_Ajax::instance();
 
 		// Add no extra filters.
 		add_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
-		add_filter( 'job_manager_get_listings_result', array( $this, 'load_last_jobs_result' ), 10, 2 );
+		add_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10, 2 );
 
 		// Run the action.
-		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		ob_start();
 		$instance->get_listings();
 		$result = json_decode( ob_get_clean(), true );
-		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		$this->tear_down_job_listing_search_request();
 
 		$this->assertInternalType( 'array', $result );
@@ -135,7 +135,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		$this->assertTrue( $result['found_jobs'] );
 		$this->assertEmpty( $result['showing'] );
 
-		$job_ids = array();
+		$job_ids = [];
 		/**
 		 * @var WP_Post $post
 		 */
@@ -161,25 +161,25 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 
 		copy( $iptc_file, $tmp_name );
 
-		$_FILES['upload'] = array(
+		$_FILES['upload'] = [
 			'tmp_name' => $tmp_name,
 			'name'     => 'test-image-iptc.jpg',
 			'type'     => 'image/jpeg',
 			'error'    => 0,
 			'size'     => filesize( $iptc_file ),
-		);
+		];
 		$this->assertFileExists( $tmp_name );
 
 		// Add extra filters.
 		add_filter( 'job_manager_user_can_upload_file_via_ajax', '__return_true' );
-		add_filter( 'submit_job_wp_handle_upload_overrides', array( $this, 'override_upload_action' ) );
+		add_filter( 'submit_job_wp_handle_upload_overrides', [ $this, 'override_upload_action' ] );
 
 		// Run the action.
-		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		ob_start();
 		$instance->upload_file();
 		$result = json_decode( ob_get_clean(), true );
-		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		unset( $_FILES['upload'] );
 
 		// Check result.
@@ -208,25 +208,25 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 
 		copy( $iptc_file, $tmp_name );
 
-		$_FILES['upload'] = array(
+		$_FILES['upload'] = [
 			'tmp_name' => $tmp_name,
 			'name'     => 'test-image-iptc.jpg',
 			'type'     => 'image/jpeg',
 			'error'    => 0,
 			'size'     => filesize( $iptc_file ),
-		);
+		];
 		$this->assertFileExists( $tmp_name );
 
 		// Add extra filters.
 		add_filter( 'job_manager_user_can_upload_file_via_ajax', '__return_false' );
-		add_filter( 'submit_job_wp_handle_upload_overrides', array( $this, 'override_upload_action' ) );
+		add_filter( 'submit_job_wp_handle_upload_overrides', [ $this, 'override_upload_action' ] );
 
 		// Run the action.
-		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		ob_start();
 		$instance->upload_file();
 		$result = json_decode( ob_get_clean(), true );
-		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		unset( $_FILES['upload'] );
 
 		// Check result.
@@ -243,24 +243,24 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	public function test_upload_bad_file() {
 		$instance = WP_Job_Manager_Ajax::instance();
 
-		$_FILES['upload'] = array(
+		$_FILES['upload'] = [
 			'tmp_name' => null,
 			'name'     => 'test-image-iptc-bad.jpg',
 			'type'     => 'image/jpeg',
 			'error'    => 1,
 			'size'     => 0,
-		);
+		];
 
 		// Add extra filters.
 		add_filter( 'job_manager_user_can_upload_file_via_ajax', '__return_true' );
-		add_filter( 'submit_job_wp_handle_upload_overrides', array( $this, 'override_upload_action' ) );
+		add_filter( 'submit_job_wp_handle_upload_overrides', [ $this, 'override_upload_action' ] );
 
 		// Run the action.
-		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		ob_start();
 		$instance->upload_file();
 		$result = json_decode( ob_get_clean(), true );
-		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		unset( $_FILES['upload'] );
 
 		$this->assertNotEmpty( $result );

@@ -2,8 +2,8 @@
 
 class Requests_Transport_Faker implements Requests_Transport {
 	public $headers_matter = false;
-	private $_log          = array();
-	private $_responses    = array();
+	private $_log          = [];
+	private $_responses    = [];
 
 	/**
 	 * Adds a fake request and response.
@@ -12,13 +12,13 @@ class Requests_Transport_Faker implements Requests_Transport {
 	 * @param array $response
 	 */
 	public function add_fake_request( $request, $response ) {
-		$response_arr = array();
+		$response_arr = [];
 		if ( is_array( $request ) ) {
 			$response_arr['request'] = $request;
 			$request                 = self::make_request_signature(
 				isset( $request['url'] ) ? $request['url'] : '',
-				isset( $request['headers'] ) ? $request['headers'] : array(),
-				isset( $request['data'] ) ? $request['data'] : array()
+				isset( $request['headers'] ) ? $request['headers'] : [],
+				isset( $request['data'] ) ? $request['data'] : []
 			);
 		}
 		if ( is_array( $response ) ) {
@@ -37,17 +37,17 @@ class Requests_Transport_Faker implements Requests_Transport {
 	 *
 	 * @return string
 	 */
-	public static function make_request_signature( $url, $headers = array(), $data = array() ) {
+	public static function make_request_signature( $url, $headers = [], $data = [] ) {
 		if ( empty( $headers ) ) {
-			$headers = array();
+			$headers = [];
 		}
 		if ( empty( $data ) ) {
-			$data = array();
+			$data = [];
 		}
 		if ( is_object( $url ) && $url instanceof Requests_IRI ) {
 			$url = $url->__toString();
 		}
-		return sha1( json_encode( array( $url, $headers, $data ) ) );
+		return sha1( json_encode( [ $url, $headers, $data ] ) );
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Requests_Transport_Faker implements Requests_Transport {
 	 */
 	public static function build_response( $response ) {
 		if ( ! isset( $response['headers'] ) ) {
-			$response['headers'] = array( 'HTTP/1.1 200 OK' );
+			$response['headers'] = [ 'HTTP/1.1 200 OK' ];
 		}
 		if ( ! isset( $response['body'] ) ) {
 			$response['body'] = '';
@@ -96,17 +96,17 @@ class Requests_Transport_Faker implements Requests_Transport {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function request( $url, $headers = array(), $data = array(), $options = array() ) {
+	public function request( $url, $headers = [], $data = [], $options = [] ) {
 		if ( $this->headers_matter ) {
 			$signature = self::make_request_signature( $url, $headers, $data );
 		} else {
-			$signature = self::make_request_signature( $url, array(), $data );
+			$signature = self::make_request_signature( $url, [], $data );
 		}
-		$this->_log[ $signature ] = array(
+		$this->_log[ $signature ] = [
 			'url'     => $url,
 			'headers' => $headers,
 			'data'    => $data,
-		);
+		];
 		if ( ! isset( $this->_responses[ $signature ] ) ) {
 			throw new Requests_Exception( 'Computer says no', 'test' );
 		}
@@ -117,20 +117,20 @@ class Requests_Transport_Faker implements Requests_Transport {
 	 * {@inheritdoc}
 	 */
 	public function request_multiple( $requests, $options ) {
-		$responses = array();
+		$responses = [];
 		$class     = get_class( $this );
 		foreach ( $requests as $id => $request ) {
 			try {
 				$handler          = new $class();
 				$responses[ $id ] = $handler->request( $request['url'], $request['headers'], $request['data'], $request['options'] );
 
-				$request['options']['hooks']->dispatch( 'transport.internal.parse_response', array( &$responses[ $id ], $request ) );
+				$request['options']['hooks']->dispatch( 'transport.internal.parse_response', [ &$responses[ $id ], $request ] );
 			} catch ( Requests_Exception $e ) {
 				$responses[ $id ] = $e;
 			}
 
 			if ( ! is_string( $responses[ $id ] ) ) {
-				$request['options']['hooks']->dispatch( 'multiple.request.complete', array( &$responses[ $id ], $id ) );
+				$request['options']['hooks']->dispatch( 'multiple.request.complete', [ &$responses[ $id ], $id ] );
 			}
 		}
 
