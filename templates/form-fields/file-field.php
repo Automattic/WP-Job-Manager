@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$classes            = array( 'input-text' );
+$classes            = [ 'input-text' ];
 $allowed_mime_types = array_keys( ! empty( $field['allowed_mime_types'] ) ? $field['allowed_mime_types'] : get_allowed_mime_types() );
 $field_name         = isset( $field['name'] ) ? $field['name'] : $key;
 $field_name         .= ! empty( $field['multiple'] ) ? '[]' : '';
@@ -34,10 +34,10 @@ if ( ! empty( $field['ajax'] ) && job_manager_user_can_upload_file_via_ajax() ) 
 	<?php if ( ! empty( $field['value'] ) ) : ?>
 		<?php if ( is_array( $field['value'] ) ) : ?>
 			<?php foreach ( $field['value'] as $value ) : ?>
-				<?php get_job_manager_template( 'form-fields/uploaded-file-html.php', array( 'key' => $key, 'name' => 'current_' . $field_name, 'value' => $value, 'field' => $field ) ); ?>
+				<?php get_job_manager_template( 'form-fields/uploaded-file-html.php', [ 'key' => $key, 'name' => 'current_' . $field_name, 'value' => $value, 'field' => $field ] ); ?>
 			<?php endforeach; ?>
 		<?php elseif ( $value = $field['value'] ) : ?>
-			<?php get_job_manager_template( 'form-fields/uploaded-file-html.php', array( 'key' => $key, 'name' => 'current_' . $field_name, 'value' => $value, 'field' => $field ) ); ?>
+			<?php get_job_manager_template( 'form-fields/uploaded-file-html.php', [ 'key' => $key, 'name' => 'current_' . $field_name, 'value' => $value, 'field' => $field ] ); ?>
 		<?php endif; ?>
 	<?php endif; ?>
 </div>

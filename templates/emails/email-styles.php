@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$style_vars                   = array();
+$style_vars                   = [];
 $style_vars['color_bg']       = '#fff';
 $style_vars['color_fg']       = '#000';
 $style_vars['color_light']    = '#eee';
