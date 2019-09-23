@@ -360,9 +360,23 @@ class WP_Job_Manager_Shortcodes {
 
 		// Array handling.
 		$atts['categories']         = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
+		$atts['selected_category']  = is_array( $atts['selected_category'] ) ? $atts['selected_category'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_category'] ) ) );
 		$atts['job_types']          = is_array( $atts['job_types'] ) ? $atts['job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
 		$atts['post_status']        = is_array( $atts['post_status'] ) ? $atts['post_status'] : array_filter( array_map( 'trim', explode( ',', $atts['post_status'] ) ) );
 		$atts['selected_job_types'] = is_array( $atts['selected_job_types'] ) ? $atts['selected_job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_job_types'] ) ) );
+
+		// Normalize field for categories.
+		if ( ! empty( $atts['selected_category'] ) ) {
+			foreach ( $atts['selected_category'] as $cat_index => $category ) {
+				if ( ! is_numeric( $category ) ) {
+					$term = get_term_by( 'slug', $category, 'job_listing_category' );
+
+					if ( $term ) {
+						$atts['selected_category'][ $cat_index ] = $term->term_id;
+					}
+				}
+			}
+		}
 
 		$data_attributes = array(
 			'location'        => $atts['location'],
