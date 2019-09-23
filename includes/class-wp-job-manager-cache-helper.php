@@ -21,15 +21,15 @@ class WP_Job_Manager_Cache_Helper {
 	 * Initializes cache hooks.
 	 */
 	public static function init() {
-		add_action( 'save_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
-		add_action( 'delete_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
-		add_action( 'trash_post', array( __CLASS__, 'flush_get_job_listings_cache' ) );
-		add_action( 'job_manager_my_job_do_action', array( __CLASS__, 'job_manager_my_job_do_action' ) );
-		add_action( 'set_object_terms', array( __CLASS__, 'set_term' ), 10, 4 );
-		add_action( 'edited_term', array( __CLASS__, 'edited_term' ), 10, 3 );
-		add_action( 'create_term', array( __CLASS__, 'edited_term' ), 10, 3 );
-		add_action( 'delete_term', array( __CLASS__, 'edited_term' ), 10, 3 );
-		add_action( 'transition_post_status', array( __CLASS__, 'maybe_clear_count_transients' ), 10, 3 );
+		add_action( 'save_post', [ __CLASS__, 'flush_get_job_listings_cache' ] );
+		add_action( 'delete_post', [ __CLASS__, 'flush_get_job_listings_cache' ] );
+		add_action( 'trash_post', [ __CLASS__, 'flush_get_job_listings_cache' ] );
+		add_action( 'job_manager_my_job_do_action', [ __CLASS__, 'job_manager_my_job_do_action' ] );
+		add_action( 'set_object_terms', [ __CLASS__, 'set_term' ], 10, 4 );
+		add_action( 'edited_term', [ __CLASS__, 'edited_term' ], 10, 3 );
+		add_action( 'create_term', [ __CLASS__, 'edited_term' ], 10, 3 );
+		add_action( 'delete_term', [ __CLASS__, 'edited_term' ], 10, 3 );
+		add_action( 'transition_post_status', [ __CLASS__, 'maybe_clear_count_transients' ], 10, 3 );
 	}
 
 	/**
@@ -155,7 +155,7 @@ class WP_Job_Manager_Cache_Helper {
 		 * @param string  $old_status Old post status.
 		 * @param WP_Post $post       Post object.
 		 */
-		$post_types = apply_filters( 'wpjm_count_cache_supported_post_types', array( 'job_listing' ), $new_status, $old_status, $post );
+		$post_types = apply_filters( 'wpjm_count_cache_supported_post_types', [ 'job_listing' ], $new_status, $old_status, $post );
 
 		// Only proceed when statuses do not match, and post type is supported post type.
 		if ( $new_status === $old_status || ! in_array( $post->post_type, $post_types, true ) ) {
@@ -172,9 +172,9 @@ class WP_Job_Manager_Cache_Helper {
 		 * @param string  $old_status    Old post status.
 		 * @param WP_Post $post          Post object.
 		 */
-		$valid_statuses = apply_filters( 'wpjm_count_cache_supported_statuses', array( 'pending' ), $new_status, $old_status, $post );
+		$valid_statuses = apply_filters( 'wpjm_count_cache_supported_statuses', [ 'pending' ], $new_status, $old_status, $post );
 
-		$rlike = array();
+		$rlike = [];
 		// New status transient option name.
 		if ( in_array( $new_status, $valid_statuses, true ) ) {
 			$rlike[] = "^_transient_jm_{$new_status}_{$post->post_type}_count_user_";

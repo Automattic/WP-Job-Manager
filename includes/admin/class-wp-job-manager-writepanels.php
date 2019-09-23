@@ -42,9 +42,9 @@ class WP_Job_Manager_Writepanels {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-		add_action( 'save_post', array( $this, 'save_post' ), 1, 2 );
-		add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
+		add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
+		add_action( 'save_post', [ $this, 'save_post' ], 1, 2 );
+		add_action( 'job_manager_save_job_listing', [ $this, 'save_job_listing_data' ], 20, 2 );
 	}
 
 	/**
@@ -57,14 +57,14 @@ class WP_Job_Manager_Writepanels {
 
 		$current_user = wp_get_current_user();
 		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields();
-		$fields       = array();
+		$fields       = [];
 
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
-			$fields['_job_author'] = array(
+			$fields['_job_author'] = [
 				'label'    => __( 'Posted by', 'wp-job-manager' ),
 				'type'     => 'author',
 				'priority' => 0,
-			);
+			];
 		}
 
 		foreach ( $fields_raw as $meta_key => $field ) {
@@ -120,7 +120,7 @@ class WP_Job_Manager_Writepanels {
 		 */
 		$fields = apply_filters( 'job_manager_job_listing_wp_admin_fields', $fields, $post_id );
 
-		uasort( $fields, array( __CLASS__, 'sort_by_priority' ) );
+		uasort( $fields, [ __CLASS__, 'sort_by_priority' ] );
 
 		return $fields;
 	}
@@ -147,13 +147,13 @@ class WP_Job_Manager_Writepanels {
 		global $wp_post_types;
 
 		// translators: Placeholder %s is the singular name for a job listing post type.
-		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ), array( $this, 'job_listing_data' ), 'job_listing', 'normal', 'high' );
+		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ), [ $this, 'job_listing_data' ], 'job_listing', 'normal', 'high' );
 		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
 		} elseif ( false === job_manager_multi_job_type() ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
 			$job_listing_type = get_taxonomy( 'job_listing_type' );
-			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, array( $this, 'job_type_single_meta_box' ), 'job_listing', 'side', 'core' );
+			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, [ $this, 'job_type_single_meta_box' ], 'job_listing', 'side', 'core' );
 		}
 	}
 
@@ -168,10 +168,10 @@ class WP_Job_Manager_Writepanels {
 
 		// Get all the terms for this taxonomy.
 		$terms     = get_terms(
-			array(
+			[
 				'taxonomy'   => $taxonomy_name,
 				'hide_empty' => 0,
-			)
+			]
 		);
 		$postterms = get_the_terms( $post->ID, $taxonomy_name );
 		$current   = $postterms ? array_pop( $postterms ) : false;
@@ -255,7 +255,7 @@ class WP_Job_Manager_Writepanels {
 			$name = $key;
 		}
 		if ( ! empty( $field['classes'] ) ) {
-			$classes = implode( ' ', is_array( $field['classes'] ) ? $field['classes'] : array( $field['classes'] ) );
+			$classes = implode( ' ', is_array( $field['classes'] ) ? $field['classes'] : [ $field['classes'] ] );
 		} else {
 			$classes = '';
 		}
@@ -298,7 +298,7 @@ class WP_Job_Manager_Writepanels {
 			$name = $key;
 		}
 		if ( ! empty( $field['classes'] ) ) {
-			$classes = implode( ' ', is_array( $field['classes'] ) ? $field['classes'] : array( $field['classes'] ) );
+			$classes = implode( ' ', is_array( $field['classes'] ) ? $field['classes'] : [ $field['classes'] ] );
 		} else {
 			$classes = '';
 		}
@@ -316,7 +316,7 @@ class WP_Job_Manager_Writepanels {
 			<?php endif; ?>
 			</label>
 			<?php if ( ! empty( $field['information'] ) ) : ?>
-				<span class="information"><?php echo wp_kses( $field['information'], array( 'a' => array( 'href' => array() ) ) ); ?></span>
+				<span class="information"><?php echo wp_kses( $field['information'], [ 'a' => [ 'href' => [] ] ] ); ?></span>
 			<?php endif; ?>
 			<?php echo '<input type="hidden" name="' . esc_attr( $name ) . '" class="' . esc_attr( $classes ) . '" id="' . esc_attr( $key ) . '" value="' . esc_attr( $field['value'] ) . '" />'; ?>
 		</p>
@@ -545,7 +545,7 @@ class WP_Job_Manager_Writepanels {
 			if ( has_action( 'job_manager_input_' . $type ) ) {
 				do_action( 'job_manager_input_' . $type, $key, $field );
 			} elseif ( method_exists( $this, 'input_' . $type ) ) {
-				call_user_func( array( $this, 'input_' . $type ), $key, $field );
+				call_user_func( [ $this, 'input_' . $type ], $key, $field );
 			}
 		}
 
@@ -649,7 +649,7 @@ class WP_Job_Manager_Writepanels {
 				$input_post_author = $_POST[ $key ] > 0 ? intval( $_POST[ $key ] ) : 0;
 
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Avoid update post within `save_post` action.
-				$wpdb->update( $wpdb->posts, array( 'post_author' => $input_post_author ), array( 'ID' => $post_id ) );
+				$wpdb->update( $wpdb->posts, [ 'post_author' => $input_post_author ], [ 'ID' => $post_id ] );
 			} elseif ( isset( $_POST[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
 				update_post_meta( $post_id, $key, wp_unslash( $_POST[ $key ] ) );
@@ -661,17 +661,17 @@ class WP_Job_Manager_Writepanels {
 		$today_date             = date( 'Y-m-d', current_time( 'timestamp' ) );
 		$is_job_listing_expired = $expiry_date && $today_date > $expiry_date;
 		if ( $is_job_listing_expired && ! $this->is_job_listing_status_changing( null, 'draft' ) ) {
-			remove_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20 );
+			remove_action( 'job_manager_save_job_listing', [ $this, 'save_job_listing_data' ], 20 );
 			if ( $this->is_job_listing_status_changing( 'expired', 'publish' ) ) {
 				update_post_meta( $post_id, '_job_expires', calculate_job_expiry( $post_id ) );
 			} else {
-				$job_data = array(
+				$job_data = [
 					'ID'          => $post_id,
 					'post_status' => 'expired',
-				);
+				];
 				wp_update_post( $job_data );
 			}
-			add_action( 'job_manager_save_job_listing', array( $this, 'save_job_listing_data' ), 20, 2 );
+			add_action( 'job_manager_save_job_listing', [ $this, 'save_job_listing_data' ], 20, 2 );
 		}
 	}
 

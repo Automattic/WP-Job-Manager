@@ -82,11 +82,11 @@ class WP_Job_Manager_Install {
 			add_role(
 				'employer',
 				__( 'Employer', 'wp-job-manager' ),
-				array(
+				[
 					'read'         => true,
 					'edit_posts'   => false,
 					'delete_posts' => false,
-				)
+				]
 			);
 
 			$capabilities = self::get_core_capabilities();
@@ -105,11 +105,11 @@ class WP_Job_Manager_Install {
 	 * @return array
 	 */
 	private static function get_core_capabilities() {
-		return array(
-			'core'        => array(
+		return [
+			'core'        => [
 				'manage_job_listings',
-			),
-			'job_listing' => array(
+			],
+			'job_listing' => [
 				'edit_job_listing',
 				'read_job_listing',
 				'delete_job_listing',
@@ -127,8 +127,8 @@ class WP_Job_Manager_Install {
 				'edit_job_listing_terms',
 				'delete_job_listing_terms',
 				'assign_job_listing_terms',
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -162,25 +162,25 @@ class WP_Job_Manager_Install {
 	 * @return array Default taxonomy terms.
 	 */
 	private static function get_default_taxonomy_terms() {
-		return array(
-			'job_listing_type' => array(
-				'Full Time'  => array(
+		return [
+			'job_listing_type' => [
+				'Full Time'  => [
 					'employment_type' => 'FULL_TIME',
-				),
-				'Part Time'  => array(
+				],
+				'Part Time'  => [
 					'employment_type' => 'PART_TIME',
-				),
-				'Temporary'  => array(
+				],
+				'Temporary'  => [
 					'employment_type' => 'TEMPORARY',
-				),
-				'Freelance'  => array(
+				],
+				'Freelance'  => [
 					'employment_type' => 'CONTRACTOR',
-				),
-				'Internship' => array(
+				],
+				'Internship' => [
 					'employment_type' => 'INTERN',
-				),
-			),
-		);
+				],
+			],
+		];
 	}
 
 	/**

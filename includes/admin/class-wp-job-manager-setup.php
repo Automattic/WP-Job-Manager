@@ -42,12 +42,12 @@ class WP_Job_Manager_Setup {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
-		add_action( 'admin_head', array( $this, 'admin_head' ) );
+		add_action( 'admin_menu', [ $this, 'admin_menu' ], 12 );
+		add_action( 'admin_head', [ $this, 'admin_head' ] );
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		if ( isset( $_GET['page'] ) && 'job-manager-setup' === $_GET['page'] ) {
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 12 );
+			add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 12 );
 		}
 	}
 
@@ -55,7 +55,7 @@ class WP_Job_Manager_Setup {
 	 * Adds setup link to admin dashboard menu briefly so the page callback is registered.
 	 */
 	public function admin_menu() {
-		add_dashboard_page( __( 'Setup', 'wp-job-manager' ), __( 'Setup', 'wp-job-manager' ), 'manage_options', 'job-manager-setup', array( $this, 'setup_page' ) );
+		add_dashboard_page( __( 'Setup', 'wp-job-manager' ), __( 'Setup', 'wp-job-manager' ), 'manage_options', 'job-manager-setup', [ $this, 'setup_page' ] );
 	}
 
 	/**
@@ -69,7 +69,7 @@ class WP_Job_Manager_Setup {
 	 * Enqueues scripts for setup page.
 	 */
 	public function admin_enqueue_scripts() {
-		wp_enqueue_style( 'job_manager_setup_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/setup.css', array( 'dashicons' ), JOB_MANAGER_VERSION );
+		wp_enqueue_style( 'job_manager_setup_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/setup.css', [ 'dashicons' ], JOB_MANAGER_VERSION );
 	}
 
 	/**
@@ -80,7 +80,7 @@ class WP_Job_Manager_Setup {
 	 * @param  string $option
 	 */
 	public function create_page( $title, $content, $option ) {
-		$page_data = array(
+		$page_data = [
 			'post_status'    => 'publish',
 			'post_type'      => 'page',
 			'post_author'    => 1,
@@ -89,7 +89,7 @@ class WP_Job_Manager_Setup {
 			'post_content'   => $content,
 			'post_parent'    => 0,
 			'comment_status' => 'closed',
-		);
+		];
 		$page_id   = wp_insert_post( $page_data );
 
 		if ( $option ) {
@@ -125,13 +125,13 @@ class WP_Job_Manager_Setup {
 				) {
 					wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
 				}
-				$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wp-job-manager-create-page'] ) ) : array();
-				$page_titles     = isset( $_POST['wp-job-manager-page-title'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wp-job-manager-page-title'] ) ) : array();
-				$pages_to_create = array(
+				$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wp-job-manager-create-page'] ) ) : [];
+				$page_titles     = isset( $_POST['wp-job-manager-page-title'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wp-job-manager-page-title'] ) ) : [];
+				$pages_to_create = [
 					'submit_job_form' => '[submit_job_form]',
 					'job_dashboard'   => '[job_dashboard]',
 					'jobs'            => '[jobs]',
-				);
+				];
 
 				foreach ( $pages_to_create as $page => $content ) {
 					if ( ! isset( $create_pages[ $page ] ) || empty( $page_titles[ $page ] ) ) {

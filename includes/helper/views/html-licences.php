@@ -33,12 +33,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				$notices = WP_Job_Manager_Helper::get_messages( $product_slug );
 				if ( empty( $notices ) && ! empty( $licence['errors'] ) ) {
-					$notices = array();
+					$notices = [];
 					foreach ( $licence['errors'] as $key => $error_message ) {
-						$notices[] = array(
+						$notices[] = [
 							'type'    => 'error',
 							'message' => $error_message,
-						);
+						];
 					}
 				}
 				foreach ( $notices as $message ) {
