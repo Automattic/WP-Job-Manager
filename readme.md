@@ -152,6 +152,27 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 ## Changelog ##
+### 1.34.0 ###
+* Templates Updated: `content-job_listing.php`, `job-submitted.php`.
+* Enhancement: Add support for pre-selecting categories in `[jobs]` using category slugs in query string (e.g. `/jobs?search_category=developer,pm,senior`).
+* Change: Job listing now supports `author` functionality, which will expose the author field in the REST API.
+* Change: Menu position is fixed in WP admin. Plugins such as Resumes and Applications will need to be updated to show in WP admin below WPJM. (@technerdlove)
+* Change: Filter form on `[jobs]` resets on page refresh and uses query string as expected.
+* Change: No longer required to generate usernames from email for password field. (@manzoorwanijk)
+* Change: Use minified version of remote jQuery UI CSS. (@ovidiul)
+* Change: Google Maps link uses https.
+* Fix: Clear the `filled` flag when relisting a job listing.
+* Fix: Page titles are properly set during initial set up. (@JuanchoPestana)
+* Fix: Correctly format list of file extensions when an unsupported file type is uploaded.
+* Fix: Latitude and longitude are correctly used in `content-job_listing.php` template. (@MarieComet)
+* Fix: Delete widget options on plugin uninstall. (@JuanchoPestana)
+* Fix: Remove unused parameter in `job-submitted.php` template. (@JuanchoPestana)
+* Third Party: Fix issue with saving attachments when using Download Attachments plugin.
+* Third Party: Fix issue with Polylang where translations get overwritten on save of another language.
+* Dev: Adds the ability to completely disable the state saving functionality of `[jobs]` results.
+* Dev: Allows custom calls to `get_job_listings()` to just get `ids` and `id=>parent`. (@manzoorwanijk)
+* Dev: Switched to short-array syntax across plugin. 
+
 ### 1.33.5 ###
 * Fix: Issue where a JS error could occur when submitting a job.
 
