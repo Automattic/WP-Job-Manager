@@ -27,14 +27,14 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count_posts = wp_count_posts( 'job_listing' );
 
 		if ( taxonomy_exists( 'job_listing_category' ) ) {
-			$categories = wp_count_terms( 'job_listing_category', array( 'hide_empty' => false ) );
+			$categories = wp_count_terms( 'job_listing_category', [ 'hide_empty' => false ] );
 		}
 
-		return array(
+		return [
 			'employers'                   => self::get_employer_count(),
 			'job_categories'              => $categories,
 			'job_categories_desc'         => self::get_job_category_has_description_count(),
-			'job_types'                   => wp_count_terms( 'job_listing_type', array( 'hide_empty' => false ) ),
+			'job_types'                   => wp_count_terms( 'job_listing_type', [ 'hide_empty' => false ] ),
 			'job_types_desc'              => self::get_job_type_has_description_count(),
 			'job_types_emp_type'          => self::get_job_type_has_employment_type_count(),
 			'jobs_type'                   => self::get_job_type_count(),
@@ -62,7 +62,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_by_guests'              => self::get_jobs_by_guests(),
 			'official_extensions'         => self::get_official_extensions_count(),
 			'licensed_extensions'         => self::get_licensed_extensions_count(),
-		);
+		];
 	}
 
 	/**
@@ -72,10 +72,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 */
 	private static function get_employer_count() {
 		$employer_query = new WP_User_Query(
-			array(
+			[
 				'fields' => 'ID',
 				'role'   => 'employer',
-			)
+			]
 		);
 
 		return $employer_query->total_users;
@@ -95,10 +95,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 
 		$count = 0;
 		$terms = get_terms(
-			array(
+			[
 				'taxonomy'   => 'job_listing_category',
 				'hide_empty' => false,
-			)
+			]
 		);
 
 		foreach ( $terms as $term ) {
@@ -122,10 +122,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_job_type_has_description_count() {
 		$count = 0;
 		$terms = get_terms(
-			array(
+			[
 				'taxonomy'   => 'job_listing_type',
 				'hide_empty' => false,
-			)
+			]
 		);
 
 		foreach ( $terms as $term ) {
@@ -149,10 +149,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_job_type_has_employment_type_count() {
 		$count = 0;
 		$terms = get_terms(
-			array(
+			[
 				'taxonomy'   => 'job_listing_type',
 				'hide_empty' => false,
-			)
+			]
 		);
 
 		foreach ( $terms as $term ) {
@@ -177,18 +177,18 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 **/
 	private static function get_jobs_by_type_count( $job_type ) {
 		$query = new WP_Query(
-			array(
+			[
 				'post_type'   => 'job_listing',
-				'post_status' => array( 'expired', 'publish' ),
+				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'tax_query'   => array(
-					array(
+				'tax_query'   => [
+					[
 						'field'    => 'slug',
 						'taxonomy' => 'job_listing_type',
 						'terms'    => $job_type,
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 
 		return $query->found_posts;
@@ -203,17 +203,17 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 */
 	private static function get_company_logo_count() {
 		$query = new WP_Query(
-			array(
+			[
 				'post_type'   => 'job_listing',
-				'post_status' => array( 'expired', 'publish' ),
+				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'meta_query'  => array(
-					array(
+				'meta_query'  => [
+					[
 						'key'     => '_thumbnail_id',
 						'compare' => 'EXISTS',
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 
 		return $query->found_posts;
@@ -228,17 +228,17 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 **/
 	private static function get_job_type_count() {
 		$query = new WP_Query(
-			array(
+			[
 				'post_type'   => 'job_listing',
-				'post_status' => array( 'expired', 'publish' ),
+				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'tax_query'   => array(
-					array(
+				'tax_query'   => [
+					[
 						'taxonomy' => 'job_listing_type',
 						'operator' => 'EXISTS',
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 
 		return $query->found_posts;
@@ -253,18 +253,18 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 */
 	private static function get_jobs_count_with_meta( $meta_key ) {
 		$query = new WP_Query(
-			array(
+			[
 				'post_type'   => 'job_listing',
-				'post_status' => array( 'publish', 'expired' ),
+				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
-				'meta_query'  => array(
-					array(
+				'meta_query'  => [
+					[
 						'key'     => $meta_key,
 						'value'   => '[^[:space:]]',
 						'compare' => 'REGEXP',
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 
 		return $query->found_posts;
@@ -280,17 +280,17 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 */
 	private static function get_jobs_count_with_checked_meta( $meta_key ) {
 		$query = new WP_Query(
-			array(
+			[
 				'post_type'   => 'job_listing',
-				'post_status' => array( 'publish', 'expired' ),
+				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
-				'meta_query'  => array(
-					array(
+				'meta_query'  => [
+					[
 						'key'   => $meta_key,
 						'value' => '1',
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 
 		return $query->found_posts;
@@ -303,12 +303,12 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 */
 	private static function get_jobs_by_guests() {
 		$query = new WP_Query(
-			array(
+			[
 				'post_type'   => 'job_listing',
-				'post_status' => array( 'publish', 'expired' ),
+				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
-				'author__in'  => array( 0 ),
-			)
+				'author__in'  => [ 0 ],
+			]
 		);
 
 		return $query->found_posts;
@@ -371,10 +371,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return array
 	 */
 	public static function get_event_logging_base_fields() {
-		$base_fields = array(
+		$base_fields = [
 			'job_listings' => wp_count_posts( 'job_listing' )->publish,
 			'paid'         => self::has_paid_extensions() ? 1 : 0,
-		);
+		];
 
 		/**
 		 * Filter the fields that should be sent with every event that is logged.

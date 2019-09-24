@@ -30,7 +30,7 @@ class WP_Job_Manager_Permalink_Settings {
 	 * @var array
 	 * @since 1.27.0
 	 */
-	private $permalinks = array();
+	private $permalinks = [];
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -62,21 +62,21 @@ class WP_Job_Manager_Permalink_Settings {
 		add_settings_field(
 			'wpjm_job_base_slug',
 			__( 'Job base', 'wp-job-manager' ),
-			array( $this, 'job_base_slug_input' ),
+			[ $this, 'job_base_slug_input' ],
 			'permalink',
 			'optional'
 		);
 		add_settings_field(
 			'wpjm_job_category_slug',
 			__( 'Job category base', 'wp-job-manager' ),
-			array( $this, 'job_category_slug_input' ),
+			[ $this, 'job_category_slug_input' ],
 			'permalink',
 			'optional'
 		);
 		add_settings_field(
 			'wpjm_job_type_slug',
 			__( 'Job type base', 'wp-job-manager' ),
-			array( $this, 'job_type_slug_input' ),
+			[ $this, 'job_type_slug_input' ],
 			'permalink',
 			'optional'
 		);
@@ -84,7 +84,7 @@ class WP_Job_Manager_Permalink_Settings {
 			add_settings_field(
 				'wpjm_job_listings_archive_slug',
 				__( 'Job listing archive page', 'wp-job-manager' ),
-				array( $this, 'job_listings_archive_slug_input' ),
+				[ $this, 'job_listings_archive_slug_input' ],
 				'permalink',
 				'optional'
 			);

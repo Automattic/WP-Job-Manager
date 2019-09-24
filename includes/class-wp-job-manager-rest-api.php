@@ -21,7 +21,7 @@ class WP_Job_Manager_REST_API {
 	 * @static
 	 */
 	public static function init() {
-		add_filter( 'rest_prepare_job_listing', array( __CLASS__, 'prepare_job_listing' ), 10, 2 );
+		add_filter( 'rest_prepare_job_listing', [ __CLASS__, 'prepare_job_listing' ], 10, 2 );
 	}
 
 	/**

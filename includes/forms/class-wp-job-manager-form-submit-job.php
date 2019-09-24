@@ -64,42 +64,42 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'wp', array( $this, 'process' ) );
-		add_action( 'submit_job_form_start', array( $this, 'output_submit_form_nonce_field' ) );
-		add_action( 'preview_job_form_start', array( $this, 'output_preview_form_nonce_field' ) );
-		add_action( 'job_manager_job_submitted', array( $this, 'track_job_submission' ) );
+		add_action( 'wp', [ $this, 'process' ] );
+		add_action( 'submit_job_form_start', [ $this, 'output_submit_form_nonce_field' ] );
+		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
+		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
 
 		if ( $this->use_recaptcha_field() ) {
-			add_action( 'submit_job_form_end', array( $this, 'display_recaptcha_field' ) );
-			add_filter( 'submit_job_form_validate_fields', array( $this, 'validate_recaptcha_field' ) );
-			add_filter( 'submit_draft_job_form_validate_fields', array( $this, 'validate_recaptcha_field' ) );
+			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
+			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
+			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
 		}
 
 		$this->steps = (array) apply_filters(
 			'submit_job_steps',
-			array(
-				'submit'  => array(
+			[
+				'submit'  => [
 					'name'     => __( 'Submit Details', 'wp-job-manager' ),
-					'view'     => array( $this, 'submit' ),
-					'handler'  => array( $this, 'submit_handler' ),
+					'view'     => [ $this, 'submit' ],
+					'handler'  => [ $this, 'submit_handler' ],
 					'priority' => 10,
-				),
-				'preview' => array(
+				],
+				'preview' => [
 					'name'     => __( 'Preview', 'wp-job-manager' ),
-					'view'     => array( $this, 'preview' ),
-					'handler'  => array( $this, 'preview_handler' ),
+					'view'     => [ $this, 'preview' ],
+					'handler'  => [ $this, 'preview_handler' ],
 					'priority' => 20,
-				),
-				'done'    => array(
+				],
+				'done'    => [
 					'name'     => __( 'Done', 'wp-job-manager' ),
-					'before'   => array( $this, 'done_before' ),
-					'view'     => array( $this, 'done' ),
+					'before'   => [ $this, 'done_before' ],
+					'view'     => [ $this, 'done' ],
 					'priority' => 30,
-				),
-			)
+				],
+			]
 		);
 
-		uasort( $this->steps, array( $this, 'sort_by_priority' ) );
+		uasort( $this->steps, [ $this, 'sort_by_priority' ] );
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing,  WordPress.Security.NonceVerification.Recommended -- Check happens later when possible. Input is used safely.
 		// Get step/job.
@@ -150,7 +150,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					$this->job_id = 0;
 					$this->step   = 0;
 				}
-			} elseif ( ! in_array( $job_status, apply_filters( 'job_manager_valid_submit_job_statuses', array( 'preview', 'draft' ) ), true ) ) {
+			} elseif ( ! in_array( $job_status, apply_filters( 'job_manager_valid_submit_job_statuses', [ 'preview', 'draft' ] ), true ) ) {
 				$this->job_id = 0;
 				$this->step   = 0;
 			}
@@ -200,24 +200,24 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 		$this->fields = apply_filters(
 			'submit_job_form_fields',
-			array(
-				'job'     => array(
-					'job_title'       => array(
+			[
+				'job'     => [
+					'job_title'       => [
 						'label'       => __( 'Job Title', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => true,
 						'placeholder' => '',
 						'priority'    => 1,
-					),
-					'job_location'    => array(
+					],
+					'job_location'    => [
 						'label'       => __( 'Location', 'wp-job-manager' ),
 						'description' => __( 'Leave this blank if the location is not important', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
 						'priority'    => 2,
-					),
-					'job_type'        => array(
+					],
+					'job_type'        => [
 						'label'       => __( 'Job type', 'wp-job-manager' ),
 						'type'        => $job_type,
 						'required'    => true,
@@ -225,8 +225,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'    => 3,
 						'default'     => 'full-time',
 						'taxonomy'    => 'job_listing_type',
-					),
-					'job_category'    => array(
+					],
+					'job_category'    => [
 						'label'       => __( 'Job category', 'wp-job-manager' ),
 						'type'        => 'term-multiselect',
 						'required'    => true,
@@ -234,62 +234,62 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'    => 4,
 						'default'     => '',
 						'taxonomy'    => 'job_listing_category',
-					),
-					'job_description' => array(
+					],
+					'job_description' => [
 						'label'    => __( 'Description', 'wp-job-manager' ),
 						'type'     => 'wp-editor',
 						'required' => true,
 						'priority' => 5,
-					),
-					'application'     => array(
+					],
+					'application'     => [
 						'label'       => $application_method_label,
 						'type'        => 'text',
 						'sanitizer'   => $application_method_sanitizer,
 						'required'    => true,
 						'placeholder' => $application_method_placeholder,
 						'priority'    => 6,
-					),
-				),
-				'company' => array(
-					'company_name'    => array(
+					],
+				],
+				'company' => [
+					'company_name'    => [
 						'label'       => __( 'Company name', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => true,
 						'placeholder' => __( 'Enter the name of the company', 'wp-job-manager' ),
 						'priority'    => 1,
-					),
-					'company_website' => array(
+					],
+					'company_website' => [
 						'label'       => __( 'Website', 'wp-job-manager' ),
 						'type'        => 'text',
 						'sanitizer'   => 'url',
 						'required'    => false,
 						'placeholder' => __( 'http://', 'wp-job-manager' ),
 						'priority'    => 2,
-					),
-					'company_tagline' => array(
+					],
+					'company_tagline' => [
 						'label'       => __( 'Tagline', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( 'Briefly describe your company', 'wp-job-manager' ),
 						'maxlength'   => 64,
 						'priority'    => 3,
-					),
-					'company_video'   => array(
+					],
+					'company_video'   => [
 						'label'       => __( 'Video', 'wp-job-manager' ),
 						'type'        => 'text',
 						'sanitizer'   => 'url',
 						'required'    => false,
 						'placeholder' => __( 'A link to a video about your company', 'wp-job-manager' ),
 						'priority'    => 4,
-					),
-					'company_twitter' => array(
+					],
+					'company_twitter' => [
 						'label'       => __( 'Twitter username', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( '@yourcompany', 'wp-job-manager' ),
 						'priority'    => 5,
-					),
-					'company_logo'    => array(
+					],
+					'company_logo'    => [
 						'label'              => __( 'Logo', 'wp-job-manager' ),
 						'type'               => 'file',
 						'required'           => false,
@@ -297,15 +297,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'           => 6,
 						'ajax'               => true,
 						'multiple'           => false,
-						'allowed_mime_types' => array(
+						'allowed_mime_types' => [
 							'jpg'  => 'image/jpeg',
 							'jpeg' => 'image/jpeg',
 							'gif'  => 'image/gif',
 							'png'  => 'image/png',
-						),
-					),
-				),
-			)
+						],
+					],
+				],
+			]
 		);
 
 		if ( ! get_option( 'job_manager_enable_categories' ) || 0 === intval( wp_count_terms( 'job_listing_category' ) ) ) {
@@ -342,11 +342,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					// translators: Placeholder %s is the label for the required field.
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
 				}
-				if ( ! empty( $field['taxonomy'] ) && in_array( $field['type'], array( 'term-checklist', 'term-select', 'term-multiselect' ), true ) ) {
+				if ( ! empty( $field['taxonomy'] ) && in_array( $field['type'], [ 'term-checklist', 'term-select', 'term-multiselect' ], true ) ) {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
 						$check_value = $values[ $group_key ][ $key ];
 					} else {
-						$check_value = empty( $values[ $group_key ][ $key ] ) ? array() : array( $values[ $group_key ][ $key ] );
+						$check_value = empty( $values[ $group_key ][ $key ] ) ? [] : [ $values[ $group_key ][ $key ] ];
 					}
 					foreach ( $check_value as $term ) {
 						if ( ! term_exists( $term, $field['taxonomy'] ) ) {
@@ -359,14 +359,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
 						$check_value = array_filter( $values[ $group_key ][ $key ] );
 					} else {
-						$check_value = array_filter( array( $values[ $group_key ][ $key ] ) );
+						$check_value = array_filter( [ $values[ $group_key ][ $key ] ] );
 					}
 					if ( ! empty( $check_value ) ) {
 						foreach ( $check_value as $file_url ) {
 							if ( is_numeric( $file_url ) ) {
 								continue;
 							}
-							$file_url = esc_url( $file_url, array( 'http', 'https' ) );
+							$file_url = esc_url( $file_url, [ 'http', 'https' ] );
 							if ( empty( $file_url ) ) {
 								throw new Exception( __( 'Invalid attachment provided.', 'wp-job-manager' ) );
 							}
@@ -377,7 +377,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
 						$check_value = array_filter( $values[ $group_key ][ $key ] );
 					} else {
-						$check_value = array_filter( array( $values[ $group_key ][ $key ] ) );
+						$check_value = array_filter( [ $values[ $group_key ][ $key ] ] );
 					}
 					if ( ! empty( $check_value ) ) {
 						foreach ( $check_value as $file_url ) {
@@ -399,7 +399,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
 						$check_value = array_filter( $values[ $group_key ][ $key ] );
 					} else {
-						$check_value = array_filter( array( $values[ $group_key ][ $key ] ) );
+						$check_value = array_filter( [ $values[ $group_key ][ $key ] ] );
 					}
 					if ( count( $check_value ) > $file_limit ) {
 						// translators: Placeholder %d is the number of files to that users are limited to.
@@ -464,14 +464,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	protected function enqueue_job_form_assets() {
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
-		wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', array(), JOB_MANAGER_VERSION );
+		wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', [], JOB_MANAGER_VERSION );
 
 		// Register datepicker JS. It will be enqueued if needed when a date.
 		// field is rendered.
-		wp_register_script( 'wp-job-manager-datepicker', JOB_MANAGER_PLUGIN_URL . '/assets/js/datepicker.min.js', array( 'jquery', 'jquery-ui-datepicker' ), JOB_MANAGER_VERSION, true );
+		wp_register_script( 'wp-job-manager-datepicker', JOB_MANAGER_PLUGIN_URL . '/assets/js/datepicker.min.js', [ 'jquery', 'jquery-ui-datepicker' ], JOB_MANAGER_VERSION, true );
 
 		// Localize scripts after the fields are rendered.
-		add_action( 'submit_job_form_end', array( $this, 'localize_job_form_scripts' ) );
+		add_action( 'submit_job_form_end', [ $this, 'localize_job_form_scripts' ] );
 	}
 
 	/**
@@ -485,10 +485,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			wp_localize_script(
 				'wp-job-manager-datepicker',
 				'job_manager_datepicker',
-				array(
+				[
 					/* translators: jQuery date format, see http://api.jqueryui.com/datepicker/#utility-formatDate */
 					'date_format' => _x( 'yy-mm-dd', 'Date format for jQuery datepicker.', 'wp-job-manager' ),
-				)
+				]
 			);
 		}
 	}
@@ -499,7 +499,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return array
 	 */
 	private function job_types() {
-		$options = array();
+		$options = [];
 		$terms   = get_job_listing_types();
 		foreach ( $terms as $term ) {
 			$options[ $term->slug ] = $term->name;
@@ -526,13 +526,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							$this->fields[ $group_key ][ $key ]['value'] = $job->post_content;
 							break;
 						case 'job_type':
-							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_type', array( 'fields' => 'ids' ) );
+							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_type', [ 'fields' => 'ids' ] );
 							if ( ! job_manager_multi_job_type() ) {
 								$this->fields[ $group_key ][ $key ]['value'] = current( $this->fields[ $group_key ][ $key ]['value'] );
 							}
 							break;
 						case 'job_category':
-							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_category', array( 'fields' => 'ids' ) );
+							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_category', [ 'fields' => 'ids' ] );
 							break;
 						case 'company_logo':
 							$this->fields[ $group_key ][ $key ]['value'] = has_post_thumbnail( $job->ID ) ? get_post_thumbnail_id( $job->ID ) : get_post_meta( $job->ID, '_' . $key, true );
@@ -566,7 +566,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$this->enqueue_job_form_assets();
 		get_job_manager_template(
 			'job-submit.php',
-			array(
+			[
 				'form'               => $this->form_name,
 				'job_id'             => $this->get_job_id(),
 				'resume_edit'        => $this->resume_edit,
@@ -576,7 +576,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'step'               => $this->get_step(),
 				'can_continue_later' => $this->can_continue_later(),
 				'submit_button_text' => apply_filters( 'submit_job_form_submit_button_text', __( 'Preview', 'wp-job-manager' ) ),
-			)
+			]
 		);
 	}
 
@@ -663,12 +663,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 					if ( ! empty( $input_create_account_email ) ) {
 						$create_account = wp_job_manager_create_account(
-							array(
+							[
 								'username' => ( job_manager_generate_username_from_email() || empty( $input_create_account_username ) ) ? '' : $input_create_account_username,
 								'password' => ( wpjm_use_standard_password_setup_email() || empty( $input_create_account_password ) ) ? '' : $input_create_account_password,
 								'email'    => sanitize_text_field( wp_unslash( $input_create_account_email ) ),
 								'role'     => get_option( 'job_manager_registration_role' ),
-							)
+							]
 						);
 					}
 				}
@@ -722,16 +722,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param  array  $values
 	 * @param  bool   $update_slug
 	 */
-	protected function save_job( $post_title, $post_content, $status = 'preview', $values = array(), $update_slug = true ) {
-		$job_data = array(
+	protected function save_job( $post_title, $post_content, $status = 'preview', $values = [], $update_slug = true ) {
+		$job_data = [
 			'post_title'     => $post_title,
 			'post_content'   => $post_content,
 			'post_type'      => 'job_listing',
 			'comment_status' => 'closed',
-		);
+		];
 
 		if ( $update_slug ) {
-			$job_slug = array();
+			$job_slug = [];
 
 			// Prepend with company name.
 			if ( apply_filters( 'submit_job_form_prefix_post_name_with_company', true ) && ! empty( $values['company']['company_name'] ) ) {
@@ -798,7 +798,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		include_once ABSPATH . 'wp-admin/includes/media.php';
 
 		$upload_dir     = wp_upload_dir();
-		$attachment_url = esc_url( $attachment_url, array( 'http', 'https' ) );
+		$attachment_url = esc_url( $attachment_url, [ 'http', 'https' ] );
 		if ( empty( $attachment_url ) ) {
 			return 0;
 		}
@@ -812,18 +812,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		$attachment_url = sprintf( '%s://%s%s', $attachment_url_parts['scheme'], $attachment_url_parts['host'], $attachment_url_parts['path'] );
 
-		$attachment_url = str_replace( array( $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ), array( $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ), $attachment_url );
+		$attachment_url = str_replace( [ $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ], [ $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ], $attachment_url );
 		if ( empty( $attachment_url ) || ! is_string( $attachment_url ) ) {
 			return 0;
 		}
 
-		$attachment = array(
+		$attachment = [
 			'post_title'   => wpjm_get_the_job_title( $this->job_id ),
 			'post_content' => '',
 			'post_status'  => 'inherit',
 			'post_parent'  => $this->job_id,
 			'guid'         => $attachment_url,
-		);
+		];
 
 		$info = wp_check_filetype( $attachment_url );
 		if ( $info ) {
@@ -850,7 +850,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_post_meta( $this->job_id, '_filled', 0, true );
 		add_post_meta( $this->job_id, '_featured', 0, true );
 
-		$maybe_attach = array();
+		$maybe_attach = [];
 
 		// Loop fields and save meta and term data.
 		foreach ( $this->fields as $group_key => $group_fields ) {
@@ -860,7 +860,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					if ( is_array( $values[ $group_key ][ $key ] ) ) {
 						wp_set_object_terms( $this->job_id, $values[ $group_key ][ $key ], $field['taxonomy'], false );
 					} else {
-						wp_set_object_terms( $this->job_id, array( $values[ $group_key ][ $key ] ), $field['taxonomy'], false );
+						wp_set_object_terms( $this->job_id, [ $values[ $group_key ][ $key ] ], $field['taxonomy'], false );
 					}
 
 					// Company logo is a featured image.
@@ -897,7 +897,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( count( $maybe_attach ) && apply_filters( 'job_manager_attach_uploaded_files', true ) ) {
 			// Get attachments.
 			$attachments     = get_posts( 'post_parent=' . $this->job_id . '&post_type=attachment&fields=ids&numberposts=-1' );
-			$attachment_urls = array();
+			$attachment_urls = [];
 
 			// Loop attachments already attached to the job.
 			foreach ( $attachments as $attachment_id ) {
@@ -939,9 +939,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			get_job_manager_template(
 				'job-preview.php',
-				array(
+				[
 					'form' => $this,
-				)
+				]
 			);
 
 			wp_reset_postdata();
@@ -968,12 +968,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
 			$job = get_post( $this->job_id );
 
-			if ( in_array( $job->post_status, array( 'preview', 'expired' ), true ) ) {
+			if ( in_array( $job->post_status, [ 'preview', 'expired' ], true ) ) {
 				// Reset expiry.
 				delete_post_meta( $job->ID, '_job_expires' );
 
 				// Update job listing.
-				$update_job                  = array();
+				$update_job                  = [];
 				$update_job['ID']            = $job->ID;
 				$update_job['post_status']   = apply_filters( 'submit_job_post_status', get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish', $job );
 				$update_job['post_date']     = current_time( 'mysql' );
@@ -1044,7 +1044,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Displays the final screen after a job listing has been submitted.
 	 */
 	public function done() {
-		get_job_manager_template( 'job-submitted.php', array( 'job' => get_post( $this->job_id ) ) );
+		get_job_manager_template( 'job-submitted.php', [ 'job' => get_post( $this->job_id ) ] );
 	}
 
 	/**
@@ -1090,10 +1090,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	public function track_job_submission( $post_id ) {
 		WP_Job_Manager_Usage_Tracking::track_job_submission(
 			$post_id,
-			array(
+			[
 				'source'     => 'frontend',
 				'old_status' => 'preview',
-			)
+			]
 		);
 	}
 }

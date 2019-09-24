@@ -62,16 +62,16 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 * Registers widget.
 	 */
 	public function register() {
-		$widget_ops = array(
+		$widget_ops = [
 			'classname'   => $this->widget_cssclass,
 			'description' => $this->widget_description,
-		);
+		];
 
 		parent::__construct( $this->widget_id, $this->widget_name, $widget_ops );
 
-		add_action( 'save_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
+		add_action( 'save_post', [ $this, 'flush_widget_cache' ] );
+		add_action( 'deleted_post', [ $this, 'flush_widget_cache' ] );
+		add_action( 'switch_theme', [ $this, 'flush_widget_cache' ] );
 	}
 
 	/**
@@ -84,7 +84,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 		$cache = wp_cache_get( $this->widget_id, 'widget' );
 
 		if ( ! is_array( $cache ) ) {
-			$cache = array();
+			$cache = [];
 		}
 
 		if ( isset( $cache[ $args['widget_id'] ] ) ) {
@@ -201,7 +201,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 * @return array
 	 */
 	protected function get_default_instance() {
-		$defaults = array();
+		$defaults = [];
 		if ( ! empty( $this->settings ) ) {
 			foreach ( $this->settings as $key => $setting ) {
 				$defaults[ $key ] = null;

@@ -15,17 +15,17 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 	 * @param string|array|object $args Arguments used to retrieve job listings.
 	 * @return WP_Query
 	 */
-	function get_job_listings( $args = array() ) {
+	function get_job_listings( $args = [] ) {
 		global $job_manager_keyword;
 
 		$args = wp_parse_args(
 			$args,
-			array(
+			[
 				'search_location'   => '',
 				'search_keywords'   => '',
-				'search_categories' => array(),
-				'job_types'         => array(),
-				'post_status'       => array(),
+				'search_categories' => [],
+				'job_types'         => [],
+				'post_status'       => [],
 				'offset'            => 0,
 				'posts_per_page'    => 20,
 				'orderby'           => 'date',
@@ -33,7 +33,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				'featured'          => null,
 				'filled'            => null,
 				'fields'            => 'all',
-			)
+			]
 		);
 
 		/**
@@ -48,12 +48,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		if ( ! empty( $args['post_status'] ) ) {
 			$post_status = $args['post_status'];
 		} elseif ( 0 === intval( get_option( 'job_manager_hide_expired', get_option( 'job_manager_hide_expired_content', 1 ) ) ) ) {
-			$post_status = array( 'publish', 'expired' );
+			$post_status = [ 'publish', 'expired' ];
 		} else {
 			$post_status = 'publish';
 		}
 
-		$query_args = array(
+		$query_args = [
 			'post_type'              => 'job_listing',
 			'post_status'            => $post_status,
 			'ignore_sticky_posts'    => 1,
@@ -61,80 +61,80 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			'posts_per_page'         => intval( $args['posts_per_page'] ),
 			'orderby'                => $args['orderby'],
 			'order'                  => $args['order'],
-			'tax_query'              => array(),
-			'meta_query'             => array(),
+			'tax_query'              => [],
+			'meta_query'             => [],
 			'update_post_term_cache' => false,
 			'update_post_meta_cache' => false,
 			'cache_results'          => false,
 			'fields'                 => $args['fields'],
-		);
+		];
 
 		if ( $args['posts_per_page'] < 0 ) {
 			$query_args['no_found_rows'] = true;
 		}
 
 		if ( ! empty( $args['search_location'] ) ) {
-			$location_meta_keys = array( 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' );
-			$location_search    = array( 'relation' => 'OR' );
+			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+			$location_search    = [ 'relation' => 'OR' ];
 			foreach ( $location_meta_keys as $meta_key ) {
-				$location_search[] = array(
+				$location_search[] = [
 					'key'     => $meta_key,
 					'value'   => $args['search_location'],
 					'compare' => 'like',
-				);
+				];
 			}
 			$query_args['meta_query'][] = $location_search;
 		}
 
 		if ( ! is_null( $args['featured'] ) ) {
-			$query_args['meta_query'][] = array(
+			$query_args['meta_query'][] = [
 				'key'     => '_featured',
 				'value'   => '1',
 				'compare' => $args['featured'] ? '=' : '!=',
-			);
+			];
 		}
 
 		if ( ! is_null( $args['filled'] ) || 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
-			$query_args['meta_query'][] = array(
+			$query_args['meta_query'][] = [
 				'key'     => '_filled',
 				'value'   => '1',
 				'compare' => $args['filled'] ? '=' : '!=',
-			);
+			];
 		}
 
 		if ( ! empty( $args['job_types'] ) ) {
-			$query_args['tax_query'][] = array(
+			$query_args['tax_query'][] = [
 				'taxonomy' => 'job_listing_type',
 				'field'    => 'slug',
 				'terms'    => $args['job_types'],
-			);
+			];
 		}
 
 		if ( ! empty( $args['search_categories'] ) ) {
 			$field                     = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
 			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
-			$query_args['tax_query'][] = array(
+			$query_args['tax_query'][] = [
 				'taxonomy'         => 'job_listing_category',
 				'field'            => $field,
 				'terms'            => array_values( $args['search_categories'] ),
 				'include_children' => 'AND' !== $operator,
 				'operator'         => $operator,
-			);
+			];
 		}
 
 		if ( 'featured' === $args['orderby'] ) {
-			$query_args['orderby'] = array(
+			$query_args['orderby'] = [
 				'menu_order' => 'ASC',
 				'date'       => 'DESC',
 				'ID'         => 'DESC',
-			);
+			];
 		}
 
 		if ( 'rand_featured' === $args['orderby'] ) {
-			$query_args['orderby'] = array(
+			$query_args['orderby'] = [
 				'menu_order' => 'ASC',
 				'rand'       => 'ASC',
-			);
+			];
 		}
 
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
@@ -179,7 +179,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 					&& isset( $cached_query_posts->posts )
 					&& is_array( $cached_query_posts->posts )
 				) {
-					if ( in_array( $query_args['fields'], array( 'ids', 'id=>parent' ), true ) ) {
+					if ( in_array( $query_args['fields'], [ 'ids', 'id=>parent' ], true ) ) {
 						// For these special requests, just return the array of results as set.
 						$posts = $cached_query_posts->posts;
 					} else {
@@ -199,7 +199,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				$result               = new WP_Query( $query_args );
 				$cached_query_results = false;
 
-				$cacheable_result                  = array();
+				$cacheable_result                  = [];
 				$cacheable_result['posts']         = array_values( $result->posts );
 				$cacheable_result['found_posts']   = $result->found_posts;
 				$cacheable_result['max_num_pages'] = $result->max_num_pages;
@@ -264,7 +264,7 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 		global $wpdb, $job_manager_keyword;
 
 		// Searchable Meta Keys: set to empty to search all meta keys.
-		$searchable_meta_keys = array(
+		$searchable_meta_keys = [
 			'_job_location',
 			'_company_name',
 			'_application',
@@ -272,12 +272,12 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 			'_company_tagline',
 			'_company_website',
 			'_company_twitter',
-		);
+		];
 
 		$searchable_meta_keys = apply_filters( 'job_listing_searchable_meta_keys', $searchable_meta_keys );
 
 		// Set Search DB Conditions.
-		$conditions = array();
+		$conditions = [];
 
 		// Search Post Meta.
 		if ( apply_filters( 'job_listing_search_post_meta', true ) ) {
@@ -330,14 +330,14 @@ if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
 	function get_job_listing_post_statuses() {
 		return apply_filters(
 			'job_listing_post_statuses',
-			array(
+			[
 				'draft'           => _x( 'Draft', 'post status', 'wp-job-manager' ),
 				'expired'         => _x( 'Expired', 'post status', 'wp-job-manager' ),
 				'preview'         => _x( 'Preview', 'post status', 'wp-job-manager' ),
 				'pending'         => _x( 'Pending approval', 'post status', 'wp-job-manager' ),
 				'pending_payment' => _x( 'Pending payment', 'post status', 'wp-job-manager' ),
 				'publish'         => _x( 'Active', 'post status', 'wp-job-manager' ),
-			)
+			]
 		);
 	}
 endif;
@@ -351,7 +351,7 @@ if ( ! function_exists( 'get_featured_job_ids' ) ) :
 	 */
 	function get_featured_job_ids() {
 		return get_posts(
-			array(
+			[
 				'posts_per_page'   => -1,
 				'suppress_filters' => false,
 				'post_type'        => 'job_listing',
@@ -359,7 +359,7 @@ if ( ! function_exists( 'get_featured_job_ids' ) ) :
 				'meta_key'         => '_featured',
 				'meta_value'       => '1',
 				'fields'           => 'ids',
-			)
+			]
 		);
 	}
 endif;
@@ -374,14 +374,14 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
 	 */
 	function get_job_listing_types( $fields = 'all' ) {
 		if ( ! get_option( 'job_manager_enable_types' ) ) {
-			return array();
+			return [];
 		} else {
-			$args = array(
+			$args = [
 				'fields'     => $fields,
 				'hide_empty' => false,
 				'order'      => 'ASC',
 				'orderby'    => 'name',
-			);
+			];
 
 			$args = apply_filters( 'get_job_listing_types_args', $args );
 
@@ -402,14 +402,14 @@ if ( ! function_exists( 'get_job_listing_categories' ) ) :
 	 */
 	function get_job_listing_categories() {
 		if ( ! get_option( 'job_manager_enable_categories' ) ) {
-			return array();
+			return [];
 		}
 
-		$args = array(
+		$args = [
 			'orderby'    => 'name',
 			'order'      => 'ASC',
 			'hide_empty' => false,
-		);
+		];
 
 		/**
 		 * Change the category query arguments.
@@ -435,8 +435,8 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 	 * @param array $args
 	 * @return string
 	 */
-	function job_manager_get_filtered_links( $args = array() ) {
-		$job_categories = array();
+	function job_manager_get_filtered_links( $args = [] ) {
+		$job_categories = [];
 		$types          = get_job_listing_types();
 
 		// Convert to slugs.
@@ -455,26 +455,26 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 
 		$links = apply_filters(
 			'job_manager_job_filters_showing_jobs_links',
-			array(
-				'reset'    => array(
+			[
+				'reset'    => [
 					'name' => __( 'Reset', 'wp-job-manager' ),
 					'url'  => '#',
-				),
-				'rss_link' => array(
+				],
+				'rss_link' => [
 					'name' => __( 'RSS', 'wp-job-manager' ),
 					'url'  => get_job_listing_rss_link(
 						apply_filters(
 							'job_manager_get_listings_custom_filter_rss_args',
-							array(
+							[
 								'job_types'       => isset( $args['filter_job_types'] ) ? implode( ',', $args['filter_job_types'] ) : '',
 								'search_location' => $args['search_location'],
 								'job_categories'  => implode( ',', $job_categories ),
 								'search_keywords' => $args['search_keywords'],
-							)
+							]
 						)
 					),
-				),
-			),
+				],
+			],
 			$args
 		);
 
@@ -506,8 +506,8 @@ if ( ! function_exists( 'get_job_listing_rss_link' ) ) :
 	 * @param array $args
 	 * @return string
 	 */
-	function get_job_listing_rss_link( $args = array() ) {
-		$rss_link = add_query_arg( urlencode_deep( array_merge( array( 'feed' => WP_Job_Manager_Post_Types::get_job_feed_name() ), $args ) ), home_url() );
+	function get_job_listing_rss_link( $args = [] ) {
+		$rss_link = add_query_arg( urlencode_deep( array_merge( [ 'feed' => WP_Job_Manager_Post_Types::get_job_feed_name() ], $args ) ), home_url() );
 		return $rss_link;
 	}
 endif;
@@ -548,19 +548,19 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 	function wp_job_manager_create_account( $args, $deprecated = '' ) {
 		// Soft Deprecated in 1.20.0.
 		if ( ! is_array( $args ) ) {
-			$args = array(
+			$args = [
 				'username' => '',
 				'password' => false,
 				'email'    => $args,
 				'role'     => $deprecated,
-			);
+			];
 		} else {
-			$defaults = array(
+			$defaults = [
 				'username' => '',
 				'email'    => '',
 				'password' => false,
 				'role'     => get_option( 'default_role' ),
-			);
+			];
 
 			$args = wp_parse_args( $args, $defaults );
 		}
@@ -604,12 +604,12 @@ if ( ! function_exists( 'wp_job_manager_create_account' ) ) :
 		}
 
 		// Create account.
-		$new_user = array(
+		$new_user = [
 			'user_login' => $username,
 			'user_pass'  => $args['password'],
 			'user_email' => $email,
 			'role'       => $args['role'],
-		);
+		];
 
 		// User is forced to set up account with email sent to them. This password will remain a secret.
 		if ( empty( $new_user['user_pass'] ) ) {
@@ -756,11 +756,11 @@ function is_wpjm_page() {
 
 	if ( ! $is_wpjm_page ) {
 		$wpjm_page_ids = array_filter(
-			array(
+			[
 				get_option( 'job_manager_submit_job_form_page_id', false ),
 				get_option( 'job_manager_job_dashboard_page_id', false ),
 				get_option( 'job_manager_jobs_page_id', false ),
-			)
+			]
 		);
 
 		/**
@@ -803,7 +803,7 @@ function has_wpjm_shortcode( $content = null, $tag = null ) {
 	}
 
 	if ( ! empty( $content ) ) {
-		$wpjm_shortcodes = array( 'submit_job_form', 'job_dashboard', 'jobs', 'job', 'job_summary', 'job_apply' );
+		$wpjm_shortcodes = [ 'submit_job_form', 'job_dashboard', 'jobs', 'job', 'job_summary', 'job_apply' ];
 		/**
 		 * Filters a list of all shortcodes associated with WPJM.
 		 *
@@ -815,7 +815,7 @@ function has_wpjm_shortcode( $content = null, $tag = null ) {
 
 		if ( null !== $tag ) {
 			if ( ! is_array( $tag ) ) {
-				$tag = array( $tag );
+				$tag = [ $tag ];
 			}
 			$wpjm_shortcodes = array_intersect( $wpjm_shortcodes, $tag );
 		}
@@ -846,7 +846,7 @@ function has_wpjm_shortcode( $content = null, $tag = null ) {
  * @return bool
  */
 function is_wpjm_job_listing() {
-	return is_singular( array( 'job_listing' ) );
+	return is_singular( [ 'job_listing' ] );
 }
 
 /**
@@ -889,7 +889,7 @@ function wpjm_use_standard_password_setup_email() {
  * @return array
  */
 function wpjm_job_listing_employment_type_options() {
-	$employment_types               = array();
+	$employment_types               = [];
 	$employment_types['FULL_TIME']  = __( 'Full Time', 'wp-job-manager' );
 	$employment_types['PART_TIME']  = __( 'Part Time', 'wp-job-manager' );
 	$employment_types['CONTRACTOR'] = __( 'Contractor', 'wp-job-manager' );
@@ -1031,7 +1031,7 @@ function wpjm_user_can_edit_published_submissions() {
 	 *
 	 * @param bool $can_edit_published_submissions
 	 */
-	return apply_filters( 'job_manager_user_can_edit_published_submissions', in_array( get_option( 'job_manager_user_edit_published_submissions' ), array( 'yes', 'yes_moderated' ), true ) );
+	return apply_filters( 'job_manager_user_can_edit_published_submissions', in_array( get_option( 'job_manager_user_edit_published_submissions' ), [ 'yes', 'yes_moderated' ], true ) );
 }
 
 /**
@@ -1064,7 +1064,7 @@ function wpjm_published_submission_edits_require_moderation() {
  * @return string
  */
 function job_manager_dropdown_categories( $args = '' ) {
-	$defaults = array(
+	$defaults = [
 		'orderby'         => 'id',
 		'order'           => 'ASC',
 		'show_count'      => 0,
@@ -1086,7 +1086,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 		'placeholder'     => __( 'Choose a category&hellip;', 'wp-job-manager' ),
 		'no_results_text' => __( 'No results match', 'wp-job-manager' ),
 		'multiple_text'   => __( 'Select Some Options', 'wp-job-manager' ),
-	);
+	];
 
 	$r = wp_parse_args( $args, $defaults );
 
@@ -1103,7 +1103,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 
 	if ( empty( $categories ) ) {
 		$categories = get_terms(
-			array(
+			[
 				'taxonomy'     => $r['taxonomy'],
 				'orderby'      => $r['orderby'],
 				'order'        => $r['order'],
@@ -1112,7 +1112,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 				'child_of'     => $r['child_of'],
 				'exclude'      => $r['exclude'],
 				'hierarchical' => $r['hierarchical'],
-			)
+			]
 		);
 		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 7 );
 	}
@@ -1225,19 +1225,19 @@ add_filter( 'upload_dir', 'job_manager_upload_dir' );
  * @return array
  */
 function job_manager_prepare_uploaded_files( $file_data ) {
-	$files_to_upload = array();
+	$files_to_upload = [];
 
 	if ( is_array( $file_data['name'] ) ) {
 		foreach ( $file_data['name'] as $file_data_key => $file_data_value ) {
 			if ( $file_data['name'][ $file_data_key ] ) {
 				$type              = wp_check_filetype( $file_data['name'][ $file_data_key ] ); // Map mime type to one WordPress recognises.
-				$files_to_upload[] = array(
+				$files_to_upload[] = [
 					'name'     => $file_data['name'][ $file_data_key ],
 					'type'     => $type['type'],
 					'tmp_name' => $file_data['tmp_name'][ $file_data_key ],
 					'error'    => $file_data['error'][ $file_data_key ],
 					'size'     => $file_data['size'][ $file_data_key ],
-				);
+				];
 			}
 		}
 	} else {
@@ -1257,7 +1257,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
  * @param  string|array|object $args Optional arguments.
  * @return stdClass|WP_Error Object containing file information, or error.
  */
-function job_manager_upload_file( $file, $args = array() ) {
+function job_manager_upload_file( $file, $args = [] ) {
 	global $job_manager_upload, $job_manager_uploading_file;
 
 	include_once ABSPATH . 'wp-admin/includes/file.php';
@@ -1265,11 +1265,11 @@ function job_manager_upload_file( $file, $args = array() ) {
 
 	$args = wp_parse_args(
 		$args,
-		array(
+		[
 			'file_key'           => '',
 			'file_label'         => '',
 			'allowed_mime_types' => '',
-		)
+		]
 	);
 
 	$job_manager_upload         = true;
@@ -1311,7 +1311,7 @@ function job_manager_upload_file( $file, $args = array() ) {
 			return new WP_Error( 'upload', sprintf( __( 'Uploaded files need to be one of the following file types: %s', 'wp-job-manager' ), $allowed_file_extensions ) );
 		}
 	} else {
-		$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', array( 'test_form' => false ) ) );
+		$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', [ 'test_form' => false ] ) );
 		if ( ! empty( $upload['error'] ) ) {
 			return new WP_Error( 'upload', $upload['error'] );
 		} else {
@@ -1339,20 +1339,20 @@ function job_manager_upload_file( $file, $args = array() ) {
  */
 function job_manager_get_allowed_mime_types( $field = '' ) {
 	if ( 'company_logo' === $field ) {
-		$allowed_mime_types = array(
+		$allowed_mime_types = [
 			'jpg|jpeg|jpe' => 'image/jpeg',
 			'gif'          => 'image/gif',
 			'png'          => 'image/png',
-		);
+		];
 	} else {
-		$allowed_mime_types = array(
+		$allowed_mime_types = [
 			'jpg|jpeg|jpe' => 'image/jpeg',
 			'gif'          => 'image/gif',
 			'png'          => 'image/png',
 			'pdf'          => 'application/pdf',
 			'doc'          => 'application/msword',
 			'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-		);
+		];
 	}
 
 	/**
@@ -1417,7 +1417,7 @@ function job_manager_duplicate_listing( $post_id ) {
 	 * Duplicate the post.
 	 */
 	$new_post_id = wp_insert_post(
-		array(
+		[
 			'comment_status' => $post->comment_status,
 			'ping_status'    => $post->ping_status,
 			'post_author'    => $post->post_author,
@@ -1431,7 +1431,7 @@ function job_manager_duplicate_listing( $post_id ) {
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order,
-		)
+		]
 	);
 
 	/**
@@ -1440,7 +1440,7 @@ function job_manager_duplicate_listing( $post_id ) {
 	$taxonomies = get_object_taxonomies( $post->post_type );
 
 	foreach ( $taxonomies as $taxonomy ) {
-		$post_terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'slugs' ) );
+		$post_terms = wp_get_object_terms( $post_id, $taxonomy, [ 'fields' => 'slugs' ] );
 		wp_set_object_terms( $new_post_id, $post_terms, $taxonomy, false );
 	}
 
@@ -1454,7 +1454,7 @@ function job_manager_duplicate_listing( $post_id ) {
 	if ( ! empty( $post_meta ) ) {
 		$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
 
-		$default_duplicate_ignore_keys = array( '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' );
+		$default_duplicate_ignore_keys = [ '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' ];
 		$duplicate_ignore_keys         = apply_filters( 'job_manager_duplicate_listing_ignore_keys', $default_duplicate_ignore_keys, true );
 
 		foreach ( $post_meta as $meta_key => $meta_value ) {

@@ -23,7 +23,7 @@ abstract class WP_Job_Manager_Form {
 	 * @access protected
 	 * @var array
 	 */
-	protected $fields = array();
+	protected $fields = [];
 
 	/**
 	 * Form action.
@@ -39,7 +39,7 @@ abstract class WP_Job_Manager_Form {
 	 * @access protected
 	 * @var array
 	 */
-	protected $errors = array();
+	protected $errors = [];
 
 	/**
 	 * Form notices.
@@ -47,7 +47,7 @@ abstract class WP_Job_Manager_Form {
 	 * @access protected
 	 * @var array
 	 */
-	protected $messages = array();
+	protected $messages = [];
 
 	/**
 	 * Form steps.
@@ -55,7 +55,7 @@ abstract class WP_Job_Manager_Form {
 	 * @access protected
 	 * @var array
 	 */
-	protected $steps = array();
+	protected $steps = [];
 
 	/**
 	 * Current form step.
@@ -102,7 +102,7 @@ abstract class WP_Job_Manager_Form {
 			delete_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key' );
 			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
 			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
-			wp_safe_redirect( remove_query_arg( array( 'new', 'key' ) ) );
+			wp_safe_redirect( remove_query_arg( [ 'new', 'key' ] ) );
 			exit;
 		}
 
@@ -135,7 +135,7 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param array $atts Attributes to use in the view handler.
 	 */
-	public function output( $atts = array() ) {
+	public function output( $atts = [] ) {
 		$this->enqueue_scripts();
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
@@ -267,12 +267,12 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function get_fields( $key ) {
 		if ( empty( $this->fields[ $key ] ) ) {
-			return array();
+			return [];
 		}
 
 		$fields = $this->fields[ $key ];
 
-		uasort( $fields, array( $this, 'sort_by_priority' ) );
+		uasort( $fields, [ $this, 'sort_by_priority' ] );
 
 		return $fields;
 	}
@@ -295,7 +295,7 @@ abstract class WP_Job_Manager_Form {
 	 * Initializes form fields.
 	 */
 	protected function init_fields() {
-		$this->fields = array();
+		$this->fields = [];
 	}
 
 	/**
@@ -304,7 +304,7 @@ abstract class WP_Job_Manager_Form {
 	public function enqueue_scripts() {
 		if ( $this->use_recaptcha_field() ) {
 			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NoExplicitVersion
-			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js', array(), false, false );
+			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js', [], false, false );
 		}
 	}
 
@@ -341,16 +341,16 @@ abstract class WP_Job_Manager_Form {
 	 * Output the reCAPTCHA field.
 	 */
 	public function display_recaptcha_field() {
-		$field             = array();
+		$field             = [];
 		$field['label']    = get_option( 'job_manager_recaptcha_label' );
 		$field['required'] = true;
 		$field['site_key'] = get_option( 'job_manager_recaptcha_site_key' );
 		get_job_manager_template(
 			'form-fields/recaptcha-field.php',
-			array(
+			[
 				'key'   => 'recaptcha',
 				'field' => $field,
-			)
+			]
 		);
 	}
 
@@ -374,11 +374,11 @@ abstract class WP_Job_Manager_Form {
 		$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 		$response            = wp_remote_get(
 			add_query_arg(
-				array(
+				[
 					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
 					'response' => $input_recaptcha_response,
 					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : $default_remote_addr,
-				),
+				],
 				'https://www.google.com/recaptcha/api/siteverify'
 			)
 		);
@@ -406,7 +406,7 @@ abstract class WP_Job_Manager_Form {
 	protected function get_posted_fields() {
 		$this->init_fields();
 
-		$values = array();
+		$values = [];
 
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
@@ -417,7 +417,7 @@ abstract class WP_Job_Manager_Form {
 				if ( $handler ) {
 					$values[ $group_key ][ $key ] = call_user_func( $handler, $key, $field );
 				} elseif ( method_exists( $this, "get_posted_{$field_type}_field" ) ) {
-					$values[ $group_key ][ $key ] = call_user_func( array( $this, "get_posted_{$field_type}_field" ), $key, $field );
+					$values[ $group_key ][ $key ] = call_user_func( [ $this, "get_posted_{$field_type}_field" ], $key, $field );
 				} else {
 					$values[ $group_key ][ $key ] = $this->get_posted_field( $key, $field );
 				}
@@ -509,7 +509,7 @@ abstract class WP_Job_Manager_Form {
 	 */
 	protected function get_posted_multiselect_field( $key, $field ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST[ $key ] ) ) : array();
+		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST[ $key ] ) ) : [];
 	}
 
 	/**
@@ -569,7 +569,7 @@ abstract class WP_Job_Manager_Form {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 			return array_map( 'absint', $_POST['tax_input'][ $field['taxonomy'] ] );
 		} else {
-			return array();
+			return [];
 		}
 	}
 
@@ -582,7 +582,7 @@ abstract class WP_Job_Manager_Form {
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : array();
+		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : [];
 	}
 
 	/**
@@ -613,16 +613,16 @@ abstract class WP_Job_Manager_Form {
 				$allowed_mime_types = job_manager_get_allowed_mime_types();
 			}
 
-			$file_urls       = array();
+			$file_urls       = [];
 			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1720.
 
 			foreach ( $files_to_upload as $file_to_upload ) {
 				$uploaded_file = job_manager_upload_file(
 					$file_to_upload,
-					array(
+					[
 						'file_key'           => $field_key,
 						'allowed_mime_types' => $allowed_mime_types,
-					)
+					]
 				);
 
 				if ( is_wp_error( $uploaded_file ) ) {

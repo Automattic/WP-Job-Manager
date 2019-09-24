@@ -44,10 +44,10 @@ class WP_Job_Manager_Geocode {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_filter( 'job_manager_geolocation_endpoint', array( $this, 'add_geolocation_endpoint_query_args' ), 0, 2 );
-		add_filter( 'job_manager_geolocation_api_key', array( $this, 'get_google_maps_api_key' ), 0 );
-		add_action( 'job_manager_update_job_data', array( $this, 'update_location_data' ), 20, 2 );
-		add_action( 'job_manager_job_location_edited', array( $this, 'change_location_data' ), 20, 2 );
+		add_filter( 'job_manager_geolocation_endpoint', [ $this, 'add_geolocation_endpoint_query_args' ], 0, 2 );
+		add_filter( 'job_manager_geolocation_api_key', [ $this, 'get_google_maps_api_key' ], 0 );
+		add_action( 'job_manager_update_job_data', [ $this, 'update_location_data' ], 20, 2 );
+		add_action( 'job_manager_job_location_edited', [ $this, 'change_location_data' ], 20, 2 );
 	}
 
 	/**
@@ -186,14 +186,14 @@ class WP_Job_Manager_Geocode {
 	 * @throws Exception After geocoding error.
 	 */
 	public static function get_location_data( $raw_address ) {
-		$invalid_chars = array(
+		$invalid_chars = [
 			' ' => '+',
 			',' => '',
 			'?' => '',
 			'&' => '',
 			'=' => '',
 			'#' => '',
-		);
+		];
 		$raw_address   = trim( strtolower( str_replace( array_keys( $invalid_chars ), array_values( $invalid_chars ), $raw_address ) ) );
 
 		if ( empty( $raw_address ) ) {
@@ -218,13 +218,13 @@ class WP_Job_Manager_Geocode {
 			if ( false === $geocoded_address || empty( $geocoded_address->results[0] ) ) {
 				$result           = wp_remote_get(
 					$geocode_api_url,
-					array(
+					[
 						'timeout'     => 5,
 						'redirection' => 1,
 						'httpversion' => '1.1',
 						'user-agent'  => 'WordPress/WP-Job-Manager-' . JOB_MANAGER_VERSION . '; ' . get_bloginfo( 'url' ),
 						'sslverify'   => false,
-					)
+					]
 				);
 				$result           = wp_remote_retrieve_body( $result );
 				$geocoded_address = json_decode( $result );
@@ -248,7 +248,7 @@ class WP_Job_Manager_Geocode {
 			return new WP_Error( 'error', $e->getMessage() );
 		}
 
-		$address                      = array();
+		$address                      = [];
 		$address['lat']               = sanitize_text_field( $geocoded_address->results[0]->geometry->location->lat );
 		$address['long']              = sanitize_text_field( $geocoded_address->results[0]->geometry->location->lng );
 		$address['formatted_address'] = sanitize_text_field( $geocoded_address->results[0]->formatted_address );

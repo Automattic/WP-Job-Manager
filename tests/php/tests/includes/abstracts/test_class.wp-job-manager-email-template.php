@@ -17,13 +17,13 @@ class WP_Test_WP_Job_Manager_Email_Template extends WPJM_BaseTest {
 	 */
 	public function test_get_rich_content() {
 		$job           = get_post( $this->factory->job_listing->create() );
-		$args          = array( 'job' => $job );
+		$args          = [ 'job' => $job ];
 		$test          = new WP_Job_Manager_Email_Template_Valid( $args, $this->get_base_settings() );
 		$test_expected = "<strong>Rich Test Email: {$job->post_title}</strong>";
 
-		add_filter( 'job_manager_locate_template', array( $this, 'use_rich_test_template' ) );
+		add_filter( 'job_manager_locate_template', [ $this, 'use_rich_test_template' ] );
 		$test_value = $test->get_rich_content();
-		remove_filter( 'job_manager_locate_template', array( $this, 'use_rich_test_template' ) );
+		remove_filter( 'job_manager_locate_template', [ $this, 'use_rich_test_template' ] );
 		$this->assertStringStartsWith( $test_expected, $test_value );
 	}
 
@@ -35,12 +35,12 @@ class WP_Test_WP_Job_Manager_Email_Template extends WPJM_BaseTest {
 	 */
 	public function test_get_plain_content() {
 		$job           = get_post( $this->factory->job_listing->create() );
-		$args          = array( 'job' => $job );
+		$args          = [ 'job' => $job ];
 		$test          = new WP_Job_Manager_Email_Template_Valid( $args, $this->get_base_settings() );
 		$test_expected = "Plain Test Email: {$job->post_title}";
-		add_filter( 'job_manager_locate_template', array( $this, 'use_plain_test_template' ) );
+		add_filter( 'job_manager_locate_template', [ $this, 'use_plain_test_template' ] );
 		$test_value = $test->get_plain_content();
-		remove_filter( 'job_manager_locate_template', array( $this, 'use_plain_test_template' ) );
+		remove_filter( 'job_manager_locate_template', [ $this, 'use_plain_test_template' ] );
 		$this->assertStringStartsWith( $test_expected, $test_value );
 	}
 
@@ -54,12 +54,12 @@ class WP_Test_WP_Job_Manager_Email_Template extends WPJM_BaseTest {
 	public function test_get_plain_content_rich_fallback() {
 		$this->fake_pass = 0;
 		$job             = get_post( $this->factory->job_listing->create() );
-		$args            = array( 'job' => $job );
+		$args            = [ 'job' => $job ];
 		$test            = new WP_Job_Manager_Email_Template_Valid( $args, $this->get_base_settings() );
 		$test_expected   = "Rich Test Email: {$job->post_title}";
-		add_filter( 'job_manager_locate_template', array( $this, 'use_fake_test_template' ) );
+		add_filter( 'job_manager_locate_template', [ $this, 'use_fake_test_template' ] );
 		$test_value = $test->get_plain_content();
-		remove_filter( 'job_manager_locate_template', array( $this, 'use_fake_test_template' ) );
+		remove_filter( 'job_manager_locate_template', [ $this, 'use_fake_test_template' ] );
 		$this->assertStringStartsWith( $test_expected, $test_value );
 	}
 
@@ -69,11 +69,11 @@ class WP_Test_WP_Job_Manager_Email_Template extends WPJM_BaseTest {
 	 */
 	public function test_has_template_rich() {
 		$this->fake_pass = 0;
-		$args            = array( 'job' => '' );
+		$args            = [ 'job' => '' ];
 		$test            = new WP_Job_Manager_Email_Template_Valid( $args, $this->get_base_settings() );
-		add_filter( 'job_manager_locate_template', array( $this, 'use_rich_test_template' ) );
+		add_filter( 'job_manager_locate_template', [ $this, 'use_rich_test_template' ] );
 		$test_value = $test->has_template();
-		remove_filter( 'job_manager_locate_template', array( $this, 'use_rich_test_template' ) );
+		remove_filter( 'job_manager_locate_template', [ $this, 'use_rich_test_template' ] );
 		$this->assertTrue( $test_value );
 	}
 
@@ -83,11 +83,11 @@ class WP_Test_WP_Job_Manager_Email_Template extends WPJM_BaseTest {
 	 */
 	public function test_has_template_plain_fake() {
 		$this->fake_pass = 0;
-		$args            = array( 'job' => '' );
+		$args            = [ 'job' => '' ];
 		$test            = new WP_Job_Manager_Email_Template_Valid( $args, $this->get_base_settings() );
-		add_filter( 'job_manager_locate_template', array( $this, 'use_fake_test_template' ) );
+		add_filter( 'job_manager_locate_template', [ $this, 'use_fake_test_template' ] );
 		$test_value = $test->has_template( true );
-		remove_filter( 'job_manager_locate_template', array( $this, 'use_fake_test_template' ) );
+		remove_filter( 'job_manager_locate_template', [ $this, 'use_fake_test_template' ] );
 		$this->assertFalse( $test_value );
 	}
 
@@ -124,9 +124,9 @@ class WP_Test_WP_Job_Manager_Email_Template extends WPJM_BaseTest {
 	}
 
 	protected function get_base_settings() {
-		return array(
+		return [
 			'enabled'    => '1',
 			'plain_text' => '0',
-		);
+		];
 	}
 }

@@ -29,9 +29,9 @@ class WP_Job_Manager_Admin_Notices {
 	 * Initialize admin notice handling.
 	 */
 	public static function init() {
-		add_action( 'job_manager_init_admin_notices', array( __CLASS__, 'init_core_notices' ) );
-		add_action( 'admin_notices', array( __CLASS__, 'display_notices' ) );
-		add_action( 'wp_loaded', array( __CLASS__, 'dismiss_notices' ) );
+		add_action( 'job_manager_init_admin_notices', [ __CLASS__, 'init_core_notices' ] );
+		add_action( 'admin_notices', [ __CLASS__, 'display_notices' ] );
+		add_action( 'wp_loaded', [ __CLASS__, 'dismiss_notices' ] );
 	}
 
 	/**
@@ -73,7 +73,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Clears all enqueued notices.
 	 */
 	public static function reset_notices() {
-		self::$notice_state = array();
+		self::$notice_state = [];
 		self::save_notice_state();
 	}
 
@@ -97,7 +97,7 @@ class WP_Job_Manager_Admin_Notices {
 	 */
 	public static function init_core_notices() {
 		// core_setup: Notice is used when first activating WP Job Manager.
-		add_action( 'job_manager_admin_notice_' . self::NOTICE_CORE_SETUP, array( __CLASS__, 'display_core_setup' ) );
+		add_action( 'job_manager_admin_notice_' . self::NOTICE_CORE_SETUP, [ __CLASS__, 'display_core_setup' ] );
 	}
 
 	/**
@@ -117,7 +117,7 @@ class WP_Job_Manager_Admin_Notices {
 
 			self::remove_notice( $hide_notice );
 
-			wp_safe_redirect( remove_query_arg( array( 'wpjm_hide_notice', '_wpjm_notice_nonce' ) ) );
+			wp_safe_redirect( remove_query_arg( [ 'wpjm_hide_notice', '_wpjm_notice_nonce' ] ) );
 			exit;
 		}
 	}
@@ -165,17 +165,17 @@ class WP_Job_Manager_Admin_Notices {
 	 * @param array $additional_screens Screen IDs to also show a notice on.
 	 * @return bool
 	 */
-	public static function is_admin_on_standard_job_manager_screen( $additional_screens = array() ) {
+	public static function is_admin_on_standard_job_manager_screen( $additional_screens = [] ) {
 		$screen          = get_current_screen();
 		$screen_id       = $screen ? $screen->id : '';
 		$show_on_screens = array_merge(
-			array(
+			[
 				'edit-job_listing',
 				'edit-job_listing_category',
 				'edit-job_listing_type',
 				'job_listing_page_job-manager-addons',
 				'job_listing_page_job-manager-settings',
-			),
+			],
 			$additional_screens
 		);
 
@@ -196,7 +196,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Note: For internal use only. Do not call manually.
 	 */
 	public static function display_core_setup() {
-		if ( ! self::is_admin_on_standard_job_manager_screen( array( 'plugins', 'dashboard' ) ) ) {
+		if ( ! self::is_admin_on_standard_job_manager_screen( [ 'plugins', 'dashboard' ] ) ) {
 			return;
 		}
 		include dirname( __FILE__ ) . '/views/html-admin-notice-core-setup.php';
@@ -211,7 +211,7 @@ class WP_Job_Manager_Admin_Notices {
 		if ( null === self::$notice_state ) {
 			self::$notice_state = json_decode( get_option( self::STATE_OPTION, '[]' ), true );
 			if ( ! is_array( self::$notice_state ) ) {
-				self::$notice_state = array();
+				self::$notice_state = [];
 			}
 		}
 		return self::$notice_state;

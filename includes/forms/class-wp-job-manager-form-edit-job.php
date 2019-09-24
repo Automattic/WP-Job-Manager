@@ -62,8 +62,8 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * Constructor
 	 */
 	public function __construct() {
-		add_action( 'wp', array( $this, 'submit_handler' ) );
-		add_action( 'submit_job_form_start', array( $this, 'output_submit_form_nonce_field' ) );
+		add_action( 'wp', [ $this, 'submit_handler' ] );
+		add_action( 'submit_job_form_start', [ $this, 'output_submit_form_nonce_field' ] );
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Check happens later when possible.
 		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
@@ -88,7 +88,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 *
 	 * @param array $atts
 	 */
-	public function output( $atts = array() ) {
+	public function output( $atts = [] ) {
 		if ( ! empty( $this->save_message ) ) {
 			echo '<div class="job-manager-message">' . wp_kses_post( $this->save_message ) . '</div>';
 		}
@@ -124,7 +124,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 						$this->fields[ $group_key ][ $key ]['value'] = has_post_thumbnail( $job->ID ) ? get_post_thumbnail_id( $job->ID ) : get_post_meta( $job->ID, '_' . $key, true );
 
 					} elseif ( ! empty( $field['taxonomy'] ) ) {
-						$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, $field['taxonomy'], array( 'fields' => 'ids' ) );
+						$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, $field['taxonomy'], [ 'fields' => 'ids' ] );
 
 					} else {
 						$this->fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
@@ -149,7 +149,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 		get_job_manager_template(
 			'job-submit.php',
-			array(
+			[
 				'form'               => $this->form_name,
 				'job_id'             => $this->get_job_id(),
 				'action'             => $this->get_action(),
@@ -157,7 +157,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 				'company_fields'     => $this->get_fields( 'company' ),
 				'step'               => $this->get_step(),
 				'submit_button_text' => $save_button_text,
-			)
+			]
 		);
 	}
 
