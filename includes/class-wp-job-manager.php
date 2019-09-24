@@ -136,7 +136,7 @@ class WP_Job_Manager {
 		$content = sprintf(
 			// translators: Placeholders %1$s and %2$s are the names of the two cookies used in WP Job Manager.
 			__(
-				'This site adds the following cookies to help users resume job submissions that they 
+				'This site adds the following cookies to help users resume job submissions that they
 				have started but have not completed: %1$s and %2$s',
 				'wp-job-manager'
 			),
@@ -367,9 +367,9 @@ class WP_Job_Manager {
 		}
 
 		if ( job_manager_user_can_upload_file_via_ajax() ) {
-			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', [ 'jquery' ], '9.30.0', true );
-			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', [ 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ], '9.30.0', true );
-			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', [ 'jquery', 'jquery-fileupload' ], JOB_MANAGER_VERSION, true );
+			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', array( 'jquery' ), '10.1.0', true );
+			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', array( 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ), '10.1.0', true );
+			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', array( 'jquery', 'jquery-fileupload' ), JOB_MANAGER_VERSION, true );
 
 			ob_start();
 			get_job_manager_template(
