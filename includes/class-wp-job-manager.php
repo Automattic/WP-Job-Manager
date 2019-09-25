@@ -367,9 +367,9 @@ class WP_Job_Manager {
 		}
 
 		if ( job_manager_user_can_upload_file_via_ajax() ) {
-			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', array( 'jquery' ), '10.1.0', true );
-			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', array( 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ), '10.1.0', true );
-			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', array( 'jquery', 'jquery-fileupload' ), JOB_MANAGER_VERSION, true );
+			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', [ 'jquery' ], '10.1.0', true );
+			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', [ 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ], '10.1.0', true );
+			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', [ 'jquery', 'jquery-fileupload' ], JOB_MANAGER_VERSION, true );
 
 			ob_start();
 			get_job_manager_template(
