@@ -249,13 +249,6 @@ module.exports = function( grunt ) {
 			],
 		},
 
-		checkrepo: {
-			deploy: {
-				tagged: true,
-				clean: true,
-			},
-		},
-
 		wp_readme_to_markdown: {
 			readme: {
 				files: {
@@ -279,7 +272,6 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( 'grunt-checkbranch' );
 	grunt.loadNpmTasks( 'grunt-wp-deploy' );
 	grunt.loadNpmTasks( 'grunt-shell' );
-	grunt.loadNpmTasks( 'grunt-checkrepo' );
 	grunt.loadNpmTasks( 'grunt-wp-i18n' );
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
 	grunt.loadNpmTasks( 'grunt-zip' );
@@ -289,19 +281,21 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'build-blocks', [ 'shell:webpack' ] );
 	grunt.registerTask( 'build-blocks:dev', [ 'shell:webpackDev' ] );
 
-	// grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'test', 'build-blocks', 'copy' ] );
-	grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'test', 'copy' ] );
-	// grunt.registerTask( 'build-unsafe', [ 'clean', 'build-blocks', 'copy' ] );
-	grunt.registerTask( 'build-unsafe', [ 'clean', 'copy' ] );
+	grunt.registerTask( 'build', [ 'less', 'cssmin', 'uglify' ] );
 
-	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'checkrepo', 'build', 'wp_deploy' ] );
+	// grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'test', 'build-blocks', 'copy' ] );
+	grunt.registerTask( 'build-package', [ 'gitinfo', 'clean', 'test', 'copy' ] );
+	// grunt.registerTask( 'build-unsafe', [ 'clean', 'build-blocks', 'copy' ] );
+	grunt.registerTask( 'build-package-unsafe', [ 'clean', 'copy' ] );
+
+	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'build', 'wp_deploy' ] );
 	grunt.registerTask( 'deploy-unsafe', [ 'build', 'wp_deploy' ] );
 
-	grunt.registerTask( 'package', [ 'build', 'zip' ] );
-	grunt.registerTask( 'package-unsafe', [ 'build-unsafe', 'zip' ] );
+	grunt.registerTask( 'package', [ 'build-package', 'zip' ] );
+	grunt.registerTask( 'package-unsafe', [ 'build-package-unsafe', 'zip' ] );
 
 	// Register tasks
-	grunt.registerTask( 'default', [ 'less', 'cssmin', 'uglify', 'wp_readme_to_markdown' ] );
+	grunt.registerTask( 'default', [ 'build-assets', 'wp_readme_to_markdown' ] );
 
 	// Just an alias for pot file generation
 	grunt.registerTask( 'pot', [ 'makepot' ] );

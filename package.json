@@ -7,12 +7,14 @@
 	"repository": "automattic/wp-job-manager",
 	"main": "Gruntfile.js",
 	"scripts": {
-		"build": "npm run lint && cross-env BABEL_ENV=default webpack --mode=production",
-		"clean": "rimraf build",
-		"dev": "npm run lint && cross-env BABEL_ENV=default webpack --mode=development --watch",
-		"lint": "eslint --ext js,jsx assets/blocks",
-		"test": "jest",
-		"reformat-files": "./node_modules/.bin/prettier --ignore-path .eslintignore --write \"**/*.{js,jsx,json,ts,tsx}\""
+		"build": "grunt build",
+		"build-watch": "grunt watch",
+		"build-js": "npm run lint && cross-env BABEL_ENV=default webpack --mode=production",
+		"clean-js": "rimraf build",
+		"build-watch-js": "npm run lint && cross-env BABEL_ENV=default webpack --mode=development --watch",
+		"lint-js": "eslint --ext js,jsx assets/blocks",
+		"test-js": "jest",
+		"reformat-files-js": "./node_modules/.bin/prettier --ignore-path .eslintignore --write \"**/*.{js,jsx,json,ts,tsx}\""
 	},
 	"devDependencies": {
 		"@wordpress/babel-preset-default": "^4.3.0",
@@ -36,21 +38,15 @@
 		"grunt-checkrepo": "^0.1.0",
 		"grunt-checktextdomain": "~1.0.0",
 		"grunt-contrib-clean": "^1.1.0",
-		"grunt-contrib-concat": "1.0.1",
 		"grunt-contrib-copy": "^1.0.0",
 		"grunt-contrib-cssmin": "~2.2.0",
 		"grunt-contrib-jshint": "~1.1.0",
 		"grunt-contrib-less": "^2.0.0",
-		"grunt-contrib-sass": "~1.0.0",
 		"grunt-contrib-uglify": "~3.0.0",
 		"grunt-contrib-watch": "^1.1.0",
-		"grunt-gitinfo": "^0.1.8",
-		"grunt-phpcs": "^0.4.0",
+		"grunt-gitinfo": "^0.1.9",
 		"grunt-phpunit": "^0.3.6",
-		"grunt-postcss": "^0.8.0",
-		"grunt-rtlcss": "2.0.1",
 		"grunt-shell": "^2.1.0",
-		"grunt-stylelint": "^0.11.0",
 		"grunt-wp-deploy": "^2.0.0",
 		"grunt-wp-i18n": "^1.0.3",
 		"grunt-wp-readme-to-markdown": "^2.0.0",
@@ -75,7 +71,7 @@
 	"dependencies": {
 		"babel-preset-stage-3": "^6.24.1",
 		"diff": "^4.0.1",
-		"lodash": "^4.17.11",
+		"lodash": "^4.17.15",
 		"react": "^16.8.6",
 		"select2": "^4.0.7"
 	}
