@@ -12,8 +12,8 @@ module.exports = function( grunt ) {
 			js: 'assets/js',
 			select2: 'assets/js/select2',
 			blocks: 'assets/blocks',
-			build: 'tmp/build',
-			svn: 'tmp/release-svn',
+			build: 'build/tmp-package',
+			svn: 'build/release-svn',
 		},
 
 		shell: {
@@ -106,6 +106,7 @@ module.exports = function( grunt ) {
 					'!.*',
 					'!**/*~',
 					'!tmp/**', //hidden/tmp files
+					'!build/**', //hidden/tmp files
 					'!*.code-workspace', // IDE files
 					'!docs/**',
 					'!CONTRIBUTING.md',
@@ -152,7 +153,7 @@ module.exports = function( grunt ) {
 			dist: {
 				options: {
 					potFilename: 'wp-job-manager.pot',
-					exclude: [ 'apigen/.*', 'tests/.*', 'tmp/.*', 'vendor/.*', 'node_modules/.*' ],
+					exclude: [ 'apigen/.*', 'tests/.*', 'tmp/.*', 'build/.*', 'vendor/.*', 'node_modules/.*' ],
 				},
 			},
 		},
@@ -186,6 +187,7 @@ module.exports = function( grunt ) {
 					'!tests/**', // Exclude tests/
 					'!vendor/**', // Exclude vendor/
 					'!tmp/**', // Exclude tmp/
+					'!build/**', // Exclude build/
 				],
 				expand: true,
 			},
@@ -217,7 +219,7 @@ module.exports = function( grunt ) {
 			main: {
 				cwd: '<%= dirs.build %>/',
 				src: [ '<%= dirs.build %>/**' ],
-				dest: 'tmp/wp-job-manager.zip',
+				dest: 'build/wp-job-manager.zip',
 				compression: 'DEFLATE',
 			},
 		},
@@ -233,7 +235,7 @@ module.exports = function( grunt ) {
 		},
 
 		clean: {
-			main: [ 'tmp/*.zip', 'lib/wpjm_rest', '<%= dirs.build %>' ], //Clean up build folder
+			main: [ 'build/*.zip', '<%= dirs.build %>' ], //Clean up build folder
 		},
 
 		jshint: {

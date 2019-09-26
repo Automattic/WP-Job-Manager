@@ -9,6 +9,7 @@
 	"scripts": {
 		"build": "grunt build",
 		"build-watch": "grunt watch",
+		"build-package": "grunt package",
 		"build-js": "npm run lint && cross-env BABEL_ENV=default webpack --mode=production",
 		"clean-js": "rimraf build",
 		"build-watch-js": "npm run lint && cross-env BABEL_ENV=default webpack --mode=development --watch",
