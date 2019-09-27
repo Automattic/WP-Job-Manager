@@ -34,14 +34,17 @@ jQuery( document ).ready( function( $ ) {
 	 * Get the session storage key for the job listings instance.
 	 */
 	function get_session_storage_key( $target ) {
-		var index          = $( 'div.job_listings' ).index( $target );
-		var unique_page_id = $target.data( 'post_id' );
+		var index   = $( 'div.job_listings' ).index( $target );
+		var pageUrl = window.location.href;
 
-		if ( typeof unique_page_id === 'undefined' || ! unique_page_id ) {
-			unique_page_id = window.location.href.replace( location.hash, '' );
+		if ( index < 0 && $($target.context).attr( 'action' ) ) {
+			pageUrl = $($target.context).attr( 'action' );
+			index   = 0;
 		}
 
-		return session_storage_prefix + unique_page_id + '_' + index;
+		pageUrl = pageUrl.replace( location.hash, '' );
+
+		return session_storage_prefix + pageUrl + '_' + index;
 	}
 
 	/**
@@ -110,7 +113,9 @@ jQuery( document ).ready( function( $ ) {
 	/**
 	 * Persist the state of the form.
 	 */
-	function persist_form( $target ) {
+	function persist_form( $form ) {
+		var $target = $form.closest( '.job_listings' );
+
 		if ( ! is_state_storage_enabled( $target ) || ! $target ) {
 			return false;
 		}
@@ -120,7 +125,6 @@ jQuery( document ).ready( function( $ ) {
 			return false;
 		}
 
-		var $form = $target.find( '.job_filters' );
 		state.form = $form.serialize();
 
 		return store_state( $target, state );
@@ -266,17 +270,9 @@ jQuery( document ).ready( function( $ ) {
 	// Preserve form when not refreshing page.
 	$(document).on( 'click', 'a', function() {
 		// We're moving away to another page. Let's make sure the form persist.
-		$( 'div.job_listings' ).each( function() {
+		$( '.job_filters' ).each( function() {
 			persist_form( $( this ) );
 		} );
-	} );
-
-	$(document).on( 'submit', 'form', function() {
-		// We're moving away from current page from another form. Let's make sure the form persist.
-		$( 'div.job_listings' ).each( function() {
-			persist_form( $( this ) );
-		} );
-
 	} );
 
 	var xhr = [];
@@ -490,8 +486,16 @@ jQuery( document ).ready( function( $ ) {
 
 			return false;
 		} )
-		.on( 'submit', function() {
-			return false;
+		.on( 'submit', function(event) {
+			var $listings = $( this ).closest( '.job_listings' );
+
+			persist_form( $( this ) );
+
+			if ( $listings.length > 0 ) {
+				return false
+			}
+
+			return true;
 		} );
 
 	$( document.body ).on( 'click', '.load_more_jobs', function() {
