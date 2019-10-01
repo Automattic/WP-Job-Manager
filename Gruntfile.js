@@ -283,12 +283,14 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'build-blocks', [ 'shell:webpack' ] );
 	grunt.registerTask( 'build-blocks:dev', [ 'shell:webpackDev' ] );
 
+	grunt.registerTask( 'pre-package', [ 'update-assets', 'wp_readme_to_markdown' ] );
+
 	grunt.registerTask( 'build', [ 'less', 'cssmin', 'uglify' ] );
 
-	// grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'test', 'build-blocks', 'copy' ] );
-	grunt.registerTask( 'build-package', [ 'gitinfo', 'clean', 'test', 'copy' ] );
-	// grunt.registerTask( 'build-unsafe', [ 'clean', 'build-blocks', 'copy' ] );
-	grunt.registerTask( 'build-package-unsafe', [ 'clean', 'copy' ] );
+	// grunt.registerTask( 'build', [ 'gitinfo', 'clean', 'test', 'build-blocks', 'copy:main' ] );
+	grunt.registerTask( 'build-package', [ 'gitinfo', 'clean', 'test', 'copy:main' ] );
+	// grunt.registerTask( 'build-unsafe', [ 'clean', 'build-blocks', 'copy:main' ] );
+	grunt.registerTask( 'build-package-unsafe', [ 'clean', 'copy:main' ] );
 
 	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'build', 'wp_deploy' ] );
 	grunt.registerTask( 'deploy-unsafe', [ 'build', 'wp_deploy' ] );
