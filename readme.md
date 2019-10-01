@@ -173,7 +173,7 @@ It then creates a database based on the parameters passed to it.
 * Dev: Allows custom calls to `get_job_listings()` to just get `ids` and `id=>parent`. (@manzoorwanijk)
 * Dev: Switched to short-array syntax across plugin. 
 * Dev: Updated `jquery-fileupload` library to 10.2.0.
-* Dev: Updated `select2` library to 4.0.7.
+* Dev: Updated `select2` library to 4.0.10.
 
 ### 1.33.5 ###
 * Fix: Issue where a JS error could occur when submitting a job.
