@@ -257,8 +257,8 @@ class WP_Job_Manager {
 	 * Registers select2 assets when needed.
 	 */
 	public static function register_select2_assets() {
-		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', [ 'jquery' ], '4.0.5', false );
-		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', [], '4.0.5' );
+		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', [ 'jquery' ], '4.0.10', false );
+		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', [], '4.0.10' );
 	}
 
 	/**
