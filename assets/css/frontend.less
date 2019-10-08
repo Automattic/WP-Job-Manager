@@ -644,6 +644,7 @@ div.job_listings {
 }
 
 #job-manager-job-dashboard {
+	max-width: 100vw;
 	.account-sign-in {
 		.button {
 			margin-right: .5em;
@@ -685,7 +686,8 @@ div.job_listings {
 			}
 		}
 		td, th {
-			padding: .5em 1em .5em 0;
+			padding: .5em;
+			min-width: 10vw;
 		}
 		.job_title small {
 			color: #999;
@@ -696,7 +698,7 @@ div.job_listings {
 				.jm-icon;
 			}
 		}
-		.filled, .expires, .applications {
+		.filled, .date, .expires, .applications {
 			text-align: center;
 		}
 	}
