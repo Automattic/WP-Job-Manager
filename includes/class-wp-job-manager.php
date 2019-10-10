@@ -86,6 +86,7 @@ class WP_Job_Manager {
 		add_action( 'widgets_init', [ $this, 'widgets_init' ] );
 		add_action( 'wp_loaded', [ $this, 'register_shared_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'frontend_scripts' ] );
+		add_action( 'wp_footer', [ $this, 'maybe_localize_jquery_ui_datepicker' ], 1 );
 		add_action( 'admin_init', [ $this, 'updater' ] );
 		add_action( 'admin_init', [ $this, 'add_privacy_policy_content' ] );
 		add_action( 'wp_logout', [ $this, 'cleanup_job_posting_cookies' ] );
@@ -251,6 +252,9 @@ class WP_Job_Manager {
 
 		$jquery_version = isset( $wp_scripts->registered['jquery-ui-core']->ver ) ? $wp_scripts->registered['jquery-ui-core']->ver : '1.9.2';
 		wp_register_style( 'jquery-ui', '//code.jquery.com/ui/' . $jquery_version . '/themes/smoothness/jquery-ui.min.css', [], $jquery_version );
+
+		// Register datepicker JS. It will be enqueued if needed when a date field is used.
+		wp_register_script( 'wp-job-manager-datepicker', JOB_MANAGER_PLUGIN_URL . '/assets/js/datepicker.min.js', [ 'jquery', 'jquery-ui-datepicker' ], JOB_MANAGER_VERSION, true );
 	}
 
 	/**
@@ -259,6 +263,21 @@ class WP_Job_Manager {
 	public static function register_select2_assets() {
 		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', [ 'jquery' ], '4.0.10', false );
 		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', [], '4.0.10' );
+	}
+
+	/**
+	 * WordPress localizes this script late in `wp_head`. We sometimes enqueue the datepicker later on.
+	 *
+	 * @access private
+	 * @since 1.34.1
+	 */
+	public function maybe_localize_jquery_ui_datepicker() {
+		// Check if this data has already been added. Prevents outputting localization data multiple times.
+		if ( wp_scripts()->get_data( 'jquery-ui-datepicker', 'after' ) ) {
+			return;
+		}
+
+		wp_localize_jquery_ui_datepicker();
 	}
 
 	/**
