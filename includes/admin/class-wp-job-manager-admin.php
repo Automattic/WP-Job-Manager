@@ -93,8 +93,8 @@ class WP_Job_Manager_Admin {
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'select2' );
 			wp_enqueue_style( 'job_manager_admin_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/admin.css', [], JOB_MANAGER_VERSION );
+			wp_enqueue_script( 'wp-job-manager-datepicker' );
 			wp_register_script( 'jquery-tiptip', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-tiptip/jquery.tipTip.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
-			wp_enqueue_script( 'job_manager_datepicker_js', JOB_MANAGER_PLUGIN_URL . '/assets/js/datepicker.min.js', [ 'jquery', 'jquery-ui-datepicker' ], JOB_MANAGER_VERSION, true );
 			wp_enqueue_script( 'job_manager_admin_js', JOB_MANAGER_PLUGIN_URL . '/assets/js/admin.min.js', [ 'jquery', 'jquery-tiptip', 'select2' ], JOB_MANAGER_VERSION, true );
 
 			wp_localize_script(
@@ -113,17 +113,6 @@ class WP_Job_Manager_Admin {
 					'search_users_nonce'     => wp_create_nonce( 'search-users' ),
 				]
 			);
-
-			if ( ! function_exists( 'wp_localize_jquery_ui_datepicker' ) || ! has_action( 'admin_enqueue_scripts', 'wp_localize_jquery_ui_datepicker' ) ) {
-				wp_localize_script(
-					'job_manager_datepicker_js',
-					'job_manager_datepicker',
-					[
-						/* translators: jQuery date format, see http://api.jqueryui.com/datepicker/#utility-formatDate */
-						'date_format' => _x( 'yy-mm-dd', 'Date format for jQuery datepicker.', 'wp-job-manager' ),
-					]
-				);
-			}
 		}
 
 		wp_enqueue_style( 'job_manager_admin_menu_css', JOB_MANAGER_PLUGIN_URL . '/assets/css/menu.css', [], JOB_MANAGER_VERSION );

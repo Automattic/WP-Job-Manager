@@ -465,32 +465,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected function enqueue_job_form_assets() {
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
 		wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', [], JOB_MANAGER_VERSION );
-
-		// Register datepicker JS. It will be enqueued if needed when a date.
-		// field is rendered.
-		wp_register_script( 'wp-job-manager-datepicker', JOB_MANAGER_PLUGIN_URL . '/assets/js/datepicker.min.js', [ 'jquery', 'jquery-ui-datepicker' ], JOB_MANAGER_VERSION, true );
-
-		// Localize scripts after the fields are rendered.
-		add_action( 'submit_job_form_end', [ $this, 'localize_job_form_scripts' ] );
 	}
 
 	/**
 	 * Localize frontend scripts that have been enqueued. This should be called
 	 * after the fields are rendered, in case some of them enqueue new scripts.
+	 *
+	 * @deprecated 1.34.1 No longer needed.
 	 */
 	public function localize_job_form_scripts() {
-		if ( function_exists( 'wp_localize_jquery_ui_datepicker' ) ) {
-			wp_localize_jquery_ui_datepicker();
-		} else {
-			wp_localize_script(
-				'wp-job-manager-datepicker',
-				'job_manager_datepicker',
-				[
-					/* translators: jQuery date format, see http://api.jqueryui.com/datepicker/#utility-formatDate */
-					'date_format' => _x( 'yy-mm-dd', 'Date format for jQuery datepicker.', 'wp-job-manager' ),
-				]
-			);
-		}
+		_deprecated_function( __METHOD__, '1.34.1' );
 	}
 
 	/**
