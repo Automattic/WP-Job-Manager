@@ -752,7 +752,19 @@ final class WP_Job_Manager_Email_Notifications {
 		if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $content, $headers ) ) {
 			return false;
 		}
-		return wp_mail( $args['to'], $args['subject'], $content, $headers, $args['attachments'] );
+
+		if ( ! is_array( $args['to'] ) ) {
+			$args['to'] = array_filter( array_map( 'sanitize_email', preg_split( '/[,|;]\s?/', $args['to'] ) ) );
+		}
+
+		$is_success = ! empty( $args['to'] );
+		foreach ( $args['to'] as $to_email ) {
+			if ( ! wp_mail( $to_email, $args['subject'], $content, $headers, $args['attachments'] ) ) {
+				$is_success = false;
+			}
+		}
+
+		return $is_success;
 	}
 
 	/**
