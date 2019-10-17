@@ -474,10 +474,14 @@ final class WP_Job_Manager_Email_Notifications {
 	/**
 	 * Checks if we should send emails using plain text.
 	 *
-	 * @param string $email_notification_key
+	 * @since 1.31.0
+	 * @since 1.34.1 Added arguments to allow for per-recipient customization.
+	 *
+	 * @param string $email_notification_key  Unique ID for this email notificsation.
+	 * @param array  $args                    Email arguments.
 	 * @return bool
 	 */
-	public static function send_as_plain_text( $email_notification_key ) {
+	public static function send_as_plain_text( $email_notification_key, $args = [] ) {
 		$settings = self::get_email_settings( $email_notification_key );
 
 		$send_as_plain_text = ! empty( $settings[ self::EMAIL_SETTING_PLAIN_TEXT ] );
@@ -487,10 +491,11 @@ final class WP_Job_Manager_Email_Notifications {
 		 *
 		 * @since 1.31.0
 		 *
-		 * @param bool   $send_as_plain_text
-		 * @param string $email_notification_key
+		 * @param bool   $send_as_plain_text      Whether to send this email as plain text.
+		 * @param string $email_notification_key  Unique ID for this email notificsation.
+		 * @param array  $args                    Email arguments.
 		 */
-		return apply_filters( 'job_manager_email_send_as_plain_text', $send_as_plain_text, $email_notification_key );
+		return apply_filters( 'job_manager_email_send_as_plain_text', $send_as_plain_text, $email_notification_key, $args );
 	}
 
 	/**
@@ -725,46 +730,58 @@ final class WP_Job_Manager_Email_Notifications {
 			$args[ $field ] = apply_filters( "job_manager_email_{$email_notification_key}_{$field}", $email->$method(), $email );
 		}
 
-		$headers = is_array( $args['headers'] ) ? $args['headers'] : [];
-
-		if ( ! empty( $args['from'] ) ) {
-			$headers[] = 'From: ' . $args['from'];
+		$args['headers'] = is_array( $args['headers'] ) ? $args['headers'] : [];
+		$send_to = $args['to'];
+		if ( ! is_array( $send_to ) ) {
+			$send_to = array_filter( array_map( 'sanitize_email', preg_split( '/[,|;]\s?/', $send_to ) ) );
 		}
 
-		if ( ! self::send_as_plain_text( $email_notification_key ) ) {
-			$headers[] = 'Content-Type: text/html';
-		}
+		$sent_count = 0;
+		foreach ( $send_to as $to_email ) {
+			$args['to'] = $to_email;
+			$content    = self::get_email_content( $email_notification_key, $args );
 
-		$content = self::get_email_content( $email_notification_key, $args );
+			/**
+			 * Filter all email arguments for job manager notifications.
+			 *
+			 * @since 1.34.1
+			 *
+			 * @param mixed                $email_field_value Value to be filtered.
+			 * @param WP_Job_Manager_Email $email             Email notification object.
+			 */
+			$args = apply_filters( "job_manager_email_{$email_notification_key}_args", $args, $email );
 
-		/**
-		 * Allows for short-circuiting the actual sending of email notifications.
-		 *
-		 * @since 1.31.0
-		 *
-		 * @param bool                  $do_send_notification   True if we should send the notification.
-		 * @param WP_Job_Manager_Email  $email                  Email notification object.
-		 * @param array                 $args                   Email arguments for generating email.
-		 * @param string                $content                Email content.
-		 * @param array                 $headers                Email headers.
-		 * @param
-		 */
-		if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $content, $headers ) ) {
-			return false;
-		}
+			$headers    = $args['headers'];
+			if ( ! empty( $args['from'] ) ) {
+				$headers[] = 'From: ' . $args['from'];
+			}
 
-		if ( ! is_array( $args['to'] ) ) {
-			$args['to'] = array_filter( array_map( 'sanitize_email', preg_split( '/[,|;]\s?/', $args['to'] ) ) );
-		}
+			if ( ! self::send_as_plain_text( $email_notification_key, $args ) ) {
+				$headers[] = 'Content-Type: text/html';
+			}
 
-		$is_success = ! empty( $args['to'] );
-		foreach ( $args['to'] as $to_email ) {
-			if ( ! wp_mail( $to_email, $args['subject'], $content, $headers, $args['attachments'] ) ) {
-				$is_success = false;
+			/**
+			 * Allows for short-circuiting the actual sending of email notifications.
+			 *
+			 * @since 1.31.0
+			 *
+			 * @param bool                  $do_send_notification   True if we should send the notification.
+			 * @param WP_Job_Manager_Email  $email                  Email notification object.
+			 * @param array                 $args                   Email arguments for generating email.
+			 * @param string                $content                Email content.
+			 * @param array                 $headers                Email headers.
+			 * @param
+			 */
+			if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $content, $headers ) ) {
+				continue;
+			}
+
+			if ( wp_mail( $to_email, $args['subject'], $content, $headers, $args['attachments'] ) ) {
+				$sent_count++;
 			}
 		}
 
-		return $is_success;
+		return $sent_count > 0;
 	}
 
 	/**
@@ -772,12 +789,12 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 *
-	 * @param string $email_notification_key
-	 * @param array  $args
+	 * @param string $email_notification_key Unique email notification key.
+	 * @param array  $args                   Arguments passed for generating email.
 	 * @return string
 	 */
 	private static function get_email_content( $email_notification_key, $args ) {
-		$plain_text = self::send_as_plain_text( $email_notification_key );
+		$plain_text = self::send_as_plain_text( $email_notification_key, $args );
 
 		ob_start();
 
