@@ -823,6 +823,17 @@ class WP_Job_Manager_Settings {
 		$enable_option['name']       = $option['name'] . '[' . $enable_option['name'] . ']';
 		$enable_option['type']       = 'checkbox';
 		$enable_option['attributes'] = [ 'class="sub-settings-expander"' ];
+
+		if ( isset( $enable_option['force_value'] ) && is_bool( $enable_option['force_value'] ) ) {
+			if ( true === $enable_option['force_value'] ) {
+				$enable_option['value'] = 1;
+			} elseif ( false === $enable_option['force_value'] ) {
+				$enable_option['value'] = 0;
+			}
+
+			$enable_option['attributes'][] = 'disabled="disabled"';
+		}
+
 		$this->input_checkbox( $enable_option, $enable_option['attributes'], $values[ $option['enable_field']['name'] ], null );
 
 		echo '<div class="sub-settings-expandable">';
