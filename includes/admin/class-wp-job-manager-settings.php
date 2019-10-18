@@ -516,9 +516,12 @@ class WP_Job_Manager_Settings {
 	 * @param string $ignored_placeholder
 	 */
 	protected function input_checkbox( $option, $attributes, $value, $ignored_placeholder ) {
+		if ( ! isset( $option['hidden_value'] ) ) {
+			$option['hidden_value'] = '0';
+		}
 		?>
 		<label>
-		<input type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="0" />
+		<input type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $option['hidden_value'] ); ?>" />
 		<input
 			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
@@ -826,11 +829,12 @@ class WP_Job_Manager_Settings {
 
 		if ( isset( $enable_option['force_value'] ) && is_bool( $enable_option['force_value'] ) ) {
 			if ( true === $enable_option['force_value'] ) {
-				$enable_option['value'] = 1;
+				$values[ $option['enable_field']['name'] ] = '1';
 			} elseif ( false === $enable_option['force_value'] ) {
-				$enable_option['value'] = 0;
+				$values[ $option['enable_field']['name'] ] = '0';
 			}
 
+			$enable_option['hidden_value'] = $values[ $option['enable_field']['name'] ];
 			$enable_option['attributes'][] = 'disabled="disabled"';
 		}
 
