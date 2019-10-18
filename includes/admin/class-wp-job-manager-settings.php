@@ -444,6 +444,13 @@ class WP_Job_Manager_Settings {
 			</form>
 		</div>
 		<script type="text/javascript">
+			jQuery('.nav-internal').click(function (e) {
+				e.preventDefault();
+				jQuery('.nav-tab-wrapper a[href="' + jQuery(this).attr('href') + '"]').click();
+
+				return false;
+			});
+
 			jQuery('.nav-tab-wrapper a').click(function() {
 				if ( '#' !== jQuery(this).attr( 'href' ).substr( 0, 1 ) ) {
 					return false;
