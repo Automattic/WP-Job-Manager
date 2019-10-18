@@ -416,7 +416,7 @@ final class WP_Job_Manager_Email_Notifications {
 		$email_settings      = [];
 
 		foreach ( $email_notifications as $email_notification_key => $email_class ) {
-			$email_notification_context = call_user_func( [ $email_class, 'get_context' ] );
+			$email_notification_context = $email_class::get_context();
 			if ( $context !== $email_notification_context ) {
 				continue;
 			}
@@ -424,11 +424,12 @@ final class WP_Job_Manager_Email_Notifications {
 			$email_settings[] = [
 				'type'         => 'multi_enable_expand',
 				'class'        => 'email-setting-row no-separator',
-				'name'         => self::EMAIL_SETTING_PREFIX . call_user_func( [ $email_class, 'get_key' ] ),
+				'name'         => self::EMAIL_SETTING_PREFIX . $email_class::get_key(),
 				'enable_field' => [
-					'name'     => self::EMAIL_SETTING_ENABLED,
-					'cb_label' => call_user_func( [ $email_class, 'get_name' ] ),
-					'desc'     => call_user_func( [ $email_class, 'get_description' ] ),
+					'name'        => self::EMAIL_SETTING_ENABLED,
+					'cb_label'    => $email_class::get_name(),
+					'desc'        => $email_class::get_description(),
+					'force_value' => $email_class::get_enabled_force_value(),
 				],
 				'label'        => false,
 				'std'          => self::get_email_setting_defaults( $email_notification_key ),
@@ -456,9 +457,15 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return bool
 	 */
 	public static function is_email_notification_enabled( $email_notification_key ) {
-		$settings = self::get_email_settings( $email_notification_key );
+		$settings    = self::get_email_settings( $email_notification_key );
+		$email_class = self::get_email_class( $email_notification_key );
 
+		$enabled_force_value           = $email_class ? $email_class::get_enabled_force_value() : null;
 		$is_email_notification_enabled = ! empty( $settings[ self::EMAIL_SETTING_ENABLED ] );
+
+		if ( is_bool( $enabled_force_value ) ) {
+			$is_email_notification_enabled = $enabled_force_value;
+		}
 
 		/**
 		 * Filter whether an notification email is enabled.
