@@ -78,8 +78,9 @@ class WP_Job_Manager_Ajax {
 		} elseif ( get_option( 'permalink_structure' ) ) {
 			$endpoint = trailingslashit( home_url( '/jm-ajax/' . $request . '/', 'relative' ) );
 		} else {
-			$endpoint = add_query_arg( 'jm-ajax', $request, trailingslashit( home_url( '', 'relative' ) ) );
+			$endpoint = add_query_arg( 'jm-ajax', $request, home_url( '/', 'relative' ) );
 		}
+
 		return esc_url_raw( $endpoint );
 	}
 
