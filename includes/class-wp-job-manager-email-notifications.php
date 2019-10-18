@@ -100,6 +100,39 @@ final class WP_Job_Manager_Email_Notifications {
 	}
 
 	/**
+	 * Send email notifications for a specific email now and return the status. Not usually necessary but useful if you
+	 * need to check to make sure a notification was sent.
+	 *
+	 * @param string $email_key Email key to send notifications for.
+	 * @return bool True if an email notification was sent.
+	 */
+	public static function send_notifications( $email_key ) {
+		$email_sent = false;
+		$email_notifications = self::get_email_notifications( true );
+		foreach ( self::$deferred_notifications as $index => $email ) {
+			if (
+				! is_string( $email[0] )
+				|| ! isset( $email_notifications[ $email[0] ] )
+				|| $email[0] !== $email_key
+			) {
+				continue;
+			}
+
+			$email_class            = $email_notifications[ $email[0] ];
+			$email_notification_key = $email[0];
+			$email_args             = is_array( $email[1] ) ? $email[1] : [];
+
+			if ( self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_notification_key ) ) ) ) {
+				$email_sent = true;
+			}
+
+			unset( self::$deferred_notifications[ $index ] );
+		}
+
+		return $email_sent;
+	}
+
+	/**
 	 * Initialize if necessary.
 	 */
 	public static function maybe_init() {
