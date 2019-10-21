@@ -13,6 +13,7 @@
 	<exclude-pattern>vendor/</exclude-pattern>
 	<exclude-pattern>tests/</exclude-pattern>
 	<exclude-pattern>tmp/</exclude-pattern>
+	<exclude-pattern>build/</exclude-pattern>
 
 	<!-- Temporarily exclude templates and lib for now -->
 	<exclude-pattern>templates/</exclude-pattern>
