@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class WP_Job_Manager_Cache_Helper {
+	const CACHE_PREFIX = 'jm_ ';
 
 	/**
 	 * Initializes cache hooks.
