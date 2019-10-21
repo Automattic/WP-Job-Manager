@@ -72,9 +72,14 @@ abstract class WP_Job_Manager_Listing_Query_Generator {
 	/**
 	 * Get the default arguments used to generate the query.
 	 *
+	 * @abstract
 	 * @return array
 	 */
-	abstract protected static function get_default_args();
+	protected static function get_default_args() {
+		_doing_it_wrong( __METHOD__, __( 'This method should be implemented in the class.', 'wp-job-manager' ), '1.35.0' );
+
+		return [];
+	}
 
 	/**
 	 * Run any tasks that need to be done right away.
