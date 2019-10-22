@@ -95,7 +95,7 @@ abstract class WP_Job_Manager_Listing_Query_Generator {
 	 */
 	protected function get_query_args() {
 		if ( null === $this->query_args ) {
-			$this->query_args = $this->build_query_args();
+			$this->query_args = $this->clean_query_args( $this->build_query_args() );
 		}
 
 		return $this->query_args;
@@ -238,6 +238,32 @@ abstract class WP_Job_Manager_Listing_Query_Generator {
 		}
 
 		return 'all';
+	}
+
+	/**
+	 * Clean generated query arguments.
+	 *
+	 * @param array $query_args Query arguments passed to `WP_Query`.
+	 * @return array
+	 */
+	protected function clean_query_args( $query_args ) {
+		// Cleanup.
+		$remove_empty = [ 'meta_query', 'tax_query' ];
+		$remove_null  = [ 'no_found_rows', 's' ];
+
+		foreach ( $remove_empty as $query_key ) {
+			if ( empty( $query_args[ $query_key ] ) ) {
+				unset( $query_args[ $query_key ] );
+			}
+		}
+
+		foreach ( $remove_null as $query_key ) {
+			if ( null === $query_args[ $query_key ] ) {
+				unset( $query_args[ $query_key ] );
+			}
+		}
+
+		return $query_args;
 	}
 
 	/**

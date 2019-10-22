@@ -75,22 +75,6 @@ class WP_Job_Manager_Query_Generator extends WP_Job_Manager_Listing_Query_Genera
 		 */
 		$query_args = apply_filters( 'job_manager_get_listings', $query_args, $args );
 
-		// Cleanup.
-		$remove_empty = [ 'meta_query', 'tax_query' ];
-		$remove_null  = [ 'no_found_rows', 's' ];
-
-		foreach ( $remove_empty as $query_key ) {
-			if ( empty( $query_args[ $query_key ] ) ) {
-				unset( $query_args[ $query_key ] );
-			}
-		}
-
-		foreach ( $remove_null as $query_key ) {
-			if ( null === $query_args[ $query_key ] ) {
-				unset( $query_args[ $query_key ] );
-			}
-		}
-
 		return $query_args;
 	}
 
