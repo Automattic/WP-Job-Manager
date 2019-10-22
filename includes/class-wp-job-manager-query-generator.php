@@ -61,8 +61,8 @@ class WP_Job_Manager_Query_Generator extends WP_Job_Manager_Listing_Query_Genera
 		// Job listing specific arguments.
 		$query_args['s']           = $this->parse_keyword();
 		$query_args['post_status'] = $this->parse_post_status();
-		$query_args['meta_query']  = $this->generate_meta_query();
-		$query_args['tax_query']   = $this->generate_tax_query();
+		$query_args['meta_query']  = $this->build_meta_query();
+		$query_args['tax_query']   = $this->build_tax_query();
 
 		/** This filter is documented in wp-job-manager.php */
 		$query_args['lang'] = apply_filters( 'wpjm_lang', null );
@@ -149,11 +149,11 @@ class WP_Job_Manager_Query_Generator extends WP_Job_Manager_Listing_Query_Genera
 	}
 
 	/**
-	 * Generates the meta query used by `WP_Query`.
+	 * Builds the meta query used by `WP_Query`.
 	 *
 	 * @return array
 	 */
-	private function generate_meta_query() {
+	private function build_meta_query() {
 		$args       = $this->get_args();
 		$meta_query = [];
 
@@ -190,11 +190,11 @@ class WP_Job_Manager_Query_Generator extends WP_Job_Manager_Listing_Query_Genera
 	}
 
 	/**
-	 * Generates the taxonomy query used by `WP_Query`.
+	 * Builds the taxonomy query used by `WP_Query`.
 	 *
 	 * @return array
 	 */
-	private function generate_tax_query() {
+	private function build_tax_query() {
 		$args      = $this->get_args();
 		$tax_query = [];
 
