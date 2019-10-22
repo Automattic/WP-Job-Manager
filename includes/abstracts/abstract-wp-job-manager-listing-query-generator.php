@@ -15,6 +15,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class WP_Job_Manager_Listing_Query_Generator {
 	/**
+	 * Query arguments used to create the `WP_Query` object.
+	 *
+	 * @var array
+	 */
+	private $query_args;
+
+	/**
 	 * Arguments used to generate the query. Set on instantiation.
 	 *
 	 * @var array
@@ -63,11 +70,11 @@ abstract class WP_Job_Manager_Listing_Query_Generator {
 	abstract protected function get_cache_key_salt();
 
 	/**
-	 * Get the query arguments used for `WP_Query`.
+	 * Builds the query arguments used for `WP_Query`.
 	 *
 	 * @return array
 	 */
-	abstract protected function get_query_args();
+	abstract protected function build_query_args();
 
 	/**
 	 * Get the default arguments used to generate the query.
@@ -79,6 +86,19 @@ abstract class WP_Job_Manager_Listing_Query_Generator {
 		_doing_it_wrong( __METHOD__, __( 'This method should be implemented in the class.', 'wp-job-manager' ), '1.35.0' );
 
 		return [];
+	}
+
+	/**
+	 * Get the query arguments used for `WP_Query`.
+	 *
+	 * @return array
+	 */
+	protected function get_query_args() {
+		if ( null === $this->query_args ) {
+			$this->query_args = $this->build_query_args();
+		}
+
+		return $this->query_args;
 	}
 
 	/**
