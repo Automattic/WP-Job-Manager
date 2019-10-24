@@ -61,6 +61,11 @@ a {
 	margin-bottom: 10px;
 }
 
+th.section-header {
+	vertical-align: middle;
+	font-weight: bold;
+}
+
 td.detail-label,
 td.detail-value {
 	vertical-align: middle;
