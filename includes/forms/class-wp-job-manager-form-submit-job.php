@@ -104,9 +104,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing,  WordPress.Security.NonceVerification.Recommended -- Check happens later when possible. Input is used safely.
 		// Get step/job.
 		if ( isset( $_POST['step'] ) ) {
-			$this->step = is_numeric( $_POST['step'] ) ? max( absint( $_POST['step'] ), 0 ) : array_search( intval( $_POST['step'] ), array_keys( $this->steps ), true );
+			$this->step = is_numeric( $_POST['step'] ) ? max( absint( $_POST['step'] ), 0 ) : array_search( sanitize_text_field( $_POST['step'] ), array_keys( $this->steps ), true );
 		} elseif ( ! empty( $_GET['step'] ) ) {
-			$this->step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( intval( $_GET['step'] ), array_keys( $this->steps ), true );
+			$this->step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( sanitize_text_field( $_GET['step'] ), array_keys( $this->steps ), true );
 		}
 
 		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
