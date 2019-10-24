@@ -868,6 +868,37 @@ class WP_Job_Manager_Post_Types {
 		return $data;
 	}
 
+
+	/**
+	 * Check if a job is editable.
+	 *
+	 * @since 1.34.1
+	 *
+	 * @param int  $job_id Job ID to check.
+	 * @return bool
+	 */
+	public static function job_is_editable( $job_id ) {
+		$job_is_editable = true;
+		$post_status     = get_post_status( $job_id );
+
+		if (
+			( 'publish' === $post_status && ! wpjm_user_can_edit_published_submissions() )
+			|| ( 'publish' !== $post_status && ! job_manager_user_can_edit_pending_submissions() )
+		) {
+			$job_is_editable = false;
+		}
+
+		/**
+		 * Allows filtering on whether a job can be edited after it has gone past the `preview` stage.
+		 *
+		 * @since 1.34.1
+		 *
+		 * @param bool $job_is_editable If the job is editable.
+		 * @param int  $job_id          Job ID to check.
+		 */
+		return apply_filters( 'job_manager_job_is_editable', $job_is_editable, $job_id );
+	}
+
 	/**
 	 * Returns the name of the job RSS feed.
 	 *
