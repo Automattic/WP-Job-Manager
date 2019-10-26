@@ -369,6 +369,13 @@ class WP_Job_Manager_Settings {
 							'desc'  => __( 'Select the page where you\'ve used the [jobs] shortcode. This lets the plugin know the location of the job listings page.', 'wp-job-manager' ),
 							'type'  => 'page',
 						],
+						[
+                            'name'  => 'job_manager_terms_page_id',
+                            'std'   => '',
+                            'label' => __('Terms & Condition Page', 'wp-job-manager'),
+                            'desc'  => __('Select the page where you\'ve placed Terms & Conditions for Job Submission. If this is set it will be shown on Job submission page', 'wp-job-manager'),
+                            'type'  => 'page',
+                        ],
 					],
 				],
 			]

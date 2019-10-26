@@ -69,7 +69,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
 
-		if ( $this->use_recaptcha_field() ) {
+        if ($this->use_terms_field()) {
+            add_action('submit_job_form_end', [ $this, 'display_terms_field' ]);
+            add_filter('submit_job_form_validate_fields', [ $this, 'validate_terms_field' ]);
+            add_filter('submit_draft_job_form_validate_fields', [ $this, 'validate_terms_field' ]);
+        }
+
+        if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
 			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
@@ -326,7 +332,59 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return false;
 		}
 		return 1 === absint( get_option( 'job_manager_enable_recaptcha_job_submission' ) );
-	}
+    }
+    
+    /**
+     * Use Terms & Condition field on the form?
+     *
+     * @return bool
+     */
+    public function use_terms_field()
+    {
+        return absint(get_option('job_manager_terms_page_id')) > 0? true : false ;
+    }
+    /**
+     * Display Terms & Condition field
+     */
+    public function display_terms_field()
+    {
+        $page_id = absint(get_option('job_manager_terms_page_id'));
+        
+        $field             = [];
+        $field['label']    = apply_filters('wpjm_terms_field_label', 'Terms & Condition');
+        $field['required'] = false;
+        $field['type']     = 'checkbox';
+        $field['description'] = apply_filters(
+            'wpjm_terms_field_description',
+            wp_sprintf('I Accept <a href=%s target="_blank">Terms & Conditions</a>', get_permalink($page_id)),
+            $page_id
+        );
+        
+        get_job_manager_template(
+            'form-fields/terms-field.php',
+            [
+                'key'   => 'terms',
+                'field' => $field,
+            ]
+        );
+    }
+    
+    /**
+     * Validation for Terms & Condition field
+     * @return bool | WP_Error
+     */
+    public function validate_terms_field($success)
+    {
+        if ($this->use_terms_field()) {
+            $error_message = apply_filters('wpjm_terms_warning', __('Please accept Terms & Condition to proceed further.', 'wp-job-manager'));
+
+            if (isset($_POST['terms']) == false || absint($_POST['terms']) !== 1) {
+                return new WP_Error('validation-error', $error_message);
+            }
+        }
+
+        return $success;
+    }
 
 	/**
 	 * Validates the posted fields.
