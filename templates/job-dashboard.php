@@ -63,6 +63,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 													if ( job_manager_get_permalink( 'submit_job_form' ) ) {
 														$actions['relist'] = [ 'label' => __( 'Relist', 'wp-job-manager' ), 'nonce' => true ];
 													}
+													$actions['duplicate'] = [ 'label' => __('Duplicate', 'wp-job-manager'), 'nonce' => true ];
 													break;
 												case 'pending_payment' :
 												case 'pending' :
