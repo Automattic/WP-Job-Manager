@@ -868,7 +868,6 @@ class WP_Job_Manager_Post_Types {
 		return $data;
 	}
 
-
 	/**
 	 * Check if a job is editable.
 	 *
