@@ -43,6 +43,11 @@ class WP_Job_Manager_Email_Valid extends WP_Job_Manager_Email {
 	 * @return string|array
 	 */
 	public function get_to() {
+		$args = $this->get_args();
+		if ( isset( $args['to'] ) ) {
+			return $args['to'];
+		}
+
 		return 'to@example.com';
 	}
 

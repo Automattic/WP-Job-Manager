@@ -121,6 +121,52 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Test multiple recipients separated by comma.
+	 *
+	 * @covers WP_Job_Manager_Email_Notifications::send_deferred_notifications()
+	 * @covers WP_Job_Manager_Email_Notifications::send_email()
+	 */
+	public function test_send_deferred_notifications_multiple_recipients_comma() {
+		$mailer = tests_retrieve_phpmailer_instance();
+		$this->assertFalse( $mailer->get_sent() );
+		add_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+		do_action( 'job_manager_send_notification', 'valid_email', [ 'test' => 'test', 'to' => 'testa@example.com, testb@example.com' ] );
+		WP_Job_Manager_Email_Notifications::send_deferred_notifications();
+		remove_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+
+		$this->assertNotFalse( $mailer->get_sent( 0 ) );
+		$this->assertNotFalse( $mailer->get_sent( 1 ) );
+		$this->assertFalse( $mailer->get_sent( 2 ) );
+
+		$this->assertEquals( 'testa@example.com', $mailer->get_recipient( 'to', 0 )->address );
+		$this->assertEquals( 'testb@example.com', $mailer->get_recipient( 'to', 1 )->address );
+	}
+
+	/**
+	 * Test multiple recipients separated by semicolon.
+	 *
+	 * @covers WP_Job_Manager_Email_Notifications::send_deferred_notifications()
+	 * @covers WP_Job_Manager_Email_Notifications::send_email()
+	 */
+	public function test_send_deferred_notifications_multiple_recipients_semicolon() {
+		$mailer = tests_retrieve_phpmailer_instance();
+		$this->assertFalse( $mailer->get_sent() );
+		add_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+		do_action( 'job_manager_send_notification', 'valid_email', [ 'test' => 'test', 'to' => 'testa@example.com; testb@example.com; testc@example.com' ] );
+		WP_Job_Manager_Email_Notifications::send_deferred_notifications();
+		remove_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+
+		$this->assertNotFalse( $mailer->get_sent( 0 ) );
+		$this->assertNotFalse( $mailer->get_sent( 1 ) );
+		$this->assertNotFalse( $mailer->get_sent( 2 ) );
+		$this->assertFalse( $mailer->get_sent( 3 ) );
+
+		$this->assertEquals( 'testa@example.com', $mailer->get_recipient( 'to', 0 )->address );
+		$this->assertEquals( 'testb@example.com', $mailer->get_recipient( 'to', 1 )->address );
+		$this->assertEquals( 'testc@example.com', $mailer->get_recipient( 'to', 2 )->address );
+	}
+
+	/**
 	 * @covers WP_Job_Manager_Email_Notifications::send_deferred_notifications()
 	 */
 	public function test_send_deferred_notifications_unknown_email() {
