@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.32.0
+ * @version     1.34.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -48,7 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 											switch ( $job->post_status ) {
 												case 'publish' :
-													if ( wpjm_user_can_edit_published_submissions() ) {
+													if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
 														$actions[ 'edit' ] = [ 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false ];
 													}
 													if ( is_position_filled( $job ) ) {
@@ -66,7 +66,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 													break;
 												case 'pending_payment' :
 												case 'pending' :
-													if ( job_manager_user_can_edit_pending_submissions() ) {
+													if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
 														$actions['edit'] = [ 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false ];
 													}
 												break;

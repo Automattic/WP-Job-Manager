@@ -73,11 +73,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		}
 
 		if ( ! empty( $this->job_id ) ) {
-			$post_status = get_post_status( $this->job_id );
-			if (
-				( 'publish' === $post_status && ! wpjm_user_can_edit_published_submissions() )
-				|| ( 'publish' !== $post_status && ! job_manager_user_can_edit_pending_submissions() )
-			) {
+			if ( ! WP_Job_Manager_Post_Types::job_is_editable( $this->job_id ) ) {
 				$this->job_id = 0;
 			}
 		}
