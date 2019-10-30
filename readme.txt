@@ -156,7 +156,7 @@ It then creates a database based on the parameters passed to it.
 = 1.34.1 =
 * Templates Updated: `job-submitted.php`, `job-dashboard.php`.
 * Enhancement: Email notifications are sent separately if multiple recipients are listed.
-* Enhancement: Notices at end of job submission process are now displayed as a styled notice.
+* Enhancement: Notices at end of job submission process are now displayed as a styled notice. (@DaveParkerRKD)
 * Fix: Resuming job listing submission at a particular step is now fixed.
 * Fix: Issue with some permalink structures and WPMU would cause issues on `[jobs]` page.
 * Dev: Adds the ability to block some jobs from being edited in the frontend.
