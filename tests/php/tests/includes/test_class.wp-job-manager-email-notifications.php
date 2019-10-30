@@ -1,5 +1,6 @@
 <?php
 require_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-valid.php';
+require_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-valid-secondary.php';
 require_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class-wp-job-manager-email-invalid.php';
 
 /**
@@ -194,6 +195,107 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @covers WP_Job_Manager_Email_Notifications::send_notifications()
+	 * @covers WP_Job_Manager_Email_Notifications::send_email()
+	 */
+	public function test_send_notifications_valid_key() {
+		$mailer = tests_retrieve_phpmailer_instance();
+
+		// Enqueue valid email.
+		add_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+		do_action( 'job_manager_send_notification', 'valid_email', [ 'test' => 'test' ] );
+
+		$email_sent = WP_Job_Manager_Email_Notifications::send_notifications( 'valid_email' );
+		remove_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+
+		$this->assertTrue( $email_sent, 'An email should have been sent' );
+		$sent_email = $mailer->get_sent();
+		$this->assertNotFalse( $sent_email );
+
+		// No emails should be deferred.
+		$this->assertEmpty( WP_Job_Manager_Email_Notifications::get_deferred_notification_hashes(), 'No emails should still be enqueued' );
+	}
+
+	/**
+	 * Tests to make sure that only the requested emails are sent immediately.
+	 *
+	 * @covers WP_Job_Manager_Email_Notifications::send_notifications()
+	 * @covers WP_Job_Manager_Email_Notifications::send_email()
+	 */
+	public function test_send_notifications_non_queued_key() {
+		$mailer = tests_retrieve_phpmailer_instance();
+
+		// Enqueue valid email.
+		add_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+		add_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_secondary_valid_email' ] );
+		do_action( 'job_manager_send_notification', 'valid_secondary_email', [ 'test' => 'test' ] );
+
+		$email_sent = WP_Job_Manager_Email_Notifications::send_notifications( 'valid_email' );
+		remove_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+		remove_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_secondary_valid_email' ] );
+
+		$this->assertFalse( $email_sent, 'An email should NOT have been sent' );
+		$sent_email = $mailer->get_sent();
+		$this->assertFalse( $sent_email );
+
+		// One email should still be deferred.
+		$this->assertCount( 1, WP_Job_Manager_Email_Notifications::get_deferred_notification_hashes(), 'One email should still be enqueued' );
+	}
+
+	/**
+	 * Tests to make sure that emails are only sent the first time if no new emails were enqueued.
+	 *
+	 * @covers WP_Job_Manager_Email_Notifications::send_notifications()
+	 * @covers WP_Job_Manager_Email_Notifications::send_email()
+	 */
+	public function test_send_notifications_double_enqueued() {
+		$mailer = tests_retrieve_phpmailer_instance();
+
+		// Enqueue valid email.
+		add_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+		do_action( 'job_manager_send_notification', 'valid_email', [ 'test' => 'test' ] );
+
+		$email_sent = WP_Job_Manager_Email_Notifications::send_notifications( 'valid_email' );
+		$email_sent_twice = WP_Job_Manager_Email_Notifications::send_notifications( 'valid_email' );
+		remove_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+
+		$this->assertTrue( $email_sent, 'An email should have been sent' );
+		$this->assertFalse( $email_sent_twice, 'An email should NOT have been sent the second time this was called' );
+
+		$sent_email = $mailer->get_sent();
+		$this->assertNotFalse( $sent_email );
+
+		// No email should be deferred.
+		$this->assertCount( 0, WP_Job_Manager_Email_Notifications::get_deferred_notification_hashes(), 'No email should be enqueued' );
+	}
+
+
+	/**
+	 * Tests to make sure that invalid emails are not sent.
+	 *
+	 * @covers WP_Job_Manager_Email_Notifications::send_notifications()
+	 * @covers WP_Job_Manager_Email_Notifications::send_email()
+	 */
+	public function test_send_notifications_invalid_args() {
+		$mailer = tests_retrieve_phpmailer_instance();
+
+		// Enqueue valid email.
+		add_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+		do_action( 'job_manager_send_notification', 'valid_email', [ 'invalid' => 'test' ] );
+
+		$email_sent = WP_Job_Manager_Email_Notifications::send_notifications( 'valid_email' );
+		remove_filter( 'job_manager_email_notifications', [ $this, 'inject_email_config_valid_email' ] );
+
+		$this->assertFalse( $email_sent, 'An email should NOT have been sent' );
+
+		$sent_email = $mailer->get_sent();
+		$this->assertFalse( $sent_email );
+
+		// No email should be deferred.
+		$this->assertCount( 0, WP_Job_Manager_Email_Notifications::get_deferred_notification_hashes(), 'No email should be enqueued' );
+	}
+
+	/**
 	 * @covers WP_Job_Manager_Email_Notifications::get_email_notifications()
 	 * @covers WP_Job_Manager_Email_Notifications::is_email_notification_valid()
 	 */
@@ -366,6 +468,11 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 
 	public function inject_email_config_valid_email( $emails ) {
 		$emails[] = 'WP_Job_Manager_Email_Valid';
+		return $emails;
+	}
+
+	public function inject_email_config_secondary_valid_email( $emails ) {
+		$emails[] = 'WP_Job_Manager_Email_Valid_Secondary';
 		return $emails;
 	}
 
