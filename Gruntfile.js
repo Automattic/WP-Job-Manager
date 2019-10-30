@@ -299,7 +299,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'package-unsafe', [ 'build-package-unsafe', 'zip' ] );
 
 	// Register tasks
-	grunt.registerTask( 'default', [ 'build-assets', 'wp_readme_to_markdown' ] );
+	grunt.registerTask( 'default', [ 'build', 'wp_readme_to_markdown' ] );
 
 	// Just an alias for pot file generation
 	grunt.registerTask( 'pot', [ 'makepot' ] );
