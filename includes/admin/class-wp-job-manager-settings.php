@@ -830,7 +830,7 @@ class WP_Job_Manager_Settings {
 		if ( isset( $enable_option['force_value'] ) && is_bool( $enable_option['force_value'] ) ) {
 			if ( true === $enable_option['force_value'] ) {
 				$values[ $option['enable_field']['name'] ] = '1';
-			} elseif ( false === $enable_option['force_value'] ) {
+			} else {
 				$values[ $option['enable_field']['name'] ] = '0';
 			}
 
