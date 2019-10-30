@@ -477,7 +477,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @since 1.31.0
 	 * @since 1.34.1 Added arguments to allow for per-recipient customization.
 	 *
-	 * @param string $email_notification_key  Unique ID for this email notificsation.
+	 * @param string $email_notification_key  Unique ID for this email notification.
 	 * @param array  $args                    Email arguments.
 	 * @return bool
 	 */
@@ -492,7 +492,7 @@ final class WP_Job_Manager_Email_Notifications {
 		 * @since 1.31.0
 		 *
 		 * @param bool   $send_as_plain_text      Whether to send this email as plain text.
-		 * @param string $email_notification_key  Unique ID for this email notificsation.
+		 * @param string $email_notification_key  Unique ID for this email notification.
 		 * @param array  $args                    Email arguments.
 		 */
 		return apply_filters( 'job_manager_email_send_as_plain_text', $send_as_plain_text, $email_notification_key, $args );
