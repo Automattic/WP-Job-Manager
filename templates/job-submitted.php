@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.31.1
+ * @version     1.34.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,21 +19,21 @@ global $wp_post_types;
 
 switch ( $job->post_status ) :
 	case 'publish' :
-		echo wp_kses_post(
+		echo '<div class="job-manager-message">' . wp_kses_post(
 			sprintf(
 				__( '%s listed successfully. To view your listing <a href="%s">click here</a>.', 'wp-job-manager' ),
 				esc_html( $wp_post_types['job_listing']->labels->singular_name ),
 				get_permalink( $job->ID )
 			)
-		);
+		) . '</div>';
 	break;
 	case 'pending' :
-		echo wp_kses_post(
+		echo '<div class="job-manager-message">' . wp_kses_post(
 			sprintf(
 				esc_html__( '%s submitted successfully. Your listing will be visible once approved.', 'wp-job-manager' ),
 				esc_html( $wp_post_types['job_listing']->labels->singular_name )
 			)
-		);
+		) . '</div>';
 	break;
 	default :
 		do_action( 'job_manager_job_submitted_content_' . str_replace( '-', '_', sanitize_title( $job->post_status ) ), $job );
