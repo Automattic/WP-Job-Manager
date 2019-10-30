@@ -107,7 +107,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return bool True if an email notification was sent.
 	 */
 	public static function send_notifications( $email_key ) {
-		$email_sent = false;
+		$email_sent          = false;
 		$email_notifications = self::get_email_notifications( true );
 		foreach ( self::$deferred_notifications as $index => $email ) {
 			if (
