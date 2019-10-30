@@ -516,9 +516,12 @@ class WP_Job_Manager_Settings {
 	 * @param string $ignored_placeholder
 	 */
 	protected function input_checkbox( $option, $attributes, $value, $ignored_placeholder ) {
+		if ( ! isset( $option['hidden_value'] ) ) {
+			$option['hidden_value'] = '0';
+		}
 		?>
 		<label>
-		<input type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="0" />
+		<input type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $option['hidden_value'] ); ?>" />
 		<input
 			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
@@ -823,6 +826,18 @@ class WP_Job_Manager_Settings {
 		$enable_option['name']       = $option['name'] . '[' . $enable_option['name'] . ']';
 		$enable_option['type']       = 'checkbox';
 		$enable_option['attributes'] = [ 'class="sub-settings-expander"' ];
+
+		if ( isset( $enable_option['force_value'] ) && is_bool( $enable_option['force_value'] ) ) {
+			if ( true === $enable_option['force_value'] ) {
+				$values[ $option['enable_field']['name'] ] = '1';
+			} else {
+				$values[ $option['enable_field']['name'] ] = '0';
+			}
+
+			$enable_option['hidden_value'] = $values[ $option['enable_field']['name'] ];
+			$enable_option['attributes'][] = 'disabled="disabled"';
+		}
+
 		$this->input_checkbox( $enable_option, $enable_option['attributes'], $values[ $option['enable_field']['name'] ], null );
 
 		echo '<div class="sub-settings-expandable">';

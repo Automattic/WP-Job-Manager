@@ -210,6 +210,15 @@ abstract class WP_Job_Manager_Email {
 	}
 
 	/**
+	 * Force the email notification to be enabled or disabled.
+	 *
+	 * @return bool|null True to force enabled; False to force disabled; Null to not force a value.
+	 */
+	public static function get_enabled_force_value() {
+		return null;
+	}
+
+	/**
 	 * Returns the args that the email notification was sent with.
 	 *
 	 * @return array
