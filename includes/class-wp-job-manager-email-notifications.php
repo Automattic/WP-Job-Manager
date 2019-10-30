@@ -118,11 +118,10 @@ final class WP_Job_Manager_Email_Notifications {
 				continue;
 			}
 
-			$email_class            = $email_notifications[ $email[0] ];
-			$email_notification_key = $email[0];
-			$email_args             = is_array( $email[1] ) ? $email[1] : [];
+			$email_class = $email_notifications[ $email[0] ];
+			$email_args  = is_array( $email[1] ) ? $email[1] : [];
 
-			if ( self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_notification_key ) ) ) ) {
+			if ( self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_key ) ) ) ) {
 				$email_sent = true;
 			}
 
