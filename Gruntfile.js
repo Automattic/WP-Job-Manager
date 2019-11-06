@@ -292,8 +292,8 @@ module.exports = function( grunt ) {
 	// grunt.registerTask( 'build-unsafe', [ 'clean', 'build-blocks', 'copy:main' ] );
 	grunt.registerTask( 'build-package-unsafe', [ 'clean', 'copy:main' ] );
 
-	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'build', 'wp_deploy' ] );
-	grunt.registerTask( 'deploy-unsafe', [ 'build', 'wp_deploy' ] );
+	grunt.registerTask( 'deploy', [ 'checkbranch:master', 'build-package', 'wp_deploy' ] );
+	grunt.registerTask( 'deploy-unsafe', [ 'build-package', 'wp_deploy' ] );
 
 	grunt.registerTask( 'package', [ 'build-package', 'zip' ] );
 	grunt.registerTask( 'package-unsafe', [ 'build-package-unsafe', 'zip' ] );
