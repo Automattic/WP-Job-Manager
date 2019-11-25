@@ -92,11 +92,9 @@ jQuery(function($) {
 					this.validation_errors.push( data.result.data );
 				}
 
-				var self = this;
-
 				$.each(data.result.files, function(index, file) {
 					if ( file.error ) {
-						self.validation_errors.push( file.error );
+						this.validation_errors.push( file.error );
 					} else {
 						var html;
 						if ( $.inArray( file.extension, image_types ) >= 0 ) {
