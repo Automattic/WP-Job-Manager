@@ -809,7 +809,6 @@ final class WP_Job_Manager_Email_Notifications {
 			 * @param array                 $args                   Email arguments for generating email.
 			 * @param string                $content                Email content.
 			 * @param array                 $headers                Email headers.
-			 * @param
 			 */
 			if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $content, $headers ) ) {
 				continue;
