@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<ul>
 		<li class="icon-review"><a href="https://wordpress.org/support/view/plugin-reviews/wp-job-manager#postform"><?php esc_html_e( 'Leave a positive review', 'wp-job-manager' ); ?></a></li>
 		<li class="icon-localization"><a href="https://translate.wordpress.org/projects/wp-plugins/wp-job-manager"><?php esc_html_e( 'Contribute a localization', 'wp-job-manager' ); ?></a></li>
-		<li class="icon-code"><a href="https://github.com/mikejolley/WP-Job-Manager"><?php esc_html_e( 'Contribute code or report a bug', 'wp-job-manager' ); ?></a></li>
+		<li class="icon-code"><a href="https://github.com/Automattic/WP-Job-Manager/"><?php esc_html_e( 'Contribute code or report a bug', 'wp-job-manager' ); ?></a></li>
 		<li class="icon-forum"><a href="https://wordpress.org/support/plugin/wp-job-manager"><?php esc_html_e( 'Help other users on the forums', 'wp-job-manager' ); ?></a></li>
 	</ul>
 </div>
