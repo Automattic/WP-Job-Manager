@@ -873,7 +873,7 @@ class WP_Job_Manager_Post_Types {
 	 *
 	 * @since 1.34.1
 	 *
-	 * @param int  $job_id Job ID to check.
+	 * @param int $job_id Job ID to check.
 	 * @return bool
 	 */
 	public static function job_is_editable( $job_id ) {

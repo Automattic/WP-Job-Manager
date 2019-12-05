@@ -770,7 +770,7 @@ final class WP_Job_Manager_Email_Notifications {
 		}
 
 		$args['headers'] = is_array( $args['headers'] ) ? $args['headers'] : [];
-		$send_to = $args['to'];
+		$send_to         = $args['to'];
 		if ( ! is_array( $send_to ) ) {
 			$send_to = array_filter( array_map( 'sanitize_email', preg_split( '/[,|;]\s?/', $send_to ) ) );
 		}
@@ -790,7 +790,7 @@ final class WP_Job_Manager_Email_Notifications {
 			 */
 			$args = apply_filters( "job_manager_email_{$email_notification_key}_args", $args, $email );
 
-			$headers    = $args['headers'];
+			$headers = $args['headers'];
 			if ( ! empty( $args['from'] ) ) {
 				$headers[] = 'From: ' . $args['from'];
 			}
