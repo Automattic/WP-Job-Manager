@@ -172,6 +172,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return bool
 	 */
 	protected function is_forced_application_default_field() {
+		/**
+		 * Force application field to skip email / URL validations and sanitizer
+		 *
+		 * @since 1.34.1
+		 *
+		 * @param bool  $is_forced Whether the application field is forced to default.
+		 */
 		return apply_filters( 'job_manager_application_force_default_field', false );
 	}
 
