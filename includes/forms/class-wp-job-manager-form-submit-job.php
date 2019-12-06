@@ -167,6 +167,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Checks if it is forced application default field
+	 *
+	 * @return bool
+	 */
+	protected function is_forced_application_default_field() {
+		return apply_filters( 'job_manager_application_force_default_field', false );
+	}
+
+	/**
 	 * Initializes the fields used in the form.
 	 */
 	public function init_fields() {
@@ -191,6 +200,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$application_method_placeholder = __( 'Enter an email address or website URL', 'wp-job-manager' );
 				$application_method_sanitizer   = 'url_or_email';
 				break;
+		}
+
+		if ( $this->is_forced_application_default_field() ) {
+			$application_method_sanitizer = null;
 		}
 
 		if ( job_manager_multi_job_type() ) {
