@@ -20,6 +20,7 @@ $editor = apply_filters( 'submit_job_form_wp_editor_args', [
 	'media_buttons' => false,
 	'textarea_rows' => 8,
 	'quicktags'     => false,
+	'editor_css'		=> '<style> .mce-top-part button { background-color: rgba(0,0,0,0.0) !important; } </style>',
 	'tinymce'       => [
 		'plugins'                       => 'lists,paste,tabfocus,wplink,wordpress',
 		'paste_as_text'                 => true,
