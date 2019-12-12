@@ -167,22 +167,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Checks if it is forced application default field
-	 *
-	 * @return bool
-	 */
-	protected function is_forced_application_default_field() {
-		/**
-		 * Force application field to skip email / URL validations and sanitizer
-		 *
-		 * @since 1.x.x
-		 *
-		 * @param bool  $is_forced Whether the application field is forced to default.
-		 */
-		return apply_filters( 'job_manager_application_force_default_field', false );
-	}
-
-	/**
 	 * Initializes the fields used in the form.
 	 */
 	public function init_fields() {
@@ -207,10 +191,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$application_method_placeholder = __( 'Enter an email address or website URL', 'wp-job-manager' );
 				$application_method_sanitizer   = 'url_or_email';
 				break;
-		}
-
-		if ( $this->is_forced_application_default_field() ) {
-			$application_method_sanitizer = null;
 		}
 
 		if ( job_manager_multi_job_type() ) {
@@ -349,6 +329,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Checks if application field should use standard validation
+	 *
+	 * @return bool
+	 */
+	protected function should_application_field_use_standard_validation() {
+		/**
+		 * Force application field to use standard validation (skip email and URL validations)
+		 *
+		 * @since 1.x.x
+		 *
+		 * @param bool  $is_forced Whether the application field is forced to use standard validation.
+		 */
+		return apply_filters( 'job_manager_application_field_use_standard_validation', false );
+	}
+
+	/**
 	 * Validates the posted fields.
 	 *
 	 * @param array $values
@@ -435,7 +431,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		// Application method.
-		if ( ! $this->is_forced_application_default_field() && isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
+		if ( ! $this->should_application_field_use_standard_validation() && isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
 			$allowed_application_method   = get_option( 'job_manager_allowed_application_method', '' );
 			$values['job']['application'] = str_replace( ' ', '+', $values['job']['application'] );
 			switch ( $allowed_application_method ) {
