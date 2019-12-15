@@ -259,7 +259,7 @@ class WP_Job_Manager_Post_Types {
 							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ), $singular ),
 						],
-						'show_ui'              => true,
+						'show_ui'              => false,
 						'show_tagcloud'        => false,
 						'public'               => $public,
 						'capabilities'         => [
