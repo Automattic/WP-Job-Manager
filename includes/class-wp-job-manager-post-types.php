@@ -87,6 +87,7 @@ class WP_Job_Manager_Post_Types {
 		// Bulk edit.
 		add_action( 'bulk_edit_custom_box', [ $this, 'add_custom_meta_box_field' ], 10, 2 );
 		add_action( 'admin_print_scripts-edit.php', [ $this, 'enqueue_bulk_edit_js_file' ] );
+		add_action( 'wp_ajax_bulk_edit_save_job_listing_action', [ $this, 'bulk_edit_action_function' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -1657,5 +1658,19 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function enqueue_bulk_edit_js_file() {
 		wp_enqueue_script( 'job-listings-bulk-edit', JOB_MANAGER_PLUGIN_URL . '/assets/js/bulk-edit-job-listing-type.js', [ 'jquery', 'inline-edit-post' ], '1.0', true );
+	}
+
+	/**
+	 * Adds action for bulk edit (for job listing type)
+	 */
+	public function bulk_edit_action_function() {
+		$post_ids = ( isset( $_POST['post_ids'] ) && ! empty( $_POST['post_ids'] ) ) ? $_POST['post_ids'] : null;
+		if ( ! empty( $post_ids ) && is_array( $post_ids ) ) {
+			if ( isset( $_POST['job_type'] ) && ! empty( $_POST['job_type'] ) ) {
+				foreach ( $post_ids as $post_id ) {
+					wp_set_object_terms( $post_id, $_POST['job_type'], 'job_listing_type' );
+				}
+			}
+		}
 	}
 }
