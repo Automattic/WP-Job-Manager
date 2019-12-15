@@ -86,6 +86,7 @@ class WP_Job_Manager_Post_Types {
 
 		// Bulk edit.
 		add_action( 'bulk_edit_custom_box', [ $this, 'add_custom_meta_box_field' ], 10, 2 );
+		add_action( 'admin_print_scripts-edit.php', [ $this, 'enqueue_bulk_edit_js_file' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -1649,5 +1650,12 @@ class WP_Job_Manager_Post_Types {
 				}
 				break;
 		}
+	}
+
+	/**
+	 * Enqueues js file for bulk edit functionality (for job type)
+	 */
+	public function enqueue_bulk_edit_js_file() {
+		wp_enqueue_script( 'job-listings-bulk-edit', JOB_MANAGER_PLUGIN_URL . '/assets/js/bulk-edit-job-listing-type.js', [ 'jquery', 'inline-edit-post' ], '1.0', true );
 	}
 }
