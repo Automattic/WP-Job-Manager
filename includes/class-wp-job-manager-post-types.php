@@ -84,6 +84,9 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
 
+		// Bulk edit.
+		add_action( 'bulk_edit_custom_box', [ $this, 'add_custom_meta_box_field' ], 10, 2 );
+
 		// Single job content.
 		$this->job_content_filter( true );
 	}
@@ -148,8 +151,8 @@ class WP_Job_Manager_Post_Types {
 		$permalink_structure = self::get_permalink_structure();
 
 		/**
-		 * Taxonomies
-		 */
+		* Taxonomies
+		*/
 		if ( get_option( 'job_manager_enable_categories' ) ) {
 			$singular = __( 'Job category', 'wp-job-manager' );
 			$plural   = __( 'Job categories', 'wp-job-manager' );
@@ -291,131 +294,131 @@ class WP_Job_Manager_Post_Types {
 			}
 		}
 
-		/**
-		 * Post types
-		 */
-		$singular = __( 'Job', 'wp-job-manager' );
-		$plural   = __( 'Jobs', 'wp-job-manager' );
+				/**
+				* Post types
+				*/
+				$singular = __( 'Job', 'wp-job-manager' );
+				$plural   = __( 'Jobs', 'wp-job-manager' );
 
-		/**
-		 * Set whether to add archive page support when registering the job listing post type.
-		 *
-		 * @since 1.30.0
-		 *
-		 * @param bool $enable_job_archive_page
-		 */
+				/**
+				* Set whether to add archive page support when registering the job listing post type.
+				*
+				* @since 1.30.0
+				*
+				* @param bool $enable_job_archive_page
+				*/
 		if ( apply_filters( 'job_manager_enable_job_archive_page', current_theme_supports( 'job-manager-templates' ) ) ) {
 			$has_archive = $permalink_structure['jobs_archive_rewrite_slug'];
 		} else {
 			$has_archive = false;
 		}
 
-		$rewrite = [
-			'slug'       => $permalink_structure['job_rewrite_slug'],
-			'with_front' => false,
-			'feeds'      => true,
-			'pages'      => false,
-		];
+				$rewrite = [
+					'slug'       => $permalink_structure['job_rewrite_slug'],
+					'with_front' => false,
+					'feeds'      => true,
+					'pages'      => false,
+				];
 
-		register_post_type(
-			'job_listing',
-			apply_filters(
-				'register_post_type_job_listing',
-				[
-					'labels'                => [
-						'name'                  => $plural,
-						'singular_name'         => $singular,
-						'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
-						// translators: Placeholder %s is the plural label of the job listing post type.
-						'all_items'             => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
-						'add_new'               => __( 'Add New', 'wp-job-manager' ),
-						// translators: Placeholder %s is the singular label of the job listing post type.
-						'add_new_item'          => sprintf( __( 'Add %s', 'wp-job-manager' ), $singular ),
-						'edit'                  => __( 'Edit', 'wp-job-manager' ),
-						// translators: Placeholder %s is the singular label of the job listing post type.
-						'edit_item'             => sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
-						// translators: Placeholder %s is the singular label of the job listing post type.
-						'new_item'              => sprintf( __( 'New %s', 'wp-job-manager' ), $singular ),
-						// translators: Placeholder %s is the singular label of the job listing post type.
-						'view'                  => sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
-						// translators: Placeholder %s is the singular label of the job listing post type.
-						'view_item'             => sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
-						// translators: Placeholder %s is the singular label of the job listing post type.
-						'search_items'          => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
-						// translators: Placeholder %s is the singular label of the job listing post type.
-						'not_found'             => sprintf( __( 'No %s found', 'wp-job-manager' ), $plural ),
-						// translators: Placeholder %s is the plural label of the job listing post type.
-						'not_found_in_trash'    => sprintf( __( 'No %s found in trash', 'wp-job-manager' ), $plural ),
-						// translators: Placeholder %s is the singular label of the job listing post type.
-						'parent'                => sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
-						'featured_image'        => __( 'Company Logo', 'wp-job-manager' ),
-						'set_featured_image'    => __( 'Set company logo', 'wp-job-manager' ),
-						'remove_featured_image' => __( 'Remove company logo', 'wp-job-manager' ),
-						'use_featured_image'    => __( 'Use as company logo', 'wp-job-manager' ),
-					],
-					// translators: Placeholder %s is the plural label of the job listing post type.
-					'description'           => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
-					'public'                => true,
-					'show_ui'               => true,
-					'capability_type'       => 'job_listing',
-					'map_meta_cap'          => true,
-					'publicly_queryable'    => true,
-					'exclude_from_search'   => false,
-					'hierarchical'          => false,
-					'rewrite'               => $rewrite,
-					'query_var'             => true,
-					'supports'              => [ 'title', 'editor', 'custom-fields', 'publicize', 'thumbnail', 'author' ],
-					'has_archive'           => $has_archive,
-					'show_in_nav_menus'     => false,
-					'delete_with_user'      => true,
-					'show_in_rest'          => true,
-					'rest_base'             => 'job-listings',
-					'rest_controller_class' => 'WP_REST_Posts_Controller',
-					'template'              => [ [ 'core/freeform' ] ],
-					'template_lock'         => 'all',
-					'menu_position'         => 30,
-				]
-			)
-		);
+				register_post_type(
+					'job_listing',
+					apply_filters(
+						'register_post_type_job_listing',
+						[
+							'labels'                => [
+								'name'                  => $plural,
+								'singular_name'         => $singular,
+								'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
+								// translators: Placeholder %s is the plural label of the job listing post type.
+								'all_items'             => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
+								'add_new'               => __( 'Add New', 'wp-job-manager' ),
+								// translators: Placeholder %s is the singular label of the job listing post type.
+								'add_new_item'          => sprintf( __( 'Add %s', 'wp-job-manager' ), $singular ),
+								'edit'                  => __( 'Edit', 'wp-job-manager' ),
+								// translators: Placeholder %s is the singular label of the job listing post type.
+								'edit_item'             => sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+								// translators: Placeholder %s is the singular label of the job listing post type.
+								'new_item'              => sprintf( __( 'New %s', 'wp-job-manager' ), $singular ),
+								// translators: Placeholder %s is the singular label of the job listing post type.
+								'view'                  => sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
+								// translators: Placeholder %s is the singular label of the job listing post type.
+								'view_item'             => sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
+								// translators: Placeholder %s is the singular label of the job listing post type.
+								'search_items'          => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+								// translators: Placeholder %s is the singular label of the job listing post type.
+								'not_found'             => sprintf( __( 'No %s found', 'wp-job-manager' ), $plural ),
+								// translators: Placeholder %s is the plural label of the job listing post type.
+								'not_found_in_trash'    => sprintf( __( 'No %s found in trash', 'wp-job-manager' ), $plural ),
+								// translators: Placeholder %s is the singular label of the job listing post type.
+								'parent'                => sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
+								'featured_image'        => __( 'Company Logo', 'wp-job-manager' ),
+								'set_featured_image'    => __( 'Set company logo', 'wp-job-manager' ),
+								'remove_featured_image' => __( 'Remove company logo', 'wp-job-manager' ),
+								'use_featured_image'    => __( 'Use as company logo', 'wp-job-manager' ),
+							],
+							// translators: Placeholder %s is the plural label of the job listing post type.
+							'description'           => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
+							'public'                => true,
+							'show_ui'               => true,
+							'capability_type'       => 'job_listing',
+							'map_meta_cap'          => true,
+							'publicly_queryable'    => true,
+							'exclude_from_search'   => false,
+							'hierarchical'          => false,
+							'rewrite'               => $rewrite,
+							'query_var'             => true,
+							'supports'              => [ 'title', 'editor', 'custom-fields', 'publicize', 'thumbnail', 'author' ],
+							'has_archive'           => $has_archive,
+							'show_in_nav_menus'     => false,
+							'delete_with_user'      => true,
+							'show_in_rest'          => true,
+							'rest_base'             => 'job-listings',
+							'rest_controller_class' => 'WP_REST_Posts_Controller',
+							'template'              => [ [ 'core/freeform' ] ],
+							'template_lock'         => 'all',
+							'menu_position'         => 30,
+						]
+					)
+				);
 
-		/**
-		 * Feeds
-		 */
-		add_feed( self::get_job_feed_name(), [ $this, 'job_feed' ] );
+					/**
+					* Feeds
+					*/
+					add_feed( self::get_job_feed_name(), [ $this, 'job_feed' ] );
 
-		/**
-		 * Post status
-		 */
-		register_post_status(
-			'expired',
-			[
-				'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
-				'public'                    => true,
-				'protected'                 => true,
-				'exclude_from_search'       => true,
-				'show_in_admin_all_list'    => true,
-				'show_in_admin_status_list' => true,
-				// translators: Placeholder %s is the number of expired posts of this type.
-				'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'wp-job-manager' ),
-			]
-		);
-		register_post_status(
-			'preview',
-			[
-				'label'                     => _x( 'Preview', 'post status', 'wp-job-manager' ),
-				'public'                    => false,
-				'exclude_from_search'       => true,
-				'show_in_admin_all_list'    => false,
-				'show_in_admin_status_list' => true,
-				// translators: Placeholder %s is the number of posts in a preview state.
-				'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
-			]
-		);
+					/**
+					* Post status
+					*/
+					register_post_status(
+						'expired',
+						[
+							'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
+							'public'                    => true,
+							'protected'                 => true,
+							'exclude_from_search'       => true,
+							'show_in_admin_all_list'    => true,
+							'show_in_admin_status_list' => true,
+							// translators: Placeholder %s is the number of expired posts of this type.
+							'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'wp-job-manager' ),
+						]
+					);
+					register_post_status(
+						'preview',
+						[
+							'label'                     => _x( 'Preview', 'post status', 'wp-job-manager' ),
+							'public'                    => false,
+							'exclude_from_search'       => true,
+							'show_in_admin_all_list'    => false,
+							'show_in_admin_status_list' => true,
+							// translators: Placeholder %s is the number of posts in a preview state.
+							'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
+						]
+					);
 	}
 
-	/**
-	 * Change label for admin menu item to show number of Job Listing items pending approval.
-	 */
+				/**
+				 * Change label for admin menu item to show number of Job Listing items pending approval.
+				 */
 	public function admin_head() {
 		global $menu;
 
@@ -439,30 +442,30 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Filter the post content of job listings.
-	 *
-	 * @since 1.33.0
-	 * @param string $post_content Post content to filter.
-	 */
+				/**
+				 * Filter the post content of job listings.
+				 *
+				 * @since 1.33.0
+				 * @param string $post_content Post content to filter.
+				 */
 	public static function output_kses_post( $post_content ) {
 		echo wp_kses( $post_content, self::kses_allowed_html() );
 	}
 
-	/**
-	 * Returns the expanded set of tags allowed in job listing content.
-	 *
-	 * @since 1.33.0
-	 * @return string
-	 */
+				/**
+				 * Returns the expanded set of tags allowed in job listing content.
+				 *
+				 * @since 1.33.0
+				 * @return string
+				 */
 	private static function kses_allowed_html() {
 		/**
-		 * Change the allowed tags in job listing content.
-		 *
-		 * @since 1.33.0
-		 *
-		 * @param array $allowed_html Tags allowed in job listing posts.
-		 */
+		* Change the allowed tags in job listing content.
+		*
+		* @since 1.33.0
+		*
+		* @param array $allowed_html Tags allowed in job listing posts.
+		*/
 		return apply_filters(
 			'job_manager_kses_allowed_html',
 			array_replace_recursive( // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.array_replace_recursiveFound
@@ -485,13 +488,13 @@ class WP_Job_Manager_Post_Types {
 		);
 	}
 
-	/**
-	 * Sanitize job type meta box input data from WP admin.
-	 *
-	 * @param WP_Taxonomy $taxonomy  Taxonomy being sterilized.
-	 * @param mixed       $input     Raw term data from the 'tax_input' field.
-	 * @return int[]|int
-	 */
+					/**
+					 * Sanitize job type meta box input data from WP admin.
+					 *
+					 * @param WP_Taxonomy $taxonomy  Taxonomy being sterilized.
+					 * @param mixed       $input     Raw term data from the 'tax_input' field.
+					 * @return int[]|int
+					 */
 	public function sanitize_job_type_meta_box_input( $taxonomy, $input ) {
 		if ( is_array( $input ) ) {
 			return array_map( 'intval', $input );
@@ -499,11 +502,11 @@ class WP_Job_Manager_Post_Types {
 		return intval( $input );
 	}
 
-	/**
-	 * Toggles content filter on and off.
-	 *
-	 * @param bool $enable
-	 */
+					/**
+					 * Toggles content filter on and off.
+					 *
+					 * @param bool $enable
+					 */
 	private function job_content_filter( $enable ) {
 		if ( ! $enable ) {
 			remove_filter( 'the_content', [ $this, 'job_content' ] );
@@ -512,12 +515,12 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Adds extra content before/after the post for single job listings.
-	 *
-	 * @param string $content
-	 * @return string
-	 */
+					/**
+					 * Adds extra content before/after the post for single job listings.
+					 *
+					 * @param string $content
+					 * @return string
+					 */
 	public function job_content( $content ) {
 		global $post;
 
@@ -540,9 +543,9 @@ class WP_Job_Manager_Post_Types {
 		return apply_filters( 'job_manager_single_job_content', ob_get_clean(), $post );
 	}
 
-	/**
-	 * Generates the RSS feed for Job Listings.
-	 */
+					/**
+					 * Generates the RSS feed for Job Listings.
+					 */
 	public function job_feed() {
 		global $job_manager_keyword;
 
@@ -619,11 +622,11 @@ class WP_Job_Manager_Post_Types {
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search' );
 	}
 
-	/**
-	 * Adds query arguments in order to make sure that the feed properly queries the 'job_listing' type.
-	 *
-	 * @param WP_Query $wp
-	 */
+					/**
+					 * Adds query arguments in order to make sure that the feed properly queries the 'job_listing' type.
+					 *
+					 * @param WP_Query $wp
+					 */
 	public function add_feed_query_args( $wp ) {
 
 		// Let's leave if not the job feed.
@@ -644,16 +647,16 @@ class WP_Job_Manager_Post_Types {
 		$wp->query_vars['post_type'] = 'job_listing';
 	}
 
-	/**
-	 * Adds a custom namespace to the job feed.
-	 */
+					/**
+					 * Adds a custom namespace to the job feed.
+					 */
 	public function job_feed_namespace() {
 		echo 'xmlns:job_listing="' . esc_url( site_url() ) . '"' . "\n";
 	}
 
-	/**
-	 * Adds custom data to the job feed.
-	 */
+					/**
+					 * Adds custom data to the job feed.
+					 */
 	public function job_feed_item() {
 		$post_id   = get_the_ID();
 		$location  = get_the_job_location( $post_id );
@@ -672,16 +675,16 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		/**
-		 * Fires at the end of each job RSS feed item.
-		 *
-		 * @param int $post_id The post ID of the job.
-		 */
+		* Fires at the end of each job RSS feed item.
+		*
+		* @param int $post_id The post ID of the job.
+		*/
 		do_action( 'job_feed_item', $post_id );
 	}
 
-	/**
-	 * Maintenance task to expire jobs.
-	 */
+					/**
+					 * Maintenance task to expire jobs.
+					 */
 	public function check_for_expired_jobs() {
 		// Change status to expired.
 		$job_ids = get_posts(
@@ -718,20 +721,20 @@ class WP_Job_Manager_Post_Types {
 		// Delete old expired jobs.
 
 		/**
-		 * Set whether or not we should delete expired jobs after a certain amount of time.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param bool $delete_expired_jobs Whether we should delete expired jobs after a certain amount of time. Defaults to false.
-		 */
+		* Set whether or not we should delete expired jobs after a certain amount of time.
+		*
+		* @since 1.0.0
+		*
+		* @param bool $delete_expired_jobs Whether we should delete expired jobs after a certain amount of time. Defaults to false.
+		*/
 		if ( apply_filters( 'job_manager_delete_expired_jobs', false ) ) {
 			/**
-			 * Days to preserve expired job listings before deleting them.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param int $delete_expired_jobs_days Number of days to preserve expired job listings before deleting them.
-			 */
+			* Days to preserve expired job listings before deleting them.
+			*
+			* @since 1.0.0
+			*
+			* @param int $delete_expired_jobs_days Number of days to preserve expired job listings before deleting them.
+			*/
 			$delete_expired_jobs_days = apply_filters( 'job_manager_delete_expired_jobs_days', 30 );
 
 			$job_ids = get_posts(
@@ -757,9 +760,9 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Deletes old previewed jobs after 30 days to keep the DB clean.
-	 */
+					/**
+					 * Deletes old previewed jobs after 30 days to keep the DB clean.
+					 */
 	public function delete_old_previews() {
 		// Delete old jobs stuck in preview.
 		$job_ids = get_posts(
@@ -784,23 +787,23 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Typo wrapper for `set_expiry` method.
-	 *
-	 * @param WP_Post $post
-	 * @since 1.0.0
-	 * @deprecated 1.0.1
-	 */
+					/**
+					 * Typo wrapper for `set_expiry` method.
+					 *
+					 * @param WP_Post $post
+					 * @since 1.0.0
+					 * @deprecated 1.0.1
+					 */
 	public function set_expirey( $post ) {
 		_deprecated_function( __METHOD__, '1.0.1', 'WP_Job_Manager_Post_Types::set_expiry' );
 		$this->set_expiry( $post );
 	}
 
-	/**
-	 * Sets expiry date when job status changes.
-	 *
-	 * @param WP_Post $post
-	 */
+					/**
+					 * Sets expiry date when job status changes.
+					 *
+					 * @param WP_Post $post
+					 */
 	public function set_expiry( $post ) {
 		if ( 'job_listing' !== $post->post_type ) {
 			return;
@@ -832,50 +835,50 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Displays the application content when the application method is an email.
-	 *
-	 * @param stdClass $apply
-	 */
+					/**
+					 * Displays the application content when the application method is an email.
+					 *
+					 * @param stdClass $apply
+					 */
 	public function application_details_email( $apply ) {
 		get_job_manager_template( 'job-application-email.php', [ 'apply' => $apply ] );
 	}
 
-	/**
-	 * Displays the application content when the application method is a url.
-	 *
-	 * @param stdClass $apply
-	 */
+					/**
+					 * Displays the application content when the application method is a url.
+					 *
+					 * @param stdClass $apply
+					 */
 	public function application_details_url( $apply ) {
 		get_job_manager_template( 'job-application-url.php', [ 'apply' => $apply ] );
 	}
 
-	/**
-	 * Fixes post name when wp_update_post changes it.
-	 *
-	 * @param array $data
-	 * @param array $postarr
-	 * @return array
-	 */
+					/**
+					 * Fixes post name when wp_update_post changes it.
+					 *
+					 * @param array $data
+					 * @param array $postarr
+					 * @return array
+					 */
 	public function fix_post_name( $data, $postarr ) {
 		if ( 'job_listing' === $data['post_type']
-			&& 'pending' === $data['post_status']
-			&& ! current_user_can( 'publish_posts' )
-			&& isset( $postarr['post_name'] )
+		&& 'pending' === $data['post_status']
+		&& ! current_user_can( 'publish_posts' )
+		&& isset( $postarr['post_name'] )
 		) {
 			$data['post_name'] = $postarr['post_name'];
 		}
 		return $data;
 	}
 
-	/**
-	 * Check if a job is editable.
-	 *
-	 * @since 1.34.1
-	 *
-	 * @param int $job_id Job ID to check.
-	 * @return bool
-	 */
+				/**
+				 * Check if a job is editable.
+				 *
+				 * @since 1.34.1
+				 *
+				 * @param int $job_id Job ID to check.
+				 * @return bool
+				 */
 	public static function job_is_editable( $job_id ) {
 		$job_is_editable = true;
 		$post_status     = get_post_status( $job_id );
@@ -888,45 +891,45 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		/**
-		 * Allows filtering on whether a job can be edited after it has gone past the `preview` stage.
-		 *
-		 * @since 1.34.1
-		 *
-		 * @param bool $job_is_editable If the job is editable.
-		 * @param int  $job_id          Job ID to check.
-		 */
+		* Allows filtering on whether a job can be edited after it has gone past the `preview` stage.
+		*
+		* @since 1.34.1
+		*
+		* @param bool $job_is_editable If the job is editable.
+		* @param int  $job_id          Job ID to check.
+		*/
 		return apply_filters( 'job_manager_job_is_editable', $job_is_editable, $job_id );
 	}
 
-	/**
-	 * Returns the name of the job RSS feed.
-	 *
-	 * @return string
-	 */
+				/**
+				 * Returns the name of the job RSS feed.
+				 *
+				 * @return string
+				 */
 	public static function get_job_feed_name() {
 		/**
-		 * Change the name of the job feed.
-		 *
-		 * NOTE: When you override this, you must re-save permalink settings to clear the rewrite cache.
-		 *
-		 * @since 1.32.0
-		 *
-		 * @param string $job_feed_name Slug used for the job feed.
-		 */
+		* Change the name of the job feed.
+		*
+		* NOTE: When you override this, you must re-save permalink settings to clear the rewrite cache.
+		*
+		* @since 1.32.0
+		*
+		* @param string $job_feed_name Slug used for the job feed.
+		*/
 		return apply_filters( 'job_manager_job_feed_name', 'job_feed' );
 	}
 
-	/**
-	 * Get the permalink settings directly from the option.
-	 *
-	 * @return array Permalink settings option.
-	 */
+				/**
+				 * Get the permalink settings directly from the option.
+				 *
+				 * @return array Permalink settings option.
+				 */
 	public static function get_raw_permalink_settings() {
 		/**
-		 * Option `wpjm_permalinks` was renamed to match other options in 1.32.0.
-		 *
-		 * Reference to the old option and support for non-standard plugin updates will be removed in 1.34.0.
-		 */
+		* Option `wpjm_permalinks` was renamed to match other options in 1.32.0.
+		*
+		* Reference to the old option and support for non-standard plugin updates will be removed in 1.34.0.
+		*/
 		$legacy_permalink_settings = '[]';
 		if ( false !== get_option( 'wpjm_permalinks', false ) ) {
 			$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalinks', [] ) );
@@ -936,13 +939,13 @@ class WP_Job_Manager_Post_Types {
 		return (array) json_decode( get_option( self::PERMALINK_OPTION_NAME, $legacy_permalink_settings ), true );
 	}
 
-	/**
-	 * Retrieves permalink settings.
-	 *
-	 * @see https://github.com/woocommerce/woocommerce/blob/3.0.8/includes/wc-core-functions.php#L1573
-	 * @since 1.28.0
-	 * @return array
-	 */
+				/**
+				 * Retrieves permalink settings.
+				 *
+				 * @see https://github.com/woocommerce/woocommerce/blob/3.0.8/includes/wc-core-functions.php#L1573
+				 * @since 1.28.0
+				 * @return array
+				 */
 	public static function get_permalink_structure() {
 		// Switch to the site's default locale, bypassing the active user's locale.
 		if ( function_exists( 'switch_to_locale' ) && did_action( 'admin_init' ) ) {
@@ -985,13 +988,13 @@ class WP_Job_Manager_Post_Types {
 		return $permalinks;
 	}
 
-	/**
-	 * Generates location data if a post is added.
-	 *
-	 * @param int    $object_id
-	 * @param string $meta_key
-	 * @param mixed  $meta_value
-	 */
+				/**
+				 * Generates location data if a post is added.
+				 *
+				 * @param int    $object_id
+				 * @param string $meta_key
+				 * @param mixed  $meta_value
+				 */
 	public function maybe_add_geolocation_data( $object_id, $meta_key, $meta_value ) {
 		if ( '_job_location' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
 			return;
@@ -999,14 +1002,14 @@ class WP_Job_Manager_Post_Types {
 		do_action( 'job_manager_job_location_edited', $object_id, $meta_value );
 	}
 
-	/**
-	 * Triggered when updating meta on a job listing.
-	 *
-	 * @param int    $meta_id
-	 * @param int    $object_id
-	 * @param string $meta_key
-	 * @param mixed  $meta_value
-	 */
+				/**
+				 * Triggered when updating meta on a job listing.
+				 *
+				 * @param int    $meta_id
+				 * @param int    $object_id
+				 * @param string $meta_key
+				 * @param mixed  $meta_value
+				 */
 	public function update_post_meta( $meta_id, $object_id, $meta_key, $meta_value ) {
 		if ( 'job_listing' !== get_post_type( $object_id ) ) {
 			return;
@@ -1022,26 +1025,26 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Generates location data if a post is updated.
-	 *
-	 * @param int    $meta_id (Unused).
-	 * @param int    $object_id
-	 * @param string $meta_key (Unused).
-	 * @param mixed  $meta_value
-	 */
+				/**
+				 * Generates location data if a post is updated.
+				 *
+				 * @param int    $meta_id (Unused).
+				 * @param int    $object_id
+				 * @param string $meta_key (Unused).
+				 * @param mixed  $meta_value
+				 */
 	public function maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
 		do_action( 'job_manager_job_location_edited', $object_id, $meta_value );
 	}
 
-	/**
-	 * Maybe sets menu_order if the featured status of a job is changed.
-	 *
-	 * @param int    $meta_id (Unused).
-	 * @param int    $object_id
-	 * @param string $meta_key (Unused).
-	 * @param mixed  $meta_value
-	 */
+				/**
+				 * Maybe sets menu_order if the featured status of a job is changed.
+				 *
+				 * @param int    $meta_id (Unused).
+				 * @param int    $object_id
+				 * @param string $meta_key (Unused).
+				 * @param mixed  $meta_value
+				 */
 	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {
 		global $wpdb;
 
@@ -1067,26 +1070,26 @@ class WP_Job_Manager_Post_Types {
 		clean_post_cache( $object_id );
 	}
 
-	/**
-	 * Legacy.
-	 *
-	 * @param int    $meta_id
-	 * @param int    $object_id
-	 * @param string $meta_key
-	 * @param mixed  $meta_value
-	 * @deprecated 1.19.1
-	 */
+				/**
+				 * Legacy.
+				 *
+				 * @param int    $meta_id
+				 * @param int    $object_id
+				 * @param string $meta_key
+				 * @param mixed  $meta_value
+				 * @deprecated 1.19.1
+				 */
 	public function maybe_generate_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value ) {
 		_deprecated_function( __METHOD__, '1.19.1', 'WP_Job_Manager_Post_Types::maybe_update_geolocation_data' );
 		$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value );
 	}
 
-	/**
-	 * Maybe sets default meta data for job listings.
-	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
-	 */
+				/**
+				 * Maybe sets default meta data for job listings.
+				 *
+				 * @param int     $post_id Post ID.
+				 * @param WP_Post $post    Post object.
+				 */
 	public function maybe_add_default_meta_data( $post_id, $post ) {
 		if ( empty( $post ) || 'job_listing' === $post->post_type ) {
 			add_post_meta( $post_id, '_filled', 0, true );
@@ -1094,13 +1097,13 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Track job submission from the backend.
-	 *
-	 * @param string  $new_status  New post status.
-	 * @param string  $old_status  Old status.
-	 * @param WP_Post $post        Post object.
-	 */
+				/**
+				 * Track job submission from the backend.
+				 *
+				 * @param string  $new_status  New post status.
+				 * @param string  $old_status  Old status.
+				 * @param WP_Post $post        Post object.
+				 */
 	public function track_job_submission( $new_status, $old_status, $post ) {
 		if ( empty( $post ) || 'job_listing' !== get_post_type( $post ) ) {
 			return;
@@ -1138,9 +1141,9 @@ class WP_Job_Manager_Post_Types {
 		);
 	}
 
-	/**
-	 * Add noindex for expired and filled job listings.
-	 */
+				/**
+				 * Add noindex for expired and filled job listings.
+				 */
 	public function noindex_expired_filled_job_listings() {
 		if ( ! is_single() ) {
 			return;
@@ -1158,9 +1161,9 @@ class WP_Job_Manager_Post_Types {
 		wp_no_robots();
 	}
 
-	/**
-	 * Add structured data to the footer of job listing pages.
-	 */
+				/**
+				 * Add structured data to the footer of job listing pages.
+				 */
 	public function output_structured_data() {
 		if ( ! is_single() ) {
 			return;
@@ -1177,12 +1180,12 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Sanitize and verify employment type.
-	 *
-	 * @param string $employment_type
-	 * @return string
-	 */
+				/**
+				 * Sanitize and verify employment type.
+				 *
+				 * @param string $employment_type
+				 * @return string
+				 */
 	public function sanitize_employment_type( $employment_type ) {
 		$employment_types = wpjm_job_listing_employment_type_options();
 		if ( ! isset( $employment_types[ $employment_type ] ) ) {
@@ -1191,9 +1194,9 @@ class WP_Job_Manager_Post_Types {
 		return $employment_type;
 	}
 
-	/**
-	 * Registers job listing meta fields.
-	 */
+				/**
+				 * Registers job listing meta fields.
+				 */
 	public function register_meta_fields() {
 		$fields = self::get_job_listing_fields();
 
@@ -1214,11 +1217,11 @@ class WP_Job_Manager_Post_Types {
 		}
 	}
 
-	/**
-	 * Returns configuration for custom fields on Job Listing posts.
-	 *
-	 * @return array See `job_manager_job_listing_data_fields` filter for more documentation.
-	 */
+				/**
+				 * Returns configuration for custom fields on Job Listing posts.
+				 *
+				 * @return array See `job_manager_job_listing_data_fields` filter for more documentation.
+				 */
 	public static function get_job_listing_fields() {
 		$default_field = [
 			'label'              => null,
@@ -1345,88 +1348,88 @@ class WP_Job_Manager_Post_Types {
 		];
 
 		/**
-		 * Filters job listing data fields.
-		 *
-		 * For the REST API, do not pass fields you don't want to be visible to the current visitor when `show_in_rest`
-		 * is `true`. To add values and other data when generating the WP admin form, use filter
-		 * `job_manager_job_listing_wp_admin_fields` which should have `$post_id` in context.
-		 *
-		 * @since 1.0.0
-		 * @since 1.27.0 $post_id was added.
-		 * @since 1.33.0 Used both in WP admin and REST API. Removed `$post_id` attribute. Added fields for REST API.
-		 *
-		 * @param array    $fields  {
-		 *     Job listing meta fields for REST API and WP admin. Associative array with meta key as the index.
-		 *     All fields except for `$label` are optional and have working defaults.
-		 *
-		 *     @type array $meta_key {
-		 *         @type string        $label              Label to show for field. Used in: WP Admin; REST API.
-		 *         @type string        $placeholder        Placeholder to show in empty form fields. Used in: WP Admin.
-		 *         @type string        $description        Longer description to shown below form field.
-		 *                                                 Used in: WP Admin.
-		 *         @type array         $classes            Classes to apply to form input field. Used in: WP Admin.
-		 *         @type int           $priority           Field placement priority for WP admin. Lower is first.
-		 *                                                 Used in: WP Admin (Default: 10).
-		 *         @type string        $value              Override standard retrieval of meta value in form field.
-		 *                                                 Used in: WP Admin.
-		 *         @type string        $default            Default value on form field if no other value is set for
-		 *                                                 field. Used in: WP Admin (Since 1.33.0).
-		 *         @type string        $type               Type of form field to render. Used in: WP Admin
-		 *                                                 (Default: 'text').
-		 *         @type string        $data_type          Data type to cast to. Options: 'string', 'boolean',
-		 *                                                 'integer', 'number'.  Used in: REST API. (Since 1.33.0;
-		 *                                                 Default: 'string').
-		 *         @type bool|callable $show_in_admin      Whether field should be displayed in WP admin. Can be
-		 *                                                 callable that returns boolean. Used in: WP Admin
-		 *                                                 (Since 1.33.0; Default: true).
-		 *         @type bool|array    $show_in_rest       Whether data associated with this meta key can put in REST
-		 *                                                 API response for job listings. Can be used to pass REST API
-		 *                                                 arguments in `show_in_rest` parameter. Used in: REST API
-		 *                                                 (Since 1.33.0; Default: false).
-		 *         @type callable      $auth_edit_callback {
-		 *             Decides if specific user can edit the meta key. Used in: WP Admin; REST API.
-		 *             Defaults to callable that limits to those who can edit specific the job listing (also limited
-		 *             by relevant endpoints).
-		 *
-		 *             @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`.
-		 *             @since 1.33.0
-		 *
-		 *             @param bool   $allowed   Whether the user can add the object meta. Default false.
-		 *             @param string $meta_key  The meta key.
-		 *             @param int    $object_id Post ID for Job Listing.
-		 *             @param int    $user_id   User ID.
-		 *
-		 *             @return bool
-		 *         }
-		 *         @type callable      $auth_view_callback {
-		 *             Decides if specific user can view value of the meta key. Used in: REST API.
-		 *             Defaults to visible to all (if shown in REST API, which by default is false).
-		 *
-		 *             @see WPJM method `WP_Job_Manager_REST_API::prepare_job_listing()`.
-		 *             @since 1.33.0
-		 *
-		 *             @param bool   $allowed   Whether the user can add the object meta. Default false.
-		 *             @param string $meta_key  The meta key.
-		 *             @param int    $object_id Post ID for Job Listing.
-		 *             @param int    $user_id   User ID.
-		 *
-		 *             @return bool
-		 *         }
-		 *         @type callable      $sanitize_callback  {
-		 *             Sanitizes the meta value before saving to database. Used in: WP Admin; REST API; Frontend.
-		 *             Defaults to callable that sanitizes based on the field type.
-		 *
-		 *             @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`
-		 *             @since 1.33.0
-		 *
-		 *             @param mixed  $meta_value Value of meta field that needs sanitization.
-		 *             @param string $meta_key   Meta key that is being sanitized.
-		 *
-		 *             @return mixed
-		 *         }
-		 *     }
-		 * }
-		 */
+		* Filters job listing data fields.
+		*
+		* For the REST API, do not pass fields you don't want to be visible to the current visitor when `show_in_rest`
+		* is `true`. To add values and other data when generating the WP admin form, use filter
+		* `job_manager_job_listing_wp_admin_fields` which should have `$post_id` in context.
+		*
+		* @since 1.0.0
+		* @since 1.27.0 $post_id was added.
+		* @since 1.33.0 Used both in WP admin and REST API. Removed `$post_id` attribute. Added fields for REST API.
+		*
+		* @param array    $fields  {
+		*     Job listing meta fields for REST API and WP admin. Associative array with meta key as the index.
+		*     All fields except for `$label` are optional and have working defaults.
+		*
+		*     @type array $meta_key {
+		*         @type string        $label              Label to show for field. Used in: WP Admin; REST API.
+		*         @type string        $placeholder        Placeholder to show in empty form fields. Used in: WP Admin.
+		*         @type string        $description        Longer description to shown below form field.
+		*                                                 Used in: WP Admin.
+		*         @type array         $classes            Classes to apply to form input field. Used in: WP Admin.
+		*         @type int           $priority           Field placement priority for WP admin. Lower is first.
+		*                                                 Used in: WP Admin (Default: 10).
+		*         @type string        $value              Override standard retrieval of meta value in form field.
+		*                                                 Used in: WP Admin.
+		*         @type string        $default            Default value on form field if no other value is set for
+		*                                                 field. Used in: WP Admin (Since 1.33.0).
+		*         @type string        $type               Type of form field to render. Used in: WP Admin
+		*                                                 (Default: 'text').
+		*         @type string        $data_type          Data type to cast to. Options: 'string', 'boolean',
+		*                                                 'integer', 'number'.  Used in: REST API. (Since 1.33.0;
+		*                                                 Default: 'string').
+		*         @type bool|callable $show_in_admin      Whether field should be displayed in WP admin. Can be
+		*                                                 callable that returns boolean. Used in: WP Admin
+		*                                                 (Since 1.33.0; Default: true).
+		*         @type bool|array    $show_in_rest       Whether data associated with this meta key can put in REST
+		*                                                 API response for job listings. Can be used to pass REST API
+		*                                                 arguments in `show_in_rest` parameter. Used in: REST API
+		*                                                 (Since 1.33.0; Default: false).
+		*         @type callable      $auth_edit_callback {
+		*             Decides if specific user can edit the meta key. Used in: WP Admin; REST API.
+		*             Defaults to callable that limits to those who can edit specific the job listing (also limited
+		*             by relevant endpoints).
+		*
+		*             @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`.
+		*             @since 1.33.0
+		*
+		*             @param bool   $allowed   Whether the user can add the object meta. Default false.
+		*             @param string $meta_key  The meta key.
+		*             @param int    $object_id Post ID for Job Listing.
+		*             @param int    $user_id   User ID.
+		*
+		*             @return bool
+		*         }
+		*         @type callable      $auth_view_callback {
+		*             Decides if specific user can view value of the meta key. Used in: REST API.
+		*             Defaults to visible to all (if shown in REST API, which by default is false).
+		*
+		*             @see WPJM method `WP_Job_Manager_REST_API::prepare_job_listing()`.
+		*             @since 1.33.0
+		*
+		*             @param bool   $allowed   Whether the user can add the object meta. Default false.
+		*             @param string $meta_key  The meta key.
+		*             @param int    $object_id Post ID for Job Listing.
+		*             @param int    $user_id   User ID.
+		*
+		*             @return bool
+		*         }
+		*         @type callable      $sanitize_callback  {
+		*             Sanitizes the meta value before saving to database. Used in: WP Admin; REST API; Frontend.
+		*             Defaults to callable that sanitizes based on the field type.
+		*
+		*             @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`
+		*             @since 1.33.0
+		*
+		*             @param mixed  $meta_value Value of meta field that needs sanitization.
+		*             @param string $meta_key   Meta key that is being sanitized.
+		*
+		*             @return mixed
+		*         }
+		*     }
+		* }
+		*/
 		$fields = apply_filters( 'job_manager_job_listing_data_fields', $fields );
 
 		// Ensure default fields are set.
@@ -1437,13 +1440,13 @@ class WP_Job_Manager_Post_Types {
 		return $fields;
 	}
 
-	/**
-	 * Sanitize meta fields based on input type.
-	 *
-	 * @param mixed  $meta_value Value of meta field that needs sanitization.
-	 * @param string $meta_key   Meta key that is being sanitized.
-	 * @return mixed
-	 */
+				/**
+				 * Sanitize meta fields based on input type.
+				 *
+				 * @param mixed  $meta_value Value of meta field that needs sanitization.
+				 * @param string $meta_key   Meta key that is being sanitized.
+				 * @return mixed
+				 */
 	public static function sanitize_meta_field_based_on_input_type( $meta_value, $meta_key ) {
 		$fields = self::get_job_listing_fields();
 
@@ -1475,12 +1478,12 @@ class WP_Job_Manager_Post_Types {
 		return sanitize_text_field( $meta_value );
 	}
 
-	/**
-	 * Sanitize `_application` meta field.
-	 *
-	 * @param string $meta_value Value of meta field that needs sanitization.
-	 * @return string
-	 */
+				/**
+				 * Sanitize `_application` meta field.
+				 *
+				 * @param string $meta_value Value of meta field that needs sanitization.
+				 * @return string
+				 */
 	public static function sanitize_meta_field_application( $meta_value ) {
 		if ( is_email( $meta_value ) ) {
 			return sanitize_email( $meta_value );
@@ -1489,12 +1492,12 @@ class WP_Job_Manager_Post_Types {
 		return self::sanitize_meta_field_url( $meta_value );
 	}
 
-	/**
-	 * Sanitize URL meta fields.
-	 *
-	 * @param string $meta_value Value of meta field that needs sanitization.
-	 * @return string
-	 */
+				/**
+				 * Sanitize URL meta fields.
+				 *
+				 * @param string $meta_value Value of meta field that needs sanitization.
+				 * @return string
+				 */
 	public static function sanitize_meta_field_url( $meta_value ) {
 		$meta_value = trim( $meta_value );
 		if ( '' === $meta_value ) {
@@ -1504,12 +1507,12 @@ class WP_Job_Manager_Post_Types {
 		return esc_url_raw( $meta_value );
 	}
 
-	/**
-	 * Sanitize date meta fields.
-	 *
-	 * @param string $meta_value Value of meta field that needs sanitization.
-	 * @return string
-	 */
+				/**
+				 * Sanitize date meta fields.
+				 *
+				 * @param string $meta_value Value of meta field that needs sanitization.
+				 * @return string
+				 */
 	public static function sanitize_meta_field_date( $meta_value ) {
 		$meta_value = trim( $meta_value );
 
@@ -1526,16 +1529,16 @@ class WP_Job_Manager_Post_Types {
 		return $meta_value;
 	}
 
-	/**
-	 * Checks if user can manage job listings.
-	 *
-	 * @param bool   $allowed   Whether the user can edit the job listing meta.
-	 * @param string $meta_key  The meta key.
-	 * @param int    $post_id   Job listing's post ID.
-	 * @param int    $user_id   User ID.
-	 *
-	 * @return bool Whether the user can edit the job listing meta.
-	 */
+				/**
+				 * Checks if user can manage job listings.
+				 *
+				 * @param bool   $allowed   Whether the user can edit the job listing meta.
+				 * @param string $meta_key  The meta key.
+				 * @param int    $post_id   Job listing's post ID.
+				 * @param int    $user_id   User ID.
+				 *
+				 * @return bool Whether the user can edit the job listing meta.
+				 */
 	public static function auth_check_can_manage_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
 		$user = get_user_by( 'ID', $user_id );
 
@@ -1546,16 +1549,16 @@ class WP_Job_Manager_Post_Types {
 		return $user->has_cap( 'manage_job_listings' );
 	}
 
-	/**
-	 * Checks if user can edit job listings.
-	 *
-	 * @param bool   $allowed   Whether the user can edit the job listing meta.
-	 * @param string $meta_key  The meta key.
-	 * @param int    $post_id   Job listing's post ID.
-	 * @param int    $user_id   User ID.
-	 *
-	 * @return bool Whether the user can edit the job listing meta.
-	 */
+				/**
+				 * Checks if user can edit job listings.
+				 *
+				 * @param bool   $allowed   Whether the user can edit the job listing meta.
+				 * @param string $meta_key  The meta key.
+				 * @param int    $post_id   Job listing's post ID.
+				 * @param int    $user_id   User ID.
+				 *
+				 * @return bool Whether the user can edit the job listing meta.
+				 */
 	public static function auth_check_can_edit_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
 		$user = get_user_by( 'ID', $user_id );
 
@@ -1570,16 +1573,16 @@ class WP_Job_Manager_Post_Types {
 		return job_manager_user_can_edit_job( $post_id );
 	}
 
-	/**
-	 * Checks if user can edit other's job listings.
-	 *
-	 * @param bool   $allowed   Whether the user can edit the job listing meta.
-	 * @param string $meta_key  The meta key.
-	 * @param int    $post_id   Job listing's post ID.
-	 * @param int    $user_id   User ID.
-	 *
-	 * @return bool Whether the user can edit the job listing meta.
-	 */
+				/**
+				 * Checks if user can edit other's job listings.
+				 *
+				 * @param bool   $allowed   Whether the user can edit the job listing meta.
+				 * @param string $meta_key  The meta key.
+				 * @param int    $post_id   Job listing's post ID.
+				 * @param int    $user_id   User ID.
+				 *
+				 * @return bool Whether the user can edit the job listing meta.
+				 */
 	public static function auth_check_can_edit_others_job_listings( $allowed, $meta_key, $post_id, $user_id ) {
 		$user = get_user_by( 'ID', $user_id );
 
@@ -1590,17 +1593,61 @@ class WP_Job_Manager_Post_Types {
 		return $user->has_cap( 'edit_others_job_listings' );
 	}
 
-	/**
-	 * Add post type for Job Manager to list of post types deleted with user.
-	 *
-	 * @since 1.33.0
-	 *
-	 * @param array $types
-	 * @return array
-	 */
+				/**
+				 * Add post type for Job Manager to list of post types deleted with user.
+				 *
+				 * @since 1.33.0
+				 *
+				 * @param array $types
+				 * @return array
+				 */
 	public function delete_user_add_job_listings_post_type( $types ) {
 		$types[] = 'job_listing';
 
 		return $types;
+	}
+
+				/**
+				 * Adds custom field for bulk edit (radio buttons for job listing type selection).
+				 * Can be modified to handle other taxonomies if needed.
+				 *
+				 * @param string $column_name
+				 * @param string $post_type
+				 */
+	public function add_custom_meta_box_field( $column_name, $post_type ) {
+		switch ( $post_type ) {
+			case 'job_listing':
+				switch ( $column_name ) {
+					case 'job_listing_type':
+						?>
+							<fieldset class="inline-edit-col-left">
+								<div class="inline-edit-col">
+									<label>
+										<span class="title"><?php esc_html_e( 'Job type', 'wp-job-manager' ); ?></span>
+										<span class="input-text-wrap">
+											<label style="display:inline;">
+												<input type="radio" name="job_listing_type" value="freelance" /> Freelance
+											</label>
+											<label style="display:inline;">
+												<input type="radio" name="job_listing_type" value="full-time" /> Full Time
+											</label>
+											<label style="display:inline;">
+												<input type="radio" name="job_listing_type" value="internship" /> Internship
+											</label>
+											<label style="display:inline;">
+												<input type="radio" name="job_listing_type" value="part-time" /> Part Time
+											</label>
+											<label style="display:inline;">
+												<input type="radio" name="job_listing_type" value="temporary" /> Temporary
+											</label>
+										</span>
+									</label>
+								</div>
+							</fieldset>
+							<?php
+						break;
+				}
+				break;
+		}
 	}
 }
