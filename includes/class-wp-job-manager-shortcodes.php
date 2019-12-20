@@ -273,6 +273,16 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
+	 * Filters the url from paginate_links to avoid multiple calls for same action in job dashboard
+	 *
+	 * @param string $link
+	 * @return string
+	 */
+	public function filter_paginate_links( $link ) {
+		return esc_url( remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link ) );
+	}
+
+	/**
 	 * Displays edit job form.
 	 */
 	public function edit_job() {
