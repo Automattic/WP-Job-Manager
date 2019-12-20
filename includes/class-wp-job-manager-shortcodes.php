@@ -61,6 +61,8 @@ class WP_Job_Manager_Shortcodes {
 		add_shortcode( 'job', [ $this, 'output_job' ] );
 		add_shortcode( 'job_summary', [ $this, 'output_job_summary' ] );
 		add_shortcode( 'job_apply', [ $this, 'output_job_apply' ] );
+
+		add_filter( 'paginate_links', [ $this, 'filter_paginate_links' ], 10, 1 );
 	}
 
 	/**
