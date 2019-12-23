@@ -1621,7 +1621,10 @@ class WP_Job_Manager_Post_Types {
 			case 'job_listing':
 				switch ( $column_name ) {
 					case 'job_listing_type':
-						get_job_manager_template( 'job-listings-bulk-edit.php' );
+						get_job_manager_template(
+							'job-listings-bulk-edit.php',
+							[ 'multiple_types_enabled' => get_option( 'job_manager_multi_job_type' ) ]
+						);
 						break;
 				}
 				break;
