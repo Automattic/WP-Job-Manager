@@ -329,13 +329,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Checks if application field should use standard validation
+	 * Checks if application field should use standard validation.
 	 *
 	 * @return bool
 	 */
 	protected function should_application_field_use_standard_validation() {
 		/**
-		 * Force application field to use standard validation (skip email and URL validations)
+		 * Force application field to use standard validation (skip email and URL validations).
 		 *
 		 * @since 1.x.x
 		 *
