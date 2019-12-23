@@ -13,27 +13,57 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-?>
+if ( 0 === (int) $multiple_types_enabled ) :
+	?>
 
 	<fieldset class="inline-edit-col-left">
 			<label>
 				<span class="title"><?php esc_html_e( 'Job type', 'wp-job-manager' ); ?></span>
 				<span class="input-text-wrap">
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="freelance" /> <?php esc_html_e( 'Freelance', 'wp-job-manager' ); ?>
+						<input type="radio" name="single_job_listing_type" value="freelance" /> <?php esc_html_e( 'Freelance', 'wp-job-manager' ); ?>
 					</label></br>
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="full-time" /> <?php esc_html_e( 'Full Time', 'wp-job-manager' ); ?>
+						<input type="radio" name="single_job_listing_type" value="full-time" /> <?php esc_html_e( 'Full Time', 'wp-job-manager' ); ?>
 					</label></br>
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="internship" /> <?php esc_html_e( 'Internship', 'wp-job-manager' ); ?>
+						<input type="radio" name="single_job_listing_type" value="internship" /> <?php esc_html_e( 'Internship', 'wp-job-manager' ); ?>
 					</label></br>
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="part-time" /> <?php esc_html_e( 'Part Time', 'wp-job-manager' ); ?>
+						<input type="radio" name="single_job_listing_type" value="part-time" /> <?php esc_html_e( 'Part Time', 'wp-job-manager' ); ?>
 					</label></br>
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="temporary" /> <?php esc_html_e( 'Temporary', 'wp-job-manager' ); ?>
+						<input type="radio" name="single_job_listing_type" value="temporary" /> <?php esc_html_e( 'Temporary', 'wp-job-manager' ); ?>
 					</label>
 				</span>
 			</label>
 	</fieldset>
+
+<?php else : ?>
+
+	<fieldset class="inline-edit-col-left">
+			<label>
+				<span class="title"><?php esc_html_e( 'Job types', 'wp-job-manager' ); ?></span>
+				<span class="input-text-wrap">
+					<label style="display:inline;">
+						<input type="checkbox" name="multiple_job_listing_type" value="freelance" /> <?php esc_html_e( 'Freelance', 'wp-job-manager' ); ?>
+					</label></br>
+					<label style="display:inline;">
+						<input type="checkbox" name="multiple_job_listing_type" value="full-time" /> <?php esc_html_e( 'Full Time', 'wp-job-manager' ); ?>
+					</label></br>
+					<label style="display:inline;">
+						<input type="checkbox" name="multiple_job_listing_type" value="internship" /> <?php esc_html_e( 'Internship', 'wp-job-manager' ); ?>
+					</label></br>
+					<label style="display:inline;">
+						<input type="checkbox" name="multiple_job_listing_type" value="part-time" /> <?php esc_html_e( 'Part Time', 'wp-job-manager' ); ?>
+					</label></br>
+					<label style="display:inline;">
+						<input type="checkbox" name="multiple_job_listing_type" value="temporary" /> <?php esc_html_e( 'Temporary', 'wp-job-manager' ); ?>
+					</label>
+				</span>
+			</label>
+	</fieldset>
+
+	<?php
+endif;
+?>
