@@ -1621,32 +1621,7 @@ class WP_Job_Manager_Post_Types {
 			case 'job_listing':
 				switch ( $column_name ) {
 					case 'job_listing_type':
-						?>
-							<fieldset class="inline-edit-col-left">
-								<div class="inline-edit-col">
-									<label>
-										<span class="title"><?php esc_html_e( 'Job type', 'wp-job-manager' ); ?></span>
-										<span class="input-text-wrap">
-											<label style="display:inline;">
-												<input type="radio" name="job_listing_type" value="freelance" /> Freelance
-											</label>
-											<label style="display:inline;">
-												<input type="radio" name="job_listing_type" value="full-time" /> Full Time
-											</label>
-											<label style="display:inline;">
-												<input type="radio" name="job_listing_type" value="internship" /> Internship
-											</label>
-											<label style="display:inline;">
-												<input type="radio" name="job_listing_type" value="part-time" /> Part Time
-											</label>
-											<label style="display:inline;">
-												<input type="radio" name="job_listing_type" value="temporary" /> Temporary
-											</label>
-										</span>
-									</label>
-								</div>
-							</fieldset>
-							<?php
+						get_job_manager_template( 'job-listings-bulk-edit.php' );
 						break;
 				}
 				break;
