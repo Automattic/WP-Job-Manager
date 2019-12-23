@@ -1644,9 +1644,18 @@ class WP_Job_Manager_Post_Types {
 	public function bulk_edit_action_function() {
 		$post_ids = ( isset( $_POST['post_ids'] ) && ! empty( $_POST['post_ids'] ) ) ? $_POST['post_ids'] : null;
 		if ( ! empty( $post_ids ) && is_array( $post_ids ) ) {
-			if ( isset( $_POST['job_type'] ) && ! empty( $_POST['job_type'] ) ) {
-				foreach ( $post_ids as $post_id ) {
-					wp_set_object_terms( $post_id, $_POST['job_type'], 'job_listing_type' );
+
+			if ( ! get_option( 'job_manager_multi_job_type' ) ) {
+				if ( isset( $_POST['single_job_type'] ) && ! empty( $_POST['single_job_type'] ) ) {
+					foreach ( $post_ids as $post_id ) {
+						wp_set_object_terms( $post_id, $_POST['single_job_type'], 'job_listing_type' );
+					}
+				}
+			} else {
+				if ( isset( $_POST['multiple_job_type'] ) && ! empty( $_POST['multiple_job_type'] ) ) {
+					foreach ( $post_ids as $post_id ) {
+							wp_set_object_terms( $post_id, $_POST['multiple_job_type'], 'job_listing_type' );
+					}
 				}
 			}
 		}
