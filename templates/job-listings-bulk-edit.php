@@ -20,19 +20,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<span class="title"><?php esc_html_e( 'Job type', 'wp-job-manager' ); ?></span>
 				<span class="input-text-wrap">
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="freelance" /> Freelance
+						<input type="radio" name="job_listing_type" value="freelance" /> <?php esc_html_e( 'Freelance', 'wp-job-manager' ); ?>
 					</label></br>
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="full-time" /> Full Time
+						<input type="radio" name="job_listing_type" value="full-time" /> <?php esc_html_e( 'Full Time', 'wp-job-manager' ); ?>
 					</label></br>
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="internship" /> Internship
+						<input type="radio" name="job_listing_type" value="internship" /> <?php esc_html_e( 'Internship', 'wp-job-manager' ); ?>
 					</label></br>
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="part-time" /> Part Time
+						<input type="radio" name="job_listing_type" value="part-time" /> <?php esc_html_e( 'Part Time', 'wp-job-manager' ); ?>
 					</label></br>
 					<label style="display:inline;">
-						<input type="radio" name="job_listing_type" value="temporary" /> Temporary
+						<input type="radio" name="job_listing_type" value="temporary" /> <?php esc_html_e( 'Temporary', 'wp-job-manager' ); ?>
 					</label>
 				</span>
 			</label>
