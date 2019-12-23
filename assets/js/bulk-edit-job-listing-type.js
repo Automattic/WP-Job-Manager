@@ -20,7 +20,11 @@
       $post_ids.push( $( this ).attr( 'id' ).replace( /^(ttle)/i, '' ) );
     });
     // get the job type
-    var $job_type = $bulk_row.find( 'input[name="job_listing_type"]:checked' ).val();
+    var $single_job_type = $bulk_row.find( 'input[name="single_job_listing_type"]:checked' ).val();
+	  var $multiple_job_type = [];
+    $.each( $( "input[name='multiple_job_listing_type']:checked" ), function() {
+      $multiple_job_type.push( $( this ).val() );
+    });
 
     $.ajax({
       url: ajaxurl,
@@ -30,7 +34,8 @@
       data: {
         action: 'bulk_edit_save_job_listing_action',
         post_ids: $post_ids,
-        job_type: $job_type
+        single_job_type: $single_job_type,
+		    multiple_job_type: $multiple_job_type
       }
     });
   });
