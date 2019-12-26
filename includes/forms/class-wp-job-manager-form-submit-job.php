@@ -109,7 +109,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( sanitize_text_field( $_GET['step'] ), array_keys( $this->steps ), true );
 		}
 
-		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
+		$this->job_id = ! empty( $_GET['job_id'] ) ? absint( $_GET['job_id'] ) : 0;
 		// phpcs:enable WordPress.Security.NonceVerification.Missing,  WordPress.Security.NonceVerification.Recommended
 
 		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
@@ -126,6 +126,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			)
 			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] )
 			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] )
+			&& empty( $this->job_id )
 		) {
 			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
 			$job_status = get_post_status( $job_id );
