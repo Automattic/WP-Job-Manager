@@ -15,7 +15,7 @@ We use the `[Type] Good First Bug` label to mark issues that are suitable for ne
 
 WP Job Manager is licensed under the GPLv3+, and all contributions to the project will be released under the same license. You maintain copyright over any contribution you make, and by submitting a pull request, you are agreeing to release that contribution under the GPLv3+ license.
 
-If you have questions about the process to contribute code or want to discuss details of your contribution, you can contact WP Job Manager core developers on the #core channel in the [WP Job Manager community Slack](https://wp-job-manager.com/community-slack/).
+If you have questions about the process to contribute code or want to discuss details of your contribution, you can contact WP Job Manager core developers in the [WordPress.org Slack](https://make.wordpress.org/chat/).
 
 ## Getting started
 
