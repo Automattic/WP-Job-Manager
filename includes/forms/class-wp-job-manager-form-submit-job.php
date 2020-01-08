@@ -329,6 +329,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Checks if application field should use skip email / URL validation.
+	 *
+	 * @return bool
+	 */
+	protected function should_application_field_skip_email_url_validation() {
+		/**
+		 * Force application field to skip email / URL validation.
+		 *
+		 * @since 1.x.x
+		 *
+		 * @param bool  $is_forced Whether the application field is forced to skip email / URL validation.
+		 */
+		return apply_filters( 'job_manager_application_field_skip_email_url_validation', false );
+	}
+
+	/**
 	 * Validates the posted fields.
 	 *
 	 * @param array $values
@@ -415,7 +431,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		// Application method.
-		if ( isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
+		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
 			$allowed_application_method   = get_option( 'job_manager_allowed_application_method', '' );
 			$values['job']['application'] = str_replace( ' ', '+', $values['job']['application'] );
 			switch ( $allowed_application_method ) {
