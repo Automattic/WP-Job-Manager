@@ -130,6 +130,17 @@ class WP_Job_Manager_Settings {
 							'attributes'  => [],
 						],
 						[
+							'name'    => 'job_manager_job_listing_pagination_type',
+							'std'     => 'load_more',
+							'label'   => __( 'Pagination Type', 'wp-job-manager' ),
+							'desc'    => __( 'Determines whether to show page numbered links or a Load More Listings button.', 'wp-job-manager' ),
+							'type'    => 'radio',
+							'options' => [
+								'load_more'  => __( 'Load More Listings button', 'wp-job-manager' ),
+								'pagination' => __( 'Page numbered links', 'wp-job-manager' ),
+							],
+						],
+						[
 							'name'       => 'job_manager_hide_filled_positions',
 							'std'        => '0',
 							'label'      => __( 'Filled Positions', 'wp-job-manager' ),
