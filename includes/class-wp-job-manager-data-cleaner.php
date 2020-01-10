@@ -101,6 +101,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_admin_notices',
 		'widget_widget_featured_jobs',
 		'widget_widget_recent_jobs',
+		'job_manager_display_only_city_state',
 	];
 
 	/**
