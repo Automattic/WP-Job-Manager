@@ -18,7 +18,7 @@
 		"reformat-files-js": "./node_modules/.bin/prettier --ignore-path .eslintignore --write \"**/*.{js,jsx,json,ts,tsx}\""
 	},
 	"devDependencies": {
-		"@wordpress/babel-preset-default": "^4.3.0",
+		"@wordpress/babel-preset-default": "^4.10.0",
 		"@wordpress/jest-preset-default": "^4.2.0",
 		"babel-core": "^6.26.3",
 		"babel-eslint": "^9.0.0",
@@ -31,7 +31,7 @@
 		"eslint": "^5.16.0",
 		"eslint-config-wordpress": "^2.0.0",
 		"eslint-plugin-jsx-a11y": "^6.2.1",
-		"eslint-plugin-react": "^7.13.0",
+		"eslint-plugin-react": "^7.18.3",
 		"eslint-plugin-wordpress": "git://github.com/WordPress-Coding-Standards/eslint-plugin-wordpress.git#1774343f6226052a46b081e01db3fca8793cc9f1",
 		"extend": ">=3.0.2",
 		"grunt": "^1.0.4",
@@ -56,14 +56,14 @@
 		"lodash-webpack-plugin": "^0.11.5",
 		"merge": ">=1.2.1",
 		"mini-css-extract-plugin": "^0.4.5",
-		"node-sass": "^4.12.0",
+		"node-sass": "^4.13.1",
 		"prettier": "https://github.com/Automattic/wp-prettier/releases/download/wp-1.17.0/wp-prettier-1.17.0.tgz",
 		"rimraf": "^2.6.3",
 		"sass-loader": "^7.1.0",
 		"style-loader": "^0.21.0",
 		"tar": "^4.4.10",
-		"webpack": "^4.34.0",
-		"webpack-cli": "^3.3.4"
+		"webpack": "^4.41.6",
+		"webpack-cli": "^3.3.11"
 	},
 	"engines": {
 		"node": ">=0.8.0",
@@ -71,9 +71,9 @@
 	},
 	"dependencies": {
 		"babel-preset-stage-3": "^6.24.1",
-		"diff": "^4.0.1",
+		"diff": "^4.0.2",
 		"lodash": "^4.17.15",
-		"react": "^16.8.6",
-		"select2": "^4.0.7"
+		"react": "^16.12.0",
+		"select2": "^4.0.13"
 	}
 }
