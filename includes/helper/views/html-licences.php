@@ -1,6 +1,12 @@
 <?php
+/**
+ * File containing the view to show the table for managing license keys.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 ?>
 <h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
@@ -27,12 +33,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				$notices = WP_Job_Manager_Helper::get_messages( $product_slug );
 				if ( empty( $notices ) && ! empty( $licence['errors'] ) ) {
-					$notices = array();
-					foreach ( $licence['errors'] as $key => $error ) {
-						$notices[] = array(
+					$notices = [];
+					foreach ( $licence['errors'] as $key => $error_message ) {
+						$notices[] = [
 							'type'    => 'error',
-							'message' => $error,
-						);
+							'message' => $error_message,
+						];
 					}
 				}
 				foreach ( $notices as $message ) {

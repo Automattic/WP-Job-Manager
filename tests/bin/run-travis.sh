@@ -11,7 +11,6 @@ run_phpunit_for() {
 	cd "/tmp/$test_branch/src/wp-content/plugins/$PLUGIN_SLUG"
 	nvm use 8
 	npm install >/dev/null
-	./node_modules/.bin/mixtape build >/dev/null
 
 	phpunit
 

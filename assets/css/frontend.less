@@ -129,7 +129,10 @@
 			font-weight: bold;
 			border: 0;
 		}
-		input.input-text, textarea, select {
+		input.input-text,
+		input.input-date,
+		textarea,
+		select {
 			margin: 0;
 			vertical-align: middle;
 			width: 100%;
@@ -197,7 +200,7 @@
 		cursor: not-allowed;
 	}
 	.spinner {
-		background: url(../../../../../wp-includes/images/spinner.gif) no-repeat;
+		background-repeat: no-repeat;
 		background-size: 20px 20px;
 		display: inline-block;
 		visibility: hidden;
@@ -227,6 +230,7 @@ div.job_listings {
 		clear: both;
 		min-height: 3em;
 		box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+		box-sizing: content-box;
 
 		img {
 			width: 3em;
@@ -248,7 +252,7 @@ div.job_listings {
 		}
 		.tagline {
 			display: block;
-			margin: 0 0 0 42px;
+			margin: 0 0 0 3em;
 			padding: 0 0 0 1em;
 			line-height: 1.5em;
 			font-style: italic;
@@ -437,6 +441,9 @@ div.job_listings {
 				padding-top: .5em;
 				clear: both;
 				width: 100%;
+			}
+			&.search_submit {
+				padding-top: .5em;
 			}
 			.showing_jobs {
 				a {

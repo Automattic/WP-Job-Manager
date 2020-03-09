@@ -1,12 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Settings.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Handles the management of plugin settings.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Settings {
@@ -17,14 +22,14 @@ class WP_Job_Manager_Settings {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Our Settings.
 	 *
 	 * @var array Settings.
 	 */
-	protected $settings = array();
+	protected $settings = [];
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -34,10 +39,10 @@ class WP_Job_Manager_Settings {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -45,7 +50,7 @@ class WP_Job_Manager_Settings {
 	 */
 	public function __construct() {
 		$this->settings_group = 'job_manager';
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_init', [ $this, 'register_settings' ] );
 	}
 
 	/**
@@ -68,7 +73,7 @@ class WP_Job_Manager_Settings {
 	protected function init_settings() {
 		// Prepare roles option.
 		$roles         = get_editable_roles();
-		$account_roles = array();
+		$account_roles = [];
 
 		foreach ( $roles as $key => $role ) {
 			if ( 'administrator' === $key ) {
@@ -79,294 +84,294 @@ class WP_Job_Manager_Settings {
 
 		$this->settings = apply_filters(
 			'job_manager_settings',
-			array(
-				'general'        => array(
+			[
+				'general'        => [
 					__( 'General', 'wp-job-manager' ),
-					array(
-						array(
+					[
+						[
 							'name'    => 'job_manager_date_format',
 							'std'     => 'relative',
 							'label'   => __( 'Date Format', 'wp-job-manager' ),
 							'desc'    => __( 'Choose how you want the published date for jobs to be displayed on the front-end.', 'wp-job-manager' ),
 							'type'    => 'radio',
-							'options' => array(
+							'options' => [
 								'relative' => __( 'Relative to the current date (e.g., 1 day, 1 week, 1 month ago)', 'wp-job-manager' ),
 								'default'  => __( 'Default date format as defined in Settings', 'wp-job-manager' ),
-							),
-						),
-						array(
+							],
+						],
+						[
 							'name'       => 'job_manager_google_maps_api_key',
 							'std'        => '',
 							'label'      => __( 'Google Maps API Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up a Google Maps API key.
 							'desc'       => sprintf( __( 'Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href="%s">Google Maps API developer site</a>.', 'wp-job-manager' ), 'https://developers.google.com/maps/documentation/geocoding/get-api-key' ),
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_delete_data_on_uninstall',
 							'std'        => '0',
 							'label'      => __( 'Delete Data On Uninstall', 'wp-job-manager' ),
 							'cb_label'   => __( 'Delete WP Job Manager data when the plugin is deleted. Once removed, this data cannot be restored.', 'wp-job-manager' ),
 							'desc'       => '',
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-					),
-				),
-				'job_listings'   => array(
+							'attributes' => [],
+						],
+					],
+				],
+				'job_listings'   => [
 					__( 'Job Listings', 'wp-job-manager' ),
-					array(
-						array(
+					[
+						[
 							'name'        => 'job_manager_per_page',
 							'std'         => '10',
 							'placeholder' => '',
 							'label'       => __( 'Listings Per Page', 'wp-job-manager' ),
 							'desc'        => __( 'Number of job listings to display per page.', 'wp-job-manager' ),
-							'attributes'  => array(),
-						),
-						array(
+							'attributes'  => [],
+						],
+						[
 							'name'       => 'job_manager_hide_filled_positions',
 							'std'        => '0',
 							'label'      => __( 'Filled Positions', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide filled positions', 'wp-job-manager' ),
 							'desc'       => __( 'Filled positions will not display in your archives.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_hide_expired',
 							'std'        => get_option( 'job_manager_hide_expired_content' ) ? '1' : '0', // back compat.
 							'label'      => __( 'Hide Expired Listings', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide expired listings in job archives/search', 'wp-job-manager' ),
 							'desc'       => __( 'Expired job listings will not be searchable.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_hide_expired_content',
 							'std'        => '1',
 							'label'      => __( 'Hide Expired Listings Content', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide content in expired single job listings', 'wp-job-manager' ),
 							'desc'       => __( 'Your site will display the titles of expired listings, but not the content of the listings. Otherwise, expired listings display their full content minus the application area.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_enable_categories',
 							'std'        => '0',
 							'label'      => __( 'Categories', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable listing categories', 'wp-job-manager' ),
 							'desc'       => __( 'This lets users select from a list of categories when submitting a job. Note: an admin has to create categories before site users can select them.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_enable_default_category_multiselect',
 							'std'        => '0',
 							'label'      => __( 'Multi-select Categories', 'wp-job-manager' ),
 							'cb_label'   => __( 'Default to category multiselect', 'wp-job-manager' ),
-							'desc'       => __( 'The category selection box will default to allowing multiple selections on the [jobs] shortcode. Without this, users will only be able to select a single category when submitting jobs.', 'wp-job-manager' ),
+							'desc'       => __( 'The category selection box will default to allowing multiple selections on the [jobs] shortcode. Without this, visitors will only be able to select a single category when filtering jobs.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'    => 'job_manager_category_filter_type',
 							'std'     => 'any',
 							'label'   => __( 'Category Filter Type', 'wp-job-manager' ),
 							'desc'    => __( 'Determines the logic used to display jobs when selecting multiple categories.', 'wp-job-manager' ),
 							'type'    => 'radio',
-							'options' => array(
+							'options' => [
 								'any' => __( 'Jobs will be shown if within ANY selected category', 'wp-job-manager' ),
 								'all' => __( 'Jobs will be shown if within ALL selected categories', 'wp-job-manager' ),
-							),
-						),
-						array(
+							],
+						],
+						[
 							'name'       => 'job_manager_enable_types',
 							'std'        => '1',
 							'label'      => __( 'Types', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable listing types', 'wp-job-manager' ),
 							'desc'       => __( 'This lets users select from a list of types when submitting a job. Note: an admin has to create types before site users can select them.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_multi_job_type',
 							'std'        => '0',
 							'label'      => __( 'Multi-select Listing Types', 'wp-job-manager' ),
 							'cb_label'   => __( 'Allow multiple types for listings', 'wp-job-manager' ),
 							'desc'       => __( 'This allows users to select more than one type when submitting a job. The metabox on the post editor and the selection box on the front-end job submission form will both reflect this.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-					),
-				),
-				'job_submission' => array(
+							'attributes' => [],
+						],
+					],
+				],
+				'job_submission' => [
 					__( 'Job Submission', 'wp-job-manager' ),
-					array(
-						array(
+					[
+						[
 							'name'       => 'job_manager_user_requires_account',
 							'std'        => '1',
 							'label'      => __( 'Account Required', 'wp-job-manager' ),
 							'cb_label'   => __( 'Require an account to submit listings', 'wp-job-manager' ),
 							'desc'       => __( 'Limits job listing submissions to registered, logged-in users.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_enable_registration',
 							'std'        => '1',
 							'label'      => __( 'Account Creation', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable account creation during submission', 'wp-job-manager' ),
 							'desc'       => __( 'Includes account creation on the listing submission form, to allow non-registered users to create an account and submit a job listing simultaneously.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_generate_username_from_email',
 							'std'        => '1',
 							'label'      => __( 'Account Username', 'wp-job-manager' ),
 							'cb_label'   => __( 'Generate usernames from email addresses', 'wp-job-manager' ),
 							'desc'       => __( 'Automatically generates usernames for new accounts from the registrant\'s email address. If this is not enabled, a "username" field will display instead.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_use_standard_password_setup_email',
 							'std'        => '1',
 							'label'      => __( 'Account Password', 'wp-job-manager' ),
 							'cb_label'   => __( 'Email new users a link to set a password', 'wp-job-manager' ),
 							'desc'       => __( 'Sends an email to the user with their username and a link to set their password. If this is not enabled, a "password" field will display instead, and their email address won\'t be verified.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'    => 'job_manager_registration_role',
 							'std'     => 'employer',
 							'label'   => __( 'Account Role', 'wp-job-manager' ),
 							'desc'    => __( 'Any new accounts created during submission will have this role. If you haven\'t enabled account creation during submission in the options above, your own method of assigning roles will apply.', 'wp-job-manager' ),
 							'type'    => 'select',
 							'options' => $account_roles,
-						),
-						array(
+						],
+						[
 							'name'       => 'job_manager_submission_requires_approval',
 							'std'        => '1',
 							'label'      => __( 'Moderate New Listings', 'wp-job-manager' ),
 							'cb_label'   => __( 'Require admin approval of all new listing submissions', 'wp-job-manager' ),
 							'desc'       => __( 'Sets all new submissions to "pending." They will not appear on your site until an admin approves them.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_user_can_edit_pending_submissions',
 							'std'        => '0',
 							'label'      => __( 'Allow Pending Edits', 'wp-job-manager' ),
 							'cb_label'   => __( 'Allow editing of pending listings', 'wp-job-manager' ),
 							'desc'       => __( 'Users can continue to edit pending listings until they are approved by an admin.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_user_edit_published_submissions',
 							'std'        => 'yes',
 							'label'      => __( 'Allow Published Edits', 'wp-job-manager' ),
 							'cb_label'   => __( 'Allow editing of published listings', 'wp-job-manager' ),
 							'desc'       => __( 'Choose whether published job listings can be edited and if edits require admin approval. When moderation is required, the original job listings will be unpublished while edits await admin approval.', 'wp-job-manager' ),
 							'type'       => 'radio',
-							'options'    => array(
+							'options'    => [
 								'no'            => __( 'Users cannot edit', 'wp-job-manager' ),
 								'yes'           => __( 'Users can edit without admin approval', 'wp-job-manager' ),
 								'yes_moderated' => __( 'Users can edit, but edits require admin approval', 'wp-job-manager' ),
-							),
-							'attributes' => array(),
-						),
-						array(
+							],
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_submission_duration',
 							'std'        => '30',
 							'label'      => __( 'Listing Duration', 'wp-job-manager' ),
 							'desc'       => __( 'Listings will display for the set number of days, then expire. Leave this field blank if you don\'t want listings to have an expiration date.', 'wp-job-manager' ),
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'    => 'job_manager_allowed_application_method',
 							'std'     => '',
 							'label'   => __( 'Application Method', 'wp-job-manager' ),
 							'desc'    => __( 'Choose the application method job listers will need to provide. Specify URL or email address only, or allow listers to choose which they prefer.', 'wp-job-manager' ),
 							'type'    => 'radio',
-							'options' => array(
+							'options' => [
 								''      => __( 'Email address or website URL', 'wp-job-manager' ),
 								'email' => __( 'Email addresses only', 'wp-job-manager' ),
 								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
-							),
-						),
-					),
-				),
-				'recaptcha'      => array(
+							],
+						],
+					],
+				],
+				'recaptcha'      => [
 					__( 'reCAPTCHA', 'wp-job-manager' ),
-					array(
-						array(
+					[
+						[
 							'name'        => 'job_manager_recaptcha_label',
 							'std'         => __( 'Are you human?', 'wp-job-manager' ),
 							'placeholder' => '',
 							'label'       => __( 'Field Label', 'wp-job-manager' ),
 							'desc'        => __( 'The label used for the reCAPTCHA field on forms.', 'wp-job-manager' ),
-							'attributes'  => array(),
-						),
-						array(
+							'attributes'  => [],
+						],
+						[
 							'name'        => 'job_manager_recaptcha_site_key',
 							'std'         => '',
 							'placeholder' => '',
 							'label'       => __( 'Site Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
 							'desc'        => sprintf( __( 'You can retrieve your site key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
-							'attributes'  => array(),
-						),
-						array(
+							'attributes'  => [],
+						],
+						[
 							'name'        => 'job_manager_recaptcha_secret_key',
 							'std'         => '',
 							'placeholder' => '',
 							'label'       => __( 'Secret Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
 							'desc'        => sprintf( __( 'You can retrieve your secret key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
-							'attributes'  => array(),
-						),
-						array(
+							'attributes'  => [],
+						],
+						[
 							'name'       => 'job_manager_enable_recaptcha_job_submission',
 							'std'        => '0',
 							'label'      => __( 'Job Submission Form', 'wp-job-manager' ),
 							'cb_label'   => __( 'Display a reCAPTCHA field on job submission form.', 'wp-job-manager' ),
 							'desc'       => sprintf( __( 'This will help prevent bots from submitting job listings. You must have entered a valid site key and secret key above.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-					),
-				),
-				'job_pages'      => array(
+							'attributes' => [],
+						],
+					],
+				],
+				'job_pages'      => [
 					__( 'Pages', 'wp-job-manager' ),
-					array(
-						array(
+					[
+						[
 							'name'  => 'job_manager_submit_job_form_page_id',
 							'std'   => '',
 							'label' => __( 'Submit Job Form Page', 'wp-job-manager' ),
 							'desc'  => __( 'Select the page where you\'ve used the [submit_job_form] shortcode. This lets the plugin know the location of the form.', 'wp-job-manager' ),
 							'type'  => 'page',
-						),
-						array(
+						],
+						[
 							'name'  => 'job_manager_job_dashboard_page_id',
 							'std'   => '',
 							'label' => __( 'Job Dashboard Page', 'wp-job-manager' ),
 							'desc'  => __( 'Select the page where you\'ve used the [job_dashboard] shortcode. This lets the plugin know the location of the dashboard.', 'wp-job-manager' ),
 							'type'  => 'page',
-						),
-						array(
+						],
+						[
 							'name'  => 'job_manager_jobs_page_id',
 							'std'   => '',
 							'label' => __( 'Job Listings Page', 'wp-job-manager' ),
 							'desc'  => __( 'Select the page where you\'ve used the [jobs] shortcode. This lets the plugin know the location of the job listings page.', 'wp-job-manager' ),
 							'type'  => 'page',
-						),
-					),
-				),
-			)
+						],
+					],
+				],
+			]
 		);
 	}
 
@@ -406,13 +411,14 @@ class WP_Job_Manager_Settings {
 				</h2>
 
 				<?php
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for basic flow.
 				if ( ! empty( $_GET['settings-updated'] ) ) {
 					flush_rewrite_rules();
 					echo '<div class="updated fade job-manager-updated"><p>' . esc_html__( 'Settings successfully saved', 'wp-job-manager' ) . '</p></div>';
 				}
 
 				foreach ( $this->settings as $key => $section ) {
-					$section_args = isset( $section[2] ) ? (array) $section[2] : array();
+					$section_args = isset( $section[2] ) ? (array) $section[2] : [];
 					echo '<div id="settings-' . esc_attr( sanitize_title( $key ) ) . '" class="settings_panel">';
 					if ( ! empty( $section_args['before'] ) ) {
 						echo '<p class="before-settings">' . wp_kses_post( $section_args['before'] ) . '</p>';
@@ -438,6 +444,13 @@ class WP_Job_Manager_Settings {
 			</form>
 		</div>
 		<script type="text/javascript">
+			jQuery('.nav-internal').click(function (e) {
+				e.preventDefault();
+				jQuery('.nav-tab-wrapper a[href="' + jQuery(this).attr('href') + '"]').click();
+
+				return false;
+			});
+
 			jQuery('.nav-tab-wrapper a').click(function() {
 				if ( '#' !== jQuery(this).attr( 'href' ).substr( 0, 1 ) ) {
 					return false;
@@ -481,23 +494,6 @@ class WP_Job_Manager_Settings {
 				}
 			}).change();
 
-			// If generate username is enabled on page load, assume use_standard_password_setup_email has been cleared.
-			// Default is true, so let's sneakily set it to that before it gets cleared and disabled.
-			if ( $generate_username_from_email.is(':checked') ) {
-				$use_standard_password_setup_email.prop('checked', true);
-			}
-
-			$generate_username_from_email.change(function() {
-				if ( jQuery( this ).is(':checked') ) {
-					$use_standard_password_setup_email.data('original-state', $use_standard_password_setup_email.is(':checked')).prop('checked', true).prop('disabled', true);
-				} else {
-					$use_standard_password_setup_email.prop('disabled', false);
-					if ( undefined !== $use_standard_password_setup_email.data('original-state') ) {
-						$use_standard_password_setup_email.prop('checked', $use_standard_password_setup_email.data('original-state'));
-					}
-				}
-			}).change();
-
 			jQuery( '.sub-settings-expander' ).on( 'change', function() {
 				var $expandable = jQuery(this).parent().siblings( '.sub-settings-expandable' );
 				var checked = jQuery(this).is( ':checked' );
@@ -520,16 +516,19 @@ class WP_Job_Manager_Settings {
 	 * @param string $ignored_placeholder
 	 */
 	protected function input_checkbox( $option, $attributes, $value, $ignored_placeholder ) {
+		if ( ! isset( $option['hidden_value'] ) ) {
+			$option['hidden_value'] = '0';
+		}
 		?>
 		<label>
-		<input type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="0" />
+		<input type="hidden" name="<?php echo esc_attr( $option['name'] ); ?>" value="<?php echo esc_attr( $option['hidden_value'] ); ?>" />
 		<input
 			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			type="checkbox"
 			value="1"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			checked( '1', $value );
 			?>
 		/> <?php echo wp_kses_post( $option['cb_label'] ); ?></label>
@@ -556,8 +555,8 @@ class WP_Job_Manager_Settings {
 			rows="3"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
-			echo $placeholder; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		>
 			<?php echo esc_textarea( $value ); ?>
@@ -584,7 +583,7 @@ class WP_Job_Manager_Settings {
 			class="regular-text"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			<?php
-			echo implode( ' ', $attributes ); // WPCS: XSS ok.
+			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		>
 		<?php
@@ -636,7 +635,7 @@ class WP_Job_Manager_Settings {
 	 * @param string $ignored_placeholder
 	 */
 	protected function input_page( $option, $ignored_attributes, $value, $ignored_placeholder ) {
-		$args = array(
+		$args = [
 			'name'             => $option['name'],
 			'id'               => $option['name'],
 			'sort_column'      => 'menu_order',
@@ -644,9 +643,10 @@ class WP_Job_Manager_Settings {
 			'show_option_none' => __( '--no page--', 'wp-job-manager' ),
 			'echo'             => false,
 			'selected'         => absint( $value ),
-		);
+		];
 
-		echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) ); // WPCS: XSS ok.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Safe output.
+		echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'wp-job-manager' ) . "' id=", wp_dropdown_pages( $args ) );
 
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
@@ -673,7 +673,7 @@ class WP_Job_Manager_Settings {
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
-			echo implode( ' ', $attributes ); // WPCS: XSS ok.
+			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		/><strong><?php echo esc_html( $human_value ); ?></strong>
 		<?php
@@ -700,8 +700,8 @@ class WP_Job_Manager_Settings {
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
-			echo $placeholder; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		/>
 		<?php
@@ -729,8 +729,8 @@ class WP_Job_Manager_Settings {
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
-			echo $placeholder; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		/>
 		<?php
@@ -757,8 +757,8 @@ class WP_Job_Manager_Settings {
 			name="<?php echo esc_attr( $option['name'] ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
-			echo implode( ' ', $attributes ) . ' '; // WPCS: XSS ok.
-			echo $placeholder; // WPCS: XSS ok.
+			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
 		/>
 		<?php
@@ -778,7 +778,7 @@ class WP_Job_Manager_Settings {
 		$placeholder    = ( ! empty( $option['placeholder'] ) ) ? 'placeholder="' . esc_attr( $option['placeholder'] ) . '"' : '';
 		$class          = ! empty( $option['class'] ) ? $option['class'] : '';
 		$option['type'] = ! empty( $option['type'] ) ? $option['type'] : 'text';
-		$attributes     = array();
+		$attributes     = [];
 		if ( ! empty( $option['attributes'] ) && is_array( $option['attributes'] ) ) {
 			foreach ( $option['attributes'] as $attribute_name => $attribute_value ) {
 				$attributes[] = esc_attr( $attribute_name ) . '="' . esc_attr( $attribute_value ) . '"';
@@ -825,7 +825,19 @@ class WP_Job_Manager_Settings {
 		$enable_option               = $option['enable_field'];
 		$enable_option['name']       = $option['name'] . '[' . $enable_option['name'] . ']';
 		$enable_option['type']       = 'checkbox';
-		$enable_option['attributes'] = array( 'class="sub-settings-expander"' );
+		$enable_option['attributes'] = [ 'class="sub-settings-expander"' ];
+
+		if ( isset( $enable_option['force_value'] ) && is_bool( $enable_option['force_value'] ) ) {
+			if ( true === $enable_option['force_value'] ) {
+				$values[ $option['enable_field']['name'] ] = '1';
+			} else {
+				$values[ $option['enable_field']['name'] ] = '0';
+			}
+
+			$enable_option['hidden_value'] = $values[ $option['enable_field']['name'] ];
+			$enable_option['attributes'][] = 'disabled="disabled"';
+		}
+
 		$this->input_checkbox( $enable_option, $enable_option['attributes'], $values[ $option['enable_field']['name'] ], null );
 
 		echo '<div class="sub-settings-expandable">';

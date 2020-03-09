@@ -1,4 +1,10 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Widget.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -6,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Job Manager Widget base.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Widget extends WP_Widget {
@@ -57,16 +62,16 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 * Registers widget.
 	 */
 	public function register() {
-		$widget_ops = array(
+		$widget_ops = [
 			'classname'   => $this->widget_cssclass,
 			'description' => $this->widget_description,
-		);
+		];
 
 		parent::__construct( $this->widget_id, $this->widget_name, $widget_ops );
 
-		add_action( 'save_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
+		add_action( 'save_post', [ $this, 'flush_widget_cache' ] );
+		add_action( 'deleted_post', [ $this, 'flush_widget_cache' ] );
+		add_action( 'switch_theme', [ $this, 'flush_widget_cache' ] );
 	}
 
 	/**
@@ -79,11 +84,11 @@ class WP_Job_Manager_Widget extends WP_Widget {
 		$cache = wp_cache_get( $this->widget_id, 'widget' );
 
 		if ( ! is_array( $cache ) ) {
-			$cache = array();
+			$cache = [];
 		}
 
 		if ( isset( $cache[ $args['widget_id'] ] ) ) {
-			echo $cache[ $args['widget_id'] ]; // WPCS: XSS ok.
+			echo $cache[ $args['widget_id'] ]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			return true;
 		}
 
@@ -181,8 +186,8 @@ class WP_Job_Manager_Widget extends WP_Widget {
 				case 'checkbox':
 					?>
 					<p>
-						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 						<input class="checkbox" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="checkbox" value="1" <?php checked( $value, 1 ); ?> />
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
 					</p>
 					<?php
 					break;
@@ -196,7 +201,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 * @return array
 	 */
 	protected function get_default_instance() {
-		$defaults = array();
+		$defaults = [];
 		if ( ! empty( $this->settings ) ) {
 			foreach ( $this->settings as $key => $setting ) {
 				$defaults[ $key ] = null;

@@ -20,7 +20,7 @@ function offer_version_sort( $first, $second ) {
 
 uasort( $versions, 'offer_version_sort' );
 
-$version_stack = array();
+$version_stack = [];
 
 foreach ( $versions as $offer ) {
 	list( $major, $minor ) = explode( '.',  $offer->version );
@@ -29,7 +29,7 @@ foreach ( $versions as $offer ) {
 
 	if (
 		! isset( $version_stack[ $base ] )
-		|| version_compare( $offer->version, $version_stack[ $base ] ) ) {
+		|| version_compare( $offer->version, $version_stack[ $base ], '>' ) ) {
 
 		// There is no version like this yet or there is a newer patch to this major version.
 		$version_stack[ $base ] = $offer->version;

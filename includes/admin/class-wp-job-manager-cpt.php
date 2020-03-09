@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_CPT.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Handles actions and filters specific to the custom post type for Job Listings.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_CPT {
@@ -18,7 +22,7 @@ class WP_Job_Manager_CPT {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -28,40 +32,40 @@ class WP_Job_Manager_CPT {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 1, 2 );
-		add_filter( 'manage_edit-job_listing_columns', array( $this, 'columns' ) );
-		add_filter( 'list_table_primary_column', array( $this, 'primary_column' ), 10, 2 );
-		add_filter( 'post_row_actions', array( $this, 'row_actions' ) );
-		add_action( 'manage_job_listing_posts_custom_column', array( $this, 'custom_columns' ), 2 );
-		add_filter( 'manage_edit-job_listing_sortable_columns', array( $this, 'sortable_columns' ) );
-		add_filter( 'request', array( $this, 'sort_columns' ) );
-		add_action( 'parse_query', array( $this, 'search_meta' ) );
-		add_action( 'parse_query', array( $this, 'filter_meta' ) );
-		add_filter( 'get_search_query', array( $this, 'search_meta_label' ) );
-		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ) );
-		add_action( 'bulk_actions-edit-job_listing', array( $this, 'add_bulk_actions' ) );
-		add_action( 'handle_bulk_actions-edit-job_listing', array( $this, 'do_bulk_actions' ), 10, 3 );
-		add_action( 'admin_init', array( $this, 'approve_job' ) );
-		add_action( 'admin_notices', array( $this, 'action_notices' ) );
-		add_action( 'view_mode_post_types', array( $this, 'disable_view_mode' ) );
+		add_filter( 'enter_title_here', [ $this, 'enter_title_here' ], 1, 2 );
+		add_filter( 'manage_edit-job_listing_columns', [ $this, 'columns' ] );
+		add_filter( 'list_table_primary_column', [ $this, 'primary_column' ], 10, 2 );
+		add_filter( 'post_row_actions', [ $this, 'row_actions' ] );
+		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'custom_columns' ], 2 );
+		add_filter( 'manage_edit-job_listing_sortable_columns', [ $this, 'sortable_columns' ] );
+		add_filter( 'request', [ $this, 'sort_columns' ] );
+		add_action( 'parse_query', [ $this, 'search_meta' ] );
+		add_action( 'parse_query', [ $this, 'filter_meta' ] );
+		add_filter( 'get_search_query', [ $this, 'search_meta_label' ] );
+		add_filter( 'post_updated_messages', [ $this, 'post_updated_messages' ] );
+		add_action( 'bulk_actions-edit-job_listing', [ $this, 'add_bulk_actions' ] );
+		add_action( 'handle_bulk_actions-edit-job_listing', [ $this, 'do_bulk_actions' ], 10, 3 );
+		add_action( 'admin_init', [ $this, 'approve_job' ] );
+		add_action( 'admin_notices', [ $this, 'action_notices' ] );
+		add_action( 'view_mode_post_types', [ $this, 'disable_view_mode' ] );
 
 		if ( get_option( 'job_manager_enable_categories' ) ) {
-			add_action( 'restrict_manage_posts', array( $this, 'jobs_by_category' ) );
+			add_action( 'restrict_manage_posts', [ $this, 'jobs_by_category' ] );
 		}
-		add_action( 'restrict_manage_posts', array( $this, 'jobs_meta_filters' ) );
+		add_action( 'restrict_manage_posts', [ $this, 'jobs_meta_filters' ] );
 
-		foreach ( array( 'post', 'post-new' ) as $hook ) {
-			add_action( "admin_footer-{$hook}.php", array( $this, 'extend_submitdiv_post_status' ) );
+		foreach ( [ 'post', 'post-new' ] as $hook ) {
+			add_action( "admin_footer-{$hook}.php", [ $this, 'extend_submitdiv_post_status' ] );
 		}
 	}
 
@@ -71,35 +75,35 @@ class WP_Job_Manager_CPT {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$actions_handled                         = array();
-		$actions_handled['approve_jobs']         = array(
+		$actions_handled                         = [];
+		$actions_handled['approve_jobs']         = [
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Approve %s', 'wp-job-manager' ),
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'notice'  => __( '%s approved', 'wp-job-manager' ),
-			'handler' => array( $this, 'bulk_action_handle_approve_job' ),
-		);
-		$actions_handled['expire_jobs']          = array(
+			'handler' => [ $this, 'bulk_action_handle_approve_job' ],
+		];
+		$actions_handled['expire_jobs']          = [
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Expire %s', 'wp-job-manager' ),
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'notice'  => __( '%s expired', 'wp-job-manager' ),
-			'handler' => array( $this, 'bulk_action_handle_expire_job' ),
-		);
-		$actions_handled['mark_jobs_filled']     = array(
+			'handler' => [ $this, 'bulk_action_handle_expire_job' ],
+		];
+		$actions_handled['mark_jobs_filled']     = [
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Mark %s Filled', 'wp-job-manager' ),
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'notice'  => __( '%s marked as filled', 'wp-job-manager' ),
-			'handler' => array( $this, 'bulk_action_handle_mark_job_filled' ),
-		);
-		$actions_handled['mark_jobs_not_filled'] = array(
+			'handler' => [ $this, 'bulk_action_handle_mark_job_filled' ],
+		];
+		$actions_handled['mark_jobs_not_filled'] = [
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'label'   => __( 'Mark %s Not Filled', 'wp-job-manager' ),
 			// translators: Placeholder (%s) is the plural name of the job listings post type.
 			'notice'  => __( '%s marked as not filled', 'wp-job-manager' ),
-			'handler' => array( $this, 'bulk_action_handle_mark_job_not_filled' ),
-		);
+			'handler' => [ $this, 'bulk_action_handle_mark_job_not_filled' ],
+		];
 
 		/**
 		 * Filters the bulk actions that can be applied to job listings.
@@ -148,15 +152,17 @@ class WP_Job_Manager_CPT {
 	public function do_bulk_actions( $redirect_url, $action, $post_ids ) {
 		$actions_handled = $this->get_bulk_actions();
 		if ( isset( $actions_handled[ $action ] ) && isset( $actions_handled[ $action ]['handler'] ) ) {
-			$handled_jobs = array();
+			$handled_jobs = [];
 			if ( ! empty( $post_ids ) ) {
 				foreach ( $post_ids as $post_id ) {
-					if ( 'job_listing' === get_post_type( $post_id )
-						 && call_user_func( $actions_handled[ $action ]['handler'], $post_id ) ) {
+					if (
+						'job_listing' === get_post_type( $post_id )
+						&& call_user_func( $actions_handled[ $action ]['handler'], $post_id )
+					) {
 						$handled_jobs[] = $post_id;
 					}
 				}
-				wp_redirect( add_query_arg( 'handled_jobs', $handled_jobs, add_query_arg( 'action_performed', $action, $redirect_url ) ) );
+				wp_safe_redirect( add_query_arg( 'handled_jobs', $handled_jobs, add_query_arg( 'action_performed', $action, $redirect_url ) ) );
 				exit;
 			}
 		}
@@ -170,13 +176,14 @@ class WP_Job_Manager_CPT {
 	 * @return bool
 	 */
 	public function bulk_action_handle_approve_job( $post_id ) {
-		$job_data = array(
+		$job_data = [
 			'ID'          => $post_id,
 			'post_status' => 'publish',
-		);
-		if ( in_array( get_post_status( $post_id ), array( 'pending', 'pending_payment' ), true )
-			 && current_user_can( 'publish_post', $post_id )
-			 && wp_update_post( $job_data )
+		];
+		if (
+			in_array( get_post_status( $post_id ), [ 'pending', 'pending_payment' ], true )
+			&& current_user_can( 'publish_post', $post_id )
+			&& wp_update_post( $job_data )
 		) {
 			return true;
 		}
@@ -190,12 +197,13 @@ class WP_Job_Manager_CPT {
 	 * @return bool
 	 */
 	public function bulk_action_handle_expire_job( $post_id ) {
-		$job_data = array(
+		$job_data = [
 			'ID'          => $post_id,
 			'post_status' => 'expired',
-		);
-		if ( current_user_can( 'manage_job_listings', $post_id )
-			 && wp_update_post( $job_data )
+		];
+		if (
+			current_user_can( 'manage_job_listings', $post_id )
+			&& wp_update_post( $job_data )
 		) {
 			return true;
 		}
@@ -210,8 +218,9 @@ class WP_Job_Manager_CPT {
 	 * @return bool
 	 */
 	public function bulk_action_handle_mark_job_filled( $post_id ) {
-		if ( current_user_can( 'manage_job_listings', $post_id )
-			 && update_post_meta( $post_id, '_filled', 1 )
+		if (
+			current_user_can( 'manage_job_listings', $post_id )
+			&& update_post_meta( $post_id, '_filled', 1 )
 		) {
 			return true;
 		}
@@ -225,8 +234,9 @@ class WP_Job_Manager_CPT {
 	 * @return bool
 	 */
 	public function bulk_action_handle_mark_job_not_filled( $post_id ) {
-		if ( current_user_can( 'manage_job_listings', $post_id )
-			 && update_post_meta( $post_id, '_filled', 0 )
+		if (
+			current_user_can( 'manage_job_listings', $post_id )
+			&& update_post_meta( $post_id, '_filled', 0 )
 		) {
 			return true;
 		}
@@ -237,14 +247,19 @@ class WP_Job_Manager_CPT {
 	 * Approves a single job.
 	 */
 	public function approve_job() {
-		if ( ! empty( $_GET['approve_job'] ) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'approve_job' ) && current_user_can( 'publish_post', $_GET['approve_job'] ) ) {
+		if (
+			! empty( $_GET['approve_job'] )
+			&& ! empty( $_REQUEST['_wpnonce'] )
+			&& wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'approve_job' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+			&& current_user_can( 'publish_post', absint( $_GET['approve_job'] ) )
+		) {
 			$post_id  = absint( $_GET['approve_job'] );
-			$job_data = array(
+			$job_data = [
 				'ID'          => $post_id,
 				'post_status' => 'publish',
-			);
+			];
 			wp_update_post( $job_data );
-			wp_redirect( remove_query_arg( 'approve_job', add_query_arg( 'handled_jobs', $post_id, add_query_arg( 'action_performed', 'approve_jobs', admin_url( 'edit.php?post_type=job_listing' ) ) ) ) );
+			wp_safe_redirect( remove_query_arg( 'approve_job', add_query_arg( 'handled_jobs', $post_id, add_query_arg( 'action_performed', 'approve_jobs', admin_url( 'edit.php?post_type=job_listing' ) ) ) ) );
 			exit;
 		}
 	}
@@ -255,20 +270,22 @@ class WP_Job_Manager_CPT {
 	public function action_notices() {
 		global $post_type, $pagenow;
 
-		$handled_jobs    = isset( $_REQUEST['handled_jobs'] ) ? $_REQUEST['handled_jobs'] : false;
-		$action          = isset( $_REQUEST['action_performed'] ) ? $_REQUEST['action_performed'] : false;
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+		$handled_jobs    = isset( $_REQUEST['handled_jobs'] ) && is_array( $_REQUEST['handled_jobs'] ) ? array_map( 'absint', $_REQUEST['handled_jobs'] ) : false;
+		$action          = isset( $_REQUEST['action_performed'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['action_performed'] ) ) : false;
 		$actions_handled = $this->get_bulk_actions();
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-		if ( 'edit.php' === $pagenow
-			 && 'job_listing' === $post_type
-			 && $action
-			 && ! empty( $handled_jobs )
-			 && isset( $actions_handled[ $action ] )
-			 && isset( $actions_handled[ $action ]['notice'] )
+		if (
+			'edit.php' === $pagenow
+			&& 'job_listing' === $post_type
+			&& $action
+			&& ! empty( $handled_jobs )
+			&& isset( $actions_handled[ $action ] )
+			&& isset( $actions_handled[ $action ]['notice'] )
 		) {
 			if ( is_array( $handled_jobs ) ) {
-				$handled_jobs = array_map( 'absint', $handled_jobs );
-				$titles       = array();
+				$titles = [];
 				foreach ( $handled_jobs as $job_id ) {
 					$titles[] = wpjm_get_the_job_title( $job_id );
 				}
@@ -291,7 +308,7 @@ class WP_Job_Manager_CPT {
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php';
 
-		$r                 = array();
+		$r                 = [];
 		$r['taxonomy']     = 'job_listing_category';
 		$r['pad_counts']   = 1;
 		$r['hierarchical'] = 1;
@@ -306,16 +323,18 @@ class WP_Job_Manager_CPT {
 			return;
 		}
 
-		$allowed_html = array(
-			'option' => array(
-				'value' => array(),
-				'selected' => array(),
-				'class' => array(),
-			),
-		);
+		$allowed_html = [
+			'option' => [
+				'value'    => [],
+				'selected' => [],
+				'class'    => [],
+			],
+		];
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes or data exposed based on input.
+		$selected_category = isset( $_GET['job_listing_category'] ) ? sanitize_text_field( wp_unslash( $_GET['job_listing_category'] ) ) : '';
 		echo "<select name='job_listing_category' id='dropdown_job_listing_category'>";
-		echo '<option value="" ' . selected( isset( $_GET['job_listing_category'] ) ? $_GET['job_listing_category'] : '', '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
+		echo '<option value="" ' . selected( $selected_category, '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
 		echo wp_kses( $walker->walk( $terms, 0, $r ), $allowed_html );
 		echo '</select>';
 
@@ -337,39 +356,39 @@ class WP_Job_Manager_CPT {
 		// Filter by Filled.
 		$this->jobs_filter_dropdown(
 			'job_listing_filled',
-			array(
-				array(
+			[
+				[
 					'value' => '',
 					'text'  => __( 'Select Filled', 'wp-job-manager' ),
-				),
-				array(
+				],
+				[
 					'value' => '1',
 					'text'  => __( 'Filled', 'wp-job-manager' ),
-				),
-				array(
+				],
+				[
 					'value' => '0',
 					'text'  => __( 'Not Filled', 'wp-job-manager' ),
-				),
-			)
+				],
+			]
 		);
 
 		// Filter by Featured.
 		$this->jobs_filter_dropdown(
 			'job_listing_featured',
-			array(
-				array(
+			[
+				[
 					'value' => '',
 					'text'  => __( 'Select Featured', 'wp-job-manager' ),
-				),
-				array(
+				],
+				[
 					'value' => '1',
 					'text'  => __( 'Featured', 'wp-job-manager' ),
-				),
-				array(
+				],
+				[
 					'value' => '0',
 					'text'  => __( 'Not Featured', 'wp-job-manager' ),
-				),
-			)
+				],
+			]
 		);
 	}
 
@@ -390,7 +409,8 @@ class WP_Job_Manager_CPT {
 	 * @param array  $options      The options for the dropdown. See the description above.
 	 */
 	private function jobs_filter_dropdown( $param, $options ) {
-		$selected = isset( $_GET[ $param ] ) ? $_GET[ $param ] : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes or data exposed based on input.
+		$selected = isset( $_GET[ $param ] ) ? sanitize_text_field( wp_unslash( $_GET[ $param ] ) ) : '';
 
 		echo '<select name="' . esc_attr( $param ) . '" id="dropdown_' . esc_attr( $param ) . '">';
 
@@ -426,7 +446,10 @@ class WP_Job_Manager_CPT {
 	public function post_updated_messages( $messages ) {
 		global $post, $post_ID, $wp_post_types;
 
-		$messages['job_listing'] = array(
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes based on input.
+		$revision_title = isset( $_GET['revision'] ) ? wp_post_revision_title( (int) $_GET['revision'], false ) : false;
+
+		$messages['job_listing'] = [
 			0  => '',
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 			1  => sprintf( __( '%1$s updated. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
@@ -435,7 +458,7 @@ class WP_Job_Manager_CPT {
 			// translators: %s is the singular name of the job listing post type.
 			4  => sprintf( esc_html__( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the revision number.
-			5  => isset( $_GET['revision'] ) ? sprintf( __( '%1$s restored to revision from %2$s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			5  => $revision_title ? sprintf( __( '%1$s restored to revision from %2$s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, $revision_title ) : false,
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 			6  => sprintf( __( '%1$s published. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
@@ -451,7 +474,7 @@ class WP_Job_Manager_CPT {
 			),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 			10 => sprintf( __( '%1$s draft updated. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
-		);
+		];
 
 		return $messages;
 	}
@@ -464,7 +487,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function columns( $columns ) {
 		if ( ! is_array( $columns ) ) {
-			$columns = array();
+			$columns = [];
 		}
 
 		unset( $columns['title'], $columns['date'], $columns['author'] );
@@ -517,7 +540,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function row_actions( $actions ) {
 		if ( 'job_listing' === get_post_type() ) {
-			return array();
+			return [];
 		}
 		return $actions;
 	}
@@ -601,36 +624,36 @@ class WP_Job_Manager_CPT {
 				break;
 			case 'job_actions':
 				echo '<div class="actions">';
-				$admin_actions = apply_filters( 'post_row_actions', array(), $post );
+				$admin_actions = apply_filters( 'post_row_actions', [], $post );
 
-				if ( in_array( $post->post_status, array( 'pending', 'pending_payment' ), true ) && current_user_can( 'publish_post', $post->ID ) ) {
-					$admin_actions['approve'] = array(
+				if ( in_array( $post->post_status, [ 'pending', 'pending_payment' ], true ) && current_user_can( 'publish_post', $post->ID ) ) {
+					$admin_actions['approve'] = [
 						'action' => 'approve',
 						'name'   => __( 'Approve', 'wp-job-manager' ),
 						'url'    => wp_nonce_url( add_query_arg( 'approve_job', $post->ID ), 'approve_job' ),
-					);
+					];
 				}
 				if ( 'trash' !== $post->post_status ) {
 					if ( current_user_can( 'read_post', $post->ID ) ) {
-						$admin_actions['view'] = array(
+						$admin_actions['view'] = [
 							'action' => 'view',
 							'name'   => __( 'View', 'wp-job-manager' ),
 							'url'    => get_permalink( $post->ID ),
-						);
+						];
 					}
 					if ( current_user_can( 'edit_post', $post->ID ) ) {
-						$admin_actions['edit'] = array(
+						$admin_actions['edit'] = [
 							'action' => 'edit',
 							'name'   => __( 'Edit', 'wp-job-manager' ),
 							'url'    => get_edit_post_link( $post->ID ),
-						);
+						];
 					}
 					if ( current_user_can( 'delete_post', $post->ID ) ) {
-						$admin_actions['delete'] = array(
+						$admin_actions['delete'] = [
 							'action' => 'delete',
 							'name'   => __( 'Delete', 'wp-job-manager' ),
 							'url'    => get_delete_post_link( $post->ID ),
-						);
+						];
 					}
 				}
 
@@ -657,12 +680,12 @@ class WP_Job_Manager_CPT {
 	 * @return array
 	 */
 	public function sortable_columns( $columns ) {
-		$custom = array(
+		$custom = [
 			'job_posted'   => 'date',
 			'job_position' => 'title',
 			'job_location' => 'job_location',
 			'job_expires'  => 'job_expires',
-		);
+		];
 		return wp_parse_args( $custom, $columns );
 	}
 
@@ -677,18 +700,18 @@ class WP_Job_Manager_CPT {
 			if ( 'job_expires' === $vars['orderby'] ) {
 				$vars = array_merge(
 					$vars,
-					array(
+					[
 						'meta_key' => '_job_expires',
 						'orderby'  => 'meta_value',
-					)
+					]
 				);
 			} elseif ( 'job_location' === $vars['orderby'] ) {
 				$vars = array_merge(
 					$vars,
-					array(
+					[
 						'meta_key' => '_job_location',
 						'orderby'  => 'meta_value',
-					)
+					]
 				);
 			}
 		}
@@ -709,23 +732,27 @@ class WP_Job_Manager_CPT {
 
 		$post_ids = array_unique(
 			array_merge(
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- WP_Query doesn't allow for meta query to be an optional match.
 				$wpdb->get_col(
 					$wpdb->prepare(
-						"
-					SELECT posts.ID
-					FROM {$wpdb->posts} posts
-					INNER JOIN {$wpdb->postmeta} p1 ON posts.ID = p1.post_id
-					WHERE p1.meta_value LIKE %s
-					OR posts.post_title LIKE %s
-					OR posts.post_content LIKE %s
-					AND posts.post_type = 'job_listing'
-					",
+						"SELECT posts.ID
+						FROM {$wpdb->posts} posts
+						WHERE (
+							posts.ID IN (
+								SELECT post_id
+								FROM {$wpdb->postmeta}
+								WHERE meta_value LIKE %s
+							)
+							OR posts.post_title LIKE %s
+							OR posts.post_content LIKE %s
+						)
+						AND posts.post_type = 'job_listing'",
 						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
 						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
 						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%'
 					)
 				),
-				array( 0 )
+				[ 0 ]
 			)
 		);
 
@@ -747,25 +774,30 @@ class WP_Job_Manager_CPT {
 			return;
 		}
 
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+		$input_job_listing_filled   = isset( $_GET['job_listing_filled'] ) && '' !== $_GET['job_listing_filled'] ? absint( $_GET['job_listing_filled'] ) : false;
+		$input_job_listing_featured = isset( $_GET['job_listing_featured'] ) && '' !== $_GET['job_listing_featured'] ? absint( $_GET['job_listing_featured'] ) : false;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
 		$meta_query = $wp->get( 'meta_query' );
 		if ( ! is_array( $meta_query ) ) {
-			$meta_query = array();
+			$meta_query = [];
 		}
 
 		// Filter on _filled meta.
-		if ( isset( $_GET['job_listing_filled'] ) && '' !== $_GET['job_listing_filled'] ) {
-			$meta_query[] = array(
+		if ( false !== $input_job_listing_filled ) {
+			$meta_query[] = [
 				'key'   => '_filled',
-				'value' => $_GET['job_listing_filled'],
-			);
+				'value' => $input_job_listing_filled,
+			];
 		}
 
 		// Filter on _featured meta.
-		if ( isset( $_GET['job_listing_featured'] ) && '' !== $_GET['job_listing_featured'] ) {
-			$meta_query[] = array(
+		if ( false !== $input_job_listing_featured ) {
+			$meta_query[] = [
 				'key'   => '_featured',
-				'value' => $_GET['job_listing_featured'],
-			);
+				'value' => $input_job_listing_featured,
+			];
 		}
 
 		// Set new meta query.
@@ -783,11 +815,13 @@ class WP_Job_Manager_CPT {
 	public function search_meta_label( $query ) {
 		global $pagenow, $typenow;
 
-		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) || ! isset( $_GET['s'] ) ) {
 			return $query;
 		}
 
-		return wp_unslash( sanitize_text_field( $_GET['s'] ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+		return sanitize_text_field( wp_unslash( $_GET['s'] ) );
 	}
 
 	/**
@@ -819,11 +853,11 @@ class WP_Job_Manager_CPT {
 		<script type="text/javascript">
 			jQuery( document ).ready( function($) {
 				<?php if ( ! empty( $display ) ) : ?>
-					jQuery( '#post-status-display' ).html( <?php echo wp_json_encode( $display ); ?> );
+					jQuery( '#post-status-display' ).html( decodeURIComponent( '<?php echo rawurlencode( (string) wp_specialchars_decode( $display ) ); ?>' ) );
 				<?php endif; ?>
 
 				var select = jQuery( '#post-status-select' ).find( 'select' );
-				jQuery( select ).html( <?php echo wp_json_encode( $options ); ?> );
+				jQuery( select ).html( decodeURIComponent( '<?php echo rawurlencode( (string) wp_specialchars_decode( $options ) ); ?>' ) );
 			} );
 		</script>
 		<?php

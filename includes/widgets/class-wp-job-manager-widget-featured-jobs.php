@@ -1,4 +1,10 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Widget_Featured_Jobs.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -22,42 +28,47 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 		$this->widget_cssclass    = 'job_manager widget_featured_jobs';
 		$this->widget_description = __( 'Display a list of featured listings on your site.', 'wp-job-manager' );
 		$this->widget_id          = 'widget_featured_jobs';
-		$this->settings           = array(
-			'title'   => array(
+		$this->settings           = [
+			'title'     => [
 				'type'  => 'text',
 				// translators: Placeholder %s is the plural label for the job listing post type.
 				'std'   => sprintf( __( 'Featured %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ),
 				'label' => __( 'Title', 'wp-job-manager' ),
-			),
-			'number'  => array(
+			],
+			'number'    => [
 				'type'  => 'number',
 				'step'  => 1,
 				'min'   => 1,
 				'max'   => '',
 				'std'   => 10,
 				'label' => __( 'Number of listings to show', 'wp-job-manager' ),
-			),
-			'orderby' => array(
+			],
+			'orderby'   => [
 				'type'    => 'select',
 				'std'     => 'date',
 				'label'   => __( 'Sort By', 'wp-job-manager' ),
-				'options' => array(
+				'options' => [
 					'date'          => __( 'Date', 'wp-job-manager' ),
 					'title'         => __( 'Title', 'wp-job-manager' ),
 					'author'        => __( 'Author', 'wp-job-manager' ),
 					'rand_featured' => __( 'Random', 'wp-job-manager' ),
-				),
-			),
-			'order'   => array(
+				],
+			],
+			'order'     => [
 				'type'    => 'select',
 				'std'     => 'DESC',
 				'label'   => __( 'Sort Direction', 'wp-job-manager' ),
-				'options' => array(
+				'options' => [
 					'ASC'  => __( 'Ascending', 'wp-job-manager' ),
 					'DESC' => __( 'Descending', 'wp-job-manager' ),
-				),
-			),
-		);
+				],
+			],
+			'show_logo' => [
+				'type'  => 'checkbox',
+				'std'   => 0,
+				'label' => esc_html__( 'Show Company Logo', 'wp-job-manager' ),
+			],
+		];
 		parent::__construct();
 	}
 
@@ -84,22 +95,23 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 		$orderby        = esc_attr( $instance['orderby'] );
 		$order          = esc_attr( $instance['order'] );
 		$title          = apply_filters( 'widget_title', $title_instance, $instance, $this->id_base );
+		$show_logo      = absint( $instance['show_logo'] );
 		$jobs           = get_job_listings(
-			array(
+			[
 				'posts_per_page' => $number,
 				'orderby'        => $orderby,
 				'order'          => $order,
 				'featured'       => true,
-			)
+			]
 		);
 
 		if ( $jobs->have_posts() ) : ?>
 
-			<?php echo $args['before_widget']; // WPCS: XSS ok. ?>
+			<?php echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 			<?php
 			if ( $title ) {
-				echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // WPCS: XSS ok.
+				echo $args['before_title'] . esc_html( $title ) . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
 			?>
 
@@ -110,26 +122,26 @@ class WP_Job_Manager_Widget_Featured_Jobs extends WP_Job_Manager_Widget {
 					$jobs->the_post();
 					?>
 
-					<?php get_job_manager_template_part( 'content-widget', 'job_listing' ); ?>
+					<?php get_job_manager_template( 'content-widget-job_listing.php', [ 'show_logo' => $show_logo ] ); ?>
 
 				<?php endwhile; ?>
 
 			</ul>
 
-			<?php echo $args['after_widget']; // WPCS: XSS ok. ?>
+			<?php echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 		<?php else : ?>
 
 			<?php get_job_manager_template_part( 'content-widget', 'no-jobs-found' ); ?>
 
-		<?php
+			<?php
 		endif;
 
 		wp_reset_postdata();
 
 		$content = ob_get_clean();
 
-		echo $content; // WPCS: XSS ok.
+		echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 		$this->cache_widget( $args, $content );
 	}

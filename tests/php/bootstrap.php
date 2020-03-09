@@ -28,11 +28,10 @@ class WPJM_Unit_Tests_Bootstrap {
 	 */
 	public function __construct() {
 		define( 'DOING_AJAX', true );
-		define( 'WPJM_REST_API_ENABLED', true );
 		ini_set( 'display_errors', 'on' );
 
 		error_reporting( E_ALL );
-		set_error_handler( array( $this, 'convert_to_exception' ), E_ALL );
+		set_error_handler( [ $this, 'convert_to_exception' ], E_ALL );
 
 		$this->tests_dir    = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'tests';
 		$this->includes_dir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'includes';
@@ -43,10 +42,10 @@ class WPJM_Unit_Tests_Bootstrap {
 		require_once $this->wp_tests_dir . '/includes/functions.php';
 
 		// load WPJM.
-		tests_add_filter( 'muplugins_loaded', array( $this, 'load_plugin' ) );
+		tests_add_filter( 'muplugins_loaded', [ $this, 'load_plugin' ] );
 
 		// install WPJM.
-		tests_add_filter( 'setup_theme', array( $this, 'install_plugin' ) );
+		tests_add_filter( 'setup_theme', [ $this, 'install_plugin' ] );
 
 		// load the WP testing environment.
 		require_once $this->wp_tests_dir . '/includes/bootstrap.php';
@@ -126,15 +125,15 @@ class WPJM_Unit_Tests_Bootstrap {
 			define( 'E_DEPRECATED', 8192 );
 		}
 
-		$error_descriptions = array(
+		$error_descriptions = [
 			E_WARNING    => 'Warning',
 			E_ERROR      => 'Error',
 			E_PARSE      => 'Parse Error',
 			E_NOTICE     => 'Notice',
 			E_STRICT     => 'Strict Notice',
 			E_DEPRECATED => 'PHP Deprecated',
-		);
-		if ( in_array( $errno, array( E_RECOVERABLE_ERROR ) ) ) {
+		];
+		if ( in_array( $errno, [ E_RECOVERABLE_ERROR ] ) ) {
 			return;
 		}
 		$description = 'Unknown Error: ';

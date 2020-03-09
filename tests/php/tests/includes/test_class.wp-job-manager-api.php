@@ -22,7 +22,7 @@ class WP_Test_WP_Job_Manager_API extends WPJM_BaseTest {
 	 */
 	public function test_add_query_vars() {
 		$instance = WP_Job_Manager_API::instance();
-		$vars     = array( 'existing-var' );
+		$vars     = [ 'existing-var' ];
 		$new_vars = $instance->add_query_vars( $vars );
 		$this->assertCount( 2, $new_vars );
 		$this->assertContains( 'job-manager-api', $new_vars );
@@ -41,11 +41,11 @@ class WP_Test_WP_Job_Manager_API extends WPJM_BaseTest {
 		$this->assertTrue( class_exists( 'WPJM_Api_Handler_Stub' ) );
 		$handler     = new WPJM_Api_Handler_Stub();
 		$handler_tag = strtolower( get_class( $handler ) );
-		add_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		$wp->query_vars['job-manager-api'] = $handler_tag;
 		$this->assertFalse( $handler->fired );
 		$instance->api_requests();
 		$this->assertTrue( $handler->fired );
-		remove_filter( 'wp_die_ajax_handler', array( $this, 'return_do_not_die' ) );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 	}
 }

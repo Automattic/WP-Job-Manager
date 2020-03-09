@@ -6,7 +6,7 @@
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
- * @package     WP Job Manager
+ * @package     wp-job-manager
  * @category    Template
  * @version     1.20.0
  */
@@ -30,7 +30,7 @@ if ( $max_num_pages <= 1 ) {
 	 	 *
 	 	 * @param array $args The pagination arguments.
 	 	 */
-		echo paginate_links( apply_filters( 'job_manager_pagination_args', array(
+		echo paginate_links( apply_filters( 'job_manager_pagination_args', [
 			'base'      => esc_url_raw( str_replace( 999999999, '%#%', get_pagenum_link( 999999999, false ) ) ),
 			'format'    => '',
 			'current'   => max( 1, get_query_var('paged') ),
@@ -40,6 +40,6 @@ if ( $max_num_pages <= 1 ) {
 			'type'      => 'list',
 			'end_size'  => 3,
 			'mid_size'  => 3
-		) ) );
+		] ) );
 	?>
 </nav>
