@@ -3,10 +3,12 @@ name: "\U0001F41E Bug report"
 about: Report a bug if something isn't working as expected in the core WP Job Manager
   plugin.
 title: ''
-labels: ''
+labels: '[Type] Bug'
 assignees: ''
 
 ---
+
+<!-- Thanks for contributing to WP Job Manager! Pick a clear title ("Improve client-side UI validation") and proceed. -->
 
 **Describe the bug**
 A clear and concise description of what the bug is. Please be as descriptive as possible; issues lacking detail, or for any other reason than to report a bug, may be closed without action.
