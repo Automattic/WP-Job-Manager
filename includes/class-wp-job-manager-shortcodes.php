@@ -342,19 +342,26 @@ class WP_Job_Manager_Shortcodes {
 			$atts['filled'] = ( is_bool( $atts['filled'] ) && $atts['filled'] ) || in_array( $atts['filled'], [ 1, '1', 'true', 'yes' ], true );
 		}
 
+		// By default, use client-side state to populate form fields.
+		$disable_client_state = false;
+
 		// Get keywords, location, category and type from querystring if set.
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		if ( ! empty( $_GET['search_keywords'] ) ) {
-			$atts['keywords'] = sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) );
+			$atts['keywords']     = sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) );
+			$disable_client_state = true;
 		}
 		if ( ! empty( $_GET['search_location'] ) ) {
-			$atts['location'] = sanitize_text_field( wp_unslash( $_GET['search_location'] ) );
+			$atts['location']      = sanitize_text_field( wp_unslash( $_GET['search_location'] ) );
+			$disable_client_state  = true;
 		}
 		if ( ! empty( $_GET['search_category'] ) ) {
 			$atts['selected_category'] = sanitize_text_field( wp_unslash( $_GET['search_category'] ) );
+			$disable_client_state      = true;
 		}
 		if ( ! empty( $_GET['search_job_type'] ) ) {
 			$atts['selected_job_types'] = sanitize_text_field( wp_unslash( $_GET['search_job_type'] ) );
+			$disable_client_state       = true;
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
@@ -379,14 +386,15 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		$data_attributes = [
-			'location'        => $atts['location'],
-			'keywords'        => $atts['keywords'],
-			'show_filters'    => $atts['show_filters'] ? 'true' : 'false',
-			'show_pagination' => $atts['show_pagination'] ? 'true' : 'false',
-			'per_page'        => $atts['per_page'],
-			'orderby'         => $atts['orderby'],
-			'order'           => $atts['order'],
-			'categories'      => implode( ',', $atts['categories'] ),
+			'location'                   => $atts['location'],
+			'keywords'                   => $atts['keywords'],
+			'show_filters'               => $atts['show_filters'] ? 'true' : 'false',
+			'show_pagination'            => $atts['show_pagination'] ? 'true' : 'false',
+			'per_page'                   => $atts['per_page'],
+			'orderby'                    => $atts['orderby'],
+			'order'                      => $atts['order'],
+			'categories'                 => implode( ',', $atts['categories'] ),
+			'disable-form-state-storage' => $disable_client_state,
 		];
 
 		if ( $atts['show_filters'] ) {
