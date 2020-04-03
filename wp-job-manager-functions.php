@@ -1094,6 +1094,15 @@ function job_manager_dropdown_categories( $args = '' ) {
 		$r['pad_counts'] = true;
 	}
 
+	if ( isset( $_GET['search_category'] ) ) {
+		$r['search_category_ids'] = [];
+		$search_category_slugs    = explode( ',', $_GET['search_category'] );
+
+		foreach( $search_category_slugs as $slug ) {
+			$r['search_category_ids'][] = get_term_by( 'slug', $slug, $r['taxonomy'] )->term_id;
+		}
+	}
+
 	/** This filter is documented in wp-job-manager.php */
 	$r['lang'] = apply_filters( 'wpjm_lang', null );
 
@@ -1102,18 +1111,38 @@ function job_manager_dropdown_categories( $args = '' ) {
 	$categories      = get_transient( $categories_hash );
 
 	if ( empty( $categories ) ) {
-		$categories = get_terms(
-			[
-				'taxonomy'     => $r['taxonomy'],
-				'orderby'      => $r['orderby'],
-				'order'        => $r['order'],
-				'hide_empty'   => $r['hide_empty'],
-				'parent'       => $r['parent'],
-				'child_of'     => $r['child_of'],
-				'exclude'      => $r['exclude'],
-				'hierarchical' => $r['hierarchical'],
-			]
-		);
+		$args = [
+			'taxonomy'     => $r['taxonomy'],
+			'orderby'      => $r['orderby'],
+			'order'        => $r['order'],
+			'hide_empty'   => $r['hide_empty'],
+			'parent'       => $r['parent'],
+			'child_of'     => $r['child_of'],
+			'exclude'      => $r['exclude'],
+			'hierarchical' => $r['hierarchical'],
+		];
+
+		$categories = get_terms( $args );
+
+		if ( isset( $r['search_category_ids'] ) ) {
+			$categories_ids = wp_list_pluck( $categories, 'term_id' );
+
+			$args['hide_empty'] = false;
+			$args['include']    = $r['search_category_ids'];
+
+			$search_categories = array_filter(
+				get_terms( $args ),
+				function( $term ) use ( $categories_ids ) {
+					return ! in_array( $term->term_id, $categories_ids, true);
+				}
+			);
+
+			$categories = array_merge(
+				$categories,
+				$search_categories
+			);
+		}
+
 		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 7 );
 	}
 
