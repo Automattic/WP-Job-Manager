@@ -207,6 +207,16 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	/**
+	 * Get URL query string
+	 */
+	function getQueryString( name ) {
+		var search = window.location.search;
+		var result = new RegExp( '[\\?&]' + name + '=([^&#]*)' ).exec( search );
+
+		return result ? decodeURIComponent( result[1] ) : null;
+	}
+
+	/**
 	 * Handle restoring the results from sessionStorage or the Ajax call.
 	 */
 	function handle_result( $target, result, append ) {
@@ -315,7 +325,7 @@ jQuery( document ).ready( function( $ ) {
 			var job_types = $target.data( 'job_types' );
 			var post_status = $target.data( 'post_status' );
 			var index = $( 'div.job_listings' ).index( this );
-			var categories, keywords, location;
+			var categories, searchCategory, keywords, location;
 
 			if ( index < 0 ) {
 				return;
@@ -350,6 +360,15 @@ jQuery( document ).ready( function( $ ) {
 						return $( this ).val();
 					} )
 					.get();
+
+				if (
+					! categories
+					|| categories.length === 0
+					|| ! categories[0]
+				) {
+					searchCategory = getQueryString( 'search_category' );
+					categories = searchCategory ? searchCategory.split( ',' ) : categories;
+				}
 
 				keywords = '';
 				location = '';
