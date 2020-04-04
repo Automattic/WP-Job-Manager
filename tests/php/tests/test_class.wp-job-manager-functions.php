@@ -788,6 +788,108 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$this->assertTrue( is_wpjm() );
 	}
 
+	/**
+	 * @since 1.34.2
+	 * @covers ::wpjm_get_category_slugs_from_search_query_string
+	 */
+	public function test_get_category_slugs_from_search_query_string() {
+		$_GET['search_category']        = 'cat1,cat2,cat3';
+		$expected_search_category_slugs = [ 'cat1', 'cat2', 'cat3' ];
+
+		$search_category_slugs = wpjm_get_category_slugs_from_search_query_string();
+
+		$this->assertEquals(
+			$expected_search_category_slugs,
+			$search_category_slugs,
+			'Should return the array of category slugs to search'
+		);
+	}
+
+	/**
+	 * @since 1.34.2
+	 * @covers ::wpjm_get_category_slugs_from_search_query_string
+	 */
+	public function test_get_category_slugs_from_search_query_string_no_query_string() {
+		$search_category_slugs = wpjm_get_category_slugs_from_search_query_string();
+
+		$this->assertEquals(
+			[],
+			$search_category_slugs,
+			'Should return an empty array of category slugs when there is no search query'
+		);
+	}
+
+	/**
+	 * @since 1.34.2
+	 * @covers ::wpjm_get_category_slugs_from_search_query_string
+	 */
+	public function test_get_category_slugs_from_search_query_string_empty_query_string() {
+		$_GET['search_category'] = '';
+		$search_category_slugs   = wpjm_get_category_slugs_from_search_query_string();
+
+		$this->assertEquals(
+			[],
+			$search_category_slugs,
+			'Should return an empty array of category slugs when the query string is empty'
+		);
+	}
+
+	/**
+	 * @since 1.34.2
+	 * @covers ::wpjm_get_categories_by_slug
+	 */
+	public function test_get_categories_by_slug() {
+		$taxonomy_name = 'job_listing_category';
+		$default_args  = [
+			'orderby' => 'slug',
+			'order'   => 'ASC',
+		];
+
+		$term1 = wp_create_term( 'cat1', $taxonomy_name );
+		$term2 = wp_create_term( 'cat2', $taxonomy_name );
+		$term3 = wp_create_term( 'cat3', $taxonomy_name );
+
+		$search_category_slugs = [ 'cat1', 'cat2' ];
+		$exclude_categories    = [];
+
+		$expected_categories = [ get_term( $term1['term_id'] ), get_term( $term2['term_id'] ) ];
+		$categories          = wpjm_get_categories_by_slug( $search_category_slugs, $default_args, $exclude_categories);
+
+		$this->assertEquals(
+			$expected_categories,
+			$categories,
+			'Should return the correct categories searched by slug'
+		);
+	}
+
+	/**
+	 * @since 1.34.2
+	 * @covers ::wpjm_get_categories_by_slug
+	 */
+	public function test_get_categories_by_slug_excluding_categories() {
+		$taxonomy_name = 'job_listing_category';
+		$default_args  = [
+			'orderby' => 'slug',
+			'order'   => 'ASC',
+		];
+
+		$term1 = wp_create_term( 'cat1', $taxonomy_name );
+		$term2 = wp_create_term( 'cat2', $taxonomy_name );
+		$term3 = wp_create_term( 'cat3', $taxonomy_name );
+
+		$search_category_slugs = [ 'cat1', 'cat2' ];
+		$exclude_categories    = [ get_term( $term2['term_id'] ) ];
+
+		$expected_categories = [ get_term( $term1['term_id'] ) ];
+		$categories          = wpjm_get_categories_by_slug( $search_category_slugs, $default_args, $exclude_categories);
+
+		$this->assertEquals(
+			$expected_categories,
+			$categories,
+			'Should return the correct categories searched by slug excluding some of them'
+		);
+	}
+
 	protected function set_up_request_page() {
 		$this->go_to( get_post_type_archive_link( 'job_listing' ) );
 	}

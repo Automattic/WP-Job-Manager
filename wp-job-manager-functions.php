@@ -1054,6 +1054,49 @@ function wpjm_published_submission_edits_require_moderation() {
 }
 
 /**
+ * Get the category slugs from the search query string.
+ * The query string is made with the category slugs separate by commas.
+ *
+ * @since 1.34.2
+ *
+ * @return string[] $search_category_slugs Array of category slugs.
+ */
+function wpjm_get_category_slugs_from_search_query_string() {
+	$search_category_slugs = [];
+
+	if ( isset( $_GET['search_category'] ) && $_GET['search_category'] ) {
+		$search_category_slugs = explode( ',', $_GET['search_category'] );
+	}
+
+	return $search_category_slugs;
+}
+
+/**
+ * Get categories by slug.
+ *
+ * @since 1.34.2
+ *
+ * @param string[]  $search_category_slugs Array of category slugs to search.
+ * @param array     $default_args          Default args to search the term categories.
+ * @param WP_Term[] $exclude_categories    Array of categories to exclude.
+ *
+ * @return WP_Term[] $categories Array of categories.
+ */
+function wpjm_get_categories_by_slug( $search_category_slugs, $default_args, $exclude_categories ) {
+	$exclude_category_ids = wp_list_pluck( $exclude_categories, 'term_id' );
+
+	$args = [
+		'hide_empty' => false,
+		'slug'       => $search_category_slugs,
+		'exclude'    => $exclude_category_ids,
+	];
+
+	$args = wp_parse_args( $args, $default_args );
+
+	return get_terms( $args );
+}
+
+/**
  * Displays category select dropdown.
  *
  * Based on wp_dropdown_categories, with the exception of supporting multiple selected categories.
@@ -1094,14 +1137,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 		$r['pad_counts'] = true;
 	}
 
-	if ( isset( $_GET['search_category'] ) ) {
-		$r['search_category_ids'] = [];
-		$search_category_slugs    = explode( ',', $_GET['search_category'] );
-
-		foreach( $search_category_slugs as $slug ) {
-			$r['search_category_ids'][] = get_term_by( 'slug', $slug, $r['taxonomy'] )->term_id;
-		}
-	}
+	$r['search_category_slugs'] = wpjm_get_category_slugs_from_search_query_string();
 
 	/** This filter is documented in wp-job-manager.php */
 	$r['lang'] = apply_filters( 'wpjm_lang', null );
@@ -1124,22 +1160,10 @@ function job_manager_dropdown_categories( $args = '' ) {
 
 		$categories = get_terms( $args );
 
-		if ( isset( $r['search_category_ids'] ) ) {
-			$categories_ids = wp_list_pluck( $categories, 'term_id' );
-
-			$args['hide_empty'] = false;
-			$args['include']    = $r['search_category_ids'];
-
-			$search_categories = array_filter(
-				get_terms( $args ),
-				function( $term ) use ( $categories_ids ) {
-					return ! in_array( $term->term_id, $categories_ids, true);
-				}
-			);
-
+		if ( ! empty( $r['search_category_slugs'] ) ) {
 			$categories = array_merge(
 				$categories,
-				$search_categories
+				wpjm_get_categories_by_slug( $r['search_category_slugs'], $args, $categories )
 			);
 		}
 
