@@ -100,6 +100,10 @@ class WP_Job_Manager {
 
 		// Defaults for WPJM core actions.
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
+
+		// Prevent assets cache.
+		add_filter( 'script_loader_src', [ $this, 'prevent_debug_assets_cache' ] );
+		add_filter( 'style_loader_src', [ $this, 'prevent_debug_assets_cache' ] );
 	}
 
 	/**
@@ -485,5 +489,27 @@ class WP_Job_Manager {
 		} else {
 			wp_register_style( 'wp-job-manager-job-listings', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-listings.css', [], JOB_MANAGER_VERSION );
 		}
+	}
+
+	/**
+	 * Prevent assets cache while debugging.
+	 * Hooked into `script_loader_src` and `style_loader_src`.
+	 *
+	 * @access private
+	 * @since  1.34.2
+	 *
+	 * @param string $src File src to filter.
+	 *
+	 * @return string $src File src filtered.
+	 */
+	public function prevent_debug_assets_cache( $src ) {
+		if ( ! defined( 'SCRIPT_DEBUG' ) || ! SCRIPT_DEBUG ) {
+			return $src;
+		}
+
+		$debug_param = 'debug=' . uniqid();
+		$concat_char = false === strpos( $src, '?' ) ? '?' : '&';
+
+		return $src . $concat_char . $debug_param;
 	}
 }

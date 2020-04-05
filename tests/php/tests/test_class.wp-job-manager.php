@@ -65,4 +65,63 @@ class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 		$this->assertTrue( defined( 'JOB_MANAGER_PLUGIN_DIR' ) );
 		$this->assertTrue( defined( 'JOB_MANAGER_PLUGIN_URL' ) );
 	}
+
+	/**
+	 * Tests prevent assets cache while debugging.
+	 *
+	 * @since 1.34.2
+	 *
+	 * @covers WP_Job_Manager::prevent_debug_assets_cache
+	 */
+	public function test_prevent_debug_assets_cache() {
+		$src = 'file.js';
+
+		$this->assertNotEquals(
+			WP_Job_Manager::instance()->prevent_debug_assets_cache( $src ),
+			WP_Job_Manager::instance()->prevent_debug_assets_cache( $src ),
+			'Should return different URL to prevent cache'
+		);
+	}
+
+	/**
+	 * Tests prevent assets cache while debugging with URL not containing query string.
+	 *
+	 * @since 1.34.2
+	 *
+	 * @covers WP_Job_Manager::prevent_debug_assets_cache
+	 */
+	public function test_prevent_debug_assets_cache_without_query_string() {
+		$src = 'file.js';
+
+		$has_new_query_string = false !== strpos(
+			WP_Job_Manager::instance()->prevent_debug_assets_cache( $src ),
+			'?debug='
+		);
+
+		$this->assertTrue(
+			$has_new_query_string,
+			'Should return URL with new query string'
+		);
+	}
+
+	/**
+	 * Tests prevent assets cache while debugging with URL containing query string.
+	 *
+	 * @since 1.34.2
+	 *
+	 * @covers WP_Job_Manager::prevent_debug_assets_cache
+	 */
+	public function test_prevent_debug_assets_cache_with_query_string() {
+		$src = 'file.js?q=123';
+
+		$has_new_query_string = false !== strpos(
+			WP_Job_Manager::instance()->prevent_debug_assets_cache( $src ),
+			'&debug='
+		);
+
+		$this->assertTrue(
+			$has_new_query_string,
+			'Should return URL adding other query string'
+		);
+	}
 }
