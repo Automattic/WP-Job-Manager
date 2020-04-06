@@ -417,7 +417,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						foreach ( $check_value as $file_url ) {
 							$baseurl = wp_upload_dir()['baseurl'];
 
-							if ( ! is_numeric( $file_url ) && false === strpos( $file_url, $baseurl ) ) {
+							if ( ! is_numeric( $file_url ) && 0 !== strpos( $file_url, $baseurl ) ) {
 								throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
 							}
 						}
