@@ -407,6 +407,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						}
 					}
 				}
+				if ( 'file' === $field['type'] ) {
+					if ( is_array( $values[ $group_key ][ $key ] ) ) {
+						$check_value = array_filter( $values[ $group_key ][ $key ] );
+					} else {
+						$check_value = array_filter( [ $values[ $group_key ][ $key ] ] );
+					}
+					if ( ! empty( $check_value ) ) {
+						foreach ( $check_value as $file_url ) {
+							$baseurl = wp_upload_dir()['baseurl'];
+
+							if ( ! is_numeric( $file_url ) && false === strpos( $file_url, $baseurl ) ) {
+								throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
+							}
+						}
+					}
+				}
 				if ( empty( $field['file_limit'] ) && empty( $field['multiple'] ) ) {
 					$field['file_limit'] = 1;
 				}
