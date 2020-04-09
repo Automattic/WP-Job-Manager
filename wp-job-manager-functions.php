@@ -1137,7 +1137,9 @@ function job_manager_dropdown_categories( $args = '' ) {
 		$r['pad_counts'] = true;
 	}
 
-	$r['search_category_slugs'] = wpjm_get_category_slugs_from_search_query_string();
+	if ( ! isset( $r['search_category_slugs'] ) ) {
+		$r['search_category_slugs'] = wpjm_get_category_slugs_from_search_query_string();
+	}
 
 	/** This filter is documented in wp-job-manager.php */
 	$r['lang'] = apply_filters( 'wpjm_lang', null );
