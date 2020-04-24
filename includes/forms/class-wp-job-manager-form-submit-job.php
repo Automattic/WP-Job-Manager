@@ -379,46 +379,30 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					}
 					if ( ! empty( $check_value ) ) {
 						foreach ( $check_value as $file_url ) {
+							// Check image path.
+							$baseurl = wp_upload_dir()['baseurl'];
+							if ( ! is_numeric( $file_url ) && 0 !== strpos( $file_url, $baseurl ) ) {
+								throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
+							}
+
+							// Check mime types.
+							if ( ! empty( $field['allowed_mime_types'] ) ) {
+								$file_url  = current( explode( '?', $file_url ) );
+								$file_info = wp_check_filetype( $file_url );
+
+								if ( ! is_numeric( $file_url ) && $file_info && ! in_array( $file_info['type'], $field['allowed_mime_types'], true ) ) {
+									// translators: Placeholder %1$s is field label; %2$s is the file mime type; %3$s is the allowed mime-types.
+									throw new Exception( sprintf( __( '"%1$s" (filetype %2$s) needs to be one of the following file types: %3$s', 'wp-job-manager' ), $field['label'], $file_info['ext'], implode( ', ', array_keys( $field['allowed_mime_types'] ) ) ) );
+								}
+							}
+
+							// Check if attachment is valid.
 							if ( is_numeric( $file_url ) ) {
 								continue;
 							}
 							$file_url = esc_url( $file_url, [ 'http', 'https' ] );
 							if ( empty( $file_url ) ) {
 								throw new Exception( __( 'Invalid attachment provided.', 'wp-job-manager' ) );
-							}
-						}
-					}
-				}
-				if ( 'file' === $field['type'] && ! empty( $field['allowed_mime_types'] ) ) {
-					if ( is_array( $values[ $group_key ][ $key ] ) ) {
-						$check_value = array_filter( $values[ $group_key ][ $key ] );
-					} else {
-						$check_value = array_filter( [ $values[ $group_key ][ $key ] ] );
-					}
-					if ( ! empty( $check_value ) ) {
-						foreach ( $check_value as $file_url ) {
-							$file_url  = current( explode( '?', $file_url ) );
-							$file_info = wp_check_filetype( $file_url );
-
-							if ( ! is_numeric( $file_url ) && $file_info && ! in_array( $file_info['type'], $field['allowed_mime_types'], true ) ) {
-								// translators: Placeholder %1$s is field label; %2$s is the file mime type; %3$s is the allowed mime-types.
-								throw new Exception( sprintf( __( '"%1$s" (filetype %2$s) needs to be one of the following file types: %3$s', 'wp-job-manager' ), $field['label'], $file_info['ext'], implode( ', ', array_keys( $field['allowed_mime_types'] ) ) ) );
-							}
-						}
-					}
-				}
-				if ( 'file' === $field['type'] ) {
-					if ( is_array( $values[ $group_key ][ $key ] ) ) {
-						$check_value = array_filter( $values[ $group_key ][ $key ] );
-					} else {
-						$check_value = array_filter( [ $values[ $group_key ][ $key ] ] );
-					}
-					if ( ! empty( $check_value ) ) {
-						foreach ( $check_value as $file_url ) {
-							$baseurl = wp_upload_dir()['baseurl'];
-
-							if ( ! is_numeric( $file_url ) && 0 !== strpos( $file_url, $baseurl ) ) {
-								throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
 							}
 						}
 					}
