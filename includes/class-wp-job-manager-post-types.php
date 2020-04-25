@@ -590,6 +590,14 @@ class WP_Job_Manager_Post_Types {
 			$query_args['meta_query'][] = $location_search;
 		}
 
+		// Hide filled positions from the job feed.
+		if ( 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
+			$query_args['meta_query'][] = [
+				'key'   => '_filled',
+				'value' => '0',
+			];
+		}
+
 		if ( ! empty( $input_job_types ) ) {
 			$query_args['tax_query'][] = [
 				'taxonomy' => 'job_listing_type',
