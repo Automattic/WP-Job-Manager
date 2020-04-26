@@ -299,6 +299,13 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Clears form fields (resets to empty array)
+	 */
+	public function clear_fields() {
+		$this->fields = [];
+	}
+	
+	/**
 	 * Enqueue the scripts for the form.
 	 */
 	public function enqueue_scripts() {
