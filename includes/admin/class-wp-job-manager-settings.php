@@ -558,9 +558,7 @@ class WP_Job_Manager_Settings {
 			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $placeholder; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
-		>
-			<?php echo esc_textarea( $value ); ?>
-		</textarea>
+		><?php echo esc_textarea( $value ); ?></textarea>
 		<?php
 
 		if ( ! empty( $option['desc'] ) ) {
