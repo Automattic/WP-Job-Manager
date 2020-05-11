@@ -795,6 +795,10 @@ final class WP_Job_Manager_Email_Notifications {
 				$headers[] = 'From: ' . $args['from'];
 			}
 
+			if ( ! empty( $args['cc'] ) ) {
+				$headers[] = 'CC: ' . $args['cc'];
+			}
+
 			if ( ! self::send_as_plain_text( $email_notification_key, $args ) ) {
 				$headers[] = 'Content-Type: text/html';
 			}
