@@ -123,7 +123,7 @@ class WP_Job_Manager_Setup {
 					! isset( $_REQUEST['setup_wizard'] )
 					|| false === wp_verify_nonce( wp_unslash( $_REQUEST['setup_wizard'] ), 'step_3' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 				) {
-					wp_die( 'Error in nonce. Try again.', 'wp-job-manager' );
+					wp_die( esc_html__( 'Error in nonce. Try again.', 'wp-job-manager' ), 'wp-job-manager' );
 				}
 				$create_pages    = isset( $_POST['wp-job-manager-create-page'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wp-job-manager-create-page'] ) ) : [];
 				$page_titles     = isset( $_POST['wp-job-manager-page-title'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wp-job-manager-page-title'] ) ) : [];
