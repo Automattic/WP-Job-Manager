@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="field account-sign-in">
 			<?php
 				$user = wp_get_current_user();
+				// translators: Placeholder %s is the username.
 				printf( wp_kses_post( __( 'You are currently signed in as <strong>%s</strong>.', 'wp-job-manager' ) ), esc_html( $user->user_login ) );
 			?>
 
@@ -42,6 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<?php if ( $registration_enabled ) : ?>
 
+				<?php // translators: Placeholder %s is the optionally text. ?>
 				<?php printf( esc_html__( 'If you don\'t have an account you can %screate one below by entering your email address/username.', 'wp-job-manager' ), $account_required ? '' : esc_html__( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
 				<?php if ( $use_standard_password_email ) : ?>
 					<?php printf( esc_html__( 'Your account details will be confirmed via email.', 'wp-job-manager' ) ); ?>

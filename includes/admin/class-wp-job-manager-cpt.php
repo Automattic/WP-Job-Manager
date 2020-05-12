@@ -580,7 +580,7 @@ class WP_Job_Manager_CPT {
 
 				the_company_logo();
 				echo '</div>';
-				echo '<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>';
+				echo '<button type="button" class="toggle-row"><span class="screen-reader-text">' . esc_html__( 'Show more details', 'wp-job-manager' ) . '</span></button>';
 				break;
 			case 'job_location':
 				the_job_location( true, $post );

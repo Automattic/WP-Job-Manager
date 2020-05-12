@@ -20,12 +20,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 $job = $args['job'];
 
-printf( esc_html__( 'A new job listing has been submitted to %s (%s).', 'wp-job-manager' ), esc_html( get_bloginfo( 'name' ) ), esc_url( home_url() ) );
+// translators: %1$s placeholder is the name of the site, %2$s placeholder is URL to the blog.
+printf( esc_html__( 'A new job listing has been submitted to %1$s (%2$s).', 'wp-job-manager' ), esc_html( get_bloginfo( 'name' ) ), esc_url( home_url() ) );
 switch ( $job->post_status ) {
 	case 'publish':
 		printf( ' ' . esc_html__( 'It has been published and is now available to the public.', 'wp-job-manager' ) );
 		break;
 	case 'pending':
+		// translators: Placeholder %s is the admin job listings URL.
 		printf( ' ' . esc_html__( 'It is awaiting approval by an administrator in WordPress admin (%s).', 'wp-job-manager' ), esc_url( admin_url( 'edit.php?post_type=job_listing' ) ) );
 		break;
 }
