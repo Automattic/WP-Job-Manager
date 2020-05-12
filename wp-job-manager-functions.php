@@ -1065,7 +1065,7 @@ function wpjm_get_category_slugs_from_search_query_string() {
 	$search_category_slugs = [];
 
 	if ( isset( $_GET['search_category'] ) && $_GET['search_category'] ) {
-		$search_category_slugs = explode( ',', $_GET['search_category'] );
+		$search_category_slugs = explode( ',', sanitize_text_field( wp_unslash( $_GET['search_category'] ) ) );
 	}
 
 	return $search_category_slugs;
