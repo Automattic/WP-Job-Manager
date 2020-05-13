@@ -130,7 +130,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 		}
 
 		foreach ( $this->settings as $key => $setting ) {
-			$instance[ $key ] = sanitize_text_field( $new_instance[ $key ] );
+			$instance[ $key ] = isset( $new_instance[ $key ] ) ? sanitize_text_field( $new_instance[ $key ] ) : '';
 		}
 
 		$this->flush_widget_cache();
