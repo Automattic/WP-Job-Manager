@@ -203,6 +203,15 @@ class WP_Job_Manager_Settings {
 							'type'       => 'checkbox',
 							'attributes' => [],
 						],
+						[
+							'name'       => 'job_manager_allow_rectangular_logos',
+							'std'        => '0',
+							'label'      => __( 'Rectangular logos', 'wp-job-manager' ),
+							'cb_label'   => __( 'Override the default square company logo thumbnails and display them as rectangular', 'wp-job-manager' ),
+							'desc'       => __( 'This allows users who upload rectangular logos to be shown in the job listings page without being resized into a square', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
 					],
 				],
 				'job_submission' => [
