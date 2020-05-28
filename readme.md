@@ -2,9 +2,9 @@
 **Contributors:** [mikejolley](https://profiles.wordpress.org/mikejolley), [automattic](https://profiles.wordpress.org/automattic), [adamkheckler](https://profiles.wordpress.org/adamkheckler), [alexsanford1](https://profiles.wordpress.org/alexsanford1), [annezazu](https://profiles.wordpress.org/annezazu), [cena](https://profiles.wordpress.org/cena), [chaselivingston](https://profiles.wordpress.org/chaselivingston), [csonnek](https://profiles.wordpress.org/csonnek), [davor.altman](https://profiles.wordpress.org/davor.altman), [donnapep](https://profiles.wordpress.org/donnapep), [donncha](https://profiles.wordpress.org/donncha), [drawmyface](https://profiles.wordpress.org/drawmyface), [erania-pinnera](https://profiles.wordpress.org/erania-pinnera), [jacobshere](https://profiles.wordpress.org/jacobshere), [jakeom](https://profiles.wordpress.org/jakeom), [jeherve](https://profiles.wordpress.org/jeherve), [jenhooks](https://profiles.wordpress.org/jenhooks), [jgs](https://profiles.wordpress.org/jgs), [jonryan](https://profiles.wordpress.org/jonryan), [kraftbj](https://profiles.wordpress.org/kraftbj), [lamdayap](https://profiles.wordpress.org/lamdayap), [lschuyler](https://profiles.wordpress.org/lschuyler), [macmanx](https://profiles.wordpress.org/macmanx), [nancythanki](https://profiles.wordpress.org/nancythanki), [orangesareorange](https://profiles.wordpress.org/orangesareorange), [rachelsquirrel](https://profiles.wordpress.org/rachelsquirrel), [ryancowles](https://profiles.wordpress.org/ryancowles), [richardmtl](https://profiles.wordpress.org/richardmtl), [scarstocea](https://profiles.wordpress.org/scarstocea)  
 **Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent  
 **Requires at least:** 4.9  
-**Tested up to:** 5.2  
+**Tested up to:** 5.4  
 **Requires PHP:** 5.6  
-**Stable tag:** 1.34.1  
+**Stable tag:** 1.34.2  
 **License:** GPLv3  
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -23,7 +23,7 @@ WP Job Manager is a **lightweight** job listing plugin for adding job-board like
 * Each listing can be tied to an email or website address so that job seekers can apply to the jobs.
 * Searches also display RSS links to allow job seekers to be alerted to new jobs matching their search.
 * Allow logged in employers to view, edit, mark filled, or delete their active job listings.
-* Developer friendly code — Custom Post Types, endpoints & template files.
+* Developer friendly code - Custom Post Types, endpoints & template files.
 
 The plugin comes with several shortcodes to output jobs in various formats, and since its built with Custom Post Types you are free to extend it further through themes.
 
@@ -152,6 +152,22 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 ## Changelog ##
+
+### 1.34.2 ###
+* Enhancement: New filter to skip validation for application field.
+* Enhancement: New method for clearing fields.
+* Fix: Improve TwentyTwenty theme compatibility (@JuanchoPestana)
+* Fix: Issue in RSS feed with empty query parameters.
+* Fix: Issue on Jobs page with empty query parameters.
+* Fix: Conflict with search query parameters on Jobs page.
+* Fix: Ensuring hidden jobs do not display in RSS feed.
+* Fix: Image validation when posting a job.
+* Fix: JS error in file upload.
+* Fix: Removed extra whitespace in textarea settings fields.
+* Fix: Several untranslatable strings are now translatable.
+* Fix: CC header in emails.
+* Fix: Search category query sanitization.
+* Fix: Remove PHP notices. (@truongwp)
 
 ### 1.34.1 ###
 * Templates Updated: `job-submitted.php`, `job-dashboard.php`.

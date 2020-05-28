@@ -1,3 +1,19 @@
+= 1.34.2 =
+* Enhancement: New filter to skip validation for application field.
+* Enhancement: New method for clearing fields.
+* Fix: Improve TwentyTwenty theme compatibility (@JuanchoPestana)
+* Fix: Issue in RSS feed with empty query parameters.
+* Fix: Issue on Jobs page with empty query parameters.
+* Fix: Conflict with search query parameters on Jobs page.
+* Fix: Ensuring hidden jobs do not display in RSS feed.
+* Fix: Image validation when posting a job.
+* Fix: JS error in file upload.
+* Fix: Removed extra whitespace in textarea settings fields.
+* Fix: Several untranslatable strings are now translatable.
+* Fix: CC header in emails.
+* Fix: Search category query sanitization.
+* Fix: Remove PHP notices. (@truongwp)
+
 = 1.34.1 =
 * Templates Updated: `job-submitted.php`, `job-dashboard.php`.
 * Enhancement: Email notifications are sent separately if multiple recipients are listed.
