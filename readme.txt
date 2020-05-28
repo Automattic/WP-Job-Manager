@@ -23,7 +23,7 @@ WP Job Manager is a **lightweight** job listing plugin for adding job-board like
 * Each listing can be tied to an email or website address so that job seekers can apply to the jobs.
 * Searches also display RSS links to allow job seekers to be alerted to new jobs matching their search.
 * Allow logged in employers to view, edit, mark filled, or delete their active job listings.
-* Developer friendly code â Custom Post Types, endpoints & template files.
+* Developer friendly code - Custom Post Types, endpoints & template files.
 
 The plugin comes with several shortcodes to output jobs in various formats, and since its built with Custom Post Types you are free to extend it further through themes.
 
