@@ -7,7 +7,7 @@
  * Author: Automattic
  * Author URI: https://wpjobmanager.com/
  * Requires at least: 4.9
- * Tested up to: 5.2
+ * Tested up to: 5.4
  * Requires PHP: 5.6
  * Text Domain: wp-job-manager
  * Domain Path: /languages/
