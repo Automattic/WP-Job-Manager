@@ -281,7 +281,7 @@ class WP_Job_Manager_Shortcodes {
 	 * @return string
 	 */
 	public function filter_paginate_links( $link ) {
-		return esc_url( remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link ) );
+		return remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link );
 	}
 
 	/**
