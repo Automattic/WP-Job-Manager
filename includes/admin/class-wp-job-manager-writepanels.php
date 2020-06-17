@@ -205,6 +205,8 @@ class WP_Job_Manager_Writepanels {
 	 * @param array  $field
 	 */
 	public static function input_file( $key, $field ) {
+		global $post;
+
 		if ( empty( $field['placeholder'] ) ) {
 			$field['placeholder'] = 'https://';
 		}
@@ -228,8 +230,20 @@ class WP_Job_Manager_Writepanels {
 					<?php
 				}
 			} else {
+				$download_attribute = '';
+				if ( isset( $field['download'] ) ) {
+					$download_attribute = ' data-download-url="' . esc_url( $field['download'] ) . '"';
+				}
 				?>
-				<span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php esc_html_e( 'View', 'wp-job-manager' ); ?></button></span>
+				<span class="file_url">
+					<input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
+					<button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>">
+						<?php esc_html_e( 'Upload', 'wp-job-manager' ); ?>
+					</button>
+					<button class="button button-small wp_job_manager_view_file_button"<?php echo $download_attribute ?>>
+						<?php esc_html_e( 'View', 'wp-job-manager' ); ?>
+					</button>
+				</span>
 				<?php
 			}
 			if ( ! empty( $field['multiple'] ) ) {
