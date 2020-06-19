@@ -120,6 +120,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_job_feed_rss2() {
 		$this->factory->job_listing->create_many( 5 );
@@ -135,6 +136,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_job_feed_rss2_2inrow() {
 		$this->factory->job_listing->create_many( 5 );
@@ -150,6 +152,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_job_feed_location_search() {
 		$this->factory->job_listing->create_many(
@@ -191,6 +194,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_job_feed_keyword_search() {
 		$this->factory->job_listing->create_many( 3 );
