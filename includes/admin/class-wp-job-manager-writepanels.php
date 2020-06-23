@@ -199,12 +199,52 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
+	 * Displays file input field.
+	 *
+	 * @param string  $key         Field key.
+	 * @param string  $name        Input name.
+	 * @param string  $placeholder Input placeholder.
+	 * @param string  $value       File path.
+	 * @param boolean $multiple    Flag if the field is single or part of multiple.
+	 * @param string  $download    URL to download the file.
+	 */
+	private static function file_url_field( $key, $name, $placeholder, $value, $multiple, $download = null ) {
+		$input_id_attribute = '';
+		if ( ! $multiple ) {
+			$input_id_attribute = 'id="' . esc_attr( $key ) . '"';
+		}
+
+		$download_attribute = '';
+		if ( null !== $download ) {
+			$download_attribute = ' data-download-url="' . esc_url( $download ) . '"';
+		}
+
+		$name = esc_attr( $name );
+		if ( $multiple ) {
+			$name = $name . '[]';
+		}
+		?>
+		<span class="file_url">
+			<input type="text" name="<?php echo $name ?>" <?php echo $input_id_attribute ?> placeholder="<?php echo esc_attr( $placeholder ); ?>" value="<?php echo esc_attr( $value ); ?>" />
+			<button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>">
+				<?php esc_html_e( 'Upload', 'wp-job-manager' ); ?>
+			</button>
+			<button class="button button-small wp_job_manager_view_file_button"<?php echo $download_attribute ?>>
+				<?php esc_html_e( 'View', 'wp-job-manager' ); ?>
+			</button>
+		</span>
+		<?php
+	}
+
+	/**
 	 * Displays label and file input field.
 	 *
 	 * @param string $key
 	 * @param array  $field
 	 */
 	public static function input_file( $key, $field ) {
+		global $post;
+
 		if ( empty( $field['placeholder'] ) ) {
 			$field['placeholder'] = 'https://';
 		}
@@ -222,15 +262,21 @@ class WP_Job_Manager_Writepanels {
 			</label>
 			<?php
 			if ( ! empty( $field['multiple'] ) ) {
-				foreach ( (array) $field['value'] as $value ) {
-					?>
-					<span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php esc_html_e( 'View', 'wp-job-manager' ); ?></button></span>
-					<?php
+				foreach ( (array) $field['value'] as $k => $value ) {
+					$download = null;
+					if ( isset( $field['download'] ) && isset( $field['download'][ $k ] ) ) {
+						$download = $field['download'][ $k ];
+					}
+
+					self::file_url_field( $key, $name, $field['placeholder'], $value, true, $download );
 				}
 			} else {
-				?>
-				<span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php esc_html_e( 'View', 'wp-job-manager' ); ?></button></span>
-				<?php
+				$download = null;
+				if ( isset( $field['download'] ) ) {
+					$download = $field['download'];
+				}
+
+				self::file_url_field( $key, $name, $field['placeholder'], $field['value'], false, $download );
 			}
 			if ( ! empty( $field['multiple'] ) ) {
 				?>
