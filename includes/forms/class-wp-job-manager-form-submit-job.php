@@ -110,6 +110,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		$this->job_id = ! empty( $_GET['job_id'] ) ? absint( $_GET['job_id'] ) : 0;
+		if ( 0 === $this->job_id ) {
+			$this->job_id = ! empty( $_POST['job_id'] ) ? absint( $_POST['job_id'] ) : 0;
+		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing,  WordPress.Security.NonceVerification.Recommended
 
 		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
