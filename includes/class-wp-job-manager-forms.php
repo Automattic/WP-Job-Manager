@@ -50,7 +50,7 @@ class WP_Job_Manager_Forms {
 	 */
 	public function load_posted_form() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
-		$job_manager_form = ! empty( $_POST['job_manager_form'] ) ? sanitize_title( wp_unslash( $_POST['job_manager_form'] ) ) : false;
+		$job_manager_form = ! empty( $_REQUEST['job_manager_form'] ) ? sanitize_title( wp_unslash( $_REQUEST['job_manager_form'] ) ) : false;
 
 		if ( ! empty( $job_manager_form ) ) {
 			$this->load_form_class( $job_manager_form );
