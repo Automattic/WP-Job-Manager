@@ -381,8 +381,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						foreach ( $check_value as $file_url ) {
 							// Check image path.
 							$baseurl = wp_upload_dir()['baseurl'];
-							if ( ! is_numeric( $file_url ) && 0 !== strpos( $file_url, $baseurl ) ) {
-								throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
+
+							if ( ! is_numeric( $file_url ) ) {
+								/**
+								 * Set this flag to true to reject files from external URLs during job submission.
+								 *
+								 * @since 1.34.3
+								 *
+								 * @param bool  $reject_external_files  The flag.
+								 */
+								$reject_external_files = apply_filters( 'job_manager_submit_job_reject_external_files', false );
+
+								if ( $reject_external_files && 0 !== strpos( $file_url, $baseurl ) ) {
+									throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
+								}
 							}
 
 							// Check mime types.
