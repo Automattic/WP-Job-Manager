@@ -61,6 +61,8 @@ class WP_Job_Manager_Shortcodes {
 		add_shortcode( 'job', [ $this, 'output_job' ] );
 		add_shortcode( 'job_summary', [ $this, 'output_job_summary' ] );
 		add_shortcode( 'job_apply', [ $this, 'output_job_apply' ] );
+
+		add_filter( 'paginate_links', [ $this, 'filter_paginate_links' ], 10, 1 );
 	}
 
 	/**
@@ -270,6 +272,16 @@ class WP_Job_Manager_Shortcodes {
 		);
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Filters the url from paginate_links to avoid multiple calls for same action in job dashboard
+	 *
+	 * @param string $link
+	 * @return string
+	 */
+	public function filter_paginate_links( $link ) {
+		return remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link );
 	}
 
 	/**
