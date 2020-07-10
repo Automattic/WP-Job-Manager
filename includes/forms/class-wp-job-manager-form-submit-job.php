@@ -388,9 +388,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 								 *
 								 * @since 1.34.3
 								 *
-								 * @param bool  $reject_external_files  The flag.
+								 * @param bool   $reject_external_files  The flag.
+								 * @param string $key                    The field key.
+								 * @param string $group_key              The group.
+								 * @param array  $field                  An array containing the information for the field.
 								 */
-								$reject_external_files = apply_filters( 'job_manager_submit_job_reject_external_files', false );
+								$reject_external_files = apply_filters( 'job_manager_submit_job_reject_external_files', false, $key, $group_key, $field );
 
 								if ( $reject_external_files && 0 !== strpos( $file_url, $baseurl ) ) {
 									throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
