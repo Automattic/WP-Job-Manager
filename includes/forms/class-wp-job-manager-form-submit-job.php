@@ -379,8 +379,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					}
 					if ( ! empty( $check_value ) ) {
 						foreach ( $check_value as $file_url ) {
-							// Check image path.
-							$baseurl = wp_upload_dir()['baseurl'];
 
 							if ( ! is_numeric( $file_url ) ) {
 								/**
@@ -394,6 +392,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 								 * @param array  $field                  An array containing the information for the field.
 								 */
 								$reject_external_files = apply_filters( 'job_manager_submit_job_reject_external_files', false, $key, $group_key, $field );
+
+								// Check image path.
+								$baseurl = wp_upload_dir()['baseurl'];
 
 								if ( $reject_external_files && 0 !== strpos( $file_url, $baseurl ) ) {
 									throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
