@@ -66,6 +66,24 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
+	* Helper function used to check if page is WPJM dashboard page.
+	*
+	* Checks if page has 'job_dashboard' shortcode.
+	*
+	* @access private
+	* @return bool True if page is dashboard page, false otherwise.
+	*/
+	private function is_job_dashboard_page() {
+		global $post;
+
+		if ( is_page() && has_shortcode( $post->post_content, 'job_dashboard' ) ) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
 	 * Handles actions which need to be run before the shortcode e.g. post actions.
 	 */
 	public function shortcode_action_handler() {
