@@ -87,9 +87,7 @@ class WP_Job_Manager_Shortcodes {
 	 * Handles actions which need to be run before the shortcode e.g. post actions.
 	 */
 	public function shortcode_action_handler() {
-		global $post;
-
-		if ( is_page() && has_shortcode( $post->post_content, 'job_dashboard' ) ) {
+		if ( $this->is_job_dashboard_page() ) {
 			$this->job_dashboard_handler();
 		}
 	}
