@@ -79,7 +79,7 @@ class WP_Job_Manager_Shortcodes {
 		if ( is_page() && has_shortcode( $post->post_content, 'job_dashboard' ) ) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -299,7 +299,12 @@ class WP_Job_Manager_Shortcodes {
 	 * @return string
 	 */
 	public function filter_paginate_links( $link ) {
-		return remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link );
+
+		if ( $this->is_job_dashboard_page() ) {
+			return remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link );
+		}
+
+		return $link;
 	}
 
 	/**
