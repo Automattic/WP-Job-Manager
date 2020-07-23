@@ -61,15 +61,33 @@ class WP_Job_Manager_Shortcodes {
 		add_shortcode( 'job', [ $this, 'output_job' ] );
 		add_shortcode( 'job_summary', [ $this, 'output_job_summary' ] );
 		add_shortcode( 'job_apply', [ $this, 'output_job_apply' ] );
+
+		add_filter( 'paginate_links', [ $this, 'filter_paginate_links' ], 10, 1 );
+	}
+
+	/**
+	* Helper function used to check if page is WPJM dashboard page.
+	*
+	* Checks if page has 'job_dashboard' shortcode.
+	*
+	* @access private
+	* @return bool True if page is dashboard page, false otherwise.
+	*/
+	private function is_job_dashboard_page() {
+		global $post;
+
+		if ( is_page() && has_shortcode( $post->post_content, 'job_dashboard' ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
 	 * Handles actions which need to be run before the shortcode e.g. post actions.
 	 */
 	public function shortcode_action_handler() {
-		global $post;
-
-		if ( is_page() && has_shortcode( $post->post_content, 'job_dashboard' ) ) {
+		if ( $this->is_job_dashboard_page() ) {
 			$this->job_dashboard_handler();
 		}
 	}
@@ -270,6 +288,21 @@ class WP_Job_Manager_Shortcodes {
 		);
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Filters the url from paginate_links to avoid multiple calls for same action in job dashboard
+	 *
+	 * @param string $link
+	 * @return string
+	 */
+	public function filter_paginate_links( $link ) {
+
+		if ( $this->is_job_dashboard_page() ) {
+			return remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link );
+		}
+
+		return $link;
 	}
 
 	/**
