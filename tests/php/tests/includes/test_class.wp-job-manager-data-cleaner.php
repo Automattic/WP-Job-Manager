@@ -1,6 +1,6 @@
 <?php
 
-require 'includes/class-wp-job-manager-data-cleaner.php';
+require JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-data-cleaner.php';
 
 class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	// Posts.
@@ -77,7 +77,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		}
 
 		wp_set_object_terms(
-			$this->course_ids[0],
+			$this->job_listing_ids[0],
 			[
 				$this->job_listing_types[0]['term_id'],
 				$this->job_listing_types[1]['term_id'],
@@ -85,7 +85,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 			'job_listing_type'
 		);
 		wp_set_object_terms(
-			$this->course_ids[1],
+			$this->job_listing_ids[1],
 			[
 				$this->job_listing_types[1]['term_id'],
 				$this->job_listing_types[2]['term_id'],
@@ -93,7 +93,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 			'job_listing_type'
 		);
 		wp_set_object_terms(
-			$this->course_ids[2],
+			$this->job_listing_ids[2],
 			[
 				$this->job_listing_types[0]['term_id'],
 				$this->job_listing_types[1]['term_id'],
@@ -110,7 +110,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		}
 
 		wp_set_object_terms(
-			$this->course_ids[0],
+			$this->job_listing_ids[0],
 			[
 				$this->categories[0]['term_id'],
 				$this->categories[1]['term_id'],
