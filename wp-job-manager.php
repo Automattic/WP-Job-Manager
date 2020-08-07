@@ -6,9 +6,9 @@
  * Version: 1.34.2
  * Author: Automattic
  * Author URI: https://wpjobmanager.com/
- * Requires at least: 4.9
- * Tested up to: 5.4
- * Requires PHP: 5.6
+ * Requires at least: 5.2
+ * Tested up to: 5.5
+ * Requires PHP: 7.0
  * Text Domain: wp-job-manager
  * Domain Path: /languages/
  * License: GPL2+
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants.
-define( 'JOB_MANAGER_VERSION', '1.34.2' );
+define( 'JOB_MANAGER_VERSION', '1.34.3' );
 define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
