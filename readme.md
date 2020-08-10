@@ -1,10 +1,10 @@
 # WP Job Manager #
 **Contributors:** [mikejolley](https://profiles.wordpress.org/mikejolley), [automattic](https://profiles.wordpress.org/automattic), [adamkheckler](https://profiles.wordpress.org/adamkheckler), [alexsanford1](https://profiles.wordpress.org/alexsanford1), [annezazu](https://profiles.wordpress.org/annezazu), [cena](https://profiles.wordpress.org/cena), [chaselivingston](https://profiles.wordpress.org/chaselivingston), [csonnek](https://profiles.wordpress.org/csonnek), [davor.altman](https://profiles.wordpress.org/davor.altman), [donnapep](https://profiles.wordpress.org/donnapep), [donncha](https://profiles.wordpress.org/donncha), [drawmyface](https://profiles.wordpress.org/drawmyface), [erania-pinnera](https://profiles.wordpress.org/erania-pinnera), [jacobshere](https://profiles.wordpress.org/jacobshere), [jakeom](https://profiles.wordpress.org/jakeom), [jeherve](https://profiles.wordpress.org/jeherve), [jenhooks](https://profiles.wordpress.org/jenhooks), [jgs](https://profiles.wordpress.org/jgs), [jonryan](https://profiles.wordpress.org/jonryan), [kraftbj](https://profiles.wordpress.org/kraftbj), [lamdayap](https://profiles.wordpress.org/lamdayap), [lschuyler](https://profiles.wordpress.org/lschuyler), [macmanx](https://profiles.wordpress.org/macmanx), [nancythanki](https://profiles.wordpress.org/nancythanki), [orangesareorange](https://profiles.wordpress.org/orangesareorange), [rachelsquirrel](https://profiles.wordpress.org/rachelsquirrel), [ryancowles](https://profiles.wordpress.org/ryancowles), [richardmtl](https://profiles.wordpress.org/richardmtl), [scarstocea](https://profiles.wordpress.org/scarstocea)  
 **Tags:** job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent  
-**Requires at least:** 4.9  
-**Tested up to:** 5.4  
-**Requires PHP:** 5.6  
-**Stable tag:** 1.34.2  
+**Requires at least:** 5.2  
+**Tested up to:** 5.5  
+**Requires PHP:** 7.0  
+**Stable tag:** 1.34.3  
 **License:** GPLv3  
 **License URI:** http://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -152,6 +152,15 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 ## Changelog ##
+
+### 1.34.3 ###
+* Fix: Hide filled listings in WordPress 5.5 sitemaps.
+* Fix: Issue with editing a job after getting to a preview step for another job.
+* Fix: Remove query args from paginate_links urls. (@JuanchoPestana)
+* Change: Add download button for custom file fields in the admin.
+* Dev: Add a filter to enable external file blocking (`job_manager_submit_job_reject_external_files`).
+* Dev: Update `select2` to 4.0.13.
+* Updated template: `job-submit.php` with change to the `Create A New Job` link URL.
 
 ### 1.34.2 ###
 * Enhancement: New filter to skip validation for application field.
