@@ -160,6 +160,7 @@ It then creates a database based on the parameters passed to it.
 * Change: Add download button for custom file fields in the admin.
 * Dev: Add a filter to enable external file blocking (`job_manager_submit_job_reject_external_files`).
 * Dev: Update `select2` to 4.0.13.
+* Updated template: `job-submit.php` with change to the `Create A New Job` link URL.
 
 = 1.34.2 =
 * Enhancement: New filter to skip validation for application field.
