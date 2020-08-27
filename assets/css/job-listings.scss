@@ -11,21 +11,26 @@ ul.job_listings {
 		border-bottom: 1px solid #eee;
 		background: url(../images/ajax-loader.gif) no-repeat center 32px;
 	}
-	li.job_listing, li.no_job_listings_found {
+
+	li.job_listing,
+	li.no_job_listings_found {
 		list-style: none outside;
 		padding: 0;
 		margin: 0;
 		border-bottom: 1px solid #eee;
 
 		&.job_position_filled {
+
 			a {
 				opacity: 0.25;
 			}
 		}
+
 		&.no_job_listings_found {
 			padding: 1em;
 			border-bottom: 1px solid #eee;
 		}
+
 		a {
 			display: block;
 			padding: 1em 1em 1em 2em;
@@ -36,9 +41,11 @@ ul.job_listings {
 			line-height: 1.5em;
 			text-decoration: none;
 
-			&:hover, &:focus {
+			&:hover,
+			&:focus {
 				background-color: #fcfcfc;
 			}
+
 			img.company_logo {
 				width: 42px;
 				height: 42px;
@@ -49,29 +56,37 @@ ul.job_listings {
 				vertical-align: middle;
 				box-shadow: none;
 			}
-			div.position, div.location, ul.meta {
+
+			div.position,
+			div.location,
+			ul.meta {
 				-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 				-moz-box-sizing: border-box;    /* Firefox, other Gecko */
 				box-sizing: border-box;         /* Opera/IE 8+ */
 			}
+
 			div.position {
 				float: left;
 				width: 55%;
 				padding: 0 0 0 42px;
 				line-height: 1.5em;
+
 				h3 {
 					margin: 0;
 					padding: 0;
 					line-height: inherit;
 					font-size: inherit;
 				}
+
 				.company {
 					color: #999;
+
 					.tagline {
-						margin-left: .5em;
+						margin-left: 0.5em;
 					}
 				}
 			}
+
 			div.location {
 				float: left;
 				text-align: left;
@@ -80,6 +95,7 @@ ul.job_listings {
 				color: #999;
 				line-height: 1.5em;
 			}
+
 			.meta {
 				float: right;
 				text-align: right;
@@ -89,90 +105,114 @@ ul.job_listings {
 				line-height: 1.5em;
 				color: #999;
 				list-style: none outside;
+
 				li {
 					list-style: none outside;
 					display: block;
 					margin: 0;
 				}
+
 				.job-type {
 					font-weight: bold;
 				}
 			}
 		}
+
 		&.job_position_featured {
+
 			a {
 				background: #fefee5;
 
-				&:hover, &:focus {
+				&:hover,
+				&:focus {
 					background-color: #fefed8;
 				}
 			}
 		}
 	}
 }
+
 .widget {
+
 	ul.job_listings {
+
 		li.job_listing {
+
 			a {
 				padding: 1em 0;
 			}
-			.image{
+
+			.image {
 				float: left;
 
-				img{
+				img {
 					left: 0;
 					position: relative;
 				}
 			}
-			.content{
+
+			.content {
 				overflow: hidden;
 			}
+
 			.position {
 				float: none;
 				width: auto;
 				padding: 0;
 			}
+
 			ul.meta {
 				float: none;
 				width: auto;
 				padding: 0;
 				margin: 0;
 				text-align: left;
+
 				li {
 					float: none;
 					display: inline;
 					padding: 0;
-					margin: 0 .5em 0 0;
+					margin: 0 0.5em 0 0;
 					font-weight: normal;
 
-					&:after {
-						padding: 0 0 0 .5em;
+					&::after {
+						padding: 0 0 0 0.5em;
 						content: "\2023";
 					}
-					&:last-child:after {
-						content: '';
+
+					&:last-child::after {
+						content: "";
 					}
 				}
 			}
 		}
 	}
 }
-.job-manager, .job_listing, .job-types {
+
+.job-manager,
+.job_listing,
+.job-types {
+
 	.job-type {
 		color: $part-time;
 	}
+
 	.full-time {
 		color: $full-time;
 	}
+
 	.part-time {
 		color: $part-time;
 	}
+
 	.temporary {
 		color: $temporary;
 	}
+
 	.freelance {
 		color: $freelance;
 	}
+
 	.internship {
 		color: $internship;
 	}
@@ -182,31 +222,40 @@ ul.job_listings {
  * Mobile styles
  */
 @media only screen and (max-width: 767px) {
+
 	ul.job_listings {
-		li.job_listing, li.no_job_listings_found {
+
+		li.job_listing,
+		li.no_job_listings_found {
+
 			a {
 				padding: 1em;
+
 				img.company_logo {
 					visibility: hidden;
 				}
+
 				div.position {
 					float: left;
 					width: 60%;
 					padding: 0;
 				}
+
 				div.location {
 					float: right;
 					width: 40%;
 					line-height: 2em;
-					font-size: .75em;
+					font-size: 0.75em;
 					padding: 0 0 0 1em;
 					text-align: right;
 				}
+
 				.meta {
 					float: right;
 					width: 40%;
 					line-height: 2em;
-					font-size: .75em;
+					font-size: 0.75em;
+
 					li {
 						font-size: 1em;
 					}
@@ -221,8 +270,11 @@ ul.job_listings {
  * Default theme fixes
  */
 .twenty-eleven {
+
 	ul.job_listings {
-		li.job_listing, li.no_job_listings_found {
+
+		li.job_listing,
+		li.no_job_listings_found {
 			padding: 0 !important;
 		}
 	}

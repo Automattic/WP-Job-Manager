@@ -1,14 +1,16 @@
 #wp-link {
-  #search-panel, #wplink-link-existing-content {
-	display: none;
-  }
+
+	#search-panel,
+	#wplink-link-existing-content {
+		display: none;
+	}
 }
 
 div#wp-link-wrap.wp-core-ui {
-  height: 300px;
+	height: 300px;
 }
 
 .wplink-autocomplete.ui-autocomplete {
-  display: none;
-  visibility: hidden;
+	display: none;
+	visibility: hidden;
 }
