@@ -322,7 +322,8 @@ class WP_Job_Manager {
 			$style_handle,
 			JOB_MANAGER_PLUGIN_URL . '/assets/dist/' . $style_path,
 			null !== $dependencies ? $dependencies : $script_asset['dependencies'],
-			$script_asset['version']
+			$script_asset['version'],
+			$media
 		);
 
 		return $result;
