@@ -261,8 +261,8 @@ class WP_Job_Manager {
 	 * Registers select2 assets when needed.
 	 */
 	public static function register_select2_assets() {
-		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', [ 'jquery' ], '4.0.10', false );
-		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', [], '4.0.10' );
+		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/lib/select2/select2.full.min.js', [ 'jquery' ], '4.0.10', false );
+		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/lib/select2/select2.min.css', [], '4.0.10' );
 	}
 
 	/**
@@ -318,7 +318,7 @@ class WP_Job_Manager {
 
 			// Register the script for dependencies that still require it.
 			if ( ! wp_script_is( 'chosen', 'registered' ) ) {
-				wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', [ 'jquery' ], '1.1.0', true );
+				wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-chosen/chosen.jquery.min.js', [ 'jquery' ], '1.1.0', true );
 				wp_register_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/css/chosen.css', [], '1.1.0' );
 			}
 
@@ -386,8 +386,8 @@ class WP_Job_Manager {
 		}
 
 		if ( job_manager_user_can_upload_file_via_ajax() ) {
-			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', [ 'jquery' ], '10.1.0', true );
-			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', [ 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ], '10.1.0', true );
+			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-fileupload/jquery.iframe-transport.js', [ 'jquery' ], '10.1.0', true );
+			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-fileupload/jquery.fileupload.js', [ 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ], '10.1.0', true );
 			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', [ 'jquery', 'jquery-fileupload' ], JOB_MANAGER_VERSION, true );
 
 			ob_start();
@@ -424,7 +424,7 @@ class WP_Job_Manager {
 			);
 		}
 
-		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-deserialize/jquery.deserialize.js', [ 'jquery' ], '1.2.1', true );
+		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-deserialize/jquery.deserialize.js', [ 'jquery' ], '1.2.1', true );
 		wp_register_script( 'wp-job-manager-ajax-filters', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.min.js', $ajax_filter_deps, JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-dashboard', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-dashboard.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
 		wp_register_script( 'wp-job-manager-job-application', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-application.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
