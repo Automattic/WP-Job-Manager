@@ -1,18 +1,18 @@
-@import "mixins";
-@import "icons";
-@import "job-listings";
+@use "mixins";
+@use "icons";
+@use "job-listings";
 
-@primary: 			#999999; 									/* Primary colour for buttons (alt) */
-@primarytext: 		desaturate(lighten(@primary,50%),18%);		/* Text on primary colour bg */
+$primary: 			#999999; 									/* Primary colour for buttons (alt) */
+$primarytext: 		desaturate(lighten($primary,50%),18%);		/* Text on primary colour bg */
 
-@secondary: 		desaturate(lighten(@primary,40%),18%);		/* Secondary buttons */
-@secondarytext:	 	desaturate(darken(@secondary,60%),18%);		/* Text on secondary colour bg */
+$secondary: 		desaturate(lighten($primary,40%),18%);		/* Secondary buttons */
+$secondarytext:	 	desaturate(darken($secondary,60%),18%);		/* Text on secondary colour bg */
 
-@highlight: 		spin( @primary, 150 ); 						/* Prices, In stock labels, sales flash */
-@highlightext:		desaturate(lighten(@highlight,50%),18%);	/* Text on highlight colour bg */
+$highlight: 		spin( $primary, 150 ); 						/* Prices, In stock labels, sales flash */
+$highlightext:		desaturate(lighten($highlight,50%),18%);	/* Text on highlight colour bg */
 
-@contentbg: 		#fff; 										/* Content BG - Tabs (active state) */
-@subtext: 			#777; 										/* small, breadcrumbs etc */
+$contentbg: 		#fff; 										/* Content BG - Tabs (active state) */
+$subtext: 			#777; 										/* small, breadcrumbs etc */
 
 .display-icon {
 	display: inline-block;
@@ -39,9 +39,9 @@
 	padding: 1em 2em 1em 3.5em !important;
 	margin: 0 0 2em !important;
 	position: relative;
-	background-color: lighten(@secondary,5%);
-	color: @secondarytext;
-	border-top: 3px solid @primary;
+	background-color: lighten($secondary,5%);
+	color: $secondarytext;
+	border-top: 3px solid $primary;
 	list-style: none outside !important;
 	width: auto;
 	.clearfix;
@@ -304,22 +304,22 @@ div.job_listings {
 		}
 		.job-type {
 			color: #fff;
-			background-color: @part-time;
+			background-color: $part-time;
 		}
 		.full-time {
-			background-color: @full-time;
+			background-color: $full-time;
 		}
 		.part-time {
-			background-color: @part-time;
+			background-color: $part-time;
 		}
 		.temporary {
-			background-color: @temporary;
+			background-color: $temporary;
 		}
 		.freelance {
-			background-color: @freelance;
+			background-color: $freelance;
 		}
 		.internship {
-			background-color: @internship;
+			background-color: $internship;
 		}
 		.position-filled, .listing-expired {
 			color: #b81c23;
@@ -629,19 +629,19 @@ div.job_listings {
 		margin: -.5em -.5em 0 0;
 
 		&.full-time {
-			background-color: @full-time;
+			background-color: $full-time;
 		}
 		&.part-time {
-			background-color: @part-time;
+			background-color: $part-time;
 		}
 		&.temporary {
-			background-color: @temporary;
+			background-color: $temporary;
 		}
 		&.freelance {
-			background-color: @freelance;
+			background-color: $freelance;
 		}
 		&.internship {
-			background-color: @internship;
+			background-color: $internship;
 		}
 	}
 }

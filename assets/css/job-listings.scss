@@ -1,4 +1,4 @@
-@import "mixins";
+@use "mixins";
 
 .rp4wp-related-job_listing > ul,
 ul.job_listings {
@@ -159,22 +159,22 @@ ul.job_listings {
 }
 .job-manager, .job_listing, .job-types {
 	.job-type {
-		color: @part-time;
+		color: $part-time;
 	}
 	.full-time {
-		color: @full-time;
+		color: $full-time;
 	}
 	.part-time {
-		color: @part-time;
+		color: $part-time;
 	}
 	.temporary {
-		color: @temporary;
+		color: $temporary;
 	}
 	.freelance {
-		color: @freelance;
+		color: $freelance;
 	}
 	.internship {
-		color: @internship;
+		color: $internship;
 	}
 }
 

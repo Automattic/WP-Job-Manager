@@ -1,5 +1,5 @@
-@import "mixins";
-@import "icons.less";
+@use "mixins";
+@use "icons";
 
 .job-manager-settings-wrap {
 	.job-manager-updated {
@@ -134,25 +134,25 @@ a.wpjm-activate-licence-link:active {
 			color: #fff;
 			padding: 4px;
 			font-size: 11px;
-			.border_radius( 2px );
+			@include border_radius( 2px );
 			display:block;
-			background-color: @part-time;
+			background-color: $part-time;
 			text-align: center;
 		}
 		.full-time {
-			background-color: @full-time;
+			background-color: $full-time;
 		}
 		.part-time {
-			background-color: @part-time;
+			background-color: $part-time;
 		}
 		.temporary {
-			background-color: @temporary;
+			background-color: $temporary;
 		}
 		.freelance {
-			background-color: @freelance;
+			background-color: $freelance;
 		}
 		.internship {
-			background-color: @internship;
+			background-color: $internship;
 		}
 	}
 	th.column-job_position {
@@ -174,8 +174,8 @@ a.wpjm-activate-licence-link:active {
 			position: absolute;
 			right: 7px;
 			top: 0;
-			.border_radius( 50% );
-			.box_shadow( 0, 1px, 0, 1px, rgba( 0,0,0,0.1 ) );
+			@include border_radius( 50% );
+			@include box_shadow( 0, 1px, 0, 1px, rgba( 0,0,0,0.1 ) );
 			border: 1px solid #fff;
 		}
 		.company {
@@ -301,12 +301,12 @@ a.wpjm-activate-licence-link:active {
 			margin-left: 4px;
 		}
 		.file_no_url {
-			.keyframes(flash; {
+			@keyframes flash {
 				from { background-color: unset; }
 				to { background-color: #dc3232; }
-			});
+			}
 
-			.animation(flash 0.3s linear infinite alternate);
+			@include animation(flash 0.3s linear infinite alternate);
 		}
 	}
 }
