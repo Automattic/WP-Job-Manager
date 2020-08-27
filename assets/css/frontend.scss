@@ -1,6 +1,6 @@
-@use "mixins";
-@use "icons";
-@use "job-listings";
+@import "mixins";
+@import "icons";
+@import "job-listings";
 
 $primary: 			#999; 									/* Primary colour for buttons (alt) */
 $primarytext: 		desaturate(lighten($primary, 50%), 18%);		/* Text on primary colour bg */
@@ -8,7 +8,7 @@ $primarytext: 		desaturate(lighten($primary, 50%), 18%);		/* Text on primary col
 $secondary: 		desaturate(lighten($primary, 40%), 18%);		/* Secondary buttons */
 $secondarytext:	 	desaturate(darken($secondary, 60%), 18%);		/* Text on secondary colour bg */
 
-$highlight: 		spin($primary, 150); 						/* Prices, In stock labels, sales flash */
+$highlight: 		adjust-hue($primary, 150); 						/* Prices, In stock labels, sales flash */
 $highlightext:		desaturate(lighten($highlight, 50%), 18%);	/* Text on highlight colour bg */
 
 $contentbg: 		#fff; 										/* Content BG - Tabs (active state) */
