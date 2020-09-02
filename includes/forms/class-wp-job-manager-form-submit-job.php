@@ -500,7 +500,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	protected function enqueue_job_form_assets() {
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
-		wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', [], JOB_MANAGER_VERSION );
+
+		WP_Job_Manager::register_style( 'wp-job-manager-job-submission', 'css/job-submission.css', [] );
+		wp_enqueue_style( 'wp-job-manager-job-submission' );
 	}
 
 	/**
