@@ -14,7 +14,7 @@ $highlightext:		desaturate(lighten($highlight, 50%), 18%);	/* Text on highlight 
 $contentbg: 		#fff; 										/* Content BG - Tabs (active state) */
 $subtext: 			#777; 										/* small, breadcrumbs etc */
 
-.display-icon {
+@mixin display-icon() {
 	display: inline-block;
 	width: 16px;
 	height: 16px;
@@ -140,7 +140,7 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 
 				&::before {
 
-					@extend .display-icon;
+					@include display-icon();
 					content: "\e808";
 				}
 			}
@@ -306,13 +306,13 @@ div.job_listings {
 
 		.website::before {
 
-			@extend .display-icon;
+			@include display-icon();
 			content: "\e809";
 		}
 
 		.company_twitter::before {
 
-			@extend .display-icon;
+			@include display-icon();
 			content: "\e80a";
 		}
 
@@ -388,20 +388,20 @@ div.job_listings {
 
 		.location::before {
 
-			@extend .display-icon;
+			@include display-icon();
 			content: "\e81d";
 		}
 
 		.date-posted::before {
 
-			@extend .display-icon;
+			@include display-icon();
 			content: "\e80f";
 		}
 
 		.position-filled::before,
 		.listing-expired::before {
 
-			@extend .display-icon;
+			@include display-icon();
 			content: "\e80e";
 		}
 	}
@@ -771,7 +771,7 @@ div.job_listings {
 
 			&::before {
 
-				@extend .display-icon;
+				@include display-icon();
 				content: "\e808";
 			}
 		}
@@ -829,7 +829,7 @@ div.job_listings {
 
 			&::before {
 
-				@extend .jm-icon;
+				@include jm-icon()
 				content: "\e803";
 			}
 		}
