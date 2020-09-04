@@ -7,7 +7,7 @@
 
 		.wp-menu-image::before {
 
-			@include jm-icon()
+			@include jm-icon();
 			content: "\e800";
 		}
 	}
@@ -16,7 +16,7 @@
 
 		.wp-menu-image::before {
 
-			@include jm-icon()
+			@include jm-icon();
 			content: "\e806";
 		}
 	}
