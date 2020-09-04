@@ -47,7 +47,7 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 	list-style: none outside !important;
 	width: auto;
 
-	@extend .clearfix;
+	@include clearfix();
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 
 	&::before {
@@ -105,7 +105,7 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 		border: 0;
 		border-bottom: 1px solid #eee;
 
-		@extend .clearfix;
+		@include clearfix();
 
 		label {
 			display: block;
@@ -493,12 +493,12 @@ div.job_listings {
 .job_filters {
 	background: #eee;
 
-	@extend .clearfix;
+	@include clearfix();
 
 	.search_jobs {
 		padding: 1em;
 
-		@extend .clearfix;
+		@include clearfix();
 
 		div {
 			-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -564,7 +564,7 @@ div.job_listings {
 		background: #f9f9f9;
 		border-top: 1px solid #e5e5e5;
 
-		@extend .clearfix;
+		@include clearfix();
 
 		li {
 			margin: 0;

@@ -18,6 +18,20 @@ $temporary: #d93674;
 	}
 }
 
+@mixin clearfix() {
+	zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+
+	&::before,
+	&::after {
+		content: "";
+		display: table;
+	}
+
+	&::after {
+		clear: both;
+	}
+}
+
 @mixin border_radius($radius:4px) {
 	-webkit-border-radius: $radius;
 	border-radius: $radius;
