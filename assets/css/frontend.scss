@@ -33,6 +33,10 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 	*display: inline;
 }
 
+.display-icon {
+	@include display-icon();
+}
+
 /* =Global styles/layout
 -------------------------------------------------------------- */
 .job-manager-message,
