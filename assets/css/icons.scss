@@ -40,3 +40,7 @@
 	/* fix buttons height, for twitter bootstrap */
 	line-height: 1em;
 }
+
+.jm-icon {
+	@include jm-icon();
+}
