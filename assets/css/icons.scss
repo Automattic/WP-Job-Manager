@@ -22,7 +22,7 @@
 	font-style: normal;
 }
 
-.jm-icon {
+@mixin jm-icon() {
 	font-family: job-manager !important;
 	font-style: normal;
 	font-weight: normal;
@@ -39,4 +39,9 @@
 
 	/* fix buttons height, for twitter bootstrap */
 	line-height: 1em;
+}
+
+.jm-icon {
+
+	@include jm-icon();
 }

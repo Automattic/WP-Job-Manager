@@ -78,7 +78,7 @@ a.wpjm-activate-licence-link:active {
 
 			&::before {
 
-				@extend .jm-icon;
+				@include jm-icon();
 				content: "\e803";
 			}
 		}
@@ -127,7 +127,7 @@ a.wpjm-activate-licence-link:active {
 
 		span::before {
 
-			@extend .jm-icon;
+			@include jm-icon();
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -265,7 +265,7 @@ a.wpjm-activate-licence-link:active {
 
 			&::before {
 
-				@extend .jm-icon;
+				@include jm-icon();
 				float: left;
 				width: 2em !important;
 				line-height: 2em;

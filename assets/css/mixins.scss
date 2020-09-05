@@ -4,7 +4,7 @@ $internship: #6033cc;
 $freelance: #39c;
 $temporary: #d93674;
 
-.clearfix {
+@mixin clearfix() {
 	zoom: 1; /* For IE 6/7 (trigger hasLayout) */
 
 	&::before,
@@ -16,6 +16,11 @@ $temporary: #d93674;
 	&::after {
 		clear: both;
 	}
+}
+
+.clearfix {
+
+	@include clearfix();
 }
 
 @mixin border_radius($radius:4px) {
