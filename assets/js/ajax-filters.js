@@ -507,12 +507,8 @@ jQuery( document ).ready( function( $ ) {
 		return false;
 	} );
 
-	if ( $.isFunction( $.fn.select2 ) && typeof job_manager_select2_args !== 'undefined' ) {
-		var select2_args = job_manager_select2_args;
-		select2_args[ 'allowClear' ] = true;
-		select2_args[ 'minimumResultsForSearch' ] = 10;
-
-		$( 'select[name^="search_categories"]:visible' ).select2( select2_args );
+	if ( $.isFunction( $.fn.select2 ) && typeof job_manager_select2_filters_args !== 'undefined' ) {
+		$( 'select[name^="search_categories"]:visible' ).select2( job_manager_select2_filters_args );
 	}
 
 	// Initial job and $form population

@@ -431,6 +431,21 @@ class WP_Job_Manager {
 		wp_register_script( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-submission.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
 
+		if ( isset( $select2_args ) ) {
+			$select2_filters_args = array_merge( $select2_args, [ 'allowClear'              => true,
+			                                                      'minimumResultsForSearch' => 10,
+			                                                      'placeholder'             => __( 'Any Category', 'wp-job-manager' )
+			] );
+
+			$select2_filters_args = apply_filters( 'job_manager_select2_filters_args', $select2_filters_args );
+
+			wp_localize_script(
+				'select2',
+				'job_manager_select2_filters_args',
+				$select2_filters_args
+			);
+		}
+
 		wp_localize_script(
 			'wp-job-manager-job-submission',
 			'job_manager_job_submission',
