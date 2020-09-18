@@ -437,12 +437,10 @@ class WP_Job_Manager {
 			                                                      'placeholder'             => __( 'Any Category', 'wp-job-manager' )
 			] );
 
-			$select2_filters_args = apply_filters( 'job_manager_select2_filters_args', $select2_filters_args );
-
 			wp_localize_script(
 				'select2',
 				'job_manager_select2_filters_args',
-				$select2_filters_args
+				apply_filters( 'job_manager_select2_filters_args', $select2_filters_args )
 			);
 		}
 
