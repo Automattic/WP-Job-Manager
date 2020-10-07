@@ -66,13 +66,13 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	* Helper function used to check if page is WPJM dashboard page.
-	*
-	* Checks if page has 'job_dashboard' shortcode.
-	*
-	* @access private
-	* @return bool True if page is dashboard page, false otherwise.
-	*/
+	 * Helper function used to check if page is WPJM dashboard page.
+	 *
+	 * Checks if page has 'job_dashboard' shortcode.
+	 *
+	 * @access private
+	 * @return bool True if page is dashboard page, false otherwise.
+	 */
 	private function is_job_dashboard_page() {
 		global $post;
 
@@ -298,7 +298,8 @@ class WP_Job_Manager_Shortcodes {
 	 */
 	public function filter_paginate_links( $link ) {
 
-		if ( $this->is_job_dashboard_page() ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used for comparison only.
+		if ( $this->is_job_dashboard_page() && isset( $_GET['action'] ) && in_array( $_GET['action'], [ 'mark_filled', 'mark_not_filled' ], true ) ) {
 			return remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link );
 		}
 
@@ -385,8 +386,8 @@ class WP_Job_Manager_Shortcodes {
 			$disable_client_state = true;
 		}
 		if ( ! empty( $_GET['search_location'] ) ) {
-			$atts['location']      = sanitize_text_field( wp_unslash( $_GET['search_location'] ) );
-			$disable_client_state  = true;
+			$atts['location']     = sanitize_text_field( wp_unslash( $_GET['search_location'] ) );
+			$disable_client_state = true;
 		}
 		if ( ! empty( $_GET['search_category'] ) ) {
 			$atts['selected_category'] = sanitize_text_field( wp_unslash( $_GET['search_category'] ) );
