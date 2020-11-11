@@ -110,12 +110,17 @@ class WP_Job_Manager_Shortcodes {
 	public function job_dashboard_handler() {
 		if (
 			! empty( $_REQUEST['action'] )
+			&& ! empty( $_REQUEST['job_id'] )
 			&& ! empty( $_REQUEST['_wpnonce'] )
-			&& wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'job_manager_my_job_actions' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 		) {
 
-			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
 			$job_id = isset( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
+			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
+
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+			if ( ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'job_manager_my_job_actions_' . $job_id ) ) {
+				return;
+			}
 
 			try {
 				// Get Job.

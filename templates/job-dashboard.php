@@ -82,7 +82,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 											foreach ( $actions as $action => $value ) {
 												$action_url = add_query_arg( [ 'action' => $action, 'job_id' => $job->ID ] );
 												if ( $value['nonce'] ) {
-													$action_url = wp_nonce_url( $action_url, 'job_manager_my_job_actions' );
+													$action_url = wp_nonce_url( $action_url, 'job_manager_my_job_actions_' . $job->ID );
 												}
 												echo '<li><a href="' . esc_url( $action_url ) . '" class="job-dashboard-action-' . esc_attr( $action ) . '">' . esc_html( $value['label'] ) . '</a></li>';
 											}
