@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 5.2
 Tested up to: 5.5
 Requires PHP: 7.0
-Stable tag: 1.34.3
+Stable tag: 1.34.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,6 +152,9 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.34.4 =
+* Fix: Security issue with job listing duplication.
 
 = 1.34.3 =
 * Fix: Hide filled listings in WordPress 5.5 sitemaps.
