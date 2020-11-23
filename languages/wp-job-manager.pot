@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the WP Job Manager plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.34.3\n"
+"Project-Id-Version: WP Job Manager 1.34.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager/\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-08-27T21:50:59+00:00\n"
+"POT-Creation-Date: 2020-11-24T11:31:07+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: wp-job-manager\n"
@@ -263,7 +263,7 @@ msgid "Featured?"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:503
-#: includes/class-wp-job-manager-shortcodes.php:275
+#: includes/class-wp-job-manager-shortcodes.php:333
 msgid "Filled?"
 msgstr ""
 
@@ -303,13 +303,13 @@ msgstr ""
 #. translators: Placeholder %s is the singular label of the job listing post type.
 #: includes/admin/class-wp-job-manager-cpt.php:647
 #: includes/class-wp-job-manager-post-types.php:335
-#: templates/job-dashboard.php:52
-#: templates/job-dashboard.php:70
+#: includes/class-wp-job-manager-shortcodes.php:381
+#: includes/class-wp-job-manager-shortcodes.php:414
 msgid "Edit"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:654
-#: templates/job-dashboard.php:79
+#: includes/class-wp-job-manager-shortcodes.php:429
 msgid "Delete"
 msgstr ""
 
@@ -1344,56 +1344,76 @@ msgstr ""
 msgid "Listing Expiry Date"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:126
+#: includes/class-wp-job-manager-shortcodes.php:141
 msgid "Invalid ID"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:133
+#: includes/class-wp-job-manager-shortcodes.php:148
 msgid "This position has already been filled"
 msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
-#: includes/class-wp-job-manager-shortcodes.php:141
+#: includes/class-wp-job-manager-shortcodes.php:156
 msgid "%s has been filled"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:146
+#: includes/class-wp-job-manager-shortcodes.php:161
 msgid "This position is not filled"
 msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
-#: includes/class-wp-job-manager-shortcodes.php:154
+#: includes/class-wp-job-manager-shortcodes.php:169
 msgid "%s has been marked as not filled"
 msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
-#: includes/class-wp-job-manager-shortcodes.php:162
+#: includes/class-wp-job-manager-shortcodes.php:177
 msgid "%s has been deleted"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:167
-#: includes/class-wp-job-manager-shortcodes.php:181
+#: includes/class-wp-job-manager-shortcodes.php:182
+#: includes/class-wp-job-manager-shortcodes.php:196
 msgid "Missing submission page."
 msgstr ""
 
 #. translators: Placeholder %s is the plural label for the job listing post type.
-#: includes/class-wp-job-manager-shortcodes.php:274
+#: includes/class-wp-job-manager-shortcodes.php:332
 #: includes/widgets/class-wp-job-manager-widget-featured-jobs.php:36
 #: includes/widgets/class-wp-job-manager-widget-featured-jobs.php:52
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:36
 msgid "Title"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:276
+#: includes/class-wp-job-manager-shortcodes.php:334
 msgid "Date Posted"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:277
+#: includes/class-wp-job-manager-shortcodes.php:335
 msgid "Listing Expires"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:456
-#: includes/class-wp-job-manager-shortcodes.php:494
+#: includes/class-wp-job-manager-shortcodes.php:387
+msgid "Mark not filled"
+msgstr ""
+
+#: includes/class-wp-job-manager-shortcodes.php:392
+msgid "Mark filled"
+msgstr ""
+
+#: includes/class-wp-job-manager-shortcodes.php:398
+msgid "Duplicate"
+msgstr ""
+
+#: includes/class-wp-job-manager-shortcodes.php:405
+msgid "Relist"
+msgstr ""
+
+#: includes/class-wp-job-manager-shortcodes.php:422
+msgid "Continue Submission"
+msgstr ""
+
+#: includes/class-wp-job-manager-shortcodes.php:617
+#: includes/class-wp-job-manager-shortcodes.php:655
 msgid "Load more listings"
 msgstr ""
 
@@ -1424,25 +1444,25 @@ msgid ""
 "\t\t\t\thave started but have not completed: %1$s and %2$s"
 msgstr ""
 
-#: includes/class-wp-job-manager.php:358
+#: includes/class-wp-job-manager.php:359
 msgid "Load previous listings"
 msgstr ""
 
-#: includes/class-wp-job-manager.php:486
+#: includes/class-wp-job-manager.php:487
 msgid "Invalid file type. Accepted types:"
 msgstr ""
 
 #. translators: Placeholder %d is the number of files to that users are limited to.
-#: includes/class-wp-job-manager.php:503
+#: includes/class-wp-job-manager.php:504
 #: includes/forms/class-wp-job-manager-form-submit-job.php:442
 msgid "You are only allowed to upload a maximum of %d files."
 msgstr ""
 
-#: includes/class-wp-job-manager.php:511
+#: includes/class-wp-job-manager.php:512
 msgid "Are you sure you want to delete this listing?"
 msgstr ""
 
-#: includes/class-wp-job-manager.php:519
+#: includes/class-wp-job-manager.php:520
 msgid "This field is required."
 msgstr ""
 
@@ -2015,36 +2035,16 @@ msgstr ""
 msgid "You need to be signed in to manage your listings."
 msgstr ""
 
-#: templates/job-dashboard.php:19
+#: templates/job-dashboard.php:26
 msgid "Your listings are shown in the table below."
 msgstr ""
 
-#: templates/job-dashboard.php:31
+#: templates/job-dashboard.php:38
 msgid "You do not have any active listings."
 msgstr ""
 
-#: templates/job-dashboard.php:44
+#: templates/job-dashboard.php:51
 msgid "Featured Job"
-msgstr ""
-
-#: templates/job-dashboard.php:55
-msgid "Mark not filled"
-msgstr ""
-
-#: templates/job-dashboard.php:57
-msgid "Mark filled"
-msgstr ""
-
-#: templates/job-dashboard.php:60
-msgid "Duplicate"
-msgstr ""
-
-#: templates/job-dashboard.php:64
-msgid "Relist"
-msgstr ""
-
-#: templates/job-dashboard.php:75
-msgid "Continue Submission"
 msgstr ""
 
 #: templates/job-filters.php:30
