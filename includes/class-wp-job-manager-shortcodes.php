@@ -25,6 +25,13 @@ class WP_Job_Manager_Shortcodes {
 	private $job_dashboard_message = '';
 
 	/**
+	 * Cache of job post IDs currently displayed on job dashboard.
+	 *
+	 * @var int[]
+	 */
+	private $job_dashboard_job_ids;
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -110,19 +117,27 @@ class WP_Job_Manager_Shortcodes {
 	public function job_dashboard_handler() {
 		if (
 			! empty( $_REQUEST['action'] )
+			&& ! empty( $_REQUEST['job_id'] )
 			&& ! empty( $_REQUEST['_wpnonce'] )
-			&& wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), 'job_manager_my_job_actions' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 		) {
 
-			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
 			$job_id = isset( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
+			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
+
+			$job         = get_post( $job_id );
+			$job_actions = $this->get_job_actions( $job );
+
+			if (
+				! isset( $job_actions[ $action ] )
+				|| empty( $job_actions[ $action ]['nonce'] )
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+				|| ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), $job_actions[ $action ]['nonce'] )
+			) {
+				return;
+			}
 
 			try {
-				// Get Job.
-				$job = get_post( $job_id );
-
-				// Check ownership.
-				if ( ! job_manager_user_can_edit_job( $job_id ) ) {
+				if ( empty( $job ) || 'job_listing' !== $job->post_type || ! job_manager_user_can_edit_job( $job_id ) ) {
 					throw new Exception( __( 'Invalid ID', 'wp-job-manager' ) );
 				}
 
@@ -213,6 +228,60 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
+	 * Check if a job is listed on the current user's job dashboard page.
+	 *
+	 * @param WP_Post $job Job post object.
+	 *
+	 * @return bool
+	 */
+	private function is_job_available_on_dashboard( WP_Post $job ) {
+		// Check cache of currently displayed job dashboard IDs first to avoid lots of queries.
+		if ( isset( $this->job_dashboard_job_ids ) && in_array( (int) $job->ID, $this->job_dashboard_job_ids, true ) ) {
+			return true;
+		}
+
+		$args           = $this->get_job_dashboard_query_args();
+		$args['p']      = $job->ID;
+		$args['fields'] = 'ids';
+
+		$query = new WP_Query( $args );
+
+		return (int) $query->post_count > 0;
+	}
+
+	/**
+	 * Helper that generates the job dashboard query args.
+	 *
+	 * @param int $posts_per_page Number of posts per page.
+	 *
+	 * @return array
+	 */
+	private function get_job_dashboard_query_args( $posts_per_page = -1 ) {
+		$job_dashboard_args = [
+			'post_type'           => 'job_listing',
+			'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview' ],
+			'ignore_sticky_posts' => 1,
+			'posts_per_page'      => $posts_per_page,
+			'orderby'             => 'date',
+			'order'               => 'desc',
+			'author'              => get_current_user_id(),
+		];
+
+		if ( $posts_per_page > 0 ) {
+			$job_dashboard_args['offset'] = ( max( 1, get_query_var( 'paged' ) ) - 1 ) * $posts_per_page;
+		}
+
+		/**
+		 * Customize the query that is used to get jobs on the job dashboard.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array $job_dashboard_args Arguments to pass to WP_Query.
+		 */
+		return apply_filters( 'job_manager_get_dashboard_jobs_args', $job_dashboard_args );
+	}
+
+	/**
 	 * Handles shortcode which lists the logged in user's jobs.
 	 *
 	 * @param array $atts
@@ -250,21 +319,10 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		// ....If not show the job dashboard.
-		$args = apply_filters(
-			'job_manager_get_dashboard_jobs_args',
-			[
-				'post_type'           => 'job_listing',
-				'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview' ],
-				'ignore_sticky_posts' => 1,
-				'posts_per_page'      => $posts_per_page,
-				'offset'              => ( max( 1, get_query_var( 'paged' ) ) - 1 ) * $posts_per_page,
-				'orderby'             => 'date',
-				'order'               => 'desc',
-				'author'              => get_current_user_id(),
-			]
-		);
+		$jobs = new WP_Query( $this->get_job_dashboard_query_args( $posts_per_page ) );
 
-		$jobs = new WP_Query();
+		// Cache IDs for access check later on.
+		$this->job_dashboard_job_ids = wp_list_pluck( $jobs->posts, 'ID' );
 
 		echo wp_kses_post( $this->job_dashboard_message );
 
@@ -278,16 +336,118 @@ class WP_Job_Manager_Shortcodes {
 			]
 		);
 
+		$job_actions = [];
+		foreach ( $jobs->posts as $job ) {
+			$job_actions[ $job->ID ] = $this->get_job_actions( $job );
+		}
+
 		get_job_manager_template(
 			'job-dashboard.php',
 			[
-				'jobs'                  => $jobs->query( $args ),
+				'jobs'                  => $jobs->posts,
+				'job_actions'           => $job_actions,
 				'max_num_pages'         => $jobs->max_num_pages,
 				'job_dashboard_columns' => $job_dashboard_columns,
 			]
 		);
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Get the actions available to the user for a job listing on the job dashboard page.
+	 *
+	 * @param WP_Post $job The job post object.
+	 *
+	 * @return array
+	 */
+	public function get_job_actions( $job ) {
+		if (
+			! get_current_user_id()
+			|| ! $job instanceof WP_Post
+			|| 'job_listing' !== $job->post_type
+			|| ! $this->is_job_available_on_dashboard( $job )
+		) {
+			return [];
+		}
+
+		$base_nonce_action_name = 'job_manager_my_job_actions';
+
+		$actions = [];
+		switch ( $job->post_status ) {
+			case 'publish':
+				if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
+					$actions['edit'] = [
+						'label' => __( 'Edit', 'wp-job-manager' ),
+						'nonce' => false,
+					];
+				}
+				if ( is_position_filled( $job ) ) {
+					$actions['mark_not_filled'] = [
+						'label' => __( 'Mark not filled', 'wp-job-manager' ),
+						'nonce' => $base_nonce_action_name,
+					];
+				} else {
+					$actions['mark_filled'] = [
+						'label' => __( 'Mark filled', 'wp-job-manager' ),
+						'nonce' => $base_nonce_action_name,
+					];
+				}
+
+				$actions['duplicate'] = [
+					'label' => __( 'Duplicate', 'wp-job-manager' ),
+					'nonce' => $base_nonce_action_name,
+				];
+				break;
+			case 'expired':
+				if ( job_manager_get_permalink( 'submit_job_form' ) ) {
+					$actions['relist'] = [
+						'label' => __( 'Relist', 'wp-job-manager' ),
+						'nonce' => $base_nonce_action_name,
+					];
+				}
+				break;
+			case 'pending_payment':
+			case 'pending':
+				if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
+					$actions['edit'] = [
+						'label' => __( 'Edit', 'wp-job-manager' ),
+						'nonce' => false,
+					];
+				}
+				break;
+			case 'draft':
+			case 'preview':
+				$actions['continue'] = [
+					'label' => __( 'Continue Submission', 'wp-job-manager' ),
+					'nonce' => $base_nonce_action_name,
+				];
+				break;
+		}
+
+		$actions['delete'] = [
+			'label' => __( 'Delete', 'wp-job-manager' ),
+			'nonce' => $base_nonce_action_name,
+		];
+
+		/**
+		 * Filter the actions available to the current user for a job on the job dashboard page.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param array   $actions Actions to filter.
+		 * @param WP_Post $job     Job post object.
+		 */
+		$actions = apply_filters( 'job_manager_my_job_actions', $actions, $job );
+
+		// For backwards compatibility, convert `nonce => true` to the nonce action name.
+		foreach ( $actions as $key => $action ) {
+			if ( true === $action['nonce'] ) {
+				$actions[ $key ]['nonce'] = $base_nonce_action_name;
+			}
+		}
+
+		return $actions;
 	}
 
 	/**
@@ -298,7 +458,8 @@ class WP_Job_Manager_Shortcodes {
 	 */
 	public function filter_paginate_links( $link ) {
 
-		if ( $this->is_job_dashboard_page() ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used for comparison only.
+		if ( $this->is_job_dashboard_page() && isset( $_GET['action'] ) && in_array( $_GET['action'], [ 'mark_filled', 'mark_not_filled' ], true ) ) {
 			return remove_query_arg( [ 'action', 'job_id', '_wpnonce' ], $link );
 		}
 
