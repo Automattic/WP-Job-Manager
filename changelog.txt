@@ -1,3 +1,7 @@
+= 1.34.4 =
+* Fix: Harden security of job dashboard actions. Reported by Slavco.
+* Updated template: `job-dashboard.php`.
+
 = 1.34.3 =
 * Fix: Hide filled listings in WordPress 5.5 sitemaps.
 * Fix: Issue with editing a job after getting to a preview step for another job.
