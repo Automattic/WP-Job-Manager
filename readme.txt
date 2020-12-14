@@ -153,6 +153,9 @@ It then creates a database based on the parameters passed to it.
 
 == Changelog ==
 
+= 1.34.5 =
+* Fix: Jobs list not appearing in the page load while using Firefox.
+
 = 1.34.4 =
 * Fix: Harden security of job dashboard actions. Reported by Slavco.
 * Updated template: `job-dashboard.php`.
