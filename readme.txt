@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 5.2
 Tested up to: 5.6
 Requires PHP: 7.0
-Stable tag: 1.34.4
+Stable tag: 1.34.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
