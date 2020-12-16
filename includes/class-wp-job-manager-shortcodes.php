@@ -73,13 +73,13 @@ class WP_Job_Manager_Shortcodes {
 	}
 
 	/**
-	* Helper function used to check if page is WPJM dashboard page.
-	*
-	* Checks if page has 'job_dashboard' shortcode.
-	*
-	* @access private
-	* @return bool True if page is dashboard page, false otherwise.
-	*/
+	 * Helper function used to check if page is WPJM dashboard page.
+	 *
+	 * Checks if page has 'job_dashboard' shortcode.
+	 *
+	 * @access private
+	 * @return bool True if page is dashboard page, false otherwise.
+	 */
 	private function is_job_dashboard_page() {
 		global $post;
 
@@ -546,8 +546,8 @@ class WP_Job_Manager_Shortcodes {
 			$disable_client_state = true;
 		}
 		if ( ! empty( $_GET['search_location'] ) ) {
-			$atts['location']      = sanitize_text_field( wp_unslash( $_GET['search_location'] ) );
-			$disable_client_state  = true;
+			$atts['location']     = sanitize_text_field( wp_unslash( $_GET['search_location'] ) );
+			$disable_client_state = true;
 		}
 		if ( ! empty( $_GET['search_category'] ) ) {
 			$atts['selected_category'] = sanitize_text_field( wp_unslash( $_GET['search_category'] ) );
