@@ -1,4 +1,10 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Widget.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -6,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Job Manager Widget base.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Widget extends WP_Widget {
@@ -57,16 +62,16 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 * Registers widget.
 	 */
 	public function register() {
-		$widget_ops = array(
+		$widget_ops = [
 			'classname'   => $this->widget_cssclass,
 			'description' => $this->widget_description,
-		);
+		];
 
 		parent::__construct( $this->widget_id, $this->widget_name, $widget_ops );
 
-		add_action( 'save_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
+		add_action( 'save_post', [ $this, 'flush_widget_cache' ] );
+		add_action( 'deleted_post', [ $this, 'flush_widget_cache' ] );
+		add_action( 'switch_theme', [ $this, 'flush_widget_cache' ] );
 	}
 
 	/**
@@ -79,11 +84,11 @@ class WP_Job_Manager_Widget extends WP_Widget {
 		$cache = wp_cache_get( $this->widget_id, 'widget' );
 
 		if ( ! is_array( $cache ) ) {
-			$cache = array();
+			$cache = [];
 		}
 
 		if ( isset( $cache[ $args['widget_id'] ] ) ) {
-			echo $cache[ $args['widget_id'] ];
+			echo $cache[ $args['widget_id'] ]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			return true;
 		}
 
@@ -97,6 +102,12 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 * @param string $content
 	 */
 	public function cache_widget( $args, $content ) {
+		$cache = wp_cache_get( $this->widget_id, 'widget' );
+
+		if ( ! is_array( $cache ) ) {
+			$cache = [];
+		}
+
 		$cache[ $args['widget_id'] ] = $content;
 
 		wp_cache_set( $this->widget_id, $cache, 'widget' );
@@ -125,7 +136,7 @@ class WP_Job_Manager_Widget extends WP_Widget {
 		}
 
 		foreach ( $this->settings as $key => $setting ) {
-			$instance[ $key ] = sanitize_text_field( $new_instance[ $key ] );
+			$instance[ $key ] = isset( $new_instance[ $key ] ) ? sanitize_text_field( $new_instance[ $key ] ) : '';
 		}
 
 		$this->flush_widget_cache();
@@ -151,35 +162,61 @@ class WP_Job_Manager_Widget extends WP_Widget {
 			$value = isset( $instance[ $key ] ) ? $instance[ $key ] : $setting['std'];
 
 			switch ( $setting['type'] ) {
-				case 'text' :
+				case 'text':
 					?>
 					<p>
-						<label for="<?php echo $this->get_field_id( $key ); ?>"><?php echo $setting['label']; ?></label>
-						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo $this->get_field_name( $key ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" />
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
+						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="text" value="<?php echo esc_attr( $value ); ?>" />
 					</p>
 					<?php
-				break;
-				case 'number' :
+					break;
+				case 'number':
 					?>
 					<p>
-						<label for="<?php echo $this->get_field_id( $key ); ?>"><?php echo $setting['label']; ?></label>
-						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo $this->get_field_name( $key ); ?>" type="number" step="<?php echo esc_attr( $setting['step'] ); ?>" min="<?php echo esc_attr( $setting['min'] ); ?>" max="<?php echo esc_attr( $setting['max'] ); ?>" value="<?php echo esc_attr( $value ); ?>" />
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
+						<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="number" step="<?php echo esc_attr( $setting['step'] ); ?>" min="<?php echo esc_attr( $setting['min'] ); ?>" max="<?php echo esc_attr( $setting['max'] ); ?>" value="<?php echo esc_attr( $value ); ?>" />
 					</p>
 					<?php
-				break;
-				case 'select' :
+					break;
+				case 'select':
 					?>
 					<p>
-						<label for="<?php echo $this->get_field_id( $key ); ?>"><?php echo $setting['label']; ?></label>
-						<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo $this->get_field_name( $key ); ?>">
-							<?php foreach ( $setting['options'] as $key => $label ) : ?>
-								<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $value, $key ); ?>><?php echo esc_html( $label ); ?></option>
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
+						<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>">
+							<?php foreach ( $setting['options'] as $option_key => $option_label ) : ?>
+								<option value="<?php echo esc_attr( $option_key ); ?>" <?php selected( $value, $option_key ); ?>><?php echo esc_html( $option_label ); ?></option>
 							<?php endforeach; ?></select>
 					</p>
 					<?php
-				break;
+					break;
+				case 'checkbox':
+					?>
+					<p>
+						<input class="checkbox" id="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $key ) ); ?>" type="checkbox" value="1" <?php checked( $value, 1 ); ?> />
+						<label for="<?php echo esc_attr( $this->get_field_id( $key ) ); ?>"><?php echo esc_html( $setting['label'] ); ?></label>
+					</p>
+					<?php
+					break;
 			}
 		}
+	}
+
+	/**
+	 * Gets the instance with the default values for all settings.
+	 *
+	 * @return array
+	 */
+	protected function get_default_instance() {
+		$defaults = [];
+		if ( ! empty( $this->settings ) ) {
+			foreach ( $this->settings as $key => $setting ) {
+				$defaults[ $key ] = null;
+				if ( isset( $setting['std'] ) ) {
+					$defaults[ $key ] = $setting['std'];
+				}
+			}
+		}
+		return $defaults;
 	}
 
 	/**

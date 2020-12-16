@@ -1,11 +1,19 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Form_Edit_Job.
+ *
+ * @package wp-job-manager
+ */
 
-include_once( 'class-wp-job-manager-form-submit-job.php' );
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+require_once 'class-wp-job-manager-form-submit-job.php';
 
 /**
  * Handles the editing of Job Listings from the public facing frontend (from within `[job_dashboard]` shortcode).
  *
- * @package wp-job-manager
  * @since 1.0.0
  * @extends WP_Job_Manager_Form_Submit_Job
  */
@@ -19,11 +27,15 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	public $form_name = 'edit-job';
 
 	/**
+	 * Messaged shown on save.
+	 *
 	 * @var bool|string
 	 */
 	private $save_message = false;
 
 	/**
+	 * Message shown on error.
+	 *
 	 * @var bool|string
 	 */
 	private $save_error = false;
@@ -34,51 +46,50 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 	 * @access protected
 	 * @var WP_Job_Manager_Form_Edit_Job The single instance of the class
 	 */
-	protected static $_instance = null;
+	protected static $instance = null;
 
 	/**
 	 * Main Instance
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		add_action( 'wp', array( $this, 'submit_handler' ) );
-		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST[ 'job_id' ] ) : 0;
+		add_action( 'wp', [ $this, 'submit_handler' ] );
+		add_action( 'submit_job_form_start', [ $this, 'output_submit_form_nonce_field' ] );
 
-		if  ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Check happens later when possible.
+		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
+
+		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
 			$this->job_id = 0;
 		}
 
 		if ( ! empty( $this->job_id ) ) {
-			$post_status = get_post_status( $this->job_id );
-			if (
-				( 'publish' === $post_status && ! wpjm_user_can_edit_published_submissions() )
-				|| ( 'publish' !== $post_status && ! job_manager_user_can_edit_pending_submissions() )
-			) {
+			if ( ! WP_Job_Manager_Post_Types::job_is_editable( $this->job_id ) ) {
 				$this->job_id = 0;
 			}
 		}
 	}
 
 	/**
-	 * output function.
+	 * Output function.
 	 *
 	 * @param array $atts
 	 */
-	public function output( $atts = array() ) {
+	public function output( $atts = [] ) {
 		if ( ! empty( $this->save_message ) ) {
-			echo '<div class="job-manager-message">' . $this->save_message . '</div>';
+			echo '<div class="job-manager-message">' . wp_kses_post( $this->save_message ) . '</div>';
 		}
 		if ( ! empty( $this->save_error ) ) {
-			echo '<div class="job-manager-error">' . $this->save_error . '</div>';
+			echo '<div class="job-manager-error">' . wp_kses_post( $this->save_error ) . '</div>';
 		}
 		$this->submit();
 	}
@@ -90,7 +101,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		$job = get_post( $this->job_id );
 
 		if ( empty( $this->job_id ) ) {
-			echo wpautop( __( 'Invalid listing', 'wp-job-manager' ) );
+			echo wp_kses_post( wpautop( __( 'Invalid listing', 'wp-job-manager' ) ) );
 			return;
 		}
 
@@ -109,7 +120,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 						$this->fields[ $group_key ][ $key ]['value'] = has_post_thumbnail( $job->ID ) ? get_post_thumbnail_id( $job->ID ) : get_post_meta( $job->ID, '_' . $key, true );
 
 					} elseif ( ! empty( $field['taxonomy'] ) ) {
-						$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, $field['taxonomy'], array( 'fields' => 'ids' ) );
+						$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, $field['taxonomy'], [ 'fields' => 'ids' ] );
 
 					} else {
 						$this->fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
@@ -123,40 +134,51 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		$this->enqueue_job_form_assets();
 
 		$save_button_text = __( 'Save changes', 'wp-job-manager' );
-		if ( 'publish' === get_post_status( $this->job_id )
-			 && wpjm_published_submission_edits_require_moderation() ) {
+		if (
+			'publish' === get_post_status( $this->job_id )
+			&& wpjm_published_submission_edits_require_moderation()
+		) {
 			$save_button_text = __( 'Submit changes for approval', 'wp-job-manager' );
 		}
 
 		$save_button_text = apply_filters( 'update_job_form_submit_button_text', $save_button_text );
 
-		get_job_manager_template( 'job-submit.php', array(
-			'form'               => $this->form_name,
-			'job_id'             => $this->get_job_id(),
-			'action'             => $this->get_action(),
-			'job_fields'         => $this->get_fields( 'job' ),
-			'company_fields'     => $this->get_fields( 'company' ),
-			'step'               => $this->get_step(),
-			'submit_button_text' => $save_button_text,
-		) );
+		get_job_manager_template(
+			'job-submit.php',
+			[
+				'form'               => $this->form_name,
+				'job_id'             => $this->get_job_id(),
+				'action'             => $this->get_action(),
+				'job_fields'         => $this->get_fields( 'job' ),
+				'company_fields'     => $this->get_fields( 'company' ),
+				'step'               => $this->get_step(),
+				'submit_button_text' => $save_button_text,
+			]
+		);
 	}
 
 	/**
-	 * Submit Step is posted
+	 * Submit Step is posted.
+	 *
+	 * @throws Exception When invalid fields are submitted.
 	 */
 	public function submit_handler() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Check happens later when possible.
 		if ( empty( $_POST['submit_job'] ) ) {
 			return;
 		}
 
+		$this->check_submit_form_nonce_field();
+
 		try {
 
-			// Get posted values
+			// Get posted values.
 			$values = $this->get_posted_fields();
 
-			// Validate required
-			if ( is_wp_error( ( $return = $this->validate_fields( $values ) ) ) ) {
-				throw new Exception( $return->get_error_message() );
+			// Validate required.
+			$validation_result = $this->validate_fields( $values );
+			if ( is_wp_error( $validation_result ) ) {
+				throw new Exception( $validation_result->get_error_message() );
 			}
 
 			$save_post_status = '';
@@ -165,13 +187,13 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			}
 			$original_post_status = get_post_status( $this->job_id );
 
-			// Update the job
+			// Update the job.
 			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $save_post_status, $values, false );
 			$this->update_job_data( $values );
 
-			// Successful
+			// Successful.
 			$save_message = __( 'Your changes have been saved.', 'wp-job-manager' );
-			$post_status = get_post_status( $this->job_id );
+			$post_status  = get_post_status( $this->job_id );
 
 			update_post_meta( $this->job_id, '_job_edited', time() );
 

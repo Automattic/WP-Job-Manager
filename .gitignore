@@ -1,6 +1,5 @@
 /nbproject/private/
 /node_modules/
-package-lock.json
 project.xml
 project.properties
 .DS_Store
@@ -12,6 +11,9 @@ sftp-config.json
 /deploy/
 /vendor/
 /tmp/
+/build/
+/assets/dist/
+/*.zip
 
 # Ignore lib/wpjm_rest but keep folder
 lib/wpjm_rest/*

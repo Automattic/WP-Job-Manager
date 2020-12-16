@@ -1,6 +1,8 @@
 <?php
 /**
  * Only load these if Polylang plugin is installed and active.
+ *
+ * @package wp-job-manager
  */
 
 /**
@@ -25,8 +27,11 @@ add_action( 'pll_init', 'polylang_wpjm_init' );
  * @return array
  */
 function polylang_wpjm_query_language( $query_args ) {
-	if ( isset( $_POST['lang'] ) ) {
-		$query_args['lang'] = $_POST['lang'];
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
+	$input_lang = isset( $_POST['lang'] ) ? sanitize_text_field( wp_unslash( $_POST['lang'] ) ) : false;
+
+	if ( $input_lang ) {
+		$query_args['lang'] = $input_lang;
 	}
 	return $query_args;
 }
@@ -40,9 +45,11 @@ function polylang_wpjm_query_language( $query_args ) {
  * @return string
  */
 function polylang_wpjm_get_job_listings_lang( $lang ) {
-	if ( function_exists( 'pll_current_language' )
-		 && function_exists( 'pll_is_translated_post_type' )
-		 && pll_is_translated_post_type( 'job_listing' ) ) {
+	if (
+		function_exists( 'pll_current_language' )
+		&& function_exists( 'pll_is_translated_post_type' )
+		&& pll_is_translated_post_type( 'job_listing' )
+	) {
 		return pll_current_language();
 	}
 	return $lang;
@@ -63,3 +70,16 @@ function polylang_wpjm_page_id( $page_id ) {
 	return absint( $page_id );
 }
 
+/**
+ * Tells Polylang about ajax requests
+ * The filter is applied *before* the action 'pll_init'
+ *
+ * @since 1.32.0
+ *
+ * @param bool $is_ajax
+ * @return bool
+ */
+function polylang_wpjm_doing_ajax( $is_ajax ) {
+	return isset( $_SERVER['REQUEST_URI'] ) && false === strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '/jm-ajax/' ) ? $is_ajax : true;
+}
+add_filter( 'pll_is_ajax_on_front', 'polylang_wpjm_doing_ajax' );

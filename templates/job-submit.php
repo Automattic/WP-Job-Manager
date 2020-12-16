@@ -6,13 +6,13 @@
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
- * @package     WP Job Manager
+ * @package     wp-job-manager
  * @category    Template
- * @version     1.30.0
+ * @version     1.34.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 global $job_manager;
@@ -21,7 +21,7 @@ global $job_manager;
 
 	<?php
 	if ( isset( $resume_edit ) && $resume_edit ) {
-		printf( '<p><strong>' . __( "You are editing an existing job. %s", 'wp-job-manager' ) . '</strong></p>', '<a href="?new=1&key=' . $resume_edit . '">' . __( 'Create A New Job', 'wp-job-manager' ) . '</a>' );
+		printf( '<p><strong>' . esc_html__( "You are editing an existing job. %s", 'wp-job-manager' ) . '</strong></p>', '<a href="?job_manager_form=submit-job&new=1&key=' . esc_attr( $resume_edit ) . '">' . esc_html__( 'Create A New Job', 'wp-job-manager' ) . '</a>' );
 	}
 	?>
 
@@ -39,10 +39,10 @@ global $job_manager;
 		<?php do_action( 'submit_job_form_job_fields_start' ); ?>
 
 		<?php foreach ( $job_fields as $key => $field ) : ?>
-			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
-				<label for="<?php echo esc_attr( $key ); ?>"><?php echo $field['label'] . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>
+			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?> fieldset-type-<?php echo esc_attr( $field['type'] ); ?>">
+				<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_kses_post( $field['label'] ) . wp_kses_post( apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ) ); ?></label>
 				<div class="field <?php echo $field['required'] ? 'required-field' : ''; ?>">
-					<?php get_job_manager_template( 'form-fields/' . $field['type'] . '-field.php', array( 'key' => $key, 'field' => $field ) ); ?>
+					<?php get_job_manager_template( 'form-fields/' . $field['type'] . '-field.php', [ 'key' => $key, 'field' => $field ] ); ?>
 				</div>
 			</fieldset>
 		<?php endforeach; ?>
@@ -51,15 +51,15 @@ global $job_manager;
 
 		<!-- Company Information Fields -->
 		<?php if ( $company_fields ) : ?>
-			<h2><?php _e( 'Company Details', 'wp-job-manager' ); ?></h2>
+			<h2><?php esc_html_e( 'Company Details', 'wp-job-manager' ); ?></h2>
 
 			<?php do_action( 'submit_job_form_company_fields_start' ); ?>
 
 			<?php foreach ( $company_fields as $key => $field ) : ?>
-				<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
-					<label for="<?php echo esc_attr( $key ); ?>"><?php echo $field['label'] . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ); ?></label>
+				<fieldset class="fieldset-<?php echo esc_attr( $key ); ?> fieldset-type-<?php echo esc_attr( $field['type'] ); ?>">
+					<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_kses_post( $field['label'] ) . wp_kses_post( apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ) ); ?></label>
 					<div class="field <?php echo $field['required'] ? 'required-field' : ''; ?>">
-						<?php get_job_manager_template( 'form-fields/' . $field['type'] . '-field.php', array( 'key' => $key, 'field' => $field ) ); ?>
+						<?php get_job_manager_template( 'form-fields/' . $field['type'] . '-field.php', [ 'key' => $key, 'field' => $field ] ); ?>
 					</div>
 				</fieldset>
 			<?php endforeach; ?>
@@ -70,11 +70,16 @@ global $job_manager;
 		<?php do_action( 'submit_job_form_end' ); ?>
 
 		<p>
-			<input type="hidden" name="job_manager_form" value="<?php echo $form; ?>" />
+			<input type="hidden" name="job_manager_form" value="<?php echo esc_attr( $form ); ?>" />
 			<input type="hidden" name="job_id" value="<?php echo esc_attr( $job_id ); ?>" />
 			<input type="hidden" name="step" value="<?php echo esc_attr( $step ); ?>" />
 			<input type="submit" name="submit_job" class="button" value="<?php echo esc_attr( $submit_button_text ); ?>" />
-			<span class="spinner" style="background-image: url(<?php echo includes_url( 'images/spinner.gif' ); ?>);"></span>
+			<?php
+			if ( isset( $can_continue_later ) && $can_continue_later ) {
+				echo '<input type="submit" name="save_draft" class="button secondary save_draft" value="' . esc_attr__( 'Save Draft', 'wp-job-manager' ) . '" formnovalidate />';
+			}
+			?>
+			<span class="spinner" style="background-image: url(<?php echo esc_url( includes_url( 'images/spinner.gif' ) ); ?>);"></span>
 		</p>
 
 	<?php else : ?>

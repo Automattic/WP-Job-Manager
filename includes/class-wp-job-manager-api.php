@@ -1,7 +1,12 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_API.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
 /**
@@ -18,7 +23,7 @@ class WP_Job_Manager_API {
 	 * @var self
 	 * @since  1.26.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -28,24 +33,24 @@ class WP_Job_Manager_API {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_filter( 'query_vars', array( $this, 'add_query_vars' ), 0 );
-		add_action( 'parse_request', array( $this, 'api_requests' ), 0 );
+		add_filter( 'query_vars', [ $this, 'add_query_vars' ], 0 );
+		add_action( 'parse_request', [ $this, 'api_requests' ], 0 );
 	}
 
 	/**
 	 * Adds query vars used in API calls.
 	 *
-	 * @param array $vars the query vars
+	 * @param array $vars the query vars.
 	 * @return array
 	 */
 	public function add_query_vars( $vars ) {
@@ -66,18 +71,20 @@ class WP_Job_Manager_API {
 	public function api_requests() {
 		global $wp;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- If necessary/possible, nonce should be checked by API handler.
 		if ( ! empty( $_GET['job-manager-api'] ) ) {
-			$wp->query_vars['job-manager-api'] = $_GET['job-manager-api'];
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- If necessary/possible, nonce should be checked by API handler.
+			$wp->query_vars['job-manager-api'] = sanitize_text_field( wp_unslash( $_GET['job-manager-api'] ) );
 		}
 
 		if ( ! empty( $wp->query_vars['job-manager-api'] ) ) {
-			// Buffer, we won't want any output here
+			// Buffer, we won't want any output here.
 			ob_start();
 
-			// Get API trigger
+			// Get API trigger.
 			$api = strtolower( esc_attr( $wp->query_vars['job-manager-api'] ) );
 
-			// Load class if exists
+			// Load class if exists.
 			if ( has_action( 'job_manager_api_' . $api ) && class_exists( $api ) ) {
 				$api_class = new $api();
 			}
@@ -90,7 +97,7 @@ class WP_Job_Manager_API {
 			 */
 			do_action( 'job_manager_api_' . $api );
 
-			// Done, clear buffer and exit
+			// Done, clear buffer and exit.
 			ob_end_clean();
 			wp_die();
 		}

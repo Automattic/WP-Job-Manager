@@ -7,16 +7,16 @@ class WP_Test_WP_Job_Manager extends WPJM_BaseTest {
 	 * @since 1.26.0
 	 */
 	public function test_wp_job_manager_global_object() {
-		// setup the test
+		// setup the test.
 		global $job_manager;
 
-		// test if the global job manager object is loaded
+		// test if the global job manager object is loaded.
 		$this->assertTrue( isset( $job_manager ), 'Job Manager global object loaded' );
 
-		// check the class
+		// check the class.
 		$this->assertInstanceOf( 'WP_Job_Manager', $job_manager, 'Job Manager object is instance of WP_Job_Manager class' );
 
-		// check it matches result of global function
+		// check it matches result of global function.
 		$this->assertSame( WPJM(), $job_manager, 'Job Manager global must be equal to result of WPJM()' );
 	}
 

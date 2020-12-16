@@ -1,7 +1,20 @@
 <wpml-config>
-	<custom-fields>
-		<custom-field action="copy">_job_expires</custom-field>
-		<custom-field action="copy">_job_duration</custom-field>
-		<custom-field action="copy">_filled</custom-field>
-	</custom-fields>
+  <custom-types>
+    <custom-type translate="1">job_listing</custom-type>
+  </custom-types>
+  <taxonomies>
+    <taxonomy translate="1">job_listing_type</taxonomy>
+  </taxonomies>
+  <custom-fields>
+    <custom-field action="copy">_filled</custom-field>
+    <custom-field action="copy">_featured</custom-field>
+    <custom-field action="copy">_job_expires</custom-field>
+    <custom-field action="translate">_job_location</custom-field>
+    <custom-field action="translate">_application</custom-field>
+    <custom-field action="translate">_company_name</custom-field>
+    <custom-field action="translate">_company_website</custom-field>
+    <custom-field action="translate">_company_tagline</custom-field>
+    <custom-field action="copy">_company_twitter</custom-field>
+    <custom-field action="translate">_company_video</custom-field>
+  </custom-fields>
 </wpml-config>

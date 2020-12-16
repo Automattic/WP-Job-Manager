@@ -6,13 +6,13 @@
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
- * @package     WP Job Manager
+ * @package     wp-job-manager
  * @category    Template
- * @version     1.16.1
+ * @version     1.31.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 ?>
 <?php if ( $apply = get_the_job_application_method() ) :
@@ -20,9 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	?>
 	<div class="job_application application">
 		<?php do_action( 'job_application_start', $apply ); ?>
-		
-		<input type="button" class="application_button button" value="<?php _e( 'Apply for job', 'wp-job-manager' ); ?>" />
-		
+
+		<input type="button" class="application_button button" value="<?php esc_attr_e( 'Apply for job', 'wp-job-manager' ); ?>" />
+
 		<div class="application_details">
 			<?php
 				/**

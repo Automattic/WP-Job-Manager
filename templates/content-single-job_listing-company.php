@@ -8,14 +8,14 @@
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
- * @package     WP Job Manager
+ * @package     wp-job-manager
  * @category    Template
  * @since       1.14.0
- * @version     1.28.0
+ * @version     1.32.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 if ( ! get_the_company_name() ) {
@@ -27,7 +27,7 @@ if ( ! get_the_company_name() ) {
 
 	<p class="name">
 		<?php if ( $website = get_the_company_website() ) : ?>
-			<a class="website" href="<?php echo esc_url( $website ); ?>" target="_blank" rel="nofollow"><?php _e( 'Website', 'wp-job-manager' ); ?></a>
+			<a class="website" href="<?php echo esc_url( $website ); ?>" rel="nofollow"><?php esc_html_e( 'Website', 'wp-job-manager' ); ?></a>
 		<?php endif; ?>
 		<?php the_company_twitter(); ?>
 		<?php the_company_name( '<strong>', '</strong>' ); ?>
