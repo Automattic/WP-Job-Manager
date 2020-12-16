@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@wordpress/jest-preset-default": "6.3.0",
-    "@wordpress/scripts": "12.2.1",
+    "@wordpress/scripts": "12.5.0",
     "file-loader": "6.1.0"
   },
   "scripts": {
