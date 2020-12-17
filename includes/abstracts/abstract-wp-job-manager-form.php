@@ -190,8 +190,20 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function get_action() {
 		$default_action = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+		$action = esc_url_raw( $this->action ? $this->action : $default_action );
 
-		return esc_url_raw( $this->action ? $this->action : $default_action );
+		/**
+		 * Alter form submit action URL
+		 *
+		 * Before submitting or editing a job, alter the posted values before they get stored into the database.
+		 *
+		 * @param string $action Form action value
+		 * @param WP_Job_Manager_Form $this
+		 *
+		 * @since @@version
+		 *
+		 */
+		return apply_filters( 'job_manager_get_form_action', $action, $this );
 	}
 
 	/**
