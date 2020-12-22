@@ -251,6 +251,7 @@ class WP_Job_Manager {
 		global $wp_scripts;
 
 		$jquery_version = isset( $wp_scripts->registered['jquery-ui-core']->ver ) ? $wp_scripts->registered['jquery-ui-core']->ver : '1.9.2';
+		$jquery_version = preg_replace( '/-wp/', '', $jquery_version );
 		wp_register_style( 'jquery-ui', '//code.jquery.com/ui/' . $jquery_version . '/themes/smoothness/jquery-ui.min.css', [], $jquery_version );
 
 		// Register datepicker JS. It will be enqueued if needed when a date field is used.
