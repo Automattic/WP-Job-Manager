@@ -44,6 +44,7 @@ matrix:
 
 # Clones WordPress and configures our testing environment.
 before_script:
+    - composer self-update --1
     - phpenv config-rm xdebug.ini
     - export PLUGIN_BASE_DIR=$(basename $(pwd))
     - export PLUGIN_SLUG=$(basename $(pwd) | tr '[:upper:]' '[:lower:]')
