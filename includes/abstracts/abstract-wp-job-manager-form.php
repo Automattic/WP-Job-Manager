@@ -195,13 +195,12 @@ abstract class WP_Job_Manager_Form {
 		/**
 		 * Alter form submit action URL
 		 *
-		 * Before submitting or editing a job, alter the posted values before they get stored into the database.
+		 * @since 1.35.0
 		 *
-		 * @param string $action Form action value
-		 * @param WP_Job_Manager_Form $this
+		 * @param string              $action Form action value
+		 * @param WP_Job_Manager_Form $this   Current form class object
 		 *
-		 * @since @@version
-		 *
+		 * @return string
 		 */
 		return apply_filters( 'job_manager_get_form_action', $action, $this );
 	}
