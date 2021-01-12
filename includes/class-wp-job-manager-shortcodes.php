@@ -94,7 +94,16 @@ class WP_Job_Manager_Shortcodes {
 	 * Handles actions which need to be run before the shortcode e.g. post actions.
 	 */
 	public function shortcode_action_handler() {
-		if ( $this->is_job_dashboard_page() ) {
+    /**
+		 * Determine if the shortcode action handler should run.
+		 *
+		 * @since 1.35.0
+		 *
+		 * @param bool $should_run_handler Should the handler run.
+		 */
+		$should_run_handler = apply_filters( 'job_manager_should_run_shortcode_action_handler', $this->is_job_dashboard_page() );
+
+		if ( $should_run_handler ) {
 			$this->job_dashboard_handler();
 		}
 	}
