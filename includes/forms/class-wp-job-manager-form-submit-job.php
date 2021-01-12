@@ -547,6 +547,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( $this->job_id );
 			foreach ( $this->fields as $group_key => $group_fields ) {
 				foreach ( $group_fields as $key => $field ) {
+					if ( isset( $this->fields[ $group_key ][ $key ]['value'] ) ) {
+						continue;
+					}
+
 					switch ( $key ) {
 						case 'job_title':
 							$this->fields[ $group_key ][ $key ]['value'] = $job->post_title;
