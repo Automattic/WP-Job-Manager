@@ -689,7 +689,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 								'username' => ( job_manager_generate_username_from_email() || empty( $input_create_account_username ) ) ? '' : $input_create_account_username,
 								'password' => ( wpjm_use_standard_password_setup_email() || empty( $input_create_account_password ) ) ? '' : $input_create_account_password,
 								'email'    => sanitize_text_field( wp_unslash( $input_create_account_email ) ),
-								'role'     => get_option( 'job_manager_registration_role' ),
+								/**
+								 * Allow customization of new user creation role
+								 *
+								 * @param string                         $role     New user registration role (pulled from 'job_manager_registration_role' option)
+								 * @param array                          $values   Submitted input values.
+								 * @param WP_Job_Manager_Form_Submit_Job $this     Current class object
+								 *
+								 * @since 1.35.0
+								 */
+								'role'     => apply_filters( 'submit_job_form_create_account_role', get_option( 'job_manager_registration_role' ), $values, $this ),
 							]
 						);
 					}
