@@ -322,7 +322,7 @@ class WP_Job_Manager_Settings {
 							'placeholder' => '',
 							'label'       => __( 'Site Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
-							'desc'        => sprintf( __( 'You can retrieve your site key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
+							'desc'        => sprintf( __( 'You can retrieve your reCAPTCHA v2 "I\'m not a robot" Checkbox site key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'attributes'  => [],
 						],
 						[
@@ -331,7 +331,7 @@ class WP_Job_Manager_Settings {
 							'placeholder' => '',
 							'label'       => __( 'Secret Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
-							'desc'        => sprintf( __( 'You can retrieve your secret key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
+							'desc'        => sprintf( __( 'You can retrieve your reCAPTCHA v2 "I\'m not a robot" Checkbox secret key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'attributes'  => [],
 						],
 						[
