@@ -432,6 +432,18 @@ abstract class WP_Job_Manager_Form {
 				$field_type = str_replace( '-', '_', $field['type'] );
 				$handler    = apply_filters( "job_manager_get_posted_{$field_type}_field", false );
 
+				$this->fields[ $group_key ][ $key ]['empty'] = false;
+
+				if ( ! isset( $field['before_sanitize'] ) ) {
+					$field['before_sanitize'] = function ( $value ) use ( $group_key, $key ) {
+						if ( is_string( $value ) ) {
+							$value = trim( $value );
+						}
+
+						$this->fields[ $group_key ][ $key ]['empty'] = empty( $value );
+					};
+				}
+
 				if ( $handler ) {
 					$values[ $group_key ][ $key ] = call_user_func( $handler, $key, $field );
 				} elseif ( method_exists( $this, "get_posted_{$field_type}_field" ) ) {
@@ -440,13 +452,7 @@ abstract class WP_Job_Manager_Form {
 					$values[ $group_key ][ $key ] = $this->get_posted_field( $key, $field );
 				}
 
-				$this->fields[ $group_key ][ $key ]['empty'] = true;
-				if ( null !== $values[ $group_key ][ $key ] ) {
-					$this->fields[ $group_key ][ $key ]['empty'] = false;
-
-					// Set fields value.
-					$this->fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
-				}
+				$this->fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
 			}
 		}
 
@@ -543,7 +549,7 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
-	 * @return string|array|null
+	 * @return string|array
 	 */
 	protected function get_posted_field( $key, $field ) {
 		// Allow custom sanitizers with standard text fields.
@@ -552,13 +558,13 @@ abstract class WP_Job_Manager_Form {
 		}
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- WP_Job_Manager_Form::sanitize_posted_field handles the sanitization based on the type of data passed; nonce check happens elsewhere.
-		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
 
-		if ( '' === $value ) {
-			return null;
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $this->sanitize_posted_field( $value, $field['sanitizer'] );
+		return $value ? $this->sanitize_posted_field( $value, $field['sanitizer'] ) : '';
 	}
 
 	/**
@@ -566,17 +572,17 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
-	 * @return array|null
+	 * @return array
 	 */
 	protected function get_posted_multiselect_field( $key, $field ) {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- Nonce check happens elsewhere.
-		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : [];
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
 
-		if ( [] === $value ) {
-			return null;
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return array_map( 'sanitize_text_field', $value );
+		return $value ? array_map( 'sanitize_text_field', $value ) : [];
 	}
 
 	/**
@@ -585,7 +591,7 @@ abstract class WP_Job_Manager_Form {
 	 * @param  string $key
 	 * @param  array  $field
 	 *
-	 * @return string|array|null
+	 * @return string|array
 	 * @throws Exception When the upload fails.
 	 */
 	protected function get_posted_file_field( $key, $field ) {
@@ -597,10 +603,6 @@ abstract class WP_Job_Manager_Form {
 			$file = array_filter( array_merge( $file, (array) $this->get_posted_field( 'current_' . $key, $field ) ) );
 		}
 
-		if ( ! $file ) {
-			return null;
-		}
-
 		return $file;
 	}
 
@@ -609,17 +611,17 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
-	 * @return string|null
+	 * @return string
 	 */
 	protected function get_posted_textarea_field( $key, $field ) {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- Nonce check happens elsewhere.
-		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
 
-		if ( '' === $value ) {
-			return null;
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return trim( wp_kses_post( $value ) );
+		return $value ? trim( wp_kses_post( $value ) ) : '';
 	}
 
 	/**
@@ -638,17 +640,22 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
-	 * @return array|null
+	 * @return array
 	 */
 	protected function get_posted_term_checklist_field( $key, $field ) {
+		$value = false;
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		if ( isset( $_POST['tax_input'] ) && isset( $_POST['tax_input'][ $field['taxonomy'] ] ) ) {
-
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-			return array_map( 'absint', $_POST['tax_input'][ $field['taxonomy'] ] );
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens earlier. Sanitized below.
+			$value = wp_unslash( $_POST['tax_input'][ $field['taxonomy'] ] );
 		}
 
-		return null;
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -656,17 +663,17 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
-	 * @return array|null
+	 * @return array
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
 		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens elsewhere. Sanitization below.
-		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
 
-		if ( '' === $value ) {
-			return null;
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return array_map( 'absint', $value );
+		return $value ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -674,13 +681,17 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param  string $key
 	 * @param  array  $field
-	 * @return int|null
+	 * @return int
 	 */
 	protected function get_posted_term_select_field( $key, $field ) {
 		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens elsewhere. Sanitization below.
 		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
 
-		return $value && $value > 0 ? absint( $value ) : null;
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value && $value > 0 ? absint( $value ) : '';
 	}
 
 	/**
@@ -692,6 +703,8 @@ abstract class WP_Job_Manager_Form {
 	 * @return  string|array
 	 */
 	protected function upload_file( $field_key, $field ) {
+		$value = null;
+
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
 			if ( ! empty( $field['allowed_mime_types'] ) ) {
 				$allowed_mime_types = $field['allowed_mime_types'];
@@ -719,10 +732,16 @@ abstract class WP_Job_Manager_Form {
 			}
 
 			if ( ! empty( $field['multiple'] ) ) {
-				return $file_urls;
+				$value = $file_urls;
 			} else {
-				return current( $file_urls );
+				$value = current( $file_urls );
 			}
 		}
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value;
 	}
 }
