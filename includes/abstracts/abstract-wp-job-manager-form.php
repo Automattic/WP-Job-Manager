@@ -74,6 +74,15 @@ abstract class WP_Job_Manager_Form {
 	public $form_name = '';
 
 	/**
+	 * Field names of values that had a value on submission but may have been cleared during sanitization.
+	 *
+	 * This is optional and is a helper to be used when sanitation errors should be displayed over empty required fields.
+	 *
+	 * @var array
+	 */
+	public $values_existed = [];
+
+	/**
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
@@ -542,7 +551,13 @@ abstract class WP_Job_Manager_Form {
 		}
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- WP_Job_Manager_Form::sanitize_posted_field handles the sanitization based on the type of data passed; nonce check happens elsewhere.
-		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( wp_unslash( $_POST[ $key ] ), $field['sanitizer'] ) : '';
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( ! empty( $value ) ) {
+			$this->values_existed[] = $key;
+		}
+
+		return $value ? $this->sanitize_posted_field( $value, $field['sanitizer'] ) : '';
 	}
 
 	/**
@@ -553,8 +568,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_multiselect_field( $key, $field ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST[ $key ] ) ) : [];
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- Nonce check happens elsewhere.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( ! empty( $value ) ) {
+			$this->values_existed[] = $key;
+		}
+
+		return $value ? array_map( 'sanitize_text_field', $value ) : [];
 	}
 
 	/**
@@ -586,8 +607,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected function get_posted_textarea_field( $key, $field ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return isset( $_POST[ $key ] ) ? trim( wp_kses_post( wp_unslash( $_POST[ $key ] ) ) ) : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- Nonce check happens elsewhere.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( ! empty( $value ) ) {
+			$this->values_existed[] = $key;
+		}
+
+		return $value ? trim( wp_kses_post( $value ) ) : '';
 	}
 
 	/**
@@ -611,6 +638,8 @@ abstract class WP_Job_Manager_Form {
 	protected function get_posted_term_checklist_field( $key, $field ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		if ( isset( $_POST['tax_input'] ) && isset( $_POST['tax_input'][ $field['taxonomy'] ] ) ) {
+			$this->values_existed[] = $key;
+
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 			return array_map( 'absint', $_POST['tax_input'][ $field['taxonomy'] ] );
 		} else {
@@ -626,8 +655,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : [];
+		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens elsewhere. Sanitization below.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( ! empty( $value ) ) {
+			$this->values_existed[] = $key;
+		}
+
+		return $value ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -638,8 +673,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function get_posted_term_select_field( $key, $field ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return ! empty( $_POST[ $key ] ) && $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens elsewhere. Sanitization below.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( ! empty( $value ) ) {
+			$this->values_existed[] = $key;
+		}
+
+		return $value && $value > 0 ? absint( $value ) : '';
 	}
 
 	/**
@@ -652,6 +693,8 @@ abstract class WP_Job_Manager_Form {
 	 */
 	protected function upload_file( $field_key, $field ) {
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
+			$this->values_existed[] = $field_key;
+
 			if ( ! empty( $field['allowed_mime_types'] ) ) {
 				$allowed_mime_types = $field['allowed_mime_types'];
 			} else {
