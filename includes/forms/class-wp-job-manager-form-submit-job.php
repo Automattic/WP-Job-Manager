@@ -454,6 +454,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
 			$allowed_application_method   = get_option( 'job_manager_allowed_application_method', '' );
 			$values['job']['application'] = str_replace( ' ', '+', $values['job']['application'] );
+
+			$is_valid = true;
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce checked earlier when required.
+			$posted_value = isset( $_POST['application'] ) ? sanitize_text_field( wp_unslash( $_POST['application'] ) ) : false;
+			if ( $posted_value && empty( $values['job']['application'] ) ) {
+				$is_valid                     = false;
+				$values['job']['application'] = $posted_value;
+			}
+
 			switch ( $allowed_application_method ) {
 				case 'email':
 					if ( ! is_email( $values['job']['application'] ) ) {
@@ -461,21 +471,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					}
 					break;
 				case 'url':
-					// Prefix http if needed.
-					if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-						$values['job']['application'] = 'http://' . $values['job']['application'];
-					}
-					if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+					$is_valid = $is_valid && filter_var( $values['job']['application'], FILTER_VALIDATE_URL );
+					if ( ! $is_valid ) {
 						throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
 					}
 					break;
 				default:
 					if ( ! is_email( $values['job']['application'] ) ) {
-						// Prefix http if needed.
-						if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-							$values['job']['application'] = 'http://' . $values['job']['application'];
-						}
-						if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+						$is_valid = $is_valid && filter_var( $values['job']['application'], FILTER_VALIDATE_URL );
+						if ( ! $is_valid ) {
 							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
 						}
 					}

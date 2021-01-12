@@ -482,23 +482,50 @@ abstract class WP_Job_Manager_Form {
 		$value = trim( $value );
 
 		if ( 'url' === $sanitizer ) {
-			return esc_url_raw( $value );
+			return esc_url_raw( $this->normalize_url( $value ) );
 		} elseif ( 'email' === $sanitizer ) {
 			return sanitize_email( $value );
 		} elseif ( 'url_or_email' === $sanitizer ) {
-			if ( null !== wp_parse_url( $value, PHP_URL_HOST ) ) {
-				// Sanitize as URL.
-				return esc_url_raw( $value );
+			if ( is_email( $value ) ) {
+				return sanitize_email( $value );
 			}
 
-			// Sanitize as email.
-			return sanitize_email( $value );
+			// Sanitize as URL.
+			return esc_url_raw( $this->normalize_url( $value ) );
 		} elseif ( is_callable( $sanitizer ) ) {
 			return call_user_func( $sanitizer, $value );
 		}
 
 		// Use standard text sanitizer.
 		return sanitize_text_field( wp_unslash( $value ) );
+	}
+
+	/**
+	 * Add missing schemes to assumed URLs and replace spaces with plus signs.
+	 *
+	 * @param string $value Assumed URL to normalize.
+	 *
+	 * @return string
+	 */
+	protected function normalize_url( $value ) {
+		if ( ! empty( $value ) && ! preg_match( '/^https?:\/\//', $value ) ) {
+			/**
+			 * URL scheme to prepend when none is provided.
+			 *
+			 * @since 1.35.0
+			 *
+			 * @value string|bool $scheme Scheme to prepend (http or https). False to skip prepending scheme.
+			 * @value string      $url    Assumed URL that was passed.
+			 */
+			$assumed_scheme = apply_filters( 'job_manager_form_assumed_url_scheme', 'http', $value );
+			if ( $assumed_scheme ) {
+				$value = $assumed_scheme . '://' . $value;
+			}
+		}
+
+		$value = str_replace( ' ', '+', $value );
+
+		return $value;
 	}
 
 	/**
