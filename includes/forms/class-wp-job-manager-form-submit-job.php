@@ -341,7 +341,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		/**
 		 * Force application field to skip email / URL validation.
 		 *
-		 * @since 1.x.x
+		 * @since 1.34.2
 		 *
 		 * @param bool  $is_forced Whether the application field is forced to skip email / URL validation.
 		 */
