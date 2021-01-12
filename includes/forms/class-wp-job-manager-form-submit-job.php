@@ -465,25 +465,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( $posted_value && empty( $values['job']['application'] ) ) {
 				$is_valid                                    = false;
 				$this->fields['job']['application']['value'] = $posted_value;
-				$values['job']['application']                = $posted_value;
 			}
 
 			switch ( $allowed_application_method ) {
 				case 'email':
-					if ( ! is_email( $values['job']['application'] ) ) {
+					if ( ! $is_valid || ! is_email( $values['job']['application'] ) ) {
 						throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
 					}
 					break;
 				case 'url':
-					$is_valid = $is_valid && filter_var( $values['job']['application'], FILTER_VALIDATE_URL );
-					if ( ! $is_valid ) {
+					if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 						throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
 					}
 					break;
 				default:
 					if ( ! is_email( $values['job']['application'] ) ) {
-						$is_valid = $is_valid && filter_var( $values['job']['application'], FILTER_VALIDATE_URL );
-						if ( ! $is_valid ) {
+						if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
 						}
 					}

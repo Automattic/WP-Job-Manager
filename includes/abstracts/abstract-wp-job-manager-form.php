@@ -76,7 +76,8 @@ abstract class WP_Job_Manager_Form {
 	/**
 	 * Field names of values that had a value on submission but may have been cleared during sanitization.
 	 *
-	 * This is optional and is a helper to be used when sanitation errors should be displayed over empty required fields.
+	 * This is optional and is a helper to be used when sanitation errors should be displayed over
+	 * empty required fields.
 	 *
 	 * @var array
 	 */
