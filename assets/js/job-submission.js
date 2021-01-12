@@ -91,7 +91,7 @@ jQuery(document).ready(function($) {
 		if ( jobCategoryFieldIsInvalid() ) {
 			$(this).find( 'input[type=submit]' ).blur();
 
-			var jobCategoryInput = $( '.select2-search__field' )[0];
+			var jobCategoryInput = $( '.fieldset-job_category .select2-search__field' )[0];
 			jobCategoryInput.setCustomValidity( job_manager_job_submission.i18n_required_field );
 			jobCategoryInput.reportValidity();
 
@@ -121,7 +121,7 @@ jQuery(document).ready(function($) {
 	function jobCategoryFieldIsInvalid() {
 		var jobCategory = $( '#job_category' );
 		return jobCategory.length &&
-				!jobCategory.val() &&
+		       ( !jobCategory.val() || !jobCategory.val().length ) &&
 				jobCategory.parent().hasClass( 'required-field' ) &&
 				jobCategory.next().hasClass('select2');
 	}
@@ -146,7 +146,7 @@ jQuery(document).ready(function($) {
 
 	// Listen for changes to the category field to clear validity
 	$( '#job_category' ).on( 'select2:select', function() {
-		var jobCategoryInput = $( '.select2-search__field' )[0];
+		var jobCategoryInput = $( '.fieldset-job_category .select2-search__field' )[0];
 		jobCategoryInput.setCustomValidity( '' );
 		jobCategoryInput.reportValidity();
 	});
