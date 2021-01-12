@@ -72,9 +72,9 @@ class WP_Job_Manager_Shortcodes {
 		/**
 		 * Determine if the shortcode action handler should run.
 		 *
-		 * @param bool $should_run_handler Should the handler run.
+		 * @since 1.35.0
 		 *
-		 * @return bool
+		 * @param bool $should_run_handler Should the handler run.
 		 */
 		$should_run_handler = apply_filters( 'job_manager_should_run_shortcode_action_handler', is_page() && has_shortcode( $post->post_content, 'job_dashboard' ) );
 
