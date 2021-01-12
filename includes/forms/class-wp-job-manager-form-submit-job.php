@@ -361,7 +361,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				if (
 					$field['required']
 					&& empty( $values[ $group_key ][ $key ] )
-					&& ! in_array( $key, $this->values_existed, true )
+					&& ( ! isset( $field['empty'] ) || $field['empty'] )
 				) {
 					// translators: Placeholder %s is the label for the required field.
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
