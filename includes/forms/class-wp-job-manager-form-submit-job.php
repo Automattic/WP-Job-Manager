@@ -358,7 +358,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected function validate_fields( $values ) {
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
-				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) ) {
+				if (
+					$field['required']
+					&& empty( $values[ $group_key ][ $key ] )
+				) {
 					// translators: Placeholder %s is the label for the required field.
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
 				}
@@ -451,17 +454,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		// Application method.
-		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
+		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) ) {
 			$allowed_application_method   = get_option( 'job_manager_allowed_application_method', '' );
-			$values['job']['application'] = str_replace( ' ', '+', $values['job']['application'] );
 
 			$is_valid = true;
 
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce checked earlier when required.
 			$posted_value = isset( $_POST['application'] ) ? sanitize_text_field( wp_unslash( $_POST['application'] ) ) : false;
 			if ( $posted_value && empty( $values['job']['application'] ) ) {
-				$is_valid                     = false;
-				$values['job']['application'] = $posted_value;
+				$is_valid                                    = false;
+				$this->fields['job']['application']['value'] = $posted_value;
+				$values['job']['application']                = $posted_value;
 			}
 
 			switch ( $allowed_application_method ) {
