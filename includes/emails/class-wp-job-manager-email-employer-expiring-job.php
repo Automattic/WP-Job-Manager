@@ -126,14 +126,14 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 	 */
 	public static function get_setting_fields() {
 		$fields   = parent::get_setting_fields();
-		$fields[] = array(
+		$fields[] = [
 			'name'       => self::SETTING_NOTICE_PERIOD_NAME,
 			'std'        => self::SETTING_NOTICE_PERIOD_DEFAULT,
 			'label'      => __( 'Notice Period', 'wp-job-manager' ),
 			'type'       => 'number',
 			'after'      => ' ' . __( 'days', 'wp-job-manager' ),
-			'attributes' => array( 'min' => 0 ),
-		);
+			'attributes' => [ 'min' => 0 ],
+		];
 		return $fields;
 	}
 

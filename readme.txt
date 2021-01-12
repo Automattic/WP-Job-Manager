@@ -1,10 +1,10 @@
 === WP Job Manager ===
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
-Requires at least: 4.9
-Tested up to: 5.2
-Requires PHP: 5.6
-Stable tag: 1.33.5
+Requires at least: 5.2
+Tested up to: 5.6
+Requires PHP: 7.0
+Stable tag: 1.34.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,7 +23,7 @@ WP Job Manager is a **lightweight** job listing plugin for adding job-board like
 * Each listing can be tied to an email or website address so that job seekers can apply to the jobs.
 * Searches also display RSS links to allow job seekers to be alerted to new jobs matching their search.
 * Allow logged in employers to view, edit, mark filled, or delete their active job listings.
-* Developer friendly code — Custom Post Types, endpoints & template files.
+* Developer friendly code - Custom Post Types, endpoints & template files.
 
 The plugin comes with several shortcodes to output jobs in various formats, and since its built with Custom Post Types you are free to extend it further through themes.
 
@@ -152,9 +152,90 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.34.5 =
+* Fix: Jobs list not appearing in the page load while using Firefox.
+
+= 1.34.4 =
+* Fix: Harden security of job dashboard actions. Reported by Slavco.
+* Updated template: `job-dashboard.php`.
+
+= 1.34.3 =
+* Fix: Hide filled listings in WordPress 5.5 sitemaps.
+* Fix: Issue with editing a job after getting to a preview step for another job.
+* Fix: Remove query args from paginate_links urls. (@JuanchoPestana)
+* Change: Add download button for custom file fields in the admin.
+* Dev: Add a filter to enable external file blocking (`job_manager_submit_job_reject_external_files`).
+* Dev: Update `select2` to 4.0.13.
+* Updated template: `job-submit.php` with change to the `Create A New Job` link URL.
+
+= 1.34.2 =
+* Enhancement: New filter to skip validation for application field.
+* Enhancement: New method for clearing fields.
+* Fix: Improve TwentyTwenty theme compatibility (@JuanchoPestana)
+* Fix: Issue in RSS feed with empty query parameters.
+* Fix: Issue on Jobs page with empty query parameters.
+* Fix: Conflict with search query parameters on Jobs page.
+* Fix: Ensuring hidden jobs do not display in RSS feed.
+* Fix: Image validation when posting a job.
+* Fix: JS error in file upload.
+* Fix: Removed extra whitespace in textarea settings fields.
+* Fix: Several untranslatable strings are now translatable.
+* Fix: CC header in emails.
+* Fix: Search category query sanitization.
+* Fix: Remove PHP notices. (@truongwp)
+
+= 1.34.1 =
+* Templates Updated: `job-submitted.php`, `job-dashboard.php`.
+* Enhancement: Email notifications are sent separately if multiple recipients are listed.
+* Enhancement: Notices at end of job submission process are now displayed as a styled notice. (@DaveParkerRKD)
+* Fix: Resuming job listing submission at a particular step is now fixed.
+* Fix: Issue with some permalink structures and WPMU would cause issues on `[jobs]` page.
+* Dev: Adds the ability to block some jobs from being edited in the frontend.
+* Dev: Adds ability to force some email notifications to be enabled. 
+* Dev: Allows email notifications to be sent immediately.
+* Dev: Adds ability for settings to reference other settings tabs.
+* Dev: Standardizes jQuery UI datepicker script IDs in frontend and backend. Plugins and themes should enqueue `wp-job-manager-datepicker` if they need jQuery UI datepicker.
+
+= 1.34.0 =
+* Templates Updated: `content-job_listing.php`, `job-submitted.php`.
+* Enhancement: Add support for pre-selecting categories in `[jobs]` using category slugs in query string (e.g. `/jobs?search_category=developer,pm,senior`).
+* Change: Job listing now supports `author` functionality, which will expose the author field in the REST API.
+* Change: Menu position is fixed in WP admin. Plugins such as Resumes and Applications will need to be updated to show in WP admin below WPJM. (@technerdlove)
+* Change: Filter form on `[jobs]` resets on page refresh and uses query string as expected.
+* Change: No longer required to generate usernames from email for password field. (@manzoorwanijk)
+* Change: Use minified version of remote jQuery UI CSS. (@ovidiul)
+* Change: Google Maps link uses https.
+* Fix: Clear the `filled` flag when relisting a job listing.
+* Fix: Page titles are properly set during initial set up. (@JuanchoPestana)
+* Fix: Correctly format list of file extensions when an unsupported file type is uploaded.
+* Fix: Latitude and longitude are correctly used in `content-job_listing.php` template. (@MarieComet)
+* Fix: Delete widget options on plugin uninstall. (@JuanchoPestana)
+* Fix: Remove unused parameter in `job-submitted.php` template. (@JuanchoPestana)
+* Third Party: Fix issue with saving attachments when using Download Attachments plugin.
+* Third Party: Fix issue with Polylang where translations get overwritten on save of another language.
+* Dev: Adds the ability to completely disable the state saving functionality of `[jobs]` results.
+* Dev: Allows custom calls to `get_job_listings()` to just get `ids` and `id=>parent`. (@manzoorwanijk)
+* Dev: Switched to short-array syntax across plugin. 
+* Dev: Updated `jquery-fileupload` library to 10.2.0.
+* Dev: Updated `select2` library to 4.0.10.
+
+= 1.33.5 =
+* Fix: Issue where a JS error could occur when submitting a job.
+
+= 1.33.4 =
+* Note: WP Job Manager now requires a minimum PHP version of 5.6.20.
+* Fix: Javascript error in job-submission.js on custom job description fields.
+* Fix: Checking typeof undefined should be in quotes in job_submission.js.
+* Fix: Plugin activation issue that didn't set up roles correctly.
+* Fix: Escaped HTML issue in expiring jobs email notice.
+* Change: Added additional unslashing and sanitization of input variables from forms. 
+* Change: Limited direct database access within the plugin and migrated to WordPress core functions when possible.
+* Removed: Transient garbage collection. WordPress 4.9 and up handle this automatically.
+
 = 1.33.3 =
-* Fix: Upgrade jquery-fileupload to v9.32.0
-* Fix: Set frame origin on pages where shortcodes are embedded
+* Fix: Upgrade jquery-fileupload to v9.32.0.
+* Fix: Set frame origin on pages where shortcodes are embedded.
 
 = 1.33.2 =
 * Fix: Issue with `[jobs]` filter form on some themes and plugins.

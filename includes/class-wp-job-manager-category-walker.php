@@ -30,11 +30,11 @@ class WP_Job_Manager_Category_Walker extends Walker {
 	 *
 	 * @var array
 	 */
-	public $db_fields = array(
+	public $db_fields = [
 		'parent' => 'parent',
 		'id'     => 'term_id',
 		'slug'   => 'slug',
-	);
+	];
 
 	/**
 	 * Start the list walker.
@@ -48,7 +48,7 @@ class WP_Job_Manager_Category_Walker extends Walker {
 	 * @param array  $args
 	 * @param int    $current_object_id
 	 */
-	public function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
+	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
 
 		if ( ! empty( $args['hierarchical'] ) ) {
 			$pad = str_repeat( '&nbsp;', $depth * 3 );

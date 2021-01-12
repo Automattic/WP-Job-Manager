@@ -15,7 +15,7 @@ class WP_Test_WP_Job_Manager_Forms extends WPJM_BaseTest {
 	public function test_load_posted_form_too_legit_to_quit() {
 		WP_Job_manager_Form_Test::reset();
 		$this->assertFalse( WP_Job_manager_Form_Test::has_instance() );
-		$_POST['job_manager_form'] = 'Test';
+		$_REQUEST['job_manager_form'] = 'Test';
 		$instance                  = WP_Job_Manager_Forms::instance();
 		$instance->load_posted_form();
 		$this->assertTrue( WP_Job_manager_Form_Test::has_instance() );
@@ -28,7 +28,7 @@ class WP_Test_WP_Job_Manager_Forms extends WPJM_BaseTest {
 	public function test_load_posted_form_not_legit_so_quit() {
 		WP_Job_manager_Form_Test::reset();
 		$this->assertFalse( WP_Job_manager_Form_Test::has_instance() );
-		unset( $_POST['job_manager_form'] );
+		unset( $_REQUEST['job_manager_form'] );
 		$instance = WP_Job_Manager_Forms::instance();
 		$instance->load_posted_form();
 		$this->assertFalse( WP_Job_manager_Form_Test::has_instance() );

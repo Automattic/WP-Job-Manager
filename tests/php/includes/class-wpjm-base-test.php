@@ -59,7 +59,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	 * @return array
 	 */
 	public function return_do_not_die() {
-		return array( $this, 'do_not_die' );
+		return [ $this, 'do_not_die' ];
 	}
 
 	/**
@@ -75,28 +75,28 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	 * Helper to disable manage job listings capability.
 	 */
 	protected function disable_update_plugins_cap() {
-		remove_filter( 'user_has_cap', array( $this, 'add_manage_update_plugins_cap' ) );
+		remove_filter( 'user_has_cap', [ $this, 'add_manage_update_plugins_cap' ] );
 	}
 
 	/**
 	 * Helper to enable manage job listings capability.
 	 */
 	protected function enable_update_plugins_cap() {
-		add_filter( 'user_has_cap', array( $this, 'add_manage_update_plugins_cap' ) );
+		add_filter( 'user_has_cap', [ $this, 'add_manage_update_plugins_cap' ] );
 	}
 
 	/**
 	 * Helper to disable update plugins capability.
 	 */
 	protected function disable_manage_job_listings_cap() {
-		remove_filter( 'user_has_cap', array( $this, 'add_manage_job_listing_cap' ) );
+		remove_filter( 'user_has_cap', [ $this, 'add_manage_job_listing_cap' ] );
 	}
 
 	/**
 	 * Helper to enable update plugins capability.
 	 */
 	protected function enable_manage_job_listings_cap() {
-		add_filter( 'user_has_cap', array( $this, 'add_manage_job_listing_cap' ) );
+		add_filter( 'user_has_cap', [ $this, 'add_manage_job_listing_cap' ] );
 	}
 
 	/**
@@ -116,14 +116,14 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	}
 
 	protected function disable_transport_faker() {
-		remove_action( 'requests-requests.before_request', array( $this, 'overload_request_transport' ), 10 );
+		remove_action( 'requests-requests.before_request', [ $this, 'overload_request_transport' ], 10 );
 		remove_filter( 'job_manager_geolocation_api_key', '__return_empty_string', 10 );
-		add_filter( 'job_manager_geolocation_api_key', array( $this, 'get_google_maps_api_key' ), 10 );
+		add_filter( 'job_manager_geolocation_api_key', [ $this, 'get_google_maps_api_key' ], 10 );
 	}
 
 	protected function enable_transport_faker() {
-		add_action( 'requests-requests.before_request', array( $this, 'overload_request_transport' ), 10, 5 );
-		remove_filter( 'job_manager_geolocation_api_key', array( $this, 'get_google_maps_api_key' ), 10 );
+		add_action( 'requests-requests.before_request', [ $this, 'overload_request_transport' ], 10, 5 );
+		remove_filter( 'job_manager_geolocation_api_key', [ $this, 'get_google_maps_api_key' ], 10 );
 		add_filter( 'job_manager_geolocation_api_key', '__return_empty_string', 10 );
 	}
 

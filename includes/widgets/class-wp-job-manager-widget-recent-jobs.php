@@ -28,37 +28,37 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 		$this->widget_cssclass    = 'job_manager widget_recent_jobs';
 		$this->widget_description = __( 'Display a list of recent listings on your site, optionally matching a keyword and location.', 'wp-job-manager' );
 		$this->widget_id          = 'widget_recent_jobs';
-		$this->settings           = array(
-			'title'     => array(
+		$this->settings           = [
+			'title'     => [
 				'type'  => 'text',
 				// translators: Placeholder %s is the plural label for the job listing post type.
 				'std'   => sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ),
 				'label' => __( 'Title', 'wp-job-manager' ),
-			),
-			'keyword'   => array(
+			],
+			'keyword'   => [
 				'type'  => 'text',
 				'std'   => '',
 				'label' => __( 'Keyword', 'wp-job-manager' ),
-			),
-			'location'  => array(
+			],
+			'location'  => [
 				'type'  => 'text',
 				'std'   => '',
 				'label' => __( 'Location', 'wp-job-manager' ),
-			),
-			'number'    => array(
+			],
+			'number'    => [
 				'type'  => 'number',
 				'step'  => 1,
 				'min'   => 1,
 				'max'   => '',
 				'std'   => 10,
 				'label' => __( 'Number of listings to show', 'wp-job-manager' ),
-			),
-			'show_logo' => array(
+			],
+			'show_logo' => [
 				'type'  => 'checkbox',
 				'std'   => 0,
 				'label' => esc_html__( 'Show Company Logo', 'wp-job-manager' ),
-			),
-		);
+			],
+		];
 
 		parent::__construct();
 	}
@@ -84,13 +84,13 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 		$title     = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 		$number    = absint( $instance['number'] );
 		$jobs      = get_job_listings(
-			array(
+			[
 				'search_location' => $instance['location'],
 				'search_keywords' => $instance['keyword'],
 				'posts_per_page'  => $number,
 				'orderby'         => 'date',
 				'order'           => 'DESC',
-			)
+			]
 		);
 		$show_logo = absint( $instance['show_logo'] );
 
@@ -122,7 +122,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 					$jobs->the_post();
 					?>
 
-					<?php get_job_manager_template( 'content-widget-job_listing.php', array( 'show_logo' => $show_logo ) ); ?>
+					<?php get_job_manager_template( 'content-widget-job_listing.php', [ 'show_logo' => $show_logo ] ); ?>
 
 				<?php endwhile; ?>
 

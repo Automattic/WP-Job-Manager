@@ -20,7 +20,7 @@ function offer_version_sort( $first, $second ) {
 
 uasort( $versions, 'offer_version_sort' );
 
-$version_stack = array();
+$version_stack = [];
 
 foreach ( $versions as $offer ) {
 	list( $major, $minor ) = explode( '.',  $offer->version );

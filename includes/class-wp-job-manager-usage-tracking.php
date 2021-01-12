@@ -27,12 +27,12 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		parent::__construct();
 
 		// Add filter for settings.
-		add_filter( 'job_manager_settings', array( $this, 'add_setting_field' ) );
+		add_filter( 'job_manager_settings', [ $this, 'add_setting_field' ] );
 
 		// In the setup wizard, do not display the normal opt-in dialog.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 		if ( isset( $_GET['page'] ) && 'job-manager-setup' === $_GET['page'] ) {
-			remove_action( 'admin_notices', array( $this, 'maybe_display_tracking_opt_in' ) );
+			remove_action( 'admin_notices', [ $this, 'maybe_display_tracking_opt_in' ] );
 		}
 	}
 
@@ -42,7 +42,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 * @return array
 	 */
 	protected function get_base_system_data() {
-		$base_data            = array();
+		$base_data            = [];
 		$base_data['version'] = JOB_MANAGER_VERSION;
 
 		return $base_data;
@@ -56,7 +56,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 * @param string $event_name The name of the event, without the `wpjm` prefix.
 	 * @param array  $properties The event properties to be sent.
 	 */
-	public static function log_event( $event_name, $properties = array() ) {
+	public static function log_event( $event_name, $properties = [] ) {
 		$properties = array_merge(
 			WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields(),
 			$properties
@@ -106,7 +106,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 * @param int   $post_id    Post ID.
 	 * @param array $properties Default properties to use.
 	 */
-	public static function track_job_submission( $post_id, $properties = array() ) {
+	public static function track_job_submission( $post_id, $properties = [] ) {
 		// Only track the first time a job is submitted.
 		if ( get_post_meta( $post_id, '_tracked_submitted' ) ) {
 			return;
@@ -130,7 +130,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 * @param int   $post_id    Post ID.
 	 * @param array $properties Default properties to use.
 	 */
-	public static function track_job_approval( $post_id, $properties = array() ) {
+	public static function track_job_approval( $post_id, $properties = [] ) {
 		// Only track the first time a job is approved.
 		if ( get_post_meta( $post_id, '_tracked_approved' ) ) {
 			return;
@@ -245,14 +245,14 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		if ( 1 === preg_match( '/^wp\-job\-manager/', $plugin_slug ) ) {
 			return true;
 		}
-		$third_party_plugins = array(
+		$third_party_plugins = [
 			'all-in-one-seo-pack',
 			'polylang',
 			'jetpack',
 			'wordpress-seo', // Yoast.
 			'sitepress-multilingual-cms', // WPML.
 			'bibblio-related-posts', // Related Posts for WordPress.
-		);
+		];
 		if ( in_array( $plugin_slug, $third_party_plugins, true ) ) {
 			return true;
 		}
@@ -316,14 +316,14 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 * @return array
 	 */
 	public function add_setting_field( $fields ) {
-		$fields['general'][1][] = array(
+		$fields['general'][1][] = [
 			'name'     => self::WPJM_SETTING_NAME,
 			'std'      => '0',
 			'type'     => 'checkbox',
 			'desc'     => '',
 			'label'    => __( 'Enable Usage Tracking', 'wp-job-manager' ),
 			'cb_label' => $this->opt_in_checkbox_text(),
-		);
+		];
 
 		return $fields;
 	}

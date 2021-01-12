@@ -8,7 +8,14 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.32.0
+ * @version     1.34.4
+ *
+ * @since 1.34.4 Available job actions are passed in an array (`$job_actions`, keyed by job ID) and not generated in the template.
+ *
+ * @var array     $job_dashboard_columns Array of the columns to show on the job dashboard page.
+ * @var int       $max_num_pages         Maximum number of pages
+ * @var WP_Post[] $jobs                  Array of job post results.
+ * @var array     $job_actions           Array of actions available for each job.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -44,47 +51,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<?php echo is_position_featured( $job ) ? '<span class="featured-job-icon" title="' . esc_attr__( 'Featured Job', 'wp-job-manager' ) . '"></span>' : ''; ?>
 									<ul class="job-dashboard-actions">
 										<?php
-											$actions = array();
-
-											switch ( $job->post_status ) {
-												case 'publish' :
-													if ( wpjm_user_can_edit_published_submissions() ) {
-														$actions[ 'edit' ] = array( 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false );
+											if ( ! empty( $job_actions[ $job->ID ] ) ) {
+												foreach ( $job_actions[ $job->ID ] as $action => $value ) {
+													$action_url = add_query_arg( [
+														'action' => $action,
+														'job_id' => $job->ID
+													] );
+													if ( $value['nonce'] ) {
+														$action_url = wp_nonce_url( $action_url, $value['nonce'] );
 													}
-													if ( is_position_filled( $job ) ) {
-														$actions['mark_not_filled'] = array( 'label' => __( 'Mark not filled', 'wp-job-manager' ), 'nonce' => true );
-													} else {
-														$actions['mark_filled'] = array( 'label' => __( 'Mark filled', 'wp-job-manager' ), 'nonce' => true );
-													}
-
-													$actions['duplicate'] = array( 'label' => __( 'Duplicate', 'wp-job-manager' ), 'nonce' => true );
-													break;
-												case 'expired' :
-													if ( job_manager_get_permalink( 'submit_job_form' ) ) {
-														$actions['relist'] = array( 'label' => __( 'Relist', 'wp-job-manager' ), 'nonce' => true );
-													}
-													break;
-												case 'pending_payment' :
-												case 'pending' :
-													if ( job_manager_user_can_edit_pending_submissions() ) {
-														$actions['edit'] = array( 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false );
-													}
-												break;
-												case 'draft' :
-												case 'preview' :
-													$actions['continue'] = array( 'label' => __( 'Continue Submission', 'wp-job-manager' ), 'nonce' => true );
-													break;
-											}
-
-											$actions['delete'] = array( 'label' => __( 'Delete', 'wp-job-manager' ), 'nonce' => true );
-											$actions           = apply_filters( 'job_manager_my_job_actions', $actions, $job );
-
-											foreach ( $actions as $action => $value ) {
-												$action_url = add_query_arg( array( 'action' => $action, 'job_id' => $job->ID ) );
-												if ( $value['nonce'] ) {
-													$action_url = wp_nonce_url( $action_url, 'job_manager_my_job_actions' );
+													echo '<li><a href="' . esc_url( $action_url ) . '" class="job-dashboard-action-' . esc_attr( $action ) . '">' . esc_html( $value['label'] ) . '</a></li>';
 												}
-												echo '<li><a href="' . esc_url( $action_url ) . '" class="job-dashboard-action-' . esc_attr( $action ) . '">' . esc_html( $value['label'] ) . '</a></li>';
 											}
 										?>
 									</ul>
@@ -104,5 +81,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php endif; ?>
 		</tbody>
 	</table>
-	<?php get_job_manager_template( 'pagination.php', array( 'max_num_pages' => $max_num_pages ) ); ?>
+	<?php get_job_manager_template( 'pagination.php', [ 'max_num_pages' => $max_num_pages ] ); ?>
 </div>

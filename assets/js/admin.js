@@ -116,10 +116,14 @@ jQuery(document).ready(function($) {
 	$( document.body ).on('click', '.wp_job_manager_view_file_button', function ( event ) {
 		event.preventDefault();
 
-		file_target_wrapper = $( this ).closest( '.file_url' );
-		file_target_input = file_target_wrapper.find( 'input' );
+		var attachment_url = $( this ).data( 'download-url' );
 
-		var attachment_url = file_target_input.val();
+		if ( ! attachment_url ) {
+			file_target_wrapper = $( this ).closest( '.file_url' );
+			file_target_input = file_target_wrapper.find( 'input' );
+
+			var attachment_url = file_target_input.val();
+		}
 
 		if ( attachment_url.indexOf( '://' ) > - 1 ) {
 			window.open( attachment_url, '_blank' );
@@ -168,7 +172,7 @@ jQuery(document).ready(function($) {
 
 jQuery(document).ready(function($) {
 	var taxonomy = 'job_listing_type';
-	$('#' + taxonomy + 'checklist li :radio, #' + taxonomy + 'checklist-pop :radio').live( 'click', function(){
+	$('#' + taxonomy + 'checklist li :radio, #' + taxonomy + 'checklist-pop :radio').on( 'click', function(){
 		var t = $(this), c = t.is(':checked'), id = t.val();
 		$('#' + taxonomy + 'checklist li :radio, #' + taxonomy + 'checklist-pop :radio').prop('checked',false);
 		$('#in-' + taxonomy + '-' + id + ', #in-popular-' + taxonomy + '-' + id).prop( 'checked', c );

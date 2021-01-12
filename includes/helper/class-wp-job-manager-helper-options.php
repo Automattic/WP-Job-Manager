@@ -27,7 +27,7 @@ class WP_Job_Manager_Helper_Options {
 	public static function update( $product_slug, $key, $value ) {
 		$options = self::get_master_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
-			$options[ $product_slug ] = array();
+			$options[ $product_slug ] = [];
 		}
 		$options[ $product_slug ][ $key ] = $value;
 		return self::update_master_option( $options );
@@ -64,7 +64,7 @@ class WP_Job_Manager_Helper_Options {
 	public static function delete( $product_slug, $key ) {
 		$options = self::get_master_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
-			$options[ $product_slug ] = array();
+			$options[ $product_slug ] = [];
 		}
 		unset( $options[ $product_slug ][ $key ] );
 		return self::update_master_option( $options );
@@ -80,9 +80,9 @@ class WP_Job_Manager_Helper_Options {
 	private static function attempt_legacy_restore( $product_slug ) {
 		$options = self::get_master_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
-			$options[ $product_slug ] = array();
+			$options[ $product_slug ] = [];
 		}
-		foreach ( array( 'licence_key', 'email', 'errors', 'hide_key_notice' ) as $key ) {
+		foreach ( [ 'licence_key', 'email', 'errors', 'hide_key_notice' ] as $key ) {
 			$option_value = get_option( $product_slug . '_' . $key, false );
 			if ( ! empty( $option_value ) ) {
 				$options[ $product_slug ][ $key ] = $option_value;
@@ -100,9 +100,9 @@ class WP_Job_Manager_Helper_Options {
 	 */
 	private static function get_master_option() {
 		if ( is_multisite() || is_network_admin() ) {
-			return get_site_option( self::OPTION_NAME, array() );
+			return get_site_option( self::OPTION_NAME, [] );
 		}
-		return get_option( self::OPTION_NAME, array() );
+		return get_option( self::OPTION_NAME, [] );
 	}
 
 	/**

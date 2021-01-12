@@ -28,14 +28,14 @@ if ( isset( $field['value'] ) ) {
 
 wp_enqueue_script( 'wp-job-manager-term-multiselect' );
 
-$args = array(
+$args = [
 	'taxonomy'     => $field['taxonomy'],
 	'hierarchical' => 1,
 	'name'         => isset( $field['name'] ) ? $field['name'] : $key,
 	'orderby'      => 'name',
 	'selected'     => $selected,
 	'hide_empty'   => false
-);
+];
 
 if ( isset( $field['placeholder'] ) && ! empty( $field['placeholder'] ) ) $args['placeholder'] = $field['placeholder'];
 

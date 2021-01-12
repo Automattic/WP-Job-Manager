@@ -43,8 +43,8 @@ class WP_Job_Manager_API {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_filter( 'query_vars', array( $this, 'add_query_vars' ), 0 );
-		add_action( 'parse_request', array( $this, 'api_requests' ), 0 );
+		add_filter( 'query_vars', [ $this, 'add_query_vars' ], 0 );
+		add_action( 'parse_request', [ $this, 'api_requests' ], 0 );
 	}
 
 	/**

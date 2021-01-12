@@ -21,9 +21,9 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_output_kses_post_simple() {
 		$job_id = $this->factory->job_listing->create(
-			array(
+			[
 			'post_content' => '<p>This is a simple job listing</p>',
-			)
+			]
 		);
 
 		$test_content = wpjm_get_the_job_description( $job_id );
@@ -41,9 +41,9 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_output_kses_post_allow_embeds() {
 		$job_id = $this->factory->job_listing->create(
-			array(
+			[
 			'post_content' => '<p>This is a simple job listing</p><p>https://www.youtube.com/watch?v=S_GVbuddri8</p>',
-			)
+			]
 		);
 
 		$test_content = wpjm_get_the_job_description( $job_id );
@@ -83,10 +83,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$post_id  = $this->factory->post->create();
 
 		$jobs = $wp_query = new WP_Query(
-			array(
+			[
 				'p'         => $job_id,
 				'post_type' => 'job_listing',
-			)
+			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
 		$this->assertTrue( $jobs->is_single );
@@ -120,6 +120,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_job_feed_rss2() {
 		$this->factory->job_listing->create_many( 5 );
@@ -135,6 +136,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_job_feed_rss2_2inrow() {
 		$this->factory->job_listing->create_many( 5 );
@@ -150,29 +152,30 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_job_feed_location_search() {
 		$this->factory->job_listing->create_many(
 			5,
-			array(
-				'meta_input' => array(
+			[
+				'meta_input' => [
 					'_job_location' => 'Portland, OR, USA',
-				),
-			)
+				],
+			]
 		);
 		$seattle_job_id = $this->factory->job_listing->create(
-			array(
-				'meta_input' => array(
+			[
+				'meta_input' => [
 					'_job_location' => 'Seattle, WA, USA',
-				),
-			)
+				],
+			]
 		);
 		$chicago_job_id = $this->factory->job_listing->create(
-			array(
-				'meta_input' => array(
+			[
+				'meta_input' => [
 					'_job_location' => 'Chicago, IL, USA',
-				),
-			)
+				],
+			]
 		);
 
 		$_GET['search_location'] = 'Seattle';
@@ -191,18 +194,19 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_job_feed_keyword_search() {
 		$this->factory->job_listing->create_many( 3 );
 		$dog_job_id  = $this->factory->job_listing->create(
-			array(
+			[
 				'post_title' => 'Dog Whisperer',
-			)
+			]
 		);
 		$dino_job_id = $this->factory->job_listing->create(
-			array(
+			[
 				'post_title' => 'Dinosaur Whisperer Pro',
-			)
+			]
 		);
 
 		$_GET['search_keywords'] = 'Dinosaur';
@@ -276,43 +280,43 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_job_feed_item() {
 		$instance       = WP_Job_Manager_Post_Types::instance();
-		$new_jobs       = array();
+		$new_jobs       = [];
 		$type_a         = wp_create_term( 'Job Type A', 'job_listing_type' );
 		$type_b         = wp_create_term( 'Job Type B', 'job_listing_type' );
-		$new_job_args   = array();
-		$new_job_args[] = array(
-			'meta_input' => array(
+		$new_job_args   = [];
+		$new_job_args[] = [
+			'meta_input' => [
 				'_company_name' => 'Custom Company A',
-			),
-			'tax_input'  => array(
+			],
+			'tax_input'  => [
 				'job_listing_type' => $type_a['term_id'],
-			),
-		);
-		$new_job_args[] = array(
-			'meta_input' => array(
+			],
+		];
+		$new_job_args[] = [
+			'meta_input' => [
 				'_job_location' => 'Custom Location B',
 				'_company_name' => '',
-			),
-			'tax_input'  => array(
+			],
+			'tax_input'  => [
 				'job_listing_type' => $type_b['term_id'],
-			),
-		);
-		$new_job_args[] = array(
-			'meta_input' => array(
+			],
+		];
+		$new_job_args[] = [
+			'meta_input' => [
 				'_job_location' => 'Custom Location A',
 				'_company_name' => 'Custom Company B',
-			),
-			'tax_input'  => array(),
-		);
+			],
+			'tax_input'  => [],
+		];
 		$new_jobs[]     = $this->factory->job_listing->create( $new_job_args[0] );
 		$new_jobs[]     = $this->factory->job_listing->create( $new_job_args[1] );
 		$new_jobs[]     = $this->factory->job_listing->create( $new_job_args[2] );
 		$jobs           = $wp_query = new WP_Query(
-			array(
+			[
 				'post_type' => 'job_listing',
 				'orderby'   => 'ID',
 				'order'     => 'ASC',
-			)
+			]
 		);
 		$this->assertEquals( count( $new_jobs ), $jobs->post_count );
 
@@ -366,18 +370,18 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::check_for_expired_jobs
 	 */
 	public function test_check_for_expired_jobs() {
-		$new_jobs                 = array();
+		$new_jobs                 = [];
 		$new_jobs['none']        = $this->factory->job_listing->create();
 		delete_post_meta( $new_jobs['none'], '_job_expires' );
 		$new_jobs['empty']         = $this->factory->job_listing->create();
 		update_post_meta( $new_jobs['empty'], '_job_expires', '' );
-		$new_jobs['invalid-none'] = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => '0000-00-00' ) ) );
-		$new_jobs['today']        = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d' ) ) ) );
-		$new_jobs['yesterday']    = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-1 day' ) ) ) ) );
-		$new_jobs['ancient']      = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-100 day' ) ) ) ) );
-		$new_jobs['tomorrow']     = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ) ) );
-		$new_jobs['30daysago']    = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-30 day' ) ) ) ) );
-		$new_jobs['31daysago']    = $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => date( 'Y-m-d', strtotime( '-31 day' ) ) ) ) );
+		$new_jobs['invalid-none'] = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => '0000-00-00' ] ] );
+		$new_jobs['today']        = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d' ) ] ] );
+		$new_jobs['yesterday']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '-1 day' ) ) ] ] );
+		$new_jobs['ancient']      = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '-100 day' ) ) ] ] );
+		$new_jobs['tomorrow']     = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ] ] );
+		$new_jobs['30daysago']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '-30 day' ) ) ] ] );
+		$new_jobs['31daysago']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '-31 day' ) ) ] ] );
 
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$this->assertNotExpired( $new_jobs['none'] );
@@ -422,37 +426,37 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::delete_old_previews
 	 */
 	public function test_delete_old_previews() {
-		$new_jobs              = array();
-		$new_jobs['now']       = $this->factory->job_listing->create( array( 'post_status' => 'preview' ) );
+		$new_jobs              = [];
+		$new_jobs['now']       = $this->factory->job_listing->create( [ 'post_status' => 'preview' ] );
 		$new_jobs['yesterday'] = $this->factory->job_listing->create(
-			array(
+			[
 				'post_status' => 'preview',
 				'age'         => '-1 day',
-			)
+			]
 		);
 		$new_jobs['29days']    = $this->factory->job_listing->create(
-			array(
+			[
 				'post_status' => 'preview',
 				'age'         => '-29 days',
-			)
+			]
 		);
 		$new_jobs['30days']    = $this->factory->job_listing->create(
-			array(
+			[
 				'post_status' => 'preview',
 				'age'         => '-30 days',
-			)
+			]
 		);
 		$new_jobs['31days']    = $this->factory->job_listing->create(
-			array(
+			[
 				'post_status' => 'preview',
 				'age'         => '-31 days',
-			)
+			]
 		);
 		$new_jobs['60days']    = $this->factory->job_listing->create(
-			array(
+			[
 				'post_status' => 'preview',
 				'age'         => '-60 days',
-			)
+			]
 		);
 		$this->assertPostStatus( 'preview', $new_jobs['now'] );
 		$this->assertPostStatus( 'preview', $new_jobs['yesterday'] );
@@ -501,7 +505,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::set_expiry
 	 */
 	public function test_set_expiry_calculate() {
-		$post             = get_post( $this->factory->job_listing->create( array( 'meta_input' => array( '_job_duration' => 77 ) ) ) );
+		$post             = get_post( $this->factory->job_listing->create( [ 'meta_input' => [ '_job_duration' => 77 ] ] ) );
 		$instance         = WP_Job_Manager_Post_Types::instance();
 		$expire_date      = date( 'Y-m-d', strtotime( '+77 days', current_time( 'timestamp' ) ) );
 		$expire_date_calc = calculate_job_expiry( $post->ID );
@@ -515,7 +519,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::set_expiry
 	 */
 	public function test_set_expiry_past() {
-		$post     = get_post( $this->factory->job_listing->create( array( 'meta_input' => array( '_job_expires' => '2008-01-01' ) ) ) );
+		$post     = get_post( $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => '2008-01-01' ] ] ) );
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$instance->set_expiry( $post );
 		$this->assertEquals( '', get_post_meta( $post->ID, '_job_expires', true ) );
@@ -528,34 +532,34 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_fix_post_name() {
 		$instance = WP_Job_Manager_Post_Types::instance();
 		// Legit.
-		$data                 = array(
+		$data                 = [
 			'post_type'   => 'job_listing',
 			'post_status' => 'pending',
 			'post_name'   => 'Bad ABC',
-		);
-		$postarr              = array();
+		];
+		$postarr              = [];
 		$postarr['post_name'] = 'TEST 123';
 		$data_fixed           = $instance->fix_post_name( $data, $postarr );
 		$this->assertEquals( $postarr['post_name'], $data_fixed['post_name'] );
 
 		// Bad Post Type.
-		$data                 = array(
+		$data                 = [
 			'post_type'   => 'post',
 			'post_status' => 'pending',
 			'post_name'   => 'Bad ABC',
-		);
-		$postarr              = array();
+		];
+		$postarr              = [];
 		$postarr['post_name'] = 'TEST 123';
 		$data_fixed           = $instance->fix_post_name( $data, $postarr );
 		$this->assertEquals( $data['post_name'], $data_fixed['post_name'] );
 
 		// Bad Post Status.
-		$data                 = array(
+		$data                 = [
 			'post_type'   => 'job_listing',
 			'post_status' => 'publish',
 			'post_name'   => 'Bad ABC',
-		);
-		$postarr              = array();
+		];
+		$postarr              = [];
 		$postarr['post_name'] = 'TEST 123';
 		$data_fixed           = $instance->fix_post_name( $data, $postarr );
 		$this->assertEquals( $data['post_name'], $data_fixed['post_name'] );
@@ -566,11 +570,11 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::maybe_add_geolocation_data
 	 */
 	public function test_get_permalink_structure() {
-		$permalink_test = array(
+		$permalink_test = [
 			'job_base'      => 'job-test-a',
 			'category_base' => 'job-cat-b',
 			'type_base'     => 'job-type-c',
-		);
+		];
 		update_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME, wp_json_encode( $permalink_test ) );
 		$permalinks = WP_Job_Manager_Post_Types::get_permalink_structure();
 		delete_option( WP_Job_Manager_Post_Types::PERMALINK_OPTION_NAME );
@@ -587,19 +591,19 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$bad_post = get_post(
 			$this->factory->post->create(
-				array(
+				[
 					'menu_order' => 10,
-					'meta_input' => array( '_featured' => 0 ),
-				)
+					'meta_input' => [ '_featured' => 0 ],
+				]
 			)
 		);
 
 		$post = get_post(
 			$this->factory->job_listing->create(
-				array(
+				[
 					'menu_order' => 10,
-					'meta_input' => array( '_featured' => 0 ),
-				)
+					'meta_input' => [ '_featured' => 0 ],
+				]
 			)
 		);
 
@@ -625,10 +629,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$post     = get_post(
 			$this->factory->job_listing->create(
-				array(
+				[
 					'menu_order' => 10,
-					'meta_input' => array( '_featured' => 0 ),
-				)
+					'meta_input' => [ '_featured' => 0 ],
+				]
 			)
 		);
 		unset( $wp_actions['job_manager_job_location_edited'] );
@@ -645,10 +649,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$post     = get_post(
 			$this->factory->job_listing->create(
-				array(
+				[
 					'menu_order' => 10,
-					'meta_input' => array( '_featured' => 0 ),
-				)
+					'meta_input' => [ '_featured' => 0 ],
+				]
 			)
 		);
 
@@ -679,10 +683,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_maybe_add_default_meta_data() {
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$post     = wp_insert_post(
-			array(
+			[
 				'post_type'  => 'job_listing',
 				'post_title' => 'Hello A',
-			)
+			]
 		);
 		delete_post_meta( $post, '_featured' );
 		delete_post_meta( $post, '_filled' );
@@ -700,10 +704,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_maybe_add_default_meta_data_non_job_listing() {
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$post     = wp_insert_post(
-			array(
+			[
 				'post_type'  => 'post',
 				'post_title' => 'Hello B',
-			)
+			]
 		);
 		delete_post_meta( $post, '_featured' );
 		delete_post_meta( $post, '_filled' );
@@ -725,10 +729,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$post_id  = $this->factory->post->create();
 
 		$jobs = $wp_query = new WP_Query(
-			array(
+			[
 				'p'         => $job_id,
 				'post_type' => 'job_listing',
-			)
+			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
 		$this->assertTrue( $jobs->is_single );
@@ -750,14 +754,14 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_noindex_expired_filled_job_listings_expired() {
 		global $wp_query;
 		$instance = WP_Job_Manager_Post_Types::instance();
-		$job_id   = $this->factory->job_listing->create( array( 'post_status' => 'expired ' ) );
+		$job_id   = $this->factory->job_listing->create( [ 'post_status' => 'expired ' ] );
 		$post_id  = $this->factory->post->create();
 
 		$jobs = $wp_query = new WP_Query(
-			array(
+			[
 				'p'         => $job_id,
 				'post_type' => 'job_listing',
-			)
+			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
 		$this->assertTrue( $jobs->is_single );
@@ -783,10 +787,10 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$post_id  = $this->factory->post->create();
 
 		$jobs = $wp_query = new WP_Query(
-			array(
+			[
 				'p'         => $job_id,
 				'post_type' => 'job_listing',
-			)
+			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
 		$this->assertTrue( $jobs->is_single );
@@ -810,14 +814,14 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_output_structured_data_expired() {
 		global $wp_query;
 		$instance = WP_Job_Manager_Post_Types::instance();
-		$job_id   = $this->factory->job_listing->create( array( 'post_status' => 'expired ' ) );
+		$job_id   = $this->factory->job_listing->create( [ 'post_status' => 'expired ' ] );
 		$post_id  = $this->factory->post->create();
 
 		$jobs = $wp_query = new WP_Query(
-			array(
+			[
 				'p'         => $job_id,
 				'post_type' => 'job_listing',
-			)
+			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
 		$this->assertTrue( $jobs->is_single );
@@ -880,44 +884,44 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type
 	 */
 	public function test_sanitize_meta_field_based_on_input_type_text() {
-		$strings = array(
-			array(
+		$strings = [
+			[
 				'expected' => 'This is a test.',
 				'test'     => 'This is a test. <script>alert("bad");</script>',
-			),
-			array(
+			],
+			[
 				'expected' => 0,
 				'test'     => 0,
-			),
-			array(
+			],
+			[
 				'expected' => '',
 				'test'     => false,
-			),
-			array(
+			],
+			[
 				'expected' => '',
 				'test'     => '%AB%BC%DE',
-			),
-			array(
+			],
+			[
 				'expected' => 'САПР',
 				'test'     => 'САПР',
-			),
-			array(
+			],
+			[
 				'expected' => 'Standard String',
 				'test'     => 'Standard String',
-			),
-			array(
+			],
+			[
 				'expected' => 'My iframe:',
 				'test'     => 'My iframe: <iframe src="http://example.com"></iframe>',
-			),
-		);
+			],
+		];
 
 		$this->set_up_custom_job_listing_data_feilds();
-		$results = array();
+		$results = [];
 		foreach ( $strings as $str ) {
-			$results[] = array(
+			$results[] = [
 				'expected' => $str['expected'],
 				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str['test'], '_text' ),
-			);
+			];
 		}
 
 		foreach ( $results as $result ) {
@@ -929,44 +933,44 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type
 	 */
 	public function test_sanitize_meta_field_based_on_input_type_textarea() {
-		$strings = array(
-			array(
+		$strings = [
+			[
 				'expected' => 'This is a test. alert("bad");',
 				'test'     => 'This is a test. <script>alert("bad");</script>',
-			),
-			array(
+			],
+			[
 				'expected' => 0,
 				'test'     => 0,
-			),
-			array(
+			],
+			[
 				'expected' => '',
 				'test'     => false,
-			),
-			array(
+			],
+			[
 				'expected' => '%AB%BC%DE',
 				'test'     => '%AB%BC%DE',
-			),
-			array(
+			],
+			[
 				'expected' => 'САПР',
 				'test'     => 'САПР',
-			),
-			array(
+			],
+			[
 				'expected' => 'Standard String',
 				'test'     => 'Standard String',
-			),
-			array(
+			],
+			[
 				'expected' => 'My iframe: ',
 				'test'     => 'My iframe: <iframe src="http://example.com"></iframe>',
-			),
-		);
+			],
+		];
 
 		$this->set_up_custom_job_listing_data_feilds();
-		$results = array();
+		$results = [];
 		foreach ( $strings as $str ) {
-			$results[] = array(
+			$results[] = [
 				'expected' => $str['expected'],
 				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str['test'], '_textarea' ),
-			);
+			];
 		}
 
 		foreach ( $results as $result ) {
@@ -978,32 +982,32 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type
 	 */
 	public function test_sanitize_meta_field_based_on_input_type_checkbox() {
-		$strings = array(
-			array(
+		$strings = [
+			[
 				'expected' => 1,
 				'test'     => 'false',
-			),
-			array(
+			],
+			[
 				'expected' => 0,
 				'test'     => '',
-			),
-			array(
+			],
+			[
 				'expected' => 0,
 				'test'     => false,
-			),
-			array(
+			],
+			[
 				'expected' => 1,
 				'test'     => true,
-			),
-		);
+			],
+		];
 
 		$this->set_up_custom_job_listing_data_feilds();
-		$results = array();
+		$results = [];
 		foreach ( $strings as $str ) {
-			$results[] = array(
+			$results[] = [
 				'expected' => $str['expected'],
 				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_based_on_input_type( $str['test'], '_checkbox' ),
-			);
+			];
 		}
 		$this->remove_custom_job_listing_data_feilds();
 
@@ -1016,32 +1020,32 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_application
 	 */
 	public function test_sanitize_meta_field_application() {
-		$strings = array(
-			array(
+		$strings = [
+			[
 				'expected' => 'http://test%20email@example.com',
 				'test'     => 'test email@example.com',
-			),
-			array(
+			],
+			[
 				'expected' => 'http://awesome',
 				'test'     => 'awesome',
-			),
-			array(
+			],
+			[
 				'expected' => 'https://example.com',
 				'test'     => 'https://example.com',
-			),
-			array(
+			],
+			[
 				'expected' => 'example@example.com',
 				'test'     => 'example@example.com',
-			),
-		);
+			],
+		];
 
 		$this->set_up_custom_job_listing_data_feilds();
-		$results = array();
+		$results = [];
 		foreach ( $strings as $str ) {
-			$results[] = array(
+			$results[] = [
 				'expected' => $str['expected'],
 				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_application( $str['test'], '_application' ),
-			);
+			];
 		}
 		$this->remove_custom_job_listing_data_feilds();
 
@@ -1054,32 +1058,32 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_url
 	 */
 	public function test_sanitize_meta_field_url() {
-		$strings = array(
-			array(
+		$strings = [
+			[
 				'expected' => 'http://example.com',
 				'test'     => 'http://example.com',
-			),
-			array(
+			],
+			[
 				'expected' => '',
 				'test'     => 'slack://custom-url',
-			),
-			array(
+			],
+			[
 				'expected' => 'http://example.com',
 				'test'     => 'example.com',
-			),
-			array(
+			],
+			[
 				'expected' => 'http://example.com/?baz=bar&foo%5Bbar%5D=baz',
 				'test'     => 'http://example.com/?baz=bar&foo[bar]=baz',
-			),
-		);
+			],
+		];
 
 		$this->set_up_custom_job_listing_data_feilds();
-		$results = array();
+		$results = [];
 		foreach ( $strings as $str ) {
-			$results[] = array(
+			$results[] = [
 				'expected' => $str['expected'],
 				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_url( $str['test'] ),
-			);
+			];
 		}
 		$this->remove_custom_job_listing_data_feilds();
 
@@ -1092,32 +1096,32 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_date
 	 */
 	public function test_sanitize_meta_field_date() {
-		$strings = array(
-			array(
+		$strings = [
+			[
 				'expected' => '',
 				'test'     => 'http://example.com',
-			),
-			array(
+			],
+			[
 				'expected' => '',
 				'test'     => 'January 1, 2019',
-			),
-			array(
+			],
+			[
 				'expected' => '',
 				'test'     => '01-01-2019',
-			),
-			array(
+			],
+			[
 				'expected' => '2019-01-01',
 				'test'     => '2019-01-01',
-			),
-		);
+			],
+		];
 
 		$this->set_up_custom_job_listing_data_feilds();
-		$results = array();
+		$results = [];
 		foreach ( $strings as $str ) {
-			$results[] = array(
+			$results[] = [
 				'expected' => $str['expected'],
 				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_date( $str['test'] ),
-			);
+			];
 		}
 		$this->remove_custom_job_listing_data_feilds();
 
@@ -1127,16 +1131,16 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	private function set_up_custom_job_listing_data_feilds() {
-		add_filter( 'job_manager_job_listing_data_fields', array( $this, 'custom_job_listing_data_fields' ) );
+		add_filter( 'job_manager_job_listing_data_fields', [ $this, 'custom_job_listing_data_fields' ] );
 	}
 
 	private function remove_custom_job_listing_data_feilds() {
-		remove_filter( 'job_manager_job_listing_data_fields', array( $this, 'custom_job_listing_data_fields' ) );
+		remove_filter( 'job_manager_job_listing_data_fields', [ $this, 'custom_job_listing_data_fields' ] );
 	}
 
 	public function custom_job_listing_data_fields() {
-		return array(
-			'_text'    => array(
+		return [
+			'_text'    => [
 				'label'         => 'Text Field',
 				'placeholder'   => 'Text Field',
 				'description'   => 'Text Field',
@@ -1145,8 +1149,8 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'data_type'     => 'string',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
-			),
-			'_textarea'    => array(
+			],
+			'_textarea'    => [
 				'label'         => 'Textarea Field',
 				'placeholder'   => 'Textarea Field',
 				'description'   => 'Textarea Field',
@@ -1155,8 +1159,8 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'data_type'     => 'string',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
-			),
-			'_url'    => array(
+			],
+			'_url'    => [
 				'label'         => 'URL Field',
 				'placeholder'   => 'URL Field',
 				'description'   => 'URL Field',
@@ -1165,9 +1169,9 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'data_type'     => 'string',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
-				'sanitize_callback' => array( 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_url' ),
-			),
-			'_checkbox'    => array(
+				'sanitize_callback' => [ 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_url' ],
+			],
+			'_checkbox'    => [
 				'label'         => 'Checkbox Field',
 				'placeholder'   => 'Checkbox Field',
 				'description'   => 'Checkbox Field',
@@ -1176,26 +1180,26 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'data_type'     => 'integer',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
-			),
-			'_date'    => array(
+			],
+			'_date'    => [
 				'label'             => 'Checkbox Field',
 				'placeholder'       => 'Checkbox Field',
 				'description'       => 'Checkbox Field',
 				'priority'          => 1,
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'classes'           => array( 'job-manager-datepicker' ),
-				'sanitize_callback' => array( 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_date' ),
-			),
-			'_application'    => array(
+				'classes'           => [ 'job-manager-datepicker' ],
+				'sanitize_callback' => [ 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_date' ],
+			],
+			'_application'    => [
 				'label'             => 'Application Field',
 				'placeholder'       => 'Application Field',
 				'description'       => 'Application Field',
 				'priority'          => 1,
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => array( 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_application' ),
-			),
-		);
+				'sanitize_callback' => [ 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_application' ],
+			],
+		];
 	}
 }

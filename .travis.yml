@@ -49,12 +49,7 @@ before_script:
     - export PLUGIN_SLUG=$(basename $(pwd) | tr '[:upper:]' '[:lower:]')
     - source ~/.nvm/nvm.sh
     - export PATH="$HOME/.composer/vendor/bin:$PATH"
-    - |
-            if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-                composer global require "phpunit/phpunit=5.7.*"
-            elif [[ ${TRAVIS_PHP_VERSION:0:3} != "5.2" ]]; then
-                composer global require "phpunit/phpunit=4.8.*"
-            fi
+    - composer global require "phpunit/phpunit=5.7.*"
     - nvm install 8
     - nvm use 8
     - ./tests/bin/prepare-wordpress.sh

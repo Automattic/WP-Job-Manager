@@ -23,13 +23,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 		$field['default'] = '';
 	}
 
-	$args = array(
+	$args = [
 		'descendants_and_self'  => 0,
-		'selected_cats'         => isset( $field['value'] ) ? $field['value'] : ( is_array( $field['default'] ) ? $field['default'] : array( $field['default'] ) ),
+		'selected_cats'         => isset( $field['value'] ) ? $field['value'] : ( is_array( $field['default'] ) ? $field['default'] : [ $field['default'] ] ),
 		'popular_cats'          => false,
 		'taxonomy'              => $field['taxonomy'],
 		'checked_ontop'         => false
-	);
+	];
 
 	// $field['post_id'] needs to be passed via the args so we can get the existing terms.
 	ob_start();

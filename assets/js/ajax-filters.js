@@ -1,15 +1,39 @@
 /* global job_manager_ajax_filters */
 jQuery( document ).ready( function( $ ) {
-	function job_manager_supports_html5_session_storage() {
-		return window.sessionStorage && typeof window.sessionStorage.setItem === 'function';
+	var session_storage_prefix = 'job_listing_';
+
+	/**
+	 * Check if we should maintain the state.
+	 */
+	function is_state_storage_enabled( $target ) {
+		if ( ! supports_html5_session_storage() ) {
+			return false;
+		}
+
+		// Check to see if it is globally disabled.
+		if ( $( document.body ).hasClass( 'disable-job-manager-form-state-storage' ) ) {
+			return false;
+		}
+
+		// Check if it is disabled on this specific element.
+		if ( $target.data( 'disable-form-state-storage' ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
-	var session_storage_prefix = 'job_listing_';
+	/**
+	 * Check if the sessionStorage object is available.
+	 */
+	function supports_html5_session_storage() {
+		return window.sessionStorage && typeof window.sessionStorage.setItem === 'function';
+	}
 
 	/**
 	 * Get the session storage key for the job listings instance.
 	 */
-	function job_manager_get_session_storage_key( $target ) {
+	function get_session_storage_key( $target ) {
 		var index          = $( 'div.job_listings' ).index( $target );
 		var unique_page_id = $target.data( 'post_id' );
 
@@ -23,8 +47,8 @@ jQuery( document ).ready( function( $ ) {
 	/**
 	 * Store the filter form values and possibly the rendered results in sessionStorage.
 	 */
-	function job_manager_store_state( $target, state ) {
-		if ( ! job_manager_supports_html5_session_storage() ) {
+	function store_state( $target, state ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
@@ -32,11 +56,7 @@ jQuery( document ).ready( function( $ ) {
 			state = {};
 		}
 
-		var $form = $target.find( '.job_filters' );
-
-		state.form = $form.serialize();
-
-		var session_storage_key = job_manager_get_session_storage_key( $target );
+		var session_storage_key = get_session_storage_key( $target );
 
 		try {
 			return window.sessionStorage.setItem( session_storage_key, JSON.stringify( state ) );
@@ -50,12 +70,12 @@ jQuery( document ).ready( function( $ ) {
 	/**
 	 * Retrieve the stored form values and maybe the rendered results from sessionStorage.
 	 */
-	function job_manager_get_state( $target ) {
-		if ( ! job_manager_supports_html5_session_storage() ) {
+	function get_state( $target ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
-		var session_storage_key = job_manager_get_session_storage_key( $target );
+		var session_storage_key = get_session_storage_key( $target );
 
 		try {
 			var state = window.sessionStorage.getItem( session_storage_key );
@@ -72,30 +92,49 @@ jQuery( document ).ready( function( $ ) {
 	/**
 	 * Toggle the `persist_results` boolean based on whether we not the rendered results to persist when moving away from page.
 	 */
-	function job_manager_persist_results( $target, persist ) {
-		if ( ! job_manager_supports_html5_session_storage() || ! $target ) {
+	function persist_results( $target, persist ) {
+		if ( ! is_state_storage_enabled( $target ) || ! $target ) {
 			return false;
 		}
 
-		var state = job_manager_get_state( $target );
+		var state = get_state( $target );
 		if ( ! state ) {
 			return false;
 		}
 
 		state.persist_results = persist;
 
-		return job_manager_store_state( $target, state );
+		return store_state( $target, state );
+	}
+
+	/**
+	 * Persist the state of the form.
+	 */
+	function persist_form( $target ) {
+		if ( ! is_state_storage_enabled( $target ) || ! $target ) {
+			return false;
+		}
+
+		var state = get_state( $target );
+		if ( ! state ) {
+			return false;
+		}
+
+		var $form = $target.find( '.job_filters' );
+		state.form = $form.serialize();
+
+		return store_state( $target, state );
 	}
 
 	/**
 	 * Store the rendered results with the state in sessionStorage.
 	 */
-	function job_manager_save_results( $target, results ) {
-		if ( ! job_manager_supports_html5_session_storage() ) {
+	function save_results( $target, results ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
-		var state = job_manager_get_state( $target );
+		var state = get_state( $target );
 		if ( ! state ) {
 			state = {
 				persist_results: false
@@ -109,18 +148,18 @@ jQuery( document ).ready( function( $ ) {
 
 		state.results = results;
 
-		return job_manager_store_state( $target, state );
+		return store_state( $target, state );
 	}
 
 	/**
 	 * Clear the stored state of the form values and possibly the rendered results from sessionStorage.
 	 */
-	function job_manager_clear_state( $target ) {
-		if ( ! job_manager_supports_html5_session_storage() ) {
+	function clear_state( $target ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
-		var session_storage_key = job_manager_get_session_storage_key( $target );
+		var session_storage_key = get_session_storage_key( $target );
 
 		try {
 			window.sessionStorage.removeItem( session_storage_key );
@@ -132,27 +171,45 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	/**
-	 * Clear just the rendered results from the stored state in sessionStorage.
+	 * Clear the rendered results from the stored state in sessionStorage.
 	 */
-	function job_manager_clear_results( $target ) {
-		if ( ! job_manager_supports_html5_session_storage() ) {
+	function clear_results( $target ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
 			return false;
 		}
 
-		var state = job_manager_get_state( $target );
+		var state = get_state( $target );
 		if ( ! state ) {
 			state = {};
 		}
 
 		state.results = null;
 
-		return job_manager_store_state( $target, state );
+		return store_state( $target, state );
+	}
+
+	/**
+	 * Clear the form from the stored state in sessionStorage.
+	 */
+	function clear_form( $target ) {
+		if ( ! is_state_storage_enabled( $target ) ) {
+			return false;
+		}
+
+		var state = get_state( $target );
+		if ( ! state ) {
+			state = {};
+		}
+
+		state.form = null;
+
+		return store_state( $target, state );
 	}
 
 	/**
 	 * Handle restoring the results from sessionStorage or the Ajax call.
 	 */
-	function job_manager_handle_result( $target, result, append ) {
+	function handle_result( $target, result, append ) {
 		var $results = $target.find( '.job_listings' );
 		var $showing = $target.find( '.showing_jobs' );
 
@@ -206,13 +263,29 @@ jQuery( document ).ready( function( $ ) {
 		return true;
 	}
 
+	// Preserve form when not refreshing page.
+	$(document).on( 'click', 'a', function() {
+		// We're moving away to another page. Let's make sure the form persist.
+		$( 'div.job_listings' ).each( function() {
+			persist_form( $( this ) );
+		} );
+	} );
+
+	$(document).on( 'submit', 'form', function() {
+		// We're moving away from current page from another form. Let's make sure the form persist.
+		$( 'div.job_listings' ).each( function() {
+			persist_form( $( this ) );
+		} );
+
+	} );
+
 	var xhr = [];
 	$( 'div.job_listings' )
 		.on( 'click', 'li.job_listing a', function() {
 			var $target = $( this ).closest( 'div.job_listings' );
 
 			// We're moving away to a job listing. Let's make sure the results persist.
-			job_manager_persist_results( $target, true );
+			persist_results( $target, true );
 		} )
 		.on( 'click', '.job-manager-pagination a', function() {
 			var $target = $( this ).closest( 'div.job_listings' );
@@ -248,7 +321,7 @@ jQuery( document ).ready( function( $ ) {
 				return;
 			}
 
-			job_manager_clear_state( $target );
+			clear_state( $target );
 
 			if ( xhr[ index ] ) {
 				xhr[ index ].abort();
@@ -346,12 +419,12 @@ jQuery( document ).ready( function( $ ) {
 						try {
 							result.data = data;
 
-							job_manager_handle_result( $target, result, append );
+							handle_result( $target, result, append );
 
 							$results.removeClass( 'loading' );
 							$target.triggerHandler( 'updated_results', result );
 
-							job_manager_save_results( $target, result );
+							save_results( $target, result );
 						} catch ( err ) {
 							if ( window.console ) {
 								window.console.log( err );
@@ -382,7 +455,7 @@ jQuery( document ).ready( function( $ ) {
 		.change( function() {
 			var $target = $( this ).closest( 'div.job_listings' );
 			$target.triggerHandler( 'update_results', [ 1, false ] );
-			job_manager_store_state( $target );
+			store_state( $target );
 		} )
 		.on( 'keyup', function( e ) {
 			if ( e.which === 13 ) {
@@ -413,7 +486,7 @@ jQuery( document ).ready( function( $ ) {
 
 			$target.triggerHandler( 'reset' );
 			$target.triggerHandler( 'update_results', [ 1, false ] );
-			job_manager_store_state( $target );
+			store_state( $target );
 
 			return false;
 		} )
@@ -442,50 +515,49 @@ jQuery( document ).ready( function( $ ) {
 		$( 'select[name^="search_categories"]:visible' ).select2( select2_args );
 	}
 
-	// Initial job and $form population
-	$( window ).on( 'load', function() {
-		$( 'div.job_listings' ).each( function() {
-			var $target = $( this );
-			var $form = $target.find( '.job_filters' );
-			var results_loaded = false;
-			var state = job_manager_get_state( $target );
-
-			if ( state ) {
-				// Restore the results from cache.
-				if ( state.results ) {
-					results_loaded = job_manager_handle_result( $target, state.results );
-
-					// We don't want this to continue to persist unless we click on another link.
-					job_manager_persist_results( $target, false );
-				}
-
-				// Restore the form state.
-				if ( typeof state.form === 'string' && '' !== state.form ) {
-					// When deserializing a form, we need to first uncheck the checkboxes that are by default checked.
-					$form.find('input[type=checkbox]').prop('checked', false);
-					$form.deserialize(state.form);
-					$form
-						.find(':input[name^="search_categories"]')
-						.not(':input[type="hidden"]')
-						.trigger('change.select2');
-				}
-			}
-
-			if ( ! results_loaded && $form.length > 0 ) {
-				// If we didn't load results from cache, load page 1.
-				$target.triggerHandler( 'update_results', [ 1, false ] );
-			}
-		} );
-	} );
-
 	$( window ).on( 'unload', function() {
 		$( 'div.job_listings' ).each( function() {
-			var state = job_manager_get_state( $( this ) );
+			var state = get_state( $( this ) );
 			if ( state && ! state.persist_results ) {
-				job_manager_clear_results( $( this ) );
+				clear_results( $( this ) );
 			}
 		} );
 
 		return true;
+	} );
+
+	// Initial job and $form population
+	$( 'div.job_listings' ).each( function() {
+		var $target = $( this );
+		var $form = $target.find( '.job_filters' );
+		var results_loaded = false;
+		var state = get_state( $target );
+
+		if ( state ) {
+			// Restore the results from cache.
+			if ( state.results ) {
+				results_loaded = handle_result( $target, state.results );
+
+				// We don't want this to continue to persist unless we click on another link.
+				persist_results( $target, false );
+				clear_form( $target );
+			}
+
+			// Restore the form state.
+			if ( typeof state.form === 'string' && '' !== state.form ) {
+				// When deserializing a form, we need to first uncheck the checkboxes that are by default checked.
+				$form.find('input[type=checkbox]').prop('checked', false);
+				$form.deserialize(state.form);
+				$form
+					.find(':input[name^="search_categories"]')
+					.not(':input[type="hidden"]')
+					.trigger('change.select2');
+			}
+		}
+
+		if ( ! results_loaded && $form.length > 0 ) {
+			// If we didn't load results from cache, load page 1.
+			$target.triggerHandler( 'update_results', [ 1, false ] );
+		}
 	} );
 } );

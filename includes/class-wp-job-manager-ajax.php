@@ -42,19 +42,19 @@ class WP_Job_Manager_Ajax {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'init', array( __CLASS__, 'add_endpoint' ) );
-		add_action( 'template_redirect', array( __CLASS__, 'do_jm_ajax' ), 0 );
+		add_action( 'init', [ __CLASS__, 'add_endpoint' ] );
+		add_action( 'template_redirect', [ __CLASS__, 'do_jm_ajax' ], 0 );
 
 		// JM Ajax endpoints.
-		add_action( 'job_manager_ajax_get_listings', array( $this, 'get_listings' ) );
-		add_action( 'job_manager_ajax_upload_file', array( $this, 'upload_file' ) );
+		add_action( 'job_manager_ajax_get_listings', [ $this, 'get_listings' ] );
+		add_action( 'job_manager_ajax_upload_file', [ $this, 'upload_file' ] );
 
 		// BW compatible handlers.
-		add_action( 'wp_ajax_nopriv_job_manager_get_listings', array( $this, 'get_listings' ) );
-		add_action( 'wp_ajax_job_manager_get_listings', array( $this, 'get_listings' ) );
-		add_action( 'wp_ajax_nopriv_job_manager_upload_file', array( $this, 'upload_file' ) );
-		add_action( 'wp_ajax_job_manager_upload_file', array( $this, 'upload_file' ) );
-		add_action( 'wp_ajax_job_manager_search_users', array( $this, 'ajax_search_users' ) );
+		add_action( 'wp_ajax_nopriv_job_manager_get_listings', [ $this, 'get_listings' ] );
+		add_action( 'wp_ajax_job_manager_get_listings', [ $this, 'get_listings' ] );
+		add_action( 'wp_ajax_nopriv_job_manager_upload_file', [ $this, 'upload_file' ] );
+		add_action( 'wp_ajax_job_manager_upload_file', [ $this, 'upload_file' ] );
+		add_action( 'wp_ajax_job_manager_search_users', [ $this, 'ajax_search_users' ] );
 	}
 
 	/**
@@ -78,8 +78,9 @@ class WP_Job_Manager_Ajax {
 		} elseif ( get_option( 'permalink_structure' ) ) {
 			$endpoint = trailingslashit( home_url( '/jm-ajax/' . $request . '/', 'relative' ) );
 		} else {
-			$endpoint = add_query_arg( 'jm-ajax', $request, trailingslashit( home_url( '', 'relative' ) ) );
+			$endpoint = add_query_arg( 'jm-ajax', $request, home_url( '/', 'relative' ) );
 		}
+
 		return esc_url_raw( $endpoint );
 	}
 
@@ -138,23 +139,23 @@ class WP_Job_Manager_Ajax {
 		if ( is_array( $search_categories ) ) {
 			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
 		} else {
-			$search_categories = array_filter( array( sanitize_text_field( wp_unslash( $search_categories ) ) ) );
+			$search_categories = array_filter( [ sanitize_text_field( wp_unslash( $search_categories ) ) ] );
 		}
 
 		$types              = get_job_listing_types();
 		$job_types_filtered = ! is_null( $filter_job_types ) && count( $types ) !== count( $filter_job_types );
 
-		$args = array(
+		$args = [
 			'search_location'   => $search_location,
 			'search_keywords'   => $search_keywords,
 			'search_categories' => $search_categories,
-			'job_types'         => is_null( $filter_job_types ) || count( $types ) === count( $filter_job_types ) ? '' : $filter_job_types + array( 0 ),
+			'job_types'         => is_null( $filter_job_types ) || count( $types ) === count( $filter_job_types ) ? '' : $filter_job_types + [ 0 ],
 			'post_status'       => $filter_post_status,
 			'orderby'           => $orderby,
 			'order'             => $order,
 			'offset'            => ( $page - 1 ) * $per_page,
 			'posts_per_page'    => max( 1, $per_page ),
-		);
+		];
 
 		if ( 'true' === $filled || 'false' === $filled ) {
 			$args['filled'] = 'true' === $filled;
@@ -174,11 +175,11 @@ class WP_Job_Manager_Ajax {
 		 */
 		$jobs = get_job_listings( apply_filters( 'job_manager_get_listings_args', $args ) );
 
-		$result = array(
+		$result = [
 			'found_jobs'    => $jobs->have_posts(),
 			'showing'       => '',
 			'max_num_pages' => $jobs->max_num_pages,
-		);
+		];
 
 		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories || $job_types_filtered ) ) {
 			// translators: Placeholder %d is the number of found search results.
@@ -188,11 +189,11 @@ class WP_Job_Manager_Ajax {
 			$message = '';
 		}
 
-		$search_values = array(
+		$search_values = [
 			'location'   => $search_location,
 			'keywords'   => $search_keywords,
 			'categories' => $search_categories,
-		);
+		];
 
 		/**
 		 * Filter the message that describes the results of the search query.
@@ -212,12 +213,12 @@ class WP_Job_Manager_Ajax {
 
 		// Generate RSS link.
 		$result['showing_links'] = job_manager_get_filtered_links(
-			array(
+			[
 				'filter_job_types'  => $filter_job_types,
 				'search_location'   => $search_location,
 				'search_categories' => $search_categories,
 				'search_keywords'   => $search_keywords,
-			)
+			]
 		);
 
 		/**
@@ -283,9 +284,9 @@ class WP_Job_Manager_Ajax {
 			wp_send_json_error( __( 'You must be logged in to upload files using this method.', 'wp-job-manager' ) );
 			return;
 		}
-		$data = array(
-			'files' => array(),
-		);
+		$data = [
+			'files' => [],
+		];
 
 		if ( ! empty( $_FILES ) ) {
 			foreach ( $_FILES as $file_key => $file ) {
@@ -293,15 +294,15 @@ class WP_Job_Manager_Ajax {
 				foreach ( $files_to_upload as $file_to_upload ) {
 					$uploaded_file = job_manager_upload_file(
 						$file_to_upload,
-						array(
+						[
 							'file_key' => $file_key,
-						)
+						]
 					);
 
 					if ( is_wp_error( $uploaded_file ) ) {
-						$data['files'][] = array(
+						$data['files'][] = [
 							'error' => $uploaded_file->get_error_message(),
-						);
+						];
 					} else {
 						$data['files'][] = $uploaded_file;
 					}
@@ -327,7 +328,7 @@ class WP_Job_Manager_Ajax {
 		 *
 		 * @param array $user_caps Array of capabilities/roles that are allowed to search for users.
 		 */
-		$allowed_capabilities = apply_filters( 'job_manager_caps_can_search_users', array( 'edit_job_listings' ) );
+		$allowed_capabilities = apply_filters( 'job_manager_caps_can_search_users', [ 'edit_job_listings' ] );
 		foreach ( $allowed_capabilities as $cap ) {
 			if ( current_user_can( $cap ) ) {
 				$user_can_search_users = true;
@@ -359,7 +360,7 @@ class WP_Job_Manager_Ajax {
 		$page     = isset( $_GET['page'] ) ? intval( $_GET['page'] ) : 1;
 		$per_page = 20;
 
-		$exclude = array();
+		$exclude = [];
 		if ( ! empty( $_GET['exclude'] ) ) {
 			$exclude = array_map( 'intval', $_GET['exclude'] );
 		}
@@ -369,7 +370,7 @@ class WP_Job_Manager_Ajax {
 		}
 
 		$more_exist = false;
-		$users      = array();
+		$users      = [];
 
 		// Search by ID.
 		if ( is_numeric( $term ) && ! in_array( intval( $term ), $exclude, true ) ) {
@@ -380,15 +381,15 @@ class WP_Job_Manager_Ajax {
 		}
 
 		if ( empty( $users ) ) {
-			$search_args = array(
+			$search_args = [
 				'exclude'        => $exclude,
 				'search'         => '*' . esc_attr( $term ) . '*',
-				'search_columns' => array( 'user_login', 'user_email', 'user_nicename', 'display_name' ),
+				'search_columns' => [ 'user_login', 'user_email', 'user_nicename', 'display_name' ],
 				'number'         => $per_page,
 				'paged'          => $page,
 				'orderby'        => 'display_name',
 				'order'          => 'ASC',
-			);
+			];
 
 			/**
 			 * Modify the arguments used for `WP_User_Query` constructor.
@@ -410,7 +411,7 @@ class WP_Job_Manager_Ajax {
 			$more_exist  = $total_pages > $page;
 		}
 
-		$found_users = array();
+		$found_users = [];
 
 		foreach ( $users as $user ) {
 			$found_users[ $user->ID ] = sprintf(
@@ -422,10 +423,10 @@ class WP_Job_Manager_Ajax {
 			);
 		}
 
-		$response = array(
+		$response = [
 			'results' => $found_users,
 			'more'    => $more_exist,
-		);
+		];
 
 		/**
 		 * Modify the search results response for users in ajax call.

@@ -115,7 +115,7 @@ class WP_Job_Manager_Dependency_Checker {
 		$update_action_link = '';
 		if ( current_user_can( 'update_core' ) ) {
 			// translators: %s is the URL for the page where users can go to update WordPress.
-			$update_action_link = ' ' . sprintf( 'Please <a href="%s">update WordPress</a> to avoid issues.', esc_url( self_admin_url( 'update-core.php' ) ) );
+			$update_action_link = ' ' . sprintf( __( 'Please <a href="%s">update WordPress</a> to avoid issues.', 'wp-job-manager' ), esc_url( self_admin_url( 'update-core.php' ) ) );
 		}
 
 		echo '<div class="error">';

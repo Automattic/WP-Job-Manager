@@ -26,10 +26,13 @@ $job = $args['job'];
 $expiring_today = $args['expiring_today'];
 
 if ( $expiring_today ) {
-	printf( esc_html__( 'The following job listing is expiring today from %s (%s).', 'wp-job-manager' ), esc_html( get_bloginfo( 'name' ) ), esc_url( home_url() ) );
+	// translators: %1$s placeholder is the name of the site, %2$s placeholder is URL to the blog.
+	printf( esc_html__( 'The following job listing is expiring today from %1$s (%2$s).', 'wp-job-manager' ), esc_html( get_bloginfo( 'name' ) ), esc_url( home_url() ) );
 } else {
-	printf( esc_html__( 'The following job listing is expiring soon from %s (%s).', 'wp-job-manager' ), esc_html( get_bloginfo( 'name' ) ), esc_url( home_url() ) );
+	// translators: %1$s placeholder is the name of the site, %2$s placeholder is URL to the blog.
+	printf( esc_html__( 'The following job listing is expiring soon from %1$s (%2$s).', 'wp-job-manager' ), esc_html( get_bloginfo( 'name' ) ), esc_url( home_url() ) );
 }
+// translators: Placeholder %s is the job listing dashboard URL.
 printf( ' ' . esc_html__( 'Visit the job listing dashboard (%s) to manage the listing.', 'wp-job-manager' ), esc_url( job_manager_get_permalink( 'job_dashboard' ) ) );
 
 /**

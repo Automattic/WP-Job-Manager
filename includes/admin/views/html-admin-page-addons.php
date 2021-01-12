@@ -17,11 +17,11 @@ if ( ! empty( $messages ) ) {
 		}
 		$message_type = 'info';
 		if ( isset( $message->type )
-		&& in_array( $message->type, array( 'info', 'success', 'warning', 'error' ), true ) ) {
+		&& in_array( $message->type, [ 'info', 'success', 'warning', 'error' ], true ) ) {
 			$message_type = $message->type;
 		}
 		$action_label  = isset( $message->action_label ) ? esc_attr( $message->action_label ) : __( 'More Information &rarr;', 'wp-job-manager' );
-		$action_url    = isset( $message->action_url ) ? esc_url( $message->action_url, array( 'http', 'https' ) ) : false;
+		$action_url    = isset( $message->action_url ) ? esc_url( $message->action_url, [ 'http', 'https' ] ) : false;
 		$action_target = isset( $message->action_target ) && 'self' === $message->action_target ? '_self' : '_blank';
 		$action_str    = '';
 		if ( $action_url ) {
@@ -56,17 +56,17 @@ if ( empty( $add_ons ) ) {
 	echo '<ul class="products">';
 	foreach ( $add_ons as $add_on ) {
 		$url = add_query_arg(
-			array(
+			[
 				'utm_source'   => 'product',
 				'utm_medium'   => 'addonpage',
 				'utm_campaign' => 'wpjmplugin',
 				'utm_content'  => 'listing',
-			),
+			],
 			$add_on->link
 		);
 		?>
 		<li class="product">
-			<a href="<?php echo esc_url( $url, array( 'http', 'https' ) ); ?>">
+			<a href="<?php echo esc_url( $url, [ 'http', 'https' ] ); ?>">
 				<?php if ( ! empty( $add_on->image ) ) : ?>
 					<img src="<?php echo esc_url( $add_on->image ); ?>" />
 				<?php endif; ?>
