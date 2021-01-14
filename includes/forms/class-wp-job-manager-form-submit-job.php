@@ -724,6 +724,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $post_status, $values );
 			$this->update_job_data( $values );
 
+			// Mark this job as a public submission so the submission hook is fired.
+			update_post_meta( $this->job_id, '_public_submission', true );
+
 			if ( $this->job_id ) {
 				// Reset the `_filled` flag.
 				update_post_meta( $this->job_id, '_filled', 0 );
@@ -1082,6 +1085,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Handles the job submissions before the view is called.
 	 */
 	public function done_before() {
+		delete_post_meta( $this->job_id, '_public_submission' );
+
+		/**
+		 * Trigger job submission action.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param int $job_id The job ID.
+		 */
 		do_action( 'job_manager_job_submitted', $this->job_id );
 	}
 
