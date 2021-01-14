@@ -27,6 +27,13 @@ class WP_Job_Manager_Post_Types {
 	private static $instance = null;
 
 	/**
+	 * Job IDs that were submitted in this request.
+	 *
+	 * @var array
+	 */
+	private $submitted_job_ids = [];
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  1.26.0
@@ -51,11 +58,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'job_manager_check_for_expired_jobs', [ $this, 'check_for_expired_jobs' ] );
 		add_action( 'job_manager_delete_old_previews', [ $this, 'delete_old_previews' ] );
 
-		add_action( 'pending_to_publish', [ $this, 'set_expiry' ] );
-		add_action( 'preview_to_publish', [ $this, 'set_expiry' ] );
-		add_action( 'draft_to_publish', [ $this, 'set_expiry' ] );
-		add_action( 'auto-draft_to_publish', [ $this, 'set_expiry' ] );
-		add_action( 'expired_to_publish', [ $this, 'set_expiry' ] );
+		add_action( 'transition_post_status', [ $this, 'transition_post_status' ], 10, 3 );
 
 		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ] );
 		add_action( 'wp_footer', [ $this, 'output_structured_data' ] );
@@ -816,6 +819,59 @@ class WP_Job_Manager_Post_Types {
 	public function set_expirey( $post ) {
 		_deprecated_function( __METHOD__, '1.0.1', 'WP_Job_Manager_Post_Types::set_expiry' );
 		$this->set_expiry( $post );
+	}
+
+	/**
+	 * Handle tasks related to transition job listing post statuses.
+	 *
+	 * @access private
+	 *
+	 * @param string  $new_status The new post status.
+	 * @param string  $old_status The old post status.
+	 * @param WP_Post $post       The post object.
+	 */
+	public function transition_post_status( $new_status, $old_status, $post ) {
+		if ( 'job_listing' !== $post->post_type ) {
+			return;
+		}
+
+		$published_post_statuses = [ 'publish' ];
+		$submitted_post_statuses = [ 'publish', 'pending' ];
+
+		// If we're coming to a published post status from a non-published post status, set the expiry.
+		if ( in_array( $new_status, $published_post_statuses, true ) && ! in_array( $old_status, $published_post_statuses, true ) ) {
+			$this->set_expiry( $post );
+		}
+
+		// If we're transitioning to a submitted post status on a public submission, fire submitted hook.
+		if (
+			get_post_meta( $post->ID, '_public_submission', true )
+			&& in_array( $new_status, $submitted_post_statuses, true )
+			&& ! in_array( $old_status, $submitted_post_statuses, true )
+		) {
+			$this->submitted_job_ids[] = $post->ID;
+
+			add_action( 'shutdown', [ $this, 'ensure_job_submission_action_triggered' ], 1 );
+		}
+
+	}
+
+	/**
+	 * Ensures jobs that are submitted on the frontend always have the job submitted action fired.
+	 *
+	 * @access private
+	 */
+	public function ensure_job_submission_action_triggered() {
+		foreach ( $this->submitted_job_ids as $job_id ) {
+			if ( get_post_meta( $job_id, '_public_submission', true ) ) {
+				delete_post_meta( $job_id, '_public_submission' );
+
+				/** This action is documented in includes/forms/class-wp-job-manager-form-submit-job.php */
+				do_action( 'job_manager_job_submitted', $job_id );
+			}
+		}
+
+		$this->submitted_job_ids = [];
 	}
 
 	/**
