@@ -341,7 +341,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		/**
 		 * Force application field to skip email / URL validation.
 		 *
-		 * @since 1.x.x
+		 * @since 1.34.2
 		 *
 		 * @param bool  $is_forced Whether the application field is forced to skip email / URL validation.
 		 */
@@ -358,7 +358,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected function validate_fields( $values ) {
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
-				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) ) {
+				if (
+					$field['required']
+					&& empty( $values[ $group_key ][ $key ] )
+					&& ( ! isset( $field['empty'] ) || $field['empty'] )
+				) {
 					// translators: Placeholder %s is the label for the required field.
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
 				}
@@ -451,31 +455,32 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		// Application method.
-		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
+		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) ) {
 			$allowed_application_method   = get_option( 'job_manager_allowed_application_method', '' );
-			$values['job']['application'] = str_replace( ' ', '+', $values['job']['application'] );
+
+			$is_valid = true;
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce checked earlier when required.
+			$posted_value = isset( $_POST['application'] ) ? sanitize_text_field( wp_unslash( $_POST['application'] ) ) : false;
+			if ( $posted_value && empty( $values['job']['application'] ) ) {
+				$is_valid                                    = false;
+				$this->fields['job']['application']['value'] = $posted_value;
+			}
+
 			switch ( $allowed_application_method ) {
 				case 'email':
-					if ( ! is_email( $values['job']['application'] ) ) {
+					if ( ! $is_valid || ! is_email( $values['job']['application'] ) ) {
 						throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
 					}
 					break;
 				case 'url':
-					// Prefix http if needed.
-					if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-						$values['job']['application'] = 'http://' . $values['job']['application'];
-					}
-					if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+					if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 						throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
 					}
 					break;
 				default:
 					if ( ! is_email( $values['job']['application'] ) ) {
-						// Prefix http if needed.
-						if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-							$values['job']['application'] = 'http://' . $values['job']['application'];
-						}
-						if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+						if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
 						}
 					}
@@ -540,6 +545,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( $this->job_id );
 			foreach ( $this->fields as $group_key => $group_fields ) {
 				foreach ( $group_fields as $key => $field ) {
+					if ( isset( $this->fields[ $group_key ][ $key ]['value'] ) ) {
+						continue;
+					}
+
 					switch ( $key ) {
 						case 'job_title':
 							$this->fields[ $group_key ][ $key ]['value'] = $job->post_title;

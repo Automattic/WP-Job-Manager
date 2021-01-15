@@ -432,6 +432,18 @@ abstract class WP_Job_Manager_Form {
 				$field_type = str_replace( '-', '_', $field['type'] );
 				$handler    = apply_filters( "job_manager_get_posted_{$field_type}_field", false );
 
+				$this->fields[ $group_key ][ $key ]['empty'] = false;
+
+				if ( ! isset( $field['before_sanitize'] ) ) {
+					$field['before_sanitize'] = function ( $value ) use ( $group_key, $key ) {
+						if ( is_string( $value ) ) {
+							$value = trim( $value );
+						}
+
+						$this->fields[ $group_key ][ $key ]['empty'] = empty( $value );
+					};
+				}
+
 				if ( $handler ) {
 					$values[ $group_key ][ $key ] = call_user_func( $handler, $key, $field );
 				} elseif ( method_exists( $this, "get_posted_{$field_type}_field" ) ) {
@@ -440,7 +452,6 @@ abstract class WP_Job_Manager_Form {
 					$values[ $group_key ][ $key ] = $this->get_posted_field( $key, $field );
 				}
 
-				// Set fields value.
 				$this->fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
 			}
 		}
@@ -482,23 +493,55 @@ abstract class WP_Job_Manager_Form {
 		$value = trim( $value );
 
 		if ( 'url' === $sanitizer ) {
-			return esc_url_raw( $value );
+			return esc_url_raw( $this->normalize_url( $value ) );
 		} elseif ( 'email' === $sanitizer ) {
-			return sanitize_email( $value );
-		} elseif ( 'url_or_email' === $sanitizer ) {
-			if ( null !== wp_parse_url( $value, PHP_URL_HOST ) ) {
-				// Sanitize as URL.
-				return esc_url_raw( $value );
+			$sanitized_value = sanitize_email( $value );
+			if ( $sanitized_value !== $value ) {
+				return '';
 			}
 
-			// Sanitize as email.
-			return sanitize_email( $value );
+			return $sanitized_value;
+		} elseif ( 'url_or_email' === $sanitizer ) {
+			if ( is_email( $value ) ) {
+				return sanitize_email( $value );
+			}
+
+			// Sanitize as URL.
+			return esc_url_raw( $this->normalize_url( $value ) );
 		} elseif ( is_callable( $sanitizer ) ) {
 			return call_user_func( $sanitizer, $value );
 		}
 
 		// Use standard text sanitizer.
 		return sanitize_text_field( wp_unslash( $value ) );
+	}
+
+	/**
+	 * Add missing schemes to assumed URLs and replace spaces with plus signs.
+	 *
+	 * @param string $value Assumed URL to normalize.
+	 *
+	 * @return string
+	 */
+	protected function normalize_url( $value ) {
+		if ( ! empty( $value ) && ! preg_match( '/^https?:\/\//', $value ) ) {
+			/**
+			 * URL scheme to prepend when none is provided.
+			 *
+			 * @since 1.35.0
+			 *
+			 * @value string|bool $scheme Scheme to prepend (http or https). False to skip prepending scheme.
+			 * @value string      $url    Assumed URL that was passed.
+			 */
+			$assumed_scheme = apply_filters( 'job_manager_form_assumed_url_scheme', 'http', $value );
+			if ( $assumed_scheme ) {
+				$value = $assumed_scheme . '://' . $value;
+			}
+		}
+
+		$value = str_replace( ' ', '+', $value );
+
+		return $value;
 	}
 
 	/**
@@ -515,7 +558,13 @@ abstract class WP_Job_Manager_Form {
 		}
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- WP_Job_Manager_Form::sanitize_posted_field handles the sanitization based on the type of data passed; nonce check happens elsewhere.
-		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( wp_unslash( $_POST[ $key ] ), $field['sanitizer'] ) : '';
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? $this->sanitize_posted_field( $value, $field['sanitizer'] ) : '';
 	}
 
 	/**
@@ -526,8 +575,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_multiselect_field( $key, $field ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST[ $key ] ) ) : [];
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- Nonce check happens elsewhere.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? array_map( 'sanitize_text_field', $value ) : [];
 	}
 
 	/**
@@ -559,8 +614,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected function get_posted_textarea_field( $key, $field ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return isset( $_POST[ $key ] ) ? trim( wp_kses_post( wp_unslash( $_POST[ $key ] ) ) ) : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- Nonce check happens elsewhere.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? trim( wp_kses_post( $value ) ) : '';
 	}
 
 	/**
@@ -582,13 +643,19 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_checklist_field( $key, $field ) {
+		$value = false;
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		if ( isset( $_POST['tax_input'] ) && isset( $_POST['tax_input'][ $field['taxonomy'] ] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-			return array_map( 'absint', $_POST['tax_input'][ $field['taxonomy'] ] );
-		} else {
-			return [];
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens earlier. Sanitized below.
+			$value = wp_unslash( $_POST['tax_input'][ $field['taxonomy'] ] );
 		}
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -599,8 +666,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : [];
+		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens elsewhere. Sanitization below.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -611,8 +684,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function get_posted_term_select_field( $key, $field ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
-		return ! empty( $_POST[ $key ] ) && $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens elsewhere. Sanitization below.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value && $value > 0 ? absint( $value ) : '';
 	}
 
 	/**
@@ -624,6 +703,8 @@ abstract class WP_Job_Manager_Form {
 	 * @return  string|array
 	 */
 	protected function upload_file( $field_key, $field ) {
+		$value = null;
+
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
 			if ( ! empty( $field['allowed_mime_types'] ) ) {
 				$allowed_mime_types = $field['allowed_mime_types'];
@@ -651,10 +732,16 @@ abstract class WP_Job_Manager_Form {
 			}
 
 			if ( ! empty( $field['multiple'] ) ) {
-				return $file_urls;
+				$value = $file_urls;
 			} else {
-				return current( $file_urls );
+				$value = current( $file_urls );
 			}
 		}
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value;
 	}
 }
