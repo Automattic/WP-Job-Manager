@@ -52,7 +52,7 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_post_types' ], 0 );
-    add_action( 'init', [ $this, 'add_content_filters' ] );
+		add_action( 'init', [ $this, 'add_content_filters' ] );
 		add_action( 'init', [ $this, 'prepare_block_editor' ] );
 		add_action( 'init', [ $this, 'register_meta_fields' ] );
 		add_filter( 'admin_head', [ $this, 'admin_head' ] );
