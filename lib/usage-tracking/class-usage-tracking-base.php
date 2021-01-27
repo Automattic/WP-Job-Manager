@@ -132,6 +132,14 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 */
 	abstract protected function do_track_plugin( $plugin_slug );
 
+	/**
+	 * Gets the base data returned with system information.
+	 *
+	 * @return array
+	 */
+	protected function get_base_system_data() {
+		return array();
+	}
 
 	/*
 	 * Initialization.
@@ -354,7 +362,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		 */
 		$theme = wp_get_theme();
 
-		$system_data                         = array();
+		$system_data                         = $this->get_base_system_data();
 		$system_data['wp_version']           = $wp_version;
 		$system_data['php_version']          = PHP_VERSION;
 		$system_data['locale']               = get_locale();

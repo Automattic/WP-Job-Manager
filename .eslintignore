@@ -1,3 +1,7 @@
 assets/build
-assets/js
 node_modules
+tmp/
+assets/lib/jquery-*
+assets/lib/select2
+assets/font
+vendor/

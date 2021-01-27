@@ -1,14 +1,12 @@
 <?php
 /**
- * Abstract class for an email notification built using templates.
+ * File containing the class WP_Job_Manager_Email_Template.
  *
  * @package wp-job-manager
- *
- * @since 1.31.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
@@ -94,8 +92,8 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 	 */
 	protected function locate_template( $plain_text ) {
 		$class_name            = get_class( $this );
-		$template_path         = call_user_func( array( $class_name, 'get_template_path' ) );
-		$template_default_path = call_user_func( array( $class_name, 'get_template_default_path' ) );
+		$template_path         = call_user_func( [ $class_name, 'get_template_path' ] );
+		$template_default_path = call_user_func( [ $class_name, 'get_template_default_path' ] );
 		return locate_job_manager_template( $this->get_template_file_name( $plain_text ), $template_path, $template_default_path );
 	}
 
@@ -108,7 +106,7 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 	protected function get_template_file_name( $plain_text = false ) {
 		$class_name = get_class( $this );
 		// PHP 5.2: Using `call_user_func()` but `$class_name::get_key()` preferred.
-		$email_notification_key = call_user_func( array( $class_name, 'get_key' ) );
+		$email_notification_key = call_user_func( [ $class_name, 'get_key' ] );
 		$template_name          = str_replace( '_', '-', $email_notification_key );
 		return self::generate_template_file_name( $template_name, $plain_text );
 	}
@@ -121,7 +119,7 @@ abstract class WP_Job_Manager_Email_Template extends WP_Job_Manager_Email {
 	 * @return string
 	 */
 	public static function generate_template_file_name( $template_name, $plain_text = false ) {
-		$file_name_parts = array( 'emails' );
+		$file_name_parts = [ 'emails' ];
 		if ( $plain_text ) {
 			$file_name_parts[] = 'plain';
 		}

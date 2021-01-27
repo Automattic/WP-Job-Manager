@@ -77,19 +77,19 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_Helper_Base_Test {
 
 	private function setup_master_option( $value = null ) {
 		if ( null === $value ) {
-			$value = array(
-				'test' => array(
+			$value = [
+				'test' => [
 					'licence_key'     => 'abcd',
 					'email'           => 'local@local.dev',
 					'errors'          => null,
 					'hide_key_notice' => false,
-				),
-			);
+				],
+			];
 		}
 		update_option( 'job_manager_helper', $value );
 	}
 
 	private function get_master_option() {
-		return get_option( 'job_manager_helper', array() );
+		return get_option( 'job_manager_helper', [] );
 	}
 }

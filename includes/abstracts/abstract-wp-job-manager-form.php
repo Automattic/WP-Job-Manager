@@ -1,10 +1,18 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Form.
+ *
+ * @package wp-job-manager
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Parent abstract class for form classes.
  *
  * @abstract
- * @package wp-job-manager
  * @since 1.0.0
  */
 abstract class WP_Job_Manager_Form {
@@ -15,7 +23,7 @@ abstract class WP_Job_Manager_Form {
 	 * @access protected
 	 * @var array
 	 */
-	protected $fields = array();
+	protected $fields = [];
 
 	/**
 	 * Form action.
@@ -31,7 +39,15 @@ abstract class WP_Job_Manager_Form {
 	 * @access protected
 	 * @var array
 	 */
-	protected $errors = array();
+	protected $errors = [];
+
+	/**
+	 * Form notices.
+	 *
+	 * @access protected
+	 * @var array
+	 */
+	protected $messages = [];
 
 	/**
 	 * Form steps.
@@ -39,7 +55,7 @@ abstract class WP_Job_Manager_Form {
 	 * @access protected
 	 * @var array
 	 */
-	protected $steps = array();
+	protected $steps = [];
 
 	/**
 	 * Current form step.
@@ -61,14 +77,14 @@ abstract class WP_Job_Manager_Form {
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__ );
+		_doing_it_wrong( __FUNCTION__, 'Unable to clone ' . __CLASS__, '1.0.0' );
 	}
 
 	/**
 	 * Unserializes instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__ );
+		_doing_it_wrong( __FUNCTION__, 'Unable to wake up ' . __CLASS__, '1.0.0' );
 	}
 
 	/**
@@ -78,15 +94,16 @@ abstract class WP_Job_Manager_Form {
 
 		// reset cookie.
 		if (
-			isset( $_GET['new'] ) &&
+			isset( $_GET['new'] ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
 			isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) &&
-			get_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
+			get_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
 		) {
-			delete_post_meta( $_COOKIE['wp-job-manager-submitting-job-id'], '_submitting_key' );
+			delete_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key' );
 			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
 			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
-			wp_redirect( remove_query_arg( array( 'new', 'key' ), $_SERVER['REQUEST_URI'] ) );
+			wp_safe_redirect( remove_query_arg( [ 'new', 'key', 'job_manager_form' ] ) );
+			exit;
 		}
 
 		$step_key = $this->get_step_key( $this->step );
@@ -98,7 +115,12 @@ abstract class WP_Job_Manager_Form {
 		$next_step_key = $this->get_step_key( $this->step );
 
 		// If the next step has a handler to call before going to the view, run it now.
-		if ( $next_step_key && $step_key !== $next_step_key && is_callable( $this->steps[ $next_step_key ]['before'] ) ) {
+		if (
+			$next_step_key
+			&& $step_key !== $next_step_key
+			&& isset( $this->steps[ $next_step_key ]['before'] )
+			&& is_callable( $this->steps[ $next_step_key ]['before'] )
+		) {
 			call_user_func( $this->steps[ $next_step_key ]['before'] );
 		}
 
@@ -113,10 +135,11 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param array $atts Attributes to use in the view handler.
 	 */
-	public function output( $atts = array() ) {
+	public function output( $atts = [] ) {
 		$this->enqueue_scripts();
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
+		$this->show_messages();
 
 		if ( $step_key && is_callable( $this->steps[ $step_key ]['view'] ) ) {
 			call_user_func( $this->steps[ $step_key ]['view'], $atts );
@@ -142,13 +165,44 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Adds an notice.
+	 *
+	 * @param string $message The notice message.
+	 */
+	public function add_message( $message ) {
+		$this->messages[] = $message;
+	}
+
+	/**
+	 * Displays notice messages.
+	 */
+	public function show_messages() {
+		foreach ( $this->messages as $message ) {
+			echo '<div class="job-manager-info">' . wp_kses_post( $message ) . '</div>';
+		}
+	}
+
+	/**
 	 * Gets the action (URL for forms to post to).
 	 * As of 1.22.2 this defaults to the current page permalink.
 	 *
 	 * @return string
 	 */
 	public function get_action() {
-		return esc_url_raw( $this->action ? $this->action : wp_unslash( $_SERVER['REQUEST_URI'] ) );
+		$default_action = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+		$action = esc_url_raw( $this->action ? $this->action : $default_action );
+
+		/**
+		 * Alter form submit action URL
+		 *
+		 * @since 1.35.0
+		 *
+		 * @param string              $action Form action value
+		 * @param WP_Job_Manager_Form $this   Current form class object
+		 *
+		 * @return string
+		 */
+		return apply_filters( 'job_manager_get_form_action', $action, $this );
 	}
 
 	/**
@@ -224,12 +278,12 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function get_fields( $key ) {
 		if ( empty( $this->fields[ $key ] ) ) {
-			return array();
+			return [];
 		}
 
 		$fields = $this->fields[ $key ];
 
-		uasort( $fields, array( $this, 'sort_by_priority' ) );
+		uasort( $fields, [ $this, 'sort_by_priority' ] );
 
 		return $fields;
 	}
@@ -252,7 +306,14 @@ abstract class WP_Job_Manager_Form {
 	 * Initializes form fields.
 	 */
 	protected function init_fields() {
-		$this->fields = array();
+		$this->fields = [];
+	}
+
+	/**
+	 * Clears form fields (resets to empty array)
+	 */
+	public function clear_fields() {
+		$this->fields = [];
 	}
 
 	/**
@@ -260,7 +321,8 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function enqueue_scripts() {
 		if ( $this->use_recaptcha_field() ) {
-			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js' );
+			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NoExplicitVersion
+			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js', [], false, false );
 		}
 	}
 
@@ -297,16 +359,16 @@ abstract class WP_Job_Manager_Form {
 	 * Output the reCAPTCHA field.
 	 */
 	public function display_recaptcha_field() {
-		$field             = array();
+		$field             = [];
 		$field['label']    = get_option( 'job_manager_recaptcha_label' );
 		$field['required'] = true;
 		$field['site_key'] = get_option( 'job_manager_recaptcha_site_key' );
 		get_job_manager_template(
 			'form-fields/recaptcha-field.php',
-			array(
+			[
 				'key'   => 'recaptcha',
 				'field' => $field,
-			)
+			]
 		);
 	}
 
@@ -318,19 +380,23 @@ abstract class WP_Job_Manager_Form {
 	 * @return bool|WP_Error
 	 */
 	public function validate_recaptcha_field( $success ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier (when possible).
+		$input_recaptcha_response = isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '';
+
 		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
-		if ( empty( $_POST['g-recaptcha-response'] ) ) {
+		if ( empty( $input_recaptcha_response ) ) {
 			// translators: Placeholder is for the label of the reCAPTCHA field.
 			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 		}
 
-		$response = wp_remote_get(
+		$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$response            = wp_remote_get(
 			add_query_arg(
-				array(
+				[
 					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
-					'response' => isset( $_POST['g-recaptcha-response'] ) ? $_POST['g-recaptcha-response'] : '',
-					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],
-				),
+					'response' => $input_recaptcha_response,
+					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : $default_remote_addr,
+				],
 				'https://www.google.com/recaptcha/api/siteverify'
 			)
 		);
@@ -358,7 +424,7 @@ abstract class WP_Job_Manager_Form {
 	protected function get_posted_fields() {
 		$this->init_fields();
 
-		$values = array();
+		$values = [];
 
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
@@ -366,15 +432,26 @@ abstract class WP_Job_Manager_Form {
 				$field_type = str_replace( '-', '_', $field['type'] );
 				$handler    = apply_filters( "job_manager_get_posted_{$field_type}_field", false );
 
+				$this->fields[ $group_key ][ $key ]['empty'] = false;
+
+				if ( ! isset( $field['before_sanitize'] ) ) {
+					$field['before_sanitize'] = function ( $value ) use ( $group_key, $key ) {
+						if ( is_string( $value ) ) {
+							$value = trim( $value );
+						}
+
+						$this->fields[ $group_key ][ $key ]['empty'] = empty( $value );
+					};
+				}
+
 				if ( $handler ) {
 					$values[ $group_key ][ $key ] = call_user_func( $handler, $key, $field );
 				} elseif ( method_exists( $this, "get_posted_{$field_type}_field" ) ) {
-					$values[ $group_key ][ $key ] = call_user_func( array( $this, "get_posted_{$field_type}_field" ), $key, $field );
+					$values[ $group_key ][ $key ] = call_user_func( [ $this, "get_posted_{$field_type}_field" ], $key, $field );
 				} else {
 					$values[ $group_key ][ $key ] = $this->get_posted_field( $key, $field );
 				}
 
-				// Set fields value.
 				$this->fields[ $group_key ][ $key ]['value'] = $values[ $group_key ][ $key ];
 			}
 		}
@@ -416,23 +493,55 @@ abstract class WP_Job_Manager_Form {
 		$value = trim( $value );
 
 		if ( 'url' === $sanitizer ) {
-			return esc_url_raw( $value );
+			return esc_url_raw( $this->normalize_url( $value ) );
 		} elseif ( 'email' === $sanitizer ) {
-			return sanitize_email( $value );
-		} elseif ( 'url_or_email' === $sanitizer ) {
-			if ( null !== wp_parse_url( $value, PHP_URL_HOST ) ) {
-				// Sanitize as URL.
-				return esc_url_raw( $value );
+			$sanitized_value = sanitize_email( $value );
+			if ( $sanitized_value !== $value ) {
+				return '';
 			}
 
-			// Sanitize as email.
-			return sanitize_email( $value );
+			return $sanitized_value;
+		} elseif ( 'url_or_email' === $sanitizer ) {
+			if ( is_email( $value ) ) {
+				return sanitize_email( $value );
+			}
+
+			// Sanitize as URL.
+			return esc_url_raw( $this->normalize_url( $value ) );
 		} elseif ( is_callable( $sanitizer ) ) {
 			return call_user_func( $sanitizer, $value );
 		}
 
 		// Use standard text sanitizer.
-		return sanitize_text_field( stripslashes( $value ) );
+		return sanitize_text_field( wp_unslash( $value ) );
+	}
+
+	/**
+	 * Add missing schemes to assumed URLs and replace spaces with plus signs.
+	 *
+	 * @param string $value Assumed URL to normalize.
+	 *
+	 * @return string
+	 */
+	protected function normalize_url( $value ) {
+		if ( ! empty( $value ) && ! preg_match( '/^https?:\/\//', $value ) ) {
+			/**
+			 * URL scheme to prepend when none is provided.
+			 *
+			 * @since 1.35.0
+			 *
+			 * @value string|bool $scheme Scheme to prepend (http or https). False to skip prepending scheme.
+			 * @value string      $url    Assumed URL that was passed.
+			 */
+			$assumed_scheme = apply_filters( 'job_manager_form_assumed_url_scheme', 'http', $value );
+			if ( $assumed_scheme ) {
+				$value = $assumed_scheme . '://' . $value;
+			}
+		}
+
+		$value = str_replace( ' ', '+', $value );
+
+		return $value;
 	}
 
 	/**
@@ -447,7 +556,15 @@ abstract class WP_Job_Manager_Form {
 		if ( ! isset( $field['sanitizer'] ) ) {
 			$field['sanitizer'] = null;
 		}
-		return isset( $_POST[ $key ] ) ? $this->sanitize_posted_field( $_POST[ $key ], $field['sanitizer'] ) : '';
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- WP_Job_Manager_Form::sanitize_posted_field handles the sanitization based on the type of data passed; nonce check happens elsewhere.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? $this->sanitize_posted_field( $value, $field['sanitizer'] ) : '';
 	}
 
 	/**
@@ -458,7 +575,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_multiselect_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? array_map( 'sanitize_text_field', $_POST[ $key ] ) : array();
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- Nonce check happens elsewhere.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? array_map( 'sanitize_text_field', $value ) : [];
 	}
 
 	/**
@@ -490,7 +614,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return string
 	 */
 	protected function get_posted_textarea_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? wp_kses_post( trim( stripslashes( $_POST[ $key ] ) ) ) : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification -- Nonce check happens elsewhere.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? trim( wp_kses_post( $value ) ) : '';
 	}
 
 	/**
@@ -512,11 +643,19 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_checklist_field( $key, $field ) {
+		$value = false;
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier.
 		if ( isset( $_POST['tax_input'] ) && isset( $_POST['tax_input'][ $field['taxonomy'] ] ) ) {
-			return array_map( 'absint', $_POST['tax_input'][ $field['taxonomy'] ] );
-		} else {
-			return array();
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens earlier. Sanitized below.
+			$value = wp_unslash( $_POST['tax_input'][ $field['taxonomy'] ] );
 		}
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -527,7 +666,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return array
 	 */
 	protected function get_posted_term_multiselect_field( $key, $field ) {
-		return isset( $_POST[ $key ] ) ? array_map( 'absint', $_POST[ $key ] ) : array();
+		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens elsewhere. Sanitization below.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -538,7 +684,14 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function get_posted_term_select_field( $key, $field ) {
-		return ! empty( $_POST[ $key ] ) && $_POST[ $key ] > 0 ? absint( $_POST[ $key ] ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce check happens elsewhere. Sanitization below.
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : false;
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value && $value > 0 ? absint( $value ) : '';
 	}
 
 	/**
@@ -550,6 +703,8 @@ abstract class WP_Job_Manager_Form {
 	 * @return  string|array
 	 */
 	protected function upload_file( $field_key, $field ) {
+		$value = null;
+
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
 			if ( ! empty( $field['allowed_mime_types'] ) ) {
 				$allowed_mime_types = $field['allowed_mime_types'];
@@ -557,16 +712,16 @@ abstract class WP_Job_Manager_Form {
 				$allowed_mime_types = job_manager_get_allowed_mime_types();
 			}
 
-			$file_urls       = array();
-			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] );
+			$file_urls       = [];
+			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1720.
 
 			foreach ( $files_to_upload as $file_to_upload ) {
 				$uploaded_file = job_manager_upload_file(
 					$file_to_upload,
-					array(
+					[
 						'file_key'           => $field_key,
 						'allowed_mime_types' => $allowed_mime_types,
-					)
+					]
 				);
 
 				if ( is_wp_error( $uploaded_file ) ) {
@@ -577,10 +732,16 @@ abstract class WP_Job_Manager_Form {
 			}
 
 			if ( ! empty( $field['multiple'] ) ) {
-				return $file_urls;
+				$value = $file_urls;
 			} else {
-				return current( $file_urls );
+				$value = current( $file_urls );
 			}
 		}
+
+		if ( isset( $field['before_sanitize'] ) && is_callable( $field['before_sanitize'] ) ) {
+			call_user_func( $field['before_sanitize'], $value );
+		}
+
+		return $value;
 	}
 }

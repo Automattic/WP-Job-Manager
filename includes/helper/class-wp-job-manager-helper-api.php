@@ -1,4 +1,9 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Helper_API.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,7 +22,7 @@ class WP_Job_Manager_Helper_API {
 	 * @var self
 	 * @since  1.29.0
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -27,10 +32,10 @@ class WP_Job_Manager_Helper_API {
 	 * @return self Main instance.
 	 */
 	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -102,38 +107,38 @@ class WP_Job_Manager_Helper_API {
 	 * @return array|bool|mixed|object
 	 */
 	protected function request( $args, $return_error = false ) {
-		$defaults = array(
+		$defaults = [
 			'instance'       => $this->get_site_url(),
 			'plugin_name'    => '',
 			'version'        => '',
 			'api_product_id' => '',
 			'licence_key'    => '',
 			'email'          => '',
-		);
+		];
 
 		$args    = wp_parse_args( $args, $defaults );
 		$request = wp_safe_remote_get(
 			$this->get_api_base_url() . '?' . http_build_query( $args, '', '&' ),
-			array(
+			[
 				'timeout' => 10,
-				'headers' => array(
+				'headers' => [
 					'Accept' => 'application/json',
-				),
-			)
+				],
+			]
 		);
 
 		if ( is_wp_error( $request ) || 200 !== wp_remote_retrieve_response_code( $request ) ) {
 			if ( $return_error ) {
 				if ( is_wp_error( $request ) ) {
-					return array(
+					return [
 						'error_code' => $request->get_error_code(),
 						'error'      => $request->get_error_message(),
-					);
+					];
 				}
-				return array(
+				return [
 					'error_code' => wp_remote_retrieve_response_code( $request ),
 					'error'      => 'Error code: ' . wp_remote_retrieve_response_code( $request ),
-				);
+				];
 			}
 			return false;
 		}
@@ -165,9 +170,10 @@ class WP_Job_Manager_Helper_API {
 	 * @return string
 	 */
 	private function get_api_base_url() {
-		if ( defined( 'JOB_MANAGER_VERSION' )
-			 && defined( 'JOB_MANAGER_DEV_API_BASE_URL' )
-			 && '-dev' === substr( JOB_MANAGER_VERSION, -4 )
+		if (
+			defined( 'JOB_MANAGER_VERSION' )
+			&& defined( 'JOB_MANAGER_DEV_API_BASE_URL' )
+			&& '-dev' === substr( JOB_MANAGER_VERSION, -4 )
 		) {
 			return JOB_MANAGER_DEV_API_BASE_URL;
 		}

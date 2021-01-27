@@ -22,28 +22,28 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 
 		// Create some listings.
 		$listing_notfilled_notfeatured_id = $this->create_listing_with_meta(
-			array(
+			[
 				'_filled'   => '0',
 				'_featured' => '0',
-			)
+			]
 		);
 		$listing_notfilled_featured_id    = $this->create_listing_with_meta(
-			array(
+			[
 				'_filled'   => '0',
 				'_featured' => '1',
-			)
+			]
 		);
 		$listing_filled_notfeatured_id    = $this->create_listing_with_meta(
-			array(
+			[
 				'_filled'   => '1',
 				'_featured' => '0',
-			)
+			]
 		);
 		$listing_filled_featured_id       = $this->create_listing_with_meta(
-			array(
+			[
 				'_filled'   => '1',
 				'_featured' => '1',
-			)
+			]
 		);
 
 		// Simulate viewing the edit.php page.
@@ -51,10 +51,10 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 
 		// When no filters are given.
 		$query = new WP_Query(
-			array(
+			[
 				'post_type' => 'job_listing',
 				'fields'    => 'ids',
-			)
+			]
 		);
 		$this->assertContains( $listing_notfilled_notfeatured_id, $query->posts );
 		$this->assertContains( $listing_notfilled_featured_id, $query->posts );
@@ -64,10 +64,10 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 		// Filtering on Filled.
 		$_GET['job_listing_filled'] = '1';
 		$query                      = new WP_Query(
-			array(
+			[
 				'post_type' => 'job_listing',
 				'fields'    => 'ids',
-			)
+			]
 		);
 		$this->assertNotContains( $listing_notfilled_notfeatured_id, $query->posts );
 		$this->assertNotContains( $listing_notfilled_featured_id, $query->posts );
@@ -78,10 +78,10 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 		$_GET['job_listing_filled']   = '';
 		$_GET['job_listing_featured'] = '0';
 		$query                        = new WP_Query(
-			array(
+			[
 				'post_type' => 'job_listing',
 				'fields'    => 'ids',
-			)
+			]
 		);
 		$this->assertContains( $listing_notfilled_notfeatured_id, $query->posts );
 		$this->assertNotContains( $listing_notfilled_featured_id, $query->posts );
@@ -101,7 +101,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 
 		// Create some listings.
 		$listing_id = $this->factory->post->create(
-			array( 'post_type' => 'job_listing' )
+			[ 'post_type' => 'job_listing' ]
 		);
 
 		// Simulate viewing some other page.
@@ -111,10 +111,10 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 		$_GET['job_listing_filled']   = '1';
 		$_GET['job_listing_featured'] = '1';
 		$query                        = new WP_Query(
-			array(
+			[
 				'post_type' => 'job_listing',
 				'fields'    => 'ids',
-			)
+			]
 		);
 		$this->assertContains( $listing_id, $query->posts );
 	}
@@ -123,7 +123,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 
 	private function create_listing_with_meta( $meta ) {
 		$id = $this->factory->post->create(
-			array( 'post_type' => 'job_listing' )
+			[ 'post_type' => 'job_listing' ]
 		);
 
 		foreach ( $meta as $meta_key => $meta_value ) {

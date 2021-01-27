@@ -1,12 +1,12 @@
 <?php
 /**
- * Abstract email notification class.
+ * File containing the class WP_Job_Manager_Email.
  *
  * @package wp-job-manager
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
@@ -28,8 +28,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * }
  * ```
  *
- * @package wp-job-manager
- *
  * @since 1.31.0
  */
 abstract class WP_Job_Manager_Email {
@@ -38,14 +36,14 @@ abstract class WP_Job_Manager_Email {
 	 *
 	 * @var array
 	 */
-	private $args = array();
+	private $args = [];
 
 	/**
 	 * Settings for this email notification.
 	 *
 	 * @var array
 	 */
-	private $settings = array();
+	private $settings = [];
 
 	/**
 	 * WP_Job_Manager_Email constructor.
@@ -163,7 +161,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return array
 	 */
 	public function get_attachments() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -181,7 +179,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return array
 	 */
 	public function get_headers() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -190,7 +188,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return string
 	 */
 	public function get_plain_content() {
-		return strip_tags( $this->get_rich_content() );
+		return wp_strip_all_tags( $this->get_rich_content() );
 	}
 
 	/**
@@ -199,7 +197,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return array
 	 */
 	public static function get_setting_fields() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -209,6 +207,15 @@ abstract class WP_Job_Manager_Email {
 	 */
 	public static function is_default_enabled() {
 		return true;
+	}
+
+	/**
+	 * Force the email notification to be enabled or disabled.
+	 *
+	 * @return bool|null True to force enabled; False to force disabled; Null to not force a value.
+	 */
+	public static function get_enabled_force_value() {
+		return null;
 	}
 
 	/**

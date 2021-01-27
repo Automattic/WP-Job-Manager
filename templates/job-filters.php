@@ -6,9 +6,9 @@
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
- * @package     WP Job Manager
+ * @package     wp-job-manager
  * @category    Template
- * @version     1.31.1
+ * @version     1.33.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,18 +36,36 @@ do_action( 'job_manager_job_filters_before', $atts );
 			<input type="text" name="search_location" id="search_location" placeholder="<?php esc_attr_e( 'Location', 'wp-job-manager' ); ?>" value="<?php echo esc_attr( $location ); ?>" />
 		</div>
 
+		<div style="clear: both"></div>
+
 		<?php if ( $categories ) : ?>
 			<?php foreach ( $categories as $category ) : ?>
 				<input type="hidden" name="search_categories[]" value="<?php echo esc_attr( sanitize_title( $category ) ); ?>" />
 			<?php endforeach; ?>
-		<?php elseif ( $show_categories && ! is_tax( 'job_listing_category' ) && get_terms( array( 'taxonomy' => 'job_listing_category' ) ) ) : ?>
+		<?php elseif ( $show_categories && ! is_tax( 'job_listing_category' ) && get_terms( [ 'taxonomy' => 'job_listing_category' ] ) ) : ?>
 			<div class="search_categories">
 				<label for="search_categories"><?php esc_html_e( 'Category', 'wp-job-manager' ); ?></label>
 				<?php if ( $show_category_multiselect ) : ?>
-					<?php job_manager_dropdown_categories( array( 'taxonomy' => 'job_listing_category', 'hierarchical' => 1, 'name' => 'search_categories', 'orderby' => 'name', 'selected' => $selected_category, 'hide_empty' => true ) ); ?>
+					<?php job_manager_dropdown_categories( [ 'taxonomy' => 'job_listing_category', 'hierarchical' => 1, 'name' => 'search_categories', 'orderby' => 'name', 'selected' => $selected_category, 'hide_empty' => true ] ); ?>
 				<?php else : ?>
-					<?php job_manager_dropdown_categories( array( 'taxonomy' => 'job_listing_category', 'hierarchical' => 1, 'show_option_all' => __( 'Any category', 'wp-job-manager' ), 'name' => 'search_categories', 'orderby' => 'name', 'selected' => $selected_category, 'multiple' => false, 'hide_empty' => true ) ); ?>
+					<?php job_manager_dropdown_categories( [ 'taxonomy' => 'job_listing_category', 'hierarchical' => 1, 'show_option_all' => __( 'Any category', 'wp-job-manager' ), 'name' => 'search_categories', 'orderby' => 'name', 'selected' => $selected_category, 'multiple' => false, 'hide_empty' => true ] ); ?>
 				<?php endif; ?>
+			</div>
+		<?php endif; ?>
+
+		<?php
+		/**
+		 * Show the submit button on the job filters form.
+		 *
+		 * @since 1.33.0
+		 *
+		 * @param bool $show_submit_button Whether to show the button. Defaults to true.
+		 * @return bool
+		 */
+		if ( apply_filters( 'job_manager_job_filters_show_submit_button', true ) ) :
+		?>
+			<div class="search_submit">
+				<input type="submit" value="<?php esc_attr_e( 'Search Jobs', 'wp-job-manager' ); ?>">
 			</div>
 		<?php endif; ?>
 

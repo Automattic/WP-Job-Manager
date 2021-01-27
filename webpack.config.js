@@ -1,51 +1,47 @@
-/* global require, module, process, __dirname */
-const cleanWebpackPlugin = require( 'clean-webpack-plugin' );
-const lodashModuleReplacementPlugin = require( 'lodash-webpack-plugin' );
-const miniCssExtractPlugin = require( 'mini-css-extract-plugin' );
-const glob = require( 'glob' );
-const entryArray = glob.sync( './assets/blocks/**/index.jsx' );
-const entryObject = entryArray.reduce( ( acc, item ) => {
-	let name = item.replace( './assets/blocks/', '' ).replace( '/index.jsx', '' );
-	acc[name] = item;
+const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
+const path = require( 'path' );
 
-	return acc;
-}, {} );
-
-const webpackConfig = ( env, argv ) => {
-	return {
-		entry: entryObject,
-		output: {
-			filename: 'build/blocks/[name]/index.js',
-			path: __dirname,
-		},
-		module: {
-			rules: [
-				{
-					test: /.jsx$/,
-					use: 'babel-loader',
-					exclude: /node_modules/,
-				},
-				{
-					test: /\.scss$/,
-					include: [
-						/assets\/blocks/
-					],
-					use: [
-						argv.mode !== 'production' ? 'style-loader' : miniCssExtractPlugin.loader,
-						'css-loader',
-						'sass-loader'
-					]
-				},
-			],
-		},
-		plugins: [
-			new cleanWebpackPlugin( [ 'build/blocks' ] ),
-			new lodashModuleReplacementPlugin(),
-			new miniCssExtractPlugin( {
-				filename: 'build/blocks/[name]/style.css'
-			} ),
-		],
-	};
+const files = {
+	'js/admin': 'js/admin.js',
+	'js/ajax-file-upload': 'js/ajax-file-upload.js',
+	'js/ajax-filters': 'js/ajax-filters.js',
+	'js/datepicker': 'js/datepicker.js',
+	'js/job-application': 'js/job-application.js',
+	'js/job-dashboard': 'js/job-dashboard.js',
+	'js/job-submission': 'js/job-submission.js',
+	'js/multiselect': 'js/multiselect.js',
+	'js/term-multiselect': 'js/term-multiselect.js',
+	'css/admin': 'css/admin.scss',
+	'css/frontend': 'css/frontend.scss',
+	'css/job-listings': 'css/job-listings.scss',
+	'css/job-submission': 'css/job-submission.scss',
+	'css/setup': 'css/setup.scss',
+	'css/menu': 'css/menu.scss',
 };
 
-module.exports = webpackConfig;
+const baseDist = 'assets/dist/';
+
+Object.keys( files ).forEach( function ( key ) {
+	files[ key ] = path.resolve( './assets', files[ key ] );
+} );
+
+const FileLoader = {
+	test: /\.(?:gif|jpg|jpeg|png|svg|woff|woff2|eot|ttf|otf)$/i,
+	loader: 'file-loader',
+	options: {
+		name: '[path][name]-[contenthash].[ext]',
+		context: 'assets',
+		publicPath: '..',
+	},
+};
+
+module.exports = {
+	...defaultConfig,
+	entry: files,
+	output: {
+		path: path.resolve( '.', baseDist ),
+	},
+	module: {
+		rules: [ FileLoader, ...defaultConfig.module.rules ],
+	},
+};

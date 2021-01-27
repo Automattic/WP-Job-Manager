@@ -1,6 +1,6 @@
 {
 	'presets': [
-		[ 'env', {
+		[ '@babel/preset-env', {
 			'targets': {
 				'browsers': [
 					'> 1%',
@@ -17,13 +17,5 @@
 			}
 		} ],
 		'@wordpress/default'
-	],
-	'plugins': [
-		[ 'transform-react-jsx', {
-			'pragma': 'wp.element.createElement'
-		} ],
-		'transform-class-properties',
-		'transform-object-rest-spread',
-		'lodash'
 	]
 }

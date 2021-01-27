@@ -1,4 +1,9 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Install.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -7,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles the installation of the WP Job Manager plugin.
  *
- * @package wp-job-manager
  * @since 1.0.0
  */
 class WP_Job_Manager_Install {
@@ -21,14 +25,20 @@ class WP_Job_Manager_Install {
 		self::init_user_roles();
 		self::default_terms();
 
-		// Redirect to setup screen for new installs.
+		$is_new_install = false;
+
+		// Fresh installs should be prompted to set up their instance.
 		if ( ! get_option( 'wp_job_manager_version' ) ) {
-			set_transient( '_job_manager_activation_redirect', 1, HOUR_IN_SECONDS );
+			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin-notices.php';
+			WP_Job_Manager_Admin_Notices::add_notice( WP_Job_Manager_Admin_Notices::NOTICE_CORE_SETUP );
+			$is_new_install = true;
 		}
 
 		// Update featured posts ordering.
 		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '1.22.0', '<' ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One time data update.
 			$wpdb->query( "UPDATE {$wpdb->posts} p SET p.menu_order = 0 WHERE p.post_type='job_listing';" );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One time data update.
 			$wpdb->query( "UPDATE {$wpdb->posts} p LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id SET p.menu_order = -1 WHERE pm.meta_key = '_featured' AND pm.meta_value='1' AND p.post_type='job_listing';" );
 		}
 
@@ -47,6 +57,17 @@ class WP_Job_Manager_Install {
 			update_option( 'job_manager_job_dashboard_page_id', $page_id );
 		}
 
+		// Scheduled hook was removed in 1.33.4.
+		if ( wp_next_scheduled( 'job_manager_clear_expired_transients' ) ) {
+			wp_clear_scheduled_hook( 'job_manager_clear_expired_transients' );
+		}
+
+		if ( $is_new_install ) {
+			$permalink_options                 = (array) json_decode( get_option( 'job_manager_permalinks', '[]' ), true );
+			$permalink_options['jobs_archive'] = '';
+			update_option( 'job_manager_permalinks', wp_json_encode( $permalink_options ) );
+		}
+
 		delete_transient( 'wp_job_manager_addons_html' );
 		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );
 	}
@@ -55,28 +76,24 @@ class WP_Job_Manager_Install {
 	 * Initializes user roles.
 	 */
 	private static function init_user_roles() {
-		global $wp_roles;
+		$roles = wp_roles();
 
-		if ( class_exists( 'WP_Roles' ) && ! isset( $wp_roles ) ) {
-			$wp_roles = new WP_Roles(); // WPCS: override ok.
-		}
-
-		if ( is_object( $wp_roles ) ) {
+		if ( is_object( $roles ) ) {
 			add_role(
 				'employer',
 				__( 'Employer', 'wp-job-manager' ),
-				array(
+				[
 					'read'         => true,
 					'edit_posts'   => false,
 					'delete_posts' => false,
-				)
+				]
 			);
 
 			$capabilities = self::get_core_capabilities();
 
 			foreach ( $capabilities as $cap_group ) {
 				foreach ( $cap_group as $cap ) {
-					$wp_roles->add_cap( 'administrator', $cap );
+					$roles->add_cap( 'administrator', $cap );
 				}
 			}
 		}
@@ -88,11 +105,11 @@ class WP_Job_Manager_Install {
 	 * @return array
 	 */
 	private static function get_core_capabilities() {
-		return array(
-			'core'        => array(
+		return [
+			'core'        => [
 				'manage_job_listings',
-			),
-			'job_listing' => array(
+			],
+			'job_listing' => [
 				'edit_job_listing',
 				'read_job_listing',
 				'delete_job_listing',
@@ -110,8 +127,8 @@ class WP_Job_Manager_Install {
 				'edit_job_listing_terms',
 				'delete_job_listing_terms',
 				'assign_job_listing_terms',
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -145,25 +162,25 @@ class WP_Job_Manager_Install {
 	 * @return array Default taxonomy terms.
 	 */
 	private static function get_default_taxonomy_terms() {
-		return array(
-			'job_listing_type' => array(
-				'Full Time'  => array(
+		return [
+			'job_listing_type' => [
+				'Full Time'  => [
 					'employment_type' => 'FULL_TIME',
-				),
-				'Part Time'  => array(
+				],
+				'Part Time'  => [
 					'employment_type' => 'PART_TIME',
-				),
-				'Temporary'  => array(
+				],
+				'Temporary'  => [
 					'employment_type' => 'TEMPORARY',
-				),
-				'Freelance'  => array(
+				],
+				'Freelance'  => [
 					'employment_type' => 'CONTRACTOR',
-				),
-				'Internship' => array(
+				],
+				'Internship' => [
 					'employment_type' => 'INTERN',
-				),
-			),
-		);
+				],
+			],
+		];
 	}
 
 	/**
