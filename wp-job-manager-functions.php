@@ -771,8 +771,8 @@ function is_wpjm_page() {
 		 * @param int[] $wpjm_page_ids
 		 */
 		$wpjm_page_ids = array_unique( apply_filters( 'job_manager_page_ids', $wpjm_page_ids ) );
-		
-		if ( ! empty ( $wpjm_page_ids ) ) {
+
+		if ( ! empty( $wpjm_page_ids ) ) {
 			$is_wpjm_page = is_page( $wpjm_page_ids );
 		}
 	}

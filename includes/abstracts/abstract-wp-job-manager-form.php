@@ -190,7 +190,7 @@ abstract class WP_Job_Manager_Form {
 	 */
 	public function get_action() {
 		$default_action = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-		$action = esc_url_raw( $this->action ? $this->action : $default_action );
+		$action         = esc_url_raw( $this->action ? $this->action : $default_action );
 
 		/**
 		 * Alter form submit action URL

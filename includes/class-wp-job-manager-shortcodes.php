@@ -94,7 +94,7 @@ class WP_Job_Manager_Shortcodes {
 	 * Handles actions which need to be run before the shortcode e.g. post actions.
 	 */
 	public function shortcode_action_handler() {
-    /**
+		/**
 		 * Determine if the shortcode action handler should run.
 		 *
 		 * @since 1.35.0

@@ -225,11 +225,11 @@ class WP_Job_Manager_Writepanels {
 		}
 		?>
 		<span class="file_url">
-			<input type="text" name="<?php echo $name ?>" <?php echo $input_id_attribute ?> placeholder="<?php echo esc_attr( $placeholder ); ?>" value="<?php echo esc_attr( $value ); ?>" />
+			<input type="text" name="<?php echo $name; ?>" <?php echo $input_id_attribute; ?> placeholder="<?php echo esc_attr( $placeholder ); ?>" value="<?php echo esc_attr( $value ); ?>" />
 			<button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>">
 				<?php esc_html_e( 'Upload', 'wp-job-manager' ); ?>
 			</button>
-			<button class="button button-small wp_job_manager_view_file_button"<?php echo $download_attribute ?>>
+			<button class="button button-small wp_job_manager_view_file_button"<?php echo $download_attribute; ?>>
 				<?php esc_html_e( 'View', 'wp-job-manager' ); ?>
 			</button>
 		</span>
