@@ -23,9 +23,9 @@
     "select2": "4.0.13"
   },
   "devDependencies": {
-    "@wordpress/jest-preset-default": "6.3.0",
-    "@wordpress/scripts": "12.5.0",
-    "file-loader": "6.1.0"
+    "@wordpress/jest-preset-default": "7.0.0",
+    "@wordpress/scripts": "13.0.0",
+    "file-loader": "6.2.0"
   },
   "scripts": {
     "build": "npm run build:assets && npm run archive",
