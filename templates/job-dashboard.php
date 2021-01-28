@@ -8,9 +8,10 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.34.4
+ * @version     1.35.0
  *
  * @since 1.34.4 Available job actions are passed in an array (`$job_actions`, keyed by job ID) and not generated in the template.
+ * @since 1.35.0 Switched to new date functions.
  *
  * @var array     $job_dashboard_columns Array of the columns to show on the job dashboard page.
  * @var int       $max_num_pages         Maximum number of pages
@@ -66,9 +67,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 										?>
 									</ul>
 								<?php elseif ('date' === $key ) : ?>
-									<?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $job->post_date ) ) ); ?>
+									<?php echo esc_html( wp_date( get_option( 'date_format' ), get_post_datetime( $job )->getTimestamp() ) ); ?>
 								<?php elseif ('expires' === $key ) : ?>
-									<?php echo esc_html( $job->_job_expires ? date_i18n( get_option( 'date_format' ), strtotime( $job->_job_expires ) ) : '&ndash;' ); ?>
+									<?php
+									$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+									echo esc_html( $job_expires ? wp_date( get_option( 'date_format' ), $job_expires->getTimestamp() ) : '&ndash;' );
+									?>
 								<?php elseif ('filled' === $key ) : ?>
 									<?php echo is_position_filled( $job ) ? '&#10004;' : '&ndash;'; ?>
 								<?php else : ?>
