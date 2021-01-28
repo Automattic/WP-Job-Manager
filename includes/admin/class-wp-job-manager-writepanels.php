@@ -93,14 +93,17 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		if ( isset( $fields['_job_expires'] ) && ! isset( $fields['_job_expires']['value'] ) ) {
-			$job_expires = get_post_meta( $post_id, '_job_expires', true );
+			$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post_id );
 
+			$fields['_job_expires']['placeholder'] = null;
 			if ( ! empty( $job_expires ) ) {
-				$fields['_job_expires']['placeholder'] = null;
-				$fields['_job_expires']['value']       = date( 'Y-m-d', strtotime( $job_expires ) );
+				$fields['_job_expires']['value'] = $job_expires->format( 'Y-m-d' );
 			} else {
-				$fields['_job_expires']['placeholder'] = date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post_id ) ) );
-				$fields['_job_expires']['value']       = '';
+				$assumed_expiration_date = calculate_job_expiry( $post_id, true );
+				if ( $assumed_expiration_date ) {
+					$fields['_job_expires']['placeholder'] = wp_date( get_option( 'date_format' ), $assumed_expiration_date->getTimestamp() );
+				}
+				$fields['_job_expires']['value'] = '';
 			}
 		}
 
@@ -602,11 +605,17 @@ class WP_Job_Manager_Writepanels {
 			}
 		}
 
-		$user_edited_date = get_post_meta( $post->ID, '_job_edited', true );
-		if ( $user_edited_date ) {
+		$user_edited_timestamp = get_post_meta( $post->ID, '_job_edited', true );
+		if ( $user_edited_timestamp ) {
 			echo '<p class="form-field">';
-			// translators: %1$s is placeholder for singular name of the job listing post type; %2$s is the intl formatted date the listing was last modified.
-			echo '<em>' . sprintf( esc_html__( '%1$s was last modified by the user on %2$s.', 'wp-job-manager' ), esc_html( $wp_post_types['job_listing']->labels->singular_name ), esc_html( date_i18n( get_option( 'date_format' ), $user_edited_date ) ) ) . '</em>';
+			echo '<em>';
+			printf(
+				// translators: %1$s is placeholder for singular name of the job listing post type; %2$s is the intl formatted date the listing was last modified.
+				esc_html__( '%1$s was last modified by the user on %2$s.', 'wp-job-manager' ),
+				esc_html( $wp_post_types['job_listing']->labels->singular_name ),
+				esc_html( wp_date( get_option( 'date_format' ), (int) $user_edited_timestamp ) )
+			);
+			echo '</em>';
 			echo '</p>';
 		}
 
@@ -679,7 +688,7 @@ class WP_Job_Manager_Writepanels {
 				}
 			}
 
-			// Expirey date.
+			// Expiry date.
 			if ( '_job_expires' === $key ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				if ( empty( $_POST[ $key ] ) ) {
@@ -690,7 +699,10 @@ class WP_Job_Manager_Writepanels {
 					}
 				} else {
 					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
-					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) ) ) );
+					$input_job_expires = DateTimeImmutable::createFromFormat( 'Y-m-d', sanitize_text_field( wp_unslash( $_POST[ $key ] ) ), wp_timezone() );
+					if ( $input_job_expires ) {
+						WP_Job_Manager_Post_Types::instance()->set_job_expiration( $post_id, $input_job_expires );
+					}
 				}
 			} elseif ( '_job_author' === $key ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
@@ -710,13 +722,12 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		/* Set Post Status To Expired If Already Expired */
-		$expiry_date            = get_post_meta( $post_id, '_job_expires', true );
-		$today_date             = date( 'Y-m-d', current_time( 'timestamp' ) );
-		$is_job_listing_expired = $expiry_date && $today_date > $expiry_date;
+		$post_types             = WP_Job_Manager_Post_Types::instance();
+		$is_job_listing_expired = $post_types->has_job_expired( $post_id );
 		if ( $is_job_listing_expired && ! $this->is_job_listing_status_changing( null, 'draft' ) ) {
 			remove_action( 'job_manager_save_job_listing', [ $this, 'save_job_listing_data' ], 20 );
 			if ( $this->is_job_listing_status_changing( 'expired', 'publish' ) ) {
-				update_post_meta( $post_id, '_job_expires', calculate_job_expiry( $post_id ) );
+				$post_types->set_job_expiration( $post_id, calculate_job_expiry( $post_id, true ) );
 			} else {
 				$job_data = [
 					'ID'          => $post_id,
