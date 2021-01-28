@@ -1438,7 +1438,7 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  * @since 1.35.0 Added the `$return_datetime` param.
  *
  * @param  int  $job_id          Job ID.
- * @param bool $return_datetime Return the date time object.
+ * @param  bool $return_datetime Return the date time object.
  * @return string|DateTimeImmutable When `$return_datetime`, it will return either DateTimeImmutable or null.
  */
 function calculate_job_expiry( $job_id, $return_datetime = false ) {
