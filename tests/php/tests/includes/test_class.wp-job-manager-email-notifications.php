@@ -42,8 +42,8 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$new_jobs['empty']         = $this->factory->job_listing->create();
 		update_post_meta( $new_jobs['empty'], '_job_expires', '' );
 		$new_jobs['invalid-none'] = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => '0000-00-00' ] ] );
-		$new_jobs['today']        = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d' ) ] ] );
-		$new_jobs['tomorrow']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ] ] );
+		$new_jobs['today']        = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d' ) ] ] );
+		$new_jobs['tomorrow']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d', strtotime( '+1 day' ) ) ] ] );
 
 		$this->assertEquals( 0, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
 		add_filter( 'job_manager_email_is_email_notification_enabled', '__return_true' );
@@ -67,8 +67,8 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$new_jobs['empty']         = $this->factory->job_listing->create();
 		update_post_meta( $new_jobs['empty'], '_job_expires', '' );
 		$new_jobs['invalid-none'] = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => '0000-00-00' ] ] );
-		$new_jobs['today']        = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d' ) ] ] );
-		$new_jobs['tomorrow']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ] ] );
+		$new_jobs['today']        = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d' ) ] ] );
+		$new_jobs['tomorrow']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d', strtotime( '+1 day' ) ) ] ] );
 
 		$this->assertEquals( 0, WP_Job_Manager_Email_Notifications::get_deferred_notification_count() );
 		add_filter( 'job_manager_email_is_email_notification_enabled', '__return_true' );

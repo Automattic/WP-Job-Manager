@@ -50,7 +50,7 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 
 	public function set_post_age( $post_id, $age ) {
 		global $wpdb;
-		$mod_date = date( 'Y-m-d', strtotime( $age ) );
+		$mod_date = wp_date( 'Y-m-d', strtotime( $age ) );
 		$wpdb->update(
 			$wpdb->posts,
 			[

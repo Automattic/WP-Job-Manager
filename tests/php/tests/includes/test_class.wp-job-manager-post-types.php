@@ -376,12 +376,12 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$new_jobs['empty']         = $this->factory->job_listing->create();
 		update_post_meta( $new_jobs['empty'], '_job_expires', '' );
 		$new_jobs['invalid-none'] = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => '0000-00-00' ] ] );
-		$new_jobs['today']        = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d' ) ] ] );
-		$new_jobs['yesterday']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '-1 day' ) ) ] ] );
-		$new_jobs['ancient']      = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '-100 day' ) ) ] ] );
-		$new_jobs['tomorrow']     = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '+1 day' ) ) ] ] );
-		$new_jobs['30daysago']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '-30 day' ) ) ] ] );
-		$new_jobs['31daysago']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => date( 'Y-m-d', strtotime( '-31 day' ) ) ] ] );
+		$new_jobs['today']        = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d' ) ] ] );
+		$new_jobs['yesterday']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d', strtotime( '-1 day' ) ) ] ] );
+		$new_jobs['ancient']      = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d', strtotime( '-100 day' ) ) ] ] );
+		$new_jobs['tomorrow']     = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d', strtotime( '+1 day' ) ) ] ] );
+		$new_jobs['30daysago']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d', strtotime( '-30 day' ) ) ] ] );
+		$new_jobs['31daysago']    = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d', strtotime( '-31 day' ) ) ] ] );
 
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$this->assertNotExpired( $new_jobs['none'] );
@@ -419,6 +419,26 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$this->assertNotTrashed( $new_jobs['30daysago'] );
 		$this->assertNotTrashed( $new_jobs['today'] );
 		$this->assertNotTrashed( $new_jobs['tomorrow'] );
+	}
+
+	/**
+	 * @since 1.28.0
+	 * @covers WP_Job_Manager_Post_Types::check_for_expired_jobs
+	 */
+	public function test_check_for_expired_jobs_time_of_day_variations() {
+		$today = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => wp_date( 'Y-m-d' ) ] ] );
+		$instance = WP_Job_Manager_Post_Types::instance();
+		$this->assertNotExpired( $today );
+
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+		add_filter( 'job_manager_jobs_expire_end_of_day', '__return_true' );
+		$instance->check_for_expired_jobs();
+		$this->assertNotExpired( $today );
+
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+		add_filter( 'job_manager_jobs_expire_end_of_day', '__return_false' );
+		$instance->check_for_expired_jobs();
+		$this->assertExpired( $today );
 	}
 
 	/**
@@ -494,7 +514,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_set_expiry_post() {
 		$post                  = get_post( $this->factory->job_listing->create() );
 		$instance              = WP_Job_Manager_Post_Types::instance();
-		$_POST['_job_expires'] = $expire_date = date( 'Y-m-d', strtotime( '+10 days', current_time( 'timestamp' ) ) );
+		$_POST['_job_expires'] = $expire_date = wp_date( 'Y-m-d', strtotime( '+10 days', current_datetime()->getTimestamp() ) );
 		$instance->set_expiry( $post );
 		unset( $_POST['_job_expires'] );
 		$this->assertEquals( $expire_date, get_post_meta( $post->ID, '_job_expires', true ) );
@@ -507,7 +527,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_set_expiry_calculate() {
 		$post             = get_post( $this->factory->job_listing->create( [ 'meta_input' => [ '_job_duration' => 77 ] ] ) );
 		$instance         = WP_Job_Manager_Post_Types::instance();
-		$expire_date      = date( 'Y-m-d', strtotime( '+77 days', current_time( 'timestamp' ) ) );
+		$expire_date      = wp_date( 'Y-m-d', strtotime( '+77 days', current_datetime()->getTimestamp() ) );
 		$expire_date_calc = calculate_job_expiry( $post->ID );
 		$this->assertEquals( $expire_date, $expire_date_calc );
 		$instance->set_expiry( $post );
