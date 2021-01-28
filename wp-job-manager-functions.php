@@ -1435,23 +1435,28 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  * Calculates and returns the job expiry date.
  *
  * @since 1.22.0
- * @param  int $job_id
- * @return string
+ * @since 1.35.0 Added the `$return_datetime` param.
+ *
+ * @param  int  $job_id          Job ID.
+ * @param bool $return_datetime Return the date time object.
+ * @return string|DateTimeImmutable When `$return_datetime`, it will return either DateTimeImmutable or null.
  */
-function calculate_job_expiry( $job_id ) {
+function calculate_job_expiry( $job_id, $return_datetime = false ) {
 	// Get duration from the product if set...
 	$duration = get_post_meta( $job_id, '_job_duration', true );
 
 	// ...otherwise use the global option.
 	if ( ! $duration ) {
-		$duration = absint( get_option( 'job_manager_submission_duration' ) );
+		$duration = get_option( 'job_manager_submission_duration' );
 	}
 
 	if ( $duration ) {
-		return date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
+		$new_job_expiry = current_datetime()->add( new DateInterval( 'P' . absint( $duration ) . 'D' ) );
+
+		return $return_datetime ? WP_Job_Manager_Post_Types::instance()->prepare_job_expires_time( $new_job_expiry ) : $new_job_expiry->format( 'Y-m-d' );
 	}
 
-	return '';
+	return $return_datetime ? null : '';
 }
 
 /**

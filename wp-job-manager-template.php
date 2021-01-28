@@ -370,11 +370,11 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 	$data               = [];
 	$data['@context']   = 'http://schema.org/';
 	$data['@type']      = 'JobPosting';
-	$data['datePosted'] = get_post_time( 'c', false, $post );
+	$data['datePosted'] = get_post_datetime( $post )->format( 'c' );
 
-	$job_expires = get_post_meta( $post->ID, '_job_expires', true );
+	$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post );
 	if ( ! empty( $job_expires ) ) {
-		$data['validThrough'] = date( 'c', strtotime( $job_expires ) );
+		$data['validThrough'] = $job_expires->format( 'c' );
 	}
 
 	$data['title']       = wp_strip_all_tags( wpjm_get_the_job_title( $post ) );
@@ -744,13 +744,13 @@ function the_job_publish_date( $post = null ) {
 	$date_format = get_option( 'job_manager_date_format' );
 
 	if ( 'default' === $date_format ) {
-		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . date_i18n( get_option( 'date_format' ), get_post_time( 'U' ) );
+		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . wp_date( get_option( 'date_format' ), get_post_timestamp( $post ) );
 	} else {
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
-		$display_date = sprintf( esc_html__( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) );
+		$display_date = sprintf( esc_html__( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp( $post ), time() ) );
 	}
 
-	echo '<time datetime="' . esc_attr( get_post_time( 'Y-m-d' ) ) . '">' . wp_kses_post( $display_date ) . '</time>';
+	echo '<time datetime="' . esc_attr( get_post_datetime( $post )->format( 'Y-m-d' ) ) . '">' . wp_kses_post( $display_date ) . '</time>';
 }
 
 
@@ -765,13 +765,12 @@ function get_the_job_publish_date( $post = null ) {
 	$date_format = get_option( 'job_manager_date_format' );
 
 	if ( 'default' === $date_format ) {
-		return get_post_time( get_option( 'date_format' ) );
+		return wp_date( get_option( 'date_format' ), get_post_datetime()->getTimestamp() );
 	} else {
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
-		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) );
+		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp(), time() ) );
 	}
 }
-
 
 /**
  * Displays the location for the job listing.
