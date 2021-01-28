@@ -38,6 +38,7 @@
     "format:js": "wp-scripts format-js",
     "lint:css": "wp-scripts lint-style assets/css",
     "lint:js": "wp-scripts lint-js assets/js",
+    "lint:php": "./vendor/bin/phpcs",
     "lint:pkg-json": "wp-scripts lint-pkg-json",
     "packages-update": "wp-scripts packages-update",
     "start": "wp-scripts start",
