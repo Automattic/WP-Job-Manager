@@ -23,9 +23,9 @@
     "select2": "4.0.13"
   },
   "devDependencies": {
-    "@wordpress/jest-preset-default": "6.3.0",
-    "@wordpress/scripts": "12.5.0",
-    "file-loader": "6.1.0"
+    "@wordpress/jest-preset-default": "7.0.0",
+    "@wordpress/scripts": "13.0.0",
+    "file-loader": "6.2.0"
   },
   "scripts": {
     "build": "npm run build:assets && npm run archive",
@@ -38,6 +38,7 @@
     "format:js": "wp-scripts format-js",
     "lint:css": "wp-scripts lint-style assets/css",
     "lint:js": "wp-scripts lint-js assets/js",
+    "lint:php": "./vendor/bin/phpcs",
     "lint:pkg-json": "wp-scripts lint-pkg-json",
     "packages-update": "wp-scripts packages-update",
     "start": "wp-scripts start",

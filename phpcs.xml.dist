@@ -45,6 +45,15 @@
 	</rule>
 
 	<!-- Temporary Rule Exclusions -->
+	<rule ref="WordPress.DateTime.RestrictedFunctions.date_date">
+		<exclude-pattern>*.php</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.DateTime.CurrentTimeTimestamp.Requested">
+		<exclude-pattern>*.php</exclude-pattern>
+	</rule>
+	<!-- End of Temporary Rule Exclusions -->
+
+	<!-- Temporary Rule Exclusions -->
 	<rule ref="VariableAnalysis">
 		<exclude-pattern>includes/admin/views/</exclude-pattern>
 		<exclude-pattern>templates/</exclude-pattern>

@@ -209,27 +209,34 @@ class WP_Job_Manager_Writepanels {
 	 * @param string  $download    URL to download the file.
 	 */
 	private static function file_url_field( $key, $name, $placeholder, $value, $multiple, $download = null ) {
-		$input_id_attribute = '';
-		if ( ! $multiple ) {
-			$input_id_attribute = 'id="' . esc_attr( $key ) . '"';
-		}
-
-		$download_attribute = '';
-		if ( null !== $download ) {
-			$download_attribute = ' data-download-url="' . esc_url( $download ) . '"';
-		}
-
 		$name = esc_attr( $name );
 		if ( $multiple ) {
 			$name = $name . '[]';
 		}
 		?>
 		<span class="file_url">
-			<input type="text" name="<?php echo $name ?>" <?php echo $input_id_attribute ?> placeholder="<?php echo esc_attr( $placeholder ); ?>" value="<?php echo esc_attr( $value ); ?>" />
+			<input
+				type="text"
+				name="<?php echo esc_attr( $name ); ?>"
+				<?php
+				if ( ! $multiple ) {
+					echo 'id="' . esc_attr( $key ) . '"';
+				}
+				?>
+				placeholder="<?php echo esc_attr( $placeholder ); ?>"
+				value="<?php echo esc_attr( $value ); ?>"
+			/>
 			<button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>">
 				<?php esc_html_e( 'Upload', 'wp-job-manager' ); ?>
 			</button>
-			<button class="button button-small wp_job_manager_view_file_button"<?php echo $download_attribute ?>>
+			<button
+				class="button button-small wp_job_manager_view_file_button"
+				<?php
+				if ( $download ) {
+					echo 'data-download-url="' . esc_url( $download ) . '"';
+				}
+				?>
+			>
 				<?php esc_html_e( 'View', 'wp-job-manager' ); ?>
 			</button>
 		</span>

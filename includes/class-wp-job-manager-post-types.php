@@ -840,7 +840,7 @@ class WP_Job_Manager_Post_Types {
 
 		// If we're coming to a published post status from a non-published post status, set the expiry.
 		if (
-			$old_status !== 'new'
+			'new' !== $old_status
 			&& in_array( $new_status, $published_post_statuses, true )
 			&& ! in_array( $old_status, $published_post_statuses, true )
 		) {

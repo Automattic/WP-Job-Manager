@@ -771,8 +771,8 @@ function is_wpjm_page() {
 		 * @param int[] $wpjm_page_ids
 		 */
 		$wpjm_page_ids = array_unique( apply_filters( 'job_manager_page_ids', $wpjm_page_ids ) );
-		
-		if ( ! empty ( $wpjm_page_ids ) ) {
+
+		if ( ! empty( $wpjm_page_ids ) ) {
 			$is_wpjm_page = is_page( $wpjm_page_ids );
 		}
 	}
@@ -1066,8 +1066,11 @@ function wpjm_published_submission_edits_require_moderation() {
 function wpjm_get_category_slugs_from_search_query_string() {
 	$search_category_slugs = [];
 
-	if ( isset( $_GET['search_category'] ) && $_GET['search_category'] ) {
-		$search_category_slugs = explode( ',', sanitize_text_field( wp_unslash( $_GET['search_category'] ) ) );
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Should be checked outside of this function.
+	$search_category = ! empty( $_GET['search_category'] ) ? sanitize_text_field( wp_unslash( $_GET['search_category'] ) ) : false;
+
+	if ( $search_category ) {
+		$search_category_slugs = explode( ',', $search_category );
 	}
 
 	return $search_category_slugs;

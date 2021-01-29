@@ -289,11 +289,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 */
 	public function opt_in_checkbox_text() {
 		return sprintf(
-
-			/*
-			 * translators: the href tag contains the URL for the page
-			 * telling users what data WPJM tracks.
-			 */
+			// translators: the href tag contains the URL for the page telling users what data WPJM tracks.
 			__(
 				'Help us make WP Job Manager better by allowing us to collect
 				<a href="%s">usage tracking data</a>.
