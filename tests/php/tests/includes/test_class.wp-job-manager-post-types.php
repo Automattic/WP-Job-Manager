@@ -546,6 +546,142 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Time zones to test certain expiry tests with.
+	 *
+	 * @return string[][]
+	 */
+	public function data_provider_timezones() {
+		return [
+			'UTC'                 => [ 'UTC' ],
+			'Australia/Melbourne' => [ 'Australia/Melbourne' ],
+			'America/Los_Angeles' => [ 'America/Los_Angeles' ],
+			'Pacific/Honolulu'    => [ 'Pacific/Honolulu' ],
+		];
+	}
+
+	/**
+	 * @since 1.35.0
+	 * @dataProvider data_provider_timezones
+	 * @param string $tz Time zone.
+	 */
+	public function test_has_job_expired_past( $tz ) {
+		update_option( 'timezone_string', $tz );
+
+		$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => current_datetime()->sub( new DateInterval( 'P1D' ) )->format( 'Y-m-d' ) ], ] );
+
+		$this->assertTrue( WP_Job_Manager_Post_Types::instance()->has_job_expired( $job_id ) );
+	}
+
+	/**
+	 * @since 1.35.0
+	 * @dataProvider data_provider_timezones
+	 * @param string $tz Time zone.
+	 */
+	public function test_has_job_expired_same_day_start_of_day( $tz ) {
+		update_option( 'timezone_string', $tz );
+
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+		add_filter( 'job_manager_jobs_expire_end_of_day', '__return_false' );
+
+		$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => current_datetime()->format( 'Y-m-d' ) ], ] );
+		$result = WP_Job_Manager_Post_Types::instance()->has_job_expired( $job_id );
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+
+		$this->assertTrue( $result );
+	}
+
+	/**
+	 * @since 1.35.0
+	 * @dataProvider data_provider_timezones
+	 * @param string $tz Time zone.
+	 */
+	public function test_has_job_expired_same_day_end_of_day( $tz ) {
+		update_option( 'timezone_string', $tz );
+
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+		add_filter( 'job_manager_jobs_expire_end_of_day', '__return_true' );
+
+		$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => current_datetime()->format( 'Y-m-d' ) ], ] );
+		$result = WP_Job_Manager_Post_Types::instance()->has_job_expired( $job_id );
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @since 1.35.0
+	 * @dataProvider data_provider_timezones
+	 * @param string $tz Time zone.
+	 */
+	public function test_has_job_expired_tomorrow( $tz ) {
+		update_option( 'timezone_string', $tz );
+
+		$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => current_datetime()->add( new DateInterval( 'P1D' ) )->format( 'Y-m-d' ) ], ] );
+		$result = WP_Job_Manager_Post_Types::instance()->has_job_expired( $job_id );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @since 1.35.0
+	 * @dataProvider data_provider_timezones
+	 * @param string $tz Time zone.
+	 */
+	public function test_get_job_expiration( $tz ) {
+		update_option( 'timezone_string', $tz );
+
+		$test_date = '2020-01-01';
+
+		$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => $test_date ] ] );
+		$result = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job_id );
+
+		$this->assertEquals( $test_date, $result->format( 'Y-m-d' ) );
+	}
+
+	/**
+	 * @since 1.35.0
+	 * @param string $tz Time zone.
+	 */
+	public function test_get_job_expiration_null() {
+		$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => '' ] ] );
+		$result = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job_id );
+
+		$this->assertFalse( $result );
+	}
+
+	/**
+	 * @since 1.35.0
+	 * @param string $tz Time zone.
+	 */
+	public function test_get_job_expiration_start_of_day() {
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+		add_filter( 'job_manager_jobs_expire_end_of_day', '__return_false' );
+
+		$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => '2020-01-01' ] ] );
+		$result = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job_id );
+
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+
+		$this->assertEquals( '00:00:00', $result->format( 'H:i:s' ) );
+	}
+
+	/**
+	 * @since 1.35.0
+	 * @param string $tz Time zone.
+	 */
+	public function test_get_job_expiration_end_of_day() {
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+		add_filter( 'job_manager_jobs_expire_end_of_day', '__return_true' );
+
+		$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_expires' => '2020-01-01' ] ] );
+		$result = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job_id );
+
+		remove_all_filters( 'job_manager_jobs_expire_end_of_day' );
+
+		$this->assertEquals( '23:59:59', $result->format( 'H:i:s' ) );
+	}
+
+	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::fix_post_name
 	 */
