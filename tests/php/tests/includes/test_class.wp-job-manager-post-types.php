@@ -1113,41 +1113,60 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_date
+	 * Data provider for \WP_Test_WP_Job_Manager_Post_Types::test_sanitize_meta_field_date.
+	 *
+	 * @return string[][]
 	 */
-	public function test_sanitize_meta_field_date() {
-		$strings = [
-			[
-				'expected' => '',
-				'test'     => 'http://example.com',
+	public function data_provider_sanitize_meta_field_date() {
+		return [
+			'invalid-not-date'          => [
+				'',
+				'http://example.com',
 			],
-			[
-				'expected' => '',
-				'test'     => 'January 1, 2019',
+			'invalid-bad-date-format'   => [
+				'',
+				'January 1, 2019',
 			],
-			[
-				'expected' => '',
-				'test'     => '01-01-2019',
+			'invalid-bad-date-format-2' => [
+				'',
+				'01-01-2019',
 			],
-			[
-				'expected' => '2019-01-01',
-				'test'     => '2019-01-01',
+			'valid-date-format'         => [
+				'2019-01-01',
+				'2019-01-01',
+			],
+			'valid-date-format-tz-1'    => [
+				'2019-01-01',
+				'2019-01-01',
+				'Australia/Melbourne',
+			],
+			'valid-date-format-tz-2'    => [
+				'2019-01-01',
+				'2019-01-01',
+				'America/Los_Angeles',
+			],
+			'valid-date-format-tz-3'    => [
+				'2019-01-01',
+				'2019-01-01',
+				'Pacific/Honolulu',
 			],
 		];
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::sanitize_meta_field_date
+	 * @dataProvider data_provider_sanitize_meta_field_date
+	 */
+	public function test_sanitize_meta_field_date( $expected, $test, $tz = null ) {
+		if ( $tz ) {
+			update_option( 'timezone_string', $tz );
+		}
 
 		$this->set_up_custom_job_listing_data_feilds();
-		$results = [];
-		foreach ( $strings as $str ) {
-			$results[] = [
-				'expected' => $str['expected'],
-				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_date( $str['test'] ),
-			];
-		}
+		$result = WP_Job_Manager_Post_Types::sanitize_meta_field_date( $test );
 		$this->remove_custom_job_listing_data_feilds();
 
-		foreach ( $results as $result ) {
-			$this->assertEquals( $result['expected'], $result['result'] );
-		}
+		$this->assertEquals( $expected, $result );
 	}
 
 	private function set_up_custom_job_listing_data_feilds() {
