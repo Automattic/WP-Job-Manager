@@ -898,7 +898,7 @@ class WP_Job_Manager_Post_Types {
 		$expiration_date = $this->get_job_expiration( $post );
 
 		// Clear the expiration field if it has expired.
-		if ( $expiration_date && $this->has_job_expired( $post ) ) {
+		if ( $this->has_job_expired( $post ) ) {
 			$this->set_job_expiration( $post, null );
 		}
 
