@@ -708,6 +708,11 @@ class WP_Job_Manager_Post_Types {
 	 * Maintenance task to expire jobs.
 	 */
 	public function check_for_expired_jobs() {
+		$expired_date_comparison = current_datetime();
+		if ( ! $this->jobs_expires_end_of_day() ) {
+			$expired_date_comparison = $expired_date_comparison->add( new DateInterval( 'P1D' ) );
+		}
+
 		// Change status to expired.
 		$job_ids = get_posts(
 			[
@@ -724,7 +729,7 @@ class WP_Job_Manager_Post_Types {
 					],
 					[
 						'key'     => '_job_expires',
-						'value'   => date( 'Y-m-d', current_time( 'timestamp' ) ),
+						'value'   => $expired_date_comparison->format( 'Y-m-d' ),
 						'compare' => '<',
 					],
 				],
@@ -759,7 +764,8 @@ class WP_Job_Manager_Post_Types {
 			 */
 			$delete_expired_jobs_days = apply_filters( 'job_manager_delete_expired_jobs_days', 30 );
 
-			$job_ids = get_posts(
+			$date_cutoff = current_datetime()->sub( new DateInterval( 'P' . $delete_expired_jobs_days . 'D' ) );
+			$job_ids     = get_posts(
 				[
 					'post_type'      => 'job_listing',
 					'post_status'    => 'expired',
@@ -767,7 +773,7 @@ class WP_Job_Manager_Post_Types {
 					'date_query'     => [
 						[
 							'column' => 'post_modified',
-							'before' => date( 'Y-m-d', strtotime( '-' . $delete_expired_jobs_days . ' days', current_time( 'timestamp' ) ) ),
+							'before' => $date_cutoff->format( 'Y-m-d' ),
 						],
 					],
 					'posts_per_page' => -1,
@@ -787,7 +793,8 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function delete_old_previews() {
 		// Delete old jobs stuck in preview.
-		$job_ids = get_posts(
+		$date_cutoff = current_datetime()->sub( new DateInterval( 'P30D' ) );
+		$job_ids     = get_posts(
 			[
 				'post_type'      => 'job_listing',
 				'post_status'    => 'preview',
@@ -795,7 +802,7 @@ class WP_Job_Manager_Post_Types {
 				'date_query'     => [
 					[
 						'column' => 'post_modified',
-						'before' => date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ),
+						'before' => $date_cutoff->format( 'Y-m-d' ),
 					],
 				],
 				'posts_per_page' => -1,
@@ -888,30 +895,133 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		// See if it is already set.
-		if ( metadata_exists( 'post', $post->ID, '_job_expires' ) ) {
-			$expires = get_post_meta( $post->ID, '_job_expires', true );
-			if ( $expires && strtotime( $expires ) < current_time( 'timestamp' ) ) {
-				update_post_meta( $post->ID, '_job_expires', '' );
-			}
+		$expiration_date = $this->get_job_expiration( $post );
+
+		// Clear the expiration field if it has expired.
+		if ( $this->has_job_expired( $post ) ) {
+			$this->set_job_expiration( $post, null );
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
-		$input_job_expires = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+		$input_job_expires          = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+		$input_job_expires_datetime = DateTimeImmutable::createFromFormat( 'Y-m-d', $input_job_expires, wp_timezone() );
 
 		// See if the user has set the expiry manually.
-		if ( ! empty( $input_job_expires ) ) {
-			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( $input_job_expires ) ) );
-		} elseif ( ! isset( $expires ) ) {
+		if ( ! empty( $input_job_expires_datetime ) ) {
+			$this->set_job_expiration( $post, $input_job_expires_datetime );
+		} elseif ( ! $expiration_date ) {
 			// No manual setting? Lets generate a date if there isn't already one.
-			$expires = calculate_job_expiry( $post->ID );
-			update_post_meta( $post->ID, '_job_expires', $expires );
+			$expires = calculate_job_expiry( $post->ID, true );
+
+			$this->set_job_expiration( $post, $expires );
 
 			// In case we are saving a post, ensure post data is updated so the field is not overridden.
 			if ( null !== $input_job_expires ) {
-				$_POST['_job_expires'] = $expires;
+				$_POST['_job_expires'] = $expires ? $expires->format( 'Y-m-d' ) : '';
 			}
 		}
+	}
+
+	/**
+	 * Set the job expiration date.
+	 *
+	 * @param WP_Post|int       $job          Job post object or ID.
+	 * @param DateTimeImmutable $date_expires Date time object for the job expiration date. Null if to be cleared.
+	 *
+	 * @return false
+	 * @throws TypeError When bad argument is passed to `$date_expires`.
+	 */
+	public function set_job_expiration( $job, $date_expires ) {
+		$job = get_post( $job );
+
+		if ( 'job_listing' !== $job->post_type ) {
+			return false;
+		}
+
+		if ( null === $date_expires ) {
+			update_post_meta( $job->ID, '_job_expires', '' );
+		} elseif ( $date_expires instanceof DateTimeImmutable ) {
+			update_post_meta( $job->ID, '_job_expires', $date_expires->format( 'Y-m-d' ) );
+		} else {
+			throw new TypeError( sprintf( 'The `$date_expires` argument passed to %s must be an instance of DateTimeImmutable or null', __METHOD__ ) );
+		}
+	}
+
+	/**
+	 * Get the job expiration date object.
+	 *
+	 * @param int|WP_Post $job Job post object or ID.
+	 *
+	 * @return false|DateTimeImmutable
+	 */
+	public function get_job_expiration( $job ) {
+		$job = get_post( $job );
+
+		if ( 'job_listing' !== $job->post_type ) {
+			return false;
+		}
+
+		$job_expires = false;
+
+		if ( metadata_exists( 'post', $job->ID, '_job_expires' ) ) {
+			$expires_str = get_post_meta( $job->ID, '_job_expires', true );
+
+			$job_expires = DateTimeImmutable::createFromFormat( 'Y-m-d', $expires_str, wp_timezone() );
+		}
+
+		if ( $job_expires ) {
+			$job_expires = $this->prepare_job_expires_time( $job_expires );
+		}
+
+		return $job_expires;
+	}
+
+	/**
+	 * Prepare a job expiration date time object by normalizing the time
+	 *
+	 * @param DateTimeImmutable $job_expires Job object.
+	 *
+	 * @return DateTimeImmutable
+	 */
+	public function prepare_job_expires_time( DateTimeImmutable $job_expires ) {
+		if ( $this->jobs_expires_end_of_day() ) {
+			return $job_expires->setTime( 23, 59, 59 );
+		}
+
+		return $job_expires->setTime( 0, 0 );
+	}
+
+	/**
+	 * Check if jobs should expire at the end of the day. If not, they'll expire at the start of the day.
+	 *
+	 * @return bool
+	 */
+	private function jobs_expires_end_of_day() {
+		/**
+		 * Override if a job expires at the end of the day instead of start of the day.
+		 *
+		 * @since 1.35.0
+		 *
+		 * @param bool $end_of_day True if the job expires at the end of the day; otherwise it will end at the start of the day.
+		 */
+		return apply_filters( 'job_manager_jobs_expire_end_of_day', true );
+	}
+
+	/**
+	 * Check if a job has expired.
+	 *
+	 * @param int|WP_Post $job Job post object or ID.
+	 *
+	 * @return bool
+	 */
+	public function has_job_expired( $job ) {
+		$expiration = $this->get_job_expiration( $job );
+
+		if ( ! $expiration ) {
+			return false;
+		}
+
+		return $expiration->getTimestamp() < current_datetime()->getTimestamp();
 	}
 
 	/**
@@ -1633,7 +1743,8 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// Checks for valid date.
-		if ( date( 'Y-m-d', strtotime( $meta_value ) ) !== $meta_value ) {
+		$test_date = DateTimeImmutable::createFromFormat( 'Y-m-d', $meta_value, wp_timezone() );
+		if ( ! $test_date || $test_date->format( 'Y-m-d' ) !== $meta_value ) {
 			return '';
 		}
 

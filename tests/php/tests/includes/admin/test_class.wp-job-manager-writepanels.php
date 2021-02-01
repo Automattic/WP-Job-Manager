@@ -10,10 +10,10 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 	}
 
 	public function data_provider_test_save_job_data_auto_expire() {
-		$expired_date = date( 'Y-m-d', strtotime( '-2 months', current_time( 'timestamp' ) ) );
-		$future_date  = date( 'Y-m-d', strtotime( '+2 months', current_time( 'timestamp' ) ) );
+		$expired_date = wp_date( 'Y-m-d', strtotime( '-2 months', current_datetime()->getTimestamp() ) );
+		$future_date  = wp_date( 'Y-m-d', strtotime( '+2 months', current_datetime()->getTimestamp() ) );
 		$duration     = absint( get_option( 'job_manager_submission_duration' ) );
-		$auto_date    = date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
+		$auto_date    = wp_date( 'Y-m-d', strtotime( "+{$duration} days", current_datetime()->getTimestamp() ) );
 
 		return [
 			/**

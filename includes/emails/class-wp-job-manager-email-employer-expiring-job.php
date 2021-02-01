@@ -109,9 +109,9 @@ class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Te
 
 		if ( isset( $args['job'] ) ) {
 			$args['expiring_today'] = false;
-			$today                  = date( 'Y-m-d', current_time( 'timestamp' ) );
-			$expiring_date          = date( 'Y-m-d', strtotime( $args['job']->_job_expires ) );
-			if ( ! empty( $args['job']->_job_expires ) && $today === $expiring_date ) {
+			$today                  = wp_date( 'Y-m-d' );
+			$expiring_date          = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $args['job'] );
+			if ( ! empty( $args['job']->_job_expires ) && $today === $expiring_date->format( 'Y-m-d' ) ) {
 				$args['expiring_today'] = true;
 			}
 		}
