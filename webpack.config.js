@@ -42,6 +42,6 @@ module.exports = {
 		path: path.resolve( '.', baseDist ),
 	},
 	module: {
-		rules: [ FileLoader, ...defaultConfig.module.rules ],
+		rules: [ FileLoader, ...defaultConfig.module.rules.slice(0, 4) ],
 	},
 };
