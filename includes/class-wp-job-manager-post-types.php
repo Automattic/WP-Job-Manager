@@ -1743,7 +1743,8 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// Checks for valid date.
-		if ( ! DateTimeImmutable::createFromFormat( 'Y-m-d', $meta_value ) ) {
+		$test_date = DateTimeImmutable::createFromFormat( 'Y-m-d', $meta_value, wp_timezone() );
+		if ( ! $test_date || $test_date->format( 'Y-m-d' ) !== $meta_value ) {
 			return '';
 		}
 
