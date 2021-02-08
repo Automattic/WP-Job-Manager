@@ -153,6 +153,24 @@ It then creates a database based on the parameters passed to it.
 
 == Changelog ==
 
+= 1.35.0 =
+* Change: Bumped minimum WordPress version to 5.4.
+* Change: Listings now expire (by default) at the end of the expiration date.
+* Change: Job listing expiration checks uses the WordPress time zone.
+* Change: All dates are now presented using the WordPress time zone.
+* Change: Transitioned from LESS to SCSS for CSS generation. May effect final CSS generation and should be tested with theme.
+* Fix: jQuery UI CSS 404s when jQuery Migrate plugin is installed.
+* Fix: Pagination on job dashboard page when actions are completed.
+* Fix: Application Email/URL field will give more actionable validation errors.
+* Fix: Action `job_manager_job_submitted` fired when outside of standard submission flow.
+* Fix: `job_manager_select2_filters_args` pollution on frontend. (@tripflex)
+* Fix: `is_wpjm_page` returns true if none are defined. (@ibndawood)
+* Fix: Missing variable error with cached widgets.
+* Tweak: reCAPTCHA setting has more clear language. (@tripflex)
+* Dev: Added filter `submit_job_form_create_account_role` for user role when created on job submission. (@tripflex)
+* Dev: Added filter `job_manager_should_run_shortcode_action_handler` for if a job dashboard action should run. 
+* Dev: Added filter `job_manager_get_form_action` to modify the action of a frontend form. (@tripflex)
+
 = 1.34.5 =
 * Fix: Jobs list not appearing in the page load while using Firefox.
 
