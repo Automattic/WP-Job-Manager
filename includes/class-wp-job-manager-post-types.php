@@ -1473,6 +1473,11 @@ class WP_Job_Manager_Post_Types {
 			$application_method_placeholder = __( 'https://', 'wp-job-manager' );
 		}
 
+		$job_expires_description = __( 'Job listing expires at the end of the selected day.', 'wp-job-manager' );
+		if ( ! self::instance()->jobs_expires_end_of_day() ) {
+			$job_expires_description = __( 'Job listing expires at the start of the selected day.', 'wp-job-manager' );
+		}
+
 		$fields = [
 			'_job_location'    => [
 				'label'         => __( 'Location', 'wp-job-manager' ),
@@ -1557,6 +1562,7 @@ class WP_Job_Manager_Post_Types {
 			],
 			'_job_expires'     => [
 				'label'              => __( 'Listing Expiry Date', 'wp-job-manager' ),
+				'description'        => $job_expires_description,
 				'priority'           => 11,
 				'show_in_admin'      => true,
 				'show_in_rest'       => true,
