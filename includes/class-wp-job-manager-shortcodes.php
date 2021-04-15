@@ -418,6 +418,10 @@ class WP_Job_Manager_Shortcodes {
 				break;
 			case 'pending_payment':
 			case 'pending':
+			$actions['continue'] = [
+				'label' => __( 'Continue Submission', 'wp-job-manager' ),
+				'nonce' => $base_nonce_action_name,
+			];
 				if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
 					$actions['edit'] = [
 						'label' => __( 'Edit', 'wp-job-manager' ),
