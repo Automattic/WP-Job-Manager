@@ -60,7 +60,7 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'transition_post_status', [ $this, 'transition_post_status' ], 10, 3 );
 
-		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ] );
+		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ], 0 );
 		add_action( 'wp_footer', [ $this, 'output_structured_data' ] );
 		add_filter( 'wp_sitemaps_posts_query_args', [ $this, 'sitemaps_maybe_hide_filled' ], 10, 2 );
 
@@ -1379,7 +1379,11 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		wp_no_robots();
+		if ( function_exists( 'wp_robots_no_robots' ) ) {
+			add_filter( 'wp_robots', 'wp_robots_no_robots' );
+		} else {
+			wp_no_robots();
+		}
 	}
 
 	/**
