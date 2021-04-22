@@ -921,14 +921,23 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		);
 		$this->assertEquals( 1, $jobs->post_count );
 		$this->assertTrue( $jobs->is_single );
-		$desired_result = $this->get_wp_no_robots();
 		while ( $jobs->have_posts() ) {
 			$jobs->the_post();
-			$post = get_post();
-			ob_start();
-			$instance->noindex_expired_filled_job_listings();
-			$result = ob_get_clean();
-			$this->assertEquals( $desired_result, $result );
+
+			if ( function_exists('wp_robots') ) {
+				$instance->noindex_expired_filled_job_listings();
+				ob_start();
+				$wp_robots = wp_robots();
+				$result = ob_get_clean();
+				$this->assertNotFalse( strpos( $result, 'noindex' ) );
+			} else {
+				$desired_result = $this->get_wp_no_robots();
+				$post = get_post();
+				ob_start();
+				$instance->noindex_expired_filled_job_listings();
+				$result = ob_get_clean();
+				$this->assertEquals( $desired_result, $result );
+			}
 		}
 	}
 
