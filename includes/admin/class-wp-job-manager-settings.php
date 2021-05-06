@@ -219,7 +219,7 @@ class WP_Job_Manager_Settings {
 						],
 						[
 							'name'       => 'job_manager_enable_registration',
-							'std'        => '1',
+							'std'        => '0',
 							'label'      => __( 'Account Creation', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable account creation during submission', 'wp-job-manager' ),
 							'desc'       => __( 'Includes account creation on the listing submission form, to allow non-registered users to create an account and submit a job listing simultaneously.', 'wp-job-manager' ),
