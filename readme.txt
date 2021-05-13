@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 5.5
 Tested up to: 5.7
 Requires PHP: 7.0
-Stable tag: 1.35.0
+Stable tag: 1.35.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,6 +152,11 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.35.1 =
+* Change: On new installs, do not enable account registration on job submission page by default.
+* Fix: Company name color contrast (@DaWoblefet)
+* Fix: Fix issue when Select2 isn't used on the job submission form (@tripflex)
 
 = 1.35.0 =
 * Change: Bumped minimum WordPress version to 5.4.

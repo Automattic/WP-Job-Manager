@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the WP Job Manager plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.35.0\n"
+"Project-Id-Version: WP Job Manager 1.35.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager/\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-02-17T18:53:43+00:00\n"
+"POT-Creation-Date: 2021-05-13T16:01:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: wp-job-manager\n"
@@ -233,7 +233,7 @@ msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:497
 #: includes/class-wp-job-manager-email-notifications.php:270
-#: includes/class-wp-job-manager-post-types.php:1483
+#: includes/class-wp-job-manager-post-types.php:1487
 #: includes/forms/class-wp-job-manager-form-submit-job.php:217
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:46
 #: templates/job-filters.php:35
@@ -992,27 +992,27 @@ msgid "Company Logo"
 msgstr ""
 
 #: includes/class-wp-job-manager-data-exporter.php:52
-#: includes/class-wp-job-manager-post-types.php:1502
+#: includes/class-wp-job-manager-post-types.php:1506
 msgid "Company Name"
 msgstr ""
 
 #: includes/class-wp-job-manager-data-exporter.php:53
-#: includes/class-wp-job-manager-post-types.php:1510
+#: includes/class-wp-job-manager-post-types.php:1514
 msgid "Company Website"
 msgstr ""
 
 #: includes/class-wp-job-manager-data-exporter.php:54
-#: includes/class-wp-job-manager-post-types.php:1519
+#: includes/class-wp-job-manager-post-types.php:1523
 msgid "Company Tagline"
 msgstr ""
 
 #: includes/class-wp-job-manager-data-exporter.php:55
-#: includes/class-wp-job-manager-post-types.php:1527
+#: includes/class-wp-job-manager-post-types.php:1531
 msgid "Company Twitter"
 msgstr ""
 
 #: includes/class-wp-job-manager-data-exporter.php:56
-#: includes/class-wp-job-manager-post-types.php:1535
+#: includes/class-wp-job-manager-post-types.php:1539
 msgid "Company Video"
 msgstr ""
 
@@ -1273,82 +1273,82 @@ msgctxt "Post type archive slug - resave permalinks after changing this"
 msgid "jobs"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1465
+#: includes/class-wp-job-manager-post-types.php:1469
 #: includes/forms/class-wp-job-manager-form-submit-job.php:194
 msgid "Application email/URL"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1466
+#: includes/class-wp-job-manager-post-types.php:1470
 #: includes/forms/class-wp-job-manager-form-submit-job.php:195
 msgid "Enter an email address or website URL"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1469
+#: includes/class-wp-job-manager-post-types.php:1473
 #: includes/forms/class-wp-job-manager-form-submit-job.php:184
 msgid "Application email"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1470
+#: includes/class-wp-job-manager-post-types.php:1474
 #: includes/forms/class-wp-job-manager-form-submit-job.php:185
 msgid "you@example.com"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1472
+#: includes/class-wp-job-manager-post-types.php:1476
 #: includes/forms/class-wp-job-manager-form-submit-job.php:189
 msgid "Application URL"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1473
+#: includes/class-wp-job-manager-post-types.php:1477
 #: includes/forms/class-wp-job-manager-form-submit-job.php:190
 msgid "https://"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1476
+#: includes/class-wp-job-manager-post-types.php:1480
 msgid "Job listing expires at the end of the day."
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1478
+#: includes/class-wp-job-manager-post-types.php:1482
 msgid "Job listing expires at the start of the day."
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1484
+#: includes/class-wp-job-manager-post-types.php:1488
 #: includes/forms/class-wp-job-manager-form-submit-job.php:221
 msgid "e.g. \"London\""
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1485
+#: includes/class-wp-job-manager-post-types.php:1489
 msgid "Leave this blank if the location is not important."
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1494
+#: includes/class-wp-job-manager-post-types.php:1498
 msgid "This field is required for the \"application\" area to appear beneath the listing."
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1520
+#: includes/class-wp-job-manager-post-types.php:1524
 msgid "Brief description about the company"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1536
+#: includes/class-wp-job-manager-post-types.php:1540
 msgid "URL to the company video"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1545
+#: includes/class-wp-job-manager-post-types.php:1549
 msgid "Position Filled"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1551
+#: includes/class-wp-job-manager-post-types.php:1555
 msgid "Filled listings will no longer accept applications."
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1554
+#: includes/class-wp-job-manager-post-types.php:1558
 msgid "Featured Listing"
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1556
+#: includes/class-wp-job-manager-post-types.php:1560
 msgid "Featured listings will be sticky during searches, and can be styled differently."
 msgstr ""
 
-#: includes/class-wp-job-manager-post-types.php:1564
+#: includes/class-wp-job-manager-post-types.php:1568
 msgid "Listing Expiry Date"
 msgstr ""
 
