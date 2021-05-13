@@ -91,9 +91,11 @@ jQuery(document).ready(function($) {
 		if ( jobCategoryFieldIsInvalid() ) {
 			$(this).find( 'input[type=submit]' ).blur();
 
-			var jobCategoryInput = $( '.fieldset-job_category .select2-search__field' )[0];
-			jobCategoryInput.setCustomValidity( job_manager_job_submission.i18n_required_field );
-			jobCategoryInput.reportValidity();
+			var jobCategoryInput = $( '.fieldset-job_category .select2-search__field' );
+			if ( jobCategoryInput && jobCategoryInput.length ) {
+				jobCategoryInput[0].setCustomValidity( job_manager_job_submission.i18n_required_field );
+				jobCategoryInput[0].reportValidity();
+			}
 
 			return true;
 		}
@@ -146,9 +148,11 @@ jQuery(document).ready(function($) {
 
 	// Listen for changes to the category field to clear validity
 	$( '#job_category' ).on( 'select2:select', function() {
-		var jobCategoryInput = $( '.fieldset-job_category .select2-search__field' )[0];
-		jobCategoryInput.setCustomValidity( '' );
-		jobCategoryInput.reportValidity();
+		var jobCategoryInput = $( '.fieldset-job_category .select2-search__field' );
+		if ( jobCategoryInput && jobCategoryInput.length ) {
+			jobCategoryInput[0].setCustomValidity( '' );
+			jobCategoryInput[0].reportValidity();
+		}
 	});
 
 	// Listen for changes to the description field to clear validity
