@@ -454,7 +454,7 @@ abstract class WP_Job_Manager_Form {
 		/**
 		 * Filters the agreement checkbox label.
 		 *
-		 * @since 1.4.3
+		 * @since 1.35.2
 		 *
 		 * @param string $label Agreement label.
 		 */
