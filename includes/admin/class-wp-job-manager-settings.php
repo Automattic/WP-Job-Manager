@@ -378,6 +378,20 @@ class WP_Job_Manager_Settings {
 							'desc'  => __( 'Select the page where you\'ve used the [jobs] shortcode. This lets the plugin know the location of the job listings page.', 'wp-job-manager' ),
 							'type'  => 'page',
 						],
+						[
+							'name'  => 'job_manager_terms_page_id',
+							'std'   => '',
+							'label' => __( 'Terms Page', 'wp-job-manager' ),
+							'desc'  => __( 'Select the page that you want to link when agreement checkbox is enabled. See "Agreement checkbox" setting in "Job Sumission" tab.', 'wp-job-manager' ),
+							'type'  => 'page',
+						],
+						[
+							'name'  => 'job_manager_conditions_page_id',
+							'std'   => '',
+							'label' => __( 'Conditions Page', 'wp-job-manager' ),
+							'desc'  => __( 'Select the page that you want to link when agreement checkbox is enabled. See "Agreement checkbox" setting in "Job Sumission" tab.', 'wp-job-manager' ),
+							'type'  => 'page',
+						],
 					],
 				],
 			]
