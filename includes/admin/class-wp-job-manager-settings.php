@@ -303,6 +303,15 @@ class WP_Job_Manager_Settings {
 								'url'   => __( 'Website URLs only', 'wp-job-manager' ),
 							],
 						],
+						[
+							'name'       => 'job_manager_show_agreement_job_submission',
+							'std'        => '0',
+							'label'      => __( 'Agreement checkbox', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable a required agreement checkbox on the form', 'wp-job-manager' ),
+							'desc'       => __( 'Show a checkbox that needs to be marked in order to submit the form. The label content can be customized using the <code>wp_job_manager_spl_stripe_agreement_label</code> filter.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
 					],
 				],
 				'recaptcha'      => [
