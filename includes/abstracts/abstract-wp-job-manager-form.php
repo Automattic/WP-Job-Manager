@@ -424,28 +424,28 @@ abstract class WP_Job_Manager_Form {
 	public function display_agreement_checkbox_field() {
 		$terms_page_id      = get_option( 'job_manager_terms_page_id', false );
 		$conditions_page_id = get_option( 'job_manager_conditions_page_id', false );
-		$terms_label        = esc_html__( 'terms' );
-		$conditions_label   = esc_html__( 'conditions' );
+		$terms_label        = esc_html__( 'terms', 'wp-job-manager' );
+		$conditions_label   = esc_html__( 'conditions', 'wp-job-manager' );
 
 		// translators: %1$s is the terms page link; %2$s is the terms label.
 		$terms_placeholder = $terms_page_id ? sprintf(
 			'<a href="%1$s" target="_blank">%2$s</a>',
 			get_permalink( $terms_page_id ),
-			$terms_label,
+			$terms_label
 		) : $terms_label;
 
 		// translators: %1$s is the conditions page link; %2$s is the conditions label.
 		$conditions_placeholder = $conditions_page_id ? sprintf(
 			'<a href="%1$s" target="_blank">%2$s</a>',
 			get_permalink( $conditions_page_id ),
-			$conditions_label,
+			$conditions_label
 		) : $conditions_label;
 
-		// translators: %1$s is the terms placeholder; %2$s is the conditions placeholder.
 		$label_content = sprintf(
+			// translators: %1$s is the terms placeholder; %2$s is the conditions placeholder.
 			esc_html__( 'I accept the %1$s and %2$s.', 'wp-job-manager' ),
 			$terms_placeholder,
-			$conditions_placeholder,
+			$conditions_placeholder
 		);
 
 		$field             = [];
@@ -479,6 +479,7 @@ abstract class WP_Job_Manager_Form {
 	 * @return bool|WP_Error
 	 */
 	public function validate_agreement_checkbox( $success ) {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Check only.
 		if ( empty( $_POST['agreement-checkbox'] ) ) {
 			return new WP_Error( 'validation-error', esc_html__( 'Agreement is a required field', 'wp-job-manager' ) );
 		}
