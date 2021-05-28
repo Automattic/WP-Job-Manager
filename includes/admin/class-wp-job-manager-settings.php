@@ -308,7 +308,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '0',
 							'label'      => __( 'Agreement checkbox', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable a required agreement checkbox on the form', 'wp-job-manager' ),
-							'desc'       => __( 'Show a checkbox that needs to be marked in order to submit the form. The label content can be customized using the <code>wp_job_manager_spl_stripe_agreement_label</code> filter.', 'wp-job-manager' ),
+							'desc'       => __( 'Show a checkbox that needs to be marked in order to submit the form. You can also add link to terms and conditions selecting the respective pages in the "Pages" tab. And the label content can be customized using the <code>job_manager_agreement_label</code> filter.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
 						],
