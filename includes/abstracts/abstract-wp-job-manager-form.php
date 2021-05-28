@@ -422,6 +422,32 @@ abstract class WP_Job_Manager_Form {
 	 * @since 1.35.2
 	 */
 	public function display_agreement_checkbox_field() {
+		$terms_page_id      = get_option( 'job_manager_terms_page_id', false );
+		$conditions_page_id = get_option( 'job_manager_conditions_page_id', false );
+		$terms_label        = esc_html__( 'terms' );
+		$conditions_label   = esc_html__( 'conditions' );
+
+		// translators: %1$s is the terms page link; %2$s is the terms label.
+		$terms_placeholder = $terms_page_id ? sprintf(
+			'<a href="%1$s" target="_blank">%2$s</a>',
+			get_permalink( $terms_page_id ),
+			$terms_label,
+		) : $terms_label;
+
+		// translators: %1$s is the conditions page link; %2$s is the conditions label.
+		$conditions_placeholder = $conditions_page_id ? sprintf(
+			'<a href="%1$s" target="_blank">%2$s</a>',
+			get_permalink( $conditions_page_id ),
+			$conditions_label,
+		) : $conditions_label;
+
+		// translators: %1$s is the terms placeholder; %2$s is the conditions placeholder.
+		$label_content = sprintf(
+			esc_html__( 'I accept the %1$s and %2$s.', 'wp-job-manager' ),
+			$terms_placeholder,
+			$conditions_placeholder,
+		);
+
 		$field             = [];
 		$field['required'] = true;
 
@@ -432,10 +458,7 @@ abstract class WP_Job_Manager_Form {
 		 *
 		 * @param string $label Agreement label.
 		 */
-		$field['label'] = apply_filters(
-			'job_manager_agreement_label',
-			esc_html__( 'I accept the terms and conditions.', 'wp-job-manager' ),
-		);
+		$field['label'] = apply_filters( 'job_manager_agreement_label', $label_content );
 
 		get_job_manager_template(
 			'form-fields/full-line-checkbox-field.php',
