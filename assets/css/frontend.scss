@@ -112,7 +112,7 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 
 		@include clearfix();
 
-		label {
+		label:not(.full-line-checkbox-field label) {
 			display: block;
 			margin: 0;
 			width: 29%;
@@ -125,7 +125,7 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 			}
 		}
 
-		div.field {
+		div.field:not(.full-line-checkbox-field) {
 			width: 70%;
 			float: right;
 			vertical-align: middle;
