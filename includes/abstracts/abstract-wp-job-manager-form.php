@@ -417,6 +417,53 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Output the agreement checkbox field.
+	 *
+	 * @since 1.35.2
+	 */
+	public function display_agreement_checkbox_field() {
+		$field             = [];
+		$field['required'] = true;
+
+		/**
+		 * Filters the agreement checkbox label.
+		 *
+		 * @since 1.4.3
+		 *
+		 * @param string $label Agreement label.
+		 */
+		$field['label'] = apply_filters(
+			'job_manager_agreement_label',
+			esc_html__( 'I accept the terms and conditions.', 'wp-job-manager' ),
+		);
+
+		get_job_manager_template(
+			'form-fields/full-line-checkbox-field.php',
+			[
+				'key'   => 'agreement-checkbox',
+				'field' => $field,
+			]
+		);
+	}
+
+	/**
+	 * Validate a agreement checkbox field.
+	 *
+	 * @since 1.35.2
+	 *
+	 * @param bool $success
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function validate_agreement_checkbox( $success ) {
+		if ( empty( $_POST['agreement-checkbox'] ) ) {
+			return new WP_Error( 'validation-error', esc_html__( 'Agreement is a required field', 'wp-job-manager' ) );
+		}
+
+		return $success;
+	}
+
+	/**
 	 * Gets post data for fields.
 	 *
 	 * @return array of data.
