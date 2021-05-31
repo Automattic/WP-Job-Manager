@@ -69,16 +69,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
 
-		if ( $this->use_recaptcha_field() ) {
-			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
-			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
-			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
-		}
-
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
 			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
+		}
+
+		if ( $this->use_recaptcha_field() ) {
+			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
+			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
+			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
 		}
 
 		$this->steps = (array) apply_filters(
