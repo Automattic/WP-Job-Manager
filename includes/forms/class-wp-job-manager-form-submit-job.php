@@ -345,7 +345,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @return bool
 	 */
-	public function use_agreement_checkbox() {
+	private function use_agreement_checkbox() {
 		return 1 === absint( get_option( 'job_manager_show_agreement_job_submission' ) );
 	}
 
