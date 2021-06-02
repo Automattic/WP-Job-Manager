@@ -417,6 +417,67 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Output the agreement checkbox field.
+	 *
+	 * @since 1.35.2
+	 */
+	public function display_agreement_checkbox_field() {
+		$terms_page_id = get_option( 'job_manager_terms_and_conditions_page_id', false );
+		$terms_label   = esc_html__( 'Terms and Conditions', 'wp-job-manager' );
+
+		// translators: %1$s placeholder is the Terms and Conditions page link; %2$s placeholder is the Terms and Conditions label.
+		$terms_placeholder = $terms_page_id ? sprintf(
+			'<a href="%1$s" target="_blank">%2$s</a>',
+			get_permalink( $terms_page_id ),
+			$terms_label
+		) : $terms_label;
+
+		$label_content = sprintf(
+			// translators: Placeholder %s is the Terms and Conditions placeholder.
+			esc_html__( 'I accept the %s.', 'wp-job-manager' ),
+			$terms_placeholder
+		);
+
+		$field             = [];
+		$field['required'] = true;
+
+		/**
+		 * Filters the agreement checkbox label.
+		 *
+		 * @since 1.35.2
+		 *
+		 * @param string $label Agreement label.
+		 */
+		$field['label'] = apply_filters( 'job_manager_agreement_label', $label_content );
+
+		get_job_manager_template(
+			'form-fields/full-line-checkbox-field.php',
+			[
+				'key'   => 'agreement-checkbox',
+				'field' => $field,
+			]
+		);
+	}
+
+	/**
+	 * Validate a agreement checkbox field.
+	 *
+	 * @since 1.35.2
+	 *
+	 * @param bool $success
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function validate_agreement_checkbox( $success ) {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Check only.
+		if ( empty( $_POST['agreement-checkbox'] ) ) {
+			return new WP_Error( 'validation-error', esc_html__( 'Terms and Conditions is a required field', 'wp-job-manager' ) );
+		}
+
+		return $success;
+	}
+
+	/**
 	 * Gets post data for fields.
 	 *
 	 * @return array of data.

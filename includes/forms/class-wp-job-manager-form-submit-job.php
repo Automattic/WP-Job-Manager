@@ -69,6 +69,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
 
+		if ( $this->use_agreement_checkbox() ) {
+			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
+			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
+		}
+
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
@@ -330,6 +335,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return false;
 		}
 		return 1 === absint( get_option( 'job_manager_enable_recaptcha_job_submission' ) );
+	}
+
+	/**
+	 * Use agreement checkbox field on the form?
+	 *
+	 * @since 1.35.2
+	 *
+	 * @return bool
+	 */
+	private function use_agreement_checkbox() {
+		return 1 === absint( get_option( 'job_manager_show_agreement_job_submission' ) );
 	}
 
 	/**
