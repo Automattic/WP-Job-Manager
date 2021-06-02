@@ -72,7 +72,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
-			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
 		}
 
 		if ( $this->use_recaptcha_field() ) {
