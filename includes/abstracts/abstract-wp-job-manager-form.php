@@ -471,7 +471,7 @@ abstract class WP_Job_Manager_Form {
 	public function validate_agreement_checkbox( $success ) {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Check only.
 		if ( empty( $_POST['agreement-checkbox'] ) ) {
-			return new WP_Error( 'validation-error', esc_html__( 'Agreement is a required field', 'wp-job-manager' ) );
+			return new WP_Error( 'validation-error', esc_html__( 'Terms and Conditions is a required field', 'wp-job-manager' ) );
 		}
 
 		return $success;
