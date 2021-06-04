@@ -441,6 +441,9 @@ abstract class WP_Job_Manager_Form {
 		$field             = [];
 		$field['required'] = true;
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Check only.
+		$field['checked'] = isset( $_POST['agreement-checkbox'] ) && '1' === $_POST['agreement-checkbox'];
+
 		/**
 		 * Filters the agreement checkbox label.
 		 *
