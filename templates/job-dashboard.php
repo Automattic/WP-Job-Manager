@@ -23,8 +23,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$submission_limit           = get_option( 'job_manager_submission_limit' );
-$submit_job_form_page_id 	= get_option( 'job_manager_submit_job_form_page_id' );
+$submission_limit			= get_option( 'job_manager_submission_limit' );
+$submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 ?>
 <div id="job-manager-job-dashboard">
 	<p><?php esc_html_e( 'Your listings are shown in the table below.', 'wp-job-manager' ); ?></p>
