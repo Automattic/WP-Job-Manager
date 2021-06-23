@@ -44,3 +44,5 @@ if ( ! is_multisite() ) {
 
 require dirname( __FILE__ ) . '/includes/class-wp-job-manager-usage-tracking.php';
 WP_Job_Manager_Usage_Tracking::get_instance()->clear_options();
+
+//
