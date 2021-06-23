@@ -91,7 +91,7 @@ $submit_job_form_page_id 	= get_option( 'job_manager_submit_job_form_page_id' );
 			<tfoot>
 				<tr>
 					<td colspan="<?php echo count( $job_dashboard_columns ); ?>">
-						<a href="<?php echo esc_url( get_permalink( $submit_job_form_page_id ) ); ?>"><?php _e( 'Add Job', 'wp-job-manager' ); ?></a>
+						<a href="<?php echo esc_url( get_permalink( $submit_job_form_page_id ) ); ?>"><?php esc_html_e( 'Add Job', 'wp-job-manager' ); ?></a>
 					</td>
 				</tr>
 			</tfoot>
