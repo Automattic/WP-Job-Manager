@@ -1560,3 +1560,19 @@ function wpjm_esc_json( $json, $html = false ) {
 		true                               // Double escape entities: `&amp;` -> `&amp;amp;`.
 	);
 }
+
+/**
+ * Count user job listings
+ *
+ * @param  integer $user_id
+ * @return int
+ */
+function job_manager_count_user_job_listings( $user_id = 0 ) {
+	global $wpdb;
+
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'job_listing' AND post_status IN ( 'publish', 'pending', 'expired', 'hidden' );", $user_id ) );
+}

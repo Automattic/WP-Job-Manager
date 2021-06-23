@@ -57,6 +57,7 @@ class WP_Job_Manager_Shortcodes {
 	 * Constructor.
 	 */
 	public function __construct() {
+		add_action( 'wp', [ $this, 'handle_redirects' ] );
 		add_action( 'wp', [ $this, 'shortcode_action_handler' ] );
 		add_action( 'job_manager_job_dashboard_content_edit', [ $this, 'edit_job' ] );
 		add_action( 'job_manager_job_filters_end', [ $this, 'job_filter_job_types' ], 20 );
@@ -88,6 +89,56 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Handle redirects
+	 */
+	public function handle_redirects() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+		if ( ! get_current_user_id() || ( ! empty( $_REQUEST['job_id'] ) && job_manager_user_can_edit_job( intval( $_REQUEST['job_id'] ) ) ) ) {
+			return;
+		}
+
+		$submit_job_form_page_id 	= get_option( 'job_manager_submit_job_form_page_id' );
+		$submission_limit           = get_option( 'job_manager_submission_limit' );
+		$job_count               	= job_manager_count_user_job_listings();
+
+		if (
+			$submit_job_form_page_id
+			&& $submission_limit
+			&& $job_count >= $submission_limit
+			&& is_page( $submit_job_form_page_id )
+		) {
+			$employer_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id' );
+			if ( $employer_dashboard_page_id ) {
+				$redirect_url = get_permalink( $employer_dashboard_page_id );
+			} else {
+				$redirect_url = home_url( '/' );
+			}
+
+			/**
+			 * Filter on the URL visitors will be redirected upon exceeding submission limit.
+			 *
+			 * @since 1.35.2
+			 *
+			 * @param string $redirect_url     URL to redirect when user has exceeded submission limit.
+			 * @param int    $submission_limit Maximum number of listings a user can submit.
+			 * @param int    $job_count        Number of job listings the user has submitted.
+			 */
+			$redirect_url = apply_filters(
+				'job_manager_redirect_url_exceeded_listing_limit',
+				$redirect_url,
+				$submission_limit,
+				$job_count
+			);
+
+			if ( $redirect_url ) {
+				wp_safe_redirect( esc_url( $redirect_url ) );
+
+				exit;
+			}
+		}
 	}
 
 	/**
