@@ -90,8 +90,7 @@ $submit_job_form_page_id 	= get_option( 'job_manager_submit_job_form_page_id' );
 		<?php if ( $submit_job_form_page_id && ( job_manager_count_user_job_listings() < $submission_limit || ! $submission_limit ) ) : ?>
 			<tfoot>
 				<tr>
-					<td colspan="<?php echo count( $job_dashboard_columns ); ?>"> <?php echo $submission_limit; ?>
-						<?php echo job_manager_count_user_job_listings(); ?>
+					<td colspan="<?php echo count( $job_dashboard_columns ); ?>">
 						<a href="<?php echo esc_url( get_permalink( $submit_job_form_page_id ) ); ?>"><?php _e( 'Add Job', 'wp-job-manager' ); ?></a>
 					</td>
 				</tr>
