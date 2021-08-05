@@ -153,6 +153,11 @@ It then creates a database based on the parameters passed to it.
 
 == Changelog ==
 
+= 1.35.2 =
+* Enhancement: Add agreement checkbox to job submission.
+* Fix: Remove unnecessary filter avoiding warning in WP 5.8.
+* Fix: Fix padding on "Apply for job" button.
+
 = 1.35.1 =
 * Change: On new installs, do not enable account registration on job submission page by default.
 * Fix: Company name color contrast. (@DaWoblefet)
