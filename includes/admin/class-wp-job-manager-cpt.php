@@ -148,6 +148,8 @@ class WP_Job_Manager_CPT {
 	 * @param string $redirect_url The redirect URL.
 	 * @param string $action       The action being taken.
 	 * @param array  $post_ids     The posts to take the action on.
+	 *
+	 * @return string $redirect_url The redirect URL.
 	 */
 	public function do_bulk_actions( $redirect_url, $action, $post_ids ) {
 		$actions_handled = $this->get_bulk_actions();
@@ -166,6 +168,8 @@ class WP_Job_Manager_CPT {
 				exit;
 			}
 		}
+
+		return $redirect_url;
 	}
 
 	/**
