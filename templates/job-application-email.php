@@ -16,4 +16,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <?php // translators: %1$s is the email address, %2$s is the subject query args. ?>
-<p><?php printf( wp_kses_post( __( 'To apply for this job <strong>email your details to</strong> <a class="job_application_email" href="mailto:%1$s%2$s">%1$s</a>', 'wp-job-manager' ) ), esc_html( $apply->email ), '?subject=' . rawurlencode( $apply->subject ) ); ?></p>
+<p><?php printf( wp_kses_post( __( 'To apply for this job <strong>email your details to</strong> <a class="job_application_email" href="mailto:%1$s%2$s">%1$s</a>', 'wp-job-manager' ) ), esc_html( $apply->email ), '?subject=' . rawurlencode( htmlspecialchars_decode( $apply->subject ) ) ); ?></p>
