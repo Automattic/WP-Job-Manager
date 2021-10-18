@@ -92,6 +92,7 @@ class WP_Job_Manager {
 		add_action( 'wp_logout', [ $this, 'cleanup_job_posting_cookies' ] );
 		add_action( 'init', [ 'WP_Job_Manager_Email_Notifications', 'init' ] );
 		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
+		add_action( 'plugins_loaded', [ $this, 'include_admin_files' ] );
 
 		// Filters.
 		add_filter( 'wp_privacy_personal_data_exporters', [ 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ] );
@@ -569,6 +570,16 @@ class WP_Job_Manager {
 		} else {
 			self::register_style( 'wp-job-manager-job-listings', 'css/job-listings.css', [] );
 			wp_enqueue_style( 'wp-job-manager-job-listings' );
+		}
+	}
+
+	/**
+	 * This solves a loading order issue which occurs when is_admin() starts to return true at a point after plugin
+	 * load. See the below issue for more information: https://github.com/Automattic/evergreen/issues/136
+	 */
+	public function include_admin_files() {
+		if ( is_admin() && ! defined( 'WP_Job_Manager_Admin' ) ) {
+			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';
 		}
 	}
 }
