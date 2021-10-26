@@ -578,7 +578,7 @@ class WP_Job_Manager {
 	 * load. See the below issue for more information: https://github.com/Automattic/evergreen/issues/136
 	 */
 	public function include_admin_files() {
-		if ( is_admin() && ! defined( 'WP_Job_Manager_Admin' ) ) {
+		if ( is_admin() && ! class_exists( 'WP_Job_Manager_Admin' ) ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';
 		}
 	}
