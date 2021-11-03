@@ -566,7 +566,7 @@ class WP_Job_Manager_CPT {
 			case 'job_position':
 				echo '<div class="job_position">';
 				// translators: %d is the post ID for the job listing.
-				echo '<a href="' . esc_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . esc_html( wpjm_get_the_job_title() ) . '</a>';
+				echo '<a href="' . esc_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . wp_kses_post( wpjm_get_the_job_title() ) . '</a>';
 
 				echo '<div class="company">';
 
