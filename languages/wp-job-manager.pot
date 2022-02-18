@@ -1893,9 +1893,8 @@ msgstr ""
 msgid "Sign in"
 msgstr ""
 
-#. translators: Placeholder %s is the optionally text.
 #: templates/account-signin.php:47
-msgid "If you don't have an account you can %screate one below by entering your email address/username."
+msgid "If you don't have an account you can create one below by entering your email address/username."
 msgstr ""
 
 #. translators: Placeholder %s is the optionally text.
