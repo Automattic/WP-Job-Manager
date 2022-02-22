@@ -16,8 +16,7 @@
     "url": "https://github.com/Automattic/WP-Job-Manager/issues"
   },
   "engines": {
-    "node": ">=0.8.0",
-    "npm": ">=1.1.0"
+    "npm": ">=7.0.0"
   },
   "dependencies": {
     "select2": "4.0.13"
