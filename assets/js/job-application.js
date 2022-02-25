@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
 	}
 
 	$( document.body ).on( 'click', '.job_application .application_button', function() {
-		var $details = $(this).siblings('.application_details').first();
+		var $details = $(this).parents('.job_application').find('.application_details').first();
 		var $button = $(this);
 		$details.slideToggle( 400, function() {
 			if ( ! $(this).is(':visible') ) {
