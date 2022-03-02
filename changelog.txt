@@ -1,3 +1,12 @@
+= 1.35.3 =
+* Fix: Use wp_kses_post to process a job title instead of esc_html
+* Fix: Fix dependencies (npm/composer) problems
+* Fix: Decode html special chars for mailto link (@RafaelKr)
+* Fix: Reset job filter properly by using jQuery's prop instead of jQuery's attr
+* Fix: Fix not translatable string (@masteradhoc)
+* Fix: Disable transient cache when the order is set to random or random featured
+* Fix: Fix button "Apply for job" when the page is translated using Google Translate
+
 = 1.35.2 =
 * Enhancement: Add agreement checkbox to job submission.
 * Fix: Remove unnecessary filter avoiding warning in WP 5.8.
