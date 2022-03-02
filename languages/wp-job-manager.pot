@@ -1,17 +1,17 @@
-# Copyright (C) 2021 Automattic
-# This file is distributed under the same license as the WP Job Manager plugin.
+# Copyright (C) 2022 Automattic
+# This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.35.2\n"
+"Project-Id-Version: WP Job Manager 1.35.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager/\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-08-05T21:30:05+00:00\n"
+"POT-Creation-Date: 2022-03-02T15:34:10-03:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.5.0-alpha-75cb7e3\n"
+"X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: wp-job-manager\n"
 
 #. Plugin Name of the plugin
@@ -196,6 +196,7 @@ msgstr ""
 msgid "%1$s updated. <a href=\"%2$s\">View</a>"
 msgstr ""
 
+#. translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 #: includes/admin/class-wp-job-manager-cpt.php:456
 msgid "Custom field updated."
 msgstr ""
@@ -312,6 +313,7 @@ msgstr ""
 msgid "View"
 msgstr ""
 
+#. translators: Placeholder %s is the singular label of the job listing post type.
 #: includes/admin/class-wp-job-manager-cpt.php:648
 #: includes/class-wp-job-manager-post-types.php:340
 #: includes/class-wp-job-manager-shortcodes.php:390
@@ -1016,6 +1018,7 @@ msgstr[1] ""
 msgid "You must be logged in to upload files using this method."
 msgstr ""
 
+#. translators: Placeholder %s is the singular label of the job listing post type.
 #: includes/class-wp-job-manager-data-exporter.php:51
 #: includes/class-wp-job-manager-post-types.php:357
 msgid "Company Logo"
@@ -1224,6 +1227,7 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+#. translators: Placeholder %s is the plural label of the job listing post type.
 #: includes/class-wp-job-manager-post-types.php:337
 msgid "Add New"
 msgstr ""
@@ -1272,7 +1276,7 @@ msgid "This is where you can create and manage %s."
 msgstr ""
 
 #: includes/class-wp-job-manager-post-types.php:398
-#: wp-job-manager-functions.php:335
+#: wp-job-manager-functions.php:326
 msgctxt "post status"
 msgid "Expired"
 msgstr ""
@@ -1285,7 +1289,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: includes/class-wp-job-manager-post-types.php:411
-#: wp-job-manager-functions.php:336
+#: wp-job-manager-functions.php:327
 msgctxt "post status"
 msgid "Preview"
 msgstr ""
@@ -1413,6 +1417,7 @@ msgstr ""
 msgid "Missing submission page."
 msgstr ""
 
+#. translators: Placeholder %s is the plural label for the job listing post type.
 #: includes/class-wp-job-manager-shortcodes.php:341
 #: includes/widgets/class-wp-job-manager-widget-featured-jobs.php:36
 #: includes/widgets/class-wp-job-manager-widget-featured-jobs.php:52
@@ -1474,35 +1479,35 @@ msgid "Enable Usage Tracking"
 msgstr ""
 
 #. translators: Placeholders %1$s and %2$s are the names of the two cookies used in WP Job Manager.
-#: includes/class-wp-job-manager.php:139
+#: includes/class-wp-job-manager.php:140
 msgid ""
 "This site adds the following cookies to help users resume job submissions that they\n"
 "\t\t\t\thave started but have not completed: %1$s and %2$s"
 msgstr ""
 
-#: includes/class-wp-job-manager.php:360
+#: includes/class-wp-job-manager.php:361
 msgid "Load previous listings"
 msgstr ""
 
-#: includes/class-wp-job-manager.php:488
+#: includes/class-wp-job-manager.php:489
 msgid "Invalid file type. Accepted types:"
 msgstr ""
 
-#: includes/class-wp-job-manager.php:506
+#: includes/class-wp-job-manager.php:507
 msgid "Any Category"
 msgstr ""
 
 #. translators: Placeholder %d is the number of files to that users are limited to.
-#: includes/class-wp-job-manager.php:522
+#: includes/class-wp-job-manager.php:523
 #: includes/forms/class-wp-job-manager-form-submit-job.php:462
 msgid "You are only allowed to upload a maximum of %d files."
 msgstr ""
 
-#: includes/class-wp-job-manager.php:530
+#: includes/class-wp-job-manager.php:531
 msgid "Are you sure you want to delete this listing?"
 msgstr ""
 
-#: includes/class-wp-job-manager.php:538
+#: includes/class-wp-job-manager.php:539
 msgid "This field is required."
 msgstr ""
 
@@ -1673,7 +1678,7 @@ msgstr ""
 #. translators: Placeholder %1$s is field label; %2$s is the file mime type; %3$s is the allowed mime-types.
 #. translators: %1$s is the file field label; %2$s is the file type; %3$s is the list of allowed file types.
 #: includes/forms/class-wp-job-manager-form-submit-job.php:435
-#: wp-job-manager-functions.php:1368
+#: wp-job-manager-functions.php:1359
 msgid "\"%1$s\" (filetype %2$s) needs to be one of the following file types: %3$s"
 msgstr ""
 
@@ -1893,24 +1898,23 @@ msgstr ""
 msgid "Sign in"
 msgstr ""
 
-#: templates/account-signin.php:47
+#: templates/account-signin.php:46
 msgid "If you don't have an account you can create one below by entering your email address/username."
 msgstr ""
 
-#. translators: Placeholder %s is the optionally text.
-#: templates/account-signin.php:47
+#: templates/account-signin.php:46
 msgid "optionally"
 msgstr ""
 
-#: templates/account-signin.php:49
+#: templates/account-signin.php:48
 msgid "Your account details will be confirmed via email."
 msgstr ""
 
-#: templates/account-signin.php:54
+#: templates/account-signin.php:53
 msgid "You must sign in to create a new listing."
 msgstr ""
 
-#: templates/account-signin.php:65
+#: templates/account-signin.php:64
 #: templates/job-submit.php:43
 #: templates/job-submit.php:60
 msgid "(optional)"
@@ -2043,12 +2047,12 @@ msgid "Maximum file size: %s."
 msgstr ""
 
 #: templates/form-fields/multiselect-field.php:20
-#: wp-job-manager-functions.php:1135
+#: wp-job-manager-functions.php:1126
 msgid "No results match"
 msgstr ""
 
 #: templates/form-fields/multiselect-field.php:20
-#: wp-job-manager-functions.php:1136
+#: wp-job-manager-functions.php:1127
 msgid "Select Some Options"
 msgstr ""
 
@@ -2141,88 +2145,88 @@ msgstr ""
 msgid "%s submitted successfully. Your listing will be visible once approved."
 msgstr ""
 
-#: wp-job-manager-functions.php:334
+#: wp-job-manager-functions.php:325
 msgctxt "post status"
 msgid "Draft"
 msgstr ""
 
-#: wp-job-manager-functions.php:337
+#: wp-job-manager-functions.php:328
 msgctxt "post status"
 msgid "Pending approval"
 msgstr ""
 
-#: wp-job-manager-functions.php:338
+#: wp-job-manager-functions.php:329
 msgctxt "post status"
 msgid "Pending payment"
 msgstr ""
 
-#: wp-job-manager-functions.php:339
+#: wp-job-manager-functions.php:330
 msgctxt "post status"
 msgid "Active"
 msgstr ""
 
-#: wp-job-manager-functions.php:460
+#: wp-job-manager-functions.php:451
 msgid "Reset"
 msgstr ""
 
-#: wp-job-manager-functions.php:464
+#: wp-job-manager-functions.php:455
 msgid "RSS"
 msgstr ""
 
-#: wp-job-manager-functions.php:572
+#: wp-job-manager-functions.php:563
 msgid "Invalid email address."
 msgstr ""
 
-#: wp-job-manager-functions.php:580
+#: wp-job-manager-functions.php:571
 msgid "Your email address isn&#8217;t correct."
 msgstr ""
 
-#: wp-job-manager-functions.php:584
+#: wp-job-manager-functions.php:575
 msgid "This email is already registered, please choose another one."
 msgstr ""
 
-#: wp-job-manager-functions.php:895
+#: wp-job-manager-functions.php:886
 msgid "Full Time"
 msgstr ""
 
-#: wp-job-manager-functions.php:896
+#: wp-job-manager-functions.php:887
 msgid "Part Time"
 msgstr ""
 
-#: wp-job-manager-functions.php:897
+#: wp-job-manager-functions.php:888
 msgid "Contractor"
 msgstr ""
 
-#: wp-job-manager-functions.php:898
+#: wp-job-manager-functions.php:889
 msgid "Temporary"
 msgstr ""
 
-#: wp-job-manager-functions.php:899
+#: wp-job-manager-functions.php:890
 msgid "Intern"
 msgstr ""
 
-#: wp-job-manager-functions.php:900
+#: wp-job-manager-functions.php:891
 msgid "Volunteer"
 msgstr ""
 
-#: wp-job-manager-functions.php:901
+#: wp-job-manager-functions.php:892
 msgid "Per Diem"
 msgstr ""
 
-#: wp-job-manager-functions.php:902
+#: wp-job-manager-functions.php:893
 msgid "Other"
 msgstr ""
 
-#: wp-job-manager-functions.php:969
+#: wp-job-manager-functions.php:960
 msgid "Passwords must be at least 8 characters long."
 msgstr ""
 
-#: wp-job-manager-functions.php:1134
+#: wp-job-manager-functions.php:1125
 msgid "Choose a category&hellip;"
 msgstr ""
 
 #. translators: %s is the list of allowed file types.
-#: wp-job-manager-functions.php:1371
+#: wp-job-manager-functions.php:1362
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
