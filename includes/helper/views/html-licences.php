@@ -81,7 +81,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 	<?php endforeach; ?>
 		<?php // translators: Placeholder %s is the lost license key URL. ?>
-		<div class="notice notice-info inline"><p><?php printf( wp_kses_post( __( 'Lost your license key? <a href="%s">Retrieve it here</a>.', 'wp-job-manager' ) ), 'https://wpjobmanager.com/lost-licence-key/' ); ?></p></div>
+		<div class="notice notice-info inline"><p><?php printf( wp_kses_post( __( 'Lost your license key? <a href="%s">Retrieve it here</a>.', 'wp-job-manager' ) ), 'https://wpjobmanager.com/lost-license-key/' ); ?></p></div>
 	<?php else : ?>
 		<div class="notice notice-warning inline"><p><?php esc_html_e( 'No plugins are activated that have licenses managed by WP Job Manager.', 'wp-job-manager' ); ?></p></div>
 	<?php endif; ?>
