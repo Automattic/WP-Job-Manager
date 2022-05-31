@@ -415,6 +415,10 @@ class WP_Job_Manager_Writepanels {
 		} else {
 			$name = $key;
 		}
+		$selected_value = null;
+		if ( isset( $field['value'] ) ) {
+			$selected_value = esc_attr( $field['value'] );
+		}
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>">
@@ -428,8 +432,8 @@ class WP_Job_Manager_Writepanels {
 					<option
 						value="<?php echo esc_attr( $key ); ?>"
 						<?php
-						if ( isset( $field['value'] ) ) {
-							selected( $field['value'], $key );
+						if ( null !== $selected_value ) {
+							selected( $selected_value, trim( $key ) );
 						}
 						?>
 					><?php echo esc_html( $value ); ?></option>

@@ -162,13 +162,14 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 
 		do_action( 'before_get_job_listings', $query_args, $args );
 
+		$should_cache = 'rand_featured' !== $args['orderby'] && 'rand' !== $args['orderby'];
+
 		// Cache results.
-		if ( apply_filters( 'get_job_listings_cache_results', true ) ) {
-			$to_hash              = wp_json_encode( $query_args );
-			$query_args_hash      = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
-			$result               = false;
-			$cached_query_results = true;
-			$cached_query_posts   = get_transient( $query_args_hash );
+		if ( apply_filters( 'get_job_listings_cache_results', $should_cache ) ) {
+			$to_hash            = wp_json_encode( $query_args );
+			$query_args_hash    = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
+			$result             = false;
+			$cached_query_posts = get_transient( $query_args_hash );
 			if ( is_string( $cached_query_posts ) ) {
 				$cached_query_posts = json_decode( $cached_query_posts, false );
 				if (
@@ -196,23 +197,13 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			}
 
 			if ( false === $result ) {
-				$result               = new WP_Query( $query_args );
-				$cached_query_results = false;
+				$result = new WP_Query( $query_args );
 
 				$cacheable_result                  = [];
 				$cacheable_result['posts']         = array_values( $result->posts );
 				$cacheable_result['found_posts']   = $result->found_posts;
 				$cacheable_result['max_num_pages'] = $result->max_num_pages;
 				set_transient( $query_args_hash, wp_json_encode( $cacheable_result ), DAY_IN_SECONDS );
-			}
-
-			if ( $cached_query_results ) {
-				// random order is cached so shuffle them.
-				if ( 'rand_featured' === $args['orderby'] ) {
-					usort( $result->posts, '_wpjm_shuffle_featured_post_results_helper' );
-				} elseif ( 'rand' === $args['orderby'] ) {
-					shuffle( $result->posts );
-				}
 			}
 		} else {
 			$result = new WP_Query( $query_args );
