@@ -895,9 +895,9 @@ function job_manager_get_resized_image( $logo, $size ) {
 
 		$upload_dir        = wp_upload_dir();
 		$logo_path         = str_replace( [ $upload_dir['baseurl'], $upload_dir['url'], WP_CONTENT_URL ], [ $upload_dir['basedir'], $upload_dir['path'], WP_CONTENT_DIR ], $logo );
-		$path_parts        = pathinfo( $logo_path );
+		$file_type         = wp_check_filetype( $logo_path );
 		$dims              = $img_width . 'x' . $img_height;
-		$resized_logo_path = str_replace( '.' . $path_parts['extension'], '-' . $dims . '.' . $path_parts['extension'], $logo_path );
+		$resized_logo_path = str_replace( '.' . $file_type['ext'], '-' . $dims . '.' . $file_type['ext'], $logo_path );
 
 		if ( strstr( $resized_logo_path, 'http:' ) || strstr( $resized_logo_path, 'https:' ) ) {
 			return $logo;
@@ -917,14 +917,14 @@ function job_manager_get_resized_image( $logo, $size ) {
 					$save = $image->save( $resized_logo_path );
 
 					if ( ! is_wp_error( $save ) ) {
-						$logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
+						$logo = dirname( $logo ) . '/' . wp_basename( $resized_logo_path );
 					}
 				}
 			}
 
 			ob_get_clean();
 		} else {
-			$logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
+			$logo = dirname( $logo ) . '/' . wp_basename( $resized_logo_path );
 		}
 	}
 
