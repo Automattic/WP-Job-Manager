@@ -527,7 +527,12 @@ class WP_Job_Manager_Post_Types {
 	public function job_content( $content ) {
 		global $post;
 
-		if ( ! is_singular( 'job_listing' ) || ! in_the_loop() || 'job_listing' !== $post->post_type ) {
+		if (
+			! is_singular( 'job_listing' ) ||
+			! in_the_loop() ||
+			'job_listing' !== $post->post_type ||
+			post_password_required()
+		) {
 			return $content;
 		}
 
