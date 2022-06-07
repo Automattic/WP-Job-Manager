@@ -531,7 +531,7 @@ class WP_Job_Manager_Post_Types {
 			! is_singular( 'job_listing' ) ||
 			! in_the_loop() ||
 			'job_listing' !== $post->post_type ||
-			post_password_required()
+			( post_password_required() && ! is_super_admin() )
 		) {
 			return $content;
 		}
