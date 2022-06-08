@@ -6,10 +6,10 @@
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
- * @package     WP Job Manager
+ * @package     wp-job-manager
  * @category    Template
  * @since       1.0.0
- * @version     1.27.0
+ * @version     1.34.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $post;
 ?>
-<li <?php job_listing_class(); ?> data-longitude="<?php echo esc_attr( $post->geolocation_lat ); ?>" data-latitude="<?php echo esc_attr( $post->geolocation_long ); ?>">
+<li <?php job_listing_class(); ?> data-longitude="<?php echo esc_attr( $post->geolocation_long ); ?>" data-latitude="<?php echo esc_attr( $post->geolocation_lat ); ?>">
 	<a href="<?php the_job_permalink(); ?>">
 		<?php the_company_logo(); ?>
 		<div class="position">

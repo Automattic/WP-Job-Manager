@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_Job_Manager_Blocks
+ * Class WP_Job_Manager_Blocks.
  */
 class WP_Job_Manager_Blocks {
 	/**
@@ -19,7 +19,7 @@ class WP_Job_Manager_Blocks {
 	 *
 	 * @var self
 	 */
-	private static $_instance = null;
+	private static $instance = null;
 
 	/**
 	 * Singleton instance getter
@@ -27,11 +27,11 @@ class WP_Job_Manager_Blocks {
 	 * @return self
 	 */
 	public static function get_instance() {
-		if ( ! self::$_instance ) {
-			self::$_instance = new WP_Job_Manager_Blocks();
+		if ( ! self::$instance ) {
+			self::$instance = new WP_Job_Manager_Blocks();
 		}
 
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	/**
@@ -42,7 +42,7 @@ class WP_Job_Manager_Blocks {
 			return;
 		}
 
-		add_action( 'init', array( $this, 'register_blocks' ) );
+		add_action( 'init', [ $this, 'register_blocks' ] );
 	}
 
 	/**

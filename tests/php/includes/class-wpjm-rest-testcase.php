@@ -2,7 +2,7 @@
 /**
  * Base class for testing Controllers
  *
- * @package wpjm/tests
+ * @package wp-job-manager/tests
  */
 
 /**
@@ -18,11 +18,11 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	protected $admin_id;
 
 	/**
-	 * Default User ID
+	 * A REST Server.
 	 *
-	 * @var int
+	 * @var WP_REST_Server
 	 */
-	protected $default_user_id;
+	private $rest_server;
 
 	public static function setUpBeforeClass() {
 		/** @var WP_REST_Server $wp_rest_server */
@@ -32,28 +32,8 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 			$wp_rest_server = new WP_REST_Server();
 			do_action( 'rest_api_init' );
 		}
-	}
-	/**
-	 * A REST Server.
-	 *
-	 * @var WP_REST_Server
-	 */
-	private $rest_server;
 
-	/**
-	 * An Environment
-	 *
-	 * @var WP_Job_Manager_REST_Environment
-	 */
-	private $environment;
-
-	/**
-	 * Get Environment
-	 *
-	 * @return WP_Job_Manager_REST_Environment
-	 */
-	protected function environment() {
-		return $this->environment;
+		parent::setUpBeforeClass();
 	}
 
 	/**
@@ -68,7 +48,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	/**
 	 * Set this up.
 	 */
-	function setUp() {
+	public function setUp() {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server, $wp_version;
 		parent::setUp();
@@ -80,49 +60,19 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 			return;
 		}
 
+		$this->reregister_post_type();
 		$this->disable_manage_job_listings_cap();
+
+		WP_Job_Manager_REST_API::init();
 
 		// Ensure the role gets created.
 		WP_Job_Manager_Install::install();
 		wp_roles()->init_roles();
 		wp_cache_flush();
 
-		$admin = get_user_by( 'email', 'rest_api_admin_user@test.com' );
-		if ( false === $admin ) {
-			$this->admin_id = wp_create_user(
-				'rest_api_admin_user',
-				'rest_api_admin_user',
-				'rest_api_admin_user@test.com'
-			);
-			$admin          = get_user_by( 'ID', $this->admin_id );
-			$admin->set_role( 'administrator' );
-		}
-
 		$this->default_user_id = get_current_user_id();
 		$this->login_as_admin();
 		$this->rest_server = $wp_rest_server;
-		$bootstrap         = WPJM()->rest_api()->get_bootstrap();
-		$this->bootstrap   = WPJM()->rest_api()->get_bootstrap();
-		$this->environment = $bootstrap->environment();
-	}
-
-	function login_as_admin() {
-		return $this->login_as( $this->admin_id );
-	}
-
-	function login_as_default_user() {
-		return $this->login_as( $this->default_user_id );
-	}
-
-	function login_as( $user_id ) {
-		wp_set_current_user( $user_id );
-		return $this;
-	}
-
-	function logout() {
-		$this->login_as( 0 );
-		wp_logout();
-		return $this;
 	}
 
 	/**
@@ -130,7 +80,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 *
 	 * @param string $cls Class Name.
 	 */
-	function assertClassExists( $cls ) {
+	protected function assertClassExists( $cls ) {
 		$this->assertNotFalse( class_exists( $cls ), $cls . ': should exist' );
 	}
 
@@ -141,7 +91,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 *
 	 * @throws WP_Job_Manager_REST_Exception
 	 */
-	function assertModelValid( $model ) {
+	protected function assertModelValid( $model ) {
 		$this->assertTrue( $model->validate() );
 	}
 
@@ -151,7 +101,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param WP_REST_Response $response The Response.
 	 * @param int              $status_code Expected status code.
 	 */
-	function assertResponseStatus( $response, $status_code ) {
+	protected function assertResponseStatus( $response, $status_code ) {
 		$this->assertInstanceOf( 'WP_REST_Response', $response );
 		$this->assertEquals( $status_code, $response->get_status() );
 	}
@@ -164,7 +114,9 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args_or_body Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function request( $endpoint, $method, $args_or_body = array() ) {
+	protected function request( $endpoint, $method, $args_or_body = [] ) {
+		$this->beforeRequest();
+
 		$request = new WP_REST_Request( $method, $endpoint );
 		if ( is_array( $args_or_body ) ) {
 			foreach ( $args_or_body as $key => $value ) {
@@ -183,7 +135,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function get( $endpoint, $args = array() ) {
+	protected function get( $endpoint, $args = [] ) {
 		return $this->request( $endpoint, 'GET', $args );
 	}
 
@@ -194,7 +146,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function post( $endpoint, $args = array() ) {
+	protected function post( $endpoint, $args = [] ) {
 		return $this->request( $endpoint, 'POST', $args );
 	}
 
@@ -205,7 +157,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function put( $endpoint, $args = array() ) {
+	protected function put( $endpoint, $args = [] ) {
 		return $this->request( $endpoint, 'PUT', $args );
 	}
 
@@ -216,8 +168,15 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	function delete( $endpoint, $args = array() ) {
+	protected function delete( $endpoint, $args = [] ) {
 		return $this->request( $endpoint, 'DELETE', $args );
+	}
+
+	/**
+	 * Runs before requests.
+	 */
+	protected function beforeRequest() {
+		// Overload.
 	}
 }
 

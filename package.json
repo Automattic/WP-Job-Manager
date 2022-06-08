@@ -1,75 +1,61 @@
 {
   "name": "wp-job-manager",
-  "title": "WP Job Manager",
-  "version": "1.31.3",
+  "version": "1.35.3",
+  "description": "WP Job Manager",
+  "author": "Automattic",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "wordpress-plugin"
+  ],
   "homepage": "http://wordpress.org/plugins/wp-job-manager/",
-  "license": "GPL-2.0+",
-  "repository": "automattic/wp-job-manager",
-  "main": "Gruntfile.js",
-  "scripts": {
-    "build": "npm run lint && cross-env BABEL_ENV=default webpack --mode=production",
-    "clean": "rimraf build",
-    "dev": "npm run lint && cross-env BABEL_ENV=default webpack --mode=development --watch",
-    "lint": "eslint --ext js,jsx assets/blocks",
-    "test": "jest"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Automattic/WP-Job-Manager.git"
   },
-  "devDependencies": {
-    "@wordpress/babel-preset-default": "^1.3.0",
-    "@wordpress/jest-preset-default": "^1.0.6",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.5",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-lodash": "^3.3.4",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "clean-webpack-plugin": "^0.1.19",
-    "cross-env": "^5.2.0",
-    "css-loader": "^0.28.11",
-    "eslint": "^5.0.1",
-    "eslint-config-wordpress": "^2.0.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.10.0",
-    "eslint-plugin-wordpress": "git://github.com/WordPress-Coding-Standards/eslint-plugin-wordpress.git#1774343f6226052a46b081e01db3fca8793cc9f1",
-    "grunt": "~1.0.1",
-    "grunt-checkbranch": "^1.0.4",
-    "grunt-checkrepo": "^0.1.0",
-    "grunt-checktextdomain": "~1.0.0",
-    "grunt-contrib-clean": "^1.1.0",
-    "grunt-contrib-concat": "1.0.1",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-cssmin": "~2.2.0",
-    "grunt-contrib-jshint": "~1.1.0",
-    "grunt-contrib-less": "^2.0.0",
-    "grunt-contrib-sass": "~1.0.0",
-    "grunt-contrib-uglify": "~3.0.0",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-gitinfo": "^0.1.8",
-    "grunt-phpcs": "^0.4.0",
-    "grunt-phpunit": "^0.3.6",
-    "grunt-postcss": "^0.8.0",
-    "grunt-rtlcss": "2.0.1",
-    "grunt-shell": "^2.1.0",
-    "grunt-stylelint": "^0.6.0",
-    "grunt-wp-deploy": "^1.2.1",
-    "grunt-wp-i18n": "^1.0.2",
-    "grunt-wp-readme-to-markdown": "^2.0.0",
-    "grunt-zip": "^0.17.1",
-    "jest": "^23.2.0",
-    "lodash-webpack-plugin": "^0.11.5",
-    "mini-css-extract-plugin": "^0.4.0",
-    "mixtape": "git+https://github.com/Automattic/mixtape.git#faca4e486ae88661bd642c1b44e058b9bc461fa2",
-    "node-sass": "^4.9.0",
-    "rimraf": "^2.6.2",
-    "sass-loader": "^7.0.3",
-    "style-loader": "^0.21.0",
-    "webpack": "^4.12.0",
-    "webpack-cli": "^3.0.8"
+  "bugs": {
+    "url": "https://github.com/Automattic/WP-Job-Manager/issues"
   },
   "engines": {
-    "node": ">=0.8.0",
-    "npm": ">=1.1.0"
+    "npm": ">=7.0.0"
   },
   "dependencies": {
-    "lodash": "^4.17.10",
-    "react": "^16.4.1"
+    "select2": "4.0.13"
+  },
+  "devDependencies": {
+    "@wordpress/jest-preset-default": "7.0.0",
+    "@wordpress/scripts": "13.0.0",
+    "file-loader": "6.2.0",
+    "husky": "7.0.4",
+    "lint-staged": "12.3.4"
+  },
+  "scripts": {
+    "build": "npm run build:assets && npm run archive",
+    "build:assets": "wp-scripts build",
+    "build:vendor": "cp ./node_modules/select2/dist/css/select2.min.css ./node_modules/select2/dist/js/select2.full.min.js ./assets/lib/select2",
+    "archive": "composer archive --file=$npm_package_name --format=zip",
+    "postarchive": "rm -rf $npm_package_name && unzip $npm_package_name.zip -d $npm_package_name && rm $npm_package_name.zip && zip -r $npm_package_name.zip $npm_package_name && rm -rf $npm_package_name",
+    "check-engines": "wp-scripts check-engines",
+    "check-licenses": "wp-scripts check-licenses",
+    "format:js": "wp-scripts format-js",
+    "lint:css": "wp-scripts lint-style assets/css",
+    "lint:js": "wp-scripts lint-js assets/js",
+    "lint:php": "./vendor/bin/phpcs",
+    "lint:pkg-json": "wp-scripts lint-pkg-json",
+    "packages-update": "wp-scripts packages-update",
+    "prepare": "husky install",
+    "start": "wp-scripts start",
+    "test": "npm run test-php",
+    "test-php": "./vendor/bin/phpunit",
+    "i18n:build": "npm run i18n:php",
+    "i18n:php": "wp i18n make-pot --exclude=lib,build,vendor,node_modules --skip-js --headers='{\"Last-Translator\":null,\"Language-Team\":null,\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/wp-job-manager/\"}' . languages/wp-job-manager.pot"
+  },
+  "lint-staged": {
+    "*.php": [
+      "php -l -d display_errors=0",
+      "./vendor/bin/phpcs --standard=phpcs.xml.dist --colors --encoding=utf-8 -n -p"
+    ]
+  },
+  "config": {
+    "wp_org_slug": "wp-job-manager"
   }
 }

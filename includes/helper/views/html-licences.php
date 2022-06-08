@@ -1,6 +1,12 @@
 <?php
+/**
+ * File containing the view to show the table for managing license keys.
+ *
+ * @package wp-job-manager
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 ?>
 <h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
@@ -27,12 +33,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				$notices = WP_Job_Manager_Helper::get_messages( $product_slug );
 				if ( empty( $notices ) && ! empty( $licence['errors'] ) ) {
-					$notices = array();
-					foreach ( $licence['errors'] as $key => $error ) {
-						$notices[] = array(
+					$notices = [];
+					foreach ( $licence['errors'] as $key => $error_message ) {
+						$notices[] = [
 							'type'    => 'error',
-							'message' => $error,
-						);
+							'message' => $error_message,
+						];
 					}
 				}
 				foreach ( $notices as $message ) {
@@ -51,7 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<input type="text" disabled="disabled" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX" value="<?php echo esc_attr( $licence['licence_key'] ); ?>"/>
 					</label>
 					<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email"><?php esc_html_e( 'Email', 'wp-job-manager' ); ?>:
-						<input type="email" disabled="disabled" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email" name="email" placeholder="Email address" value="<?php echo esc_attr( $licence['email'] ); ?>"/>
+						<input type="email" disabled="disabled" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email" name="email" placeholder="<?php esc_attr_e( 'Email address', 'wp-job-manager' ); ?>" value="<?php echo esc_attr( $licence['email'] ); ?>"/>
 					</label>
 
 					<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Deactivate License', 'wp-job-manager' ); ?>" />
@@ -64,7 +70,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<input type="text" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
 					</label>
 					<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email"><?php esc_html_e( 'Email', 'wp-job-manager' ); ?>:
-						<input type="email" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email" name="email" placeholder="Email address" value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>"/>
+						<input type="email" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email" name="email" placeholder="<?php esc_attr_e( 'Email address', 'wp-job-manager' ); ?>" value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>"/>
 					</label>
 					<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 					<?php
@@ -74,7 +80,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 		</div>
 	<?php endforeach; ?>
-		<div class="notice notice-info inline"><p><?php printf( 'Lost your license key? <a href="%s">Retrieve it here</a>.', 'https://wpjobmanager.com/lost-licence-key/' ); ?></p></div>
+		<?php // translators: Placeholder %s is the lost license key URL. ?>
+		<div class="notice notice-info inline"><p><?php printf( wp_kses_post( __( 'Lost your license key? <a href="%s">Retrieve it here</a>.', 'wp-job-manager' ) ), 'https://wpjobmanager.com/lost-licence-key/' ); ?></p></div>
 	<?php else : ?>
 		<div class="notice notice-warning inline"><p><?php esc_html_e( 'No plugins are activated that have licenses managed by WP Job Manager.', 'wp-job-manager' ); ?></p></div>
 	<?php endif; ?>

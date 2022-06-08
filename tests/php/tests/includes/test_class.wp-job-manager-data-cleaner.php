@@ -1,6 +1,6 @@
 <?php
 
-require 'includes/class-wp-job-manager-data-cleaner.php';
+require JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-data-cleaner.php';
 
 class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	// Posts.
@@ -30,33 +30,37 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	private function setupPosts() {
 		// Create some regular posts.
 		$this->post_ids = $this->factory->post->create_many(
-			2, array(
+			2,
+			[
 				'post_status' => 'publish',
 				'post_type'   => 'post',
-			)
+			]
 		);
 
 		// Create an unrelated CPT to ensure its posts do not get deleted.
 		register_post_type(
-			'biography', array(
+			'biography',
+			[
 				'label'       => 'Biographies',
 				'description' => 'A biography of a famous person (for testing)',
 				'public'      => true,
-			)
+			]
 		);
 		$this->biography_ids = $this->factory->post->create_many(
-			4, array(
+			4,
+			[
 				'post_status' => 'publish',
 				'post_type'   => 'biography',
-			)
+			]
 		);
 
 		// Create some Job Listings.
 		$this->job_listing_ids = $this->factory->post->create_many(
-			8, array(
+			8,
+			[
 				'post_status' => 'publish',
 				'post_type'   => 'job_listing',
-			)
+			]
 		);
 	}
 
@@ -66,78 +70,78 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	 */
 	private function setupTaxonomyTerms() {
 		// Setup some job types.
-		$this->job_listing_types = array();
+		$this->job_listing_types = [];
 
 		for ( $i = 1; $i <= 3; $i++ ) {
 			$this->job_listing_types[] = wp_insert_term( 'Job Type ' . $i, 'job_listing_type' );
 		}
 
 		wp_set_object_terms(
-			$this->course_ids[0],
-			array(
+			$this->job_listing_ids[0],
+			[
 				$this->job_listing_types[0]['term_id'],
 				$this->job_listing_types[1]['term_id'],
-			),
+			],
 			'job_listing_type'
 		);
 		wp_set_object_terms(
-			$this->course_ids[1],
-			array(
+			$this->job_listing_ids[1],
+			[
 				$this->job_listing_types[1]['term_id'],
 				$this->job_listing_types[2]['term_id'],
-			),
+			],
 			'job_listing_type'
 		);
 		wp_set_object_terms(
-			$this->course_ids[2],
-			array(
+			$this->job_listing_ids[2],
+			[
 				$this->job_listing_types[0]['term_id'],
 				$this->job_listing_types[1]['term_id'],
 				$this->job_listing_types[2]['term_id'],
-			),
+			],
 			'job_listing_type'
 		);
 
 		// Setup some categories.
-		$this->categories = array();
+		$this->categories = [];
 
 		for ( $i = 1; $i <= 3; $i++ ) {
 			$this->categories[] = wp_insert_term( 'Category ' . $i, 'category' );
 		}
 
 		wp_set_object_terms(
-			$this->course_ids[0],
-			array(
+			$this->job_listing_ids[0],
+			[
 				$this->categories[0]['term_id'],
 				$this->categories[1]['term_id'],
-			),
+			],
 			'category'
 		);
 		wp_set_object_terms(
 			$this->post_ids[0],
-			array(
+			[
 				$this->categories[1]['term_id'],
 				$this->categories[2]['term_id'],
-			),
+			],
 			'category'
 		);
 		wp_set_object_terms(
 			$this->biography_ids[2],
-			array(
+			[
 				$this->categories[0]['term_id'],
 				$this->categories[1]['term_id'],
 				$this->categories[2]['term_id'],
-			),
+			],
 			'category'
 		);
 
 		// Setup a custom taxonomy.
 		register_taxonomy( 'age', 'biography' );
 
-		$this->ages = array(
+		$this->ages = [
 			wp_insert_term( 'Old', 'age' ),
 			wp_insert_term( 'New', 'age' ),
-		);
+		];
 
 		wp_set_object_terms( $this->biography_ids[0], $this->ages[0]['term_id'], 'age' );
 		wp_set_object_terms( $this->biography_ids[1], $this->ages[1]['term_id'], 'age' );
@@ -158,36 +162,37 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	private function setupPages() {
 		// Create some regular pages.
 		$this->regular_page_ids = $this->factory->post->create_many(
-			2, array(
+			2,
+			[
 				'post_type'  => 'page',
 				'post_title' => 'Normal page',
-			)
+			]
 		);
 
 		// Create the Submit Job page.
 		$this->submit_job_form_page_id = $this->factory->post->create(
-			array(
+			[
 				'post_type'  => 'page',
 				'post_title' => 'Submit Job Page',
-			)
+			]
 		);
 		update_option( 'job_manager_submit_job_form_page_id', $this->submit_job_form_page_id );
 
 		// Create the Job Dashboard page.
 		$this->job_dashboard_page_id = $this->factory->post->create(
-			array(
+			[
 				'post_type'  => 'page',
 				'post_title' => 'Job Dashboard Page',
-			)
+			]
 		);
 		update_option( 'job_manager_job_dashboard_page_id', $this->job_dashboard_page_id );
 
 		// Create the Submit Job page.
 		$this->jobs_page_id = $this->factory->post->create(
-			array(
+			[
 				'post_type'  => 'page',
 				'post_title' => 'Jobs Page',
-			)
+			]
 		);
 		update_option( 'job_manager_jobs_page_id', $this->jobs_page_id );
 	}
@@ -202,13 +207,13 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		WP_Job_Manager_Install::install();
 
 		// Create a regular user and assign some caps.
-		$this->regular_user_id = $this->factory->user->create( array( 'role' => 'author' ) );
+		$this->regular_user_id = $this->factory->user->create( [ 'role' => 'author' ] );
 		$regular_user          = get_user_by( 'id', $this->regular_user_id );
 		$regular_user->add_cap( 'edit_others_posts' );
 		$regular_user->add_cap( 'manage_job_listings' );
 
 		// Create a teacher user and assign some caps.
-		$this->employer_user_id = $this->factory->user->create( array( 'role' => 'employer' ) );
+		$this->employer_user_id = $this->factory->user->create( [ 'role' => 'employer' ] );
 		$employer_user          = get_user_by( 'id', $this->employer_user_id );
 		$employer_user->add_cap( 'edit_others_posts' );
 		$employer_user->add_cap( 'manage_job_listings' );
@@ -278,39 +283,47 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 			// Ensure the data is deleted from all the relevant DB tables.
 			$this->assertEquals(
-				array(), $wpdb->get_results(
+				[],
+				$wpdb->get_results(
 					$wpdb->prepare(
 						"SELECT * from $wpdb->termmeta WHERE term_id = %s",
 						$term_id
 					)
-				), 'WPJM term meta should be deleted'
+				),
+				'WPJM term meta should be deleted'
 			);
 
 			$this->assertEquals(
-				array(), $wpdb->get_results(
+				[],
+				$wpdb->get_results(
 					$wpdb->prepare(
 						"SELECT * from $wpdb->terms WHERE term_id = %s",
 						$term_id
 					)
-				), 'WPJM term should be deleted'
+				),
+				'WPJM term should be deleted'
 			);
 
 			$this->assertEquals(
-				array(), $wpdb->get_results(
+				[],
+				$wpdb->get_results(
 					$wpdb->prepare(
 						"SELECT * from $wpdb->term_taxonomy WHERE term_taxonomy_id = %s",
 						$term_taxonomy_id
 					)
-				), 'WPJM term taxonomy should be deleted'
+				),
+				'WPJM term taxonomy should be deleted'
 			);
 
 			$this->assertEquals(
-				array(), $wpdb->get_results(
+				[],
+				$wpdb->get_results(
 					$wpdb->prepare(
 						"SELECT * from $wpdb->term_relationships WHERE term_taxonomy_id = %s",
 						$term_taxonomy_id
 					)
-				), 'WPJM term relationships should be deleted'
+				),
+				'WPJM term relationships should be deleted'
 			);
 		}
 	}
@@ -328,14 +341,14 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 		// Check "Category 1".
 		$this->assertEquals(
-			array( $this->biography_ids[2] ),
+			[ $this->biography_ids[2] ],
 			$this->getPostIdsWithTerm( $this->categories[0]['term_id'], 'category' ),
 			'Category 1 should not be deleted'
 		);
 
 		// Check "Category 2". Sort the arrays because the ordering doesn't.
 		// matter.
-		$expected = array( $this->post_ids[0], $this->biography_ids[2] );
+		$expected = [ $this->post_ids[0], $this->biography_ids[2] ];
 		$actual   = $this->getPostIdsWithTerm( $this->categories[1]['term_id'], 'category' );
 		sort( $expected );
 		sort( $actual );
@@ -347,7 +360,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 		// Check "Category 3". Sort the arrays because the ordering doesn't.
 		// matter.
-		$expected = array( $this->post_ids[0], $this->biography_ids[2] );
+		$expected = [ $this->post_ids[0], $this->biography_ids[2] ];
 		$actual   = $this->getPostIdsWithTerm( $this->categories[2]['term_id'], 'category' );
 		sort( $expected );
 		sort( $actual );
@@ -359,14 +372,14 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 		// Check "Old" biographies.
 		$this->assertEquals(
-			array( $this->biography_ids[0] ),
+			[ $this->biography_ids[0] ],
 			$this->getPostIdsWithTerm( $this->ages[0]['term_id'], 'age' ),
 			'"Old" should not be deleted'
 		);
 
 		// Check "New" biographies.
 		$this->assertEquals(
-			array( $this->biography_ids[1] ),
+			[ $this->biography_ids[1] ],
 			$this->getPostIdsWithTerm( $this->ages[1]['term_id'], 'age' ),
 			'"New" should not be deleted'
 		);
@@ -485,25 +498,25 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_user_meta
 	 */
 	public function testCleanupUserMeta() {
-		$user_id = $this->factory->user->create( array( 'role' => 'author' ) );
+		$user_id = $this->factory->user->create( [ 'role' => 'author' ] );
 
-		$keep_meta_keys = array(
+		$keep_meta_keys = [
 			'company_logo',
 			'company_name',
 			'company_website',
 			'company_tagline',
 			'company_twitter',
 			'company_video',
-		);
+		];
 
-		$remove_meta_keys = array(
+		$remove_meta_keys = [
 			'_company_logo',
 			'_company_name',
 			'_company_website',
 			'_company_tagline',
 			'_company_twitter',
 			'_company_video',
-		);
+		];
 
 		foreach ( array_merge( $keep_meta_keys, $remove_meta_keys ) as $meta_key ) {
 			update_user_meta( $user_id, $meta_key, 'test_value' );
@@ -529,16 +542,16 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	 * @covers WP_Job_Manager_Data_Cleaner::cleanup_cron_jobs
 	 */
 	public function testJobManagerCronJobsRemoved() {
-		$wpjm_jobs     = array(
+		$wpjm_jobs     = [
 			'job_manager_check_for_expired_jobs',
 			'job_manager_delete_old_previews',
 			'job_manager_clear_expired_transients',
 			'job_manager_usage_tracking_send_usage_data',
-		);
-		$non_wpjm_jobs = array(
+		];
+		$non_wpjm_jobs = [
 			'another_job',
 			'random_job',
-		);
+		];
 
 		foreach ( array_merge( $wpjm_jobs, $non_wpjm_jobs ) as $job ) {
 			wp_schedule_event( time() + 3600, 'daily', $job );
@@ -561,17 +574,17 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 	private function getPostIdsWithTerm( $term_id, $taxonomy ) {
 		return get_posts(
-			array(
+			[
 				'fields'    => 'ids',
 				'post_type' => 'any',
-				'tax_query' => array(
-					array(
+				'tax_query' => [
+					[
 						'field'    => 'term_id',
 						'terms'    => $term_id,
 						'taxonomy' => $taxonomy,
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 	}
 }

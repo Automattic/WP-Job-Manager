@@ -29,6 +29,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$product_slug = 'test';
 		$default      = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
 		$this->assertNull( $default );
+		$_GET['_wpjm_nonce'] = wp_create_nonce( 'dismiss-wpjm-licence-notice' );
 		unset( $_GET['dismiss-wpjm-licence-notice'] );
 		$instance->admin_init();
 		$key_notice_status = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
@@ -45,10 +46,45 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$product_slug = 'test';
 		$default      = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
 		$this->assertNull( $default );
+		$_GET['_wpjm_nonce']                 = wp_create_nonce( 'dismiss-wpjm-licence-notice' );
 		$_GET['dismiss-wpjm-licence-notice'] = $product_slug;
 		$instance->admin_init();
 		$key_notice_status = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
 		$this->assertTrue( $key_notice_status );
+	}
+
+	/**
+	 * @since 1.33.4
+	 * @covers WP_Job_Manager_Helper::admin_init
+	 * @requires PHP 5.3.0
+	 */
+	public function test_admin_init_with_bad_nonce() {
+		$instance     = $this->getMockHelper();
+		$product_slug = 'test';
+		$default      = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
+		$this->assertNull( $default );
+		$_GET['_wpjm_nonce']                 = wp_create_nonce( 'a-bad-nonce' );
+		$_GET['dismiss-wpjm-licence-notice'] = $product_slug;
+		$instance->admin_init();
+		$key_notice_status = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
+		$this->assertNull( $key_notice_status );
+	}
+
+	/**
+	 * @since 1.33.4
+	 * @covers WP_Job_Manager_Helper::admin_init
+	 * @requires PHP 5.3.0
+	 */
+	public function test_admin_init_with_no_nonce() {
+		$instance     = $this->getMockHelper();
+		$product_slug = 'test';
+		$default      = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
+		$this->assertNull( $default );
+		unset( $_GET['_wpjm_nonce'] );
+		$_GET['dismiss-wpjm-licence-notice'] = $product_slug;
+		$instance->admin_init();
+		$key_notice_status = WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice', null );
+		$this->assertNull( $key_notice_status );
 	}
 
 	/**
@@ -61,7 +97,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	public function test_check_for_updates_has_update() {
 		$instance       = $this->getMockHelper( $this->plugin_data_with_update() );
 		$data           = new stdClass();
-		$data->response = array();
+		$data->response = [];
 		$instance->check_for_updates( $data );
 		$this->assertTrue( isset( $data->response['test/test.php'] ) );
 	}
@@ -76,7 +112,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	public function test_check_for_updates_no_update() {
 		$instance       = $this->getMockHelper( $this->plugin_data_without_update() );
 		$data           = new stdClass();
-		$data->response = array();
+		$data->response = [];
 		$instance->check_for_updates( $data );
 		$this->assertEmpty( $data->response );
 	}
@@ -95,7 +131,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		WP_Job_Manager_Helper_Options::delete( 'test', 'email' );
 
 		$data           = new stdClass();
-		$data->response = array();
+		$data->response = [];
 		$instance->check_for_updates( $data );
 		$this->assertEmpty( $data->response );
 	}
@@ -190,7 +226,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$response    = new stdClass();
 		$args        = new stdClass();
 		$args->slug  = $plugin_slug;
-		$args        = new stdClass( array( 'slug' => $plugin_slug ) );
+		$args        = new stdClass( [ 'slug' => $plugin_slug ] );
 		$result      = $instance->plugins_api( $response, 'what_the_what', $args );
 		$this->assertSame( $response, $result );
 	}
@@ -220,7 +256,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	public function test_plugin_links_valid_plugin_valid_license() {
 		$instance = $this->getMockHelper();
 		$this->enable_update_plugins_cap();
-		$actions = $instance->plugin_links( array(), 'test/test.php' );
+		$actions = $instance->plugin_links( [], 'test/test.php' );
 		$this->disable_update_plugins_cap();
 		$this->assertCount( 1, $actions );
 		$this->assertContains( __( 'Manage License', 'wp-job-manager' ), $actions[0] );
@@ -236,7 +272,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$this->enable_update_plugins_cap();
 		WP_Job_Manager_Helper_Options::delete( 'test', 'licence_key' );
 		WP_Job_Manager_Helper_Options::delete( 'test', 'email' );
-		$actions = $instance->plugin_links( array(), 'test/test.php' );
+		$actions = $instance->plugin_links( [], 'test/test.php' );
 		$this->disable_update_plugins_cap();
 		$this->assertCount( 1, $actions );
 		$this->assertContains( __( 'Activate License', 'wp-job-manager' ), $actions[0] );
@@ -250,7 +286,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	public function test_plugin_links_invalid_plugin() {
 		$instance = $this->getMockHelper();
 		$this->enable_update_plugins_cap();
-		$actions = $instance->plugin_links( array(), 'rhino/rhino.php' );
+		$actions = $instance->plugin_links( [], 'rhino/rhino.php' );
 		$this->disable_update_plugins_cap();
 		$this->assertCount( 0, $actions );
 	}
@@ -262,7 +298,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 */
 	public function test_plugin_links_invalid_cap() {
 		$instance = $this->getMockHelper();
-		$actions  = $instance->plugin_links( array(), 'test/test.php' );
+		$actions  = $instance->plugin_links( [], 'test/test.php' );
 		$this->assertCount( 0, $actions );
 	}
 
@@ -296,7 +332,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 */
 	public function test_has_licenced_products_true() {
 		// Simulate no installed plugins.
-		$instance = $this->getMockHelper( array() );
+		$instance = $this->getMockHelper( [] );
 		$this->assertFalse( $instance->has_licenced_products() );
 	}
 
@@ -308,7 +344,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 */
 	public function test_has_licenced_products_false() {
 		// Simulate a installed plugin.
-		$instance = $this->getMockHelper( array( 'test' => array() ) );
+		$instance = $this->getMockHelper( [ 'test' => [] ] );
 		$this->assertTrue( $instance->has_licenced_products() );
 	}
 
@@ -325,11 +361,11 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		WP_Job_Manager_Helper_Options::delete( 'rhino', 'licence_key' );
 		WP_Job_Manager_Helper_Options::delete( 'rhino', 'email' );
 		WP_Job_Manager_Helper_Options::delete( 'rhino', 'errors' );
-		$expected = array(
+		$expected = [
 			'licence_key' => '1234',
 			'email'       => 'test@local.dev',
 			'errors'      => null,
-		);
+		];
 		$this->assertEquals( $expected, $result );
 	}
 
@@ -340,11 +376,11 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	public function test_get_plugin_license_invalid() {
 		$instance = new WP_Job_Manager_Helper();
 		$result   = $instance->get_plugin_licence( 'rhino' );
-		$expected = array(
+		$expected = [
 			'licence_key' => null,
 			'email'       => null,
 			'errors'      => null,
-		);
+		];
 		$this->assertEquals( $expected, $result );
 	}
 
@@ -354,8 +390,8 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 */
 	public function test_extra_headers() {
 		$instance = new WP_Job_Manager_Helper();
-		$result   = $instance->extra_headers( array() );
-		$expected = array( 'WPJM-Product' );
+		$result   = $instance->extra_headers( [] );
+		$expected = [ 'WPJM-Product' ];
 		$this->assertEquals( $expected, $result );
 	}
 }

@@ -54,26 +54,46 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	private $publish;
 
 	/**
+	 * Set up for tests.
+	 */
+	public function setUp() {
+		parent::setUp();
+
+		// Ensure job categories and types are enabled.
+		update_option( 'job_manager_enable_categories', 1 );
+		update_option( 'job_manager_enable_types', 1 );
+		unregister_post_type( 'job_listing' );
+		$post_type_instance = WP_Job_Manager_Post_Types::instance();
+		$post_type_instance->register_post_types();
+	}
+
+	/**
 	 * Create a number of job listings with different statuses.
 	 */
 	private function create_default_job_listings() {
 		$this->draft           = $this->factory->job_listing->create_many(
-			2, array( 'post_status' => 'draft' )
+			2,
+			[ 'post_status' => 'draft' ]
 		);
 		$this->expired         = $this->factory->job_listing->create_many(
-			10, array( 'post_status' => 'expired' )
+			10,
+			[ 'post_status' => 'expired' ]
 		);
 		$this->preview         = $this->factory->job_listing->create_many(
-			1, array( 'post_status' => 'preview' )
+			1,
+			[ 'post_status' => 'preview' ]
 		);
 		$this->pending         = $this->factory->job_listing->create_many(
-			8, array( 'post_status' => 'pending' )
+			8,
+			[ 'post_status' => 'pending' ]
 		);
 		$this->pending_payment = $this->factory->job_listing->create_many(
-			3, array( 'post_status' => 'pending_payment' )
+			3,
+			[ 'post_status' => 'pending_payment' ]
 		);
 		$this->publish         = $this->factory->job_listing->create_many(
-			15, array( 'post_status' => 'publish' )
+			15,
+			[ 'post_status' => 'publish' ]
 		);
 	}
 
@@ -89,10 +109,12 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$subscriber_count = 2;
 
 		$this->factory->user->create_many(
-			$employer_count, array( 'role' => 'employer' )
+			$employer_count,
+			[ 'role' => 'employer' ]
 		);
 		$this->factory->user->create_many(
-			$subscriber_count, array( 'role' => 'subscriber' )
+			$subscriber_count,
+			[ 'role' => 'subscriber' ]
 		);
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
@@ -106,7 +128,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_job_categories_count() {
-		$terms = $this->factory->term->create_many( 14, array( 'taxonomy' => 'job_listing_category' ) );
+		$terms = $this->factory->term->create_many( 14, [ 'taxonomy' => 'job_listing_category' ] );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -136,16 +158,16 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		// Create some terms with varying descriptions.
 		$valid   = $this->factory->term->create_many(
 			2,
-			array(
+			[
 				'taxonomy'    => 'job_listing_category',
 				'description' => ' Valid description ',
-			)
+			]
 		);
 		$invalid = $this->factory->term->create(
-			array(
+			[
 				'taxonomy'    => 'job_listing_category',
 				'description' => "\t\n",
-			)
+			]
 		);
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
@@ -173,7 +195,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_job_types_count() {
-		$terms = $this->factory->term->create_many( 14, array( 'taxonomy' => 'job_listing_type' ) );
+		$terms = $this->factory->term->create_many( 14, [ 'taxonomy' => 'job_listing_type' ] );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -191,16 +213,16 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		// Create some terms with varying descriptions.
 		$valid   = $this->factory->term->create_many(
 			2,
-			array(
+			[
 				'taxonomy'    => 'job_listing_type',
 				'description' => ' Valid description ',
-			)
+			]
 		);
 		$invalid = $this->factory->term->create(
-			array(
+			[
 				'taxonomy'    => 'job_listing_type',
 				'description' => "\t\n",
-			)
+			]
 		);
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
@@ -216,7 +238,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_job_type_has_employment_type_count
 	 */
 	public function test_get_job_type_has_employment_type_count() {
-		$terms = $this->factory->term->create_many( 5, array( 'taxonomy' => 'job_listing_type' ) );
+		$terms = $this->factory->term->create_many( 5, [ 'taxonomy' => 'job_listing_type' ] );
 
 		// Set the employment type for some terms.
 		add_term_meta( $terms[1], 'employment_type', 'FULL_TIME' );
@@ -416,10 +438,10 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		// Create some media attachments.
 		$media = $this->factory->attachment->create_many(
 			6,
-			array(
+			[
 				'post_type'   => 'job_listing',
 				'post_status' => 'publish',
-			)
+			]
 		);
 
 		// Add logos to some listings with varying statuses.
@@ -445,7 +467,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 */
 	public function test_get_job_type_count() {
 		$this->create_default_job_listings();
-		$terms = $this->factory->term->create_many( 6, array( 'taxonomy' => 'job_listing_type' ) );
+		$terms = $this->factory->term->create_many( 6, [ 'taxonomy' => 'job_listing_type' ] );
 
 		// Assign job types to some jobs.
 		wp_set_object_terms( $this->draft[0], $terms[0], 'job_listing_type', false );
@@ -608,7 +630,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$published = 3;
 		$expired   = 2;
 
-		$this->create_job_listings_with_meta( '_filled', '1', $published, $expired, array( '0' ) );
+		$this->create_job_listings_with_meta( '_filled', '1', $published, $expired, [ '0' ] );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 		$this->assertEquals( $published + $expired, $data['jobs_filled'] );
@@ -625,7 +647,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$published = 3;
 		$expired   = 2;
 
-		$this->create_job_listings_with_meta( '_featured', '1', $published, $expired, array( '0' ) );
+		$this->create_job_listings_with_meta( '_featured', '1', $published, $expired, [ '0' ] );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 		$this->assertEquals( $published + $expired, $data['jobs_featured'] );
@@ -644,26 +666,28 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 
 		// Create published listings.
 		$this->factory->job_listing->create_many(
-			$published_by_guest, array(
+			$published_by_guest,
+			[
 				'post_author' => '0',
-			)
+			]
 		);
 
 		// Create expired listings.
 		$this->factory->job_listing->create_many(
-			$expired_by_guest, array(
+			$expired_by_guest,
+			[
 				'post_author' => '0',
 				'post_status' => 'expired',
-			)
+			]
 		);
 
 		// Create guest listings with other statuses.
-		$statuses = array( 'future', 'draft', 'pending', 'private', 'trash' );
+		$statuses = [ 'future', 'draft', 'pending', 'private', 'trash' ];
 		foreach ( $statuses as $status ) {
-			$params = array(
+			$params = [
 				'post_author' => '0',
 				'post_status' => $status,
-			);
+			];
 
 			if ( 'future' === $status ) {
 				$params['post_date'] = '3018-02-15 00:00:00';
@@ -673,13 +697,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		}
 
 		// Create listings with other author.
-		$all_statuses = array_merge( $statuses, array( 'publish', 'expired' ) );
+		$all_statuses = array_merge( $statuses, [ 'publish', 'expired' ] );
 		$author_id    = $this->factory->user->create();
 		foreach ( $all_statuses as $status ) {
-			$params = array(
+			$params = [
 				'post_author' => $author_id,
 				'post_status' => $status,
-			);
+			];
 
 			if ( 'future' === $status ) {
 				$params['post_date'] = '3018-02-15 00:00:00';
@@ -692,6 +716,160 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$this->assertEquals( $published_by_guest + $expired_by_guest, $data['jobs_by_guests'] );
 	}
 
+	/**
+	 * Checks count of official plugins and licensed extensions when none are licensed.
+	 *
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_official_extensions_count
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_licensed_extensions_count
+	 */
+	public function test_get_official_no_license_plugin_count() {
+		$this->set_fake_plugins();
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->restore_default_plugins();
+
+		$this->assertEquals( 2, $data['official_extensions'] );
+		$this->assertEquals( 0, $data['licensed_extensions'] );
+	}
+
+	/**
+	 * Checks count of official plugins and licensed extensions when one of the two plugins are licensed.
+	 *
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_official_extensions_count
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_licensed_extensions_count
+	 */
+	public function test_get_official_with_license_plugin_count() {
+		$this->set_fake_plugins();
+		$this->set_fake_license();
+		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
+		$this->restore_default_plugins();
+		$this->remove_fake_license();
+
+		$this->assertEquals( 2, $data['official_extensions'] );
+		$this->assertEquals( 1, $data['licensed_extensions'] );
+	}
+
+	/**
+	 * Checks paid flag is 0 when there are no official extensions.
+	 *
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields
+	 */
+	public function test_get_event_logging_base_fields_paid_without_extensions() {
+		$base_fields = WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields();
+
+		$this->assertEquals( 0, $base_fields['paid'] );
+	}
+
+	/**
+	 * Checks paid flag is 0 when there are official extensions.
+	 *
+	 * @since 1.33.0
+	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields
+	 */
+	public function test_get_event_logging_base_fields_paid_with_extensions() {
+		$this->set_fake_plugins();
+		$base_fields = WP_Job_Manager_Usage_Tracking_Data::get_event_logging_base_fields();
+		$this->restore_default_plugins();
+
+		$this->assertEquals( 1, $base_fields['paid'] );
+	}
+
+	/**
+	 * Adds fake license to one of the products.
+	 */
+	private function set_fake_license() {
+		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'licence_key', 'FAKE-LICENSE' );
+		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'email', 'fake@example.com' );
+		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'errors', [] );
+	}
+
+	/**
+	 * Removes fake license to one of the products.
+	 */
+	private function remove_fake_license() {
+		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'licence_key' );
+		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'email' );
+		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'errors' );
+	}
+
+	/**
+	 * Restores the default plugins.
+	 */
+	private function restore_default_plugins() {
+		wp_clean_plugins_cache();
+		update_option( 'active_plugins', [] );
+		remove_filter( 'job_manager_clear_plugin_cache', '__return_false' );
+	}
+
+	/**
+	 * Sets up some fake plugins, including fake official extensions.
+	 */
+	private function set_fake_plugins() {
+		add_filter( 'job_manager_clear_plugin_cache', '__return_false' );
+		$plugins =  [
+			'hello.php' =>  [
+				'WPJM-Product' => '',
+				'Name' => 'Hello Dolly',
+				'PluginURI' => 'http://wordpress.org/plugins/hello-dolly/',
+				'Version' => '1.7.2',
+				'Description' => 'This is not just a plugin, it symbolizes the hope and enthusiasm of an entire generation summed up in two words sung most famously by Louis Armstrong: Hello, Dolly. When activated you will randomly see a lyric from <cite>Hello, Dolly</cite> in the upper right of your admin screen on every page.',
+				'Author' => 'Matt Mullenweg',
+				'AuthorURI' => 'http://ma.tt/',
+				'TextDomain' => '',
+				'DomainPath' => '',
+				'Network' => false,
+				'Title' => 'Hello Dolly',
+				'AuthorName' => 'Matt Mullenweg',
+			],
+			'wp-job-manager-tester/wp-job-manager-tester.php' =>  [
+				'WPJM-Product' => '',
+				'Name' => 'WP Job Manager Tester',
+				'PluginURI' => 'http://wordpress.org/plugins/wp-job-manager-tester/',
+				'Version' => '1.0.0',
+				'Description' => 'Just a test plugin.',
+				'Author' => 'Example',
+				'AuthorURI' => 'http://example.com/',
+				'TextDomain' => 'wp-job-manager-tester',
+				'DomainPath' => '',
+				'Network' => false,
+				'Title' => 'WP Job Manager Tester',
+				'AuthorName' => 'Example',
+			],
+			'wp-job-manager-official-tester/wp-job-manager-official-tester.php' =>  [
+				'WPJM-Product' => 'wp-job-manager-official-tester',
+				'Name' => 'WP Job Manager Official Tester',
+				'PluginURI' => 'http://wpjobmanager.com',
+				'Version' => '1.0.0',
+				'Description' => 'Just a test plugin.',
+				'Author' => 'Example',
+				'AuthorURI' => 'http://example.com/',
+				'TextDomain' => 'wp-job-manager-official-tester',
+				'DomainPath' => '',
+				'Network' => false,
+				'Title' => 'WP Job Manager Official Tester',
+				'AuthorName' => 'Example',
+			],
+			'wp-job-manager-official-licensed-tester/wp-job-manager-official-licensed-tester.php' =>  [
+				'WPJM-Product' => 'wp-job-manager-official-licensed-tester',
+				'Name' => 'WP Job Manager Official Licensed Tester',
+				'PluginURI' => 'http://wpjobmanager.com',
+				'Version' => '1.0.0',
+				'Description' => 'Just a test plugin.',
+				'Author' => 'Example',
+				'AuthorURI' => 'http://example.com/',
+				'TextDomain' => 'wp-job-manager-official-licensed-tester',
+				'DomainPath' => '',
+				'Network' => false,
+				'Title' => 'WP Job Manager Official Licensed Tester',
+				'AuthorName' => 'Example',
+			],
+		];
+
+		update_option( 'active_plugins', array_keys( $plugins ) );
+		wp_cache_set( 'plugins', [ '' => $plugins ], 'plugins' );
+	}
 
 	/**
 	 * Creates job listings with the given meta values. This will also create
@@ -706,48 +884,49 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @param int    $expired the number of expired listings to create.
 	 * @param int    $other_values other values for which to create listings (optional).
 	 */
-	private function create_job_listings_with_meta( $meta_name, $meta_value, $published, $expired, $other_values = array() ) {
+	private function create_job_listings_with_meta( $meta_name, $meta_value, $published, $expired, $other_values = [] ) {
 		// Create published listings.
 		$this->factory->job_listing->create_many(
 			$published,
-			array(
-				'meta_input' => array(
+			[
+				'meta_input' => [
 					$meta_name => $meta_value,
-				),
-			)
+				],
+			]
 		);
 
 		// Create expired listings.
 		$this->factory->job_listing->create_many(
-			$expired, array(
+			$expired,
+			[
 				'post_status' => 'expired',
-				'meta_input'  => array(
+				'meta_input'  => [
 					$meta_name => $meta_value,
-				),
-			)
+				],
+			]
 		);
 
 		// Create listings with empty values.
-		$empty_values = array( '', '   ', "\n\t", " \n \t " );
+		$empty_values = [ '', '   ', "\n\t", " \n \t " ];
 		foreach ( $empty_values as $val ) {
 			$this->factory->job_listing->create(
-				array(
-					'meta_input' => array(
+				[
+					'meta_input' => [
 						$meta_name => $val,
-					),
-				)
+					],
+				]
 			);
 		}
 
 		// Create listings with other statuses.
-		$statuses = array( 'future', 'draft', 'pending', 'private', 'trash' );
+		$statuses = [ 'future', 'draft', 'pending', 'private', 'trash' ];
 		foreach ( $statuses as $status ) {
-			$params = array(
+			$params = [
 				'post_status' => $status,
-				'meta_input'  => array(
+				'meta_input'  => [
 					$meta_name => $meta_value,
-				),
-			);
+				],
+			];
 
 			if ( 'future' === $status ) {
 				$params['post_date'] = '3018-02-15 00:00:00';
@@ -759,11 +938,11 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		// Create listings with other values.
 		foreach ( $other_values as $val ) {
 			$this->factory->job_listing->create(
-				array(
-					'meta_input' => array(
+				[
+					'meta_input' => [
 						$meta_name => $val,
-					),
-				)
+					],
+				]
 			);
 		}
 	}

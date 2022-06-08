@@ -5,13 +5,15 @@ jQuery(document).ready(function($) {
 	}
 
 	$( document.body ).on( 'click', '.job_application .application_button', function() {
-		var $details = $(this).siblings('.application_details').first();
+		var $details = $(this).parents('.job_application').find('.application_details').first();
 		var $button = $(this);
 		$details.slideToggle( 400, function() {
 			if ( ! $(this).is(':visible') ) {
 				// Only care if we toggled to be visible
 				return;
 			}
+
+			$details.trigger('visible');
 
 			// If max(33% height, 200px) of the application details aren't shown, scroll.
 			var minimum_details_threshold = Math.max( Math.min( $details.outerHeight(), 200 ), $details.outerHeight() * .33 );

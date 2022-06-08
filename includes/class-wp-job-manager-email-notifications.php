@@ -1,13 +1,17 @@
 <?php
+/**
+ * File containing the class WP_Job_Manager_Email_Notifications.
+ *
+ * @package wp-job-manager
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit;
 }
 
 /**
  * Base class for WP Job Manager's email notification system.
  *
- * @package wp-job-manager
  * @since 1.31.0
  */
 final class WP_Job_Manager_Email_Notifications {
@@ -20,7 +24,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @var array
 	 */
-	private static $deferred_notifications = array();
+	private static $deferred_notifications = [];
 
 	/**
 	 * Sets up initial hooks.
@@ -28,16 +32,16 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @static
 	 */
 	public static function init() {
-		add_action( 'job_manager_send_notification', array( __CLASS__, 'schedule_notification' ), 10, 2 );
-		add_action( 'job_manager_email_init', array( __CLASS__, 'lazy_init' ) );
-		add_action( 'job_manager_email_job_details', array( __CLASS__, 'output_job_details' ), 10, 4 );
-		add_action( 'job_manager_email_header', array( __CLASS__, 'output_header' ), 10, 3 );
-		add_action( 'job_manager_email_footer', array( __CLASS__, 'output_footer' ), 10, 3 );
-		add_action( 'job_manager_email_daily_notices', array( __CLASS__, 'send_employer_expiring_notice' ) );
-		add_action( 'job_manager_email_daily_notices', array( __CLASS__, 'send_admin_expiring_notice' ) );
-		add_filter( 'job_manager_settings', array( __CLASS__, 'add_job_manager_email_settings' ), 1 );
-		add_action( 'job_manager_job_submitted', array( __CLASS__, 'send_new_job_notification' ) );
-		add_action( 'job_manager_user_edit_job_listing', array( __CLASS__, 'send_updated_job_notification' ) );
+		add_action( 'job_manager_send_notification', [ __CLASS__, 'schedule_notification' ], 10, 2 );
+		add_action( 'job_manager_email_init', [ __CLASS__, 'lazy_init' ] );
+		add_action( 'job_manager_email_job_details', [ __CLASS__, 'output_job_details' ], 10, 4 );
+		add_action( 'job_manager_email_header', [ __CLASS__, 'output_header' ], 10, 3 );
+		add_action( 'job_manager_email_footer', [ __CLASS__, 'output_footer' ], 10, 3 );
+		add_action( 'job_manager_email_daily_notices', [ __CLASS__, 'send_employer_expiring_notice' ] );
+		add_action( 'job_manager_email_daily_notices', [ __CLASS__, 'send_admin_expiring_notice' ] );
+		add_filter( 'job_manager_settings', [ __CLASS__, 'add_job_manager_email_settings' ], 1 );
+		add_action( 'job_manager_job_submitted', [ __CLASS__, 'send_new_job_notification' ] );
+		add_action( 'job_manager_user_edit_job_listing', [ __CLASS__, 'send_updated_job_notification' ] );
 	}
 
 	/**
@@ -46,12 +50,12 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	public static function core_email_notifications() {
-		return array(
+		return [
 			'WP_Job_Manager_Email_Admin_New_Job',
 			'WP_Job_Manager_Email_Admin_Updated_Job',
 			'WP_Job_Manager_Email_Admin_Expiring_Job',
 			'WP_Job_Manager_Email_Employer_Expiring_Job',
-		);
+		];
 	}
 
 	/**
@@ -64,10 +68,10 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param string $notification
 	 * @param array  $args
 	 */
-	public static function schedule_notification( $notification, $args = array() ) {
+	public static function schedule_notification( $notification, $args = [] ) {
 		self::maybe_init();
 
-		self::$deferred_notifications[] = array( $notification, $args );
+		self::$deferred_notifications[] = [ $notification, $args ];
 	}
 
 	/**
@@ -89,10 +93,42 @@ final class WP_Job_Manager_Email_Notifications {
 
 			$email_class            = $email_notifications[ $email[0] ];
 			$email_notification_key = $email[0];
-			$email_args             = is_array( $email[1] ) ? $email[1] : array();
+			$email_args             = is_array( $email[1] ) ? $email[1] : [];
 
 			self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_notification_key ) ) );
 		}
+	}
+
+	/**
+	 * Send email notifications for a specific email now and return the status. Not usually necessary but useful if you
+	 * need to check to make sure a notification was sent.
+	 *
+	 * @param string $email_key Email key to send notifications for.
+	 * @return bool True if an email notification was sent.
+	 */
+	public static function send_notifications( $email_key ) {
+		$email_sent          = false;
+		$email_notifications = self::get_email_notifications( true );
+		foreach ( self::$deferred_notifications as $index => $email ) {
+			if (
+				! is_string( $email[0] )
+				|| ! isset( $email_notifications[ $email[0] ] )
+				|| $email[0] !== $email_key
+			) {
+				continue;
+			}
+
+			$email_class = $email_notifications[ $email[0] ];
+			$email_args  = is_array( $email[1] ) ? $email[1] : [];
+
+			if ( self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_key ) ) ) ) {
+				$email_sent = true;
+			}
+
+			unset( self::$deferred_notifications[ $index ] );
+		}
+
+		return $email_sent;
 	}
 
 	/**
@@ -118,14 +154,14 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @access private
 	 */
 	public static function lazy_init() {
-		add_action( 'shutdown', array( __CLASS__, 'send_deferred_notifications' ) );
+		add_action( 'shutdown', [ __CLASS__, 'send_deferred_notifications' ] );
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-updated-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-employer-expiring-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-expiring-job.php';
 
-		if ( ! class_exists( 'Emogrifier' ) && class_exists( 'DOMDocument' ) ) {
+		if ( ! class_exists( 'Emogrifier' ) && class_exists( 'DOMDocument' ) && version_compare( PHP_VERSION, '5.5', '>=' ) ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/lib/emogrifier/class-emogrifier.php';
 		}
 	}
@@ -141,7 +177,7 @@ final class WP_Job_Manager_Email_Notifications {
 		if ( ! defined( 'PHPUNIT_WPJM_TESTSUITE' ) || ! PHPUNIT_WPJM_TESTSUITE ) {
 			die( 'This is just for use while testing' );
 		}
-		self::$deferred_notifications = array();
+		self::$deferred_notifications = [];
 	}
 
 	/**
@@ -161,7 +197,7 @@ final class WP_Job_Manager_Email_Notifications {
 		 * @param array $email_notifications All the email notifications to be registered.
 		 */
 		$email_notification_classes = array_unique( apply_filters( 'job_manager_email_notifications', self::core_email_notifications() ) );
-		$email_notifications        = array();
+		$email_notifications        = [];
 
 		/**
 		 * Email class in loop.
@@ -175,7 +211,7 @@ final class WP_Job_Manager_Email_Notifications {
 			}
 
 			// PHP 5.2: Using `call_user_func()` but `$email_class::get_key()` preferred.
-			$email_notification_key = call_user_func( array( $email_class, 'get_key' ) );
+			$email_notification_key = call_user_func( [ $email_class, 'get_key' ] );
 			if (
 				isset( $email_notifications[ $email_notification_key ] )
 				|| ( $enabled_notifications_only && ! self::is_email_notification_enabled( $email_notification_key ) )
@@ -217,12 +253,12 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	private static function get_job_detail_fields( WP_Post $job, $sent_to_admin, $plain_text = false ) {
-		$fields = array();
+		$fields = [];
 
-		$fields['job_title'] = array(
+		$fields['job_title'] = [
 			'label' => __( 'Job title', 'wp-job-manager' ),
 			'value' => $job->post_title,
-		);
+		];
 
 		if ( $sent_to_admin || 'publish' === $job->post_status ) {
 			$fields['job_title']['url'] = get_permalink( $job );
@@ -230,65 +266,65 @@ final class WP_Job_Manager_Email_Notifications {
 
 		$job_location = get_the_job_location( $job );
 		if ( ! empty( $job_location ) ) {
-			$fields['job_location'] = array(
+			$fields['job_location'] = [
 				'label' => __( 'Location', 'wp-job-manager' ),
 				'value' => $job_location,
-			);
+			];
 		}
 
 		if ( get_option( 'job_manager_enable_types' ) && wp_count_terms( 'job_listing_type' ) > 0 ) {
 			$job_types = wpjm_get_the_job_types( $job );
 			if ( ! empty( $job_types ) ) {
-				$fields['job_type'] = array(
+				$fields['job_type'] = [
 					'label' => __( 'Job type', 'wp-job-manager' ),
 					'value' => implode( ', ', wp_list_pluck( $job_types, 'name' ) ),
-				);
+				];
 			}
 		}
 
 		if ( get_option( 'job_manager_enable_categories' ) && wp_count_terms( 'job_listing_category' ) > 0 ) {
 			$job_categories = wpjm_get_the_job_categories( $job );
 			if ( ! empty( $job_categories ) ) {
-				$fields['job_category'] = array(
+				$fields['job_category'] = [
 					'label' => __( 'Job category', 'wp-job-manager' ),
 					'value' => implode( ', ', wp_list_pluck( $job_categories, 'name' ) ),
-				);
+				];
 			}
 		}
 
 		$company_name = get_the_company_name( $job );
 		if ( ! empty( $company_name ) ) {
-			$fields['company_name'] = array(
+			$fields['company_name'] = [
 				'label' => __( 'Company name', 'wp-job-manager' ),
 				'value' => $company_name,
-			);
+			];
 		}
 
 		$company_website = get_the_company_website( $job );
 		if ( ! empty( $company_website ) ) {
-			$fields['company_website'] = array(
+			$fields['company_website'] = [
 				'label' => __( 'Company website', 'wp-job-manager' ),
-				'value' => $plain_text ? $company_website : sprintf( '<a href="%1$s">%1$s</a>', esc_url( $company_website, array( 'http', 'https' ) ) ),
-			);
+				'value' => $plain_text ? $company_website : sprintf( '<a href="%1$s">%1$s</a>', esc_url( $company_website, [ 'http', 'https' ] ) ),
+			];
 		}
 
-		$job_expires = get_post_meta( $job->ID, '_job_expires', true );
+		$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
 		if ( ! empty( $job_expires ) ) {
-			$job_expires_str       = date_i18n( get_option( 'date_format' ), strtotime( $job_expires ) );
-			$fields['job_expires'] = array(
+			$job_expires_str       = wp_date( get_option( 'date_format' ), $job_expires->getTimestamp() );
+			$fields['job_expires'] = [
 				'label' => __( 'Listing expires', 'wp-job-manager' ),
 				'value' => $job_expires_str,
-			);
+			];
 		}
 
 		if ( $sent_to_admin ) {
 			$author = get_user_by( 'ID', $job->post_author );
 			if ( $author instanceof WP_User ) {
-				$fields['author'] = array(
+				$fields['author'] = [
 					'label' => __( 'Posted by', 'wp-job-manager' ),
 					'value' => $author->user_nicename,
 					'url'   => 'mailto:' . $author->user_email,
-				);
+				];
 			}
 		}
 
@@ -363,12 +399,12 @@ final class WP_Job_Manager_Email_Notifications {
 			return false;
 		}
 
-		$template_default_path = call_user_func( array( $email_class, 'get_template_default_path' ) );
+		$template_default_path = call_user_func( [ $email_class, 'get_template_default_path' ] );
 		if ( '' === $template_default_path ) {
 			return false;
 		}
 
-		$template_path = call_user_func( array( $email_class, 'get_template_path' ) );
+		$template_path = call_user_func( [ $email_class, 'get_template_path' ] );
 		$template      = self::locate_template_file( $template_name, $plain_text, $template_path, $template_default_path );
 		if ( '' === $template ) {
 			return false;
@@ -409,37 +445,38 @@ final class WP_Job_Manager_Email_Notifications {
 	 */
 	public static function add_email_settings( $settings, $context ) {
 		$email_notifications = self::get_email_notifications( false );
-		$email_settings      = array();
+		$email_settings      = [];
 
 		foreach ( $email_notifications as $email_notification_key => $email_class ) {
-			$email_notification_context = call_user_func( array( $email_class, 'get_context' ) );
+			$email_notification_context = $email_class::get_context();
 			if ( $context !== $email_notification_context ) {
 				continue;
 			}
 
-			$email_settings[] = array(
+			$email_settings[] = [
 				'type'         => 'multi_enable_expand',
 				'class'        => 'email-setting-row no-separator',
-				'name'         => self::EMAIL_SETTING_PREFIX . call_user_func( array( $email_class, 'get_key' ) ),
-				'enable_field' => array(
-					'name'     => self::EMAIL_SETTING_ENABLED,
-					'cb_label' => call_user_func( array( $email_class, 'get_name' ) ),
-					'desc'     => call_user_func( array( $email_class, 'get_description' ) ),
-				),
+				'name'         => self::EMAIL_SETTING_PREFIX . $email_class::get_key(),
+				'enable_field' => [
+					'name'        => self::EMAIL_SETTING_ENABLED,
+					'cb_label'    => $email_class::get_name(),
+					'desc'        => $email_class::get_description(),
+					'force_value' => $email_class::get_enabled_force_value(),
+				],
 				'label'        => false,
 				'std'          => self::get_email_setting_defaults( $email_notification_key ),
 				'settings'     => self::get_email_setting_fields( $email_notification_key ),
-			);
+			];
 		}
 
 		if ( ! empty( $email_settings ) ) {
-			$settings['email_notifications'] = array(
+			$settings['email_notifications'] = [
 				__( 'Email Notifications', 'wp-job-manager' ),
 				$email_settings,
-				array(
+				[
 					'before' => __( 'Select the email notifications to enable.', 'wp-job-manager' ),
-				),
-			);
+				],
+			];
 		}
 
 		return $settings;
@@ -452,9 +489,15 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return bool
 	 */
 	public static function is_email_notification_enabled( $email_notification_key ) {
-		$settings = self::get_email_settings( $email_notification_key );
+		$settings    = self::get_email_settings( $email_notification_key );
+		$email_class = self::get_email_class( $email_notification_key );
 
+		$enabled_force_value           = $email_class ? $email_class::get_enabled_force_value() : null;
 		$is_email_notification_enabled = ! empty( $settings[ self::EMAIL_SETTING_ENABLED ] );
+
+		if ( is_bool( $enabled_force_value ) ) {
+			$is_email_notification_enabled = $enabled_force_value;
+		}
 
 		/**
 		 * Filter whether an notification email is enabled.
@@ -470,10 +513,14 @@ final class WP_Job_Manager_Email_Notifications {
 	/**
 	 * Checks if we should send emails using plain text.
 	 *
-	 * @param string $email_notification_key
+	 * @since 1.31.0
+	 * @since 1.34.1 Added arguments to allow for per-recipient customization.
+	 *
+	 * @param string $email_notification_key  Unique ID for this email notification.
+	 * @param array  $args                    Email arguments.
 	 * @return bool
 	 */
-	public static function send_as_plain_text( $email_notification_key ) {
+	public static function send_as_plain_text( $email_notification_key, $args = [] ) {
 		$settings = self::get_email_settings( $email_notification_key );
 
 		$send_as_plain_text = ! empty( $settings[ self::EMAIL_SETTING_PLAIN_TEXT ] );
@@ -483,10 +530,11 @@ final class WP_Job_Manager_Email_Notifications {
 		 *
 		 * @since 1.31.0
 		 *
-		 * @param bool   $send_as_plain_text
-		 * @param string $email_notification_key
+		 * @param bool   $send_as_plain_text      Whether to send this email as plain text.
+		 * @param string $email_notification_key  Unique ID for this email notification.
+		 * @param array  $args                    Email arguments.
 		 */
-		return apply_filters( 'job_manager_email_send_as_plain_text', $send_as_plain_text, $email_notification_key );
+		return apply_filters( 'job_manager_email_send_as_plain_text', $send_as_plain_text, $email_notification_key, $args );
 	}
 
 	/**
@@ -525,7 +573,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param int $job_id
 	 */
 	public static function send_new_job_notification( $job_id ) {
-		do_action( 'job_manager_send_notification', 'admin_new_job', array( 'job_id' => $job_id ) );
+		do_action( 'job_manager_send_notification', 'admin_new_job', [ 'job_id' => $job_id ] );
 	}
 
 	/**
@@ -534,7 +582,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param int $job_id
 	 */
 	public static function send_updated_job_notification( $job_id ) {
-		do_action( 'job_manager_send_notification', 'admin_updated_job', array( 'job_id' => $job_id ) );
+		do_action( 'job_manager_send_notification', 'admin_updated_job', [ 'job_id' => $job_id ] );
 	}
 
 	/**
@@ -544,23 +592,26 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param int    $days_notice
 	 */
 	private static function send_expiring_notice( $email_notification_key, $days_notice ) {
-		global $wpdb;
+		$notice_before_datetime = current_datetime()->add( new DateInterval( 'P' . $days_notice . 'D' ) );
 
-		$notice_before_ts = current_time( 'timestamp' ) + ( DAY_IN_SECONDS * $days_notice );
-		$job_ids          = $wpdb->get_col( $wpdb->prepare(
-			"
-			SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
-			LEFT JOIN {$wpdb->posts} as posts ON postmeta.post_id = posts.ID
-			WHERE postmeta.meta_key = '_job_expires'
-			AND postmeta.meta_value = %s
-			AND posts.post_status = 'publish'
-			AND posts.post_type = 'job_listing'
-		", date( 'Y-m-d', $notice_before_ts )
-		) );
+		$job_ids = get_posts(
+			[
+				'post_type'      => 'job_listing',
+				'post_status'    => 'publish',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'meta_query'     => [
+					[
+						'key'   => '_job_expires',
+						'value' => $notice_before_datetime->format( 'Y-m-d' ),
+					],
+				],
+			]
+		);
 
 		if ( $job_ids ) {
 			foreach ( $job_ids as $job_id ) {
-				do_action( 'job_manager_send_notification', $email_notification_key, array( 'job_id' => $job_id ) );
+				do_action( 'job_manager_send_notification', $email_notification_key, [ 'job_id' => $job_id ] );
 			}
 		}
 	}
@@ -573,19 +624,19 @@ final class WP_Job_Manager_Email_Notifications {
 	 */
 	private static function get_email_setting_fields( $email_notification_key ) {
 		$email_class    = self::get_email_class( $email_notification_key );
-		$core_settings  = array(
-			array(
+		$core_settings  = [
+			[
 				'name'    => 'plain_text',
 				'std'     => '0',
 				'label'   => __( 'Format', 'wp-job-manager' ),
 				'type'    => 'radio',
-				'options' => array(
+				'options' => [
 					'1' => __( 'Send plain text email', 'wp-job-manager' ),
 					'0' => __( 'Send rich text email', 'wp-job-manager' ),
-				),
-			),
-		);
-		$email_settings = call_user_func( array( $email_class, 'get_setting_fields' ) );
+				],
+			],
+		];
+		$email_settings = call_user_func( [ $email_class, 'get_setting_fields' ] );
 		return array_merge( $core_settings, $email_settings );
 	}
 
@@ -599,7 +650,7 @@ final class WP_Job_Manager_Email_Notifications {
 		$option_name  = self::EMAIL_SETTING_PREFIX . $email_notification_key;
 		$option_value = get_option( $option_name );
 		if ( empty( $option_value ) || ! is_array( $option_value ) ) {
-			$option_value = array();
+			$option_value = [];
 		}
 		$default_settings = self::get_email_setting_defaults( $email_notification_key );
 
@@ -616,8 +667,8 @@ final class WP_Job_Manager_Email_Notifications {
 		$settings    = self::get_email_setting_fields( $email_notification_key );
 		$email_class = self::get_email_class( $email_notification_key );
 
-		$defaults                                = array();
-		$defaults[ self::EMAIL_SETTING_ENABLED ] = call_user_func( array( $email_class, 'is_default_enabled' ) ) ? '1' : '0';
+		$defaults                                = [];
+		$defaults[ self::EMAIL_SETTING_ENABLED ] = call_user_func( [ $email_class, 'is_default_enabled' ] ) ? '1' : '0';
 
 		foreach ( $settings as $setting ) {
 			$defaults[ $setting['name'] ] = null;
@@ -655,6 +706,24 @@ final class WP_Job_Manager_Email_Notifications {
 	}
 
 	/**
+	 * Returns the hash representation of the notifications to be sent.
+	 *
+	 * Do not use. Used just in unit tests.
+	 *
+	 * @access private
+	 *
+	 * @return string[]
+	 */
+	public static function get_deferred_notification_hashes() {
+		return array_map(
+			function( $value ) {
+				return sha1( wp_json_encode( $value ) );
+			},
+			self::$deferred_notifications
+		);
+	}
+
+	/**
 	 * Confirms an email notification is valid.
 	 *
 	 * @access private
@@ -667,8 +736,8 @@ final class WP_Job_Manager_Email_Notifications {
 		return is_string( $email_class )
 				&& class_exists( $email_class )
 				&& is_subclass_of( $email_class, 'WP_Job_Manager_Email' )
-				&& false !== call_user_func( array( $email_class, 'get_key' ) )
-				&& false !== call_user_func( array( $email_class, 'get_name' ) );
+				&& false !== call_user_func( [ $email_class, 'get_key' ] )
+				&& false !== call_user_func( [ $email_class, 'get_name' ] );
 	}
 
 	/**
@@ -685,8 +754,8 @@ final class WP_Job_Manager_Email_Notifications {
 			return false;
 		}
 
-		$fields = array( 'to', 'from', 'subject', 'rich_content', 'plain_content', 'attachments', 'cc', 'headers' );
-		$args   = array();
+		$fields = [ 'to', 'from', 'subject', 'rich_content', 'plain_content', 'attachments', 'cc', 'headers' ];
+		$args   = [];
 		foreach ( $fields as $field ) {
 			$method = 'get_' . $field;
 
@@ -701,34 +770,61 @@ final class WP_Job_Manager_Email_Notifications {
 			$args[ $field ] = apply_filters( "job_manager_email_{$email_notification_key}_{$field}", $email->$method(), $email );
 		}
 
-		$headers = is_array( $args['headers'] ) ? $args['headers'] : array();
-
-		if ( ! empty( $args['from'] ) ) {
-			$headers[] = 'From: ' . $args['from'];
+		$args['headers'] = is_array( $args['headers'] ) ? $args['headers'] : [];
+		$send_to         = $args['to'];
+		if ( ! is_array( $send_to ) ) {
+			$send_to = array_filter( array_map( 'sanitize_email', preg_split( '/[,|;]\s?/', $send_to ) ) );
 		}
 
-		if ( ! self::send_as_plain_text( $email_notification_key ) ) {
-			$headers[] = 'Content-Type: text/html';
+		$sent_count = 0;
+		foreach ( $send_to as $to_email ) {
+			$args['to'] = $to_email;
+			$content    = self::get_email_content( $email_notification_key, $args );
+
+			/**
+			 * Filter all email arguments for job manager notifications.
+			 *
+			 * @since 1.34.1
+			 *
+			 * @param mixed                $email_field_value Value to be filtered.
+			 * @param WP_Job_Manager_Email $email             Email notification object.
+			 */
+			$args = apply_filters( "job_manager_email_{$email_notification_key}_args", $args, $email );
+
+			$headers = $args['headers'];
+			if ( ! empty( $args['from'] ) ) {
+				$headers[] = 'From: ' . $args['from'];
+			}
+
+			if ( ! empty( $args['cc'] ) ) {
+				$headers[] = 'CC: ' . $args['cc'];
+			}
+
+			if ( ! self::send_as_plain_text( $email_notification_key, $args ) ) {
+				$headers[] = 'Content-Type: text/html';
+			}
+
+			/**
+			 * Allows for short-circuiting the actual sending of email notifications.
+			 *
+			 * @since 1.31.0
+			 *
+			 * @param bool                  $do_send_notification   True if we should send the notification.
+			 * @param WP_Job_Manager_Email  $email                  Email notification object.
+			 * @param array                 $args                   Email arguments for generating email.
+			 * @param string                $content                Email content.
+			 * @param array                 $headers                Email headers.
+			 */
+			if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $content, $headers ) ) {
+				continue;
+			}
+
+			if ( wp_mail( $to_email, $args['subject'], $content, $headers, $args['attachments'] ) ) {
+				$sent_count++;
+			}
 		}
 
-		$content = self::get_email_content( $email_notification_key, $args );
-
-		/**
-		 * Allows for short-circuiting the actual sending of email notifications.
-		 *
-		 * @since 1.31.0
-		 *
-		 * @param bool                  $do_send_notification   True if we should send the notification.
-		 * @param WP_Job_Manager_Email  $email                  Email notification object.
-		 * @param array                 $args                   Email arguments for generating email.
-		 * @param string                $content                Email content.
-		 * @param array                 $headers                Email headers.
-		 * @param
-		 */
-		if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $content, $headers ) ) {
-			return false;
-		}
-		return wp_mail( $args['to'], $args['subject'], $content, $headers, $args['attachments'] );
+		return $sent_count > 0;
 	}
 
 	/**
@@ -736,12 +832,12 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 *
-	 * @param string $email_notification_key
-	 * @param array  $args
+	 * @param string $email_notification_key Unique email notification key.
+	 * @param array  $args                   Arguments passed for generating email.
 	 * @return string
 	 */
 	private static function get_email_content( $email_notification_key, $args ) {
-		$plain_text = self::send_as_plain_text( $email_notification_key );
+		$plain_text = self::send_as_plain_text( $email_notification_key, $args );
 
 		ob_start();
 

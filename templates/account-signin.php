@@ -6,9 +6,9 @@
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
- * @package     WP Job Manager
+ * @package     wp-job-manager
  * @category    Template
- * @version     1.31.1
+ * @version     1.33.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="field account-sign-in">
 			<?php
 				$user = wp_get_current_user();
+				// translators: Placeholder %s is the username.
 				printf( wp_kses_post( __( 'You are currently signed in as <strong>%s</strong>.', 'wp-job-manager' ) ), esc_html( $user->user_login ) );
 			?>
 
@@ -42,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<?php if ( $registration_enabled ) : ?>
 
-				<?php printf( esc_html__( 'If you don\'t have an account you can %screate one below by entering your email address/username.', 'wp-job-manager' ), $account_required ? '' : esc_html__( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
+				<?php printf( esc_html__( 'If you don\'t have an account you can create one below by entering your email address/username.', 'wp-job-manager' ), $account_required ? '' : esc_html__( 'optionally', 'wp-job-manager' ) . ' ' ); ?>
 				<?php if ( $use_standard_password_email ) : ?>
 					<?php printf( esc_html__( 'Your account details will be confirmed via email.', 'wp-job-manager' ) ); ?>
 				<?php endif; ?>
@@ -61,8 +62,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
 				<label
 					for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field[ 'label' ] ) . wp_kses_post( apply_filters( 'submit_job_form_required_label', $field[ 'required' ] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager' ) . '</small>', $field ) ); ?></label>
-				<div class="field <?php echo $field[ 'required' ] ? 'required-field' : ''; ?>">
-					<?php get_job_manager_template( 'form-fields/' . $field[ 'type' ] . '-field.php', array( 'key'   => $key, 'field' => $field ) ); ?>
+				<div class="field <?php echo $field[ 'required' ] ? 'required-field draft-required' : ''; ?>">
+					<?php get_job_manager_template( 'form-fields/' . $field[ 'type' ] . '-field.php', [ 'key'   => $key, 'field' => $field ] ); ?>
 				</div>
 			</fieldset>
 			<?php
