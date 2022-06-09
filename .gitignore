@@ -14,6 +14,7 @@ sftp-config.json
 /build/
 /assets/dist/
 /*.zip
+.idea
 
 # Ignore lib/wpjm_rest but keep folder
 lib/wpjm_rest/*
