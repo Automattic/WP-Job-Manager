@@ -74,7 +74,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_location'] ) ) {
-			if ( 'remote' === $args['search_location'] || 'Remote' === $args['search_location'] ) {
+			if ( __( 'remote', 'wp-job-manager' ) === $args['search_location'] || __( 'Remote', 'wp-job-manager' ) === $args['search_location'] ) {
 				$args['search_location'] = '1';
 			}
 			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long', '_remote_position' ];
