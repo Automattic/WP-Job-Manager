@@ -1,6 +1,6 @@
 {
   "name": "wp-job-manager",
-  "version": "1.35.1",
+  "version": "1.35.3",
   "description": "WP Job Manager",
   "author": "Automattic",
   "license": "GPL-2.0-or-later",
@@ -16,8 +16,7 @@
     "url": "https://github.com/Automattic/WP-Job-Manager/issues"
   },
   "engines": {
-    "node": ">=0.8.0",
-    "npm": ">=1.1.0"
+    "npm": ">=7.0.0"
   },
   "dependencies": {
     "select2": "4.0.13"
@@ -25,7 +24,9 @@
   "devDependencies": {
     "@wordpress/jest-preset-default": "7.0.0",
     "@wordpress/scripts": "13.0.0",
-    "file-loader": "6.2.0"
+    "file-loader": "6.2.0",
+    "husky": "7.0.4",
+    "lint-staged": "12.3.4"
   },
   "scripts": {
     "build": "npm run build:assets && npm run archive",
@@ -41,11 +42,18 @@
     "lint:php": "./vendor/bin/phpcs",
     "lint:pkg-json": "wp-scripts lint-pkg-json",
     "packages-update": "wp-scripts packages-update",
+    "prepare": "husky install",
     "start": "wp-scripts start",
     "test": "npm run test-php",
     "test-php": "./vendor/bin/phpunit",
     "i18n:build": "npm run i18n:php",
     "i18n:php": "wp i18n make-pot --exclude=lib,build,vendor,node_modules --skip-js --headers='{\"Last-Translator\":null,\"Language-Team\":null,\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/wp-job-manager/\"}' . languages/wp-job-manager.pot"
+  },
+  "lint-staged": {
+    "*.php": [
+      "php -l -d display_errors=0",
+      "./vendor/bin/phpcs --standard=phpcs.xml.dist --colors --encoding=utf-8 -n -p"
+    ]
   },
   "config": {
     "wp_org_slug": "wp-job-manager"

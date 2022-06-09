@@ -96,8 +96,6 @@ class WP_Job_Manager_Post_Types {
 	 * Prepare CPTs for special block editor situations.
 	 */
 	public function prepare_block_editor() {
-		add_filter( 'allowed_block_types', [ $this, 'force_classic_block' ], 10, 2 );
-
 		if ( false === job_manager_multi_job_type() ) {
 			add_filter( 'rest_prepare_taxonomy', [ $this, 'hide_job_type_block_editor_selector' ], 10, 3 );
 		}
@@ -107,11 +105,15 @@ class WP_Job_Manager_Post_Types {
 	 * Forces job listings to just have the classic block. This is necessary with the use of the classic editor on
 	 * the frontend.
 	 *
+	 * @deprecated 1.35.2
+	 *
 	 * @param array   $allowed_block_types
 	 * @param WP_Post $post
 	 * @return array
 	 */
 	public function force_classic_block( $allowed_block_types, $post ) {
+		_deprecated_function( __METHOD__, '1.35.2' );
+
 		if ( 'job_listing' === $post->post_type ) {
 			return [ 'core/freeform' ];
 		}
@@ -525,7 +527,12 @@ class WP_Job_Manager_Post_Types {
 	public function job_content( $content ) {
 		global $post;
 
-		if ( ! is_singular( 'job_listing' ) || ! in_the_loop() || 'job_listing' !== $post->post_type ) {
+		if (
+			! is_singular( 'job_listing' ) ||
+			! in_the_loop() ||
+			'job_listing' !== $post->post_type ||
+			( post_password_required() && ! is_super_admin() )
+		) {
 			return $content;
 		}
 

@@ -213,7 +213,7 @@ class WP_Job_Manager_Shortcodes {
 
 						// Message.
 						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . wp_kses_post( sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 						break;
 					case 'mark_not_filled':
 						// Check status.
@@ -226,7 +226,7 @@ class WP_Job_Manager_Shortcodes {
 
 						// Message.
 						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . wp_kses_post( sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 						break;
 					case 'delete':
 						// Trash it.
@@ -234,7 +234,7 @@ class WP_Job_Manager_Shortcodes {
 
 						// Message.
 						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = '<div class="job-manager-message">' . esc_html( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
+						$this->job_dashboard_message = '<div class="job-manager-message">' . wp_kses_post( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
 
 						break;
 					case 'duplicate':
@@ -831,7 +831,7 @@ class WP_Job_Manager_Shortcodes {
 		if ( $jobs->have_posts() ) {
 			while ( $jobs->have_posts() ) {
 				$jobs->the_post();
-				echo '<h1>' . esc_html( wpjm_get_the_job_title() ) . '</h1>';
+				echo '<h1>' . wp_kses_post( wpjm_get_the_job_title() ) . '</h1>';
 				get_job_manager_template_part( 'content-single', 'job_listing' );
 			}
 		}

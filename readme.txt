@@ -1,10 +1,10 @@
 === WP Job Manager ===
-Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, ryancowles, richardmtl, scarstocea
+Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
-Requires at least: 5.5
-Tested up to: 5.7
+Requires at least: 5.7
+Tested up to: 5.9
 Requires PHP: 7.0
-Stable tag: 1.35.1
+Stable tag: 1.35.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,6 +152,20 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.35.3 =
+* Fix: Use wp_kses_post to process a job title instead of esc_html
+* Fix: Fix dependencies (npm/composer) problems
+* Fix: Decode html special chars for mailto link (@RafaelKr)
+* Fix: Reset job filter properly by using jQuery's prop instead of jQuery's attr
+* Fix: Fix not translatable string (@masteradhoc)
+* Fix: Disable transient cache when the order is set to random or random featured
+* Fix: Fix button "Apply for job" when the page is translated using Google Translate
+
+= 1.35.2 =
+* Enhancement: Add agreement checkbox to job submission.
+* Fix: Remove unnecessary filter avoiding warning in WP 5.8.
+* Fix: Fix padding on "Apply for job" button.
 
 = 1.35.1 =
 * Change: On new installs, do not enable account registration on job submission page by default.

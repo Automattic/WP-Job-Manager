@@ -480,9 +480,10 @@ jQuery( document ).ready( function( $ ) {
 				.not( ':input[type="hidden"]' )
 				.val( '' )
 				.trigger( 'change.select2' );
-			$( ':input[name="filter_job_type[]"]', $form )
+			$form
+				.find( ':input[name="filter_job_type[]"]' )
 				.not( ':input[type="hidden"]' )
-				.attr( 'checked', 'checked' );
+				.prop( 'checked', true );
 
 			$target.triggerHandler( 'reset' );
 			$target.triggerHandler( 'update_results', [ 1, false ] );
