@@ -1551,3 +1551,72 @@ function wpjm_esc_json( $json, $html = false ) {
 		true                               // Double escape entities: `&amp;` -> `&amp;amp;`.
 	);
 }
+
+/**
+ * True if an the user can browse resumes.
+ *
+ * @return bool
+ */
+function job_manager_user_can_browse_job_listings() {
+	$can_browse = true;
+	$caps       = array_filter( array_map( 'trim', array_map( 'strtolower', explode( ',', get_option( 'job_manager_browse_job_capability' ) ) ) ) );
+
+	if ( $caps ) {
+		$can_browse = false;
+		foreach ( $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$can_browse = true;
+				break;
+			}
+		}
+	}
+
+	return apply_filters( 'job_manager_user_can_browse_job_listings', $can_browse );
+}
+
+/**
+ * True if an the user can view a resume.
+ *
+ * @since 1.36.0
+ *
+ * @param  int $job_id
+ * @return bool
+ */
+function job_manager_user_can_view_job_listing( $job_id ) {
+	$can_view = true;
+	$job      = get_post( $job_id );
+
+	// Allow previews.
+	if ( 'preview' === $job->post_status ) {
+		return true;
+	}
+
+	$caps = array_filter( array_map( 'trim', array_map( 'strtolower', explode( ',', get_option( 'job_manager_view_job_capability' ) ) ) ) );
+
+	if ( $caps ) {
+		$can_view = false;
+		foreach ( $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$can_view = true;
+				break;
+			}
+		}
+	}
+
+	if ( 'expired' === $job->post_status ) {
+		$can_view = false;
+	}
+
+	if ( $job->post_author > 0 && absint( $job->post_author ) === get_current_user_id() ) {
+		$can_view = true;
+	}
+
+	$key = get_post_meta( $job_id, 'share_link_key', true );
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( $key && ! empty( $_GET['key'] ) && $key === $_GET['key'] ) {
+		$can_view = true;
+	}
+
+	return apply_filters( 'job_manager_user_can_view_job', $can_view, $job_id );
+}
