@@ -397,7 +397,7 @@ class WP_Job_Manager_Settings {
 							'label' => __( 'Browse Job Capability', 'wp-job-manager' ),
 							'type'  => 'capabilities',
 							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
-							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to browse resumes. If no value is selected, everyone (including logged out guests) will be able to browse resumes..', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
 						],
 						[
 							'name'  => 'job_manager_view_job_capability',
@@ -405,7 +405,7 @@ class WP_Job_Manager_Settings {
 							'label' => __( 'View Job Capability', 'wp-job-manager' ),
 							'type'  => 'capabilities',
 							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
-							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to view a single resume. If no value is selected, everyone (including logged out guests) will be able to view resumes.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
 						],
 					],
 				],
