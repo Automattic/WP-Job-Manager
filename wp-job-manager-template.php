@@ -411,9 +411,7 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['jobLocation']['@type']   = 'Place';
 		$data['jobLocation']['address'] = wpjm_get_job_listing_location_structured_data( $post );
 		if ( $post->_remote_position ) {
-			$data['additionalProperty']          = array();
-			$data['additionalProperty']['@type'] = 'PropertyValue';
-			$data['additionalProperty']['value'] = 'TELECOMMUTE';
+			$data['jobLocationType'] = 'TELECOMMUTE';
 		}
 		if ( empty( $data['jobLocation']['address'] ) ) {
 			$data['jobLocation']['address'] = $location;
