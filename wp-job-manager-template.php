@@ -821,11 +821,7 @@ function get_the_job_location( $post = null ) {
 		return null;
 	}
 
-	if ( $post->_remote_position ) {
-		return apply_filters( 'the_job_location', $post->_remote_position, $post );
-	} else {
-		return apply_filters( 'the_job_location', $post->_job_location, $post );
-	}
+	return apply_filters( 'the_job_location', $post->_job_location, $post );
 }
 
 /**
