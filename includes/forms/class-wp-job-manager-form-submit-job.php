@@ -265,6 +265,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => $application_method_placeholder,
 						'priority'    => 7,
 					],
+					'job_salary'        => [
+						'label'       => __( 'Salary', 'wp-job-manager' ),
+						'type'        => 'text',
+						'required'    => false,
+						'placeholder' => 'e.g. 20000',
+						'priority'    => 8,
+					],
 				],
 				'company' => [
 					'company_name'    => [
@@ -329,6 +336,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
 			unset( $this->fields['job']['job_type'] );
+		}
+		if ( ! get_option( 'job_manager_enable_salary' ) ) {
+			unset( $this->fields['job']['job_salary'] );
 		}
 	}
 
