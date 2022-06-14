@@ -383,7 +383,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			foreach ( $group_fields as $key => $field ) {
 				if (
 					$field['required']
-					&& empty( $values[ $group_key ][ $key ] )
+					&& $this->is_empty( $values[ $group_key ][ $key ] )
 					&& ( ! isset( $field['empty'] ) || $field['empty'] )
 				) {
 					// translators: Placeholder %s is the label for the required field.
@@ -521,6 +521,33 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		 * @param array $values   Submitted input values.
 		 */
 		return apply_filters( 'submit_job_form_validate_fields', true, $this->fields, $values );
+	}
+
+	/**
+	 * Checks whether a value is empty.
+	 *
+	 * @param string|numeric|array|boolean $value
+	 * @return bool True if value is empty, false otherwise.
+	 */
+	protected function is_empty( $value ) {
+		/**
+		 * Filter values considered as empty or falsy for required fields.
+		 * Useful for example if you want to consider zero (0) as a non-empty value.
+		 *
+		 * @see http://php.net/manual/en/function.empty.php -- standard default empty values
+		 *
+		 * @since 1.36.0
+		 *
+		 * @param array  $false_vals A list of values considered as falsy.
+		 */
+		$false_vals = apply_filters( 'submit_job_form_validate_fields_empty_values', [ '', 0, 0.0, '0', null, false, [] ] );
+
+		// strict true for type checking.
+		if ( in_array( $value, $false_vals, true ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

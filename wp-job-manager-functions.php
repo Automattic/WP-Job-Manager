@@ -81,11 +81,14 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$location_search    = [ 'relation' => 'OR' ];
 
 			foreach ( $location_meta_keys as $meta_key ) {
-				$location_search[] = [
-					'key'     => $meta_key,
-					'value'   => $args['search_location'],
-					'compare' => 'like',
-				];
+				$search_locations = mb_split( '[,\s]+', $args['search_location'] );
+				foreach ( $search_locations as $search_location ) {
+					$location_search[] = [
+						'key'     => $meta_key,
+						'value'   => $search_location,
+						'compare' => 'like',
+					];
+				}
 			}
 			$query_args['meta_query'][] = $location_search;
 		}
