@@ -784,11 +784,17 @@ function get_the_job_publish_date( $post = null ) {
  */
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
-
-	if ( '1' === $location ) {
-		echo wp_kses_post( apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) ) );
-		return;
+	$post     = get_post( $post );
+	if ( $post->_remote_position ) {
+		$remote_label = apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) );
+		if ( $location ) {
+			$location = "$location <small>($remote_label)</small>";
+		} else {
+			$location = $remote_label;
+			$map_link = false;
+		}
 	}
+
 	if ( $location ) {
 		if ( $map_link ) {
 			// If linking to google maps, we don't want anything but text here.
