@@ -110,7 +110,18 @@ class WP_Job_Manager_Writepanels {
 				'priority'    => 9,
 				'description' => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
 			],
+			'_job_salary' => [
+				'label'       => __( 'Salary', 'wp-job-manager' ),
+				'type'        => 'text',
+				'placeholder' => 'e.g. 20000',
+				'priority'    => 10,
+				'description' => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
+				'default'     => '',
+			],
 		];
+		if ( ! get_option( 'job_manager_enable_salary' ) ) {
+			unset( $fields['_job_salary'] );
+		}
 		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
 			$fields['_featured']    = [
 				'label'       => __( 'Featured Listing', 'wp-job-manager' ),
