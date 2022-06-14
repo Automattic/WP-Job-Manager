@@ -226,7 +226,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
 						'priority'    => 2,
 					],
-          'remote_position' => [
+					'remote_position' => [
 						'label'       => __( 'Remote Position', 'wp-job-manager' ),
 						'description' => __( 'Check if is a remote position.', 'wp-job-manager' ),
 						'type'        => 'checkbox',
