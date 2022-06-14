@@ -57,7 +57,76 @@ class WP_Job_Manager_Writepanels {
 
 		$current_user = wp_get_current_user();
 		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields();
-		$fields       = [];
+
+		$fields = [
+			'_job_location'    => [
+				'label'       => __( 'Location', 'wp-job-manager' ),
+				'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
+				'description' => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
+				'priority'    => 1,
+			],
+			'_remote_position' => [
+				'label'       => __( 'Remote Position', 'wp-job-manager' ),
+				'description' => __( 'Check if is a remote position.', 'wp-job-manager' ),
+				'type'        => 'checkbox',
+				'priority'    => 2,
+			],
+			'_application'     => [
+				'label'       => __( 'Application Email or URL', 'wp-job-manager' ),
+				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
+				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
+				'value'       => metadata_exists( 'post', $post_id, '_application' ) ? get_post_meta( $post_id, '_application', true ) : $current_user->user_email,
+				'priority'    => 3,
+			],
+			'_company_name'    => [
+				'label'       => __( 'Company Name', 'wp-job-manager' ),
+				'placeholder' => '',
+				'priority'    => 4,
+			],
+			'_company_website' => [
+				'label'       => __( 'Company Website', 'wp-job-manager' ),
+				'placeholder' => '',
+				'priority'    => 5,
+			],
+			'_company_tagline' => [
+				'label'       => __( 'Company Tagline', 'wp-job-manager' ),
+				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' ),
+				'priority'    => 6,
+			],
+			'_company_twitter' => [
+				'label'       => __( 'Company Twitter', 'wp-job-manager' ),
+				'placeholder' => '@yourcompany',
+				'priority'    => 7,
+			],
+			'_company_video'   => [
+				'label'       => __( 'Company Video', 'wp-job-manager' ),
+				'placeholder' => __( 'URL to the company video', 'wp-job-manager' ),
+				'type'        => 'file',
+				'priority'    => 8,
+			],
+			'_filled'          => [
+				'label'       => __( 'Position Filled', 'wp-job-manager' ),
+				'type'        => 'checkbox',
+				'priority'    => 9,
+				'description' => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
+			],
+		];
+		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
+			$fields['_featured']    = [
+				'label'       => __( 'Featured Listing', 'wp-job-manager' ),
+				'type'        => 'checkbox',
+				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
+				'priority'    => 10,
+			];
+			$job_expires            = get_post_meta( $post_id, '_job_expires', true );
+			$fields['_job_expires'] = [
+				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
+				'priority'    => 11,
+				'classes'     => [ 'job-manager-datepicker' ],
+				'placeholder' => ! empty( $job_expires ) ? null : date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post_id ) ) ),
+				'value'       => ! empty( $job_expires ) ? gmdate( 'Y-m-d', strtotime( $job_expires ) ) : '',
+			];
+		}
 
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
 			$fields['_job_author'] = [
@@ -494,7 +563,7 @@ class WP_Job_Manager_Writepanels {
 		?>
 		<p class="form-field form-field-checkbox">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?></label>
-			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $field['value'], 1 ); ?> />
+			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php isset( $field['value'] ) ? checked( $field['value'], 1 ) : ''; ?> />
 			<?php if ( ! empty( $field['description'] ) ) : ?>
 				<span class="description"><?php echo wp_kses_post( $field['description'] ); ?></span>
 			<?php endif; ?>

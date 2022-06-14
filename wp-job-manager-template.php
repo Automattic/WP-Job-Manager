@@ -410,6 +410,9 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['jobLocation']            = [];
 		$data['jobLocation']['@type']   = 'Place';
 		$data['jobLocation']['address'] = wpjm_get_job_listing_location_structured_data( $post );
+		if ( $post->_remote_position ) {
+			$data['jobLocationType'] = 'TELECOMMUTE';
+		}
 		if ( empty( $data['jobLocation']['address'] ) ) {
 			$data['jobLocation']['address'] = $location;
 		}
@@ -781,6 +784,16 @@ function get_the_job_publish_date( $post = null ) {
  */
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
+	$post     = get_post( $post );
+	if ( $post->_remote_position ) {
+		$remote_label = apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) );
+		if ( $location ) {
+			$location = "$location <small>($remote_label)</small>";
+		} else {
+			$location = $remote_label;
+			$map_link = false;
+		}
+	}
 
 	if ( $location ) {
 		if ( $map_link ) {
@@ -788,7 +801,7 @@ function the_job_location( $map_link = true, $post = null ) {
 			echo wp_kses_post(
 				apply_filters(
 					'the_job_location_map_link',
-					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
+					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
 					$location,
 					$post
 				)
