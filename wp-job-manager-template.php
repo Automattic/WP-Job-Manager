@@ -418,6 +418,28 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		}
 	}
 
+	$salary = get_the_job_salary( $post );
+	if ( ! empty( $salary ) ) {
+		$data['baseSalary'] = [];
+		$data['baseSalary']['@type'] = 'MonetaryAmount';
+		/**
+		 * Filter for the salary currency.
+		 *
+		 * @since TBD
+		 * @param string     job salary currency.
+		 */
+		$data['baseSalary']['currency'] = apply_filters( 'wpjm_job_salary_currency', 'USD' );
+		$data['baseSalary']['value']['@type'] = 'QuantitativeValue';
+		$data['baseSalary']['value']['value'] = $salary;
+		/**
+		 * Filter for the salary unit.
+		 *
+		 * @since TBD
+		 * @param string     job salary unit.
+		 */
+		$data['baseSalary']['value']['unitText'] = apply_filters( 'wpjm_job_salary_unit', 'YEAR' );
+	}
+
 	/**
 	 * Filter the structured data for a job listing.
 	 *
@@ -1250,3 +1272,55 @@ function job_listing_company_display() {
 	get_job_manager_template( 'content-single-job_listing-company.php', [] );
 }
 add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
+
+/**
+ * Gets the job salary.
+ *
+ * @since T1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	$job_salary = $post->_job_salary;
+
+	/**
+	 * Filter the returned job salary.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_salary
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'the_job_salary', $job_salary, $post );
+}
+
+/**
+ * Displays or retrieves the job salaray with optional content.
+ *
+ * @since 1.36.0
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|void
+ */
+function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
+	$job_salary = get_the_job_salary( $post );
+
+	if ( strlen( $job_salary ) == 0 ) {
+		return;
+	}
+
+	$job_salary = $before . $job_salary . $after;
+
+	if ( $echo ) {
+		echo esc_html( $job_salary );
+	} else {
+		return $job_salary;
+	}
+}
