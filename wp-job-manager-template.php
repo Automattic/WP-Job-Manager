@@ -422,11 +422,11 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 	$currency = get_the_job_salary_currency( $post );
 	$unit     = get_the_job_salary_unit( $post );
 	if ( ! empty( $salary ) ) {
-		$data['baseSalary'] = [];
-		$data['baseSalary']['@type'] = 'MonetaryAmount';
-		$data['baseSalary']['currency'] = $currency;
-		$data['baseSalary']['value']['@type'] = 'QuantitativeValue';
-		$data['baseSalary']['value']['value'] = $salary;
+		$data['baseSalary']                      = [];
+		$data['baseSalary']['@type']             = 'MonetaryAmount';
+		$data['baseSalary']['currency']          = $currency;
+		$data['baseSalary']['value']['@type']    = 'QuantitativeValue';
+		$data['baseSalary']['value']['value']    = $salary;
 		$data['baseSalary']['value']['unitText'] = $unit;
 	}
 
@@ -1304,7 +1304,7 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	$currency = get_the_job_salary_currency( $post );
 	$unit     = get_the_job_salary_unit( $post );
 
-	if ( strlen( $salary ) == 0 ) {
+	if ( strlen( $salary ) === 0 ) {
 		return;
 	}
 

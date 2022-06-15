@@ -265,7 +265,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => $application_method_placeholder,
 						'priority'    => 7,
 					],
-					'job_salary'        => [
+					'job_salary'      => [
 						'label'       => __( 'Salary', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,

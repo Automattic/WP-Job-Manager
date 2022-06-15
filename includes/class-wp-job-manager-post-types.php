@@ -691,7 +691,7 @@ class WP_Job_Manager_Post_Types {
 		$location  = get_the_job_location( $post_id );
 		$company   = get_the_company_name( $post_id );
 		$job_types = wpjm_get_the_job_types( $post_id );
-		$salary = get_the_job_salary( $post_id );
+		$salary    = get_the_job_salary( $post_id );
 
 		if ( $location ) {
 			echo '<job_listing:location><![CDATA[' . esc_html( $location ) . "]]></job_listing:location>\n";

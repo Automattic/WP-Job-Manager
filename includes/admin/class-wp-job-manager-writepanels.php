@@ -110,7 +110,7 @@ class WP_Job_Manager_Writepanels {
 				'priority'    => 9,
 				'description' => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
 			],
-			'_job_salary' => [
+			'_job_salary'      => [
 				'label'       => __( 'Salary', 'wp-job-manager' ),
 				'type'        => 'text',
 				'placeholder' => 'e.g. 20000',
