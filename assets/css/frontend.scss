@@ -411,7 +411,7 @@ div.job_listings {
 		}
 
 		.salary:before {
-			.display-icon;
+			@include display-icon();
 			content: '\e800';
 		}
 	}
