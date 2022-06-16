@@ -785,29 +785,31 @@ function get_the_job_publish_date( $post = null ) {
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
 	$post     = get_post( $post );
+	// phpcs:ignore PHPCompatibility.Operators.NewOperators.t_coalesceFound
+	$address = get_the_job_location_address() ?? $location;
 	if ( $post->_remote_position ) {
 		$remote_label = apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) );
-		if ( $location ) {
-			$location = "$location <small>($remote_label)</small>";
+		if ( $address ) {
+			$address = "$address <small>($remote_label)</small>";
 		} else {
-			$location = $remote_label;
+			$address  = $remote_label;
 			$map_link = false;
 		}
 	}
 
-	if ( $location ) {
+	if ( $address ) {
 		if ( $map_link ) {
 			// If linking to google maps, we don't want anything but text here.
 			echo wp_kses_post(
 				apply_filters(
 					'the_job_location_map_link',
-					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
-					$location,
+					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $address ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $address ) ) . '</a>',
+					$address,
 					$post
 				)
 			);
 		} else {
-			echo wp_kses_post( $location );
+			echo wp_kses_post( $address );
 		}
 	} else {
 		echo wp_kses_post( apply_filters( 'the_job_location_anywhere_text', __( 'Anywhere', 'wp-job-manager' ) ) );
@@ -828,6 +830,71 @@ function get_the_job_location( $post = null ) {
 	}
 
 	return apply_filters( 'the_job_location', $post->_job_location, $post );
+}
+
+/**
+ * Gets the full address of the job listing.
+ *
+ * @since 1.36.0
+ * @param null|int|WP_Post $post (default: null).
+ * @return string|null $address
+ */
+function get_the_job_location_address( $post = null ) {
+	if ( get_option( 'job_manager_display_location_address' ) !== '1' ) {
+		return null;
+	}
+
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return null;
+	}
+
+	$address_data     = [];
+	$geolocation_keys = [
+		'city',
+		'country_long',
+		'country_short',
+		'formatted_address',
+		'lat',
+		'long',
+		'state_long',
+		'state_short',
+		'street',
+		'street_number',
+		'postcode',
+	];
+
+	foreach ( $geolocation_keys as $geolocation_key ) {
+		// phpcs:ignore PHPCompatibility.Operators.NewOperators.t_coalesceFound
+		$address_data[ $geolocation_key ] = get_post_meta( $post->ID, "geolocation_{$geolocation_key}", true ) ?? '';
+	}
+
+	$address_string = $address_data['formatted_address'] ? $address_data['formatted_address'] : null;
+
+	/**
+	 * Updates the job location address string. The filter gets the geolocation
+	 * address data or null if not available and the current $post.
+	 *
+	 * @since 1.36.0
+	 * @hook the_job_location_address
+	 * @param array|null $address {
+	 *   Returns an array of address keys and values.
+	 *   @type string $lat               The lattitude  of the location.
+	 *   @type string $long              The longitude  of the location.
+	 *   @type string $long              The longitude  of the location.
+	 *   @type string $formatted_address The address formatted by Google Maps API.
+	 *   @type string $street_number     The street number.
+	 *   @type string $street            The street name.
+	 *   @type string $city              The city name.
+	 *   @type string $state_short       The short abbriviation of the state.
+	 *   @type string $state_long        Full name of the state.
+	 *   @type string $country_short     The short abbriviation of the country.
+	 *   @type string $country_long      Full name of the country.
+	 * }
+	 * @param WP_Post $post The current post.
+	 * @return string The location address string.
+	 */
+	return apply_filters( 'the_job_location_address', $address_string, $address_data, $post );
 }
 
 /**
