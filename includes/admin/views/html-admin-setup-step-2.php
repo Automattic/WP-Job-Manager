@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tfoot>
 		<tr>
 			<th colspan="4">
-				<input type="submit" class="button button-primary" value="Create selected pages" />
+				<input type="submit" class="button button-primary" value="<?php esc_html_e( 'Create selected pages', 'wp-job-manager' ); ?> />
 				<a href="<?php echo esc_url( add_query_arg( 'step', 3 ) ); ?>" class="button"><?php esc_html_e( 'Skip this step', 'wp-job-manager' ); ?></a>
 			</th>
 		</tr>
