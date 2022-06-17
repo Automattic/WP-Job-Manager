@@ -38,6 +38,8 @@ do_action( 'single_job_listing_meta_before' ); ?>
 
 	<li class="date-posted"><?php the_job_publish_date(); ?></li>
 
+	<li class="salary"><?php the_job_salary(); ?> </li>
+
 	<?php if ( is_position_filled() ) : ?>
 		<li class="position-filled"><?php _e( 'This position has been filled', 'wp-job-manager' ); ?></li>
 	<?php elseif ( ! candidates_can_apply() && 'preview' !== $post->post_status ) : ?>

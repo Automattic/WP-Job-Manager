@@ -418,6 +418,18 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		}
 	}
 
+	$salary   = get_the_job_salary( $post );
+	$currency = get_the_job_salary_currency( $post );
+	$unit     = get_the_job_salary_unit( $post );
+	if ( ! empty( $salary ) ) {
+		$data['baseSalary']                      = [];
+		$data['baseSalary']['@type']             = 'MonetaryAmount';
+		$data['baseSalary']['currency']          = $currency;
+		$data['baseSalary']['value']['@type']    = 'QuantitativeValue';
+		$data['baseSalary']['value']['value']    = $salary;
+		$data['baseSalary']['value']['unitText'] = $unit;
+	}
+
 	/**
 	 * Filter the structured data for a job listing.
 	 *
@@ -785,31 +797,29 @@ function get_the_job_publish_date( $post = null ) {
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
 	$post     = get_post( $post );
-	// phpcs:ignore PHPCompatibility.Operators.NewOperators.t_coalesceFound
-	$address = get_the_job_location_address() ?? $location;
 	if ( $post->_remote_position ) {
 		$remote_label = apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) );
-		if ( $address ) {
-			$address = "$address <small>($remote_label)</small>";
+		if ( $location ) {
+			$location = "$location <small>($remote_label)</small>";
 		} else {
-			$address  = $remote_label;
+			$location = $remote_label;
 			$map_link = false;
 		}
 	}
 
-	if ( $address ) {
+	if ( $location ) {
 		if ( $map_link ) {
 			// If linking to google maps, we don't want anything but text here.
 			echo wp_kses_post(
 				apply_filters(
 					'the_job_location_map_link',
-					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $address ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $address ) ) . '</a>',
-					$address,
+					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
+					$location,
 					$post
 				)
 			);
 		} else {
-			echo wp_kses_post( $address );
+			echo wp_kses_post( $location );
 		}
 	} else {
 		echo wp_kses_post( apply_filters( 'the_job_location_anywhere_text', __( 'Anywhere', 'wp-job-manager' ) ) );
@@ -829,72 +839,16 @@ function get_the_job_location( $post = null ) {
 		return null;
 	}
 
-	return apply_filters( 'the_job_location', $post->_job_location, $post );
-}
-
-/**
- * Gets the full address of the job listing.
- *
- * @since 1.36.0
- * @param null|int|WP_Post $post (default: null).
- * @return string|null $address
- */
-function get_the_job_location_address( $post = null ) {
-	if ( get_option( 'job_manager_display_location_address' ) !== '1' ) {
-		return null;
-	}
-
-	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
-		return null;
-	}
-
-	$address_data     = [];
-	$geolocation_keys = [
-		'city',
-		'country_long',
-		'country_short',
-		'formatted_address',
-		'lat',
-		'long',
-		'state_long',
-		'state_short',
-		'street',
-		'street_number',
-		'postcode',
-	];
-
-	foreach ( $geolocation_keys as $geolocation_key ) {
+	$job_location = $post->_job_location;
+	if ( get_option( 'job_manager_display_location_address' ) === '1' ) {
 		// phpcs:ignore PHPCompatibility.Operators.NewOperators.t_coalesceFound
-		$address_data[ $geolocation_key ] = get_post_meta( $post->ID, "geolocation_{$geolocation_key}", true ) ?? '';
+		$job_location_address = get_post_meta( $post->ID, 'geolocation_formatted_address', true ) ?? '';
+		if ( $job_location_address ) {
+			$job_location = $job_location_address;
+		}
 	}
 
-	$address_string = $address_data['formatted_address'] ? $address_data['formatted_address'] : null;
-
-	/**
-	 * Updates the job location address string. The filter gets the geolocation
-	 * address data or null if not available and the current $post.
-	 *
-	 * @since 1.36.0
-	 * @hook the_job_location_address
-	 * @param array|null $address {
-	 *   Returns an array of address keys and values.
-	 *   @type string $lat               The lattitude  of the location.
-	 *   @type string $long              The longitude  of the location.
-	 *   @type string $long              The longitude  of the location.
-	 *   @type string $formatted_address The address formatted by Google Maps API.
-	 *   @type string $street_number     The street number.
-	 *   @type string $street            The street name.
-	 *   @type string $city              The city name.
-	 *   @type string $state_short       The short abbriviation of the state.
-	 *   @type string $state_long        Full name of the state.
-	 *   @type string $country_short     The short abbriviation of the country.
-	 *   @type string $country_long      Full name of the country.
-	 * }
-	 * @param WP_Post $post The current post.
-	 * @return string The location address string.
-	 */
-	return apply_filters( 'the_job_location_address', $address_string, $address_data, $post );
+	return apply_filters( 'the_job_location', $job_location, $post );
 }
 
 /**
@@ -1317,3 +1271,105 @@ function job_listing_company_display() {
 	get_job_manager_template( 'content-single-job_listing-company.php', [] );
 }
 add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
+
+/**
+ * Gets the job salary.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	$job_salary = $post->_job_salary;
+
+	/**
+	 * Filter the returned job salary.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_salary
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'the_job_salary', $job_salary, $post );
+}
+
+/**
+ * Displays or retrieves the job salaray with optional content.
+ *
+ * @since 1.36.0
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|void
+ */
+function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
+	$salary   = get_the_job_salary( $post );
+	$currency = get_the_job_salary_currency( $post );
+	$unit     = get_the_job_salary_unit( $post );
+
+	if ( strlen( $salary ) === 0 ) {
+		return;
+	}
+
+	$job_salary = $before . $salary . ' ' . $currency . ' / ' . $unit . $after;
+
+	if ( $echo ) {
+		echo esc_html( $job_salary );
+	} else {
+		return $job_salary;
+	}
+}
+
+/**
+ * Gets the job salary currency.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_currency( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	/**
+	 * Filter the returned job currency.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_currency
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_job_salary_currency', 'USD', $post );
+}
+
+/**
+ * Gets the job salary unit.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_unit( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	/**
+	 * Filter the returned job unit (interval).
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_unit
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_job_salary_unit', 'YEAR', $post );
+}

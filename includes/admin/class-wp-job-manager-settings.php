@@ -205,6 +205,15 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+							'name'       => 'job_manager_enable_salary',
+							'std'        => '0',
+							'label'      => __( 'Salary', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Job Salary', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users add a salary when submitting a job.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
 							'name'     => 'job_manager_display_location_address',
 							'std'      => '0',
 							'label'    => __( 'Location Display', 'wp-job-manager' ),
