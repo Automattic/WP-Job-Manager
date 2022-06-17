@@ -409,6 +409,11 @@ div.job_listings {
 			@include display-icon();
 			content: "\e80e";
 		}
+
+		.salary:before {
+			@include display-icon();
+			content: '\e800';
+		}
 	}
 
 	.job_description {

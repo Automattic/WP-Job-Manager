@@ -418,6 +418,18 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		}
 	}
 
+	$salary   = get_the_job_salary( $post );
+	$currency = get_the_job_salary_currency( $post );
+	$unit     = get_the_job_salary_unit( $post );
+	if ( ! empty( $salary ) ) {
+		$data['baseSalary']                      = [];
+		$data['baseSalary']['@type']             = 'MonetaryAmount';
+		$data['baseSalary']['currency']          = $currency;
+		$data['baseSalary']['value']['@type']    = 'QuantitativeValue';
+		$data['baseSalary']['value']['value']    = $salary;
+		$data['baseSalary']['value']['unitText'] = $unit;
+	}
+
 	/**
 	 * Filter the structured data for a job listing.
 	 *
@@ -1250,3 +1262,105 @@ function job_listing_company_display() {
 	get_job_manager_template( 'content-single-job_listing-company.php', [] );
 }
 add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
+
+/**
+ * Gets the job salary.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	$job_salary = $post->_job_salary;
+
+	/**
+	 * Filter the returned job salary.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_salary
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'the_job_salary', $job_salary, $post );
+}
+
+/**
+ * Displays or retrieves the job salaray with optional content.
+ *
+ * @since 1.36.0
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|void
+ */
+function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
+	$salary   = get_the_job_salary( $post );
+	$currency = get_the_job_salary_currency( $post );
+	$unit     = get_the_job_salary_unit( $post );
+
+	if ( strlen( $salary ) === 0 ) {
+		return;
+	}
+
+	$job_salary = $before . $salary . ' ' . $currency . ' / ' . $unit . $after;
+
+	if ( $echo ) {
+		echo esc_html( $job_salary );
+	} else {
+		return $job_salary;
+	}
+}
+
+/**
+ * Gets the job salary currency.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_currency( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	/**
+	 * Filter the returned job currency.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_currency
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_job_salary_currency', 'USD', $post );
+}
+
+/**
+ * Gets the job salary unit.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_unit( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	/**
+	 * Filter the returned job unit (interval).
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_unit
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_job_salary_unit', 'YEAR', $post );
+}
