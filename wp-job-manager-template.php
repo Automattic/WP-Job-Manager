@@ -410,9 +410,24 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['jobLocation']            = [];
 		$data['jobLocation']['@type']   = 'Place';
 		$data['jobLocation']['address'] = wpjm_get_job_listing_location_structured_data( $post );
+		if ( $post->_remote_position ) {
+			$data['jobLocationType'] = 'TELECOMMUTE';
+		}
 		if ( empty( $data['jobLocation']['address'] ) ) {
 			$data['jobLocation']['address'] = $location;
 		}
+	}
+
+	$salary   = get_the_job_salary( $post );
+	$currency = get_the_job_salary_currency( $post );
+	$unit     = get_the_job_salary_unit( $post );
+	if ( ! empty( $salary ) ) {
+		$data['baseSalary']                      = [];
+		$data['baseSalary']['@type']             = 'MonetaryAmount';
+		$data['baseSalary']['currency']          = $currency;
+		$data['baseSalary']['value']['@type']    = 'QuantitativeValue';
+		$data['baseSalary']['value']['value']    = $salary;
+		$data['baseSalary']['value']['unitText'] = $unit;
 	}
 
 	/**
@@ -781,6 +796,16 @@ function get_the_job_publish_date( $post = null ) {
  */
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
+	$post     = get_post( $post );
+	if ( $post->_remote_position ) {
+		$remote_label = apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) );
+		if ( $location ) {
+			$location = "$location <small>($remote_label)</small>";
+		} else {
+			$location = $remote_label;
+			$map_link = false;
+		}
+	}
 
 	if ( $location ) {
 		if ( $map_link ) {
@@ -788,7 +813,7 @@ function the_job_location( $map_link = true, $post = null ) {
 			echo wp_kses_post(
 				apply_filters(
 					'the_job_location_map_link',
-					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
+					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
 					$location,
 					$post
 				)
@@ -814,7 +839,16 @@ function get_the_job_location( $post = null ) {
 		return null;
 	}
 
-	return apply_filters( 'the_job_location', $post->_job_location, $post );
+	$job_location = $post->_job_location;
+	if ( get_option( 'job_manager_display_location_address' ) === '1' ) {
+		// phpcs:ignore PHPCompatibility.Operators.NewOperators.t_coalesceFound
+		$job_location_address = get_post_meta( $post->ID, 'geolocation_formatted_address', true ) ?? '';
+		if ( $job_location_address ) {
+			$job_location = $job_location_address;
+		}
+	}
+
+	return apply_filters( 'the_job_location', $job_location, $post );
 }
 
 /**
@@ -1237,3 +1271,105 @@ function job_listing_company_display() {
 	get_job_manager_template( 'content-single-job_listing-company.php', [] );
 }
 add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
+
+/**
+ * Gets the job salary.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	$job_salary = $post->_job_salary;
+
+	/**
+	 * Filter the returned job salary.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_salary
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'the_job_salary', $job_salary, $post );
+}
+
+/**
+ * Displays or retrieves the job salaray with optional content.
+ *
+ * @since 1.36.0
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|void
+ */
+function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
+	$salary   = get_the_job_salary( $post );
+	$currency = get_the_job_salary_currency( $post );
+	$unit     = get_the_job_salary_unit( $post );
+
+	if ( strlen( $salary ) === 0 ) {
+		return;
+	}
+
+	$job_salary = $before . $salary . ' ' . $currency . ' / ' . $unit . $after;
+
+	if ( $echo ) {
+		echo esc_html( $job_salary );
+	} else {
+		return $job_salary;
+	}
+}
+
+/**
+ * Gets the job salary currency.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_currency( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	/**
+	 * Filter the returned job currency.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_currency
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_job_salary_currency', 'USD', $post );
+}
+
+/**
+ * Gets the job salary unit.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_unit( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	/**
+	 * Filter the returned job unit (interval).
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_unit
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_job_salary_unit', 'YEAR', $post );
+}

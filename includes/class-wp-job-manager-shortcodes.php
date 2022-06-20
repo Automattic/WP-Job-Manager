@@ -545,6 +545,11 @@ class WP_Job_Manager_Shortcodes {
 	public function output_jobs( $atts ) {
 		ob_start();
 
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			get_job_manager_template_part( 'access-denied', 'browse-job_listings' );
+			return ob_get_clean();
+		}
+
 		$atts = shortcode_atts(
 			apply_filters(
 				'job_manager_output_jobs_defaults',
@@ -557,8 +562,8 @@ class WP_Job_Manager_Shortcodes {
 					'show_filters'              => true,
 					'show_categories'           => true,
 					'show_category_multiselect' => get_option( 'job_manager_enable_default_category_multiselect', false ),
-					'show_pagination'           => false,
-					'show_more'                 => true,
+					'show_pagination'           => 'pagination' === get_option( 'job_manager_job_listing_pagination_type' ) ? true : false,
+					'show_more'                 => 'load_more' === get_option( 'job_manager_job_listing_pagination_type' ) ? true : false,
 
 					// Limit what jobs are shown based on category, post status, and type.
 					'categories'                => '',

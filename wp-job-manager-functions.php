@@ -74,16 +74,50 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_location'] ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			$location_search    = [ 'relation' => 'OR' ];
-			foreach ( $location_meta_keys as $meta_key ) {
-				$location_search[] = [
-					'key'     => $meta_key,
-					'value'   => $args['search_location'],
-					'compare' => 'like',
-				];
+			// translators: This one is used to determine if the user is searching for remote work type.
+			$remote_keyword     = __( 'remote', 'wp-job-manager' );
+			$search_terms       = mb_split( '[,\s]+', $args['search_location'] );
+			$search_locations   = [];
+			$location_query     = [];
+			$is_remote_location = false;
+
+			// Check if user is looking for a remote work.
+			foreach ( $search_terms as $search_term ) {
+				$levenshtein_distance = levenshtein( strtolower( $remote_keyword ), strtolower( $search_term ) );
+				if ( -1 < $levenshtein_distance && $levenshtein_distance < 3 ) {
+					$is_remote_location = true;
+				} else {
+					$search_locations[] = $search_term;
+				}
 			}
-			$query_args['meta_query'][] = $location_search;
+
+			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+			foreach ( $location_meta_keys as $meta_key ) {
+				foreach ( $search_locations as $search_location ) {
+					$location_query[] = [
+						'key'     => $meta_key,
+						'value'   => $search_location,
+						'compare' => 'like',
+					];
+				}
+			}
+			if ( count( $location_query ) > 0 ) {
+				$location_query['relation'] = 'OR';
+				$query_args['meta_query'][] = $location_query;
+			}
+
+			if ( $is_remote_location ) {
+				$remote_work_query = [
+					'relation' => 'AND',
+					[
+						'key'     => '_remote_position',
+						'value'   => '1',
+						'compare' => '=',
+					],
+
+				];
+				$query_args['meta_query'][] = $remote_work_query;
+			}
 		}
 
 		if ( ! is_null( $args['featured'] ) ) {
@@ -1566,4 +1600,73 @@ function job_manager_count_user_job_listings( $user_id = 0 ) {
 	}
 
 	return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'job_listing' AND post_status IN ( 'publish', 'pending', 'expired', 'hidden' );", $user_id ) );
+}
+
+/**
+ * True if an the user can browse resumes.
+ *
+ * @return bool
+ */
+function job_manager_user_can_browse_job_listings() {
+	$can_browse = true;
+	$caps       = array_filter( array_map( 'trim', array_map( 'strtolower', explode( ',', get_option( 'job_manager_browse_job_capability' ) ) ) ) );
+
+	if ( $caps ) {
+		$can_browse = false;
+		foreach ( $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$can_browse = true;
+				break;
+			}
+		}
+	}
+
+	return apply_filters( 'job_manager_user_can_browse_job_listings', $can_browse );
+}
+
+/**
+ * True if an the user can view a resume.
+ *
+ * @since 1.36.0
+ *
+ * @param  int $job_id
+ * @return bool
+ */
+function job_manager_user_can_view_job_listing( $job_id ) {
+	$can_view = true;
+	$job      = get_post( $job_id );
+
+	// Allow previews.
+	if ( 'preview' === $job->post_status ) {
+		return true;
+	}
+
+	$caps = array_filter( array_map( 'trim', array_map( 'strtolower', explode( ',', get_option( 'job_manager_view_job_capability' ) ) ) ) );
+
+	if ( $caps ) {
+		$can_view = false;
+		foreach ( $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$can_view = true;
+				break;
+			}
+		}
+	}
+
+	if ( 'expired' === $job->post_status ) {
+		$can_view = false;
+	}
+
+	if ( $job->post_author > 0 && absint( $job->post_author ) === get_current_user_id() ) {
+		$can_view = true;
+	}
+
+	$key = get_post_meta( $job_id, 'share_link_key', true );
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( $key && ! empty( $_GET['key'] ) && $key === $_GET['key'] ) {
+		$can_view = true;
+	}
+
+	return apply_filters( 'job_manager_user_can_view_job', $can_view, $job_id );
 }
