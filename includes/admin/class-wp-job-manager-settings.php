@@ -115,9 +115,9 @@ class WP_Job_Manager_Settings {
 							'cb_label'   => __( 'Delete WP Job Manager data when the plugin is deleted. Once the plugin is uninstalled, only job listings can be restored (30 days).', 'wp-job-manager' ),
 							'desc'       => '',
 							'type'       => 'checkbox',
-							'attributes' => array(),
-						),
-						array(
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_bypass_trash_on_uninstall',
 							'std'        => '0',
 							'label'      => __( 'Bypass Trash For Job Listings', 'wp-job-manager' ),
