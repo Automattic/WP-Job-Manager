@@ -25,6 +25,7 @@
     "@wordpress/jest-preset-default": "7.0.0",
     "@wordpress/scripts": "13.0.0",
     "file-loader": "6.2.0",
+    "grunt": "^1.5.3",
     "husky": "7.0.4",
     "lint-staged": "12.3.4"
   },
