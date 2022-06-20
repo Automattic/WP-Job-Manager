@@ -213,6 +213,14 @@ class WP_Job_Manager_Settings {
 							'type'       => 'checkbox',
 							'attributes' => [],
 						],
+						[
+							'name'     => 'job_manager_display_location_address',
+							'std'      => '0',
+							'label'    => __( 'Location Display', 'wp-job-manager' ),
+							'cb_label' => __( 'Display Location Address', 'wp-job-manager' ),
+							'desc'     => __( 'Display the full address of the job listing location if it is detected by Google Maps Geocoding API. If full address is not available then it will display whatever text the user submitted for the location.', 'wp-job-manager' ),
+							'type'     => 'checkbox',
+						],
 					],
 				],
 				'job_submission' => [

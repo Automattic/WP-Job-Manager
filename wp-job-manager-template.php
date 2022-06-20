@@ -839,7 +839,16 @@ function get_the_job_location( $post = null ) {
 		return null;
 	}
 
-	return apply_filters( 'the_job_location', $post->_job_location, $post );
+	$job_location = $post->_job_location;
+	if ( get_option( 'job_manager_display_location_address' ) === '1' ) {
+		// phpcs:ignore PHPCompatibility.Operators.NewOperators.t_coalesceFound
+		$job_location_address = get_post_meta( $post->ID, 'geolocation_formatted_address', true ) ?? '';
+		if ( $job_location_address ) {
+			$job_location = $job_location_address;
+		}
+	}
+
+	return apply_filters( 'the_job_location', $job_location, $post );
 }
 
 /**
