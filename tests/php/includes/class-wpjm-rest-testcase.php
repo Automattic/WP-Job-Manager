@@ -114,7 +114,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args_or_body Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	protected function request( $endpoint, $method, $args_or_body = array() ) {
+	protected function request( $endpoint, $method, $args_or_body = [] ) {
 		$this->beforeRequest();
 
 		$request = new WP_REST_Request( $method, $endpoint );
@@ -135,7 +135,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	protected function get( $endpoint, $args = array() ) {
+	protected function get( $endpoint, $args = [] ) {
 		return $this->request( $endpoint, 'GET', $args );
 	}
 
@@ -146,7 +146,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	protected function post( $endpoint, $args = array() ) {
+	protected function post( $endpoint, $args = [] ) {
 		return $this->request( $endpoint, 'POST', $args );
 	}
 
@@ -157,7 +157,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	protected function put( $endpoint, $args = array() ) {
+	protected function put( $endpoint, $args = [] ) {
 		return $this->request( $endpoint, 'PUT', $args );
 	}
 
@@ -168,7 +168,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 * @param array  $args Any Data/Args.
 	 * @return WP_REST_Response
 	 */
-	protected function delete( $endpoint, $args = array() ) {
+	protected function delete( $endpoint, $args = [] ) {
 		return $this->request( $endpoint, 'DELETE', $args );
 	}
 

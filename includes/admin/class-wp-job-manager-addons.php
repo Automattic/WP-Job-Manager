@@ -50,7 +50,7 @@ class WP_Job_Manager_Addons {
 	 */
 	private function get_add_ons( $category = null ) {
 		$raw_add_ons = wp_remote_get(
-			add_query_arg( array( array( 'category' => $category ) ), self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' )
+			add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' )
 		);
 		if ( ! is_wp_error( $raw_add_ons ) ) {
 			$add_ons = json_decode( wp_remote_retrieve_body( $raw_add_ons ) )->products;
@@ -91,10 +91,10 @@ class WP_Job_Manager_Addons {
 		if ( false === ( $add_on_messages ) ) {
 			$raw_messages = wp_safe_remote_get(
 				add_query_arg(
-					array(
+					[
 						'version' => JOB_MANAGER_VERSION,
 						'lang'    => get_locale(),
-					),
+					],
 					self::WPJM_COM_PRODUCTS_API_BASE_URL . '/messages'
 				)
 			);

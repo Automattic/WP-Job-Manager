@@ -42,7 +42,7 @@ class WP_Job_Manager_Blocks {
 			return;
 		}
 
-		add_action( 'init', array( $this, 'register_blocks' ) );
+		add_action( 'init', [ $this, 'register_blocks' ] );
 	}
 
 	/**

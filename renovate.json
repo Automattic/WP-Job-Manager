@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "labels": ["[Type] Maintenance"],
+  "packageRules": [
+    {
+      "depTypeList": ["devDependencies"],
+      "extends": ["schedule:monthly"],
+      "groupName": "devDependencies"
+    },
+    {
+      "depTypeList": ["dependencies"],
+      "extends": ["schedule:monthly"]
+    },
+    {
+      "depTypeList": ["require-dev"],
+      "extends": ["schedule:monthly"],
+      "groupName": "require-dev"
+    }
+  ]
+}

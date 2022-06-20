@@ -42,13 +42,13 @@ class WP_Job_Manager_Taxonomy_Meta {
 	 */
 	public function __construct() {
 		if ( wpjm_job_listing_employment_type_enabled() ) {
-			add_action( 'job_listing_type_edit_form_fields', array( $this, 'display_schema_org_employment_type_field' ), 10, 2 );
-			add_action( 'job_listing_type_add_form_fields', array( $this, 'add_form_display_schema_org_employment_type_field' ), 10 );
-			add_action( 'edited_job_listing_type', array( $this, 'set_schema_org_employment_type_field' ), 10, 2 );
-			add_action( 'created_job_listing_type', array( $this, 'set_schema_org_employment_type_field' ), 10, 2 );
-			add_filter( 'manage_edit-job_listing_type_columns', array( $this, 'add_employment_type_column' ) );
-			add_filter( 'manage_job_listing_type_custom_column', array( $this, 'add_employment_type_column_content' ), 10, 3 );
-			add_filter( 'manage_edit-job_listing_type_sortable_columns', array( $this, 'add_employment_type_column_sortable' ) );
+			add_action( 'job_listing_type_edit_form_fields', [ $this, 'display_schema_org_employment_type_field' ], 10, 2 );
+			add_action( 'job_listing_type_add_form_fields', [ $this, 'add_form_display_schema_org_employment_type_field' ], 10 );
+			add_action( 'edited_job_listing_type', [ $this, 'set_schema_org_employment_type_field' ], 10, 2 );
+			add_action( 'created_job_listing_type', [ $this, 'set_schema_org_employment_type_field' ], 10, 2 );
+			add_filter( 'manage_edit-job_listing_type_columns', [ $this, 'add_employment_type_column' ] );
+			add_filter( 'manage_job_listing_type_custom_column', [ $this, 'add_employment_type_column_content' ], 10, 3 );
+			add_filter( 'manage_edit-job_listing_type_sortable_columns', [ $this, 'add_employment_type_column_sortable' ] );
 		}
 	}
 

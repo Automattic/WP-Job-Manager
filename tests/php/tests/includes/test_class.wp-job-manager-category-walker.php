@@ -28,17 +28,17 @@ class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 			$test_output_b,
 			$terms[0],
 			11,
-			array(
+			[
 				'show_count'   => true,
 				'hierarchical' => true,
-			)
+			]
 		);
 		$this->assertContains( '&nbsp;(0)', $test_output_b );
 		$this->assertContains( str_repeat( '&nbsp;', 33 ), $test_output_b );
 
 		// With selected.
 		$test_output_c = '';
-		$walker->start_el( $test_output_c, $terms[0], 0, array( 'selected' => $terms[0]->slug ) );
+		$walker->start_el( $test_output_c, $terms[0], 0, [ 'selected' => $terms[0]->slug ] );
 		$this->assertContains( 'selected="selected"', $test_output_c );
 	}
 
@@ -48,7 +48,7 @@ class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 
 	private function get_terms() {
 		$terms                = $this->setup_terms();
-		$args                 = array();
+		$args                 = [];
 		$args['taxonomy']     = WP_UnitTest_Factory_For_Term::DEFAULT_TAXONOMY;
 		$args['pad_counts']   = 1;
 		$args['hierarchical'] = 1;

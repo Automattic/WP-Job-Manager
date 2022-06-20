@@ -42,15 +42,15 @@ class WP_Job_Manager_Forms {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'init', array( $this, 'load_posted_form' ) );
+		add_action( 'init', [ $this, 'load_posted_form' ] );
 	}
 
 	/**
 	 * If a form was posted, load its class so that it can be processed before display.
 	 */
 	public function load_posted_form() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
-		$job_manager_form = ! empty( $_POST['job_manager_form'] ) ? sanitize_title( wp_unslash( $_POST['job_manager_form'] ) ) : false;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+		$job_manager_form = ! empty( $_REQUEST['job_manager_form'] ) ? sanitize_title( wp_unslash( $_REQUEST['job_manager_form'] ) ) : false;
 
 		if ( ! empty( $job_manager_form ) ) {
 			$this->load_form_class( $job_manager_form );
@@ -73,7 +73,7 @@ class WP_Job_Manager_Forms {
 		$form_file  = JOB_MANAGER_PLUGIN_DIR . '/includes/forms/class-wp-job-manager-form-' . $form_name . '.php';
 
 		if ( class_exists( $form_class ) ) {
-			return call_user_func( array( $form_class, 'instance' ) );
+			return call_user_func( [ $form_class, 'instance' ] );
 		}
 
 		if ( ! file_exists( $form_file ) ) {
@@ -85,7 +85,7 @@ class WP_Job_Manager_Forms {
 		}
 
 		// Init the form.
-		return call_user_func( array( $form_class, 'instance' ) );
+		return call_user_func( [ $form_class, 'instance' ] );
 	}
 
 	/**
@@ -95,7 +95,7 @@ class WP_Job_Manager_Forms {
 	 * @param array  $atts Optional passed attributes.
 	 * @return string|null
 	 */
-	public function get_form( $form_name, $atts = array() ) {
+	public function get_form( $form_name, $atts = [] ) {
 		$form = $this->load_form_class( $form_name );
 		if ( $form ) {
 			ob_start();

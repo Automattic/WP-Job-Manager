@@ -17,7 +17,7 @@ class WP_Job_Manager_Form_Test extends WP_Job_Manager_Form {
 		return null !== self::$instance;
 	}
 
-	public function output( $atts = array() ) {
+	public function output( $atts = [] ) {
 		echo 'success';
 	}
 }

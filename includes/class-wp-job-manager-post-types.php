@@ -27,6 +27,13 @@ class WP_Job_Manager_Post_Types {
 	private static $instance = null;
 
 	/**
+	 * Job IDs that were submitted in this request.
+	 *
+	 * @var array
+	 */
+	private $submitted_job_ids = [];
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  1.26.0
@@ -44,21 +51,18 @@ class WP_Job_Manager_Post_Types {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'init', array( $this, 'register_post_types' ), 0 );
-		add_action( 'init', array( $this, 'prepare_block_editor' ) );
-		add_action( 'init', array( $this, 'register_meta_fields' ) );
-		add_filter( 'admin_head', array( $this, 'admin_head' ) );
-		add_action( 'job_manager_check_for_expired_jobs', array( $this, 'check_for_expired_jobs' ) );
-		add_action( 'job_manager_delete_old_previews', array( $this, 'delete_old_previews' ) );
+		add_action( 'init', [ $this, 'register_post_types' ], 0 );
+		add_action( 'init', [ $this, 'prepare_block_editor' ] );
+		add_action( 'init', [ $this, 'register_meta_fields' ] );
+		add_filter( 'admin_head', [ $this, 'admin_head' ] );
+		add_action( 'job_manager_check_for_expired_jobs', [ $this, 'check_for_expired_jobs' ] );
+		add_action( 'job_manager_delete_old_previews', [ $this, 'delete_old_previews' ] );
 
-		add_action( 'pending_to_publish', array( $this, 'set_expiry' ) );
-		add_action( 'preview_to_publish', array( $this, 'set_expiry' ) );
-		add_action( 'draft_to_publish', array( $this, 'set_expiry' ) );
-		add_action( 'auto-draft_to_publish', array( $this, 'set_expiry' ) );
-		add_action( 'expired_to_publish', array( $this, 'set_expiry' ) );
+		add_action( 'transition_post_status', [ $this, 'transition_post_status' ], 10, 3 );
 
-		add_action( 'wp_head', array( $this, 'noindex_expired_filled_job_listings' ) );
-		add_action( 'wp_footer', array( $this, 'output_structured_data' ) );
+		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ], 0 );
+		add_action( 'wp_footer', [ $this, 'output_structured_data' ] );
+		add_filter( 'wp_sitemaps_posts_query_args', [ $this, 'sitemaps_maybe_hide_filled' ], 10, 2 );
 
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
@@ -67,22 +71,22 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_job_description', 'shortcode_unautop' );
 		add_filter( 'the_job_description', 'prepend_attachment' );
 		if ( ! empty( $GLOBALS['wp_embed'] ) ) {
-			add_filter( 'the_job_description', array( $GLOBALS['wp_embed'], 'run_shortcode' ), 8 );
-			add_filter( 'the_job_description', array( $GLOBALS['wp_embed'], 'autoembed' ), 8 );
+			add_filter( 'the_job_description', [ $GLOBALS['wp_embed'], 'run_shortcode' ], 8 );
+			add_filter( 'the_job_description', [ $GLOBALS['wp_embed'], 'autoembed' ], 8 );
 		}
 
-		add_action( 'job_manager_application_details_email', array( $this, 'application_details_email' ) );
-		add_action( 'job_manager_application_details_url', array( $this, 'application_details_url' ) );
+		add_action( 'job_manager_application_details_email', [ $this, 'application_details_email' ] );
+		add_action( 'job_manager_application_details_url', [ $this, 'application_details_url' ] );
 
-		add_filter( 'wp_insert_post_data', array( $this, 'fix_post_name' ), 10, 2 );
-		add_action( 'add_post_meta', array( $this, 'maybe_add_geolocation_data' ), 10, 3 );
-		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
-		add_action( 'wp_insert_post', array( $this, 'maybe_add_default_meta_data' ), 10, 2 );
-		add_filter( 'post_types_to_delete_with_user', array( $this, 'delete_user_add_job_listings_post_type' ) );
+		add_filter( 'wp_insert_post_data', [ $this, 'fix_post_name' ], 10, 2 );
+		add_action( 'add_post_meta', [ $this, 'maybe_add_geolocation_data' ], 10, 3 );
+		add_action( 'update_post_meta', [ $this, 'update_post_meta' ], 10, 4 );
+		add_action( 'wp_insert_post', [ $this, 'maybe_add_default_meta_data' ], 10, 2 );
+		add_filter( 'post_types_to_delete_with_user', [ $this, 'delete_user_add_job_listings_post_type' ] );
 
-		add_action( 'transition_post_status', array( $this, 'track_job_submission' ), 10, 3 );
+		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
-		add_action( 'parse_query', array( $this, 'add_feed_query_args' ) );
+		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -92,10 +96,8 @@ class WP_Job_Manager_Post_Types {
 	 * Prepare CPTs for special block editor situations.
 	 */
 	public function prepare_block_editor() {
-		add_filter( 'allowed_block_types', array( $this, 'force_classic_block' ), 10, 2 );
-
 		if ( false === job_manager_multi_job_type() ) {
-			add_filter( 'rest_prepare_taxonomy', array( $this, 'hide_job_type_block_editor_selector' ), 10, 3 );
+			add_filter( 'rest_prepare_taxonomy', [ $this, 'hide_job_type_block_editor_selector' ], 10, 3 );
 		}
 	}
 
@@ -103,13 +105,17 @@ class WP_Job_Manager_Post_Types {
 	 * Forces job listings to just have the classic block. This is necessary with the use of the classic editor on
 	 * the frontend.
 	 *
+	 * @deprecated 1.35.2
+	 *
 	 * @param array   $allowed_block_types
 	 * @param WP_Post $post
 	 * @return array
 	 */
 	public function force_classic_block( $allowed_block_types, $post ) {
+		_deprecated_function( __METHOD__, '1.35.2' );
+
 		if ( 'job_listing' === $post->post_type ) {
-			return array( 'core/freeform' );
+			return [ 'core/freeform' ];
 		}
 		return $allowed_block_types;
 	}
@@ -155,11 +161,11 @@ class WP_Job_Manager_Post_Types {
 			$plural   = __( 'Job categories', 'wp-job-manager' );
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
-				$rewrite = array(
+				$rewrite = [
 					'slug'         => $permalink_structure['category_rewrite_slug'],
 					'with_front'   => false,
 					'hierarchical' => false,
-				);
+				];
 				$public  = true;
 			} else {
 				$rewrite = false;
@@ -168,14 +174,14 @@ class WP_Job_Manager_Post_Types {
 
 			register_taxonomy(
 				'job_listing_category',
-				apply_filters( 'register_taxonomy_job_listing_category_object_type', array( 'job_listing' ) ),
+				apply_filters( 'register_taxonomy_job_listing_category_object_type', [ 'job_listing' ] ),
 				apply_filters(
 					'register_taxonomy_job_listing_category_args',
-					array(
+					[
 						'hierarchical'          => true,
 						'update_count_callback' => '_update_post_term_count',
 						'label'                 => $plural,
-						'labels'                => array(
+						'labels'                => [
 							'name'              => $plural,
 							'singular_name'     => $singular,
 							'menu_name'         => ucwords( $plural ),
@@ -195,21 +201,21 @@ class WP_Job_Manager_Post_Types {
 							'add_new_item'      => sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
 							// translators: Placeholder %s is the singular label of the job listing category taxonomy type.
 							'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ), $singular ),
-						),
+						],
 						'show_ui'               => true,
 						'show_tagcloud'         => false,
 						'public'                => $public,
-						'capabilities'          => array(
+						'capabilities'          => [
 							'manage_terms' => $admin_capability,
 							'edit_terms'   => $admin_capability,
 							'delete_terms' => $admin_capability,
 							'assign_terms' => $admin_capability,
-						),
+						],
 						'rewrite'               => $rewrite,
 						'show_in_rest'          => true,
 						'rest_base'             => 'job-categories',
 
-					)
+					]
 				)
 			);
 		}
@@ -219,11 +225,11 @@ class WP_Job_Manager_Post_Types {
 			$plural   = __( 'Job types', 'wp-job-manager' );
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
-				$rewrite = array(
+				$rewrite = [
 					'slug'         => $permalink_structure['type_rewrite_slug'],
 					'with_front'   => false,
 					'hierarchical' => false,
-				);
+				];
 				$public  = true;
 			} else {
 				$rewrite = false;
@@ -232,13 +238,13 @@ class WP_Job_Manager_Post_Types {
 
 			register_taxonomy(
 				'job_listing_type',
-				apply_filters( 'register_taxonomy_job_listing_type_object_type', array( 'job_listing' ) ),
+				apply_filters( 'register_taxonomy_job_listing_type_object_type', [ 'job_listing' ] ),
 				apply_filters(
 					'register_taxonomy_job_listing_type_args',
-					array(
+					[
 						'hierarchical'         => true,
 						'label'                => $plural,
-						'labels'               => array(
+						'labels'               => [
 							'name'              => $plural,
 							'singular_name'     => $singular,
 							'menu_name'         => ucwords( $plural ),
@@ -258,35 +264,35 @@ class WP_Job_Manager_Post_Types {
 							'add_new_item'      => sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
 							// translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 							'new_item_name'     => sprintf( __( 'New %s Name', 'wp-job-manager' ), $singular ),
-						),
+						],
 						'show_ui'              => true,
 						'show_tagcloud'        => false,
 						'public'               => $public,
-						'capabilities'         => array(
+						'capabilities'         => [
 							'manage_terms' => $admin_capability,
 							'edit_terms'   => $admin_capability,
 							'delete_terms' => $admin_capability,
 							'assign_terms' => $admin_capability,
-						),
+						],
 						'rewrite'              => $rewrite,
 						'show_in_rest'         => true,
 						'rest_base'            => 'job-types',
-						'meta_box_sanitize_cb' => array( $this, 'sanitize_job_type_meta_box_input' ),
-					)
+						'meta_box_sanitize_cb' => [ $this, 'sanitize_job_type_meta_box_input' ],
+					]
 				)
 			);
 			if ( function_exists( 'wpjm_job_listing_employment_type_enabled' ) && wpjm_job_listing_employment_type_enabled() ) {
 				register_meta(
 					'term',
 					'employment_type',
-					array(
+					[
 						'object_subtype'    => 'job_listing_type',
 						'show_in_rest'      => true,
 						'type'              => 'string',
 						'single'            => true,
 						'description'       => esc_html__( 'Employment Type', 'wp-job-manager' ),
-						'sanitize_callback' => array( $this, 'sanitize_employment_type' ),
-					)
+						'sanitize_callback' => [ $this, 'sanitize_employment_type' ],
+					]
 				);
 			}
 		}
@@ -310,19 +316,19 @@ class WP_Job_Manager_Post_Types {
 			$has_archive = false;
 		}
 
-		$rewrite = array(
+		$rewrite = [
 			'slug'       => $permalink_structure['job_rewrite_slug'],
 			'with_front' => false,
 			'feeds'      => true,
 			'pages'      => false,
-		);
+		];
 
 		register_post_type(
 			'job_listing',
 			apply_filters(
 				'register_post_type_job_listing',
-				array(
-					'labels'                => array(
+				[
+					'labels'                => [
 						'name'                  => $plural,
 						'singular_name'         => $singular,
 						'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
@@ -352,7 +358,7 @@ class WP_Job_Manager_Post_Types {
 						'set_featured_image'    => __( 'Set company logo', 'wp-job-manager' ),
 						'remove_featured_image' => __( 'Remove company logo', 'wp-job-manager' ),
 						'use_featured_image'    => __( 'Use as company logo', 'wp-job-manager' ),
-					),
+					],
 					// translators: Placeholder %s is the plural label of the job listing post type.
 					'description'           => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
 					'public'                => true,
@@ -364,30 +370,31 @@ class WP_Job_Manager_Post_Types {
 					'hierarchical'          => false,
 					'rewrite'               => $rewrite,
 					'query_var'             => true,
-					'supports'              => array( 'title', 'editor', 'custom-fields', 'publicize', 'thumbnail' ),
+					'supports'              => [ 'title', 'editor', 'custom-fields', 'publicize', 'thumbnail', 'author' ],
 					'has_archive'           => $has_archive,
 					'show_in_nav_menus'     => false,
 					'delete_with_user'      => true,
 					'show_in_rest'          => true,
 					'rest_base'             => 'job-listings',
 					'rest_controller_class' => 'WP_REST_Posts_Controller',
-					'template'              => array( array( 'core/freeform' ) ),
+					'template'              => [ [ 'core/freeform' ] ],
 					'template_lock'         => 'all',
-				)
+					'menu_position'         => 30,
+				]
 			)
 		);
 
 		/**
 		 * Feeds
 		 */
-		add_feed( self::get_job_feed_name(), array( $this, 'job_feed' ) );
+		add_feed( self::get_job_feed_name(), [ $this, 'job_feed' ] );
 
 		/**
 		 * Post status
 		 */
 		register_post_status(
 			'expired',
-			array(
+			[
 				'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
 				'public'                    => true,
 				'protected'                 => true,
@@ -396,11 +403,11 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin_status_list' => true,
 				// translators: Placeholder %s is the number of expired posts of this type.
 				'label_count'               => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'wp-job-manager' ),
-			)
+			]
 		);
 		register_post_status(
 			'preview',
-			array(
+			[
 				'label'                     => _x( 'Preview', 'post status', 'wp-job-manager' ),
 				'public'                    => false,
 				'exclude_from_search'       => true,
@@ -408,7 +415,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin_status_list' => true,
 				// translators: Placeholder %s is the number of posts in a preview state.
 				'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
-			)
+			]
 		);
 	}
 
@@ -466,8 +473,8 @@ class WP_Job_Manager_Post_Types {
 			'job_manager_kses_allowed_html',
 			array_replace_recursive( // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.array_replace_recursiveFound
 				wp_kses_allowed_html( 'post' ),
-				array(
-					'iframe' => array(
+				[
+					'iframe' => [
 						'src'             => true,
 						'width'           => true,
 						'height'          => true,
@@ -478,8 +485,8 @@ class WP_Job_Manager_Post_Types {
 						'title'           => true,
 						'allow'           => true,
 						'allowfullscreen' => true,
-					),
-				)
+					],
+				]
 			)
 		);
 	}
@@ -505,9 +512,9 @@ class WP_Job_Manager_Post_Types {
 	 */
 	private function job_content_filter( $enable ) {
 		if ( ! $enable ) {
-			remove_filter( 'the_content', array( $this, 'job_content' ) );
+			remove_filter( 'the_content', [ $this, 'job_content' ] );
 		} else {
-			add_filter( 'the_content', array( $this, 'job_content' ) );
+			add_filter( 'the_content', [ $this, 'job_content' ] );
 		}
 	}
 
@@ -520,7 +527,12 @@ class WP_Job_Manager_Post_Types {
 	public function job_content( $content ) {
 		global $post;
 
-		if ( ! is_singular( 'job_listing' ) || ! in_the_loop() || 'job_listing' !== $post->post_type ) {
+		if (
+			! is_singular( 'job_listing' ) ||
+			! in_the_loop() ||
+			'job_listing' !== $post->post_type ||
+			( post_password_required() && ! is_super_admin() )
+		) {
 			return $content;
 		}
 
@@ -548,53 +560,74 @@ class WP_Job_Manager_Post_Types {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input used to filter public data in feed.
 		$input_posts_per_page  = isset( $_GET['posts_per_page'] ) ? absint( $_GET['posts_per_page'] ) : 10;
 		$input_search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : false;
-		$input_job_types       = isset( $_GET['job_types'] ) ? explode( ',', sanitize_text_field( wp_unslash( $_GET['job_types'] ) ) ) : false;
-		$input_job_categories  = isset( $_GET['job_categories'] ) ? explode( ',', sanitize_text_field( wp_unslash( $_GET['job_categories'] ) ) ) : false;
-		$job_manager_keyword   = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
+
+		if ( isset( $_GET['job_types'] ) ) {
+			$sanitized_job_types = sanitize_text_field( wp_unslash( $_GET['job_types'] ) );
+			$input_job_types     = empty( $sanitized_job_types ) ? false : explode( ',', $sanitized_job_types );
+		} else {
+			$input_job_types = false;
+		}
+
+		if ( isset( $_GET['job_categories'] ) ) {
+			$sanitized_job_categories = sanitize_text_field( wp_unslash( $_GET['job_categories'] ) );
+			$input_job_categories     = empty( $sanitized_job_categories ) ? false : explode( ',', $sanitized_job_categories );
+		} else {
+			$input_job_categories = false;
+		}
+
+		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-		$query_args = array(
+		$query_args = [
 			'post_type'           => 'job_listing',
 			'post_status'         => 'publish',
 			'ignore_sticky_posts' => 1,
 			'posts_per_page'      => $input_posts_per_page,
 			'paged'               => absint( get_query_var( 'paged', 1 ) ),
-			'tax_query'           => array(),
-			'meta_query'          => array(),
-		);
+			'tax_query'           => [],
+			'meta_query'          => [],
+		];
 
 		if ( ! empty( $input_search_location ) ) {
-			$location_meta_keys = array( 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' );
-			$location_search    = array( 'relation' => 'OR' );
+			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+			$location_search    = [ 'relation' => 'OR' ];
 			foreach ( $location_meta_keys as $meta_key ) {
-				$location_search[] = array(
+				$location_search[] = [
 					'key'     => $meta_key,
 					'value'   => $input_search_location,
 					'compare' => 'like',
-				);
+				];
 			}
 			$query_args['meta_query'][] = $location_search;
 		}
 
+		// Hide filled positions from the job feed.
+		if ( 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
+			$query_args['meta_query'][] = [
+				'key'   => '_filled',
+				'value' => '0',
+			];
+		}
+
 		if ( ! empty( $input_job_types ) ) {
-			$query_args['tax_query'][] = array(
+			$query_args['tax_query'][] = [
 				'taxonomy' => 'job_listing_type',
 				'field'    => 'slug',
-				'terms'    => $input_job_types + array( 0 ),
-			);
+				'terms'    => $input_job_types + [ 0 ],
+			];
 		}
 
 		if ( ! empty( $input_job_categories ) ) {
-			$cats                      = $input_job_categories + array( 0 );
+			$cats                      = $input_job_categories + [ 0 ];
 			$field                     = is_numeric( $cats ) ? 'term_id' : 'slug';
 			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $cats ) > 1 ? 'AND' : 'IN';
-			$query_args['tax_query'][] = array(
+			$query_args['tax_query'][] = [
 				'taxonomy'         => 'job_listing_category',
 				'field'            => $field,
 				'terms'            => $cats,
 				'include_children' => 'AND' !== $operator,
 				'operator'         => $operator,
-			);
+			];
 		}
 
 		if ( ! empty( $job_manager_keyword ) ) {
@@ -612,8 +645,8 @@ class WP_Job_Manager_Post_Types {
 
 		// phpcs:ignore WordPress.WP.DiscouragedFunctions
 		query_posts( apply_filters( 'job_feed_args', $query_args ) );
-		add_action( 'rss2_ns', array( $this, 'job_feed_namespace' ) );
-		add_action( 'rss2_item', array( $this, 'job_feed_item' ) );
+		add_action( 'rss2_ns', [ $this, 'job_feed_namespace' ] );
+		add_action( 'rss2_item', [ $this, 'job_feed_item' ] );
 		do_feed_rss2( false );
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search' );
 	}
@@ -658,6 +691,7 @@ class WP_Job_Manager_Post_Types {
 		$location  = get_the_job_location( $post_id );
 		$company   = get_the_company_name( $post_id );
 		$job_types = wpjm_get_the_job_types( $post_id );
+		$salary    = get_the_job_salary( $post_id );
 
 		if ( $location ) {
 			echo '<job_listing:location><![CDATA[' . esc_html( $location ) . "]]></job_listing:location>\n";
@@ -668,6 +702,9 @@ class WP_Job_Manager_Post_Types {
 		}
 		if ( $company ) {
 			echo '<job_listing:company><![CDATA[' . esc_html( $company ) . "]]></job_listing:company>\n";
+		}
+		if ( $salary ) {
+			echo '<job_listing:salary><![CDATA[' . esc_html( $salary ) . "]]></job_listing:salary>\n";
 		}
 
 		/**
@@ -682,32 +719,37 @@ class WP_Job_Manager_Post_Types {
 	 * Maintenance task to expire jobs.
 	 */
 	public function check_for_expired_jobs() {
+		$expired_date_comparison = current_datetime();
+		if ( ! $this->jobs_expires_end_of_day() ) {
+			$expired_date_comparison = $expired_date_comparison->add( new DateInterval( 'P1D' ) );
+		}
+
 		// Change status to expired.
 		$job_ids = get_posts(
-			array(
+			[
 				'post_type'      => 'job_listing',
 				'post_status'    => 'publish',
 				'fields'         => 'ids',
 				'posts_per_page' => -1,
-				'meta_query'     => array(
+				'meta_query'     => [
 					'relation' => 'AND',
-					array(
+					[
 						'key'     => '_job_expires',
 						'value'   => 0,
 						'compare' => '>',
-					),
-					array(
+					],
+					[
 						'key'     => '_job_expires',
-						'value'   => date( 'Y-m-d', current_time( 'timestamp' ) ),
+						'value'   => $expired_date_comparison->format( 'Y-m-d' ),
 						'compare' => '<',
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 
 		if ( $job_ids ) {
 			foreach ( $job_ids as $job_id ) {
-				$job_data                = array();
+				$job_data                = [];
 				$job_data['ID']          = $job_id;
 				$job_data['post_status'] = 'expired';
 				wp_update_post( $job_data );
@@ -733,19 +775,20 @@ class WP_Job_Manager_Post_Types {
 			 */
 			$delete_expired_jobs_days = apply_filters( 'job_manager_delete_expired_jobs_days', 30 );
 
-			$job_ids = get_posts(
-				array(
+			$date_cutoff = current_datetime()->sub( new DateInterval( 'P' . $delete_expired_jobs_days . 'D' ) );
+			$job_ids     = get_posts(
+				[
 					'post_type'      => 'job_listing',
 					'post_status'    => 'expired',
 					'fields'         => 'ids',
-					'date_query'     => array(
-						array(
+					'date_query'     => [
+						[
 							'column' => 'post_modified',
-							'before' => date( 'Y-m-d', strtotime( '-' . $delete_expired_jobs_days . ' days', current_time( 'timestamp' ) ) ),
-						),
-					),
+							'before' => $date_cutoff->format( 'Y-m-d' ),
+						],
+					],
 					'posts_per_page' => -1,
-				)
+				]
 			);
 
 			if ( $job_ids ) {
@@ -761,19 +804,20 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function delete_old_previews() {
 		// Delete old jobs stuck in preview.
-		$job_ids = get_posts(
-			array(
+		$date_cutoff = current_datetime()->sub( new DateInterval( 'P30D' ) );
+		$job_ids     = get_posts(
+			[
 				'post_type'      => 'job_listing',
 				'post_status'    => 'preview',
 				'fields'         => 'ids',
-				'date_query'     => array(
-					array(
+				'date_query'     => [
+					[
 						'column' => 'post_modified',
-						'before' => date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ),
-					),
-				),
+						'before' => $date_cutoff->format( 'Y-m-d' ),
+					],
+				],
 				'posts_per_page' => -1,
-			)
+			]
 		);
 
 		if ( $job_ids ) {
@@ -796,6 +840,63 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Handle tasks related to transition job listing post statuses.
+	 *
+	 * @access private
+	 *
+	 * @param string  $new_status The new post status.
+	 * @param string  $old_status The old post status.
+	 * @param WP_Post $post       The post object.
+	 */
+	public function transition_post_status( $new_status, $old_status, $post ) {
+		if ( 'job_listing' !== $post->post_type ) {
+			return;
+		}
+
+		$published_post_statuses = [ 'publish' ];
+		$submitted_post_statuses = [ 'publish', 'pending' ];
+
+		// If we're coming to a published post status from a non-published post status, set the expiry.
+		if (
+			'new' !== $old_status
+			&& in_array( $new_status, $published_post_statuses, true )
+			&& ! in_array( $old_status, $published_post_statuses, true )
+		) {
+			$this->set_expiry( $post );
+		}
+
+		// If we're transitioning to a submitted post status on a public submission, fire submitted hook.
+		if (
+			get_post_meta( $post->ID, '_public_submission', true )
+			&& in_array( $new_status, $submitted_post_statuses, true )
+			&& ! in_array( $old_status, $submitted_post_statuses, true )
+		) {
+			$this->submitted_job_ids[] = $post->ID;
+
+			add_action( 'shutdown', [ $this, 'ensure_job_submission_action_triggered' ], 1 );
+		}
+
+	}
+
+	/**
+	 * Ensures jobs that are submitted on the frontend always have the job submitted action fired.
+	 *
+	 * @access private
+	 */
+	public function ensure_job_submission_action_triggered() {
+		foreach ( $this->submitted_job_ids as $job_id ) {
+			if ( get_post_meta( $job_id, '_public_submission', true ) ) {
+				delete_post_meta( $job_id, '_public_submission' );
+
+				/** This action is documented in includes/forms/class-wp-job-manager-form-submit-job.php */
+				do_action( 'job_manager_job_submitted', $job_id );
+			}
+		}
+
+		$this->submitted_job_ids = [];
+	}
+
+	/**
 	 * Sets expiry date when job status changes.
 	 *
 	 * @param WP_Post $post
@@ -805,30 +906,133 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		// See if it is already set.
-		if ( metadata_exists( 'post', $post->ID, '_job_expires' ) ) {
-			$expires = get_post_meta( $post->ID, '_job_expires', true );
-			if ( $expires && strtotime( $expires ) < current_time( 'timestamp' ) ) {
-				update_post_meta( $post->ID, '_job_expires', '' );
-			}
+		$expiration_date = $this->get_job_expiration( $post );
+
+		// Clear the expiration field if it has expired.
+		if ( $this->has_job_expired( $post ) ) {
+			$this->set_job_expiration( $post, null );
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
-		$input_job_expires = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+		$input_job_expires          = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+		$input_job_expires_datetime = DateTimeImmutable::createFromFormat( 'Y-m-d', $input_job_expires, wp_timezone() );
 
 		// See if the user has set the expiry manually.
-		if ( ! empty( $input_job_expires ) ) {
-			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( $input_job_expires ) ) );
-		} elseif ( ! isset( $expires ) ) {
+		if ( ! empty( $input_job_expires_datetime ) ) {
+			$this->set_job_expiration( $post, $input_job_expires_datetime );
+		} elseif ( ! $expiration_date ) {
 			// No manual setting? Lets generate a date if there isn't already one.
-			$expires = calculate_job_expiry( $post->ID );
-			update_post_meta( $post->ID, '_job_expires', $expires );
+			$expires = calculate_job_expiry( $post->ID, true );
+
+			$this->set_job_expiration( $post, $expires );
 
 			// In case we are saving a post, ensure post data is updated so the field is not overridden.
 			if ( null !== $input_job_expires ) {
-				$_POST['_job_expires'] = $expires;
+				$_POST['_job_expires'] = $expires ? $expires->format( 'Y-m-d' ) : '';
 			}
 		}
+	}
+
+	/**
+	 * Set the job expiration date.
+	 *
+	 * @param WP_Post|int       $job          Job post object or ID.
+	 * @param DateTimeImmutable $date_expires Date time object for the job expiration date. Null if to be cleared.
+	 *
+	 * @return false
+	 * @throws TypeError When bad argument is passed to `$date_expires`.
+	 */
+	public function set_job_expiration( $job, $date_expires ) {
+		$job = get_post( $job );
+
+		if ( 'job_listing' !== $job->post_type ) {
+			return false;
+		}
+
+		if ( null === $date_expires ) {
+			update_post_meta( $job->ID, '_job_expires', '' );
+		} elseif ( $date_expires instanceof DateTimeImmutable ) {
+			update_post_meta( $job->ID, '_job_expires', $date_expires->format( 'Y-m-d' ) );
+		} else {
+			throw new TypeError( sprintf( 'The `$date_expires` argument passed to %s must be an instance of DateTimeImmutable or null', __METHOD__ ) );
+		}
+	}
+
+	/**
+	 * Get the job expiration date object.
+	 *
+	 * @param int|WP_Post $job Job post object or ID.
+	 *
+	 * @return false|DateTimeImmutable
+	 */
+	public function get_job_expiration( $job ) {
+		$job = get_post( $job );
+
+		if ( 'job_listing' !== $job->post_type ) {
+			return false;
+		}
+
+		$job_expires = false;
+
+		if ( metadata_exists( 'post', $job->ID, '_job_expires' ) ) {
+			$expires_str = get_post_meta( $job->ID, '_job_expires', true );
+
+			$job_expires = DateTimeImmutable::createFromFormat( 'Y-m-d', $expires_str, wp_timezone() );
+		}
+
+		if ( $job_expires ) {
+			$job_expires = $this->prepare_job_expires_time( $job_expires );
+		}
+
+		return $job_expires;
+	}
+
+	/**
+	 * Prepare a job expiration date time object by normalizing the time
+	 *
+	 * @param DateTimeImmutable $job_expires Job object.
+	 *
+	 * @return DateTimeImmutable
+	 */
+	public function prepare_job_expires_time( DateTimeImmutable $job_expires ) {
+		if ( $this->jobs_expires_end_of_day() ) {
+			return $job_expires->setTime( 23, 59, 59 );
+		}
+
+		return $job_expires->setTime( 0, 0 );
+	}
+
+	/**
+	 * Check if jobs should expire at the end of the day. If not, they'll expire at the start of the day.
+	 *
+	 * @return bool
+	 */
+	private function jobs_expires_end_of_day() {
+		/**
+		 * Override if a job expires at the end of the day instead of start of the day.
+		 *
+		 * @since 1.35.0
+		 *
+		 * @param bool $end_of_day True if the job expires at the end of the day; otherwise it will end at the start of the day.
+		 */
+		return apply_filters( 'job_manager_jobs_expire_end_of_day', true );
+	}
+
+	/**
+	 * Check if a job has expired.
+	 *
+	 * @param int|WP_Post $job Job post object or ID.
+	 *
+	 * @return bool
+	 */
+	public function has_job_expired( $job ) {
+		$expiration = $this->get_job_expiration( $job );
+
+		if ( ! $expiration ) {
+			return false;
+		}
+
+		return $expiration->getTimestamp() < current_datetime()->getTimestamp();
 	}
 
 	/**
@@ -837,7 +1041,7 @@ class WP_Job_Manager_Post_Types {
 	 * @param stdClass $apply
 	 */
 	public function application_details_email( $apply ) {
-		get_job_manager_template( 'job-application-email.php', array( 'apply' => $apply ) );
+		get_job_manager_template( 'job-application-email.php', [ 'apply' => $apply ] );
 	}
 
 	/**
@@ -846,7 +1050,7 @@ class WP_Job_Manager_Post_Types {
 	 * @param stdClass $apply
 	 */
 	public function application_details_url( $apply ) {
-		get_job_manager_template( 'job-application-url.php', array( 'apply' => $apply ) );
+		get_job_manager_template( 'job-application-url.php', [ 'apply' => $apply ] );
 	}
 
 	/**
@@ -865,6 +1069,36 @@ class WP_Job_Manager_Post_Types {
 			$data['post_name'] = $postarr['post_name'];
 		}
 		return $data;
+	}
+
+	/**
+	 * Check if a job is editable.
+	 *
+	 * @since 1.34.1
+	 *
+	 * @param int $job_id Job ID to check.
+	 * @return bool
+	 */
+	public static function job_is_editable( $job_id ) {
+		$job_is_editable = true;
+		$post_status     = get_post_status( $job_id );
+
+		if (
+			( 'publish' === $post_status && ! wpjm_user_can_edit_published_submissions() )
+			|| ( 'publish' !== $post_status && ! job_manager_user_can_edit_pending_submissions() )
+		) {
+			$job_is_editable = false;
+		}
+
+		/**
+		 * Allows filtering on whether a job can be edited after it has gone past the `preview` stage.
+		 *
+		 * @since 1.34.1
+		 *
+		 * @param bool $job_is_editable If the job is editable.
+		 * @param int  $job_id          Job ID to check.
+		 */
+		return apply_filters( 'job_manager_job_is_editable', $job_is_editable, $job_id );
 	}
 
 	/**
@@ -898,7 +1132,7 @@ class WP_Job_Manager_Post_Types {
 		 */
 		$legacy_permalink_settings = '[]';
 		if ( false !== get_option( 'wpjm_permalinks', false ) ) {
-			$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalinks', array() ) );
+			$legacy_permalink_settings = wp_json_encode( get_option( 'wpjm_permalinks', [] ) );
 			delete_option( 'wpjm_permalinks' );
 		}
 
@@ -933,12 +1167,12 @@ class WP_Job_Manager_Post_Types {
 
 		$permalinks = wp_parse_args(
 			$permalink_settings,
-			array(
+			[
 				'job_base'      => '',
 				'category_base' => '',
 				'type_base'     => '',
 				'jobs_archive'  => '',
-			)
+			]
 		);
 
 		// Ensure rewrite slugs are set. Use legacy translation options if not.
@@ -981,7 +1215,6 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		remove_action( 'update_post_meta', array( $this, 'update_post_meta' ) );
 		switch ( $meta_key ) {
 			case '_job_location':
 				$this->maybe_update_geolocation_data( $meta_id, $object_id, $meta_key, $meta_value );
@@ -990,7 +1223,6 @@ class WP_Job_Manager_Post_Types {
 				$this->maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value );
 				break;
 		}
-		add_action( 'update_post_meta', array( $this, 'update_post_meta' ), 10, 4 );
 	}
 
 	/**
@@ -1014,25 +1246,28 @@ class WP_Job_Manager_Post_Types {
 	 * @param mixed  $meta_value
 	 */
 	public function maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value ) {
+		global $wpdb;
+
 		if ( 1 === intval( $meta_value ) ) {
-			wp_update_post(
-				array(
-					'ID'         => $object_id,
-					'menu_order' => -1,
-				)
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Update post menu order without firing actions.
+			$wpdb->update(
+				$wpdb->posts,
+				[ 'menu_order' => -1 ],
+				[ 'ID' => $object_id ]
 			);
 		} else {
-			$post = get_post( $object_id );
-
-			if ( -1 === intval( $post->menu_order ) ) {
-				wp_update_post(
-					array(
-						'ID'         => $object_id,
-						'menu_order' => 0,
-					)
-				);
-			}
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Update post menu order without firing actions.
+			$wpdb->update(
+				$wpdb->posts,
+				[ 'menu_order' => 0 ],
+				[
+					'ID'         => $object_id,
+					'menu_order' => -1,
+				]
+			);
 		}
+
+		clean_post_cache( $object_id );
 	}
 
 	/**
@@ -1089,9 +1324,9 @@ class WP_Job_Manager_Post_Types {
 			// Track approving a new job listing.
 			WP_Job_Manager_Usage_Tracking::track_job_approval(
 				$post->ID,
-				array(
+				[
 					'source' => $source,
-				)
+				]
 			);
 
 			return;
@@ -1099,11 +1334,43 @@ class WP_Job_Manager_Post_Types {
 
 		WP_Job_Manager_Usage_Tracking::track_job_submission(
 			$post->ID,
-			array(
+			[
 				'source'     => $source,
 				'old_status' => $old_status,
-			)
+			]
 		);
+	}
+
+	/**
+	 * Hide filled job listings in WP core sitemaps when the `Hide filled positions` setting
+	 * is enabled.
+	 *
+	 * @access private
+	 * @since 1.34.3
+	 *
+	 * @param array  $query_args Array of WP_Query arguments.
+	 * @param string $post_type  Post type name.
+	 *
+	 * @return array
+	 */
+	public function sitemaps_maybe_hide_filled( $query_args, $post_type ) {
+		if (
+			'job_listing' !== $post_type
+			|| 1 !== absint( get_option( 'job_manager_hide_filled_positions' ) )
+		) {
+			return $query_args;
+		}
+
+		if ( ! isset( $query_args['meta_query'] ) ) {
+			$query_args['meta_query'] = [];
+		}
+
+		$query_args['meta_query'][] = [
+			'key'   => '_filled',
+			'value' => '0',
+		];
+
+		return $query_args;
 	}
 
 	/**
@@ -1123,7 +1390,11 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		wp_no_robots();
+		if ( function_exists( 'wp_robots_no_robots' ) ) {
+			add_filter( 'wp_robots', 'wp_robots_no_robots' );
+		} else {
+			wp_no_robots();
+		}
 	}
 
 	/**
@@ -1169,7 +1440,7 @@ class WP_Job_Manager_Post_Types {
 			register_meta(
 				'post',
 				$meta_key,
-				array(
+				[
 					'type'              => $field['data_type'],
 					'show_in_rest'      => $field['show_in_rest'],
 					'description'       => $field['label'],
@@ -1177,7 +1448,7 @@ class WP_Job_Manager_Post_Types {
 					'auth_callback'     => $field['auth_edit_callback'],
 					'single'            => true,
 					'object_subtype'    => 'job_listing',
-				)
+				]
 			);
 		}
 	}
@@ -1188,22 +1459,22 @@ class WP_Job_Manager_Post_Types {
 	 * @return array See `job_manager_job_listing_data_fields` filter for more documentation.
 	 */
 	public static function get_job_listing_fields() {
-		$default_field = array(
+		$default_field = [
 			'label'              => null,
 			'placeholder'        => null,
 			'description'        => null,
 			'priority'           => 10,
 			'value'              => null,
 			'default'            => null,
-			'classes'            => array(),
+			'classes'            => [],
 			'type'               => 'text',
 			'data_type'          => 'string',
 			'show_in_admin'      => true,
 			'show_in_rest'       => false,
-			'auth_edit_callback' => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
+			'auth_edit_callback' => [ __CLASS__, 'auth_check_can_edit_job_listings' ],
 			'auth_view_callback' => null,
-			'sanitize_callback'  => array( __CLASS__, 'sanitize_meta_field_based_on_input_type' ),
-		);
+			'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_based_on_input_type' ],
+		];
 
 		$allowed_application_method     = get_option( 'job_manager_allowed_application_method', '' );
 		$application_method_label       = __( 'Application email/URL', 'wp-job-manager' );
@@ -1217,8 +1488,13 @@ class WP_Job_Manager_Post_Types {
 			$application_method_placeholder = __( 'https://', 'wp-job-manager' );
 		}
 
-		$fields = array(
-			'_job_location'    => array(
+		$job_expires_description = __( 'Job listing expires at the end of the day.', 'wp-job-manager' );
+		if ( ! self::instance()->jobs_expires_end_of_day() ) {
+			$job_expires_description = __( 'Job listing expires at the start of the day.', 'wp-job-manager' );
+		}
+
+		$fields = [
+			'_job_location'    => [
 				'label'         => __( 'Location', 'wp-job-manager' ),
 				'placeholder'   => __( 'e.g. "London"', 'wp-job-manager' ),
 				'description'   => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
@@ -1226,8 +1502,8 @@ class WP_Job_Manager_Post_Types {
 				'data_type'     => 'string',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
-			),
-			'_application'     => array(
+			],
+			'_application'     => [
 				'label'             => $application_method_label,
 				'placeholder'       => $application_method_placeholder,
 				'description'       => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
@@ -1235,42 +1511,42 @@ class WP_Job_Manager_Post_Types {
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_application' ),
-			),
-			'_company_name'    => array(
+				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_application' ],
+			],
+			'_company_name'    => [
 				'label'         => __( 'Company Name', 'wp-job-manager' ),
 				'placeholder'   => '',
 				'priority'      => 3,
 				'data_type'     => 'string',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
-			),
-			'_company_website' => array(
+			],
+			'_company_website' => [
 				'label'             => __( 'Company Website', 'wp-job-manager' ),
 				'placeholder'       => '',
 				'priority'          => 4,
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_url' ),
-			),
-			'_company_tagline' => array(
+				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_url' ],
+			],
+			'_company_tagline' => [
 				'label'         => __( 'Company Tagline', 'wp-job-manager' ),
 				'placeholder'   => __( 'Brief description about the company', 'wp-job-manager' ),
 				'priority'      => 5,
 				'data_type'     => 'string',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
-			),
-			'_company_twitter' => array(
+			],
+			'_company_twitter' => [
 				'label'         => __( 'Company Twitter', 'wp-job-manager' ),
 				'placeholder'   => '@yourcompany',
 				'priority'      => 6,
 				'data_type'     => 'string',
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
-			),
-			'_company_video'   => array(
+			],
+			'_company_video'   => [
 				'label'             => __( 'Company Video', 'wp-job-manager' ),
 				'placeholder'       => __( 'URL to the company video', 'wp-job-manager' ),
 				'type'              => 'file',
@@ -1278,9 +1554,9 @@ class WP_Job_Manager_Post_Types {
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => array( __CLASS__, 'sanitize_meta_field_url' ),
-			),
-			'_filled'          => array(
+				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_url' ],
+			],
+			'_filled'          => [
 				'label'         => __( 'Position Filled', 'wp-job-manager' ),
 				'type'          => 'checkbox',
 				'priority'      => 9,
@@ -1288,8 +1564,8 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 				'description'   => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
-			),
-			'_featured'        => array(
+			],
+			'_featured'        => [
 				'label'              => __( 'Featured Listing', 'wp-job-manager' ),
 				'type'               => 'checkbox',
 				'description'        => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
@@ -1297,20 +1573,21 @@ class WP_Job_Manager_Post_Types {
 				'data_type'          => 'integer',
 				'show_in_admin'      => true,
 				'show_in_rest'       => true,
-				'auth_edit_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
-			),
-			'_job_expires'     => array(
+				'auth_edit_callback' => [ __CLASS__, 'auth_check_can_manage_job_listings' ],
+			],
+			'_job_expires'     => [
 				'label'              => __( 'Listing Expiry Date', 'wp-job-manager' ),
+				'description'        => $job_expires_description,
 				'priority'           => 11,
 				'show_in_admin'      => true,
 				'show_in_rest'       => true,
 				'data_type'          => 'string',
-				'classes'            => array( 'job-manager-datepicker' ),
-				'auth_edit_callback' => array( __CLASS__, 'auth_check_can_manage_job_listings' ),
-				'auth_view_callback' => array( __CLASS__, 'auth_check_can_edit_job_listings' ),
-				'sanitize_callback'  => array( __CLASS__, 'sanitize_meta_field_date' ),
-			),
-		);
+				'classes'            => [ 'job-manager-datepicker' ],
+				'auth_edit_callback' => [ __CLASS__, 'auth_check_can_manage_job_listings' ],
+				'auth_view_callback' => [ __CLASS__, 'auth_check_can_edit_job_listings' ],
+				'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_date' ],
+			],
+		];
 
 		/**
 		 * Filters job listing data fields.
@@ -1487,7 +1764,8 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// Checks for valid date.
-		if ( date( 'Y-m-d', strtotime( $meta_value ) ) !== $meta_value ) {
+		$test_date = DateTimeImmutable::createFromFormat( 'Y-m-d', $meta_value, wp_timezone() );
+		if ( ! $test_date || $test_date->format( 'Y-m-d' ) !== $meta_value ) {
 			return '';
 		}
 

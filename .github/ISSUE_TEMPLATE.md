@@ -12,29 +12,26 @@ Helpful tips for screenshots:
 https://en.support.wordpress.com/make-a-screenshot/
 -->
 
-#### Steps to Reproduce
-1.
-2.
-3.
+### Steps to Reproduce
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-#### What I Expected
-
-
-#### What Happened Instead
+### What I Expected
 
 
-#### WordPress / WP Job Manager Version
+### What Happened Instead
 
 
-#### Browser / OS Version
+### PHP / WordPress / WP Job Manager Version
 
 
-#### Screenshot / Video
+### Browser / OS Version
 
 
-#### Context / Source
-<!-- Optional: share your unique context to help us understand your perspective.
+### Screenshot / Video
 
-If requesting a new feature, explain why you'd like to see it added.
--->
 
+### Context / Source
+<!-- Optional: share your unique context to help us understand your perspective. -->

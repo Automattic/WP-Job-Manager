@@ -36,14 +36,14 @@ abstract class WP_Job_Manager_Email {
 	 *
 	 * @var array
 	 */
-	private $args = array();
+	private $args = [];
 
 	/**
 	 * Settings for this email notification.
 	 *
 	 * @var array
 	 */
-	private $settings = array();
+	private $settings = [];
 
 	/**
 	 * WP_Job_Manager_Email constructor.
@@ -161,7 +161,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return array
 	 */
 	public function get_attachments() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -179,7 +179,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return array
 	 */
 	public function get_headers() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -197,7 +197,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return array
 	 */
 	public static function get_setting_fields() {
-		return array();
+		return [];
 	}
 
 	/**
@@ -207,6 +207,15 @@ abstract class WP_Job_Manager_Email {
 	 */
 	public static function is_default_enabled() {
 		return true;
+	}
+
+	/**
+	 * Force the email notification to be enabled or disabled.
+	 *
+	 * @return bool|null True to force enabled; False to force disabled; Null to not force a value.
+	 */
+	public static function get_enabled_force_value() {
+		return null;
 	}
 
 	/**

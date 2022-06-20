@@ -21,7 +21,7 @@ class WP_Test_WP_Job_Manager_Admin_Notices extends WPJM_BaseTest {
 
 		WP_Job_Manager_Admin_Notices::reset_notices();
 
-		$this->assertEquals( array(), $this->get_raw_state() );
+		$this->assertEquals( [], $this->get_raw_state() );
 	}
 
 	public function test_add_notice_simple() {
@@ -79,27 +79,27 @@ class WP_Test_WP_Job_Manager_Admin_Notices extends WPJM_BaseTest {
 
 	public function test_is_admin_on_standard_job_manager_screen_non_admin() {
 		$this->login_as_admin();
-		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( array( '' ) ) );
+		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ '' ] ) );
 
 		$this->login_as_employer();
-		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( array( '' ) ) );
+		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ '' ] ) );
 	}
 
 	public function test_is_admin_on_standard_job_manager_screen_uncommon_screen_test() {
 		$this->login_as_admin();
-		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( array( 'dinosaur' ) ) );
+		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ 'dinosaur' ] ) );
 		set_current_screen( 'dinosaur' );
 
-		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( array( 'dinosaur' ) ) );
-		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( array( 'dogs' ) ) );
+		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ 'dinosaur' ] ) );
+		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ 'dogs' ] ) );
 	}
 
 	public function test_is_admin_on_standard_job_manager_screen_common_screen_test() {
 		$this->login_as_admin();
-		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( array() ) );
+		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [] ) );
 		set_current_screen( 'edit-job_listing' );
 
-		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( array() ) );
+		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [] ) );
 	}
 
 	private function get_raw_state() {

@@ -22,6 +22,7 @@ $job = $args['job'];
 ?>
 	<p><?php
 		echo wp_kses_post(
+			// translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
 			sprintf( __( 'A job listing has been updated on <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), esc_html( get_bloginfo( 'name' ) ) ) );
 		switch ( $job->post_status ) {
 			case 'publish':
@@ -29,6 +30,7 @@ $job = $args['job'];
 				break;
 			case 'pending':
 				echo wp_kses_post( sprintf(
+					// translators: Placeholder %s is the admin job listings URL.
 					' ' . __( 'The job listing is not publicly available until the changes are approved by an administrator in the site\'s <a href="%s">WordPress admin</a>.', 'wp-job-manager' ),
 					esc_url( admin_url( 'edit.php?post_type=job_listing' ) )
 				) );

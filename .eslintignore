@@ -1,7 +1,7 @@
 assets/build
 node_modules
 tmp/
-assets/js/jquery-*
-assets/js/select2
+assets/lib/jquery-*
+assets/lib/select2
 assets/font
 vendor/

@@ -91,9 +91,11 @@ jQuery(document).ready(function($) {
 		if ( jobCategoryFieldIsInvalid() ) {
 			$(this).find( 'input[type=submit]' ).blur();
 
-			var jobCategoryInput = $( '.select2-search__field' )[0];
-			jobCategoryInput.setCustomValidity( job_manager_job_submission.i18n_required_field );
-			jobCategoryInput.reportValidity();
+			var jobCategoryInput = $( '.fieldset-job_category .select2-search__field' );
+			if ( jobCategoryInput && jobCategoryInput.length ) {
+				jobCategoryInput[0].setCustomValidity( job_manager_job_submission.i18n_required_field );
+				jobCategoryInput[0].reportValidity();
+			}
 
 			return true;
 		}
@@ -121,13 +123,13 @@ jQuery(document).ready(function($) {
 	function jobCategoryFieldIsInvalid() {
 		var jobCategory = $( '#job_category' );
 		return jobCategory.length &&
-				!jobCategory.val() &&
+		       ( !jobCategory.val() || !jobCategory.val().length ) &&
 				jobCategory.parent().hasClass( 'required-field' ) &&
 				jobCategory.next().hasClass('select2');
 	}
 
 	function descriptionFieldIsInvalid() {
-		if ( !descriptionFieldIsPresent() ) {
+		if ( ! descriptionFieldIsPresent() ) {
 			return false;
 		}
 
@@ -140,20 +142,22 @@ jQuery(document).ready(function($) {
 	}
 
 	function descriptionFieldIsPresent() {
-		return typeof tinymce !== "undefined" ||
+		return typeof tinymce !== "undefined" &&
 				tinymce.get( 'job_description' ) != null;
 	}
 
 	// Listen for changes to the category field to clear validity
 	$( '#job_category' ).on( 'select2:select', function() {
-		var jobCategoryInput = $( '.select2-search__field' )[0];
-		jobCategoryInput.setCustomValidity( '' );
-		jobCategoryInput.reportValidity();
+		var jobCategoryInput = $( '.fieldset-job_category .select2-search__field' );
+		if ( jobCategoryInput && jobCategoryInput.length ) {
+			jobCategoryInput[0].setCustomValidity( '' );
+			jobCategoryInput[0].reportValidity();
+		}
 	});
 
 	// Listen for changes to the description field to clear validity
 	setTimeout( function() {
-		if ( typeof tinymce === "undefined" || tinymce.get( 'job_description' ) == null ) {
+		if ( ! descriptionFieldIsPresent() ) {
 			return;
 		}
 
