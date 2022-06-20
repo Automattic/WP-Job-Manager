@@ -156,12 +156,19 @@ It then creates a database based on the parameters passed to it.
 = 1.36.0 =
 * Enhancement: Add salary field to satisfy Google's job search schema
 * Enhancement: Allow location to display as either City/St or Full Address
-* Fix: Form validation - consider zero (0) as a value for required fields
-* Fix: Jobs CPT doesn't show password field when job is password protected
 * Enhancement: Add link to Jobs Dashboard after submitting job
 * Enhancement: Ability to add multiple locations in search
 * Enhancement: Add support for remote job listings
-* Enhancement: Add jobLocationType: TELECOMMUTE , per Google
+* Enhancement: Add jobLocationType: TELECOMMUTE, per Google
+* Enhancement: Job Visibility Settings
+* Enhancement: Allow user to select the pagination type for the [jobs] page
+* Enhancement: Added setting to bypass trash for job listings
+* Enhancement: Add Job submission limit
+* Fix: Form validation - consider zero (0) as a value for required fields
+* Fix: Jobs CPT doesn't show password field when job is password protected
+* Fix: Undefined type PHP Notice
+* Fix: Fix broken lost license key link
+* Fix: Return $redirect_url when nothing to do with bulk edit
 
 = 1.35.3 =
 * Fix: Use wp_kses_post to process a job title instead of esc_html
