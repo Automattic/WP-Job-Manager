@@ -330,6 +330,14 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+							'name'        => 'job_manager_submission_limit',
+							'std'         => '',
+							'label'       => __( 'Listing Limit', 'wp-job-manager' ),
+							'desc'        => __( 'How many listings are users allowed to post. Can be left blank to allow unlimited listings per account.', 'wp-job-manager' ),
+							'attributes'  => [],
+							'placeholder' => __( 'No limit', 'wp-job-manager' ),
+						],
+						[
 							'name'    => 'job_manager_allowed_application_method',
 							'std'     => '',
 							'label'   => __( 'Application Method', 'wp-job-manager' ),
