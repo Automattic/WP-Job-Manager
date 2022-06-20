@@ -100,9 +100,9 @@ class WP_Job_Manager_Shortcodes {
 			return;
 		}
 
-		$submit_job_form_page_id 	= get_option( 'job_manager_submit_job_form_page_id' );
-		$submission_limit           = get_option( 'job_manager_submission_limit' );
-		$job_count               	= job_manager_count_user_job_listings();
+		$submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
+		$submission_limit        = get_option( 'job_manager_submission_limit' );
+		$job_count               = job_manager_count_user_job_listings();
 
 		if (
 			$submit_job_form_page_id
