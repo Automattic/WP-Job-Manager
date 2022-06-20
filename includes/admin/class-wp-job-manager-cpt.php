@@ -148,6 +148,8 @@ class WP_Job_Manager_CPT {
 	 * @param string $redirect_url The redirect URL.
 	 * @param string $action       The action being taken.
 	 * @param array  $post_ids     The posts to take the action on.
+	 *
+	 * @return string $redirect_url The redirect URL.
 	 */
 	public function do_bulk_actions( $redirect_url, $action, $post_ids ) {
 		$actions_handled = $this->get_bulk_actions();
@@ -166,6 +168,8 @@ class WP_Job_Manager_CPT {
 				exit;
 			}
 		}
+
+		return $redirect_url;
 	}
 
 	/**
@@ -469,7 +473,7 @@ class WP_Job_Manager_CPT {
 				// translators: %1$s is the singular name of the post type; %2$s is the date the post will be published; %3$s is the URL to preview the listing.
 				__( '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview</a>', 'wp-job-manager' ),
 				$wp_post_types['job_listing']->labels->singular_name,
-				date_i18n( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), strtotime( $post->post_date ) ),
+				wp_date( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), get_post_timestamp() ),
 				esc_url( get_permalink( $post_ID ) )
 			),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
@@ -566,7 +570,7 @@ class WP_Job_Manager_CPT {
 			case 'job_position':
 				echo '<div class="job_position">';
 				// translators: %d is the post ID for the job listing.
-				echo '<a href="' . esc_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . esc_html( wpjm_get_the_job_title() ) . '</a>';
+				echo '<a href="' . esc_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . wp_kses_post( wpjm_get_the_job_title() ) . '</a>';
 
 				echo '<div class="company">';
 
@@ -580,7 +584,7 @@ class WP_Job_Manager_CPT {
 
 				the_company_logo();
 				echo '</div>';
-				echo '<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>';
+				echo '<button type="button" class="toggle-row"><span class="screen-reader-text">' . esc_html__( 'Show more details', 'wp-job-manager' ) . '</span></button>';
 				break;
 			case 'job_location':
 				the_job_location( true, $post );
@@ -608,13 +612,14 @@ class WP_Job_Manager_CPT {
 				}
 				break;
 			case 'job_posted':
-				echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->post_date ) ) ) . '</strong><span>';
+				echo '<strong>' . esc_html( wp_date( get_option( 'date_format' ), get_post_timestamp() ) ) . '</strong><span>';
 				// translators: %s placeholder is the username of the user.
 				echo ( empty( $post->post_author ) ? esc_html__( 'by a guest', 'wp-job-manager' ) : sprintf( esc_html__( 'by %s', 'wp-job-manager' ), '<a href="' . esc_url( add_query_arg( 'author', $post->post_author ) ) . '">' . esc_html( get_the_author() ) . '</a>' ) ) . '</span>';
 				break;
 			case 'job_expires':
-				if ( $post->_job_expires ) {
-					echo '<strong>' . esc_html( date_i18n( get_option( 'date_format' ), strtotime( $post->_job_expires ) ) ) . '</strong>';
+				$job_expiration = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post );
+				if ( $job_expiration ) {
+					echo '<strong>' . esc_html( wp_date( get_option( 'date_format' ), $job_expiration->getTimestamp() ) ) . '</strong>';
 				} else {
 					echo '&ndash;';
 				}

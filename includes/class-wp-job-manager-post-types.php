@@ -27,6 +27,13 @@ class WP_Job_Manager_Post_Types {
 	private static $instance = null;
 
 	/**
+	 * Job IDs that were submitted in this request.
+	 *
+	 * @var array
+	 */
+	private $submitted_job_ids = [];
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  1.26.0
@@ -51,14 +58,11 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'job_manager_check_for_expired_jobs', [ $this, 'check_for_expired_jobs' ] );
 		add_action( 'job_manager_delete_old_previews', [ $this, 'delete_old_previews' ] );
 
-		add_action( 'pending_to_publish', [ $this, 'set_expiry' ] );
-		add_action( 'preview_to_publish', [ $this, 'set_expiry' ] );
-		add_action( 'draft_to_publish', [ $this, 'set_expiry' ] );
-		add_action( 'auto-draft_to_publish', [ $this, 'set_expiry' ] );
-		add_action( 'expired_to_publish', [ $this, 'set_expiry' ] );
+		add_action( 'transition_post_status', [ $this, 'transition_post_status' ], 10, 3 );
 
-		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ] );
+		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ], 0 );
 		add_action( 'wp_footer', [ $this, 'output_structured_data' ] );
+		add_filter( 'wp_sitemaps_posts_query_args', [ $this, 'sitemaps_maybe_hide_filled' ], 10, 2 );
 
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
@@ -92,8 +96,6 @@ class WP_Job_Manager_Post_Types {
 	 * Prepare CPTs for special block editor situations.
 	 */
 	public function prepare_block_editor() {
-		add_filter( 'allowed_block_types', [ $this, 'force_classic_block' ], 10, 2 );
-
 		if ( false === job_manager_multi_job_type() ) {
 			add_filter( 'rest_prepare_taxonomy', [ $this, 'hide_job_type_block_editor_selector' ], 10, 3 );
 		}
@@ -103,11 +105,15 @@ class WP_Job_Manager_Post_Types {
 	 * Forces job listings to just have the classic block. This is necessary with the use of the classic editor on
 	 * the frontend.
 	 *
+	 * @deprecated 1.35.2
+	 *
 	 * @param array   $allowed_block_types
 	 * @param WP_Post $post
 	 * @return array
 	 */
 	public function force_classic_block( $allowed_block_types, $post ) {
+		_deprecated_function( __METHOD__, '1.35.2' );
+
 		if ( 'job_listing' === $post->post_type ) {
 			return [ 'core/freeform' ];
 		}
@@ -521,7 +527,12 @@ class WP_Job_Manager_Post_Types {
 	public function job_content( $content ) {
 		global $post;
 
-		if ( ! is_singular( 'job_listing' ) || ! in_the_loop() || 'job_listing' !== $post->post_type ) {
+		if (
+			! is_singular( 'job_listing' ) ||
+			! in_the_loop() ||
+			'job_listing' !== $post->post_type ||
+			( post_password_required() && ! is_super_admin() )
+		) {
 			return $content;
 		}
 
@@ -549,9 +560,22 @@ class WP_Job_Manager_Post_Types {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input used to filter public data in feed.
 		$input_posts_per_page  = isset( $_GET['posts_per_page'] ) ? absint( $_GET['posts_per_page'] ) : 10;
 		$input_search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : false;
-		$input_job_types       = isset( $_GET['job_types'] ) ? explode( ',', sanitize_text_field( wp_unslash( $_GET['job_types'] ) ) ) : false;
-		$input_job_categories  = isset( $_GET['job_categories'] ) ? explode( ',', sanitize_text_field( wp_unslash( $_GET['job_categories'] ) ) ) : false;
-		$job_manager_keyword   = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
+
+		if ( isset( $_GET['job_types'] ) ) {
+			$sanitized_job_types = sanitize_text_field( wp_unslash( $_GET['job_types'] ) );
+			$input_job_types     = empty( $sanitized_job_types ) ? false : explode( ',', $sanitized_job_types );
+		} else {
+			$input_job_types = false;
+		}
+
+		if ( isset( $_GET['job_categories'] ) ) {
+			$sanitized_job_categories = sanitize_text_field( wp_unslash( $_GET['job_categories'] ) );
+			$input_job_categories     = empty( $sanitized_job_categories ) ? false : explode( ',', $sanitized_job_categories );
+		} else {
+			$input_job_categories = false;
+		}
+
+		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$query_args = [
@@ -575,6 +599,14 @@ class WP_Job_Manager_Post_Types {
 				];
 			}
 			$query_args['meta_query'][] = $location_search;
+		}
+
+		// Hide filled positions from the job feed.
+		if ( 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
+			$query_args['meta_query'][] = [
+				'key'   => '_filled',
+				'value' => '0',
+			];
 		}
 
 		if ( ! empty( $input_job_types ) ) {
@@ -659,6 +691,7 @@ class WP_Job_Manager_Post_Types {
 		$location  = get_the_job_location( $post_id );
 		$company   = get_the_company_name( $post_id );
 		$job_types = wpjm_get_the_job_types( $post_id );
+		$salary    = get_the_job_salary( $post_id );
 
 		if ( $location ) {
 			echo '<job_listing:location><![CDATA[' . esc_html( $location ) . "]]></job_listing:location>\n";
@@ -669,6 +702,9 @@ class WP_Job_Manager_Post_Types {
 		}
 		if ( $company ) {
 			echo '<job_listing:company><![CDATA[' . esc_html( $company ) . "]]></job_listing:company>\n";
+		}
+		if ( $salary ) {
+			echo '<job_listing:salary><![CDATA[' . esc_html( $salary ) . "]]></job_listing:salary>\n";
 		}
 
 		/**
@@ -683,6 +719,11 @@ class WP_Job_Manager_Post_Types {
 	 * Maintenance task to expire jobs.
 	 */
 	public function check_for_expired_jobs() {
+		$expired_date_comparison = current_datetime();
+		if ( ! $this->jobs_expires_end_of_day() ) {
+			$expired_date_comparison = $expired_date_comparison->add( new DateInterval( 'P1D' ) );
+		}
+
 		// Change status to expired.
 		$job_ids = get_posts(
 			[
@@ -699,7 +740,7 @@ class WP_Job_Manager_Post_Types {
 					],
 					[
 						'key'     => '_job_expires',
-						'value'   => date( 'Y-m-d', current_time( 'timestamp' ) ),
+						'value'   => $expired_date_comparison->format( 'Y-m-d' ),
 						'compare' => '<',
 					],
 				],
@@ -734,7 +775,8 @@ class WP_Job_Manager_Post_Types {
 			 */
 			$delete_expired_jobs_days = apply_filters( 'job_manager_delete_expired_jobs_days', 30 );
 
-			$job_ids = get_posts(
+			$date_cutoff = current_datetime()->sub( new DateInterval( 'P' . $delete_expired_jobs_days . 'D' ) );
+			$job_ids     = get_posts(
 				[
 					'post_type'      => 'job_listing',
 					'post_status'    => 'expired',
@@ -742,7 +784,7 @@ class WP_Job_Manager_Post_Types {
 					'date_query'     => [
 						[
 							'column' => 'post_modified',
-							'before' => date( 'Y-m-d', strtotime( '-' . $delete_expired_jobs_days . ' days', current_time( 'timestamp' ) ) ),
+							'before' => $date_cutoff->format( 'Y-m-d' ),
 						],
 					],
 					'posts_per_page' => -1,
@@ -762,7 +804,8 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function delete_old_previews() {
 		// Delete old jobs stuck in preview.
-		$job_ids = get_posts(
+		$date_cutoff = current_datetime()->sub( new DateInterval( 'P30D' ) );
+		$job_ids     = get_posts(
 			[
 				'post_type'      => 'job_listing',
 				'post_status'    => 'preview',
@@ -770,7 +813,7 @@ class WP_Job_Manager_Post_Types {
 				'date_query'     => [
 					[
 						'column' => 'post_modified',
-						'before' => date( 'Y-m-d', strtotime( '-30 days', current_time( 'timestamp' ) ) ),
+						'before' => $date_cutoff->format( 'Y-m-d' ),
 					],
 				],
 				'posts_per_page' => -1,
@@ -797,6 +840,63 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Handle tasks related to transition job listing post statuses.
+	 *
+	 * @access private
+	 *
+	 * @param string  $new_status The new post status.
+	 * @param string  $old_status The old post status.
+	 * @param WP_Post $post       The post object.
+	 */
+	public function transition_post_status( $new_status, $old_status, $post ) {
+		if ( 'job_listing' !== $post->post_type ) {
+			return;
+		}
+
+		$published_post_statuses = [ 'publish' ];
+		$submitted_post_statuses = [ 'publish', 'pending' ];
+
+		// If we're coming to a published post status from a non-published post status, set the expiry.
+		if (
+			'new' !== $old_status
+			&& in_array( $new_status, $published_post_statuses, true )
+			&& ! in_array( $old_status, $published_post_statuses, true )
+		) {
+			$this->set_expiry( $post );
+		}
+
+		// If we're transitioning to a submitted post status on a public submission, fire submitted hook.
+		if (
+			get_post_meta( $post->ID, '_public_submission', true )
+			&& in_array( $new_status, $submitted_post_statuses, true )
+			&& ! in_array( $old_status, $submitted_post_statuses, true )
+		) {
+			$this->submitted_job_ids[] = $post->ID;
+
+			add_action( 'shutdown', [ $this, 'ensure_job_submission_action_triggered' ], 1 );
+		}
+
+	}
+
+	/**
+	 * Ensures jobs that are submitted on the frontend always have the job submitted action fired.
+	 *
+	 * @access private
+	 */
+	public function ensure_job_submission_action_triggered() {
+		foreach ( $this->submitted_job_ids as $job_id ) {
+			if ( get_post_meta( $job_id, '_public_submission', true ) ) {
+				delete_post_meta( $job_id, '_public_submission' );
+
+				/** This action is documented in includes/forms/class-wp-job-manager-form-submit-job.php */
+				do_action( 'job_manager_job_submitted', $job_id );
+			}
+		}
+
+		$this->submitted_job_ids = [];
+	}
+
+	/**
 	 * Sets expiry date when job status changes.
 	 *
 	 * @param WP_Post $post
@@ -806,30 +906,133 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		// See if it is already set.
-		if ( metadata_exists( 'post', $post->ID, '_job_expires' ) ) {
-			$expires = get_post_meta( $post->ID, '_job_expires', true );
-			if ( $expires && strtotime( $expires ) < current_time( 'timestamp' ) ) {
-				update_post_meta( $post->ID, '_job_expires', '' );
-			}
+		$expiration_date = $this->get_job_expiration( $post );
+
+		// Clear the expiration field if it has expired.
+		if ( $this->has_job_expired( $post ) ) {
+			$this->set_job_expiration( $post, null );
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
-		$input_job_expires = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+		$input_job_expires          = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+		$input_job_expires_datetime = DateTimeImmutable::createFromFormat( 'Y-m-d', $input_job_expires, wp_timezone() );
 
 		// See if the user has set the expiry manually.
-		if ( ! empty( $input_job_expires ) ) {
-			update_post_meta( $post->ID, '_job_expires', date( 'Y-m-d', strtotime( $input_job_expires ) ) );
-		} elseif ( ! isset( $expires ) ) {
+		if ( ! empty( $input_job_expires_datetime ) ) {
+			$this->set_job_expiration( $post, $input_job_expires_datetime );
+		} elseif ( ! $expiration_date ) {
 			// No manual setting? Lets generate a date if there isn't already one.
-			$expires = calculate_job_expiry( $post->ID );
-			update_post_meta( $post->ID, '_job_expires', $expires );
+			$expires = calculate_job_expiry( $post->ID, true );
+
+			$this->set_job_expiration( $post, $expires );
 
 			// In case we are saving a post, ensure post data is updated so the field is not overridden.
 			if ( null !== $input_job_expires ) {
-				$_POST['_job_expires'] = $expires;
+				$_POST['_job_expires'] = $expires ? $expires->format( 'Y-m-d' ) : '';
 			}
 		}
+	}
+
+	/**
+	 * Set the job expiration date.
+	 *
+	 * @param WP_Post|int       $job          Job post object or ID.
+	 * @param DateTimeImmutable $date_expires Date time object for the job expiration date. Null if to be cleared.
+	 *
+	 * @return false
+	 * @throws TypeError When bad argument is passed to `$date_expires`.
+	 */
+	public function set_job_expiration( $job, $date_expires ) {
+		$job = get_post( $job );
+
+		if ( 'job_listing' !== $job->post_type ) {
+			return false;
+		}
+
+		if ( null === $date_expires ) {
+			update_post_meta( $job->ID, '_job_expires', '' );
+		} elseif ( $date_expires instanceof DateTimeImmutable ) {
+			update_post_meta( $job->ID, '_job_expires', $date_expires->format( 'Y-m-d' ) );
+		} else {
+			throw new TypeError( sprintf( 'The `$date_expires` argument passed to %s must be an instance of DateTimeImmutable or null', __METHOD__ ) );
+		}
+	}
+
+	/**
+	 * Get the job expiration date object.
+	 *
+	 * @param int|WP_Post $job Job post object or ID.
+	 *
+	 * @return false|DateTimeImmutable
+	 */
+	public function get_job_expiration( $job ) {
+		$job = get_post( $job );
+
+		if ( 'job_listing' !== $job->post_type ) {
+			return false;
+		}
+
+		$job_expires = false;
+
+		if ( metadata_exists( 'post', $job->ID, '_job_expires' ) ) {
+			$expires_str = get_post_meta( $job->ID, '_job_expires', true );
+
+			$job_expires = DateTimeImmutable::createFromFormat( 'Y-m-d', $expires_str, wp_timezone() );
+		}
+
+		if ( $job_expires ) {
+			$job_expires = $this->prepare_job_expires_time( $job_expires );
+		}
+
+		return $job_expires;
+	}
+
+	/**
+	 * Prepare a job expiration date time object by normalizing the time
+	 *
+	 * @param DateTimeImmutable $job_expires Job object.
+	 *
+	 * @return DateTimeImmutable
+	 */
+	public function prepare_job_expires_time( DateTimeImmutable $job_expires ) {
+		if ( $this->jobs_expires_end_of_day() ) {
+			return $job_expires->setTime( 23, 59, 59 );
+		}
+
+		return $job_expires->setTime( 0, 0 );
+	}
+
+	/**
+	 * Check if jobs should expire at the end of the day. If not, they'll expire at the start of the day.
+	 *
+	 * @return bool
+	 */
+	private function jobs_expires_end_of_day() {
+		/**
+		 * Override if a job expires at the end of the day instead of start of the day.
+		 *
+		 * @since 1.35.0
+		 *
+		 * @param bool $end_of_day True if the job expires at the end of the day; otherwise it will end at the start of the day.
+		 */
+		return apply_filters( 'job_manager_jobs_expire_end_of_day', true );
+	}
+
+	/**
+	 * Check if a job has expired.
+	 *
+	 * @param int|WP_Post $job Job post object or ID.
+	 *
+	 * @return bool
+	 */
+	public function has_job_expired( $job ) {
+		$expiration = $this->get_job_expiration( $job );
+
+		if ( ! $expiration ) {
+			return false;
+		}
+
+		return $expiration->getTimestamp() < current_datetime()->getTimestamp();
 	}
 
 	/**
@@ -1139,6 +1342,38 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Hide filled job listings in WP core sitemaps when the `Hide filled positions` setting
+	 * is enabled.
+	 *
+	 * @access private
+	 * @since 1.34.3
+	 *
+	 * @param array  $query_args Array of WP_Query arguments.
+	 * @param string $post_type  Post type name.
+	 *
+	 * @return array
+	 */
+	public function sitemaps_maybe_hide_filled( $query_args, $post_type ) {
+		if (
+			'job_listing' !== $post_type
+			|| 1 !== absint( get_option( 'job_manager_hide_filled_positions' ) )
+		) {
+			return $query_args;
+		}
+
+		if ( ! isset( $query_args['meta_query'] ) ) {
+			$query_args['meta_query'] = [];
+		}
+
+		$query_args['meta_query'][] = [
+			'key'   => '_filled',
+			'value' => '0',
+		];
+
+		return $query_args;
+	}
+
+	/**
 	 * Add noindex for expired and filled job listings.
 	 */
 	public function noindex_expired_filled_job_listings() {
@@ -1155,7 +1390,11 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		wp_no_robots();
+		if ( function_exists( 'wp_robots_no_robots' ) ) {
+			add_filter( 'wp_robots', 'wp_robots_no_robots' );
+		} else {
+			wp_no_robots();
+		}
 	}
 
 	/**
@@ -1249,6 +1488,11 @@ class WP_Job_Manager_Post_Types {
 			$application_method_placeholder = __( 'https://', 'wp-job-manager' );
 		}
 
+		$job_expires_description = __( 'Job listing expires at the end of the day.', 'wp-job-manager' );
+		if ( ! self::instance()->jobs_expires_end_of_day() ) {
+			$job_expires_description = __( 'Job listing expires at the start of the day.', 'wp-job-manager' );
+		}
+
 		$fields = [
 			'_job_location'    => [
 				'label'         => __( 'Location', 'wp-job-manager' ),
@@ -1333,6 +1577,7 @@ class WP_Job_Manager_Post_Types {
 			],
 			'_job_expires'     => [
 				'label'              => __( 'Listing Expiry Date', 'wp-job-manager' ),
+				'description'        => $job_expires_description,
 				'priority'           => 11,
 				'show_in_admin'      => true,
 				'show_in_rest'       => true,
@@ -1519,7 +1764,8 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// Checks for valid date.
-		if ( date( 'Y-m-d', strtotime( $meta_value ) ) !== $meta_value ) {
+		$test_date = DateTimeImmutable::createFromFormat( 'Y-m-d', $meta_value, wp_timezone() );
+		if ( ! $test_date || $test_date->format( 'Y-m-d' ) !== $meta_value ) {
 			return '';
 		}
 

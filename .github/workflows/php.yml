@@ -1,0 +1,77 @@
+name: PHP Linting and Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+      - 'feature/**'
+      - 'release/**'
+
+jobs:
+  lint:
+    name:    PHP Linting
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/composer/
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+      - uses: actions/cache@v2
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+          tools:       composer
+          coverage:    none
+      - name: Install PHP dependencies
+        run: composer self-update --1 && composer install --no-ansi --no-interaction --prefer-dist --no-progress
+      - name: Run PHP Linter
+        run: npm run lint:php
+  test:
+    name: PHP Unit Tests
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        wp: [ 'latest' ]
+        wpmu: [ 0 ]
+        php: [ '7.2', '7.3', '7.4' ]
+        include:
+          - php: 7.3
+            wp: 5.4
+          - php: 7.3
+            wp: 5.5
+    env:
+      WP_VERSION: ${{ matrix.wp }}
+      PHP_VERSION: ${{ matrix.php }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/composer/
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+      - uses: actions/cache@v2
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysql
+          tools: composer
+          coverage: none
+      # run CI checks
+      - name: Start mysql service
+        run: sudo /etc/init.d/mysql start
+      - name: Install PHP dependencies
+        run: composer self-update --1 && composer install --no-ansi --no-interaction --prefer-dist --no-progress
+      - name: Setup test environment
+        run: bash ./tests/bin/install-wp-tests.sh wordpress_test root root localhost $WP_VERSION
+      - name: Run tests
+        run: npm run test-php

@@ -252,7 +252,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 			'_company_video'   => 'https://youtube.com/example',
 			'_filled'          => 0,
 			'_featured'        => 0,
-			'_job_expires'     => date( 'Y-m-d', strtotime( '+45 days' ) ),
+			'_job_expires'     => wp_date( 'Y-m-d', strtotime( '+45 days' ) ),
 		];
 
 		$response = $this->post(

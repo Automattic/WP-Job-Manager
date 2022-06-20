@@ -308,9 +308,9 @@ final class WP_Job_Manager_Email_Notifications {
 			];
 		}
 
-		$job_expires = get_post_meta( $job->ID, '_job_expires', true );
+		$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
 		if ( ! empty( $job_expires ) ) {
-			$job_expires_str       = date_i18n( get_option( 'date_format' ), strtotime( $job_expires ) );
+			$job_expires_str       = wp_date( get_option( 'date_format' ), $job_expires->getTimestamp() );
 			$fields['job_expires'] = [
 				'label' => __( 'Listing expires', 'wp-job-manager' ),
 				'value' => $job_expires_str,
@@ -592,8 +592,9 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @param int    $days_notice
 	 */
 	private static function send_expiring_notice( $email_notification_key, $days_notice ) {
-		$notice_before_ts = current_time( 'timestamp' ) + ( DAY_IN_SECONDS * $days_notice );
-		$job_ids          = get_posts(
+		$notice_before_datetime = current_datetime()->add( new DateInterval( 'P' . $days_notice . 'D' ) );
+
+		$job_ids = get_posts(
 			[
 				'post_type'      => 'job_listing',
 				'post_status'    => 'publish',
@@ -602,7 +603,7 @@ final class WP_Job_Manager_Email_Notifications {
 				'meta_query'     => [
 					[
 						'key'   => '_job_expires',
-						'value' => date( 'Y-m-d', $notice_before_ts ),
+						'value' => $notice_before_datetime->format( 'Y-m-d' ),
 					],
 				],
 			]
@@ -793,6 +794,10 @@ final class WP_Job_Manager_Email_Notifications {
 			$headers = $args['headers'];
 			if ( ! empty( $args['from'] ) ) {
 				$headers[] = 'From: ' . $args['from'];
+			}
+
+			if ( ! empty( $args['cc'] ) ) {
+				$headers[] = 'CC: ' . $args['cc'];
 			}
 
 			if ( ! self::send_as_plain_text( $email_notification_key, $args ) ) {

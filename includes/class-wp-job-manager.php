@@ -92,6 +92,7 @@ class WP_Job_Manager {
 		add_action( 'wp_logout', [ $this, 'cleanup_job_posting_cookies' ] );
 		add_action( 'init', [ 'WP_Job_Manager_Email_Notifications', 'init' ] );
 		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
+		add_action( 'plugins_loaded', [ $this, 'include_admin_files' ] );
 
 		// Filters.
 		add_filter( 'wp_privacy_personal_data_exporters', [ 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ] );
@@ -251,18 +252,83 @@ class WP_Job_Manager {
 		global $wp_scripts;
 
 		$jquery_version = isset( $wp_scripts->registered['jquery-ui-core']->ver ) ? $wp_scripts->registered['jquery-ui-core']->ver : '1.9.2';
+		$jquery_version = preg_replace( '/-wp/', '', $jquery_version );
 		wp_register_style( 'jquery-ui', '//code.jquery.com/ui/' . $jquery_version . '/themes/smoothness/jquery-ui.min.css', [], $jquery_version );
 
 		// Register datepicker JS. It will be enqueued if needed when a date field is used.
-		wp_register_script( 'wp-job-manager-datepicker', JOB_MANAGER_PLUGIN_URL . '/assets/js/datepicker.min.js', [ 'jquery', 'jquery-ui-datepicker' ], JOB_MANAGER_VERSION, true );
+		self::register_script( 'wp-job-manager-datepicker', 'js/datepicker.js', [ 'jquery', 'jquery-ui-datepicker' ], true );
 	}
 
 	/**
 	 * Registers select2 assets when needed.
 	 */
 	public static function register_select2_assets() {
-		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.full.min.js', [ 'jquery' ], '4.0.10', false );
-		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/js/select2/select2.min.css', [], '4.0.10' );
+		wp_register_script( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/lib/select2/select2.full.min.js', [ 'jquery' ], '4.0.10', false );
+		wp_register_style( 'select2', JOB_MANAGER_PLUGIN_URL . '/assets/lib/select2/select2.min.css', [], '4.0.10' );
+	}
+
+	/**
+	 * Register a built script file.
+	 *
+	 * @param string $script_handle The script handle to register.
+	 * @param string $script_path   The script path within the assets/dist directory.
+	 * @param array  $dependencies  The script dependencies. If set, this will override what is included in the `[script].asset.php` file.
+	 * @param bool   $in_footer     Whether to enqueue the script before </body> instead of in the <head>.
+	 *
+	 * @return bool
+	 */
+	public static function register_script( $script_handle, $script_path, $dependencies = null, $in_footer = false ) {
+		$script_asset_path = realpath(
+			JOB_MANAGER_PLUGIN_DIR . '/assets/dist/' .
+			substr_replace( $script_path, '.asset.php', - strlen( '.js' ) )
+		);
+
+		if ( ! file_exists( $script_asset_path ) ) {
+			return false;
+		}
+
+		$script_asset = require $script_asset_path;
+		$result       = wp_register_script(
+			$script_handle,
+			JOB_MANAGER_PLUGIN_URL . '/assets/dist/' . $script_path,
+			null !== $dependencies ? $dependencies : $script_asset['dependencies'],
+			$script_asset['version'],
+			$in_footer
+		);
+
+		return $result;
+	}
+
+	/**
+	 * Register a built stylesheet file.
+	 *
+	 * @param string $style_handle The stylesheet handle to register.
+	 * @param string $style_path   The stylesheet path within the assets/dist directory.
+	 * @param array  $dependencies The script dependencies. If set, this will override what is included in the `[script].asset.php` file.
+	 * @param string $media        The media for which this stylesheet has been defined.
+	 *
+	 * @return bool
+	 */
+	public static function register_style( $style_handle, $style_path, $dependencies = null, $media = 'all' ) {
+		$script_asset_path = realpath(
+			JOB_MANAGER_PLUGIN_DIR . '/assets/dist/' .
+			substr_replace( $style_path, '.asset.php', - strlen( '.css' ) )
+		);
+
+		if ( ! file_exists( $script_asset_path ) ) {
+			return false;
+		}
+
+		$script_asset = require $script_asset_path;
+		$result       = wp_register_style(
+			$style_handle,
+			JOB_MANAGER_PLUGIN_URL . '/assets/dist/' . $style_path,
+			null !== $dependencies ? $dependencies : $script_asset['dependencies'],
+			$script_asset['version'],
+			$media
+		);
+
+		return $result;
 	}
 
 	/**
@@ -318,8 +384,8 @@ class WP_Job_Manager {
 
 			// Register the script for dependencies that still require it.
 			if ( ! wp_script_is( 'chosen', 'registered' ) ) {
-				wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-chosen/chosen.jquery.min.js', [ 'jquery' ], '1.1.0', true );
-				wp_register_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/css/chosen.css', [], '1.1.0' );
+				wp_register_script( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-chosen/chosen.jquery.min.js', [ 'jquery' ], '1.1.0', true );
+				wp_register_style( 'chosen', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-chosen/chosen.css', [], '1.1.0' );
 			}
 
 			// Backwards compatibility for third-party themes/plugins while they transition to Select2.
@@ -365,8 +431,8 @@ class WP_Job_Manager {
 		 */
 		if ( apply_filters( 'job_manager_enhanced_select_enabled', $enhanced_select_used_on_page ) ) {
 			self::register_select2_assets();
-			wp_register_script( 'wp-job-manager-term-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/term-multiselect.min.js', [ 'jquery', 'select2' ], JOB_MANAGER_VERSION, true );
-			wp_register_script( 'wp-job-manager-multiselect', JOB_MANAGER_PLUGIN_URL . '/assets/js/multiselect.min.js', [ 'jquery', 'select2' ], JOB_MANAGER_VERSION, true );
+			self::register_script( 'wp-job-manager-term-multiselect', 'js/term-multiselect.js', [ 'jquery', 'select2' ], true );
+			self::register_script( 'wp-job-manager-multiselect', 'js/multiselect.js', [ 'jquery', 'select2' ], true );
 			wp_enqueue_style( 'select2' );
 
 			$ajax_filter_deps[] = 'select2';
@@ -386,9 +452,10 @@ class WP_Job_Manager {
 		}
 
 		if ( job_manager_user_can_upload_file_via_ajax() ) {
-			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.iframe-transport.js', [ 'jquery' ], '10.1.0', true );
-			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-fileupload/jquery.fileupload.js', [ 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ], '10.1.0', true );
-			wp_register_script( 'wp-job-manager-ajax-file-upload', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-file-upload.min.js', [ 'jquery', 'jquery-fileupload' ], JOB_MANAGER_VERSION, true );
+			wp_register_script( 'jquery-iframe-transport', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-fileupload/jquery.iframe-transport.js', [ 'jquery' ], '10.1.0', true );
+			wp_register_script( 'jquery-fileupload', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-fileupload/jquery.fileupload.js', [ 'jquery', 'jquery-iframe-transport', 'jquery-ui-widget' ], '10.1.0', true );
+
+			self::register_script( 'wp-job-manager-ajax-file-upload', 'js/ajax-file-upload.js', [ 'jquery', 'jquery-fileupload' ], true );
 
 			ob_start();
 			get_job_manager_template(
@@ -424,12 +491,29 @@ class WP_Job_Manager {
 			);
 		}
 
-		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-deserialize/jquery.deserialize.js', [ 'jquery' ], '1.2.1', true );
-		wp_register_script( 'wp-job-manager-ajax-filters', JOB_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.min.js', $ajax_filter_deps, JOB_MANAGER_VERSION, true );
-		wp_register_script( 'wp-job-manager-job-dashboard', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-dashboard.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
-		wp_register_script( 'wp-job-manager-job-application', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-application.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
-		wp_register_script( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/js/job-submission.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
+		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-deserialize/jquery.deserialize.js', [ 'jquery' ], '1.2.1', true );
+		self::register_script( 'wp-job-manager-ajax-filters', 'js/ajax-filters.js', $ajax_filter_deps, true );
+		self::register_script( 'wp-job-manager-job-dashboard', 'js/job-dashboard.js', [ 'jquery' ], true );
+		self::register_script( 'wp-job-manager-job-application', 'js/job-application.js', [ 'jquery' ], true );
+		self::register_script( 'wp-job-manager-job-submission', 'js/job-submission.js', [ 'jquery' ], true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
+
+		if ( isset( $select2_args ) ) {
+			$select2_filters_args = array_merge(
+				$select2_args,
+				[
+					'allowClear'              => true,
+					'minimumResultsForSearch' => 10,
+					'placeholder'             => __( 'Any Category', 'wp-job-manager' ),
+				]
+			);
+
+			wp_localize_script(
+				'select2',
+				'job_manager_select2_filters_args',
+				apply_filters( 'job_manager_select2_filters_args', $select2_filters_args )
+			);
+		}
 
 		wp_localize_script(
 			'wp-job-manager-job-submission',
@@ -481,9 +565,21 @@ class WP_Job_Manager {
 		 * @param bool $is_frontend_style_enabled
 		 */
 		if ( apply_filters( 'job_manager_enqueue_frontend_style', is_wpjm() ) ) {
-			wp_enqueue_style( 'wp-job-manager-frontend', JOB_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', [], JOB_MANAGER_VERSION );
+			self::register_style( 'wp-job-manager-frontend', 'css/frontend.css', [] );
+			wp_enqueue_style( 'wp-job-manager-frontend' );
 		} else {
-			wp_register_style( 'wp-job-manager-job-listings', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-listings.css', [], JOB_MANAGER_VERSION );
+			self::register_style( 'wp-job-manager-job-listings', 'css/job-listings.css', [] );
+			wp_enqueue_style( 'wp-job-manager-job-listings' );
+		}
+	}
+
+	/**
+	 * This solves a loading order issue which occurs when is_admin() starts to return true at a point after plugin
+	 * load. See the below issue for more information: https://github.com/Automattic/evergreen/issues/136
+	 */
+	public function include_admin_files() {
+		if ( is_admin() && ! class_exists( 'WP_Job_Manager_Admin' ) ) {
+			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';
 		}
 	}
 }

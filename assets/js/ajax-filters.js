@@ -480,9 +480,10 @@ jQuery( document ).ready( function( $ ) {
 				.not( ':input[type="hidden"]' )
 				.val( '' )
 				.trigger( 'change.select2' );
-			$( ':input[name="filter_job_type[]"]', $form )
+			$form
+				.find( ':input[name="filter_job_type[]"]' )
 				.not( ':input[type="hidden"]' )
-				.attr( 'checked', 'checked' );
+				.prop( 'checked', true );
 
 			$target.triggerHandler( 'reset' );
 			$target.triggerHandler( 'update_results', [ 1, false ] );
@@ -507,50 +508,9 @@ jQuery( document ).ready( function( $ ) {
 		return false;
 	} );
 
-	if ( $.isFunction( $.fn.select2 ) && typeof job_manager_select2_args !== 'undefined' ) {
-		var select2_args = job_manager_select2_args;
-		select2_args[ 'allowClear' ] = true;
-		select2_args[ 'minimumResultsForSearch' ] = 10;
-
-		$( 'select[name^="search_categories"]:visible' ).select2( select2_args );
+	if ( $.isFunction( $.fn.select2 ) && typeof job_manager_select2_filters_args !== 'undefined' ) {
+		$( 'select[name^="search_categories"]:visible' ).select2( job_manager_select2_filters_args );
 	}
-
-	// Initial job and $form population
-	$( window ).on( 'load', function() {
-		$( 'div.job_listings' ).each( function() {
-			var $target = $( this );
-			var $form = $target.find( '.job_filters' );
-			var results_loaded = false;
-			var state = get_state( $target );
-
-			if ( state ) {
-				// Restore the results from cache.
-				if ( state.results ) {
-					results_loaded = handle_result( $target, state.results );
-
-					// We don't want this to continue to persist unless we click on another link.
-					persist_results( $target, false );
-					clear_form( $target );
-				}
-
-				// Restore the form state.
-				if ( typeof state.form === 'string' && '' !== state.form ) {
-					// When deserializing a form, we need to first uncheck the checkboxes that are by default checked.
-					$form.find('input[type=checkbox]').prop('checked', false);
-					$form.deserialize(state.form);
-					$form
-						.find(':input[name^="search_categories"]')
-						.not(':input[type="hidden"]')
-						.trigger('change.select2');
-				}
-			}
-
-			if ( ! results_loaded && $form.length > 0 ) {
-				// If we didn't load results from cache, load page 1.
-				$target.triggerHandler( 'update_results', [ 1, false ] );
-			}
-		} );
-	} );
 
 	$( window ).on( 'unload', function() {
 		$( 'div.job_listings' ).each( function() {
@@ -561,5 +521,40 @@ jQuery( document ).ready( function( $ ) {
 		} );
 
 		return true;
+	} );
+
+	// Initial job and $form population
+	$( 'div.job_listings' ).each( function() {
+		var $target = $( this );
+		var $form = $target.find( '.job_filters' );
+		var results_loaded = false;
+		var state = get_state( $target );
+
+		if ( state ) {
+			// Restore the results from cache.
+			if ( state.results ) {
+				results_loaded = handle_result( $target, state.results );
+
+				// We don't want this to continue to persist unless we click on another link.
+				persist_results( $target, false );
+				clear_form( $target );
+			}
+
+			// Restore the form state.
+			if ( typeof state.form === 'string' && '' !== state.form ) {
+				// When deserializing a form, we need to first uncheck the checkboxes that are by default checked.
+				$form.find('input[type=checkbox]').prop('checked', false);
+				$form.deserialize(state.form);
+				$form
+					.find(':input[name^="search_categories"]')
+					.not(':input[type="hidden"]')
+					.trigger('change.select2');
+			}
+		}
+
+		if ( ! results_loaded && $form.length > 0 ) {
+			// If we didn't load results from cache, load page 1.
+			$target.triggerHandler( 'update_results', [ 1, false ] );
+		}
 	} );
 } );

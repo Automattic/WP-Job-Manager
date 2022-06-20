@@ -80,6 +80,8 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_use_standard_password_setup_email',
 		'job_manager_registration_role',
 		'job_manager_submission_requires_approval',
+		'job_manager_show_agreement_job_submission',
+		'job_manager_terms_and_conditions_page_id',
 		'job_manager_user_can_edit_pending_submissions',
 		'job_manager_user_edit_published_submissions',
 		'job_manager_submission_duration',
@@ -102,6 +104,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'widget_widget_featured_jobs',
 		'widget_widget_recent_jobs',
 		'job_manager_job_listing_pagination_type',
+		'job_manager_enable_salary',
 	];
 
 	/**

@@ -8,7 +8,15 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.34.1
+ * @version     1.35.0
+ *
+ * @since 1.34.4 Available job actions are passed in an array (`$job_actions`, keyed by job ID) and not generated in the template.
+ * @since 1.35.0 Switched to new date functions.
+ *
+ * @var array     $job_dashboard_columns Array of the columns to show on the job dashboard page.
+ * @var int       $max_num_pages         Maximum number of pages
+ * @var WP_Post[] $jobs                  Array of job post results.
+ * @var array     $job_actions           Array of actions available for each job.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -44,54 +52,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<?php echo is_position_featured( $job ) ? '<span class="featured-job-icon" title="' . esc_attr__( 'Featured Job', 'wp-job-manager' ) . '"></span>' : ''; ?>
 									<ul class="job-dashboard-actions">
 										<?php
-											$actions = [];
-
-											switch ( $job->post_status ) {
-												case 'publish' :
-													if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
-														$actions[ 'edit' ] = [ 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false ];
+											if ( ! empty( $job_actions[ $job->ID ] ) ) {
+												foreach ( $job_actions[ $job->ID ] as $action => $value ) {
+													$action_url = add_query_arg( [
+														'action' => $action,
+														'job_id' => $job->ID
+													] );
+													if ( $value['nonce'] ) {
+														$action_url = wp_nonce_url( $action_url, $value['nonce'] );
 													}
-													if ( is_position_filled( $job ) ) {
-														$actions['mark_not_filled'] = [ 'label' => __( 'Mark not filled', 'wp-job-manager' ), 'nonce' => true ];
-													} else {
-														$actions['mark_filled'] = [ 'label' => __( 'Mark filled', 'wp-job-manager' ), 'nonce' => true ];
-													}
-
-													$actions['duplicate'] = [ 'label' => __( 'Duplicate', 'wp-job-manager' ), 'nonce' => true ];
-													break;
-												case 'expired' :
-													if ( job_manager_get_permalink( 'submit_job_form' ) ) {
-														$actions['relist'] = [ 'label' => __( 'Relist', 'wp-job-manager' ), 'nonce' => true ];
-													}
-													break;
-												case 'pending_payment' :
-												case 'pending' :
-													if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
-														$actions['edit'] = [ 'label' => __( 'Edit', 'wp-job-manager' ), 'nonce' => false ];
-													}
-												break;
-												case 'draft' :
-												case 'preview' :
-													$actions['continue'] = [ 'label' => __( 'Continue Submission', 'wp-job-manager' ), 'nonce' => true ];
-													break;
-											}
-
-											$actions['delete'] = [ 'label' => __( 'Delete', 'wp-job-manager' ), 'nonce' => true ];
-											$actions           = apply_filters( 'job_manager_my_job_actions', $actions, $job );
-
-											foreach ( $actions as $action => $value ) {
-												$action_url = add_query_arg( [ 'action' => $action, 'job_id' => $job->ID ] );
-												if ( $value['nonce'] ) {
-													$action_url = wp_nonce_url( $action_url, 'job_manager_my_job_actions' );
+													echo '<li><a href="' . esc_url( $action_url ) . '" class="job-dashboard-action-' . esc_attr( $action ) . '">' . esc_html( $value['label'] ) . '</a></li>';
 												}
-												echo '<li><a href="' . esc_url( $action_url ) . '" class="job-dashboard-action-' . esc_attr( $action ) . '">' . esc_html( $value['label'] ) . '</a></li>';
 											}
 										?>
 									</ul>
 								<?php elseif ('date' === $key ) : ?>
-									<?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $job->post_date ) ) ); ?>
+									<?php echo esc_html( wp_date( get_option( 'date_format' ), get_post_datetime( $job )->getTimestamp() ) ); ?>
 								<?php elseif ('expires' === $key ) : ?>
-									<?php echo esc_html( $job->_job_expires ? date_i18n( get_option( 'date_format' ), strtotime( $job->_job_expires ) ) : '&ndash;' ); ?>
+									<?php
+									$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+									echo esc_html( $job_expires ? wp_date( get_option( 'date_format' ), $job_expires->getTimestamp() ) : '&ndash;' );
+									?>
 								<?php elseif ('filled' === $key ) : ?>
 									<?php echo is_position_filled( $job ) ? '&#10004;' : '&ndash;'; ?>
 								<?php else : ?>

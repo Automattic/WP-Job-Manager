@@ -57,7 +57,87 @@ class WP_Job_Manager_Writepanels {
 
 		$current_user = wp_get_current_user();
 		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields();
-		$fields       = [];
+
+		$fields = [
+			'_job_location'    => [
+				'label'       => __( 'Location', 'wp-job-manager' ),
+				'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
+				'description' => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
+				'priority'    => 1,
+			],
+			'_remote_position' => [
+				'label'       => __( 'Remote Position', 'wp-job-manager' ),
+				'description' => __( 'Check if is a remote position.', 'wp-job-manager' ),
+				'type'        => 'checkbox',
+				'priority'    => 2,
+			],
+			'_application'     => [
+				'label'       => __( 'Application Email or URL', 'wp-job-manager' ),
+				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
+				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
+				'value'       => metadata_exists( 'post', $post_id, '_application' ) ? get_post_meta( $post_id, '_application', true ) : $current_user->user_email,
+				'priority'    => 3,
+			],
+			'_company_name'    => [
+				'label'       => __( 'Company Name', 'wp-job-manager' ),
+				'placeholder' => '',
+				'priority'    => 4,
+			],
+			'_company_website' => [
+				'label'       => __( 'Company Website', 'wp-job-manager' ),
+				'placeholder' => '',
+				'priority'    => 5,
+			],
+			'_company_tagline' => [
+				'label'       => __( 'Company Tagline', 'wp-job-manager' ),
+				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' ),
+				'priority'    => 6,
+			],
+			'_company_twitter' => [
+				'label'       => __( 'Company Twitter', 'wp-job-manager' ),
+				'placeholder' => '@yourcompany',
+				'priority'    => 7,
+			],
+			'_company_video'   => [
+				'label'       => __( 'Company Video', 'wp-job-manager' ),
+				'placeholder' => __( 'URL to the company video', 'wp-job-manager' ),
+				'type'        => 'file',
+				'priority'    => 8,
+			],
+			'_filled'          => [
+				'label'       => __( 'Position Filled', 'wp-job-manager' ),
+				'type'        => 'checkbox',
+				'priority'    => 9,
+				'description' => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
+			],
+			'_job_salary'      => [
+				'label'       => __( 'Salary', 'wp-job-manager' ),
+				'type'        => 'text',
+				'placeholder' => 'e.g. 20000',
+				'priority'    => 10,
+				'description' => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
+				'default'     => '',
+			],
+		];
+		if ( ! get_option( 'job_manager_enable_salary' ) ) {
+			unset( $fields['_job_salary'] );
+		}
+		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
+			$fields['_featured']    = [
+				'label'       => __( 'Featured Listing', 'wp-job-manager' ),
+				'type'        => 'checkbox',
+				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
+				'priority'    => 10,
+			];
+			$job_expires            = get_post_meta( $post_id, '_job_expires', true );
+			$fields['_job_expires'] = [
+				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
+				'priority'    => 11,
+				'classes'     => [ 'job-manager-datepicker' ],
+				'placeholder' => ! empty( $job_expires ) ? null : date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post_id ) ) ),
+				'value'       => ! empty( $job_expires ) ? gmdate( 'Y-m-d', strtotime( $job_expires ) ) : '',
+			];
+		}
 
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
 			$fields['_job_author'] = [
@@ -93,14 +173,17 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		if ( isset( $fields['_job_expires'] ) && ! isset( $fields['_job_expires']['value'] ) ) {
-			$job_expires = get_post_meta( $post_id, '_job_expires', true );
+			$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post_id );
 
+			$fields['_job_expires']['placeholder'] = null;
 			if ( ! empty( $job_expires ) ) {
-				$fields['_job_expires']['placeholder'] = null;
-				$fields['_job_expires']['value']       = date( 'Y-m-d', strtotime( $job_expires ) );
+				$fields['_job_expires']['value'] = $job_expires->format( 'Y-m-d' );
 			} else {
-				$fields['_job_expires']['placeholder'] = date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post_id ) ) );
-				$fields['_job_expires']['value']       = '';
+				$assumed_expiration_date = calculate_job_expiry( $post_id, true );
+				if ( $assumed_expiration_date ) {
+					$fields['_job_expires']['placeholder'] = wp_date( get_option( 'date_format' ), $assumed_expiration_date->getTimestamp() );
+				}
+				$fields['_job_expires']['value'] = '';
 			}
 		}
 
@@ -199,12 +282,59 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
+	 * Displays file input field.
+	 *
+	 * @param string  $key         Field key.
+	 * @param string  $name        Input name.
+	 * @param string  $placeholder Input placeholder.
+	 * @param string  $value       File path.
+	 * @param boolean $multiple    Flag if the field is single or part of multiple.
+	 * @param string  $download    URL to download the file.
+	 */
+	private static function file_url_field( $key, $name, $placeholder, $value, $multiple, $download = null ) {
+		$name = esc_attr( $name );
+		if ( $multiple ) {
+			$name = $name . '[]';
+		}
+		?>
+		<span class="file_url">
+			<input
+				type="text"
+				name="<?php echo esc_attr( $name ); ?>"
+				<?php
+				if ( ! $multiple ) {
+					echo 'id="' . esc_attr( $key ) . '"';
+				}
+				?>
+				placeholder="<?php echo esc_attr( $placeholder ); ?>"
+				value="<?php echo esc_attr( $value ); ?>"
+			/>
+			<button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>">
+				<?php esc_html_e( 'Upload', 'wp-job-manager' ); ?>
+			</button>
+			<button
+				class="button button-small wp_job_manager_view_file_button"
+				<?php
+				if ( $download ) {
+					echo 'data-download-url="' . esc_url( $download ) . '"';
+				}
+				?>
+			>
+				<?php esc_html_e( 'View', 'wp-job-manager' ); ?>
+			</button>
+		</span>
+		<?php
+	}
+
+	/**
 	 * Displays label and file input field.
 	 *
 	 * @param string $key
 	 * @param array  $field
 	 */
 	public static function input_file( $key, $field ) {
+		global $post;
+
 		if ( empty( $field['placeholder'] ) ) {
 			$field['placeholder'] = 'https://';
 		}
@@ -222,15 +352,21 @@ class WP_Job_Manager_Writepanels {
 			</label>
 			<?php
 			if ( ! empty( $field['multiple'] ) ) {
-				foreach ( (array) $field['value'] as $value ) {
-					?>
-					<span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>[]" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $value ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php esc_html_e( 'View', 'wp-job-manager' ); ?></button></span>
-					<?php
+				foreach ( (array) $field['value'] as $k => $value ) {
+					$download = null;
+					if ( isset( $field['download'] ) && isset( $field['download'][ $k ] ) ) {
+						$download = $field['download'][ $k ];
+					}
+
+					self::file_url_field( $key, $name, $field['placeholder'], $value, true, $download );
 				}
 			} else {
-				?>
-				<span class="file_url"><input type="text" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Upload', 'wp-job-manager' ); ?></button><button class="button button-small wp_job_manager_view_file_button"><?php esc_html_e( 'View', 'wp-job-manager' ); ?></button></span>
-				<?php
+				$download = null;
+				if ( isset( $field['download'] ) ) {
+					$download = $field['download'];
+				}
+
+				self::file_url_field( $key, $name, $field['placeholder'], $field['value'], false, $download );
 			}
 			if ( ! empty( $field['multiple'] ) ) {
 				?>
@@ -359,6 +495,10 @@ class WP_Job_Manager_Writepanels {
 		} else {
 			$name = $key;
 		}
+		$selected_value = null;
+		if ( isset( $field['value'] ) ) {
+			$selected_value = esc_attr( $field['value'] );
+		}
 		?>
 		<p class="form-field">
 			<label for="<?php echo esc_attr( $key ); ?>">
@@ -372,8 +512,8 @@ class WP_Job_Manager_Writepanels {
 					<option
 						value="<?php echo esc_attr( $key ); ?>"
 						<?php
-						if ( isset( $field['value'] ) ) {
-							selected( $field['value'], $key );
+						if ( null !== $selected_value ) {
+							selected( $selected_value, trim( $key ) );
 						}
 						?>
 					><?php echo esc_html( $value ); ?></option>
@@ -434,7 +574,7 @@ class WP_Job_Manager_Writepanels {
 		?>
 		<p class="form-field form-field-checkbox">
 			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( wp_strip_all_tags( $field['label'] ) ); ?></label>
-			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $field['value'], 1 ); ?> />
+			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php isset( $field['value'] ) ? checked( $field['value'], 1 ) : ''; ?> />
 			<?php if ( ! empty( $field['description'] ) ) : ?>
 				<span class="description"><?php echo wp_kses_post( $field['description'] ); ?></span>
 			<?php endif; ?>
@@ -549,11 +689,17 @@ class WP_Job_Manager_Writepanels {
 			}
 		}
 
-		$user_edited_date = get_post_meta( $post->ID, '_job_edited', true );
-		if ( $user_edited_date ) {
+		$user_edited_timestamp = get_post_meta( $post->ID, '_job_edited', true );
+		if ( $user_edited_timestamp ) {
 			echo '<p class="form-field">';
-			// translators: %1$s is placeholder for singular name of the job listing post type; %2$s is the intl formatted date the listing was last modified.
-			echo '<em>' . sprintf( esc_html__( '%1$s was last modified by the user on %2$s.', 'wp-job-manager' ), esc_html( $wp_post_types['job_listing']->labels->singular_name ), esc_html( date_i18n( get_option( 'date_format' ), $user_edited_date ) ) ) . '</em>';
+			echo '<em>';
+			printf(
+				// translators: %1$s is placeholder for singular name of the job listing post type; %2$s is the intl formatted date the listing was last modified.
+				esc_html__( '%1$s was last modified by the user on %2$s.', 'wp-job-manager' ),
+				esc_html( $wp_post_types['job_listing']->labels->singular_name ),
+				esc_html( wp_date( get_option( 'date_format' ), (int) $user_edited_timestamp ) )
+			);
+			echo '</em>';
 			echo '</p>';
 		}
 
@@ -617,7 +763,7 @@ class WP_Job_Manager_Writepanels {
 			}
 
 			// Checkboxes that aren't sent are unchecked.
-			if ( 'checkbox' === $field['type'] ) {
+			if ( isset( $field['type'] ) && 'checkbox' === $field['type'] ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				if ( ! empty( $_POST[ $key ] ) ) {
 					$_POST[ $key ] = 1;
@@ -626,7 +772,7 @@ class WP_Job_Manager_Writepanels {
 				}
 			}
 
-			// Expirey date.
+			// Expiry date.
 			if ( '_job_expires' === $key ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				if ( empty( $_POST[ $key ] ) ) {
@@ -637,7 +783,10 @@ class WP_Job_Manager_Writepanels {
 					}
 				} else {
 					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
-					update_post_meta( $post_id, $key, date( 'Y-m-d', strtotime( sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) ) ) );
+					$input_job_expires = DateTimeImmutable::createFromFormat( 'Y-m-d', sanitize_text_field( wp_unslash( $_POST[ $key ] ) ), wp_timezone() );
+					if ( $input_job_expires ) {
+						WP_Job_Manager_Post_Types::instance()->set_job_expiration( $post_id, $input_job_expires );
+					}
 				}
 			} elseif ( '_job_author' === $key ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
@@ -657,13 +806,12 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		/* Set Post Status To Expired If Already Expired */
-		$expiry_date            = get_post_meta( $post_id, '_job_expires', true );
-		$today_date             = date( 'Y-m-d', current_time( 'timestamp' ) );
-		$is_job_listing_expired = $expiry_date && $today_date > $expiry_date;
+		$post_types             = WP_Job_Manager_Post_Types::instance();
+		$is_job_listing_expired = $post_types->has_job_expired( $post_id );
 		if ( $is_job_listing_expired && ! $this->is_job_listing_status_changing( null, 'draft' ) ) {
 			remove_action( 'job_manager_save_job_listing', [ $this, 'save_job_listing_data' ], 20 );
 			if ( $this->is_job_listing_status_changing( 'expired', 'publish' ) ) {
-				update_post_meta( $post_id, '_job_expires', calculate_job_expiry( $post_id ) );
+				$post_types->set_job_expiration( $post_id, calculate_job_expiry( $post_id, true ) );
 			} else {
 				$job_data = [
 					'ID'          => $post_id,

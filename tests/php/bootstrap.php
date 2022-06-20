@@ -47,6 +47,12 @@ class WPJM_Unit_Tests_Bootstrap {
 		// install WPJM.
 		tests_add_filter( 'setup_theme', [ $this, 'install_plugin' ] );
 
+		// Used for some libraries. Tests that require these libraries should be skipped if they don't exist.
+		$autoload_file = __DIR__ . '/../vendor/autoload.php';
+		if ( file_exists( $autoload_file ) ) {
+			require_once $autoload_file;
+		}
+
 		// load the WP testing environment.
 		require_once $this->wp_tests_dir . '/includes/bootstrap.php';
 

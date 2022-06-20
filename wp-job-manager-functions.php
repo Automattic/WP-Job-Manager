@@ -74,16 +74,50 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_location'] ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			$location_search    = [ 'relation' => 'OR' ];
-			foreach ( $location_meta_keys as $meta_key ) {
-				$location_search[] = [
-					'key'     => $meta_key,
-					'value'   => $args['search_location'],
-					'compare' => 'like',
-				];
+			// translators: This one is used to determine if the user is searching for remote work type.
+			$remote_keyword     = __( 'remote', 'wp-job-manager' );
+			$search_terms       = mb_split( '[,\s]+', $args['search_location'] );
+			$search_locations   = [];
+			$location_query     = [];
+			$is_remote_location = false;
+
+			// Check if user is looking for a remote work.
+			foreach ( $search_terms as $search_term ) {
+				$levenshtein_distance = levenshtein( strtolower( $remote_keyword ), strtolower( $search_term ) );
+				if ( -1 < $levenshtein_distance && $levenshtein_distance < 3 ) {
+					$is_remote_location = true;
+				} else {
+					$search_locations[] = $search_term;
+				}
 			}
-			$query_args['meta_query'][] = $location_search;
+
+			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+			foreach ( $location_meta_keys as $meta_key ) {
+				foreach ( $search_locations as $search_location ) {
+					$location_query[] = [
+						'key'     => $meta_key,
+						'value'   => $search_location,
+						'compare' => 'like',
+					];
+				}
+			}
+			if ( count( $location_query ) > 0 ) {
+				$location_query['relation'] = 'OR';
+				$query_args['meta_query'][] = $location_query;
+			}
+
+			if ( $is_remote_location ) {
+				$remote_work_query = [
+					'relation' => 'AND',
+					[
+						'key'     => '_remote_position',
+						'value'   => '1',
+						'compare' => '=',
+					],
+
+				];
+				$query_args['meta_query'][] = $remote_work_query;
+			}
 		}
 
 		if ( ! is_null( $args['featured'] ) ) {
@@ -162,13 +196,14 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 
 		do_action( 'before_get_job_listings', $query_args, $args );
 
+		$should_cache = 'rand_featured' !== $args['orderby'] && 'rand' !== $args['orderby'];
+
 		// Cache results.
-		if ( apply_filters( 'get_job_listings_cache_results', true ) ) {
-			$to_hash              = wp_json_encode( $query_args );
-			$query_args_hash      = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
-			$result               = false;
-			$cached_query_results = true;
-			$cached_query_posts   = get_transient( $query_args_hash );
+		if ( apply_filters( 'get_job_listings_cache_results', $should_cache ) ) {
+			$to_hash            = wp_json_encode( $query_args );
+			$query_args_hash    = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
+			$result             = false;
+			$cached_query_posts = get_transient( $query_args_hash );
 			if ( is_string( $cached_query_posts ) ) {
 				$cached_query_posts = json_decode( $cached_query_posts, false );
 				if (
@@ -196,23 +231,13 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			}
 
 			if ( false === $result ) {
-				$result               = new WP_Query( $query_args );
-				$cached_query_results = false;
+				$result = new WP_Query( $query_args );
 
 				$cacheable_result                  = [];
 				$cacheable_result['posts']         = array_values( $result->posts );
 				$cacheable_result['found_posts']   = $result->found_posts;
 				$cacheable_result['max_num_pages'] = $result->max_num_pages;
 				set_transient( $query_args_hash, wp_json_encode( $cacheable_result ), DAY_IN_SECONDS );
-			}
-
-			if ( $cached_query_results ) {
-				// random order is cached so shuffle them.
-				if ( 'rand_featured' === $args['orderby'] ) {
-					usort( $result->posts, '_wpjm_shuffle_featured_post_results_helper' );
-				} elseif ( 'rand' === $args['orderby'] ) {
-					shuffle( $result->posts );
-				}
 			}
 		} else {
 			$result = new WP_Query( $query_args );
@@ -718,7 +743,7 @@ function job_manager_user_can_edit_job( $job_id ) {
 	} else {
 		$job = get_post( $job_id );
 
-		if ( ! $job || ( absint( $job->post_author ) !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
+		if ( ! $job || 'job_listing' !== $job->post_type || ( absint( $job->post_author ) !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
 			$can_edit = false;
 		}
 	}
@@ -772,7 +797,9 @@ function is_wpjm_page() {
 		 */
 		$wpjm_page_ids = array_unique( apply_filters( 'job_manager_page_ids', $wpjm_page_ids ) );
 
-		$is_wpjm_page = is_page( $wpjm_page_ids );
+		if ( ! empty( $wpjm_page_ids ) ) {
+			$is_wpjm_page = is_page( $wpjm_page_ids );
+		}
 	}
 
 	/**
@@ -1054,6 +1081,52 @@ function wpjm_published_submission_edits_require_moderation() {
 }
 
 /**
+ * Get the category slugs from the search query string.
+ * The query string is made with the category slugs separate by commas.
+ *
+ * @since 1.34.2
+ *
+ * @return string[] $search_category_slugs Array of category slugs.
+ */
+function wpjm_get_category_slugs_from_search_query_string() {
+	$search_category_slugs = [];
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Should be checked outside of this function.
+	$search_category = ! empty( $_GET['search_category'] ) ? sanitize_text_field( wp_unslash( $_GET['search_category'] ) ) : false;
+
+	if ( $search_category ) {
+		$search_category_slugs = explode( ',', $search_category );
+	}
+
+	return $search_category_slugs;
+}
+
+/**
+ * Get categories by slug.
+ *
+ * @since 1.34.2
+ *
+ * @param string[]  $search_category_slugs Array of category slugs to search.
+ * @param array     $default_args          Default args to search the term categories.
+ * @param WP_Term[] $exclude_categories    Array of categories to exclude.
+ *
+ * @return WP_Term[] $categories Array of categories.
+ */
+function wpjm_get_categories_by_slug( $search_category_slugs, $default_args, $exclude_categories ) {
+	$exclude_category_ids = wp_list_pluck( $exclude_categories, 'term_id' );
+
+	$args = [
+		'hide_empty' => false,
+		'slug'       => $search_category_slugs,
+		'exclude'    => $exclude_category_ids,
+	];
+
+	$args = wp_parse_args( $args, $default_args );
+
+	return get_terms( $args );
+}
+
+/**
  * Displays category select dropdown.
  *
  * Based on wp_dropdown_categories, with the exception of supporting multiple selected categories.
@@ -1094,6 +1167,10 @@ function job_manager_dropdown_categories( $args = '' ) {
 		$r['pad_counts'] = true;
 	}
 
+	if ( ! isset( $r['search_category_slugs'] ) ) {
+		$r['search_category_slugs'] = wpjm_get_category_slugs_from_search_query_string();
+	}
+
 	/** This filter is documented in wp-job-manager.php */
 	$r['lang'] = apply_filters( 'wpjm_lang', null );
 
@@ -1102,18 +1179,26 @@ function job_manager_dropdown_categories( $args = '' ) {
 	$categories      = get_transient( $categories_hash );
 
 	if ( empty( $categories ) ) {
-		$categories = get_terms(
-			[
-				'taxonomy'     => $r['taxonomy'],
-				'orderby'      => $r['orderby'],
-				'order'        => $r['order'],
-				'hide_empty'   => $r['hide_empty'],
-				'parent'       => $r['parent'],
-				'child_of'     => $r['child_of'],
-				'exclude'      => $r['exclude'],
-				'hierarchical' => $r['hierarchical'],
-			]
-		);
+		$args = [
+			'taxonomy'     => $r['taxonomy'],
+			'orderby'      => $r['orderby'],
+			'order'        => $r['order'],
+			'hide_empty'   => $r['hide_empty'],
+			'parent'       => $r['parent'],
+			'child_of'     => $r['child_of'],
+			'exclude'      => $r['exclude'],
+			'hierarchical' => $r['hierarchical'],
+		];
+
+		$categories = get_terms( $args );
+
+		if ( ! empty( $r['search_category_slugs'] ) ) {
+			$categories = array_merge(
+				$categories,
+				wpjm_get_categories_by_slug( $r['search_category_slugs'], $args, $categories )
+			);
+		}
+
 		set_transient( $categories_hash, $categories, DAY_IN_SECONDS * 7 );
 	}
 
@@ -1375,23 +1460,28 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  * Calculates and returns the job expiry date.
  *
  * @since 1.22.0
- * @param  int $job_id
- * @return string
+ * @since 1.35.0 Added the `$return_datetime` param.
+ *
+ * @param  int  $job_id          Job ID.
+ * @param  bool $return_datetime Return the date time object.
+ * @return string|DateTimeImmutable When `$return_datetime`, it will return either DateTimeImmutable or null.
  */
-function calculate_job_expiry( $job_id ) {
+function calculate_job_expiry( $job_id, $return_datetime = false ) {
 	// Get duration from the product if set...
 	$duration = get_post_meta( $job_id, '_job_duration', true );
 
 	// ...otherwise use the global option.
 	if ( ! $duration ) {
-		$duration = absint( get_option( 'job_manager_submission_duration' ) );
+		$duration = get_option( 'job_manager_submission_duration' );
 	}
 
 	if ( $duration ) {
-		return date( 'Y-m-d', strtotime( "+{$duration} days", current_time( 'timestamp' ) ) );
+		$new_job_expiry = current_datetime()->add( new DateInterval( 'P' . absint( $duration ) . 'D' ) );
+
+		return $return_datetime ? WP_Job_Manager_Post_Types::instance()->prepare_job_expires_time( $new_job_expiry ) : $new_job_expiry->format( 'Y-m-d' );
 	}
 
-	return '';
+	return $return_datetime ? null : '';
 }
 
 /**
@@ -1409,7 +1499,7 @@ function job_manager_duplicate_listing( $post_id ) {
 	}
 
 	$post = get_post( $post_id );
-	if ( ! $post ) {
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
 		return 0;
 	}
 
@@ -1454,14 +1544,21 @@ function job_manager_duplicate_listing( $post_id ) {
 	if ( ! empty( $post_meta ) ) {
 		$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
 
-		$default_duplicate_ignore_keys = [ '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id' ];
+		$default_duplicate_ignore_keys = [ '_filled', '_featured', '_job_expires', '_job_duration', '_package_id', '_user_package_id', '_edit_lock', '_submitting_key', '_tracked_submitted', '_tracked_approved' ];
 		$duplicate_ignore_keys         = apply_filters( 'job_manager_duplicate_listing_ignore_keys', $default_duplicate_ignore_keys, true );
 
 		foreach ( $post_meta as $meta_key => $meta_value ) {
-			if ( in_array( $meta_key, $duplicate_ignore_keys, true ) ) {
+			$sanitized_key = preg_replace( "/[^\x20-\x7E]/", '', $meta_key );
+
+			if ( in_array( $sanitized_key, $duplicate_ignore_keys, true ) ) {
 				continue;
 			}
-			update_post_meta( $new_post_id, $meta_key, maybe_unserialize( $meta_value ) );
+
+			if ( 1 === preg_match( '/^(_wp_|_oembed_)/', $sanitized_key ) ) {
+				continue;
+			}
+
+			update_post_meta( $new_post_id, wp_slash( $meta_key ), wp_slash( maybe_unserialize( $meta_value ) ) );
 		}
 	}
 
@@ -1487,4 +1584,73 @@ function wpjm_esc_json( $json, $html = false ) {
 		'UTF-8',                           // json_encode() outputs UTF-8 (really just ASCII), not the blog's charset.
 		true                               // Double escape entities: `&amp;` -> `&amp;amp;`.
 	);
+}
+
+/**
+ * True if an the user can browse resumes.
+ *
+ * @return bool
+ */
+function job_manager_user_can_browse_job_listings() {
+	$can_browse = true;
+	$caps       = array_filter( array_map( 'trim', array_map( 'strtolower', explode( ',', get_option( 'job_manager_browse_job_capability' ) ) ) ) );
+
+	if ( $caps ) {
+		$can_browse = false;
+		foreach ( $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$can_browse = true;
+				break;
+			}
+		}
+	}
+
+	return apply_filters( 'job_manager_user_can_browse_job_listings', $can_browse );
+}
+
+/**
+ * True if an the user can view a resume.
+ *
+ * @since 1.36.0
+ *
+ * @param  int $job_id
+ * @return bool
+ */
+function job_manager_user_can_view_job_listing( $job_id ) {
+	$can_view = true;
+	$job      = get_post( $job_id );
+
+	// Allow previews.
+	if ( 'preview' === $job->post_status ) {
+		return true;
+	}
+
+	$caps = array_filter( array_map( 'trim', array_map( 'strtolower', explode( ',', get_option( 'job_manager_view_job_capability' ) ) ) ) );
+
+	if ( $caps ) {
+		$can_view = false;
+		foreach ( $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$can_view = true;
+				break;
+			}
+		}
+	}
+
+	if ( 'expired' === $job->post_status ) {
+		$can_view = false;
+	}
+
+	if ( $job->post_author > 0 && absint( $job->post_author ) === get_current_user_id() ) {
+		$can_view = true;
+	}
+
+	$key = get_post_meta( $job_id, 'share_link_key', true );
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( $key && ! empty( $_GET['key'] ) && $key === $_GET['key'] ) {
+		$can_view = true;
+	}
+
+	return apply_filters( 'job_manager_user_can_view_job', $can_view, $job_id );
 }

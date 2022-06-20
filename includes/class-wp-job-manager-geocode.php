@@ -229,7 +229,7 @@ class WP_Job_Manager_Geocode {
 				$result           = wp_remote_retrieve_body( $result );
 				$geocoded_address = json_decode( $result );
 
-				if ( $geocoded_address->status ) {
+				if ( isset( $geocoded_address->status ) ) {
 					if ( 'ZERO_RESULTS' === $geocoded_address->status ) {
 						throw new Exception( __( 'No results found', 'wp-job-manager' ) );
 					} elseif ( 'OVER_QUERY_LIMIT' === $geocoded_address->status ) {

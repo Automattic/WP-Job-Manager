@@ -370,11 +370,11 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 	$data               = [];
 	$data['@context']   = 'http://schema.org/';
 	$data['@type']      = 'JobPosting';
-	$data['datePosted'] = get_post_time( 'c', false, $post );
+	$data['datePosted'] = get_post_datetime( $post )->format( 'c' );
 
-	$job_expires = get_post_meta( $post->ID, '_job_expires', true );
+	$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post );
 	if ( ! empty( $job_expires ) ) {
-		$data['validThrough'] = date( 'c', strtotime( $job_expires ) );
+		$data['validThrough'] = $job_expires->format( 'c' );
 	}
 
 	$data['title']       = wp_strip_all_tags( wpjm_get_the_job_title( $post ) );
@@ -410,9 +410,24 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['jobLocation']            = [];
 		$data['jobLocation']['@type']   = 'Place';
 		$data['jobLocation']['address'] = wpjm_get_job_listing_location_structured_data( $post );
+		if ( $post->_remote_position ) {
+			$data['jobLocationType'] = 'TELECOMMUTE';
+		}
 		if ( empty( $data['jobLocation']['address'] ) ) {
 			$data['jobLocation']['address'] = $location;
 		}
+	}
+
+	$salary   = get_the_job_salary( $post );
+	$currency = get_the_job_salary_currency( $post );
+	$unit     = get_the_job_salary_unit( $post );
+	if ( ! empty( $salary ) ) {
+		$data['baseSalary']                      = [];
+		$data['baseSalary']['@type']             = 'MonetaryAmount';
+		$data['baseSalary']['currency']          = $currency;
+		$data['baseSalary']['value']['@type']    = 'QuantitativeValue';
+		$data['baseSalary']['value']['value']    = $salary;
+		$data['baseSalary']['value']['unitText'] = $unit;
 	}
 
 	/**
@@ -744,13 +759,13 @@ function the_job_publish_date( $post = null ) {
 	$date_format = get_option( 'job_manager_date_format' );
 
 	if ( 'default' === $date_format ) {
-		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . date_i18n( get_option( 'date_format' ), get_post_time( 'U' ) );
+		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . wp_date( get_option( 'date_format' ), get_post_timestamp( $post ) );
 	} else {
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
-		$display_date = sprintf( esc_html__( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) );
+		$display_date = sprintf( esc_html__( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp( $post ), time() ) );
 	}
 
-	echo '<time datetime="' . esc_attr( get_post_time( 'Y-m-d' ) ) . '">' . wp_kses_post( $display_date ) . '</time>';
+	echo '<time datetime="' . esc_attr( get_post_datetime( $post )->format( 'Y-m-d' ) ) . '">' . wp_kses_post( $display_date ) . '</time>';
 }
 
 
@@ -765,13 +780,12 @@ function get_the_job_publish_date( $post = null ) {
 	$date_format = get_option( 'job_manager_date_format' );
 
 	if ( 'default' === $date_format ) {
-		return get_post_time( get_option( 'date_format' ) );
+		return wp_date( get_option( 'date_format' ), get_post_datetime()->getTimestamp() );
 	} else {
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
-		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_time( 'U' ), current_time( 'timestamp' ) ) );
+		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp(), time() ) );
 	}
 }
-
 
 /**
  * Displays the location for the job listing.
@@ -782,6 +796,16 @@ function get_the_job_publish_date( $post = null ) {
  */
 function the_job_location( $map_link = true, $post = null ) {
 	$location = get_the_job_location( $post );
+	$post     = get_post( $post );
+	if ( $post->_remote_position ) {
+		$remote_label = apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) );
+		if ( $location ) {
+			$location = "$location <small>($remote_label)</small>";
+		} else {
+			$location = $remote_label;
+			$map_link = false;
+		}
+	}
 
 	if ( $location ) {
 		if ( $map_link ) {
@@ -789,7 +813,7 @@ function the_job_location( $map_link = true, $post = null ) {
 			echo wp_kses_post(
 				apply_filters(
 					'the_job_location_map_link',
-					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
+					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
 					$location,
 					$post
 				)
@@ -815,7 +839,16 @@ function get_the_job_location( $post = null ) {
 		return null;
 	}
 
-	return apply_filters( 'the_job_location', $post->_job_location, $post );
+	$job_location = $post->_job_location;
+	if ( get_option( 'job_manager_display_location_address' ) === '1' ) {
+		// phpcs:ignore PHPCompatibility.Operators.NewOperators.t_coalesceFound
+		$job_location_address = get_post_meta( $post->ID, 'geolocation_formatted_address', true ) ?? '';
+		if ( $job_location_address ) {
+			$job_location = $job_location_address;
+		}
+	}
+
+	return apply_filters( 'the_job_location', $job_location, $post );
 }
 
 /**
@@ -896,9 +929,9 @@ function job_manager_get_resized_image( $logo, $size ) {
 
 		$upload_dir        = wp_upload_dir();
 		$logo_path         = str_replace( [ $upload_dir['baseurl'], $upload_dir['url'], WP_CONTENT_URL ], [ $upload_dir['basedir'], $upload_dir['path'], WP_CONTENT_DIR ], $logo );
-		$path_parts        = pathinfo( $logo_path );
+		$file_type         = wp_check_filetype( $logo_path );
 		$dims              = $img_width . 'x' . $img_height;
-		$resized_logo_path = str_replace( '.' . $path_parts['extension'], '-' . $dims . '.' . $path_parts['extension'], $logo_path );
+		$resized_logo_path = str_replace( '.' . $file_type['ext'], '-' . $dims . '.' . $file_type['ext'], $logo_path );
 
 		if ( strstr( $resized_logo_path, 'http:' ) || strstr( $resized_logo_path, 'https:' ) ) {
 			return $logo;
@@ -918,14 +951,14 @@ function job_manager_get_resized_image( $logo, $size ) {
 					$save = $image->save( $resized_logo_path );
 
 					if ( ! is_wp_error( $save ) ) {
-						$logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
+						$logo = dirname( $logo ) . '/' . wp_basename( $resized_logo_path );
 					}
 				}
 			}
 
 			ob_get_clean();
 		} else {
-			$logo = dirname( $logo ) . '/' . basename( $resized_logo_path );
+			$logo = dirname( $logo ) . '/' . wp_basename( $resized_logo_path );
 		}
 	}
 
@@ -1238,3 +1271,105 @@ function job_listing_company_display() {
 	get_job_manager_template( 'content-single-job_listing-company.php', [] );
 }
 add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
+
+/**
+ * Gets the job salary.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	$job_salary = $post->_job_salary;
+
+	/**
+	 * Filter the returned job salary.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_salary
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'the_job_salary', $job_salary, $post );
+}
+
+/**
+ * Displays or retrieves the job salaray with optional content.
+ *
+ * @since 1.36.0
+ * @param string           $before (default: '').
+ * @param string           $after (default: '').
+ * @param bool             $echo (default: true).
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|void
+ */
+function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
+	$salary   = get_the_job_salary( $post );
+	$currency = get_the_job_salary_currency( $post );
+	$unit     = get_the_job_salary_unit( $post );
+
+	if ( strlen( $salary ) === 0 ) {
+		return;
+	}
+
+	$job_salary = $before . $salary . ' ' . $currency . ' / ' . $unit . $after;
+
+	if ( $echo ) {
+		echo esc_html( $job_salary );
+	} else {
+		return $job_salary;
+	}
+}
+
+/**
+ * Gets the job salary currency.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_currency( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	/**
+	 * Filter the returned job currency.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_currency
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_job_salary_currency', 'USD', $post );
+}
+
+/**
+ * Gets the job salary unit.
+ *
+ * @since 1.36.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_unit( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	/**
+	 * Filter the returned job unit (interval).
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_unit
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'wpjm_job_salary_unit', 'YEAR', $post );
+}

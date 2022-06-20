@@ -69,6 +69,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
 
+		if ( $this->use_agreement_checkbox() ) {
+			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
+			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
+		}
+
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
@@ -109,7 +114,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->step = is_numeric( $_GET['step'] ) ? max( absint( $_GET['step'] ), 0 ) : array_search( sanitize_text_field( $_GET['step'] ), array_keys( $this->steps ), true );
 		}
 
-		$this->job_id = ! empty( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
+		$this->job_id = ! empty( $_GET['job_id'] ) ? absint( $_GET['job_id'] ) : 0;
+		if ( 0 === $this->job_id ) {
+			$this->job_id = ! empty( $_POST['job_id'] ) ? absint( $_POST['job_id'] ) : 0;
+		}
 		// phpcs:enable WordPress.Security.NonceVerification.Missing,  WordPress.Security.NonceVerification.Recommended
 
 		if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
@@ -126,6 +134,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			)
 			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] )
 			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] )
+			&& empty( $this->job_id )
 		) {
 			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
 			$job_status = get_post_status( $job_id );
@@ -217,12 +226,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
 						'priority'    => 2,
 					],
+					'remote_position' => [
+						'label'       => __( 'Remote Position', 'wp-job-manager' ),
+						'description' => __( 'Check if is a remote position.', 'wp-job-manager' ),
+						'type'        => 'checkbox',
+						'required'    => false,
+						'priority'    => 3,
+					],
 					'job_type'        => [
 						'label'       => __( 'Job type', 'wp-job-manager' ),
 						'type'        => $job_type,
 						'required'    => true,
 						'placeholder' => __( 'Choose job type&hellip;', 'wp-job-manager' ),
-						'priority'    => 3,
+						'priority'    => 4,
 						'default'     => 'full-time',
 						'taxonomy'    => 'job_listing_type',
 					],
@@ -231,7 +247,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'type'        => 'term-multiselect',
 						'required'    => true,
 						'placeholder' => '',
-						'priority'    => 4,
+						'priority'    => 5,
 						'default'     => '',
 						'taxonomy'    => 'job_listing_category',
 					],
@@ -239,7 +255,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'label'    => __( 'Description', 'wp-job-manager' ),
 						'type'     => 'wp-editor',
 						'required' => true,
-						'priority' => 5,
+						'priority' => 6,
 					],
 					'application'     => [
 						'label'       => $application_method_label,
@@ -247,7 +263,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'sanitizer'   => $application_method_sanitizer,
 						'required'    => true,
 						'placeholder' => $application_method_placeholder,
-						'priority'    => 6,
+						'priority'    => 7,
+					],
+					'job_salary'      => [
+						'label'       => __( 'Salary', 'wp-job-manager' ),
+						'type'        => 'text',
+						'required'    => false,
+						'placeholder' => 'e.g. 20000',
+						'priority'    => 8,
 					],
 				],
 				'company' => [
@@ -314,6 +337,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
 			unset( $this->fields['job']['job_type'] );
 		}
+		if ( ! get_option( 'job_manager_enable_salary' ) ) {
+			unset( $this->fields['job']['job_salary'] );
+		}
 	}
 
 	/**
@@ -329,6 +355,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Use agreement checkbox field on the form?
+	 *
+	 * @since 1.35.2
+	 *
+	 * @return bool
+	 */
+	private function use_agreement_checkbox() {
+		return 1 === absint( get_option( 'job_manager_show_agreement_job_submission' ) );
+	}
+
+	/**
 	 * Checks if application field should use skip email / URL validation.
 	 *
 	 * @return bool
@@ -337,7 +374,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		/**
 		 * Force application field to skip email / URL validation.
 		 *
-		 * @since 1.x.x
+		 * @since 1.34.2
 		 *
 		 * @param bool  $is_forced Whether the application field is forced to skip email / URL validation.
 		 */
@@ -354,7 +391,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected function validate_fields( $values ) {
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
-				if ( $field['required'] && empty( $values[ $group_key ][ $key ] ) ) {
+				if (
+					$field['required']
+					&& $this->is_empty( $values[ $group_key ][ $key ] )
+					&& ( ! isset( $field['empty'] ) || $field['empty'] )
+				) {
 					// translators: Placeholder %s is the label for the required field.
 					return new WP_Error( 'validation-error', sprintf( __( '%s is a required field', 'wp-job-manager' ), $field['label'] ) );
 				}
@@ -379,30 +420,46 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					}
 					if ( ! empty( $check_value ) ) {
 						foreach ( $check_value as $file_url ) {
+
+							if ( ! is_numeric( $file_url ) ) {
+								/**
+								 * Set this flag to true to reject files from external URLs during job submission.
+								 *
+								 * @since 1.34.3
+								 *
+								 * @param bool   $reject_external_files  The flag.
+								 * @param string $key                    The field key.
+								 * @param string $group_key              The group.
+								 * @param array  $field                  An array containing the information for the field.
+								 */
+								$reject_external_files = apply_filters( 'job_manager_submit_job_reject_external_files', false, $key, $group_key, $field );
+
+								// Check image path.
+								$baseurl = wp_upload_dir()['baseurl'];
+
+								if ( $reject_external_files && 0 !== strpos( $file_url, $baseurl ) ) {
+									throw new Exception( __( 'Invalid image path.', 'wp-job-manager' ) );
+								}
+							}
+
+							// Check mime types.
+							if ( ! empty( $field['allowed_mime_types'] ) ) {
+								$file_url  = current( explode( '?', $file_url ) );
+								$file_info = wp_check_filetype( $file_url );
+
+								if ( ! is_numeric( $file_url ) && $file_info && ! in_array( $file_info['type'], $field['allowed_mime_types'], true ) ) {
+									// translators: Placeholder %1$s is field label; %2$s is the file mime type; %3$s is the allowed mime-types.
+									throw new Exception( sprintf( __( '"%1$s" (filetype %2$s) needs to be one of the following file types: %3$s', 'wp-job-manager' ), $field['label'], $file_info['ext'], implode( ', ', array_keys( $field['allowed_mime_types'] ) ) ) );
+								}
+							}
+
+							// Check if attachment is valid.
 							if ( is_numeric( $file_url ) ) {
 								continue;
 							}
 							$file_url = esc_url( $file_url, [ 'http', 'https' ] );
 							if ( empty( $file_url ) ) {
 								throw new Exception( __( 'Invalid attachment provided.', 'wp-job-manager' ) );
-							}
-						}
-					}
-				}
-				if ( 'file' === $field['type'] && ! empty( $field['allowed_mime_types'] ) ) {
-					if ( is_array( $values[ $group_key ][ $key ] ) ) {
-						$check_value = array_filter( $values[ $group_key ][ $key ] );
-					} else {
-						$check_value = array_filter( [ $values[ $group_key ][ $key ] ] );
-					}
-					if ( ! empty( $check_value ) ) {
-						foreach ( $check_value as $file_url ) {
-							$file_url  = current( explode( '?', $file_url ) );
-							$file_info = wp_check_filetype( $file_url );
-
-							if ( ! is_numeric( $file_url ) && $file_info && ! in_array( $file_info['type'], $field['allowed_mime_types'], true ) ) {
-								// translators: Placeholder %1$s is field label; %2$s is the file mime type; %3$s is the allowed mime-types.
-								throw new Exception( sprintf( __( '"%1$s" (filetype %2$s) needs to be one of the following file types: %3$s', 'wp-job-manager' ), $field['label'], $file_info['ext'], implode( ', ', array_keys( $field['allowed_mime_types'] ) ) ) );
 							}
 						}
 					}
@@ -431,31 +488,32 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		// Application method.
-		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) && ! empty( $values['job']['application'] ) ) {
-			$allowed_application_method   = get_option( 'job_manager_allowed_application_method', '' );
-			$values['job']['application'] = str_replace( ' ', '+', $values['job']['application'] );
+		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) ) {
+			$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
+
+			$is_valid = true;
+
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce checked earlier when required.
+			$posted_value = isset( $_POST['application'] ) ? sanitize_text_field( wp_unslash( $_POST['application'] ) ) : false;
+			if ( $posted_value && empty( $values['job']['application'] ) ) {
+				$is_valid                                    = false;
+				$this->fields['job']['application']['value'] = $posted_value;
+			}
+
 			switch ( $allowed_application_method ) {
 				case 'email':
-					if ( ! is_email( $values['job']['application'] ) ) {
+					if ( ! $is_valid || ! is_email( $values['job']['application'] ) ) {
 						throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
 					}
 					break;
 				case 'url':
-					// Prefix http if needed.
-					if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-						$values['job']['application'] = 'http://' . $values['job']['application'];
-					}
-					if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+					if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 						throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
 					}
 					break;
 				default:
 					if ( ! is_email( $values['job']['application'] ) ) {
-						// Prefix http if needed.
-						if ( ! strstr( $values['job']['application'], 'http:' ) && ! strstr( $values['job']['application'], 'https:' ) ) {
-							$values['job']['application'] = 'http://' . $values['job']['application'];
-						}
-						if ( ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+						if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
 						}
 					}
@@ -476,11 +534,40 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Checks whether a value is empty.
+	 *
+	 * @param string|numeric|array|boolean $value
+	 * @return bool True if value is empty, false otherwise.
+	 */
+	protected function is_empty( $value ) {
+		/**
+		 * Filter values considered as empty or falsy for required fields.
+		 * Useful for example if you want to consider zero (0) as a non-empty value.
+		 *
+		 * @see http://php.net/manual/en/function.empty.php -- standard default empty values
+		 *
+		 * @since 1.36.0
+		 *
+		 * @param array  $false_vals A list of values considered as falsy.
+		 */
+		$false_vals = apply_filters( 'submit_job_form_validate_fields_empty_values', [ '', 0, 0.0, '0', null, false, [] ] );
+
+		// strict true for type checking.
+		if ( in_array( $value, $false_vals, true ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Enqueues scripts and styles for editing and posting a job listing.
 	 */
 	protected function enqueue_job_form_assets() {
 		wp_enqueue_script( 'wp-job-manager-job-submission' );
-		wp_enqueue_style( 'wp-job-manager-job-submission', JOB_MANAGER_PLUGIN_URL . '/assets/css/job-submission.css', [], JOB_MANAGER_VERSION );
+
+		WP_Job_Manager::register_style( 'wp-job-manager-job-submission', 'css/job-submission.css', [] );
+		wp_enqueue_style( 'wp-job-manager-job-submission' );
 	}
 
 	/**
@@ -518,6 +605,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( $this->job_id );
 			foreach ( $this->fields as $group_key => $group_fields ) {
 				foreach ( $group_fields as $key => $field ) {
+					if ( isset( $this->fields[ $group_key ][ $key ]['value'] ) ) {
+						continue;
+					}
+
 					switch ( $key ) {
 						case 'job_title':
 							$this->fields[ $group_key ][ $key ]['value'] = $job->post_title;
@@ -667,7 +758,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 								'username' => ( job_manager_generate_username_from_email() || empty( $input_create_account_username ) ) ? '' : $input_create_account_username,
 								'password' => ( wpjm_use_standard_password_setup_email() || empty( $input_create_account_password ) ) ? '' : $input_create_account_password,
 								'email'    => sanitize_text_field( wp_unslash( $input_create_account_email ) ),
-								'role'     => get_option( 'job_manager_registration_role' ),
+								/**
+								 * Allow customization of new user creation role
+								 *
+								 * @param string                         $role     New user registration role (pulled from 'job_manager_registration_role' option)
+								 * @param array                          $values   Submitted input values.
+								 * @param WP_Job_Manager_Form_Submit_Job $this     Current class object
+								 *
+								 * @since 1.35.0
+								 */
+								'role'     => apply_filters( 'submit_job_form_create_account_role', get_option( 'job_manager_registration_role' ), $values, $this ),
 							]
 						);
 					}
@@ -692,6 +792,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			// Update the job.
 			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $post_status, $values );
 			$this->update_job_data( $values );
+
+			// Mark this job as a public submission so the submission hook is fired.
+			update_post_meta( $this->job_id, '_public_submission', true );
 
 			if ( $this->job_id ) {
 				// Reset the `_filled` flag.
@@ -1051,6 +1154,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Handles the job submissions before the view is called.
 	 */
 	public function done_before() {
+		delete_post_meta( $this->job_id, '_public_submission' );
+
+		/**
+		 * Trigger job submission action.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param int $job_id The job ID.
+		 */
 		do_action( 'job_manager_job_submitted', $this->job_id );
 	}
 

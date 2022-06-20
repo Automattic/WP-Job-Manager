@@ -23,6 +23,7 @@ $job = $args['job'];
 	<p><?php
 		echo wp_kses_post(
 			sprintf(
+				// translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
 				__( 'A new job listing has been submitted to <a href="%s">%s</a>.', 'wp-job-manager' ),
 				home_url(),
 				get_bloginfo( 'name' )
@@ -35,6 +36,7 @@ $job = $args['job'];
 			case 'pending':
 				echo wp_kses_post(
 					sprintf(
+						// translators: Placeholder %s is the admin job listings URL.
 						' ' . __( 'It is awaiting approval by an administrator in <a href="%s">WordPress admin</a>.','wp-job-manager' ),
 						esc_url( admin_url( 'edit.php?post_type=job_listing' ) )
 					)
