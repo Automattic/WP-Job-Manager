@@ -763,7 +763,7 @@ class WP_Job_Manager_Writepanels {
 			}
 
 			// Checkboxes that aren't sent are unchecked.
-			if ( 'checkbox' === $field['type'] ) {
+			if ( isset( $field['type'] ) && 'checkbox' === $field['type'] ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				if ( ! empty( $_POST[ $key ] ) ) {
 					$_POST[ $key ] = 1;
