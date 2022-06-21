@@ -153,6 +153,9 @@ It then creates a database based on the parameters passed to it.
 
 == Changelog ==
 
+= 1.36.2 =
+* Fix: Revert Job Visibility Settings feature
+
 = 1.36.1 =
 * Enhancement: Add salary field to satisfy Google's job search schema
 * Enhancement: Allow location to display as either City/St or Full Address
