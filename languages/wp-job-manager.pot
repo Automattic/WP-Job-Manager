@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-06-21T19:38:52+00:00\n"
+"POT-Creation-Date: 2022-06-21T19:39:41+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: wp-job-manager\n"
@@ -1035,6 +1035,7 @@ msgid "Remote Position"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-writepanels.php:70
+#: includes/forms/class-wp-job-manager-form-submit-job.php:231
 msgid "Select if this is a remote position."
 msgstr ""
 
@@ -2117,10 +2118,6 @@ msgstr ""
 #: includes/forms/class-wp-job-manager-form-submit-job.php:223
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:214
 msgid "Leave this blank if the location is not important"
-msgstr ""
-
-#: includes/forms/class-wp-job-manager-form-submit-job.php:231
-msgid "Check if is a remote position."
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:240
