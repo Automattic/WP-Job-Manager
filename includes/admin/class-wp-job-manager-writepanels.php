@@ -67,7 +67,7 @@ class WP_Job_Manager_Writepanels {
 			],
 			'_remote_position' => [
 				'label'       => __( 'Remote Position', 'wp-job-manager' ),
-				'description' => __( 'Check if is a remote position.', 'wp-job-manager' ),
+				'description' => __( 'Select if this is a remote position.', 'wp-job-manager' ),
 				'type'        => 'checkbox',
 				'priority'    => 2,
 			],
