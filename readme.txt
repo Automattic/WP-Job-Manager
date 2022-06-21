@@ -2,9 +2,9 @@
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
 Requires at least: 5.7
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 1.35.3
+Stable tag: 1.36.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,6 +152,23 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.36.0 =
+* Enhancement: Add salary field to satisfy Google's job search schema
+* Enhancement: Allow location to display as either City/St or Full Address
+* Enhancement: Add link to Jobs Dashboard after submitting job
+* Enhancement: Ability to add multiple locations in search
+* Enhancement: Add support for remote job listings
+* Enhancement: Add jobLocationType: TELECOMMUTE, per Google
+* Enhancement: Job Visibility Settings
+* Enhancement: Allow user to select the pagination type for the [jobs] page
+* Enhancement: Added setting to bypass trash for job listings
+* Enhancement: Add Job submission limit
+* Fix: Form validation - consider zero (0) as a value for required fields
+* Fix: Jobs CPT doesn't show password field when job is password protected
+* Fix: Undefined type PHP Notice
+* Fix: Fix broken lost license key link
+* Fix: Return $redirect_url when nothing to do with bulk edit
 
 = 1.35.3 =
 * Fix: Use wp_kses_post to process a job title instead of esc_html

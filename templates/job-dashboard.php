@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.35.0
+ * @version     1.35.2
  *
  * @since 1.34.4 Available job actions are passed in an array (`$job_actions`, keyed by job ID) and not generated in the template.
  * @since 1.35.0 Switched to new date functions.
@@ -22,6 +22,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+
+$submission_limit			= get_option( 'job_manager_submission_limit' );
+$submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 ?>
 <div id="job-manager-job-dashboard">
 	<p><?php esc_html_e( 'Your listings are shown in the table below.', 'wp-job-manager' ); ?></p>
@@ -84,6 +87,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php endforeach; ?>
 			<?php endif; ?>
 		</tbody>
+		<?php if ( $submit_job_form_page_id && ( job_manager_count_user_job_listings() < $submission_limit || ! $submission_limit ) ) : ?>
+			<tfoot>
+				<tr>
+					<td colspan="<?php echo count( $job_dashboard_columns ); ?>">
+						<a href="<?php echo esc_url( get_permalink( $submit_job_form_page_id ) ); ?>"><?php esc_html_e( 'Add Job', 'wp-job-manager' ); ?></a>
+					</td>
+				</tr>
+			</tfoot>
+		<?php endif; ?>
 	</table>
 	<?php get_job_manager_template( 'pagination.php', [ 'max_num_pages' => $max_num_pages ] ); ?>
 </div>
