@@ -178,7 +178,6 @@ jQuery(document).ready(function($) {
 		$('#in-' + taxonomy + '-' + id + ', #in-popular-' + taxonomy + '-' + id).prop( 'checked', c );
 	});
 
-
 	if ( $.isFunction( $.fn.select2 ) ) {
 		var job_listings_admin_select2_settings = {
 			'tags': true // Allows for free entry of custom capabilities.
