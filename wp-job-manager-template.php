@@ -1318,6 +1318,20 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	}
 
 	$job_salary = $before . $salary . ' ' . $currency . ' / ' . $unit . $after;
+	/**
+	 * Filter the returned job salary message (with the additional formatting)
+	 *
+	 * @since 1.37.0
+	 *
+	 * @param string  $job_salary
+	 * @param int|WP_Post|null $post
+	 * @param string $before
+	 * @param string $salary
+	 * @param string $currency
+	 * @param string $unit
+	 * @param string $after
+	 */
+	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $unit, $after );
 
 	if ( $echo ) {
 		echo esc_html( $job_salary );
