@@ -1309,6 +1309,7 @@ function get_the_job_salary( $post = null ) {
  * @return string|void
  */
 function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
+	$post     = get_post( $post );
 	$salary   = get_the_job_salary( $post );
 	$currency = get_the_job_salary_currency( $post );
 	$unit     = get_the_job_salary_unit( $post );
@@ -1328,12 +1329,12 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	 * @since 1.37.0
 	 *
 	 * @param string  $job_salary
-	 * @param int|WP_Post|null $post
-	 * @param string $before
-	 * @param string $salary
-	 * @param string $currency
-	 * @param string $unit
-	 * @param string $after
+	 * @param WP_Post $post
+	 * @param string  $before
+	 * @param string  $salary
+	 * @param string  $currency
+	 * @param string  $unit
+	 * @param string  $after
 	 */
 	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $unit, $after );
 
