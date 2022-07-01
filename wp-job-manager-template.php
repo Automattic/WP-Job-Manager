@@ -1299,7 +1299,7 @@ function get_the_job_salary( $post = null ) {
 }
 
 /**
- * Displays or retrieves the job salaray with optional content.
+ * Displays or retrieves the job salary with optional content.
  *
  * @since 1.36.0
  * @param string           $before (default: '').
