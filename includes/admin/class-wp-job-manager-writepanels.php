@@ -118,6 +118,22 @@ class WP_Job_Manager_Writepanels {
 				'description' => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
 				'default'     => '',
 			],
+			'_job_salary_currency'      => [
+				'label'       => __( 'Salary Currency', 'wp-job-manager' ),
+				'type'        => 'text',
+				'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
+				'priority'    => 10,
+				'description' => __( 'Add a salary currency field, this field is optional.', 'wp-job-manager' ),
+				'default'     => '',
+			],
+			'_job_salary_unit'      => [
+				'label'       => __( 'Salary Unit', 'wp-job-manager' ),
+				'type'        => 'text',
+				'placeholder' => __( 'e.g. YEAR', 'wp-job-manager' ),
+				'priority'    => 10,
+				'description' => __( 'Add a salary unit field, this field is optional.', 'wp-job-manager' ),
+				'default'     => '',
+			],
 		];
 		if ( ! get_option( 'job_manager_enable_salary' ) ) {
 			unset( $fields['_job_salary'] );
