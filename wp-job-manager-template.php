@@ -1358,6 +1358,11 @@ function get_the_job_salary_currency( $post = null ) {
 		return;
 	}
 
+	$job_currency = $post->_job_salary_currency;
+	if ( empty( $job_currency ) ) {
+		$job_currency = get_option( 'job_manager_default_salary_currency' );
+	}
+
 	/**
 	 * Filter the returned job currency.
 	 *
@@ -1366,7 +1371,7 @@ function get_the_job_salary_currency( $post = null ) {
 	 * @param string  $job_currency
 	 * @param WP_Post $post
 	 */
-	return apply_filters( 'wpjm_job_salary_currency', 'USD', $post );
+	return apply_filters( 'wpjm_job_salary_currency', $job_currency, $post );
 }
 
 /**
@@ -1382,6 +1387,11 @@ function get_the_job_salary_unit( $post = null ) {
 		return;
 	}
 
+	$job_unit = $post->_job_salary_unit;
+	if ( empty( $job_unit ) ) {
+		$job_unit = get_option( 'job_manager_default_salary_unit' );
+	}
+
 	/**
 	 * Filter the returned job unit (interval).
 	 *
@@ -1390,5 +1400,5 @@ function get_the_job_salary_unit( $post = null ) {
 	 * @param string  $job_unit
 	 * @param WP_Post $post
 	 */
-	return apply_filters( 'wpjm_job_salary_unit', 'YEAR', $post );
+	return apply_filters( 'wpjm_job_salary_unit', $job_unit, $post );
 }
