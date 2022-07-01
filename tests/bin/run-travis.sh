@@ -20,7 +20,7 @@ run_phpunit_for() {
 }
 
 if [ "$WP_TRAVISCI" == "phpunit" ]; then
-	WP_SLUGS=('master' 'latest' 'previous')
+	WP_SLUGS=('trunk' 'latest' 'previous')
 
 	if [ ! -z "$WP_VERSION" ]; then
 		WP_SLUGS=("$WP_VERSION")

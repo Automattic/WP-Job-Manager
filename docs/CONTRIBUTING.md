@@ -22,7 +22,7 @@ If you have questions about the process to contribute code or want to discuss de
 - [How to set up WP Job Manager development environment](https://github.com/Automattic/WP-Job-Manager/wiki/Setting-Up-Development-Environment)
 - [Git Flow and PR Review](https://github.com/Automattic/WP-Job-Manager/wiki/Our-Git-Flow-and-PR-Review)
 - [String localisation guidelines](https://codex.wordpress.org/I18n_for_WordPress_Developers)
-- [Running unit tests](https://github.com/Automattic/WP-Job-Manager/blob/master/tests/README.md)
+- [Running unit tests](https://github.com/Automattic/WP-Job-Manager/blob/trunk/tests/README.md)
 
 ## Coding Guidelines and Development 🛠
 
