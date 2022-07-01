@@ -243,7 +243,7 @@ class WP_Job_Manager_Settings {
 						],
 						[
 							'name'       => 'job_manager_default_salary_currency',
-							'std'        => '0',
+							'std'        => 'USD',
 							'label'      => __( 'Default Salary Currency', 'wp-job-manager' ),
 							'cb_label'   => __( 'Default Currency used by salaries', 'wp-job-manager' ),
 							'desc'       => __( 'Sets the default currency used by salaries', 'wp-job-manager' ),
@@ -262,7 +262,7 @@ class WP_Job_Manager_Settings {
 						],
 						[
 							'name'       => 'job_manager_default_salary_unit',
-							'std'        => '0',
+							'std'        => 'YEAR',
 							'label'      => __( 'Default Salary Unit', 'wp-job-manager' ),
 							'cb_label'   => __( 'Default Unit used by salaries', 'wp-job-manager' ),
 							'desc'       => __( 'Sets the default unit used by salaries', 'wp-job-manager' ),
