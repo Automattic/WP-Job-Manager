@@ -135,8 +135,15 @@ class WP_Job_Manager_Writepanels {
 				'default'     => '',
 			],
 		];
-		if ( ! get_option( 'job_manager_enable_salary' ) ) {
-			unset( $fields['_job_salary'] );
+		if ( get_option( 'job_manager_enable_salary' ) ) {
+			if ( ! get_option( 'job_manager_enable_salary_currency' ) ) {
+				unset( $fields['_job_salary_currency'] );
+			}
+			if ( ! get_option( 'job_manager_enable_salary_unit' ) ) {
+				unset( $fields['_job_salary_unit'] );
+			}
+		} else {
+			unset( $fields['_job_salary'], $fields['_job_salary_currency'], $fields['_job_salary_unit'] );
 		}
 		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
 			$fields['_featured']    = [
