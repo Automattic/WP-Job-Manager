@@ -1317,7 +1317,11 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 		return;
 	}
 
-	$job_salary = $before . $salary . ' ' . $currency . ' / ' . $unit . $after;
+	$job_salary = $before . $salary . ' ' . $currency;
+	if ( ! empty( $after ) ) {
+		$job_salary .= ' / ' . $unit;
+	}
+	$job_salary .= $after;
 	/**
 	 * Filter the returned job salary message (with the additional formatting)
 	 *
