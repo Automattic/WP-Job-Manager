@@ -59,58 +59,58 @@ class WP_Job_Manager_Writepanels {
 		$fields_raw   = WP_Job_Manager_Post_Types::get_job_listing_fields();
 
 		$fields = [
-			'_job_location'    => [
+			'_job_location'        => [
 				'label'       => __( 'Location', 'wp-job-manager' ),
 				'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
 				'description' => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
 				'priority'    => 1,
 			],
-			'_remote_position' => [
+			'_remote_position'     => [
 				'label'       => __( 'Remote Position', 'wp-job-manager' ),
 				'description' => __( 'Select if this is a remote position.', 'wp-job-manager' ),
 				'type'        => 'checkbox',
 				'priority'    => 2,
 			],
-			'_application'     => [
+			'_application'         => [
 				'label'       => __( 'Application Email or URL', 'wp-job-manager' ),
 				'placeholder' => __( 'URL or email which applicants use to apply', 'wp-job-manager' ),
 				'description' => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
 				'value'       => metadata_exists( 'post', $post_id, '_application' ) ? get_post_meta( $post_id, '_application', true ) : $current_user->user_email,
 				'priority'    => 3,
 			],
-			'_company_name'    => [
+			'_company_name'        => [
 				'label'       => __( 'Company Name', 'wp-job-manager' ),
 				'placeholder' => '',
 				'priority'    => 4,
 			],
-			'_company_website' => [
+			'_company_website'     => [
 				'label'       => __( 'Company Website', 'wp-job-manager' ),
 				'placeholder' => '',
 				'priority'    => 5,
 			],
-			'_company_tagline' => [
+			'_company_tagline'     => [
 				'label'       => __( 'Company Tagline', 'wp-job-manager' ),
 				'placeholder' => __( 'Brief description about the company', 'wp-job-manager' ),
 				'priority'    => 6,
 			],
-			'_company_twitter' => [
+			'_company_twitter'     => [
 				'label'       => __( 'Company Twitter', 'wp-job-manager' ),
 				'placeholder' => '@yourcompany',
 				'priority'    => 7,
 			],
-			'_company_video'   => [
+			'_company_video'       => [
 				'label'       => __( 'Company Video', 'wp-job-manager' ),
 				'placeholder' => __( 'URL to the company video', 'wp-job-manager' ),
 				'type'        => 'file',
 				'priority'    => 8,
 			],
-			'_filled'          => [
+			'_filled'              => [
 				'label'       => __( 'Position Filled', 'wp-job-manager' ),
 				'type'        => 'checkbox',
 				'priority'    => 9,
 				'description' => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
 			],
-			'_job_salary'      => [
+			'_job_salary'          => [
 				'label'       => __( 'Salary', 'wp-job-manager' ),
 				'type'        => 'text',
 				'placeholder' => 'e.g. 20000',
@@ -118,7 +118,7 @@ class WP_Job_Manager_Writepanels {
 				'description' => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
 				'default'     => '',
 			],
-			'_job_salary_currency'      => [
+			'_job_salary_currency' => [
 				'label'       => __( 'Salary Currency', 'wp-job-manager' ),
 				'type'        => 'text',
 				'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
@@ -126,7 +126,7 @@ class WP_Job_Manager_Writepanels {
 				'description' => __( 'Add a salary currency field, this field is optional.', 'wp-job-manager' ),
 				'default'     => '',
 			],
-			'_job_salary_unit'      => [
+			'_job_salary_unit'     => [
 				'label'       => __( 'Salary Unit', 'wp-job-manager' ),
 				'type'        => 'text',
 				'placeholder' => __( 'e.g. YEAR', 'wp-job-manager' ),
