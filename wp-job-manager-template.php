@@ -1319,7 +1319,7 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	}
 
 	$job_salary = $before . $salary . ' ' . $currency;
-	if ( ! empty( $after ) ) {
+	if ( ! empty( $unit ) ) {
 		$job_salary .= ' / ' . $unit;
 	}
 	$job_salary .= $after;
