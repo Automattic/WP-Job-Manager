@@ -123,7 +123,7 @@ class WP_Job_Manager_Writepanels {
 				'type'        => 'text',
 				'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
 				'priority'    => 10,
-				'description' => __( 'Add a salary currency field, this field is optional.', 'wp-job-manager' ),
+				'description' => __( 'Add a salary currency field, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' ),
 				'default'     => '',
 			],
 			'_job_salary_unit'     => [
@@ -131,7 +131,7 @@ class WP_Job_Manager_Writepanels {
 				'type'        => 'text',
 				'placeholder' => __( 'e.g. YEAR', 'wp-job-manager' ),
 				'priority'    => 10,
-				'description' => __( 'Add a salary unit field, this field is optional.', 'wp-job-manager' ),
+				'description' => __( 'Add a salary unit field, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
 				'default'     => '',
 			],
 		];
