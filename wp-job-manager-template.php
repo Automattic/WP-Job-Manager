@@ -1359,7 +1359,7 @@ function get_the_job_salary_currency( $post = null ) {
 	}
 
 	$job_currency = $post->_job_salary_currency;
-	if ( empty( $job_currency ) ) {
+	if ( empty( $job_currency ) || ! get_option( 'job_manager_enable_salary_currency' ) ) {
 		$job_currency = get_option( 'job_manager_default_salary_currency' );
 	}
 
@@ -1388,7 +1388,7 @@ function get_the_job_salary_unit( $post = null ) {
 	}
 
 	$job_unit = $post->_job_salary_unit;
-	if ( empty( $job_unit ) ) {
+	if ( empty( $job_unit ) || ! get_option( 'job_manager_enable_salary_unit' ) ) {
 		$job_unit = get_option( 'job_manager_default_salary_unit' );
 	}
 
