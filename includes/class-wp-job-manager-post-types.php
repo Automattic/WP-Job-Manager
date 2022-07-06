@@ -1587,6 +1587,25 @@ class WP_Job_Manager_Post_Types {
 				'auth_view_callback' => [ __CLASS__, 'auth_check_can_edit_job_listings' ],
 				'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_date' ],
 			],
+			'_remote_position' => [
+				'label'         => __( 'Remote Position', 'wp-job-manager' ),
+				'description'   => __( 'Select if this is a remote position.', 'wp-job-manager' ),
+				'type'          => 'checkbox',
+				'priority'      => 12,
+				'data_type'     => 'integer',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			],
+			'_job_salary'      => [
+				'label'         => __( 'Salary', 'wp-job-manager' ),
+				'type'          => 'text',
+				'placeholder'   => 'e.g. 20000',
+				'priority'      => 13,
+				'description'   => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			],
 		];
 
 		/**
