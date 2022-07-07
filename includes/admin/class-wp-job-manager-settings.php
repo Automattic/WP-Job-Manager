@@ -582,15 +582,10 @@ class WP_Job_Manager_Settings {
 			var $job_manager_registration_role = jQuery('#setting-job_manager_registration_role');
 
 			jQuery('#setting-job_manager_enable_registration').change(function(){
-				if ( jQuery( this ).is(':checked') ) {
-					$job_manager_registration_role.closest('tr').show();
-					$use_standard_password_setup_email.closest('tr').show();
-					$generate_username_from_email.closest('tr').show();
-				} else {
-					$job_manager_registration_role.closest('tr').hide();
-					$use_standard_password_setup_email.closest('tr').hide();
-					$generate_username_from_email.closest('tr').hide();
-				}
+				var $job_manager_enable_registration_is_checked = jQuery( this ).is(':checked');
+				$job_manager_registration_role.closest('tr').toggle($job_manager_enable_registration_is_checked);
+				$use_standard_password_setup_email.closest('tr').toggle($job_manager_enable_registration_is_checked);
+				$generate_username_from_email.closest('tr').toggle($job_manager_enable_registration_is_checked);
 			}).change();
 
 			jQuery( '.sub-settings-expander' ).on( 'change', function() {
