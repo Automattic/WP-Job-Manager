@@ -211,14 +211,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'submit_job_form_fields',
 			[
 				'job'     => [
-					'job_title'       => [
+					'job_title'           => [
 						'label'       => __( 'Job Title', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => true,
 						'placeholder' => '',
 						'priority'    => 1,
 					],
-					'job_location'    => [
+					'job_location'        => [
 						'label'       => __( 'Location', 'wp-job-manager' ),
 						'description' => __( 'Leave this blank if the location is not important', 'wp-job-manager' ),
 						'type'        => 'text',
@@ -226,14 +226,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
 						'priority'    => 2,
 					],
-					'remote_position' => [
+					'remote_position'     => [
 						'label'       => __( 'Remote Position', 'wp-job-manager' ),
 						'description' => __( 'Select if this is a remote position.', 'wp-job-manager' ),
 						'type'        => 'checkbox',
 						'required'    => false,
 						'priority'    => 3,
 					],
-					'job_type'        => [
+					'job_type'            => [
 						'label'       => __( 'Job type', 'wp-job-manager' ),
 						'type'        => $job_type,
 						'required'    => true,
@@ -242,7 +242,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'default'     => 'full-time',
 						'taxonomy'    => 'job_listing_type',
 					],
-					'job_category'    => [
+					'job_category'        => [
 						'label'       => __( 'Job category', 'wp-job-manager' ),
 						'type'        => 'term-multiselect',
 						'required'    => true,
@@ -251,13 +251,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'default'     => '',
 						'taxonomy'    => 'job_listing_category',
 					],
-					'job_description' => [
+					'job_description'     => [
 						'label'    => __( 'Description', 'wp-job-manager' ),
 						'type'     => 'wp-editor',
 						'required' => true,
 						'priority' => 6,
 					],
-					'application'     => [
+					'application'         => [
 						'label'       => $application_method_label,
 						'type'        => 'text',
 						'sanitizer'   => $application_method_sanitizer,
@@ -265,12 +265,35 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => $application_method_placeholder,
 						'priority'    => 7,
 					],
-					'job_salary'      => [
+					'job_salary'          => [
 						'label'       => __( 'Salary', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => 'e.g. 20000',
 						'priority'    => 8,
+					],
+					'job_salary_currency' => [
+						'label'       => __( 'Salary Currency', 'wp-job-manager' ),
+						'type'        => 'text',
+						'required'    => false,
+						'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
+						'description' => __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' ),
+						'priority'    => 9,
+					],
+					'job_salary_unit'     => [
+						'label'       => __( 'Salary Unit', 'wp-job-manager' ),
+						'type'        => 'select',
+						'options'     => [
+							''      => __( '--', 'wp-job-manager' ),
+							'YEAR'  => __( 'Year', 'wp-job-manager' ),
+							'MONTH' => __( 'Month', 'wp-job-manager' ),
+							'WEEK'  => __( 'Week', 'wp-job-manager' ),
+							'DAY'   => __( 'Day', 'wp-job-manager' ),
+							'HOUR'  => __( 'Hour', 'wp-job-manager' ),
+						],
+						'description' => __( 'Add a salary period unit, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
+						'required'    => false,
+						'priority'    => 10,
 					],
 				],
 				'company' => [
@@ -337,8 +360,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
 			unset( $this->fields['job']['job_type'] );
 		}
-		if ( ! get_option( 'job_manager_enable_salary' ) ) {
-			unset( $this->fields['job']['job_salary'] );
+		if ( get_option( 'job_manager_enable_salary' ) ) {
+			if ( ! get_option( 'job_manager_enable_salary_currency' ) ) {
+				unset( $this->fields['job']['job_salary_currency'] );
+			}
+			if ( ! get_option( 'job_manager_enable_salary_unit' ) ) {
+				unset( $this->fields['job']['job_salary_unit'] );
+			}
+		} else {
+			unset( $this->fields['job']['job_salary'], $this->fields['job']['job_salary_currency'], $this->fields['job']['job_salary_unit'] );
 		}
 	}
 
