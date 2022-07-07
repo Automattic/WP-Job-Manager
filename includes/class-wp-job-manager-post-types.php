@@ -1603,7 +1603,7 @@ class WP_Job_Manager_Post_Types {
 				'priority'      => 13,
 				'description'   => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
 				'data_type'     => 'string',
-				'show_in_admin' => true,
+				'show_in_admin' => (bool) get_option( 'job_manager_enable_salary' ),
 				'show_in_rest'  => true,
 			],
 		];

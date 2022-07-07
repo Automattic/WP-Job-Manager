@@ -60,26 +60,6 @@ class WP_Job_Manager_Writepanels {
 
 		$fields = [];
 
-		if ( ! get_option( 'job_manager_enable_salary' ) ) {
-			unset( $fields['_job_salary'] );
-		}
-		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
-			$fields['_featured']    = [
-				'label'       => __( 'Featured Listing', 'wp-job-manager' ),
-				'type'        => 'checkbox',
-				'description' => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
-				'priority'    => 10,
-			];
-			$job_expires            = get_post_meta( $post_id, '_job_expires', true );
-			$fields['_job_expires'] = [
-				'label'       => __( 'Listing Expiry Date', 'wp-job-manager' ),
-				'priority'    => 11,
-				'classes'     => [ 'job-manager-datepicker' ],
-				'placeholder' => ! empty( $job_expires ) ? null : date_i18n( get_option( 'date_format' ), strtotime( calculate_job_expiry( $post_id ) ) ),
-				'value'       => ! empty( $job_expires ) ? gmdate( 'Y-m-d', strtotime( $job_expires ) ) : '',
-			];
-		}
-
 		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
 			$fields['_job_author'] = [
 				'label'    => __( 'Posted by', 'wp-job-manager' ),
