@@ -128,10 +128,17 @@ class WP_Job_Manager_Writepanels {
 			],
 			'_job_salary_unit'     => [
 				'label'       => __( 'Salary Unit', 'wp-job-manager' ),
-				'type'        => 'text',
-				'placeholder' => __( 'e.g. YEAR', 'wp-job-manager' ),
+				'type'        => 'select',
+				'options'     => [
+					''      => __( '--', 'wp-job-manager' ),
+					'YEAR'  => __( 'Year', 'wp-job-manager' ),
+					'MONTH' => __( 'Month', 'wp-job-manager' ),
+					'WEEK'  => __( 'Week', 'wp-job-manager' ),
+					'DAY'   => __( 'Day', 'wp-job-manager' ),
+					'HOUR'  => __( 'Hour', 'wp-job-manager' ),
+				],
 				'priority'    => 10,
-				'description' => __( 'Add a salary unit field, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
+				'description' => __( 'Add a salary period unit field, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
 				'default'     => '',
 			],
 		];
