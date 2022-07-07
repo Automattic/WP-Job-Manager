@@ -580,12 +580,24 @@ class WP_Job_Manager_Settings {
 			var $use_standard_password_setup_email = jQuery('#setting-job_manager_use_standard_password_setup_email');
 			var $generate_username_from_email = jQuery('#setting-job_manager_generate_username_from_email');
 			var $job_manager_registration_role = jQuery('#setting-job_manager_registration_role');
+			var $job_manager_enable_salary_currency = jQuery('#setting-job_manager_enable_salary_currency');
+			var $job_manager_enable_salary_unit = jQuery('#setting-job_manager_enable_salary_unit');
+			var $job_manager_default_salary_currency = jQuery('#setting-job_manager_default_salary_currency');
+			var $job_manager_default_salary_unit = jQuery('#setting-job_manager_default_salary_unit');
 
 			jQuery('#setting-job_manager_enable_registration').change(function(){
 				var $job_manager_enable_registration_is_checked = jQuery( this ).is(':checked');
 				$job_manager_registration_role.closest('tr').toggle($job_manager_enable_registration_is_checked);
 				$use_standard_password_setup_email.closest('tr').toggle($job_manager_enable_registration_is_checked);
 				$generate_username_from_email.closest('tr').toggle($job_manager_enable_registration_is_checked);
+			}).change();
+
+			jQuery('#setting-job_manager_enable_salary').change(function(){
+				var $job_manager_enable_salary_is_checked = jQuery( this ).is(':checked');
+				$job_manager_enable_salary_currency.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_enable_salary_unit.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_default_salary_currency.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_default_salary_unit.closest('tr').toggle($job_manager_enable_salary_is_checked);
 			}).change();
 
 			jQuery( '.sub-settings-expander' ).on( 'change', function() {
