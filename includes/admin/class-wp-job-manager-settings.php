@@ -51,6 +51,7 @@ class WP_Job_Manager_Settings {
 	public function __construct() {
 		$this->settings_group = 'job_manager';
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
+		add_action( 'admin_action_update', [ $this, 'pre_process_settings_save' ] );
 	}
 
 	/**
@@ -473,6 +474,27 @@ class WP_Job_Manager_Settings {
 							'label' => __( 'Terms and Conditions Page', 'wp-job-manager' ),
 							'desc'  => __( 'Select the page to link when "Terms and Conditions Checkbox" is enabled. See setting in "Job Submission" tab.', 'wp-job-manager' ),
 							'type'  => 'page',
+						],
+					],
+				],
+				'job_visibility' => [
+					__( 'Job Visibility', 'wp-job-manager' ),
+					[
+						[
+							'name'  => 'job_manager_browse_job_listings_capability',
+							'std'   => '',
+							'label' => __( 'Browse Job Capability', 'wp-job-manager' ),
+							'type'  => 'capabilities',
+							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+						],
+						[
+							'name'  => 'job_manager_view_job_listing_capability',
+							'std'   => '',
+							'label' => __( 'View Job Capability', 'wp-job-manager' ),
+							'type'  => 'capabilities',
+							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
 						],
 					],
 				],
@@ -984,5 +1006,132 @@ class WP_Job_Manager_Settings {
 	 */
 	protected function input_input( $option, $attributes, $value, $placeholder ) {
 		$this->input_text( $option, $attributes, $value, $placeholder );
+	}
+
+	/**
+	 * Outputs the capabilities or roles input field.
+	 *
+	 * @param array    $option              Option arguments for settings input.
+	 * @param string[] $attributes          Attributes on the HTML element. Strings must already be escaped.
+	 * @param mixed    $value               Current value.
+	 * @param string   $ignored_placeholder We set the placeholder in the method. This is ignored.
+	 */
+	protected function input_capabilities( $option, $attributes, $value, $ignored_placeholder ) {
+		$value                 = self::capabilities_string_to_array( $value );
+		$option['options']     = self::get_capabilities_and_roles( $value );
+		$option['placeholder'] = esc_html__( 'Everyone (Public)', 'wp-job-manager' );
+
+		?>
+		<select
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			class="regular-text settings-role-select"
+			name="<?php echo esc_attr( $option['name'] ); ?>[]"
+			multiple="multiple"
+			data-placeholder="<?php echo esc_attr( $option['placeholder'] ); ?>"
+			<?php
+			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			?>
+		>
+			<?php
+			foreach ( $option['options'] as $key => $name ) {
+				echo '<option value="' . esc_attr( $key ) . '" ' . selected( in_array( $key, $value, true ) ? $key : null, $key, false ) . '>' . esc_html( $name ) . '</option>';
+			}
+			?>
+		</select>
+		<?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
+		}
+	}
+
+	/**
+	 * Role settings should be saved as a comma-separated list.
+	 */
+	public function pre_process_settings_save() {
+		$screen = get_current_screen();
+
+		if ( ! $screen || 'options' !== $screen->id ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Settings save will handle the nonce check.
+		if ( ! isset( $_POST['option_page'] ) || 'job_manager' !== $_POST['option_page'] ) {
+			return;
+		}
+
+		$capabilities_fields = [
+			'job_manager_browse_job_listings_capability',
+			'job_manager_view_job_listing_capability',
+		];
+		foreach ( $capabilities_fields as $capabilities_field ) {
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Settings save will handle the nonce check.
+			if ( isset( $_POST[ $capabilities_field ] ) ) {
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by `WP_Resume_Manager_Settings::capabilities_array_to_string()`
+				$input_capabilities_field_value = wp_unslash( $_POST[ $capabilities_field ] );
+				if ( is_array( $input_capabilities_field_value ) ) {
+					$_POST[ $capabilities_field ] = self::capabilities_array_to_string( $input_capabilities_field_value );
+				}
+			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
+		}
+	}
+
+	/**
+	 * Convert list of capabilities and roles into array of values.
+	 *
+	 * @param string $value Comma separated list of capabilities and roles.
+	 * @return array
+	 */
+	private static function capabilities_string_to_array( $value ) {
+		return array_filter(
+			array_map(
+				function( $value ) {
+					return trim( sanitize_text_field( $value ) );
+				},
+				explode( ',', $value )
+			)
+		);
+	}
+
+	/**
+	 * Convert array of capabilities and roles into a comma separated list.
+	 *
+	 * @param array $value Array of capabilities and roles.
+	 * @return string
+	 */
+	private static function capabilities_array_to_string( $value ) {
+		if ( ! is_array( $value ) ) {
+			return '';
+		}
+
+		$caps = array_filter( array_map( 'sanitize_text_field', $value ) );
+
+		return implode( ',', $caps );
+	}
+
+	/**
+	 * Get the list of roles and capabilities to use in select dropdown.
+	 *
+	 * @param array $caps Selected capabilities to ensure they show up in the list.
+	 * @return array
+	 */
+	private static function get_capabilities_and_roles( $caps = [] ) {
+		$capabilities_and_roles = [];
+		$roles                  = get_editable_roles();
+
+		foreach ( $roles as $key => $role ) {
+			$capabilities_and_roles[ $key ] = $role['name'];
+		}
+
+		// Go through custom user selected capabilities and add them to the list.
+		foreach ( $caps as $value ) {
+			if ( isset( $capabilities_and_roles[ $value ] ) ) {
+				continue;
+			}
+			$capabilities_and_roles[ $value ] = $value;
+		}
+
+		return $capabilities_and_roles;
 	}
 }

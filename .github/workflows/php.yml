@@ -3,7 +3,7 @@ name: PHP Linting and Tests
 on:
   pull_request:
     branches:
-      - master
+      - trunk
       - 'feature/**'
       - 'release/**'
 

@@ -545,6 +545,11 @@ class WP_Job_Manager_Shortcodes {
 	public function output_jobs( $atts ) {
 		ob_start();
 
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			get_job_manager_template_part( 'access-denied', 'browse-job_listings' );
+			return ob_get_clean();
+		}
+
 		$atts = shortcode_atts(
 			apply_filters(
 				'job_manager_output_jobs_defaults',
