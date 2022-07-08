@@ -177,4 +177,41 @@ jQuery(document).ready(function($) {
 		$('#' + taxonomy + 'checklist li :radio, #' + taxonomy + 'checklist-pop :radio').prop('checked',false);
 		$('#in-' + taxonomy + '-' + id + ', #in-popular-' + taxonomy + '-' + id).prop( 'checked', c );
 	});
+
+	if ( $.isFunction( $.fn.select2 ) ) {
+		var job_listings_admin_select2_settings = {
+			'tags': true // Allows for free entry of custom capabilities.
+		};
+
+		if ( $( '.settings-role-select' ).length > 0 ) {
+			// This fixes a issue where backspace on role just turns it into search.
+			// @see https://github.com/select2/select2/issues/3354#issuecomment-277419278 for more info.
+			$.fn.select2.amd.require(
+				['select2/selection/search' ],
+				function ( Search ) {
+					Search.prototype.searchRemoveChoice = function (decorated, item) {
+						this.trigger(
+							'unselect',
+							{
+								data: item
+							}
+						);
+
+						this.$search.val( '' );
+						this.handleSearch();
+					};
+				},
+				null,
+				true
+			);
+		}
+
+		jQuery( '.nav-tab-wrapper a' ).on( 'click',
+			function() {
+				var $content = jQuery( jQuery( this ).attr( 'href' ) );
+				// Refresh when tab is selected.
+				$content.find( '.settings-role-select' ).select2( job_listings_admin_select2_settings );
+			}
+		);
+	}
 });
