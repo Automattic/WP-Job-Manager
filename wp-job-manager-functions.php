@@ -1622,6 +1622,13 @@ function job_manager_user_can_browse_job_listings() {
 		}
 	}
 
+	/**
+	 * Filter if the current user can or cannot browse job listings
+	 *
+	 * @since 1.37.0
+	 *
+	 * @param boolean $can_browse
+	 */
 	return apply_filters( 'job_manager_user_can_browse_job_listings', $can_browse );
 }
 
@@ -1662,5 +1669,13 @@ function job_manager_user_can_view_job_listing( $job_id ) {
 		$can_view = true;
 	}
 
+	/**
+	 * Filter if the current user can or cannot view a given job
+	 *
+	 * @since 1.37.0
+	 *
+	 * @param boolean $can_view
+	 * @param int     $job_id
+	 */
 	return apply_filters( 'job_manager_user_can_view_job', $can_view, $job_id );
 }
