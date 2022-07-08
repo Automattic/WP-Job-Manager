@@ -1610,7 +1610,7 @@ function job_manager_count_user_job_listings( $user_id = 0 ) {
  */
 function job_manager_user_can_browse_job_listings() {
 	$can_browse = true;
-	$caps       = array_filter( array_map( 'trim', array_map( 'strtolower', explode( ',', get_option( 'job_manager_browse_job_listings_capability' ) ) ) ) );
+	$caps       = get_option( 'job_manager_browse_job_listings_capability' );
 
 	if ( $caps ) {
 		$can_browse = false;
@@ -1642,7 +1642,7 @@ function job_manager_user_can_view_job_listing( $job_id ) {
 		return true;
 	}
 
-	$caps = array_filter( array_map( 'trim', array_map( 'strtolower', explode( ',', get_option( 'job_manager_view_job_listing_capability' ) ) ) ) );
+	$caps = get_option( 'job_manager_view_job_listing_capability' );
 
 	if ( $caps ) {
 		$can_view = false;

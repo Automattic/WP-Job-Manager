@@ -1000,11 +1000,10 @@ class WP_Job_Manager_Settings {
 	 *
 	 * @param array    $option              Option arguments for settings input.
 	 * @param string[] $attributes          Attributes on the HTML element. Strings must already be escaped.
-	 * @param mixed    $value               Current value.
+	 * @param string[] $value               Current value.
 	 * @param string   $ignored_placeholder We set the placeholder in the method. This is ignored.
 	 */
 	protected function input_capabilities( $option, $attributes, $value, $ignored_placeholder ) {
-		$value                 = self::capabilities_string_to_array( $value );
 		$option['options']     = self::get_capabilities_and_roles( $value );
 		$option['placeholder'] = esc_html__( 'Everyone (Public)', 'wp-job-manager' );
 
@@ -1051,39 +1050,6 @@ class WP_Job_Manager_Settings {
 			}
 		}
 		return $result;
-	}
-
-	/**
-	 * Convert list of capabilities and roles into array of values.
-	 *
-	 * @param string $value Comma separated list of capabilities and roles.
-	 * @return array
-	 */
-	private static function capabilities_string_to_array( $value ) {
-		return array_filter(
-			array_map(
-				function( $value ) {
-					return trim( sanitize_text_field( $value ) );
-				},
-				explode( ',', $value )
-			)
-		);
-	}
-
-	/**
-	 * Convert array of capabilities and roles into a comma separated list.
-	 *
-	 * @param array $value Array of capabilities and roles.
-	 * @return string
-	 */
-	private static function capabilities_array_to_string( $value ) {
-		if ( ! is_array( $value ) ) {
-			return '';
-		}
-
-		$caps = array_filter( array_map( 'sanitize_text_field', $value ) );
-
-		return implode( ',', $caps );
 	}
 
 	/**
