@@ -1662,12 +1662,5 @@ function job_manager_user_can_view_job_listing( $job_id ) {
 		$can_view = true;
 	}
 
-	$key = get_post_meta( $job_id, 'share_link_key', true );
-
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	if ( $key && ! empty( $_GET['key'] ) && $key === $_GET['key'] ) {
-		$can_view = true;
-	}
-
 	return apply_filters( 'job_manager_user_can_view_job', $can_view, $job_id );
 }
