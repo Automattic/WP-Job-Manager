@@ -1312,7 +1312,7 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	$post     = get_post( $post );
 	$salary   = get_the_job_salary( $post );
 	$currency = get_the_job_salary_currency( $post );
-	$unit     = get_the_job_salary_unit( $post );
+	$unit     = get_the_job_salary_unit_display_text( $post );
 
 	if ( strlen( $salary ) === 0 ) {
 		return;
@@ -1401,4 +1401,40 @@ function get_the_job_salary_unit( $post = null ) {
 	 * @param WP_Post $post
 	 */
 	return apply_filters( 'wpjm_job_salary_unit', $job_unit, $post );
+}
+
+/**
+ * Get the display text for the job salary unit
+ *
+ * @since 1.37.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_unit_display_text( $post = null ) {
+	$job_unit = get_the_job_salary_unit( $post );
+
+	$translated_options = [
+		'YEAR'  => __( 'Year', 'wp-job-manager' ),
+		'MONTH' => __( 'Month', 'wp-job-manager' ),
+		'WEEK'  => __( 'Week', 'wp-job-manager' ),
+		'DAY'   => __( 'Day', 'wp-job-manager' ),
+		'HOUR'  => __( 'Hour', 'wp-job-manager' ),
+	];
+
+	$raw_job_unit = $job_unit;
+
+	if ( isset( $translated_options[ $job_unit ] ) ) {
+		$job_unit = $translated_options[ $job_unit ];
+	}
+
+	/**
+	 * Filter the returned job unit (interval) display text.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_unit
+	 * @param WP_Post $post
+	 * @param string  $raw_job_unit
+	 */
+	return apply_filters( 'wpjm_job_salary_unit_display_text', $job_unit, $post, $raw_job_unit );
 }
