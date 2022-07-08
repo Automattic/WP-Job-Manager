@@ -38,7 +38,13 @@ do_action( 'single_job_listing_meta_before' ); ?>
 
 	<li class="date-posted"><?php the_job_publish_date(); ?></li>
 
-	<li class="salary"><?php the_job_salary(); ?> </li>
+	<?php
+	$job_salary = the_job_salary('', '', false);
+	if ( ! empty( $job_salary ) ) : ?>
+	<li class="salary"><?php echo esc_html( $job_salary ); ?> </li>
+	<?php
+	endif;
+	?>
 
 	<?php if ( is_position_filled() ) : ?>
 		<li class="position-filled"><?php _e( 'This position has been filled', 'wp-job-manager' ); ?></li>
