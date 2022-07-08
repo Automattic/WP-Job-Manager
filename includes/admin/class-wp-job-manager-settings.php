@@ -1044,7 +1044,7 @@ class WP_Job_Manager_Settings {
 		}
 		$result = [];
 		foreach ( $value as $item ) {
-			$item = strtolower( trim( sanitize_text_field( $item ) ) );
+			$item = trim( sanitize_text_field( $item ) );
 			if ( $item ) {
 				$result[] = $item;
 			}
