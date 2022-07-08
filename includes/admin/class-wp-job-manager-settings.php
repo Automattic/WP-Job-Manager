@@ -534,16 +534,48 @@ class WP_Job_Manager_Settings {
 				return false;
 			});
 
+			if ( jQuery.isFunction( jQuery.fn.select2 ) ) {
+
+				if ( jQuery( '.settings-role-select' ).length > 0 ) {
+					// This fixes a issue where backspace on role just turns it into search.
+					// @see https://github.com/select2/select2/issues/3354#issuecomment-277419278 for more info.
+					jQuery.fn.select2.amd.require(
+						['select2/selection/search' ],
+						function ( Search ) {
+							Search.prototype.searchRemoveChoice = function (decorated, item) {
+								this.trigger(
+									'unselect',
+									{
+										data: item
+									}
+								);
+
+								this.$search.val( '' );
+								this.handleSearch();
+							};
+						},
+						null,
+						true
+					);
+				}
+			}
+
+			var job_listings_admin_select2_settings = {
+				'tags': true // Allows for free entry of custom capabilities.
+			};
+
 			jQuery('.nav-tab-wrapper a').click(function() {
 				if ( '#' !== jQuery(this).attr( 'href' ).substr( 0, 1 ) ) {
 					return false;
 				}
 				jQuery('.settings_panel').hide();
 				jQuery('.nav-tab-active').removeClass('nav-tab-active');
-				jQuery( jQuery(this).attr('href') ).show();
+				var $content = jQuery( jQuery(this).attr('href') );
+				$content.show();
 				jQuery(this).addClass('nav-tab-active');
 				window.location.hash = jQuery(this).attr('href');
 				jQuery( 'form.job-manager-options' ).attr( 'action', 'options.php' + jQuery(this).attr( 'href' ) );
+				$content.find( '.settings-role-select' ).select2( job_listings_admin_select2_settings );
 				window.scrollTo( 0, 0 );
 				return false;
 			});
