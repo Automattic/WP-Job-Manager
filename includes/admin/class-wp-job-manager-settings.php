@@ -438,7 +438,7 @@ class WP_Job_Manager_Settings {
 					[
 						[
 							'name'              => 'job_manager_browse_job_listings_capability',
-							'std'               => '',
+							'std'               => [],
 							'label'             => __( 'Browse Job Capability', 'wp-job-manager' ),
 							'type'              => 'capabilities',
 							'sanitize_callback' => [ $this, 'sanitize_capabilities' ],
@@ -447,7 +447,7 @@ class WP_Job_Manager_Settings {
 						],
 						[
 							'name'              => 'job_manager_view_job_listing_capability',
-							'std'               => '',
+							'std'               => [],
 							'label'             => __( 'View Job Capability', 'wp-job-manager' ),
 							'type'              => 'capabilities',
 							'sanitize_callback' => [ $this, 'sanitize_capabilities' ],
