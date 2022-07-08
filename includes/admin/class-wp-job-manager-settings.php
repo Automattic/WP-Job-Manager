@@ -469,7 +469,11 @@ class WP_Job_Manager_Settings {
 				if ( isset( $option['std'] ) ) {
 					add_option( $option['name'], $option['std'] );
 				}
-				register_setting( $this->settings_group, $option['name'] );
+				$args = [];
+				if ( isset( $option['sanitize_callback'] ) ) {
+					$args['sanitize_callback'] = $option['sanitize_callback'];
+				}
+				register_setting( $this->settings_group, $option['name'], $args );
 			}
 		}
 	}
