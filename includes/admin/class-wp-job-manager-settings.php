@@ -268,13 +268,7 @@ class WP_Job_Manager_Settings {
 							'cb_label'   => __( 'Default Unit used by salaries', 'wp-job-manager' ),
 							'desc'       => __( 'Sets the default period unit used by salaries', 'wp-job-manager' ),
 							'type'       => 'select',
-							'options'    => [
-								'YEAR'  => __( 'Year', 'wp-job-manager' ),
-								'MONTH' => __( 'Month', 'wp-job-manager' ),
-								'WEEK'  => __( 'Week', 'wp-job-manager' ),
-								'DAY'   => __( 'Day', 'wp-job-manager' ),
-								'HOUR'  => __( 'Hour', 'wp-job-manager' ),
-							],
+							'options'    => job_manager_get_salary_unit_options(),
 							'attributes' => [],
 						],
 						[

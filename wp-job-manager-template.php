@@ -1413,13 +1413,7 @@ function get_the_job_salary_unit( $post = null ) {
 function get_the_job_salary_unit_display_text( $post = null ) {
 	$job_unit = get_the_job_salary_unit( $post );
 
-	$translated_options = [
-		'YEAR'  => __( 'Year', 'wp-job-manager' ),
-		'MONTH' => __( 'Month', 'wp-job-manager' ),
-		'WEEK'  => __( 'Week', 'wp-job-manager' ),
-		'DAY'   => __( 'Day', 'wp-job-manager' ),
-		'HOUR'  => __( 'Hour', 'wp-job-manager' ),
-	];
+	$translated_options = job_manager_get_salary_unit_options();
 
 	$raw_job_unit = $job_unit;
 

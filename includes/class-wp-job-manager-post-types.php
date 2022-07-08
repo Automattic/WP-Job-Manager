@@ -1621,15 +1621,7 @@ class WP_Job_Manager_Post_Types {
 				'label'         => __( 'Salary Unit', 'wp-job-manager' ),
 				'type'          => 'select',
 				'data_type'     => 'string',
-				'options'       => [
-					''      => __( '--', 'wp-job-manager' ),
-					'YEAR'  => __( 'Year', 'wp-job-manager' ),
-					'MONTH' => __( 'Month', 'wp-job-manager' ),
-					'WEEK'  => __( 'Week', 'wp-job-manager' ),
-					'DAY'   => __( 'Day', 'wp-job-manager' ),
-					'HOUR'  => __( 'Hour', 'wp-job-manager' ),
-				],
-
+				'options'       => job_manager_get_salary_unit_options( true ),
 				'priority'      => 15,
 				'description'   => __( 'Add a salary period unit, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
 				'default'       => '',
