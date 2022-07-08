@@ -1628,7 +1628,7 @@ function job_manager_user_can_browse_job_listings() {
 /**
  * True if an the user can view a resume.
  *
- * @since 1.36.0
+ * @since 1.37.0
  *
  * @param  int $job_id
  * @return bool
