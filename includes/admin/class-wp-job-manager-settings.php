@@ -437,20 +437,22 @@ class WP_Job_Manager_Settings {
 					__( 'Job Visibility', 'wp-job-manager' ),
 					[
 						[
-							'name'  => 'job_manager_browse_job_listings_capability',
-							'std'   => '',
-							'label' => __( 'Browse Job Capability', 'wp-job-manager' ),
-							'type'  => 'capabilities',
+							'name'              => 'job_manager_browse_job_listings_capability',
+							'std'               => '',
+							'label'             => __( 'Browse Job Capability', 'wp-job-manager' ),
+							'type'              => 'capabilities',
+							'sanitize_callback' => [ $this, 'sanitize_capabilities' ],
 							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
-							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+							'desc'              => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
 						],
 						[
-							'name'  => 'job_manager_view_job_listing_capability',
-							'std'   => '',
-							'label' => __( 'View Job Capability', 'wp-job-manager' ),
-							'type'  => 'capabilities',
+							'name'              => 'job_manager_view_job_listing_capability',
+							'std'               => '',
+							'label'             => __( 'View Job Capability', 'wp-job-manager' ),
+							'type'              => 'capabilities',
+							'sanitize_callback' => [ $this, 'sanitize_capabilities' ],
 							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
-							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+							'desc'              => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
 						],
 					],
 				],
@@ -1031,35 +1033,24 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-	 * Role settings should be saved as a comma-separated list.
+	 * Sanitize the options related to capabilities, making the necessary conversions
+	 *
+	 * @param string[]|string $value
+	 * @return string[]
 	 */
-	public function pre_process_settings_save() {
-		$screen = get_current_screen();
-
-		if ( ! $screen || 'options' !== $screen->id ) {
-			return;
+	public function sanitize_capabilities( $value ) {
+		$value = wp_unslash( $value );
+		if ( is_string( $value ) ) {
+			$value = explode( ',', $value );
 		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Settings save will handle the nonce check.
-		if ( ! isset( $_POST['option_page'] ) || 'job_manager' !== $_POST['option_page'] ) {
-			return;
-		}
-
-		$capabilities_fields = [
-			'job_manager_browse_job_listings_capability',
-			'job_manager_view_job_listing_capability',
-		];
-		foreach ( $capabilities_fields as $capabilities_field ) {
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Settings save will handle the nonce check.
-			if ( isset( $_POST[ $capabilities_field ] ) ) {
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by `WP_Resume_Manager_Settings::capabilities_array_to_string()`
-				$input_capabilities_field_value = wp_unslash( $_POST[ $capabilities_field ] );
-				if ( is_array( $input_capabilities_field_value ) ) {
-					$_POST[ $capabilities_field ] = self::capabilities_array_to_string( $input_capabilities_field_value );
-				}
+		$result = [];
+		foreach ( $value as $item ) {
+			$item = strtolower( trim( sanitize_text_field( $item ) ) );
+			if ( $item ) {
+				$result[] = $item;
 			}
-			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
+		return $result;
 	}
 
 	/**
