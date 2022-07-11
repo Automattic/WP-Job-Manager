@@ -1671,3 +1671,24 @@ function job_manager_user_can_view_job_listing( $job_id ) {
 
 	return apply_filters( 'job_manager_user_can_view_job', $can_view, $job_id );
 }
+
+/**
+ * Return an associative array containing the options for salary units, based on Google Structured Data documentation.
+ *
+ * @param boolean $include_empty Defines if we should include an empty option as default.
+ * @return array Where the key is the identifier used by Google Structured Data, and the value is a translated label.
+ */
+function job_manager_get_salary_unit_options( $include_empty = false ) {
+	$options = [
+		''      => __( '--', 'wp-job-manager' ),
+		'YEAR'  => __( 'Year', 'wp-job-manager' ),
+		'MONTH' => __( 'Month', 'wp-job-manager' ),
+		'WEEK'  => __( 'Week', 'wp-job-manager' ),
+		'DAY'   => __( 'Day', 'wp-job-manager' ),
+		'HOUR'  => __( 'Hour', 'wp-job-manager' ),
+	];
+	if ( ! $include_empty ) {
+		unset( $options[''] );
+	}
+	return apply_filters( 'job_manager_get_salary_unit_options', $options, $include_empty );
+}

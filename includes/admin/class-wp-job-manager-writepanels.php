@@ -428,7 +428,7 @@ class WP_Job_Manager_Writepanels {
 					<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
 				<?php endif; ?>
 			</label>
-			<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>">
+			<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $key ); ?>" autocomplete="off">
 				<?php foreach ( $field['options'] as $key => $value ) : ?>
 					<option
 						value="<?php echo esc_attr( $key ); ?>"

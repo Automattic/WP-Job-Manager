@@ -234,6 +234,44 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+							'name'       => 'job_manager_enable_salary_currency',
+							'std'        => '0',
+							'label'      => __( 'Salary Currency', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Job Salary Currency Customization', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users add a salary currency when submitting a job.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
+							'name'        => 'job_manager_default_salary_currency',
+							'std'         => 'USD',
+							'label'       => __( 'Default Salary Currency', 'wp-job-manager' ),
+							'cb_label'    => __( 'Default Currency used by salaries', 'wp-job-manager' ),
+							'desc'        => __( 'Sets the default currency used by salaries', 'wp-job-manager' ),
+							'type'        => 'text',
+							'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
+							'attributes'  => [],
+						],
+						[
+							'name'       => 'job_manager_enable_salary_unit',
+							'std'        => '0',
+							'label'      => __( 'Salary Unit', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Job Salary Unit Customization', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users add a salary currency when submitting a job.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
+							'name'       => 'job_manager_default_salary_unit',
+							'std'        => 'YEAR',
+							'label'      => __( 'Default Salary Unit', 'wp-job-manager' ),
+							'cb_label'   => __( 'Default Unit used by salaries', 'wp-job-manager' ),
+							'desc'       => __( 'Sets the default period unit used by salaries', 'wp-job-manager' ),
+							'type'       => 'select',
+							'options'    => job_manager_get_salary_unit_options(),
+							'attributes' => [],
+						],
+						[
 							'name'     => 'job_manager_display_location_address',
 							'std'      => '0',
 							'label'    => __( 'Location Display', 'wp-job-manager' ),
@@ -564,17 +602,24 @@ class WP_Job_Manager_Settings {
 			var $use_standard_password_setup_email = jQuery('#setting-job_manager_use_standard_password_setup_email');
 			var $generate_username_from_email = jQuery('#setting-job_manager_generate_username_from_email');
 			var $job_manager_registration_role = jQuery('#setting-job_manager_registration_role');
+			var $job_manager_enable_salary_currency = jQuery('#setting-job_manager_enable_salary_currency');
+			var $job_manager_enable_salary_unit = jQuery('#setting-job_manager_enable_salary_unit');
+			var $job_manager_default_salary_currency = jQuery('#setting-job_manager_default_salary_currency');
+			var $job_manager_default_salary_unit = jQuery('#setting-job_manager_default_salary_unit');
 
 			jQuery('#setting-job_manager_enable_registration').change(function(){
-				if ( jQuery( this ).is(':checked') ) {
-					$job_manager_registration_role.closest('tr').show();
-					$use_standard_password_setup_email.closest('tr').show();
-					$generate_username_from_email.closest('tr').show();
-				} else {
-					$job_manager_registration_role.closest('tr').hide();
-					$use_standard_password_setup_email.closest('tr').hide();
-					$generate_username_from_email.closest('tr').hide();
-				}
+				var $job_manager_enable_registration_is_checked = jQuery( this ).is(':checked');
+				$job_manager_registration_role.closest('tr').toggle($job_manager_enable_registration_is_checked);
+				$use_standard_password_setup_email.closest('tr').toggle($job_manager_enable_registration_is_checked);
+				$generate_username_from_email.closest('tr').toggle($job_manager_enable_registration_is_checked);
+			}).change();
+
+			jQuery('#setting-job_manager_enable_salary').change(function(){
+				var $job_manager_enable_salary_is_checked = jQuery( this ).is(':checked');
+				$job_manager_enable_salary_currency.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_enable_salary_unit.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_default_salary_currency.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_default_salary_unit.closest('tr').toggle($job_manager_enable_salary_is_checked);
 			}).change();
 
 			jQuery( '.sub-settings-expander' ).on( 'change', function() {
@@ -663,6 +708,7 @@ class WP_Job_Manager_Settings {
 			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
 			class="regular-text"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
+			autocomplete="off"
 			<?php
 			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
