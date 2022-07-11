@@ -708,6 +708,7 @@ class WP_Job_Manager_Settings {
 			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
 			class="regular-text"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
+			autocomplete="off"
 			<?php
 			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
