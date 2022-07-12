@@ -153,6 +153,10 @@ It then creates a database based on the parameters passed to it.
 
 == Changelog ==
 
+= 1.37.0 =
+* Enhancement: Job Visibility Settings
+* Enhancement: New settings for Salary fields
+
 = 1.36.2 =
 * Fix: Revert Job Visibility Settings feature
 
