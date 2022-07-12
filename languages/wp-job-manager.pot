@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the WP Job Manager plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.36.2\n"
+"Project-Id-Version: WP Job Manager 1.37.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager/\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-06-21T19:39:41+00:00\n"
+"POT-Creation-Date: 2022-07-12T17:06:06+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: wp-job-manager\n"
@@ -293,7 +293,6 @@ msgid "Type"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:501
-#: includes/admin/class-wp-job-manager-writepanels.php:63
 #: includes/class-wp-job-manager-email-notifications.php:270
 #: includes/class-wp-job-manager-post-types.php:1498
 #: includes/forms/class-wp-job-manager-form-submit-job.php:222
@@ -326,7 +325,7 @@ msgid "Expires"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:505
-#: includes/admin/class-wp-job-manager-settings.php:182
+#: includes/admin/class-wp-job-manager-settings.php:183
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-cpt.php:501
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:162
 msgid "Categories"
@@ -377,8 +376,8 @@ msgid "Approve"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:645
-#: includes/admin/class-wp-job-manager-writepanels.php:323
-#: includes/admin/class-wp-job-manager-writepanels.php:373
+#: includes/admin/class-wp-job-manager-writepanels.php:244
+#: includes/admin/class-wp-job-manager-writepanels.php:294
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-cpt.php:640
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:227
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:232
@@ -449,60 +448,60 @@ msgctxt "Job type slug - resave permalinks after changing this"
 msgid "job-type"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:89
+#: includes/admin/class-wp-job-manager-settings.php:90
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:89
 msgid "General"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:94
+#: includes/admin/class-wp-job-manager-settings.php:95
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:94
 msgid "Date Format"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:95
+#: includes/admin/class-wp-job-manager-settings.php:96
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:95
 msgid "Choose how you want the published date for jobs to be displayed on the front-end."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:98
+#: includes/admin/class-wp-job-manager-settings.php:99
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:98
 msgid "Relative to the current date (e.g., 1 day, 1 week, 1 month ago)"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:99
+#: includes/admin/class-wp-job-manager-settings.php:100
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:99
 msgid "Default date format as defined in Settings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:105
+#: includes/admin/class-wp-job-manager-settings.php:106
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:105
 msgid "Google Maps API Key"
 msgstr ""
 
 #. translators: Placeholder %s is URL to set up a Google Maps API key.
-#: includes/admin/class-wp-job-manager-settings.php:107
+#: includes/admin/class-wp-job-manager-settings.php:108
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:107
 msgid "Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href=\"%s\">Google Maps API developer site</a>."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:113
+#: includes/admin/class-wp-job-manager-settings.php:114
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:113
 msgid "Delete Data On Uninstall"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:114
+#: includes/admin/class-wp-job-manager-settings.php:115
 msgid "Delete WP Job Manager data when the plugin is deleted. Once the plugin is uninstalled, only job listings can be restored (30 days)."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:122
+#: includes/admin/class-wp-job-manager-settings.php:123
 msgid "Bypass Trash For Job Listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:123
+#: includes/admin/class-wp-job-manager-settings.php:124
 msgid "If checked, when the plugin is uninstalled, job listings will be permanently deleted immediately."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:131
+#: includes/admin/class-wp-job-manager-settings.php:132
 #: includes/class-wp-job-manager-post-types.php:334
 #: includes/class-wp-job-manager-post-types.php:437
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:122
@@ -511,488 +510,569 @@ msgstr ""
 msgid "Job Listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:137
+#: includes/admin/class-wp-job-manager-settings.php:138
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:128
 msgid "Listings Per Page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:138
+#: includes/admin/class-wp-job-manager-settings.php:139
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:129
 msgid "Number of job listings to display per page."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:144
+#: includes/admin/class-wp-job-manager-settings.php:145
 msgid "Pagination Type"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:145
+#: includes/admin/class-wp-job-manager-settings.php:146
 msgid "Determines whether to show page numbered links or a Load More Listings button."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:148
+#: includes/admin/class-wp-job-manager-settings.php:149
 msgid "Load More Listings button"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:149
+#: includes/admin/class-wp-job-manager-settings.php:150
 msgid "Page numbered links"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:155
+#: includes/admin/class-wp-job-manager-settings.php:156
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:135
 msgid "Filled Positions"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:156
+#: includes/admin/class-wp-job-manager-settings.php:157
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:136
 msgid "Hide filled positions"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:157
+#: includes/admin/class-wp-job-manager-settings.php:158
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:137
 msgid "Filled positions will not display in your archives."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:164
+#: includes/admin/class-wp-job-manager-settings.php:165
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:144
 msgid "Hide Expired Listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:165
+#: includes/admin/class-wp-job-manager-settings.php:166
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:145
 msgid "Hide expired listings in job archives/search"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:166
+#: includes/admin/class-wp-job-manager-settings.php:167
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:146
 msgid "Expired job listings will not be searchable."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:173
+#: includes/admin/class-wp-job-manager-settings.php:174
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:153
 msgid "Hide Expired Listings Content"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:174
+#: includes/admin/class-wp-job-manager-settings.php:175
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:154
 msgid "Hide content in expired single job listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:175
+#: includes/admin/class-wp-job-manager-settings.php:176
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:155
 msgid "Your site will display the titles of expired listings, but not the content of the listings. Otherwise, expired listings display their full content minus the application area."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:183
+#: includes/admin/class-wp-job-manager-settings.php:184
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:163
 msgid "Enable listing categories"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:184
+#: includes/admin/class-wp-job-manager-settings.php:185
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:164
 msgid "This lets users select from a list of categories when submitting a job. Note: an admin has to create categories before site users can select them."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:191
+#: includes/admin/class-wp-job-manager-settings.php:192
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:171
 msgid "Multi-select Categories"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:192
+#: includes/admin/class-wp-job-manager-settings.php:193
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:172
 msgid "Default to category multiselect"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:193
+#: includes/admin/class-wp-job-manager-settings.php:194
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:173
 msgid "The category selection box will default to allowing multiple selections on the [jobs] shortcode. Without this, visitors will only be able to select a single category when filtering jobs."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:200
+#: includes/admin/class-wp-job-manager-settings.php:201
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:180
 msgid "Category Filter Type"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:201
+#: includes/admin/class-wp-job-manager-settings.php:202
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:181
 msgid "Determines the logic used to display jobs when selecting multiple categories."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:204
+#: includes/admin/class-wp-job-manager-settings.php:205
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:184
 msgid "Jobs will be shown if within ANY selected category"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:205
+#: includes/admin/class-wp-job-manager-settings.php:206
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:185
 msgid "Jobs will be shown if within ALL selected categories"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:211
+#: includes/admin/class-wp-job-manager-settings.php:212
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:191
 msgid "Types"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:212
+#: includes/admin/class-wp-job-manager-settings.php:213
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:192
 msgid "Enable listing types"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:213
+#: includes/admin/class-wp-job-manager-settings.php:214
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:193
 msgid "This lets users select from a list of types when submitting a job. Note: an admin has to create types before site users can select them."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:220
+#: includes/admin/class-wp-job-manager-settings.php:221
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:200
 msgid "Multi-select Listing Types"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:221
+#: includes/admin/class-wp-job-manager-settings.php:222
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:201
 msgid "Allow multiple types for listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:222
+#: includes/admin/class-wp-job-manager-settings.php:223
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:202
 msgid "This allows users to select more than one type when submitting a job. The metabox on the post editor and the selection box on the front-end job submission form will both reflect this."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:229
-#: includes/admin/class-wp-job-manager-writepanels.php:114
+#: includes/admin/class-wp-job-manager-settings.php:230
+#: includes/class-wp-job-manager-post-types.php:1600
 #: includes/forms/class-wp-job-manager-form-submit-job.php:269
 msgid "Salary"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:230
+#: includes/admin/class-wp-job-manager-settings.php:231
 msgid "Enable Job Salary"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:231
+#: includes/admin/class-wp-job-manager-settings.php:232
 msgid "This lets users add a salary when submitting a job."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:238
-msgid "Location Display"
-msgstr ""
-
 #: includes/admin/class-wp-job-manager-settings.php:239
-msgid "Display Location Address"
+#: includes/class-wp-job-manager-post-types.php:1610
+#: includes/forms/class-wp-job-manager-form-submit-job.php:276
+msgid "Salary Currency"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:240
+msgid "Enable Job Salary Currency Customization"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:241
+#: includes/admin/class-wp-job-manager-settings.php:260
+msgid "This lets users add a salary currency when submitting a job."
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:248
+msgid "Default Salary Currency"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:249
+msgid "Default Currency used by salaries"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:250
+msgid "Sets the default currency used by salaries"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:252
+#: includes/class-wp-job-manager-post-types.php:1613
+#: includes/forms/class-wp-job-manager-form-submit-job.php:279
+msgid "e.g. USD"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:258
+#: includes/class-wp-job-manager-post-types.php:1621
+#: includes/forms/class-wp-job-manager-form-submit-job.php:284
+msgid "Salary Unit"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:259
+msgid "Enable Job Salary Unit Customization"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:267
+msgid "Default Salary Unit"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:268
+msgid "Default Unit used by salaries"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:269
+msgid "Sets the default period unit used by salaries"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:277
+msgid "Location Display"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:278
+msgid "Display Location Address"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:279
 msgid "Display the full address of the job listing location if it is detected by Google Maps Geocoding API. If full address is not available then it will display whatever text the user submitted for the location."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:246
+#: includes/admin/class-wp-job-manager-settings.php:285
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:209
 msgid "Job Submission"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:251
+#: includes/admin/class-wp-job-manager-settings.php:290
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:214
 msgid "Account Required"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:252
+#: includes/admin/class-wp-job-manager-settings.php:291
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:215
 msgid "Require an account to submit listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:253
+#: includes/admin/class-wp-job-manager-settings.php:292
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:216
 msgid "Limits job listing submissions to registered, logged-in users."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:260
+#: includes/admin/class-wp-job-manager-settings.php:299
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:223
 msgid "Account Creation"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:261
+#: includes/admin/class-wp-job-manager-settings.php:300
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:224
 msgid "Enable account creation during submission"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:262
+#: includes/admin/class-wp-job-manager-settings.php:301
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:225
 msgid "Includes account creation on the listing submission form, to allow non-registered users to create an account and submit a job listing simultaneously."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:269
+#: includes/admin/class-wp-job-manager-settings.php:308
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:232
 msgid "Account Username"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:270
+#: includes/admin/class-wp-job-manager-settings.php:309
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:233
 msgid "Generate usernames from email addresses"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:271
+#: includes/admin/class-wp-job-manager-settings.php:310
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:234
 msgid "Automatically generates usernames for new accounts from the registrant's email address. If this is not enabled, a \"username\" field will display instead."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:278
+#: includes/admin/class-wp-job-manager-settings.php:317
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:241
 msgid "Account Password"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:279
+#: includes/admin/class-wp-job-manager-settings.php:318
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:242
 msgid "Email new users a link to set a password"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:280
+#: includes/admin/class-wp-job-manager-settings.php:319
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:243
 msgid "Sends an email to the user with their username and a link to set their password. If this is not enabled, a \"password\" field will display instead, and their email address won't be verified."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:287
+#: includes/admin/class-wp-job-manager-settings.php:326
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:250
 msgid "Account Role"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:288
+#: includes/admin/class-wp-job-manager-settings.php:327
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:251
 msgid "Any new accounts created during submission will have this role. If you haven't enabled account creation during submission in the options above, your own method of assigning roles will apply."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:295
+#: includes/admin/class-wp-job-manager-settings.php:334
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:258
 msgid "Moderate New Listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:296
+#: includes/admin/class-wp-job-manager-settings.php:335
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:259
 msgid "Require admin approval of all new listing submissions"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:297
+#: includes/admin/class-wp-job-manager-settings.php:336
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:260
 msgid "Sets all new submissions to \"pending.\" They will not appear on your site until an admin approves them."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:304
+#: includes/admin/class-wp-job-manager-settings.php:343
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:267
 msgid "Allow Pending Edits"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:305
+#: includes/admin/class-wp-job-manager-settings.php:344
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:268
 msgid "Allow editing of pending listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:306
+#: includes/admin/class-wp-job-manager-settings.php:345
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:269
 msgid "Users can continue to edit pending listings until they are approved by an admin."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:313
+#: includes/admin/class-wp-job-manager-settings.php:352
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:276
 msgid "Allow Published Edits"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:314
+#: includes/admin/class-wp-job-manager-settings.php:353
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:277
 msgid "Allow editing of published listings"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:315
+#: includes/admin/class-wp-job-manager-settings.php:354
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:278
 msgid "Choose whether published job listings can be edited and if edits require admin approval. When moderation is required, the original job listings will be unpublished while edits await admin approval."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:318
+#: includes/admin/class-wp-job-manager-settings.php:357
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:281
 msgid "Users cannot edit"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:319
+#: includes/admin/class-wp-job-manager-settings.php:358
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:282
 msgid "Users can edit without admin approval"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:320
+#: includes/admin/class-wp-job-manager-settings.php:359
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:283
 msgid "Users can edit, but edits require admin approval"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:327
+#: includes/admin/class-wp-job-manager-settings.php:366
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:290
 msgid "Listing Duration"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:328
+#: includes/admin/class-wp-job-manager-settings.php:367
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:291
 msgid "Listings will display for the set number of days, then expire. Leave this field blank if you don't want listings to have an expiration date."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:334
+#: includes/admin/class-wp-job-manager-settings.php:373
 msgid "Listing Limit"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:335
+#: includes/admin/class-wp-job-manager-settings.php:374
 msgid "How many listings are users allowed to post. Can be left blank to allow unlimited listings per account."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:337
+#: includes/admin/class-wp-job-manager-settings.php:376
 msgid "No limit"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:342
+#: includes/admin/class-wp-job-manager-settings.php:381
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:297
 msgid "Application Method"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:343
+#: includes/admin/class-wp-job-manager-settings.php:382
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:298
 msgid "Choose the application method job listers will need to provide. Specify URL or email address only, or allow listers to choose which they prefer."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:346
+#: includes/admin/class-wp-job-manager-settings.php:385
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:301
 msgid "Email address or website URL"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:347
+#: includes/admin/class-wp-job-manager-settings.php:386
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:302
 msgid "Email addresses only"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:348
+#: includes/admin/class-wp-job-manager-settings.php:387
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:303
 msgid "Website URLs only"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:354
+#: includes/admin/class-wp-job-manager-settings.php:393
 msgid "Terms and Conditions Checkbox"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:355
+#: includes/admin/class-wp-job-manager-settings.php:394
 msgid "Enable required Terms and Conditions checkbox on the form"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:356
+#: includes/admin/class-wp-job-manager-settings.php:395
 msgid "Require a Terms and Conditions checkbox to be marked before a job can be submitted. The linked page can be set from the <a href=\"#settings-job_pages\" class=\"nav-internal\">Pages</a> settings tab."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:363
+#: includes/admin/class-wp-job-manager-settings.php:402
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:309
 msgid "reCAPTCHA"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:367
+#: includes/admin/class-wp-job-manager-settings.php:406
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:313
 msgid "Are you human?"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:369
+#: includes/admin/class-wp-job-manager-settings.php:408
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:315
 msgid "Field Label"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:370
+#: includes/admin/class-wp-job-manager-settings.php:409
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:316
 msgid "The label used for the reCAPTCHA field on forms."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:377
+#: includes/admin/class-wp-job-manager-settings.php:416
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:323
 msgid "Site Key"
 msgstr ""
 
 #. translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
-#: includes/admin/class-wp-job-manager-settings.php:379
+#: includes/admin/class-wp-job-manager-settings.php:418
 msgid "You can retrieve your reCAPTCHA v2 \"I'm not a robot\" Checkbox site key from <a href=\"%s\">Google's reCAPTCHA admin dashboard</a>."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:386
+#: includes/admin/class-wp-job-manager-settings.php:425
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:332
 msgid "Secret Key"
 msgstr ""
 
 #. translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
-#: includes/admin/class-wp-job-manager-settings.php:388
+#: includes/admin/class-wp-job-manager-settings.php:427
 msgid "You can retrieve your reCAPTCHA v2 \"I'm not a robot\" Checkbox secret key from <a href=\"%s\">Google's reCAPTCHA admin dashboard</a>."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:394
+#: includes/admin/class-wp-job-manager-settings.php:433
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:340
 msgid "Job Submission Form"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:395
+#: includes/admin/class-wp-job-manager-settings.php:434
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:341
 msgid "Display a reCAPTCHA field on job submission form."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:396
+#: includes/admin/class-wp-job-manager-settings.php:435
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:342
 msgid "This will help prevent bots from submitting job listings. You must have entered a valid site key and secret key above."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:403
+#: includes/admin/class-wp-job-manager-settings.php:442
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:349
 msgid "Pages"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:408
+#: includes/admin/class-wp-job-manager-settings.php:447
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:354
 msgid "Submit Job Form Page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:409
+#: includes/admin/class-wp-job-manager-settings.php:448
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:355
 msgid "Select the page where you've used the [submit_job_form] shortcode. This lets the plugin know the location of the form."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:415
+#: includes/admin/class-wp-job-manager-settings.php:454
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:361
 msgid "Job Dashboard Page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:416
+#: includes/admin/class-wp-job-manager-settings.php:455
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:362
 msgid "Select the page where you've used the [job_dashboard] shortcode. This lets the plugin know the location of the dashboard."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:422
+#: includes/admin/class-wp-job-manager-settings.php:461
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:368
 msgid "Job Listings Page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:423
+#: includes/admin/class-wp-job-manager-settings.php:462
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:369
 msgid "Select the page where you've used the [jobs] shortcode. This lets the plugin know the location of the job listings page."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:429
+#: includes/admin/class-wp-job-manager-settings.php:468
 msgid "Terms and Conditions Page"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:430
+#: includes/admin/class-wp-job-manager-settings.php:469
 msgid "Select the page to link when \"Terms and Conditions Checkbox\" is enabled. See setting in \"Job Submission\" tab."
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:478
+#: includes/admin/class-wp-job-manager-settings.php:475
+msgid "Job Visibility"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:480
+msgid "Browse Job Capability"
+msgstr ""
+
+#. translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+#: includes/admin/class-wp-job-manager-settings.php:484
+msgid "Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings."
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:489
+msgid "View Job Capability"
+msgstr ""
+
+#. translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+#: includes/admin/class-wp-job-manager-settings.php:493
+msgid "Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings."
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:544
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:417
 msgid "Settings successfully saved"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:503
+#: includes/admin/class-wp-job-manager-settings.php:569
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:442
 msgid "Save Changes"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:702
+#: includes/admin/class-wp-job-manager-settings.php:808
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:650
 msgid "--no page--"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-settings.php:708
+#: includes/admin/class-wp-job-manager-settings.php:814
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-settings.php:656
 msgid "Select a page&hellip;"
+msgstr ""
+
+#: includes/admin/class-wp-job-manager-settings.php:1054
+msgid "Everyone (Public)"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-setup.php:58
@@ -1015,131 +1095,7 @@ msgstr ""
 msgid "Employment Type"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:64
-#: includes/class-wp-job-manager-post-types.php:1499
-#: includes/forms/class-wp-job-manager-form-submit-job.php:226
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1223
-#: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:217
-msgid "e.g. \"London\""
-msgstr ""
-
 #: includes/admin/class-wp-job-manager-writepanels.php:65
-#: includes/class-wp-job-manager-post-types.php:1500
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1224
-msgid "Leave this blank if the location is not important."
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:69
-#: includes/forms/class-wp-job-manager-form-submit-job.php:230
-msgid "Remote Position"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:70
-#: includes/forms/class-wp-job-manager-form-submit-job.php:231
-msgid "Select if this is a remote position."
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:75
-msgid "Application Email or URL"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:76
-msgid "URL or email which applicants use to apply"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:77
-#: includes/class-wp-job-manager-post-types.php:1509
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1233
-msgid "This field is required for the \"application\" area to appear beneath the listing."
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:82
-#: includes/class-wp-job-manager-data-exporter.php:52
-#: includes/class-wp-job-manager-post-types.php:1517
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:52
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1241
-msgid "Company Name"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:87
-#: includes/class-wp-job-manager-data-exporter.php:53
-#: includes/class-wp-job-manager-post-types.php:1525
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:53
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1249
-msgid "Company Website"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:92
-#: includes/class-wp-job-manager-data-exporter.php:54
-#: includes/class-wp-job-manager-post-types.php:1534
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:54
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1258
-msgid "Company Tagline"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:93
-#: includes/class-wp-job-manager-post-types.php:1535
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1259
-msgid "Brief description about the company"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:97
-#: includes/class-wp-job-manager-data-exporter.php:55
-#: includes/class-wp-job-manager-post-types.php:1542
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:55
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1266
-msgid "Company Twitter"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:102
-#: includes/class-wp-job-manager-data-exporter.php:56
-#: includes/class-wp-job-manager-post-types.php:1550
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:56
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1274
-msgid "Company Video"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:103
-#: includes/class-wp-job-manager-post-types.php:1551
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1275
-msgid "URL to the company video"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:108
-#: includes/class-wp-job-manager-post-types.php:1560
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1284
-msgid "Position Filled"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:111
-#: includes/class-wp-job-manager-post-types.php:1566
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1290
-msgid "Filled listings will no longer accept applications."
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:118
-msgid "Add a salary field, this field is optional."
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:127
-#: includes/class-wp-job-manager-post-types.php:1569
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1293
-msgid "Featured Listing"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:129
-#: includes/class-wp-job-manager-post-types.php:1571
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1295
-msgid "Featured listings will be sticky during searches, and can be styled differently."
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:134
-#: includes/class-wp-job-manager-post-types.php:1579
-#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1303
-msgid "Listing Expiry Date"
-msgstr ""
-
-#: includes/admin/class-wp-job-manager-writepanels.php:144
 #: includes/class-wp-job-manager-email-notifications.php:324
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:64
 #: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-email-notifications.php:292
@@ -1147,57 +1103,57 @@ msgid "Posted by"
 msgstr ""
 
 #. translators: Placeholder %s is the singular name for a job listing post type.
-#: includes/admin/class-wp-job-manager-writepanels.php:233
+#: includes/admin/class-wp-job-manager-writepanels.php:154
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:150
 msgid "%s Data"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:312
-#: includes/admin/class-wp-job-manager-writepanels.php:373
+#: includes/admin/class-wp-job-manager-writepanels.php:233
+#: includes/admin/class-wp-job-manager-writepanels.php:294
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:227
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:232
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:237
 msgid "Use file"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:313
-#: includes/admin/class-wp-job-manager-writepanels.php:373
+#: includes/admin/class-wp-job-manager-writepanels.php:234
+#: includes/admin/class-wp-job-manager-writepanels.php:294
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:227
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:232
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:237
 msgid "Upload"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:373
+#: includes/admin/class-wp-job-manager-writepanels.php:294
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:237
 msgid "Add file"
 msgstr ""
 
 #. translators: Used in user select. %1$s is the user's display name; #%2$s is the user ID; %3$s is the user email.
-#: includes/admin/class-wp-job-manager-writepanels.php:611
+#: includes/admin/class-wp-job-manager-writepanels.php:532
 #: includes/class-wp-job-manager-ajax.php:419
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:471
 #: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-ajax.php:418
 msgid "%1$s (#%2$s – %3$s)"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:618
+#: includes/admin/class-wp-job-manager-writepanels.php:539
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:478
 msgid "Guest User"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:622
+#: includes/admin/class-wp-job-manager-writepanels.php:543
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:482
 msgid "Change"
 msgstr ""
 
-#: includes/admin/class-wp-job-manager-writepanels.php:625
+#: includes/admin/class-wp-job-manager-writepanels.php:546
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:485
 msgid "Guest"
 msgstr ""
 
 #. translators: %1$s is placeholder for singular name of the job listing post type; %2$s is the intl formatted date the listing was last modified.
-#: includes/admin/class-wp-job-manager-writepanels.php:698
+#: includes/admin/class-wp-job-manager-writepanels.php:619
 #: tmp/release-svn/wp-job-manager/trunk/includes/admin/class-wp-job-manager-writepanels.php:556
 msgid "%1$s was last modified by the user on %2$s."
 msgstr ""
@@ -1460,6 +1416,41 @@ msgstr ""
 msgid "Company Logo"
 msgstr ""
 
+#: includes/class-wp-job-manager-data-exporter.php:52
+#: includes/class-wp-job-manager-post-types.php:1517
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:52
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1241
+msgid "Company Name"
+msgstr ""
+
+#: includes/class-wp-job-manager-data-exporter.php:53
+#: includes/class-wp-job-manager-post-types.php:1525
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:53
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1249
+msgid "Company Website"
+msgstr ""
+
+#: includes/class-wp-job-manager-data-exporter.php:54
+#: includes/class-wp-job-manager-post-types.php:1534
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:54
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1258
+msgid "Company Tagline"
+msgstr ""
+
+#: includes/class-wp-job-manager-data-exporter.php:55
+#: includes/class-wp-job-manager-post-types.php:1542
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:55
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1266
+msgid "Company Twitter"
+msgstr ""
+
+#: includes/class-wp-job-manager-data-exporter.php:56
+#: includes/class-wp-job-manager-post-types.php:1550
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:56
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1274
+msgid "Company Video"
+msgstr ""
+
 #: includes/class-wp-job-manager-data-exporter.php:81
 #: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-data-exporter.php:81
 msgid "WP Job Manager User Data"
@@ -1523,7 +1514,7 @@ msgid "Job category"
 msgstr ""
 
 #: includes/class-wp-job-manager-email-notifications.php:298
-#: includes/forms/class-wp-job-manager-form-submit-job.php:278
+#: includes/forms/class-wp-job-manager-form-submit-job.php:294
 #: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-email-notifications.php:266
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:255
 msgid "Company name"
@@ -1837,6 +1828,82 @@ msgstr ""
 msgid "Job listing expires at the start of the day."
 msgstr ""
 
+#: includes/class-wp-job-manager-post-types.php:1499
+#: includes/forms/class-wp-job-manager-form-submit-job.php:226
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1223
+#: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:217
+msgid "e.g. \"London\""
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1500
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1224
+msgid "Leave this blank if the location is not important."
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1509
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1233
+msgid "This field is required for the \"application\" area to appear beneath the listing."
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1535
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1259
+msgid "Brief description about the company"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1551
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1275
+msgid "URL to the company video"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1560
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1284
+msgid "Position Filled"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1566
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1290
+msgid "Filled listings will no longer accept applications."
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1569
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1293
+msgid "Featured Listing"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1571
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1295
+msgid "Featured listings will be sticky during searches, and can be styled differently."
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1579
+#: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-post-types.php:1303
+msgid "Listing Expiry Date"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1591
+#: includes/forms/class-wp-job-manager-form-submit-job.php:230
+msgid "Remote Position"
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1592
+#: includes/forms/class-wp-job-manager-form-submit-job.php:231
+msgid "Select if this is a remote position."
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1604
+msgid "Add a salary field, this field is optional."
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1615
+#: includes/forms/class-wp-job-manager-form-submit-job.php:280
+msgid "Add a salary currency, this field is optional. Leave it empty to use the default salary currency."
+msgstr ""
+
+#: includes/class-wp-job-manager-post-types.php:1626
+#: includes/forms/class-wp-job-manager-form-submit-job.php:287
+msgid "Add a salary period unit, this field is optional. Leave it empty to use the default salary unit, if one is defined."
+msgstr ""
+
 #: includes/class-wp-job-manager-shortcodes.php:201
 #: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-shortcodes.php:108
 msgid "Invalid ID"
@@ -1924,8 +1991,8 @@ msgstr ""
 msgid "Continue Submission"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:677
-#: includes/class-wp-job-manager-shortcodes.php:715
+#: includes/class-wp-job-manager-shortcodes.php:682
+#: includes/class-wp-job-manager-shortcodes.php:720
 #: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-shortcodes.php:401
 #: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager-shortcodes.php:439
 msgid "Load more listings"
@@ -1977,7 +2044,7 @@ msgstr ""
 
 #. translators: Placeholder %d is the number of files to that users are limited to.
 #: includes/class-wp-job-manager.php:523
-#: includes/forms/class-wp-job-manager-form-submit-job.php:479
+#: includes/forms/class-wp-job-manager-form-submit-job.php:502
 #: tmp/release-svn/wp-job-manager/trunk/includes/class-wp-job-manager.php:420
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:406
 msgid "You are only allowed to upload a maximum of %d files."
@@ -2097,7 +2164,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:93
-#: includes/forms/class-wp-job-manager-form-submit-job.php:669
+#: includes/forms/class-wp-job-manager-form-submit-job.php:692
 #: templates/job-preview.php:30
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:88
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:578
@@ -2130,141 +2197,141 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:281
+#: includes/forms/class-wp-job-manager-form-submit-job.php:297
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:258
 msgid "Enter the name of the company"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:285
+#: includes/forms/class-wp-job-manager-form-submit-job.php:301
 #: templates/content-single-job_listing-company.php:30
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:262
 #: tmp/release-svn/wp-job-manager/trunk/templates/content-single-job_listing-company.php:30
 msgid "Website"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:289
+#: includes/forms/class-wp-job-manager-form-submit-job.php:305
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:266
 msgid "http://"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:293
+#: includes/forms/class-wp-job-manager-form-submit-job.php:309
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:270
 msgid "Tagline"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:296
+#: includes/forms/class-wp-job-manager-form-submit-job.php:312
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:273
 msgid "Briefly describe your company"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:301
+#: includes/forms/class-wp-job-manager-form-submit-job.php:317
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:278
 msgid "Video"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:305
+#: includes/forms/class-wp-job-manager-form-submit-job.php:321
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:282
 msgid "A link to a video about your company"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:309
+#: includes/forms/class-wp-job-manager-form-submit-job.php:325
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:286
 msgid "Twitter username"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:312
+#: includes/forms/class-wp-job-manager-form-submit-job.php:328
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:289
 msgid "@yourcompany"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:316
+#: includes/forms/class-wp-job-manager-form-submit-job.php:332
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:293
 msgid "Logo"
 msgstr ""
 
 #. translators: Placeholder %s is the label for the required field.
-#: includes/forms/class-wp-job-manager-form-submit-job.php:400
+#: includes/forms/class-wp-job-manager-form-submit-job.php:423
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:343
 msgid "%s is a required field"
 msgstr ""
 
 #. translators: Placeholder %s is the field label that is did not validate.
-#: includes/forms/class-wp-job-manager-form-submit-job.php:411
+#: includes/forms/class-wp-job-manager-form-submit-job.php:434
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:354
 msgid "%s is invalid"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:441
+#: includes/forms/class-wp-job-manager-form-submit-job.php:464
 msgid "Invalid image path."
 msgstr ""
 
 #. translators: Placeholder %1$s is field label; %2$s is the file mime type; %3$s is the allowed mime-types.
 #. translators: %1$s is the file field label; %2$s is the file type; %3$s is the list of allowed file types.
-#: includes/forms/class-wp-job-manager-form-submit-job.php:452
+#: includes/forms/class-wp-job-manager-form-submit-job.php:475
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:389
 #: tmp/release-svn/wp-job-manager/trunk/wp-job-manager-functions.php:1304
 #: wp-job-manager-functions.php:1393
 msgid "\"%1$s\" (filetype %2$s) needs to be one of the following file types: %3$s"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:462
+#: includes/forms/class-wp-job-manager-form-submit-job.php:485
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:371
 msgid "Invalid attachment provided."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:506
+#: includes/forms/class-wp-job-manager-form-submit-job.php:529
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:424
 msgid "Please enter a valid application email address"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:511
+#: includes/forms/class-wp-job-manager-form-submit-job.php:534
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:433
 msgid "Please enter a valid application URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:517
+#: includes/forms/class-wp-job-manager-form-submit-job.php:540
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:443
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:728
+#: includes/forms/class-wp-job-manager-form-submit-job.php:751
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:637
 msgid "Please enter a username."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:732
+#: includes/forms/class-wp-job-manager-form-submit-job.php:755
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:641
 msgid "Please enter a password."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:736
+#: includes/forms/class-wp-job-manager-form-submit-job.php:759
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:645
 msgid "Please enter your email address."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:742
+#: includes/forms/class-wp-job-manager-form-submit-job.php:765
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:651
 msgid "Passwords must match."
 msgstr ""
 
 #. translators: Placeholder %s is the password hint.
-#: includes/forms/class-wp-job-manager-form-submit-job.php:748
+#: includes/forms/class-wp-job-manager-form-submit-job.php:771
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:657
 msgid "Invalid Password: %s"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:750
+#: includes/forms/class-wp-job-manager-form-submit-job.php:773
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:659
 msgid "Password is not valid."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:782
+#: includes/forms/class-wp-job-manager-form-submit-job.php:805
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:682
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
 #. translators: placeholder is the URL to the job dashboard page.
-#: includes/forms/class-wp-job-manager-form-submit-job.php:808
+#: includes/forms/class-wp-job-manager-form-submit-job.php:831
 #: tmp/release-svn/wp-job-manager/trunk/includes/forms/class-wp-job-manager-form-submit-job.php:700
 msgid "Draft was saved. Job listing drafts can be resumed from the <a href=\"%s\">job dashboard</a>."
 msgstr ""
@@ -2449,6 +2516,18 @@ msgstr ""
 msgid "Keyword"
 msgstr ""
 
+#: templates/access-denied-browse-job_listings.php:19
+msgid "Sorry, you do not have permission to browse job listings."
+msgstr ""
+
+#: templates/access-denied-single-job_listing.php:20
+msgid "This listing has expired"
+msgstr ""
+
+#: templates/access-denied-single-job_listing.php:22
+msgid "Sorry, you do not have permission to view this job listing."
+msgstr ""
+
 #: templates/account-signin.php:21
 #: tmp/release-svn/wp-job-manager/trunk/templates/account-signin.php:21
 msgid "Your account"
@@ -2515,17 +2594,17 @@ msgstr ""
 msgid "There are currently no vacancies."
 msgstr ""
 
-#: templates/content-single-job_listing-meta.php:44
+#: templates/content-single-job_listing-meta.php:50
 #: tmp/release-svn/wp-job-manager/trunk/templates/content-single-job_listing-meta.php:42
 msgid "This position has been filled"
 msgstr ""
 
-#: templates/content-single-job_listing-meta.php:46
+#: templates/content-single-job_listing-meta.php:52
 #: tmp/release-svn/wp-job-manager/trunk/templates/content-single-job_listing-meta.php:44
 msgid "Applications have closed"
 msgstr ""
 
-#: templates/content-single-job_listing.php:23
+#: templates/content-single-job_listing.php:24
 #: tmp/release-svn/wp-job-manager/trunk/templates/content-single-job_listing.php:23
 msgid "This listing has expired."
 msgstr ""
@@ -3009,6 +3088,30 @@ msgstr ""
 #. translators: This one is used to determine if the user is searching for remote work type.
 #: wp-job-manager-functions.php:78
 msgid "remote"
+msgstr ""
+
+#: wp-job-manager-functions.php:1691
+msgid "--"
+msgstr ""
+
+#: wp-job-manager-functions.php:1692
+msgid "Year"
+msgstr ""
+
+#: wp-job-manager-functions.php:1693
+msgid "Month"
+msgstr ""
+
+#: wp-job-manager-functions.php:1694
+msgid "Week"
+msgstr ""
+
+#: wp-job-manager-functions.php:1695
+msgid "Day"
+msgstr ""
+
+#: wp-job-manager-functions.php:1696
+msgid "Hour"
 msgstr ""
 
 #: wp-job-manager-template.php:801
