@@ -51,7 +51,6 @@ class WP_Job_Manager_Settings {
 	public function __construct() {
 		$this->settings_group = 'job_manager';
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
-		add_action( 'admin_action_update', [ $this, 'pre_process_settings_save' ] );
 	}
 
 	/**
@@ -1089,12 +1088,16 @@ class WP_Job_Manager_Settings {
 			$value = explode( ',', $value );
 		}
 		$result = [];
-		foreach ( $value as $item ) {
-			$item = trim( sanitize_text_field( $item ) );
-			if ( $item ) {
-				$result[] = $item;
+
+		if ( ! empty( $value ) ) {
+			foreach ( $value as $item ) {
+				$item = trim( sanitize_text_field( $item ) );
+				if ( $item ) {
+					$result[] = $item;
+				}
 			}
 		}
+
 		return $result;
 	}
 
