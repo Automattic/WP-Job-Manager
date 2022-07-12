@@ -1698,5 +1698,12 @@ function job_manager_get_salary_unit_options( $include_empty = false ) {
 	if ( ! $include_empty ) {
 		unset( $options[''] );
 	}
+	/**
+	 * Filter the salary unit options that should appear to the user
+	 *
+	 * @since 1.37.0
+	 * @param array $options Where the key is the identifier used by Google Structured Data, and the value is a translated label.
+	 * @param boolean $include_empty Defines if we should include an empty option as default.
+	 */
 	return apply_filters( 'job_manager_get_salary_unit_options', $options, $include_empty );
 }
