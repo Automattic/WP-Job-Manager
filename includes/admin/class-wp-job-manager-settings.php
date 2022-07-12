@@ -475,20 +475,22 @@ class WP_Job_Manager_Settings {
 					__( 'Job Visibility', 'wp-job-manager' ),
 					[
 						[
-							'name'  => 'job_manager_browse_job_listings_capability',
-							'std'   => '',
-							'label' => __( 'Browse Job Capability', 'wp-job-manager' ),
-							'type'  => 'capabilities',
+							'name'              => 'job_manager_browse_job_listings_capability',
+							'std'               => [],
+							'label'             => __( 'Browse Job Capability', 'wp-job-manager' ),
+							'type'              => 'capabilities',
+							'sanitize_callback' => [ $this, 'sanitize_capabilities' ],
 							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
-							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+							'desc'              => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
 						],
 						[
-							'name'  => 'job_manager_view_job_listing_capability',
-							'std'   => '',
-							'label' => __( 'View Job Capability', 'wp-job-manager' ),
-							'type'  => 'capabilities',
+							'name'              => 'job_manager_view_job_listing_capability',
+							'std'               => [],
+							'label'             => __( 'View Job Capability', 'wp-job-manager' ),
+							'type'              => 'capabilities',
+							'sanitize_callback' => [ $this, 'sanitize_capabilities' ],
 							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
-							'desc'  => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+							'desc'              => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
 						],
 					],
 				],
@@ -507,7 +509,11 @@ class WP_Job_Manager_Settings {
 				if ( isset( $option['std'] ) ) {
 					add_option( $option['name'], $option['std'] );
 				}
-				register_setting( $this->settings_group, $option['name'] );
+				$args = [];
+				if ( isset( $option['sanitize_callback'] ) ) {
+					$args['sanitize_callback'] = $option['sanitize_callback'];
+				}
+				register_setting( $this->settings_group, $option['name'], $args );
 			}
 		}
 	}
@@ -572,16 +578,48 @@ class WP_Job_Manager_Settings {
 				return false;
 			});
 
+			if ( jQuery.isFunction( jQuery.fn.select2 ) ) {
+
+				if ( jQuery( '.settings-role-select' ).length > 0 ) {
+					// This fixes a issue where backspace on role just turns it into search.
+					// @see https://github.com/select2/select2/issues/3354#issuecomment-277419278 for more info.
+					jQuery.fn.select2.amd.require(
+						['select2/selection/search' ],
+						function ( Search ) {
+							Search.prototype.searchRemoveChoice = function (decorated, item) {
+								this.trigger(
+									'unselect',
+									{
+										data: item
+									}
+								);
+
+								this.$search.val( '' );
+								this.handleSearch();
+							};
+						},
+						null,
+						true
+					);
+				}
+			}
+
+			var job_listings_admin_select2_settings = {
+				'tags': true // Allows for free entry of custom capabilities.
+			};
+
 			jQuery('.nav-tab-wrapper a').click(function() {
 				if ( '#' !== jQuery(this).attr( 'href' ).substr( 0, 1 ) ) {
 					return false;
 				}
 				jQuery('.settings_panel').hide();
 				jQuery('.nav-tab-active').removeClass('nav-tab-active');
-				jQuery( jQuery(this).attr('href') ).show();
+				var $content = jQuery( jQuery(this).attr('href') );
+				$content.show();
 				jQuery(this).addClass('nav-tab-active');
 				window.location.hash = jQuery(this).attr('href');
 				jQuery( 'form.job-manager-options' ).attr( 'action', 'options.php' + jQuery(this).attr( 'href' ) );
+				$content.find( '.settings-role-select' ).select2( job_listings_admin_select2_settings );
 				window.scrollTo( 0, 0 );
 				return false;
 			});
@@ -1008,11 +1046,10 @@ class WP_Job_Manager_Settings {
 	 *
 	 * @param array    $option              Option arguments for settings input.
 	 * @param string[] $attributes          Attributes on the HTML element. Strings must already be escaped.
-	 * @param mixed    $value               Current value.
+	 * @param string[] $value               Current value.
 	 * @param string   $ignored_placeholder We set the placeholder in the method. This is ignored.
 	 */
 	protected function input_capabilities( $option, $attributes, $value, $ignored_placeholder ) {
-		$value                 = self::capabilities_string_to_array( $value );
 		$option['options']     = self::get_capabilities_and_roles( $value );
 		$option['placeholder'] = esc_html__( 'Everyone (Public)', 'wp-job-manager' );
 
@@ -1041,68 +1078,24 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-	 * Role settings should be saved as a comma-separated list.
+	 * Sanitize the options related to capabilities, making the necessary conversions
+	 *
+	 * @param string[]|string $value
+	 * @return string[]
 	 */
-	public function pre_process_settings_save() {
-		$screen = get_current_screen();
-
-		if ( ! $screen || 'options' !== $screen->id ) {
-			return;
+	public function sanitize_capabilities( $value ) {
+		$value = wp_unslash( $value );
+		if ( is_string( $value ) ) {
+			$value = explode( ',', $value );
 		}
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Settings save will handle the nonce check.
-		if ( ! isset( $_POST['option_page'] ) || 'job_manager' !== $_POST['option_page'] ) {
-			return;
-		}
-
-		$capabilities_fields = [
-			'job_manager_browse_job_listings_capability',
-			'job_manager_view_job_listing_capability',
-		];
-		foreach ( $capabilities_fields as $capabilities_field ) {
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Settings save will handle the nonce check.
-			if ( isset( $_POST[ $capabilities_field ] ) ) {
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized by `WP_Resume_Manager_Settings::capabilities_array_to_string()`
-				$input_capabilities_field_value = wp_unslash( $_POST[ $capabilities_field ] );
-				if ( is_array( $input_capabilities_field_value ) ) {
-					$_POST[ $capabilities_field ] = self::capabilities_array_to_string( $input_capabilities_field_value );
-				}
+		$result = [];
+		foreach ( $value as $item ) {
+			$item = trim( sanitize_text_field( $item ) );
+			if ( $item ) {
+				$result[] = $item;
 			}
-			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
-	}
-
-	/**
-	 * Convert list of capabilities and roles into array of values.
-	 *
-	 * @param string $value Comma separated list of capabilities and roles.
-	 * @return array
-	 */
-	private static function capabilities_string_to_array( $value ) {
-		return array_filter(
-			array_map(
-				function( $value ) {
-					return trim( sanitize_text_field( $value ) );
-				},
-				explode( ',', $value )
-			)
-		);
-	}
-
-	/**
-	 * Convert array of capabilities and roles into a comma separated list.
-	 *
-	 * @param array $value Array of capabilities and roles.
-	 * @return string
-	 */
-	private static function capabilities_array_to_string( $value ) {
-		if ( ! is_array( $value ) ) {
-			return '';
-		}
-
-		$caps = array_filter( array_map( 'sanitize_text_field', $value ) );
-
-		return implode( ',', $caps );
+		return $result;
 	}
 
 	/**
