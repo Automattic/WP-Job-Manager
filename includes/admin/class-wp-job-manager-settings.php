@@ -51,7 +51,6 @@ class WP_Job_Manager_Settings {
 	public function __construct() {
 		$this->settings_group = 'job_manager';
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
-		add_action( 'admin_action_update', [ $this, 'pre_process_settings_save' ] );
 	}
 
 	/**
