@@ -1088,12 +1088,16 @@ class WP_Job_Manager_Settings {
 			$value = explode( ',', $value );
 		}
 		$result = [];
-		foreach ( $value as $item ) {
-			$item = trim( sanitize_text_field( $item ) );
-			if ( $item ) {
-				$result[] = $item;
+
+		if ( ! empty( $value ) ) {
+			foreach ( $value as $item ) {
+				$item = trim( sanitize_text_field( $item ) );
+				if ( $item ) {
+					$result[] = $item;
+				}
 			}
 		}
+
 		return $result;
 	}
 
