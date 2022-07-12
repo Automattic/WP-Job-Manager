@@ -283,7 +283,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					'job_salary_unit'     => [
 						'label'       => __( 'Salary Unit', 'wp-job-manager' ),
 						'type'        => 'select',
-						'options'     => job_manager_get_salary_unit_options( true ),
+						'options'     => job_manager_get_salary_unit_options(),
 						'description' => __( 'Add a salary period unit, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
 						'required'    => false,
 						'priority'    => 10,
