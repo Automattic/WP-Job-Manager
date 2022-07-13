@@ -1413,7 +1413,7 @@ function get_the_job_salary_unit( $post = null ) {
 function get_the_job_salary_unit_display_text( $post = null ) {
 	$job_unit = get_the_job_salary_unit( $post );
 
-	$translated_options = job_manager_get_salary_unit_options();
+	$translated_options = job_manager_get_salary_unit_options( false );
 
 	$raw_job_unit = $job_unit;
 
