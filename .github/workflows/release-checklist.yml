@@ -1,0 +1,25 @@
+name: Plugin Release Build
+
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - 'trunk'
+
+jobs:
+  checklist_job:
+    if: ${{ startsWith( github.head_ref, 'release/' ) }}
+    runs-on: ubuntu-latest
+    name: WPJM release checklist
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Checklist
+        uses: automattic/contextual-qa-checklist-action@master
+        with:
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          input-file: .github/RELEASE-CHECKLIST.yml
+          comment-header: 'Please perform the following tests with the built package in a new installation before publishing:'
+          comment-footer: '' 
+          show-paths: false
