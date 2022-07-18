@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 5.7
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 1.36.2
+Stable tag: 1.37.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,6 +152,10 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.37.0 =
+* Enhancement: Job Visibility Settings
+* Enhancement: New settings for Salary fields
 
 = 1.36.2 =
 * Fix: Revert Job Visibility Settings feature
