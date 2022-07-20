@@ -312,6 +312,7 @@ jQuery( document ).ready( function( $ ) {
 			var order = $target.data( 'order' );
 			var featured = $target.data( 'featured' );
 			var filled = $target.data( 'filled' );
+			var remote_position = $target.data( 'remote_position' );
 			var job_types = $target.data( 'job_types' );
 			var post_status = $target.data( 'post_status' );
 			var index = $( 'div.job_listings' ).index( this );
@@ -378,6 +379,7 @@ jQuery( document ).ready( function( $ ) {
 					page: page,
 					featured: featured,
 					filled: filled,
+					remote_position: remote_position,
 					show_pagination: $target.data( 'show_pagination' ),
 					form_data: $form.serialize(),
 				};
@@ -406,6 +408,7 @@ jQuery( document ).ready( function( $ ) {
 					page: page,
 					featured: featured,
 					filled: filled,
+					remote_position: remote_position,
 					show_pagination: $target.data( 'show_pagination' ),
 				};
 			}

@@ -32,6 +32,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				'order'             => 'DESC',
 				'featured'          => null,
 				'filled'            => null,
+				'remote_position'   => null,
 				'fields'            => 'all',
 			]
 		);
@@ -83,7 +84,27 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 					'compare' => 'like',
 				];
 			}
+
+			if ( ! is_null( $args['remote_position'] ) ) {
+				$location_search = [
+					'relation' => 'AND',
+					[
+						'key'     => '_remote_position',
+						'value'   => '1',
+						'compare' => $args['remote_position'] ? '=' : '!=',
+					],
+					$location_search,
+				];
+			}
+
 			$query_args['meta_query'][] = $location_search;
+
+		} elseif ( ! is_null( $args['remote_position'] ) ) {
+			$query_args['meta_query'][] = [
+				'key'     => '_remote_position',
+				'value'   => '1',
+				'compare' => $args['remote_position'] ? '=' : '!=',
+			];
 		}
 
 		if ( ! is_null( $args['featured'] ) ) {

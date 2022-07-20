@@ -133,6 +133,7 @@ class WP_Job_Manager_Ajax {
 		$per_page           = isset( $_REQUEST['per_page'] ) ? absint( $_REQUEST['per_page'] ) : absint( get_option( 'job_manager_per_page' ) );
 		$filled             = isset( $_REQUEST['filled'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['filled'] ) ) : null;
 		$featured           = isset( $_REQUEST['featured'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured'] ) ) : null;
+		$remote_position    = isset( $_REQUEST['remote_position'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['remote_position'] ) ) : null;
 		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
@@ -159,6 +160,10 @@ class WP_Job_Manager_Ajax {
 
 		if ( 'true' === $filled || 'false' === $filled ) {
 			$args['filled'] = 'true' === $filled;
+		}
+
+		if ( 'true' === $remote_position || 'false' === $remote_position ) {
+			$args['remote_position'] = 'true' === $remote_position;
 		}
 
 		if ( 'true' === $featured || 'false' === $featured ) {
