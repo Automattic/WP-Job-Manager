@@ -74,6 +74,27 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$query_args['no_found_rows'] = true;
 		}
 
+		$remote_position_search = false;
+
+		if ( ! is_null( $args['remote_position'] ) ) {
+			$remote_position_search = [
+				'key'     => '_remote_position',
+				'value'   => '1',
+				'compare' => $args['remote_position'] ? '=' : '!=',
+			];
+
+			if ( '!=' === $remote_position_search['compare'] && apply_filters( 'job_manager_get_job_listings_remote_position_check_not_exists', true, $args ) ) {
+				$remote_position_search = [
+					'relation' => 'OR',
+					$remote_position_search,
+					[
+						'key'     => '_remote_position',
+						'compare' => 'NOT EXISTS',
+					],
+				];
+			}
+		}
+
 		if ( ! empty( $args['search_location'] ) ) {
 			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
 			$location_search    = [ 'relation' => 'OR' ];
@@ -85,26 +106,18 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				];
 			}
 
-			if ( ! is_null( $args['remote_position'] ) ) {
+			if ( $remote_position_search ) {
 				$location_search = [
 					'relation' => 'AND',
-					[
-						'key'     => '_remote_position',
-						'value'   => '1',
-						'compare' => $args['remote_position'] ? '=' : '!=',
-					],
+					$remote_position_search,
 					$location_search,
 				];
 			}
 
 			$query_args['meta_query'][] = $location_search;
 
-		} elseif ( ! is_null( $args['remote_position'] ) ) {
-			$query_args['meta_query'][] = [
-				'key'     => '_remote_position',
-				'value'   => '1',
-				'compare' => $args['remote_position'] ? '=' : '!=',
-			];
+		} elseif ( $remote_position_search ) {
+			$query_args['meta_query'][] = $remote_position_search;
 		}
 
 		if ( ! is_null( $args['featured'] ) ) {
