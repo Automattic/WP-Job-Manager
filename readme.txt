@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 5.7
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 1.36.0
+Stable tag: 1.37.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -153,7 +153,14 @@ It then creates a database based on the parameters passed to it.
 
 == Changelog ==
 
-= 1.36.0 =
+= 1.37.0 =
+* Enhancement: Job Visibility Settings
+* Enhancement: New settings for Salary fields
+
+= 1.36.2 =
+* Fix: Revert Job Visibility Settings feature
+
+= 1.36.1 =
 * Enhancement: Add salary field to satisfy Google's job search schema
 * Enhancement: Allow location to display as either City/St or Full Address
 * Enhancement: Add link to Jobs Dashboard after submitting job

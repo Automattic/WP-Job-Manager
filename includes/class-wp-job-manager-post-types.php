@@ -1494,7 +1494,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$fields = [
-			'_job_location'    => [
+			'_job_location'        => [
 				'label'         => __( 'Location', 'wp-job-manager' ),
 				'placeholder'   => __( 'e.g. "London"', 'wp-job-manager' ),
 				'description'   => __( 'Leave this blank if the location is not important.', 'wp-job-manager' ),
@@ -1503,7 +1503,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			],
-			'_application'     => [
+			'_application'         => [
 				'label'             => $application_method_label,
 				'placeholder'       => $application_method_placeholder,
 				'description'       => __( 'This field is required for the "application" area to appear beneath the listing.', 'wp-job-manager' ),
@@ -1513,7 +1513,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'      => true,
 				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_application' ],
 			],
-			'_company_name'    => [
+			'_company_name'        => [
 				'label'         => __( 'Company Name', 'wp-job-manager' ),
 				'placeholder'   => '',
 				'priority'      => 3,
@@ -1521,7 +1521,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			],
-			'_company_website' => [
+			'_company_website'     => [
 				'label'             => __( 'Company Website', 'wp-job-manager' ),
 				'placeholder'       => '',
 				'priority'          => 4,
@@ -1530,7 +1530,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'      => true,
 				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_url' ],
 			],
-			'_company_tagline' => [
+			'_company_tagline'     => [
 				'label'         => __( 'Company Tagline', 'wp-job-manager' ),
 				'placeholder'   => __( 'Brief description about the company', 'wp-job-manager' ),
 				'priority'      => 5,
@@ -1538,7 +1538,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			],
-			'_company_twitter' => [
+			'_company_twitter'     => [
 				'label'         => __( 'Company Twitter', 'wp-job-manager' ),
 				'placeholder'   => '@yourcompany',
 				'priority'      => 6,
@@ -1546,7 +1546,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			],
-			'_company_video'   => [
+			'_company_video'       => [
 				'label'             => __( 'Company Video', 'wp-job-manager' ),
 				'placeholder'       => __( 'URL to the company video', 'wp-job-manager' ),
 				'type'              => 'file',
@@ -1556,7 +1556,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'      => true,
 				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_url' ],
 			],
-			'_filled'          => [
+			'_filled'              => [
 				'label'         => __( 'Position Filled', 'wp-job-manager' ),
 				'type'          => 'checkbox',
 				'priority'      => 9,
@@ -1565,7 +1565,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'  => true,
 				'description'   => __( 'Filled listings will no longer accept applications.', 'wp-job-manager' ),
 			],
-			'_featured'        => [
+			'_featured'            => [
 				'label'              => __( 'Featured Listing', 'wp-job-manager' ),
 				'type'               => 'checkbox',
 				'description'        => __( 'Featured listings will be sticky during searches, and can be styled differently.', 'wp-job-manager' ),
@@ -1575,7 +1575,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'       => true,
 				'auth_edit_callback' => [ __CLASS__, 'auth_check_can_manage_job_listings' ],
 			],
-			'_job_expires'     => [
+			'_job_expires'         => [
 				'label'              => __( 'Listing Expiry Date', 'wp-job-manager' ),
 				'description'        => $job_expires_description,
 				'priority'           => 11,
@@ -1586,6 +1586,47 @@ class WP_Job_Manager_Post_Types {
 				'auth_edit_callback' => [ __CLASS__, 'auth_check_can_manage_job_listings' ],
 				'auth_view_callback' => [ __CLASS__, 'auth_check_can_edit_job_listings' ],
 				'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_date' ],
+			],
+			'_remote_position'     => [
+				'label'         => __( 'Remote Position', 'wp-job-manager' ),
+				'description'   => __( 'Select if this is a remote position.', 'wp-job-manager' ),
+				'type'          => 'checkbox',
+				'priority'      => 12,
+				'data_type'     => 'integer',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			],
+			'_job_salary'          => [
+				'label'         => __( 'Salary', 'wp-job-manager' ),
+				'type'          => 'text',
+				'placeholder'   => 'e.g. 20000',
+				'priority'      => 13,
+				'description'   => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
+				'data_type'     => 'string',
+				'show_in_admin' => (bool) get_option( 'job_manager_enable_salary' ),
+				'show_in_rest'  => true,
+			],
+			'_job_salary_currency' => [
+				'label'         => __( 'Salary Currency', 'wp-job-manager' ),
+				'type'          => 'text',
+				'data_type'     => 'string',
+				'placeholder'   => __( 'e.g. USD', 'wp-job-manager' ),
+				'priority'      => 14,
+				'description'   => __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' ),
+				'default'       => '',
+				'show_in_admin' => get_option( 'job_manager_enable_salary' ) && get_option( 'job_manager_enable_salary_currency' ),
+				'show_in_rest'  => true,
+			],
+			'_job_salary_unit'     => [
+				'label'         => __( 'Salary Unit', 'wp-job-manager' ),
+				'type'          => 'select',
+				'data_type'     => 'string',
+				'options'       => job_manager_get_salary_unit_options(),
+				'priority'      => 15,
+				'description'   => __( 'Add a salary period unit, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
+				'default'       => '',
+				'show_in_admin' => get_option( 'job_manager_enable_salary' ) && get_option( 'job_manager_enable_salary_unit' ),
+				'show_in_rest'  => true,
 			],
 		];
 

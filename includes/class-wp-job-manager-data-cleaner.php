@@ -106,6 +106,10 @@ class WP_Job_Manager_Data_Cleaner {
 		'widget_widget_recent_jobs',
 		'job_manager_job_listing_pagination_type',
 		'job_manager_enable_salary',
+		'job_manager_enable_salary_unit',
+		'job_manager_default_salary_unit',
+		'job_manager_enable_salary_currency',
+		'job_manager_default_salary_currency',
 	];
 
 	/**
