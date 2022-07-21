@@ -91,18 +91,9 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		ob_start();
 
-		$title  = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
-		$number = absint( $instance['number'] );
-
-		$args = [
-			'search_location' => $instance['location'],
-			'search_keywords' => $instance['keyword'],
-			'posts_per_page'  => $number,
-			'orderby'         => 'date',
-			'order'           => 'DESC',
-		];
-
-		$jobs = get_job_listings(
+		$title     = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
+		$number    = absint( $instance['number'] );
+		$jobs      = get_job_listings(
 			[
 				'search_location' => $instance['location'],
 				'remote_position' => in_array( $instance['remote_position'], [ 'true', 'false' ], true ) ? 'true' === $instance['remote_position'] : null,
