@@ -29,23 +29,33 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 		$this->widget_description = __( 'Display a list of recent listings on your site, optionally matching a keyword and location.', 'wp-job-manager' );
 		$this->widget_id          = 'widget_recent_jobs';
 		$this->settings           = [
-			'title'     => [
+			'title'           => [
 				'type'  => 'text',
 				// translators: Placeholder %s is the plural label for the job listing post type.
 				'std'   => sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ),
 				'label' => __( 'Title', 'wp-job-manager' ),
 			],
-			'keyword'   => [
+			'keyword'         => [
 				'type'  => 'text',
 				'std'   => '',
 				'label' => __( 'Keyword', 'wp-job-manager' ),
 			],
-			'location'  => [
+			'location'        => [
 				'type'  => 'text',
 				'std'   => '',
 				'label' => __( 'Location', 'wp-job-manager' ),
 			],
-			'number'    => [
+			'remote_position' => [
+				'type'    => 'select',
+				'std'     => 0,
+				'label'   => esc_html__( 'Remote Positions', 'wp-job-manager' ),
+				'options' => [
+					'all'   => esc_html__( 'Show all', 'wp-job-manager' ),
+					'true'  => esc_html__( 'Show only remote positions', 'wp-job-manager' ),
+					'false' => esc_html__( 'Show only non-remote positions', 'wp-job-manager' ),
+				],
+			],
+			'number'          => [
 				'type'  => 'number',
 				'step'  => 1,
 				'min'   => 1,
@@ -53,7 +63,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 				'std'   => 10,
 				'label' => __( 'Number of listings to show', 'wp-job-manager' ),
 			],
-			'show_logo' => [
+			'show_logo'       => [
 				'type'  => 'checkbox',
 				'std'   => 0,
 				'label' => esc_html__( 'Show Company Logo', 'wp-job-manager' ),
@@ -81,11 +91,21 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		ob_start();
 
-		$title     = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
-		$number    = absint( $instance['number'] );
-		$jobs      = get_job_listings(
+		$title  = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
+		$number = absint( $instance['number'] );
+
+		$args = [
+			'search_location' => $instance['location'],
+			'search_keywords' => $instance['keyword'],
+			'posts_per_page'  => $number,
+			'orderby'         => 'date',
+			'order'           => 'DESC',
+		];
+
+		$jobs = get_job_listings(
 			[
 				'search_location' => $instance['location'],
+				'remote_position' => in_array( $instance['remote_position'], [ 'true', 'false' ], true ) ? 'true' === $instance['remote_position'] : null,
 				'search_keywords' => $instance['keyword'],
 				'posts_per_page'  => $number,
 				'orderby'         => 'date',
