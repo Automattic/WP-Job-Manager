@@ -356,6 +356,7 @@ jQuery( document ).ready( function( $ ) {
 				location = '';
 				var $keywords = $form.find( ':input[name="search_keywords"]' );
 				var $location = $form.find( ':input[name="search_location"]' );
+				var $remote_position = $form.find( ':input[name="remote_position"]' );
 
 				// Workaround placeholder scripts
 				if ( $keywords.val() !== $keywords.attr( 'placeholder' ) ) {
@@ -364,6 +365,10 @@ jQuery( document ).ready( function( $ ) {
 
 				if ( $location.val() !== $location.attr( 'placeholder' ) ) {
 					location = $location.val();
+				}
+
+				if( $remote_position.length && $remote_position.is( ':checked' ) ) {
+					remote_position = 'true';
 				}
 
 				data = {
@@ -453,7 +458,7 @@ jQuery( document ).ready( function( $ ) {
 		} );
 
 	$(
-		'#search_keywords, #search_location, .job_types :input, #search_categories, .job-manager-filter'
+		'#search_keywords, #search_location, #remote_position, .job_types :input, #search_categories, .job-manager-filter'
 	)
 		.change( function() {
 			var $target = $( this ).closest( 'div.job_listings' );
@@ -487,6 +492,10 @@ jQuery( document ).ready( function( $ ) {
 				.find( ':input[name="filter_job_type[]"]' )
 				.not( ':input[type="hidden"]' )
 				.prop( 'checked', true );
+			$form
+				.find( ':input[name="remote_position"]' )
+				.not( ':input[type="hidden"]' )
+				.prop( 'checked', false );
 
 			$target.triggerHandler( 'reset' );
 			$target.triggerHandler( 'update_results', [ 1, false ] );

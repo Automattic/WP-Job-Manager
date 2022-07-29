@@ -674,6 +674,7 @@ class WP_Job_Manager_Shortcodes {
 					'job_types'                 => $atts['job_types'],
 					'atts'                      => $atts,
 					'location'                  => $atts['location'],
+					'remote_position'           => $atts['remote_position'],
 					'keywords'                  => $atts['keywords'],
 					'selected_job_types'        => $atts['selected_job_types'],
 					'show_category_multiselect' => $atts['show_category_multiselect'],

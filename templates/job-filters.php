@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.33.0
+ * @version     1.37.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -35,6 +35,13 @@ do_action( 'job_manager_job_filters_before', $atts );
 			<label for="search_location"><?php esc_html_e( 'Location', 'wp-job-manager' ); ?></label>
 			<input type="text" name="search_location" id="search_location" placeholder="<?php esc_attr_e( 'Location', 'wp-job-manager' ); ?>" value="<?php echo esc_attr( $location ); ?>" />
 		</div>
+
+		<?php if( apply_filters( 'job_manager_job_filters_show_remote_position', get_option('job_manager_enable_remote_position', true ), $atts ) ) : ?>
+			<div class="search_remote_position">
+				<input type="checkbox" class="input-checkbox" name="remote_position" id="remote_position" placeholder="<?php esc_attr_e( 'Location', 'wp-job-manager' ); ?>" value="1" <?php checked(! empty( $remote_position ) ); ?> />
+				<label for="remote_position" id="remote_position_label"><?php esc_html_e( 'Remote positions only', 'wp-job-manager' ); ?></label>
+			</div>
+		<?php endif; ?>
 
 		<div style="clear: both"></div>
 
