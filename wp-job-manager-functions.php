@@ -1602,3 +1602,108 @@ function job_manager_count_user_job_listings( $user_id = 0 ) {
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'job_listing' AND post_status IN ( 'publish', 'pending', 'expired', 'hidden' );", $user_id ) );
 }
+
+/**
+ * True if an the user can browse resumes.
+ *
+ * @return bool
+ */
+function job_manager_user_can_browse_job_listings() {
+	$can_browse = true;
+	$caps       = get_option( 'job_manager_browse_job_listings_capability' );
+
+	if ( $caps ) {
+		$can_browse = false;
+		foreach ( $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$can_browse = true;
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Filter if the current user can or cannot browse job listings
+	 *
+	 * @since 1.37.0
+	 *
+	 * @param boolean $can_browse
+	 */
+	return apply_filters( 'job_manager_user_can_browse_job_listings', $can_browse );
+}
+
+/**
+ * True if an the user can view a resume.
+ *
+ * @since 1.37.0
+ *
+ * @param  int $job_id
+ * @return bool
+ */
+function job_manager_user_can_view_job_listing( $job_id ) {
+	$can_view = true;
+	$job      = get_post( $job_id );
+
+	// Allow previews.
+	if ( 'preview' === $job->post_status ) {
+		return true;
+	}
+
+	$caps = get_option( 'job_manager_view_job_listing_capability' );
+
+	if ( $caps ) {
+		$can_view = false;
+		foreach ( $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				$can_view = true;
+				break;
+			}
+		}
+	}
+
+	if ( 'expired' === $job->post_status ) {
+		$can_view = false;
+	}
+
+	if ( $job->post_author > 0 && absint( $job->post_author ) === get_current_user_id() ) {
+		$can_view = true;
+	}
+
+	/**
+	 * Filter if the current user can or cannot view a given job
+	 *
+	 * @since 1.37.0
+	 *
+	 * @param boolean $can_view
+	 * @param int     $job_id
+	 */
+	return apply_filters( 'job_manager_user_can_view_job', $can_view, $job_id );
+}
+
+/**
+ * Return an associative array containing the options for salary units, based on Google Structured Data documentation.
+ *
+ * @param boolean $include_empty Defines if we should include an empty option as default.
+ * @return array Where the key is the identifier used by Google Structured Data, and the value is a translated label.
+ */
+function job_manager_get_salary_unit_options( $include_empty = true ) {
+	$options = [
+		''      => __( '--', 'wp-job-manager' ),
+		'YEAR'  => __( 'Year', 'wp-job-manager' ),
+		'MONTH' => __( 'Month', 'wp-job-manager' ),
+		'WEEK'  => __( 'Week', 'wp-job-manager' ),
+		'DAY'   => __( 'Day', 'wp-job-manager' ),
+		'HOUR'  => __( 'Hour', 'wp-job-manager' ),
+	];
+	if ( ! $include_empty ) {
+		unset( $options[''] );
+	}
+	/**
+	 * Filter the salary unit options that should appear to the user
+	 *
+	 * @since 1.37.0
+	 * @param array $options Where the key is the identifier used by Google Structured Data, and the value is a translated label.
+	 * @param boolean $include_empty Defines if we should include an empty option as default.
+	 */
+	return apply_filters( 'job_manager_get_salary_unit_options', $options, $include_empty );
+}

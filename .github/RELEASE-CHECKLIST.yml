@@ -1,0 +1,8 @@
+paths:
+  "**":
+    - Follow the setup guide to create WPJM default pages.
+    - Check that the installed version is correct on the Plugins page.
+    - Create a new account and login with it.
+    - Go to the 'Post a Job' page and post a new job.
+    - Switch to the administrator and approve the newly posted job in admin.
+    - Visit the 'Jobs' page with the non-admin user and make sure that the job is displayed.
