@@ -70,6 +70,10 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 			],
 		];
 
+		if ( ! get_option( 'job_manager_enable_remote_position' ) ) {
+			unset( $this->settings['remote_position'] );
+		}
+
 		parent::__construct();
 	}
 

@@ -340,6 +340,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! get_option( 'job_manager_enable_salary' ) ) {
 			unset( $this->fields['job']['job_salary'] );
 		}
+		if ( ! get_option( 'job_manager_enable_remote_position' ) ) {
+			unset( $this->fields['job']['remote_position'] );
+		}
 	}
 
 	/**

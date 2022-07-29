@@ -233,6 +233,15 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+							'name'       => 'job_manager_enable_remote_position',
+							'std'        => '1',
+							'label'      => __( 'Remote Position', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Remote Position', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users select if the listing is a remote position when submitting a job.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
 							'name'     => 'job_manager_display_location_address',
 							'std'      => '0',
 							'label'    => __( 'Location Display', 'wp-job-manager' ),

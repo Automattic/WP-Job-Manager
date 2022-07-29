@@ -122,6 +122,9 @@ class WP_Job_Manager_Writepanels {
 		if ( ! get_option( 'job_manager_enable_salary' ) ) {
 			unset( $fields['_job_salary'] );
 		}
+		if ( ! get_option( 'job_manager_enable_remote_position' ) ) {
+			unset( $fields['_remote_position'] );
+		}
 		if ( $current_user->has_cap( 'manage_job_listings' ) ) {
 			$fields['_featured']    = [
 				'label'       => __( 'Featured Listing', 'wp-job-manager' ),
