@@ -224,6 +224,15 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+							'name'       => 'job_manager_enable_remote_position',
+							'std'        => '1',
+							'label'      => __( 'Remote Position', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Remote Position', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users select if the listing is a remote position when submitting a job.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_enable_salary',
 							'std'        => '0',
 							'label'      => __( 'Salary', 'wp-job-manager' ),
@@ -233,12 +242,41 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
-							'name'       => 'job_manager_enable_remote_position',
-							'std'        => '1',
-							'label'      => __( 'Remote Position', 'wp-job-manager' ),
-							'cb_label'   => __( 'Enable Remote Position', 'wp-job-manager' ),
-							'desc'       => __( 'This lets users select if the listing is a remote position when submitting a job.', 'wp-job-manager' ),
+							'name'       => 'job_manager_enable_salary_currency',
+							'std'        => '0',
+							'label'      => __( 'Salary Currency', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Job Salary Currency Customization', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users add a salary currency when submitting a job.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
+							'name'        => 'job_manager_default_salary_currency',
+							'std'         => 'USD',
+							'label'       => __( 'Default Salary Currency', 'wp-job-manager' ),
+							'cb_label'    => __( 'Default Currency used by salaries', 'wp-job-manager' ),
+							'desc'        => __( 'Sets the default currency used by salaries', 'wp-job-manager' ),
+							'type'        => 'text',
+							'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
+							'attributes'  => [],
+						],
+						[
+							'name'       => 'job_manager_enable_salary_unit',
+							'std'        => '0',
+							'label'      => __( 'Salary Unit', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Job Salary Unit Customization', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users add a salary currency when submitting a job.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
+							'name'       => 'job_manager_default_salary_unit',
+							'std'        => 'YEAR',
+							'label'      => __( 'Default Salary Unit', 'wp-job-manager' ),
+							'cb_label'   => __( 'Default Unit used by salaries', 'wp-job-manager' ),
+							'desc'       => __( 'Sets the default period unit used by salaries', 'wp-job-manager' ),
+							'type'       => 'select',
+							'options'    => job_manager_get_salary_unit_options(),
 							'attributes' => [],
 						],
 						[
@@ -441,6 +479,29 @@ class WP_Job_Manager_Settings {
 						],
 					],
 				],
+				'job_visibility' => [
+					__( 'Job Visibility', 'wp-job-manager' ),
+					[
+						[
+							'name'              => 'job_manager_browse_job_listings_capability',
+							'std'               => [],
+							'label'             => __( 'Browse Job Capability', 'wp-job-manager' ),
+							'type'              => 'capabilities',
+							'sanitize_callback' => [ $this, 'sanitize_capabilities' ],
+							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+							'desc'              => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+						],
+						[
+							'name'              => 'job_manager_view_job_listing_capability',
+							'std'               => [],
+							'label'             => __( 'View Job Capability', 'wp-job-manager' ),
+							'type'              => 'capabilities',
+							'sanitize_callback' => [ $this, 'sanitize_capabilities' ],
+							// translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+							'desc'              => sprintf( __( 'Enter which <a href="%s">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings.', 'wp-job-manager' ), 'http://codex.wordpress.org/Roles_and_Capabilities' ),
+						],
+					],
+				],
 			]
 		);
 	}
@@ -456,7 +517,11 @@ class WP_Job_Manager_Settings {
 				if ( isset( $option['std'] ) ) {
 					add_option( $option['name'], $option['std'] );
 				}
-				register_setting( $this->settings_group, $option['name'] );
+				$args = [];
+				if ( isset( $option['sanitize_callback'] ) ) {
+					$args['sanitize_callback'] = $option['sanitize_callback'];
+				}
+				register_setting( $this->settings_group, $option['name'], $args );
 			}
 		}
 	}
@@ -521,16 +586,48 @@ class WP_Job_Manager_Settings {
 				return false;
 			});
 
+			if ( jQuery.isFunction( jQuery.fn.select2 ) ) {
+
+				if ( jQuery( '.settings-role-select' ).length > 0 ) {
+					// This fixes a issue where backspace on role just turns it into search.
+					// @see https://github.com/select2/select2/issues/3354#issuecomment-277419278 for more info.
+					jQuery.fn.select2.amd.require(
+						['select2/selection/search' ],
+						function ( Search ) {
+							Search.prototype.searchRemoveChoice = function (decorated, item) {
+								this.trigger(
+									'unselect',
+									{
+										data: item
+									}
+								);
+
+								this.$search.val( '' );
+								this.handleSearch();
+							};
+						},
+						null,
+						true
+					);
+				}
+			}
+
+			var job_listings_admin_select2_settings = {
+				'tags': true // Allows for free entry of custom capabilities.
+			};
+
 			jQuery('.nav-tab-wrapper a').click(function() {
 				if ( '#' !== jQuery(this).attr( 'href' ).substr( 0, 1 ) ) {
 					return false;
 				}
 				jQuery('.settings_panel').hide();
 				jQuery('.nav-tab-active').removeClass('nav-tab-active');
-				jQuery( jQuery(this).attr('href') ).show();
+				var $content = jQuery( jQuery(this).attr('href') );
+				$content.show();
 				jQuery(this).addClass('nav-tab-active');
 				window.location.hash = jQuery(this).attr('href');
 				jQuery( 'form.job-manager-options' ).attr( 'action', 'options.php' + jQuery(this).attr( 'href' ) );
+				$content.find( '.settings-role-select' ).select2( job_listings_admin_select2_settings );
 				window.scrollTo( 0, 0 );
 				return false;
 			});
@@ -551,17 +648,24 @@ class WP_Job_Manager_Settings {
 			var $use_standard_password_setup_email = jQuery('#setting-job_manager_use_standard_password_setup_email');
 			var $generate_username_from_email = jQuery('#setting-job_manager_generate_username_from_email');
 			var $job_manager_registration_role = jQuery('#setting-job_manager_registration_role');
+			var $job_manager_enable_salary_currency = jQuery('#setting-job_manager_enable_salary_currency');
+			var $job_manager_enable_salary_unit = jQuery('#setting-job_manager_enable_salary_unit');
+			var $job_manager_default_salary_currency = jQuery('#setting-job_manager_default_salary_currency');
+			var $job_manager_default_salary_unit = jQuery('#setting-job_manager_default_salary_unit');
 
 			jQuery('#setting-job_manager_enable_registration').change(function(){
-				if ( jQuery( this ).is(':checked') ) {
-					$job_manager_registration_role.closest('tr').show();
-					$use_standard_password_setup_email.closest('tr').show();
-					$generate_username_from_email.closest('tr').show();
-				} else {
-					$job_manager_registration_role.closest('tr').hide();
-					$use_standard_password_setup_email.closest('tr').hide();
-					$generate_username_from_email.closest('tr').hide();
-				}
+				var $job_manager_enable_registration_is_checked = jQuery( this ).is(':checked');
+				$job_manager_registration_role.closest('tr').toggle($job_manager_enable_registration_is_checked);
+				$use_standard_password_setup_email.closest('tr').toggle($job_manager_enable_registration_is_checked);
+				$generate_username_from_email.closest('tr').toggle($job_manager_enable_registration_is_checked);
+			}).change();
+
+			jQuery('#setting-job_manager_enable_salary').change(function(){
+				var $job_manager_enable_salary_is_checked = jQuery( this ).is(':checked');
+				$job_manager_enable_salary_currency.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_enable_salary_unit.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_default_salary_currency.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_default_salary_unit.closest('tr').toggle($job_manager_enable_salary_is_checked);
 			}).change();
 
 			jQuery( '.sub-settings-expander' ).on( 'change', function() {
@@ -650,6 +754,7 @@ class WP_Job_Manager_Settings {
 			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
 			class="regular-text"
 			name="<?php echo esc_attr( $option['name'] ); ?>"
+			autocomplete="off"
 			<?php
 			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			?>
@@ -942,5 +1047,91 @@ class WP_Job_Manager_Settings {
 	 */
 	protected function input_input( $option, $attributes, $value, $placeholder ) {
 		$this->input_text( $option, $attributes, $value, $placeholder );
+	}
+
+	/**
+	 * Outputs the capabilities or roles input field.
+	 *
+	 * @param array    $option              Option arguments for settings input.
+	 * @param string[] $attributes          Attributes on the HTML element. Strings must already be escaped.
+	 * @param string[] $value               Current value.
+	 * @param string   $ignored_placeholder We set the placeholder in the method. This is ignored.
+	 */
+	protected function input_capabilities( $option, $attributes, $value, $ignored_placeholder ) {
+		$option['options']     = self::get_capabilities_and_roles( $value );
+		$option['placeholder'] = esc_html__( 'Everyone (Public)', 'wp-job-manager' );
+
+		?>
+		<select
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			class="regular-text settings-role-select"
+			name="<?php echo esc_attr( $option['name'] ); ?>[]"
+			multiple="multiple"
+			data-placeholder="<?php echo esc_attr( $option['placeholder'] ); ?>"
+			<?php
+			echo implode( ' ', $attributes ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			?>
+		>
+			<?php
+			foreach ( $option['options'] as $key => $name ) {
+				echo '<option value="' . esc_attr( $key ) . '" ' . selected( in_array( $key, $value, true ) ? $key : null, $key, false ) . '>' . esc_html( $name ) . '</option>';
+			}
+			?>
+		</select>
+		<?php
+
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
+		}
+	}
+
+	/**
+	 * Sanitize the options related to capabilities, making the necessary conversions
+	 *
+	 * @param string[]|string $value
+	 * @return string[]
+	 */
+	public function sanitize_capabilities( $value ) {
+		$value = wp_unslash( $value );
+		if ( is_string( $value ) ) {
+			$value = explode( ',', $value );
+		}
+		$result = [];
+
+		if ( ! empty( $value ) ) {
+			foreach ( $value as $item ) {
+				$item = trim( sanitize_text_field( $item ) );
+				if ( $item ) {
+					$result[] = $item;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get the list of roles and capabilities to use in select dropdown.
+	 *
+	 * @param array $caps Selected capabilities to ensure they show up in the list.
+	 * @return array
+	 */
+	private static function get_capabilities_and_roles( $caps = [] ) {
+		$capabilities_and_roles = [];
+		$roles                  = get_editable_roles();
+
+		foreach ( $roles as $key => $role ) {
+			$capabilities_and_roles[ $key ] = $role['name'];
+		}
+
+		// Go through custom user selected capabilities and add them to the list.
+		foreach ( $caps as $value ) {
+			if ( isset( $capabilities_and_roles[ $value ] ) ) {
+				continue;
+			}
+			$capabilities_and_roles[ $value ] = $value;
+		}
+
+		return $capabilities_and_roles;
 	}
 }
