@@ -367,8 +367,8 @@ jQuery( document ).ready( function( $ ) {
 					location = $location.val();
 				}
 
-				if( $remote_position.length && $remote_position.is( ':checked' ) ) {
-					remote_position = 'true';
+				if( $remote_position.length ) {
+					remote_position = $remote_position.is( ':checked' ) ? 'true' : null;
 				}
 
 				data = {
