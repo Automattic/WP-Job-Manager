@@ -571,6 +571,7 @@ class WP_Job_Manager_Shortcodes {
 					'post_status'               => '',
 					'featured'                  => null, // True to show only featured, false to hide featured, leave null to show both.
 					'filled'                    => null, // True to show only filled, false to hide filled, leave null to show both/use the settings.
+					'remote_position'           => null, // True to show only remote, false to hide remote, leave null to show both.
 
 					// Default values for filters.
 					'location'                  => '',
@@ -599,6 +600,10 @@ class WP_Job_Manager_Shortcodes {
 
 		if ( ! is_null( $atts['filled'] ) ) {
 			$atts['filled'] = ( is_bool( $atts['filled'] ) && $atts['filled'] ) || in_array( $atts['filled'], [ 1, '1', 'true', 'yes' ], true );
+		}
+
+		if ( ! is_null( $atts['remote_position'] ) ) {
+			$atts['remote_position'] = ( is_bool( $atts['remote_position'] ) && $atts['remote_position'] ) || in_array( $atts['remote_position'], [ 1, '1', 'true', 'yes' ], true );
 		}
 
 		// By default, use client-side state to populate form fields.
@@ -669,6 +674,7 @@ class WP_Job_Manager_Shortcodes {
 					'job_types'                 => $atts['job_types'],
 					'atts'                      => $atts,
 					'location'                  => $atts['location'],
+					'remote_position'           => $atts['remote_position'],
 					'keywords'                  => $atts['keywords'],
 					'selected_job_types'        => $atts['selected_job_types'],
 					'show_category_multiselect' => $atts['show_category_multiselect'],
@@ -696,6 +702,7 @@ class WP_Job_Manager_Shortcodes {
 						'posts_per_page'    => $atts['per_page'],
 						'featured'          => $atts['featured'],
 						'filled'            => $atts['filled'],
+						'remote_position'   => $atts['remote_position'],
 					]
 				)
 			);
@@ -732,6 +739,9 @@ class WP_Job_Manager_Shortcodes {
 		}
 		if ( ! is_null( $atts['filled'] ) ) {
 			$data_attributes['filled'] = $atts['filled'] ? 'true' : 'false';
+		}
+		if ( ! is_null( $atts['remote_position'] ) ) {
+			$data_attributes['remote_position'] = $atts['remote_position'] ? 'true' : 'false';
 		}
 		if ( ! empty( $atts['post_status'] ) ) {
 			$data_attributes['post_status'] = implode( ',', $atts['post_status'] );

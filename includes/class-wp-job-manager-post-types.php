@@ -1593,7 +1593,7 @@ class WP_Job_Manager_Post_Types {
 				'type'          => 'checkbox',
 				'priority'      => 12,
 				'data_type'     => 'integer',
-				'show_in_admin' => true,
+				'show_in_admin' => (bool) get_option( 'job_manager_enable_remote_position' ),
 				'show_in_rest'  => true,
 			],
 			'_job_salary'          => [

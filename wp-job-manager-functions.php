@@ -32,6 +32,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				'order'             => 'DESC',
 				'featured'          => null,
 				'filled'            => null,
+				'remote_position'   => null,
 				'fields'            => 'all',
 			]
 		);
@@ -73,51 +74,50 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$query_args['no_found_rows'] = true;
 		}
 
-		if ( ! empty( $args['search_location'] ) ) {
-			// translators: This one is used to determine if the user is searching for remote work type.
-			$remote_keyword     = __( 'remote', 'wp-job-manager' );
-			$search_terms       = mb_split( '[,\s]+', $args['search_location'] );
-			$search_locations   = [];
-			$location_query     = [];
-			$is_remote_location = false;
+		$remote_position_search = false;
 
-			// Check if user is looking for a remote work.
-			foreach ( $search_terms as $search_term ) {
-				$levenshtein_distance = levenshtein( strtolower( $remote_keyword ), strtolower( $search_term ) );
-				if ( -1 < $levenshtein_distance && $levenshtein_distance < 3 ) {
-					$is_remote_location = true;
-				} else {
-					$search_locations[] = $search_term;
-				}
-			}
+		if ( ! is_null( $args['remote_position'] ) ) {
+			$remote_position_search = [
+				'key'     => '_remote_position',
+				'value'   => '1',
+				'compare' => $args['remote_position'] ? '=' : '!=',
+			];
 
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			foreach ( $location_meta_keys as $meta_key ) {
-				foreach ( $search_locations as $search_location ) {
-					$location_query[] = [
-						'key'     => $meta_key,
-						'value'   => $search_location,
-						'compare' => 'like',
-					];
-				}
-			}
-			if ( count( $location_query ) > 0 ) {
-				$location_query['relation'] = 'OR';
-				$query_args['meta_query'][] = $location_query;
-			}
-
-			if ( $is_remote_location ) {
-				$remote_work_query = [
-					'relation' => 'AND',
+			if ( '!=' === $remote_position_search['compare'] && apply_filters( 'job_manager_get_job_listings_remote_position_check_not_exists', true, $args ) ) {
+				$remote_position_search = [
+					'relation' => 'OR',
+					$remote_position_search,
 					[
 						'key'     => '_remote_position',
-						'value'   => '1',
-						'compare' => '=',
+						'compare' => 'NOT EXISTS',
 					],
-
 				];
-				$query_args['meta_query'][] = $remote_work_query;
 			}
+		}
+
+		if ( ! empty( $args['search_location'] ) ) {
+			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+			$location_search    = [ 'relation' => 'OR' ];
+			foreach ( $location_meta_keys as $meta_key ) {
+				$location_search[] = [
+					'key'     => $meta_key,
+					'value'   => $args['search_location'],
+					'compare' => 'like',
+				];
+			}
+
+			if ( $remote_position_search ) {
+				$location_search = [
+					'relation' => 'AND',
+					$remote_position_search,
+					$location_search,
+				];
+			}
+
+			$query_args['meta_query'][] = $location_search;
+
+		} elseif ( $remote_position_search ) {
+			$query_args['meta_query'][] = $remote_position_search;
 		}
 
 		if ( ! is_null( $args['featured'] ) ) {

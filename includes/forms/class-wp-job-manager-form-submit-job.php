@@ -363,6 +363,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		} else {
 			unset( $this->fields['job']['job_salary'], $this->fields['job']['job_salary_currency'], $this->fields['job']['job_salary_unit'] );
 		}
+		if ( ! get_option( 'job_manager_enable_remote_position' ) ) {
+			unset( $this->fields['job']['remote_position'] );
+		}
 	}
 
 	/**

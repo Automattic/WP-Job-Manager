@@ -533,6 +533,41 @@ div.job_listings {
 				width: 50%;
 			}
 
+			&.search_remote_position {
+
+				width: 50%;
+				float: right;
+				padding-left: 0.5em;
+				padding-top: 0.5em;
+
+				input {
+					width: auto;
+				}
+
+				label#remote_position_label {
+					display: inline-block;
+				}
+			}
+
+			@media(max-width: 480px){
+				&.search_keywords,
+				&.filter_first {
+					width: 100%;
+					padding-right: 0;
+				}
+
+				&.search_location,
+				&.filter_last {
+					width: 100%;
+					padding-top: 0.5em;
+					padding-left: 0;
+				}
+
+				&.search_remote_position {
+					width: 100%;
+				}
+			}
+
 			&.search_categories,
 			&.filter_wide {
 				padding-top: 0.5em;
