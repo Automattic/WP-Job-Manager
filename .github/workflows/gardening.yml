@@ -1,0 +1,36 @@
+name: Repo gardening
+
+on:
+  issues:
+    types: [opened, reopened, edited, closed]
+  issue_comment:
+    types: [created]
+
+jobs:
+  repo-gardening:
+    name: 'Perform automated triage tasks on issues'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v3
+
+     - name: Setup Node
+       uses: actions/setup-node@v3
+       with:
+         node-version: 16
+
+     - name: Wait for prior instances of the workflow to finish
+       uses: softprops/turnstyle@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+     - name: 'Run gardening action'
+       uses: automattic/action-repo-gardening@trunk
+       with:
+         github_token: ${{ secrets.GITHUB_TOKEN }}
+         slack_token: ${{ secrets.SLACK_TOKEN }}
+         slack_he_triage_channel: ${{ secrets.SLACK_HE_TRIAGE_CHANNEL }}
+         slack_quality_channel: ${{ secrets.SLACK_QUALITY_CHANNEL }}
+         tasks: 'gatherSupportReferences,replyToCustomersReminder'
