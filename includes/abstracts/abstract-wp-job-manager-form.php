@@ -628,7 +628,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? $this->sanitize_posted_field( $value, $field['sanitizer'] ) : '';
+		return false !== $value ? $this->sanitize_posted_field( $value, $field['sanitizer'] ) : '';
 	}
 
 	/**
@@ -685,7 +685,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? trim( wp_kses_post( $value ) ) : '';
+		return false !== $value ? trim( wp_kses_post( $value ) ) : '';
 	}
 
 	/**
