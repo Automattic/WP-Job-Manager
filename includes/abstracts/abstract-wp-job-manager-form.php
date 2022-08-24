@@ -504,7 +504,7 @@ abstract class WP_Job_Manager_Form {
 							$value = trim( $value );
 						}
 
-						$this->fields[ $group_key ][ $key ]['empty'] = empty( $value );
+						$this->fields[ $group_key ][ $key ]['empty'] = $this->is_empty( $value, $key );
 					};
 				}
 
@@ -531,6 +531,35 @@ abstract class WP_Job_Manager_Form {
 		 * @param array  $fields  The form fields.
 		 */
 		return apply_filters( 'job_manager_get_posted_fields', $values, $this->fields );
+	}
+
+	/**
+	 * Checks whether a value is empty.
+	 *
+	 * @param string|numeric|array|boolean $value The value that is being checked.
+	 * @param string                       $key   The key of the field that is being checked.
+	 * @return bool True if value is empty, false otherwise.
+	 */
+	protected function is_empty( $value, $key = '' ) {
+		/**
+		 * Filter values considered as empty or falsy for required fields.
+		 * Useful for example if you want to consider zero (0) as a non-empty value.
+		 *
+		 * @see http://php.net/manual/en/function.empty.php -- standard default empty values
+		 *
+		 * @since 1.36.0
+		 *
+		 * @param array  $false_vals A list of values considered as falsy.
+		 * @param string $key        The key that this is being used for.
+		 */
+		$false_vals = apply_filters( 'submit_job_form_validate_fields_empty_values', [ '', 0, 0.0, '0', null, false, [] ], $key );
+
+		// strict true for type checking.
+		if ( in_array( $value, $false_vals, true ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
