@@ -646,7 +646,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? array_map( 'sanitize_text_field', $value ) : [];
+		return is_array( $value ) ? array_map( 'sanitize_text_field', $value ) : [];
 	}
 
 	/**
@@ -719,7 +719,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? array_map( 'absint', $value ) : [];
+		return is_array( $value ) ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -737,7 +737,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? array_map( 'absint', $value ) : [];
+		return is_array( $value ) ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
