@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.37.1
+ * @version     1.38.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
