@@ -1,10 +1,10 @@
 === WP Job Manager ===
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
-Requires at least: 5.7
+Requires at least: 5.8
 Tested up to: 6.0
-Requires PHP: 7.0
-Stable tag: 1.37.0
+Requires PHP: 7.2
+Stable tag: 1.38.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -139,7 +139,7 @@ Developers who would like to run the existing tests or add their tests to the te
 2. Run the install script(you will need to have `wget` installed) - `bash tests/bin/install-wp-tests.sh <db-name> <db-user> <db-pass> <db-host> <wp-version>`.
 3. Run the plugin tests - `phpunit`
 
-The install script installs a copy of WordPress in the `/tmp` directory along with the WordPress unit testing tools. 
+The install script installs a copy of WordPress in the `/tmp` directory along with the WordPress unit testing tools.
 It then creates a database based on the parameters passed to it.
 
 == Screenshots ==
@@ -152,6 +152,11 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.38.0 =
+* Enhancement: Improve support for searching multiple locations (@tripflex).
+* Fix: Translation issue in onboarding wizard. (@NekoJonez)
+* Fix: Better support for jobs submissions with `0` as input.
 
 = 1.37.0 =
 * Enhancement: Job Visibility Settings
@@ -211,7 +216,7 @@ It then creates a database based on the parameters passed to it.
 * Fix: Missing variable error with cached widgets.
 * Tweak: reCAPTCHA setting has more clear language. (@tripflex)
 * Dev: Added filter `submit_job_form_create_account_role` for user role when created on job submission. (@tripflex)
-* Dev: Added filter `job_manager_should_run_shortcode_action_handler` for if a job dashboard action should run. 
+* Dev: Added filter `job_manager_should_run_shortcode_action_handler` for if a job dashboard action should run.
 * Dev: Added filter `job_manager_get_form_action` to modify the action of a frontend form. (@tripflex)
 
 = 1.34.5 =
@@ -253,7 +258,7 @@ It then creates a database based on the parameters passed to it.
 * Fix: Resuming job listing submission at a particular step is now fixed.
 * Fix: Issue with some permalink structures and WPMU would cause issues on `[jobs]` page.
 * Dev: Adds the ability to block some jobs from being edited in the frontend.
-* Dev: Adds ability to force some email notifications to be enabled. 
+* Dev: Adds ability to force some email notifications to be enabled.
 * Dev: Allows email notifications to be sent immediately.
 * Dev: Adds ability for settings to reference other settings tabs.
 * Dev: Standardizes jQuery UI datepicker script IDs in frontend and backend. Plugins and themes should enqueue `wp-job-manager-datepicker` if they need jQuery UI datepicker.
@@ -277,7 +282,7 @@ It then creates a database based on the parameters passed to it.
 * Third Party: Fix issue with Polylang where translations get overwritten on save of another language.
 * Dev: Adds the ability to completely disable the state saving functionality of `[jobs]` results.
 * Dev: Allows custom calls to `get_job_listings()` to just get `ids` and `id=>parent`. (@manzoorwanijk)
-* Dev: Switched to short-array syntax across plugin. 
+* Dev: Switched to short-array syntax across plugin.
 * Dev: Updated `jquery-fileupload` library to 10.2.0.
 * Dev: Updated `select2` library to 4.0.10.
 
@@ -290,7 +295,7 @@ It then creates a database based on the parameters passed to it.
 * Fix: Checking typeof undefined should be in quotes in job_submission.js.
 * Fix: Plugin activation issue that didn't set up roles correctly.
 * Fix: Escaped HTML issue in expiring jobs email notice.
-* Change: Added additional unslashing and sanitization of input variables from forms. 
+* Change: Added additional unslashing and sanitization of input variables from forms.
 * Change: Limited direct database access within the plugin and migrated to WordPress core functions when possible.
 * Removed: Transient garbage collection. WordPress 4.9 and up handle this automatically.
 
@@ -346,7 +351,7 @@ It then creates a database based on the parameters passed to it.
 = 1.32.0 =
 * Enhancement: Switched from Chosen to Select2 for enhanced dropdown handling and better mobile support. May require theme update.
 * Enhancement: Draft and unsubmitted job listings now appear in `[job_dashboard]`, allowing users to complete their submission.
-* Enhancement: [REVERTED IN 1.32.1] Filled and expired positions are now hidden from WordPress search. (@felipeelia) 
+* Enhancement: [REVERTED IN 1.32.1] Filled and expired positions are now hidden from WordPress search. (@felipeelia)
 * Enhancement: Adds additional support for the new block editor. Restricted to classic block for compatibility with frontend editor.
 * Enhancement: Job types can be preselected in `[jobs]` shortcode with `?search_job_type=term-slug`. (@felipeelia)
 * Enhancement: Author selection in WP admin now uses a searchable dropdown.
@@ -366,7 +371,7 @@ It then creates a database based on the parameters passed to it.
 * Fix: Escape the attachment URL. (Props to karimeo)
 * Fix: Custom job field priority fix when using decimals. (@tripflex)
 * Fix: Fix issue with empty mutli-select in WP admin jobs page. (@felipeelia)
-* Fix: Issue with data export when email doesn't have any job listings. 
+* Fix: Issue with data export when email doesn't have any job listings.
 * Third Party: Improved WPML support. (@vukvukovich)
 
 = 1.31.2 =
@@ -381,7 +386,7 @@ It then creates a database based on the parameters passed to it.
 * Fix: No longer auto-expire job listings in Draft status.
 * Fix: Issue with undefined index error in WP admin. (@albionselimaj)
 * Fix: Issue with duplicate usernames preventing submission of job listings. (@timothyjensen)
-* Dev: Widespread code formatting cleanup throughout the plugin. 
+* Dev: Widespread code formatting cleanup throughout the plugin.
 
 = 1.31.0 =
 * Change: Minimum WordPress version is now 4.7.0.
@@ -389,7 +394,7 @@ It then creates a database based on the parameters passed to it.
 * Enhancement: For GDPR, scrub WPJM data from database on uninstall if option is enabled.
 * Enhancement: Filter by Filled and Featured status in WP admin.
 * Enhancement: Simplify the display of application URLs.
-* Enhancement: When using WPML, prevent changes to page options when on a non-default language. (@vukvukovich) 
+* Enhancement: When using WPML, prevent changes to page options when on a non-default language. (@vukvukovich)
 * Enhancement: Include company logo in structured data. (@RajeebTheGreat)
 * Enhancement: Use more efficient jQuery selectors in scripts. (@RajeebTheGreat)
 * Enhancement: Use proper `<h2>` tag in `content-summary-job_listing.php` template for the job title. (@abdullah1908)
@@ -404,7 +409,7 @@ It then creates a database based on the parameters passed to it.
 
 = 1.30.2 =
 * Enhancement: Show notice when user is using an older version of WordPress.
-* Enhancement: Hide unnecessary view mode in WP Admin's Job Listings page. (@RajeebTheGreat) 
+* Enhancement: Hide unnecessary view mode in WP Admin's Job Listings page. (@RajeebTheGreat)
 * Enhancement: Add support for the `paged` parameter in the RSS feed. (@RajeebTheGreat)
 * Fix: Minor PHP 7.2 compatibility fixes.
 * Dev: Allow `parent` attribute to be passed to `job_manager_dropdown_categories()`. (@RajeebTheGreat)
@@ -485,7 +490,7 @@ It then creates a database based on the parameters passed to it.
 * Fix: Make sure cron jobs for checking/cleaning expired listings are always in place.
 * Fix: Better handling of multiple job types. (@spencerfinnell)
 * Fix: Issue with deleting company logos from job listings submission form.
-* Fix: Warning thrown on job submission form when user not logged in. (@piersb)  
+* Fix: Warning thrown on job submission form when user not logged in. (@piersb)
 * Fix: Issue with WPML not syncing some meta fields.
 * Fix: Better handling of AJAX upload errors. (@tripflex)
 * Fix: Remove job posting cookies on logout.
@@ -493,7 +498,7 @@ It then creates a database based on the parameters passed to it.
 * Fix: Issue with Safari and expiration datepicker.
 
 = 1.26.2 =
-* Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.  
+* Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.
 * Fix: Escape post title in WP Admin's Job Listings page and template segments. (Props to @EhsanCod3r)
 
 = 1.26.1 =
