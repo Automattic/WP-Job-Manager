@@ -504,7 +504,7 @@ abstract class WP_Job_Manager_Form {
 							$value = trim( $value );
 						}
 
-						$this->fields[ $group_key ][ $key ]['empty'] = empty( $value );
+						$this->fields[ $group_key ][ $key ]['empty'] = $this->is_empty( $value, $key );
 					};
 				}
 
@@ -531,6 +531,35 @@ abstract class WP_Job_Manager_Form {
 		 * @param array  $fields  The form fields.
 		 */
 		return apply_filters( 'job_manager_get_posted_fields', $values, $this->fields );
+	}
+
+	/**
+	 * Checks whether a value is empty.
+	 *
+	 * @param string|numeric|array|boolean $value The value that is being checked.
+	 * @param string                       $key   The key of the field that is being checked.
+	 * @return bool True if value is empty, false otherwise.
+	 */
+	protected function is_empty( $value, $key = '' ) {
+		/**
+		 * Filter values considered as empty or falsy for required fields.
+		 * Useful for example if you want to consider zero (0) as a non-empty value.
+		 *
+		 * @see http://php.net/manual/en/function.empty.php -- standard default empty values
+		 *
+		 * @since 1.36.0
+		 *
+		 * @param array  $false_vals A list of values considered as falsy.
+		 * @param string $key        The key that this is being used for.
+		 */
+		$false_vals = apply_filters( 'submit_job_form_validate_fields_empty_values', [ '', 0, 0.0, '0', null, false, [] ], $key );
+
+		// strict true for type checking.
+		if ( in_array( $value, $false_vals, true ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -628,7 +657,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? $this->sanitize_posted_field( $value, $field['sanitizer'] ) : '';
+		return false !== $value ? $this->sanitize_posted_field( $value, $field['sanitizer'] ) : '';
 	}
 
 	/**
@@ -646,7 +675,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? array_map( 'sanitize_text_field', $value ) : [];
+		return is_array( $value ) ? array_map( 'sanitize_text_field', $value ) : [];
 	}
 
 	/**
@@ -685,7 +714,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? trim( wp_kses_post( $value ) ) : '';
+		return false !== $value ? trim( wp_kses_post( $value ) ) : '';
 	}
 
 	/**
@@ -719,7 +748,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? array_map( 'absint', $value ) : [];
+		return is_array( $value ) ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
@@ -737,7 +766,7 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return $value ? array_map( 'absint', $value ) : [];
+		return is_array( $value ) ? array_map( 'absint', $value ) : [];
 	}
 
 	/**
