@@ -1,7 +1,8 @@
 = 1.38.0 =
-* Enhancement: Improve support for searching multiple locations (@tripflex).
+* Enhancement: Add remote position to filtering (@tripflex)
+* Fix: Remove multiple location search, revert back to original handling prior to 1.36 (@tripflex)
 * Fix: Translation issue in onboarding wizard. (@NekoJonez)
-* Fix: Better support for jobs submissions with `0` as input.
+* Fix: Better support for jobs submissions with `0` as input
 
 = 1.37.0 =
 * Enhancement: Job Visibility Settings
