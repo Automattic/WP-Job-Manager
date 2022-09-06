@@ -271,6 +271,11 @@ class WP_Job_Manager_Helper {
 		if ( ! $plugin || ! current_user_can( 'update_plugins' ) ) {
 			return $actions;
 		}
+
+		if ( ! apply_filters( 'wpjm_display_addon_plugin_activation_link', true, $plugin['_product_slug'] ) ) {
+			return $actions;
+		}
+
 		$product_slug = $plugin['_product_slug'];
 		$licence      = $this->get_plugin_licence( $product_slug );
 		$css_class    = '';
@@ -461,7 +466,9 @@ class WP_Job_Manager_Helper {
 		}
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$licence = $this->get_plugin_licence( $product_slug );
-			if ( ! WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ) ) {
+			$hide_key_notice = apply_filters( 'wpjm_hide_license_key_notice', WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ),  $product_slug );
+
+			if ( ! $hide_key_notice ) {
 				if ( empty( $licence['licence_key'] ) ) {
 					include 'views/html-licence-key-notice.php';
 				} elseif ( ! empty( $licence['errors'] ) ) {
