@@ -155,6 +155,8 @@ It then creates a database based on the parameters passed to it.
 
 = 1.38.0 =
 * Enhancement: Add remote position to filtering (@tripflex)
+* Enhancement: Add setting to enable/disable remote position field (@tripflex)
+* Enhancement: Add mobile support for keyword and location fields (@tripflex)
 * Fix: Remove multiple location search, revert back to original handling prior to 1.36 (@tripflex)
 * Fix: Translation issue in onboarding wizard. (@NekoJonez)
 * Fix: Better support for jobs submissions with `0` as input
