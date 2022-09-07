@@ -97,10 +97,9 @@ class WP_Job_Manager_Shortcodes {
 	public function handle_redirects() {
 		$submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-		if ( ! is_user_logged_in() ||
-			 ! is_page( $submit_job_form_page_id ) ||
-			 ( ! empty( $_REQUEST['job_id'] ) && job_manager_user_can_edit_job( intval( $_REQUEST['job_id'] ) ) )
+		if ( ! is_user_logged_in() || ! is_page( $submit_job_form_page_id ) ||
+			 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+			( ! empty( $_REQUEST['job_id'] ) && job_manager_user_can_edit_job( intval( $_REQUEST['job_id'] ) ) )
 		) {
 			return;
 		}
