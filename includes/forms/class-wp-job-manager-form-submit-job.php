@@ -515,6 +515,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Application method.
 		if ( ! $this->should_application_field_skip_email_url_validation() && isset( $values['job']['application'] ) ) {
 			$allowed_application_method = get_option( 'job_manager_allowed_application_method', '' );
+			$application_required       = isset( $this->fields['job']['application']['required'] ) && $this->fields['job']['application']['required'];
 
 			$is_valid = true;
 
@@ -525,24 +526,26 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$this->fields['job']['application']['value'] = $posted_value;
 			}
 
-			switch ( $allowed_application_method ) {
-				case 'email':
-					if ( ! $is_valid || ! is_email( $values['job']['application'] ) ) {
-						throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
-					}
-					break;
-				case 'url':
-					if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
-						throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
-					}
-					break;
-				default:
-					if ( ! is_email( $values['job']['application'] ) ) {
-						if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
-							throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
+			if ( $application_required || ! empty( $values['job']['application'] ) ) {
+				switch ( $allowed_application_method ) {
+					case 'email':
+						if ( ! $is_valid || ! is_email( $values['job']['application'] ) ) {
+							throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
 						}
-					}
-					break;
+						break;
+					case 'url':
+						if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+							throw new Exception( __( 'Please enter a valid application URL', 'wp-job-manager' ) );
+						}
+						break;
+					default:
+						if ( ! is_email( $values['job']['application'] ) ) {
+							if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
+								throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
+							}
+						}
+						break;
+				}
 			}
 		}
 
