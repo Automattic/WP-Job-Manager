@@ -95,20 +95,22 @@ class WP_Job_Manager_Shortcodes {
 	 * Handle redirects
 	 */
 	public function handle_redirects() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-		if ( ! get_current_user_id() || ( ! empty( $_REQUEST['job_id'] ) && job_manager_user_can_edit_job( intval( $_REQUEST['job_id'] ) ) ) ) {
+		$submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
+
+		if ( ! is_user_logged_in() || ! is_page( $submit_job_form_page_id ) ||
+			 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+			( ! empty( $_REQUEST['job_id'] ) && job_manager_user_can_edit_job( intval( $_REQUEST['job_id'] ) ) )
+		) {
 			return;
 		}
 
-		$submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
-		$submission_limit        = get_option( 'job_manager_submission_limit' );
-		$job_count               = job_manager_count_user_job_listings();
+		$submission_limit = get_option( 'job_manager_submission_limit' );
+		$job_count        = job_manager_count_user_job_listings();
 
 		if (
 			$submit_job_form_page_id
 			&& $submission_limit
 			&& $job_count >= $submission_limit
-			&& is_page( $submit_job_form_page_id )
 		) {
 			$employer_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id' );
 			if ( $employer_dashboard_page_id ) {
