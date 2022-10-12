@@ -1,15 +1,20 @@
 <?php
+/**
+ * WP.com Marketplace licensing integration for premium core addons.
+ *
+ * @package wp-job-manager
+ */
 
 /**
  * Configure license configuration for WP Job Manager when purchased from WP.com Marketplace.
  *
- * @param $result
- * @param $payload
- * @param string $event_type
+ * @param bool|WP_Error $result The result of the licensing configuration.
+ * @param array $payload        The payload receivced from WPJobManager.com back-end API.
+ * @param string $event_type    The event type that triggers this filter.
  *
  * @return bool
  */
-function dotcom_marketplace_configure_license_for_wp_job_manager_addon( $result, $payload, string $event_type ) {
+function dotcom_marketplace_configure_license_for_wp_job_manager_addon( $result, $payload, $event_type ) {
 	if ( 'provision_license' !== $event_type ) {
 		return $result;
 	}
@@ -19,9 +24,12 @@ function dotcom_marketplace_configure_license_for_wp_job_manager_addon( $result,
 
 	$messages = $helper->get_messages( $payload['wpjm_product_slug'] );
 
-	$errors = array_filter( $messages, function ( $message ) {
-		return 'error' === $message['type'];
-	} );
+	$errors = array_filter(
+		$messages,
+		function ( $message ) {
+			return 'error' === $message['type'];
+		}
+	);
 
 	if ( ! empty( $errors ) ) {
 		return new \WP_Error( 'error', 'An error has occurred while installing ' . $payload['wpjm_product_slug'], $errors );
