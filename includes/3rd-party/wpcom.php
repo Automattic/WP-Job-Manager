@@ -8,9 +8,9 @@
 /**
  * Configure license configuration for WP Job Manager when purchased from WP.com Marketplace.
  *
- * @param bool|WP_Error $result The result of the licensing configuration.
- * @param array $payload        The payload receivced from WPJobManager.com back-end API.
- * @param string $event_type    The event type that triggers this filter.
+ * @param bool|WP_Error $result     The result of the licensing configuration.
+ * @param array         $payload    The payload receivced from WPJobManager.com back-end API.
+ * @param string        $event_type The event type that triggers this filter.
  *
  * @return bool
  */
