@@ -14,7 +14,7 @@
  *
  * @return bool
  */
-function dotcom_marketplace_configure_license_for_wp_job_manager_addon( $result, $payload, $event_type ) {
+function wpjm_dotcom_marketplace_configure_license_for_wp_job_manager_addon( $result, $payload, $event_type ) {
 	if ( 'provision_license' !== $event_type ) {
 		return $result;
 	}
@@ -51,5 +51,5 @@ const WPJM_WPCOM_PRODUCTS = [
 ];
 
 foreach ( WPJM_WPCOM_PRODUCTS as $wpjm_wpcom_product ) {
-	add_filter( 'wpcom_marketplace_webhook_response_' . $wpjm_wpcom_product, 'dotcom_marketplace_configure_license_for_wp_job_manager_addon', 10, 3 );
+	add_filter( 'wpcom_marketplace_webhook_response_' . $wpjm_wpcom_product, 'wpjm_dotcom_marketplace_configure_license_for_wp_job_manager_addon', 10, 3 );
 }
