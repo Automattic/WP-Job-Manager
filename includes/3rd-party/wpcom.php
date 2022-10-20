@@ -53,3 +53,40 @@ const WPJM_WPCOM_PRODUCTS = [
 foreach ( WPJM_WPCOM_PRODUCTS as $wpjm_wpcom_product ) {
 	add_filter( 'wpcom_marketplace_webhook_response_' . $wpjm_wpcom_product, 'wpjm_dotcom_marketplace_configure_license_for_wp_job_manager_addon', 10, 3 );
 }
+
+/**
+ * Hide the license form on the licenses page for addons that are purchased from WP.com.
+ *
+ * @param $status
+ * @param $product_slug
+ *
+ * @return false|mixed
+ */
+function wpjm_hide_addon_license_form_for_purchases_on_wpcom( $status, $product_slug ) {
+	$subscriptions = get_option( 'wpcom_active_subscriptions', array() );
+	if ( isset( $subscriptions[ $product_slug ] ) ) {
+		return false;
+	}
+
+	return $status;
+}
+
+add_filter( 'wpjm_display_license_form_for_addon', 'wpjm_hide_addon_license_form_for_purchases_on_wpcom', 10, 2 );
+
+/**
+ * Display a notice after the license form for each addon.
+ *
+ * @param $product_slug
+ *
+ * @return false|void
+ */
+function wpjm_display_managed_by_wpcom_notice_for_addon( $product_slug ) {
+	$subscriptions = get_option( 'wpcom_active_subscriptions', array() );
+	if ( ! isset( $subscriptions[ $product_slug ] ) ) {
+		return false;
+	}
+
+	esc_html_e( 'The license for this product is automatically managed by WordPress.com.', 'wpjm' );
+}
+
+add_action( 'wpjm_manage_license_page_after_license_form', 'wpjm_display_managed_by_wpcom_notice_for_addon' );
