@@ -57,8 +57,8 @@ foreach ( WPJM_WPCOM_PRODUCTS as $wpjm_wpcom_product ) {
 /**
  * Hide the license form on the licenses page for addons that are purchased from WP.com.
  *
- * @param $status
- * @param $product_slug
+ * @param bool   $status
+ * @param string $product_slug
  *
  * @return false|mixed
  */
@@ -76,7 +76,7 @@ add_filter( 'wpjm_display_license_form_for_addon', 'wpjm_hide_addon_license_form
 /**
  * Display a notice after the license form for each addon.
  *
- * @param $product_slug
+ * @param string $product_slug
  *
  * @return false|void
  */

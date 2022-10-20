@@ -21,8 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants.
-define( 'JOB_MANAGER_VERSION', '1.38.0-dev' );
-define( 'JOB_MANAGER_DEV_API_BASE_URL', 'https://2018.wpjobmanager.com/wp-json/wpcom-marketplace/v1/webhooks' );
+define( 'JOB_MANAGER_VERSION', '1.38.0' );
 define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
