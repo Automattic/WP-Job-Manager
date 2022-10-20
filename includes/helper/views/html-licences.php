@@ -78,7 +78,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						} // end if : else licence is not active.
 						?>
 					</form>
-				<?php
+					<?php
 				}
 				do_action( 'wpjm_manage_license_page_after_license_form', $product_slug );
 				?>

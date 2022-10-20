@@ -63,7 +63,7 @@ foreach ( WPJM_WPCOM_PRODUCTS as $wpjm_wpcom_product ) {
  * @return false|mixed
  */
 function wpjm_hide_addon_license_form_for_purchases_on_wpcom( $status, $product_slug ) {
-	$subscriptions = get_option( 'wpcom_active_subscriptions', array() );
+	$subscriptions = get_option( 'wpcom_active_subscriptions', [] );
 	if ( isset( $subscriptions[ $product_slug ] ) ) {
 		return false;
 	}
@@ -81,12 +81,12 @@ add_filter( 'wpjm_display_license_form_for_addon', 'wpjm_hide_addon_license_form
  * @return false|void
  */
 function wpjm_display_managed_by_wpcom_notice_for_addon( $product_slug ) {
-	$subscriptions = get_option( 'wpcom_active_subscriptions', array() );
+	$subscriptions = get_option( 'wpcom_active_subscriptions', [] );
 	if ( ! isset( $subscriptions[ $product_slug ] ) ) {
 		return false;
 	}
 
-	esc_html_e( 'The license for this product is automatically managed by WordPress.com.', 'wpjm' );
+	esc_html_e( 'The license for this product is automatically managed by WordPress.com.', 'wp-job-manager' );
 }
 
 add_action( 'wpjm_manage_license_page_after_license_form', 'wpjm_display_managed_by_wpcom_notice_for_addon' );
