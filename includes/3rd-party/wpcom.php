@@ -83,7 +83,7 @@ add_filter( 'wpjm_display_license_form_for_addon', 'wpjm_hide_addon_license_form
 function wpjm_display_managed_by_wpcom_notice_for_addon( $product_slug ) {
 	$subscriptions = get_option( 'wpcom_active_subscriptions', [] );
 	if ( ! isset( $subscriptions[ $product_slug ] ) ) {
-		return false;
+		return;
 	}
 
 	esc_html_e( 'The license for this product is automatically managed by WordPress.com.', 'wp-job-manager' );
