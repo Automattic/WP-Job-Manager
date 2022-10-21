@@ -86,7 +86,7 @@ function wpjm_display_managed_by_wpcom_notice_for_addon( $product_slug ) {
 		return;
 	}
 
-	esc_html_e( 'The license for this product is automatically managed by WordPress.com.', 'wp-job-manager' );
+	esc_html_e( 'The license for this add-on is automatically managed by WordPress.com.', 'wp-job-manager' );
 }
 
 add_action( 'wpjm_manage_license_page_after_license_form', 'wpjm_display_managed_by_wpcom_notice_for_addon' );
