@@ -1134,7 +1134,7 @@ function get_the_company_tagline( $post = null ) {
 function the_company_twitter( $before = '', $after = '', $echo = true, $post = null ) {
 	$company_twitter = get_the_company_twitter( $post );
 
-	if ( 0 === strlen( $company_twitter ) ) {
+	if ( empty( $company_twitter ) ) {
 		return null;
 	}
 
@@ -1162,7 +1162,7 @@ function get_the_company_twitter( $post = null ) {
 
 	$company_twitter = $post->_company_twitter;
 
-	if ( 0 === strlen( $company_twitter ) ) {
+	if ( empty( $company_twitter ) ) {
 		return null;
 	}
 
