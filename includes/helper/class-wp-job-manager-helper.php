@@ -511,7 +511,7 @@ class WP_Job_Manager_Helper {
 	 * @param string $licence_key
 	 * @param string $email
 	 */
-	private function activate_licence( $product_slug, $licence_key, $email ) {
+	public function activate_licence( $product_slug, $licence_key, $email ) {
 		$response = $this->api->activate(
 			[
 				'api_product_id' => $product_slug,
