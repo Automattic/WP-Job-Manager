@@ -2,16 +2,16 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 1.38.0\n"
+"Project-Id-Version: WP Job Manager 1.38.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager/\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-08-26T17:27:21+00:00\n"
+"POT-Creation-Date: 2022-10-25T15:40:11+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.6.0\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: wp-job-manager\n"
 
 #. Plugin Name of the plugin
@@ -30,6 +30,10 @@ msgstr ""
 
 #. Author of the plugin
 msgid "Automattic"
+msgstr ""
+
+#: includes/3rd-party/wpcom.php:89
+msgid "The license for this add-on is automatically managed by WordPress.com."
 msgstr ""
 
 #: includes/3rd-party/wpml.php:94
@@ -277,7 +281,7 @@ msgid "Featured?"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:507
-#: includes/class-wp-job-manager-shortcodes.php:393
+#: includes/class-wp-job-manager-shortcodes.php:395
 msgid "Filled?"
 msgstr ""
 
@@ -317,13 +321,13 @@ msgstr ""
 #. translators: Placeholder %s is the singular label of the job listing post type.
 #: includes/admin/class-wp-job-manager-cpt.php:652
 #: includes/class-wp-job-manager-post-types.php:340
-#: includes/class-wp-job-manager-shortcodes.php:441
-#: includes/class-wp-job-manager-shortcodes.php:474
+#: includes/class-wp-job-manager-shortcodes.php:443
+#: includes/class-wp-job-manager-shortcodes.php:476
 msgid "Edit"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:659
-#: includes/class-wp-job-manager-shortcodes.php:489
+#: includes/class-wp-job-manager-shortcodes.php:491
 msgid "Delete"
 msgstr ""
 
@@ -1566,76 +1570,76 @@ msgstr ""
 msgid "Add a salary period unit, this field is optional. Leave it empty to use the default salary unit, if one is defined."
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:201
+#: includes/class-wp-job-manager-shortcodes.php:203
 msgid "Invalid ID"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:208
+#: includes/class-wp-job-manager-shortcodes.php:210
 msgid "This position has already been filled"
 msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
-#: includes/class-wp-job-manager-shortcodes.php:216
+#: includes/class-wp-job-manager-shortcodes.php:218
 msgid "%s has been filled"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:221
+#: includes/class-wp-job-manager-shortcodes.php:223
 msgid "This position is not filled"
 msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
-#: includes/class-wp-job-manager-shortcodes.php:229
+#: includes/class-wp-job-manager-shortcodes.php:231
 msgid "%s has been marked as not filled"
 msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
-#: includes/class-wp-job-manager-shortcodes.php:237
+#: includes/class-wp-job-manager-shortcodes.php:239
 msgid "%s has been deleted"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:242
-#: includes/class-wp-job-manager-shortcodes.php:256
+#: includes/class-wp-job-manager-shortcodes.php:244
+#: includes/class-wp-job-manager-shortcodes.php:258
 msgid "Missing submission page."
 msgstr ""
 
 #. translators: Placeholder %s is the plural label for the job listing post type.
-#: includes/class-wp-job-manager-shortcodes.php:392
+#: includes/class-wp-job-manager-shortcodes.php:394
 #: includes/widgets/class-wp-job-manager-widget-featured-jobs.php:36
 #: includes/widgets/class-wp-job-manager-widget-featured-jobs.php:52
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:36
 msgid "Title"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:394
+#: includes/class-wp-job-manager-shortcodes.php:396
 msgid "Date Posted"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:395
+#: includes/class-wp-job-manager-shortcodes.php:397
 msgid "Listing Expires"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:447
+#: includes/class-wp-job-manager-shortcodes.php:449
 msgid "Mark not filled"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:452
+#: includes/class-wp-job-manager-shortcodes.php:454
 msgid "Mark filled"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:458
+#: includes/class-wp-job-manager-shortcodes.php:460
 msgid "Duplicate"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:465
+#: includes/class-wp-job-manager-shortcodes.php:467
 msgid "Relist"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:482
+#: includes/class-wp-job-manager-shortcodes.php:484
 msgid "Continue Submission"
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:688
-#: includes/class-wp-job-manager-shortcodes.php:727
+#: includes/class-wp-job-manager-shortcodes.php:690
+#: includes/class-wp-job-manager-shortcodes.php:729
 msgid "Load more listings"
 msgstr ""
 
@@ -1776,7 +1780,7 @@ msgid "Submit Details"
 msgstr ""
 
 #: includes/forms/class-wp-job-manager-form-submit-job.php:93
-#: includes/forms/class-wp-job-manager-form-submit-job.php:667
+#: includes/forms/class-wp-job-manager-form-submit-job.php:670
 #: templates/job-preview.php:30
 msgid "Preview"
 msgstr ""
@@ -1867,49 +1871,49 @@ msgstr ""
 msgid "Invalid attachment provided."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:531
+#: includes/forms/class-wp-job-manager-form-submit-job.php:533
 msgid "Please enter a valid application email address"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:536
+#: includes/forms/class-wp-job-manager-form-submit-job.php:538
 msgid "Please enter a valid application URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:542
+#: includes/forms/class-wp-job-manager-form-submit-job.php:544
 msgid "Please enter a valid application email address or URL"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:726
+#: includes/forms/class-wp-job-manager-form-submit-job.php:729
 msgid "Please enter a username."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:730
+#: includes/forms/class-wp-job-manager-form-submit-job.php:733
 msgid "Please enter a password."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:734
+#: includes/forms/class-wp-job-manager-form-submit-job.php:737
 msgid "Please enter your email address."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:740
+#: includes/forms/class-wp-job-manager-form-submit-job.php:743
 msgid "Passwords must match."
 msgstr ""
 
 #. translators: Placeholder %s is the password hint.
-#: includes/forms/class-wp-job-manager-form-submit-job.php:746
+#: includes/forms/class-wp-job-manager-form-submit-job.php:749
 msgid "Invalid Password: %s"
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:748
+#: includes/forms/class-wp-job-manager-form-submit-job.php:751
 msgid "Password is not valid."
 msgstr ""
 
-#: includes/forms/class-wp-job-manager-form-submit-job.php:780
+#: includes/forms/class-wp-job-manager-form-submit-job.php:783
 msgid "You must be signed in to post a new listing."
 msgstr ""
 
 #. translators: placeholder is the URL to the job dashboard page.
-#: includes/forms/class-wp-job-manager-form-submit-job.php:806
+#: includes/forms/class-wp-job-manager-form-submit-job.php:809
 msgid "Draft was saved. Job listing drafts can be resumed from the <a href=\"%s\">job dashboard</a>."
 msgstr ""
 
@@ -1923,7 +1927,7 @@ msgid "Manage License"
 msgstr ""
 
 #: includes/helper/class-wp-job-manager-helper.php:285
-#: includes/helper/views/html-licences.php:75
+#: includes/helper/views/html-licences.php:76
 #: tests/php/tests/includes/helper/test_class.wp-job-manager-helper.php:278
 msgid "Activate License"
 msgstr ""
@@ -1967,31 +1971,31 @@ msgstr ""
 msgid "<a href=\"%1$s\">Please enter your license key</a> to get updates for \"%2$s\"."
 msgstr ""
 
-#: includes/helper/views/html-licences.php:56
-#: includes/helper/views/html-licences.php:69
+#: includes/helper/views/html-licences.php:57
+#: includes/helper/views/html-licences.php:70
 msgid "License"
-msgstr ""
-
-#: includes/helper/views/html-licences.php:59
-#: includes/helper/views/html-licences.php:72
-msgid "Email"
 msgstr ""
 
 #: includes/helper/views/html-licences.php:60
 #: includes/helper/views/html-licences.php:73
+msgid "Email"
+msgstr ""
+
+#: includes/helper/views/html-licences.php:61
+#: includes/helper/views/html-licences.php:74
 msgid "Email address"
 msgstr ""
 
-#: includes/helper/views/html-licences.php:63
+#: includes/helper/views/html-licences.php:64
 msgid "Deactivate License"
 msgstr ""
 
 #. translators: Placeholder %s is the lost license key URL.
-#: includes/helper/views/html-licences.php:84
+#: includes/helper/views/html-licences.php:89
 msgid "Lost your license key? <a href=\"%s\">Retrieve it here</a>."
 msgstr ""
 
-#: includes/helper/views/html-licences.php:86
+#: includes/helper/views/html-licences.php:91
 msgid "No plugins are activated that have licenses managed by WP Job Manager."
 msgstr ""
 
