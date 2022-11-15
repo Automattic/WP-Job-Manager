@@ -1599,7 +1599,7 @@ class WP_Job_Manager_Post_Types {
 			'_job_salary'          => [
 				'label'         => __( 'Salary', 'wp-job-manager' ),
 				'type'          => 'text',
-				'placeholder'   => 'e.g. 20000',
+				'placeholder'   => __( 'e.g. 20000', 'wp-job-manager' ),
 				'priority'      => 13,
 				'description'   => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
 				'data_type'     => 'string',
