@@ -91,6 +91,22 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
+	 * Get the locales used in the site.
+	 *
+	 * @return string[]
+	 */
+	private function get_site_locales() {
+		$locales = array_values( get_available_languages() );
+
+		/** This action is documented in WordPress core's wp-includes/update.php */
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		$locales = apply_filters( 'plugins_update_check_locales', $locales );
+		$locales = array_unique( $locales );
+
+		return $locales;
+	}
+
+	/**
 	 * Handles special tasks on admin requests.
 	 */
 	private function handle_admin_request() {
@@ -182,11 +198,13 @@ class WP_Job_Manager_Helper {
 
 		$response = $this->api->plugin_update_check(
 			[
-				'plugin_name'    => $plugin_data['Name'],
-				'version'        => $plugin_data['Version'],
-				'api_product_id' => $product_slug,
-				'licence_key'    => $licence['licence_key'],
-				'email'          => $licence['email'],
+				'plugin_name'       => $plugin_data['Name'],
+				'version'           => $plugin_data['Version'],
+				'api_product_id'    => $product_slug,
+				'licence_key'       => $licence['licence_key'],
+				'email'             => $licence['email'],
+				'locale'            => get_locale(),
+				'available_locales' => implode( ',', $this->get_site_locales() ),
 			]
 		);
 
