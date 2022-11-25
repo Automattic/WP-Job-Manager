@@ -31,6 +31,13 @@ class WP_Job_Manager_Helper {
 	protected $api;
 
 	/**
+	 * Language Pack helper.
+	 *
+	 * @var WP_Job_Manager_Helper_Language_Packs
+	 */
+	private $language_pack_helper;
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -66,6 +73,7 @@ class WP_Job_Manager_Helper {
 	public function init() {
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-options.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-api.php';
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-language-packs.php';
 
 		$this->api = WP_Job_Manager_Helper_API::instance();
 
@@ -85,9 +93,37 @@ class WP_Job_Manager_Helper {
 	 * Initializes admin-only actions.
 	 */
 	public function admin_init() {
+		$this->load_language_pack_helper();
 		add_action( 'plugin_action_links', [ $this, 'plugin_links' ], 10, 2 );
 		add_action( 'admin_notices', [ $this, 'licence_error_notices' ] );
 		$this->handle_admin_request();
+	}
+
+	/**
+	 * Load the language pack helper.
+	 */
+	private function load_language_pack_helper() {
+		if ( $this->language_pack_helper ) {
+			return;
+		}
+
+		$this->language_pack_helper = new WP_Job_Manager_Helper_Language_Packs( $this->get_plugin_versions(), $this->get_site_locales() );
+	}
+
+	/**
+	 * Get the versions for the installed managed plugins, keyed with the plugin slug.
+	 *
+	 * @return string[]
+	 */
+	public function get_plugin_versions() {
+		return array_filter(
+			array_map(
+				function( $plugin ) {
+					return $plugin['Version'];
+				},
+				$this->get_installed_plugins( false )
+			)
+		);
 	}
 
 	/**
@@ -104,6 +140,15 @@ class WP_Job_Manager_Helper {
 		$locales = array_unique( $locales );
 
 		return $locales;
+	}
+
+	/**
+	 * Get the language packs helper.
+	 *
+	 * @return WP_Job_Manager_Helper_Language_Packs
+	 */
+	public function get_language_pack_helper() {
+		return $this->language_pack_helper;
 	}
 
 	/**
