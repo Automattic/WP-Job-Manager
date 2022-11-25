@@ -187,22 +187,20 @@ class WP_Job_Manager_Helper {
 	 */
 	private function get_plugin_version( $plugin_filename ) {
 		$plugin_data = $this->get_licence_managed_plugin( $plugin_filename );
-		if ( ! $plugin_data ) {
+		if ( ! $plugin_data || empty( $plugin_data['_product_slug'] ) ) {
 			return false;
 		}
+
 		$product_slug = $plugin_data['_product_slug'];
 		$licence      = $this->get_plugin_licence( $product_slug );
-		if ( ! $licence || empty( $licence['licence_key'] ) ) {
-			return false;
-		}
 
 		$response = $this->api->plugin_update_check(
 			[
 				'plugin_name'       => $plugin_data['Name'],
 				'version'           => $plugin_data['Version'],
 				'api_product_id'    => $product_slug,
-				'licence_key'       => $licence['licence_key'],
-				'email'             => $licence['email'],
+				'licence_key'       => $licence['licence_key'] ?? null,
+				'email'             => $licence['email'] ?? null,
 				'locale'            => get_locale(),
 				'available_locales' => implode( ',', $this->get_site_locales() ),
 			]
@@ -612,7 +610,7 @@ class WP_Job_Manager_Helper {
 		}
 
 		$errors         = ! empty( $response['errors'] ) ? $response['errors'] : [];
-		$allowed_errors = [ 'no_activation', 'expired_key', 'expiring_soon' ];
+		$allowed_errors = [ 'no_activation', 'expired_key', 'expiring_soon', 'update_available' ];
 		$ignored_errors = array_diff( array_keys( $errors ), $allowed_errors );
 
 		foreach ( $ignored_errors as $key ) {
