@@ -119,25 +119,6 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 
 	/**
 	 * @since 1.29.0
-	 * @covers WP_Job_Manager_Helper::has_licenced_products
-	 * @covers WP_Job_Manager_Helper::get_plugin_version
-	 * @covers WP_Job_Manager_Helper::get_plugin_licence
-	 * @requires PHP 5.3.0
-	 */
-	public function test_check_for_updates_no_license() {
-		$instance = $this->getMockHelper( $this->plugin_data_with_update() );
-
-		WP_Job_Manager_Helper_Options::delete( 'test', 'licence_key' );
-		WP_Job_Manager_Helper_Options::delete( 'test', 'email' );
-
-		$data           = new stdClass();
-		$data->response = [];
-		$instance->check_for_updates( $data );
-		$this->assertEmpty( $data->response );
-	}
-
-	/**
-	 * @since 1.29.0
 	 * @covers WP_Job_Manager_Helper::plugin_activated
 	 * @requires PHP 5.3.0
 	 */
