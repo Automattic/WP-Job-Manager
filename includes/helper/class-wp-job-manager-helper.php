@@ -31,6 +31,13 @@ class WP_Job_Manager_Helper {
 	protected $api;
 
 	/**
+	 * Language Pack helper.
+	 *
+	 * @var WP_Job_Manager_Helper_Language_Packs
+	 */
+	private $language_pack_helper;
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -66,6 +73,7 @@ class WP_Job_Manager_Helper {
 	public function init() {
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-options.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-api.php';
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-language-packs.php';
 
 		$this->api = WP_Job_Manager_Helper_API::instance();
 
@@ -85,9 +93,53 @@ class WP_Job_Manager_Helper {
 	 * Initializes admin-only actions.
 	 */
 	public function admin_init() {
+		$this->load_language_pack_helper();
 		add_action( 'plugin_action_links', [ $this, 'plugin_links' ], 10, 2 );
 		add_action( 'admin_notices', [ $this, 'licence_error_notices' ] );
 		$this->handle_admin_request();
+	}
+
+	/**
+	 * Load the language pack helper.
+	 */
+	private function load_language_pack_helper() {
+		if ( $this->language_pack_helper ) {
+			return;
+		}
+
+		$this->language_pack_helper = new WP_Job_Manager_Helper_Language_Packs( $this->get_plugin_versions(), $this->get_site_locales() );
+	}
+
+	/**
+	 * Get the versions for the installed managed plugins, keyed with the plugin slug.
+	 *
+	 * @return string[]
+	 */
+	private function get_plugin_versions() {
+		return array_filter(
+			array_map(
+				function( $plugin ) {
+					return $plugin['Version'];
+				},
+				$this->get_installed_plugins( false )
+			)
+		);
+	}
+
+	/**
+	 * Get the locales used in the site.
+	 *
+	 * @return string[]
+	 */
+	private function get_site_locales() {
+		$locales = array_values( get_available_languages() );
+
+		/** This action is documented in WordPress core's wp-includes/update.php */
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		$locales = apply_filters( 'plugins_update_check_locales', $locales );
+		$locales = array_unique( $locales );
+
+		return $locales;
 	}
 
 	/**
@@ -171,22 +223,22 @@ class WP_Job_Manager_Helper {
 	 */
 	private function get_plugin_version( $plugin_filename ) {
 		$plugin_data = $this->get_licence_managed_plugin( $plugin_filename );
-		if ( ! $plugin_data ) {
-			return false;
-		}
-		$product_slug = $plugin_data['_product_slug'];
-		$licence      = $this->get_plugin_licence( $product_slug );
-		if ( ! $licence || empty( $licence['licence_key'] ) ) {
+		if ( ! $plugin_data || empty( $plugin_data['_product_slug'] ) ) {
 			return false;
 		}
 
+		$product_slug = $plugin_data['_product_slug'];
+		$licence      = $this->get_plugin_licence( $product_slug );
+
 		$response = $this->api->plugin_update_check(
 			[
-				'plugin_name'    => $plugin_data['Name'],
-				'version'        => $plugin_data['Version'],
-				'api_product_id' => $product_slug,
-				'licence_key'    => $licence['licence_key'],
-				'email'          => $licence['email'],
+				'plugin_name'       => $plugin_data['Name'],
+				'version'           => $plugin_data['Version'],
+				'api_product_id'    => $product_slug,
+				'licence_key'       => $licence['licence_key'] ?? null,
+				'email'             => $licence['email'] ?? null,
+				'locale'            => get_locale(),
+				'available_locales' => implode( ',', $this->get_site_locales() ),
 			]
 		);
 
@@ -594,7 +646,7 @@ class WP_Job_Manager_Helper {
 		}
 
 		$errors         = ! empty( $response['errors'] ) ? $response['errors'] : [];
-		$allowed_errors = [ 'no_activation', 'expired_key', 'expiring_soon' ];
+		$allowed_errors = [ 'no_activation', 'expired_key', 'expiring_soon', 'update_available' ];
 		$ignored_errors = array_diff( array_keys( $errors ), $allowed_errors );
 
 		foreach ( $ignored_errors as $key ) {
