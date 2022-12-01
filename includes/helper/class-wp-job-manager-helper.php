@@ -143,15 +143,6 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
-	 * Get the language packs helper.
-	 *
-	 * @return WP_Job_Manager_Helper_Language_Packs
-	 */
-	public function get_language_pack_helper() {
-		return $this->language_pack_helper;
-	}
-
-	/**
 	 * Handles special tasks on admin requests.
 	 */
 	private function handle_admin_request() {

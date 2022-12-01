@@ -67,6 +67,17 @@ class WP_Job_Manager_Helper_Language_Packs {
 			return $transient;
 		}
 
+		/**
+		 * Allows for disabling language packs downloading.
+		 *
+		 * @since 1.39.0
+		 *
+		 * @param bool $disable_language_packs Whether to disable language packs. Default false.
+		 */
+		if ( apply_filters( 'wp_job_manager_helper_disable_language_packs', false ) ) {
+			return $transient;
+		}
+
 		$translations            = $this->get_language_pack_updates();
 		$transient->translations = array_merge( $transient->translations ?? [], $translations );
 
