@@ -115,7 +115,7 @@ class WP_Job_Manager_Helper {
 	 *
 	 * @return string[]
 	 */
-	public function get_plugin_versions() {
+	private function get_plugin_versions() {
 		return array_filter(
 			array_map(
 				function( $plugin ) {
