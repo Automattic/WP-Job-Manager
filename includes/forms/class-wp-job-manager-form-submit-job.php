@@ -269,7 +269,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'label'       => __( 'Salary', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
-						'placeholder' => 'e.g. 20000',
+						'placeholder' => __( 'e.g. 20000', 'wp-job-manager' ),
 						'priority'    => 8,
 					],
 					'job_salary_currency' => [
