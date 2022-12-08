@@ -27,3 +27,19 @@ function wpjm_yoast_skip_filled_job_listings( $url, $type, $post ) {
 	return $url;
 }
 add_action( 'wpseo_sitemap_entry', 'wpjm_yoast_skip_filled_job_listings', 10, 3 );
+
+/**
+ * Links schema to Yoast SEO schema if Yoast SEO is loaded.
+ *
+ * @param array $data The schema data.
+ *
+ * @return array The schema data.
+ */
+function wpjm_link_schema_to_yoast_schema( $data ) {
+	if ( function_exists( 'YoastSEO' ) ) {
+		$data['mainEntityOfPage']    = [ '@id' => YoastSEO()->meta->for_current_page()->canonical ];
+		$data['identifier']['value'] = YoastSEO()->meta->for_current_page()->canonical;
+	}
+	return $data;
+}
+add_filter( 'wpjm_get_job_listing_structured_data', 'wpjm_link_schema_to_yoast_schema' );
