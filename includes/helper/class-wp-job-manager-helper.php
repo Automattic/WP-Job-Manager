@@ -232,13 +232,11 @@ class WP_Job_Manager_Helper {
 
 		$response = $this->api->plugin_update_check(
 			[
-				'plugin_name'       => $plugin_data['Name'],
-				'version'           => $plugin_data['Version'],
-				'api_product_id'    => $product_slug,
-				'licence_key'       => $licence['licence_key'] ?? null,
-				'email'             => $licence['email'] ?? null,
-				'locale'            => get_locale(),
-				'available_locales' => implode( ',', $this->get_site_locales() ),
+				'plugin_name'    => $plugin_data['Name'],
+				'version'        => $plugin_data['Version'],
+				'api_product_id' => $product_slug,
+				'licence_key'    => $licence['licence_key'] ?? null,
+				'email'          => $licence['email'] ?? null,
 			]
 		);
 
