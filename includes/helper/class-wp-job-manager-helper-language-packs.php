@@ -102,7 +102,7 @@ class WP_Job_Manager_Helper_Language_Packs {
 		$transient_key = self::REMOTE_PACKAGE_TRANSIENT . md5( wp_json_encode( [ $this->plugin_versions, $this->locales ] ) );
 		$data          = get_site_transient( $transient_key );
 		if ( false !== $data && is_array( $data ) ) {
-			return $data;
+			return $this->parse_language_pack_translations( $data );
 		}
 
 		// Set the timeout for the request.
@@ -143,7 +143,7 @@ class WP_Job_Manager_Helper_Language_Packs {
 		}
 
 		$this->language_pack_updates_cache = $this->parse_language_pack_translations( $response['data'] );
-		set_site_transient( $transient_key, $this->language_pack_updates_cache, DAY_IN_SECONDS );
+		set_site_transient( $transient_key, $response['data'], DAY_IN_SECONDS );
 
 		return $this->language_pack_updates_cache;
 	}
