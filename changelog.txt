@@ -1,3 +1,8 @@
+= 1.39.0 =
+* Enhancement: Download first-party plugin extension translations
+* Enhancement: Add integration to Yoast SEO schema (@jdevalk)
+* Fix: Make salary placeholder string translatable
+
 = 1.38.1 =
 * Enhancement: Added support for WordPress.com marketplace
 * Change: Only perform application field validation when required or not empty (@tripflex)
