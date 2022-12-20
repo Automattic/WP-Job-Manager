@@ -34,7 +34,8 @@ $args = [
 	'name'         => isset( $field['name'] ) ? $field['name'] : $key,
 	'orderby'      => 'name',
 	'selected'     => $selected,
-	'hide_empty'   => false
+	'hide_empty'   => false,
+	'required'     => isset( $field['required'] ) ? true : false
 ];
 
 if ( isset( $field['placeholder'] ) && ! empty( $field['placeholder'] ) ) $args['placeholder'] = $field['placeholder'];
