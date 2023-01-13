@@ -15,9 +15,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+?>
 
-if ( $post->post_status === 'expired' ) : ?>
-	<div class="job-manager-info"><?php _e( 'This listing has expired', 'wp-job-manager' ); ?></div>
-<?php else : ?>
-	<p class="job-manager-error"><?php _e( 'Sorry, you do not have permission to view this job listing.', 'wp-job-manager' ); ?></p>
-<?php endif; ?>
+<p class="job-manager-error"><?php _e( 'Sorry, you do not have permission to view this job listing.', 'wp-job-manager' ); ?></p>

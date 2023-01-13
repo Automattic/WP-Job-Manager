@@ -1661,10 +1661,6 @@ function job_manager_user_can_view_job_listing( $job_id ) {
 		}
 	}
 
-	if ( 'expired' === $job->post_status ) {
-		$can_view = false;
-	}
-
 	if ( $job->post_author > 0 && absint( $job->post_author ) === get_current_user_id() ) {
 		$can_view = true;
 	}
