@@ -136,6 +136,15 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			];
 		}
 
+		if ( 1 === absint( get_option( 'job_manager_hide_expired_positions' ) ) ) {
+			$query_args['meta_query'][] = [
+				'key'   => '_job_expires',
+				'value' => date('Y-m-d'),
+				'compare' => '<=',
+				'type' => 'DATE',
+			];
+		}
+
 		if ( ! empty( $args['job_types'] ) ) {
 			$query_args['tax_query'][] = [
 				'taxonomy' => 'job_listing_type',

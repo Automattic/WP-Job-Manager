@@ -609,6 +609,16 @@ class WP_Job_Manager_Post_Types {
 			];
 		}
 
+		// Hide expired positions from the job feed.
+		if ( 1 === absint( get_option( 'job_manager_hide_expired_positions' ) ) ) {
+			$query_args['meta_query'][] = [
+				'key'   => '_job_expires',
+				'value' => date('Y-m-d'),
+				'compare' => '>=',
+				'type' => 'DATE',
+			];
+		}
+
 		if ( ! empty( $input_job_types ) ) {
 			$query_args['tax_query'][] = [
 				'taxonomy' => 'job_listing_type',
@@ -1368,6 +1378,40 @@ class WP_Job_Manager_Post_Types {
 		$query_args['meta_query'][] = [
 			'key'   => '_filled',
 			'value' => '0',
+		];
+
+		return $query_args;
+	}
+
+	/**
+	 * Hide expired job listings in WP core sitemaps when the `Hide expired positions` setting
+	 * is enabled.
+	 *
+	 * @access private
+	 * @since 1.39.0
+	 *
+	 * @param array  $query_args Array of WP_Query arguments.
+	 * @param string $post_type  Post type name.
+	 *
+	 * @return array
+	 */
+	public function sitemaps_maybe_hide_expired( Array $query_args, String $post_type ): array {
+		if (
+			'job_listing' !== $post_type
+			|| 1 !== absint( get_option( 'job_manager_hide_expired_positions' ) )
+		) {
+			return $query_args;
+		}
+
+		if ( ! isset( $query_args['meta_query'] ) ) {
+			$query_args['meta_query'] = [];
+		}
+
+		$query_args['meta_query'][] = [
+			'key'   => '_job_expires',
+			'value' => date('Y-m-d'),
+			'compare' => '>=',
+			'type' => 'DATE',
 		];
 
 		return $query_args;

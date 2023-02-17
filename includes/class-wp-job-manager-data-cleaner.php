@@ -67,7 +67,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_usage_tracking_opt_in_hide',
 		'job_manager_per_page',
 		'job_manager_hide_filled_positions',
-		'job_manager_hide_expired',
+		'job_manager_hide_expired_positions',
 		'job_manager_hide_expired_content',
 		'job_manager_enable_categories',
 		'job_manager_enable_default_category_multiselect',
