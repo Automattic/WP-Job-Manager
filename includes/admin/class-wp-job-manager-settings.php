@@ -159,7 +159,7 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
-							'name'       => 'job_manager_hide_expired_positions',
+							'name'       => 'job_manager_hide_expired',
 							'std'        => get_option( 'job_manager_hide_expired_content' ) ? '1' : '0', // back compat.
 							'label'      => __( 'Expired Positions', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide expired positions in job archives/search', 'wp-job-manager' ),
