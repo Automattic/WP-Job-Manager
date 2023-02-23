@@ -172,7 +172,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '1',
 							'label'      => __( 'Hide Expired Positions Content', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide content in expired single job position', 'wp-job-manager' ),
-							'desc'       => __( 'Your site will display the titles of expired position, but not the content of the positions Otherwise, expired positions display their full content minus the application area.', 'wp-job-manager' ),
+							'desc'       => __( 'Your site will display the titles of expired positions, but not the content of the positions. Otherwise, expired positions display their full content minus the application area.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
 						],
