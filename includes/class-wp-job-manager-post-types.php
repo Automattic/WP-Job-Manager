@@ -86,6 +86,7 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
+		add_action( 'parse_query', [ $this, 'maybe_hide_filled_expired_job_listings_from_search' ] );
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
 
 		// Single job content.
@@ -649,6 +650,67 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'rss2_item', [ $this, 'job_feed_item' ] );
 		do_feed_rss2( false );
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search' );
+	}
+
+	/**
+	 * Modifies WordPress Query of public search.
+	 *
+	 * @param WP_Query $query Query being processed.
+	 */
+	public function maybe_hide_filled_expired_job_listings_from_search( $query ) {
+		if ( ! $query->is_search() ) {
+			return;
+		}
+
+		// Remove filled positions, if necessary.
+		if ( 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
+			$meta_query = $query->get( 'meta_query' );
+
+			if ( ! is_array( $meta_query ) ) {
+				$meta_query = [];
+			}
+
+			$meta_query[] = [
+				'relation' => 'OR',
+				[
+					'key'     => '_filled',
+					'value'   => '0',
+					'compare' => '=',
+				],
+				[
+					'key'     => '_filled',
+					'compare' => 'NOT EXISTS',
+				],
+			];
+
+			$query->set( 'meta_query', $meta_query );
+		}
+
+		// Remove expired positions, if necessary.
+		if ( 1 === absint( get_option( 'job_manager_hide_expired' ) ) ) {
+			$meta_query = $query->get( 'meta_query' );
+
+			if ( ! is_array( $meta_query ) ) {
+				$meta_query = [];
+			}
+
+			$meta_query[] = [
+				'relation' => 'OR',
+				[
+					'key'     => '_job_expires',
+					'value'   => gmdate( 'Y-m-d' ),
+					'compare' => '>=',
+					'type'    => 'DATE',
+				],
+				[
+					'key'     => '_job_expires',
+					'compare' => 'NOT EXISTS',
+				],
+			];
+
+			$query->set( 'meta_query', $meta_query );
+		}
+
 	}
 
 	/**
