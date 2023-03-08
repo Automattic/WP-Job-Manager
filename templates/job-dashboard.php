@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$submission_limit			= get_option( 'job_manager_submission_limit' );
+$submission_limit			= ! empty( get_option( 'job_manager_submission_limit' ) ) ? absint( get_option( 'job_manager_submission_limit' ) ) : false;
 $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 ?>
 <div id="job-manager-job-dashboard">
@@ -87,7 +87,14 @@ $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 				<?php endforeach; ?>
 			<?php endif; ?>
 		</tbody>
-		<?php if ( $submit_job_form_page_id && ( job_manager_count_user_job_listings() < $submission_limit || ! $submission_limit ) && '0' !== $submission_limit ) : ?>
+		<?php
+
+var_dump($submit_job_form_page_id );
+var_dump(  job_manager_count_user_job_listings() < $submission_limit );
+var_dump( $submission_limit );
+
+		?>
+		<?php if ( $submit_job_form_page_id && job_manager_count_user_job_listings() < $submission_limit && false !== $submission_limit ) : ?>
 			<tfoot>
 				<tr>
 					<td colspan="<?php echo count( $job_dashboard_columns ); ?>">
