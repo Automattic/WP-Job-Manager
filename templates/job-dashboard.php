@@ -87,14 +87,7 @@ $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 				<?php endforeach; ?>
 			<?php endif; ?>
 		</tbody>
-		<?php
-
-var_dump($submit_job_form_page_id );
-var_dump(  job_manager_count_user_job_listings() < $submission_limit );
-var_dump( $submission_limit );
-
-		?>
-		<?php if ( $submit_job_form_page_id && job_manager_count_user_job_listings() < $submission_limit && false !== $submission_limit ) : ?>
+		<?php if ( $submit_job_form_page_id && ( job_manager_count_user_job_listings() < $submission_limit || 'false' === $submission_limit ) ) : ?>
 			<tfoot>
 				<tr>
 					<td colspan="<?php echo count( $job_dashboard_columns ); ?>">
