@@ -425,10 +425,20 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 			$email_key                = $email_keys[ $key ];
 			$email_settings           = call_user_func( [ $email_class, 'get_setting_fields' ] );
 			$email_is_default_enabled = call_user_func( [ $email_class, 'is_default_enabled' ] );
-			$defaults                 = [
-				'enabled'    => $email_is_default_enabled ? '1' : '0',
-				'plain_text' => '0',
-			];
+			if ( 'job_manager_email_employer_expiring_job' === $setting['name'] ) {
+				$defaults                 = [
+					'enabled'    => $email_is_default_enabled ? '1' : '0',
+					'plain_text' => '0',
+				];
+				$email_settings_count = count( $email_settings ) + 1;
+			} else {
+				$defaults                 = [
+					'enabled'    => $email_is_default_enabled ? '1' : '0',
+					'email_to'   => '',
+					'plain_text' => '0',
+				];
+				$email_settings_count = count( $email_settings ) + 2;
+			}
 			foreach ( $email_settings as $email_setting ) {
 				$defaults[ $email_setting['name'] ] = $email_setting['std'];
 			}
@@ -444,7 +454,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 			$this->assertArrayHasKey( 'std', $setting );
 			$this->assertEquals( $setting['std'], $defaults );
 			$this->assertArrayHasKey( 'settings', $setting );
-			$this->assertEquals( count( $setting['settings'] ), count( $email_settings ) + 1 );
+			$this->assertEquals( count( $setting['settings'] ), $email_settings_count );
 		}
 	}
 
