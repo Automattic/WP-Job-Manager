@@ -213,11 +213,13 @@ class WP_Job_Manager_Helper {
 			}
 		}
 
-		// If there is an update available, add the addon update available notice.
+		// Enable or disable notices.
 		if ( ! empty($available_addon_updates) ) {
 			WP_Job_Manager_Admin_Notices::add_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
-			set_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
+		} else {
+			WP_Job_Manager_Admin_Notices::remove_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
 		}
+		set_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
 
 
 		return $check_for_updates_data;
