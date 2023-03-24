@@ -509,7 +509,8 @@ class WP_Job_Manager_Helper {
 		if (
 			null === $screen ||
 			in_array( $screen->id, [ 'job_listing_page_job-manager-addons' ], true ) ||
-			! current_user_can( 'update_plugins' ) ) {
+			! current_user_can( 'update_plugins' )
+		) {
 			return;
 		}
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
