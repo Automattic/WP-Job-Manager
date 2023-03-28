@@ -69,6 +69,7 @@ class WP_Job_Manager_Install {
 		}
 
 		delete_transient( 'wp_job_manager_addons_html' );
+		delete_transient( 'jm_wpjmcom_add_on_messages' );
 		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );
 	}
 
