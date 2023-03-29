@@ -15,8 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.32.0
  */
 class WP_Job_Manager_Admin_Notices {
-	const STATE_OPTION      = 'job_manager_admin_notices';
-	const NOTICE_CORE_SETUP = 'core_setup';
+	const STATE_OPTION                  = 'job_manager_admin_notices';
+	const NOTICE_CORE_SETUP             = 'core_setup';
+	const NOTICE_ADDON_UPDATE_AVAILABLE = 'addon_update_available';
+	const ALLOWED_HTML                  = [
+		'div' => [
+			'class' => [],
+		],
+		'a'   => [
+			'target' => [],
+			'href'   => [],
+			'rel'    => [],
+		],
+	];
 
 	/**
 	 * Current notices for admin user.
@@ -98,6 +109,7 @@ class WP_Job_Manager_Admin_Notices {
 	public static function init_core_notices() {
 		// core_setup: Notice is used when first activating WP Job Manager.
 		add_action( 'job_manager_admin_notice_' . self::NOTICE_CORE_SETUP, [ __CLASS__, 'display_core_setup' ] );
+		add_action( 'job_manager_admin_notice_' . self::NOTICE_ADDON_UPDATE_AVAILABLE, [ __CLASS__, 'display_addon_update_available' ] );
 	}
 
 	/**
@@ -203,6 +215,24 @@ class WP_Job_Manager_Admin_Notices {
 	}
 
 	/**
+	 * Displays the notice that informs about WPJM addon updates available.
+	 *
+	 * Note: For internal use only. Do not call manually.
+	 */
+	public static function display_addon_update_available() {
+		if ( ! self::is_admin_on_standard_job_manager_screen( [ 'dashboard' ] ) ) {
+			return;
+		}
+
+		$updates = get_transient( 'wpjm_addon_updates_available', [] );
+
+		if ( ! empty( $updates ) ) {
+			$notice = self::generate_notice_from_updates( $updates );
+			self::render_notice( $notice );
+		}
+	}
+
+	/**
 	 * Gets the current admin notices to be displayed.
 	 *
 	 * @return array
@@ -226,6 +256,100 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		update_option( self::STATE_OPTION, wp_json_encode( self::get_notice_state() ), false );
+	}
+
+	/**
+	 * Given an array of updates, generate a notice.
+	 *
+	 * @param array $updates The contents of the addon updates transient.
+	 * @return array|null
+	 */
+	private static function generate_notice_from_updates( $updates ) {
+		if ( empty( $updates ) ) {
+			return null;
+		}
+
+		// Default: Single update available.
+		$extra_info          = null;
+		$update_action_label = __( 'Update', 'wp-job-manager' );
+		$message             = __( 'Good news, reminder to update to latest version.', 'wp-job-manager' );
+		$actions             = [
+			[
+				'url'     => 'https://wpjobmanager.com/release-notes/',
+				'label'   => __( 'View release notes', 'wp-job-manager' ),
+				'target'  => '_blank',
+				'primary' => false,
+			],
+		];
+
+		// Multiple updates: Change message, update action label, remove release notes secondary action and add extra info.
+		if ( count( $updates ) > 1 ) {
+			$message             = __( 'Good news, reminder to update these plugins to their latest versions.', 'wp-job-manager' );
+			$update_action_label = __( 'Update All', 'wp-job-manager' );
+			$extra_info          = '';
+			$actions             = []; // Remove more_info link.
+			foreach ( $updates as $update ) {
+				$extra_info .= '<div class="wpjm-addon-update-notice-info">';
+				$extra_info .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $update['plugin'] ) . '</div>';
+				$extra_info .= '<div class="wpjm-addon-update-notice-info__version">';
+				$extra_info .= '<a href="https://wpjobmanager.com/release-notes/" target="_blank">';
+				// translators: %s is the new version number for the addon.
+				$extra_info .= sprintf( esc_html__( 'New Version: %s', 'wp-job-manager' ), $update['new_version'] );
+				$extra_info .= '</a>';
+				$extra_info .= '</div>';
+				$extra_info .= '</div>';
+			}
+		}
+
+		$actions[] = [
+			'label' => $update_action_label,
+			'url'   => admin_url( 'plugins.php' ),
+		];
+
+		return [
+			'message'    => $message,
+			'actions'    => $actions,
+			'extra_info' => $extra_info,
+		];
+	}
+
+	/**
+	 * Renders a notice.
+	 *
+	 * @param array $notice See `generate_notice_from_updates` for format.
+	 * @return void
+	 */
+	private static function render_notice( $notice ) {
+		// TODO Handle different levels of notices.
+		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info">';
+
+		echo '<div class="wpjm-admin-notice__top">';
+		// TODO Add icon.
+		echo '<div class="wpjm-admin-notice__message">';
+		echo wp_kses( $notice['message'], self::ALLOWED_HTML );
+		echo '</div>';
+		if ( ! empty( $notice['actions'] ) ) {
+			echo '<div class="wpjm-admin-notice__actions">';
+			foreach ( $notice['actions'] as $action ) {
+				if ( ! isset( $action['label'], $action['url'] ) ) {
+					continue;
+				}
+
+				$button_class = ! isset( $action['primary'] ) || $action['primary'] ? 'button-primary' : 'button-secondary';
+				echo '<a href="' . esc_url( $action['url'] ) . '" target="' . esc_attr( $action['target'] ?? '_self' ) . '" rel="noopener noreferrer" class="button ' . esc_attr( $button_class ) . '">';
+				echo esc_html( $action['label'] );
+				echo '</a>';
+			}
+			echo '</div>';
+		}
+		echo '</div>';
+
+		if ( ! empty( $notice['extra_info'] ) ) {
+			echo '<div class="wpjm-admin-notice__extra_info">';
+			echo wp_kses( $notice['extra_info'], self::ALLOWED_HTML );
+			echo '</div>';
+		}
+		echo '</div>';
 	}
 }
 

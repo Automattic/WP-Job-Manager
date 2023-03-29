@@ -12,6 +12,7 @@ const files = {
 	'js/multiselect': 'js/multiselect.js',
 	'js/term-multiselect': 'js/term-multiselect.js',
 	'css/admin': 'css/admin.scss',
+	'css/admin-notices': 'css/admin-notices.scss',
 	'css/frontend': 'css/frontend.scss',
 	'css/job-listings': 'css/job-listings.scss',
 	'css/job-submission': 'css/job-submission.scss',

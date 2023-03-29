@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Handles Job Manager's Ajax endpoints.
+ * Helper functions used in WP Job Manager regarding addons and licenses.
  *
  * @package wp-job-manager
  * @since 1.29.0
@@ -198,6 +198,7 @@ class WP_Job_Manager_Helper {
 	 * @return array
 	 */
 	public function check_for_updates( $check_for_updates_data ) {
+		$available_addon_updates = [];
 		// Set version variables.
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$response = $this->get_plugin_version( $plugin_data['_filename'] );
@@ -207,9 +208,18 @@ class WP_Job_Manager_Helper {
 				&& isset( $response['new_version'] )
 				&& version_compare( $response['new_version'], $plugin_data['Version'], '>' )
 			) {
+				$available_addon_updates[ $product_slug ]                      = $response;
 				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 			}
 		}
+
+		// Enable or disable notices.
+		if ( ! empty( $available_addon_updates ) ) {
+			WP_Job_Manager_Admin_Notices::add_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
+		} else {
+			WP_Job_Manager_Admin_Notices::remove_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
+		}
+		set_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
 
 		return $check_for_updates_data;
 	}
