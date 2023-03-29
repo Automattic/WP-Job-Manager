@@ -215,7 +215,7 @@ class WP_Job_Manager_Admin_Notices {
 	}
 
 	/**
-	 * Displays the setup wizard notice when WPJM is first activated.
+	 * Displays the notice that informs about WPJM addon updates available.
 	 *
 	 * Note: For internal use only. Do not call manually.
 	 */
