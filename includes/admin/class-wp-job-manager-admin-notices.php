@@ -260,7 +260,8 @@ class WP_Job_Manager_Admin_Notices {
 
 	/**
 	 * Given an array of updates, generate a notice.
-	 * @param $updates
+	 *
+	 * @param array $updates The contents of the addon updates transient.
 	 * @return array|null
 	 */
 	private static function generate_notice_from_updates( $updates ) {
@@ -292,7 +293,8 @@ class WP_Job_Manager_Admin_Notices {
 				$extra_info .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $update['plugin'] ) . '</div>';
 				$extra_info .= '<div class="wpjm-addon-update-notice-info__version">';
 				$extra_info .= '<a href="https://wpjobmanager.com/release-notes/" target="_blank">';
-				$extra_info .= esc_html__( sprintf( "New Version: %s", $update['new_version'] ), 'wp-job-manager' );
+				// translators: %s is the new version number for the addon.
+				$extra_info .= sprintf( esc_html__( 'New Version: %s', 'wp-job-manager' ), $update['new_version'] );
 				$extra_info .= '</a>';
 				$extra_info .= '</div>';
 				$extra_info .= '</div>';
@@ -347,7 +349,7 @@ class WP_Job_Manager_Admin_Notices {
 			echo wp_kses( $notice['extra_info'], self::ALLOWED_HTML );
 			echo '</div>';
 		}
-		echo "</div>";
+		echo '</div>';
 	}
 }
 
