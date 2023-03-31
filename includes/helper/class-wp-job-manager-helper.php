@@ -362,9 +362,6 @@ class WP_Job_Manager_Helper {
 			return false;
 		}
 		$args = $this->get_plugin_licence( $product_slug );
-		if ( empty( $args['licence_key'] ) || empty( $args['email'] ) ) {
-			return false;
-		}
 		$args['api_product_id'] = $product_slug;
 
 		$response = $this->api->plugin_information( $args );
