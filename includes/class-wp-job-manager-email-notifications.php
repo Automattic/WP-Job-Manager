@@ -636,6 +636,7 @@ final class WP_Job_Manager_Email_Notifications {
 				],
 			],
 		];
+
 		if ( 'employer_expiring_job' !== $email_notification_key ) {
 			array_unshift(
 				$core_settings,
