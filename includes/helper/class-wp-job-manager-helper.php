@@ -361,7 +361,7 @@ class WP_Job_Manager_Helper {
 		if ( ! $this->is_product_installed( $product_slug ) ) {
 			return false;
 		}
-		$args = $this->get_plugin_licence( $product_slug );
+		$args                   = $this->get_plugin_licence( $product_slug );
 		$args['api_product_id'] = $product_slug;
 
 		$response = $this->api->plugin_information( $args );
