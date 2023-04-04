@@ -50,10 +50,10 @@ jobs:
         wpmu: [ 0 ]
         php: [ '7.2', '7.3', '7.4' ]
         include:
-          - php: 7.3
-            wp: 6.0
-          - php: 7.3
-            wp: 6.1
+          - php: '7.3'
+            wp: '6.0'
+          - php: '7.3'
+            wp: '6.1'
     env:
       WP_VERSION: ${{ matrix.wp }}
       PHP_VERSION: ${{ matrix.php }}
