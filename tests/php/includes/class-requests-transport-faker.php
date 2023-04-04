@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'REQUESTS_SILENCE_PSR0_DEPRECATIONS' ) ) {
+	define( 'REQUESTS_SILENCE_PSR0_DEPRECATIONS', true );
+}
+
 class Requests_Transport_Faker implements Requests_Transport {
 	public $headers_matter = false;
 	private $_log          = [];
@@ -140,7 +144,7 @@ class Requests_Transport_Faker implements Requests_Transport {
 	/**
 	 * {@inheritdoc}
 	 */
-	public static function test() {
+	public static function test( $capabilities = [] ) {
 		return true;
 	}
 }
