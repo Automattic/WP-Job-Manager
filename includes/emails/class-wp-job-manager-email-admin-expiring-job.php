@@ -51,7 +51,7 @@ class WP_Job_Manager_Email_Admin_Expiring_Job extends WP_Job_Manager_Email_Emplo
 	 */
 	public function get_to() {
 		$option = get_option( 'job_manager_email_admin_expiring_job', false );
-		return ! $option['email_to'] ? get_option( 'admin_email', false ) : $option['email_to'];
+		return $option['email_to'] ? $option['email_to'] : get_option( 'admin_email', false );
 	}
 
 }
