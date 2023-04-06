@@ -11,13 +11,14 @@ const files = {
 	'js/job-submission': 'js/job-submission.js',
 	'js/multiselect': 'js/multiselect.js',
 	'js/term-multiselect': 'js/term-multiselect.js',
+	'js/admin/wpjm-notice-dismiss': 'js/admin/wpjm-notice-dismiss.js',
 	'css/admin': 'css/admin.scss',
 	'css/admin-notices': 'css/admin-notices.scss',
 	'css/frontend': 'css/frontend.scss',
 	'css/job-listings': 'css/job-listings.scss',
 	'css/job-submission': 'css/job-submission.scss',
 	'css/setup': 'css/setup.scss',
-	'css/menu': 'css/menu.scss',
+	'css/menu': 'css/menu.scss'
 };
 
 const baseDist = 'assets/dist/';
