@@ -4,6 +4,11 @@ $internship: #6033cc;
 $freelance: #39c;
 $temporary: #d93674;
 
+$notice-error: #d63638;
+$notice-warning: #dba617;
+$notice-info: #72aee6;
+$notice-success: #43af99;
+
 @mixin clearfix() {
 	zoom: 1; /* For IE 6/7 (trigger hasLayout) */
 

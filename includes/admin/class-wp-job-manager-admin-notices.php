@@ -320,8 +320,9 @@ class WP_Job_Manager_Admin_Notices {
 	 * @return void
 	 */
 	private static function render_notice( $notice ) {
+
 		// TODO Handle different levels of notices.
-		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info">';
+		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info is-dismissible">';
 
 		echo '<div class="wpjm-admin-notice__top">';
 		// TODO Add icon.

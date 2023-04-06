@@ -1,3 +1,4 @@
+@import "mixins";
 
 .wpjm-admin-notice {
 
@@ -33,6 +34,13 @@
 
 		.button {
 			padding: 3px 12px;
+
+		}
+	}
+
+	button {
+		&.notice-dismiss {
+			top: initial;
 		}
 	}
 }
