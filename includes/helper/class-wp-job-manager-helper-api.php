@@ -41,8 +41,8 @@ class WP_Job_Manager_Helper_API {
 	/**
 	 * Checks if there is an update for the plugin using the WPJobManager.com API.
 	 *
-	 * @param array|string $args
-	 * @return array|false $response.
+	 * @param array $args The arguments to pass to the endpoint.
+	 * @return array|false The response, or false if the request failed.
 	 */
 	public function plugin_update_check( $args ) {
 		$args            = wp_parse_args( $args );
@@ -54,8 +54,8 @@ class WP_Job_Manager_Helper_API {
 	/**
 	 * Sends and receives data related to plugin information from the WPJobManager.com API.
 	 *
-	 * @param array $args The arguments to pass to the API.
-	 * @return array|false $response The response, or false if the request failed.
+	 * @param array $args  The arguments to pass to the endpoint.
+	 * @return array|false The response, or false if the request failed.
 	 */
 	public function plugin_information( $args ) {
 		$args            = wp_parse_args( $args );
