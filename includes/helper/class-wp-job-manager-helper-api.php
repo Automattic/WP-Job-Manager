@@ -85,17 +85,13 @@ class WP_Job_Manager_Helper_API {
 	 * Attempt to deactivate a plugin licence.
 	 *
 	 * @param array|string $args
-	 * @return boolean|string JSON response or false if failed.
+	 * @return array|false JSON response or false if failed.
 	 */
 	public function deactivate( $args ) {
 		$args            = wp_parse_args( $args );
 		$args['wc-api']  = 'wp_plugin_licencing_activation_api';
 		$args['request'] = 'deactivate';
-		$response        = $this->request( $args, false );
-		if ( false === $response ) {
-			return false;
-		}
-		return $response;
+		return $this->request( $args, false );
 	}
 
 	/**
