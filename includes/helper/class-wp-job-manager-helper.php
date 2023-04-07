@@ -532,19 +532,20 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
-	 * Handles a request on the manage license key screen.
+	 * Handles a request on the manage licence key screen.
+	 *
+	 * @return void
 	 */
 	private function handle_request() {
 		$licenced_plugins = $this->get_installed_plugins();
 		if (
-			empty( $_POST )
-			|| empty( $_POST['_wpnonce'] )
+			empty( $_POST['_wpnonce'] )
 			|| empty( $_POST['action'] )
 			|| empty( $_POST['product_slug'] )
 			|| ! isset( $licenced_plugins[ $_POST['product_slug'] ] )
-			|| ! wp_verify_nonce( wp_unslash( $_POST['_wpnonce'] ), 'wpjm-manage-licence' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+			|| ! check_admin_referer( 'wpjm-manage-licence' )
 		) {
-			return false;
+			return;
 		}
 
 		$product_slug = sanitize_text_field( wp_unslash( $_POST['product_slug'] ) );
