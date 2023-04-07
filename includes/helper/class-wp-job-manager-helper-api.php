@@ -67,18 +67,22 @@ class WP_Job_Manager_Helper_API {
 	/**
 	 * Attempt to activate a plugin licence.
 	 *
-	 * @param array|string $args
-	 * @return boolean|string JSON response or false if failed.
+	 * @param array $args The arguments to pass to the API.
+	 * @return array|false JSON response or false if failed.
 	 */
 	public function activate( $args ) {
-		$args            = wp_parse_args( $args );
-		$args['wc-api']  = 'wp_plugin_licencing_activation_api';
-		$args['request'] = 'activate';
-		$response        = $this->request( $args, true );
-		if ( false === $response ) {
+		$args         = wp_parse_args( $args );
+		$product_slug = $args['api_product_id'];
+		$response     = $this->bulk_activate( $args['licence_key'], [ $product_slug ] );
+		if ( false === $response || ! array_key_exists( $product_slug, $response ) ) {
 			return false;
 		}
-		return $response;
+		$item              = $response[ $product_slug ];
+		$item['activated'] = $item['success'];
+		if ( ! isset( $item['error'] ) && isset( $item['error_message'] ) ) {
+			$item['error'] = $item['error_message'];
+		}
+		return $item;
 	}
 
 	/**
