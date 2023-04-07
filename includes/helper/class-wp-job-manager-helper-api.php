@@ -97,10 +97,10 @@ class WP_Job_Manager_Helper_API {
 	/**
 	 * Make a licence helper API request.
 	 *
-	 * @param array $args
-	 * @param bool  $return_error
+	 * @param array $args The arguments to pass to the API.
+	 * @param bool  $return_error If we should return the error details or not.
 	 *
-	 * @return array|bool|mixed|object
+	 * @return array|false The response as an array, or false if the request failed.
 	 */
 	protected function request( $args, $return_error = false ) {
 		$defaults = [
