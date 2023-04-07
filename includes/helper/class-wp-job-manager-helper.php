@@ -580,31 +580,7 @@ class WP_Job_Manager_Helper {
 			]
 		);
 
-		$error = false;
-		if ( false === $response ) {
-			$error = 'connection_failed';
-			$this->add_error( $product_slug, __( 'Connection failed to the License Key API server - possible server issue.', 'wp-job-manager' ) );
-		} elseif ( isset( $response['error_code'] ) && isset( $response['error'] ) ) {
-			$error = $response['error_code'];
-			$this->add_error( $product_slug, $response['error'] );
-		} elseif ( ! empty( $response['activated'] ) ) {
-			WP_Job_Manager_Helper_Options::update( $product_slug, 'licence_key', $licence_key );
-			WP_Job_Manager_Helper_Options::update( $product_slug, 'email', $email );
-			WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
-			WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
-			$this->add_success( $product_slug, __( 'Plugin license has been activated.', 'wp-job-manager' ) );
-		} else {
-			$error = 'unknown';
-			$this->add_error( $product_slug, __( 'An unknown error occurred while attempting to activate the license', 'wp-job-manager' ) );
-		}
-
-		$event_properties = [ 'slug' => $product_slug ];
-		if ( false !== $error ) {
-			$event_properties['error'] = $error;
-			self::log_event( 'license_activation_error', $event_properties );
-		} else {
-			self::log_event( 'license_activated', $event_properties );
-		}
+		$this->handle_product_activation_response( $response, $product_slug, $licence_key );
 	}
 
 	/**
@@ -731,6 +707,44 @@ class WP_Job_Manager_Helper {
 		}
 
 		WP_Job_Manager_Usage_Tracking::log_event( $event_name, $properties );
+	}
+
+	/**
+	 * Handle the response of the product activation API on WPJobManager.com.
+	 *
+	 * @param array|boolean $response The response to handle.
+	 * @param string        $product_slug The slug of the product.
+	 * @param string        $licence_key The licence key being activated.
+	 * @return void
+	 */
+	private function handle_product_activation_response( $response, $product_slug, $licence_key ) {
+		$error = false;
+		if ( isset( $response['error'] ) && ! isset( $response['error_message'] ) ) {
+			$response['error_message'] = $response['error'];
+		}
+		if ( false === $response ) {
+			$error = 'connection_failed';
+			$this->add_error( $product_slug, __( 'Connection failed to the License Key API server - possible server issue.', 'wp-job-manager' ) );
+		} elseif ( isset( $response['error_code'] ) && isset( $response['error_message'] ) ) {
+			$error = $response['error_code'];
+			$this->add_error( $product_slug, $response['error_message'] );
+		} elseif ( ! empty( $response['activated'] ) ) {
+			WP_Job_Manager_Helper_Options::update( $product_slug, 'licence_key', $licence_key );
+			WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
+			WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
+			$this->add_success( $product_slug, __( 'Plugin license has been activated.', 'wp-job-manager' ) );
+		} else {
+			$error = 'unknown';
+			$this->add_error( $product_slug, __( 'An unknown error occurred while attempting to activate the license', 'wp-job-manager' ) );
+		}
+
+		$event_properties = [ 'slug' => $product_slug ];
+		if ( false !== $error ) {
+			$event_properties['error'] = $error;
+			self::log_event( 'license_activation_error', $event_properties );
+		} else {
+			self::log_event( 'license_activated', $event_properties );
+		}
 	}
 }
 
