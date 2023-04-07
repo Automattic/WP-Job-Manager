@@ -537,27 +537,41 @@ class WP_Job_Manager_Helper {
 	 * @return void
 	 */
 	private function handle_request() {
-		$licenced_plugins = $this->get_installed_plugins();
 		if (
-			empty( $_POST['_wpnonce'] )
-			|| empty( $_POST['action'] )
-			|| empty( $_POST['product_slug'] )
-			|| ! isset( $licenced_plugins[ $_POST['product_slug'] ] )
+			empty( $_POST['action'] )
+			|| empty( $_POST['_wpnonce'] )
 			|| ! check_admin_referer( 'wpjm-manage-licence' )
 		) {
 			return;
 		}
+		$this->handle_single_request();
+	}
 
+	/**
+	 * Handle a request for a single product on the manage licence key screen.
+	 *
+	 * @return void
+	 */
+	private function handle_single_request() {
+		$licenced_plugins = $this->get_installed_plugins();
+		if (
+			empty( $_POST['action'] )
+			|| empty( $_POST['_wpnonce'] )
+			|| ! check_admin_referer( 'wpjm-manage-licence' )
+			|| empty( $_POST['product_slug'] )
+			|| ! isset( $licenced_plugins[ $_POST['product_slug'] ] )
+		) {
+			return;
+		}
 		$product_slug = sanitize_text_field( wp_unslash( $_POST['product_slug'] ) );
 		switch ( $_POST['action'] ) {
 			case 'activate':
-				if ( empty( $_POST['email'] ) || empty( $_POST['licence_key'] ) ) {
-					$this->add_error( $product_slug, __( 'Please enter a valid license key and email address in order to activate this plugin\'s license.', 'wp-job-manager' ) );
+				if ( empty( $_POST['licence_key'] ) ) {
+					$this->add_error( $product_slug, __( 'Please enter a valid license key in order to activate this plugin\'s license.', 'wp-job-manager' ) );
 					break;
 				}
-				$email       = sanitize_email( wp_unslash( $_POST['email'] ) );
 				$licence_key = sanitize_text_field( wp_unslash( $_POST['licence_key'] ) );
-				$this->activate_licence( $product_slug, $licence_key, $email );
+				$this->activate_licence( $product_slug, $licence_key, '' );
 				break;
 			case 'deactivate':
 				$this->deactivate_licence( $product_slug );
