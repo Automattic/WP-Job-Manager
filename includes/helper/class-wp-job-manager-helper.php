@@ -590,7 +590,7 @@ class WP_Job_Manager_Helper {
 	 */
 	private function deactivate_licence( $product_slug ) {
 		$licence = $this->get_plugin_licence( $product_slug );
-		if ( empty( $licence['licence_key'] ) || empty( $licence['email'] ) ) {
+		if ( empty( $licence['licence_key'] ) ) {
 			$this->add_error( $product_slug, __( 'license is not active.', 'wp-job-manager' ) );
 			return;
 		}
