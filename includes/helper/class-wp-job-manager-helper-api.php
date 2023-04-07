@@ -175,4 +175,37 @@ class WP_Job_Manager_Helper_API {
 		}
 		return self::API_BASE_URL;
 	}
+
+	/**
+	 * Decode the response from the WPJobManager.com API.
+	 *
+	 * @param array|WP_Error $response The response, or an error.
+	 * @param bool           $return_error If we should return the detailed error or not.
+	 * @return array|false The response as an array, or false if the request failed and $return_error is false.
+	 */
+	protected function decode_response( $response, $return_error ) {
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			if ( $return_error ) {
+				if ( is_wp_error( $response ) ) {
+					return [
+						'error_code' => $response->get_error_code(),
+						'error'      => $response->get_error_message(),
+					];
+				}
+				return [
+					'error_code' => wp_remote_retrieve_response_code( $response ),
+					'error'      => 'Error code: ' . wp_remote_retrieve_response_code( $response ),
+				];
+			}
+			return false;
+		}
+
+		$result = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( is_array( $result ) ) {
+			return $result;
+		}
+
+		return false;
+	}
 }
