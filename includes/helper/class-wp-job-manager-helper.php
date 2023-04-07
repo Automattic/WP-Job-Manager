@@ -544,7 +544,11 @@ class WP_Job_Manager_Helper {
 		) {
 			return;
 		}
-		$this->handle_single_request();
+		if ( str_starts_with( sanitize_text_field( wp_unslash( $_POST['action'] ) ), 'bulk_' ) ) {
+			$this->handle_bulk_request();
+		} else {
+			$this->handle_single_request();
+		}
 	}
 
 	/**
