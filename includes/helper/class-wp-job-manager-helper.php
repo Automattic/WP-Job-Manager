@@ -565,6 +565,50 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
+	 * Handle a bulk request on the manage licence key screen.
+	 *
+	 * @return void
+	 */
+	private function handle_bulk_request() {
+		if (
+			empty( $_POST['action'] )
+			|| 'bulk_activate' !== $_POST['action']
+			|| empty( $_POST['_wpnonce'] )
+			|| ! check_admin_referer( 'wpjm-manage-licence' )
+			|| empty( $_POST['product_slugs'] )
+			|| is_array( $_POST['product_slugs'] ) ) {
+			return;
+		}
+		$product_slugs = array_map( 'sanitize_text_field', wp_unslash( $_POST['product_slugs'] ) );
+		if ( empty( $_POST['licence_key'] ) ) {
+			foreach ( $product_slugs as $product_slug ) {
+				$this->add_error( $product_slug, __( 'Please enter a valid license key in order to activate the licenses of the plugins.', 'wp-job-manager' ) );
+			}
+			return;
+		}
+		$licence_key = sanitize_text_field( wp_unslash( $_POST['licence_key'] ) );
+		$this->bulk_activate_licence( $licence_key, $product_slugs );
+	}
+
+	/**
+	 * Activate multiple WPJM add-on plugins with a single licence key.
+	 *
+	 * @param string   $licence_key The licence key to activate.
+	 * @param string[] $product_slugs The product slugs to activate.
+	 * @return void
+	 */
+	public function bulk_activate_licence( $licence_key, $product_slugs ) {
+		$response = $this->api->bulk_activate(
+			$licence_key,
+			$product_slugs
+		);
+		foreach ( $product_slugs as $product_slug ) {
+			$result = $response && isset( $response[ $product_slug ] ) ? $response[ $product_slug ] : false;
+			$this->handle_product_activation_response( $result, $product_slug, $licence_key );
+		}
+	}
+
+	/**
 	 * Activate a licence key for a WPJM add-on plugin.
 	 *
 	 * @param string $product_slug The slug of the product to activate.
