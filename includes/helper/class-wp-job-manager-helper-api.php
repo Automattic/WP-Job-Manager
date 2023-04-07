@@ -112,8 +112,8 @@ class WP_Job_Manager_Helper_API {
 			'email'          => '',
 		];
 
-		$args    = wp_parse_args( $args, $defaults );
-		$request = wp_safe_remote_get(
+		$args     = wp_parse_args( $args, $defaults );
+		$response = wp_safe_remote_get(
 			$this->get_api_base_url() . '?' . http_build_query( $args, '', '&' ),
 			[
 				'timeout' => 10,
@@ -123,29 +123,7 @@ class WP_Job_Manager_Helper_API {
 			]
 		);
 
-		if ( is_wp_error( $request ) || 200 !== wp_remote_retrieve_response_code( $request ) ) {
-			if ( $return_error ) {
-				if ( is_wp_error( $request ) ) {
-					return [
-						'error_code' => $request->get_error_code(),
-						'error'      => $request->get_error_message(),
-					];
-				}
-				return [
-					'error_code' => wp_remote_retrieve_response_code( $request ),
-					'error'      => 'Error code: ' . wp_remote_retrieve_response_code( $request ),
-				];
-			}
-			return false;
-		}
-
-		$response = json_decode( wp_remote_retrieve_body( $request ), true );
-
-		if ( is_array( $response ) ) {
-			return $response;
-		}
-
-		return false;
+		return $this->decode_response( $response, $return_error );
 	}
 
 	/**
