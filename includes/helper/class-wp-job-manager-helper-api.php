@@ -82,6 +82,27 @@ class WP_Job_Manager_Helper_API {
 	}
 
 	/**
+	 * Attempt to activate multiple WPJM products with a single licence key.
+	 *
+	 * @param string $licence_key The licence key to activate.
+	 * @param array  $product_slugs The slugs of the products to activate.
+	 * @return array|false The response, or false if the request failed.
+	 */
+	public function bulk_activate( $licence_key, $product_slugs ) {
+		return $this->request_endpoint(
+			'wp-json/wpjmcom-licensing/1.0/activate',
+			[
+				'method' => 'POST',
+				'body'   => [
+					'site_url'      => $this->get_site_url(),
+					'license_key'   => $licence_key,
+					'product_slugs' => $product_slugs,
+				],
+			]
+		);
+	}
+
+	/**
 	 * Attempt to deactivate a plugin licence.
 	 *
 	 * @param array|string $args
