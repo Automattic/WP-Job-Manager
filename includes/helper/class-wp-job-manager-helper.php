@@ -567,11 +567,11 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Activate a licence key for a WPJM add-on plugin.
 	 *
-	 * @param string $product_slug
-	 * @param string $licence_key
-	 * @param string $email
+	 * @param string $product_slug The slug of the product to activate.
+	 * @param string $licence_key The licence key to activate.
+	 * @param string $email The e-mail associated with the license. Optional (and actually not used).
 	 */
-	public function activate_licence( $product_slug, $licence_key, $email ) {
+	public function activate_licence( $product_slug, $licence_key, $email = '' ) {
 		$response = $this->api->activate(
 			[
 				'api_product_id' => $product_slug,
