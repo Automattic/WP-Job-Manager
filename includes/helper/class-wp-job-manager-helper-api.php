@@ -127,6 +127,32 @@ class WP_Job_Manager_Helper_API {
 	}
 
 	/**
+	 * Make a licence helper API request to a WP REST API Endpoint.
+	 *
+	 * @param string $endpoint The endpoint to make the API request to.
+	 * @param array  $args The arguments to pass to the request.
+	 * @param bool   $return_error If we should return the error details or not.
+	 *
+	 * @return array|false The response, an error if $return_error is true, or false if the request failed and $return_error is false.
+	 */
+	protected function request_endpoint( $endpoint, $args, $return_error = false ) {
+		$defaults = [
+			'timeout' => 10,
+			'headers' => [
+				'Accept' => 'application/json',
+			],
+		];
+		$args     = wp_parse_args( $args, $defaults );
+
+		$response = wp_safe_remote_request(
+			$this->get_api_base_url() . $endpoint,
+			$args
+		);
+
+		return $this->decode_response( $response, $return_error );
+	}
+
+	/**
 	 * Returns the site URL that is MU safe.
 	 *
 	 * @return string
