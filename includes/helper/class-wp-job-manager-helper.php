@@ -595,7 +595,7 @@ class WP_Job_Manager_Helper {
 			|| empty( $_POST['_wpnonce'] )
 			|| ! check_admin_referer( 'wpjm-manage-licence' )
 			|| empty( $_POST['product_slugs'] )
-			|| is_array( $_POST['product_slugs'] ) ) {
+			|| ! is_array( $_POST['product_slugs'] ) ) {
 			return;
 		}
 		$product_slugs = array_map( 'sanitize_text_field', wp_unslash( $_POST['product_slugs'] ) );
