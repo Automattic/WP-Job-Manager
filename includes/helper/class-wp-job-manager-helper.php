@@ -782,8 +782,11 @@ class WP_Job_Manager_Helper {
 	 */
 	private function handle_product_activation_response( $response, $product_slug, $licence_key ) {
 		$error = false;
-		if ( isset( $response['error'] ) && ! isset( $response['error_message'] ) ) {
+		if ( ! isset( $response['error_message'] ) && isset( $response['error'] ) ) {
 			$response['error_message'] = $response['error'];
+		}
+		if ( ! isset( $item['activated'] ) && isset( $response['success'] ) ) {
+			$response['activated'] = $response['success'];
 		}
 		if ( false === $response ) {
 			$error = 'connection_failed';

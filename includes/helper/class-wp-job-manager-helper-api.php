@@ -77,12 +77,7 @@ class WP_Job_Manager_Helper_API {
 		if ( false === $response || ! array_key_exists( $product_slug, $response ) ) {
 			return false;
 		}
-		$item              = $response[ $product_slug ];
-		$item['activated'] = $item['success'];
-		if ( ! isset( $item['error'] ) && isset( $item['error_message'] ) ) {
-			$item['error'] = $item['error_message'];
-		}
-		return $item;
+		return $response[ $product_slug ];
 	}
 
 	/**
