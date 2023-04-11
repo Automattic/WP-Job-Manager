@@ -14,6 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php if ( ! empty( $licenced_plugins ) ) : ?>
 		<?php if ( ! empty( $show_bulk_activate ) ) : ?>
 		<div class="wpjm-bulk-activate">
+			<?php
+			$notices = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
+			foreach ( $notices as $message ) {
+				echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . '"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
+			}
+			?>
 			<b class="wpjm-bulk-activate--title">
 				Activate Job Manager Licenses
 			</b>
