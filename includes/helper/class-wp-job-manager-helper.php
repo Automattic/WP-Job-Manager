@@ -508,6 +508,21 @@ class WP_Job_Manager_Helper {
 			$this->handle_request();
 		}
 		$licenced_plugins   = $this->get_installed_plugins();
+
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- No need for nonce here.
+		if ( ! empty( $_REQUEST['s'] ) ) {
+			$search_term      = strtolower( sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) );
+			$licenced_plugins = array_filter(
+				$licenced_plugins,
+				function( $plugin ) use ( $search_term ) {
+					return str_contains( strtolower( $plugin['Name'] ), $search_term )
+						|| str_contains( strtolower( $plugin['Description'] ), $search_term )
+						|| str_contains( strtolower( $plugin['Author'] ), $search_term );
+				}
+			);
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
 		$show_bulk_activate = $this->show_bulk_activation_form( $licenced_plugins );
 		include_once dirname( __FILE__ ) . '/views/html-licences.php';
 	}
