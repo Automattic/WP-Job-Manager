@@ -77,10 +77,10 @@ class WP_Job_Manager_Helper_API {
 		if ( false === $response || ! array_key_exists( $product_slug, $response ) ) {
 			return false;
 		}
-		$item              = $response[ $product_slug ];
+		$item = $response[ $product_slug ];
 		// Add keys used previously for backwards compatibility.
 		$item['activated'] = $item['success'];
-		$item['error'] = $item['error_message'];
+		$item['error']     = $item['error_message'];
 		return $item;
 	}
 
