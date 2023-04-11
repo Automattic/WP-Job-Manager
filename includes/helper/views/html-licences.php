@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
 <div class="wpjm-licences">
 	<?php if ( ! empty( $licenced_plugins ) ) : ?>
-		<?php if ( true /** $show_bulk_activate? */ ) : ?>
+		<?php if ( ! empty( $show_bulk_activate ) ) : ?>
 		<div class="wpjm-bulk-activate">
 			<b class="wpjm-bulk-activate--title">
 				Activate Job Manager Licenses

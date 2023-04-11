@@ -508,6 +508,14 @@ class WP_Job_Manager_Helper {
 			$this->handle_request();
 		}
 		$licenced_plugins = $this->get_installed_plugins();
+		$show_bulk_activate = false;
+		foreach ( array_keys( $licenced_plugins ) as $product_slug ) {
+			$licence = self::get_plugin_licence( $product_slug );
+			if ( empty( $licence['licence_key'] ) ) {
+				$show_bulk_activate = true;
+				break;
+			}
+		}
 		include_once dirname( __FILE__ ) . '/views/html-licences.php';
 	}
 
