@@ -81,6 +81,8 @@ class WP_Job_Manager_Helper_API {
 		// Add keys used previously for backwards compatibility.
 		$item['activated'] = $item['success'];
 		$item['error']     = $item['error_message'];
+		unset( $item['success'] );
+		unset( $item['error_message'] );
 		return $item;
 	}
 
