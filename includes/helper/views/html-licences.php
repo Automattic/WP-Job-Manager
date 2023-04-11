@@ -14,14 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php if ( ! empty( $licenced_plugins ) ) : ?>
 		<?php if ( true /** $show_bulk_activate? */ ) : ?>
 		<div class="wpjm-bulk-activate">
-			<div class="wpjm-bulk-activate--title">
+			<b class="wpjm-bulk-activate--title">
 				Activate Job Manager Licenses
-			</div>
+			</b>
 			<div class="wpjm-bulk-activate--description">
 				Activate all licenses at once. Easy, everything in one place.
 			</div>
 
-			<form method="post">
+			<form method="post" class="wpjm-bulk-activate--form">
 				<input type="hidden" name="action" value="bulk_activate" />
 				<?php wp_nonce_field( 'wpjm-manage-licence' ); ?>
 				<?php
@@ -34,10 +34,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 					endif;
 				endforeach;
 				?>
-				<label for="bulk_activate_licence_key"><?php esc_html_e( 'License', 'wp-job-manager' ); ?>:
-					<input type="text" id="bulk_activate_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
-				</label>
-				<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
+				<input type="text" name="licence_key" class="wpjm-bulk-activate--field" placeholder="<?php esc_attr_e( 'ENTER YOUR LICENSE KEY', 'wp-job-manager' ); ?>"/>
+				<input type="submit" class="button button-primary wpjm-bulk-activate--button" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 			</form>
 		</div>
 		<?php endif; ?>

@@ -53,6 +53,47 @@ a.wpjm-activate-licence-link:active {
 	}
 }
 
+.wpjm-bulk-activate {
+	align-items: center;
+	border: solid 1px #e2e0e2;
+	display: flex;
+	background-color: #fff;
+	flex-wrap: wrap;
+	min-height: 82px;
+	flex-direction: column;
+	padding: 10px 0;
+	margin-bottom: 20px;
+
+	&--title {
+		font-weight: bold;
+		font-size: 16px;
+		line-height: 24px;
+	}
+
+	&--description {
+		line-height: 20px;
+		font-size: 14px;
+	}
+
+	&--form {
+		text-align: center;
+		width: 100%;
+	}
+
+	&--field {
+		max-width: 500px;
+		width: 100%;
+	}
+
+	&--field, &--button {
+		height: 40px;
+	}
+
+	&--title, &--description, &--form {
+		margin: 5px;
+	}
+}
+
 .widefat {
 
 	td.column-featured_job,
