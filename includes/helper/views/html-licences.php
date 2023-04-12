@@ -45,6 +45,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 		</div>
 		<?php endif; ?>
+		<form method='post' class='plugin-licence-search'>
+			<input type='search'  class='plugin-licence-search-field' name='s' value='<?php echo esc_attr( $search_term ?? '' ); ?>' placeholder='<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>' />
+			<input type='submit' class='button plugin-licence-search-button' value='<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>'/>
+		</form>
 		<?php foreach ( $licenced_plugins as $product_slug => $plugin_data ) : ?>
 			<?php
 			$licence = WP_Job_Manager_Helper::get_plugin_licence( $product_slug );
