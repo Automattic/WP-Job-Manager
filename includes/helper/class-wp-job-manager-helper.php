@@ -844,8 +844,12 @@ class WP_Job_Manager_Helper {
 			$error = $response['error_code'];
 			$this->add_error( $product_slug, $response['error_message'] );
 		} elseif ( ! empty( $response['activated'] ) ) {
-			$this->save_licence_data( $product_slug, $licence_key );
-			$this->add_success( $product_slug, __( 'Plugin license has been activated.', 'wp-job-manager' ) );
+			WP_Job_Manager_Helper_Options::update( $product_slug, 'licence_key', $licence_key );
+			WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
+			WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
+			if ( $show_success_message ) {
+				$this->add_success( $product_slug, __( 'Plugin license has been activated.', 'wp-job-manager' ) );
+			}
 		} else {
 			$error = 'unknown';
 			$this->add_error( $product_slug, __( 'An unknown error occurred while attempting to activate the license', 'wp-job-manager' ) );
@@ -858,19 +862,6 @@ class WP_Job_Manager_Helper {
 		} else {
 			self::log_event( 'license_activated', $event_properties );
 		}
-	}
-
-	/**
-	 * Register that the license has been properly activted on the internal options.
-	 *
-	 * @param string $product_slug The product slug to update.
-	 * @param string $licence_key The licence key used to activate the product.
-	 * @return void
-	 */
-	private function save_licence_data( $product_slug, $licence_key ) {
-		WP_Job_Manager_Helper_Options::update( $product_slug, 'licence_key', $licence_key );
-		WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
-		WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
 	}
 }
 
