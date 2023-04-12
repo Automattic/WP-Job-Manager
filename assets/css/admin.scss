@@ -56,7 +56,7 @@ a.wpjm-activate-licence-link:active {
 		margin-right: 24px;
 		line-height: 36px;
 		height: 36px;
-		.plugin-licence-ok {
+		.plugin-licence-ok::before {
 			color: #008A20;
 			content: "\e802";
 		}
