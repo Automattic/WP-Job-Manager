@@ -167,7 +167,8 @@ class WP_Job_Manager_Helper_API {
 		$defaults = [
 			'timeout' => 10,
 			'headers' => [
-				'Accept' => 'application/json',
+				'Accept'       => 'application/json',
+				'Content-Type' => 'application/json',
 			],
 		];
 		$args     = wp_parse_args( $args, $defaults );
