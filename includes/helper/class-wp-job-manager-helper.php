@@ -646,14 +646,7 @@ class WP_Job_Manager_Helper {
 				$this->add_error( 'bulk-activate', __( 'There was an error activating your license key. Please try again later.', 'wp-job-manager' ) );
 				return;
 			}
-			$error_messages = array_column( $response, 'error_message' );
-			if ( empty( $error_messages ) ) {
-				// If there are no errors, we just save the licence data for each product.
-				foreach ( $product_slugs as $product_slug ) {
-					$this->save_licence_data( $product_slug, $licence_key );
-				}
-				return;
-			}
+			$error_messages        = array_column( $response, 'error_message' );
 			$error_messages_unique = array_unique( $error_messages );
 			if ( count( $product_slugs ) === count( $error_messages ) ) {
 				if ( 1 === count( $error_messages_unique ) ) {
@@ -672,7 +665,7 @@ class WP_Job_Manager_Helper {
 			if ( $skip_invalid_product && false !== $result && 'invalid_product' === $result['error_code'] ) {
 				continue;
 			}
-			$this->handle_product_activation_response( $result, $product_slug, $licence_key );
+			$this->handle_product_activation_response( $result, $product_slug, $licence_key, false );
 		}
 	}
 
@@ -827,9 +820,10 @@ class WP_Job_Manager_Helper {
 	 * @param array|boolean $response The response to handle.
 	 * @param string        $product_slug The slug of the product.
 	 * @param string        $licence_key The licence key being activated.
+	 * @param boolean       $show_success_message Whether to show a success message or not.
 	 * @return void
 	 */
-	private function handle_product_activation_response( $response, $product_slug, $licence_key ) {
+	private function handle_product_activation_response( $response, $product_slug, $licence_key, $show_success_message = true ) {
 		$error = false;
 		if ( ! isset( $response['error_message'] ) && isset( $response['error'] ) ) {
 			$response['error_message'] = $response['error'];
