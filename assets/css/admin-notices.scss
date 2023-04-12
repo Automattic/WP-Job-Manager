@@ -43,6 +43,22 @@
 			top: initial;
 		}
 	}
+
+	&.sensei-notice-error {
+		border-left-color: $notice-error;
+	}
+
+	&.sensei-notice-warning {
+		border-left-color: $notice-warning;
+	}
+
+	&.sensei-notice-info {
+		border-left-color: $notice-info;
+	}
+
+	&.sensei-notice-success {
+		border-left-color: $notice-success;
+	}
 }
 
 .wpjm-addon-update-notice-info {
