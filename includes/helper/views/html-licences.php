@@ -15,10 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php if ( ! empty( $show_bulk_activate ) ) : ?>
 		<div class="wpjm-bulk-activate">
 			<b class="wpjm-bulk-activate--title">
-				Activate Job Manager Licenses
+				<?php esc_html_e( 'Activate Job Manager Licenses', 'wp-job-manager' ); ?>
 			</b>
 			<div class="wpjm-bulk-activate--description">
-				Activate all licenses at once. Easy, everything in one place.
+				<?php esc_html_e( 'Activate all licenses at once. Easy, everything in one place.', 'wp-job-manager' ); ?>
 			</div>
 
 			<form method="post" class="wpjm-bulk-activate--form">
