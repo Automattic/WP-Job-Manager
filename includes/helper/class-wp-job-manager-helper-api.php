@@ -98,11 +98,13 @@ class WP_Job_Manager_Helper_API {
 			'wp-json/wpjmcom-licensing/v1/activate',
 			[
 				'method' => 'POST',
-				'body'   => [
-					'site_url'      => $this->get_site_url(),
-					'license_key'   => $licence_key,
-					'product_slugs' => $product_slugs,
-				],
+				'body'   => wp_json_encode(
+					[
+						'site_url'      => $this->get_site_url(),
+						'license_key'   => $licence_key,
+						'product_slugs' => $product_slugs,
+					]
+				),
 			]
 		);
 	}
