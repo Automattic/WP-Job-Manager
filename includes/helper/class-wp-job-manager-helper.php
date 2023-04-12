@@ -508,15 +508,25 @@ class WP_Job_Manager_Helper {
 			$this->handle_request();
 		}
 		$licenced_plugins = $this->get_installed_plugins();
-		$show_bulk_activate = false;
+		$show_bulk_activate = $this->show_bulk_activation_form();
+		include_once dirname( __FILE__ ) . '/views/html-licences.php';
+	}
+
+	/**
+	 * Return if we should show or not the bulk activation form.
+	 *
+	 * @param array $licenced_plugins The list of licensed plugins to handle.
+	 *
+	 * @return bool If we should show the bulk activation form or not.
+	 */
+	private function show_bulk_activation_form( $licenced_plugins ) {
 		foreach ( array_keys( $licenced_plugins ) as $product_slug ) {
 			$licence = self::get_plugin_licence( $product_slug );
-			if ( empty( $licence['licence_key'] ) ) {
-				$show_bulk_activate = true;
-				break;
+			if ( empty( $licence['licence_key'] ) && apply_filters( 'wpjm_display_license_form_for_addon', true, $product_slug ) ) {
+				return true;
 			}
 		}
-		include_once dirname( __FILE__ ) . '/views/html-licences.php';
+		return false;
 	}
 
 	/**
