@@ -659,8 +659,19 @@ class WP_Job_Manager_Helper {
 				return;
 			}
 		}
+		$skip_invalid_product = true;
+		if ( false !== $response ) {
+			$error_codes = array_unique( array_column( $response, 'error_code' ) );
+			// We skip the invalid product error if it's the only error.
+			if ( 1 === count( $error_codes ) && 'invalid_product' === $error_codes[0] ) {
+				$skip_invalid_product = false;
+			}
+		}
 		foreach ( $product_slugs as $product_slug ) {
 			$result = $response && isset( $response[ $product_slug ] ) ? $response[ $product_slug ] : false;
+			if ( $skip_invalid_product && false !== $result && 'invalid_product' === $result['error_code'] ) {
+				continue;
+			}
 			$this->handle_product_activation_response( $result, $product_slug, $licence_key );
 		}
 	}
