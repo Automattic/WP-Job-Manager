@@ -645,7 +645,7 @@ class WP_Job_Manager_Helper {
 				$this->add_error( 'bulk-activate', __( 'There was an error activating your license key. Please try again later.', 'wp-job-manager' ) );
 				return;
 			}
-			$error_messages = array_unique( array_column( $response, 'error_message' ) );
+			$error_messages = array_column( $response, 'error_message' );
 			if ( empty( $error_messages ) ) {
 				// If there are no errors, we just save the licence data for each product.
 				foreach ( $product_slugs as $product_slug ) {
@@ -653,8 +653,9 @@ class WP_Job_Manager_Helper {
 				}
 				return;
 			}
-			if ( 1 === count( $error_messages ) ) {
-				$this->add_error( 'bulk-activate', $error_messages[0] );
+			$error_messages_unique = array_unique( $error_messages );
+			if ( count( $product_slugs ) === count( $error_messages ) && 1 === count( $error_messages_unique ) ) {
+				$this->add_error( 'bulk-activate', $error_messages_unique[0] );
 				return;
 			}
 		}
