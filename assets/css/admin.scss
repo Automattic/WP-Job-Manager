@@ -90,7 +90,6 @@ a.wpjm-activate-licence-link:active {
 	border: solid 1px #e2e0e2;
 	display: flex;
 	background-color: #fff;
-	flex-wrap: wrap;
 	min-height: 82px;
 	flex-direction: column;
 	padding: 10px 0;
@@ -123,6 +122,10 @@ a.wpjm-activate-licence-link:active {
 
 	&--title, &--description, &--form {
 		margin: 5px;
+	}
+	&--notice {
+		width: calc(100% - 20px);
+		box-sizing: border-box;
 	}
 }
 

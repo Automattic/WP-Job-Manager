@@ -14,12 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php if ( ! empty( $licenced_plugins ) ) : ?>
 		<?php if ( ! empty( $show_bulk_activate ) ) : ?>
 		<div class="wpjm-bulk-activate">
-			<?php
-			$notices = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
-			foreach ( $notices as $message ) {
-				echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . '"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
-			}
-			?>
 			<b class="wpjm-bulk-activate--title">
 				Activate Job Manager Licenses
 			</b>
@@ -43,6 +37,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<input type="text" name="licence_key" class="wpjm-bulk-activate--field" placeholder="<?php esc_attr_e( 'ENTER YOUR LICENSE KEY', 'wp-job-manager' ); ?>"/>
 				<input type="submit" class="button button-primary wpjm-bulk-activate--button" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 			</form>
+			<?php
+			$notices = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
+			foreach ( $notices as $message ) {
+				echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . ' wpjm-bulk-activate--notice"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
+			}
+			?>
 		</div>
 		<?php endif; ?>
 		<?php foreach ( $licenced_plugins as $product_slug => $plugin_data ) : ?>
