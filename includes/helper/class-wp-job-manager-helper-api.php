@@ -95,7 +95,7 @@ class WP_Job_Manager_Helper_API {
 	 */
 	public function bulk_activate( $licence_key, $product_slugs ) {
 		return $this->request_endpoint(
-			'wp-json/wpjmcom-licensing/1.0/activate',
+			'wp-json/wpjmcom-licensing/v1/activate',
 			[
 				'method' => 'POST',
 				'body'   => [
