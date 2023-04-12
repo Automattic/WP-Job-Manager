@@ -635,10 +635,11 @@ class WP_Job_Manager_Helper {
 	 * @return void
 	 */
 	public function bulk_activate_licence( $licence_key, $product_slugs ) {
-		$response = $this->api->bulk_activate(
+		$response             = $this->api->bulk_activate(
 			$licence_key,
 			$product_slugs
 		);
+		$skip_invalid_product = true;
 		// We only handle bulk messaging if there are multiple products to activate.
 		if ( 1 < count( $product_slugs ) ) {
 			if ( false === $response ) {
@@ -654,17 +655,16 @@ class WP_Job_Manager_Helper {
 				return;
 			}
 			$error_messages_unique = array_unique( $error_messages );
-			if ( count( $product_slugs ) === count( $error_messages ) && 1 === count( $error_messages_unique ) ) {
-				$this->add_error( 'bulk-activate', $error_messages_unique[0] );
-				return;
-			}
-		}
-		$skip_invalid_product = true;
-		if ( false !== $response ) {
-			$error_codes = array_unique( array_column( $response, 'error_code' ) );
-			// We skip the invalid product error if it's the only error.
-			if ( 1 === count( $error_codes ) && 'invalid_product' === $error_codes[0] ) {
-				$skip_invalid_product = false;
+			if ( count( $product_slugs ) === count( $error_messages ) ) {
+				if ( 1 === count( $error_messages_unique ) ) {
+					$this->add_error( 'bulk-activate', $error_messages_unique[0] );
+					return;
+				}
+				$error_codes = array_unique( array_column( $response, 'error_code' ) );
+				if ( 1 === count( $error_codes ) && 'invalid_product' === $error_codes[0] ) {
+					// We skip the invalid product error if it's the only error, and all products returned an error.
+					$skip_invalid_product = false;
+				}
 			}
 		}
 		foreach ( $product_slugs as $product_slug ) {
