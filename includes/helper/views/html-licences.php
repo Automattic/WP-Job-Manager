@@ -76,9 +76,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 						];
 					}
 				}
-				foreach ( $notices as $message ) {
-					echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . '"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
-				}
 				if ( apply_filters( 'wpjm_display_license_form_for_addon', true, $product_slug ) ) {
 					?>
 					<form method="post" class='plugin-licence-form'>
@@ -112,6 +109,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				do_action( 'wpjm_manage_license_page_after_license_form', $product_slug );
 				?>
 			</div>
+			<?php
+			foreach ( $notices as $message ) {
+				echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . ' plugin-licence-notice"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
+			}
+			?>
 		</div>
 	<?php endforeach; ?>
 		<?php // translators: Placeholder %s is the lost license key URL. ?>
