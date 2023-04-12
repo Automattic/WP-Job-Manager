@@ -507,7 +507,7 @@ class WP_Job_Manager_Helper {
 		if ( ! empty( $_POST ) ) {
 			$this->handle_request();
 		}
-		$licenced_plugins = $this->get_installed_plugins();
+		$licenced_plugins   = $this->get_installed_plugins();
 		$show_bulk_activate = $this->show_bulk_activation_form( $licenced_plugins );
 		include_once dirname( __FILE__ ) . '/views/html-licences.php';
 	}
