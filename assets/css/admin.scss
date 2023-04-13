@@ -56,10 +56,10 @@ a.wpjm-activate-licence-link:active {
 		margin-right: 24px;
 		line-height: 36px;
 		height: 36px;
-		.plugin-licence-ok::before {
-			color: #008A20;
-			content: "\e802";
-		}
+	}
+	.plugin-licence-checkmark {
+		filter: invert(23%) sepia(74%) saturate(6542%) hue-rotate(143deg) brightness(100%) contrast(101%);
+		vertical-align: middle;
 	}
 	.plugin-licence-label {
 		line-height: 36px;

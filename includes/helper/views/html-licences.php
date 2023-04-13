@@ -94,7 +94,7 @@ $plugin_section_first = 'plugin-licence-section--first';
 					?>
 					<form method="post" class='plugin-licence-form'>
 						<?php wp_nonce_field( 'wpjm-manage-licence' ); ?>
-						<span class="jm-icon plugin-licence-ok"></span>
+						<img src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/icons/checkmark-icon.svg' ); ?>" class='plugin-licence-checkmark' aria-hidden='true' alt='<?php esc_attr_e( 'Plugin is activated', 'wp-job-manager' ); ?>'/>
 						<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="deactivate"/>
 						<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
 
