@@ -636,29 +636,33 @@ class WP_Job_Manager_Helper {
 	 * @return void
 	 */
 	public function bulk_activate_licence( $licence_key, $product_slugs ) {
-		$response             = $this->api->bulk_activate(
+		$response = $this->api->bulk_activate(
 			$licence_key,
 			$product_slugs
 		);
+		if ( false === $response ) {
+			// If response is false, the request failed, then we can consider that we returned the same error message
+			// for every product slug.
+			$response = array_fill_keys(
+				$product_slugs,
+				[
+					'error_code'    => 'connection_error',
+					'error_message' => __( 'There was an error activating your license key. Please try again later.', 'wp-job-manager' ),
+				]
+			);
+		}
+		$error_messages       = array_column( $response, 'error_message' );
 		$skip_invalid_product = true;
-		// We only handle bulk messaging if there are multiple products to activate.
-		if ( 1 < count( $product_slugs ) ) {
-			if ( false === $response ) {
-				$this->add_error( 'bulk-activate', __( 'There was an error activating your license key. Please try again later.', 'wp-job-manager' ) );
-				return;
-			}
-			$error_messages        = array_column( $response, 'error_message' );
+		// We only handle bulk errors if there are multiple products to activate, and if all products returned the same
+		// error.
+		if ( 1 < count( $product_slugs ) && count( $product_slugs ) === count( $error_messages ) ) {
+			// If there's an error for each product, then we want to show the errors for invalid products too.
+			$skip_invalid_product  = false;
 			$error_messages_unique = array_unique( $error_messages );
-			if ( count( $product_slugs ) === count( $error_messages ) ) {
-				if ( 1 === count( $error_messages_unique ) ) {
-					$this->add_error( 'bulk-activate', $error_messages_unique[0] );
-					return;
-				}
-				$error_codes = array_unique( array_column( $response, 'error_code' ) );
-				if ( 1 === count( $error_codes ) && 'invalid_product' === $error_codes[0] ) {
-					// We skip the invalid product error if it's the only error, and all products returned an error.
-					$skip_invalid_product = false;
-				}
+			// Now, if we ONLY HAVE one kind of error, then we just print it once, in the bulk form.
+			if ( 1 === count( $error_messages_unique ) ) {
+				$this->add_error( 'bulk-activate', $error_messages_unique[0] );
+				return;
 			}
 		}
 		foreach ( $product_slugs as $product_slug ) {
