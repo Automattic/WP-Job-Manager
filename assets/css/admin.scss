@@ -58,6 +58,7 @@ a.wpjm-activate-licence-link:active {
 		height: 36px;
 	}
 	.plugin-licence-checkmark {
+		// The resulting color shoudl be #008A20. Computed using https://codepen.io/sosuke/pen/Pjoqqp
 		filter: invert(23%) sepia(74%) saturate(6542%) hue-rotate(143deg) brightness(100%) contrast(101%);
 		vertical-align: middle;
 	}
