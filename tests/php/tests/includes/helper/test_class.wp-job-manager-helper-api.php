@@ -115,7 +115,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 		$this->mock_http_request( '/wp-json/wpjmcom-licensing/v1/activate',
 			[
 				$base_args['api_product_id'] => [
-					'success' => true
+					'success' => true,
+					'remaining_activations' => -1,
 				],
 			]
 		);
@@ -124,7 +125,9 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 
 		// If a request was made that we don't expect, `$response` would be false.
 		$this->assertEquals( [
-			'activated' => true
+			'activated' => true,
+			'success' => true,
+			'remaining' => -1
 		], $response );
 	}
 
@@ -140,7 +143,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 			[
 				$base_args['api_product_id'] => [
 					'success' => false,
-					'error_message' => 'some error'
+					'error_message' => 'some error',
+					'error_code' => 101,
 				],
 			]
 		);
@@ -148,8 +152,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 
 		// For activation, we return the error from the request (if there was one).
 		$this->assertEquals( [
-			'activated' => false,
-			'error' => 'some error'
+			'error' => 'some error',
+			'error_code' => 101,
 		], $response );
 	}
 
