@@ -8,6 +8,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$plugin_section_first = 'plugin-licence-section--first';
 ?>
 <h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
 <div class="wpjm-licences">
@@ -50,8 +52,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<input type='submit' class='button plugin-licence-search-button' value='<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>'/>
 		</form>
 		<?php if ( ! empty( $active_plugins ) ) : ?>
-		<div class='plugin-licence-section plugin-licence-section--active'>
+		<div class='plugin-licence-section <?php echo esc_attr( $plugin_section_first ); ?>'>
 			<?php
+			$plugin_section_first = '';
 			// translators: placeholder is the number of active addons, which will never be zero.
 			printf( esc_html__( 'Active (%d)', 'wp-job-manager' ), count( $active_plugins ) );
 			?>
@@ -114,8 +117,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php endforeach; ?>
 		<?php endif; ?>
 		<?php if ( ! empty( $inactive_plugins ) ) : ?>
-			<div class='plugin-licence-section plugin-licence-section--inactive'>
+			<div class='plugin-licence-section <?php echo esc_attr( $plugin_section_first ); ?>'>
 			<?php
+				$plugin_section_first = '';
 				// translators: placeholder is the number of inactive addons, which will never be zero.
 				printf( esc_html__( 'Inactive (%d)', 'wp-job-manager' ), count( $inactive_plugins ) );
 			?>
