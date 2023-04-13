@@ -147,6 +147,16 @@ a.wpjm-activate-licence-link:active {
 	}
 }
 
+.plugin-licence-section {
+	font-size: 13px;
+	line-height: 16px;
+	font-weight: 700;
+	margin: 18px 0;
+	&--active {
+		margin-top: -36px;
+	}
+}
+
 .widefat {
 
 	td.column-featured_job,

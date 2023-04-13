@@ -50,7 +50,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<input type='submit' class='button plugin-licence-search-button' value='<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>'/>
 		</form>
 		<?php if ( ! empty( $active_plugins ) ) : ?>
-		<div class='plugin-licence-section'>
+		<div class='plugin-licence-section plugin-licence-section--active'>
 			<?php
 			// translators: placeholder is the number of active addons, which will never be zero.
 			printf( esc_html__( 'Active (%d)', 'wp-job-manager' ), count( $active_plugins ) );
@@ -114,7 +114,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php endforeach; ?>
 		<?php endif; ?>
 		<?php if ( ! empty( $inactive_plugins ) ) : ?>
-			<div class='plugin-licence-section'>
+			<div class='plugin-licence-section plugin-licence-section--inactive'>
 			<?php
 				// translators: placeholder is the number of inactive addons, which will never be zero.
 				printf( esc_html__( 'Inactive (%d)', 'wp-job-manager' ), count( $inactive_plugins ) );
