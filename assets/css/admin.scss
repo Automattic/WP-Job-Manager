@@ -86,6 +86,19 @@ a.wpjm-activate-licence-link:active {
 	.plugin-licence-notice {
 		width: 100%;
 		margin: 0 24px 14px 12px;
+		// Apply background colors from gutenberg notices in the HTML for each notice type
+		&.notice-error {
+			background-color: #F4A2A2;
+		}
+		&.notice-warning {
+			background-color: #FEF8EE;
+		}
+		&.notice-success {
+			background-color: #EFF9F1;
+		}
+		&.notice-info {
+			background-color: #FFF;
+		}
 	}
 }
 
