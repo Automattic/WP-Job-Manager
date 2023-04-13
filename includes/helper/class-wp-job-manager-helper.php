@@ -361,10 +361,7 @@ class WP_Job_Manager_Helper {
 		if ( ! $this->is_product_installed( $product_slug ) ) {
 			return false;
 		}
-		$args = $this->get_plugin_licence( $product_slug );
-		if ( empty( $args['licence_key'] ) || empty( $args['email'] ) ) {
-			return false;
-		}
+		$args                   = $this->get_plugin_licence( $product_slug );
 		$args['api_product_id'] = $product_slug;
 
 		$response = $this->api->plugin_information( $args );
@@ -573,7 +570,11 @@ class WP_Job_Manager_Helper {
 	 */
 	public function licence_error_notices() {
 		$screen = get_current_screen();
-		if ( null === $screen || in_array( $screen->id, [ 'job_listing_page_job-manager-addons' ], true ) ) {
+		if (
+			null === $screen ||
+			in_array( $screen->id, [ 'job_listing_page_job-manager-addons' ], true ) ||
+			! current_user_can( 'update_plugins' )
+		) {
 			return;
 		}
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {

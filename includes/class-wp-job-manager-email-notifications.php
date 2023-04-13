@@ -623,8 +623,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return array
 	 */
 	private static function get_email_setting_fields( $email_notification_key ) {
-		$email_class    = self::get_email_class( $email_notification_key );
-		$core_settings  = [
+		$email_class   = self::get_email_class( $email_notification_key );
+		$core_settings = [
 			[
 				'name'    => 'plain_text',
 				'std'     => '0',
@@ -636,6 +636,19 @@ final class WP_Job_Manager_Email_Notifications {
 				],
 			],
 		];
+
+		if ( 'employer_expiring_job' !== $email_notification_key ) {
+			array_unshift(
+				$core_settings,
+				[
+					'name'        => 'email_to',
+					'placeholder' => 'Defaults to Admin email',
+					'std'         => '',
+					'label'       => __( 'Email', 'wp-job-manager' ),
+					'type'        => 'text',
+				]
+			);
+		}
 		$email_settings = call_user_func( [ $email_class, 'get_setting_fields' ] );
 		return array_merge( $core_settings, $email_settings );
 	}
