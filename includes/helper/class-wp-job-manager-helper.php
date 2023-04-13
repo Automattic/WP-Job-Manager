@@ -663,7 +663,7 @@ class WP_Job_Manager_Helper {
 		}
 		foreach ( $product_slugs as $product_slug ) {
 			$result = $response && isset( $response[ $product_slug ] ) ? $response[ $product_slug ] : false;
-			if ( $skip_invalid_product && false !== $result && 'invalid_product' === $result['error_code'] ) {
+			if ( $skip_invalid_product && false !== $result && ! $result['success'] && 'invalid_product' === $result['error_code'] ) {
 				continue;
 			}
 			$this->handle_product_activation_response( $result, $product_slug, $licence_key, false );
