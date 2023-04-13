@@ -1,4 +1,7 @@
-@import "mixins";
+$notice-error: #d63638;
+$notice-warning: #dba617;
+$notice-info: #72aee6;
+$notice-success: #43af99;
 
 .wpjm-admin-notice {
 
@@ -8,10 +11,22 @@
 
 	// Spacing.
 	gap: 10px;
-	padding: 18px 24px;
+	padding: 10px 12px;
+
+	&.wpjm-admin-notice--error {
+		border-left-color: $notice-error;
+	}
+
+	&.wpjm-addon-update--warning {
+		border-left-color: $notice-warning;
+	}
 
 	&.wpjm-admin-notice--info {
-		border-left-color: #2270B1;
+		border-left-color: $notice-info;
+	}
+
+	&.wpjm-admin-notice--success {
+		border-left-color: $notice-success;
 	}
 
 	&__top {
@@ -36,28 +51,13 @@
 			padding: 3px 12px;
 
 		}
+
 	}
 
 	button {
 		&.notice-dismiss {
 			top: initial;
 		}
-	}
-
-	&.sensei-notice-error {
-		border-left-color: $notice-error;
-	}
-
-	&.sensei-notice-warning {
-		border-left-color: $notice-warning;
-	}
-
-	&.sensei-notice-info {
-		border-left-color: $notice-info;
-	}
-
-	&.sensei-notice-success {
-		border-left-color: $notice-success;
 	}
 }
 

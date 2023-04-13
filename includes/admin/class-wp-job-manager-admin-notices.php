@@ -327,7 +327,7 @@ class WP_Job_Manager_Admin_Notices {
 		echo '<div class="wpjm-admin-notice__top">';
 		// TODO Add icon.
 		echo '<div class="wpjm-admin-notice__message">';
-		echo wp_kses( $notice['message'], self::ALLOWED_HTML );
+		echo '<strong>' . wp_kses( $notice['message'], self::ALLOWED_HTML ) . '</strong>';
 		echo '</div>';
 		if ( ! empty( $notice['actions'] ) ) {
 			echo '<div class="wpjm-admin-notice__actions">';
