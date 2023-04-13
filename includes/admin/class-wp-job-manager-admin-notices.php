@@ -134,7 +134,6 @@ class WP_Job_Manager_Admin_Notices {
 		}
 	}
 
-
 	/**
 	 * Displays notices in WP admin.
 	 *
@@ -145,6 +144,7 @@ class WP_Job_Manager_Admin_Notices {
 		 * Allows WPJM related plugins to set up their notice hooks.
 		 *
 		 * @since 1.32.0
+		 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices.
 		 */
 		do_action( 'job_manager_init_admin_notices' );
 
@@ -154,6 +154,7 @@ class WP_Job_Manager_Admin_Notices {
 			 * Allows suppression of individual admin notices.
 			 *
 			 * @since 1.32.0
+			 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to remove notices.
 			 *
 			 * @param bool $do_show_notice Set to false to prevent an admin notice from showing up.
 			 */
@@ -166,8 +167,28 @@ class WP_Job_Manager_Admin_Notices {
 			 * Handle the display of the admin notice.
 			 *
 			 * @since 1.32.0
+			 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` to add your own notices with the normalised format.
 			 */
 			do_action( 'job_manager_admin_notice_' . $notice );
+		}
+
+		$remote_notices = WP_Job_Manager_Com_API::instance()->get_notices();
+
+		/**
+		 * Filters the admin notices. Allows to add or remove notices.
+		 *
+		 * @hook   wpjm_admin_notices
+		 *
+		 * @param  {array}    $notices The admin notices.
+		 *
+		 * @return {array} The admin notices.
+		 */
+		$remote_notices = apply_filters( 'job_manager_admin_notices', $remote_notices );
+
+		foreach ($remote_notices as $remote_notice) {
+			// Check if notice has not been dismissed.
+			// Check if notice conditions apply.
+			// Display notice by calling `$this->render_notice`.
 		}
 	}
 

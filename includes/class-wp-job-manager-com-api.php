@@ -49,24 +49,14 @@ class WP_Job_Manager_Com_API {
 			[
 				'version' => JOB_MANAGER_VERSION,
 				'lang'    => determine_locale(),
-			]
+			],
+			DAY_IN_SECONDS,
+			$max_age
 		);
 
 		if ( is_wp_error( $notices ) || ! is_array( $notices ) ) {
 			$notices = [];
 		}
-
-		/**
-		 * Filters the admin notices.
-		 *
-		 * @hook   wpjm_admin_notices
-		 *
-		 * @param  {array}    $notices The admin notices.
-		 * @param  {int|null} $max_age The max age (seconds) of the source data.
-		 *
-		 * @return {array} The admin notices.
-		 */
-		$notices = apply_filters( 'wpjm_admin_notices', $notices, $max_age );
 
 		return $notices;
 	}
