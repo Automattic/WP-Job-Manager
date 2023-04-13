@@ -440,7 +440,7 @@ class WP_Job_Manager_Helper {
 	public function has_plugin_licence( $product_slug ) {
 		$licence = $this->get_plugin_licence( $product_slug );
 
-		return ! empty( $licence['licence_key'] ) && ! empty( $licence['email'] );
+		return ! empty( $licence['licence_key'] );
 	}
 
 	/**
