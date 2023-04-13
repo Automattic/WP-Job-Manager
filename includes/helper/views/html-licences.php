@@ -51,7 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 		<div class="licence-row">
 			<?php // translators: placeholder is the addon name. ?>
-			<img src="<?php echo esc_url( $plugin_data['IconURI'] ?? JOB_MANAGER_PLUGIN_URL . '/assets/images/addon-icon.png' ); ?>" alt="<?php echo esc_attr( sprintf( __( 'Plugin Icon for %s', 'wp-job-manager' ), $plugin_data['Name'] ) ); ?>" class="plugin-licence-icon"/>
+			<img src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/addon-icon.png' ); ?>" alt="<?php echo esc_attr( sprintf( __( 'Plugin Icon for %s', 'wp-job-manager' ), $plugin_data['Name'] ) ); ?>" class="plugin-licence-icon"/>
 			<div class="plugin-info">
 				<?php echo esc_html( $plugin_data['Name'] ); ?>
 				<div class="plugin-author">
