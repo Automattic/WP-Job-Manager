@@ -429,10 +429,15 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 				'enabled'    => $email_is_default_enabled ? '1' : '0',
 				'plain_text' => '0',
 			];
+			$email_settings_count = count( $email_settings ) + 1;
+
+			if ( in_array( $setting['name'], [ 'job_manager_email_admin_updated_job', 'job_manager_email_admin_new_job', 'job_manager_email_admin_expiring_job', 'job_manager_email_valid_email' ] ) ) {
+				$email_settings_count++;
+				$defaults = array_merge( array_splice( $defaults, 0, 1 ), [ 'email_to' => '' ], $defaults );
+			}
 			foreach ( $email_settings as $email_setting ) {
 				$defaults[ $email_setting['name'] ] = $email_setting['std'];
 			}
-
 			$this->assertArrayHasKey( 'type', $setting );
 			$this->assertEquals( 'multi_enable_expand', $setting['type'] );
 			$this->assertArrayHasKey( 'class', $setting );
@@ -444,7 +449,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 			$this->assertArrayHasKey( 'std', $setting );
 			$this->assertEquals( $setting['std'], $defaults );
 			$this->assertArrayHasKey( 'settings', $setting );
-			$this->assertEquals( count( $setting['settings'] ), count( $email_settings ) + 1 );
+			$this->assertEquals( count( $setting['settings'] ), $email_settings_count );
 		}
 	}
 

@@ -1,0 +1,14 @@
+name: Close issues related to a merged PR
+
+on:
+    pull_request:
+        types: [closed]
+
+jobs:
+    closeIssueOnPrMergeTrigger:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Closes issues related to a merged pull request.
+              uses: docker://ghcr.io/automattic/gha-mjolnir
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
