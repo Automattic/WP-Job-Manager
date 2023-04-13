@@ -80,9 +80,11 @@ class WP_Job_Manager_Helper_API {
 		$item = $response[ $product_slug ];
 		// Add keys used previously for backwards compatibility.
 		$item['activated'] = $item['success'];
-		$item['error']     = $item['error_message'];
 		unset( $item['success'] );
-		unset( $item['error_message'] );
+		if ( ! $item['activated'] ) {
+			$item['error'] = $item['error_message'];
+			unset( $item['error_message'] );
+		}
 		return $item;
 	}
 
