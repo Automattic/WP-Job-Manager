@@ -73,6 +73,9 @@ a.wpjm-activate-licence-link:active {
 		margin-left: 25px;
 		width: 100%;
 		max-width: 465px;
+		&--error {
+			border: 1px solid #CC1818;
+		}
 	}
 	.plugin-licence-button {
 		margin-left: 30px;
