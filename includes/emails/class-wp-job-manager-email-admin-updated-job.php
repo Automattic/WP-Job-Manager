@@ -78,7 +78,8 @@ class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Templa
 	 * @return string|array
 	 */
 	public function get_to() {
-		return get_option( 'admin_email', false );
+		$option = get_option( 'job_manager_email_admin_updated_job', false );
+		return $option['email_to'] ? $option['email_to'] : get_option( 'admin_email', false );
 	}
 
 	/**

@@ -979,3 +979,14 @@ nav.job-manager-pagination,
 		}
 	}
 }
+
+// Admin Bar Select2 overlap fixes
+#wpadminbar ~ span.select2-container, body.admin-bar > span.select2-container {
+	padding-top: 32px;
+}
+
+@media screen and ( max-width: 782px ) {
+	#wpadminbar ~ span.select2-container, body.admin-bar > span.select2-container {
+		padding-top: 46px;
+	}
+}
