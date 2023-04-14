@@ -212,95 +212,11 @@ class WP_Job_Manager_Admin_Notices {
 
 		foreach ( $notices as $notice ) {
 			// TODO: Check if notice has not been dismissed.
-			if ( self::check_notice_conditions( $notice['conditions'] ?? [] ) ) {
+			if ( WP_Job_Manager_Admin_Notices_Conditions::check( $notice['conditions'] ?? [] ) ) {
 				self::render_notice( $notice );
 			}
 		}
 	}
-
-	/**
-	 * Check notice conditions.
-	 *
-	 * @param array $conditions    The notice conditions.
-	 *
-	 * @return bool
-	 */
-	private static function check_notice_conditions( $conditions ) {
-		$has_screen_condition = false;
-		$can_see_notice       = true;
-
-		foreach ( $conditions as $condition ) {
-			if ( ! isset( $condition['type'] ) ) {
-				continue;
-			}
-
-			switch ( $condition['type'] ) {
-				case 'min_php':
-					// if ( ! isset( $condition['version'] ) ) {
-					// break;
-					// }
-					//
-					// if ( ! $this->condition_check_min_php( $condition['version'] ) ) {
-					// $can_see_notice = false;
-					// break 2;
-					// }
-
-					break;
-				case 'min_wp':
-					// if ( ! isset( $condition['version'] ) ) {
-					// break;
-					// }
-					//
-					// if ( ! $this->condition_check_min_wp( $condition['version'] ) ) {
-					// $can_see_notice = false;
-					// break 2;
-					// }
-
-					break;
-				case 'user_cap':
-					// if ( ! isset( $condition['capabilities'] ) || ! is_array( $condition['capabilities'] ) ) {
-					// break;
-					// }
-					//
-					// if ( ! $this->condition_check_capabilities( $condition['capabilities'] ) ) {
-					// $can_see_notice = false;
-					// break 2;
-					// }
-
-					break;
-				case 'screens':
-					// if ( ! isset( $condition['screens'] ) || ! is_array( $condition['screens'] ) ) {
-					// break;
-					// }
-					//
-					// $has_screen_condition = true;
-					// if ( ! $this->condition_check_screen( $condition['screens'], $screen_id ) ) {
-					// $can_see_notice = false;
-					// break 2;
-					// }
-
-					break;
-				case 'plugins':
-					// if ( ! isset( $condition['plugins'] ) || ! is_array( $condition['plugins'] ) ) {
-					// break;
-					// }
-					//
-					// if ( ! $this->condition_check_plugin( $condition['plugins'] ) ) {
-					// $can_see_notice = false;
-					// break 2;
-					// }
-					// break;
-			}
-		}
-
-		// If no screens condition was set, only show this message on Sensei screens.
-		// if ( $can_see_notice && ! $has_screen_condition && ! $this->condition_check_screen( [ self::ALL_SENSEI_SCREENS_PLACEHOLDER ] ) ) {
-		// $can_see_notice = false;
-		// }
-
-		return $can_see_notice;
-	}
-
 
 	/**
 	 * Helper for display functions to check if current request is for admin on a job manager screen.
