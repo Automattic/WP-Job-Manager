@@ -15,6 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.32.0
  */
 class WP_Job_Manager_Admin_Notices {
+	/**
+	 * Notice states.
+	 *
+	 * @deprecated $$next-version$$ This option should not be used anymore.
+	 */
 	const STATE_OPTION                  = 'job_manager_admin_notices';
 	const NOTICE_CORE_SETUP             = 'core_setup';
 	const NOTICE_ADDON_UPDATE_AVAILABLE = 'addon_update_available';
@@ -49,6 +54,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Add a notice to be displayed in WP admin.
 	 *
 	 * @since 1.32.0
+	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
 	 *
 	 * @param string $notice Name of the notice.
 	 */
@@ -65,6 +71,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Remove a notice from those displayed in WP admin.
 	 *
 	 * @since 1.32.0
+	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
 	 *
 	 * @param string $notice Name of the notice.
 	 */
@@ -82,6 +89,8 @@ class WP_Job_Manager_Admin_Notices {
 
 	/**
 	 * Clears all enqueued notices.
+	 *
+	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead.
 	 */
 	public static function reset_notices() {
 		self::$notice_state = [];
@@ -92,6 +101,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Check for a notice to be displayed in WP admin.
 	 *
 	 * @since 1.32.0
+	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead.
 	 *
 	 * @param string $notice Name of the notice. Name is not sanitized for this method.
 	 * @return bool
@@ -186,9 +196,9 @@ class WP_Job_Manager_Admin_Notices {
 		$remote_notices = apply_filters( 'job_manager_admin_notices', $remote_notices );
 
 		foreach ($remote_notices as $remote_notice) {
-			// Check if notice has not been dismissed.
-			// Check if notice conditions apply.
-			// Display notice by calling `$this->render_notice`.
+			// TODO: Check if notice has not been dismissed.
+			// TODO: Check if notice conditions apply.
+			// TODO: Display notice by calling `$this->render_notice`.
 		}
 	}
 
