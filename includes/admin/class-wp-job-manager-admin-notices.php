@@ -210,9 +210,10 @@ class WP_Job_Manager_Admin_Notices {
 
 		$notices = self::get_notices();
 
+		$condition_checker = new WP_Job_Manager_Admin_Notices_Conditions();
 		foreach ( $notices as $notice ) {
 			// TODO: Check if notice has not been dismissed.
-			if ( WP_Job_Manager_Admin_Notices_Conditions::check( $notice['conditions'] ?? [] ) ) {
+			if ( $condition_checker->check( $notice['conditions'] ?? [] ) ) {
 				self::render_notice( $notice );
 			}
 		}
