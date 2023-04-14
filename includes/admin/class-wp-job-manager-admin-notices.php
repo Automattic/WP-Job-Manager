@@ -53,7 +53,7 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Add a notice to be displayed in WP admin.
 	 *
-	 * @since 1.32.0
+	 * @since      1.32.0
 	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
 	 *
 	 * @param string $notice Name of the notice.
@@ -70,7 +70,7 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Remove a notice from those displayed in WP admin.
 	 *
-	 * @since 1.32.0
+	 * @since      1.32.0
 	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
 	 *
 	 * @param string $notice Name of the notice.
@@ -100,7 +100,7 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Check for a notice to be displayed in WP admin.
 	 *
-	 * @since 1.32.0
+	 * @since      1.32.0
 	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead.
 	 *
 	 * @param string $notice Name of the notice. Name is not sanitized for this method.
@@ -179,7 +179,7 @@ class WP_Job_Manager_Admin_Notices {
 		/**
 		 * Allows WPJM related plugins to set up their notice hooks.
 		 *
-		 * @since 1.32.0
+		 * @since      1.32.0
 		 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices.
 		 */
 		do_action( 'job_manager_init_admin_notices' );
@@ -189,7 +189,7 @@ class WP_Job_Manager_Admin_Notices {
 			/**
 			 * Allows suppression of individual admin notices.
 			 *
-			 * @since 1.32.0
+			 * @since      1.32.0
 			 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to remove notices.
 			 *
 			 * @param bool $do_show_notice Set to false to prevent an admin notice from showing up.
@@ -202,7 +202,7 @@ class WP_Job_Manager_Admin_Notices {
 			/**
 			 * Handle the display of the admin notice.
 			 *
-			 * @since 1.32.0
+			 * @since      1.32.0
 			 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` to add your own notices with the normalised format.
 			 */
 			do_action( 'job_manager_admin_notice_' . $notice );
@@ -210,12 +210,97 @@ class WP_Job_Manager_Admin_Notices {
 
 		$notices = self::get_notices();
 
-		foreach ($notices as $notice) {
+		foreach ( $notices as $notice ) {
 			// TODO: Check if notice has not been dismissed.
-			// TODO: Check if notice conditions apply.
-			// TODO: Display notice by calling `$this->render_notice`.
+			if ( self::check_notice_conditions( $notice['conditions'] ?? [] ) ) {
+				self::render_notice( $notice );
+			}
 		}
 	}
+
+	/**
+	 * Check notice conditions.
+	 *
+	 * @param array $conditions    The notice conditions.
+	 *
+	 * @return bool
+	 */
+	private static function check_notice_conditions( $conditions ) {
+		$has_screen_condition = false;
+		$can_see_notice       = true;
+
+		foreach ( $conditions as $condition ) {
+			if ( ! isset( $condition['type'] ) ) {
+				continue;
+			}
+
+			switch ( $condition['type'] ) {
+				case 'min_php':
+					// if ( ! isset( $condition['version'] ) ) {
+					// break;
+					// }
+					//
+					// if ( ! $this->condition_check_min_php( $condition['version'] ) ) {
+					// $can_see_notice = false;
+					// break 2;
+					// }
+
+					break;
+				case 'min_wp':
+					// if ( ! isset( $condition['version'] ) ) {
+					// break;
+					// }
+					//
+					// if ( ! $this->condition_check_min_wp( $condition['version'] ) ) {
+					// $can_see_notice = false;
+					// break 2;
+					// }
+
+					break;
+				case 'user_cap':
+					// if ( ! isset( $condition['capabilities'] ) || ! is_array( $condition['capabilities'] ) ) {
+					// break;
+					// }
+					//
+					// if ( ! $this->condition_check_capabilities( $condition['capabilities'] ) ) {
+					// $can_see_notice = false;
+					// break 2;
+					// }
+
+					break;
+				case 'screens':
+					// if ( ! isset( $condition['screens'] ) || ! is_array( $condition['screens'] ) ) {
+					// break;
+					// }
+					//
+					// $has_screen_condition = true;
+					// if ( ! $this->condition_check_screen( $condition['screens'], $screen_id ) ) {
+					// $can_see_notice = false;
+					// break 2;
+					// }
+
+					break;
+				case 'plugins':
+					// if ( ! isset( $condition['plugins'] ) || ! is_array( $condition['plugins'] ) ) {
+					// break;
+					// }
+					//
+					// if ( ! $this->condition_check_plugin( $condition['plugins'] ) ) {
+					// $can_see_notice = false;
+					// break 2;
+					// }
+					// break;
+			}
+		}
+
+		// If no screens condition was set, only show this message on Sensei screens.
+		// if ( $can_see_notice && ! $has_screen_condition && ! $this->condition_check_screen( [ self::ALL_SENSEI_SCREENS_PLACEHOLDER ] ) ) {
+		// $can_see_notice = false;
+		// }
+
+		return $can_see_notice;
+	}
+
 
 	/**
 	 * Helper for display functions to check if current request is for admin on a job manager screen.
