@@ -99,4 +99,28 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 		] );
 		$this->assertTrue( $result, 'Must pass for expectedly low WP version' );
 	}
+
+	public function test_check_user_cap_condition_passes_for_admin() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = WP_Job_Manager_Admin_Notices_Conditions::check( [
+			[
+				'type'         => 'user_cap',
+				'capabilities' => [ 'manage_options' ],
+			],
+		] );
+		$this->assertTrue( $result, 'Must pass for admin' );
+	}
+
+	public function test_check_user_cap_condition_fails_for_employer() {
+		$this->login_as_employer();
+		set_current_screen( 'edit-job_listing' );
+		$result = WP_Job_Manager_Admin_Notices_Conditions::check( [
+			[
+				'type'         => 'user_cap',
+				'capabilities' => [ 'manage_options' ],
+			],
+		] );
+		$this->assertFalse( $result, 'Must not pass for employer' );
+	}
 }

@@ -67,14 +67,14 @@ class WP_Job_Manager_Admin_Notices_Conditions {
 
 					break;
 				case 'user_cap':
-					// if ( ! isset( $condition['capabilities'] ) || ! is_array( $condition['capabilities'] ) ) {
-					// break;
-					// }
-					//
-					// if ( ! $this->condition_check_capabilities( $condition['capabilities'] ) ) {
-					// $can_see_notice = false;
-					// break 2;
-					// }
+					if ( ! isset( $condition['capabilities'] ) || ! is_array( $condition['capabilities'] ) ) {
+						break;
+					}
+
+					if ( ! self::condition_check_capabilities( $condition['capabilities'] ) ) {
+						$can_see_notice = false;
+						break 2;
+					}
 
 					break;
 				case 'screens':
@@ -166,5 +166,25 @@ class WP_Job_Manager_Admin_Notices_Conditions {
 	 */
 	private static function condition_check_min_wp( string $min_version ): bool {
 		return version_compare( get_bloginfo( 'version' ), $min_version, '>=' );
+	}
+
+
+	/**
+	 * Check a capability condition.
+	 *
+	 * @param array $allowed_caps Array of capabilities that the user must have.
+	 * @return bool
+	 */
+	private static function condition_check_capabilities( array $allowed_caps ): bool {
+		$condition_pass = true;
+
+		foreach ( $allowed_caps as $cap ) {
+			if ( ! current_user_can( $cap ) ) {
+				$condition_pass = false;
+				break;
+			}
+		}
+
+		return $condition_pass;
 	}
 }
