@@ -15,7 +15,7 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 		parent::tearDown();
 	}
 
-	public function test_check_passes_only_for_wpjm_screens_by_default() {
+	public function test_check_without_conditions_passes_only_for_wpjm_screens_by_default() {
 		$this->login_as_admin();
 		$result = WP_Job_Manager_Admin_Notices_Conditions::check( [] );
 		$this->assertFalse( $result, 'Must not pass for non-WPJM screens' );
@@ -26,7 +26,7 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 		}
 	}
 
-	public function test_check_passes_for_explicit_screen() {
+	public function test_check_screens_condition_passes_for_explicit_screen_id() {
 		$this->login_as_admin();
 		set_current_screen( 'some-random-screen' );
 		$result = WP_Job_Manager_Admin_Notices_Conditions::check( [
@@ -38,7 +38,7 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 		$this->assertTrue( $result, 'Must pass for explicit screen' );
 	}
 
-	public function test_check_explicit_screen_overrides_default_screens() {
+	public function test_check_screens_condition_overrides_default_screens_with_explicit_screen_id() {
 		$this->login_as_admin();
 		foreach ( WP_Job_Manager_Admin_Notices_Conditions::ALL_WPJM_SCREEN_IDS as $wpjm_screen_id ) {
 			set_current_screen( $wpjm_screen_id );
@@ -50,5 +50,29 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 			] );
 			$this->assertFalse( $result, "Must not pass for WPJM screen: $wpjm_screen_id" );
 		}
+	}
+
+	public function test_check_min_php_condition_fails_for_unexpectedly_high_php_version() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = WP_Job_Manager_Admin_Notices_Conditions::check( [
+			[
+				'type'    => 'min_php',
+				'version' => '9999',
+			],
+		] );
+		$this->assertFalse( $result, 'Must not pass for unexpectedly high PHP version' );
+	}
+
+	public function test_check_min_php_condition_passes_for_unexpectedly_low_php_version() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = WP_Job_Manager_Admin_Notices_Conditions::check( [
+			[
+				'type'    => 'min_php',
+				'version' => '1',
+			],
+		] );
+		$this->assertTrue( $result, 'Must pass for expectedly low PHP version' );
 	}
 }

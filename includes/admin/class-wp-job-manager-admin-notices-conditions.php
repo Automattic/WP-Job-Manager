@@ -45,14 +45,14 @@ class WP_Job_Manager_Admin_Notices_Conditions {
 
 			switch ( $condition['type'] ) {
 				case 'min_php':
-					// if ( ! isset( $condition['version'] ) ) {
-					// break;
-					// }
-					//
-					// if ( ! $this->condition_check_min_php( $condition['version'] ) ) {
-					// $can_see_notice = false;
-					// break 2;
-					// }
+					if ( ! isset( $condition['version'] ) ) {
+						break;
+					}
+
+					if ( ! self::condition_check_min_php( $condition['version'] ) ) {
+						$can_see_notice = false;
+						break 2;
+					}
 
 					break;
 				case 'min_wp':
@@ -146,5 +146,15 @@ class WP_Job_Manager_Admin_Notices_Conditions {
 		$screen = get_current_screen();
 
 		return $screen ? $screen->id : null;
+	}
+
+	/**
+	 * Check a PHP version condition.
+	 *
+	 * @param string $min_version Minimum PHP version.
+	 * @return bool
+	 */
+	private static function condition_check_min_php( string $min_version ): bool {
+		return version_compare( phpversion(), $min_version, '>=' );
 	}
 }
