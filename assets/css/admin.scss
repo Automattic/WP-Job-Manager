@@ -132,6 +132,10 @@ a.wpjm-activate-licence-link:active {
 		width: 100%;
 	}
 
+	&--field-error {
+		border: 1px solid #CC1818 !important;
+	}
+
 	&--field, &--button {
 		height: 40px;
 	}

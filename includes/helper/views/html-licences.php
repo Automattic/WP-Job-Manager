@@ -14,7 +14,11 @@ $plugin_section_first = 'plugin-licence-section--first';
 <h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
 <div class="wpjm-licences">
 	<?php if ( ! empty( $licenced_plugins ) ) : ?>
-		<?php if ( ! empty( $show_bulk_activate ) ) : ?>
+		<?php
+		if ( ! empty( $show_bulk_activate ) ) :
+			$notices   = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
+			$has_error = in_array( 'error', array_column( $notices, 'type' ), true );
+			?>
 		<div class="wpjm-bulk-activate">
 			<b class="wpjm-bulk-activate--title">
 				<?php esc_html_e( 'Activate Job Manager Licenses', 'wp-job-manager' ); ?>
@@ -36,11 +40,10 @@ $plugin_section_first = 'plugin-licence-section--first';
 					endif;
 				endforeach;
 				?>
-				<input type="text" name="licence_key" class="wpjm-bulk-activate--field" placeholder="<?php esc_attr_e( 'ENTER YOUR LICENSE KEY', 'wp-job-manager' ); ?>"/>
+				<input type="text" name="licence_key" class="wpjm-bulk-activate--field<?php echo $has_error ? ' wpjm-bulk-activate--field-error' : ''; ?>" placeholder="<?php esc_attr_e( 'ENTER YOUR LICENSE KEY', 'wp-job-manager' ); ?>"/>
 				<input type="submit" class="button button-primary wpjm-bulk-activate--button" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 			</form>
 			<?php
-			$notices = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
 			foreach ( $notices as $message ) {
 				echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . ' wpjm-bulk-activate--notice"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
 			}
