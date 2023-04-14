@@ -110,22 +110,25 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 	 */
 	public function test_activate_valid() {
 		$base_args = $this->get_base_args();
-		$this->set_expected_response(
+
+
+		$this->mock_http_request( '/wp-json/wpjmcom-licensing/v1/activate',
 			[
-				'args' => wp_parse_args(
-					[
-						'wc-api'  => 'wp_plugin_licencing_activation_api',
-						'request' => 'activate',
-					],
-					$base_args
-				),
+				$base_args['api_product_id'] => [
+					'success' => true,
+					'remaining_activations' => -1,
+				],
 			]
 		);
 		$instance = new WP_Job_Manager_Helper_API();
 		$response = $instance->activate( $base_args );
 
 		// If a request was made that we don't expect, `$response` would be false.
-		$this->assertEquals( $this->default_valid_response(), $response );
+		$this->assertEquals( [
+			'activated' => true,
+			'success' => true,
+			'remaining' => -1
+		], $response );
 	}
 
 	/**
@@ -135,10 +138,23 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 	public function test_activate_invalid() {
 		$base_args = $this->get_base_args();
 		$instance  = new WP_Job_Manager_Helper_API();
+
+		$this->mock_http_request( '/wp-json/wpjmcom-licensing/v1/activate',
+			[
+				$base_args['api_product_id'] => [
+					'success' => false,
+					'error_message' => 'some error',
+					'error_code' => 101,
+				],
+			]
+		);
 		$response  = $instance->activate( $base_args );
 
 		// For activation, we return the error from the request (if there was one).
-		$this->assertEquals( $this->default_invalid_response(), $response );
+		$this->assertEquals( [
+			'error' => 'some error',
+			'error_code' => 101,
+		], $response );
 	}
 
 	/**
@@ -175,6 +191,31 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 		$response  = $instance->deactivate( $base_args );
 
 		$this->assertFalse( $response );
+	}
+
+	/**
+	 * Mocks HTTP requests to a specified endpoint with a given response body.
+	 *
+	 * @param string $endpoint The request URI/path of the endpoint to mock the response for.
+	 * @param mixed $body The response body to return for the specified endpoint.
+	 *
+	 * @return void
+	 */
+	protected function mock_http_request($endpoint, $body) {
+		add_filter('pre_http_request', function($preempt, $args, $url) use ($endpoint, $body) {
+			if ($endpoint === wp_parse_url($url, PHP_URL_PATH)) {
+				return array(
+					'headers' => array(),
+					'body' => wp_json_encode($body),
+					'response' => array(
+						'code' => 200,
+						'message' => 'OK',
+					),
+					'cookies' => array(),
+				);
+			}
+			return $preempt;
+		}, 10, 3);
 	}
 
 	private function get_base_args() {
