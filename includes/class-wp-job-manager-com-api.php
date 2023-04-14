@@ -44,8 +44,8 @@ class WP_Job_Manager_Com_API {
 	 * @return array
 	 */
 	public function get_notices( $max_age = null ) {
-		$notices = $this->request(
-			'wpjm-notices/v1/notices',
+		$response = $this->request(
+			'wpjmcom-notices/1.0/notices',
 			[
 				'version' => JOB_MANAGER_VERSION,
 				'lang'    => determine_locale(),
@@ -54,11 +54,11 @@ class WP_Job_Manager_Com_API {
 			$max_age
 		);
 
-		if ( is_wp_error( $notices ) || ! is_array( $notices ) ) {
-			$notices = [];
+		if ( is_wp_error( $response ) || ! is_array( $response ) ) {
+			$response = [];
 		}
 
-		return $notices;
+		return $response['notices'];
 	}
 
 	/**
