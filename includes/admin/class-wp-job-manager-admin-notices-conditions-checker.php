@@ -5,6 +5,8 @@
  * @package wp-job-manager
  */
 
+namespace WP_Job_Manager\Admin;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -15,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since $$next-version$$
  * @internal
  */
-class WP_Job_Manager_Admin_Notices_Conditions {
+class Notices_Conditions_Checker {
 
 	const ALL_WPJM_SCREENS_PLACEHOLDER = 'wpjm*';
 

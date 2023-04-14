@@ -1,17 +1,19 @@
 <?php
 /**
- * File containing the class WP_Job_Manager_Com_API.
+ * File containing the class \WP_Job_Manager\WP_Job_Manager_Com_API.
  *
  * @package wp-job-manager
  * @since   $$next-version$$
  */
+
+namespace WP_Job_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * WP_Job_Manager_Com_API
+ * \WP_Job_Manager\WP_Job_Manager_Com_API
  */
 class WP_Job_Manager_Com_API {
 

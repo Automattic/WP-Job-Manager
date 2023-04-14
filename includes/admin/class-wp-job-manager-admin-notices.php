@@ -5,6 +5,9 @@
  * @package wp-job-manager
  */
 
+use WP_Job_Manager\Admin\Notices_Conditions_Checker;
+use WP_Job_Manager\WP_Job_Manager_Com_API;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -214,7 +217,7 @@ class WP_Job_Manager_Admin_Notices {
 
 		$notices = self::get_notices();
 
-		$condition_checker = new WP_Job_Manager_Admin_Notices_Conditions();
+		$condition_checker = new Notices_Conditions_Checker();
 		foreach ( $notices as $notice ) {
 			// TODO: Check if notice has not been dismissed.
 			if ( $condition_checker->check( $notice['conditions'] ?? [] ) ) {

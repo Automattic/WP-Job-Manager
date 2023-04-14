@@ -1,11 +1,13 @@
 <?php
 
-require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin-notices-conditions.php';
+namespace WP_Job_Manager\Admin;
+
+require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin-notices-conditions-checker.php';
 
 /**
- * @covers WP_Job_Manager_Admin_Notices_Conditions
+ * @covers Notices_Conditions_Checker
  */
-class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
+class WP_Test_Notices_Conditions_Checker extends \WPJM_BaseTest {
 
 	public function setUp() {
 		parent::setUp();
@@ -19,7 +21,7 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 		$this->login_as_admin();
 		$result = $this->get_instance()->check( [] );
 		$this->assertFalse( $result, 'Must not pass for non-WPJM screens' );
-		foreach ( WP_Job_Manager_Admin_Notices_Conditions::ALL_WPJM_SCREEN_IDS as $wpjm_screen_id ) {
+		foreach ( Notices_Conditions_Checker::ALL_WPJM_SCREEN_IDS as $wpjm_screen_id ) {
 			set_current_screen( $wpjm_screen_id );
 			$result = $this->get_instance()->check( [] );
 			$this->assertTrue( $result, "Must pass for WPJM screen: $wpjm_screen_id" );
@@ -40,7 +42,7 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 
 	public function test_check_screens_condition_overrides_default_screens_with_explicit_screen_id() {
 		$this->login_as_admin();
-		foreach ( WP_Job_Manager_Admin_Notices_Conditions::ALL_WPJM_SCREEN_IDS as $wpjm_screen_id ) {
+		foreach ( Notices_Conditions_Checker::ALL_WPJM_SCREEN_IDS as $wpjm_screen_id ) {
 			set_current_screen( $wpjm_screen_id );
 			$result = $this->get_instance()->check( [
 				[
@@ -212,11 +214,11 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 	/**
 	 * Get the mock instance.
 	 *
-	 * @return WP_Job_Manager_Admin_Notices_Conditions
+	 * @return Notices_Conditions_Checker
 	 */
 	public function get_instance( $active_plugins = [] ) {
 
-		$mock = $this->getMockBuilder( 'WP_Job_Manager_Admin_Notices_Conditions' )
+		$mock = $this->getMockBuilder( '\WP_Job_Manager\Admin\Notices_Conditions_Checker' )
 			->disableOriginalConstructor()
 			->setMethods( [ 'get_active_plugins' ] )
 			->getMock();
