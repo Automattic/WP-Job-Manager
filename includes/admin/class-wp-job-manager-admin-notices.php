@@ -23,6 +23,9 @@ class WP_Job_Manager_Admin_Notices {
 	const STATE_OPTION                  = 'job_manager_admin_notices';
 	const NOTICE_CORE_SETUP             = 'core_setup';
 	const NOTICE_ADDON_UPDATE_AVAILABLE = 'addon_update_available';
+	const DISMISS_NOTICE_NONCE_ACTION   = 'wp_job_manager_dismiss_notice';
+	const DISMISSED_NOTICES_OPTION      = 'wp_job_manager_dismissed_notices';
+	const DISMISSED_NOTICES_USER_META   = 'wp_job_manager_dismissed-notices';
 	const ALLOWED_HTML                  = [
 		'div' => [
 			'class' => [],
@@ -48,6 +51,7 @@ class WP_Job_Manager_Admin_Notices {
 		add_action( 'job_manager_init_admin_notices', [ __CLASS__, 'init_core_notices' ] );
 		add_action( 'admin_notices', [ __CLASS__, 'display_notices' ] );
 		add_action( 'wp_loaded', [ __CLASS__, 'dismiss_notices' ] );
+		add_action( 'wp_ajax_wp_job_manager_dismiss_notice', [ __CLASS__, 'handle_notice_dismiss' ] );
 	}
 
 	/**
@@ -217,6 +221,70 @@ class WP_Job_Manager_Admin_Notices {
 				self::render_notice( $notice );
 			}
 		}
+	}
+
+	/**
+	 * Get the dismissed notifications (either for the user or site-wide).
+	 *
+	 * @param bool $is_user_notification True if this is for a user notification (vs site-wide notification).
+	 *
+	 * @return array
+	 */
+	private function get_dismissed_notices( $is_user_notification ) {
+		if ( $is_user_notification ) {
+			$dismissed_notices = get_user_meta( get_current_user_id(), self::DISMISSED_NOTICES_USER_META, true );
+			if ( ! $dismissed_notices ) {
+				$dismissed_notices = [];
+			}
+		} else {
+			$dismissed_notices = get_option( self::DISMISSED_NOTICES_OPTION, [] );
+		}
+
+		return $dismissed_notices;
+	}
+
+	/**
+	 * Save dismissed notices.
+	 *
+	 * @param array $dismissed_notices    Array of dismissed notices.
+	 * @param bool  $is_user_notification True if we are setting user notifications (vs site-wide notifications).
+	 */
+	private function save_dismissed_notices( $dismissed_notices, $is_user_notification ) {
+		if ( $is_user_notification ) {
+			update_user_meta( get_current_user_id(), self::DISMISSED_NOTICES_USER_META, $dismissed_notices );
+		} else {
+			update_option( self::DISMISSED_NOTICES_OPTION, $dismissed_notices );
+		}
+	}
+
+	/**
+	 * Handle the dismissal of the notice.
+	 *
+	 * @access private
+	 */
+	public function handle_notice_dismiss() {
+		check_ajax_referer( self::DISMISS_NOTICE_NONCE_ACTION, 'nonce' );
+
+		$notices   = $this->get_notices();
+		$notice_id = isset( $_POST['notice'] ) ? sanitize_text_field( wp_unslash( $_POST['notice'] ) ) : false;
+		if ( ! $notice_id || ! isset( $notices[ $notice_id ] ) ) {
+			return;
+		}
+
+		$notice = $this->normalize_notice( $notices[ $notice_id ] );
+
+		$is_user_notification = 'user' === $notice['type'];
+		if (
+			! $notice['dismissible']
+			|| ( ! $is_user_notification && ! current_user_can( 'manage_options' ) )
+		) {
+			wp_die( '', '', 403 );
+		}
+
+		$dismissed_notices   = $this->get_dismissed_notices( $is_user_notification );
+		$dismissed_notices[] = $notice_id;
+
+		$this->save_dismissed_notices( $dismissed_notices, $is_user_notification );
 	}
 
 	/**
