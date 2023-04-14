@@ -145,6 +145,32 @@ class WP_Job_Manager_Admin_Notices {
 	}
 
 	/**
+	 * Returns all the registered notices.
+	 * This includes notices coming from wpjobmanager.com and notices added by other plugins using the `job_manager_admin_notices` filter.
+	 *
+	 * The notices will be later filtered when displayed with `display_notices()` method.
+	 *
+	 * @return mixed
+	 */
+	public static function get_notices() {
+
+		$remote_notices = WP_Job_Manager_Com_API::instance()->get_notices();
+
+		/**
+		 * Filters the admin notices. Allows to add or remove notices.
+		 *
+		 * @hook   wpjm_admin_notices
+		 *
+		 * @param  {array}    $notices The admin notices.
+		 *
+		 * @return {array} The admin notices.
+		 */
+		$all_notices = apply_filters( 'job_manager_admin_notices', $remote_notices );
+
+		return $all_notices;
+	}
+
+	/**
 	 * Displays notices in WP admin.
 	 *
 	 * Note: For internal use only. Do not call manually.
@@ -182,20 +208,9 @@ class WP_Job_Manager_Admin_Notices {
 			do_action( 'job_manager_admin_notice_' . $notice );
 		}
 
-		$remote_notices = WP_Job_Manager_Com_API::instance()->get_notices();
+		$notices = self::get_notices();
 
-		/**
-		 * Filters the admin notices. Allows to add or remove notices.
-		 *
-		 * @hook   wpjm_admin_notices
-		 *
-		 * @param  {array}    $notices The admin notices.
-		 *
-		 * @return {array} The admin notices.
-		 */
-		$remote_notices = apply_filters( 'job_manager_admin_notices', $remote_notices );
-
-		foreach ($remote_notices as $remote_notice) {
+		foreach ($notices as $notice) {
 			// TODO: Check if notice has not been dismissed.
 			// TODO: Check if notice conditions apply.
 			// TODO: Display notice by calling `$this->render_notice`.
