@@ -56,14 +56,14 @@ class WP_Job_Manager_Admin_Notices_Conditions {
 
 					break;
 				case 'min_wp':
-					// if ( ! isset( $condition['version'] ) ) {
-					// break;
-					// }
-					//
-					// if ( ! $this->condition_check_min_wp( $condition['version'] ) ) {
-					// $can_see_notice = false;
-					// break 2;
-					// }
+					if ( ! isset( $condition['version'] ) ) {
+						break;
+					}
+
+					if ( ! self::condition_check_min_wp( $condition['version'] ) ) {
+						$can_see_notice = false;
+						break 2;
+					}
 
 					break;
 				case 'user_cap':
@@ -156,5 +156,15 @@ class WP_Job_Manager_Admin_Notices_Conditions {
 	 */
 	private static function condition_check_min_php( string $min_version ): bool {
 		return version_compare( phpversion(), $min_version, '>=' );
+	}
+
+	/**
+	 * Check a WP version condition.
+	 *
+	 * @param string $min_version Minimum WP version.
+	 * @return bool
+	 */
+	private static function condition_check_min_wp( string $min_version ): bool {
+		return version_compare( get_bloginfo( 'version' ), $min_version, '>=' );
 	}
 }

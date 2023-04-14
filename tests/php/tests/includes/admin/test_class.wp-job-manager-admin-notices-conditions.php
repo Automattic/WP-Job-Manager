@@ -75,4 +75,28 @@ class WP_Test_WP_Job_Manager_Admin_Notices_Conditions extends WPJM_BaseTest {
 		] );
 		$this->assertTrue( $result, 'Must pass for expectedly low PHP version' );
 	}
+
+	public function test_check_min_wp_condition_fails_for_unexpectedly_high_wp_version() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = WP_Job_Manager_Admin_Notices_Conditions::check( [
+			[
+				'type'    => 'min_wp',
+				'version' => '9999',
+			],
+		] );
+		$this->assertFalse( $result, 'Must not pass for unexpectedly high WP version' );
+	}
+
+	public function test_check_min_wp_condition_passes_for_unexpectedly_low_wp_version() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = WP_Job_Manager_Admin_Notices_Conditions::check( [
+			[
+				'type'    => 'min_wp',
+				'version' => '1',
+			],
+		] );
+		$this->assertTrue( $result, 'Must pass for expectedly low WP version' );
+	}
 }
