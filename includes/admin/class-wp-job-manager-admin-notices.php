@@ -5,12 +5,12 @@
  * @package wp-job-manager
  */
 
-use WP_Job_Manager\Admin\Notices_Conditions_Checker;
-use WP_Job_Manager\WP_Job_Manager_Com_API;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use WP_Job_Manager\Admin\Notices_Conditions_Checker;
+use WP_Job_Manager\WP_Job_Manager_Com_API;
 
 /**
  * WP_Job_Manager_Admin_Notices class.

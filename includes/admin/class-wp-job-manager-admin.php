@@ -45,7 +45,6 @@ class WP_Job_Manager_Admin {
 		global $wp_version;
 
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-admin-notices-conditions-checker.php';
-		include_once dirname( __FILE__ ) . '/../class-wp-job-manager-com-api.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-admin-notices.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-cpt.php';
 		WP_Job_Manager_CPT::instance();
