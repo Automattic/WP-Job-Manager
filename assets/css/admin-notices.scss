@@ -13,19 +13,19 @@ $notice-success: #43af99;
 	gap: 10px;
 	padding: 10px 12px;
 
-	&.wpjm-admin-notice--error {
+	&--error {
 		border-left-color: $notice-error;
 	}
 
-	&.wpjm-addon-update--warning {
+	&--warning {
 		border-left-color: $notice-warning;
 	}
 
-	&.wpjm-admin-notice--info {
+	&--info {
 		border-left-color: $notice-info;
 	}
 
-	&.wpjm-admin-notice--success {
+	&--success {
 		border-left-color: $notice-success;
 	}
 
