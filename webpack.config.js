@@ -18,7 +18,7 @@ const files = {
 	'css/job-listings': 'css/job-listings.scss',
 	'css/job-submission': 'css/job-submission.scss',
 	'css/setup': 'css/setup.scss',
-	'css/menu': 'css/menu.scss'
+	'css/menu': 'css/menu.scss',
 };
 
 const baseDist = 'assets/dist/';
