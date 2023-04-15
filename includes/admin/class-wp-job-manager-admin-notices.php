@@ -331,9 +331,8 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Renders a notice.
 	 *
-	 * @param array $notice See `generate_notice_from_updates` for format.
 	 * @param string $notice_id  Unique identifier for the notice.
-	 * @return void
+	 * @param array  $notice See `generate_notice_from_updates` for format.
 	 */
 	private static function render_notice( $notice_id, $notice ) {
 		if ( empty( $notice['actions'] ) || ! is_array( $notice['actions'] ) ) {
@@ -354,7 +353,7 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		// TODO Remove hard-coded 'is-dismissable' CSS class once all notices are converted to use this class.
-		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info is-dismissible' . esc_attr( $notice_class ) . '"' . esc_attr__( $notice_wrapper_extra ). '>';
+		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info is-dismissible' . esc_attr( $notice_class ) . '"' . esc_html( $notice_wrapper_extra ) . '>';
 
 		echo '<div class="wpjm-admin-notice__top">';
 
@@ -396,8 +395,6 @@ class WP_Job_Manager_Admin_Notices {
 	 * Get the dismissed notifications (either for the user or site-wide).
 	 *
 	 * @param bool $is_user_notification True if this is for a user notification (vs site-wide notification).
-	 *
-	 * @return array
 	 */
 	private function get_dismissed_notices( $is_user_notification ) {
 		// TODO Implement from Sensei.
