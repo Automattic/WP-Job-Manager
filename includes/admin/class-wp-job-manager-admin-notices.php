@@ -390,34 +390,6 @@ class WP_Job_Manager_Admin_Notices {
 		echo '</div>';
 
 	}
-
-	/**
-	 * Get the dismissed notifications (either for the user or site-wide).
-	 *
-	 * @param bool $is_user_notification True if this is for a user notification (vs site-wide notification).
-	 */
-	private function get_dismissed_notices( $is_user_notification ) {
-		// TODO Implement from Sensei.
-	}
-
-	/**
-	 * Save dismissed notices.
-	 *
-	 * @param array $dismissed_notices Array of dismissed notices.
-	 * @param bool  $is_user_notification True if we are setting user notifications (vs site-wide notifications).
-	 */
-	private function save_dismissed_notices( $dismissed_notices, $is_user_notification ) {
-		// TODO Implement from Sensei.
-	}
-
-	/**
-	 * Handle the dismissal of the notice.
-	 *
-	 * @access private
-	 */
-	public function handle_notice_dismiss() {
-		// TODO Implement from Sensei.
-	}
 }
 
 WP_Job_Manager_Admin_Notices::init();
