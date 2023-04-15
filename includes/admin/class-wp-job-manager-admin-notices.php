@@ -344,7 +344,7 @@ class WP_Job_Manager_Admin_Notices {
 			$notice_class = 'wpjm-notice-' . $notice['style'];
 		}
 
-		$is_dismissible       = $notice['dismissible'];
+		$is_dismissible       = $notice['dismissible'] ?? true;
 		$notice_wrapper_extra = '';
 		if ( $is_dismissible ) {
 			wp_enqueue_script( 'job_manager_notice_dismiss' );
@@ -353,7 +353,7 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		// TODO Remove hard-coded 'is-dismissable' CSS class once all notices are converted to use this class.
-		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info is-dismissible' . esc_attr( $notice_class ) . '"' . esc_html( $notice_wrapper_extra ) . '>';
+		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info' . esc_attr( $notice_class ) . '"' . esc_html( $notice_wrapper_extra ) . '>';
 
 		echo '<div class="wpjm-admin-notice__top">';
 
