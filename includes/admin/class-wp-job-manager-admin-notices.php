@@ -339,7 +339,7 @@ class WP_Job_Manager_Admin_Notices {
 			$notice['actions'] = [];
 		}
 
-		$notice_class = '';
+		$notice_class = [];
 		if ( ! empty( $notice['style'] ) ) {
 			$notice_class = 'wpjm-notice-' . $notice['style'];
 		}
@@ -348,12 +348,12 @@ class WP_Job_Manager_Admin_Notices {
 		$notice_wrapper_extra = '';
 		if ( $is_dismissible ) {
 			wp_enqueue_script( 'job_manager_notice_dismiss' );
-			$notice_class        .= ' is-dismissible';
+			$notice_class[]       = 'is-dismissible';
 			$notice_wrapper_extra = sprintf( ' data-dismiss-action="wpjm_dismiss_notice" data-dismiss-notice="%1$s" data-dismiss-nonce="%2$s"', esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_NONCE_ACTION ) ) );
 		}
 
 		// TODO Remove hard-coded 'is-dismissable' CSS class once all notices are converted to use this class.
-		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info' . esc_attr( $notice_class ) . '"' . esc_html( $notice_wrapper_extra ) . '>';
+		echo '<div class="notice wpjm-admin-notice wpjm-admin-notice--info ' . esc_attr( implode( ' ', $notice_class ) ) . '"' . esc_html( $notice_wrapper_extra ) . '>';
 
 		echo '<div class="wpjm-admin-notice__top">';
 
