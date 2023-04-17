@@ -479,6 +479,7 @@ class WP_Job_Manager_Admin_Notices {
 			$notice_class[] = 'wpjm-admin-notice--info';
 		}
 
+		// TODO: Verify `dismissible` is the correct attribute name.
 		$is_dismissible       = $notice['dismissible'] ?? true;
 		$notice_wrapper_extra = '';
 		if ( $is_dismissible ) {
