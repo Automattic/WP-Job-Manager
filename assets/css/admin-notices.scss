@@ -36,6 +36,10 @@ $notice-success: #43af99;
 		align-items: center;
 	}
 
+	&__icon {
+		margin-right: 10px;
+	}
+
 	&__message {
 		flex: 1 1 auto;
 		font-size: 14px;

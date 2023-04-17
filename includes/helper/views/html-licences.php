@@ -12,11 +12,46 @@ if ( ! defined( 'ABSPATH' ) ) {
 <h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
 <div class="wpjm-licences">
 	<?php if ( ! empty( $licenced_plugins ) ) : ?>
+		<?php if ( ! empty( $show_bulk_activate ) ) : ?>
+		<div class="wpjm-bulk-activate">
+			<b class="wpjm-bulk-activate--title">
+				<?php esc_html_e( 'Activate Job Manager Licenses', 'wp-job-manager' ); ?>
+			</b>
+			<div class="wpjm-bulk-activate--description">
+				<?php esc_html_e( 'Activate all licenses at once. Easy, everything in one place.', 'wp-job-manager' ); ?>
+			</div>
+
+			<form method="post" class="wpjm-bulk-activate--form">
+				<input type="hidden" name="action" value="bulk_activate" />
+				<?php wp_nonce_field( 'wpjm-manage-licence' ); ?>
+				<?php
+				foreach ( $licenced_plugins as $product_slug => $plugin_data ) :
+					$licence = WP_Job_Manager_Helper::get_plugin_licence( $product_slug );
+					if ( empty( $licence['licence_key'] ) ) :
+						?>
+					<input type="hidden" name="product_slugs[]" value="<?php echo esc_attr( $product_slug ); ?>"/>
+						<?php
+					endif;
+				endforeach;
+				?>
+				<input type="text" name="licence_key" class="wpjm-bulk-activate--field" placeholder="<?php esc_attr_e( 'ENTER YOUR LICENSE KEY', 'wp-job-manager' ); ?>"/>
+				<input type="submit" class="button button-primary wpjm-bulk-activate--button" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
+			</form>
+			<?php
+			$notices = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
+			foreach ( $notices as $message ) {
+				echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . ' wpjm-bulk-activate--notice"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
+			}
+			?>
+		</div>
+		<?php endif; ?>
 		<?php foreach ( $licenced_plugins as $product_slug => $plugin_data ) : ?>
 			<?php
 			$licence = WP_Job_Manager_Helper::get_plugin_licence( $product_slug );
 			?>
 		<div class="licence-row">
+			<?php // translators: placeholder is the addon name. ?>
+			<img src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/addon-icon.png' ); ?>" alt="<?php echo esc_attr( sprintf( __( 'Plugin Icon for %s', 'wp-job-manager' ), $plugin_data['Name'] ) ); ?>" class="plugin-licence-icon"/>
 			<div class="plugin-info">
 				<?php echo esc_html( $plugin_data['Name'] ); ?>
 				<div class="plugin-author">
@@ -41,39 +76,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 						];
 					}
 				}
-				foreach ( $notices as $message ) {
-					echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . '"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
-				}
 				if ( apply_filters( 'wpjm_display_license_form_for_addon', true, $product_slug ) ) {
 					?>
-					<form method="post">
+					<form method="post" class='plugin-licence-form'>
 						<?php wp_nonce_field( 'wpjm-manage-licence' ); ?>
 						<?php
-						if ( ! empty( $licence['licence_key'] ) && ! empty( $licence['email'] ) ) {
+						if ( ! empty( $licence['licence_key'] ) ) {
 							?>
+							<span class="jm-icon plugin-licence-ok"></span>
 							<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="deactivate"/>
 							<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
 
-							<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key"><?php esc_html_e( 'License', 'wp-job-manager' ); ?>:
-								<input type="text" disabled="disabled" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX" value="<?php echo esc_attr( $licence['licence_key'] ); ?>"/>
-							</label>
-							<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email"><?php esc_html_e( 'Email', 'wp-job-manager' ); ?>:
-								<input type="email" disabled="disabled" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email" name="email" placeholder="<?php esc_attr_e( 'Email address', 'wp-job-manager' ); ?>" value="<?php echo esc_attr( $licence['email'] ); ?>"/>
-							</label>
+							<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" class="plugin-licence-label"><?php esc_html_e( 'LICENSE', 'wp-job-manager' ); ?></label>
+							<input type="text" disabled="disabled" class="plugin-licence-field" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX" value="<?php echo esc_attr( $licence['licence_key'] ); ?>"/>
 
-							<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Deactivate License', 'wp-job-manager' ); ?>" />
+
+							<input type="submit" class="button plugin-licence-button" name="submit" value="<?php esc_attr_e( 'Deactivate License', 'wp-job-manager' ); ?>" />
 							<?php
 						} else { // licence is not active.
 							?>
 							<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="activate"/>
 							<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
-							<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key"><?php esc_html_e( 'License', 'wp-job-manager' ); ?>:
-								<input type="text" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
-							</label>
-							<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email"><?php esc_html_e( 'Email', 'wp-job-manager' ); ?>:
-								<input type="email" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_email" name="email" placeholder="<?php esc_attr_e( 'Email address', 'wp-job-manager' ); ?>" value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>"/>
-							</label>
-							<input type="submit" class="button" name="submit" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
+							<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" class="plugin-licence-label"><?php esc_html_e( 'LICENSE', 'wp-job-manager' ); ?></label>
+							<input type="text" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" class="plugin-licence-field" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
+							<input type="submit" class="button plugin-licence-button" name="submit" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 							<?php
 						} // end if : else licence is not active.
 						?>
@@ -83,6 +109,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				do_action( 'wpjm_manage_license_page_after_license_form', $product_slug );
 				?>
 			</div>
+			<?php
+			foreach ( $notices as $message ) {
+				echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . ' plugin-licence-notice"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
+			}
+			?>
 		</div>
 	<?php endforeach; ?>
 		<?php // translators: Placeholder %s is the lost license key URL. ?>

@@ -32,24 +32,100 @@ a.wpjm-activate-licence-link:active {
 	}
 
 	.plugin-info {
-		font-size: 18px;
-		flex-basis: 320px;
-		padding: 0 20px;
-		margin-right: 10px;
+		font-size: 16px;
+		line-height: 24px;
+		font-weight: 600;
 
 		.plugin-author {
-			font-size: 12px;
+			font-size: 14px;
+			font-weight: 400;
 		}
 	}
-
 	.plugin-licence {
 		flex: 1;
 		flex-basis: 40%;
 		padding-bottom: 5px;
-
-		label {
-			white-space: nowrap;
+	}
+	.plugin-licence-icon {
+		width: 44px;
+		height: 44px;
+		margin: 14px 16px 14px 12px;
+	}
+	.plugin-licence-form {
+		text-align: right;
+		margin-right: 24px;
+		line-height: 36px;
+		height: 36px;
+		.plugin-licence-ok::before {
+			color: #008A20;
+			content: "\e802";
 		}
+	}
+	.plugin-licence-label {
+		line-height: 36px;
+		font-weight: 600;
+		margin-left: 22px;
+		white-space: nowrap;
+	}
+	.plugin-licence-field {
+		height: 36px;
+		margin-left: 25px;
+		width: 100%;
+		max-width: 465px;
+	}
+	.plugin-licence-button {
+		margin-left: 30px;
+		height: 36px;
+		width: 100%;
+		max-width: 140px;
+	}
+	.plugin-licence-notice {
+		width: 100%;
+		margin: 0 24px 14px 12px;
+	}
+}
+
+.wpjm-bulk-activate {
+	align-items: center;
+	border: solid 1px #e2e0e2;
+	display: flex;
+	background-color: #fff;
+	min-height: 82px;
+	flex-direction: column;
+	padding: 10px 0;
+	margin-bottom: 20px;
+
+	&--title {
+		font-weight: bold;
+		font-size: 16px;
+		line-height: 24px;
+	}
+
+	&--description {
+		line-height: 20px;
+		font-size: 14px;
+	}
+
+	&--form {
+		text-align: center;
+		width: 100%;
+	}
+
+	&--field {
+		max-width: 500px;
+		width: 100%;
+	}
+
+	&--field, &--button {
+		height: 40px;
+	}
+
+	&--title, &--description, &--form {
+		margin: 5px;
+	}
+	&--notice {
+		width: calc(100% - 20px);
+		box-sizing: border-box;
 	}
 }
 
