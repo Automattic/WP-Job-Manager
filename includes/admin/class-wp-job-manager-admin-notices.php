@@ -328,7 +328,6 @@ class WP_Job_Manager_Admin_Notices {
 	public static function handle_notice_dismiss() {
 		check_ajax_referer( self::DISMISS_NOTICE_ACTION, 'nonce' );
 
-
 		$notices   = self::get_notices();
 		$notice_id = isset( $_POST['notice'] ) ? sanitize_text_field( wp_unslash( $_POST['notice'] ) ) : false;
 		if ( ! $notice_id || ! isset( $notices[ $notice_id ] ) ) {
