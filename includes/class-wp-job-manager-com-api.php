@@ -70,7 +70,7 @@ class WP_Job_Manager_Com_API {
 	 * @param array    $args      The request GET parameters.
 	 * @param int      $cache_ttl The cache TTL.
 	 * @param int|null $max_age   The max age (seconds) of the source data. If older than this the data will be fetched again.
-	 * @return array|WP_Error
+	 * @return array|\WP_Error
 	 */
 	protected function request( $path, $args, $cache_ttl = DAY_IN_SECONDS, $max_age = null ) {
 		$transient_key = implode( '_', [ 'wpjmcom_' . $path, md5( wp_json_encode( $args ) ) ] );
