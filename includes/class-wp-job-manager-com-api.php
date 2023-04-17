@@ -73,7 +73,7 @@ class WP_Job_Manager_Com_API {
 	 * @return array|\WP_Error
 	 */
 	protected function request( $path, $args, $cache_ttl = DAY_IN_SECONDS, $max_age = null ) {
-		$transient_key = implode( '_', [ 'wpjmcom_' . $path, md5( wp_json_encode( $args ) ) ] );
+		$transient_key = $this->get_request_transient_key( $path, $args );
 		$cached_data   = get_transient( $transient_key );
 
 		// If the cached data is too old, ignore it.
@@ -152,5 +152,21 @@ class WP_Job_Manager_Com_API {
 		 * @return {array} The API url.
 		 */
 		return apply_filters( 'wpjmcom_api_url', self::API_BASE_URL );
+	}
+
+	/**
+	 * Generates the transient key for a given request.
+	 *
+	 * @param string $path The request path.
+	 * @param array  $args The request parameters.
+	 *
+	 * @return string The transient key.
+	 */
+	private function get_request_transient_key( string $path, array $args ) {
+		$data = [
+			'path' => $path,
+			'args' => $args,
+		];
+		return 'wpjmcom_' . md5( wp_json_encode( $data ) );
 	}
 }
