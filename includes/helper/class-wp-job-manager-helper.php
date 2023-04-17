@@ -504,9 +504,34 @@ class WP_Job_Manager_Helper {
 		if ( ! empty( $_POST ) ) {
 			$this->handle_request();
 		}
-		$licenced_plugins   = $this->get_installed_plugins();
+		$licenced_plugins = $this->get_installed_plugins();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No need for nonce here.
+		$search_term        = sanitize_text_field( wp_unslash( $_REQUEST['s'] ?? '' ) );
+		$licenced_plugins   = $this->search_licenced_plugins( $licenced_plugins, $search_term );
 		$show_bulk_activate = $this->show_bulk_activation_form( $licenced_plugins );
 		include_once dirname( __FILE__ ) . '/views/html-licences.php';
+	}
+
+	/**
+	 * Search for the list of licenced plugins.
+	 *
+	 * @param array  $licenced_plugins The array of licenced plugins to filter.
+	 * @param string $search_term The search term to filter by.
+	 * @return array The filtered list of licenced plugins.
+	 */
+	private function search_licenced_plugins( $licenced_plugins, $search_term ) {
+		if ( ! empty( $search_term ) ) {
+			$search_term      = strtolower( $search_term );
+			$licenced_plugins = array_filter(
+				$licenced_plugins,
+				function( $plugin ) use ( $search_term ) {
+					return str_contains( strtolower( $plugin['Name'] ), $search_term )
+						|| str_contains( strtolower( $plugin['Description'] ), $search_term )
+						|| str_contains( strtolower( $plugin['Author'] ), $search_term );
+				}
+			);
+		}
+		return $licenced_plugins;
 	}
 
 	/**

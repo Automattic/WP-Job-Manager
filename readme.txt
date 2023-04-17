@@ -1,8 +1,8 @@
 === WP Job Manager ===
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
-Requires at least: 5.8
-Tested up to: 6.1
+Requires at least: 6.0
+Tested up to: 6.2
 Requires PHP: 7.2
 Stable tag: 1.39.0
 License: GPLv3
