@@ -539,7 +539,7 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		echo '<div class="wpjm-admin-notice__message">';
-		echo '<strong>' . wp_kses( $notice['message'], self::ALLOWED_HTML ) . '</strong>';
+		echo wp_kses( $notice['message'], self::ALLOWED_HTML );
 		echo '</div>';
 		if ( ! empty( $notice['actions'] ) ) {
 			echo '<div class="wpjm-admin-notice__actions">';
