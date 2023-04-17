@@ -2,7 +2,7 @@
 
 namespace WP_Job_Manager\Admin;
 
-require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin-notices-conditions-checker.php';
+require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-notices-conditions-checker.php';
 
 /**
  * @covers Notices_Conditions_Checker
