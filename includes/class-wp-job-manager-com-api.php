@@ -57,7 +57,7 @@ class WP_Job_Manager_Com_API {
 		);
 
 		if ( is_wp_error( $response ) || ! is_array( $response ) ) {
-			$response = [];
+			return [];
 		}
 
 		return $response['notices'];
