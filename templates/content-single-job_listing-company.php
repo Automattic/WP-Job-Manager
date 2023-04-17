@@ -25,13 +25,16 @@ if ( ! get_the_company_name() ) {
 <div class="company">
 	<?php the_company_logo(); ?>
 
-	<p class="name">
-		<?php if ( $website = get_the_company_website() ) : ?>
-			<a class="website" href="<?php echo esc_url( $website ); ?>" rel="nofollow"><?php esc_html_e( 'Website', 'wp-job-manager' ); ?></a>
-		<?php endif; ?>
-		<?php the_company_twitter(); ?>
-		<?php the_company_name( '<strong>', '</strong>' ); ?>
-	</p>
-	<?php the_company_tagline( '<p class="tagline">', '</p>' ); ?>
+	<div class="company_header">
+		<p class="name">
+			<?php if ( $website = get_the_company_website() ) : ?>
+				<a class="website" href="<?php echo esc_url( $website ); ?>" rel="nofollow"><?php esc_html_e( 'Website', 'wp-job-manager' ); ?></a>
+			<?php endif; ?>
+			<?php the_company_twitter(); ?>
+			<?php the_company_name( '<strong>', '</strong>' ); ?>
+		</p>
+		<?php the_company_tagline( '<p class="tagline">', '</p>' ); ?>
+	</div>
+
 	<?php the_company_video(); ?>
 </div>
