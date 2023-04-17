@@ -39,8 +39,7 @@
 
 	 	// Setup tip tip elements and render them to the DOM
 	 	if($("#tiptip_holder").length <= 0){
-	 		var tiptip_holder = $('<div id="tiptip_holder"></div>');
-	 		tiptip_holder.css('max-width',opts.maxWidth);
+	 		var tiptip_holder = $('<div id="tiptip_holder" style="max-width:'+ opts.maxWidth +';"></div>');
 			var tiptip_content = $('<div id="tiptip_content"></div>');
 			var tiptip_arrow = $('<div id="tiptip_arrow"></div>');
 			$("body").append(tiptip_holder.html(tiptip_content).prepend(tiptip_arrow.html('<div id="tiptip_arrow_inner"></div>')));
@@ -64,35 +63,35 @@
 				var timeout = false;
 
 				if(opts.activation == "hover"){
-					org_elem.hover(function(){
+					org_elem.on( 'mouseenter', function(){
 						active_tiptip();
-					}, function(){
-						if(!opts.keepAlive){
+					} ).on( 'mouseleave', function(){
+						if(!opts.keepAlive || !tiptip_holder.is(':hover')){
 							deactive_tiptip();
 						}
 					});
 					if(opts.keepAlive){
-						tiptip_holder.hover(function(){}, function(){
+						tiptip_holder.on( 'mouseenter', function(){} ).on( 'mouseleave', function(){
 							deactive_tiptip();
 						});
 					}
 				} else if(opts.activation == "focus"){
-					org_elem.focus(function(){
+					org_elem.on( 'focus', function(){
 						active_tiptip();
-					}).blur(function(){
+					}).on( 'blur', function(){
 						deactive_tiptip();
 					});
 				} else if(opts.activation == "click"){
-					org_elem.click(function(){
+					org_elem.on( 'click', function(){
 						active_tiptip();
 						return false;
-					}).hover(function(){},function(){
+					}).on( 'mouseenter', function(){} ).on( 'mouseleave' ,function(){
 						if(!opts.keepAlive){
 							deactive_tiptip();
 						}
 					});
 					if(opts.keepAlive){
-						tiptip_holder.hover(function(){}, function(){
+						tiptip_holder.on( 'mouseenter', function(){} ).on( 'mouseleave', function(){
 							deactive_tiptip();
 						});
 					}
@@ -101,7 +100,8 @@
 				function active_tiptip(){
 					opts.enter.call(this);
 					tiptip_content.html(org_title);
-					tiptip_holder.hide().removeAttr("class").css("margin","0");
+					tiptip_holder.hide().css("margin","0");
+					tiptip_holder.removeAttr('class');
 					tiptip_arrow.removeAttr("style");
 
 					var top = parseInt(org_elem.offset()['top']);
