@@ -26,7 +26,7 @@ class WP_Job_Manager_Admin_Notices {
 	const STATE_OPTION                  = 'job_manager_admin_notices';
 	const NOTICE_CORE_SETUP             = 'core_setup';
 	const NOTICE_ADDON_UPDATE_AVAILABLE = 'addon_update_available';
-	const DISMISS_NOTICE_NONCE_ACTION   = 'wp_job_manager_dismiss_notice';
+	const DISMISS_NOTICE_ACTION         = 'wp_job_manager_dismiss_notice';
 	const DISMISSED_NOTICES_OPTION      = 'wp_job_manager_dismissed_notices';
 	const DISMISSED_NOTICES_USER_META   = 'wp_job_manager_dismissed-notices';
 
@@ -243,11 +243,46 @@ class WP_Job_Manager_Admin_Notices {
 
 		$condition_checker = new Notices_Conditions_Checker();
 		foreach ( $notices as $notice_id => $notice ) {
-			// TODO: Check if notice has not been dismissed.
+			$notice               = self::normalize_notice( $notice );
+			$is_user_notification = 'user' === $notice['type'];
+			if ( in_array( $notice_id, self::get_dismissed_notices( $is_user_notification ), true ) ) {
+				continue;
+			}
 			if ( $condition_checker->check( $notice['conditions'] ?? [] ) ) {
 				self::render_notice( $notice_id, $notice );
 			}
 		}
+	}
+
+	/**
+	 * Normalize notices.
+	 *
+	 * @param array $notice The notice configuration.
+	 *
+	 * @return array
+	 */
+	private static function normalize_notice( $notice ) {
+		if ( ! isset( $notice['conditions'] ) || ! is_array( $notice['conditions'] ) ) {
+			$notice['conditions'] = [];
+		}
+
+		if ( ! isset( $notice['type'] ) ) {
+			$notice['type'] = 'site-wide';
+		}
+
+		if ( 'site-wide' === $notice['type'] ) {
+			// Only admins can see and manage site-wide notifications.
+			$notice['conditions'][] = [
+				'type'         => 'user_cap',
+				'capabilities' => [ 'manage_options' ],
+			];
+		}
+
+		if ( ! isset( $notice['dismissible'] ) ) {
+			$notice['dismissible'] = true;
+		}
+
+		return $notice;
 	}
 
 	/**
@@ -257,7 +292,7 @@ class WP_Job_Manager_Admin_Notices {
 	 *
 	 * @return array
 	 */
-	private function get_dismissed_notices( $is_user_notification ) {
+	private static function get_dismissed_notices( $is_user_notification ) {
 		if ( $is_user_notification ) {
 			$dismissed_notices = get_user_meta( get_current_user_id(), self::DISMISSED_NOTICES_USER_META, true );
 			if ( ! $dismissed_notices ) {
@@ -276,7 +311,8 @@ class WP_Job_Manager_Admin_Notices {
 	 * @param array $dismissed_notices    Array of dismissed notices.
 	 * @param bool  $is_user_notification True if we are setting user notifications (vs site-wide notifications).
 	 */
-	private function save_dismissed_notices( $dismissed_notices, $is_user_notification ) {
+	private static function save_dismissed_notices( $dismissed_notices, $is_user_notification ) {
+		$dismissed_notices = array_unique( $dismissed_notices );
 		if ( $is_user_notification ) {
 			update_user_meta( get_current_user_id(), self::DISMISSED_NOTICES_USER_META, $dismissed_notices );
 		} else {
@@ -289,29 +325,33 @@ class WP_Job_Manager_Admin_Notices {
 	 *
 	 * @access private
 	 */
-	public function handle_notice_dismiss() {
-		check_ajax_referer( self::DISMISS_NOTICE_NONCE_ACTION, 'nonce' );
+	public static function handle_notice_dismiss() {
+		check_ajax_referer( self::DISMISS_NOTICE_ACTION, 'nonce' );
 
-		$notices   = $this->get_notices();
+
+		$notices   = self::get_notices();
 		$notice_id = isset( $_POST['notice'] ) ? sanitize_text_field( wp_unslash( $_POST['notice'] ) ) : false;
 		if ( ! $notice_id || ! isset( $notices[ $notice_id ] ) ) {
 			return;
 		}
 
-		$notice = $this->normalize_notice( $notices[ $notice_id ] );
+		$notice = self::normalize_notice( $notices[ $notice_id ] );
 
+		$is_dismissible       = $notice['dismissible'];
 		$is_user_notification = 'user' === $notice['type'];
 		if (
-			! $notice['dismissible']
+			! $is_dismissible
 			|| ( ! $is_user_notification && ! current_user_can( 'manage_options' ) )
 		) {
 			wp_die( '', '', 403 );
 		}
 
-		$dismissed_notices   = $this->get_dismissed_notices( $is_user_notification );
+		$dismissed_notices   = self::get_dismissed_notices( $is_user_notification );
 		$dismissed_notices[] = $notice_id;
 
-		$this->save_dismissed_notices( $dismissed_notices, $is_user_notification );
+		self::save_dismissed_notices( $dismissed_notices, $is_user_notification );
+
+		wp_die();
 	}
 
 	/**
@@ -479,16 +519,18 @@ class WP_Job_Manager_Admin_Notices {
 			$notice_class[] = 'wpjm-admin-notice--info';
 		}
 
-		// TODO: Verify `dismissible` is the correct attribute name.
 		$is_dismissible       = $notice['dismissible'] ?? true;
 		$notice_wrapper_extra = '';
 		if ( $is_dismissible ) {
 			wp_enqueue_script( 'job_manager_notice_dismiss' );
 			$notice_class[]       = 'is-dismissible';
-			$notice_wrapper_extra = sprintf( ' data-dismiss-action="wpjm_dismiss_notice" data-dismiss-notice="%1$s" data-dismiss-nonce="%2$s"', esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_NONCE_ACTION ) ) );
+			$notice_wrapper_extra = sprintf( ' data-dismiss-action="%1$s" data-dismiss-notice="%2$s" data-dismiss-nonce="%3$s"', esc_attr( self::DISMISS_NOTICE_ACTION ), esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_ACTION ) ) );
 		}
 
-		echo '<div class="notice wpjm-admin-notice ' . esc_attr( implode( ' ', $notice_class ) ) . '"' . esc_html( $notice_wrapper_extra ) . '>';
+		echo '<div class="notice wpjm-admin-notice ' . esc_attr( implode( ' ', $notice_class ) ) . '"';
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
+		echo $notice_wrapper_extra . '>';
 
 		echo '<div class="wpjm-admin-notice__top">';
 
