@@ -472,9 +472,9 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		$notice_class  = [];
-		$notice_styles = [ 'error', 'warning', 'success', 'info' ];
-		if ( isset( $notice['style'] ) && in_array( $notice['style'], $notice_styles, true ) ) {
-			$notice_class[] = 'wpjm-admin-notice--' . $notice['style'];
+		$notice_levels = [ 'error', 'warning', 'success', 'info' ];
+		if ( isset( $notice['level'] ) && in_array( $notice['level'], $notice_levels, true ) ) {
+			$notice_class[] = 'wpjm-admin-notice--' . $notice['level'];
 		} else {
 			$notice_class[] = 'wpjm-admin-notice--info';
 		}
