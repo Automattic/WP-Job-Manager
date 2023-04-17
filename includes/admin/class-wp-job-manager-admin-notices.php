@@ -30,7 +30,7 @@ class WP_Job_Manager_Admin_Notices {
 	const DISMISSED_NOTICES_OPTION      = 'wp_job_manager_dismissed_notices';
 	const DISMISSED_NOTICES_USER_META   = 'wp_job_manager_dismissed-notices';
 
-	const ALLOWED_HTML                  = [
+	const ALLOWED_HTML = [
 		'div' => [
 			'class' => [],
 		],
@@ -242,10 +242,10 @@ class WP_Job_Manager_Admin_Notices {
 		$notices = self::get_notices();
 
 		$condition_checker = new Notices_Conditions_Checker();
-		foreach ( $notices as $notice ) {
+		foreach ( $notices as $notice_id => $notice ) {
 			// TODO: Check if notice has not been dismissed.
 			if ( $condition_checker->check( $notice['conditions'] ?? [] ) ) {
-				self::render_notice( $notice );
+				self::render_notice( $notice_id, $notice );
 			}
 		}
 	}
@@ -463,24 +463,24 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Renders a notice.
 	 *
-	 * @param string $notice_id  Unique identifier for the notice.
-	 * @param array  $notice See `generate_notice_from_updates` for format.
+	 * @param string $notice_id Unique identifier for the notice.
+	 * @param array  $notice    See `generate_notice_from_updates` for format.
 	 */
 	private static function render_notice( $notice_id, $notice ) {
 		if ( empty( $notice['actions'] ) || ! is_array( $notice['actions'] ) ) {
 			$notice['actions'] = [];
 		}
 
-		$notice_class          = [];
-		$notice_styles         = [ 'error', 'warning', 'success', 'info' ];
-		if ( isset( $notice['style'] ) && in_array( $notice['style'], $notice_styles ) ) {
+		$notice_class  = [];
+		$notice_styles = [ 'error', 'warning', 'success', 'info' ];
+		if ( isset( $notice['style'] ) && in_array( $notice['style'], $notice_styles, true ) ) {
 			$notice_class[] = 'wpjm-admin-notice--' . $notice['style'];
 		} else {
 			$notice_class[] = 'wpjm-admin-notice--info';
 		}
 
-		$is_dismissible        = $notice['dismissible'] ?? true;
-		$notice_wrapper_extra  = '';
+		$is_dismissible       = $notice['dismissible'] ?? true;
+		$notice_wrapper_extra = '';
 		if ( $is_dismissible ) {
 			wp_enqueue_script( 'job_manager_notice_dismiss' );
 			$notice_class[]       = 'is-dismissible';
