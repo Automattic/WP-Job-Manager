@@ -65,12 +65,12 @@ class WP_Job_Manager_Admin_Notices {
 	 *
 	 * @return string path to the image
 	 */
-	private function get_icon( $icon_name ) {
+	private static function get_icon( $icon_name ) {
 		switch ( $icon_name ) {
 			case 'wpjm':
-				return '/wp-content/plugins/wp-job-manager/assets/images/wpjm-logo.png';
+				return JOB_MANAGER_PLUGIN_URL . '/assets/images/wpjm-logo.png';
 		}
-		return '/wp-content/plugins/wp-job-manager/assets/images/wpjm-logo.png';
+		return JOB_MANAGER_PLUGIN_URL . '/assets/images/wpjm-logo.png';
 	}
 
 	/**
@@ -473,7 +473,7 @@ class WP_Job_Manager_Admin_Notices {
 
 		$notice_class          = [];
 		$notice_styles         = [ 'error', 'warning', 'success', 'info' ];
-		if ( in_array( $notice['style'], $notice_styles ) ) {
+		if ( isset( $notice['style'] ) && in_array( $notice['style'], $notice_styles ) ) {
 			$notice_class[] = 'wpjm-admin-notice--' . $notice['style'];
 		} else {
 			$notice_class[] = 'wpjm-admin-notice--info';
@@ -491,8 +491,9 @@ class WP_Job_Manager_Admin_Notices {
 
 		echo '<div class="wpjm-admin-notice__top">';
 
+		$notice['icon'] = 'wpjm';
 		if ( ! empty( $notice['icon'] ) ) {
-			echo '<img src="' . esc_url( home_url() . self::get_icon( $notice['icon'] ) ) . '" class="wpjm-admin-notice__icon" alt="WP Job Manager Icon" />';
+			echo '<img src="' . esc_url( self::get_icon( $notice['icon'] ) ) . '" class="wpjm-admin-notice__icon" alt="WP Job Manager Icon" />';
 		}
 
 		echo '<div class="wpjm-admin-notice__message">';
