@@ -20,7 +20,7 @@ class WP_Job_Manager_Admin_Notices {
 	const NOTICE_ADDON_UPDATE_AVAILABLE = 'addon_update_available';
 	const DISMISS_NOTICE_NONCE_ACTION   = 'wpjm-dismiss-notice';
 
-	const ALLOWED_HTML                  = [
+	const ALLOWED_HTML = [
 		'div' => [
 			'class' => [],
 		],
@@ -352,16 +352,16 @@ class WP_Job_Manager_Admin_Notices {
 			$notice['actions'] = [];
 		}
 
-		$notice_class          = [];
-		$notice_styles         = [ 'error', 'warning', 'success', 'info' ];
-		if ( isset( $notice['style'] ) && in_array( $notice['style'], $notice_styles ) ) {
+		$notice_class  = [];
+		$notice_styles = [ 'error', 'warning', 'success', 'info' ];
+		if ( isset( $notice['style'] ) && in_array( $notice['style'], $notice_styles, true ) ) {
 			$notice_class[] = 'wpjm-admin-notice--' . $notice['style'];
 		} else {
 			$notice_class[] = 'wpjm-admin-notice--info';
 		}
 
-		$is_dismissible        = $notice['dismissible'] ?? true;
-		$notice_wrapper_extra  = '';
+		$is_dismissible       = $notice['dismissible'] ?? true;
+		$notice_wrapper_extra = '';
 		if ( $is_dismissible ) {
 			wp_enqueue_script( 'job_manager_notice_dismiss' );
 			$notice_class[]       = 'is-dismissible';
