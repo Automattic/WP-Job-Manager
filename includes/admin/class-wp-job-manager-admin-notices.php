@@ -46,7 +46,6 @@ class WP_Job_Manager_Admin_Notices {
 		add_action( 'job_manager_init_admin_notices', [ __CLASS__, 'init_core_notices' ] );
 		add_action( 'admin_notices', [ __CLASS__, 'display_notices' ] );
 		add_action( 'wp_loaded', [ __CLASS__, 'dismiss_notices' ] );
-		add_action( 'wp_ajax_wpjm_dismiss_notice', [ __CLASS__, 'handle_notice_dismiss' ] );
 	}
 
 	/**
@@ -340,7 +339,13 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		$notice_class          = [];
-		$notice_class['style'] = 'wpjm-admin-notice--' . ( $notice['style'] ?? 'info' );
+		$notice_styles         = [ 'error', 'warning', 'success', 'info' ];
+		if ( in_array( $notice['style'], $notice_styles ) ) {
+			$notice_class[] = 'wpjm-admin-notice--' . $notice['style'];
+		} else {
+			$notice_class[] = 'wpjm-admin-notice--info';
+		}
+
 		$is_dismissible        = $notice['dismissible'] ?? true;
 		$notice_wrapper_extra  = '';
 		if ( $is_dismissible ) {
