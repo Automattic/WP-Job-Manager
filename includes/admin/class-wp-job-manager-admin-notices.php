@@ -19,8 +19,7 @@ class WP_Job_Manager_Admin_Notices {
 	const NOTICE_CORE_SETUP             = 'core_setup';
 	const NOTICE_ADDON_UPDATE_AVAILABLE = 'addon_update_available';
 	const DISMISS_NOTICE_NONCE_ACTION   = 'wpjm-dismiss-notice';
-	const DISMISSED_NOTICES_OPTION      = 'wpjm-dismissed-notices';
-	const DISMISSED_NOTICES_USER_META   = 'wpjm-dismissed-notices';
+
 	const ALLOWED_HTML                  = [
 		'div' => [
 			'class' => [],
@@ -46,6 +45,21 @@ class WP_Job_Manager_Admin_Notices {
 		add_action( 'job_manager_init_admin_notices', [ __CLASS__, 'init_core_notices' ] );
 		add_action( 'admin_notices', [ __CLASS__, 'display_notices' ] );
 		add_action( 'wp_loaded', [ __CLASS__, 'dismiss_notices' ] );
+	}
+
+	/**
+	 * Get and show our icon in WPJM notices.
+	 *
+	 * @param string $icon_name Icon ID passed from API.
+	 *
+	 * @return string path to the image
+	 */
+	private function get_icon( $icon_name ) {
+		switch ( $icon_name ) {
+			case 'wpjm':
+				return '/wp-content/plugins/wp-job-manager/assets/images/wpjm-logo.png';
+		}
+		return '/wp-content/plugins/wp-job-manager/assets/images/wpjm-logo.png';
 	}
 
 	/**
@@ -354,15 +368,12 @@ class WP_Job_Manager_Admin_Notices {
 			$notice_wrapper_extra = sprintf( ' data-dismiss-action="wpjm_dismiss_notice" data-dismiss-notice="%1$s" data-dismiss-nonce="%2$s"', esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_NONCE_ACTION ) ) );
 		}
 
-		// TODO Remove hard-coded 'is-dismissable' CSS class once all notices are converted to use this class.
 		echo '<div class="notice wpjm-admin-notice ' . esc_attr( implode( ' ', $notice_class ) ) . '"' . esc_html( $notice_wrapper_extra ) . '>';
 
 		echo '<div class="wpjm-admin-notice__top">';
 
-		// TODO Implement get_icon method.
 		if ( ! empty( $notice['icon'] ) ) {
-			// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- Dynamic parts escaped in the function.
-			echo get_icon( $notice['icon'], 'wpjm-notice__icon' );
+			echo '<img src="' . esc_url( home_url() . self::get_icon( $notice['icon'] ) ) . '" class="wpjm-admin-notice__icon" alt="WP Job Manager Icon" />';
 		}
 
 		echo '<div class="wpjm-admin-notice__message">';
