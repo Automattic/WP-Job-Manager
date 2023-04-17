@@ -24,18 +24,21 @@ domReady( () => {
 		} );
 	};
 
-	document.body.addEventListener( 'click', ( event ) => {
-		const noticeContainer = event.target.closest( '.wpjm-admin-notice' );
-		if ( ! noticeContainer ) {
-			return;
-		}
+	const wpjmNotice = document.querySelector('.wpjm-admin-notice' );
+	if ( wpjmNotice ) {
+		wpjmNotice.addEventListener('click', (event) => {
+			const noticeContainer = event.target.closest('.wpjm-admin-notice');
+			if (!noticeContainer) {
+				return;
+			}
 
-		if (
-			noticeContainer.dataset.dismissNonce &&
-			noticeContainer.dataset.dismissAction &&
-			event.target.classList.contains( 'notice-dismiss' )
-		) {
-			handleDismiss( noticeContainer );
-		}
-	} );
+			if (
+				noticeContainer.dataset.dismissNonce &&
+				noticeContainer.dataset.dismissAction &&
+				event.target.classList.contains('notice-dismiss')
+			) {
+				handleDismiss(noticeContainer);
+			}
+		});
+	}
 } );
