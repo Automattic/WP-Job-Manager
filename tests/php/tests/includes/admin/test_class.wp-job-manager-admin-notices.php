@@ -1,5 +1,6 @@
 <?php
 
+require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-notices-conditions-checker.php';
 require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin-notices.php';
 
 class WP_Test_WP_Job_Manager_Admin_Notices extends WPJM_BaseTest {
