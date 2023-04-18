@@ -50,9 +50,9 @@ $plugin_section_first = 'plugin-licence-section--first';
 			?>
 		</div>
 		<?php endif; ?>
-		<form method='post' class='plugin-licence-search'>
-			<input type='search'  class='plugin-licence-search-field' name='s' value='<?php echo esc_attr( $search_term ?? '' ); ?>' placeholder='<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>' />
-			<input type='submit' class='button plugin-licence-search-button' value='<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>'/>
+		<form method="post" class="plugin-licence-search">
+			<input type="search" class="plugin-licence-search-field" name="s" value="<?php echo esc_attr( $search_term ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>" />
+			<input type="submit" class="button plugin-licence-search-button" value="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>" />
 		</form>
 		<?php if ( ! empty( $active_plugins ) ) : ?>
 		<div class='plugin-licence-section <?php echo esc_attr( $plugin_section_first ); ?>'>
@@ -95,7 +95,7 @@ $plugin_section_first = 'plugin-licence-section--first';
 				}
 				if ( apply_filters( 'wpjm_display_license_form_for_addon', true, $product_slug ) ) {
 					?>
-					<form method="post" class='plugin-licence-form'>
+					<form method="post" class="plugin-licence-form">
 						<?php wp_nonce_field( 'wpjm-manage-licence' ); ?>
 						<img src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/icons/checkmark-icon.svg' ); ?>" class='plugin-licence-checkmark' aria-hidden='true' alt='<?php esc_attr_e( 'Plugin is activated', 'wp-job-manager' ); ?>'/>
 						<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="deactivate"/>
