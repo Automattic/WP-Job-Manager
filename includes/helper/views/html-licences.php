@@ -8,11 +8,17 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$plugin_section_first = 'plugin-licence-section--first';
 ?>
 <h1 class="screen-reader-text"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></h1>
 <div class="wpjm-licences">
 	<?php if ( ! empty( $licenced_plugins ) ) : ?>
-		<?php if ( ! empty( $show_bulk_activate ) ) : ?>
+		<?php
+		if ( ! empty( $show_bulk_activate ) ) :
+			$notices   = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
+			$has_error = in_array( 'error', array_column( $notices, 'type' ), true );
+			?>
 		<div class="wpjm-bulk-activate">
 			<b class="wpjm-bulk-activate--title">
 				<?php esc_html_e( 'Activate Job Manager Licenses', 'wp-job-manager' ); ?>
@@ -34,11 +40,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 					endif;
 				endforeach;
 				?>
-				<input type="text" name="licence_key" class="wpjm-bulk-activate--field" placeholder="<?php esc_attr_e( 'ENTER YOUR LICENSE KEY', 'wp-job-manager' ); ?>"/>
+				<input type="text" name="licence_key" class="wpjm-bulk-activate--field<?php echo $has_error ? ' wpjm-bulk-activate--field-error' : ''; ?>" placeholder="<?php esc_attr_e( 'ENTER YOUR LICENSE KEY', 'wp-job-manager' ); ?>"/>
 				<input type="submit" class="button button-primary wpjm-bulk-activate--button" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 			</form>
 			<?php
-			$notices = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
 			foreach ( $notices as $message ) {
 				echo '<div class="notice inline notice-' . esc_attr( $message['type'] ) . ' wpjm-bulk-activate--notice"><p>' . wp_kses_post( $message['message'] ) . '</p></div>';
 			}
@@ -50,8 +55,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<input type="submit" class="button plugin-licence-search-button" value="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>" />
 		</form>
 		<?php if ( ! empty( $active_plugins ) ) : ?>
-		<div class='plugin-licence-section plugin-licence-section--active'>
+		<div class='plugin-licence-section <?php echo esc_attr( $plugin_section_first ); ?>'>
 			<?php
+			$plugin_section_first = '';
 			// translators: placeholder is the number of active addons, which will never be zero.
 			printf( esc_html__( 'Active (%d)', 'wp-job-manager' ), count( $active_plugins ) );
 			?>
@@ -62,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				?>
 		<div class="licence-row">
 				<?php // translators: placeholder is the addon name. ?>
-			<img src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/addon-icon.png' ); ?>" alt="<?php echo esc_attr( sprintf( __( 'Plugin Icon for %s', 'wp-job-manager' ), $plugin_data['Name'] ) ); ?>" class="plugin-licence-icon"/>
+			<img src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/addon-icon.png' ); ?>" aria-hidden="true" alt="<?php echo esc_attr( sprintf( __( 'Plugin Icon for %s', 'wp-job-manager' ), $plugin_data['Name'] ) ); ?>" class="plugin-licence-icon"/>
 			<div class="plugin-info">
 				<?php echo esc_html( $plugin_data['Name'] ); ?>
 				<div class="plugin-author">
@@ -91,7 +97,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					?>
 					<form method="post" class="plugin-licence-form">
 						<?php wp_nonce_field( 'wpjm-manage-licence' ); ?>
-						<span class="jm-icon plugin-licence-ok"></span>
+						<img src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/icons/checkmark-icon.svg' ); ?>" class='plugin-licence-checkmark' aria-hidden='true' alt='<?php esc_attr_e( 'Plugin is activated', 'wp-job-manager' ); ?>'/>
 						<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="deactivate"/>
 						<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
 
@@ -114,8 +120,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php endforeach; ?>
 		<?php endif; ?>
 		<?php if ( ! empty( $inactive_plugins ) ) : ?>
-			<div class='plugin-licence-section plugin-licence-section--inactive'>
+			<div class='plugin-licence-section <?php echo esc_attr( $plugin_section_first ); ?>'>
 			<?php
+				$plugin_section_first = '';
 				// translators: placeholder is the number of inactive addons, which will never be zero.
 				printf( esc_html__( 'Inactive (%d)', 'wp-job-manager' ), count( $inactive_plugins ) );
 			?>
@@ -152,13 +159,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 							}
 						}
 						if ( apply_filters( 'wpjm_display_license_form_for_addon', true, $product_slug ) ) {
+							$has_error = in_array( 'error', array_column( $notices, 'type' ), true );
 							?>
 							<form method="post" class='plugin-licence-form'>
 								<?php wp_nonce_field( 'wpjm-manage-licence' ); ?>
 								<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="activate"/>
 								<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
 								<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" class="plugin-licence-label"><?php esc_html_e( 'LICENSE', 'wp-job-manager' ); ?></label>
-								<input type="text" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" class="plugin-licence-field" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
+								<input type="text" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_licence_key" class="plugin-licence-field<?php echo $has_error ? ' plugin-licence-field--error' : ''; ?>" name="licence_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
 								<input type="submit" class="button plugin-licence-button" name="submit" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 							</form>
 							<?php
@@ -175,7 +183,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php endforeach; ?>
 		<?php endif; ?>
 		<?php // translators: Placeholder %s is the lost license key URL. ?>
-		<div class="notice notice-info inline"><p><?php printf( wp_kses_post( __( 'Lost your license key? <a href="%s">Retrieve it here</a>.', 'wp-job-manager' ) ), 'https://wpjobmanager.com/lost-license-key/' ); ?></p></div>
+		<p><?php printf( wp_kses_post( __( 'Lost your license key? <a href="%s">Retrieve it here</a>.', 'wp-job-manager' ) ), 'https://wpjobmanager.com/lost-license-key/' ); ?></p>
 	<?php else : ?>
 		<div class="notice notice-warning inline"><p><?php esc_html_e( 'No plugins are activated that have licenses managed by WP Job Manager.', 'wp-job-manager' ); ?></p></div>
 	<?php endif; ?>
