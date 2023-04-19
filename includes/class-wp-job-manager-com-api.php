@@ -145,11 +145,11 @@ class WP_Job_Manager_Com_API {
 		/**
 		 * Filters the wpjobmanager.com API URL.
 		 *
-		 * @hook   wpjmcom_api_url
+		 * @since $$next-version$$
 		 *
-		 * @param  {string}   $api_url The API url.
+		 * @param string $api_url The API url.
 		 *
-		 * @return {array} The API url.
+		 * @return string The API url.
 		 */
 		return apply_filters( 'wpjmcom_api_url', self::API_BASE_URL );
 	}

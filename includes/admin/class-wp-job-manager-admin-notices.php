@@ -190,11 +190,11 @@ class WP_Job_Manager_Admin_Notices {
 		/**
 		 * Filters the admin notices. Allows to add or remove notices.
 		 *
-		 * @hook   wpjm_admin_notices
+		 * @since $$next-version$$
 		 *
-		 * @param  {array}    $notices The admin notices.
+		 * @param array $notices The admin notices.
 		 *
-		 * @return {array} The admin notices.
+		 * @return array The admin notices.
 		 */
 		$all_notices = apply_filters( 'job_manager_admin_notices', $remote_notices );
 
