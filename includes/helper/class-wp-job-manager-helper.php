@@ -206,6 +206,7 @@ class WP_Job_Manager_Helper {
 			if (
 				$response
 				&& isset( $response['new_version'] )
+				&& ! empty( $response['new_version'] )
 				&& version_compare( $response['new_version'], $plugin_data['Version'], '>' )
 			) {
 				$available_addon_updates[ $product_slug ]                      = $response;
