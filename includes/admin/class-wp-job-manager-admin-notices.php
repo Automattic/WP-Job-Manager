@@ -28,7 +28,7 @@ class WP_Job_Manager_Admin_Notices {
 	const NOTICE_ADDON_UPDATE_AVAILABLE = 'addon_update_available';
 	const DISMISS_NOTICE_ACTION         = 'wp_job_manager_dismiss_notice';
 	const DISMISSED_NOTICES_OPTION      = 'wp_job_manager_dismissed_notices';
-	const DISMISSED_NOTICES_USER_META   = 'wp_job_manager_dismissed-notices';
+	const DISMISSED_NOTICES_USER_META   = 'wp_job_manager_dismissed_notices';
 
 	const ALLOWED_HTML = [
 		'div' => [
