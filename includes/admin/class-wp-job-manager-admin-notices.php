@@ -196,7 +196,7 @@ class WP_Job_Manager_Admin_Notices {
 		 *
 		 * @return array The admin notices.
 		 */
-		$all_notices = apply_filters( 'job_manager_admin_notices', $remote_notices );
+		$all_notices = apply_filters( 'wpjm_admin_notices', $remote_notices );
 
 		return $all_notices;
 	}

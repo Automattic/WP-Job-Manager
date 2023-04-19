@@ -151,7 +151,7 @@ class WP_Job_Manager_Com_API {
 		 *
 		 * @return string The API url.
 		 */
-		return apply_filters( 'wpjmcom_api_url', self::API_BASE_URL );
+		return apply_filters( 'wpjm_wpjmcom_api_url', self::API_BASE_URL );
 	}
 
 	/**
