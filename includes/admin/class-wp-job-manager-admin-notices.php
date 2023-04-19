@@ -144,13 +144,7 @@ class WP_Job_Manager_Admin_Notices {
 	public static function init_core_notices() {
 		// core_setup: Notice is used when first activating WP Job Manager.
 		add_action( 'job_manager_admin_notice_' . self::NOTICE_CORE_SETUP, [ __CLASS__, 'display_core_setup' ] );
-		add_action(
-			'job_manager_admin_notice_' . self::NOTICE_ADDON_UPDATE_AVAILABLE,
-			[
-				__CLASS__,
-				'display_addon_update_available',
-			]
-		);
+		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'maybe_add_addon_update_available_notice' ], 10, 1 );
 	}
 
 	/**
@@ -398,22 +392,23 @@ class WP_Job_Manager_Admin_Notices {
 	}
 
 	/**
-	 * Displays the notice that informs about WPJM addon updates available.
+	 * Adds notice that informs about WPJM addon updates available if any.
 	 *
-	 * Note: For internal use only. Do not call manually.
+	 * @param array $notices Existing notices.
+	 *
+	 * @internal
+	 *
+	 * @return mixed
 	 */
-	public static function display_addon_update_available() {
-		if ( ! self::is_admin_on_standard_job_manager_screen( [ 'dashboard' ] ) ) {
-			return;
-		}
-
+	public static function maybe_add_addon_update_available_notice( $notices ) {
 		$updates = get_transient( 'wpjm_addon_updates_available', [] );
-
 		if ( ! empty( $updates ) ) {
-			$notice    = self::generate_notice_from_updates( $updates );
-			$notice_id = self::NOTICE_ADDON_UPDATE_AVAILABLE;
-			self::render_notice( $notice_id, $notice );
+			$notice = self::generate_notice_from_updates( $updates );
+			if ( ! is_null( $notice ) ) {
+				$notices[ self::NOTICE_ADDON_UPDATE_AVAILABLE ] = $notice;
+			}
 		}
+		return $notices;
 	}
 
 	/**
@@ -493,9 +488,16 @@ class WP_Job_Manager_Admin_Notices {
 		];
 
 		return [
+			'type'          => 'site-wide',
 			'message'       => $message,
 			'actions'       => $actions,
 			'extra_details' => $extra_details,
+			'conditions'    => [
+				[
+					'type'    => 'screens',
+					'screens' => [ 'wpjm*', 'dashboard' ],
+				],
+			],
 		];
 	}
 

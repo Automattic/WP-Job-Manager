@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Helper functions used in WP Job Manager regarding addons and licenses.
  *
  * @package wp-job-manager
- * @since 1.29.0
+ * @since   1.29.0
  */
 class WP_Job_Manager_Helper {
 	/**
@@ -118,7 +118,7 @@ class WP_Job_Manager_Helper {
 	private function get_plugin_versions() {
 		return array_filter(
 			array_map(
-				function( $plugin ) {
+				function ( $plugin ) {
 					return $plugin['Version'];
 				},
 				$this->get_installed_plugins( false )
@@ -164,8 +164,8 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Tell the add-on when to check for and display and core WPJM version notices.
 	 *
-	 * @param bool   $do_check                       True if the add-on should do a core version check.
-	 * @param string $minimum_required_core_version  Minimum version the plugin is reporting it requires.
+	 * @param bool   $do_check                      True if the add-on should do a core version check.
+	 * @param string $minimum_required_core_version Minimum version the plugin is reporting it requires.
 	 * @return bool
 	 */
 	public function addon_core_version_check( $do_check, $minimum_required_core_version = null ) {
@@ -212,13 +212,6 @@ class WP_Job_Manager_Helper {
 				$available_addon_updates[ $product_slug ]                      = $response;
 				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 			}
-		}
-
-		// Enable or disable notices.
-		if ( ! empty( $available_addon_updates ) ) {
-			WP_Job_Manager_Admin_Notices::add_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
-		} else {
-			WP_Job_Manager_Admin_Notices::remove_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
 		}
 		set_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
 
@@ -297,9 +290,9 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Fetches the plugin information for WPJM plugins.
 	 *
-	 * @param false|object|array $response  The result object or array. Default false.
-	 * @param string             $action    The type of information being requested from the Plugin Install API.
-	 * @param object             $args      Plugin API arguments.
+	 * @param false|object|array $response The result object or array. Default false.
+	 * @param string             $action   The type of information being requested from the Plugin Install API.
+	 * @param object             $args     Plugin API arguments.
 	 *
 	 * @return false|object|array
 	 */
@@ -632,7 +625,7 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Activate multiple WPJM add-on plugins with a single licence key.
 	 *
-	 * @param string   $licence_key The licence key to activate.
+	 * @param string   $licence_key   The licence key to activate.
 	 * @param string[] $product_slugs The product slugs to activate.
 	 * @return void
 	 */
@@ -679,8 +672,8 @@ class WP_Job_Manager_Helper {
 	 * Activate a licence key for a WPJM add-on plugin.
 	 *
 	 * @param string $product_slug The slug of the product to activate.
-	 * @param string $licence_key The licence key to activate.
-	 * @param string $email The e-mail associated with the license. Optional (and actually not used).
+	 * @param string $licence_key  The licence key to activate.
+	 * @param string $email        The e-mail associated with the license. Optional (and actually not used).
 	 */
 	public function activate_licence( $product_slug, $licence_key, $email = '' ) {
 		$response = $this->api->activate(
@@ -731,8 +724,8 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Handle errors from the API.
 	 *
-	 * @param  string $product_slug
-	 * @param  array  $response
+	 * @param string $product_slug
+	 * @param array  $response
 	 */
 	private function handle_api_errors( $product_slug, $response ) {
 		$plugin_products = $this->get_installed_plugins();
@@ -759,7 +752,7 @@ class WP_Job_Manager_Helper {
 	 * Add an error message.
 	 *
 	 * @param string $product_slug The plugin slug.
-	 * @param string $message Your error message.
+	 * @param string $message      Your error message.
 	 */
 	private function add_error( $product_slug, $message ) {
 		$this->add_message( 'error', $product_slug, $message );
@@ -769,7 +762,7 @@ class WP_Job_Manager_Helper {
 	 * Add a success message.
 	 *
 	 * @param string $product_slug The plugin slug.
-	 * @param string $message Your error message.
+	 * @param string $message      Your error message.
 	 */
 	private function add_success( $product_slug, $message ) {
 		$this->add_message( 'success', $product_slug, $message );
@@ -778,9 +771,9 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Add a message.
 	 *
-	 * @param string $type Message type.
+	 * @param string $type         Message type.
 	 * @param string $product_slug The plugin slug.
-	 * @param string $message Your error message.
+	 * @param string $message      Your error message.
 	 */
 	private function add_message( $type, $product_slug, $message ) {
 		if ( ! isset( $this->licence_messages[ $product_slug ] ) ) {
@@ -823,9 +816,9 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Handle the response of the product activation API on WPJobManager.com.
 	 *
-	 * @param array|boolean $response The response to handle.
-	 * @param string        $product_slug The slug of the product.
-	 * @param string        $licence_key The licence key being activated.
+	 * @param array|boolean $response             The response to handle.
+	 * @param string        $product_slug         The slug of the product.
+	 * @param string        $licence_key          The licence key being activated.
 	 * @param boolean       $show_success_message Whether to show a success message or not.
 	 * @return void
 	 */
