@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the class WP_Job_Manager_Admin_Notices_Conditions.
+ * File containing the class Notices_Conditions_Checker.
  *
  * @package wp-job-manager
  */
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WP_Job_Manager_Admin_Notices_Conditions class.
+ * Notices_Conditions_Checker class.
  *
  * @since $$next-version$$
  * @internal
