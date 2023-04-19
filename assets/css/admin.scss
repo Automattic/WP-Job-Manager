@@ -56,10 +56,11 @@ a.wpjm-activate-licence-link:active {
 		margin-right: 24px;
 		line-height: 36px;
 		height: 36px;
-		.plugin-licence-ok::before {
-			color: #008A20;
-			content: "\e802";
-		}
+	}
+	.plugin-licence-checkmark {
+		// The resulting color shoudl be #008A20. Computed using https://codepen.io/sosuke/pen/Pjoqqp
+		filter: invert(23%) sepia(74%) saturate(6542%) hue-rotate(143deg) brightness(100%) contrast(101%);
+		vertical-align: middle;
 	}
 	.plugin-licence-label {
 		line-height: 36px;
@@ -72,6 +73,9 @@ a.wpjm-activate-licence-link:active {
 		margin-left: 25px;
 		width: 100%;
 		max-width: 465px;
+		&--error {
+			border: 1px solid #CC1818;
+		}
 	}
 	.plugin-licence-button {
 		margin-left: 30px;
@@ -82,6 +86,19 @@ a.wpjm-activate-licence-link:active {
 	.plugin-licence-notice {
 		width: 100%;
 		margin: 0 24px 14px 12px;
+		// Apply background colors from gutenberg notices in the HTML for each notice type
+		&.notice-error {
+			background-color: #F4A2A2;
+		}
+		&.notice-warning {
+			background-color: #FEF8EE;
+		}
+		&.notice-success {
+			background-color: #EFF9F1;
+		}
+		&.notice-info {
+			background-color: #FFF;
+		}
 	}
 }
 
@@ -93,7 +110,6 @@ a.wpjm-activate-licence-link:active {
 	min-height: 82px;
 	flex-direction: column;
 	padding: 10px 0;
-	margin-bottom: 20px;
 
 	&--title {
 		font-weight: bold;
@@ -116,6 +132,10 @@ a.wpjm-activate-licence-link:active {
 		width: 100%;
 	}
 
+	&--field-error {
+		border: 1px solid #CC1818 !important;
+	}
+
 	&--field, &--button {
 		height: 40px;
 	}
@@ -126,6 +146,48 @@ a.wpjm-activate-licence-link:active {
 	&--notice {
 		width: calc(100% - 20px);
 		box-sizing: border-box;
+		// Apply background colors from gutenberg notices in the HTML for each notice type
+		&.notice-error {
+			background-color: #F4A2A2;
+		}
+		&.notice-warning {
+			background-color: #FEF8EE;
+		}
+		&.notice-success {
+			background-color: #EFF9F1;
+		}
+		&.notice-info {
+			background-color: #FFF;
+		}
+	}
+}
+
+.plugin-licence-search {
+	width: 100%;
+	margin: 18px 0;
+	display: flex;
+	justify-content: end;
+	min-height: 40px;
+	.plugin-licence-search-field {
+		max-width: 180px;
+		width: 100%;
+		min-height: 40px;
+		margin-right: 3px;
+	}
+	.plugin-licence-search-button {
+		min-height: 40px;
+		max-width: 75px;
+		width: 100%;
+	}
+}
+
+.plugin-licence-section {
+	font-size: 13px;
+	line-height: 16px;
+	font-weight: 700;
+	margin: 18px 0;
+	&--first {
+		margin-top: -36px;
 	}
 }
 
