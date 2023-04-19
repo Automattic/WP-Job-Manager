@@ -213,11 +213,13 @@ class WP_Job_Manager_Helper {
 			}
 		}
 
-		// Enable or disable notices.
-		if ( ! empty( $available_addon_updates ) ) {
-			WP_Job_Manager_Admin_Notices::add_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
-		} else {
-			WP_Job_Manager_Admin_Notices::remove_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
+		if ( class_exists( 'WP_Job_Manager_Admin_Notices' ) ) {
+			// Enable or disable notices.
+			if ( ! empty( $available_addon_updates ) ) {
+				WP_Job_Manager_Admin_Notices::add_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
+			} else {
+				WP_Job_Manager_Admin_Notices::remove_notice( WP_Job_Manager_Admin_Notices::NOTICE_ADDON_UPDATE_AVAILABLE );
+			}
 		}
 		set_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
 
