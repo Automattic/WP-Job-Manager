@@ -210,6 +210,92 @@ class WP_Test_Notices_Conditions_Checker extends \WPJM_BaseTest {
 		$this->assertTrue( $result, 'Must pass when plugin is not over maximum version' );
 	}
 
+	public function test_check_date_range_condition_passes_when_date_is_in_range() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = $this->get_instance()->check( [
+			[
+				'type'       => 'date_range',
+				'start_date' => ( new \DateTime( '-1 minute' ) )->format( 'c' ),
+				'end_date'   => ( new \DateTime( '+1 minute' ) )->format( 'c' ),
+			],
+		] );
+		$this->assertTrue( $result, 'Must pass when date is between start_date and end_date' );
+	}
+
+	public function test_check_date_range_condition_fails_for_future_start_date() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = $this->get_instance()->check( [
+			[
+				'type'       => 'date_range',
+				'start_date' => ( new \DateTime( '+1 minute' ) )->format( 'c' ),
+				'end_date'   => ( new \DateTime( '+2 minute' ) )->format( 'c' ),
+			],
+		] );
+		$this->assertFalse( $result, 'Must fail when start_date is in the future' );
+	}
+
+	public function test_check_date_range_condition_fails_for_past_end_date_date() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = $this->get_instance()->check( [
+			[
+				'type'       => 'date_range',
+				'start_date' => ( new \DateTime( '-2 minute' ) )->format( 'c' ),
+				'end_date'   => ( new \DateTime( '-1 minute' ) )->format( 'c' ),
+			],
+		] );
+		$this->assertFalse( $result, 'Must fail when end_date is in the past' );
+	}
+
+	public function test_check_date_range_condition_fails_when_only_start_date_in_the_future() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = $this->get_instance()->check( [
+			[
+				'type'       => 'date_range',
+				'start_date' => ( new \DateTime( '+1 minute' ) )->format( 'c' ),
+			],
+		] );
+		$this->assertFalse( $result, 'Must fail when only start_date in the future' );
+	}
+
+	public function test_check_date_range_condition_passes_when_only_start_date_in_the_past() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = $this->get_instance()->check( [
+			[
+				'type'       => 'date_range',
+				'start_date' => ( new \DateTime( '-1 minute' ) )->format( 'c' ),
+			],
+		] );
+		$this->assertTrue( $result, 'Must pass when only start_date in the past' );
+	}
+
+	public function test_check_date_range_condition_passes_when_only_end_date_in_the_future() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = $this->get_instance()->check( [
+			[
+				'type'     => 'date_range',
+				'end_date' => ( new \DateTime( '+1 minute' ) )->format( 'c' ),
+			],
+		] );
+		$this->assertTrue( $result, 'Must pass when only end_date in the future' );
+	}
+
+	public function test_check_date_range_condition_fails_when_only_end_date_in_the_past() {
+		$this->login_as_admin();
+		set_current_screen( 'edit-job_listing' );
+		$result = $this->get_instance()->check( [
+			[
+				'type'     => 'date_range',
+				'end_date' => ( new \DateTime( '-1 minute' ) )->format( 'c' ),
+			],
+		] );
+		$this->assertFalse( $result, 'Must fail when only end_date in the past' );
+	}
 
 	/**
 	 * Get the mock instance.
