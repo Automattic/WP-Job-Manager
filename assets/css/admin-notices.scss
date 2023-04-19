@@ -42,6 +42,11 @@ $notice-success: #43af99;
 		margin-right: 10px;
 	}
 
+	&__heading {
+		margin: 5px 0;
+		font-weight: bold;
+	}
+
 	&__message {
 		flex: 1 1 auto;
 		font-size: 14px;
