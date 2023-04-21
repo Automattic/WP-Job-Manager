@@ -347,7 +347,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * @param string $notice_id  Unique identifier for the notice.
 	 * @param array  $notice See `generate_notice_from_updates` for format.
 	 */
-	private static function render_notice( $notice_id, $notice ) {
+	public static function render_notice( $notice_id, $notice ) {
 		if ( empty( $notice['actions'] ) || ! is_array( $notice['actions'] ) ) {
 			$notice['actions'] = [];
 		}
