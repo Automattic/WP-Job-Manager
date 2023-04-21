@@ -80,35 +80,6 @@ class WP_Job_Manager_Addons {
 	}
 
 	/**
-	 * Get messages for the add-ons screen
-	 *
-	 * @since  1.30.0
-	 *
-	 * @return array of objects.
-	 */
-	private function get_messages() {
-		$add_on_messages = get_transient( 'jm_wpjmcom_add_on_messages' );
-		if ( false === ( $add_on_messages ) ) {
-			$raw_messages = wp_safe_remote_get(
-				add_query_arg(
-					[
-						'version' => JOB_MANAGER_VERSION,
-						'lang'    => get_locale(),
-					],
-					self::WPJM_COM_PRODUCTS_API_BASE_URL . '/messages'
-				)
-			);
-			if ( ! is_wp_error( $raw_messages ) ) {
-				$add_on_messages = json_decode( wp_remote_retrieve_body( $raw_messages ) );
-				if ( $add_on_messages ) {
-					set_transient( 'jm_wpjmcom_add_on_messages', $add_on_messages, WEEK_IN_SECONDS );
-				}
-			}
-		}
-		return apply_filters( 'job_manager_add_on_messages', $add_on_messages );
-	}
-
-	/**
 	 * Handles output of the reports page in admin.
 	 */
 	public function output() {
@@ -140,7 +111,6 @@ class WP_Job_Manager_Addons {
 			} else {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 				$category   = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : null;
-				$messages   = $this->get_messages();
 				$categories = $this->get_categories();
 				$add_ons    = $this->get_add_ons( $category );
 
