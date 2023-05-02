@@ -9,16 +9,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use WP_Job_Manager\Admin\Notices_Conditions_Checker;
+use WP_Job_Manager\WP_Job_Manager_Com_API;
+
 /**
  * WP_Job_Manager_Admin_Notices class.
  *
  * @since 1.32.0
  */
 class WP_Job_Manager_Admin_Notices {
+	/**
+	 * Notice states.
+	 *
+	 * @deprecated $$next-version$$ This option should not be used anymore.
+	 */
 	const STATE_OPTION                  = 'job_manager_admin_notices';
 	const NOTICE_CORE_SETUP             = 'core_setup';
 	const NOTICE_ADDON_UPDATE_AVAILABLE = 'addon_update_available';
-	const DISMISS_NOTICE_NONCE_ACTION   = 'wpjm-dismiss-notice';
+	const DISMISS_NOTICE_ACTION         = 'wp_job_manager_dismiss_notice';
+	const DISMISSED_NOTICES_OPTION      = 'wp_job_manager_dismissed_notices';
+	const DISMISSED_NOTICES_USER_META   = 'wp_job_manager_dismissed_notices';
 
 	const ALLOWED_HTML = [
 		'div' => [
@@ -45,6 +55,7 @@ class WP_Job_Manager_Admin_Notices {
 		add_action( 'job_manager_init_admin_notices', [ __CLASS__, 'init_core_notices' ] );
 		add_action( 'admin_notices', [ __CLASS__, 'display_notices' ] );
 		add_action( 'wp_loaded', [ __CLASS__, 'dismiss_notices' ] );
+		add_action( 'wp_ajax_wp_job_manager_dismiss_notice', [ __CLASS__, 'handle_notice_dismiss' ] );
 	}
 
 	/**
@@ -65,9 +76,10 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Add a notice to be displayed in WP admin.
 	 *
-	 * @param string $notice Name of the notice.
+	 * @since      1.32.0
+	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
 	 *
-	 * @since 1.32.0
+	 * @param string $notice Name of the notice.
 	 */
 	public static function add_notice( $notice ) {
 		$notice = sanitize_key( $notice );
@@ -81,9 +93,10 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Remove a notice from those displayed in WP admin.
 	 *
-	 * @param string $notice Name of the notice.
+	 * @since      1.32.0
+	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
 	 *
-	 * @since 1.32.0
+	 * @param string $notice Name of the notice.
 	 */
 	public static function remove_notice( $notice ) {
 		$notice_state = self::get_notice_state();
@@ -99,6 +112,8 @@ class WP_Job_Manager_Admin_Notices {
 
 	/**
 	 * Clears all enqueued notices.
+	 *
+	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead.
 	 */
 	public static function reset_notices() {
 		self::$notice_state = [];
@@ -108,10 +123,12 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Check for a notice to be displayed in WP admin.
 	 *
+	 * @since      1.32.0
+	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead.
+	 *
 	 * @param string $notice Name of the notice. Name is not sanitized for this method.
 	 *
 	 * @return bool
-	 * @since 1.32.0
 	 */
 	public static function has_notice( $notice ) {
 		$notice_state = self::get_notice_state();
@@ -158,6 +175,31 @@ class WP_Job_Manager_Admin_Notices {
 		}
 	}
 
+	/**
+	 * Returns all the registered notices.
+	 * This includes notices coming from wpjobmanager.com and notices added by other plugins using the `job_manager_admin_notices` filter.
+	 *
+	 * The notices will be later filtered when displayed with `display_notices()` method.
+	 *
+	 * @return mixed
+	 */
+	public static function get_notices() {
+
+		$remote_notices = WP_Job_Manager_Com_API::instance()->get_notices();
+
+		/**
+		 * Filters the admin notices. Allows to add or remove notices.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param array $notices The admin notices.
+		 *
+		 * @return array The admin notices.
+		 */
+		$all_notices = apply_filters( 'wpjm_admin_notices', $remote_notices );
+
+		return $all_notices;
+	}
 
 	/**
 	 * Displays notices in WP admin.
@@ -168,7 +210,8 @@ class WP_Job_Manager_Admin_Notices {
 		/**
 		 * Allows WPJM related plugins to set up their notice hooks.
 		 *
-		 * @since 1.32.0
+		 * @since      1.32.0
+		 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices.
 		 */
 		do_action( 'job_manager_init_admin_notices' );
 
@@ -177,9 +220,10 @@ class WP_Job_Manager_Admin_Notices {
 			/**
 			 * Allows suppression of individual admin notices.
 			 *
-			 * @param bool $do_show_notice Set to false to prevent an admin notice from showing up.
+			 * @since      1.32.0
+			 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to remove notices.
 			 *
-			 * @since 1.32.0
+			 * @param bool $do_show_notice Set to false to prevent an admin notice from showing up.
 			 */
 
 			if ( ! apply_filters( 'job_manager_show_admin_notice_' . $notice, true ) ) {
@@ -189,10 +233,124 @@ class WP_Job_Manager_Admin_Notices {
 			/**
 			 * Handle the display of the admin notice.
 			 *
-			 * @since 1.32.0
+			 * @since      1.32.0
+			 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` to add your own notices with the normalised format.
 			 */
 			do_action( 'job_manager_admin_notice_' . $notice );
 		}
+
+		$notices = self::get_notices();
+
+		$condition_checker = new Notices_Conditions_Checker();
+		foreach ( $notices as $notice_id => $notice ) {
+			$notice               = self::normalize_notice( $notice );
+			$is_user_notification = 'user' === $notice['type'];
+			if ( in_array( $notice_id, self::get_dismissed_notices( $is_user_notification ), true ) ) {
+				continue;
+			}
+			if ( $condition_checker->check( $notice['conditions'] ?? [] ) ) {
+				self::render_notice( $notice_id, $notice );
+			}
+		}
+	}
+
+	/**
+	 * Normalize notices.
+	 *
+	 * @param array $notice The notice configuration.
+	 *
+	 * @return array
+	 */
+	private static function normalize_notice( $notice ) {
+		if ( ! isset( $notice['conditions'] ) || ! is_array( $notice['conditions'] ) ) {
+			$notice['conditions'] = [];
+		}
+
+		if ( ! isset( $notice['type'] ) ) {
+			$notice['type'] = 'site-wide';
+		}
+
+		if ( 'site-wide' === $notice['type'] ) {
+			// Only admins can see and manage site-wide notifications.
+			$notice['conditions'][] = [
+				'type'         => 'user_cap',
+				'capabilities' => [ 'manage_options' ],
+			];
+		}
+
+		if ( ! isset( $notice['dismissible'] ) ) {
+			$notice['dismissible'] = true;
+		}
+
+		return $notice;
+	}
+
+	/**
+	 * Get the dismissed notifications (either for the user or site-wide).
+	 *
+	 * @param bool $is_user_notification True if this is for a user notification (vs site-wide notification).
+	 *
+	 * @return array
+	 */
+	private static function get_dismissed_notices( $is_user_notification ) {
+		if ( $is_user_notification ) {
+			$dismissed_notices = get_user_meta( get_current_user_id(), self::DISMISSED_NOTICES_USER_META, true );
+			if ( ! $dismissed_notices ) {
+				$dismissed_notices = [];
+			}
+		} else {
+			$dismissed_notices = get_option( self::DISMISSED_NOTICES_OPTION, [] );
+		}
+
+		return $dismissed_notices;
+	}
+
+	/**
+	 * Save dismissed notices.
+	 *
+	 * @param array $dismissed_notices    Array of dismissed notices.
+	 * @param bool  $is_user_notification True if we are setting user notifications (vs site-wide notifications).
+	 */
+	private static function save_dismissed_notices( $dismissed_notices, $is_user_notification ) {
+		$dismissed_notices = array_unique( $dismissed_notices );
+		if ( $is_user_notification ) {
+			update_user_meta( get_current_user_id(), self::DISMISSED_NOTICES_USER_META, $dismissed_notices );
+		} else {
+			update_option( self::DISMISSED_NOTICES_OPTION, $dismissed_notices );
+		}
+	}
+
+	/**
+	 * Handle the dismissal of the notice.
+	 *
+	 * @access private
+	 */
+	public static function handle_notice_dismiss() {
+		check_ajax_referer( self::DISMISS_NOTICE_ACTION, 'nonce' );
+
+		$notices   = self::get_notices();
+		$notice_id = isset( $_POST['notice'] ) ? sanitize_text_field( wp_unslash( $_POST['notice'] ) ) : false;
+		if ( ! $notice_id || ! isset( $notices[ $notice_id ] ) ) {
+			return;
+		}
+
+		$notice = self::normalize_notice( $notices[ $notice_id ] );
+
+		$is_dismissible       = $notice['dismissible'];
+		$is_user_notification = 'user' === $notice['type'];
+		if (
+			! $is_dismissible
+			|| ( ! $is_user_notification && ! current_user_can( 'manage_options' ) )
+		) {
+			wp_die( '', '', 403 );
+		}
+
+		$dismissed_notices   = self::get_dismissed_notices( $is_user_notification );
+		$dismissed_notices[] = $notice_id;
+
+		self::save_dismissed_notices( $dismissed_notices, $is_user_notification );
+
+		wp_die();
 	}
 
 	/**
@@ -344,8 +502,8 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Renders a notice.
 	 *
-	 * @param string $notice_id  Unique identifier for the notice.
-	 * @param array  $notice See `generate_notice_from_updates` for format.
+	 * @param string $notice_id Unique identifier for the notice.
+	 * @param array  $notice    See `generate_notice_from_updates` for format.
 	 */
 	private static function render_notice( $notice_id, $notice ) {
 		if ( empty( $notice['actions'] ) || ! is_array( $notice['actions'] ) ) {
@@ -365,10 +523,13 @@ class WP_Job_Manager_Admin_Notices {
 		if ( $is_dismissible ) {
 			wp_enqueue_script( 'job_manager_notice_dismiss' );
 			$notice_class[]       = 'is-dismissible';
-			$notice_wrapper_extra = sprintf( ' data-dismiss-action="wpjm_dismiss_notice" data-dismiss-notice="%1$s" data-dismiss-nonce="%2$s"', esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_NONCE_ACTION ) ) );
+			$notice_wrapper_extra = sprintf( ' data-dismiss-action="%1$s" data-dismiss-notice="%2$s" data-dismiss-nonce="%3$s"', esc_attr( self::DISMISS_NOTICE_ACTION ), esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_ACTION ) ) );
 		}
 
-		echo '<div class="notice wpjm-admin-notice ' . esc_attr( implode( ' ', $notice_class ) ) . '"' . esc_html( $notice_wrapper_extra ) . '>';
+		echo '<div class="notice wpjm-admin-notice ' . esc_attr( implode( ' ', $notice_class ) ) . '"';
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
+		echo $notice_wrapper_extra . '>';
 
 		echo '<div class="wpjm-admin-notice__top">';
 
@@ -378,7 +539,7 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		echo '<div class="wpjm-admin-notice__message">';
-		echo '<strong>' . wp_kses( $notice['message'], self::ALLOWED_HTML ) . '</strong>';
+		echo wp_kses( $notice['message'], self::ALLOWED_HTML );
 		echo '</div>';
 		if ( ! empty( $notice['actions'] ) ) {
 			echo '<div class="wpjm-admin-notice__actions">';
