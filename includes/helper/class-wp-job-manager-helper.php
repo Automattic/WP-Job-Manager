@@ -504,14 +504,14 @@ class WP_Job_Manager_Helper {
 		$licenced_plugins   = $this->search_licenced_plugins( $licenced_plugins, $search_term );
 		$active_plugins     = array_filter(
 			$licenced_plugins,
-			function( $product_slug ) {
+			function ( $product_slug ) {
 				return $this->has_plugin_licence( $product_slug );
 			},
 			ARRAY_FILTER_USE_KEY
 		);
 		$inactive_plugins   = array_filter(
 			$licenced_plugins,
-			function( $product_slug ) {
+			function ( $product_slug ) {
 				return ! $this->has_plugin_licence( $product_slug );
 			},
 			ARRAY_FILTER_USE_KEY
@@ -524,7 +524,7 @@ class WP_Job_Manager_Helper {
 	 * Search for the list of licenced plugins.
 	 *
 	 * @param array  $licenced_plugins The array of licenced plugins to filter.
-	 * @param string $search_term The search term to filter by.
+	 * @param string $search_term      The search term to filter by.
 	 * @return array The filtered list of licenced plugins.
 	 */
 	private function search_licenced_plugins( $licenced_plugins, $search_term ) {
@@ -532,7 +532,7 @@ class WP_Job_Manager_Helper {
 			$search_term      = strtolower( $search_term );
 			$licenced_plugins = array_filter(
 				$licenced_plugins,
-				function( $plugin ) use ( $search_term ) {
+				function ( $plugin ) use ( $search_term ) {
 					return str_contains( strtolower( $plugin['Name'] ), $search_term )
 						|| str_contains( strtolower( $plugin['Description'] ), $search_term )
 						|| str_contains( strtolower( $plugin['Author'] ), $search_term );
