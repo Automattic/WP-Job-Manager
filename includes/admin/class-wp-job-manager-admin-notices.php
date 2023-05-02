@@ -456,7 +456,7 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		// Default: Single update available.
-		$extra_info          = null;
+		$extra_details       = null;
 		$update_action_label = __( 'Update', 'wp-job-manager' );
 		$message             = __( 'Good news, reminder to update to the latest version of WP Job Manager.', 'wp-job-manager' );
 		$actions             = [
@@ -472,18 +472,18 @@ class WP_Job_Manager_Admin_Notices {
 		if ( count( $updates ) > 1 ) {
 			$message             = __( 'Good news, reminder to update these plugins to their latest versions.', 'wp-job-manager' );
 			$update_action_label = __( 'Update All', 'wp-job-manager' );
-			$extra_info          = '';
+			$extra_details       = '';
 			$actions             = []; // Remove more_info link.
 			foreach ( $updates as $update ) {
-				$extra_info .= '<div class="wpjm-addon-update-notice-info">';
-				$extra_info .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $update['plugin'] ) . '</div>';
-				$extra_info .= '<div class="wpjm-addon-update-notice-info__version">';
-				$extra_info .= '<a href="https://wpjobmanager.com/release-notes/" target="_blank">';
+				$extra_details .= '<div class="wpjm-addon-update-notice-info">';
+				$extra_details .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $update['plugin'] ) . '</div>';
+				$extra_details .= '<div class="wpjm-addon-update-notice-info__version">';
+				$extra_details .= '<a href="https://wpjobmanager.com/release-notes/" target="_blank">';
 				// translators: %s is the new version number for the addon.
-				$extra_info .= sprintf( esc_html__( 'New Version: %s', 'wp-job-manager' ), $update['new_version'] );
-				$extra_info .= '</a>';
-				$extra_info .= '</div>';
-				$extra_info .= '</div>';
+				$extra_details .= sprintf( esc_html__( 'New Version: %s', 'wp-job-manager' ), $update['new_version'] );
+				$extra_details .= '</a>';
+				$extra_details .= '</div>';
+				$extra_details .= '</div>';
 			}
 		}
 
@@ -493,9 +493,9 @@ class WP_Job_Manager_Admin_Notices {
 		];
 
 		return [
-			'message'    => $message,
-			'actions'    => $actions,
-			'extra_info' => $extra_info,
+			'message'       => $message,
+			'actions'       => $actions,
+			'extra_details' => $extra_details,
 		];
 	}
 
@@ -537,8 +537,12 @@ class WP_Job_Manager_Admin_Notices {
 		if ( ! empty( $notice['icon'] ) ) {
 			echo '<img src="' . esc_url( self::get_icon( $notice['icon'] ) ) . '" class="wpjm-admin-notice__icon" alt="WP Job Manager Icon" />';
 		}
-
 		echo '<div class="wpjm-admin-notice__message">';
+		if ( ! empty( $notice['heading'] ) ) {
+			echo '<div class="wpjm-admin-notice__heading">';
+			echo wp_kses( $notice['heading'], self::ALLOWED_HTML );
+			echo '</div>';
+		}
 		echo wp_kses( $notice['message'], self::ALLOWED_HTML );
 		echo '</div>';
 		if ( ! empty( $notice['actions'] ) ) {
@@ -557,9 +561,9 @@ class WP_Job_Manager_Admin_Notices {
 		}
 		echo '</div>';
 
-		if ( ! empty( $notice['extra_info'] ) ) {
-			echo '<div class="wpjm-admin-notice__extra_info">';
-			echo wp_kses( $notice['extra_info'], self::ALLOWED_HTML );
+		if ( ! empty( $notice['extra_details'] ) ) {
+			echo '<div class="wpjm-admin-notice__extra_details">';
+			echo wp_kses( $notice['extra_details'], self::ALLOWED_HTML );
 			echo '</div>';
 		}
 		echo '</div>';
