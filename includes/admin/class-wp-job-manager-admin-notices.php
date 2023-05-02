@@ -401,6 +401,10 @@ class WP_Job_Manager_Admin_Notices {
 	 * @return mixed
 	 */
 	public static function maybe_add_addon_update_available_notice( $notices ) {
+		if ( ! current_user_can( 'install_plugins' ) ) {
+			return $notices;
+		}
+
 		$updates = get_transient( 'wpjm_addon_updates_available', [] );
 		if ( ! empty( $updates ) ) {
 			$notice = self::generate_notice_from_updates( $updates );
