@@ -405,7 +405,7 @@ class WP_Job_Manager_Admin_Notices {
 			return $notices;
 		}
 
-		$updates = get_transient( 'wpjm_addon_updates_available', [] );
+		$updates = get_site_transient( 'wpjm_addon_updates_available', [] );
 		if ( ! empty( $updates ) ) {
 			$notice = self::generate_notice_from_updates( $updates );
 			if ( ! is_null( $notice ) ) {

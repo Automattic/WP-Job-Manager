@@ -213,7 +213,7 @@ class WP_Job_Manager_Helper {
 				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 			}
 		}
-		set_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
+		set_site_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
 
 		return $check_for_updates_data;
 	}
