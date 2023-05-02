@@ -47,7 +47,7 @@ class WP_Job_Manager_Com_API {
 	 */
 	public function get_notices( $max_age = null ) {
 		$response = $this->request(
-			'wpjmcom-notices/1.0/notices',
+			'wpjmcom-notices/v1/notices',
 			[
 				'version' => JOB_MANAGER_VERSION,
 				'lang'    => determine_locale(),
