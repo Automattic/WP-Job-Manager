@@ -20,13 +20,6 @@ $notice = [
 		esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper#' . sanitize_title( $product_slug . '_row' ) ) ),
 		esc_html( $plugin_data['Name'] )
 	),
-	'actions'     => [
-		[
-			'label'   => esc_html__( 'Hide notice', 'wp-job-manager' ),
-			'url'     => esc_url( wp_nonce_url( add_query_arg( 'dismiss-wpjm-licence-notice', $product_slug ), 'dismiss-wpjm-licence-notice', '_wpjm_nonce' ) ),
-			'primary' => false,
-		],
-	],
 ];
 
 WP_Job_Manager_Admin_Notices::render_notice( 'wpjm_licence_notice', $notice );
