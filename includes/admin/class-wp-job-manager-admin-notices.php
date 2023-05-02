@@ -405,7 +405,8 @@ class WP_Job_Manager_Admin_Notices {
 		if ( ! empty( $updates ) ) {
 			$notice = self::generate_notice_from_updates( $updates );
 			if ( ! is_null( $notice ) ) {
-				$notices[ self::NOTICE_ADDON_UPDATE_AVAILABLE ] = $notice;
+				$notice_id             = self::generate_notice_id_from_updates( $updates );
+				$notices[ $notice_id ] = $notice;
 			}
 		}
 		return $notices;
@@ -570,6 +571,20 @@ class WP_Job_Manager_Admin_Notices {
 		}
 		echo '</div>';
 
+	}
+
+	/**
+	 * Generate unique notice ID based on the updates available.
+	 *
+	 * @param array $updates The updates available.
+	 * @return string The notice ID.
+	 */
+	private static function generate_notice_id_from_updates( $updates ) {
+		$notice_id = self::NOTICE_ADDON_UPDATE_AVAILABLE;
+		foreach ( $updates as $update ) {
+			$notice_id .= '-' . $update['plugin'] . '@' . $update['new_version'];
+		}
+		return md5( $notice_id );
 	}
 }
 
