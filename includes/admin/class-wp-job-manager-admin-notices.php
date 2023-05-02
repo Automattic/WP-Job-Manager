@@ -56,6 +56,7 @@ class WP_Job_Manager_Admin_Notices {
 		add_action( 'admin_notices', [ __CLASS__, 'display_notices' ] );
 		add_action( 'wp_loaded', [ __CLASS__, 'dismiss_notices' ] );
 		add_action( 'wp_ajax_wp_job_manager_dismiss_notice', [ __CLASS__, 'handle_notice_dismiss' ] );
+		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'maybe_add_addon_update_available_notice' ], 10, 1 );
 	}
 
 	/**
@@ -144,7 +145,6 @@ class WP_Job_Manager_Admin_Notices {
 	public static function init_core_notices() {
 		// core_setup: Notice is used when first activating WP Job Manager.
 		add_action( 'job_manager_admin_notice_' . self::NOTICE_CORE_SETUP, [ __CLASS__, 'display_core_setup' ] );
-		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'maybe_add_addon_update_available_notice' ], 10, 1 );
 	}
 
 	/**
