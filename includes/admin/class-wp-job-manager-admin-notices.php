@@ -584,11 +584,11 @@ class WP_Job_Manager_Admin_Notices {
 	 * @return string The notice ID.
 	 */
 	private static function generate_notice_id_from_updates( $updates ) {
-		$notice_id = self::NOTICE_ADDON_UPDATE_AVAILABLE;
+		$updates_info = '';
 		foreach ( $updates as $update ) {
-			$notice_id .= '-' . $update['plugin'] . '@' . $update['new_version'];
+			$updates_info .= $update['plugin'] . '@' . $update['new_version'];
 		}
-		return md5( $notice_id );
+		return self::NOTICE_ADDON_UPDATE_AVAILABLE . '-' . md5( $updates_info );
 	}
 }
 
