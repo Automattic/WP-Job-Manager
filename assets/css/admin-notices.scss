@@ -11,7 +11,7 @@ $notice-success: #43af99;
 
 	// Spacing.
 	gap: 10px;
-	padding: 10px 12px;
+	padding: 10px 12px !important;
 
 	&--error {
 		border-left-color: $notice-error;
