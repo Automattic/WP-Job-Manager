@@ -153,6 +153,18 @@ It then creates a database based on the parameters passed to it.
 
 == Changelog ==
 
+= 1.40.0 =
+* Enhancement: Improve licensing page experience
+* Enhancement: New email notifications setting
+* Enhancement: Improve discoverability of addon updates
+* Enhancement: New admin notices sytem with redesign
+* Fix: "Hide Expired Listings Content" setting
+* Fix: Hide expired job listings from archives
+* Fix: Show license notice only to users who can manage licenses
+* Fix: Select menu overlapping in Job Listing frontend
+* Fix: Company video overlapping when no tagline set
+* Change: Update tipTip library to use WooCommerce’s version
+
 = 1.39.0 =
 * Enhancement: Download first-party plugin extension translations
 * Enhancement: Add integration to Yoast SEO schema (@jdevalk)
