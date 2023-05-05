@@ -44,6 +44,7 @@ class WP_Job_Manager_Admin {
 	public function __construct() {
 		global $wp_version;
 
+		include_once dirname( __FILE__ ) . '/class-notices-conditions-checker.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-admin-notices.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-cpt.php';
 		WP_Job_Manager_CPT::instance();
@@ -89,12 +90,15 @@ class WP_Job_Manager_Admin {
 		WP_Job_Manager::register_select2_assets();
 
 		$screen = get_current_screen();
-		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', [ 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-addons' ] ), true ) ) {
+		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', [ 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-addons', 'edit-job_listing_type', 'dashboard' ] ), true ) ) {
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'select2' );
 
 			WP_Job_Manager::register_style( 'job_manager_admin_css', 'css/admin.css', [] );
 			wp_enqueue_style( 'job_manager_admin_css' );
+
+			WP_Job_Manager::register_style( 'job_manager_admin_notices_css', 'css/admin-notices.css', [] );
+			wp_enqueue_style( 'job_manager_admin_notices_css' );
 
 			wp_enqueue_script( 'wp-job-manager-datepicker' );
 			wp_register_script( 'jquery-tiptip', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-tiptip/jquery.tipTip.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
@@ -119,6 +123,9 @@ class WP_Job_Manager_Admin {
 				]
 			);
 		}
+
+		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', [], true );
+		wp_enqueue_script( 'job_manager_notice_dismiss' );
 
 		WP_Job_Manager::register_style( 'job_manager_admin_menu_css', 'css/menu.css', [] );
 		wp_enqueue_style( 'job_manager_admin_menu_css' );

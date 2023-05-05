@@ -1,0 +1,103 @@
+$notice-error: #cc1818;
+$notice-warning: #f0b849;
+$notice-info: #72aee6;
+$notice-success: #43af99;
+
+.wpjm-admin-notice {
+
+	// Layout.
+	display: flex;
+	flex-direction: column;
+
+	// Spacing.
+	gap: 10px;
+	padding: 10px 12px;
+
+	&--error {
+		border-left-color: $notice-error;
+	}
+
+	&--warning {
+		border-left-color: $notice-warning;
+	}
+
+	&--info {
+		border-left-color: $notice-info;
+	}
+
+	&--success {
+		border-left-color: $notice-success;
+	}
+
+	&__top {
+		// Layout.
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	&__icon {
+		height: 34px;
+		width: 34px;
+		margin-right: 10px;
+	}
+
+	&__heading {
+		margin: 5px 0;
+		font-weight: bold;
+	}
+
+	&__message {
+		flex: 1 1 auto;
+		font-size: 14px;
+	}
+
+	&__actions {
+		// Layout.
+		display: flex;
+		gap: 10px;
+		align-self: center;
+	}
+
+	button {
+		&.notice-dismiss {
+			top: initial;
+		}
+	}
+}
+
+.wpjm-addon-update-notice-info {
+	// Layout.
+	display: flex;
+	flex-direction: row;
+	width: 600px;
+	padding: 0 0 0 54px;
+
+	// Style.
+	color: #3C434A;
+	line-height: 20px;
+	letter-spacing: -0.24px;
+	font-size: 14px;
+
+	&__name {
+		// Layout.
+		flex: 50%;
+
+		// Style.
+		font-weight: 700;
+	}
+
+	&__version {
+		// Layout.
+		flex: 50%;
+		text-align: right;
+
+		a {
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}
