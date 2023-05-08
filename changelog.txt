@@ -1,15 +1,17 @@
-= 1.39.0 =
+# WP Job Manager
+
+## 1.39.0 - 2022-12-13
 * Enhancement: Download first-party plugin extension translations
 * Enhancement: Add integration to Yoast SEO schema (@jdevalk)
 * Fix: Make salary placeholder string translatable
 
-= 1.38.1 =
+## 1.38.1 - 2022-10-26
 * Enhancement: Added support for WordPress.com marketplace
 * Change: Only perform application field validation when required or not empty (@tripflex)
 * Fix: Deprecated error in `the_company_twitter()` (@MPolleke)
 * Fix: Using WP Job Manager functions before they're fully loaded.
 
-= 1.38.0 =
+## 1.38.0 - 2022-08-06
 * Enhancement: Add remote position to filtering (@tripflex)
 * Enhancement: Add setting to enable/disable remote position field (@tripflex)
 * Enhancement: Add mobile support for keyword and location fields (@tripflex)
@@ -17,14 +19,14 @@
 * Fix: Translation issue in onboarding wizard. (@NekoJonez)
 * Fix: Better support for jobs submissions with `0` as input
 
-= 1.37.0 =
+## 1.37.0 - 2022-07-18
 * Enhancement: Job Visibility Settings
 * Enhancement: New settings for Salary fields
 
-= 1.36.2 =
+## 1.36.2 - 2022-06-21
 * Fix: Revert Job Visibility Settings feature
 
-= 1.36.1 =
+## 1.36.1 - 2022-06-21
 * Enhancement: Add salary field to satisfy Google's job search schema
 * Enhancement: Allow location to display as either City/St or Full Address
 * Enhancement: Add link to Jobs Dashboard after submitting job
@@ -41,7 +43,7 @@
 * Fix: Fix broken lost license key link
 * Fix: Return $redirect_url when nothing to do with bulk edit
 
-= 1.35.3 =
+## 1.35.3 - 2022-03-02
 * Fix: Use wp_kses_post to process a job title instead of esc_html
 * Fix: Fix dependencies (npm/composer) problems
 * Fix: Decode html special chars for mailto link (@RafaelKr)
@@ -50,17 +52,17 @@
 * Fix: Disable transient cache when the order is set to random or random featured
 * Fix: Fix button "Apply for job" when the page is translated using Google Translate
 
-= 1.35.2 =
+## 1.35.2 - 2021-08-09
 * Enhancement: Add agreement checkbox to job submission.
 * Fix: Remove unnecessary filter avoiding warning in WP 5.8.
 * Fix: Fix padding on "Apply for job" button.
 
-= 1.35.1 =
+## 1.35.1 - 2021-05-13
 * Change: On new installs, do not enable account registration on job submission page by default.
 * Fix: Company name color contrast. (@DaWoblefet)
 * Fix: Fix issue when Select2 isn't used on the job submission form. (@tripflex)
 
-= 1.35.0 =
+## 1.35.0 - 2021-02-17
 * Change: Bumped minimum WordPress version to 5.4.
 * Change: Listings now expire (by default) at the end of the expiration date.
 * Change: Job listing expiration checks uses the WordPress time zone.
@@ -79,14 +81,14 @@
 * Dev: Added filter `job_manager_get_form_action` to modify the action of a frontend form. (@tripflex)
 * Template update: `job-dashboard.php` with new date functions.
 
-= 1.34.5 =
+## 1.34.5 - 2020-12-15
 * Fix: Jobs list not appearing in the page load while using Firefox.
 
-= 1.34.4 =
+## 1.34.4 - 2020-11-24
 * Fix: Harden security of job dashboard actions. Reported by Slavco.
 * Updated template: `job-dashboard.php`.
 
-= 1.34.3 =
+## 1.34.3 - 2020-08-10
 * Fix: Hide filled listings in WordPress 5.5 sitemaps.
 * Fix: Issue with editing a job after getting to a preview step for another job.
 * Fix: Remove query args from paginate_links urls. (@JuanchoPestana)
@@ -95,7 +97,7 @@
 * Dev: Update `select2` to 4.0.13.
 * Updated template: `job-submit.php` with change to the `Create A New Job` link URL.
 
-= 1.34.2 =
+## 1.34.2 - 2020-05-28
 * Enhancement: New filter to skip validation for application field.
 * Enhancement: New method for clearing fields.
 * Fix: Improve TwentyTwenty theme compatibility (@JuanchoPestana)
@@ -111,7 +113,7 @@
 * Fix: Search category query sanitization.
 * Fix: Remove PHP notices. (@truongwp)
 
-= 1.34.1 =
+## 1.34.1 - 2019-11-06
 * Templates Updated: `job-submitted.php`, `job-dashboard.php`.
 * Enhancement: Email notifications are sent separately if multiple recipients are listed.
 * Enhancement: Notices at end of job submission process are now displayed as a styled notice. (@DaveParkerRKD)
@@ -123,7 +125,7 @@
 * Dev: Adds ability for settings to reference other settings tabs.
 * Dev: Standardizes jQuery UI datepicker script IDs in frontend and backend. Plugins and themes should enqueue `wp-job-manager-datepicker` if they need jQuery UI datepicker.
 
-= 1.34.0 =
+## 1.34.0 - 2019-10-01
 * Templates Updated: `content-job_listing.php`, `job-submitted.php`.
 * Enhancement: Add support for pre-selecting categories in `[jobs]` using category slugs in query string (e.g. `/jobs?search_category=developer,pm,senior`).
 * Change: Job listing now supports `author` functionality, which will expose the author field in the REST API.
@@ -146,10 +148,10 @@
 * Dev: Updated `jquery-fileupload` library to 10.2.0.
 * Dev: Updated `select2` library to 4.0.10.
 
-= 1.33.5 =
+## 1.33.5 - 2019-08-15
 * Fix: Issue where a JS error could occur when submitting a job.
 
-= 1.33.4 =
+## 1.33.4 - 2019-07-25
 * Note: WP Job Manager now requires a minimum PHP version of 5.6.20.
 * Fix: Javascript error in job-submission.js on custom job description fields.
 * Fix: Checking typeof undefined should be in quotes in job_submission.js.
@@ -159,21 +161,21 @@
 * Change: Limited direct database access within the plugin and migrated to WordPress core functions when possible.
 * Removed: Transient garbage collection. WordPress 4.9 and up handle this automatically.
 
-= 1.33.3 =
+## 1.33.3 - 2019-07-08
 * Fix: Upgrade jquery-fileupload to v9.32.0.
 * Fix: Set frame origin on pages where shortcodes are embedded.
 
-= 1.33.2 =
+## 1.33.2 - 2019-06-13
 * Fix: Issue with `[jobs]` filter form on some themes and plugins.
 
-= 1.33.1 =
+## 1.33.1 - 2019-06-10
 * Fix: reCAPTCHA is checked when saving draft job listings.
 * Fix: Fix for fatal error encountered when importing jobs with WP All Import.
 * Fix: Maximum file upload limit is now not set for multiple file upload fields.
 * Fix: Theme compatibility fix when job listings are shown outside of the `[jobs]` shortcode.
 * Fix: Custom rich text fields no longer have their HTML tags removed.
 
-= 1.33.0 =
+## 1.33.0 - 2019-06-04
 * Enhancement: Allow registered users to save drafts of job listings to be continued later from job dashboard.
 * Enhancement: Allow access to job listing fields in REST API.
 * Enhancement: Required job categories and job description fields are now checked before submit on frontend job submission form.
@@ -191,21 +193,21 @@
 * Usage Tracking: Track source of job submission (frontend vs WP admin) to better understand how jobs are entered.
 * Usage Tracking: Track official extension license events and activation to better compare types of usage between users and catch activation errors.
 
-= 1.32.3 =
+## 1.32.3 - 2019-04-23
 * Fix: Escape tooltip text in WordPress admin. (Props hd7exploit)
 * Fix: Escape user display names on author selector while editing job listings. (Props hd7exploit)
 
-= 1.32.2 =
+## 1.32.2 - 2019-02-26
 * Fix: Issue saving job types for job listings in WordPress admin after WordPress 5.1 update.
 * Fix: Add nonce checks on edit/submit forms for logged in users. Will require updates to `templates/job-preview.php` if overridden in theme. (Props to foobar7)
 * Fix: Escape JSON encoded strings.
 * Fix: Add additional sanitization for file attachment fields.
 
-= 1.32.1 =
+## 1.32.1 - 2019-01-29
 * Fix: Adds compatibility with PHP 7.3
 * Fix: Restores original site search functionality.
 
-= 1.32.0 =
+## 1.32.0 - 2019-01-23
 * Enhancement: Switched from Chosen to Select2 for enhanced dropdown handling and better mobile support. May require theme update.
 * Enhancement: Draft and unsubmitted job listings now appear in `[job_dashboard]`, allowing users to complete their submission.
 * Enhancement: [REVERTED IN 1.32.1] Filled and expired positions are now hidden from WordPress search. (@felipeelia)
@@ -224,17 +226,17 @@
 * Dev: Job feed slug name can be customized with the `job_manager_job_feed_name` filter.
 * Deprecated: Unreleased REST API implementation using `WPJM_REST_API_ENABLED` was replaced with standard WP REST API.
 
-= 1.31.3 =
+## 1.31.3 - 2018-08-23
 * Fix: Escape the attachment URL. (Props to karimeo)
 * Fix: Custom job field priority fix when using decimals. (@tripflex)
 * Fix: Fix issue with empty mutli-select in WP admin jobs page. (@felipeelia)
 * Fix: Issue with data export when email doesn't have any job listings.
 * Third Party: Improved WPML support. (@vukvukovich)
 
-= 1.31.2 =
+## 1.31.2 - 2018-07-13
 * Fix: Adds missing quote from WP admin taxonomy fields. (@redpik)
 
-= 1.31.1 =
+## 1.31.1 - 2018-07-11
 * Enhancement: Add option to show company logo in Recent Jobs widget. (@RajeebTheGreat)
 * Enhancement: Suggest additional cookie information on Privacy Policy page.
 * Enhancement: Add WPJM related meta data to user data extract.
@@ -245,7 +247,7 @@
 * Fix: Issue with duplicate usernames preventing submission of job listings. (@timothyjensen)
 * Dev: Widespread code formatting cleanup throughout the plugin.
 
-= 1.31.0 =
+## 1.31.0 - 2018-04-26
 * Change: Minimum WordPress version is now 4.7.0.
 * Enhancement: Add email notifications with initial support for new jobs, updated jobs, and expiring listings.
 * Enhancement: For GDPR, scrub WPJM data from database on uninstall if option is enabled.
@@ -264,17 +266,17 @@
 * Dev: Add `$job_id` parameter to `job_manager_job_dashboard_do_action_{$action}` action hook. (@jonasvogel)
 * Dev: Add support for hidden WPJM settings in WP Admin.
 
-= 1.30.2 =
+## 1.30.2 - 2018-03-28
 * Enhancement: Show notice when user is using an older version of WordPress.
 * Enhancement: Hide unnecessary view mode in WP Admin's Job Listings page. (@RajeebTheGreat)
 * Enhancement: Add support for the `paged` parameter in the RSS feed. (@RajeebTheGreat)
 * Fix: Minor PHP 7.2 compatibility fixes.
 * Dev: Allow `parent` attribute to be passed to `job_manager_dropdown_categories()`. (@RajeebTheGreat)
 
-= 1.30.1 =
+## 1.30.1 - 2018-03-12
 * Fix: Minor issue with a strict standard error being displayed on some instances.
 
-= 1.30.0 =
+## 1.30.0 - 2018-02-28
 * Enhancement: Adds ability to have a reCAPTCHA field to check if job listing author is human.
 * Enhancement: Allows for option to make edits to job listings force listing back into pending approval status.
 * Enhancement: Adds spinner and disables form when user submits job listing.
@@ -294,13 +296,13 @@
 * Dev: Adds `job_manager_enable_job_archive_page` filter to enable job archive page.
 * Dev: Adds `date` field for custom job listing form fields.
 
-= 1.29.3 =
+## 1.29.3 - 2018-01-31
 * Fix: When retrieving job listing results, cache only the post results and not all of `WP_Query` (props slavco)
 
-= 1.29.2 =
+## 1.29.2 - 2017-12-04
 * Fix: PHP Notice when sanitizing multiple inputs (bug in 1.29.1 release). (@albionselimaj)
 
-= 1.29.1 =
+## 1.29.1 - 2017-11-29
 * Enhancement: When retrieving listings in `[jobs]` shortcode, setting `orderby` to `rand_featured` will still place featured listings at the top.
 * Enhancement: Scroll to show application details when clicking on "Apply for Job" button.
 * Change: Updates `account-signin.php` template to warn users email will be confirmed only if that is enabled.
@@ -312,7 +314,7 @@
 * Dev: Change `wpjm_get_the_job_types()` to return an empty array when job types are disabled.
 * See all: https://github.com/Automattic/WP-Job-Manager/milestone/15?closed=1
 
-= 1.29.0 =
+## 1.29.0 - 2017-10-04
 * Enhancement: Moves license and update management for official add-ons to the core plugin.
 * Enhancement: Update language for setup wizard with more clear descriptions.
 * Fix: Prevent duplicate attachments to job listing posts for non-image media. (@tripflex)
@@ -320,7 +322,7 @@
 * Fix: Apply `the_job_application_method` filter even when no default is available. (@turtlepod)
 * Fix: Properly reset category selector on `[jobs]` shortcode.
 
-= 1.28.0 =
+## 1.28.0 - 2017-08-09
 * Enhancement: Improves support for Google Job Search by adding `JobPosting` structured data.
 * Enhancement: Adds ability for job types to be mapped to an employment type as defined for Google Job Search.
 * Enhancement: Requests search engines no longer index expired and filled job listings.
@@ -335,7 +337,7 @@
 * Dev: Adds a new `wpjm_notify_new_user` action that allows you to override default behavior.
 * Dev: Early version of REST API is bundled but disabled by default. Requires PHP 5.3+ and `WPJM_REST_API_ENABLED` constant must be set to true. Do not use in production; endpoints may change. (@pkg)
 
-= 1.27.0 =
+## 1.27.0 - 2017-07-12
 * Enhancement: Admins can now allow users to specify an account password when posting their first job listing.
 * Enhancement: Pending job listing counts are now cached for improved WP Admin performance. (@tripflex)
 * Enhancement: Allows users to override permalink slugs in WP Admin's Permalink Settings screen.
@@ -354,17 +356,17 @@
 * Fix: Expiration date can be cleared if default job duration option is empty. (@spencerfinnell)
 * Fix: Issue with Safari and expiration datepicker.
 
-= 1.26.2 =
+## 1.26.2 - 2017-06-12
 * Fix: Prevents use of Ajax file upload endpoint for visitors who aren't logged in. Themes should check with `job_manager_user_can_upload_file_via_ajax()` if using endpoint in templates.
 * Fix: Escape post title in WP Admin's Job Listings page and template segments. (Props to @EhsanCod3r)
 
-= 1.26.1 =
+## 1.26.1 - 2017-06-06
 * Enhancement: Add language using WordPress's current locale to geocode requests.
 * Fix: Allow attempts to use Google Maps Geocode API without an API key. (@spencerfinnell)
 * Fix: Issue affecting job expiry date when editing a job listing. (@spencerfinnell)
 * Fix: Show correct total count of results on `[jobs]` shortcode.
 
-= 1.26.0 =
+## 1.26.0 - 2017-05-24
 * Enhancement: Warn the user if they're editing an existing job.
 * Enhancement: WP Admin Job Listing page's table is now responsive. (@turtlepod)
 * Enhancement: New setting for hiding expired listings from `[jobs]` filter. (@turtlepod)
@@ -381,7 +383,7 @@
 * Dev: Plugins and themes can now retrieve JSON of Job Listings results without HTML. (@spencerfinnell)
 * Dev: Updated inline documentation.
 
-= 1.25.3 =
+## 1.25.3 - 2017-03-08
 * Enhancement: Allow job types to be optional, just like categories. https://github.com/automattic/wp-job-manager/pull/789 Props Donncha.
 * Enhancement: Add get_job_listing_types filter. https://github.com/automattic/wp-job-manager/pull/824 Props Adam Heckler.
 * Enhancement: Various date format setting improvements. See https://github.com/automattic/wp-job-manager/pull/757 Props Christian Nolen.
@@ -392,7 +394,7 @@
 * Fix: Add an implicit whitelist for API requests. https://github.com/automattic/wp-job-manager/pull/855 Props muddletoes.
 * Fix: Fixed taxonomy search conditions. See https://github.com/automattic/wp-job-manager/pull/859/ Props Jonas Vogel.
 
-= 1.25.2 =
+## 1.25.2 - 2016-10-26
 * Fix - The date format of the expiry date picker was incorrect in translations so we added a comment to clarify, and fixed translations.
 * Fix - Changing the date of an expired job would forget the date, even though the job would become active.
 * Fix - Site owner can allow jobs to have only one or more than one types.
@@ -406,7 +408,7 @@
 * Dev - Add upload filters and update PHPDocs, props @tripflex
 * Fix - Stop using jQuery.live, props @tripflex
 
-= 1.25.1 =
+## 1.25.1
 * Feature - Adds a view button to the Admin UI for easy access to submitted files or URLs. Props tripflex
 * Fix - Add hardening to file uploads to prevent accepting unexpected file times. Previously, other WP-allowed types were sometimes accepted.
 * Fix - Job post form categories are now properly cached and displayed per language when using WPML or Polylang.
@@ -419,7 +421,7 @@
 * Dev - Adds filter to disable Job Listings cache
 * Dev - Inline docs and coding standards improvements.
 
-= 1.25.0 =
+## 1.25.0 - 2016-03-11
 * Feature - Ability to duplicate listings from job dashboard.
 * Fix - Support WP_EMBED in job descriptions.
 * Fix - Ensure logo is displayed on edit, before submission.
@@ -429,7 +431,7 @@
 * Dev - submit_job_form_end/submit_job_form_start actions.
 * Dev - job-manager-datepicker class for backend date fields.
 
-= 1.24.0 =
+## 1.24.0 - 2016-02-04
 * Feature - Use featured images to store company logos.
 * Feature - Search term names for keywords.
 * Feature - Search custom fields in backend job listing search.
@@ -439,11 +441,11 @@
 * Dev - Made WP_Job_Manager_Form call the next 'handler' if no view is defined for the next step.
 * Dev - Added template to control job preview form.
 
-= 1.23.13 =
+## 1.23.13 - 2015-11-28
 * Fix - Conflict between the_job_location() and the regions plugin.
 * Tweak - Allow some HTML in the_job_location - uses wp_kses_post.
 
-= 1.23.12 =
+## 1.23.12 - 2015-11-26
 * Fix - Transient clear query.
 * Tweak - New user notification pluggable function.
 * Tweak - Use subquery in keyword search to avoid long queries.
@@ -452,12 +454,12 @@
 * Tweak - PolyLang compatibility functions.
 * Tweak - Unattach company logo when a new attachment is uploaded.
 
-= 1.23.11 =
+## 1.23.11 - 2015-11-05
 * Fix - Author check in job_manager_user_can_edit_job().
 * Tweak - Before deleting a job, delete its attachments.
 * Tweak - Show previews in backend if needed.
 
-= 1.23.10 =
+## 1.23.10 - 2015-11-03
 * Fix - Handle WP 4.3 signup notification.
 * Fix - Map mime types to those that WordPress knows.
 * Fix - Alert text color.
@@ -467,23 +469,23 @@
 * Tweak - Clear transients in batches of 500.
 * Tweak - Removed transifex and translations - translation will take place on https://translate.wordpress.org/projects/wp-plugins/wp-job-manager
 
-= 1.23.9 =
+## 1.23.9 - 2015-08-24
 * Fixed editing content with wp_editor. Can no longer be passed to function already escaped.
 
-= 1.23.8 =
+## 1.23.8 - 2015-08-20
 * Fix - Security: XSS issue in account signin.
 * Tweak - Update new account email text.
 
-= 1.23.7 =
+## 1.23.7 - 2015-08-19
 * Fix - 4.3 issue showing "Description is a required field" due to editor field.
 * Tweak - Default job_manager_delete_expired_jobs to false. Set to true to have expired jobs deleted automatically. More sensible default.
 * Tweak - job_manager_term_select_field_wp_dropdown_categories_args filter.
 * Tweak - Ajax WPML handling.
 
-= 1.23.6 =
+## 1.23.6
 * Fix - job_manager_ajax_filters -> job_manager_ajax_file_upload in file upload script.
 
-= 1.23.5 =
+## 1.23.5
 * Feature - Allow [job_summary] to output multiple listings via 'limit' parameter.
 * Feature - Added flowplayer support.
 * Fix - Special chars in feeds.
@@ -496,28 +498,28 @@
 * Tweak - Made videos responsive.
 * Tweak - job_manager_attach_uploaded_files filter.
 
-= 1.23.4 =
+## 1.23.4 - 2015-06-19
 * Tweak - In 1.21.0 we switched to GET ajax requests to leverage caching, however, due to the length of some queries this was causing 414 request URI too long errors in many environments. Reverted to POST to avoid this.
 * Tweak - flush_rewrite_rules after updates to ensure ajax endpoint exists.
 * Tweak - Use relative path for ajax endpoint to work around https/http.
 
-= 1.23.3 =
+## 1.23.3 - 2015-06-18
 * Fix - WPML integration with lang.
 * Tweak - Improved plugin activation code.
 * Tweak - Improved theme switch code.
 * Tweak - Search the entire meta field, not just from the start.
 * Tweak - Added some debugging code to ajax-filters to display in console.
 
-= 1.23.2 =
+## 1.23.2 - 2015-06-18
 * Fix - Send entire form data (listify workaround).
 * Fix - Set is_home false on ajax endpoint (listify workaround).
 
-= 1.23.1 =
+## 1.23.1 - 2015-06-18
 * Fix - Orderby featured should be "menu order, date", not "manu order, title".
 * Tweak - Remove duplicate data from form_data in filters JS.
 * Tweak - If index is -1 in filters JS, abort.
 
-= 1.23.0 =
+## 1.23.0 - 2015-06-17
 * Feature - Custom AJAX endpoints to reduce overhead of loading admin.
 * Feature - Support radio fields.
 * Fix - Video max width.
@@ -532,18 +534,18 @@
 * Tweak - Improved job_feed searching.
 * Tweak - Improved transient cleaning.
 
-= 1.22.3 =
+## 1.22.3 - 2015-04-22
 * Fix frontend listing edits.
 
-= 1.22.2 =
+## 1.22.2 - 2015-04-21
 * Tweak - Set form actions to current page.
 * Fix - Video embeds.
 * Fix - Load textdomain before post types are registered.
 
-= 1.22.1 =
+## 1.22.1 - 2015-04-17
 * Fix - It's 2015, but some people are still running PHP 5.2. Compatibility fix.
 
-= 1.22.0 =
+## 1.22.0 - 2015-04-17
 * Tweak - Refactored form classes to be instance based rather than static. Reduction in code base.
 * Tweak - Admin styling of the job data panels.
 * Tweak - Admin styling of the status column.
@@ -558,7 +560,7 @@
 * Fix - Add WPML var to transient name.
 * Fix - Remove use of create_function.
 
-= 1.21.4 =
+## 1.21.4 - 2015-03-20
 * Fix - get_job_listings_keyword_search keyword search.
 * Fix - Clear term cache when terms are set for any object.
 * Fix - Legacy uploads.
@@ -568,20 +570,20 @@
 * Updated translations.
 * Arabic translation by Mamdouh Samy.
 
-= 1.21.3 =
+## 1.21.3 - 2015-03-17
 * Feature - Support posts_per_page in feed.
 * Fix - Correctly set menu_order when creating a new job, or updating featured status.
 * Fix - Updater when there are no featured jobs.
 * Fix - Add geolocation_street_number to clear_location_data.
 
-= 1.21.2 =
+## 1.21.2 - 2015-03-15
 * Fix - Remove requried attribute from file input.
 
-= 1.21.1 =
+## 1.21.1 - 2015-03-14
 * Fix - Remove file type check when field is not required and empty.
 * Fix - Hide "Applications have closed" for previews.
 
-= 1.21.0 =
+## 1.21.0 - 2015-03-14
 * Feature - Ajax loading history - back button will take you back to current position in the search. If you are on > page 1, a 'load previous' button will be shown so you can paginate either way.
 * Feature - Ajax file upload during job submission.
 * Feature - Cookie set when submitting a job to allow resuming if you leave the page.
@@ -606,11 +608,11 @@
 * Tweak - Remove unused job-category field.
 * Tweak - Hide company div if company name missing.
 
-= 1.20.1 =
+## 1.20.1 - 2015-01-26
 * Fix - Core template overrides.
 * Updated localisations.
 
-= 1.20.0 =
+## 1.20.0 - 2015-01-25
 * Feature - Sortable location column in admin.
 * Feature - Automatically Generate Username from Email Address option (disable to show a username field).
 * Feature - 'filled' option for job shortcode to show all filled/non filled jobs.
@@ -629,7 +631,7 @@
 * Dev - Made get_job_manager_template_part() use locate_job_manager_template().
 * Dev - Changed how username/email/role are passed to wp_job_manager_create_account (backwards compat).
 
-= 1.19.0 =
+## 1.19.0 - 2014-12-18
 * Feature - Added html5 required attribute to required fields.
 * Feature - Added compatibility with RP4WP.
 * Fix - Chosen RTL.
@@ -644,7 +646,7 @@
 * Tweak - Login link on job dashboard. job-dashboard-login.php template file.
 * Tweak - Made backend management honour capabilities of users. Props to minderdl.
 
-= 1.18.0 =
+## 1.18.0 - 2014-11-16
 * Fix - Keep post name when pending job is posted by non-admin.
 * Fix - Prevent special chars breaking the feeds.
 * Tweak - Added new capabilities for all aspects of Job Listing Management. e.g. edit_job_listings, add_job_listing etc etc. Admin role will be updated on activation/upgrade. If you use custom roles, you'll need to edit them to grant access to the parts you wish.
@@ -653,19 +655,19 @@
 * Tweak - Always show 'showing' bar, but conditonally show 'reset' link.
 * Tweak - Trigger geolocation whenever location field is saved, even by 3rd parties.
 
-= 1.17.0 =
+## 1.17.0 - 2014-10-22
 * Feature - job_manager_user_can_edit_pending_submissions function and setting.
 * Feature - Job summary shortcode - support random display of job (featured or non featured).
 * Feature - In admin, when clicking an author name show all jobs for that author.
 * Tweak - Added sanitization function to form class to handle strings and arrays.
 
-= 1.16.1 =
+## 1.16.1 - 2014-10-11
 * Fix - Use triggerHandler() instead of trigger() in ajax-filters to prevent events bubbling up.
 * Fix - Append current 'lang' to AJAX calls for WPML.
 * Fix - When specifying categories on the jobs shortcode, don't clear those categories on reset.
 * Tweak - Added job_manager_admin_screen_ids filter.
 
-= 1.16.0 =
+## 1.16.0 - 2014-10-07
 * Added setup wizard for new installs that creates pages/shortcodes automatically.
 * Added job_manager_get_permalink function.
 * Fix - Only show website link when actually set.
@@ -675,7 +677,7 @@
 * Tweak - Nofollow website links.
 * Tweak - Removed font-sizes from default CSS and fixed display in default WP themes.
 
-= 1.15.0 =
+## 1.15.0 - 2014-09-21
 * Added location/keyword option to recent jobs widget.
 * Added job-listings-start and job-listings-end.php templates for customisation the wrapping elements.
 * Added filter type option for job categories. Can be set to require matching to any or all selected categories.
@@ -686,7 +688,7 @@
 * Fix - Chosen CSS cutting off the placeholder in Firefox.
 * Fix - Added _company_video in backend.
 
-= 1.14.0 =
+## 1.14.0
 * Extra filters for the filters template.
 * Changed text strings for easier customisations based on post type labels, and made some strings more generic.
 * New field types - term-checklist, term-multiselect, term-select. These save terms only.
@@ -705,7 +707,7 @@
 * Support HTML5 multiple attribute for file upload field. Pass multiple=>'true' to form field definition to enable.
 * Later loading for template functions.
 
-= 1.13.0 =
+## 1.13.0
 * Shortcode arg to show numbered pagination instead of 'load more jobs'. show_pagination argument.
 * Define support for Jetpack publicize.
 * Show company name alt text for company logo.
@@ -713,10 +715,10 @@
 * Added noscript element for jobs shortcode.
 * filter_var to validate URLs on the job submission form.
 
-= 1.12.1 =
+## 1.12.1
 * Job submission form categories must not hide empty categories.
 
-= 1.12.0 =
+## 1.12.0
 * On the job submission form, display hierarchical categories.
 * Use job_manager_ prefixed hooks for registration (register_post/registration_errors/register_form) to prevent issues with Captcha plugins.
 * Pass $post to job_manager_application_email_subject
@@ -729,13 +731,13 @@
 * Added some responsive styles for job lists.
 * Allow users to relist a job from the frontend. (Ensure WC Paid Listings and Simple Paid Listings are updated to support this).
 
-= 1.11.1 =
+## 1.11.1
 * Fix ajax filters 'true' for show_filters
 * Fix geocoding for certain address strings
 * Fix keywords typo
 * Remove deprecated $wpdb->escape calls. Replaced with esc_sql
 
-= 1.11.0 =
+## 1.11.0
 * Switch geocode to json and improve error checking.
 * If query limit is reached, stop making requests for a while.
 * Added extra data inside job_feed.
@@ -746,7 +748,7 @@
 * Took out show_featured_only arg for the [jobs] shortcode and added 'featured' which can be set to true or false to show or hide featured jobs, or left null to show both.
 * Removed nonce from frontend job submission form to prevent issues with caching.
 
-= 1.10.0 =
+## 1.10.0
 * Trigger change on 'enter' when filtering jobs.
 * Updated add-ons page to pull from wpjobmanager.com.
 * Updated links.
@@ -757,20 +759,20 @@
 * Add required-field class around required inputs.
 * Enable paste as text in wp-editor field.
 
-= 1.9.3 =
+## 1.9.3
 * Fix email URLs.
 * Target blank for application URLs.
 * Add posted by (author) setting in backend.
 * When saving jobs, ensure _featured and _filled are set.
 * Load admin scripts conditionally.
 
-= 1.9.2 =
+## 1.9.2
 * Fix missing parameter in application_details_url causing URLs to be missing when applying.
 
-= 1.9.1 =
+## 1.9.1
 * Removed resource heavy 'default_meta' function from the installation process.
 
-= 1.9.0 =
+## 1.9.0
 * Template - Split off URL and email application methods and added new hooks. This allows other plugins to manipulate the content.
 * Pass $values to edit job save function so permalinks are preserved.
 * When showing filters, ensure we check by slug if category is non-numeric.
@@ -784,13 +786,13 @@
 * Hook in the content only if in_the_loop(). Fixes issues with jobify and yoast SEO.
 * Removed .clear mixin to prevent theme conflicts.
 
-= 1.8.2 =
+## 1.8.2
 * For initial load, target all .job_filters areas. Jobify compat.
 
-= 1.8.1 =
+## 1.8.1
 * Fix - Corrected check to see if any category terms with jobs exist
 
-= 1.8.0 =
+## 1.8.0
 * Feature - Take search/location vars from the querystring if set
 * Feature - Option to choose role for registration, and added an 'employer' role.
 * Feature - Support for comma separated keywords when searching
@@ -800,7 +802,7 @@
 * Fix - Only show categories select box when they exist
 * Dev - job_manager_application_email_subject filter
 
-= 1.7.3 =
+## 1.7.3
 * Some changes to file uploads to support custom mime types
 * Updated icon file (http://fontello.com/)
 * Fix category rss links
@@ -810,19 +812,19 @@
 * Use get_option( 'default_role' ) when creating a user
 * Grunt for release
 
-= 1.7.2 =
+## 1.7.2
 * Preserve line breaks when saving textarea fields in admin
 * Hide 'showing all x' when no filters are chosen.
 * Register 'preview' status so that the counts are correct.
 * Delete previews via cron job.
 
-= 1.7.1 =
+## 1.7.1
 * Updated textdomain to wp-job-manager
 * Re-done .pot file
 * Additonal filters for ajax responses
 * Moved localisations to Transifex https://www.transifex.com/projects/p/wp-job-manager/
 
-= 1.7.0 =
+## 1.7.0
 * Added geolocation to save location data to meta after posting or saving a job. This will be used by other plugins.
 * Filter job_manager_geolocation_enabled and return false to turn off geolocation features.
 * Jobs shortcode can now be passed 'location' and 'keywords' to set the default for filters, or show only jobs with those keywords if filters are disabled
@@ -832,18 +834,18 @@
 * submit_job_form_wp_editor_args filter
 * "Empty" categories are visible when filtering jobs in admin.
 
-= 1.6.0 =
+## 1.6.0
 * MP6/WP 3.8 optimised styling. Min version 3.8 for new styling.
 * Removed images previously used in admin.
 * Tweak the_company_logo() to check if logo is valid URL.
 * Replaced Genericons with custom set
 * Only show link to view job on dashboard when published
 
-= 1.5.2 =
+## 1.5.2
 * Fix wp-editor field
 * Fix editing job images
 
-= 1.5.1 =
+## 1.5.1
 * Changed get_the_time to get_post_time
 * Added textarea and wp-editor to form api
 * When using the job submit form, generate a more unqiue slug for the job - company-location-type-job-title
@@ -854,7 +856,7 @@
 * Fix access control on job editing
 * Job forms multiselect support
 
-= 1.5.0 =
+## 1.5.0
 * Ability to edit job expiration date manually via admin
 * Settings API: Password field
 * Frontend Forms: Password field
@@ -866,15 +868,15 @@
 * Hierarchical dropdown for categories on filter form
 * job_manager_job_submitted hook in submission form
 
-= 1.4.0 =
+## 1.4.0
 * Added pagination to the job dashboard to avoid memory issues
 * Schema.org markup for job listings
 * Greek translation by Ioannis Arsenis
 
-= 1.3.1 =
+## 1.3.1
 * Remove line breaks from markup to prevent theme issues
 
-= 1.3.0 =
+## 1.3.0
 * When using the [jobs] shortcode without filters, if jobs > per-page show the 'load more' link
 * Clearfix for meta div
 * Hooked up $size option for company logos
@@ -884,27 +886,27 @@
 * Respect other plugin columns in admin
 * Re-arranged admin columns to show less non-useful data
 
-= 1.2.0 =
+## 1.2.0
 * Support for featured job listings
 * Support for meta job duration
 * set_expirey when publishing jobs from admin manually
 * Update handler
 
-= 1.1.3 =
+## 1.1.3
 * Corrected form field label
 * Added french translation by Remi Corson
 
-= 1.1.2 =
+## 1.1.2
 * job_manager_get_dashboard_jobs_args filter
 * Better handling of submit job steps.
 * Option to store the slug of the submit job page - used by addons.
 * Use :input in JS to support multiple input types if customised.
 
-= 1.1.1 =
+## 1.1.1
 * Improved accuracy of job search
 * Fixed category filter dropdown in admin
 
-= 1.1.0 =
+## 1.1.0
 * Tweaked css clearfixes
 * Use built in antispambot for encoding email.
 * job_manager_job_filters_showing_jobs_links filter
@@ -914,26 +916,26 @@
 * Improve 2013 Styles
 * Addons page. Disabled usings add_filter( 'job_manager_show_addons_page', '__return_false' );
 
-= 1.0.5 =
+## 1.0.5
 * Added function to get listings by certain criteria.
 * Added ES translation.
 * Fix job feed when no args are present.
 
-= 1.0.4 =
+## 1.0.4
 * More hooks in the submit process.
 * Hide apply button if url/email is unset.
 
-= 1.0.3 =
+## 1.0.3
 * Some extra hooks in job-filters.php
 * Added a workaround for scripts which bork placeholders inside the job filters.
 
-= 1.0.2 =
+## 1.0.2
 * Action in update_job_data() to allow saving of extra fields.
 * Added German translation by Chris Penning
 
-= 1.0.1 =
+## 1.0.1
 * Slight tweak to listing field filters in admin.
 * 'attributes' argument for admin settings.
 
-= 1.0.0 =
+## 1.0.0
 * First stable release.
