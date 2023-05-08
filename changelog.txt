@@ -1,17 +1,17 @@
 # WP Job Manager
 
-## 1.39.0 - YYYY-MM-DD
+## 1.39.0 - 2022-12-13
 * Enhancement: Download first-party plugin extension translations
 * Enhancement: Add integration to Yoast SEO schema (@jdevalk)
 * Fix: Make salary placeholder string translatable
 
-## 1.38.1 - YYYY-MM-DD
+## 1.38.1 - 2022-10-26
 * Enhancement: Added support for WordPress.com marketplace
 * Change: Only perform application field validation when required or not empty (@tripflex)
 * Fix: Deprecated error in `the_company_twitter()` (@MPolleke)
 * Fix: Using WP Job Manager functions before they're fully loaded.
 
-## 1.38.0 - YYYY-MM-DD
+## 1.38.0 - 2022-08-06
 * Enhancement: Add remote position to filtering (@tripflex)
 * Enhancement: Add setting to enable/disable remote position field (@tripflex)
 * Enhancement: Add mobile support for keyword and location fields (@tripflex)
