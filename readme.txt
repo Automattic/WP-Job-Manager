@@ -164,6 +164,7 @@ It then creates a database based on the parameters passed to it.
 * Fix: Select menu overlapping in Job Listing frontend
 * Fix: Company video overlapping when no tagline set
 * Change: Update tipTip library to use WooCommerce’s version
+* Change: Bumped minimum PHP version from 7.2 to 7.4
 
 = 1.39.0 =
 * Enhancement: Download first-party plugin extension translations
