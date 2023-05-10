@@ -458,8 +458,10 @@ class WP_Job_Manager_Admin_Notices {
 		// Default: Single update available.
 		$extra_details       = null;
 		$update_action_label = __( 'Update', 'wp-job-manager' );
-		$message             = __( 'Good news, reminder to update to the latest version of WP Job Manager.', 'wp-job-manager' );
-		$actions             = [
+		$first_update        = current( $updates );
+		// translators: %s is the name of the wpjm addon to be updated.
+		$message = sprintf( esc_html__( 'Good news, reminder to update to the latest version of %s.', 'wp-job-manager' ), $first_update['plugin'] );
+		$actions = [
 			[
 				'url'     => 'https://wpjobmanager.com/release-notes/',
 				'label'   => __( 'View release notes', 'wp-job-manager' ),
