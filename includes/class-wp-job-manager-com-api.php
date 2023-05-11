@@ -3,7 +3,7 @@
  * File containing the class \WP_Job_Manager\WP_Job_Manager_Com_API.
  *
  * @package wp-job-manager
- * @since   $$next-version$$
+ * @since   1.40.0
  */
 
 namespace WP_Job_Manager;
@@ -145,7 +145,7 @@ class WP_Job_Manager_Com_API {
 		/**
 		 * Filters the wpjobmanager.com API URL.
 		 *
-		 * @since $$next-version$$
+		 * @since 1.40.0
 		 *
 		 * @param string $api_url The API url.
 		 *
