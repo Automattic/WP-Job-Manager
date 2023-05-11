@@ -1,5 +1,5 @@
-$notice-error: #d63638;
-$notice-warning: #dba617;
+$notice-error: #cc1818;
+$notice-warning: #f0b849;
 $notice-info: #72aee6;
 $notice-success: #43af99;
 
@@ -45,6 +45,11 @@ $notice-success: #43af99;
 		margin-right: 10px;
 	}
 
+	&__heading {
+		margin: 5px 0;
+		font-weight: bold;
+	}
+
 	&__message {
 		flex: 1 1 auto;
 		font-size: 14px;
@@ -55,12 +60,6 @@ $notice-success: #43af99;
 		display: flex;
 		gap: 10px;
 		align-self: center;
-
-		.button {
-			padding: 3px 12px;
-
-		}
-
 	}
 
 	button {

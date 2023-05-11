@@ -321,10 +321,14 @@ div.job_listings {
 			content: "\e80a";
 		}
 
+		.company_header {
+			margin: 0 0 1em;
+			min-height: 60px;
+		}
+
 		.company_video {
 			border-top: 1px solid #eee;
 			padding: 1em 0 0;
-			margin: 1em 0 0 0;
 			position: relative;
 			padding-bottom: 56.25%;
 			padding-top: 30px;

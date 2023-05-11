@@ -60,6 +60,7 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email-template.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-email-notifications.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-data-exporter.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-com-api.php';
 
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';

@@ -24,8 +24,8 @@ domReady( () => {
 		} );
 	};
 
-	const wpjmNotice = document.querySelector('.wpjm-admin-notice' );
-	if ( wpjmNotice ) {
+	const wpjmNotices = document.querySelectorAll('.wpjm-admin-notice' );
+	for (const wpjmNotice of wpjmNotices) {
 		wpjmNotice.addEventListener('click', (event) => {
 			const noticeContainer = event.target.closest('.wpjm-admin-notice');
 			if (!noticeContainer) {
