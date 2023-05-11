@@ -455,6 +455,12 @@ class WP_Job_Manager_Shortcodes {
 						'nonce' => $base_nonce_action_name,
 					];
 				}
+				if ( job_manager_job_can_be_relisted( $job ) ) {
+					$actions['relist'] = [
+						'label' => __( 'Relist', 'wp-job-manager' ),
+						'nonce' => $base_nonce_action_name,
+					];
+				}
 
 				$actions['duplicate'] = [
 					'label' => __( 'Duplicate', 'wp-job-manager' ),

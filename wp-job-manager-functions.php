@@ -1708,11 +1708,11 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
  * Checks if the job can be relisted. By default, this is true if the job is public and expires within 5 days.
  *
  * @since $$next_version$$
- * @param int|WP_Post $job_id
+ * @param int|WP_Post $job The job or job ID.
  * @return bool
  */
-function job_manager_job_can_be_relisted( $job_id ) {
-	$job    = get_post( $job_id );
+function job_manager_job_can_be_relisted( $job ) {
+	$job = get_post( $job );
 	$status = get_post_status( $job );
 	$expiry = strtotime( get_post_meta( $job->ID, '_job_expires', true ) );
 
