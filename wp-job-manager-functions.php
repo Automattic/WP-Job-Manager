@@ -1461,12 +1461,14 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  *
  * @since 1.22.0
  * @since 1.35.0 Added the `$return_datetime` param.
+ * @since $$next-version$$ Added the `$from_timestamp` param.
  *
- * @param  int  $job_id          Job ID.
- * @param  bool $return_datetime Return the date time object.
+ * @param  int                    $job_id          Job ID.
+ * @param  bool                   $return_datetime Return the date time object.
+ * @param  DateTimeImmutable|null $from_timestamp The timestamp to calculate the expiry from.
  * @return string|DateTimeImmutable When `$return_datetime`, it will return either DateTimeImmutable or null.
  */
-function calculate_job_expiry( $job_id, $return_datetime = false ) {
+function calculate_job_expiry( $job_id, $return_datetime = false, $from_timestamp = null ) {
 	// Get duration from the product if set...
 	$duration = get_post_meta( $job_id, '_job_duration', true );
 
@@ -1476,7 +1478,10 @@ function calculate_job_expiry( $job_id, $return_datetime = false ) {
 	}
 
 	if ( $duration ) {
-		$new_job_expiry = current_datetime()->add( new DateInterval( 'P' . absint( $duration ) . 'D' ) );
+		if ( ! $from_timestamp ) {
+			$from_timestamp = current_datetime();
+		}
+		$new_job_expiry = $from_timestamp->add( new DateInterval( 'P' . absint( $duration ) . 'D' ) );
 
 		return $return_datetime ? WP_Job_Manager_Post_Types::instance()->prepare_job_expires_time( $new_job_expiry ) : $new_job_expiry->format( 'Y-m-d' );
 	}
