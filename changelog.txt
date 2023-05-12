@@ -1,5 +1,8 @@
 # WP Job Manager
 
+## 1.40.1 - 2023-05-12
+* Fix: Icons not displaying properly
+
 ## 1.40.0 - 2023-05-11
 * Enhancement: Improve licensing page experience
 * Enhancement: New email notifications setting
