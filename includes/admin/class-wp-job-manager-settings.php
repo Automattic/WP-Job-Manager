@@ -355,6 +355,15 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+							'name'       => 'job_manager_expiring_soon_days',
+							'std'        => 5,
+							'label'      => __( 'Expiring Soon Days', 'wp-job-manager' ),
+							'cb_label'   => __( 'Number of days to expiry', 'wp-job-manager' ),
+							'desc'       => __( 'Sets the number of days to expiry, after which a listing can be relisted.', 'wp-job-manager' ),
+							'type'       => 'number',
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_user_can_edit_pending_submissions',
 							'std'        => '0',
 							'label'      => __( 'Allow Pending Edits', 'wp-job-manager' ),

@@ -81,6 +81,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_registration_role',
 		'job_manager_submission_requires_approval',
 		'job_manager_publish_relistings',
+		'job_manager_expiring_soon_days',
 		'job_manager_show_agreement_job_submission',
 		'job_manager_terms_and_conditions_page_id',
 		'job_manager_user_can_edit_pending_submissions',
