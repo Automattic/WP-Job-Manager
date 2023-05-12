@@ -1717,7 +1717,7 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
  * @return bool
  */
 function job_manager_job_can_be_relisted( $job ) {
-	$job = get_post( $job );
+	$job    = get_post( $job );
 	$status = get_post_status( $job );
 	$expiry = strtotime( get_post_meta( $job->ID, '_job_expires', true ) );
 
@@ -1735,5 +1735,5 @@ function job_manager_job_can_be_relisted( $job ) {
 	 */
 	$expiring_soon_days = apply_filters( 'job_manager_expiring_soon_days', 5 );
 
-	return 'publish' === $status && $expiry - current_time( 'timestamp' ) < $expiring_soon_days * DAY_IN_SECONDS;
+	return 'publish' === $status && $expiry - time() < $expiring_soon_days * DAY_IN_SECONDS;
 }
