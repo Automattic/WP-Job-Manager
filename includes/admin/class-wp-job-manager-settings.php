@@ -346,6 +346,15 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+							'name'       => 'job_manager_publish_relistings',
+							'std'        => '1',
+							'label'      => __( 'Publish Relisted Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Automatically publish relisted listings', 'wp-job-manager' ),
+							'desc'       => __( 'Sets all relisted submissions to "publish." They will not need admin approval.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_user_can_edit_pending_submissions',
 							'std'        => '0',
 							'label'      => __( 'Allow Pending Edits', 'wp-job-manager' ),
