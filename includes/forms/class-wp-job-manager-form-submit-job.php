@@ -1091,11 +1091,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				 * @param int  $job_id                   The ID of the job listing.
 				 */
 				$should_publish_relisting = $relisting && apply_filters( 'job_manager_should_publish_relisting', get_option( 'job_manager_publish_relistings' ), $job->ID );
+				$requires_approval        = get_option( 'job_manager_submission_requires_approval' );
+				$post_status              = $should_publish_relisting || ! $requires_approval ? 'publish' : 'pending';
 
 				// Update job listing.
 				$update_job                  = [];
 				$update_job['ID']            = $job->ID;
-				$update_job['post_status']   = $should_publish_relisting ? 'publish' : apply_filters( 'submit_job_post_status', get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish', $job );
+				$update_job['post_status']   = apply_filters( 'submit_job_post_status', $post_status, $job, $should_publish_relisting );
 				$update_job['post_date']     = current_time( 'mysql' );
 				$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
 				$update_job['post_author']   = get_current_user_id();
