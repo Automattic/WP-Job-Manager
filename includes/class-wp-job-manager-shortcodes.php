@@ -253,13 +253,19 @@ class WP_Job_Manager_Shortcodes {
 
 						break;
 					case 'relist':
+					case 'extend':
 					case 'continue':
 						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
 							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
 						}
 
-						// redirect to post page.
-						wp_safe_redirect( add_query_arg( [ 'job_id' => absint( $job_id ) ], job_manager_get_permalink( 'submit_job_form' ) ) );
+						$query_args = [
+							'job_id' => absint( $job_id ),
+						];
+						if ( 'extend' === $action ) {
+							$query_args['action'] = $action;
+						}
+						wp_safe_redirect( add_query_arg( $query_args, job_manager_get_permalink( 'submit_job_form' ) ) );
 						exit;
 					default:
 						do_action( 'job_manager_job_dashboard_do_action_' . $action, $job_id );
@@ -452,6 +458,12 @@ class WP_Job_Manager_Shortcodes {
 				} else {
 					$actions['mark_filled'] = [
 						'label' => __( 'Mark filled', 'wp-job-manager' ),
+						'nonce' => $base_nonce_action_name,
+					];
+				}
+				if ( get_option( 'job_manager_can_extend_listing_expiry' ) === 'yes' && job_manager_job_can_be_extended( $job ) ) {
+					$actions['extend'] = [
+						'label' => __( 'Extend', 'wp-job-manager' ),
 						'nonce' => $base_nonce_action_name,
 					];
 				}
