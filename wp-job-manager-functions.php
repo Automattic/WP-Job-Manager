@@ -1719,10 +1719,13 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
 }
 
 /**
- * Checks if the job can be relisted. By default, this is true if the job is public and expires within 5 days.
+ * Checks if the job expiry can be extended.
+ * This is true if the job is public, the option to extend is set and the job expires within 5 days.
  *
  * @since $$next_version$$
+ *
  * @param int|WP_Post $job The job or job ID.
+ *
  * @return bool
  */
 function job_manager_job_can_be_extended( $job ) {
