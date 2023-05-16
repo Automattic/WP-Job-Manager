@@ -1470,12 +1470,14 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  *
  * @since 1.22.0
  * @since 1.35.0 Added the `$return_datetime` param.
+ * @since $$next-version$$ Added the `$from_timestamp` param.
  *
- * @param  int  $job_id          Job ID.
- * @param  bool $return_datetime Return the date time object.
+ * @param  int                    $job_id          Job ID.
+ * @param  bool                   $return_datetime Return the date time object.
+ * @param  DateTimeImmutable|null $from_timestamp The timestamp to calculate the expiry from.
  * @return string|DateTimeImmutable When `$return_datetime`, it will return either DateTimeImmutable or null.
  */
-function calculate_job_expiry( $job_id, $return_datetime = false ) {
+function calculate_job_expiry( $job_id, $return_datetime = false, $from_timestamp = null ) {
 	// Get duration from the product if set...
 	$duration = get_post_meta( $job_id, '_job_duration', true );
 
@@ -1485,7 +1487,10 @@ function calculate_job_expiry( $job_id, $return_datetime = false ) {
 	}
 
 	if ( $duration ) {
-		$new_job_expiry = current_datetime()->add( new DateInterval( 'P' . absint( $duration ) . 'D' ) );
+		if ( ! $from_timestamp ) {
+			$from_timestamp = current_datetime();
+		}
+		$new_job_expiry = $from_timestamp->add( new DateInterval( 'P' . absint( $duration ) . 'D' ) );
 
 		return $return_datetime ? WP_Job_Manager_Post_Types::instance()->prepare_job_expires_time( $new_job_expiry ) : $new_job_expiry->format( 'Y-m-d' );
 	}
@@ -1711,4 +1716,33 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
 	 * @param boolean $include_empty Defines if we should include an empty option as default.
 	 */
 	return apply_filters( 'job_manager_get_salary_unit_options', $options, $include_empty );
+}
+
+/**
+ * Checks if the job can be relisted. By default, this is true if the job is public and expires within 5 days.
+ *
+ * @since $$next_version$$
+ * @param int|WP_Post $job The job or job ID.
+ * @return bool
+ */
+function job_manager_job_can_be_extended( $job ) {
+	$job    = get_post( $job );
+	$status = get_post_status( $job );
+	$expiry = strtotime( get_post_meta( $job->ID, '_job_expires', true ) );
+
+	// If there is no expiry, then relisting is not necessary.
+	if ( ! $expiry ) {
+		return false;
+	}
+
+	/**
+	 * Number of days before a job expires to allow relisting it.
+	 *
+	 * @since $$next_version$$
+	 *
+	 * @param int $expiring_soon_days The default number of days.
+	 */
+	$expiring_soon_days = apply_filters( 'job_manager_expiring_soon_days', get_option( 'job_manager_expiring_soon_days', 5 ) );
+
+	return 'publish' === $status && $expiry - time() < $expiring_soon_days * DAY_IN_SECONDS;
 }
