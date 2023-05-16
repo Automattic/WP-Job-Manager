@@ -68,6 +68,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'submit_job_form_start', [ $this, 'output_submit_form_nonce_field' ] );
 		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
+		add_filter( 'submit_job_steps', [ $this, 'maybe_exclude_submit_step' ] );
 
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
@@ -155,7 +156,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( $this->job_id ) {
 			$job_status = get_post_status( $this->job_id );
 			// Job can be edited only if expired or can be relisted.
-			if ( 'expired' === $job_status || job_manager_job_can_be_relisted( $this->job_id ) ) {
+			if ( 'expired' === $job_status || job_manager_job_can_be_extended( $this->job_id ) ) {
 				if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
 					$this->job_id = 0;
 					$this->step   = 0;
@@ -164,6 +165,76 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$this->job_id = 0;
 				$this->step   = 0;
 			}
+		}
+	}
+
+	/**
+	 * Checks if 'extend' is set as action.
+	 *
+	 * @since $$next-version$$
+	 * @return bool
+	 */
+	public function is_extend_action() {
+		return isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'extend';
+	}
+
+	/**
+	 * Remove submit step if we're extending a listing's expiry.
+	 *
+	 * @access private
+	 * @param array $steps
+	 * @return array
+	 */
+	public function maybe_exclude_submit_step( $steps ) {
+		if ( $this->is_extend_action() ) {
+			unset( $steps['submit'] );
+			$steps['extend-expiry'] = [
+				'name'     => 'Extend Expiry',
+				'view'     => [ $this, 'preview' ],
+				'handler'  => [ $this, 'extend_handler' ],
+				'priority' => 26,
+			];
+		}
+		return $steps;
+	}
+
+	/**
+	 * Handles the extend-listing step.
+	 *
+	 * @throws Exception On validation error.
+	 */
+	public function extend_handler() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
+		if ( empty( $_POST ) ) {
+			return;
+		}
+
+		$this->check_preview_form_nonce_field();
+
+		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
+			$job       = get_post( $this->job_id );
+
+			$extending = $this->is_extend_action() && job_manager_job_can_be_extended( $this->job_id );
+
+			if ( $extending ) {
+				$old_expiry = date_create_immutable_from_format( 'Y-m-d', get_post_meta( $job->ID, '_job_expires', true ) );
+				$new_expiry = calculate_job_expiry( $job->ID, false, $old_expiry );
+				update_post_meta( $job->ID, '_job_expires', $new_expiry );
+			}
+
+			$requires_approval = get_option( 'job_manager_submission_requires_approval' );
+			$post_status       = $extending || ! $requires_approval ? 'publish' : 'pending';
+
+			// Update job listing.
+			$update_job                  = [];
+			$update_job['ID']            = $job->ID;
+			$update_job['post_status']   = apply_filters( 'submit_job_post_status', $post_status, $job, $extending );
+			$update_job['post_date']     = current_time( 'mysql' );
+			$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
+
+			wp_update_post( $update_job );
+
+			$this->step ++;
 		}
 	}
 
@@ -1072,33 +1143,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Continue = change job status then show next screen.
 		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
 			$job       = get_post( $this->job_id );
-			$relisting = job_manager_job_can_be_relisted( $this->job_id );
 
-			if ( in_array( $job->post_status, [ 'preview', 'expired' ], true ) || $relisting ) {
-				if ( $relisting ) {
-					$old_expiry = date_create_immutable_from_format( 'Y-m-d', get_post_meta( $job->ID, '_job_expires', true ) );
-					$new_expiry = calculate_job_expiry( $job->ID, false, $old_expiry );
-					update_post_meta( $job->ID, '_job_expires', $new_expiry );
-				} else {
-					// Reset expiry.
-					delete_post_meta( $job->ID, '_job_expires' );
-				}
-				/**
-				 * Filters whether a job listing should be published when relisted.
-				 *
-				 * @since $$next_version$$
-				 *
-				 * @param bool $should_publish_relisting Whether the job listing should be published when relisted.
-				 * @param int  $job_id                   The ID of the job listing.
-				 */
-				$should_publish_relisting = $relisting && apply_filters( 'job_manager_should_publish_relisting', get_option( 'job_manager_publish_relistings' ), $job->ID );
-				$requires_approval        = get_option( 'job_manager_submission_requires_approval' );
-				$post_status              = $should_publish_relisting || ! $requires_approval ? 'publish' : 'pending';
+			if ( in_array( $job->post_status, [ 'preview', 'expired' ], true ) ) {
+				// Reset expiry.
+				delete_post_meta( $job->ID, '_job_expires' );
+
+				$requires_approval = get_option( 'job_manager_submission_requires_approval' );
+				$post_status       = ! $requires_approval ? 'publish' : 'pending';
 
 				// Update job listing.
 				$update_job                  = [];
 				$update_job['ID']            = $job->ID;
-				$update_job['post_status']   = apply_filters( 'submit_job_post_status', $post_status, $job, $should_publish_relisting );
+				$update_job['post_status']   = apply_filters( 'submit_job_post_status', $post_status, $job, $extending );
 				$update_job['post_date']     = current_time( 'mysql' );
 				$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
 				$update_job['post_author']   = get_current_user_id();

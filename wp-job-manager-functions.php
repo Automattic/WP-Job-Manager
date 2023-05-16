@@ -1716,7 +1716,7 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
  * @param int|WP_Post $job The job or job ID.
  * @return bool
  */
-function job_manager_job_can_be_relisted( $job ) {
+function job_manager_job_can_be_extended( $job ) {
 	$job    = get_post( $job );
 	$status = get_post_status( $job );
 	$expiry = strtotime( get_post_meta( $job->ID, '_job_expires', true ) );
