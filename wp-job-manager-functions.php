@@ -1745,7 +1745,7 @@ function job_manager_job_can_be_extended( $job ) {
 	 *
 	 * @param int $expiring_soon_days The default number of days.
 	 */
-	$expiring_soon_days = apply_filters( 'job_manager_expiring_soon_days', get_option( 'job_manager_expiring_soon_days', 5 ) );
+	$expiring_soon_days = apply_filters( 'job_manager_renewal_days', get_option( 'job_manager_renewal_days', 5 ) );
 
 	return 'publish' === $status && $expiry - time() < $expiring_soon_days * DAY_IN_SECONDS;
 }

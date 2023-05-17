@@ -461,7 +461,7 @@ class WP_Job_Manager_Shortcodes {
 						'nonce' => $base_nonce_action_name,
 					];
 				}
-				if ( get_option( 'job_manager_can_extend_listing_expiry' ) === 'yes' && job_manager_job_can_be_extended( $job ) ) {
+				if ( get_option( 'job_manager_allow_listing_renewal' ) === '1' && job_manager_job_can_be_extended( $job ) ) {
 					$actions['extend'] = [
 						'label' => __( 'Extend', 'wp-job-manager' ),
 						'nonce' => $base_nonce_action_name,
