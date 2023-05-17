@@ -1,8 +1,8 @@
 <?php
 /**
- * Job listing preview when extending job listings.
+ * Job listing preview when renewing job listings.
  *
- * This template can be overridden by copying it to yourtheme/job_manager/job-extend-preview.php.
+ * This template can be overridden by copying it to yourtheme/job_manager/job-renew-preview.php.
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
@@ -18,15 +18,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 <form method="post" id="job_preview" action="<?php echo esc_url( $form->get_action() ); ?>">
 	<?php
 	/**
-	 * Fires at the top of the extend job listing.
+	 * Fires at the top of the renew job listing.
 	 *
 	 * @since $$next-version$$
 	 */
 	do_action( 'preview_job_form_start' );
 	?>
 	<div class="job_listing_preview_title">
-		<input type="submit" name="continue" id="job_preview_submit_button" class="button job-manager-button-submit-listing" value="<?php echo esc_attr( __( 'Extend Listing', 'wp-job-manager' ) ); ?>" />
-		<h2><?php esc_html_e( 'Extend Listing Expiration', 'wp-job-manager' ); ?></h2>
+		<input type="submit" name="continue" id="job_preview_submit_button" class="button job-manager-button-submit-listing" value="<?php echo esc_attr( __( 'Renew &rarr;', 'wp-job-manager' ) ); ?>" />
+		<h2><?php esc_html_e( 'Renew Listing', 'wp-job-manager' ); ?></h2>
 	</div>
 	<div class="job_listing_preview single_job_listing">
 		<h1><?php wpjm_the_job_title(); ?></h1>
@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 	<?php
 	/**
-	 * Fires at the bottom of the extend job listing.
+	 * Fires at the bottom of the renew job listing.
 	 *
 	 * @since $$next-version$$
 	 */

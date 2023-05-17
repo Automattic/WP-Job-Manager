@@ -1728,7 +1728,7 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
  *
  * @return bool
  */
-function job_manager_job_can_be_extended( $job ) {
+function job_manager_job_can_be_renewed( $job ) {
 	$job    = get_post( $job );
 	$status = get_post_status( $job );
 	$expiry = strtotime( get_post_meta( $job->ID, '_job_expires', true ) );

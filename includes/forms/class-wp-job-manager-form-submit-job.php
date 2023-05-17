@@ -75,7 +75,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'submit_job_form_start', [ $this, 'output_submit_form_nonce_field' ] );
 		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
-		add_filter( 'submit_job_steps', [ $this, 'maybe_extend_job_expiry' ] );
+		add_filter( 'submit_job_steps', [ $this, 'remove_edit_steps_for_renewal' ] );
 
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
@@ -162,7 +162,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Load job details.
 		if ( $this->job_id ) {
 			$job_status = get_post_status( $this->job_id );
-			if ( 'expired' === $job_status || job_manager_job_can_be_extended( $this->job_id ) ) {
+			if ( 'expired' === $job_status || job_manager_job_can_be_renewed( $this->job_id ) ) {
 				if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
 					$this->job_id = 0;
 					$this->step   = 0;
@@ -1048,7 +1048,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$post->post_status = 'preview';
 
 			setup_postdata( $post );
-			$template = $this->is_extend_action() ? 'job-extend-preview.php' : 'job-preview.php';
+			$template = $this->is_renew_action() ? 'job-renew-preview.php' : 'job-preview.php';
 
 			get_job_manager_template(
 				$template,
@@ -1220,30 +1220,30 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Checks if 'extend' is set as action.
+	 * Checks if 'renew' is set as action.
 	 *
 	 * @since $$next-version$$
 	 * @return bool
 	 */
-	public function is_extend_action() {
-		return isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'extend';
+	public function is_renew_action() {
+		return isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'renew';
 	}
 
 	/**
-	 * Handle steps for extending a listing's expiry.
+	 * Handle steps for renewing a listing before expiry, removes edit steps.
 	 *
 	 * @access private
 	 * @param array $steps
 	 * @return array
 	 */
-	public function maybe_extend_job_expiry( $steps ) {
-		if ( $this->is_extend_action() ) {
+	public function remove_edit_steps_for_renewal( $steps ) {
+		if ( $this->is_renew_action() ) {
 			unset( $steps['submit'] );
 			unset( $steps['preview'] );
-			$steps['extend-expiry'] = [
-				'name'     => 'Extend Expiry',
+			$steps['renew-listing'] = [
+				'name'     => 'Renew Listing',
 				'view'     => [ $this, 'preview' ],
-				'handler'  => [ $this, 'extend_preview_handler' ],
+				'handler'  => [ $this, 'renew_preview_handler' ],
 				'priority' => 26,
 			];
 		}
@@ -1251,11 +1251,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Handles the extend-listing step.
+	 * Handles the renew-listing form submission.
 	 *
 	 * @throws Exception On validation error.
 	 */
-	public function extend_preview_handler() {
+	public function renew_preview_handler() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
 		if ( empty( $_POST ) ) {
 			return;
@@ -1266,21 +1266,21 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
 			$job       = get_post( $this->job_id );
 
-			$extending = $this->is_extend_action() && job_manager_job_can_be_extended( $this->job_id );
+			$renewing = $this->is_renew_action() && job_manager_job_can_be_renewed( $this->job_id );
 
-			if ( $extending ) {
+			if ( $renewing ) {
 				$old_expiry = date_create_immutable_from_format( 'Y-m-d', get_post_meta( $job->ID, '_job_expires', true ) );
 				$new_expiry = calculate_job_expiry( $job->ID, false, $old_expiry );
 				update_post_meta( $job->ID, '_job_expires', $new_expiry );
 			}
 
 			$requires_approval = get_option( 'job_manager_submission_requires_approval' );
-			$post_status       = $extending || ! $requires_approval ? 'publish' : 'pending';
+			$post_status       = $renewing || ! $requires_approval ? 'publish' : 'pending';
 
 			// Update job listing.
 			$update_job                  = [];
 			$update_job['ID']            = $job->ID;
-			$update_job['post_status']   = apply_filters( 'submit_job_post_status', $post_status, $job, $extending );
+			$update_job['post_status']   = apply_filters( 'submit_job_post_status', $post_status, $job, $renewing );
 			$update_job['post_date']     = current_time( 'mysql' );
 			$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
 
