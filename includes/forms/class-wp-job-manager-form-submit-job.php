@@ -1048,12 +1048,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$post->post_status = 'preview';
 
 			setup_postdata( $post );
-			$template = $this->is_renew_action() ? 'job-renew-preview.php' : 'job-preview.php';
 
 			get_job_manager_template(
-				$template,
+				'job-preview.php',
 				[
-					'form' => $this,
+					'form'               => $this,
+					'submit_button_text' => $this->is_renew_action() ? __( 'Renew Listing &rarr;', 'wp-job-manager' ) : null,
 				]
 			);
 
@@ -1238,8 +1238,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function remove_edit_steps_for_renewal( $steps ) {
 		if ( $this->is_renew_action() ) {
-			unset( $steps['submit'] );
-			unset( $steps['preview'] );
+			unset( $steps['submit'], $steps['preview'] );
 			$steps['renew-listing'] = [
 				'name'     => 'Renew Listing',
 				'view'     => [ $this, 'preview' ],
