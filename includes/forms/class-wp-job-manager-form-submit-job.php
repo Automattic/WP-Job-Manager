@@ -1055,7 +1055,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			get_job_manager_template(
 				'job-preview.php',
 				[
-					'form'               => $this,
+					'form' => $this,
 				]
 			);
 
@@ -1228,8 +1228,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return bool
 	 */
 	public function is_renew_action() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing.
-		return isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'renew';
+		return isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'renew'; // phpcs:ignore WordPress.Security.NonceVerification.Missing.
 	}
 
 	/**
