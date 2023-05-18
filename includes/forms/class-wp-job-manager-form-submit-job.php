@@ -75,7 +75,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'submit_job_form_start', [ $this, 'output_submit_form_nonce_field' ] );
 		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
-		add_filter( 'submit_job_steps', [ $this, 'remove_edit_steps_for_renewal' ] );
+		if ( $this->is_renew_action() ) {
+			add_filter( 'submit_job_steps', [ $this, 'remove_edit_steps_for_renewal' ] );
+			add_filter( 'submit_job_step_preview_submit_text', [ $this, 'submit_button_text_renewal' ], 15 );
+		}
 
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
@@ -1053,7 +1056,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'job-preview.php',
 				[
 					'form'               => $this,
-					'submit_button_text' => $this->is_renew_action() ? __( 'Renew Listing &rarr;', 'wp-job-manager' ) : null,
 				]
 			);
 
@@ -1226,6 +1228,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return bool
 	 */
 	public function is_renew_action() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing.
 		return isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'renew';
 	}
 
@@ -1237,16 +1240,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return array
 	 */
 	public function remove_edit_steps_for_renewal( $steps ) {
-		if ( $this->is_renew_action() ) {
-			unset( $steps['submit'], $steps['preview'] );
-			$steps['renew-listing'] = [
-				'name'     => 'Renew Listing',
-				'view'     => [ $this, 'preview' ],
-				'handler'  => [ $this, 'renew_preview_handler' ],
-				'priority' => 26,
-			];
-		}
-		return $steps;
+		unset( $steps['submit'], $steps['preview'] );
+		$steps['renew-listing'] = [
+			'name'     => 'Renew Listing',
+			'view'     => [ $this, 'preview' ],
+			'handler'  => [ $this, 'renew_preview_handler' ],
+			'priority' => 29, // This action should be just before 'done' whose priority is 30.
+		];
+		return apply_filters( 'renew_job_steps', $steps, $this );
 	}
 
 	/**
@@ -1290,5 +1291,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			$this->step ++;
 		}
+	}
+
+	/**
+	 * Filters submit button text for renew-listing step.
+	 *
+	 * @param int $text The button text.
+	 * @return string
+	 */
+	public function submit_button_text_renewal( $text ) {
+		if ( $this->get_step_key( $this->step ) === 'renew-listing' ) {
+			return __( 'Renew Listing &rarr;', 'wp-job-manager' );
+		}
+		return $text;
 	}
 }

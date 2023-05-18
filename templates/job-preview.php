@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	do_action( 'preview_job_form_start' );
 	?>
 	<div class="job_listing_preview_title">
-		<input type="submit" name="continue" id="job_preview_submit_button" class="button job-manager-button-submit-listing" value="<?php echo $submit_button_text ?? esc_attr( apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing', 'wp-job-manager' ) ) ); ?>" />
+		<input type="submit" name="continue" id="job_preview_submit_button" class="button job-manager-button-submit-listing" value="<?php echo esc_attr( apply_filters( 'submit_job_step_preview_submit_text', __( 'Submit Listing', 'wp-job-manager' ) ) ); ?>" />
 		<?php if ( ! $form->is_renew_action() ) : ?>
 			<input type="submit" name="edit_job" class="button job-manager-button-edit-listing" value="<?php esc_attr_e( 'Edit listing', 'wp-job-manager' ); ?>" />
 		<?php endif; ?>
