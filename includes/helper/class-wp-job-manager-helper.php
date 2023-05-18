@@ -10,14 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Helper functions used in WP Job Manager regarding addons and licenses.
+ * Helper functions used in WP Job Manager regarding addons and licences.
  *
  * @package wp-job-manager
  * @since   1.29.0
  */
 class WP_Job_Manager_Helper {
 	/**
-	 * License messages to display to the user.
+	 * Licence messages to display to the user.
 	 *
 	 * @var array Messages when updating licences.
 	 */

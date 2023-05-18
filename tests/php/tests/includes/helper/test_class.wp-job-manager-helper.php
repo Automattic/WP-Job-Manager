@@ -234,13 +234,13 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 * @covers WP_Job_Manager_Helper::plugin_links
 	 * @requires PHP 5.3.0
 	 */
-	public function test_plugin_links_valid_plugin_valid_license() {
+	public function test_plugin_links_valid_plugin_valid_licence() {
 		$instance = $this->getMockHelper();
 		$this->enable_update_plugins_cap();
 		$actions = $instance->plugin_links( [], 'test/test.php' );
 		$this->disable_update_plugins_cap();
 		$this->assertCount( 1, $actions );
-		$this->assertContains( __( 'Manage License', 'wp-job-manager' ), $actions[0] );
+		$this->assertContains( __( 'Manage licence', 'wp-job-manager' ), $actions[0] );
 	}
 
 	/**
@@ -248,7 +248,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 * @covers WP_Job_Manager_Helper::plugin_links
 	 * @requires PHP 5.3.0
 	 */
-	public function test_plugin_links_valid_plugin_invalid_license() {
+	public function test_plugin_links_valid_plugin_invalid_licence() {
 		$instance = $this->getMockHelper();
 		$this->enable_update_plugins_cap();
 		WP_Job_Manager_Helper_Options::delete( 'test', 'licence_key' );
@@ -256,7 +256,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$actions = $instance->plugin_links( [], 'test/test.php' );
 		$this->disable_update_plugins_cap();
 		$this->assertCount( 1, $actions );
-		$this->assertContains( __( 'Activate License', 'wp-job-manager' ), $actions[0] );
+		$this->assertContains( __( 'Activate licence', 'wp-job-manager' ), $actions[0] );
 	}
 
 	/**
@@ -333,7 +333,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 * @since 1.29.0
 	 * @covers WP_Job_Manager_Helper::get_plugin_licence
 	 */
-	public function test_get_plugin_license_valid() {
+	public function test_get_plugin_licence_valid() {
 		WP_Job_Manager_Helper_Options::update( 'rhino', 'licence_key', '1234' );
 		WP_Job_Manager_Helper_Options::update( 'rhino', 'email', 'test@local.dev' );
 		WP_Job_Manager_Helper_Options::update( 'rhino', 'errors', null );
@@ -354,7 +354,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 	 * @since 1.29.0
 	 * @covers WP_Job_Manager_Helper::get_plugin_info
 	 */
-	public function test_get_plugin_license_invalid() {
+	public function test_get_plugin_licence_invalid() {
 		$instance = new WP_Job_Manager_Helper();
 		$result   = $instance->get_plugin_licence( 'rhino' );
 		$expected = [
