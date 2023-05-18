@@ -21,7 +21,7 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Notice states.
 	 *
-	 * @deprecated $$next-version$$ This option should not be used anymore.
+	 * @deprecated 1.40.0 This option should not be used anymore.
 	 */
 	const STATE_OPTION                  = 'job_manager_admin_notices';
 	const NOTICE_CORE_SETUP             = 'core_setup';
@@ -78,7 +78,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Add a notice to be displayed in WP admin.
 	 *
 	 * @since      1.32.0
-	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
+	 * @deprecated 1.40.0 Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
 	 *
 	 * @param string $notice Name of the notice.
 	 */
@@ -95,7 +95,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Remove a notice from those displayed in WP admin.
 	 *
 	 * @since      1.32.0
-	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
+	 * @deprecated 1.40.0 Use the `job_manager_admin_notices` filter instead to add your own notices. You might need to persist an option/flag by yourself.
 	 *
 	 * @param string $notice Name of the notice.
 	 */
@@ -114,7 +114,7 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Clears all enqueued notices.
 	 *
-	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead.
+	 * @deprecated 1.40.0 Use the `job_manager_admin_notices` filter instead.
 	 */
 	public static function reset_notices() {
 		self::$notice_state = [];
@@ -125,7 +125,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Check for a notice to be displayed in WP admin.
 	 *
 	 * @since      1.32.0
-	 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead.
+	 * @deprecated 1.40.0 Use the `job_manager_admin_notices` filter instead.
 	 *
 	 * @param string $notice Name of the notice. Name is not sanitized for this method.
 	 *
@@ -184,7 +184,7 @@ class WP_Job_Manager_Admin_Notices {
 		/**
 		 * Filters the admin notices. Allows to add or remove notices.
 		 *
-		 * @since $$next-version$$
+		 * @since 1.40.0
 		 *
 		 * @param array $notices The admin notices.
 		 *
@@ -205,7 +205,7 @@ class WP_Job_Manager_Admin_Notices {
 		 * Allows WPJM related plugins to set up their notice hooks.
 		 *
 		 * @since      1.32.0
-		 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to add your own notices.
+		 * @deprecated 1.40.0 Use the `job_manager_admin_notices` filter instead to add your own notices.
 		 */
 		do_action( 'job_manager_init_admin_notices' );
 
@@ -215,7 +215,7 @@ class WP_Job_Manager_Admin_Notices {
 			 * Allows suppression of individual admin notices.
 			 *
 			 * @since      1.32.0
-			 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` filter instead to remove notices.
+			 * @deprecated 1.40.0 Use the `job_manager_admin_notices` filter instead to remove notices.
 			 *
 			 * @param bool $do_show_notice Set to false to prevent an admin notice from showing up.
 			 */
@@ -228,7 +228,7 @@ class WP_Job_Manager_Admin_Notices {
 			 * Handle the display of the admin notice.
 			 *
 			 * @since      1.32.0
-			 * @deprecated $$next-version$$ Use the `job_manager_admin_notices` to add your own notices with the normalised format.
+			 * @deprecated 1.40.0 Use the `job_manager_admin_notices` to add your own notices with the normalised format.
 			 */
 			do_action( 'job_manager_admin_notice_' . $notice );
 		}
@@ -458,8 +458,10 @@ class WP_Job_Manager_Admin_Notices {
 		// Default: Single update available.
 		$extra_details       = null;
 		$update_action_label = __( 'Update', 'wp-job-manager' );
-		$message             = __( 'Good news, reminder to update to the latest version of WP Job Manager.', 'wp-job-manager' );
-		$actions             = [
+		$first_update        = current( $updates );
+		// translators: %s is the name of the wpjm addon to be updated.
+		$message = sprintf( esc_html__( 'Good news, reminder to update to the latest version of %s.', 'wp-job-manager' ), $first_update['plugin'] );
+		$actions = [
 			[
 				'url'     => 'https://wpjobmanager.com/release-notes/',
 				'label'   => __( 'View release notes', 'wp-job-manager' ),

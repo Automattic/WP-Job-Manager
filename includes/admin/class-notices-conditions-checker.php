@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Notices_Conditions_Checker class.
  *
- * @since $$next-version$$
+ * @since 1.40.0
  * @internal
  */
 class Notices_Conditions_Checker {
@@ -275,8 +275,6 @@ class Notices_Conditions_Checker {
 
 	/**
 	 * Check a date range condition.
-	 *
-	 * @since $$next-version$$
 	 *
 	 * @param ?string $start_date_str Start date.
 	 * @param ?string $end_date_str   End date.
