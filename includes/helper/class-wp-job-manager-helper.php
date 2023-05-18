@@ -95,8 +95,8 @@ class WP_Job_Manager_Helper {
 	public function admin_init() {
 		$this->load_language_pack_helper();
 		add_action( 'plugin_action_links', [ $this, 'plugin_links' ], 10, 2 );
-		add_action( 'admin_notices', [ $this, 'licence_error_notices' ] );
 		$this->handle_admin_request();
+		$this->maybe_add_licence_error_notices();
 	}
 
 	/**
@@ -560,24 +560,26 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
-	 * Outputs unset license key notices.
+	 * Outputs unset licence key notices.
 	 */
-	public function licence_error_notices() {
-		$screen = get_current_screen();
-		if (
-			null === $screen ||
-			in_array( $screen->id, [ 'job_listing_page_job-manager-addons' ], true ) ||
-			! current_user_can( 'update_plugins' )
-		) {
-			return;
-		}
+	public function maybe_add_licence_error_notices() {
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$licence = $this->get_plugin_licence( $product_slug );
 			if ( ! WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ) ) {
 				if ( empty( $licence['licence_key'] ) ) {
-					include 'views/html-licence-key-notice.php';
+					add_filter(
+						'wpjm_admin_notices',
+						function ( $notices ) use ( $product_slug, $plugin_data ) {
+							return $this->add_missing_licence_notice( $notices, $product_slug, $plugin_data );
+						}
+					);
 				} elseif ( ! empty( $licence['errors'] ) ) {
-					include 'views/html-licence-key-error.php';
+					add_filter(
+						'wpjm_admin_notices',
+						function ( $notices ) use ( $product_slug, $plugin_data ) {
+							return $this->add_error_licence_notice( $notices, $product_slug, $plugin_data );
+						}
+					);
 				}
 			}
 		}
@@ -894,6 +896,71 @@ class WP_Job_Manager_Helper {
 		} else {
 			self::log_event( 'license_activated', $event_properties );
 		}
+	}
+
+
+	/**
+	 * Add a notice to the admin if a licence key is missing.
+	 *
+	 * @param array  $notices     Notices to be displayed.
+	 * @param string $product_slug The plugin slug.
+	 * @param array  $plugin_data The plugin data.
+	 * @return array
+	 */
+	public function add_missing_licence_notice( $notices, $product_slug, $plugin_data ) {
+		$notice = [
+			'level'       => 'info',
+			'dismissible' => true,
+			'conditions'  => [
+				[
+					'type'         => 'user_cap',
+					'capabilities' => [ 'update_plugins' ],
+				],
+			],
+			'message'     => sprintf(
+				wp_kses_post(
+				// translators: %1$s is the URL to the licence key page, %2$s is the plugin name.
+					__( '<a href="%1$s">Please enter your licence key</a> to get updates for "%2$s".', 'wp-job-manager' )
+				),
+				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper#' . sanitize_title( $product_slug . '_row' ) ) ),
+				esc_html( $plugin_data['Name'] )
+			),
+		];
+		$notices['wpjm_licence_notice'] = $notice;
+
+		return $notices;
+	}
+
+	/**
+	 * Add a notice to the admin if a licence key is missing.
+	 *
+	 * @param array  $notices     Notices to be displayed.
+	 * @param string $product_slug The plugin slug.
+	 * @param array  $plugin_data The plugin data.
+	 * @return array
+	 */
+	public function add_error_licence_notice( $notices, $product_slug, $plugin_data ) {
+		$notice = [
+			'level'       => 'error',
+			'dismissible' => true,
+			'conditions'  => [
+				[
+					'type'         => 'user_cap',
+					'capabilities' => [ 'update_plugins' ],
+				],
+			],
+			'message'     => sprintf(
+				wp_kses_post(
+				// translators: %1$s is the plugin name, %2$s is the URL to the licence key page.
+					__( 'There is a problem with the licence for "%1$s". Please <a href="%2$s">manage the licence</a> to check for a solution and continue receiving updates.', 'wp-job-manager' )
+				),
+				esc_html( $plugin_data['Name'] ),
+				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper#' . sanitize_title( $product_slug . '_row' ) ) )
+			),
+		];
+		$notices['wpjm_licence_error_notice'] = $notice;
+
+		return $notices;
 	}
 }
 
