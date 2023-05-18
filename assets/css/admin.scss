@@ -9,18 +9,18 @@
 	}
 }
 
-a.wpjm-activate-license-link,
-a.wpjm-activate-license-link:link,
-a.wpjm-activate-license-link:hover,
-a.wpjm-activate-license-link:visited,
-a.wpjm-activate-license-link:active {
+a.wpjm-activate-licence-link,
+a.wpjm-activate-licence-link:link,
+a.wpjm-activate-licence-link:hover,
+a.wpjm-activate-licence-link:visited,
+a.wpjm-activate-licence-link:active {
 	color: orangered;
 }
 
-.wpjm-licenses {
+.wpjm-licences {
 	margin-top: 10px;
 
-	.license-row {
+	.licence-row {
 		align-items: center;
 		border: solid 1px #e2e0e2;
 		display: flex;
@@ -41,34 +41,34 @@ a.wpjm-activate-license-link:active {
 			font-weight: 400;
 		}
 	}
-	.plugin-license {
+	.plugin-licence {
 		flex: 1;
 		flex-basis: 40%;
 		padding-bottom: 5px;
 	}
-	.plugin-license-icon {
+	.plugin-licence-icon {
 		width: 44px;
 		height: 44px;
 		margin: 14px 16px 14px 12px;
 	}
-	.plugin-license-form {
+	.plugin-licence-form {
 		text-align: right;
 		margin-right: 24px;
 		line-height: 36px;
 		height: 36px;
 	}
-	.plugin-license-checkmark {
+	.plugin-licence-checkmark {
 		// The resulting color shoudl be #008A20. Computed using https://codepen.io/sosuke/pen/Pjoqqp
 		filter: invert(23%) sepia(74%) saturate(6542%) hue-rotate(143deg) brightness(100%) contrast(101%);
 		vertical-align: middle;
 	}
-	.plugin-license-label {
+	.plugin-licence-label {
 		line-height: 36px;
 		font-weight: 600;
 		margin-left: 22px;
 		white-space: nowrap;
 	}
-	.plugin-license-field {
+	.plugin-licence-field {
 		height: 36px;
 		margin-left: 25px;
 		width: 100%;
@@ -77,13 +77,13 @@ a.wpjm-activate-license-link:active {
 			border: 1px solid #CC1818;
 		}
 	}
-	.plugin-license-button {
+	.plugin-licence-button {
 		margin-left: 30px;
 		height: 36px;
 		width: 100%;
 		max-width: 140px;
 	}
-	.plugin-license-notice {
+	.plugin-licence-notice {
 		width: 100%;
 		margin: 0 24px 14px 12px;
 		// Apply background colors from gutenberg notices in the HTML for each notice type
@@ -162,26 +162,26 @@ a.wpjm-activate-license-link:active {
 	}
 }
 
-.plugin-license-search {
+.plugin-licence-search {
 	width: 100%;
 	margin: 18px 0;
 	display: flex;
 	justify-content: end;
 	min-height: 40px;
-	.plugin-license-search-field {
+	.plugin-licence-search-field {
 		max-width: 180px;
 		width: 100%;
 		min-height: 40px;
 		margin-right: 3px;
 	}
-	.plugin-license-search-button {
+	.plugin-licence-search-button {
 		min-height: 40px;
 		max-width: 75px;
 		width: 100%;
 	}
 }
 
-.plugin-license-section {
+.plugin-licence-section {
 	font-size: 13px;
 	line-height: 16px;
 	font-weight: 700;
@@ -733,13 +733,13 @@ tr.email-setting-row {
  */
 @media only screen and (max-width: 782px) {
 
-	.wpjm-licenses {
+	.wpjm-licences {
 
 		.plugin-info {
 			padding: 10px;
 		}
 
-		.plugin-license {
+		.plugin-licence {
 			padding: 10px;
 		}
 	}
