@@ -559,6 +559,18 @@ class WP_Job_Manager_Helper {
 		return false;
 	}
 
+
+	/**
+	 * Outputs unset license key notices.
+	 *
+	 * @deprecated 1.33.0 Use maybe_add_license_error_notices() instead.
+	 */
+	public function licence_error_notices() {
+		_deprecated_function( __METHOD__, '1.33.0', 'maybe_add_license_error_notices()' );
+		$this->maybe_add_license_error_notices();
+	}
+
+
 	/**
 	 * Outputs unset licence key notices.
 	 */
