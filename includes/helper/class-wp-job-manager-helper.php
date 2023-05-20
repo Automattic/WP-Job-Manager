@@ -938,7 +938,7 @@ class WP_Job_Manager_Helper {
 				esc_html( $plugin_data['Name'] )
 			),
 		];
-		$notices['wpjm_licence_notice'] = $notice;
+		$notices[ 'wpjm_licence_notice_' . $product_slug ] = $notice;
 
 		return $notices;
 	}
@@ -970,7 +970,7 @@ class WP_Job_Manager_Helper {
 				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper#' . sanitize_title( $product_slug . '_row' ) ) )
 			),
 		];
-		$notices['wpjm_licence_error_notice'] = $notice;
+		$notices[ 'wpjm_licence_error_notice_' . $product_slug ] = $notice;
 
 		return $notices;
 	}
