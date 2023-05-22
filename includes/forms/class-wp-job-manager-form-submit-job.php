@@ -1228,7 +1228,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return bool
 	 */
 	public function is_renew_action() {
-		return isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'renew'; // phpcs:ignore WordPress.Security.NonceVerification.Missing.
+		$job_id = isset( $_GET['job_id'] ) ? sanitize_text_field( wp_unslash( $_GET['job_id'] ) ) : '';
+		$nonce  = isset( $_GET['nonce'] ) ? wp_unslash( $_GET['nonce'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		$action = 'job_manager_renew_job_' . $job_id;
+		if ( ! wp_verify_nonce( $nonce, $action ) ) {
+			return false;
+		}
+		return isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'renew';
 	}
 
 	/**
