@@ -155,7 +155,7 @@ class WP_Job_Manager_Ajax {
 			'orderby'           => $orderby,
 			'order'             => $order,
 			'offset'            => ( $page - 1 ) * $per_page,
-			'posts_per_page'    => max( 1, $per_page ),
+			'posts_per_page'    => max( 1, $per_page ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 		];
 
 		if ( 'true' === $filled || 'false' === $filled ) {

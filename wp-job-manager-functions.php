@@ -59,7 +59,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			'post_status'            => $post_status,
 			'ignore_sticky_posts'    => 1,
 			'offset'                 => absint( $args['offset'] ),
-			'posts_per_page'         => intval( $args['posts_per_page'] ),
+			'posts_per_page'         => intval( $args['posts_per_page'] ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 			'orderby'                => $args['orderby'],
 			'order'                  => $args['order'],
 			'tax_query'              => [],
