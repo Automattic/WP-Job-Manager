@@ -5,7 +5,7 @@
  */
 class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		add_filter( 'job_manager_geolocation_api_key', [ $this, 'get_google_maps_api_key' ], 10 );
 		add_filter( 'job_manager_geolocation_enabled', '__return_true' );

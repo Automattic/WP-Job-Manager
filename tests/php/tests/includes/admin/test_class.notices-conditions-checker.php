@@ -9,11 +9,11 @@ require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-notices-conditions-check
  */
 class WP_Test_Notices_Conditions_Checker extends \WPJM_BaseTest {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 	}
 

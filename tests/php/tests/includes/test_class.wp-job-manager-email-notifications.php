@@ -9,7 +9,7 @@ require_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class
  * @group email
  */
 class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
-	public function setUp() {
+	public function setUp(): void {
 		defined( 'PHPUNIT_WPJM_TESTSUITE' ) || define( 'PHPUNIT_WPJM_TESTSUITE', true );
 		parent::setUp();
 		reset_phpmailer_instance();
@@ -22,7 +22,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		WP_Job_Manager_Email_Notifications::maybe_init();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		reset_phpmailer_instance();
 		WP_Job_Manager_Email_Notifications::clear_deferred_notifications();
 		remove_action( 'shutdown', [ 'WP_Job_Manager_Email_Notifications', 'send_deferred_notifications' ] );

@@ -3,7 +3,7 @@
 class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 	private $terms;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php';
 	}

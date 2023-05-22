@@ -16,7 +16,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	private $event_counts       = array();
 	private $track_http_request = array();
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		// Update the class name here to match the Usage Tracking class.
 		$this->usage_tracking = Usage_Tracking_Test_Subclass::get_instance();

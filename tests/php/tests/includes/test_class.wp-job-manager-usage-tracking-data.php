@@ -56,7 +56,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	/**
 	 * Set up for tests.
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		// Ensure job categories and types are enabled.

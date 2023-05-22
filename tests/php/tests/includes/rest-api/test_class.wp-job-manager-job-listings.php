@@ -17,7 +17,7 @@
  */
 class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->reset_meta_keys();

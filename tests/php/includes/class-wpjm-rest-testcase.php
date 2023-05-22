@@ -24,7 +24,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	 */
 	private $rest_server;
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass(): void {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server;
 
@@ -48,7 +48,7 @@ class WPJM_REST_TestCase extends WPJM_BaseTest {
 	/**
 	 * Set this up.
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		/** @var WP_REST_Server $wp_rest_server */
 		global $wp_rest_server, $wp_version;
 		parent::setUp();
