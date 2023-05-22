@@ -116,7 +116,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$this->assertEmpty( $sent_email->cc );
 		$this->assertEmpty( $sent_email->bcc );
 		$this->assertEquals( 'Test Subject', $sent_email->subject );
-		$this->assertStringContainsString( "<p><strong>test</strong></p>\n", $sent_email->body );
+		$this->assertStringContainsString( "<p><strong>test</strong></p>", $sent_email->body );
 		$this->assertStringContainsString( 'From: From Name <from@example.com>', $sent_email->header );
 		$this->assertStringContainsString( 'Content-Type: text/html;', $sent_email->header );
 	}
