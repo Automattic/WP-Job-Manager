@@ -96,7 +96,7 @@ class WP_Job_Manager_Helper {
 		$this->load_language_pack_helper();
 		add_action( 'plugin_action_links', [ $this, 'plugin_links' ], 10, 2 );
 		$this->handle_admin_request();
-		$this->maybe_add_licence_error_notices();
+		$this->maybe_add_license_error_notices();
 	}
 
 	/**
@@ -574,7 +574,7 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Outputs unset licence key notices.
 	 */
-	public function maybe_add_licence_error_notices() {
+	public function maybe_add_license_error_notices() {
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$licence = $this->get_plugin_licence( $product_slug );
 			if ( ! WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ) ) {
