@@ -20,6 +20,9 @@
 	<exclude-pattern>templates/</exclude-pattern>
 	<exclude-pattern>lib/</exclude-pattern>
 
+	<!-- PHP Config -->
+	<ini name="error_reporting" value="E_ALL &#38; ~E_DEPRECATED" />
+
 	<!-- Configs -->
 	<config name="minimum_supported_wp_version" value="5.8" />
 	<config name="testVersion" value="7.4-"/>
