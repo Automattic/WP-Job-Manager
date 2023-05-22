@@ -1731,7 +1731,12 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
 function job_manager_job_can_be_renewed( $job ) {
 	$job    = get_post( $job );
 	$status = get_post_status( $job );
-	$expiry = strtotime( get_post_meta( $job->ID, '_job_expires', true ) );
+
+	/*
+	 * `WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job )->getTimestamp()` seems off by a day.
+	 * The following expression is equivalent to: `strtotime( get_post_meta( $job->ID, '_job_expires', true ) )`
+	 */
+	$expiry = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job )->getTimestamp() - DAY_IN_SECONDS;
 
 	// If there is no expiry, then relisting is not necessary.
 	if ( ! $expiry ) {
