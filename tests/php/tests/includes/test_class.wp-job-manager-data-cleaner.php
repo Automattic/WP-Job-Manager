@@ -226,7 +226,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	/**
 	 * Set up for tests.
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->setupPosts();

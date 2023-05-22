@@ -4,7 +4,7 @@ require JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-writepane
 
 class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->enable_manage_job_listings_cap();
 	}

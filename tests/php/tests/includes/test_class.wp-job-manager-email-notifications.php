@@ -9,7 +9,7 @@ require_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/stubs/class
  * @group email
  */
 class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
-	public function setUp() {
+	public function setUp(): void {
 		defined( 'PHPUNIT_WPJM_TESTSUITE' ) || define( 'PHPUNIT_WPJM_TESTSUITE', true );
 		parent::setUp();
 		reset_phpmailer_instance();
@@ -22,7 +22,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		WP_Job_Manager_Email_Notifications::maybe_init();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		reset_phpmailer_instance();
 		WP_Job_Manager_Email_Notifications::clear_deferred_notifications();
 		remove_action( 'shutdown', [ 'WP_Job_Manager_Email_Notifications', 'send_deferred_notifications' ] );
@@ -110,15 +110,15 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 
 		$sent_email = $mailer->get_sent();
 		$this->assertNotFalse( $sent_email );
-		$this->assertInternalType( 'array', $sent_email->to );
+		$this->assertIsArray( $sent_email->to );
 		$this->assertTrue( isset( $sent_email->to[0][0] ) );
 		$this->assertEquals( 'to@example.com', $sent_email->to[0][0] );
 		$this->assertEmpty( $sent_email->cc );
 		$this->assertEmpty( $sent_email->bcc );
 		$this->assertEquals( 'Test Subject', $sent_email->subject );
-		$this->assertContains( "<p><strong>test</strong></p>\n", $sent_email->body );
-		$this->assertContains( 'From: From Name <from@example.com>', $sent_email->header );
-		$this->assertContains( 'Content-Type: text/html;', $sent_email->header );
+		$this->assertStringContainsString( "<p><strong>test</strong></p>", $sent_email->body );
+		$this->assertStringContainsString( 'From: From Name <from@example.com>', $sent_email->header );
+		$this->assertStringContainsString( 'Content-Type: text/html;', $sent_email->header );
 	}
 
 	/**
@@ -365,12 +365,12 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		ob_start();
 		WP_Job_Manager_Email_Notifications::output_job_details( $job, $email, true, true );
 		$content = ob_get_clean();
-		$this->assertContains( 'Job title: ' . $job->post_title, $content );
-		$this->assertContains( 'Location: ' . $job->_job_location, $content );
-		$this->assertContains( 'Job type: Full Time', $content );
-		$this->assertContains( 'Job category: Weird', $content );
-		$this->assertContains( 'Company name: ' . $job->_company_name, $content );
-		$this->assertContains( 'Company website: ' . $job->_company_website, $content );
+		$this->assertStringContainsString( 'Job title: ' . $job->post_title, $content );
+		$this->assertStringContainsString( 'Location: ' . $job->_job_location, $content );
+		$this->assertStringContainsString( 'Job type: Full Time', $content );
+		$this->assertStringContainsString( 'Job category: Weird', $content );
+		$this->assertStringContainsString( 'Company name: ' . $job->_company_name, $content );
+		$this->assertStringContainsString( 'Company website: ' . $job->_company_website, $content );
 	}
 
 	/**
@@ -381,7 +381,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		ob_start();
 		WP_Job_Manager_Email_Notifications::output_header( $email, true, false );
 		$content = ob_get_clean();
-		$this->assertContains( '<!DOCTYPE html>', $content );
+		$this->assertStringContainsString( '<!DOCTYPE html>', $content );
 	}
 
 	/**
@@ -392,7 +392,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		ob_start();
 		WP_Job_Manager_Email_Notifications::output_footer( $email, true, false );
 		$content = ob_get_clean();
-		$this->assertContains( '</html>', $content );
+		$this->assertStringContainsString( '</html>', $content );
 	}
 
 	/**
@@ -411,9 +411,9 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 		$email_notifications_settings = $settings['email_notifications'];
 
 		$this->assertTrue( isset( $email_notifications_settings[0] ) );
-		$this->assertInternalType( 'string', $email_notifications_settings[0] );
+		$this->assertIsString( $email_notifications_settings[0] );
 		$this->assertTrue( isset( $email_notifications_settings[1] ) );
-		$this->assertInternalType( 'array', $email_notifications_settings[1] );
+		$this->assertIsArray( $email_notifications_settings[1] );
 
 		$settings      = $email_notifications_settings[1];
 		$email_keys    = array_keys( $emails );
@@ -444,7 +444,7 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 			$this->assertArrayHasKey( 'name', $setting );
 			$this->assertEquals( WP_Job_Manager_Email_Notifications::EMAIL_SETTING_PREFIX . $email_key, $setting['name'] );
 			$this->assertArrayHasKey( 'enable_field', $setting );
-			$this->assertInternalType( 'array', $setting['enable_field'] );
+			$this->assertIsArray( $setting['enable_field'] );
 			$this->assertArrayHasKey( 'label', $setting );
 			$this->assertArrayHasKey( 'std', $setting );
 			$this->assertEquals( $setting['std'], $defaults );

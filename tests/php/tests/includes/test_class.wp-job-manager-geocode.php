@@ -5,7 +5,7 @@
  */
 class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		add_filter( 'job_manager_geolocation_api_key', [ $this, 'get_google_maps_api_key' ], 10 );
 		add_filter( 'job_manager_geolocation_enabled', '__return_true' );
@@ -194,12 +194,12 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 
 		remove_filter( 'job_manager_geolocation_api_key', [ $this, 'helper_add_api_key' ] );
 		remove_filter( 'job_manager_geolocation_region_cctld', [ $this, 'helper_add_region_cctld' ] );
-		$this->assertContains( $test_url, $result );
-		$this->assertContains( urlencode( $test_location ), $result );
-		$this->assertContains( 'key=' . urlencode( $this->helper_add_api_key( '' ) ), $result );
-		$this->assertContains( 'region=' . urlencode( $this->helper_add_region_cctld( '' ) ), $result );
+		$this->assertStringContainsString( $test_url, $result );
+		$this->assertStringContainsString( urlencode( $test_location ), $result );
+		$this->assertStringContainsString( 'key=' . urlencode( $this->helper_add_api_key( '' ) ), $result );
+		$this->assertStringContainsString( 'region=' . urlencode( $this->helper_add_region_cctld( '' ) ), $result );
 		$locale = get_locale();
-		$this->assertContains( 'language=' . urlencode( substr( $locale, 0, 2 ) ), $result );
+		$this->assertStringContainsString( 'language=' . urlencode( substr( $locale, 0, 2 ) ), $result );
 
 	}
 

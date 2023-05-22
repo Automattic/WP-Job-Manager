@@ -18,7 +18,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	 */
 	protected $default_user_id;
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 		include_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/class-requests-transport-faker.php';
 		$this->_transport = null;
@@ -28,7 +28,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 		$this->default_user_id = get_current_user_id();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 		$this->disable_manage_job_listings_cap();
 		$this->logout();

@@ -16,7 +16,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	private $event_counts       = array();
 	private $track_http_request = array();
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		// Update the class name here to match the Usage Tracking class.
 		$this->usage_tracking = Usage_Tracking_Test_Subclass::get_instance();
@@ -349,7 +349,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		$system_data = $this->usage_tracking->get_system_data();
 
-		$this->assertInternalType( 'array', $system_data, 'System data must be returned as an array' );
+		$this->assertIsArray( $system_data, 'System data must be returned as an array' );
 
 		$this->assertArrayHasKey( 'wp_version', $system_data, '`wp_version` key must exist in system data' );
 		$this->assertEquals( $wp_version, $system_data['wp_version'], '`wp_version` does not match expected value' );

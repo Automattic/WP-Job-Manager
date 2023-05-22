@@ -1,7 +1,7 @@
 <?php
 
 class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->enable_manage_job_listings_cap();
 		update_option( 'job_manager_enable_categories', 1 );
@@ -12,7 +12,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$this->disable_job_listing_cache();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 		add_filter( 'job_manager_geolocation_enabled', '__return_true' );
 		$this->enable_job_listing_cache();

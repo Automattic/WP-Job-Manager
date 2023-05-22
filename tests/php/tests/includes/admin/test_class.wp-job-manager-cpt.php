@@ -3,7 +3,7 @@
 require 'includes/admin/class-wp-job-manager-cpt.php';
 
 class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		// Ensure the hooks are set up.

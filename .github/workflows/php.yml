@@ -35,7 +35,7 @@ jobs:
           coverage:    none
 
       - name: Install PHP dependencies
-        run: composer self-update --1 && composer install --no-ansi --no-interaction --prefer-dist --no-progress
+        run: composer self-update && composer install --no-ansi --no-interaction --prefer-dist --no-progress
 
       - name: Run PHP Linter
         run: npm run lint:php
@@ -88,7 +88,7 @@ jobs:
           coverage: none
 
       - name: Install PHP dependencies
-        run: composer self-update --1 && composer install --no-ansi --no-interaction --prefer-dist --no-progress
+        run: composer self-update && composer install --no-ansi --no-interaction --prefer-dist --no-progress
 
       - name: Setup test environment
         run: bash ./tests/bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 $WP_VERSION

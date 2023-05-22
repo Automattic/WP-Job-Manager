@@ -1,7 +1,7 @@
 <?php
 
 class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->enable_manage_job_listings_cap();
 		update_option( 'job_manager_enable_categories', 1 );
@@ -10,7 +10,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		add_filter( 'job_manager_geolocation_enabled', '__return_false' );
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 		add_filter( 'job_manager_geolocation_enabled', '__return_true' );
 	}
@@ -105,14 +105,14 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 
 			$post_content_filtered = $instance->job_content( $post->post_content );
 			$this->assertNotEquals( $post->post_content, $post_content_filtered );
-			$this->assertContains( '<div class="single_job_listing"', $post_content_filtered );
+			$this->assertStringContainsString( '<div class="single_job_listing"', $post_content_filtered );
 
 			ob_start();
 			the_content();
 			$post_content_filtered = ob_get_clean();
 			$this->assertNotEquals( $post->post_content, $post_content_filtered );
-			$this->assertContains( '<div class="single_job_listing"', $post_content_filtered );
-			$this->assertContains( $post->post_content, $post_content_filtered );
+			$this->assertStringContainsString( '<div class="single_job_listing"', $post_content_filtered );
+			$this->assertStringContainsString( $post->post_content, $post_content_filtered );
 		}
 	}
 
@@ -341,26 +341,26 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 
 			if ( $has_location ) {
 				$job_location = get_the_job_location( $post );
-				$this->assertContains( 'job_listing:location', $result );
-				$this->assertContains( $job_location, $result );
+				$this->assertStringContainsString( 'job_listing:location', $result );
+				$this->assertStringContainsString( $job_location, $result );
 			} else {
-				$this->assertNotContains( 'job_listing:location', $result );
+				$this->assertStringNotContainsString( 'job_listing:location', $result );
 			}
 
 			if ( $has_job_type ) {
 				$job_type = current( wpjm_get_the_job_types( $post ) );
-				$this->assertContains( 'job_listing:job_type', $result );
-				$this->assertContains( $job_type->name, $result );
+				$this->assertStringContainsString( 'job_listing:job_type', $result );
+				$this->assertStringContainsString( $job_type->name, $result );
 			} else {
-				$this->assertNotContains( 'job_listing:job_type', $result );
+				$this->assertStringNotContainsString( 'job_listing:job_type', $result );
 			}
 
 			if ( $has_company ) {
 				$company_name = get_the_company_name( $post );
-				$this->assertContains( $company_name, $result );
-				$this->assertContains( 'job_listing:company', $result );
+				$this->assertStringContainsString( $company_name, $result );
+				$this->assertStringContainsString( 'job_listing:company', $result );
 			} else {
-				$this->assertNotContains( 'job_listing:company', $result );
+				$this->assertStringNotContainsString( 'job_listing:company', $result );
 			}
 		}
 	}
@@ -967,8 +967,8 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			ob_start();
 			$instance->output_structured_data();
 			$result = ob_get_clean();
-			$this->assertContains( '<script type="application/ld+json">', $result );
-			$this->assertContains( $json_data, $result );
+			$this->assertStringContainsString( '<script type="application/ld+json">', $result );
+			$this->assertStringContainsString( $json_data, $result );
 		}
 	}
 

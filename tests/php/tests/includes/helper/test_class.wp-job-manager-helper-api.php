@@ -5,14 +5,14 @@
  */
 class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->enable_transport_faker();
 		$transport                 = $this->get_request_transport();
 		$transport->headers_matter = true;
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 		$this->disable_transport_faker();
 	}
