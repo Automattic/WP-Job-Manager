@@ -10,14 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Helper functions used in WP Job Manager regarding addons and licences.
+ * Helper functions used in WP Job Manager regarding addons and licenses.
  *
  * @package wp-job-manager
  * @since   1.29.0
  */
 class WP_Job_Manager_Helper {
 	/**
-	 * Licence messages to display to the user.
+	 * License messages to display to the user.
 	 *
 	 * @var array Messages when updating licences.
 	 */
@@ -582,14 +582,14 @@ class WP_Job_Manager_Helper {
 					add_filter(
 						'wpjm_admin_notices',
 						function ( $notices ) use ( $product_slug, $plugin_data ) {
-							return $this->add_missing_licence_notice( $notices, $product_slug, $plugin_data );
+							return $this->add_missing_license_notice( $notices, $product_slug, $plugin_data );
 						}
 					);
 				} elseif ( ! empty( $licence['errors'] ) ) {
 					add_filter(
 						'wpjm_admin_notices',
 						function ( $notices ) use ( $product_slug, $plugin_data ) {
-							return $this->add_error_licence_notice( $notices, $product_slug, $plugin_data );
+							return $this->add_error_license_notice( $notices, $product_slug, $plugin_data );
 						}
 					);
 				}
@@ -919,7 +919,7 @@ class WP_Job_Manager_Helper {
 	 * @param array  $plugin_data The plugin data.
 	 * @return array
 	 */
-	public function add_missing_licence_notice( $notices, $product_slug, $plugin_data ) {
+	public function add_missing_license_notice( $notices, $product_slug, $plugin_data ) {
 		$notice = [
 			'level'       => 'info',
 			'dismissible' => true,
@@ -951,7 +951,7 @@ class WP_Job_Manager_Helper {
 	 * @param array  $plugin_data The plugin data.
 	 * @return array
 	 */
-	public function add_error_licence_notice( $notices, $product_slug, $plugin_data ) {
+	public function add_error_license_notice( $notices, $product_slug, $plugin_data ) {
 		$notice = [
 			'level'       => 'error',
 			'dismissible' => true,
