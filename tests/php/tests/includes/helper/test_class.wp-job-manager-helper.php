@@ -240,7 +240,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$actions = $instance->plugin_links( [], 'test/test.php' );
 		$this->disable_update_plugins_cap();
 		$this->assertCount( 1, $actions );
-		$this->assertContains( __( 'Manage License', 'wp-job-manager' ), $actions[0] );
+		$this->assertStringContainsString( __( 'Manage License', 'wp-job-manager' ), $actions[0] );
 	}
 
 	/**
@@ -256,7 +256,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_Helper_Base_Test {
 		$actions = $instance->plugin_links( [], 'test/test.php' );
 		$this->disable_update_plugins_cap();
 		$this->assertCount( 1, $actions );
-		$this->assertContains( __( 'Activate License', 'wp-job-manager' ), $actions[0] );
+		$this->assertStringContainsString( __( 'Activate License', 'wp-job-manager' ), $actions[0] );
 	}
 
 	/**

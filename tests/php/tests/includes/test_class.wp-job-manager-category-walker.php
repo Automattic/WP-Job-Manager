@@ -19,8 +19,8 @@ class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 		// Typical call.
 		$test_output_a = '';
 		$walker->start_el( $test_output_a, $terms[0], 11 );
-		$this->assertContains( $terms[0]->name, $test_output_a );
-		$this->assertContains( 'level-11', $test_output_a );
+		$this->assertStringContainsString( $terms[0]->name, $test_output_a );
+		$this->assertStringContainsString( 'level-11', $test_output_a );
 
 		// With empty county.
 		$test_output_b = '';
@@ -33,13 +33,13 @@ class WP_Test_WP_Job_Manager_Category_Walker extends WPJM_BaseTest {
 				'hierarchical' => true,
 			]
 		);
-		$this->assertContains( '&nbsp;(0)', $test_output_b );
-		$this->assertContains( str_repeat( '&nbsp;', 33 ), $test_output_b );
+		$this->assertStringContainsString( '&nbsp;(0)', $test_output_b );
+		$this->assertStringContainsString( str_repeat( '&nbsp;', 33 ), $test_output_b );
 
 		// With selected.
 		$test_output_c = '';
 		$walker->start_el( $test_output_c, $terms[0], 0, [ 'selected' => $terms[0]->slug ] );
-		$this->assertContains( 'selected="selected"', $test_output_c );
+		$this->assertStringContainsString( 'selected="selected"', $test_output_c );
 	}
 
 	private function setup_terms() {

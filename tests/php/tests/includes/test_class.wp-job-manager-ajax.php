@@ -84,19 +84,19 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		// Check result.
 		$this->assertTrue( $result['found_jobs'] );
 		$this->assertEmpty( $result['showing'] );
-		$this->assertInternalType( 'array', $result );
+		$this->assertIsArray( $result );
 		$this->assertArrayHasKey( 'html', $result );
 
 		// Make sure the HTML contains all the published post titles.
 		foreach ( $published as $post_id ) {
 			$post = get_post( $post_id );
-			$this->assertContains( $post->post_title, $result['html'] );
+			$this->assertStringContainsString( $post->post_title, $result['html'] );
 		}
 
 		// Make sure the HTML does NOT contain any of the draft post titles.
 		foreach ( $draft as $post_id ) {
 			$post = get_post( $post_id );
-			$this->assertNotContains( $post->post_title, $result['html'] );
+			$this->assertStringNotContainsString( $post->post_title, $result['html'] );
 		}
 	}
 
@@ -128,7 +128,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		$this->tear_down_job_listing_search_request();
 
-		$this->assertInternalType( 'array', $result );
+		$this->assertIsArray( $result );
 		$this->assertArrayNotHasKey( 'html', $result );
 		$this->assertArrayHasKey( '_jobs', $result );
 		$this->assertCount( 2, $result['_jobs'] );

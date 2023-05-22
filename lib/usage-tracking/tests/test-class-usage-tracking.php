@@ -349,7 +349,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 
 		$system_data = $this->usage_tracking->get_system_data();
 
-		$this->assertInternalType( 'array', $system_data, 'System data must be returned as an array' );
+		$this->assertIsArray( $system_data, 'System data must be returned as an array' );
 
 		$this->assertArrayHasKey( 'wp_version', $system_data, '`wp_version` key must exist in system data' );
 		$this->assertEquals( $wp_version, $system_data['wp_version'], '`wp_version` does not match expected value' );
