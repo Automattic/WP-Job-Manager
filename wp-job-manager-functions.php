@@ -1729,28 +1729,19 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
  * @return bool
  */
 function job_manager_job_can_be_renewed( $job ) {
-	$job    = get_post( $job );
-	$status = get_post_status( $job );
+	$job        = get_post( $job );
+	$expiration = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
 
-	/*
-	 * `WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job )->getTimestamp()` seems off by a day.
-	 * The following expression is equivalent to: `strtotime( get_post_meta( $job->ID, '_job_expires', true ) )`
-	 */
-	$expiry = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job )->getTimestamp() - DAY_IN_SECONDS;
-
-	// If there is no expiry, then relisting is not necessary.
-	if ( ! $expiry ) {
+	// If there is no expiration, then renewal is not necessary.
+	if ( ! $expiration ) {
 		return false;
+	} else {
+		$expiry = $expiration->getTimestamp();
 	}
 
-	/**
-	 * Number of days before a job expires to allow relisting it.
-	 *
-	 * @since $$next_version$$
-	 *
-	 * @param int $expiring_soon_days The default number of days.
-	 */
-	$expiring_soon_days = apply_filters( 'job_manager_renewal_days', get_option( 'job_manager_renewal_days', 5 ) );
+	$expiring_soon_days = get_option( 'job_manager_renewal_days', 5 );
+	$current_time_stamp = current_datetime()->getTimestamp();
+	$status             = get_post_status( $job );
 
-	return 'publish' === $status && $expiry - time() < $expiring_soon_days * DAY_IN_SECONDS;
+	return 'publish' === $status && $expiry - $current_time_stamp < $expiring_soon_days * DAY_IN_SECONDS;
 }
