@@ -945,4 +945,25 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		remove_filter( 'get_job_listings_cache_results', '__return_false' );
 		add_filter( 'get_job_listings_cache_results', '__return_true' );
 	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::job_manager_job_can_be_renewed
+	 */
+	public function test_job_manager_job_can_be_renewed() {
+		$job_listing_id = $this->factory->job_listing->create();
+		$job_listing    = get_post( $job_listing_id );
+		$this->assertFalse( job_manager_job_can_be_renewed( $job_listing ) );
+		update_option( 'job_manager_renewal_days', 2 );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("+3 days") ) );
+		$this->assertFalse( job_manager_job_can_be_renewed( $job_listing ) );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("+2 days") ) );
+		$this->assertFalse( job_manager_job_can_be_renewed( $job_listing ) );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("+1 day") ) );
+		$this->assertTrue( job_manager_job_can_be_renewed( $job_listing ) );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("now") ) );
+		$this->assertTrue( job_manager_job_can_be_renewed( $job_listing ) );
+		update_option( 'job_manager_renewal_days', 0 );
+		$this->assertFalse( job_manager_job_can_be_renewed( $job_listing ) );
+	}
 }
