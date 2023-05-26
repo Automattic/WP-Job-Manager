@@ -1,5 +1,8 @@
 # WP Job Manager
 
+## 1.40.2 - 2023-05-26
+* Revert: Hide expired job listings from archives
+
 ## 1.40.1 - 2023-05-12
 * Fix: Icons not displaying properly
 
