@@ -658,7 +658,7 @@ class WP_Job_Manager_Post_Types {
 	 * @param WP_Query $query Query being processed.
 	 */
 	public function maybe_hide_filled_expired_job_listings_from_search( $query ) {
-		if ( ! $query->is_search() ) {
+		if ( ! $query->is_search() || is_admin() ) {
 			return;
 		}
 
