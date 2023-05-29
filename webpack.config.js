@@ -1,5 +1,5 @@
-const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
-const path = require( 'path' );
+const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const path = require('path');
 
 const files = {
 	'js/admin': 'js/admin.js',
@@ -23,27 +23,14 @@ const files = {
 
 const baseDist = 'assets/dist/';
 
-Object.keys( files ).forEach( function ( key ) {
-	files[ key ] = path.resolve( './assets', files[ key ] );
-} );
-
-const FileLoader = {
-	test: /\.(?:gif|jpg|jpeg|png|svg|woff|woff2|eot|ttf|otf)$/i,
-	loader: 'file-loader',
-	options: {
-		name: '[path][name]-[contenthash].[ext]',
-		context: 'assets',
-		publicPath: '..',
-	},
-};
+Object.keys(files).forEach(function (key) {
+	files[key] = path.resolve('./assets', files[key]);
+});
 
 module.exports = {
 	...defaultConfig,
 	entry: files,
 	output: {
-		path: path.resolve( '.', baseDist ),
-	},
-	module: {
-		rules: [ FileLoader, ...defaultConfig.module.rules.slice(0, 4) ],
+		path: path.resolve('.', baseDist),
 	},
 };
