@@ -1745,3 +1745,30 @@ function job_manager_job_can_be_renewed( $job ) {
 
 	return 'publish' === $status && $expiry - $current_time_stamp < $expiring_soon_days * DAY_IN_SECONDS;
 }
+
+/**
+ * Renew a job listing.
+ *
+ * @param WP_Post $job The job to renew.
+ */
+function job_manager_renew_job_listing( $job ) {
+	$old_expiry = date_create_immutable_from_format( 'Y-m-d', get_post_meta( $job->ID, '_job_expires', true ) );
+	$new_expiry = calculate_job_expiry( $job->ID, false, $old_expiry );
+	update_post_meta( $job->ID, '_job_expires', $new_expiry );
+
+	/**
+	 * Fires when a job listing status is about to be updated.
+	 *
+	 * @param int  $job_id The job ID.
+	 * @param bool $renewing Whether the job is being renewed.
+	 */
+	$post_status = apply_filters( 'submit_job_post_status', 'publish', $job, true );
+
+	$update_job                  = [];
+	$update_job['ID']            = $job->ID;
+	$update_job['post_status']   = $post_status;
+	$update_job['post_date']     = current_time( 'mysql' );
+	$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
+
+	wp_update_post( $update_job );
+}
