@@ -1168,6 +1168,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	public function done_before() {
 		delete_post_meta( $this->job_id, '_public_submission' );
 
+		if ( $this->should_renew_job_listing() ) {
+			job_manager_renew_job_listing( get_post( $this->job_id ) );
+		}
+
 		/**
 		 * Trigger job submission action.
 		 *
@@ -1246,12 +1250,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function remove_edit_steps_for_renewal( $steps ) {
 		unset( $steps['submit'], $steps['preview'] );
-		$steps['renew-listing'] = [
-			'name'     => 'Renew Listing',
-			'view'     => [ $this, 'preview' ],
-			'handler'  => [ $this, 'renew_preview_handler' ],
-			'priority' => 29, // This action should be just before 'done' whose priority is 30.
-		];
+		if ( ! class_exists( 'WC_Paid_Listings' ) && ! class_exists( 'WP_Job_Manager_Simple_Paid_Listings' ) ) {
+			$steps['renew-preview'] = [
+				'name'     => 'Renew Preview',
+				'view'     => [ $this, 'preview' ],
+				'handler'  => [ $this, 'renew_preview_handler' ],
+				'priority' => 29,
+			];
+		}
 		return apply_filters( 'renew_job_steps', $steps, $this );
 	}
 
@@ -1269,15 +1275,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$this->check_preview_form_nonce_field();
 
 		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
-			$job      = get_post( $this->job_id );
-			$renewing = $this->is_renew_action() && job_manager_job_can_be_renewed( $this->job_id );
-
-			if ( $renewing ) {
-				job_manager_renew_job_listing( $job );
+			if ( $this->should_renew_job_listing() ) {
+				job_manager_renew_job_listing( get_post( $this->job_id ) );
 			}
 
-			$this->step ++;
+			$this->step++;
 		}
+	}
+
+	/**
+	 * Checks if the job listing should be renewed.
+	 */
+	public function should_renew_job_listing() {
+		return 'publish' === get_post_status( $this->job_id ) && $this->is_renew_action() && job_manager_job_can_be_renewed( $this->job_id );
 	}
 
 	/**
@@ -1287,7 +1297,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return string
 	 */
 	public function submit_button_text_renewal( $text ) {
-		if ( $this->get_step_key( $this->step ) === 'renew-listing' ) {
+		if ( $this->get_step_key( $this->step ) === 'renew-preview' ) {
 			return __( 'Renew Listing &rarr;', 'wp-job-manager' );
 		}
 		return $text;
