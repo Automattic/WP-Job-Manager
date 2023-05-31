@@ -1258,6 +1258,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'priority' => 29,
 			];
 		}
+		/**
+		 * Filter the steps for renewing a listing before expiry.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param array $steps
+		 * @param WP_Job_Manager_Form_Submit_Job $form
+		 */
 		return apply_filters( 'renew_job_steps', $steps, $this );
 	}
 
