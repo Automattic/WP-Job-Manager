@@ -592,7 +592,7 @@ class WP_Job_Manager_Post_Types {
 		if ( ! empty( $input_search_location ) ) {
 			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
 			$location_search    = [ 'relation' => 'OR' ];
-			$locations          = preg_split( '/"/', $input_search_location );
+			$locations          = explode( ';', $input_search_location );
 			foreach ( $locations as $location ) {
 				$location = trim( $location );
 				if ( ! empty( $location ) ) {

@@ -98,7 +98,8 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		if ( ! empty( $args['search_location'] ) ) {
 			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
 			$location_search    = [ 'relation' => 'OR' ];
-			$locations          = preg_split( '/"/', $args['search_location'] );
+			$locations          = explode( ';', $args['search_location'] );
+
 			foreach ( $locations as $location ) {
 				$location = trim( $location );
 				if ( ! empty( $location ) ) {
