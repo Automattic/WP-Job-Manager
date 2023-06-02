@@ -18,7 +18,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	 */
 	protected $default_user_id;
 
-	function setUp(): void {
+	function setUp() {
 		parent::setUp();
 		include_once WPJM_Unit_Tests_Bootstrap::instance()->includes_dir . '/class-requests-transport-faker.php';
 		$this->_transport = null;
