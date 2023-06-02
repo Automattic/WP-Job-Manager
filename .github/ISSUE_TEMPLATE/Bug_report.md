@@ -3,7 +3,7 @@ name: "\U0001F41E Bug report"
 about: Report a bug if something isn't working as expected in the core WP Job Manager
   plugin.
 title: ''
-labels: '[Type] Bug'
+labels: "[Type] Bug"
 assignees: ''
 
 ---
@@ -35,4 +35,4 @@ A clear and concise description of what you expected to happen.
 - WordPress Version: 
 - WP Job Manager Version:
 - PHP Version: 
-- Other important details: 
+- Other important details:
