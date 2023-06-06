@@ -1772,14 +1772,3 @@ function job_manager_renew_job_listing( $job ) {
 
 	wp_update_post( $update_job );
 }
-
-/**
- * Checks if the wc paid listings has the minimum version when installed and activated.
- *
- * @since $$next-version$$
- *
- * @return bool
- */
-function job_manager_is_wcpl_renew_compatible() {
-	return ! class_exists( 'WC_Paid_Listings' ) || version_compare( JOB_MANAGER_WCPL_VERSION, '2.9.9', '>' );
-}

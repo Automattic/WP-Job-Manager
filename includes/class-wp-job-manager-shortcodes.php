@@ -462,7 +462,7 @@ class WP_Job_Manager_Shortcodes {
 						'nonce' => $base_nonce_action_name,
 					];
 				}
-				if ( get_option( 'job_manager_renewal_days' ) > 0 && job_manager_job_can_be_renewed( $job ) && job_manager_is_wcpl_renew_compatible() ) {
+				if ( get_option( 'job_manager_renewal_days' ) > 0 && job_manager_job_can_be_renewed( $job ) ) {
 					$actions['renew'] = [
 						'label' => __( 'Renew', 'wp-job-manager' ),
 						'nonce' => $base_nonce_action_name,
