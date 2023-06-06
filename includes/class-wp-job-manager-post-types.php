@@ -87,6 +87,8 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
+		add_action( 'pre_get_posts', [ $this, 'maybe_hide_filled_job_listings_from_search' ] );
+		add_action( 'pre_get_posts', [ $this, 'maybe_hide_expired_job_listings_from_search' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -657,6 +659,93 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'rss2_item', [ $this, 'job_feed_item' ] );
 		do_feed_rss2( false );
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search' );
+	}
+
+	/**
+	 * Maybe hide filled job listings from search.
+	 *
+	 * @param WP_Query $query Query object.
+	 */
+	public function maybe_hide_filled_job_listings_from_search( $query ) {
+		if ( ! is_admin() && $query->is_search() && 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
+			$meta_query = $query->get( 'meta_query' );
+
+			if ( ! is_array( $meta_query ) ) {
+				$meta_query = [];
+			}
+
+			$meta_query[] = [
+				'relation' => 'OR',
+				[
+					'key'     => '_filled',
+					'value'   => '0',
+					'compare' => '=',
+				],
+				[
+					'key'     => '_filled',
+					'compare' => 'NOT EXISTS',
+				],
+			];
+
+			$query->set( 'meta_query', $meta_query );
+		}
+	}
+
+	/**
+	 * Maybe hide expired job listings from search.
+	 *
+	 * @param WP_Query $query Query object.
+	 */
+	public function maybe_hide_expired_job_listings_from_search( $query ) {
+		if ( ! is_admin() && $query->is_search() && 1 === absint( get_option( 'job_manager_hide_expired' ) ) ) {
+			$meta_query = $query->get( 'meta_query' );
+
+			if ( ! is_array( $meta_query ) ) {
+				$meta_query = [];
+			}
+
+			$meta_query[] = [
+				'relation' => 'OR',
+				[
+					'key'     => '_job_expires',
+					'value'   => gmdate( 'Y-m-d' ),
+					'compare' => '>=',
+					'type'    => 'DATE',
+				],
+				[
+					'key'     => '_job_expires',
+					'compare' => 'NOT EXISTS',
+				],
+			];
+
+			$query->set( 'meta_query', $meta_query );
+		}
+	}
+
+	/**
+	 * Hide expired listings from the search results.
+	 *
+	 * @param array $listings
+	 *
+	 * @return array
+	 */
+	public function hide_expired( $listings ) {
+
+		// Get all expired listings.
+		$expired_listings = get_posts(
+			[
+				'post_type'   => 'job_listing',
+				'post_status' => 'expired',
+			]
+		);
+
+		// Remove expired listings from the search results.
+		foreach ( $expired_listings as $listing ) {
+			unset( $listings[ $listing->ID ] );
+		}
+
+		return $listings;
+
 	}
 
 	/**
@@ -1898,4 +1987,5 @@ class WP_Job_Manager_Post_Types {
 
 		return $types;
 	}
+
 }
