@@ -723,32 +723,6 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Hide expired listings from the search results.
-	 *
-	 * @param array $listings
-	 *
-	 * @return array
-	 */
-	public function hide_expired( $listings ) {
-
-		// Get all expired listings.
-		$expired_listings = get_posts(
-			[
-				'post_type'   => 'job_listing',
-				'post_status' => 'expired',
-			]
-		);
-
-		// Remove expired listings from the search results.
-		foreach ( $expired_listings as $listing ) {
-			unset( $listings[ $listing->ID ] );
-		}
-
-		return $listings;
-
-	}
-
-	/**
 	 * Adds query arguments in order to make sure that the feed properly queries the 'job_listing' type.
 	 *
 	 * @param WP_Query $wp
