@@ -1250,11 +1250,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function remove_edit_steps_for_renewal( $steps ) {
 		unset( $steps['submit'], $steps['preview'] );
-		$steps['renew-preview'] = [
+		$steps['preview'] = [
 			'name'     => 'Renew Preview',
 			'view'     => [ $this, 'preview' ],
 			'handler'  => [ $this, 'renew_preview_handler' ],
-			'priority' => 29,
+			'priority' => 20,
 		];
 		/**
 		 * Filter the steps for renewing a listing before expiry.
@@ -1303,7 +1303,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return string
 	 */
 	public function submit_button_text_renewal( $text ) {
-		if ( $this->get_step_key( $this->step ) === 'renew-preview' ) {
+		$key = $this->get_step_key( $this->step );
+		if ( 'Renew Preview' === $this->steps[ $key ]['name'] ) {
 			return __( 'Renew Listing &rarr;', 'wp-job-manager' );
 		}
 		return $text;
