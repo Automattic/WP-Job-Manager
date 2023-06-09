@@ -1772,3 +1772,25 @@ function job_manager_renew_job_listing( $job ) {
 
 	wp_update_post( $update_job );
 }
+
+/**
+ * Checks if the WC Paid Listings has the minimum version when installed and activated.
+ *
+ * @since $$next-version$$
+ *
+ * @return bool
+ */
+function job_manager_is_wcpl_renew_compatible() {
+	return ! class_exists( 'WC_Paid_Listings' ) || version_compare( JOB_MANAGER_WCPL_VERSION, '2.9.9', '>' );
+}
+
+/**
+ * Checks if the Simple Paid Listings has the minimum version when installed and activated.
+ *
+ * @since $$next-version$$
+ *
+ * @return bool
+ */
+function job_manager_is_spl_renew_compatible() {
+	return ! class_exists( 'WP_Job_Manager_Simple_Paid_Listings' ) || version_compare( JOB_MANAGER_SPL_VERSION, '1.4.4', '>' );
+}

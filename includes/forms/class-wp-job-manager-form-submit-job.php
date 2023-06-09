@@ -1168,10 +1168,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	public function done_before() {
 		delete_post_meta( $this->job_id, '_public_submission' );
 
-		if ( $this->should_renew_job_listing() ) {
-			job_manager_renew_job_listing( get_post( $this->job_id ) );
-		}
-
 		/**
 		 * Trigger job submission action.
 		 *
