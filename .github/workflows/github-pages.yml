@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - trunk
-      - add/* # Temporary addition for testing.
+      - workflow_dispatch
 
 jobs:
   deploy:
