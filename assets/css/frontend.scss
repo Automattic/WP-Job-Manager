@@ -256,6 +256,17 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 	.spinner.is-active {
 		visibility: visible;
 	}
+@media screen and (max-width: 782px) {
+
+	.job-manager-form fieldset label:not(.full-line-checkbox-field label) {
+		width: 100%;
+		float: none;
+	}
+
+	.job-manager-form fieldset div.field:not(.full-line-checkbox-field) {
+		width: 100%;
+		float: none;
+	}
 }
 
 div.job_listings {
