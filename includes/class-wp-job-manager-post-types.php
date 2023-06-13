@@ -722,11 +722,10 @@ class WP_Job_Manager_Post_Types {
 	 * @return void
 	 */
 	public function maybe_hide_filled_expired_job_listings_from_search( WP_Query $query ): void {
-		if ( ! get_option( 'job_manager_hide_filled_positions' ) ) {
-			return;
-		}
+		$hide_filled_positions = get_option( 'job_manager_hide_filled_positions' );
+		$hide_expired          = get_option( 'job_manager_hide_expired' );
 
-		if ( ! get_option( 'job_manager_hide_expired' ) ) {
+		if ( ! $hide_filled_positions && ! $hide_expired ) {
 			return;
 		}
 
