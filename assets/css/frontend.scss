@@ -124,6 +124,9 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 				font-size: 0.83em;
 			}
 		}
+		.full-line-checkbox-field label {
+			display: inline-block;
+		}
 
 		div.field:not(.full-line-checkbox-field) {
 			width: 70%;
