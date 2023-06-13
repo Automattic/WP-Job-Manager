@@ -469,7 +469,6 @@ class WP_Job_Manager_Shortcodes {
 					];
 				}
 				break;
-			case 'pending_payment':
 			case 'pending':
 				if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
 					$actions['edit'] = [
@@ -478,6 +477,7 @@ class WP_Job_Manager_Shortcodes {
 					];
 				}
 				break;
+			case 'pending_payment':
 			case 'draft':
 			case 'preview':
 				$actions['continue'] = [
