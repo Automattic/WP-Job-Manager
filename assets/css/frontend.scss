@@ -256,6 +256,35 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 	.spinner.is-active {
 		visibility: visible;
 	}
+
+	.select2-container
+	{
+		font-size: 1rem;
+
+		input.select2-search__field {
+			width: 100% !important;
+			height: unset;
+		}
+		.select2-selection--multiple .select2-selection__rendered {
+			display: block;
+			padding: 0;
+
+			li {
+				margin: 5px;
+			}
+
+			input {
+				padding: 0 5px;
+			}
+		}
+	}
+}
+
+.select2-container .select2-dropdown {
+	font-size: 1rem;
+}
+
+
 @media screen and (max-width: 782px) {
 
 	.job-manager-form fieldset label:not(.full-line-checkbox-field label) {
