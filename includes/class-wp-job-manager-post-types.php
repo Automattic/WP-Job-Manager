@@ -695,7 +695,7 @@ class WP_Job_Manager_Post_Types {
 	 *
 	 * @return array
 	 */
-	public function get_expired_jobs_listings(): array {
+	public function get_expired_job_listings(): array {
 		if ( ! get_option( 'job_manager_hide_expired' ) ) {
 			return [];
 		}
@@ -731,7 +731,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		if ( ! is_admin() && $query->is_search() ) {
-			$jobs_to_exclude = array_merge( $this->get_filled_job_listings(), $this->get_expired_jobs_listings() );
+			$jobs_to_exclude = array_merge( $this->get_filled_job_listings(), $this->get_expired_job_listings() );
 			if ( ! empty( $jobs_to_exclude ) ) {
 				$query->set( 'post__not_in', $jobs_to_exclude );
 			}
