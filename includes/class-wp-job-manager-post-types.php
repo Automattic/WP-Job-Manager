@@ -87,8 +87,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
-		add_action( 'pre_get_posts', [ $this, 'maybe_hide_filled_job_listings_from_search' ] );
-		add_action( 'pre_get_posts', [ $this, 'maybe_hide_expired_job_listings_from_search' ] );
+		add_action( 'pre_get_posts', [ $this, 'maybe_hide_filled_expired_job_listings_from_search' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -662,63 +661,80 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Maybe hide filled job listings from search.
+	 * Get filled jobs.
 	 *
-	 * @param WP_Query $query Query object.
+	 * @return array
 	 */
-	public function maybe_hide_filled_job_listings_from_search( $query ) {
-		if ( ! is_admin() && $query->is_search() && 1 === absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
-			$meta_query = $query->get( 'meta_query' );
-
-			if ( ! is_array( $meta_query ) ) {
-				$meta_query = [];
-			}
-
-			$meta_query[] = [
-				'relation' => 'OR',
-				[
-					'key'     => '_filled',
-					'value'   => '0',
-					'compare' => '=',
-				],
-				[
-					'key'     => '_filled',
-					'compare' => 'NOT EXISTS',
-				],
-			];
-
-			$query->set( 'meta_query', $meta_query );
+	public function get_filled_job_listings(): array {
+		if ( ! get_option( 'job_manager_hide_filled_positions' ) ) {
+			return [];
 		}
+
+		$filled_jobs_transient = get_transient( 'hide_filled_jobs_transient' );
+		if ( false === $filled_jobs_transient ) {
+			$filled_jobs_transient = get_posts(
+				[
+					'post_type'  => 'job_listing',
+					'fields'     => 'ids',
+					'meta_query' => [
+						[
+							'key'     => '_filled',
+							'value'   => '1',
+							'compare' => '=',
+						],
+					],
+				]
+			);
+			set_transient( 'hide_filled_jobs_transient', $filled_jobs_transient, DAY_IN_SECONDS );
+		}
+		return $filled_jobs_transient;
 	}
 
 	/**
-	 * Maybe hide expired job listings from search.
+	 * Get expired jobs.
 	 *
-	 * @param WP_Query $query Query object.
+	 * @return array
 	 */
-	public function maybe_hide_expired_job_listings_from_search( $query ) {
-		if ( ! is_admin() && $query->is_search() && 1 === absint( get_option( 'job_manager_hide_expired' ) ) ) {
-			$meta_query = $query->get( 'meta_query' );
+	public function get_expired_jobs_listings(): array {
+		if ( ! get_option( 'job_manager_hide_expired' ) ) {
+			return [];
+		}
 
-			if ( ! is_array( $meta_query ) ) {
-				$meta_query = [];
+		$expired_jobs_transient = get_transient( 'hide_expired_jobs_transient' );
+		if ( false === $expired_jobs_transient ) {
+			$expired_jobs_transient = get_posts(
+				[
+					'post_type'   => 'job_listing',
+					'post_status' => 'expired',
+					'fields'      => 'ids',
+				]
+			);
+			set_transient( 'hide_expired_jobs_transient', $expired_jobs_transient, DAY_IN_SECONDS );
+		}
+		return $expired_jobs_transient;
+	}
+
+	/**
+	 * Maybe exclude expired and/or filled job listings from search.
+	 *
+	 * @param $query WP_Query $query
+	 *
+	 * @return void
+	 */
+	public function maybe_hide_filled_expired_job_listings_from_search( WP_Query $query ): void {
+		if ( ! get_option( 'job_manager_hide_filled_positions' ) ) {
+			return;
+		}
+
+		if ( ! get_option( 'job_manager_hide_expired' ) ) {
+			return;
+		}
+
+		if ( ! is_admin() && $query->is_search() ) {
+			$jobs_to_exclude = array_merge( $this->get_filled_job_listings(), $this->get_expired_jobs_listings() );
+			if ( ! empty( $jobs_to_exclude ) ) {
+				$query->set( 'post__not_in', $jobs_to_exclude );
 			}
-
-			$meta_query[] = [
-				'relation' => 'OR',
-				[
-					'key'     => '_job_expires',
-					'value'   => gmdate( 'Y-m-d' ),
-					'compare' => '>=',
-					'type'    => 'DATE',
-				],
-				[
-					'key'     => '_job_expires',
-					'compare' => 'NOT EXISTS',
-				],
-			];
-
-			$query->set( 'meta_query', $meta_query );
 		}
 	}
 
