@@ -1,0 +1,112 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "WP Job Manager APIs (internal)",
+    "version": "1.0",
+    "description": "Internal WP Job Manager endpoints. These endpoints are not subject to any backwards compatibility guarantees. They may change at any time without warning since are considered as internal APIs.",
+    "contact": {
+      "name": "WPJobManager",
+      "url": "https://wpjobmanager.com/"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://wpjm.local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "promoted-jobs"
+    }
+  ],
+  "paths": {
+    "/wp-json/wpjm-internal/v1/promoted-jobs": {
+      "get": {
+        "summary": "Promoted Jobs - Get list of promoted jobs",
+        "description": "Get promoted jobs list",
+        "operationId": "get-promotedjobs-list",
+        "tags": [
+          "promoted-jobs"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            },
+            "description": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jobs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "9788656",
+                            "description": "The unique identifier for the job in the site (post ID)."
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Senior Software Engineer"
+                          },
+                          "description": {
+                            "type": "string",
+                            "example": "We are looking for a Senior Software Engineer to join our team."
+                          },
+                          "permalink": {
+                            "type": "string",
+                            "example": "https://wpjm.local/job/senior-software-engineer/"
+                          },
+                          "location": {
+                            "type": "string",
+                            "example": "New York, NY, USA"
+                          },
+                          "company_name": {
+                            "type": "string",
+                            "example": "ACME Inc."
+                          },
+                          "is_remote":  {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "job_type":  {
+                            "type": "string",
+                            "enum": [
+                              "freelance",
+                              "full-time",
+                              "internship",
+                              "part-time",
+                              "temporary",
+                              "other"
+                            ]
+                          },
+                          "salary":  {
+                            "type": "string",
+                            "example": "$50,000 - $100,000"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  }
+}
