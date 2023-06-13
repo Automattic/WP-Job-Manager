@@ -44,7 +44,7 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 .job-manager-error,
 .job-manager-info {
 	padding: 1em 2em 1em 3.5em !important;
-	margin: 0 0 2em !important;
+	margin-bottom: 2em;
 	position: relative;
 	background-color: lighten($secondary, 5%);
 	color: $secondarytext;
