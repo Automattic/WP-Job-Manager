@@ -44,7 +44,7 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 .job-manager-error,
 .job-manager-info {
 	padding: 1em 2em 1em 3.5em !important;
-	margin: 0 0 2em !important;
+	margin-bottom: 2em;
 	position: relative;
 	background-color: lighten($secondary, 5%);
 	color: $secondarytext;
@@ -123,6 +123,9 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 				opacity: 0.75;
 				font-size: 0.83em;
 			}
+		}
+		.full-line-checkbox-field label {
+			display: inline-block;
 		}
 
 		div.field:not(.full-line-checkbox-field) {
@@ -255,6 +258,46 @@ $subtext: 			#777; 										/* small, breadcrumbs etc */
 
 	.spinner.is-active {
 		visibility: visible;
+	}
+
+	.select2-container
+	{
+		font-size: 1rem;
+
+		input.select2-search__field {
+			width: 100% !important;
+			height: unset;
+		}
+		.select2-selection--multiple .select2-selection__rendered {
+			display: block;
+			padding: 0;
+
+			li {
+				margin: 5px;
+			}
+
+			input {
+				padding: 0 5px;
+			}
+		}
+	}
+}
+
+.select2-container .select2-dropdown {
+	font-size: 1rem;
+}
+
+
+@media screen and (max-width: 782px) {
+
+	.job-manager-form fieldset label:not(.full-line-checkbox-field label) {
+		width: 100%;
+		float: none;
+	}
+
+	.job-manager-form fieldset div.field:not(.full-line-checkbox-field) {
+		width: 100%;
+		float: none;
 	}
 }
 
