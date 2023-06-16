@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.34.1
+ * @version     1.41.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,6 +16,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $wp_post_types;
+
+/**
+ * Triggers before the job-submitted template is displayed.
+ *
+ * @since 1.41.0
+ *
+ * @param WP_Post $job The job that was submitted.
+ */
+do_action( 'job_manager_job_submitted_content_before', $job );
+
+$job = get_post( $job->ID );
 
 switch ( $job->post_status ) :
 	case 'publish' :
@@ -64,7 +75,35 @@ switch ( $job->post_status ) :
 		echo '</div>';
 	break;
 	default :
+		// Backwards compatibility for installations which used this action.
+		ob_start();
 		do_action( 'job_manager_job_submitted_content_' . str_replace( '-', '_', sanitize_title( $job->post_status ) ), $job );
+		$content = ob_get_clean();
+
+		if ( ! empty( $content ) ) {
+			echo $content;
+			break;
+		}
+
+		$job_submitted_content = '<div class="job-manager-message">' . wp_kses_post(
+			sprintf(
+			// translators: %1$s is the job listing post type name.
+				__( '%1$s submitted successfully.', 'wp-job-manager' ),
+				esc_html( $wp_post_types['job_listing']->labels->singular_name )
+			)
+		) . '</div>';
+
+		/**
+		 * Filters the job submitted contents for a post status other than pending and publish.
+		 *
+		 * @since 1.41.0
+		 *
+		 * @param string $job_submitted_content The content to filter.
+		 * @param WP_Post $job The job that was submitted.
+		 */
+		$job_submitted_content = apply_filters( 'job_manager_job_submitted_content', $job_submitted_content, $job );
+
+		echo $job_submitted_content;
 	break;
 endswitch;
 
