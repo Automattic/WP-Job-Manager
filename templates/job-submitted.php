@@ -75,7 +75,15 @@ switch ( $job->post_status ) :
 		echo '</div>';
 	break;
 	default :
-		do_action_deprecated( 'job_manager_job_submitted_content_' . str_replace( '-', '_', sanitize_title( $job->post_status ) ), $job, '1.41.0', 'job_manager_job_submitted_content' );
+		// Backwards compatibility for installations which used this action.
+		ob_start();
+		do_action( 'job_manager_job_submitted_content_' . str_replace( '-', '_', sanitize_title( $job->post_status ) ), $job );
+		$content = ob_get_clean();
+
+		if ( ! empty( $content ) ) {
+			echo $content;
+			break;
+		}
 
 		$job_submitted_content = '<div class="job-manager-message">' . wp_kses_post(
 			sprintf(
