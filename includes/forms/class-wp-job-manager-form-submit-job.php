@@ -49,6 +49,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected static $instance = null;
 
 	/**
+	 * Resume edit session key.
+	 *
+	 * @var mixed
+	 */
+	private $resume_edit;
+
+	/**
 	 * Returns static instance of class.
 	 *
 	 * @return self
