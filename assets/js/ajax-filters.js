@@ -457,16 +457,14 @@ jQuery( document ).ready( function( $ ) {
 			} );
 		} );
 
-	function triggerSearch() {
-		var $target = $( this ).closest( 'div.job_listings' );
-		$target.triggerHandler( 'update_results', [ 1, false ] );
-		store_state( $target );
-	}
-
 	$(
 		'#search_keywords, #search_location, #remote_position, .job_types :input, #search_categories, .job-manager-filter'
 	)
-		.change( triggerSearch )
+		.change( function() {
+			var $target = $( this ).closest( 'div.job_listings' );
+			$target.triggerHandler( 'update_results', [ 1, false ] );
+			store_state( $target );
+		} )
 		.on( 'keyup', function( e ) {
 			if ( e.which === 13 ) {
 				$( this ).trigger( 'change' );
@@ -506,7 +504,6 @@ jQuery( document ).ready( function( $ ) {
 			return false;
 		} )
 		.on( 'submit', function() {
-			triggerSearch();
 			return false;
 		} );
 
