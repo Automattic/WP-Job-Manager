@@ -49,6 +49,7 @@ class WP_Job_Manager_Admin {
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-cpt.php';
 		WP_Job_Manager_CPT::instance();
 
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-promoted-jobs.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-settings.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-writepanels.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-setup.php';
