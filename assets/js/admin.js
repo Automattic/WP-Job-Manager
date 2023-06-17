@@ -178,3 +178,29 @@ jQuery(document).ready(function($) {
 		$('#in-' + taxonomy + '-' + id + ', #in-popular-' + taxonomy + '-' + id).prop( 'checked', c );
 	});
 });
+
+// Select all elements with the class "promote_job"
+const promote_job = document.querySelectorAll('.promote_job');
+const promoteDialog = document.getElementById('promoteDialog');
+
+promote_job.forEach(function (element) {
+		element.addEventListener('click', function ( event ) {
+			event.preventDefault();
+			promoteDialog.showModal();
+			let promoteID = event.target.dataset.post;
+			let promote_job_dialog = document.querySelector('.promote-buttons-group .button-primary');
+			promote_job_dialog.setAttribute('href', promoteID );
+		});
+});
+
+customElements.define('promote-job-modal',
+  class extends HTMLElement {
+    constructor() {
+      super();
+      const promoteJobs = document.getElementById('promote-job-template').content;
+      const shadowRoot = this.attachShadow({
+        mode: 'open'
+      });
+      shadowRoot.appendChild(promoteJobs.cloneNode(true));
+    }
+  });
