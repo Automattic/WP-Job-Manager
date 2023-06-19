@@ -193,12 +193,9 @@ deactivateJob.forEach(function (element) {
 			deactivateDialog.showModal();
 			let deactivateID = event.target.dataset.post;
 			let deactivateJobLink = document.querySelector('.deactivate-action.dialog-button-group .button-primary');
-			console.log( deactivateJobLink);
 			deactivateJobLink.setAttribute('href', deactivateID );
 		});
 });
-
-
 
 const promoteJob = document.querySelectorAll('.promote_job');
 const promoteDialog = document.getElementById('promoteDialog');
