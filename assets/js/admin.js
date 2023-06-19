@@ -179,7 +179,7 @@ jQuery(document).ready(function($) {
 	});
 });
 
-const deactivate_job = document.querySelectorAll('.deactivateJob');
+const deactivateJob = document.querySelectorAll('.deactivateJob');
 const deactivateDialog = document.getElementById('deactivateDialog');
 const cancelPromote = document.querySelector('.cancel-promotion');
 
@@ -187,7 +187,7 @@ cancelPromote.addEventListener('click', () => {
 	deactivateDialog.close();
 });
 
-deactivate_job.forEach(function (element) {
+deactivateJob.forEach(function (element) {
 		element.addEventListener('click', function ( event ) {
 			event.preventDefault();
 			deactivateDialog.showModal();
