@@ -32,6 +32,13 @@ class WP_Job_Manager_Settings {
 	protected $settings = [];
 
 	/**
+	 * Settings group.
+	 *
+	 * @var array Settings.
+	 */
+	protected $settings_group;
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  1.26.0
