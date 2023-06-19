@@ -76,11 +76,18 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	public function custom_columns( $column ) {
 		global $post;
-
-		// TODO: Need to check if the job is already promoted or not.
-
 		if ( 'promoted_jobs' === $column ) {
-			echo '<button class="promote_job button button-primary" data-post=' . esc_attr( $post->ID ) . '>Promote</button>';
+			if ( $this->is_promoted( $post->ID ) ) {
+				echo '
+					Live
+					<br />
+					<a href="#">Edit promotion</a>
+					<br />
+					<a href="#">Deactivate</a>
+				';
+			} else {
+				echo '<button class="promote_job button button-primary" data-post=' . esc_attr( $post->ID ) . '>Promote</button>';
+			}
 		}
 	}
 	/**
