@@ -79,7 +79,7 @@ class WP_Job_Manager_Promoted_Jobs {
 
 		// TODO: Need to check if the job is already promoted or not.
 
-		if ( 'promoted_jobs' == $column ) {
+		if ( 'promoted_jobs' === $column ) {
 			echo '<button class="promote_job button button-primary" data-post=' . esc_attr( $post->ID ) . '>Promote</button>';
 		}
 	}
