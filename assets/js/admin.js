@@ -179,6 +179,27 @@ jQuery(document).ready(function($) {
 	});
 });
 
+const deactivate_job = document.querySelectorAll('.deactivateJob');
+const deactivateDialog = document.getElementById('deactivateDialog');
+const cancelPromote = document.querySelector('.cancel-promotion');
+
+cancelPromote.addEventListener('click', () => {
+	deactivateDialog.close();
+});
+
+deactivate_job.forEach(function (element) {
+		element.addEventListener('click', function ( event ) {
+			event.preventDefault();
+			deactivateDialog.showModal();
+			let deactivateID = event.target.dataset.post;
+			let deactivateJobLink = document.querySelector('.deactivate-action.dialog-button-group .button-primary');
+			console.log( deactivateJobLink);
+			deactivateJobLink.setAttribute('href', deactivateID );
+		});
+});
+
+
+
 const promoteJob = document.querySelectorAll('.promote_job');
 const promoteDialog = document.getElementById('promoteDialog');
 

@@ -27,9 +27,7 @@ promote-job-modal {
 	}
 	h2 {
 		font-size: 36px;
-		font-weight: 300;
 		line-height: 105%;
-		margin-top: 0;
 		width: 80%;
 		margin-bottom: 0px;
 	}
@@ -65,15 +63,6 @@ promote-job-modal {
 			font-weight: 700;
 		}
 	}
-	.promote-buttons-group {
-		.button {
-			padding: 5px 16px;
-			margin-right: 18px;
-		}
-		.button-secondary {
-			background: #ffffff;
-		}
-	}
 }
 @media screen and ( max-width: 1000px ) {
 	.promote-job-modal-column-right {
@@ -85,9 +74,15 @@ promote-job-modal {
 		padding: 0px 25px 25px;
 	}
 }
+
+/** Global Modal **/
 .promoteJobsDialog {
 	border: 0;
 	border-radius: 8px;
+	h2 {
+		margin-top: 0;
+		font-weight: 300;
+	}
 	form {
 		display: flex;
 		button {
@@ -104,6 +99,41 @@ promote-job-modal {
 	}
 	&::backdrop {
 		background: rgba(0, 0, 0, 0.5);
+	}
+	.dialog-button-group {
+		.button {
+			padding: 5px 16px;
+			margin-right: 18px;
+		}
+		.button-secondary {
+			background: #ffffff;
+		}
+	}
+}
+/** Deactivate Modal **/
+#deactivateDialog {
+	h2 {
+		font-size: 20px;
+		line-height: 28px;
+	}
+	max-width: 415px;
+	padding: 32px;
+	form {
+		display: block;
+		float: right;
+		button {
+			margin: 0 0 0 10px;
+		}
+	}
+	p {
+		margin: 40px 0;
+	}
+	.dialog-button-group {
+		display: block;
+		float: right;
+		.button-secondary {
+			border: 0;
+		}
 	}
 }
 

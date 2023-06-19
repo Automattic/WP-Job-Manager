@@ -83,7 +83,7 @@ class WP_Job_Manager_Promoted_Jobs {
 					<br />
 					<a href="#">Edit promotion</a>
 					<br />
-					<a href="#">Deactivate</a>
+					<a class="deactivateJob"href="#" data-post=' . esc_attr( $post->ID ) . '>Deactivate</a>
 				';
 			} else {
 				echo '<button class="promote_job button button-primary" data-post=' . esc_attr( $post->ID ) . '>Promote</button>';
@@ -123,8 +123,7 @@ class WP_Job_Manager_Promoted_Jobs {
 							<li>Featured on our weekly email blast</li>
 						</ul>
 					</div>
-
-					<div slot="buttons" class="promote-buttons-group">
+					<div slot="buttons" class="dialog-button-group">
 						<button class="button button-primary" type="submit">Promote your job</button>
 						<button class="button button-secondary" type="submit">Learn More</button>
 					</div>
@@ -143,6 +142,18 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	public function promoted_jobs_admin_footer() {
 		echo '
+		<dialog class="promoteJobsDialog" id="deactivateDialog">
+			<form method="dialog">
+				<button type="submit">X</button>
+			</form>
+			<h2>Are you sure you want to deactivate promotion for this job?</h2>
+			<p>If you still have time until the promotion expires, this time will be lost and the promotion of the job will be canceled.</p>
+			<div class="deactivate-action dialog-button-group">
+				<button class="cancel-promotion button button-secondary" type="submit">Cancel</button>
+				<button class="button button-primary" type="submit">Deactivate</button>
+			</div>
+		</dialog>
+
 			<template id="promote-job-template">
 				<slot name="column-left" class="column-left">
 					<slot name="promote-heading">
@@ -162,7 +173,7 @@ class WP_Job_Manager_Promoted_Jobs {
 						</ul>
 					</slot>
 
-					<slot name="buttons" class="button-group">
+					<slot name="buttons" class="dialog-button-group">
 						<button class="button btn-primary" type="submit">Promote your job</button>
 						<button class="button btn-secondary" type="submit">Learn More</button>
 					</slot>
