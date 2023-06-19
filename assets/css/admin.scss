@@ -104,6 +104,9 @@ promote-job-modal {
 		.button {
 			padding: 5px 16px;
 			margin-right: 18px;
+			&:last-child {
+				margin-right: 0;
+			}
 		}
 		.button-secondary {
 			background: #ffffff;
