@@ -33,7 +33,7 @@ promote-job-modal {
 		width: 80%;
 		margin-bottom: 0px;
 	}
-	.column-left{
+	.promote-job-modal-column-left {
 		display: flex;
 		justify-content: space-between;
 		flex-direction: column;
@@ -49,12 +49,16 @@ promote-job-modal {
 		background: url("data:image/svg+xml,<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><mask id=\"mask0_20018663_2259\" style=\"mask-type:luminance\" maskUnits=\"userSpaceOnUse\" x=\"3\" y=\"5\" width=\"18\" height=\"14\"><path d=\"M8.75685 15.9L4.57746 11.7L3.18433 13.1L8.75685 18.7L20.698 6.69999L19.3049 5.29999L8.75685 15.9Z\" fill=\"white\"/></mask><g mask=\"url%28%23mask0_20018663_2259%29\"><rect width=\"23.8823\" height=\"24\" fill=\"%232270B1\"/></g></svg>") no-repeat 0 -3px;
 		font-size: 14px;
 		list-style: none;
-		padding-left: 28px;
+		padding-left: 32px;
 	}
-	.price {
-		font-size: 12px;
+	.promote-job-modal-price {
 		display: flex;
 		flex-direction: column;
+		.price-text {
+			font-size: 12px;
+			text-transform: uppercase;
+			color: #787C82;
+		}
 		span {
 			margin-top: 10px;
 			font-size: 36px;
@@ -72,7 +76,7 @@ promote-job-modal {
 	}
 }
 @media screen and ( max-width: 1000px ) {
-	.column-right {
+	.promote-job-modal-column-right {
 		display: none;
 	}
 }
@@ -81,7 +85,7 @@ promote-job-modal {
 		padding: 0px 25px 25px;
 	}
 }
-dialog {
+.promoteJobsDialog {
 	border: 0;
 	border-radius: 8px;
 	form {
