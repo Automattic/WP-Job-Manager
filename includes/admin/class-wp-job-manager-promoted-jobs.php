@@ -144,12 +144,12 @@ class WP_Job_Manager_Promoted_Jobs {
 	public function promoted_jobs_admin_footer() {
 		?>
 			<template id="promote-job-template">
-				<slot name="column-left" class="column-left">
+				<slot name="column-left" class="promote-job-modal-column-left">
 					<slot class="promote-jobs-heading" name="promote-heading">
 						<?php esc_html_e( 'Promote Your Job on our Partner Network', 'wp-job-manager' ); ?>
 					</slot>
 
-					<slot name="price">
+					<slot name="price" class="promote-job-modal-price">
 						<div class="price-text"><?php esc_html_e( 'Starting From', 'wp-job-manager' ); ?></div>
 						<span>$--</span>
 					</slot>
@@ -162,7 +162,7 @@ class WP_Job_Manager_Promoted_Jobs {
 						</ul>
 					</slot>
 
-					<slot name="buttons" class="button-group">
+					<slot name="buttons" class="promote-buttons-group">
 						<button class="promote-button button btn-primary" type="submit">
 							<?php esc_html_e( 'Promote your job', 'wp-job-manager' ); ?>
 						</button>
@@ -172,7 +172,7 @@ class WP_Job_Manager_Promoted_Jobs {
 					</slot>
 
 				</slot>
-			<slot name="column-right">
+			<slot name="promote-job-modal-column-right">
 				<img class="promote-jobs-image" src="#">
 			</slot>
 			</template>
