@@ -142,29 +142,33 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return void
 	 */
 	public function promoted_jobs_admin_footer() {
-		echo '
+		?>
 			<template id="promote-job-template">
 				<slot name="column-left" class="column-left">
 					<slot name="promote-heading">
-						Promote Your Job on our Partner Network
+						<?php esc_html_e( 'Promote Your Job on our Partner Network', 'wp-job-manager' ); ?>
 					</slot>
 
 					<slot name="price">
-						<div class="price-text">Starting From</div>
+						<div class="price-text"><?php esc_html_e( 'Starting From', 'wp-job-manager' ); ?></div>
 						<span>$--</span>
 					</slot>
 
 					<slot name="promote-list">
 						<ul>
-							<li>Your ad will get shared on our Partner Network</li>
-							<li>Promote your job on external job boards</li>
-							<li>Featured on our weekly email blast</li>
+							<li><?php esc_html_e( 'Your ad will get shared on our Partner Network', 'wp-job-manager' ); ?></li>
+							<li><?php esc_html_e( 'Promote your job on external job boards', 'wp-job-manager' ); ?></li>
+							<li><?php esc_html_e( 'Featured on our weekly email blast', 'wp-job-manager' ); ?></li>
 						</ul>
 					</slot>
 
 					<slot name="buttons" class="button-group">
-						<button class="button btn-primary" type="submit">Promote your job</button>
-						<button class="button btn-secondary" type="submit">Learn More</button>
+						<button class="button btn-primary" type="submit">
+							<?php esc_html_e( 'Promote your job', 'wp-job-manager' ); ?>
+						</button>
+						<button class="button btn-secondary" type="submit">
+							<?php esc_html_e( 'Learn more', 'wp-job-manager' ); ?>
+						</button>
 					</slot>
 
 				</slot>
@@ -172,7 +176,8 @@ class WP_Job_Manager_Promoted_Jobs {
 				<img src="#">
 			</slot>
 			</template>
-		';
+		<?php
+
 		echo $this->get_promote_jobs_template(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
