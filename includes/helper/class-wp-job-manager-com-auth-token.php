@@ -25,7 +25,7 @@ class WP_Job_Manager_Com_Auth_Token {
 	/**
 	 * Generates the site token associated with an object type and object id
 	 *
-	 * @param string $object_type Type of object metadata is for. Accepts 'post' or 'user'.
+	 * @param string $object_type Type of the object associated with the token. Accepts 'post' or 'user'.
 	 * @param int    $object_id The ID of the object to associate the token with.
 	 * @return string|WP_Error The token generated, or a WP_Error if the token could not be generated/persisted
 	 */
@@ -71,4 +71,72 @@ class WP_Job_Manager_Com_Auth_Token {
 		];
 	}
 
+
+
+	/**
+	 * Validate if a token is valid or not, and might remove it if it is valid or expired.
+	 *
+	 * @param string $object_type Type of object metadata is for. Accepts 'post' or 'user'.
+	 * @param int    $object_id  The ID of the object to associate the token with.
+	 * @param string $token The token to validate.
+	 * @return bool True if the token is valid, false otherwise.
+	 */
+	public function validate( $object_type, $object_id, $token ) {
+		if ( ! in_array( $object_type, self::ACCEPTED_OBJECT_TYPES, true ) ) {
+			return false;
+		}
+		$metadatas = get_metadata( $object_type, $object_id, self::META_KEY );
+		foreach ( $metadatas as $metadata ) {
+			if ( ! $this->is_valid( $metadata ) ) {
+				// If the metadata structure isn't valid, just ignore it.
+				continue;
+			}
+			if ( $this->is_expired( $metadata ) ) {
+				// If the token is expired, remove it.
+				delete_metadata( $object_type, $object_id, self::META_KEY, $metadata );
+				continue;
+			}
+			if ( $this->is_valid_token( $metadata, $token ) ) {
+				delete_metadata( $object_type, $object_id, self::META_KEY, $metadata );
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Checks if a value persisted in the database has the correct format for us.
+	 *
+	 * @param array $value The value persisted in the database.
+	 * @return bool True if the token is valid, false otherwise.
+	 */
+	public function is_valid( $value ) {
+		return is_array( $value ) &&
+			array_key_exists( 'token', $value ) &&
+			array_key_exists( 'ts', $value ) &&
+			is_string( $value['token'] ) &&
+			is_int( $value['ts'] );
+	}
+
+	/**
+	 * Checks if a token is expired or not.
+	 *
+	 * @param array $value The value persisted in the database.
+	 * @return bool True if the token is expired, false otherwise.
+	 */
+	private function is_expired( $value ) {
+		return $value['ts'] + self::EXPIRATION_TIME < time();
+	}
+
+	/**
+	 * Checks if a token is valid or not.
+	 *
+	 * @param array  $value The value persisted in the database.
+	 * @param string $token The token to analyse.
+	 * @return bool True if the token is valid, false otherwise.
+	 */
+	private function is_valid_token( $value, $token ) {
+		return wp_check_password( $token, $value['token'] );
+	}
 }
