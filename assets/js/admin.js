@@ -179,18 +179,19 @@ jQuery(document).ready(function($) {
 	});
 });
 
-const promoteJob = document.querySelectorAll('.promote_job');
-const promoteDialog = document.getElementById('promoteDialog');
+function wpjmModal( selector, dialogSelector ) {
+	let item = document.querySelectorAll( selector );
+	let dialog = document.querySelector( dialogSelector );
 
-promoteJob.forEach(function (element) {
-		element.addEventListener('click', function ( event ) {
+	item.forEach( function( element ) {
+		element.addEventListener( 'click', function( event ) {
 			event.preventDefault();
-			promoteDialog.showModal();
-			let promoteID = event.target.dataset.post;
-			let promote_job_dialog = document.querySelector('.promote-buttons-group .button-primary');
-			promote_job_dialog.setAttribute('href', promoteID );
+			dialog.showModal();
 		});
-});
+	});
+}
+
+wpjmModal( '.promote_job', '#promoteDialog' );
 
 customElements.define('promote-job-modal',
 class extends HTMLElement {
