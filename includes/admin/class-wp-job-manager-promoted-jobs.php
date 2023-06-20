@@ -101,7 +101,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	public function get_promote_jobs_template() {
 		return '
-		<dialog class="promoteJobsDialog" id="promoteDialog">
+		<dialog class="promote-jobs-dialog" id="promoteDialog">
 			<form method="dialog">
 				<button type="submit" autofocus>X</button>
 			</form>
