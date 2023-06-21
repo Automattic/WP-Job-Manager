@@ -12,24 +12,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles the renewal of Job Listings.
  *
- * @since $next-version$$
+ * @since 1.41.0
  */
-class WP_Job_Manager_Helper_Listing_Renewal {
+class WP_Job_Manager_Helper_Renewals {
 
 	/**
 	 * Submit job form instance.
 	 *
 	 * @var WP_Job_Manager_Form_Submit_Job
 	 */
-	public $form = null;
+	private $form = null;
 
 	/**
 	 * Stores static instance of class.
 	 *
-	 * @access protected
-	 * @var WP_Job_Manager_Form_Submit_Job The single instance of the class
+	 * @var WP_Job_Manager_Helper_Renewals The single instance of the class.
 	 */
-	protected static $instance = null;
+	private static $instance = null;
 
 	/**
 	 * Constructor.
@@ -78,7 +77,7 @@ class WP_Job_Manager_Helper_Listing_Renewal {
 	 * Handle steps for renewing a listing before expiry, removes edit steps and overrides preview step.
 	 *
 	 * @access private
-	 * @param array $steps
+	 * @param array $steps Form submit steps.
 	 * @return array
 	 */
 	public function remove_edit_steps_for_renewal( $steps ) {
@@ -92,9 +91,9 @@ class WP_Job_Manager_Helper_Listing_Renewal {
 		/**
 		 * Filter the steps for renewing a listing before expiry.
 		 *
-		 * @since $$next-version$$
+		 * @since 1.41.0
 		 *
-		 * @param array $steps
+		 * @param array $steps Form submit steps.
 		 * @param WP_Job_Manager_Form_Submit_Job $form
 		 */
 		return apply_filters( 'renew_job_steps', $steps, $this->form );
