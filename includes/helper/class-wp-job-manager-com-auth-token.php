@@ -32,6 +32,30 @@ class WP_Job_Manager_Com_Auth_Token {
 	const EXPIRATION_TIME = MINUTE_IN_SECONDS;
 
 	/**
+	 * The singleton instance of the class.
+	 *
+	 * @var WP_Job_Manager_Com_Auth_Token
+	 */
+	private static $instance;
+
+	/**
+	 * WP_Job_Manager_Com_Auth_Token constructor.
+	 */
+	private function __construct() {}
+
+	/**
+	 * Returns the singleton instance of the class.
+	 *
+	 * @return self
+	 */
+	public static function instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new WP_Job_Manager_Com_Auth_Token();
+		}
+		return self::$instance;
+	}
+
+	/**
 	 * Generates the site token associated with an object type and object id
 	 *
 	 * @param string $object_type Type of the object associated with the token. Accepts 'post' or 'user'.
