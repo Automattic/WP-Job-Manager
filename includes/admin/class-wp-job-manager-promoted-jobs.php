@@ -129,7 +129,7 @@ class WP_Job_Manager_Promoted_Jobs {
 						<button class="promote-button button button-secondary" type="submit">Learn More</button>
 					</div>
 				</div>
-				<div slot="column-right" class="promote-job-modal-column-right">
+				<div slot="promote-job-modal-column-right" class="promote-job-modal-column-right">
 					<img class="promote-jobs-image" src="https://d.pr/i/4PgTqN+">
 				</div>
 			</promote-job-modal>
@@ -172,8 +172,8 @@ class WP_Job_Manager_Promoted_Jobs {
 					</slot>
 
 				</slot>
-				<slot name="promote-job-modal-column-right">
-					<img class="promote-jobs-image" src="#">
+				<slot name="promote-job-modal-column-right" class="promote-job-modal-column-right">
+					<img class="promote-jobs-image" src="https://wpjobmanager.com/wp-content/uploads/2023/06/Right.jpg">
 				</slot>
 			</template>
 		<?php
