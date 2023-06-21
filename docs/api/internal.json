@@ -83,17 +83,16 @@
                           },
                           "job_type":  {
                             "type": "array",
-                            "enum": [
-                              "freelance",
-                              "full-time",
-                              "internship",
-                              "part-time",
-                              "temporary",
-                              "other"
-                            ],
                             "items" : {
                               "type": "string",
-                              "example": "Full Time"
+                              "enum": [
+                                "freelance",
+                                "full-time",
+                                "internship",
+                                "part-time",
+                                "temporary",
+                                "other"
+                              ]
                             }
                           },
                           "salary":  {
