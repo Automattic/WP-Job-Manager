@@ -97,8 +97,23 @@
                             }
                           },
                           "salary":  {
-                            "type": "string",
-                            "example": "$50,000 - $100,000"
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "currency": {
+                                  "type": "string",
+                                  "example": "USD"
+                                },
+                                "value": {
+                                  "type": "string",
+                                  "example": "$50,000 - $100,000"
+                                },
+                                "unit": {
+                                  "type": "string",
+                                  "example": "YEAR"
+                                }
+                              }
                           }
                         }
                       }
