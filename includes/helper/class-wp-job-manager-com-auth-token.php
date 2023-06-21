@@ -24,7 +24,7 @@ class WP_Job_Manager_Com_Auth_Token {
 	/**
 	 * The accepted object types to be associated with the token.
 	 */
-	const ACCEPTED_OBJECT_TYPES = [ 'post', 'user ' ];
+	const ACCEPTED_OBJECT_TYPES = [ 'post', 'user' ];
 
 	/**
 	 * The expiration time for the token, in seconds.
