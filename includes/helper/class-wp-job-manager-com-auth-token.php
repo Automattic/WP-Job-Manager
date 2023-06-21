@@ -118,6 +118,9 @@ class WP_Job_Manager_Com_Auth_Token {
 			return false;
 		}
 		$metadatas = get_metadata( $object_type, $object_id, self::META_KEY );
+		if ( false === $metadatas ) {
+			return false;
+		}
 		foreach ( $metadatas as $metadata ) {
 			if ( ! $this->is_valid( $metadata ) ) {
 				// If the metadata structure isn't valid, just ignore it.
