@@ -147,11 +147,19 @@ class WP_Job_Manager_Promoted_Jobs {
 				<form class="dialog" method="dialog">
 					<button class="dialog-close" type="submit">X</button>
 				</form>
-				<h2 class="promote-jobs-heading">Are you sure you want to deactivate promotion for this job?</h2>
-				<p>If you still have time until the promotion expires, this time will be lost and the promotion of the job will be canceled.</p>
+				<h2 class="promote-jobs-heading">
+					<?php esc_html_e( 'Are you sure you want to deactivate promotion for this job?', 'wp-job-manager' ); ?>
+				</h2>
+				<p>
+					<?php esc_html_e( 'If you still have time until the promotion expires, this time will be lost and the promotion of the job will be canceled.', 'wp-job-manager' ); ?>
+				</p>
 				<div class="deactivate-action promote-buttons-group">
-					<button class="cancel-promotion button button-secondary" type="submit">Cancel</button>
-					<button class="button button-primary" type="submit">Deactivate</button>
+					<button class="cancel-promotion button button-secondary" type="submit">
+						<?php esc_html_e( 'Cancel', 'wp-job-manager' ); ?>
+					</button>
+					<button class="button button-primary" type="submit">
+						<?php esc_html_e( 'Deactivate', 'wp-job-manager' ); ?>
+					</button>
 				</div>
 			</dialog>
 
