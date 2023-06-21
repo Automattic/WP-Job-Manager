@@ -16,10 +16,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since   $$next-version$$
  */
 class WP_Job_Manager_Com_Auth_Token {
+	/**
+	 * The meta key used to store the token.
+	 */
 	const META_KEY = 'wpjmcom_site_auth_token';
 
+	/**
+	 * The accepted object types to be associated with the token.
+	 */
 	const ACCEPTED_OBJECT_TYPES = [ 'post', 'user ' ];
 
+	/**
+	 * The expiration time for the token, in seconds.
+	 */
 	const EXPIRATION_TIME = MINUTE_IN_SECONDS;
 
 	/**
