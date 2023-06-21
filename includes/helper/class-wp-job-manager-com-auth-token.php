@@ -119,7 +119,7 @@ class WP_Job_Manager_Com_Auth_Token {
 	 * @param array $value The value persisted in the database.
 	 * @return bool True if the token is valid, false otherwise.
 	 */
-	public function is_valid( $value ) {
+	private function is_valid( $value ) {
 		return is_array( $value ) &&
 			array_key_exists( 'token', $value ) &&
 			array_key_exists( 'ts', $value ) &&
