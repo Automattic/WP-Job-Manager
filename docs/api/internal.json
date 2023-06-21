@@ -82,7 +82,7 @@
                             "example": false
                           },
                           "job_type":  {
-                            "type": "string",
+                            "type": "array",
                             "enum": [
                               "freelance",
                               "full-time",
@@ -90,7 +90,11 @@
                               "part-time",
                               "temporary",
                               "other"
-                            ]
+                            ],
+                            "items" : {
+                              "type": "string",
+                              "example": "Full Time"
+                            }
                           },
                           "salary":  {
                             "type": "string",
