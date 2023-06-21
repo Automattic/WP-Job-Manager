@@ -49,7 +49,7 @@ $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 								<?php if ('job_title' === $key ) : ?>
 									<?php if ( $job->post_status == 'publish' ) : ?>
 										<a href="<?php echo esc_url( get_permalink( $job->ID ) ); ?>"><?php wpjm_the_job_title( $job ); ?></a>
-										<?php if ( job_manager_job_can_be_renewed( $job ) ) : ?>
+										<?php if ( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job ) ) : ?>
 											<small>(<?php esc_html_e('Expires soon', 'wp-job-manager'); ?>)</small>
 										<?php endif; ?>
 									<?php else : ?>

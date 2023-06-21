@@ -114,7 +114,7 @@ class WP_Job_Manager_Helper_Renewals {
 
 		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
 			if ( $this->should_renew_job_listing() ) {
-				job_manager_renew_job_listing( get_post( $this->form->get_job_id() ) );
+				self::renew_job_listing( get_post( $this->form->get_job_id() ) );
 			}
 
 			$this->form->next_step();
@@ -125,7 +125,7 @@ class WP_Job_Manager_Helper_Renewals {
 	 * Checks if the job listing should be renewed.
 	 */
 	public function should_renew_job_listing() {
-		return 'publish' === get_post_status( $this->form->get_job_id() ) && $this->is_renew_action() && job_manager_job_can_be_renewed( $this->form->get_job_id() );
+		return 'publish' === get_post_status( $this->form->get_job_id() ) && $this->is_renew_action() && self::job_can_be_renewed( $this->form->get_job_id() );
 	}
 
 	/**
@@ -140,5 +140,82 @@ class WP_Job_Manager_Helper_Renewals {
 			return __( 'Renew Listing &rarr;', 'wp-job-manager' );
 		}
 		return $text;
+	}
+
+	/**
+	 * Checks if the WC Paid Listings has the minimum version when installed and activated.
+	 *
+	 * @since 1.41.0
+	 *
+	 * @return bool
+	 */
+	public static function is_wcpl_renew_compatible() {
+		return ! class_exists( 'WC_Paid_Listings' ) || version_compare( JOB_MANAGER_WCPL_VERSION, '2.9.9', '>' );
+	}
+
+	/**
+	 * Checks if the Simple Paid Listings has the minimum version when installed and activated.
+	 *
+	 * @since 1.41.0
+	 *
+	 * @return bool
+	 */
+	public static function is_spl_renew_compatible() {
+		return ! class_exists( 'WP_Job_Manager_Simple_Paid_Listings' ) || version_compare( JOB_MANAGER_SPL_VERSION, '1.4.4', '>' );
+	}
+
+	/**
+	 * Renew a job listing.
+	 *
+	 * @param WP_Post $job The job to renew.
+	 */
+	public static function renew_job_listing( $job ) {
+		$old_expiry = date_create_immutable_from_format( 'Y-m-d', get_post_meta( $job->ID, '_job_expires', true ) );
+		$new_expiry = calculate_job_expiry( $job->ID, false, $old_expiry );
+		update_post_meta( $job->ID, '_job_expires', $new_expiry );
+
+		/**
+		 * Fires when a job listing status is about to be updated.
+		 *
+		 * @param int  $job_id The job ID.
+		 * @param bool $renewing Whether the job is being renewed.
+		 */
+		$post_status = apply_filters( 'submit_job_post_status', 'publish', $job, true );
+
+		$update_job                  = [];
+		$update_job['ID']            = $job->ID;
+		$update_job['post_status']   = $post_status;
+		$update_job['post_date']     = current_time( 'mysql' );
+		$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
+
+		wp_update_post( $update_job );
+	}
+
+	/**
+	 * Checks if the job expiry can be extended.
+	 * This is true if the job is public, the option to extend is set and the job expires within 5 days.
+	 *
+	 * @since $$next_version$$
+	 *
+	 * @param int|WP_Post $job The job or job ID.
+	 *
+	 * @return bool
+	 */
+	public static function job_can_be_renewed( $job ) {
+		$job        = get_post( $job );
+		$expiration = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+
+		// If there is no expiration, then renewal is not necessary.
+		if ( ! $expiration ) {
+			return false;
+		} else {
+			$expiry = $expiration->getTimestamp();
+		}
+
+		$expiring_soon_days = get_option( 'job_manager_renewal_days', 5 );
+		$current_time_stamp = current_datetime()->getTimestamp();
+		$status             = get_post_status( $job );
+
+		return 'publish' === $status && $expiry - $current_time_stamp < $expiring_soon_days * DAY_IN_SECONDS;
 	}
 }

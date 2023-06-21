@@ -603,7 +603,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * @return array Notices.
 	 */
 	public static function paid_listings_renewal_notice( $notices ) {
-		if ( ! job_manager_is_wcpl_renew_compatible() ) {
+		if ( ! WP_Job_Manager_Helper_Renewals::is_wcpl_renew_compatible() ) {
 			$notices['wcpl_listing_renewal'] = [
 				'level'       => 'info',
 				'dismissible' => true,
@@ -612,7 +612,7 @@ class WP_Job_Manager_Admin_Notices {
 				),
 			];
 		}
-		if ( ! job_manager_is_spl_renew_compatible() ) {
+		if ( ! WP_Job_Manager_Helper_Renewals::is_spl_renew_compatible() ) {
 			$notices['spl_listing_renewal'] = [
 				'level'       => 'info',
 				'dismissible' => true,

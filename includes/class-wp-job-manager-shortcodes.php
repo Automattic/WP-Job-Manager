@@ -464,9 +464,9 @@ class WP_Job_Manager_Shortcodes {
 				}
 				if (
 					get_option( 'job_manager_renewal_days' ) > 0
-					&& job_manager_job_can_be_renewed( $job )
-					&& job_manager_is_wcpl_renew_compatible()
-					&& job_manager_is_spl_renew_compatible()
+					&& WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job )
+					&& WP_Job_Manager_Helper_Renewals::is_wcpl_renew_compatible()
+					&& WP_Job_Manager_Helper_Renewals::is_spl_renew_compatible()
 				) {
 					$actions['renew'] = [
 						'label' => __( 'Renew', 'wp-job-manager' ),
