@@ -175,6 +175,8 @@ class WP_Job_Manager {
 	 */
 	public function rest_init() {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-rest-api.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-promoted-jobs-api.php';
+		( new WP_Job_Manager_Promoted_Jobs_API() )->register_routes();
 		WP_Job_Manager_REST_API::init();
 	}
 
