@@ -38,7 +38,7 @@ class WP_Job_Manager_Helper_Renewals {
 	public function __construct( WP_Job_Manager_Form_Submit_Job $form ) {
 		$this->form = $form;
 
-		if ( $this->is_renew_action() ) {
+		if ( self::is_renew_action() ) {
 			add_filter( 'submit_job_steps', [ $this, 'remove_edit_steps_for_renewal' ] );
 			add_filter( 'submit_job_step_preview_submit_text', [ $this, 'submit_button_text_renewal' ], 15 );
 		}
@@ -63,7 +63,7 @@ class WP_Job_Manager_Helper_Renewals {
 	 * @since $$next-version$$
 	 * @return bool
 	 */
-	public function is_renew_action() {
+	public static function is_renew_action() {
 		$job_id = isset( $_GET['job_id'] ) ? sanitize_text_field( wp_unslash( $_GET['job_id'] ) ) : '';
 		$nonce  = isset( $_GET['nonce'] ) ? wp_unslash( $_GET['nonce'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 		$action = 'job_manager_renew_job_' . $job_id;
@@ -125,7 +125,7 @@ class WP_Job_Manager_Helper_Renewals {
 	 * Checks if the job listing should be renewed.
 	 */
 	public function should_renew_job_listing() {
-		return 'publish' === get_post_status( $this->form->get_job_id() ) && $this->is_renew_action() && self::job_can_be_renewed( $this->form->get_job_id() );
+		return 'publish' === get_post_status( $this->form->get_job_id() ) && self::is_renew_action() && self::job_can_be_renewed( $this->form->get_job_id() );
 	}
 
 	/**
