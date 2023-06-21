@@ -77,8 +77,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
 
 		// Listing renewal support.
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-renewals.php';
-		WP_Job_Manager_Helper_Listing_Renewal::instance( $this );
+		WP_Job_Manager_Helper_Renewals::instance( $this );
 
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
