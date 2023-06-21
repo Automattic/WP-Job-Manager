@@ -608,7 +608,7 @@ class WP_Job_Manager_Admin_Notices {
 				'level'       => 'info',
 				'dismissible' => true,
 				'message'     => wp_kses_post(
-					__( 'Job listing renewal feature requires the latest version of WC paid listings, please update the plugin to use the feature.', 'wp-job-manager' )
+					___( 'Listing renewals require the latest version of WC Paid Listings. Please update the plugin to enable the feature.', 'wp-job-manager' )
 				),
 			];
 		}
@@ -617,7 +617,7 @@ class WP_Job_Manager_Admin_Notices {
 				'level'       => 'info',
 				'dismissible' => true,
 				'message'     => wp_kses_post(
-					__( 'Job listing renewal feature requires the latest version of Simple paid listings, please update the plugin to use the feature.', 'wp-job-manager' )
+					___( 'Listing renewals require the latest version of Simple Paid Listings. Please update the plugin to enable the feature.', 'wp-job-manager' )
 				),
 			];
 		}
