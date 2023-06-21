@@ -172,9 +172,9 @@ class WP_Job_Manager_Promoted_Jobs {
 					</slot>
 
 				</slot>
-			<slot name="promote-job-modal-column-right">
-				<img class="promote-jobs-image" src="#">
-			</slot>
+				<slot name="promote-job-modal-column-right">
+					<img class="promote-jobs-image" src="#">
+				</slot>
 			</template>
 		<?php
 
