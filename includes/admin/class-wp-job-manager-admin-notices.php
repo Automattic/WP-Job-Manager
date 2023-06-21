@@ -597,7 +597,7 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Adds notice to update Simple or WC paid listings plugin to use listing renewal feature.
 	 *
-	 * @since $$next-version$$
+	 * @since 1.41.0
 	 * @param array $notices Existing notices.
 	 *
 	 * @return array Notices.
@@ -608,7 +608,7 @@ class WP_Job_Manager_Admin_Notices {
 				'level'       => 'info',
 				'dismissible' => true,
 				'message'     => wp_kses_post(
-					___( 'Listing renewals require the latest version of WC Paid Listings. Please update the plugin to enable the feature.', 'wp-job-manager' )
+					__( 'Listing renewals require the latest version of WC Paid Listings. Please update the plugin to enable the feature.', 'wp-job-manager' )
 				),
 			];
 		}
@@ -617,7 +617,7 @@ class WP_Job_Manager_Admin_Notices {
 				'level'       => 'info',
 				'dismissible' => true,
 				'message'     => wp_kses_post(
-					___( 'Listing renewals require the latest version of Simple Paid Listings. Please update the plugin to enable the feature.', 'wp-job-manager' )
+					__( 'Listing renewals require the latest version of Simple Paid Listings. Please update the plugin to enable the feature.', 'wp-job-manager' )
 				),
 			];
 		}

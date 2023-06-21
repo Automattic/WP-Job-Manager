@@ -947,7 +947,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 1.41.0
 	 * @covers WP_Job_Manager_Helper_Renewals::job_can_be_renewed
 	 */
 	public function test_job_can_be_renewed() {
@@ -968,7 +968,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 1.41.0
 	 * @covers WP_Job_Manager_Helper_Renewals::renew_job_listing
 	 */
 	public function test_renew_job_listing() {

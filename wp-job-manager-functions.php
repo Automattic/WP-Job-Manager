@@ -1470,7 +1470,7 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  *
  * @since 1.22.0
  * @since 1.35.0 Added the `$return_datetime` param.
- * @since $$next-version$$ Added the `$from_timestamp` param.
+ * @since 1.41.0 Added the `$from_timestamp` param.
  *
  * @param  int                    $job_id          Job ID.
  * @param  bool                   $return_datetime Return the date time object.

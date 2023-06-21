@@ -60,7 +60,7 @@ class WP_Job_Manager_Helper_Renewals {
 	/**
 	 * Checks if 'renew' is set as action.
 	 *
-	 * @since $$next-version$$
+	 * @since 1.41.0
 	 * @return bool
 	 */
 	public static function is_renew_action() {
