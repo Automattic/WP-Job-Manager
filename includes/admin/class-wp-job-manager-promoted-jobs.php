@@ -83,7 +83,7 @@ class WP_Job_Manager_Promoted_Jobs {
 					<br />
 					<a href="#">Edit promotion</a>
 					<br />
-					<a href="#">Deactivate</a>
+					<a class="deactivate-job"href="#" data-post=' . esc_attr( $post->ID ) . '>Deactivate</a>
 				';
 			} else {
 				echo '<button class="promote_job button button-primary" data-post=' . esc_attr( $post->ID ) . '>Promote</button>';
@@ -143,6 +143,18 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	public function promoted_jobs_admin_footer() {
 		?>
+			<dialog class="wpjm-dialog" id="deactivate-dialog">
+				<form class="dialog" method="dialog">
+					<button class="dialog-close" type="submit">X</button>
+				</form>
+				<h2 class="promote-jobs-heading">Are you sure you want to deactivate promotion for this job?</h2>
+				<p>If you still have time until the promotion expires, this time will be lost and the promotion of the job will be canceled.</p>
+				<div class="deactivate-action promote-buttons-group">
+					<button class="cancel-promotion button button-secondary" type="submit">Cancel</button>
+					<button class="button button-primary" type="submit">Deactivate</button>
+				</div>
+			</dialog>
+
 			<template id="promote-job-template">
 				<slot name="column-left" class="promote-job-modal-column-left">
 					<slot class="promote-jobs-heading" name="promote-heading">
