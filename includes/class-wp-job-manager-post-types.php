@@ -732,7 +732,6 @@ class WP_Job_Manager_Post_Types {
 		if (
 			! is_admin()
 			&& $query->is_main_query()
-			&& 'job_listing' === $query->get( 'post_type' )
 			&& $query->is_search()
 			|| $query->is_archive()
 		) {
