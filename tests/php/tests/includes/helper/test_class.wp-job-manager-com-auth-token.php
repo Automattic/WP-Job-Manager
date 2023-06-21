@@ -140,6 +140,34 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		$this->assertFalse( $result );
 	}
 
+	public function testValidate_WhenPassedUserWithMetaAndValidTokenTwice_ShouldReturnFalse() {
+		// Arrange.
+		$instance = WP_Job_Manager_Com_Auth_Token::instance();
+		$user = $this->factory->user->create_and_get();
+		$token = $instance->generate('user', $user->ID);
+
+		// Act.
+		$instance->validate( 'user', $user->ID, $token );
+		$result = $instance->validate( 'user', $user->ID, $token );
+
+		// Assert.
+		$this->assertFalse( $result );
+	}
+
+	public function testValidate_WhenPassedPostWithMetaAndValidTokenTwice_ShouldReturnFalse() {
+		// Arrange.
+		$instance = WP_Job_Manager_Com_Auth_Token::instance();
+		$post = $this->factory->post->create_and_get();
+		$token = $instance->generate('post', $post->ID);
+
+		// Act.
+		$instance->validate( 'post', $post->ID, $token );
+		$result = $instance->validate( 'post', $post->ID, $token );
+
+		// Assert.
+		$this->assertFalse( $result );
+	}
+
 	public function testValidate_WhenPassedUserWithMetaAndValidToken_ShouldReturnTrue() {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
