@@ -201,6 +201,8 @@ function wpjmCloseModal( selector, dialog ) {
 }
 
 wpjmModal( '.promote_job', '#promote-dialog' );
+wpjmModal( '.deactivate-job', '#deactivate-dialog' );
+wpjmCloseModal( '.cancel-promotion', '#deactivate-dialog' );
 
 customElements.define('promote-job-modal',
 class extends HTMLElement {
