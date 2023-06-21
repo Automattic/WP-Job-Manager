@@ -191,7 +191,7 @@ function wpjmModal( selector, dialogSelector ) {
 	});
 }
 
-wpjmModal( '.promote_job', '#promoteDialog' );
+wpjmModal( '.promote_job', '#promote-dialog' );
 
 customElements.define('promote-job-modal',
 class extends HTMLElement {
