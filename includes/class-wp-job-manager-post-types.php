@@ -729,7 +729,14 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		if ( ! is_admin() && $query->is_search() ) {
+		if (
+			! is_admin()
+			&& $query->is_main_query()
+			&& 'job_listing' === $query->get( 'post_type' )
+			&& $query->is_search()
+			|| $query->is_archive()
+		) {
+
 			$jobs_to_exclude = array_merge( $this->get_filled_job_listings(), $this->get_expired_job_listings() );
 			if ( ! empty( $jobs_to_exclude ) ) {
 				$query->set( 'post__not_in', $jobs_to_exclude );
