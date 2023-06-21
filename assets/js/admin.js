@@ -178,3 +178,29 @@ jQuery(document).ready(function($) {
 		$('#in-' + taxonomy + '-' + id + ', #in-popular-' + taxonomy + '-' + id).prop( 'checked', c );
 	});
 });
+
+function wpjmModal( selector, dialogSelector ) {
+	let item = document.querySelectorAll( selector );
+	let dialog = document.querySelector( dialogSelector );
+
+	item.forEach( function( element ) {
+		element.addEventListener( 'click', function( event ) {
+			event.preventDefault();
+			dialog.showModal();
+		});
+	});
+}
+
+wpjmModal( '.promote_job', '#promote-dialog' );
+
+customElements.define('promote-job-modal',
+class extends HTMLElement {
+	constructor() {
+		super();
+		const promoteJobs = document.getElementById('promote-job-template').content;
+		const shadowRoot = this.attachShadow({
+			mode: 'open'
+		});
+		shadowRoot.appendChild(promoteJobs.cloneNode(true));
+	}
+});

@@ -45,7 +45,7 @@ class WP_Job_Manager_CPT {
 		add_filter( 'enter_title_here', [ $this, 'enter_title_here' ], 1, 2 );
 		add_filter( 'manage_edit-job_listing_columns', [ $this, 'columns' ] );
 		add_filter( 'list_table_primary_column', [ $this, 'primary_column' ], 10, 2 );
-		add_filter( 'post_row_actions', [ $this, 'row_actions' ] );
+		add_filter( 'post_row_actions', [ $this, 'row_actions' ], 10, 2 );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'custom_columns' ], 2 );
 		add_filter( 'manage_edit-job_listing_sortable_columns', [ $this, 'sortable_columns' ] );
 		add_filter( 'request', [ $this, 'sort_columns' ] );
@@ -505,7 +505,6 @@ class WP_Job_Manager_CPT {
 		$columns['job_listing_category'] = __( 'Categories', 'wp-job-manager' );
 		$columns['featured_job']         = '<span class="tips" data-tip="' . __( 'Featured?', 'wp-job-manager' ) . '">' . __( 'Featured?', 'wp-job-manager' ) . '</span>';
 		$columns['filled']               = '<span class="tips" data-tip="' . __( 'Filled?', 'wp-job-manager' ) . '">' . __( 'Filled?', 'wp-job-manager' ) . '</span>';
-		$columns['job_actions']          = __( 'Actions', 'wp-job-manager' );
 
 		if ( ! get_option( 'job_manager_enable_categories' ) ) {
 			unset( $columns['job_listing_category'] );
@@ -534,18 +533,57 @@ class WP_Job_Manager_CPT {
 	}
 
 	/**
-	 * Removes all action links because WordPress add it to primary column.
-	 * Note: Removing all actions also remove mobile "Show more details" toggle button.
-	 * So the button need to be added manually in custom_columns callback for primary column.
+	 * Adds row actions for each job listing.
 	 *
 	 * @access public
-	 * @param array $actions
+	 * @param  array   $actions
+	 * @param  WP_Post $post
 	 * @return array
 	 */
-	public function row_actions( $actions ) {
+	public function row_actions( $actions, $post ) {
+
 		if ( 'job_listing' === get_post_type() ) {
-			return [];
+
+			unset( $actions['inline hide-if-no-js'] );
+			unset( $actions['trash'] );
+
+			if ( in_array( $post->post_status, [ 'pending', 'pending_payment' ], true ) && current_user_can( 'publish_post', $post->ID ) ) {
+				$admin_actions['approve'] = [
+					'action' => 'approved',
+					'name'   => __( 'Approve', 'wp-job-manager' ),
+					'url'    => wp_nonce_url( add_query_arg( 'approve_job', $post->ID ), 'approve_job' ),
+				];
+			}
+			if ( 'trash' !== $post->post_status ) {
+				if ( current_user_can( 'read_post', $post->ID ) ) {
+					$admin_actions['view'] = [
+						'action' => 'view',
+						'name'   => __( 'View', 'wp-job-manager' ),
+						'url'    => get_permalink( $post->ID ),
+					];
+				}
+				if ( current_user_can( 'edit_post', $post->ID ) ) {
+					$admin_actions['edit'] = [
+						'action' => 'edit',
+						'name'   => __( 'Edit', 'wp-job-manager' ),
+						'url'    => get_edit_post_link( $post->ID ),
+					];
+				}
+				if ( current_user_can( 'delete_post', $post->ID ) ) {
+					$admin_actions['delete'] = [
+						'action' => 'delete',
+						'name'   => __( 'Delete', 'wp-job-manager' ),
+						'url'    => get_delete_post_link( $post->ID ),
+					];
+				}
+			}
+			$admin_actions = apply_filters( 'job_manager_admin_actions', $admin_actions, $post );
+
+			foreach ( $admin_actions as $action ) {
+				$actions[ $action['action'] ] = '<a href="' . esc_url( $action['url'] ) . '" title="" rel="permalink">' . esc_html( $action['name'] ) . '</a>';
+			}
 		}
+
 		return $actions;
 	}
 
@@ -626,54 +664,6 @@ class WP_Job_Manager_CPT {
 				break;
 			case 'job_status':
 				echo '<span data-tip="' . esc_attr( get_the_job_status( $post ) ) . '" class="tips status-' . esc_attr( $post->post_status ) . '">' . esc_html( get_the_job_status( $post ) ) . '</span>';
-				break;
-			case 'job_actions':
-				echo '<div class="actions">';
-				$admin_actions = apply_filters( 'post_row_actions', [], $post );
-
-				if ( in_array( $post->post_status, [ 'pending', 'pending_payment' ], true ) && current_user_can( 'publish_post', $post->ID ) ) {
-					$admin_actions['approve'] = [
-						'action' => 'approve',
-						'name'   => __( 'Approve', 'wp-job-manager' ),
-						'url'    => wp_nonce_url( add_query_arg( 'approve_job', $post->ID ), 'approve_job' ),
-					];
-				}
-				if ( 'trash' !== $post->post_status ) {
-					if ( current_user_can( 'read_post', $post->ID ) ) {
-						$admin_actions['view'] = [
-							'action' => 'view',
-							'name'   => __( 'View', 'wp-job-manager' ),
-							'url'    => get_permalink( $post->ID ),
-						];
-					}
-					if ( current_user_can( 'edit_post', $post->ID ) ) {
-						$admin_actions['edit'] = [
-							'action' => 'edit',
-							'name'   => __( 'Edit', 'wp-job-manager' ),
-							'url'    => get_edit_post_link( $post->ID ),
-						];
-					}
-					if ( current_user_can( 'delete_post', $post->ID ) ) {
-						$admin_actions['delete'] = [
-							'action' => 'delete',
-							'name'   => __( 'Delete', 'wp-job-manager' ),
-							'url'    => get_delete_post_link( $post->ID ),
-						];
-					}
-				}
-
-				$admin_actions = apply_filters( 'job_manager_admin_actions', $admin_actions, $post );
-
-				foreach ( $admin_actions as $action ) {
-					if ( is_array( $action ) ) {
-						printf( '<a class="button button-icon tips icon-%1$s" href="%2$s" data-tip="%3$s">%4$s</a>', esc_attr( $action['action'] ), esc_url( $action['url'] ), esc_attr( $action['name'] ), esc_html( $action['name'] ) );
-					} else {
-						echo wp_kses_post( str_replace( 'class="', 'class="button ', $action ) );
-					}
-				}
-
-				echo '</div>';
-
 				break;
 		}
 	}
