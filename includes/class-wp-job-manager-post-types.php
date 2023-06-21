@@ -674,6 +674,7 @@ class WP_Job_Manager_Post_Types {
 		if ( false === $filled_jobs_transient ) {
 			$filled_jobs_transient = get_posts(
 				[
+					'post_status'    => 'publish',
 					'post_type'      => 'job_listing',
 					'fields'         => 'ids',
 					'posts_per_page' => -1,
