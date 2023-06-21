@@ -53,6 +53,7 @@ class WP_Job_Manager_Com_Auth_Token {
 		}
 		return $token;
 	}
+
 	/**
 	 * Generates a new random token and return it
 	 *
@@ -79,8 +80,6 @@ class WP_Job_Manager_Com_Auth_Token {
 			'ts'    => time(),
 		];
 	}
-
-
 
 	/**
 	 * Validate if a token is valid or not, and might remove it if it is valid or expired.
