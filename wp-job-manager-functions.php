@@ -1726,11 +1726,6 @@ function delete_job_listings_transients_on_save( int $post_id, WP_Post $post ): 
 		if ( '1' === get_post_meta( $post_id, '_filled', true ) ) {
 			delete_transient( 'hide_filled_jobs_transient' );
 		}
-
-		$post_status = [ 'publish', 'expired', 'trash' ];
-		if ( in_array( $post->post_status, $post_status, true ) ) {
-			delete_transient( 'hide_expired_jobs_transient' );
-		}
 	}
 
 }

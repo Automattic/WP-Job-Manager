@@ -674,9 +674,10 @@ class WP_Job_Manager_Post_Types {
 		if ( false === $filled_jobs_transient ) {
 			$filled_jobs_transient = get_posts(
 				[
-					'post_type'  => 'job_listing',
-					'fields'     => 'ids',
-					'meta_query' => [
+					'post_type'      => 'job_listing',
+					'fields'         => 'ids',
+					'posts_per_page' => -1,
+					'meta_query'     => [
 						[
 							'key'     => '_filled',
 							'value'   => '1',
@@ -691,31 +692,7 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Get expired jobs.
-	 *
-	 * @return array
-	 */
-	public function get_expired_job_listings(): array {
-		if ( ! get_option( 'job_manager_hide_expired' ) ) {
-			return [];
-		}
-
-		$expired_jobs_transient = get_transient( 'hide_expired_jobs_transient' );
-		if ( false === $expired_jobs_transient ) {
-			$expired_jobs_transient = get_posts(
-				[
-					'post_type'   => 'job_listing',
-					'post_status' => 'expired',
-					'fields'      => 'ids',
-				]
-			);
-			set_transient( 'hide_expired_jobs_transient', $expired_jobs_transient, DAY_IN_SECONDS );
-		}
-		return $expired_jobs_transient;
-	}
-
-	/**
-	 * Maybe exclude expired and/or filled job listings from search.
+	 * Maybe exclude expired and/or filled job listings from search and archive pages.
 	 *
 	 * @param $query WP_Query $query
 	 *
@@ -733,12 +710,15 @@ class WP_Job_Manager_Post_Types {
 			! is_admin()
 			&& $query->is_main_query()
 			&& $query->is_search()
-			|| $query->is_archive()
+			|| $query->is_archive() && 'job_listing' === $query->get( 'post_type' )
 		) {
 
-			$jobs_to_exclude = array_merge( $this->get_filled_job_listings(), $this->get_expired_job_listings() );
-			if ( ! empty( $jobs_to_exclude ) ) {
-				$query->set( 'post__not_in', $jobs_to_exclude );
+			if ( $hide_expired ) {
+				$query->set( 'post_status', 'publish' );
+			}
+
+			if ( $hide_filled_positions ) {
+				$query->set( 'post__not_in', $this->get_filled_job_listings() );
 			}
 		}
 	}
