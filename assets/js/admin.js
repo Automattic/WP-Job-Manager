@@ -190,6 +190,15 @@ function wpjmModal( selector, dialogSelector ) {
 		});
 	});
 }
+function wpjmCloseModal( selector, dialog ) {
+	let item = document.querySelectorAll( selector );
+	item.forEach( function( element ) {
+		element.addEventListener( 'click', function( event ) {
+			event.preventDefault();
+			this.closest( 'dialog' ).close();
+		});
+	});
+}
 
 wpjmModal( '.promote_job', '#promote-dialog' );
 
