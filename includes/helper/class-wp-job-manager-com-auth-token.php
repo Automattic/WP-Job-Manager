@@ -85,8 +85,10 @@ class WP_Job_Manager_Com_Auth_Token {
 	 */
 	private function generate_new_token() {
 		try {
-			$hash = random_bytes( 32 );
-			return bin2hex( $hash );
+			$hash = random_bytes( 48 );
+			//phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+			$base64 = base64_encode( $hash );
+			return str_replace( [ '+', '/', '=' ], '', $base64 );
 		} catch ( Exception $e ) {
 			return new WP_Error( 'wpjobmanager-com-token-not-generated', __( 'Token could not be generated', 'wp-job-manager' ) );
 		}
