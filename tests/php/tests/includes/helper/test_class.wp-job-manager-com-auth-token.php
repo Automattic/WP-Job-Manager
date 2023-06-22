@@ -168,6 +168,45 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		$this->assertFalse( $result );
 	}
 
+	public function testValidate_WhenPassedValidUserButTokenIsExpired_ShouldReturnFalse() {
+		// Arrange.
+		$instance = WP_Job_Manager_Com_Auth_Token::instance();
+		$user = $this->factory->user->create_and_get();
+		$token = $instance->generate('user', $user->ID);
+		$this->expire_tokens( 'user', $user->ID );
+
+		// Act.
+		$result = $instance->validate( 'user', $user->ID, $token );
+
+		// Assert.
+		$this->assertFalse( $result );
+	}
+
+	public function testValidate_WhenPassedValidPostButTokenIsExpired_ShouldReturnFalse() {
+		// Arrange.
+		$instance = WP_Job_Manager_Com_Auth_Token::instance();
+		$post = $this->factory->post->create_and_get();
+		$token = $instance->generate('post', $post->ID);
+		$this->expire_tokens( 'post', $post->ID );
+
+		// Act.
+		$result = $instance->validate( 'post', $post->ID, $token );
+
+		// Assert.
+		$this->assertFalse( $result );
+	}
+
+	private function expire_tokens ( $object_type, $object_id ) {
+		$metadatas = get_metadata( $object_type, $object_id, WP_Job_Manager_Com_Auth_Token::META_KEY );
+		foreach ( $metadatas as $metadata ) {
+			$new_metadata = [
+				'token' => $metadata['token'],
+				'ts' => $metadata['ts'] - HOUR_IN_SECONDS
+			];
+			update_metadata( $object_type, $object_id, WP_Job_Manager_Com_Auth_Token::META_KEY, $new_metadata, $metadata);
+		}
+	}
+
 	public function testValidate_WhenPassedUserWithMetaAndValidToken_ShouldReturnTrue() {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
