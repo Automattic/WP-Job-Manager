@@ -1719,7 +1719,7 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
  * @param int     $post_id  The ID of the post being saved.
  * @param WP_Post $post The post object being saved.
  */
-function delete_job_listings_transients_on_save( int $post_id, WP_Post $post ): void {
+function delete_filled_job_listing_transient_on_post_meta_update( int $post_id, WP_Post $post ): void {
 
 	if ( 'job_listing' === $post->post_type ) {
 
@@ -1729,4 +1729,4 @@ function delete_job_listings_transients_on_save( int $post_id, WP_Post $post ): 
 	}
 
 }
-add_action( 'save_post', 'delete_job_listings_transients_on_save', 10, 2 );
+add_action( 'update_post_meta', 'delete_filled_job_listing_transient_on_post_meta_update', 10, 2 );
