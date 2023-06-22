@@ -19,6 +19,13 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	const NOTIFICATION_URL = 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/site/{site_id}/update';
 
 	/**
+	 * The fields we are watching for changes.
+	 *
+	 * @var array
+	 */
+	private $meta_fields;
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -43,8 +50,10 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'wp_trash_post', [ $this, 'promoted_jobs_trash_post' ] );
-		add_action( 'edit_job_form_save_job_data', [ $this, 'promoted_jobs_save_post' ], 10, 2 );
+		$this->meta_fields = [ 'job_title', 'job_description', 'company_name', 'application', 'job_location' ];
+		add_action( 'wp_trash_post', [ $this, 'promoted_job_trashed' ] );
+		add_action( 'job_manager_edit_job_listing', [ $this, 'promoted_job_updated' ], 10, 2 );
+		add_action( 'job_manager_save_job_listing', [ $this, 'promoted_job_updated_admin' ], 10, 2 );
 	}
 
 	/**
@@ -71,13 +80,19 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @param int $post_id Post ID.
 	 */
 	private function get_meta_fields( $post_id ) {
-		return [
-			'job_title'       => get_post_meta( $post_id, '_job_title', true ),
-			'job_description' => get_post_meta( $post_id, '_job_description', true ),
-			'company_name'    => get_post_meta( $post_id, '_company_name', true ),
-			'application'     => get_post_meta( $post_id, '_application', true ),
-			'job_location'    => get_post_meta( $post_id, '_job_location', true ),
-		];
+		$post = get_post( $post_id );
+		foreach ( $this->meta_fields as $field ) {
+			if ( 'job_description' === $field ) {
+				$meta_fields[ $field ] = $post->post_content;
+				continue;
+			}
+			if ( 'job_title' === $field ) {
+				$meta_fields[ $field ] = $post->post_title;
+				continue;
+			}
+			$meta_fields[ $field ] = get_post_meta( $post_id, '_' . $field, true );
+		}
+		return $meta_fields;
 	}
 
 	/**
@@ -93,6 +108,28 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			'application'     => $values['job']['application'],
 			'job_location'    => $values['job']['job_location'],
 		];
+	}
+
+	/**
+	 * Extract required job listing meta from the $_POST array.
+	 *
+	 * @param WP_Post $post Post object.
+	 */
+	private function get_post_data( $post ) {
+		$post_data = [];
+		foreach ( $this->meta_fields as $field ) {
+			if ( 'job_description' === $field ) {
+				$post_data[ $field ] = $post->post_content;
+				continue;
+			}
+			if ( 'job_title' === $field ) {
+				$post_data[ $field ] = $post->post_title;
+				continue;
+			}
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Input sanitized in registered post meta config;
+			$post_data[ $field ] = isset( $_POST[ "_$field" ] ) ? wp_unslash( $_POST[ "_$field" ] ) : '';
+		}
+		return $post_data;
 	}
 
 	/**
@@ -142,7 +179,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @param int $post_id Post ID.
 	 * @return void
 	 */
-	public function promoted_jobs_trash_post( $post_id ) {
+	public function promoted_job_trashed( $post_id ) {
 		if ( ! $this->should_notify( $post_id ) ) {
 			return;
 		}
@@ -156,11 +193,30 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @param array $values Values.
 	 * @return void
 	 */
-	public function promoted_jobs_save_post( $post_id, $values ) {
+	public function promoted_job_updated( $post_id, $values ) {
 		if ( ! $this->should_notify( $post_id ) ) {
 			return;
 		}
+
 		if ( $this->post_has_changed( $this->get_meta_fields( $post_id ), $this->map_data_fields( $values ) ) ) {
+			$this->notify_change( $post_id );
+		}
+	}
+
+	/**
+	 * Notify wpjobmanager.com when a Job Listing is updated on admin.
+	 * Values are available in the $_POST global, sanitized and validated.
+	 *
+	 * @param int     $post_id Post ID.
+	 * @param WP_Post $post Post object.
+	 * @return void
+	 */
+	public function promoted_job_updated_admin( $post_id, $post ) {
+		if ( ! $this->should_notify( $post_id ) ) {
+			return;
+		}
+
+		if ( $this->post_has_changed( $this->get_meta_fields( $post_id ), $this->get_post_data( $post ) ) ) {
 			$this->notify_change( $post_id );
 		}
 	}
