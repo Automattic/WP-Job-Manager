@@ -34,7 +34,7 @@ class WP_Job_Manager_Com_Auth_Token {
 	/**
 	 * The singleton instance of the class.
 	 *
-	 * @var WP_Job_Manager_Com_Auth_Token
+	 * @var self
 	 */
 	private static $instance;
 
@@ -50,7 +50,7 @@ class WP_Job_Manager_Com_Auth_Token {
 	 */
 	public static function instance() {
 		if ( null === self::$instance ) {
-			self::$instance = new WP_Job_Manager_Com_Auth_Token();
+			self::$instance = new self();
 		}
 		return self::$instance;
 	}
