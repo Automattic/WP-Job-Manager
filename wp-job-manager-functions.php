@@ -1729,4 +1729,4 @@ function delete_filled_job_listing_transient_on_post_meta_update( int $post_id, 
 	}
 
 }
-add_action( 'update_post_meta', 'delete_filled_job_listing_transient_on_post_meta_update', 10, 2 );
+add_action( 'save_post', 'delete_filled_job_listing_transient_on_post_meta_update', 10, 2 );
