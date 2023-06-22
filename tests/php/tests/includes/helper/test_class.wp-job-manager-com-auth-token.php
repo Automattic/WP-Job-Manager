@@ -47,7 +47,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 
 		// Act.
-		$result = $instance->generate( 'user', "test");
+		$result = $instance->generate( 'user', 'invalid_id' );
 
 		// Assert.
 		$this->assertTrue( is_wp_error( $result ) );
@@ -60,7 +60,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		$user = $this->factory->user->create_and_get();
 
 		// Act.
-		$result = $instance->generate( 'user', $user->ID);
+		$result = $instance->generate( 'user', $user->ID );
 
 		// Assert.
 		$this->assertIsString( $result );
@@ -73,7 +73,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		$post = $this->factory->post->create_and_get();
 
 		// Act.
-		$result = $instance->generate( 'post', $post->ID);
+		$result = $instance->generate( 'post', $post->ID );
 
 		// Assert.
 		$this->assertIsString( $result );
@@ -118,7 +118,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$user = $this->factory->user->create_and_get();
-		$token = $instance->generate('user', $user->ID);
+		$token = $instance->generate('user', $user->ID );
 
 		// Act.
 		$result = $instance->validate( 'user', $user->ID, $token. 'a' );
@@ -131,7 +131,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$post = $this->factory->post->create_and_get();
-		$token = $instance->generate('post', $post->ID);
+		$token = $instance->generate( 'post', $post->ID );
 
 		// Act.
 		$result = $instance->validate( 'post', $post->ID, $token. 'a' );
@@ -144,7 +144,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$user = $this->factory->user->create_and_get();
-		$token = $instance->generate('user', $user->ID);
+		$token = $instance->generate( 'user', $user->ID );
 
 		// Act.
 		$instance->validate( 'user', $user->ID, $token );
@@ -158,7 +158,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$post = $this->factory->post->create_and_get();
-		$token = $instance->generate('post', $post->ID);
+		$token = $instance->generate( 'post', $post->ID );
 
 		// Act.
 		$instance->validate( 'post', $post->ID, $token );
@@ -172,7 +172,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$user = $this->factory->user->create_and_get();
-		$instance->generate('user', $user->ID);
+		$instance->generate( 'user', $user->ID );
 		$this->expire_tokens( 'user', $user->ID );
 
 		// Act.
@@ -186,7 +186,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$post = $this->factory->post->create_and_get();
-		$instance->generate('post', $post->ID);
+		$instance->generate( 'post', $post->ID );
 		$this->expire_tokens( 'post', $post->ID );
 
 		// Act.
@@ -200,7 +200,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$user = $this->factory->user->create_and_get();
-		$token = $instance->generate('user', $user->ID);
+		$token = $instance->generate( 'user', $user->ID );
 		$this->expire_tokens( 'user', $user->ID );
 
 		// Act.
@@ -224,7 +224,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		$this->assertFalse( $result );
 	}
 
-	private function expire_tokens ( $object_type, $object_id ) {
+	private function expire_tokens( $object_type, $object_id ) {
 		$metadatas = get_metadata( $object_type, $object_id, WP_Job_Manager_Com_Auth_Token::META_KEY );
 		foreach ( $metadatas as $metadata ) {
 			$new_metadata = [
@@ -239,7 +239,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$user = $this->factory->user->create_and_get();
-		$token = $instance->generate('user', $user->ID);
+		$token = $instance->generate( 'user', $user->ID );
 
 		// Act.
 		$result = $instance->validate( 'user', $user->ID, $token );
@@ -252,7 +252,7 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
 		$post = $this->factory->post->create_and_get();
-		$token = $instance->generate('post', $post->ID);
+		$token = $instance->generate( 'post', $post->ID );
 
 		// Act.
 		$result = $instance->validate( 'post', $post->ID, $token );
