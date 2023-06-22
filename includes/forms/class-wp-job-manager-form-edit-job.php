@@ -187,6 +187,15 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			}
 			$original_post_status = get_post_status( $this->job_id );
 
+			/**
+			 * Fires before a job is saved via the job submission form.
+			 *
+			 * @since $$next_version$$
+			 *
+			 * @param int   $job_id The ID of the job being saved.
+			 * @param array $values Posted values.
+			 */
+			do_action( 'edit_job_form_save_job_data', $this->job_id, $values );
 			// Update the job.
 			$this->save_job( $values['job']['job_title'], $values['job']['job_description'], $save_post_status, $values, false );
 			$this->update_job_data( $values );
