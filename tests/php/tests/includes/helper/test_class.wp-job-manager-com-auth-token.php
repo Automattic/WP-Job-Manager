@@ -168,6 +168,34 @@ class WP_Test_WP_Job_Manager_Com_Auth_Token extends WPJM_BaseTest {
 		$this->assertFalse( $result );
 	}
 
+	public function testValidate_WhenCalledWithUser_ShouldDeleteExpiredTokens() {
+		// Arrange.
+		$instance = WP_Job_Manager_Com_Auth_Token::instance();
+		$user = $this->factory->user->create_and_get();
+		$instance->generate('user', $user->ID);
+		$this->expire_tokens( 'user', $user->ID );
+
+		// Act.
+		$instance->validate( 'user', $user->ID, 'test' );
+
+		// Assert.
+		$this->assertEmpty( get_metadata( 'user', $user->ID, WP_Job_Manager_Com_Auth_Token::META_KEY ) );
+	}
+
+	public function testValidate_WhenCalledWithPost_ShouldDeleteExpiredTokens() {
+		// Arrange.
+		$instance = WP_Job_Manager_Com_Auth_Token::instance();
+		$post = $this->factory->post->create_and_get();
+		$instance->generate('post', $post->ID);
+		$this->expire_tokens( 'post', $post->ID );
+
+		// Act.
+		$instance->validate( 'post', $post->ID, 'test' );
+
+		// Assert.
+		$this->assertEmpty( get_metadata( 'user', $post->ID, WP_Job_Manager_Com_Auth_Token::META_KEY ) );
+	}
+
 	public function testValidate_WhenPassedValidUserButTokenIsExpired_ShouldReturnFalse() {
 		// Arrange.
 		$instance = WP_Job_Manager_Com_Auth_Token::instance();
