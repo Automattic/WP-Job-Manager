@@ -232,6 +232,26 @@ class WP_Job_Manager_Promoted_Jobs {
 				<?php echo $this->get_promote_jobs_template(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</template>
 			<dialog class="wpjm-dialog" id="promote-dialog"></dialog>
+
+			<dialog class="wpjm-dialog deactivate-dialog" id="deactivate-dialog">
+				<form class="dialog deactivate-button" method="dialog">
+					<button class="dialog-close" type="submit">X</button>
+				</form>
+				<h2 class="deactivate-modal-heading">
+					<?php esc_html_e( 'Are you sure you want to deactivate promotion for this job?', 'wp-job-manager' ); ?>
+				</h2>
+				<p>
+					<?php esc_html_e( 'If you still have time until the promotion expires, this time will be lost and the promotion of the job will be canceled.', 'wp-job-manager' ); ?>
+				</p>
+				<div class="deactivate-action promote-buttons-group">
+					<button class="dialog-close button button-secondary" type="submit">
+						<?php esc_html_e( 'Cancel', 'wp-job-manager' ); ?>
+					</button>
+					<button class="deactivate-promotion button button-primary" type="submit">
+						<?php esc_html_e( 'Deactivate', 'wp-job-manager' ); ?>
+					</button>
+				</div>
+			</dialog>
 		<?php
 	}
 
