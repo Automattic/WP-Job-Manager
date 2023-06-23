@@ -51,9 +51,27 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 */
 	public function __construct() {
 		$this->meta_fields = [ 'job_title', 'job_description', 'company_name', 'application', 'job_location' ];
+		$this->init_options();
 		add_action( 'wp_trash_post', [ $this, 'promoted_job_trashed' ] );
 		add_action( 'job_manager_edit_job_listing', [ $this, 'promoted_job_updated' ], 10, 2 );
 		add_action( 'job_manager_save_job_listing', [ $this, 'promoted_job_updated_admin' ], 10, 2 );
+		add_action( 'job_manager_promoted_jobs_notification', [ $this, 'run_scheduled_promoted_jobs_notification' ] );
+	}
+
+	/**
+	 * Initialize options.
+	 */
+	public function init_options() {
+		if ( ! get_option( 'job_manager_promoted_jobs_notification' ) ) {
+			add_option(
+				'job_manager_promoted_jobs_notification',
+				[
+					'last_run'           => 0,
+					'last_error_message' => 0,
+					'should_notify_jobs' => false,
+				]
+			);
+		}
 	}
 
 	/**
@@ -183,7 +201,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 		if ( ! $this->should_notify( $post_id ) ) {
 			return;
 		}
-		$this->notify_change( $post_id );
+		$this->send_notification();
 	}
 
 	/**
@@ -199,7 +217,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 		}
 
 		if ( $this->post_has_changed( $this->get_meta_fields( $post_id ), $this->map_data_fields( $values ) ) ) {
-			$this->notify_change( $post_id );
+			$this->send_notification();
 		}
 	}
 
@@ -217,22 +235,53 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 		}
 
 		if ( $this->post_has_changed( $this->get_meta_fields( $post_id ), $this->get_post_data( $post ) ) ) {
-			$this->notify_change( $post_id );
+			$this->send_notification();
 		}
 	}
 
 	/**
 	 * Notify wpjobmanager.com when a Job Listing changes.
 	 *
-	 * @param int $post_id Post ID.
 	 * @return void
 	 */
-	private function notify_change( $post_id ) {
+	private function send_notification() {
 		$response = wp_remote_post( $this->get_notification_url() );
+		$this->maybe_schedule_rerun( $response );
+	}
+
+	/**
+	 * Schedule a cron job to run the notification task if API call failed.
+	 *
+	 * @param WP_Error|array $response Response from wp_remote_post.
+	 * @return void
+	 */
+	public function maybe_schedule_rerun( $response ) {
+		$notification_meta             = get_option( 'job_manager_promoted_jobs_notification' );
+		$notification_meta['last_run'] = time();
+
 		if ( is_wp_error( $response ) ) {
-			$error_message = $response->get_error_message();
-			// Todo: Schedule a job to run the same task.
-			// Todo: maybe log the error message?
+			$notification_meta['last_error_message'] = $response->get_error_message();
+			$notification_meta['should_notify_jobs'] = true;
+
+			if ( ! wp_next_scheduled( 'job_manager_promoted_jobs_notification' ) ) {
+				wp_schedule_event( time(), 'twicedaily', 'job_manager_promoted_jobs_notification' );
+			}
+		} else {
+			$notification_meta['should_notify_jobs'] = false;
+		}
+
+		update_option( 'job_manager_should_notify_promoted_jobs', $notification_meta );
+	}
+
+	/**
+	 * Schedule a cron job to run the notification task.
+	 *
+	 * @return void
+	 */
+	public function run_scheduled_promoted_jobs_notification() {
+		$notification_meta = get_option( 'job_manager_promoted_jobs_notification' );
+		if ( $notification_meta['should_notify_jobs'] ) {
+			$this->send_notification();
 		}
 	}
 }
