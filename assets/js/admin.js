@@ -187,13 +187,23 @@ function wpjmModal( selector, dialogSelector ) {
 		element.addEventListener( 'click', function( event ) {
 			event.preventDefault();
 			dialog.showModal();
+			dialog.innerHTML = `
+			<form class="dialog" method="dialog">
+				<button class="dialog-close" type="submit">X</button>
+			</form>
+			<promote-job-template>
+				<div slot="buttons" class="promote-buttons-group">
+						<button class="promote-button button button-primary" type="submit" href="${ element.getAttribute( 'data-post') }">Promote your jobs</button>
+						<button class="promote-button button button-secondary" type="submit" href="#">Learn More</button>
+				</div>
+			<promote-job-template>`
 		});
 	});
 }
 
 wpjmModal( '.promote_job', '#promote-dialog' );
 
-customElements.define('promote-job-modal',
+customElements.define('promote-job-template',
 class extends HTMLElement {
 	constructor() {
 		super();
@@ -204,3 +214,4 @@ class extends HTMLElement {
 		shadowRoot.appendChild(promoteJobs.cloneNode(true));
 	}
 });
+
