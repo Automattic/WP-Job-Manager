@@ -353,6 +353,14 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+							'name'       => 'job_manager_renewal_days',
+							'std'        => 5,
+							'label'      => __( 'Renewal Days', 'wp-job-manager' ),
+							'desc'       => __( 'Sets the number of days before expiration, that users can renew the listing. Use 0 to disable renewals.', 'wp-job-manager' ),
+							'type'       => 'number',
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_user_can_edit_pending_submissions',
 							'std'        => '0',
 							'label'      => __( 'Allow Pending Edits', 'wp-job-manager' ),

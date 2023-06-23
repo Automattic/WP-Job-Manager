@@ -76,6 +76,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_action( 'preview_job_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 		add_action( 'job_manager_job_submitted', [ $this, 'track_job_submission' ] );
 
+		// Listing renewal support.
+		WP_Job_Manager_Helper_Renewals::instance( $this );
+
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
@@ -161,7 +164,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Load job details.
 		if ( $this->job_id ) {
 			$job_status = get_post_status( $this->job_id );
-			if ( 'expired' === $job_status ) {
+			if ( 'expired' === $job_status || WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $this->job_id ) ) {
 				if ( ! job_manager_user_can_edit_job( $this->job_id ) ) {
 					$this->job_id = 0;
 					$this->step   = 0;
