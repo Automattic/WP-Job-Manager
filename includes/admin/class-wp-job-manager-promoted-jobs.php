@@ -115,6 +115,98 @@ class WP_Job_Manager_Promoted_Jobs {
 						<div class="price-text">Starting From</div>
 						<span>$83.00</span>
 					</div>
+		<style>
+			promote-job-modal {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+				padding: 30px 80px 50px 80px;
+			}
+			promote-job-modal img.promote-jobs-image {
+				width: 100%;
+			}
+			promote-job-modal h2.promote-jobs-heading {
+				font-size: 36px;
+				font-weight: 300;
+				line-height: 105%;
+				margin-top: 0;
+				width: 80%;
+				margin-bottom: 0px;
+			}
+			promote-job-modal .promote-job-modal-column-left {
+				display: flex;
+				justify-content: space-between;
+				flex-direction: column;
+			}
+			.promote-list {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			promote-job-modal li.promote-list-item {
+				background: url("data:image/svg+xml,<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><mask id=\"mask0_20018663_2259\" style=\"mask-type:luminance\" maskUnits=\"userSpaceOnUse\" x=\"3\" y=\"5\" width=\"18\" height=\"14\"><path d=\"M8.75685 15.9L4.57746 11.7L3.18433 13.1L8.75685 18.7L20.698 6.69999L19.3049 5.29999L8.75685 15.9Z\" fill=\"white\"/></mask><g mask=\"url%28%23mask0_20018663_2259%29\"><rect width=\"23.8823\" height=\"24\" fill=\"%232270B1\"/></g></svg>") no-repeat 0 -3px;
+				font-size: 14px;
+				list-style: none;
+				padding-left: 32px;
+				margin: 12px 0;
+			}
+			promote-job-modal .promote-job-modal-price {
+				display: flex;
+				flex-direction: column;
+			}
+			promote-job-modal .promote-job-modal-price .price-text {
+				font-size: 12px;
+				text-transform: uppercase;
+				color: #787c82;
+			}
+			promote-job-modal .promote-job-modal-price span {
+				margin-top: 10px;
+				font-size: 36px;
+				font-weight: 700;
+			}
+			promote-job-modal .promote-buttons-group .button {
+				padding: 10px 16px;
+				border-radius: 2px;
+				margin-right: 18px;
+				border: 0;
+			}
+			promote-job-modal .promote-buttons-group .button-primary {
+				background: #2270b1;
+				color: #fff;
+			}
+			promote-job-modal .promote-buttons-group .button-secondary {
+				background: #fff;
+				color: #2270B1;
+				border: 1px solid #2270B1;
+			}
+			@media screen and (max-width: 1000px) {
+				.promote-job-modal-column-right {
+					display: none;
+				}
+			}
+			@media screen and (max-width: 782px) {
+				promote-job-modal {
+					padding: 0px 25px 25px;
+				}
+			}
+			.wpjm-dialog {
+				border: 0;
+				border-radius: 8px;
+			}
+			form.dialog {
+				display: flex;
+			}
+			form.dialog button.dialog-close {
+				margin: 10px 15px auto auto;
+				content: "";
+				background: none;
+				border: 0;
+				font-size: 0;
+			}
+			form.dialog button.dialog-close:after {
+				content: "\2715";
+				font-size: 20px;
+			}
+		</style>
 
 					<div slot="promote-list">
 						<ul class="promote-list">
