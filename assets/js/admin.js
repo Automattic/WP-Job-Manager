@@ -182,7 +182,14 @@ jQuery(document).ready(function($) {
 function wpjmModal( selector, dialogSelector ) {
 	let item = document.querySelectorAll( selector );
 	let dialog = document.querySelector( dialogSelector );
+	let cancelButton = dialog.querySelectorAll( '.dialog-close' );
 
+	cancelButton.forEach( function( element ) {
+		element.addEventListener( 'click', function( event ) {
+			event.preventDefault();
+			dialog.close();
+		});
+	});
 	item.forEach( function( element ) {
 		element.addEventListener( 'click', function( event ) {
 			event.preventDefault();
