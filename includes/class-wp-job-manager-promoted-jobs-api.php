@@ -27,11 +27,19 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 	protected $rest_base;
 
 	/**
+	 * Associated post meta.
+	 *
+	 * @var string
+	 */
+	protected $meta;
+
+	/**
 	 * Promoted Jobs Class constructor.
 	 */
 	public function __construct() {
 		$this->namespace = 'wpjm-internal/v1';
 		$this->rest_base = 'promoted-jobs';
+		$this->meta      = '_promoted';
 	}
 
 	/**
@@ -66,7 +74,7 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 			'ignore_sticky_posts' => true,
 			'meta_query'          => [
 				[
-					'key'     => '_promoted',
+					'key'     => $this->meta,
 					'value'   => '1',
 					'compare' => '==',
 				],
