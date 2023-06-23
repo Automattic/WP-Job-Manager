@@ -16,6 +16,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Promoted_Jobs_Notifications {
 
+	/**
+	 * The URL to notify. Sending this notification will trigger a sync of the site's jobs.
+	 *
+	 * @var string
+	 */
 	const NOTIFICATION_URL = 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/site/{site_id}/update';
 
 	/**
@@ -23,7 +28,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 *
 	 * @var array
 	 */
-	private $meta_fields;
+	private $watched_fields;
 
 	/**
 	 * The single instance of the class.
@@ -50,10 +55,10 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->meta_fields = [ 'job_title', 'job_description', 'company_name', 'application', 'job_location' ];
+		$this->watched_fields = [ 'job_title', 'job_description', 'company_name', 'application', 'job_location' ];
 		$this->init_options();
 		add_action( 'wp_trash_post', [ $this, 'promoted_job_trashed' ] );
-		add_action( 'job_manager_edit_job_listing', [ $this, 'promoted_job_updated' ], 10, 2 );
+		add_action( 'job_manager_edit_job_listing_before_save', [ $this, 'promoted_job_updated' ], 10, 2 );
 		add_action( 'job_manager_save_job_listing', [ $this, 'promoted_job_updated_admin' ], 10, 2 );
 		add_action( 'job_manager_promoted_jobs_notification', [ $this, 'run_scheduled_promoted_jobs_notification' ] );
 	}
@@ -97,9 +102,9 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 *
 	 * @param int $post_id Post ID.
 	 */
-	private function get_meta_fields( $post_id ) {
+	private function get_watched_fields_meta( $post_id ) {
 		$post = get_post( $post_id );
-		foreach ( $this->meta_fields as $field ) {
+		foreach ( $this->watched_fields as $field ) {
 			if ( 'job_description' === $field ) {
 				$meta_fields[ $field ] = $post->post_content;
 				continue;
@@ -114,11 +119,11 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	}
 
 	/**
-	 * Map values to the format we are watching for changes.
+	 * Map values to the data we are watching for changes.
 	 *
 	 * @param array $values Values of the job fields.
 	 */
-	private function map_data_fields( $values ) {
+	private function map_to_watched_fields( $values ) {
 		return [
 			'job_title'       => $values['job']['job_title'],
 			'job_description' => $values['job']['job_description'],
@@ -135,7 +140,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 */
 	private function get_post_data( $post ) {
 		$post_data = [];
-		foreach ( $this->meta_fields as $field ) {
+		foreach ( $this->watched_fields as $field ) {
 			if ( 'job_description' === $field ) {
 				$post_data[ $field ] = $post->post_content;
 				continue;
@@ -182,10 +187,10 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @return bool
 	 */
 	public function should_notify( $post_id ) {
-		if ( ! $this->is_promoted_job( $post_id ) ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
 			return false;
 		}
-		if ( ! $this->get_site_id() ) {
+		if ( ! $this->is_promoted_job( $post_id ) ) {
 			return false;
 		}
 		return true;
@@ -216,7 +221,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			return;
 		}
 
-		if ( $this->post_has_changed( $this->get_meta_fields( $post_id ), $this->map_data_fields( $values ) ) ) {
+		if ( $this->post_has_changed( $this->get_watched_fields_meta( $post_id ), $this->map_to_watched_fields( $values ) ) ) {
 			$this->send_notification();
 		}
 	}
@@ -234,7 +239,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			return;
 		}
 
-		if ( $this->post_has_changed( $this->get_meta_fields( $post_id ), $this->get_post_data( $post ) ) ) {
+		if ( $this->post_has_changed( $this->get_watched_fields_meta( $post_id ), $this->get_post_data( $post ) ) ) {
 			$this->send_notification();
 		}
 	}
@@ -250,7 +255,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	}
 
 	/**
-	 * Schedule a cron job to run the notification task if API call failed.
+	 * Schedule a cron job to run the notification task if API call failed, unschedule if it succeeds.
 	 *
 	 * @param WP_Error|array $response Response from wp_remote_post.
 	 * @return void
@@ -263,11 +268,20 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			$notification_meta['last_error_message'] = $response->get_error_message();
 			$notification_meta['should_notify_jobs'] = true;
 
-			if ( ! wp_next_scheduled( 'job_manager_promoted_jobs_notification' ) ) {
-				wp_schedule_event( time(), 'twicedaily', 'job_manager_promoted_jobs_notification' );
-			}
+			$this->schedule_cron_job();
 		} else {
-			$notification_meta['should_notify_jobs'] = false;
+			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+			if ( 200 !== $body['data']['status'] ) {
+				$notification_meta['last_error_message'] = $body['code'] . ': ' . $body['message'];
+				$notification_meta['should_notify_jobs'] = true;
+
+				$this->schedule_cron_job();
+			} else {
+				$notification_meta['last_error_message'] = '';
+				$notification_meta['should_notify_jobs'] = false;
+
+				$this->unschedule_cron_job();
+			}
 		}
 
 		update_option( 'job_manager_should_notify_promoted_jobs', $notification_meta );
@@ -276,6 +290,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	/**
 	 * Schedule a cron job to run the notification task.
 	 *
+	 * @access private
 	 * @return void
 	 */
 	public function run_scheduled_promoted_jobs_notification() {
@@ -283,6 +298,27 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 		if ( $notification_meta['should_notify_jobs'] ) {
 			$this->send_notification();
 		}
+	}
+
+	/**
+	 * Schedule a cron job to run the notification task.
+	 *
+	 * @return void
+	 */
+	private function schedule_cron_job() {
+		if ( ! wp_next_scheduled( 'job_manager_promoted_jobs_notification' ) ) {
+			wp_schedule_event( time(), 'twicedaily', 'job_manager_promoted_jobs_notification' );
+		}
+	}
+
+	/**
+	 * Unschedule a cron job to run the notification task.
+	 *
+	 * @return void
+	 */
+	private function unschedule_cron_job() {
+		$timestamp = wp_next_scheduled( 'job_manager_promoted_jobs_notification' );
+		wp_unschedule_event( $timestamp, 'job_manager_promoted_jobs_notification' );
 	}
 }
 
