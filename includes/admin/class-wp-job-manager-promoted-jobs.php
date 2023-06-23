@@ -83,7 +83,7 @@ class WP_Job_Manager_Promoted_Jobs {
 					<br />
 					<a href="#">Edit promotion</a>
 					<br />
-					<a href="#">Deactivate</a>
+					<a class="deactivate-job"href="#" data-post=' . esc_attr( $post->ID ) . '>Deactivate</a>
 				';
 			} else {
 				echo '<button class="promote_job button button-primary" data-post=' . esc_attr( $post->ID ) . '>Promote</button>';
