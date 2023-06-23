@@ -399,7 +399,7 @@ class WP_Job_Manager_Post_Types {
 		 * 'Expired' notice, when viewing the single job listing and not logged in.
 		 *
 		 * This will also address historical issues stemming from addressing the issue raised here
-		 * https://github.com/Automattic/wpjobmanager.com/issues/420.
+		 * https://github.com/Automattic/WP-Job-Manager/issues/1884.
 		 */
 		$is_site_search        = ( isset( $_GET['s'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$is_expired_searchable = (bool) get_option( 'job_manager_hide_expired' );
