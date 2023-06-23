@@ -101,20 +101,6 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	public function get_promote_jobs_template() {
 		return '
-		<dialog class="wpjm-dialog" id="promote-dialog">
-			<form class="dialog" method="dialog">
-				<button class="dialog-close" type="submit" autofocus>X</button>
-			</form>
-			<promote-job-modal>
-				<div slot="column-left" class="promote-job-modal-column-left">
-					<h2 class="promote-jobs-heading" slot="promote-heading">
-						Promote your job on our partner network.
-					</h2>
-
-					<div slot="price" class="promote-job-modal-price">
-						<div class="price-text">Starting From</div>
-						<span>$83.00</span>
-					</div>
 		<style>
 			promote-job-modal {
 				display: grid;
@@ -207,25 +193,32 @@ class WP_Job_Manager_Promoted_Jobs {
 				font-size: 20px;
 			}
 		</style>
+		<promote-job-modal>
+			<div class="promote-job-modal-column-left">
+				<h2 class="promote-jobs-heading">
+					Promote your job on our partner network.
+				</h2>
 
-					<div slot="promote-list">
-						<ul class="promote-list">
-							<li class="promote-list-item">Your ad will get shared on our Partner Network</li>
-							<li class="promote-list-item">Featured on jobs.blog for 7 days</li>
-							<li class="promote-list-item">Featured on our weekly email blast</li>
-						</ul>
-					</div>
+				<div class="promote-job-modal-price">
+					<div class="price-text">Starting From</div>
+					<span>$83.00</span>
+				</div>
 
-					<div slot="buttons" class="promote-buttons-group">
-						<button class="promote-button button button-primary" type="submit">Promote your job</button>
-						<button class="promote-button button button-secondary" type="submit">Learn More</button>
-					</div>
-				</div>
-				<div slot="promote-job-modal-column-right" class="promote-job-modal-column-right">
-					<img class="promote-jobs-image" src="https://d.pr/i/4PgTqN+">
-				</div>
-			</promote-job-modal>
-		</dialog>';
+				<ul class="promote-list">
+					<li class="promote-list-item">Your ad will get shared on our Partner Network</li>
+					<li class="promote-list-item">Featured on jobs.blog for 7 days</li>
+					<li class="promote-list-item">Featured on our weekly email blast</li>
+				</ul>
+
+				<slot name="buttons" class="promote-buttons-group">
+					<button class="promote-button button button-primary" type="submit" href="#">Promote your job</button>
+					<button class="promote-button button button-secondary" type="submit" href="#">Learn More</button>
+				</slot>
+			</div>
+			<div class="promote-job-modal-column-right">
+				<img class="promote-jobs-image" src="https://wpjobmanager.com/wp-content/uploads/2023/06/Right.jpg">
+			</div>
+		</promote-job-modal>';
 	}
 
 	/**
@@ -236,41 +229,10 @@ class WP_Job_Manager_Promoted_Jobs {
 	public function promoted_jobs_admin_footer() {
 		?>
 			<template id="promote-job-template">
-				<slot name="column-left" class="promote-job-modal-column-left">
-					<slot class="promote-jobs-heading" name="promote-heading">
-						<?php esc_html_e( 'Promote Your Job on our Partner Network', 'wp-job-manager' ); ?>
-					</slot>
-
-					<slot name="price" class="promote-job-modal-price">
-						<div class="price-text"><?php esc_html_e( 'Starting From', 'wp-job-manager' ); ?></div>
-						<span>$--</span>
-					</slot>
-
-					<slot name="promote-list">
-						<ul class="promote-list">
-							<li class="promote-list-item"><?php esc_html_e( 'Your ad will get shared on our Partner Network', 'wp-job-manager' ); ?></li>
-							<li class="promote-list-item"><?php esc_html_e( 'Promote your job on external job boards', 'wp-job-manager' ); ?></li>
-							<li class="promote-list-item"><?php esc_html_e( 'Featured on our weekly email blast', 'wp-job-manager' ); ?></li>
-						</ul>
-					</slot>
-
-					<slot name="buttons" class="promote-buttons-group">
-						<button class="promote-button button btn-primary" type="submit">
-							<?php esc_html_e( 'Promote your job', 'wp-job-manager' ); ?>
-						</button>
-						<button class="promote-button button btn-secondary" type="submit">
-							<?php esc_html_e( 'Learn more', 'wp-job-manager' ); ?>
-						</button>
-					</slot>
-
-				</slot>
-				<slot name="promote-job-modal-column-right" class="promote-job-modal-column-right">
-					<img class="promote-jobs-image" src="https://wpjobmanager.com/wp-content/uploads/2023/06/Right.jpg">
-				</slot>
+				<?php echo $this->get_promote_jobs_template(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</template>
+			<dialog class="wpjm-dialog" id="promote-dialog"></dialog>
 		<?php
-
-		echo $this->get_promote_jobs_template(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 }
