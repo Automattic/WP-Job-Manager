@@ -284,7 +284,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			}
 		}
 
-		update_option( 'job_manager_should_notify_promoted_jobs', $notification_meta );
+		update_option( 'job_manager_promoted_jobs_notification', $notification_meta );
 	}
 
 	/**
