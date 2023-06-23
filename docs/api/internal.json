@@ -53,7 +53,7 @@
                         "type": "object",
                         "properties": {
                           "id": {
-                            "type": "string",
+                            "type": "integer",
                             "example": "9788656",
                             "description": "The unique identifier for the job in the site (post ID)."
                           },
