@@ -87,7 +87,7 @@ $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 				<?php endforeach; ?>
 			<?php endif; ?>
 		</tbody>
-		<?php if ( $submit_job_form_page_id && ( job_manager_count_user_job_listings() < $submission_limit || 'false' === $submission_limit ) ) : ?>
+		<?php if ( job_manager_user_can_submit_job_listing() ) : ?>
 			<tfoot>
 				<tr>
 					<td colspan="<?php echo count( $job_dashboard_columns ); ?>">
