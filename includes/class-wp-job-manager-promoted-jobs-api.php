@@ -93,8 +93,7 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 			$itemdata = $this->prepare_item_for_response( $item, $request );
 			$data[]   = $this->prepare_response_for_collection( $itemdata );
 		}
-
-		return new WP_REST_Response( $data, 200 );
+		return new WP_REST_Response( [ 'jobs' => $data ], 200 );
 	}
 
 	/**
