@@ -112,7 +112,7 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 		}
 
 		$data = [
-			'id'           => $item->ID,
+			'id'           => (string) $item->ID,
 			'title'        => $item->post_title,
 			'description'  => $item->post_content,
 			'permalink'    => get_permalink( $item ),
