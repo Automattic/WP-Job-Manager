@@ -34,6 +34,7 @@ a.wpjm-activate-licence-link:active {
 	form.dialog {
 		display: flex;
 		button.dialog-close {
+			cursor: pointer;
 			margin: 10px 15px auto auto;
 			content: '';
 			background: none;
