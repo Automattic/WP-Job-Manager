@@ -135,7 +135,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public function deactivate_promotion( $post_id ) {
-		return update_post_meta( $post_id, '_promoted', 1 );
+		return update_post_meta( $post_id, '_promoted', 0 );
 	}
 
 	/**
