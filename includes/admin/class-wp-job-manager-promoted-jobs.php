@@ -54,6 +54,9 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return array
 	 */
 	public function promoted_jobs_columns( $columns ) {
+		if ( ! $this->promote_jobs_template_exists() ) {
+			return $columns;
+		}
 		$columns['promoted_jobs'] = __( 'Promote', 'wp-job-manager' );
 		return $columns;
 	}
