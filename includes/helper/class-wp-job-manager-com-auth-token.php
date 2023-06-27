@@ -64,7 +64,7 @@ class WP_Job_Manager_Com_Auth_Token {
 	 */
 	public function generate( $object_type, $object_id ) {
 		if ( ! in_array( $object_type, self::ACCEPTED_OBJECT_TYPES, true ) ) {
-			return new WP_Error( 'wpjobmanager-com-invalid-type', __( 'Invalid object type', 'wp-job-manager' ) );
+			return new WP_Error( 'wpjobmanager-site-trust-invalid-object-type', __( 'Invalid object type to associate with token', 'wp-job-manager' ) );
 		}
 		$token = $this->generate_new_token();
 		if ( is_wp_error( $token ) ) {
@@ -73,7 +73,7 @@ class WP_Job_Manager_Com_Auth_Token {
 		$encoded = $this->encode( $token );
 		$result  = add_metadata( $object_type, $object_id, self::META_KEY, $encoded );
 		if ( ! $result ) {
-			return new WP_Error( 'wpjobmanager-com-token-not-saved', __( 'Token could not be persisted', 'wp-job-manager' ) );
+			return new WP_Error( 'wpjobmanager-site-trust-token-not-saved', __( 'Token could not be persisted', 'wp-job-manager' ) );
 		}
 		return $token;
 	}
@@ -94,7 +94,7 @@ class WP_Job_Manager_Com_Auth_Token {
 			}
 			return $result;
 		} catch ( Exception $e ) {
-			return new WP_Error( 'wpjobmanager-com-token-not-generated', __( 'Token could not be generated', 'wp-job-manager' ) );
+			return new WP_Error( 'wpjobmanager-site-trust-token-not-generated', __( 'Token could not be generated', 'wp-job-manager' ) );
 		}
 	}
 
