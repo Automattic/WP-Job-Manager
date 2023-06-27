@@ -38,7 +38,7 @@ class WP_Test_WP_Job_Manager_Site_Trust_Token extends WPJM_BaseTest {
 
 		// Assert.
 		$this->assertTrue( is_wp_error( $result ) );
-		$this->assertEquals( 'wpjobmanager-com-invalid-type' , $result->get_error_code() );
+		$this->assertEquals( 'wpjobmanager-site-trust-invalid-object-type' , $result->get_error_code() );
 	}
 
 
@@ -51,7 +51,7 @@ class WP_Test_WP_Job_Manager_Site_Trust_Token extends WPJM_BaseTest {
 
 		// Assert.
 		$this->assertTrue( is_wp_error( $result ) );
-		$this->assertEquals( 'wpjobmanager-com-token-not-saved' , $result->get_error_code() );
+		$this->assertEquals( 'wpjobmanager-site-trust-token-not-saved' , $result->get_error_code() );
 	}
 
 	public function testGenerate_WhenPassedUser_ShouldPersistMeta() {
