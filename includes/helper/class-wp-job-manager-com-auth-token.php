@@ -17,9 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Com_Auth_Token {
 	/**
-	 * The meta key used to store the token.
+	 * The meta key used to store the tokens.
 	 */
-	const META_KEY = 'wpjmcom_site_auth_token';
+	const META_KEY = '_wpjm_site_trust_tokens';
 
 	/**
 	 * The accepted object types to be associated with the token.
