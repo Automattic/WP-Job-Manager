@@ -113,7 +113,7 @@ class WP_Job_Manager_Promoted_Jobs {
 		$promote_template = wp_cache_get( 'promote-jobs-template', 'promote-jobs', false, $found );
 
 		if ( ! $found ) {
-			$response         = wp_remote_get( 'http://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog' );
+			$response         = wp_remote_get( 'http://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . get_locale() );
 			$promote_template = json_decode( $response['body'], true );
 			wp_cache_set( 'promote-jobs-template', $promote_template, 'promote-jobs', DAY_IN_SECONDS );
 		}
