@@ -90,12 +90,16 @@ class WP_Job_Manager_Promoted_Jobs {
 			}
 		}
 	}
+
 	/**
-	 * Store the promoted jobs template from wpjobmanager.com
+	 * Check if promote jobs template exists.
 	 *
-	 * TODO: we need to fetch this from wpjobmanager.com and store in cache for X amount of time
-	 * We should also have a fallback in case the API call fails.
-	 * We need to have a fallback here because we can't use a `dialog` element inside the template
+	 * @return bool
+	 */
+	public function promote_jobs_template_exists() {
+		return $this->get_promote_jobs_template() ? true : false;
+	}
+
 	/**
 	 * Store the promoted jobs template from wpjobmanager.com
 	 *
