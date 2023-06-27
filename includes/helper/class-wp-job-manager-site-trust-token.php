@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the class WP_Job_Manager_Com_Auth_Token.
+ * File containing the class WP_Job_Manager_Site_Trust_Token.
  *
  * @package wp-job-manager
  */
@@ -10,12 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Helper functions used for creating and validating tokens used for authenticating with WPJobManager.com.
+ * Helper functions used for creating and validating tokens used for verification with WPJobManager.com.
  *
  * @package wp-job-manager
  * @since   $$next-version$$
  */
-class WP_Job_Manager_Com_Auth_Token {
+class WP_Job_Manager_Site_Trust_Token {
 	/**
 	 * The meta key used to store the tokens.
 	 */
@@ -39,7 +39,7 @@ class WP_Job_Manager_Com_Auth_Token {
 	private static $instance;
 
 	/**
-	 * WP_Job_Manager_Com_Auth_Token constructor.
+	 * WP_Job_Manager_Site_Trust_Token constructor.
 	 */
 	private function __construct() {}
 
