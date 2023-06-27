@@ -34,9 +34,9 @@ class WP_Job_Manager_Site_Trust_Token {
 	/**
 	 * The singleton instance of the class.
 	 *
-	 * @var self
+	 * @var ?self
 	 */
-	private static $instance;
+	private static $instance = null;
 
 	/**
 	 * WP_Job_Manager_Site_Trust_Token constructor.
