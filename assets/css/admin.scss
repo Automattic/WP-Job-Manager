@@ -51,6 +51,38 @@ a.wpjm-activate-licence-link:active {
 	}
 }
 
+/** Deactivate Modal **/
+.deactivate-dialog {
+	h2.deactivate-modal-heading {
+		font-size: 20px;
+		line-height: 28px;
+		margin-top: 0;
+		font-weight: 300;
+	}
+	max-width: 415px;
+	padding: 32px;
+	.deactivate-button {
+		display: block;
+		float: right;
+		button {
+			margin: 0 0 0 10px;
+		}
+	}
+	p {
+		margin: 40px 0;
+	}
+	.promote-buttons-group {
+		display: block;
+		float: right;
+		.button-secondary {
+			border: 0;
+		}
+		button:last-child {
+			margin-right: 0;
+		}
+	}
+}
+
 .wpjm-licences {
 	margin-top: 10px;
 
