@@ -129,6 +129,10 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return void
 	 */
 	public function promoted_jobs_admin_footer() {
+		$screen = get_current_screen();
+		if ( 'edit-job_listing' !== $screen->id ) {
+			return;
+		}
 		?>
 			<template id="promote-job-template">
 				<?php echo $this->get_promote_jobs_template(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
