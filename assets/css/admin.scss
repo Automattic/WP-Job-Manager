@@ -17,6 +17,16 @@ a.wpjm-activate-licence-link:active {
 	color: orangered;
 }
 
+.column-promoted_jobs {
+	.jm-promoted__status-promoted {
+		font-weight: bold;
+	}
+
+	.jm-promoted__deactivate {
+		color: #b32d2e;
+	}
+}
+
 /** Promote Job Modal **/
 .promote-buttons-group {
 	.button {
