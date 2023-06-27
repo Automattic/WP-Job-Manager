@@ -73,6 +73,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 				[
 					'last_run'           => 0,
 					'last_error_message' => 0,
+					'retries'            => 0,
 					'should_notify_jobs' => false,
 				]
 			);
@@ -267,6 +268,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 		if ( is_wp_error( $response ) ) {
 			$notification_meta['last_error_message'] = $response->get_error_message();
 			$notification_meta['should_notify_jobs'] = true;
+			++$notification_meta['retries'];
 
 			$this->schedule_cron_job();
 		} else {
@@ -274,11 +276,13 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			if ( 200 !== $body['data']['status'] ) {
 				$notification_meta['last_error_message'] = $body['code'] . ': ' . $body['message'];
 				$notification_meta['should_notify_jobs'] = true;
+				++$notification_meta['retries'];
 
 				$this->schedule_cron_job();
 			} else {
 				$notification_meta['last_error_message'] = '';
 				$notification_meta['should_notify_jobs'] = false;
+				$notification_meta['retries']            = 0;
 
 				$this->unschedule_cron_job();
 			}
@@ -295,8 +299,14 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 */
 	public function run_scheduled_promoted_jobs_notification() {
 		$notification_meta = get_option( 'job_manager_promoted_jobs_notification' );
-		if ( $notification_meta['should_notify_jobs'] ) {
+		if ( $notification_meta['should_notify_jobs'] && $notification_meta['retries'] < 3 ) {
 			$this->send_notification();
+		}
+		if ( $notification_meta['retries'] >= 3 ) {
+			$this->unschedule_cron_job();
+			$notification_meta['retries']            = 0;
+			$notification_meta['should_notify_jobs'] = false;
+			update_option( 'job_manager_promoted_jobs_notification', $notification_meta );
 		}
 	}
 
