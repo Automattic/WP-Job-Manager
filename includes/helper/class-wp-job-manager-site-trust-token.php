@@ -88,11 +88,7 @@ class WP_Job_Manager_Site_Trust_Token {
 			$hash = random_bytes( 48 );
 			//phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			$base64 = base64_encode( $hash );
-			$result = str_replace( [ '+', '/', '=' ], '', $base64 );
-			if ( empty( $result ) ) {
-				$result = substr( bin2hex( $hash ), 0, 64 );
-			}
-			return $result;
+			return strtr( $base64, '+/=', '._-' );
 		} catch ( Exception $e ) {
 			return new WP_Error( 'wpjobmanager-site-trust-token-not-generated', __( 'Token could not be generated', 'wp-job-manager' ) );
 		}
