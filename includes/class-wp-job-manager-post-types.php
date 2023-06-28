@@ -676,9 +676,9 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Get filled jobs.
+	 * Retrieve and return the post IDs of any job listings marked as filled.
 	 *
-	 * @return array
+	 * @return array Array of filled job listing post IDs.
 	 */
 	public function get_filled_job_listings(): array {
 		if ( ! get_option( 'job_manager_hide_filled_positions' ) ) {
