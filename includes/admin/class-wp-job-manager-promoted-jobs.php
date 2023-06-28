@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Promoted_Jobs {
 
+	const TEMPATE_CACHE_TTL = 3600;
+
 	/**
 	 * The single instance of the class.
 	 *
@@ -110,13 +112,21 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	public function get_promote_jobs_template() {
 
-		$promote_template = wp_cache_get( 'promote-jobs-template', 'promote-jobs', false, $found );
+		$response = wp_cache_get( 'promote-jobs-template', 'promote-jobs', false, $found );
 
 		if ( ! $found ) {
-			$response         = wp_remote_get( 'http://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . get_locale() );
-			$promote_template = json_decode( $response['body'], true );
-			wp_cache_set( 'promote-jobs-template', $promote_template, 'promote-jobs', DAY_IN_SECONDS );
+			$response = wp_remote_get( 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . get_locale() );
+			wp_cache_set( 'promote-jobs-template', $response, 'promote-jobs', self::TEMPATE_CACHE_TTL );
 		}
+		if (
+			is_wp_error( $response )
+			|| 200 !== wp_remote_retrieve_response_code( $response )
+			|| empty( wp_remote_retrieve_body( $response ) )
+		) {
+			return false;
+		}
+
+		$promote_template = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( is_array( $promote_template ) && ! is_wp_error( $promote_template ) ) {
 			return $promote_template['assets'][0]['content'];
