@@ -127,6 +127,7 @@ class WP_Job_Manager_Site_Trust_Token {
 		if ( false === $metadatas ) {
 			return false;
 		}
+		$found = false;
 		foreach ( $metadatas as $metadata ) {
 			if ( ! $this->is_valid_format( $metadata ) ) {
 				// If the metadata structure isn't valid, just ignore it.
@@ -139,10 +140,10 @@ class WP_Job_Manager_Site_Trust_Token {
 			}
 			if ( $this->is_valid_token( $metadata, $token ) ) {
 				delete_metadata( $object_type, $object_id, self::META_KEY, $metadata );
-				return true;
+				$found = true;
 			}
 		}
-		return false;
+		return $found;
 	}
 
 
