@@ -681,9 +681,6 @@ class WP_Job_Manager_Post_Types {
 	 * @return array Array of filled job listing post IDs.
 	 */
 	public function get_filled_job_listings(): array {
-		if ( ! get_option( 'job_manager_hide_filled_positions' ) ) {
-			return [];
-		}
 
 		$filled_jobs_transient = get_transient( 'hide_filled_jobs_transient' );
 		if ( false === $filled_jobs_transient ) {
