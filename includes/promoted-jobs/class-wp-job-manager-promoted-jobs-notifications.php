@@ -71,7 +71,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	public function __construct() {
 		$this->watched_fields = [
 			'post' => [ 'post_title', 'post_content', 'post_status' ],
-			'meta' => [ '_company_name', '_application' ],
+			'meta' => [ '_application' ],
 		];
 		$this->init_options();
 		add_action( 'post_updated', [ $this, 'post_updated' ], 10, 3 );
