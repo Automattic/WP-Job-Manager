@@ -24,6 +24,20 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	const NOTIFICATION_URL = 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/site/{site_id}/update';
 
 	/**
+	 * The name of the job that will be scheduled to run if notification fails.
+	 *
+	 * @var string
+	 */
+	const RETRY_JOB_NAME = 'job_manager_promoted_jobs_notification';
+
+	/**
+	 * The number of retries before we stop trying.
+	 *
+	 * @var int
+	 */
+	const NUMBER_OF_RETRIES = 3;
+
+	/**
 	 * The fields we are watching for changes.
 	 *
 	 * @var array
@@ -60,10 +74,9 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			'meta' => [ '_company_name', '_application' ],
 		];
 		$this->init_options();
-		add_action( 'job_manager_promoted_jobs_notification', [ $this, 'run_scheduled_promoted_jobs_notification' ] );
-
 		add_action( 'post_updated', [ $this, 'post_updated' ], 10, 3 );
 		add_action( 'update_postmeta', [ $this, 'meta_updated' ], 10, 4 );
+		add_action( 'job_manager_promoted_jobs_notification', [ $this, 'send_notification' ] );
 	}
 
 	/**
@@ -196,87 +209,22 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	/**
 	 * Notify wpjobmanager.com when a Job Listing changes.
 	 *
+	 * @access private
+	 * @param int $retry Number of times this job has been retried.
 	 * @return void
 	 */
-	private function send_notification() {
-		$response = wp_remote_post( $this->get_notification_url() );
-		$this->maybe_schedule_rerun( $response );
-	}
-
-	/**
-	 * Schedule a cron job to run the notification task if API call failed, unschedule if it succeeds.
-	 *
-	 * @param WP_Error|array $response Response from wp_remote_post.
-	 * @return void
-	 */
-	public function maybe_schedule_rerun( $response ) {
-		$notification_meta             = get_option( 'job_manager_promoted_jobs_notification' );
-		$notification_meta['last_run'] = time();
-
-		if ( is_wp_error( $response ) ) {
-			$notification_meta['last_error_message'] = $response->get_error_message();
-			$notification_meta['should_notify_jobs'] = true;
-			++$notification_meta['retries'];
-
-			$this->schedule_cron_job();
-		} else {
-			$body = json_decode( wp_remote_retrieve_body( $response ), true );
-			if ( 200 !== $body['data']['status'] ) {
-				$notification_meta['last_error_message'] = $body['code'] . ': ' . $body['message'];
-				$notification_meta['should_notify_jobs'] = true;
-				++$notification_meta['retries'];
-
-				$this->schedule_cron_job();
-			} else {
-				$notification_meta['last_error_message'] = '';
-				$notification_meta['should_notify_jobs'] = false;
-				$notification_meta['retries']            = 0;
-
-				$this->unschedule_cron_job();
+	public function send_notification( $retry = 0 ) {
+		$response = wp_safe_remote_post( $this->get_notification_url() );
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			if ( $retry < self::NUMBER_OF_RETRIES ) {
+				// Retry in 24 hours.
+				wp_schedule_single_event(
+					time() + DAY_IN_SECONDS,
+					self::RETRY_JOB_NAME,
+					[ $retry + 1 ]
+				);
 			}
 		}
-
-		update_option( 'job_manager_promoted_jobs_notification', $notification_meta );
-	}
-
-	/**
-	 * Schedule a cron job to run the notification task.
-	 *
-	 * @access private
-	 * @return void
-	 */
-	public function run_scheduled_promoted_jobs_notification() {
-		$notification_meta = get_option( 'job_manager_promoted_jobs_notification' );
-		if ( $notification_meta['should_notify_jobs'] && $notification_meta['retries'] < 3 ) {
-			$this->send_notification();
-		}
-		if ( $notification_meta['retries'] >= 3 ) {
-			$this->unschedule_cron_job();
-			$notification_meta['retries']            = 0;
-			$notification_meta['should_notify_jobs'] = false;
-			update_option( 'job_manager_promoted_jobs_notification', $notification_meta );
-		}
-	}
-
-	/**
-	 * Schedule a cron job to run the notification task.
-	 *
-	 * @return void
-	 */
-	private function schedule_cron_job() {
-		if ( ! wp_next_scheduled( 'job_manager_promoted_jobs_notification' ) ) {
-			wp_schedule_event( time(), 'twicedaily', 'job_manager_promoted_jobs_notification' );
-		}
-	}
-
-	/**
-	 * Unschedule a cron job to run the notification task.
-	 *
-	 * @return void
-	 */
-	private function unschedule_cron_job() {
-		$timestamp = wp_next_scheduled( 'job_manager_promoted_jobs_notification' );
-		wp_unschedule_event( $timestamp, 'job_manager_promoted_jobs_notification' );
 	}
 }
 
