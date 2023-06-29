@@ -336,7 +336,7 @@ class WP_Job_Manager_Promoted_Jobs {
 					<button class="dialog-close button button-secondary" type="submit">
 						<?php esc_html_e( 'Cancel', 'wp-job-manager' ); ?>
 					</button>
-					<a class="deactivate-promotion button button-primary"">
+					<a class="deactivate-promotion button button-primary">
 					<?php esc_html_e( 'Deactivate', 'wp-job-manager' ); ?>
 					</a>
 				</div>
