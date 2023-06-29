@@ -70,10 +70,9 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 */
 	public function __construct() {
 		$this->watched_fields = [
-			'post' => [ 'post_title', 'post_content', 'post_status' ],
-			'meta' => [ '_application' ],
+			'post' => [ 'post_name', 'post_title', 'post_content', 'post_status' ],
+			'meta' => [ '_promoted' ],
 		];
-		$this->init_options();
 		add_action( 'post_updated', [ $this, 'post_updated' ], 10, 3 );
 		add_action( 'update_postmeta', [ $this, 'meta_updated' ], 10, 4 );
 		add_action( 'job_manager_promoted_jobs_notification', [ $this, 'send_notification' ] );
@@ -127,23 +126,6 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			if ( $current_value !== $meta_value ) {
 				$this->send_notification();
 			}
-		}
-	}
-
-	/**
-	 * Initialize options.
-	 */
-	public function init_options() {
-		if ( ! get_option( 'job_manager_promoted_jobs_notification' ) ) {
-			add_option(
-				'job_manager_promoted_jobs_notification',
-				[
-					'last_run'           => 0,
-					'last_error_message' => 0,
-					'retries'            => 0,
-					'should_notify_jobs' => false,
-				]
-			);
 		}
 	}
 
