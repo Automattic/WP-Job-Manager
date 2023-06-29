@@ -55,12 +55,66 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->watched_fields = [ 'job_title', 'job_description', 'company_name', 'application', 'job_location' ];
+		$this->watched_fields = [
+			'post' => [ 'post_title', 'post_content', 'post_status' ],
+			'meta' => [ '_company_name', '_application' ],
+		];
 		$this->init_options();
-		add_action( 'wp_trash_post', [ $this, 'promoted_job_trashed' ] );
-		add_action( 'job_manager_edit_job_listing_before_save', [ $this, 'promoted_job_updated' ], 10, 2 );
-		add_action( 'job_manager_save_job_listing', [ $this, 'promoted_job_updated_admin' ], 10, 2 );
 		add_action( 'job_manager_promoted_jobs_notification', [ $this, 'run_scheduled_promoted_jobs_notification' ] );
+
+		add_action( 'post_updated', [ $this, 'post_updated' ], 10, 3 );
+		add_action( 'update_postmeta', [ $this, 'meta_updated' ], 10, 4 );
+	}
+
+	/**
+	 * Checks if we should send a notification to wpjobmanager.com before a post is updated.
+	 *
+	 * @param int     $post_id Post ID.
+	 * @param WP_Post $post_after Post object after the update.
+	 * @param WP_Post $post_before Post object before the update.
+	 */
+	public function post_updated( $post_id, $post_after, $post_before ) {
+		if ( ! $this->should_notify( $post_id ) ) {
+			return;
+		}
+		$keys        = $this->watched_fields['post'];
+		$post_before = array_filter(
+			(array) $post_before,
+			function( $key ) use ( $keys ) {
+				return in_array( $key, $keys, true );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+		$post_after  = array_filter(
+			(array) $post_after,
+			function( $key ) use ( $keys ) {
+				return in_array( $key, $keys, true );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+		if ( $this->post_has_changed( $post_before, $post_after ) ) {
+			$this->send_notification();
+		}
+	}
+
+	/**
+	 * Checks if we should send a notification to wpjobmanager.com after a post meta is updated.
+	 *
+	 * @param int    $meta_id Meta ID.
+	 * @param int    $post_id Post ID.
+	 * @param string $meta_key Meta key.
+	 * @param mixed  $meta_value Meta value.
+	 */
+	public function meta_updated( $meta_id, $post_id, $meta_key, $meta_value ) {
+		if ( ! $this->should_notify( $post_id ) ) {
+			return;
+		}
+		if ( in_array( $meta_key, $this->watched_fields['meta'], true ) ) {
+			$current_value = get_post_meta( $post_id, $meta_key, true );
+			if ( $current_value !== $meta_value ) {
+				$this->send_notification();
+			}
+		}
 	}
 
 	/**
@@ -96,64 +150,6 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 */
 	private function get_notification_url() {
 		return str_replace( '{site_id}', $this->get_site_id(), self::NOTIFICATION_URL );
-	}
-
-	/**
-	 * Get post meta of the fields we are watching for changes.
-	 *
-	 * @param int $post_id Post ID.
-	 */
-	private function get_watched_fields_meta( $post_id ) {
-		$post = get_post( $post_id );
-		foreach ( $this->watched_fields as $field ) {
-			if ( 'job_description' === $field ) {
-				$meta_fields[ $field ] = $post->post_content;
-				continue;
-			}
-			if ( 'job_title' === $field ) {
-				$meta_fields[ $field ] = $post->post_title;
-				continue;
-			}
-			$meta_fields[ $field ] = get_post_meta( $post_id, '_' . $field, true );
-		}
-		return $meta_fields;
-	}
-
-	/**
-	 * Map values to the data we are watching for changes.
-	 *
-	 * @param array $values Values of the job fields.
-	 */
-	private function map_to_watched_fields( $values ) {
-		return [
-			'job_title'       => $values['job']['job_title'],
-			'job_description' => $values['job']['job_description'],
-			'company_name'    => $values['company']['company_name'],
-			'application'     => $values['job']['application'],
-			'job_location'    => $values['job']['job_location'],
-		];
-	}
-
-	/**
-	 * Extract required job listing meta from the $_POST array.
-	 *
-	 * @param WP_Post $post Post object.
-	 */
-	private function get_post_data( $post ) {
-		$post_data = [];
-		foreach ( $this->watched_fields as $field ) {
-			if ( 'job_description' === $field ) {
-				$post_data[ $field ] = $post->post_content;
-				continue;
-			}
-			if ( 'job_title' === $field ) {
-				$post_data[ $field ] = $post->post_title;
-				continue;
-			}
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Input sanitized in registered post meta config;
-			$post_data[ $field ] = isset( $_POST[ "_$field" ] ) ? wp_unslash( $_POST[ "_$field" ] ) : '';
-		}
-		return $post_data;
 	}
 
 	/**
@@ -195,54 +191,6 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Notify wpjobmanager.com when a Job Listing is trashed.
-	 *
-	 * @param int $post_id Post ID.
-	 * @return void
-	 */
-	public function promoted_job_trashed( $post_id ) {
-		if ( ! $this->should_notify( $post_id ) ) {
-			return;
-		}
-		$this->send_notification();
-	}
-
-	/**
-	 * Notify wpjobmanager.com when a Job Listing is updated.
-	 *
-	 * @param int   $post_id Post ID.
-	 * @param array $values Values.
-	 * @return void
-	 */
-	public function promoted_job_updated( $post_id, $values ) {
-		if ( ! $this->should_notify( $post_id ) ) {
-			return;
-		}
-
-		if ( $this->post_has_changed( $this->get_watched_fields_meta( $post_id ), $this->map_to_watched_fields( $values ) ) ) {
-			$this->send_notification();
-		}
-	}
-
-	/**
-	 * Notify wpjobmanager.com when a Job Listing is updated on admin.
-	 * Values are available in the $_POST global, sanitized and validated.
-	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post Post object.
-	 * @return void
-	 */
-	public function promoted_job_updated_admin( $post_id, $post ) {
-		if ( ! $this->should_notify( $post_id ) ) {
-			return;
-		}
-
-		if ( $this->post_has_changed( $this->get_watched_fields_meta( $post_id ), $this->get_post_data( $post ) ) ) {
-			$this->send_notification();
-		}
 	}
 
 	/**
