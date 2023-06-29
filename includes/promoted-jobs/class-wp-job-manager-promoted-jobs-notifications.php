@@ -38,6 +38,13 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	const NUMBER_OF_RETRIES = 3;
 
 	/**
+	 * The interval between retries.
+	 *
+	 * @var int
+	 */
+	const RETRY_INTERVAL = 60 * 60 * 24;
+
+	/**
 	 * The fields we are watching for changes.
 	 *
 	 * @var array
@@ -198,15 +205,33 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	public function send_notification( $retry = 0 ) {
 		$response = wp_safe_remote_post( $this->get_notification_url() );
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			if ( $retry < self::NUMBER_OF_RETRIES ) {
-				// Retry in 24 hours.
+			if ( ! $this->has_scheduled_retry() && $retry < self::NUMBER_OF_RETRIES ) {
+				// Retry in RETRY_INTERVAL seconds.
 				wp_schedule_single_event(
-					time() + DAY_IN_SECONDS,
+					time() + self::RETRY_INTERVAL,
 					self::RETRY_JOB_NAME,
 					[ $retry + 1 ]
 				);
 			}
+		} else {
+			// Clear any scheduled retries.
+			wp_unschedule_hook( self::RETRY_JOB_NAME );
 		}
+	}
+
+	/**
+	 * Check if a retry is scheduled.
+	 *
+	 * @return bool
+	 */
+	private function has_scheduled_retry(): bool {
+		for ( $i = 1; $i <= self::NUMBER_OF_RETRIES; $i++ ) {
+			if ( wp_next_scheduled( self::RETRY_JOB_NAME, [ $i ] ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 
