@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since $$next-version$$
  */
-class WP_Job_Manager_Promoted_Jobs {
+class WP_Job_Manager_Promoted_Jobs_Admin {
 
 	/**
 	 * The single instance of the class.
@@ -347,4 +347,4 @@ class WP_Job_Manager_Promoted_Jobs {
 
 }
 
-WP_Job_Manager_Promoted_Jobs::instance();
+WP_Job_Manager_Promoted_Jobs_Admin::instance();
