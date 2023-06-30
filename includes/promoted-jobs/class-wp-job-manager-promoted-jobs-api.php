@@ -50,6 +50,30 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 				],
 			]
 		);
+		register_rest_route(
+			$this->namespace,
+			'/' .
+			$this->rest_base . '/(?P<id>[\d]+)',
+			[
+				[
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => [ $this, 'update_job_status' ],
+					'permission_callback' => '__return_true',
+					'args'                => [
+						'id'     => [
+							'validate_callback' => function( $param ) {
+								return is_numeric( $param );
+							},
+						],
+						'status' => [
+							'validate_callback' => function( $param ) {
+								return is_numeric( $param );
+							},
+						],
+					],
+				],
+			]
+		);
 	}
 
 	/**
@@ -119,6 +143,31 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 			],
 		];
 		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Update the promoted job status.
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function update_job_status( $request ) {
+		$post_id = $request->get_param( 'id' );
+		$status  = $request->get_param( 'status' );
+		$post    = get_post( $post_id );
+
+		if ( empty( $post ) ) {
+			return new WP_Error( 'not_found', __( 'Post not found', 'wp-job-manager' ), [ 'status' => 404 ] );
+		}
+
+		$result = update_post_meta( $post_id, WP_Job_Manager_Promoted_Jobs::META_KEY, $status );
+		return new WP_REST_Response(
+			[
+				'data'    => $result,
+				'message' => 'Promoted job status updated',
+			],
+			200
+		);
 	}
 }
 
