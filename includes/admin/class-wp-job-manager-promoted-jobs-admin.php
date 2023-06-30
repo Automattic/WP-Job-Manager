@@ -16,8 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Promoted_Jobs_Admin {
 
-	const TEMPATE_CACHE_TTL = 3600;
-
 	/**
 	 * The single instance of the class.
 	 *
@@ -179,30 +177,37 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	}
 
 	/**
-	 * Store the promoted jobs template from wpjobmanager.com
+	 * Store the promoted jobs template from wpjobmanager.com.
 	 *
 	 * @return string
 	 */
 	public function get_promote_jobs_template() {
+		$promote_template                 = get_option( 'promote-jobs-template', false );
+		$promote_jobs_template_next_check = get_option( '_promote-jobs-template_next_check' );
 
-		$response = wp_cache_get( 'promote-jobs-template', 'promote-jobs', false, $found );
+		if ( ! $promote_jobs_template_next_check || $promote_jobs_template_next_check < time() ) {
+			$promote_template = false;
+		}
 
-		if ( ! $found ) {
+		if ( ! $promote_template ) {
 			$response = wp_safe_remote_get( 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . get_locale() );
-			wp_cache_set( 'promote-jobs-template', $response, 'promote-jobs', self::TEMPATE_CACHE_TTL );
-		}
-		if (
-			is_wp_error( $response )
-			|| 200 !== wp_remote_retrieve_response_code( $response )
-			|| empty( wp_remote_retrieve_body( $response ) )
-		) {
-			return false;
+			if (
+				is_wp_error( $response )
+				|| 200 !== wp_remote_retrieve_response_code( $response )
+				|| empty( wp_remote_retrieve_body( $response ) )
+			) {
+				update_option( '_promote-jobs-template_next_check', time() + MINUTE_IN_SECONDS * 5, false );
+				return false;
+			} else {
+				$assets           = json_decode( wp_remote_retrieve_body( $response ), true );
+				$promote_template = $assets['assets'][0]['content'];
+				update_option( 'promote-jobs-template', $promote_template, false );
+				update_option( '_promote-jobs-template_next_check', time() + HOUR_IN_SECONDS, false );
+			}
 		}
 
-		$promote_template = json_decode( wp_remote_retrieve_body( $response ), true );
-
-		if ( is_array( $promote_template ) && ! is_wp_error( $promote_template ) ) {
-			return $promote_template['assets'][0]['content'];
+		if ( ! is_wp_error( $promote_template ) ) {
+			return $promote_template;
 		}
 	}
 
