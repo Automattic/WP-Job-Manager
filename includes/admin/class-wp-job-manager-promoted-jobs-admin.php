@@ -210,6 +210,15 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			return;
 		}
 
+		$promote_url = add_query_arg(
+			[
+				'action'   => self::PROMOTE_JOB_ACTION,
+				'post'     => $post->ID,
+				'_wpnonce' => wp_create_nonce( self::PROMOTE_JOB_ACTION ),
+			],
+			admin_url( 'admin.php' )
+		);
+
 		if ( $this->is_promoted( $post->ID ) ) {
 			$nonce                  = wp_create_nonce( 'deactivate_promotion_' . $post->ID );
 			$deactivate_action_link = add_query_arg(
@@ -228,12 +237,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			</div>
 			';
 		} else {
-			$promote_url = add_query_arg(
-				[
-					'job_id' => $post->ID,
-				],
-				'https://wpjobmanager.com/promote-job/'
-			);
 			echo '<button class="promote_job button button-primary" data-href=' . esc_url( $promote_url ) . '>' . esc_html__( 'Promote', 'wp-job-manager' ) . '</button>';
 		}
 	}
