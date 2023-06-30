@@ -188,7 +188,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		$response = wp_cache_get( 'promote-jobs-template', 'promote-jobs', false, $found );
 
 		if ( ! $found ) {
-			$response = wp_remote_get( 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . get_locale() );
+			$response = wp_safe_remote_get( 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . get_locale() );
 			wp_cache_set( 'promote-jobs-template', $response, 'promote-jobs', self::TEMPATE_CACHE_TTL );
 		}
 		if (
