@@ -157,7 +157,7 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 		$post    = get_post( $post_id );
 
 		if ( empty( $post ) ) {
-			return new WP_Error( 'not_found', __( 'Post not found', 'wp-job-manager' ), [ 'status' => 404 ] );
+			return new WP_Error( 'not_found', __( 'The promoted job was not found', 'wp-job-manager' ), [ 'status' => 404 ] );
 		}
 
 		$result = update_post_meta( $post_id, WP_Job_Manager_Promoted_Jobs::META_KEY, $status );

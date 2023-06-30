@@ -177,10 +177,14 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "boolean"
+                      "type": "boolean",
+                      "example": true,
+                      "description": "The status of the job after it is updated"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Promoted job status updated",
+                      "description": "The message returned after the job is updated"
                     }
                   }
                 }
@@ -195,13 +199,19 @@
                   "type": "object",
                   "properties": {
                     "code": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "not_found"
                     },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "The promoted job was not found"
                     },
                     "data": {
-                      "$ref": "#/components/schemas/Error"
+                      "$ref": "#/components/schemas/Error",
+                      "description": "The error object",
+                      "example": {
+                        "status": 404
+                      }
                     }
                   }
                 }
