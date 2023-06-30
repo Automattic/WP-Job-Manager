@@ -49,7 +49,7 @@ class WP_Job_Manager_Admin {
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-cpt.php';
 		WP_Job_Manager_CPT::instance();
 
-		include_once dirname( __FILE__ ) . '/class-wp-job-manager-promoted-jobs.php';
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-promoted-jobs-admin.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-settings.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-writepanels.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-setup.php';
@@ -110,7 +110,7 @@ class WP_Job_Manager_Admin {
 				'job_manager_admin_js',
 				'job_manager_admin_params',
 				[
-					'user_selection_strings' => [
+					'user_selection_strings'      => [
 						'no_matches'        => _x( 'No matches found', 'user selection', 'wp-job-manager' ),
 						'ajax_error'        => _x( 'Loading failed', 'user selection', 'wp-job-manager' ),
 						'input_too_short_1' => _x( 'Please enter 1 or more characters', 'user selection', 'wp-job-manager' ),
@@ -118,8 +118,12 @@ class WP_Job_Manager_Admin {
 						'load_more'         => _x( 'Loading more results&hellip;', 'user selection', 'wp-job-manager' ),
 						'searching'         => _x( 'Searching&hellip;', 'user selection', 'wp-job-manager' ),
 					],
-					'ajax_url'               => admin_url( 'admin-ajax.php' ),
-					'search_users_nonce'     => wp_create_nonce( 'search-users' ),
+					'job_listing_promote_strings' => [
+						'promote_job' => _x( 'Promote your jobs', 'job promotion', 'wp-job-manager' ),
+						'learn_more'  => _x( 'Learn More', 'job promotion', 'wp-job-manager' ),
+					],
+					'ajax_url'                    => admin_url( 'admin-ajax.php' ),
+					'search_users_nonce'          => wp_create_nonce( 'search-users' ),
 				]
 			);
 		}

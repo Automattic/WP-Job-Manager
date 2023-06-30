@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the class WP_Job_Manager_Com_Auth_Token.
+ * File containing the class WP_Job_Manager_Site_Trust_Token.
  *
  * @package wp-job-manager
  */
@@ -10,16 +10,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Helper functions used for creating and validating tokens used for authenticating with WPJobManager.com.
+ * Helper functions used for creating and validating tokens used for verification with WPJobManager.com.
  *
  * @package wp-job-manager
  * @since   $$next-version$$
  */
-class WP_Job_Manager_Com_Auth_Token {
+class WP_Job_Manager_Site_Trust_Token {
 	/**
-	 * The meta key used to store the token.
+	 * The meta key used to store the tokens.
 	 */
-	const META_KEY = 'wpjmcom_site_auth_token';
+	const META_KEY = '_wpjm_site_trust_tokens';
 
 	/**
 	 * The accepted object types to be associated with the token.
@@ -34,12 +34,12 @@ class WP_Job_Manager_Com_Auth_Token {
 	/**
 	 * The singleton instance of the class.
 	 *
-	 * @var self
+	 * @var ?self
 	 */
-	private static $instance;
+	private static $instance = null;
 
 	/**
-	 * WP_Job_Manager_Com_Auth_Token constructor.
+	 * WP_Job_Manager_Site_Trust_Token constructor.
 	 */
 	private function __construct() {}
 
@@ -64,7 +64,7 @@ class WP_Job_Manager_Com_Auth_Token {
 	 */
 	public function generate( $object_type, $object_id ) {
 		if ( ! in_array( $object_type, self::ACCEPTED_OBJECT_TYPES, true ) ) {
-			return new WP_Error( 'wpjobmanager-com-invalid-type', __( 'Invalid object type', 'wp-job-manager' ) );
+			return new WP_Error( 'wpjobmanager-site-trust-invalid-object-type', __( 'Invalid object type to associate with token', 'wp-job-manager' ) );
 		}
 		$token = $this->generate_new_token();
 		if ( is_wp_error( $token ) ) {
@@ -73,7 +73,7 @@ class WP_Job_Manager_Com_Auth_Token {
 		$encoded = $this->encode( $token );
 		$result  = add_metadata( $object_type, $object_id, self::META_KEY, $encoded );
 		if ( ! $result ) {
-			return new WP_Error( 'wpjobmanager-com-token-not-saved', __( 'Token could not be persisted', 'wp-job-manager' ) );
+			return new WP_Error( 'wpjobmanager-site-trust-token-not-saved', __( 'Token could not be persisted', 'wp-job-manager' ) );
 		}
 		return $token;
 	}
@@ -88,13 +88,9 @@ class WP_Job_Manager_Com_Auth_Token {
 			$hash = random_bytes( 48 );
 			//phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 			$base64 = base64_encode( $hash );
-			$result = str_replace( [ '+', '/', '=' ], '', $base64 );
-			if ( empty( $result ) ) {
-				$result = substr( bin2hex( $hash ), 0, 64 );
-			}
-			return $result;
+			return strtr( $base64, '+/=', '._-' );
 		} catch ( Exception $e ) {
-			return new WP_Error( 'wpjobmanager-com-token-not-generated', __( 'Token could not be generated', 'wp-job-manager' ) );
+			return new WP_Error( 'wpjobmanager-site-trust-token-not-generated', __( 'Token could not be generated', 'wp-job-manager' ) );
 		}
 	}
 
@@ -127,6 +123,7 @@ class WP_Job_Manager_Com_Auth_Token {
 		if ( false === $metadatas ) {
 			return false;
 		}
+		$found = false;
 		foreach ( $metadatas as $metadata ) {
 			if ( ! $this->is_valid_format( $metadata ) ) {
 				// If the metadata structure isn't valid, just ignore it.
@@ -139,10 +136,10 @@ class WP_Job_Manager_Com_Auth_Token {
 			}
 			if ( $this->is_valid_token( $metadata, $token ) ) {
 				delete_metadata( $object_type, $object_id, self::META_KEY, $metadata );
-				return true;
+				$found = true;
 			}
 		}
-		return false;
+		return $found;
 	}
 
 
