@@ -151,9 +151,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		if ( ! job_manager_user_can_edit_job( $post_id ) ) {
 			wp_die( esc_html__( 'You do not have permission to promote this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
-		if ( $this->is_promoted( $post_id ) ) {
-			wp_die( esc_html__( 'This job listing is already promoted.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
-		}
 		$current_user = get_current_user_id();
 		$site_trust   = WP_Job_Manager_Site_Trust_Token::instance();
 		$token        = $site_trust->generate( 'user', $current_user );
