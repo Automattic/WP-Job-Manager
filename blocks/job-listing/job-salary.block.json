@@ -1,0 +1,37 @@
+{
+    "name": "wp-job-manager/job-salary",
+    "title": "Job Salary",
+    "textdomain": "wp-job-manager",
+    "icon": "businessman",
+    "category": "common",
+    "apiVersion": 1,
+    "usesContext": [
+        "postId",
+        "postType"
+    ],
+    "supports": {
+        "align": [
+            "wide",
+            "full"
+        ],
+        "html": false,
+        "color": {
+            "gradients": true,
+            "link": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "__experimentalFontFamily": true,
+            "__experimentalFontWeight": true,
+            "__experimentalFontStyle": true,
+            "__experimentalTextTransform": true,
+            "__experimentalTextDecoration": true,
+            "__experimentalLetterSpacing": true
+        }
+    }
+}

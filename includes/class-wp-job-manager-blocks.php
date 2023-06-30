@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+use WP_Job_Manager\Blocks\JobListing;
+
 /**
  * Class WP_Job_Manager_Blocks.
  */
@@ -42,14 +44,29 @@ class WP_Job_Manager_Blocks {
 			return;
 		}
 
-		add_action( 'init', [ $this, 'register_blocks' ] );
+		add_theme_support( 'job-manager-templates' );
+		add_theme_support( 'job-manager-blocks' );
+
+		/**
+		 * TODO document new theme support flags
+		 */
+		if ( get_theme_support( 'job-manager-blocks' ) ) {
+			\WP_Job_Manager_Post_Types::instance()->job_content_filter( false );
+		}
+
+		\WP_Job_Manager::register_script( 'wp-job-manager-blocks', 'blocks.js' );
+
+		JobListing\JobTitle::instance();
+		JobListing\JobSalary::instance();
+
 	}
 
 	/**
 	 * Register all Gutenblocks
+	 *
+	 * @deprecated
 	 */
 	public function register_blocks() {
-		// Add script includes for gutenblocks.
 	}
 }
 

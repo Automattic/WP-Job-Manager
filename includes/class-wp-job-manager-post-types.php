@@ -510,7 +510,7 @@ class WP_Job_Manager_Post_Types {
 	 *
 	 * @param bool $enable
 	 */
-	private function job_content_filter( $enable ) {
+	public function job_content_filter( $enable ) {
 		if ( ! $enable ) {
 			remove_filter( 'the_content', [ $this, 'job_content' ] );
 		} else {
