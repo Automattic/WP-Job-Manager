@@ -17,6 +17,16 @@ a.wpjm-activate-licence-link:active {
 	color: orangered;
 }
 
+.column-promoted_jobs {
+	.jm-promoted__status-promoted {
+		font-weight: bold;
+	}
+
+	.jm-promoted__deactivate {
+		color: #b32d2e;
+	}
+}
+
 /** Promote Job Modal **/
 .promote-buttons-group {
 	.button {
@@ -48,6 +58,38 @@ a.wpjm-activate-licence-link:active {
 	}
 	&::backdrop {
 		background: rgba(0, 0, 0, 0.5);
+	}
+}
+
+/** Deactivate Modal **/
+.deactivate-dialog {
+	h2.deactivate-modal-heading {
+		font-size: 20px;
+		line-height: 28px;
+		margin-top: 0;
+		font-weight: 300;
+	}
+	max-width: 415px;
+	padding: 32px;
+	.deactivate-button {
+		display: block;
+		float: right;
+		button {
+			margin: 0 0 0 10px;
+		}
+	}
+	p {
+		margin: 40px 0;
+	}
+	.promote-buttons-group {
+		display: block;
+		float: right;
+		.button-secondary {
+			border: 0;
+		}
+		button:last-child {
+			margin-right: 0;
+		}
 	}
 }
 

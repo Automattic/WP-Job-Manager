@@ -82,19 +82,41 @@
                             "example": false
                           },
                           "job_type":  {
-                            "type": "string",
-                            "enum": [
-                              "freelance",
-                              "full-time",
-                              "internship",
-                              "part-time",
-                              "temporary",
-                              "other"
-                            ]
+                            "type": "array",
+                            "items" : {
+                              "type": "string",
+                              "enum": [
+                                "freelance",
+                                "full-time",
+                                "internship",
+                                "part-time",
+                                "temporary",
+                                "other"
+                              ]
+                            }
                           },
                           "salary":  {
-                            "type": "string",
-                            "example": "$50,000 - $100,000"
+                            "type": "object",
+                            "properties": {
+                              "currency": {
+                                "type": "string",
+                                "example": "USD"
+                              },
+                              "value": {
+                                "type": "string",
+                                "example": "$50,000 - $100,000"
+                              },
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "YEAR",
+                                  "MONTH",
+                                  "WEEK",
+                                  "DAY",
+                                  "HOUR"
+                                ]
+                              }
+                            }
                           }
                         }
                       }
@@ -105,8 +127,7 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     }
   }
 }
