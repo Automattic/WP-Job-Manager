@@ -115,7 +115,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * @return array
 	 */
 	public function add_action_notice( $actions_handled ) {
-
 		$actions_handled['promotion_deactivated'] = [
 			// translators: Placeholder (%s) is the name of the job listing affected.
 			'notice' => __( 'Promotion for %s deactivated', 'wp-job-manager' ),
@@ -124,6 +123,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		return $actions_handled;
 	}
 
+	/*
 	 * Add the host of the Promote Job form to the array of allowed redirect hosts.
 	 *
 	 * @param array $hosts Allowed redirect hosts.
