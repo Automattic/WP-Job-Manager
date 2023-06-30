@@ -362,8 +362,8 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				</ul>
 
 				<slot name="buttons" class="promote-buttons-group">
-					<button class="promote-button button button-primary" type="submit" href="#">Promote your job</button>
-					<button class="promote-button button button-secondary" type="submit" href="#">Learn More</button>
+					<a class="promote-button button button-primary" type="submit" href="#">Promote your job</a>
+					<a class="promote-button button button-secondary" type="submit" href="#">Learn More</a>
 				</slot>
 			</div>
 			<div class="promote-job-modal-column-right">
