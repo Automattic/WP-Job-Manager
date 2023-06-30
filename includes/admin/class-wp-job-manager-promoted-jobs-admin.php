@@ -15,6 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since $$next-version$$
  */
 class WP_Job_Manager_Promoted_Jobs_Admin {
+	/**
+	 * The URL for the promote job form on WPJobManager.com.
+	 */
+	private const PROMOTE_JOB_FORM_URL = 'https://wpjobmanager.com/promote-job/';
+
+	/**
+	 * The action in wp-admin where we'll redirect the user to the promote job form.
+	 */
+	private const PROMOTE_JOB_ACTION = 'wpjm-promote-job-listing';
 
 	/**
 	 * The single instance of the class.
