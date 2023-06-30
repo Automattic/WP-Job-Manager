@@ -57,7 +57,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		add_action( 'admin_footer', [ $this, 'promoted_jobs_admin_footer' ] );
 		add_action( 'load-edit.php', [ $this, 'handle_deactivate_promotion' ] );
 		add_action( 'wpjm_job_listing_bulk_actions', [ $this, 'add_action_notice' ] );
-
+		add_filter( 'allowed_redirect_hosts', [ $this, 'add_to_allowed_redirect_hosts' ] );
 	}
 
 	/**
@@ -121,6 +121,16 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		];
 
 		return $actions_handled;
+	}
+
+	 * Add the host of the Promote Job form to the array of allowed redirect hosts.
+	 *
+	 * @param array $hosts Allowed redirect hosts.
+	 * @return array Updated array of allowed redirect hosts.
+	 */
+	public function add_to_allowed_redirect_hosts( $hosts ) {
+		$hosts[] = wp_parse_url( self::PROMOTE_JOB_FORM_URL, PHP_URL_HOST );
+		return $hosts;
 	}
 
 	/**
