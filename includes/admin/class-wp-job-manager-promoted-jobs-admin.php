@@ -54,6 +54,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	public function __construct() {
 		add_filter( 'manage_edit-job_listing_columns', [ $this, 'promoted_jobs_columns' ] );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'promoted_jobs_custom_columns' ], 2 );
+		add_action( 'admin_action_' . self::PROMOTE_JOB_ACTION, [ $this, 'promote_job' ] );
 		add_action( 'admin_footer', [ $this, 'promoted_jobs_admin_footer' ] );
 		add_action( 'load-edit.php', [ $this, 'handle_deactivate_promotion' ] );
 		add_action( 'wpjm_job_listing_bulk_actions', [ $this, 'add_action_notice' ] );
@@ -131,6 +132,46 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	public function add_to_allowed_redirect_hosts( $hosts ) {
 		$hosts[] = wp_parse_url( self::PROMOTE_JOB_FORM_URL, PHP_URL_HOST );
 		return $hosts;
+	}
+
+	/**
+	 * Process the action to promote a job listing, validating as well as redirecting to the form on WPJobManager.com.
+	 *
+	 * @return void
+	 */
+	public function promote_job() {
+		check_admin_referer( self::PROMOTE_JOB_ACTION );
+		if ( ! isset( $_GET['post'] ) ) {
+			wp_die( esc_html__( 'No job listing ID provided for promotion.', 'wp-job-manager' ) );
+		}
+		if ( ! is_ssl() ) {
+			wp_die( esc_html__( 'You must be using SSL to promote a job listing.', 'wp-job-manager' ) );
+		}
+		$post_id = absint( $_GET['post'] );
+		if ( ! job_manager_user_can_edit_job( $post_id ) ) {
+			wp_die( esc_html__( 'You do not have permission to promote this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
+		}
+		if ( $this->is_promoted( $post_id ) ) {
+			wp_die( esc_html__( 'This job listing is already promoted.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
+		}
+		$current_user = get_current_user_id();
+		$site_trust   = WP_Job_Manager_Site_Trust_Token::instance();
+		$token        = $site_trust->generate( 'user', $current_user );
+		if ( is_wp_error( $token ) ) {
+			wp_die( esc_html( $token->get_error_message() ) );
+		}
+		$url          = add_query_arg(
+			[
+				'user_id'  => $current_user,
+				'job_id'   => $post_id,
+				'token'    => $token,
+				'site_url' => site_url( '', 'https' ),
+			],
+			self::PROMOTE_JOB_FORM_URL
+		);
+		// TODO: Should we save anything in the post meta to indicate that this job is in the process of being promoted?
+		wp_safe_redirect( $url );
+		exit;
 	}
 
 	/**
