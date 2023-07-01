@@ -26,6 +26,11 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	private const PROMOTE_JOB_ACTION = 'wpjm-promote-job-listing';
 
 	/**
+	 * The action in wp-admin where we'll deactivate a promotion to a job.
+	 */
+	private const DEACTIVATE_PROMOTION_ACTION = 'wpjm-deactivate-promotion';
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -55,8 +60,8 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		add_filter( 'manage_edit-job_listing_columns', [ $this, 'promoted_jobs_columns' ] );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'promoted_jobs_custom_columns' ], 2 );
 		add_action( 'admin_action_' . self::PROMOTE_JOB_ACTION, [ $this, 'promote_job' ] );
+		add_action( 'admin_action_' . self::DEACTIVATE_PROMOTION_ACTION, [ $this, 'handle_deactivate_promotion' ] );
 		add_action( 'admin_footer', [ $this, 'promoted_jobs_admin_footer' ] );
-		add_action( 'load-edit.php', [ $this, 'handle_deactivate_promotion' ] );
 		add_action( 'wpjm_job_listing_bulk_actions', [ $this, 'add_action_notice' ] );
 		add_filter( 'allowed_redirect_hosts', [ $this, 'add_to_allowed_redirect_hosts' ] );
 	}
@@ -78,10 +83,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * Handle request to deactivate promotion for a job.
 	 */
 	public function handle_deactivate_promotion() {
-		if ( ! isset( $_GET['action'] ) || 'deactivate_promotion' !== $_GET['action'] ) {
-			return;
-		}
-
 		$post_id = absint( $_GET['post_id'] ?? 0 );
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce should not be modified.
@@ -220,7 +221,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			$nonce                  = wp_create_nonce( 'deactivate_promotion_' . $post->ID );
 			$deactivate_action_link = add_query_arg(
 				[
-					'action'  => 'deactivate_promotion',
+					'action'  => self::DEACTIVATE_PROMOTION_ACTION,
 					'post_id' => $post->ID,
 					'nonce'   => $nonce,
 				]
