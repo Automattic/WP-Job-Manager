@@ -91,7 +91,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		}
 
 		if ( ! current_user_can( 'manage_job_listings', $post_id ) || 'job_listing' !== get_post_type( $post_id ) ) {
-			return;
+			wp_die( esc_html__( 'You do not have permission to deactivate the promotion for this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
 		$this->deactivate_promotion( $post_id );
