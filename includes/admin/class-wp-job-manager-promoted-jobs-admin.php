@@ -101,8 +101,12 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				[
 					'action_performed' => 'promotion_deactivated',
 					'handled_jobs'     => [ $post_id ],
+					'post_type'        => 'job_listing',
+					'action'           => false,
+					'post_id'          => false,
+					'_wpnonce'         => false,
 				],
-				remove_query_arg( [ 'action', 'post_id', 'nonce' ] )
+				admin_url( 'edit.php' )
 			)
 		);
 		exit;
