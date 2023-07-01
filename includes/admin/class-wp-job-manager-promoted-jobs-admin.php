@@ -87,7 +87,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		check_admin_referer( self::DEACTIVATE_PROMOTION_ACTION . '-' . $post_id );
 
 		if ( ! $post_id ) {
-			wp_die( esc_html__( 'No job listing ID provided for deactivation of the promotion.', 'wp-job-manager' ) );
+			wp_die( esc_html__( 'No job listing ID provided for deactivation of the promotion.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
 		if ( ! current_user_can( 'manage_job_listings', $post_id ) || 'job_listing' !== get_post_type( $post_id ) ) {
@@ -148,10 +148,10 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		$post_id = absint( $_GET['post_id'] ?? 0 );
 		check_admin_referer( self::PROMOTE_JOB_ACTION . '-' . $post_id );
 		if ( ! $post_id ) {
-			wp_die( esc_html__( 'No job listing ID provided for promotion.', 'wp-job-manager' ) );
+			wp_die( esc_html__( 'No job listing ID provided for promotion.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 		if ( ! is_ssl() ) {
-			wp_die( esc_html__( 'You must be using SSL to promote a job listing.', 'wp-job-manager' ) );
+			wp_die( esc_html__( 'You must be using SSL to promote a job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 		if ( ! current_user_can( 'manage_job_listings', $post_id ) || 'job_listing' !== get_post_type( $post_id ) ) {
 			wp_die( esc_html__( 'You do not have permission to promote this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
