@@ -148,7 +148,7 @@ class WP_Job_Manager_Helper_API {
 
 		$args     = wp_parse_args( $args, $defaults );
 		$response = wp_safe_remote_get(
-			$this->get_api_base_url() . '?' . http_build_query( $args, '', '&' ),
+			self::get_api_base_url() . '?' . http_build_query( $args, '', '&' ),
 			[
 				'timeout' => 10,
 				'headers' => [
@@ -180,7 +180,7 @@ class WP_Job_Manager_Helper_API {
 		$args     = wp_parse_args( $args, $defaults );
 
 		$response = wp_safe_remote_request(
-			$this->get_api_base_url() . $endpoint,
+			self::get_api_base_url() . $endpoint,
 			$args
 		);
 
@@ -204,7 +204,7 @@ class WP_Job_Manager_Helper_API {
 	 *
 	 * @return string
 	 */
-	private function get_api_base_url() {
+	public static function get_api_base_url() {
 		if (
 			defined( 'JOB_MANAGER_VERSION' )
 			&& defined( 'JOB_MANAGER_DEV_API_BASE_URL' )
