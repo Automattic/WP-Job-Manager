@@ -207,14 +207,14 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		if ( 'promoted_jobs' !== $column ) {
 			return;
 		}
-
+		$base_url    = admin_url( 'admin.php' );
 		$promote_url = add_query_arg(
 			[
 				'action'   => self::PROMOTE_JOB_ACTION,
 				'post'     => $post->ID,
 				'_wpnonce' => wp_create_nonce( self::PROMOTE_JOB_ACTION ),
 			],
-			admin_url( 'admin.php' )
+			$base_url
 		);
 
 		if ( $this->is_promoted( $post->ID ) ) {
@@ -224,7 +224,8 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 					'action'  => self::DEACTIVATE_PROMOTION_ACTION,
 					'post_id' => $post->ID,
 					'nonce'   => $nonce,
-				]
+				],
+				$base_url
 			);
 			echo '
 			<span class="jm-promoted__status-promoted">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>
