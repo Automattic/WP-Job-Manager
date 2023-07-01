@@ -84,10 +84,10 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 */
 	public function handle_deactivate_promotion() {
 		$post_id = absint( $_GET['post_id'] ?? 0 );
+		check_admin_referer( self::DEACTIVATE_PROMOTION_ACTION . '-' . $post_id );
 
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce should not be modified.
-		if ( ! $post_id || empty( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'deactivate_promotion_' . $_GET['post_id'] ) ) {
-			return;
+		if ( ! $post_id ) {
+			wp_die( esc_html__( 'No job listing ID provided for deactivation of the promotion.', 'wp-job-manager' ) );
 		}
 
 		if ( ! current_user_can( 'manage_job_listings', $post_id ) || 'job_listing' !== get_post_type( $post_id ) ) {
@@ -222,12 +222,11 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		);
 
 		if ( $this->is_promoted( $post->ID ) ) {
-			$nonce                  = wp_create_nonce( 'deactivate_promotion_' . $post->ID );
 			$deactivate_action_link = add_query_arg(
 				[
-					'action'  => self::DEACTIVATE_PROMOTION_ACTION,
-					'post_id' => $post->ID,
-					'nonce'   => $nonce,
+					'action'   => self::DEACTIVATE_PROMOTION_ACTION,
+					'post_id'  => $post->ID,
+					'_wpnonce' => wp_create_nonce( self::DEACTIVATE_PROMOTION_ACTION . '-' . $post->ID ),
 				],
 				$base_url
 			);
