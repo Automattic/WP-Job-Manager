@@ -18,7 +18,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	/**
 	 * The URL for the promote job form on WPJobManager.com.
 	 */
-	private const PROMOTE_JOB_FORM_URL = 'https://wpjobmanager.com/promote-job/';
+	private const PROMOTE_JOB_FORM_PATH = '/promote-job/';
 
 	/**
 	 * The action in wp-admin where we'll redirect the user to the promote job form.
@@ -135,7 +135,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * @return array Updated array of allowed redirect hosts.
 	 */
 	public function add_to_allowed_redirect_hosts( $hosts ) {
-		$hosts[] = wp_parse_url( self::PROMOTE_JOB_FORM_URL, PHP_URL_HOST );
+		$hosts[] = wp_parse_url( WP_Job_Manager_Helper_API::get_api_base_url(), PHP_URL_HOST );
 		return $hosts;
 	}
 
@@ -169,7 +169,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				'token'    => $token,
 				'site_url' => site_url( '', 'https' ),
 			],
-			self::PROMOTE_JOB_FORM_URL
+			WP_Job_Manager_Helper_API::get_api_base_url() . self::PROMOTE_JOB_FORM_PATH
 		);
 		// TODO: Should we save anything in the post meta to indicate that this job is in the process of being promoted?
 		wp_safe_redirect( $url );
