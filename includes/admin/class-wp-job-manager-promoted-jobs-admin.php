@@ -215,7 +215,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		$promote_url = add_query_arg(
 			[
 				'action'   => self::PROMOTE_JOB_ACTION,
-				'post_id'     => $post->ID,
+				'post_id'  => $post->ID,
 				'_wpnonce' => wp_create_nonce( self::PROMOTE_JOB_ACTION . '-' . $post->ID ),
 			],
 			$base_url
