@@ -59,7 +59,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	public function __construct() {
 		add_filter( 'manage_edit-job_listing_columns', [ $this, 'promoted_jobs_columns' ] );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'promoted_jobs_custom_columns' ], 2 );
-		add_action( 'admin_action_' . self::PROMOTE_JOB_ACTION, [ $this, 'promote_job' ] );
+		add_action( 'admin_action_' . self::PROMOTE_JOB_ACTION, [ $this, 'handle_promote_job' ] );
 		add_action( 'admin_action_' . self::DEACTIVATE_PROMOTION_ACTION, [ $this, 'handle_deactivate_promotion' ] );
 		add_action( 'admin_footer', [ $this, 'promoted_jobs_admin_footer' ] );
 		add_action( 'wpjm_job_listing_bulk_actions', [ $this, 'add_action_notice' ] );
@@ -136,11 +136,11 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	}
 
 	/**
-	 * Process the action to promote a job listing, validating as well as redirecting to the form on WPJobManager.com.
+	 * Handle the action to promote a job listing, validating as well as redirecting to the form on WPJobManager.com.
 	 *
 	 * @return void
 	 */
-	public function promote_job() {
+	public function handle_promote_job() {
 		check_admin_referer( self::PROMOTE_JOB_ACTION );
 		if ( ! isset( $_GET['post'] ) ) {
 			wp_die( esc_html__( 'No job listing ID provided for promotion.', 'wp-job-manager' ) );
