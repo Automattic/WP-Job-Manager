@@ -1712,21 +1712,3 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
 	 */
 	return apply_filters( 'job_manager_get_salary_unit_options', $options, $include_empty );
 }
-
-/**
- * Delete filled_jobs_transient and expired_jobs_transient transients when a job listing is saved or updated.
- *
- * @param int     $post_id  The ID of the post being saved.
- * @param WP_Post $post The post object being saved.
- */
-function delete_filled_job_listing_transient_on_post_meta_update( int $post_id, WP_Post $post ): void {
-
-	if ( 'job_listing' === $post->post_type ) {
-
-		if ( '1' === get_post_meta( $post_id, '_filled', true ) ) {
-			delete_transient( 'hide_filled_jobs_transient' );
-		}
-	}
-
-}
-add_action( 'save_post', 'delete_filled_job_listing_transient_on_post_meta_update', 10, 2 );

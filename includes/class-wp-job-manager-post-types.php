@@ -81,6 +81,7 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'wp_insert_post_data', [ $this, 'fix_post_name' ], 10, 2 );
 		add_action( 'add_post_meta', [ $this, 'maybe_add_geolocation_data' ], 10, 3 );
 		add_action( 'update_post_meta', [ $this, 'update_post_meta' ], 10, 4 );
+		add_action( 'updated_post_meta', [ $this, 'delete_filled_job_listing_transient' ], 10, 4 );
 		add_action( 'wp_insert_post', [ $this, 'maybe_add_default_meta_data' ], 10, 2 );
 		add_filter( 'post_types_to_delete_with_user', [ $this, 'delete_user_add_job_listings_post_type' ] );
 
@@ -1958,4 +1959,22 @@ class WP_Job_Manager_Post_Types {
 		return $types;
 	}
 
+	/**
+	 * Delete the 'job_manager_hide_filled_jobs' transient when meta is updated.
+	 *
+	 * @param int    $meta_id    ID of updated metadata entry.
+	 * @param int    $object_id  ID of the object metadata is for.
+	 * @param string $meta_key   Metadata key.
+	 * @param mixed  $_meta_value Metadata value. This will be a PHP-serialized string representation of the value if the value is an array, an object, or itself a PHP-serialized string.
+	 *
+	 * @return void
+	 */
+	public function delete_filled_job_listing_transient( $meta_id, $object_id, $meta_key, $_meta_value ) {
+
+		if ( '_edit_lock' !== $meta_key || 'job_listing' !== get_post_type( $object_id ) ) {
+			return;
+		}
+
+		delete_transient( 'hide_filled_jobs_transient' );
+	}
 }
