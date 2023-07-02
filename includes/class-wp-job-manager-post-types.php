@@ -87,7 +87,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
-		add_action( 'pre_get_posts', [ $this, 'maybe_hide_filled_job_listings_from_search' ] );
+		add_action( 'pre_get_posts', [ $this, 'maybe_hide_filled_expired_job_listings_from_search' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -391,28 +391,13 @@ class WP_Job_Manager_Post_Types {
 		add_feed( self::get_job_feed_name(), [ $this, 'job_feed' ] );
 
 		/**
-		 * This code checks if (1) we're on a search or (2) the option to hide expired job listings is enabled.
-		 * If either condition is false, we're going to set the register_post_status() 'public' arg to false,
-		 * otherwise it will be true.
-		 *
-		 * This will prevent single expired job listings from showing a '404', instead of an
-		 * 'Expired' notice, when viewing the single job listing and not logged in.
-		 *
-		 * This will also address historical issues stemming from addressing the issue raised here
-		 * https://github.com/Automattic/WP-Job-Manager/issues/1884.
-		 */
-		$is_site_search    = ( isset( $_GET['s'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$is_expired_hidden = (bool) get_option( 'job_manager_hide_expired' );
-		$is_expired_public = ! $is_site_search || ! $is_expired_hidden;
-
-		/**
 		 * Post status
 		 */
 		register_post_status(
 			'expired',
 			[
 				'label'                     => _x( 'Expired', 'post status', 'wp-job-manager' ),
-				'public'                    => $is_expired_public,
+				'public'                    => true,
 				'protected'                 => true,
 				'exclude_from_search'       => true,
 				'show_in_admin_all_list'    => true,
@@ -711,10 +696,11 @@ class WP_Job_Manager_Post_Types {
 	 *
 	 * @return void
 	 */
-	public function maybe_hide_filled_job_listings_from_search( WP_Query $query ): void {
+	public function maybe_hide_filled_expired_job_listings_from_search( WP_Query $query ): void {
 		$hide_filled_positions = get_option( 'job_manager_hide_filled_positions' );
+		$hide_expired          = get_option( 'job_manager_hide_expired' );
 
-		if ( ! $hide_filled_positions ) {
+		if ( ! $hide_filled_positions && ! $hide_expired ) {
 			return;
 		}
 
@@ -723,6 +709,10 @@ class WP_Job_Manager_Post_Types {
 			&& $query->is_main_query()
 			&& ( $query->is_search() || $query->is_archive() )
 		) {
+
+			if ( $hide_expired ) {
+				$query->set( 'post_status', 'publish' );
+			}
 
 			$query->set( 'post__not_in', $this->get_filled_job_listings() );
 		}
