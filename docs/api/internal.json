@@ -161,7 +161,7 @@
                 "type": "object",
                 "properties": {
                   "status": {
-                    "type": "integer"
+                    "type": "boolean"
                   }
                 }
               }

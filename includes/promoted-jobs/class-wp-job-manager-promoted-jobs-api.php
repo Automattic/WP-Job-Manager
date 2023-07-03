@@ -67,7 +67,7 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 						],
 						'status' => [
 							'validate_callback' => function( $param ) {
-								return is_numeric( $param );
+								return is_bool( $param );
 							},
 						],
 					],
