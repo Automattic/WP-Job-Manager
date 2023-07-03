@@ -233,6 +233,7 @@ class WP_Job_Manager {
 		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
 		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
 		wp_clear_scheduled_hook( 'job_manager_email_daily_notices' );
+		wp_clear_scheduled_hook( 'job_manager_promoted_jobs_notification' );
 	}
 
 	/**

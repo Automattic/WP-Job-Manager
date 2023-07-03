@@ -49,14 +49,25 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * Constructor.
 	 */
 	public function __construct() {
+		add_action( 'init', [ $this, 'include_dependencies' ] );
 		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
+	}
+
+	/**
+	 * Includes promoted jobs dependencies.
+	 *
+	 * @access private
+	 * @return void
+	 */
+	public function include_dependencies() {
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-notifications.php';
 	}
 
 	/**
 	 * Loads the REST API functionality.
 	 */
 	public function rest_init() {
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php';
 		( new WP_Job_Manager_Promoted_Jobs_API() )->register_routes();
 	}
 
