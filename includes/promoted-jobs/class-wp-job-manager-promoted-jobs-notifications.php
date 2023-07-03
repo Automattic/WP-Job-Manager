@@ -224,7 +224,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 *
 	 * @return bool
 	 */
-	private function has_scheduled_retry(): bool {
+	private function has_scheduled_retry() {
 		for ( $i = 1; $i <= self::NUMBER_OF_RETRIES; $i++ ) {
 			if ( wp_next_scheduled( self::RETRY_JOB_NAME, [ $i ] ) ) {
 				return true;
