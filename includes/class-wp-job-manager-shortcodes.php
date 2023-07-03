@@ -108,9 +108,8 @@ class WP_Job_Manager_Shortcodes {
 		$job_count        = job_manager_count_user_job_listings();
 
 		if (
-			$submit_job_form_page_id
-			&& $submission_limit
-			&& $job_count >= $submission_limit
+			$submit_job_form_page_id &&
+			! \job_manager_user_can_submit_job_listing()
 		) {
 			$employer_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id' );
 			if ( $employer_dashboard_page_id ) {
