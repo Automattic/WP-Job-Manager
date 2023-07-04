@@ -260,10 +260,11 @@ class WP_Job_Manager_Shortcodes {
 
 						$query_args = [
 							'job_id' => absint( $job_id ),
+							'action' => $action,
 						];
+
 						if ( 'renew' === $action ) {
-							$query_args['action'] = $action;
-							$query_args['nonce']  = wp_create_nonce( 'job_manager_renew_job_' . $job_id );
+							$query_args['nonce'] = wp_create_nonce( 'job_manager_renew_job_' . $job_id );
 						}
 						wp_safe_redirect( add_query_arg( $query_args, job_manager_get_permalink( 'submit_job_form' ) ) );
 						exit;
