@@ -87,10 +87,6 @@ class WP_Job_Manager_Promoted_Jobs_API {
 
 		$items = get_posts( $args );
 
-		if ( empty( $items ) ) {
-			return rest_ensure_response( $items );
-		}
-
 		$data = array_map( [ $this, 'prepare_item_for_response' ], $items );
 
 		return new WP_REST_Response( [ 'jobs' => $data ], 200 );
