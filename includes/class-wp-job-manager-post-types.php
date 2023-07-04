@@ -88,7 +88,8 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
-		add_action( 'pre_get_posts', [ $this, 'maybe_hide_filled_expired_job_listings_from_search' ] );
+		add_action( 'pre_get_posts', [ $this, 'maybe_hide_filled_job_listings' ] );
+		add_action( 'pre_get_posts', [ $this, 'maybe_hide_expired_job_listings' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -691,17 +692,16 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
-	 * Maybe exclude expired and/or filled job listings from search and archive pages.
+	 * Maybe exclude filled job listings from search and archive pages.
 	 *
 	 * @param $query WP_Query $query
 	 *
 	 * @return void
 	 */
-	public function maybe_hide_filled_expired_job_listings_from_search( WP_Query $query ): void {
+	public function maybe_hide_filled_job_listings( WP_Query $query ): void {
 		$hide_filled_positions = get_option( 'job_manager_hide_filled_positions' );
-		$hide_expired          = get_option( 'job_manager_hide_expired' );
 
-		if ( ! $hide_filled_positions && ! $hide_expired ) {
+		if ( ! $hide_filled_positions ) {
 			return;
 		}
 
@@ -711,11 +711,64 @@ class WP_Job_Manager_Post_Types {
 			&& ( $query->is_search() || $query->is_archive() )
 		) {
 
-			if ( $hide_expired ) {
-				$query->set( 'post_status', 'publish' );
-			}
-
 			$query->set( 'post__not_in', $this->get_filled_job_listings() );
+		}
+	}
+
+	/**
+	 * Maybe exclude expired job listings from search and archive pages.
+	 *
+	 * @param $query WP_Query $query
+	 *
+	 * @return void
+	 */
+	public function maybe_hide_expired_job_listings( WP_Query $query ): void {
+		$hide_expired = get_option( 'job_manager_hide_expired' );
+
+		if ( ! $hide_expired ) {
+			return;
+		}
+
+		if (
+			! is_admin()
+			&& $query->is_main_query()
+			&& ( $query->is_search() || $query->is_archive() )
+		) {
+
+			$this->make_expired_private();
+
+			add_action( 'posts_selection', [ $this, 'make_expired_public' ] );
+		}
+	}
+
+	/**
+	 * Make the expired post status public.
+	 *
+	 * @return void
+	 * @internal
+	 */
+	public function make_expired_public(): void {
+
+		global $wp_post_statuses;
+
+		if ( isset( $wp_post_statuses['expired'] ) ) {
+			$wp_post_statuses['expired']->public = true;
+		}
+
+	}
+
+	/**
+	 * Make the expired post status private.
+	 *
+	 * @return void
+	 * @internal
+	 */
+	public function make_expired_private() {
+
+		global $wp_post_statuses;
+
+		if ( isset( $wp_post_statuses['expired'] ) ) {
+			$wp_post_statuses['expired']->public = false;
 		}
 	}
 
