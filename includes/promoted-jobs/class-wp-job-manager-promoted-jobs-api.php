@@ -42,9 +42,8 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			]
 		);
 		register_rest_route(
-			$this->namespace,
-			'/' .
-			$this->rest_base . '/(?P<id>[\d]+)',
+			self::NAMESPACE,
+			self::REST_BASE . '/(?P<id>[\d]+)',
 			[
 				[
 					'methods'             => WP_REST_Server::EDITABLE,
