@@ -138,7 +138,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			return new WP_Error( 'not_found', __( 'The promoted job was not found', 'wp-job-manager' ), [ 'status' => 404 ] );
 		}
 
-		$result = update_post_meta( $post_id, WP_Job_Manager_Promoted_Jobs::META_KEY, $status );
+		$result = update_post_meta( $post_id, WP_Job_Manager_Promoted_Jobs::META_KEY, $status ? '1' : '0' );
 		return new WP_REST_Response(
 			[
 				'data'    => $result,
