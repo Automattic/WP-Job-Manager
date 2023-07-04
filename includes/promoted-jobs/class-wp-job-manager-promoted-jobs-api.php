@@ -51,14 +51,12 @@ class WP_Job_Manager_Promoted_Jobs_API {
 					'permission_callback' => '__return_true',
 					'args'                => [
 						'id'     => [
-							'validate_callback' => function( $param ) {
-								return is_numeric( $param );
-							},
+							'type' => 'integer',
+							'required' => true,
 						],
 						'status' => [
-							'validate_callback' => function( $param ) {
-								return is_bool( $param );
-							},
+							'type' => 'boolean',
+							'required' => true,
 						],
 					],
 				],
