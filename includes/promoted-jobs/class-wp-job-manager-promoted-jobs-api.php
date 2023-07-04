@@ -82,7 +82,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				[
 					'key'     => WP_Job_Manager_Promoted_Jobs::META_KEY,
 					'value'   => '1',
-					'compare' => '==',
+					'compare' => '=',
 				],
 			],
 		];
