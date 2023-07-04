@@ -1722,7 +1722,7 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
  * Check if user can submit job listings.
  *
  * @return bool
- * @since $$next-version$$
+ * @since 1.41.0
  */
 function job_manager_user_can_submit_job_listing() {
 	$submission_limit = get_option( 'job_manager_submission_limit', '' );
@@ -1731,7 +1731,7 @@ function job_manager_user_can_submit_job_listing() {
 	/**
 	 * Filter if the current user can or cannot submit job listings
 	 *
-	 * @since $$next-version$$
+	 * @since 1.41.0
 	 *
 	 * @param boolean $can_submit
 	 */
