@@ -69,7 +69,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	/**
 	 * Get all promoted jobs.
 	 *
-	 * @return WP_Error|WP_REST_Response
+	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function get_items() {
 		$args = [
@@ -133,7 +133,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * Update the promoted job status.
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function update_job_status( $request ) {
 		$post_id = $request->get_param( 'id' );
