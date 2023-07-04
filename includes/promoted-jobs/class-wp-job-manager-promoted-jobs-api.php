@@ -10,38 +10,29 @@
  *
  * @since $$next-version$$
  */
-class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
+class WP_Job_Manager_Promoted_Jobs_API {
 
 	/**
 	 * The namespace.
 	 *
 	 * @var string
 	 */
-	protected $namespace;
+	private const NAMESPACE = 'wpjm-internal/v1';
 
 	/**
 	 * Rest base for the current object.
 	 *
 	 * @var string
 	 */
-	protected $rest_base;
-
-	/**
-	 * Promoted Jobs Class constructor.
-	 */
-	public function __construct() {
-		$this->namespace = 'wpjm-internal/v1';
-		$this->rest_base = 'promoted-jobs';
-	}
+	private const REST_BASE = '/promoted-jobs';
 
 	/**
 	 * Register the routes for the objects of the controller.
 	 */
 	public function register_routes() {
 		register_rest_route(
-			$this->namespace,
-			'/' .
-			$this->rest_base,
+			self::NAMESPACE,
+			self::REST_BASE,
 			[
 				[
 					'methods'             => WP_REST_Server::READABLE,
@@ -51,9 +42,8 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 			]
 		);
 		register_rest_route(
-			$this->namespace,
-			'/' .
-			$this->rest_base . '/(?P<id>[\d]+)',
+			self::NAMESPACE,
+			self::REST_BASE . '/(?P<id>[\d]+)',
 			[
 				[
 					'methods'             => WP_REST_Server::EDITABLE,
@@ -61,14 +51,12 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 					'permission_callback' => '__return_true',
 					'args'                => [
 						'id'     => [
-							'validate_callback' => function( $param ) {
-								return is_numeric( $param );
-							},
+							'type'     => 'integer',
+							'required' => true,
 						],
 						'status' => [
-							'validate_callback' => function( $param ) {
-								return is_bool( $param );
-							},
+							'type'     => 'boolean',
+							'required' => true,
 						],
 					],
 				],
@@ -79,47 +67,38 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 	/**
 	 * Get all promoted jobs.
 	 *
-	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
-	public function get_items( $request ) {
+	public function get_items() {
 		$args = [
 			'post_type'           => 'job_listing',
 			'post_status'         => 'publish',
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
+			'posts_per_page'      => -1,
 			'meta_query'          => [
 				[
 					'key'     => WP_Job_Manager_Promoted_Jobs::META_KEY,
 					'value'   => '1',
-					'compare' => '==',
+					'compare' => '=',
 				],
 			],
 		];
 
-		$job_listings = new WP_Query( $args );
-		$items        = $job_listings->posts;
-		$data         = [];
+		$items = get_posts( $args );
 
-		if ( empty( $items ) ) {
-			return rest_ensure_response( $data );
-		}
+		$data = array_map( [ $this, 'prepare_item_for_response' ], $items );
 
-		foreach ( $items as $item ) {
-			$itemdata = $this->prepare_item_for_response( $item, $request );
-			$data[]   = $this->prepare_response_for_collection( $itemdata );
-		}
 		return new WP_REST_Response( [ 'jobs' => $data ], 200 );
 	}
 
 	/**
 	 * Prepare the item for the REST response
 	 *
-	 * @param mixed           $item WordPress representation of the item.
-	 * @param WP_REST_Request $request Request object.
-	 * @return mixed
+	 * @param WP_Post $item WordPress representation of the item.
+	 * @return array The response
 	 */
-	public function prepare_item_for_response( $item, $request ) {
+	private function prepare_item_for_response( WP_Post $item ) {
 		$terms = get_the_terms( $item->ID, 'job_listing_type' );
 
 		$terms_array = [];
@@ -127,7 +106,7 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 			$terms_array[] = $term->slug;
 		}
 
-		$data = [
+		return [
 			'id'           => (string) $item->ID,
 			'title'        => $item->post_title,
 			'description'  => $item->post_content,
@@ -142,14 +121,13 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 				'salary_unit'     => get_post_meta( $item->ID, '_job_salary_unit', true ),
 			],
 		];
-		return rest_ensure_response( $data );
 	}
 
 	/**
 	 * Update the promoted job status.
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|WP_REST_Response
+	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function update_job_status( $request ) {
 		$post_id = $request->get_param( 'id' );
@@ -160,7 +138,7 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 			return new WP_Error( 'not_found', __( 'The promoted job was not found', 'wp-job-manager' ), [ 'status' => 404 ] );
 		}
 
-		$result = update_post_meta( $post_id, WP_Job_Manager_Promoted_Jobs::META_KEY, $status );
+		$result = update_post_meta( $post_id, WP_Job_Manager_Promoted_Jobs::META_KEY, $status ? '1' : '0' );
 		return new WP_REST_Response(
 			[
 				'data'    => $result,
@@ -170,5 +148,3 @@ class WP_Job_Manager_Promoted_Jobs_API extends WP_REST_Controller {
 		);
 	}
 }
-
-new WP_Job_Manager_Promoted_Jobs_API();
