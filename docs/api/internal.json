@@ -128,6 +128,111 @@
           }
         }
       }
+    },
+    "/wp-json/wpjm-internal/v1/promoted-jobs/:id": {
+      "put": {
+        "summary": "Promoted Jobs - Update the after job is promoted or expired in JobTarget",
+        "description": "Update promoted job status",
+        "operationId": "update-promotedjob",
+        "tags": [
+          "promoted-jobs"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            },
+            "description": "application/json"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "boolean",
+                      "example": true,
+                      "description": "The status of the job after it is updated"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Promoted job status updated",
+                      "description": "The message returned after the job is updated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The promoted job was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "not_found"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "The promoted job was not found"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Error",
+                      "description": "The error object",
+                      "example": {
+                        "status": 404
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          }
+        }
+      }
     }
   }
 }
