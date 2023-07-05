@@ -171,7 +171,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			],
 			WP_Job_Manager_Helper_API::get_api_base_url() . self::PROMOTE_JOB_FORM_PATH
 		);
-		// TODO: Should we save anything in the post meta to indicate that this job is in the process of being promoted?
 		wp_safe_redirect( $url );
 		exit;
 	}
