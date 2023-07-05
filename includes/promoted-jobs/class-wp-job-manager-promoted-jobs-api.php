@@ -62,6 +62,31 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				],
 			]
 		);
+		register_rest_route(
+			self::NAMESPACE,
+			self::REST_BASE . '/(?P<job_id>[\d]+)',
+			[
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_job_data' ],
+					'permission_callback' => '__return_true',
+					'args'                => [
+						'job_id'  => [
+							'required' => true,
+							'type'     => 'integer',
+						],
+						'user_id' => [
+							'required' => true,
+							'type'     => 'integer',
+						],
+						'token'   => [
+							'required' => true,
+							'type'     => 'string',
+						],
+					],
+				],
+			]
+		);
 	}
 
 	/**
