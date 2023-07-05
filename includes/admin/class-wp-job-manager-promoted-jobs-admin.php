@@ -168,6 +168,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				'job_id'   => $post_id,
 				'token'    => $token,
 				'site_url' => site_url( '', 'https' ),
+				'locale'   => get_user_locale(),
 			],
 			WP_Job_Manager_Helper_API::get_api_base_url() . self::PROMOTE_JOB_FORM_PATH
 		);
