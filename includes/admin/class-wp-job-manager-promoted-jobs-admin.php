@@ -146,7 +146,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 */
 	public function handle_promote_job() {
 		$post_id = absint( $_GET['post_id'] ?? 0 );
-		check_admin_referer( self::PROMOTE_JOB_ACTION . '-' . $post_id );
 		if ( ! $post_id ) {
 			wp_die( esc_html__( 'No job listing ID provided for promotion.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
@@ -216,7 +215,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			[
 				'action'   => self::PROMOTE_JOB_ACTION,
 				'post_id'  => $post->ID,
-				'_wpnonce' => wp_create_nonce( self::PROMOTE_JOB_ACTION . '-' . $post->ID ),
 			],
 			$base_url
 		);
