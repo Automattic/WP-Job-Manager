@@ -119,7 +119,7 @@ class WP_Job_Manager_Admin {
 						'searching'         => _x( 'Searching&hellip;', 'user selection', 'wp-job-manager' ),
 					],
 					'job_listing_promote_strings' => [
-						'promote_job' => _x( 'Promote your jobs', 'job promotion', 'wp-job-manager' ),
+						'promote_job' => _x( 'Promote your job', 'job promotion', 'wp-job-manager' ),
 						'learn_more'  => _x( 'Learn More', 'job promotion', 'wp-job-manager' ),
 					],
 					'ajax_url'                    => admin_url( 'admin-ajax.php' ),
