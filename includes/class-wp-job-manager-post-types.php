@@ -705,6 +705,18 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
+		/**
+		 * We want to ensure this only runs when: (1) not in admin and (2) the query is the main query and (3) the query
+		 * is either a search query or an archive query. This is to address complications stemming from the following
+		 * feature request: https://github.com/Automattic/WP-Job-Manager/issues/1884
+		 *
+		 * See also:
+		 *
+		 * https://github.com/Automattic/WP-Job-Manager/pull/1570
+		 * https://github.com/Automattic/WP-Job-Manager/pull/2367
+		 * https://github.com/Automattic/WP-Job-Manager/issues/2423
+		 */
+
 		if (
 			! is_admin()
 			&& $query->is_main_query()
@@ -728,6 +740,11 @@ class WP_Job_Manager_Post_Types {
 		if ( ! $hide_expired ) {
 			return;
 		}
+
+		/**
+		 * We want to ensure this only runs when: (1) not in admin and (2) the query is the main query and (3) the query.
+		 * See the comment in the maybe_hide_filled_job_listings() method for more information.
+		 */
 
 		if (
 			! is_admin()
