@@ -151,7 +151,13 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @return string
 	 */
 	private function get_notification_url() {
-		return str_replace( '{site_id}', $this->get_site_id(), self::NOTIFICATION_URL );
+		return add_query_arg(
+			[
+				'site_url' => site_url(),
+				'feed_url' => rest_url( 'wpjm-internal/v1/promoted-jobs' ),
+			],
+			self::NOTIFICATION_URL
+		);
 	}
 
 	/**
