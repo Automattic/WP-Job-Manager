@@ -21,7 +21,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 *
 	 * @var string
 	 */
-	const NOTIFICATION_URL = 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/site/{site_id}/update';
+	const NOTIFICATION_URL = 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/site/update';
 
 	/**
 	 * The name of the job that will be scheduled to run if notification fails.
