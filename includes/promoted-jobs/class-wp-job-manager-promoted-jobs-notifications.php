@@ -182,7 +182,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @return bool
 	 */
 	private function is_promoted_job( $post_id ) {
-		return get_post_meta( $post_id, '_promoted', true );
+		return '1' === get_post_meta( $post_id, '_promoted', true );
 	}
 
 	/**
