@@ -200,6 +200,8 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @return void
 	 */
 	public function send_notification( $retry = 0 ) {
+		// Clear any scheduled retries.
+		wp_unschedule_hook( self::RETRY_JOB_NAME );
 		$response = wp_safe_remote_post( $this->get_notification_url() );
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			if ( ! $this->has_scheduled_retry() && $retry < self::NUMBER_OF_RETRIES ) {
@@ -210,9 +212,6 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 					[ $retry + 1 ]
 				);
 			}
-		} else {
-			// Clear any scheduled retries.
-			wp_unschedule_hook( self::RETRY_JOB_NAME );
 		}
 	}
 
