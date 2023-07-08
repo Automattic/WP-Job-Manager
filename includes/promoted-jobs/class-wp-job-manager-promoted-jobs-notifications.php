@@ -137,15 +137,6 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	}
 
 	/**
-	 * Get the site ID.
-	 *
-	 * @return int|string
-	 */
-	private function get_site_id() {
-		return get_current_blog_id();
-	}
-
-	/**
 	 * Get the notification URL.
 	 *
 	 * @return string
