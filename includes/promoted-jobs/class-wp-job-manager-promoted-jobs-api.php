@@ -189,8 +189,8 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		];
 		if ( $verified ) {
 			// We only want to return the job data if the specified user has permission to manage the job.
-			if ( ! user_can( $user_id, 'manage_job_listings', $job_id ) || 'job_listing' !== get_post_type( $job_id ) ) {
-				return new WP_Error( __( 'Job not found or does not have enough permissions.', 'wp-job-manager' ) );
+			if ( 'job_listing' !== get_post_type( $job_id ) ) {
+				return new WP_Error( __( 'Job not found.', 'wp-job-manager' ), [ 'status' => 404 ] );
 			}
 			$result['job_data'] = $this->prepare_item_for_response( get_post( $job_id ) );
 		}
