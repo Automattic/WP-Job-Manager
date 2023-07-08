@@ -182,7 +182,8 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * @return string
 	 */
 	public function get_promote_jobs_template() {
-		$promote_template                 = get_option( 'promote-jobs-template_' . get_user_locale(), false );
+		$promote_template_option_name     = 'promote-jobs-template_' . get_user_locale();
+		$promote_template                 = get_option( $promote_template_option_name, false );
 		$promote_jobs_template_next_check = get_option( '_promote-jobs-template_next_check' );
 
 		if ( ! $promote_jobs_template_next_check || $promote_jobs_template_next_check < time() ) {
@@ -201,7 +202,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			} else {
 				$assets           = json_decode( wp_remote_retrieve_body( $response ), true );
 				$promote_template = $assets['assets'][0]['content'];
-				update_option( 'promote-jobs-template_' . get_user_locale(), $promote_template, false );
+				update_option( $promote_template_option_name, $promote_template, false );
 				update_option( '_promote-jobs-template_next_check', time() + HOUR_IN_SECONDS, false );
 			}
 		}
