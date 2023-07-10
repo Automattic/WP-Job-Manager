@@ -353,14 +353,6 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
-							'name'       => 'job_manager_renewal_days',
-							'std'        => 5,
-							'label'      => __( 'Renewal Window', 'wp-job-manager' ),
-							'desc'       => __( 'Sets the number of days before expiration where users are given the option to renew their listings. For example, entering "7" will allow users to renew their listing one week before expiration. Entering "0" will disable renewals entirely.', 'wp-job-manager' ),
-							'type'       => 'number',
-							'attributes' => [],
-						],
-						[
 							'name'       => 'job_manager_user_can_edit_pending_submissions',
 							'std'        => '0',
 							'label'      => __( 'Allow Pending Edits', 'wp-job-manager' ),
@@ -388,6 +380,14 @@ class WP_Job_Manager_Settings {
 							'std'        => '30',
 							'label'      => __( 'Listing Duration', 'wp-job-manager' ),
 							'desc'       => __( 'Listings will display for the set number of days, then expire. Leave this field blank if you don\'t want listings to have an expiration date.', 'wp-job-manager' ),
+							'attributes' => [],
+						],
+						[
+							'name'       => 'job_manager_renewal_days',
+							'std'        => 5,
+							'label'      => __( 'Renewal Window', 'wp-job-manager' ),
+							'desc'       => __( 'Sets the number of days before expiration where users are given the option to renew their listings. For example, entering "7" will allow users to renew their listing one week before expiration. Entering "0" will disable renewals entirely.', 'wp-job-manager' ),
+							'type'       => 'number',
 							'attributes' => [],
 						],
 						[
