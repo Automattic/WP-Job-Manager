@@ -355,8 +355,8 @@ class WP_Job_Manager_Settings {
 						[
 							'name'       => 'job_manager_renewal_days',
 							'std'        => 5,
-							'label'      => __( 'Renewal Days', 'wp-job-manager' ),
-							'desc'       => __( 'Sets the number of days before expiration, that users can renew the listing. Use 0 to disable renewals.', 'wp-job-manager' ),
+							'label'      => __( 'Renewal Window', 'wp-job-manager' ),
+							'desc'       => __( 'Sets the number of days before expiration where users are given the option to renew their listings. For example, entering "7" will allow users to renew their listing one week before expiration. Entering "0" will disable renewals entirely.', 'wp-job-manager' ),
 							'type'       => 'number',
 							'attributes' => [],
 						],
