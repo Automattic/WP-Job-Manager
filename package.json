@@ -53,7 +53,7 @@
   "lint-staged": {
     "*.php": [
       "php -l -d display_errors=0",
-      "./vendor/bin/phpcs --standard=phpcs.xml.dist --colors --encoding=utf-8 -n -p"
+      "./vendor/bin/phpcs --standard=phpcs.xml.dist --colors --encoding=utf-8 -p"
     ]
   },
   "config": {
