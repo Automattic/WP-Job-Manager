@@ -17,11 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Job_Manager_Promoted_Jobs_Notifications {
 
 	/**
-	 * The URL to notify. Sending this notification will trigger a sync of the site's jobs.
+	 * The endpoint in WPJMCOM to notify. Sending this notification will trigger a sync of the site's jobs.
 	 *
 	 * @var string
 	 */
-	const NOTIFICATION_URL = 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/site/update';
+	const NOTIFICATION_ENDPOINT = '/wp-json/promoted-jobs/v1/site/update';
 
 	/**
 	 * The name of the job that will be scheduled to run if notification fails.
@@ -151,7 +151,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 				'site_url' => $site_url,
 				'feed_url' => $feed_url,
 			],
-			self::NOTIFICATION_URL
+			WP_Job_Manager_Helper_API::get_wpjmcom_url() . self::NOTIFICATION_ENDPOINT
 		);
 	}
 
