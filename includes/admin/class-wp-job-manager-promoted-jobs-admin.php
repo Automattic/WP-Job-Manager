@@ -90,7 +90,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			wp_die( esc_html__( 'No job listing ID provided for deactivation of the promotion.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
-		if ( ! current_user_can( 'manage_job_listings', $post_id ) || 'job_listing' !== get_post_type( $post_id ) ) {
+		if ( ! $this->can_promote_job( $post_id ) ) {
 			wp_die( esc_html__( 'You do not have permission to deactivate the promotion for this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
@@ -110,6 +110,21 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			)
 		);
 		exit;
+	}
+
+	/**
+	 * Check if a user can promote a job. They must have permission to manage job listings and the post type must be a published job_listing.
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return bool Returns true if they can promote a job.
+	 */
+	private function can_promote_job( int $post_id ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) || 'publish' !== get_post_status( $post_id ) ) {
+			return false;
+		}
+
+		return current_user_can( 'manage_job_listings', $post_id );
 	}
 
 	/**
@@ -212,6 +227,11 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		if ( 'promoted_jobs' !== $column ) {
 			return;
 		}
+
+		if ( ! $this->can_promote_job( $post->ID ) ) {
+			return;
+		}
+
 		$base_url    = admin_url( 'admin.php' );
 		$promote_url = add_query_arg(
 			[
