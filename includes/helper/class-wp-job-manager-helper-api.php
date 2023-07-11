@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Helper_API {
 
-	const API_BASE_URL = 'https://wpjobmanager.com/';
+	const API_BASE_URL = 'https://wpjobmanager.com';
 
 	/**
 	 * The single instance of the class.
@@ -101,7 +101,7 @@ class WP_Job_Manager_Helper_API {
 	 */
 	public function bulk_activate( $licence_key, $product_slugs ) {
 		return $this->request_endpoint(
-			'wp-json/wpjmcom-licensing/v1/activate',
+			'/wp-json/wpjmcom-licensing/v1/activate',
 			[
 				'method' => 'POST',
 				'body'   => wp_json_encode(
@@ -148,7 +148,7 @@ class WP_Job_Manager_Helper_API {
 
 		$args     = wp_parse_args( $args, $defaults );
 		$response = wp_safe_remote_get(
-			$this->get_api_base_url() . '?' . http_build_query( $args, '', '&' ),
+			self::get_wpjmcom_url() . '/?' . http_build_query( $args, '', '&' ),
 			[
 				'timeout' => 10,
 				'headers' => [
@@ -180,7 +180,7 @@ class WP_Job_Manager_Helper_API {
 		$args     = wp_parse_args( $args, $defaults );
 
 		$response = wp_safe_remote_request(
-			$this->get_api_base_url() . $endpoint,
+			self::get_wpjmcom_url() . $endpoint,
 			$args
 		);
 
@@ -200,19 +200,19 @@ class WP_Job_Manager_Helper_API {
 	}
 
 	/**
-	 * Returns the API base URL.
+	 * Returns the URL to WPJobManager.com.
 	 *
 	 * @return string
 	 */
-	private function get_api_base_url() {
+	public static function get_wpjmcom_url() {
 		if (
 			defined( 'JOB_MANAGER_VERSION' )
 			&& defined( 'JOB_MANAGER_DEV_API_BASE_URL' )
 			&& '-dev' === substr( JOB_MANAGER_VERSION, -4 )
 		) {
-			return JOB_MANAGER_DEV_API_BASE_URL;
+			return rtrim( JOB_MANAGER_DEV_API_BASE_URL, '/' );
 		}
-		return self::API_BASE_URL;
+		return rtrim( self::API_BASE_URL, '/' );
 	}
 
 	/**
