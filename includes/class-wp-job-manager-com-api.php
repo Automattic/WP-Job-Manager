@@ -133,17 +133,8 @@ class WP_Job_Manager_Com_API {
 	 * @return string
 	 */
 	private function get_api_base_url() {
-		// For backwards compatibility we check and use the JOB_MANAGER_DEV_API_BASE_URL constant.
-		if (
-			defined( 'JOB_MANAGER_VERSION' )
-			&& defined( 'JOB_MANAGER_DEV_API_BASE_URL' )
-			&& '-dev' === substr( JOB_MANAGER_VERSION, -4 )
-		) {
-			return JOB_MANAGER_DEV_API_BASE_URL;
-		}
-
 		/**
-		 * Filters the wpjobmanager.com API URL.
+		 * Filters the wpjobmanager.com API URL (which by default is https://wpjobmanager.com/wp-json/).
 		 *
 		 * @since 1.40.0
 		 *
@@ -151,7 +142,7 @@ class WP_Job_Manager_Com_API {
 		 *
 		 * @return string The API url.
 		 */
-		return apply_filters( 'wpjm_wpjmcom_api_url', self::API_BASE_URL );
+		return apply_filters( 'wpjm_wpjmcom_api_url', \WP_Job_Manager_Helper_API::get_wpjmcom_url() . '/wp-json/' );
 	}
 
 	/**
