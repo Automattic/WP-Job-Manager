@@ -17,8 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Com_API {
 
-	const API_BASE_URL = 'https://wpjobmanager.com/wp-json/';
-
 	/**
 	 * The single instance of the class.
 	 *
