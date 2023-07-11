@@ -162,12 +162,16 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		if ( is_wp_error( $token ) ) {
 			wp_die( esc_html( $token->get_error_message() ) );
 		}
+		$site_url = home_url( '', 'https' );
+		$job_endpoint_url = rest_url( '/wpjm-internal/v1/promoted-jobs/' . $post_id, 'https' );
+		$job_endpoint_url = substr( $job_endpoint_url, strlen( $site_url ) );
+
 		$url = add_query_arg(
 			[
 				'user_id'  => $current_user,
-				'job_id'   => $post_id,
+				'job_endpoint_url' => $job_endpoint_url,
 				'token'    => $token,
-				'site_url' => site_url( '', 'https' ),
+				'site_url' => $site_url,
 				'locale'   => get_user_locale( $current_user ),
 			],
 			WP_Job_Manager_Helper_API::get_wpjmcom_url() . self::PROMOTE_JOB_FORM_PATH
