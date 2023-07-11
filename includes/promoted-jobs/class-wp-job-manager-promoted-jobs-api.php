@@ -62,6 +62,31 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				],
 			]
 		);
+		register_rest_route(
+			self::NAMESPACE,
+			self::REST_BASE . '/(?P<job_id>[\d]+)',
+			[
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_job_data' ],
+					'permission_callback' => '__return_true',
+					'args'                => [
+						'job_id'  => [
+							'required' => true,
+							'type'     => 'integer',
+						],
+						'user_id' => [
+							'required' => true,
+							'type'     => 'integer',
+						],
+						'token'   => [
+							'required' => true,
+							'type'     => 'string',
+						],
+					],
+				],
+			]
+		);
 	}
 
 	/**
@@ -146,5 +171,32 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			],
 			200
 		);
+	}
+
+	/**
+	 * Get the job data, but only if the user has permission to manage the job and the token is valid.
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return WP_REST_Response|WP_Error The response, or WP_Error on failure.
+	 */
+	public function get_job_data( $request ) {
+		$token    = $request->get_param( 'token' );
+		$user_id  = $request->get_param( 'user_id' );
+		$job_id   = $request->get_param( 'job_id' );
+		$verified = WP_Job_Manager_Site_Trust_Token::instance()->validate( 'user', $user_id, $token );
+		$result   = [
+			'verified' => $verified,
+		];
+		if ( $verified ) {
+			// We only want to return the job data if the specified user has permission to manage the job.
+			if ( 'job_listing' !== get_post_type( $job_id ) ) {
+				return new WP_Error( __( 'Job not found.', 'wp-job-manager' ), [ 'status' => 404 ] );
+			}
+			if ( ! user_can( $user_id, 'manage_job_listings', $job_id ) ) {
+				return new WP_Error( __( 'User does not have enough permissions to get data for this job.', 'wp-job-manager' ), [ 'status' => 401 ] );
+			}
+			$result['job_data'] = $this->prepare_item_for_response( get_post( $job_id ) );
+		}
+		return rest_ensure_response( $result );
 	}
 }
