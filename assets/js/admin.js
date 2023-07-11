@@ -198,15 +198,20 @@ function populateTemplate( item, dialog, action ) {
 					</form>
 					<promote-job-template>
 						<div slot="buttons" class="promote-buttons-group">
-							<a class="promote-button button button-primary" target="_blank" rel="noopener noreferrer" href="${ this.getAttribute( 'data-href' ) }">${ job_manager_admin_params.job_listing_promote_strings.promote_job }</a>
+							<a id="wpjm-promote-button" class="promote-button button button-primary" target="_blank" rel="noopener noreferrer" href="${ this.getAttribute( 'data-href' ) }">${ job_manager_admin_params.job_listing_promote_strings.promote_job }</a>
 							<a class="promote-button button button-secondary" target="_blank" rel="noopener noreferrer" href="#">${ job_manager_admin_params.job_listing_promote_strings.learn_more }</a>
 						</div>
 					<promote-job-template>`;
 				}
+
 				if ( 'deactivate' === action ) {
 					let deactivateButton = dialog.querySelector( '.deactivate-promotion' );
 					deactivateButton.setAttribute( 'href', this.getAttribute( 'data-href' ) );
 				}
+
+				document.querySelector( '#wpjm-promote-button' ).addEventListener( 'click', function() {
+					dialog.close();
+				} );
 			} );
 		} );
 	}
