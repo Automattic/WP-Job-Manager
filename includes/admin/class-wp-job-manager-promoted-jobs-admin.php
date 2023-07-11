@@ -135,7 +135,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * @return array Updated array of allowed redirect hosts.
 	 */
 	public function add_to_allowed_redirect_hosts( $hosts ) {
-		$hosts[] = wp_parse_url( WP_Job_Manager_Helper_API::get_api_base_url(), PHP_URL_HOST );
+		$hosts[] = wp_parse_url( WP_Job_Manager_Helper_API::get_wpjmcom_url(), PHP_URL_HOST );
 		return $hosts;
 	}
 
@@ -170,7 +170,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				'site_url' => site_url( '', 'https' ),
 				'locale'   => get_user_locale( $current_user ),
 			],
-			WP_Job_Manager_Helper_API::get_api_base_url() . self::PROMOTE_JOB_FORM_PATH
+			WP_Job_Manager_Helper_API::get_wpjmcom_url() . self::PROMOTE_JOB_FORM_PATH
 		);
 		wp_safe_redirect( $url );
 		exit;
