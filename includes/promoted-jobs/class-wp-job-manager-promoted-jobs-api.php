@@ -147,10 +147,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			$terms = [];
 		}
 
-		$terms_array = [];
-		foreach ( $terms as $term ) {
-			$terms_array[] = $term->slug;
-		}
+		$terms_array = wp_list_pluck( $terms, 'slug' );
 
 		return [
 			'id'           => (string) $item->ID,
