@@ -131,6 +131,12 @@ class WP_Job_Manager_Promoted_Jobs_API {
 
 		$data = array_map( [ $this, 'prepare_item_for_response' ], $items );
 
+		foreach ( $data as $job ) {
+			if ( is_wp_error( $job ) ) {
+				return $job;
+			}
+		}
+
 		return new WP_REST_Response( [ 'jobs' => $data ], 200 );
 	}
 
@@ -139,15 +145,18 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 *
 	 * @param WP_Post $item WordPress representation of the item.
 	 *
-	 * @return array The response
+	 * @return array|\WP_Error The response, or WP_Error on failure.
 	 */
 	private function prepare_item_for_response( WP_Post $item ) {
 		$terms = get_the_terms( $item->ID, 'job_listing_type' );
-
-		$terms_array = [];
-		foreach ( $terms as $term ) {
-			$terms_array[] = $term->slug;
+		if ( false === $terms ) {
+			$terms = [];
 		}
+		if ( is_wp_error( $terms ) ) {
+			return $terms;
+		}
+
+		$terms_array = wp_list_pluck( $terms, 'slug' );
 
 		return [
 			'id'           => (string) $item->ID,
