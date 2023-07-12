@@ -142,17 +142,23 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @return string
 	 */
 	private function get_notification_url() {
+		return WP_Job_Manager_Helper_API::get_wpjmcom_url() . self::NOTIFICATION_ENDPOINT;
+	}
+
+	/**
+	 * Get the data to send to the notification endpoint.
+	 *
+	 * @return array The data to send.
+	 */
+	private function get_notification_data() {
 		$site_url = home_url();
 		// We want to have the URL to the home-page of the site, not the URL to WordPress.
 		$feed_url = rest_url( 'wpjm-internal/v1/promoted-jobs' );
 		$feed_url = substr( $feed_url, strlen( $site_url ) );
-		return add_query_arg(
-			[
-				'site_url' => $site_url,
-				'feed_url' => $feed_url,
-			],
-			WP_Job_Manager_Helper_API::get_wpjmcom_url() . self::NOTIFICATION_ENDPOINT
-		);
+		return [
+			'site_url' => $site_url,
+			'feed_url' => $feed_url,
+		];
 	}
 
 	/**
@@ -206,7 +212,12 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	public function send_notification( $retry = 0 ) {
 		// Clear any scheduled retries.
 		wp_unschedule_hook( self::RETRY_JOB_NAME );
-		$response = wp_safe_remote_post( $this->get_notification_url() );
+		$response = wp_safe_remote_post(
+			$this->get_notification_url(),
+			[
+				'body' => $this->get_notification_data(),
+			]
+		);
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			if ( ! $this->has_scheduled_retry() && $retry < self::NUMBER_OF_RETRIES ) {
 				// Retry in RETRY_INTERVAL seconds.
