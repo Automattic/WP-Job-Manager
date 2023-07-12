@@ -139,12 +139,15 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 *
 	 * @param WP_Post $item WordPress representation of the item.
 	 *
-	 * @return array The response
+	 * @return array|\WP_Error The response, or WP_Error on failure.
 	 */
 	private function prepare_item_for_response( WP_Post $item ) {
 		$terms = get_the_terms( $item->ID, 'job_listing_type' );
 		if ( false === $terms ) {
 			$terms = [];
+		}
+		if ( is_wp_error( $terms ) ) {
+			return $terms;
 		}
 
 		$terms_array = wp_list_pluck( $terms, 'slug' );
