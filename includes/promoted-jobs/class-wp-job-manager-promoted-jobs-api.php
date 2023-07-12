@@ -143,6 +143,9 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 */
 	private function prepare_item_for_response( WP_Post $item ) {
 		$terms = get_the_terms( $item->ID, 'job_listing_type' );
+		if ( false === $terms ) {
+			$terms = [];
+		}
 
 		$terms_array = [];
 		foreach ( $terms as $term ) {
