@@ -61,18 +61,16 @@
         }
       }
     },
-    "/wp-json/wpjm-internal/v1/promoted-jobs/verify-token": {
-      "post": {
-        "tags": [
-          "promoted-jobs"
-        ],
-        "summary": "Verify if the token is valid",
-        "operationId": "post-verifyToken",
+    "/wp-json/wpjm-internal/v1/promoted-jobs/{id}": {
+      "get": {
+        "tags": ["promoted-jobs"],
+        "summary": "Retrieve job data for a job that will be promoted",
+        "operationId": "get-promotedjob",
         "parameters": [
           {
-            "name": "job_id",
-            "in": "query",
-            "description": "ID of the job that token grants access to",
+            "name": "id",
+            "in": "path",
+            "description": "ID of the job to retrieve",
             "required": true,
             "schema": {
               "type": "integer"
@@ -103,54 +101,35 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "description": "The request is completely valid and the job data is returned",
-                  "properties": {
-                    "verified": {
-                      "type": "boolean",
-                      "enum": [
-                        true
-                      ]
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "description": "The request is completely valid and the job data is returned",
+                      "properties": {
+                        "verified": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "job_data": {
+                          "$ref": "#/components/schemas/JobData"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "description": "The token/user ID is expired or invalid",
+                      "properties": {
+                        "verified": {
+                          "type": "boolean",
+                          "enum": [
+                            false
+                          ]
+                        }
+                      }
                     }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/wp-json/wpjm-internal/v1/promoted-jobs/{id}": {
-      "get": {
-        "tags": [
-          "promoted-jobs"
-        ],
-        "summary": "Retrieve job data for a job that will be promoted",
-        "operationId": "get-promotedjob",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of the job to retrieve",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "description": "The request is completely valid and the job data is returned",
-                  "properties": {
-                    "job_data": {
-                      "$ref": "#/components/schemas/JobData"
-                    }
-                  }
+                  ]
                 }
               }
             }
@@ -276,13 +255,13 @@
             "type": "string",
             "example": "ACME Inc."
           },
-          "is_remote": {
+          "is_remote":  {
             "type": "boolean",
             "example": false
           },
-          "job_type": {
+          "job_type":  {
             "type": "array",
-            "items": {
+            "items" : {
               "type": "string",
               "enum": [
                 "freelance",
@@ -294,7 +273,7 @@
               ]
             }
           },
-          "salary": {
+          "salary":  {
             "type": "object",
             "properties": {
               "currency": {
@@ -319,7 +298,7 @@
           }
         }
       },
-      "WP_Error": {
+      "WP_Error" : {
         "type": "object",
         "properties": {
           "code": {
