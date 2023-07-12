@@ -71,10 +71,23 @@ class WP_Job_Manager_Promoted_Jobs_API {
 					'callback'            => [ $this, 'get_job_data' ],
 					'permission_callback' => '__return_true',
 					'args'                => [
-						'job_id'  => [
+						'job_id' => [
 							'required' => true,
 							'type'     => 'integer',
 						],
+					],
+				],
+			]
+		);
+		register_rest_route(
+			self::NAMESPACE,
+			self::REST_BASE . '/verify-token',
+			[
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'verify_token' ],
+					'permission_callback' => '__return_true',
+					'args'                => [
 						'user_id' => [
 							'required' => true,
 							'type'     => 'integer',
@@ -82,6 +95,10 @@ class WP_Job_Manager_Promoted_Jobs_API {
 						'token'   => [
 							'required' => true,
 							'type'     => 'string',
+						],
+						'job_id'  => [
+							'required' => true,
+							'type'     => 'integer',
 						],
 					],
 				],
@@ -100,7 +117,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			'post_status'         => 'publish',
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
-			'posts_per_page'      => -1,
+			'posts_per_page'      => - 1,
 			'meta_query'          => [
 				[
 					'key'     => WP_Job_Manager_Promoted_Jobs::META_KEY,
@@ -121,6 +138,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * Prepare the item for the REST response
 	 *
 	 * @param WP_Post $item WordPress representation of the item.
+	 *
 	 * @return array The response
 	 */
 	private function prepare_item_for_response( WP_Post $item ) {
@@ -152,6 +170,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * Update the promoted job status.
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
+	 *
 	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function update_job_status( $request ) {
@@ -164,6 +183,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		}
 
 		$result = update_post_meta( $post_id, WP_Job_Manager_Promoted_Jobs::META_KEY, $status ? '1' : '0' );
+
 		return new WP_REST_Response(
 			[
 				'data'    => $result,
@@ -174,29 +194,49 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	}
 
 	/**
-	 * Get the job data, but only if the user has permission to manage the job and the token is valid.
+	 * Get the job data or error if the job is not found.
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error The response, or WP_Error on failure.
 	 */
 	public function get_job_data( $request ) {
-		$token    = $request->get_param( 'token' );
-		$user_id  = $request->get_param( 'user_id' );
-		$job_id   = $request->get_param( 'job_id' );
-		$verified = WP_Job_Manager_Site_Trust_Token::instance()->validate( 'user', $user_id, $token );
-		$result   = [
-			'verified' => $verified,
-		];
-		if ( $verified ) {
-			// We only want to return the job data if the specified user has permission to manage the job.
-			if ( 'job_listing' !== get_post_type( $job_id ) ) {
-				return new WP_Error( __( 'Job not found.', 'wp-job-manager' ), [ 'status' => 404 ] );
-			}
-			if ( ! user_can( $user_id, 'manage_job_listings', $job_id ) ) {
-				return new WP_Error( __( 'User does not have enough permissions to get data for this job.', 'wp-job-manager' ), [ 'status' => 401 ] );
-			}
-			$result['job_data'] = $this->prepare_item_for_response( get_post( $job_id ) );
+		$job_id = $request->get_param( 'job_id' );
+		if ( 'job_listing' !== get_post_type( $job_id ) ) {
+			return new WP_Error( __( 'Job not found.', 'wp-job-manager' ), [ 'status' => 404 ] );
 		}
-		return rest_ensure_response( $result );
+
+		return rest_ensure_response(
+			[
+				'job_data' => $this->prepare_item_for_response( get_post( $job_id ) ),
+			]
+		);
+	}
+
+	/**
+	 * Verify if the token is valid or not. Checks that the job exists and the user has access to it.
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 *
+	 * @return WP_REST_Response The result of the validation.
+	 */
+	public function verify_token( $request ) {
+		$token   = $request->get_param( 'token' );
+		$user_id = $request->get_param( 'user_id' );
+		$job_id  = $request->get_param( 'job_id' );
+
+		$verified = false;
+		// We only verify the token if the job_id exists and user has access to it.
+		if ( 'job_listing' === get_post_type( $job_id ) ) {
+			if ( user_can( $user_id, 'manage_job_listings', $job_id ) ) {
+				$verified = WP_Job_Manager_Site_Trust_Token::instance()->validate( 'user', $user_id, $token );
+			}
+		}
+
+		return rest_ensure_response(
+			[
+				'verified' => $verified,
+			]
+		);
 	}
 }
