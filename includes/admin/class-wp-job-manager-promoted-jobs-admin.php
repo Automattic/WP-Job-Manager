@@ -41,9 +41,9 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
+	 * @return self Main instance.
 	 * @since  $$next-version$$
 	 * @static
-	 * @return self Main instance.
 	 */
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
@@ -132,10 +132,12 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * Add the host of the Promote Job form to the array of allowed redirect hosts.
 	 *
 	 * @param array $hosts Allowed redirect hosts.
+	 *
 	 * @return array Updated array of allowed redirect hosts.
 	 */
 	public function add_to_allowed_redirect_hosts( $hosts ) {
 		$hosts[] = wp_parse_url( WP_Job_Manager_Helper_API::get_wpjmcom_url(), PHP_URL_HOST );
+
 		return $hosts;
 	}
 
@@ -159,17 +161,21 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		if ( is_wp_error( $token ) ) {
 			wp_die( esc_html( $token->get_error_message() ) );
 		}
-		$site_url         = home_url( '', 'https' );
-		$job_endpoint_url = rest_url( '/wpjm-internal/v1/promoted-jobs/' . $post_id, 'https' );
-		$job_endpoint_url = substr( $job_endpoint_url, strlen( $site_url ) );
+		$site_url            = home_url( '', 'https' );
+		$job_endpoint_url    = rest_url( '/wpjm-internal/v1/promoted-jobs/' . $post_id, 'https' );
+		$job_endpoint_url    = substr( $job_endpoint_url, strlen( $site_url ) );
+		$verify_endpoint_url = rest_url( '/wpjm-internal/v1/promoted-jobs/verify-token', 'https' );
+		$verify_endpoint_url = substr( $verify_endpoint_url, strlen( $site_url ) );
 
 		$url = add_query_arg(
 			[
-				'user_id'          => $current_user,
-				'job_endpoint_url' => $job_endpoint_url,
-				'token'            => $token,
-				'site_url'         => $site_url,
-				'locale'           => get_user_locale( $current_user ),
+				'user_id'             => $current_user,
+				'job_id'              => $post_id,
+				'job_endpoint_url'    => $job_endpoint_url,
+				'verify_endpoint_url' => $verify_endpoint_url,
+				'token'               => $token,
+				'site_url'            => $site_url,
+				'locale'              => get_user_locale( $current_user ),
 			],
 			WP_Job_Manager_Helper_API::get_wpjmcom_url() . self::PROMOTE_JOB_FORM_PATH
 		);
@@ -403,7 +409,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 						<?php esc_html_e( 'Cancel', 'wp-job-manager' ); ?>
 					</button>
 					<a class="deactivate-promotion button button-primary">
-					<?php esc_html_e( 'Deactivate', 'wp-job-manager' ); ?>
+						<?php esc_html_e( 'Deactivate', 'wp-job-manager' ); ?>
 					</a>
 				</div>
 			</form>
