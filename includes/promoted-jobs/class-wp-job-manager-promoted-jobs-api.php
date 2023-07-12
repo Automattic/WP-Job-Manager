@@ -117,7 +117,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			'post_status'         => 'publish',
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
-			'posts_per_page'      => - 1,
+			'posts_per_page'      => -1,
 			'meta_query'          => [
 				[
 					'key'     => WP_Job_Manager_Promoted_Jobs::META_KEY,
