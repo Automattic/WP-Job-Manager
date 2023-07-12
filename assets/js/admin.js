@@ -209,9 +209,11 @@ function populateTemplate( item, dialog, action ) {
 					deactivateButton.setAttribute( 'href', this.getAttribute( 'data-href' ) );
 				}
 
-				document.querySelector( '#wpjm-promote-button' ).addEventListener( 'click', function() {
-					dialog.close();
-				} );
+				if ( 'promote' === action ) {
+					dialog.querySelector( '#wpjm-promote-button' ).addEventListener( 'click', function() {
+						dialog.close();
+					} );
+				}
 			} );
 		} );
 	}
