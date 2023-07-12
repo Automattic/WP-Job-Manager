@@ -131,6 +131,12 @@ class WP_Job_Manager_Promoted_Jobs_API {
 
 		$data = array_map( [ $this, 'prepare_item_for_response' ], $items );
 
+		foreach ( $data as $job ) {
+			if ( is_wp_error( $job ) ) {
+				return $job;
+			}
+		}
+
 		return new WP_REST_Response( [ 'jobs' => $data ], 200 );
 	}
 
