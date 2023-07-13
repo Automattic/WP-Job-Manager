@@ -202,17 +202,15 @@ function populateTemplate( item, dialog, action ) {
 							<a class="promote-button button button-secondary" target="_blank" rel="noopener noreferrer" href="#">${ job_manager_admin_params.job_listing_promote_strings.learn_more }</a>
 						</div>
 					<promote-job-template>`;
+
+					dialog.querySelector( '#wpjm-promote-button' ).addEventListener( 'click', function() {
+						dialog.close();
+					} );
 				}
 
 				if ( 'deactivate' === action ) {
 					let deactivateButton = dialog.querySelector( '.deactivate-promotion' );
 					deactivateButton.setAttribute( 'href', this.getAttribute( 'data-href' ) );
-				}
-
-				if ( 'promote' === action ) {
-					dialog.querySelector( '#wpjm-promote-button' ).addEventListener( 'click', function() {
-						dialog.close();
-					} );
 				}
 			} );
 		} );
