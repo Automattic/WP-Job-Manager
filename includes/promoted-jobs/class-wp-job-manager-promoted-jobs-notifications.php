@@ -152,8 +152,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 */
 	private function get_notification_data() {
 		$site_url = home_url();
-		// We want to have the URL to the home-page of the site, not the URL to WordPress.
-		$feed_url = rest_url( 'wpjm-internal/v1/promoted-jobs' );
+		$feed_url = rest_url( '/wpjm-internal/v1/promoted-jobs' );
 		$feed_url = substr( $feed_url, strlen( $site_url ) );
 		return [
 			'site_url' => $site_url,
