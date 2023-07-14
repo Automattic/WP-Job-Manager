@@ -186,10 +186,10 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			[
 				'user_id'             => $current_user,
 				'job_id'              => $post_id,
-				'job_endpoint_url'    => $job_endpoint_url,
-				'verify_endpoint_url' => $verify_endpoint_url,
+				'job_endpoint_url'    => rawurlencode( $job_endpoint_url ),
+				'verify_endpoint_url' => rawurlencode( $verify_endpoint_url ),
 				'token'               => $token,
-				'site_url'            => $site_url,
+				'site_url'            => rawurlencode( $site_url ),
 				'locale'              => get_user_locale( $current_user ),
 			],
 			WP_Job_Manager_Helper_API::get_wpjmcom_url() . self::PROMOTE_JOB_FORM_PATH
