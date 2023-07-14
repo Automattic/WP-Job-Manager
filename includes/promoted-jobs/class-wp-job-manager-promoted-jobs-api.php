@@ -148,14 +148,17 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * @return array|\WP_Error The response, or WP_Error on failure.
 	 */
 	private function prepare_item_for_response( WP_Post $item ) {
-		$terms = get_the_terms( $item->ID, 'job_listing_type' );
+		$terms = [];
+		if ( get_option( 'job_manager_enable_types' ) ) {
+			// Only query for terms if the listing types are enabled.
+			$terms = get_the_terms( $item->ID, 'job_listing_type' );
+		}
 		if ( false === $terms ) {
 			$terms = [];
 		}
 		if ( is_wp_error( $terms ) ) {
 			return $terms;
 		}
-
 		$terms_array = wp_list_pluck( $terms, 'slug' );
 
 		return [
