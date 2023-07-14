@@ -158,14 +158,17 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * @return array|\WP_Error The response, or WP_Error on failure.
 	 */
 	private function prepare_item_for_response( WP_Post $item ) {
-		$terms = get_the_terms( $item->ID, 'job_listing_type' );
+		$terms = [];
+		if ( get_option( 'job_manager_enable_types' ) ) {
+			// Only query for terms if the listing types are enabled.
+			$terms = get_the_terms( $item->ID, 'job_listing_type' );
+		}
 		if ( false === $terms ) {
 			$terms = [];
 		}
 		if ( is_wp_error( $terms ) ) {
 			return $terms;
 		}
-
 		$terms_array = wp_list_pluck( $terms, 'slug' );
 
 		return [
@@ -224,10 +227,14 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		if ( 'job_listing' !== get_post_type( $job_id ) ) {
 			return new WP_Error( 'not_found', __( 'The promoted job was not found', 'wp-job-manager' ), [ 'status' => 404 ] );
 		}
+		$job_data = $this->prepare_item_for_response( get_post( $job_id ) );
+		if ( is_wp_error( $job_data ) ) {
+			return $job_data;
+		}
 
 		return rest_ensure_response(
 			[
-				'job_data' => $this->prepare_item_for_response( get_post( $job_id ) ),
+				'job_data' => $job_data,
 			]
 		);
 	}
