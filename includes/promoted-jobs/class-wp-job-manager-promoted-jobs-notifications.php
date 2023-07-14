@@ -17,11 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Job_Manager_Promoted_Jobs_Notifications {
 
 	/**
-	 * The URL to notify. Sending this notification will trigger a sync of the site's jobs.
+	 * The endpoint in WPJMCOM to notify. Sending this notification will trigger a sync of the site's jobs.
 	 *
 	 * @var string
 	 */
-	const NOTIFICATION_URL = 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/site/{site_id}/update';
+	const NOTIFICATION_ENDPOINT = '/wp-json/promoted-jobs/v1/site/update';
 
 	/**
 	 * The name of the job that will be scheduled to run if notification fails.
@@ -137,21 +137,27 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	}
 
 	/**
-	 * Get the site ID.
-	 *
-	 * @return int|string
-	 */
-	private function get_site_id() {
-		return get_current_blog_id();
-	}
-
-	/**
 	 * Get the notification URL.
 	 *
 	 * @return string
 	 */
 	private function get_notification_url() {
-		return str_replace( '{site_id}', $this->get_site_id(), self::NOTIFICATION_URL );
+		return WP_Job_Manager_Helper_API::get_wpjmcom_url() . self::NOTIFICATION_ENDPOINT;
+	}
+
+	/**
+	 * Get the data to send to the notification endpoint.
+	 *
+	 * @return array The data to send.
+	 */
+	private function get_notification_data() {
+		$site_url = home_url();
+		$feed_url = rest_url( '/wpjm-internal/v1/promoted-jobs' );
+		$feed_url = substr( $feed_url, strlen( $site_url ) );
+		return [
+			'site_url' => $site_url,
+			'feed_url' => $feed_url,
+		];
 	}
 
 	/**
@@ -176,7 +182,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @return bool
 	 */
 	private function is_promoted_job( $post_id ) {
-		return get_post_meta( $post_id, '_promoted', true );
+		return '1' === get_post_meta( $post_id, '_promoted', true );
 	}
 
 	/**
@@ -203,7 +209,14 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @return void
 	 */
 	public function send_notification( $retry = 0 ) {
-		$response = wp_safe_remote_post( $this->get_notification_url() );
+		// Clear any scheduled retries.
+		wp_unschedule_hook( self::RETRY_JOB_NAME );
+		$response = wp_safe_remote_post(
+			$this->get_notification_url(),
+			[
+				'body' => $this->get_notification_data(),
+			]
+		);
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			if ( ! $this->has_scheduled_retry() && $retry < self::NUMBER_OF_RETRIES ) {
 				// Retry in RETRY_INTERVAL seconds.
@@ -213,9 +226,6 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 					[ $retry + 1 ]
 				);
 			}
-		} else {
-			// Clear any scheduled retries.
-			wp_unschedule_hook( self::RETRY_JOB_NAME );
 		}
 	}
 

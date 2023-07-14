@@ -112,6 +112,8 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function get_items() {
+		global $wpdb;
+
 		$args = [
 			'post_type'           => 'job_listing',
 			'post_status'         => 'publish',
@@ -128,6 +130,14 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		];
 
 		$items = get_posts( $args );
+
+		if ( ! empty( $wpdb->last_errors ) ) {
+			return new WP_Error(
+				'wpjm_error_getting_jobs',
+				$wpdb->last_errors,
+				[ 'status' => 500 ]
+			);
+		}
 
 		$data = array_map( [ $this, 'prepare_item_for_response' ], $items );
 
