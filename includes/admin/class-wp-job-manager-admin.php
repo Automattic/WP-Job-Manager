@@ -128,7 +128,7 @@ class WP_Job_Manager_Admin {
 			);
 		}
 
-		if ( 'job_listing' === $screen->id ) {
+		if ( 'job_listing' === $screen->id && $screen->is_block_editor() ) { // Check if it's block editor in job post.
 			$post = get_post();
 
 			if ( ! empty( $post ) ) {
