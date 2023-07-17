@@ -98,11 +98,23 @@ class WP_Job_Manager {
 
 		// Filters.
 		add_filter( 'wp_privacy_personal_data_exporters', [ 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ] );
+		add_filter( 'allowed_redirect_hosts', [ $this, 'add_to_allowed_redirect_hosts' ] );
 
 		add_action( 'init', [ $this, 'usage_tracking_init' ] );
 
 		// Defaults for WPJM core actions.
 		add_action( 'wpjm_notify_new_user', 'wp_job_manager_notify_new_user', 10, 2 );
+	}
+
+	/**
+	 * Add the WPJMCOM host to the array of allowed redirect hosts.
+	 *
+	 * @param array $hosts Allowed redirect hosts.
+	 * @return array Updated array of allowed redirect hosts.
+	 */
+	public function add_to_allowed_redirect_hosts( $hosts ) {
+		$hosts[] = wp_parse_url( WP_Job_Manager_Helper_API::get_wpjmcom_url(), PHP_URL_HOST );
+		return $hosts;
 	}
 
 	/**
@@ -233,6 +245,7 @@ class WP_Job_Manager {
 		wp_clear_scheduled_hook( 'job_manager_check_for_expired_jobs' );
 		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
 		wp_clear_scheduled_hook( 'job_manager_email_daily_notices' );
+		wp_clear_scheduled_hook( 'job_manager_promoted_jobs_notification' );
 	}
 
 	/**
