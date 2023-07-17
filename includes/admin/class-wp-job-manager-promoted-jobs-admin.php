@@ -264,6 +264,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		$promote_jobs_template_next_check_name = '_promote-jobs-template_next_check_' . get_user_locale();
 		$promote_template                      = get_option( $promote_template_option_name, false );
 		$promote_jobs_template_next_check      = get_option( $promote_jobs_template_next_check_name );
+		$check_for_updated_template            = false;
 
 		if ( ! $promote_jobs_template_next_check || $promote_jobs_template_next_check < time() ) {
 			$check_for_updated_template = true;
