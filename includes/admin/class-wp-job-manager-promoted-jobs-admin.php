@@ -268,7 +268,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			return $promote_template;
 		}
 
-		$url      = 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . $locale;
+		$url      = WP_Job_Manager_Helper_API::get_wpjmcom_url() . '/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . $locale;
 		$response = wp_safe_remote_get( $url );
 		$fallback = '
 			<div>
