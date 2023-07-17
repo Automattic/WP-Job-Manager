@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { subscribe, select } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
 
 /**
  * Helper function to fire callbacks on editor lifecycles.
@@ -20,7 +21,7 @@ const editorLifecycle = ( {
 	onSaveStart = () => {},
 	onSave = () => {},
 } ) => {
-	const coreEditorSelector = select( 'core/editor' );
+	const coreEditorSelector = select( editorStore );
 	let wasSaving = false;
 	let wasDirty = false;
 
