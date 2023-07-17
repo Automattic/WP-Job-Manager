@@ -24,13 +24,9 @@ const editorLifecycle = ( {
 	const coreEditorSelector = select( editorStore );
 	let wasSaving = false;
 	let wasDirty = false;
-	let isNew    = false;
 
 	const unsubscribe = subscribe( () => {
 		subscribeListener();
-
-		// Once identified as new, it will be considered new until the save.
-		isNew = coreEditorSelector.isEditedPostNew() || isNew;
 
 		const isDirty = coreEditorSelector.isEditedPostDirty();
 
@@ -49,12 +45,11 @@ const editorLifecycle = ( {
 		if ( wasSaving && ! isSaving ) {
 			// If it completed a saving.
 			wasSaving = isSaving;
-			onSave( isNew );
-			isNew = false;
+			onSave();
 		} else if ( ! wasSaving && isSaving ) {
 			// If it started saving.
 			wasSaving = isSaving;
-			onSaveStart( isNew );
+			onSaveStart();
 		} else {
 			wasSaving = isSaving;
 		}
