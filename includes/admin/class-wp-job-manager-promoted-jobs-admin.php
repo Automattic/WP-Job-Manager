@@ -222,25 +222,10 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			return;
 		}
 
-		$base_url    = admin_url( 'admin.php' );
-		$promote_url = add_query_arg(
-			[
-				'action'   => self::PROMOTE_JOB_ACTION,
-				'post_id'  => $post->ID,
-				'_wpnonce' => wp_create_nonce( self::PROMOTE_JOB_ACTION . '-' . $post->ID ),
-			],
-			$base_url
-		);
+		$promote_url = self::get_promote_url( $post->ID );
 
 		if ( $this->is_promoted( $post->ID ) ) {
-			$deactivate_action_link = add_query_arg(
-				[
-					'action'   => self::DEACTIVATE_PROMOTION_ACTION,
-					'post_id'  => $post->ID,
-					'_wpnonce' => wp_create_nonce( self::DEACTIVATE_PROMOTION_ACTION . '-' . $post->ID ),
-				],
-				$base_url
-			);
+			$deactivate_action_link = self::get_deactivate_url( $post->ID );
 			echo '
 			<span class="jm-promoted__status-promoted">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>
 			<div class="row-actions">
@@ -252,6 +237,42 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		} else {
 			echo '<button class="promote_job button button-primary" data-href=' . esc_url( $promote_url ) . '>' . esc_html__( 'Promote', 'wp-job-manager' ) . '</button>';
 		}
+	}
+
+	/**
+	 * Get the promote URL.
+	 *
+	 * @param int|string $post_id Post ID placeholder string.
+	 *
+	 * @return string
+	 */
+	public static function get_promote_url( $post_id ) {
+		return add_query_arg(
+			[
+				'action'   => self::PROMOTE_JOB_ACTION,
+				'post_id'  => $post_id,
+				'_wpnonce' => wp_create_nonce( self::PROMOTE_JOB_ACTION . '-' . $post_id ),
+			],
+			admin_url( 'admin.php' )
+		);
+	}
+
+	/**
+	 * Get the deactivate URL.
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return string
+	 */
+	public static function get_deactivate_url( $post_id ) {
+		return add_query_arg(
+			[
+				'action'   => self::DEACTIVATE_PROMOTION_ACTION,
+				'post_id'  => $post_id,
+				'_wpnonce' => wp_create_nonce( self::DEACTIVATE_PROMOTION_ACTION . '-' . $post_id ),
+			],
+			$base_url
+		);
 	}
 
 	/**
