@@ -1,7 +1,7 @@
 /**
  * Internal dependencies.
  */
-import { postOpenPromoteModal, postOpenDeactivateModal } from './admin/promote-job-modals';
+import { initializePromoteModals } from './admin/promote-job-modals';
 
 jQuery(document).ready(function($) {
 	// Tooltips
@@ -184,37 +184,4 @@ jQuery(document).ready(function($) {
 	});
 });
 
-function wpjmModal( selector, dialogSelector, openCallback ) {
-	const elements = document.querySelectorAll( selector );
-	const dialog = document.querySelector( dialogSelector );
-
-	elements.forEach( ( element ) => {
-		element.addEventListener( 'click', function( event ) {
-			event.preventDefault();
-			dialog.showModal();
-			openCallback( element, dialog );
-		} );
-	} );
-}
-
-wpjmModal( '.promote_job', '#promote-dialog', ( element, dialog ) => {
-	const href = element.getAttribute( 'data-href' );
-	postOpenPromoteModal( dialog, href );
-} );
-wpjmModal( '.jm-promoted__deactivate', '#deactivate-dialog', ( element, dialog ) => {
-	const href = element.getAttribute( 'data-href' );
-	postOpenDeactivateModal( dialog, href );
-} );
-
-customElements.define( 'promote-job-template',
-	class extends HTMLElement {
-		constructor() {
-			super();
-			const promoteJobs = document.getElementById( 'promote-job-template' ).content;
-			const shadowRoot  = this.attachShadow( {
-				mode: 'open',
-			} );
-			shadowRoot.appendChild( promoteJobs.cloneNode( true ) );
-		}
-	} );
-
+initializePromoteModals();

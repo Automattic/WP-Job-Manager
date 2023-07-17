@@ -1,3 +1,8 @@
+/**
+ * Internal dependencies
+ */
+import wpjmModal from './wpjm-modal';
+
 export const postOpenPromoteModal = ( dialog, href ) => {
 	dialog.innerHTML = `
 	<form class="dialog" method="dialog">
@@ -19,3 +24,26 @@ export const postOpenDeactivateModal = ( dialog, href ) => {
 	const deactivateButton = dialog.querySelector( '.deactivate-promotion' );
 	deactivateButton.setAttribute( 'href', href );
 };
+
+export const initializePromoteModals = () => {
+	wpjmModal( '.promote_job', '#promote-dialog', ( element, dialog ) => {
+		const href = element.getAttribute( 'data-href' );
+		postOpenPromoteModal( dialog, href );
+	} );
+	wpjmModal( '.jm-promoted__deactivate', '#deactivate-dialog', ( element, dialog ) => {
+		const href = element.getAttribute( 'data-href' );
+		postOpenDeactivateModal( dialog, href );
+	} );
+
+	customElements.define( 'promote-job-template',
+		class extends HTMLElement {
+			constructor() {
+				super();
+				const promoteJobs = document.getElementById( 'promote-job-template' ).content;
+				const shadowRoot  = this.attachShadow( {
+					mode: 'open',
+				} );
+				shadowRoot.appendChild( promoteJobs.cloneNode( true ) );
+			}
+		} );
+}
