@@ -198,7 +198,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				|| 200 !== wp_remote_retrieve_response_code( $response )
 				|| empty( wp_remote_retrieve_body( $response ) )
 			) {
-				update_option( '_promote-jobs-template_next_check', time() + MINUTE_IN_SECONDS * 5, false );
+				update_option( $promote_jobs_template_next_check_name, time() + MINUTE_IN_SECONDS * 5, false );
 				return $promote_template;
 			} else {
 				$assets           = json_decode( wp_remote_retrieve_body( $response ), true );
