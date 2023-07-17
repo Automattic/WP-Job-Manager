@@ -304,11 +304,10 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				<?php echo $this->get_promote_jobs_template(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</template>
 			<dialog class="wpjm-dialog" id="promote-dialog"></dialog>
-
 			<?php
 		}
 
-		if ( 'job_listing' === $screen->id ) { // Job editor.
+		if ( 'edit-job_listing' === $screen->id ) { // Job listing.
 			?>
 			<dialog class="wpjm-dialog deactivate-dialog" id="deactivate-dialog">
 				<form class="dialog deactivate-button" method="dialog">
