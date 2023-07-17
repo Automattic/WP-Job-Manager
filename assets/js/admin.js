@@ -1,3 +1,8 @@
+/**
+ * Internal dependencies.
+ */
+import { postOpenPromoteModal, postOpenDeactivateModal } from './admin/promote-job-modals';
+
 jQuery(document).ready(function($) {
 	// Tooltips
 	$( '.tips, .help_tip' ).each( function() {
@@ -179,46 +184,27 @@ jQuery(document).ready(function($) {
 	});
 });
 
-function wpjmModal( selector, dialogSelector, action ) {
-	let item   = document.querySelectorAll( selector );
-	let dialog = document.querySelector( dialogSelector );
-	populateTemplate( item, dialog, action );
-}
+function wpjmModal( selector, dialogSelector, openCallback ) {
+	const elements = document.querySelectorAll( selector );
+	const dialog = document.querySelector( dialogSelector );
 
-function populateTemplate( item, dialog, action ) {
-	if ( typeof action !== 'undefined' ) {
-		item.forEach( function( element ) {
-			element.addEventListener( 'click', function( event ) {
-				event.preventDefault();
-				dialog.showModal();
-				if ( 'promote' === action ) {
-					dialog.innerHTML = `
-					<form class="dialog" method="dialog">
-						<button class="dialog-close" type="submit">X</button>
-					</form>
-					<promote-job-template>
-						<div slot="buttons" class="promote-buttons-group">
-							<a id="wpjm-promote-button" class="promote-button button button-primary" target="_blank" rel="noopener noreferrer" href="${ this.getAttribute( 'data-href' ) }">${ job_manager_admin_params.job_listing_promote_strings.promote_job }</a>
-							<a class="promote-button button button-secondary" target="_blank" rel="noopener noreferrer" href="#">${ job_manager_admin_params.job_listing_promote_strings.learn_more }</a>
-						</div>
-					<promote-job-template>`;
-
-					dialog.querySelector( '#wpjm-promote-button' ).addEventListener( 'click', function() {
-						dialog.close();
-					} );
-				}
-
-				if ( 'deactivate' === action ) {
-					let deactivateButton = dialog.querySelector( '.deactivate-promotion' );
-					deactivateButton.setAttribute( 'href', this.getAttribute( 'data-href' ) );
-				}
-			} );
+	elements.forEach( ( element ) => {
+		element.addEventListener( 'click', function( event ) {
+			event.preventDefault();
+			dialog.showModal();
+			openCallback( element, dialog );
 		} );
-	}
+	} );
 }
 
-wpjmModal( '.promote_job', '#promote-dialog', 'promote' );
-wpjmModal( '.jm-promoted__deactivate', '#deactivate-dialog', 'deactivate' );
+wpjmModal( '.promote_job', '#promote-dialog', ( element, dialog ) => {
+	const href = element.getAttribute( 'data-href' );
+	postOpenPromoteModal( dialog, href );
+} );
+wpjmModal( '.jm-promoted__deactivate', '#deactivate-dialog', ( element, dialog ) => {
+	const href = element.getAttribute( 'data-href' );
+	postOpenDeactivateModal( dialog, href );
+} );
 
 customElements.define( 'promote-job-template',
 	class extends HTMLElement {
