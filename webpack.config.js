@@ -11,6 +11,7 @@ const files = {
 	'js/job-submission': 'js/job-submission.js',
 	'js/multiselect': 'js/multiselect.js',
 	'js/term-multiselect': 'js/term-multiselect.js',
+	'js/admin/job-editor': 'js/admin/job-editor.js',
 	'js/admin/wpjm-notice-dismiss': 'js/admin/wpjm-notice-dismiss.js',
 	'css/admin': 'css/admin.scss',
 	'css/admin-notices': 'css/admin-notices.scss',

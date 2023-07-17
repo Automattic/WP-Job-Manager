@@ -222,25 +222,10 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			return;
 		}
 
-		$base_url    = admin_url( 'admin.php' );
-		$promote_url = add_query_arg(
-			[
-				'action'   => self::PROMOTE_JOB_ACTION,
-				'post_id'  => $post->ID,
-				'_wpnonce' => wp_create_nonce( self::PROMOTE_JOB_ACTION . '-' . $post->ID ),
-			],
-			$base_url
-		);
+		$promote_url = self::get_promote_url( $post->ID );
 
 		if ( $this->is_promoted( $post->ID ) ) {
-			$deactivate_action_link = add_query_arg(
-				[
-					'action'   => self::DEACTIVATE_PROMOTION_ACTION,
-					'post_id'  => $post->ID,
-					'_wpnonce' => wp_create_nonce( self::DEACTIVATE_PROMOTION_ACTION . '-' . $post->ID ),
-				],
-				$base_url
-			);
+			$deactivate_action_link = self::get_deactivate_url( $post->ID );
 			echo '
 			<span class="jm-promoted__status-promoted">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>
 			<div class="row-actions">
@@ -252,6 +237,42 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		} else {
 			echo '<button class="promote_job button button-primary" data-href=' . esc_url( $promote_url ) . '>' . esc_html__( 'Promote', 'wp-job-manager' ) . '</button>';
 		}
+	}
+
+	/**
+	 * Get the promote URL.
+	 *
+	 * @param int|string $post_id Post ID placeholder string.
+	 *
+	 * @return string
+	 */
+	public static function get_promote_url( $post_id ) {
+		return add_query_arg(
+			[
+				'action'   => self::PROMOTE_JOB_ACTION,
+				'post_id'  => $post_id,
+				'_wpnonce' => wp_create_nonce( self::PROMOTE_JOB_ACTION . '-' . $post_id ),
+			],
+			admin_url( 'admin.php' )
+		);
+	}
+
+	/**
+	 * Get the deactivate URL.
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return string
+	 */
+	public static function get_deactivate_url( $post_id ) {
+		return add_query_arg(
+			[
+				'action'   => self::DEACTIVATE_PROMOTION_ACTION,
+				'post_id'  => $post_id,
+				'_wpnonce' => wp_create_nonce( self::DEACTIVATE_PROMOTION_ACTION . '-' . $post_id ),
+			],
+			$base_url
+		);
 	}
 
 	/**
@@ -298,37 +319,41 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 */
 	public function promoted_jobs_admin_footer() {
 		$screen = get_current_screen();
-		if ( 'edit-job_listing' !== $screen->id ) {
-			return;
-		}
-		?>
-		<template id="promote-job-template">
-			<?php echo $this->get_promote_jobs_template(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		</template>
-		<dialog class="wpjm-dialog" id="promote-dialog"></dialog>
 
-		<dialog class="wpjm-dialog deactivate-dialog" id="deactivate-dialog">
-			<form class="dialog deactivate-button" method="dialog">
-				<button class="dialog-close" type="submit">X</button>
-			</form>
-			<h2 class="deactivate-modal-heading">
-				<?php esc_html_e( 'Are you sure you want to deactivate promotion for this job?', 'wp-job-manager' ); ?>
-			</h2>
-			<p>
-				<?php esc_html_e( 'If you still have time until the promotion expires, this time will be lost and the promotion of the job will be canceled.', 'wp-job-manager' ); ?>
-			</p>
-			<form method="dialog">
-				<div class="deactivate-action promote-buttons-group">
-					<button class="dialog-close button button-secondary" type="submit">
-						<?php esc_html_e( 'Cancel', 'wp-job-manager' ); ?>
-					</button>
-					<a class="deactivate-promotion button button-primary">
-						<?php esc_html_e( 'Deactivate', 'wp-job-manager' ); ?>
-					</a>
-				</div>
-			</form>
-		</dialog>
-		<?php
+		if ( in_array( $screen->id, [ 'edit-job_listing', 'job_listing' ], true ) ) { // Job listing and job editor.
+			?>
+			<template id="promote-job-template">
+				<?php echo $this->get_promote_jobs_template(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</template>
+			<dialog class="wpjm-dialog" id="promote-dialog"></dialog>
+			<?php
+		}
+
+		if ( 'edit-job_listing' === $screen->id ) { // Job listing.
+			?>
+			<dialog class="wpjm-dialog deactivate-dialog" id="deactivate-dialog">
+				<form class="dialog deactivate-button" method="dialog">
+					<button class="dialog-close" type="submit">X</button>
+				</form>
+				<h2 class="deactivate-modal-heading">
+					<?php esc_html_e( 'Are you sure you want to deactivate promotion for this job?', 'wp-job-manager' ); ?>
+				</h2>
+				<p>
+					<?php esc_html_e( 'If you still have time until the promotion expires, this time will be lost and the promotion of the job will be canceled.', 'wp-job-manager' ); ?>
+				</p>
+				<form method="dialog">
+					<div class="deactivate-action promote-buttons-group">
+						<button class="dialog-close button button-secondary" type="submit">
+							<?php esc_html_e( 'Cancel', 'wp-job-manager' ); ?>
+						</button>
+						<a class="deactivate-promotion button button-primary">
+							<?php esc_html_e( 'Deactivate', 'wp-job-manager' ); ?>
+						</a>
+					</div>
+				</form>
+			</dialog>
+			<?php
+		}
 	}
 
 }

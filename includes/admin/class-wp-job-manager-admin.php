@@ -128,6 +128,21 @@ class WP_Job_Manager_Admin {
 			);
 		}
 
+		if ( 'job_listing' === $screen->id && $screen->is_block_editor() ) { // Check if it's block editor in job post.
+			$post = get_post();
+
+			if ( ! empty( $post ) ) {
+				WP_Job_manager::register_script( 'job_manager_job_editor_js', 'js/admin/job-editor.js', [], true );
+				wp_enqueue_script( 'job_manager_job_editor_js' );
+
+				wp_add_inline_script(
+					'job_manager_job_editor_js',
+					sprintf( 'window.wpjm = window.wpjm || {}; window.wpjm.promoteUrl = "%s";', WP_Job_Manager_Promoted_Jobs_Admin::get_promote_url( $post->ID ) ),
+					'before'
+				);
+			}
+		}
+
 		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', [], true );
 		wp_enqueue_script( 'job_manager_notice_dismiss' );
 
