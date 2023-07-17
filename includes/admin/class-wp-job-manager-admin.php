@@ -128,6 +128,11 @@ class WP_Job_Manager_Admin {
 			);
 		}
 
+		if ( 'job_listing' === $screen->id ) {
+			WP_Job_manager::register_script( 'job_manager_job_editor_js', 'js/admin/job-editor.js', [], true );
+			wp_enqueue_script( 'job_manager_job_editor_js' );
+		}
+
 		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', [], true );
 		wp_enqueue_script( 'job_manager_notice_dismiss' );
 
