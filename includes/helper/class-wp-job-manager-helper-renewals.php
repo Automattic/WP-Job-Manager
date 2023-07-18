@@ -195,7 +195,7 @@ class WP_Job_Manager_Helper_Renewals {
 	 * Checks if the job expiry can be extended.
 	 * This is true if the job is public, the option to extend is set and the job expires within 5 days.
 	 *
-	 * @since $$next_version$$
+	 * @since 1.41.0
 	 *
 	 * @param int|WP_Post $job The job or job ID.
 	 *
