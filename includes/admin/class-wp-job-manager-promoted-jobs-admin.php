@@ -281,35 +281,43 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * @return string
 	 */
 	public function get_promote_jobs_template() {
-		$promote_template_option_name          = 'promote-jobs-template_' . get_user_locale();
-		$promote_jobs_template_next_check_name = '_promote-jobs-template_next_check_' . get_user_locale();
-		$promote_template                      = get_option( $promote_template_option_name, false );
-		$promote_jobs_template_next_check      = get_option( $promote_jobs_template_next_check_name );
-		$check_for_updated_template            = false;
+		$locale                          = get_user_locale();
+		$promote_template_transient_name = 'jm_promote-jobs-template_' . $locale;
+		$promote_template                = get_transient( $promote_template_transient_name );
 
-		if ( ! $promote_jobs_template_next_check || $promote_jobs_template_next_check < time() ) {
-			$check_for_updated_template = true;
-		}
-
-		if ( $check_for_updated_template ) {
-			$response = wp_safe_remote_get( 'https://wpjobmanager.com/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . get_user_locale() );
-			if (
-				is_wp_error( $response )
-				|| 200 !== wp_remote_retrieve_response_code( $response )
-				|| empty( wp_remote_retrieve_body( $response ) )
-			) {
-				update_option( $promote_jobs_template_next_check_name, time() + MINUTE_IN_SECONDS * 5, false );
-				return $promote_template;
-			} else {
-				$assets           = json_decode( wp_remote_retrieve_body( $response ), true );
-				$promote_template = $assets['assets'][0]['content'];
-				update_option( $promote_template_option_name, $promote_template, false );
-				update_option( $promote_jobs_template_next_check_name, time() + HOUR_IN_SECONDS, false );
-			}
-		}
-		if ( ! is_wp_error( $promote_template ) ) {
+		if ( false !== $promote_template ) {
 			return $promote_template;
 		}
+
+		$url      = WP_Job_Manager_Helper_API::get_wpjmcom_url() . '/wp-json/promoted-jobs/v1/assets/promote-dialog/?lang=' . $locale;
+		$response = wp_safe_remote_get( $url );
+		$fallback = '
+			<div>
+				<br />
+				<slot name="buttons" class="promote-buttons-group"></slot>
+			</div>
+		';
+
+		if (
+			is_wp_error( $response )
+			|| 200 !== wp_remote_retrieve_response_code( $response )
+			|| empty( wp_remote_retrieve_body( $response ) )
+		) {
+			return $fallback;
+		}
+
+		$assets = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( empty( $assets['assets'][0]['content'] ) ) {
+			return $fallback;
+		}
+
+		$template = $assets['assets'][0]['content'];
+
+		// Persist in a transient.
+		set_transient( $promote_template_transient_name, $template, DAY_IN_SECONDS );
+
+		return $template;
 	}
 
 	/**
