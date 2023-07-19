@@ -58,6 +58,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	public function __construct() {
 		add_filter( 'manage_edit-job_listing_columns', [ $this, 'promoted_jobs_columns' ] );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'promoted_jobs_custom_columns' ], 2 );
+		add_action( 'job_manager_admin_after_job_title', [ $this, 'add_promoted_badge' ] );
 		add_action( 'admin_action_' . self::PROMOTE_JOB_ACTION, [ $this, 'handle_promote_job' ] );
 		add_action( 'admin_action_' . self::DEACTIVATE_PROMOTION_ACTION, [ $this, 'handle_deactivate_promotion' ] );
 		add_action( 'admin_footer', [ $this, 'promoted_jobs_admin_footer' ] );
@@ -107,6 +108,25 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			)
 		);
 		exit;
+	}
+
+	/**
+	 * Add promoted badge to promoted job listings.
+	 *
+	 * @internal
+	 *
+	 * @param \WP_Post $post        The post object.
+	 */
+	public function add_promoted_badge( $post ) {
+		if (
+			is_null( $post )
+			|| 'job_listing' !== $post->post_type
+			|| ! $this->is_promoted( $post->ID )
+		) {
+			return;
+		}
+
+		echo '<span title="' . esc_attr__( 'This job has been promoted to external job boards.', 'wp-job-manager' ) . '" class="job_manager_admin_badge job_manager_admin_badge--promoted">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>';
 	}
 
 	/**
