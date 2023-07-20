@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Helper functions used in WP Job Manager regarding addons and licenses.
+ * Helper functions used in WP Job Manager regarding addons, licenses and renewals.
  *
  * @package wp-job-manager
  * @since   1.29.0
@@ -71,10 +71,11 @@ class WP_Job_Manager_Helper {
 	 * Loads the class, runs on init.
 	 */
 	public function init() {
-		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-options.php';
-		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-api.php';
-		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-language-packs.php';
-		include_once dirname( __FILE__ ) . '/class-wp-job-manager-site-trust-token.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-options.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-api.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-language-packs.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-renewals.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-site-trust-token.php';
 
 		$this->api = WP_Job_Manager_Helper_API::instance();
 

@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.35.2
+ * @version     1.41.0
  *
  * @since 1.34.4 Available job actions are passed in an array (`$job_actions`, keyed by job ID) and not generated in the template.
  * @since 1.35.0 Switched to new date functions.
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$submission_limit			= get_option( 'job_manager_submission_limit' );
+$submission_limit			= ! empty( get_option( 'job_manager_submission_limit' ) ) ? absint( get_option( 'job_manager_submission_limit' ) ) : false;
 $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 ?>
 <div id="job-manager-job-dashboard">
@@ -49,6 +49,9 @@ $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 								<?php if ('job_title' === $key ) : ?>
 									<?php if ( $job->post_status == 'publish' ) : ?>
 										<a href="<?php echo esc_url( get_permalink( $job->ID ) ); ?>"><?php wpjm_the_job_title( $job ); ?></a>
+										<?php if ( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job ) ) : ?>
+											<small>(<?php esc_html_e('Expires soon', 'wp-job-manager'); ?>)</small>
+										<?php endif; ?>
 									<?php else : ?>
 										<?php wpjm_the_job_title( $job ); ?> <small>(<?php the_job_status( $job ); ?>)</small>
 									<?php endif; ?>
@@ -87,7 +90,7 @@ $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 				<?php endforeach; ?>
 			<?php endif; ?>
 		</tbody>
-		<?php if ( $submit_job_form_page_id && ( job_manager_count_user_job_listings() < $submission_limit || ! $submission_limit ) ) : ?>
+		<?php if ( job_manager_user_can_submit_job_listing() ) : ?>
 			<tfoot>
 				<tr>
 					<td colspan="<?php echo count( $job_dashboard_columns ); ?>">

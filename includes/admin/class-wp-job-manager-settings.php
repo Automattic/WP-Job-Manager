@@ -32,6 +32,13 @@ class WP_Job_Manager_Settings {
 	protected $settings = [];
 
 	/**
+	 * Settings group.
+	 *
+	 * @var array Settings.
+	 */
+	protected $settings_group;
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  1.26.0
@@ -373,6 +380,14 @@ class WP_Job_Manager_Settings {
 							'std'        => '30',
 							'label'      => __( 'Listing Duration', 'wp-job-manager' ),
 							'desc'       => __( 'Listings will display for the set number of days, then expire. Leave this field blank if you don\'t want listings to have an expiration date.', 'wp-job-manager' ),
+							'attributes' => [],
+						],
+						[
+							'name'       => 'job_manager_renewal_days',
+							'std'        => 5,
+							'label'      => __( 'Renewal Window', 'wp-job-manager' ),
+							'desc'       => __( 'Sets the number of days before expiration where users are given the option to renew their listings. For example, entering "7" will allow users to renew their listing one week before expiration. Entering "0" will disable renewals entirely.', 'wp-job-manager' ),
+							'type'       => 'number',
 							'attributes' => [],
 						],
 						[

@@ -945,4 +945,39 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		remove_filter( 'get_job_listings_cache_results', '__return_false' );
 		add_filter( 'get_job_listings_cache_results', '__return_true' );
 	}
+
+	/**
+	 * @since 1.41.0
+	 * @covers WP_Job_Manager_Helper_Renewals::job_can_be_renewed
+	 */
+	public function test_job_can_be_renewed() {
+		$job_listing_id = $this->factory->job_listing->create();
+		$job_listing    = get_post( $job_listing_id );
+		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+		update_option( 'job_manager_renewal_days', 2 );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("+3 days") ) );
+		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("+2 days") ) );
+		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("+1 day") ) );
+		$this->assertTrue( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("now") ) );
+		$this->assertTrue( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+		update_option( 'job_manager_renewal_days', 0 );
+		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+	}
+
+	/**
+	 * @since 1.41.0
+	 * @covers WP_Job_Manager_Helper_Renewals::renew_job_listing
+	 */
+	public function test_renew_job_listing() {
+		$job_listing_id = $this->factory->job_listing->create();
+		$job_listing    = get_post( $job_listing_id );
+		update_option( 'job_manager_renewal_days', 2 );
+		update_post_meta( $job_listing_id, '_job_expires', wp_date('Y-m-d', strtotime("+1 day") ) );
+		$this->assertTrue( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+		WP_Job_Manager_Helper_Renewals::renew_job_listing( get_post( $job_listing_id ) );
+		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+	}
 }
