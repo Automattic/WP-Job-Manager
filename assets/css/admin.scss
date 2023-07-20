@@ -372,6 +372,22 @@ a.wpjm-activate-licence-link:active {
 		}
 	}
 
+	.column-job_position {
+		.job_manager_admin_badge {
+			display: inline-block;
+			margin-left: 5px;
+			padding: 0 5px;
+			border-radius: 10px;
+			font-size: 12px;
+			font-weight: regular;
+
+			&--promoted {
+				background-color: #1b00e6;
+				color: #fff;
+			}
+		}
+	}
+
 	.column-job_listing_type {
 		text-align: left;
 		width: 6em;

@@ -610,6 +610,15 @@ class WP_Job_Manager_CPT {
 				// translators: %d is the post ID for the job listing.
 				echo '<a href="' . esc_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) ) . '" class="tips job_title" data-tip="' . sprintf( esc_html__( 'ID: %d', 'wp-job-manager' ), intval( $post->ID ) ) . '">' . wp_kses_post( wpjm_get_the_job_title() ) . '</a>';
 
+				/**
+				 * Fires after the job title in the Job Listings admin list table.
+				 *
+				 * @since $$next-version$$
+				 *
+				 * @param WP_Post $post The current job listing post object.
+				 */
+				do_action( 'job_manager_admin_after_job_title', $post );
+
 				echo '<div class="company">';
 
 				if ( get_the_company_website() ) {
