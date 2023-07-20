@@ -457,14 +457,16 @@ jQuery( document ).ready( function( $ ) {
 			} );
 		} );
 
+	function triggerSearch() {
+		var $target = $( this ).closest( 'div.job_listings' );
+		$target.triggerHandler( 'update_results', [ 1, false ] );
+		store_state( $target );
+	}
+
 	$(
 		'#search_keywords, #search_location, #remote_position, .job_types :input, #search_categories, .job-manager-filter'
 	)
-		.change( function() {
-			var $target = $( this ).closest( 'div.job_listings' );
-			$target.triggerHandler( 'update_results', [ 1, false ] );
-			store_state( $target );
-		} )
+		.change( triggerSearch )
 		.on( 'keyup', function( e ) {
 			if ( e.which === 13 ) {
 				$( this ).trigger( 'change' );
@@ -504,6 +506,16 @@ jQuery( document ).ready( function( $ ) {
 			return false;
 		} )
 		.on( 'submit', function() {
+			// Find the index of the closes job_listings. This will always be 0 if only one job_listings element exists
+			// on the page.
+			var $closestListings = $( this ).closest( 'div.job_listings' );
+			var index = $( 'div.job_listings' ).index( $closestListings );
+
+			// Check if there isn't an ongoing search before triggering a new search.
+			if ( xhr[ index ] && [ 0, 4 ].indexOf( xhr[ index ].readyState ) !== -1 ) {
+				triggerSearch.call( this );
+			}
+
 			return false;
 		} );
 

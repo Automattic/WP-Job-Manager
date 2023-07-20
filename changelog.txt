@@ -1,5 +1,20 @@
 # WP Job Manager
 
+## 1.41.0 - 2023-06-10
+* Enhancement: Introduce listing renewals #2422
+* Enhancement: Allow searching multiple job locations at once #2433
+* Fix: Add check for job listing limit being 0 #2362
+* Fix: Trigger search when submitting search form #2457
+* Fix: Always show search actions #2454
+* Fix: Fix PHP 8.2 deprecations #2456
+* Fix: Make forms responsive #2453
+* Fix: Update $company_tagline check for PHP8+ #2430
+* Fix:  Update notice string from 'c' to 's' license spelling #2429
+* Change: Update WPJM logo #2482
+* Change: Add hook in job-submitted template #2458
+* Change: Run job_manager_job_submitted_content filter in every case #2474
+* Change: Update historical notices to use the new render_notice method. #2409
+
 ## 1.40.2 - 2023-05-26
 * Revert: Hide expired job listings from archives
 

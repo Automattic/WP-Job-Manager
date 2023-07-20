@@ -25,6 +25,13 @@ class WP_Job_Manager_Admin {
 	private static $instance = null;
 
 	/**
+	 * Settings page.
+	 *
+	 * @var WP_Job_Manager_Settings
+	 */
+	private $settings_page;
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  1.26.0

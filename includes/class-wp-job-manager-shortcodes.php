@@ -108,9 +108,8 @@ class WP_Job_Manager_Shortcodes {
 		$job_count        = job_manager_count_user_job_listings();
 
 		if (
-			$submit_job_form_page_id
-			&& $submission_limit
-			&& $job_count >= $submission_limit
+			$submit_job_form_page_id &&
+			! \job_manager_user_can_submit_job_listing()
 		) {
 			$employer_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id' );
 			if ( $employer_dashboard_page_id ) {
@@ -253,13 +252,21 @@ class WP_Job_Manager_Shortcodes {
 
 						break;
 					case 'relist':
+					case 'renew':
 					case 'continue':
 						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
 							throw new Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
 						}
 
-						// redirect to post page.
-						wp_safe_redirect( add_query_arg( [ 'job_id' => absint( $job_id ) ], job_manager_get_permalink( 'submit_job_form' ) ) );
+						$query_args = [
+							'job_id' => absint( $job_id ),
+							'action' => $action,
+						];
+
+						if ( 'renew' === $action ) {
+							$query_args['nonce'] = wp_create_nonce( 'job_manager_renew_job_' . $job_id );
+						}
+						wp_safe_redirect( add_query_arg( $query_args, job_manager_get_permalink( 'submit_job_form' ) ) );
 						exit;
 					default:
 						do_action( 'job_manager_job_dashboard_do_action_' . $action, $job_id );
@@ -452,6 +459,17 @@ class WP_Job_Manager_Shortcodes {
 				} else {
 					$actions['mark_filled'] = [
 						'label' => __( 'Mark filled', 'wp-job-manager' ),
+						'nonce' => $base_nonce_action_name,
+					];
+				}
+				if (
+					get_option( 'job_manager_renewal_days' ) > 0
+					&& WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job )
+					&& WP_Job_Manager_Helper_Renewals::is_wcpl_renew_compatible()
+					&& WP_Job_Manager_Helper_Renewals::is_spl_renew_compatible()
+				) {
+					$actions['renew'] = [
+						'label' => __( 'Renew', 'wp-job-manager' ),
 						'nonce' => $base_nonce_action_name,
 					];
 				}

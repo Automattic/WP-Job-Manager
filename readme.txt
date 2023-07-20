@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 6.0
 Tested up to: 6.2
 Requires PHP: 7.2
-Stable tag: 1.40.2
+Stable tag: 1.41.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,6 +152,21 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.41.0 =
+* Enhancement: Introduce listing renewals #2422
+* Enhancement: Allow searching multiple job locations at once #2433
+* Fix: Add check for job listing limit being 0 #2362
+* Fix: Trigger search when submitting search form #2457
+* Fix: Always show search actions #2454
+* Fix: Fix PHP 8.2 deprecations #2456
+* Fix: Make forms responsive #2453
+* Fix: Update $company_tagline check for PHP8+ #2430
+* Fix:  Update notice string from 'c' to 's' license spelling #2429
+* Change: Update WPJM logo #2482
+* Change: Add hook in job-submitted template #2458
+* Change: Run job_manager_job_submitted_content filter in every case #2474
+* Change: Update historical notices to use the new render_notice method. #2409
 
 = 1.40.2 =
 * Revert: Hide expired job listings from archives

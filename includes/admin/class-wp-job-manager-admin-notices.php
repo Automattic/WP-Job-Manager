@@ -57,6 +57,7 @@ class WP_Job_Manager_Admin_Notices {
 		add_action( 'wp_loaded', [ __CLASS__, 'dismiss_notices' ] );
 		add_action( 'wp_ajax_wp_job_manager_dismiss_notice', [ __CLASS__, 'handle_notice_dismiss' ] );
 		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'maybe_add_addon_update_available_notice' ], 10, 1 );
+		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'paid_listings_renewal_notice' ], 10, 1 );
 	}
 
 	/**
@@ -591,6 +592,36 @@ class WP_Job_Manager_Admin_Notices {
 			$updates_info .= $update['plugin'] . '@' . $update['new_version'];
 		}
 		return self::NOTICE_ADDON_UPDATE_AVAILABLE . '-' . md5( $updates_info );
+	}
+
+	/**
+	 * Adds notice to update Simple or WC paid listings plugin to use listing renewal feature.
+	 *
+	 * @since 1.41.0
+	 * @param array $notices Existing notices.
+	 *
+	 * @return array Notices.
+	 */
+	public static function paid_listings_renewal_notice( $notices ) {
+		if ( ! WP_Job_Manager_Helper_Renewals::is_wcpl_renew_compatible() ) {
+			$notices['wcpl_listing_renewal'] = [
+				'level'       => 'info',
+				'dismissible' => true,
+				'message'     => wp_kses_post(
+					__( 'Listing renewals require the latest version of WC Paid Listings. Please update the plugin to enable the feature.', 'wp-job-manager' )
+				),
+			];
+		}
+		if ( ! WP_Job_Manager_Helper_Renewals::is_spl_renew_compatible() ) {
+			$notices['spl_listing_renewal'] = [
+				'level'       => 'info',
+				'dismissible' => true,
+				'message'     => wp_kses_post(
+					__( 'Listing renewals require the latest version of Simple Paid Listings. Please update the plugin to enable the feature.', 'wp-job-manager' )
+				),
+			];
+		}
+		return $notices;
 	}
 }
 
