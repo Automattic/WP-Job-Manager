@@ -291,7 +291,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				'post_id'  => $post_id,
 				'_wpnonce' => wp_create_nonce( self::DEACTIVATE_PROMOTION_ACTION . '-' . $post_id ),
 			],
-			$base_url
+			admin_url( 'admin.php' )
 		);
 	}
 
