@@ -83,7 +83,7 @@ class WP_Job_Manager_Promoted_Jobs {
 			return false;
 		}
 
-		$promoted = get_post_meta( $post_id, '_promoted', true );
+		$promoted = get_post_meta( $post_id, self::PROMOTED_META_KEY, true );
 
 		return (bool) $promoted;
 	}
@@ -100,7 +100,7 @@ class WP_Job_Manager_Promoted_Jobs {
 			return false;
 		}
 
-		return update_post_meta( $post_id, '_promoted', 0 );
+		return update_post_meta( $post_id, self::PROMOTED_META_KEY, 0 );
 	}
 }
 
