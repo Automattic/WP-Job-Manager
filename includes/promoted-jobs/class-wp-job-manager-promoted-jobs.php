@@ -25,11 +25,11 @@ class WP_Job_Manager_Promoted_Jobs {
 	private static $instance = null;
 
 	/**
-	 * Associated post meta.
+	 * Name for post meta that identify a `job_listing` post as promoted.
 	 *
 	 * @var string
 	 */
-	const META_KEY = '_promoted';
+	const PROMOTED_META_KEY = '_promoted';
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
