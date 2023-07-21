@@ -71,6 +71,29 @@ class WP_Job_Manager_Promoted_Jobs {
 		( new WP_Job_Manager_Promoted_Jobs_API() )->register_routes();
 	}
 
+	/**
+	 * Check if a job is promoted.
+	 *
+	 * @param int $post_id
+	 *
+	 * @return boolean
+	 */
+	public static function is_promoted( $post_id ) {
+		$promoted = get_post_meta( $post_id, '_promoted', true );
+
+		return (bool) $promoted;
+	}
+
+	/**
+	 * Deactivate promotion for a job.
+	 *
+	 * @param int $post_id
+	 *
+	 * @return boolean
+	 */
+	public static function deactivate_promotion( $post_id ) {
+		return update_post_meta( $post_id, '_promoted', 0 );
+	}
 }
 
 WP_Job_Manager_Promoted_Jobs::instance();

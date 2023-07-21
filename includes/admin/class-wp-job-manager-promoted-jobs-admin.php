@@ -121,7 +121,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		if (
 			is_null( $post )
 			|| 'job_listing' !== $post->post_type
-			|| ! $this->is_promoted( $post->ID )
+			|| ! WP_Job_Manager_Promoted_Jobs::is_promoted( $post->ID )
 		) {
 			return;
 		}
@@ -203,19 +203,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	}
 
 	/**
-	 * Check if a job is promoted.
-	 *
-	 * @param int $post_id
-	 *
-	 * @return boolean
-	 */
-	public function is_promoted( $post_id ) {
-		$promoted = get_post_meta( $post_id, '_promoted', true );
-
-		return (bool) $promoted;
-	}
-
-	/**
 	 * Deactivate promotion for a job.
 	 *
 	 * @param int $post_id
@@ -244,7 +231,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 
 		$promote_url = self::get_promote_url( $post->ID );
 
-		if ( $this->is_promoted( $post->ID ) ) {
+		if ( WP_Job_Manager_Promoted_Jobs::is_promoted( $post->ID ) ) {
 			$deactivate_action_link = self::get_deactivate_url( $post->ID );
 			echo '
 			<span class="jm-promoted__status-promoted">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>
