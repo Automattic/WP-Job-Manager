@@ -176,16 +176,6 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	}
 
 	/**
-	 * Check if a job is promoted.
-	 *
-	 * @param int $post_id Post ID.
-	 * @return bool
-	 */
-	private function is_promoted_job( $post_id ) {
-		return '1' === get_post_meta( $post_id, '_promoted', true );
-	}
-
-	/**
 	 * Notify wpjobmanager.com when a Job Listing changes.
 	 *
 	 * @access private
