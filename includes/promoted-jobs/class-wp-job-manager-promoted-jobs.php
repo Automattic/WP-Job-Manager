@@ -87,6 +87,22 @@ class WP_Job_Manager_Promoted_Jobs {
 	}
 
 	/**
+	 * Update promotion.
+	 *
+	 * @param int  $post_id
+	 * @param bool $promoted
+	 *
+	 * @return boolean
+	 */
+	public static function update_promotion( $post_id, $promoted ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
+		return update_post_meta( $post_id, self::PROMOTED_META_KEY, $promoted ? '1' : '0' );
+	}
+
+	/**
 	 * Deactivate promotion for a job.
 	 *
 	 * @param int $post_id
@@ -94,11 +110,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public static function deactivate_promotion( $post_id ) {
-		if ( 'job_listing' !== get_post_type( $post_id ) ) {
-			return false;
-		}
-
-		return update_post_meta( $post_id, self::PROMOTED_META_KEY, 0 );
+		return self::update_promotion( $post_id, false );
 	}
 }
 
