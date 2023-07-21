@@ -79,6 +79,10 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public static function is_promoted( $post_id ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
 		$promoted = get_post_meta( $post_id, '_promoted', true );
 
 		return (bool) $promoted;
@@ -92,6 +96,10 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public static function deactivate_promotion( $post_id ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
 		return update_post_meta( $post_id, '_promoted', 0 );
 	}
 }
