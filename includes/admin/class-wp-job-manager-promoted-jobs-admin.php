@@ -92,7 +92,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			wp_die( esc_html__( 'You do not have permission to deactivate the promotion for this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
-		$this->deactivate_promotion( $post_id );
+		WP_Job_Manager_Promoted_Jobs::deactivate_promotion( $post_id );
 
 		wp_safe_redirect(
 			add_query_arg(
@@ -200,17 +200,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		);
 		wp_safe_redirect( $url );
 		exit;
-	}
-
-	/**
-	 * Deactivate promotion for a job.
-	 *
-	 * @param int $post_id
-	 *
-	 * @return boolean
-	 */
-	public function deactivate_promotion( $post_id ) {
-		return update_post_meta( $post_id, '_promoted', 0 );
 	}
 
 	/**
