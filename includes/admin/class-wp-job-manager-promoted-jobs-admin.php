@@ -63,6 +63,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		add_action( 'admin_action_' . self::DEACTIVATE_PROMOTION_ACTION, [ $this, 'handle_deactivate_promotion' ] );
 		add_action( 'admin_footer', [ $this, 'promoted_jobs_admin_footer' ] );
 		add_action( 'wpjm_job_listing_bulk_actions', [ $this, 'add_action_notice' ] );
+		add_action( 'wpjm_admin_notices', [ $this, 'maybe_add_promoted_jobs_notice' ] );
 	}
 
 	/**
@@ -360,6 +361,34 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		}
 	}
 
+	/**
+	 * Add a notice to the job listing admin page if the user has promoted jobs.
+	 *
+	 * @internal
+	 *
+	 * @param array $notices Notices to filter on.
+	 *
+	 * @return array
+	 */
+	public function maybe_add_promoted_jobs_notice( $notices ) {
+		if ( WP_Job_Manager_Promoted_Jobs::get_promoted_jobs_count() === 0 ) {
+			return $notices;
+		}
+
+		$notices['has-promoted-job'] = [
+			'type'       => 'info',
+			'heading'    => __( 'Congratulations! Your first job has been successfully promoted.', 'wp-job-manager' ),
+			'message'    => __( 'To manage your promoted job, use the <em>Edit</em> and <em>Deactivate</em> links beside the job listing under the <strong>Promote</strong> column. Unpublishing a post will not remove the promotion.', 'wp-job-manager' ),
+			'conditions' => [
+				[
+					'type'    => 'screens',
+					'screens' => [ 'edit-job_listing' ],
+				],
+			],
+		];
+
+		return $notices;
+	}
 }
 
 WP_Job_Manager_Promoted_Jobs_Admin::instance();
