@@ -32,6 +32,13 @@ class WP_Job_Manager_Promoted_Jobs {
 	const PROMOTED_META_KEY = '_promoted';
 
 	/**
+	 * Option that caches the number of active promoted jobs.
+	 *
+	 * @var string
+	 */
+	const PROMOTED_JOB_TRACK_OPTION = 'jm_promoted_job_count';
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  $$next-version$$
@@ -99,6 +106,8 @@ class WP_Job_Manager_Promoted_Jobs {
 			return false;
 		}
 
+		delete_option( self::PROMOTED_JOB_TRACK_OPTION );
+
 		return update_post_meta( $post_id, self::PROMOTED_META_KEY, $promoted ? '1' : '0' );
 	}
 
@@ -111,6 +120,39 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	public static function deactivate_promotion( $post_id ) {
 		return self::update_promotion( $post_id, false );
+	}
+
+	/**
+	 * Get the number of active promoted jobs.
+	 *
+	 * @return int
+	 */
+	public static function get_promoted_jobs_count() {
+		$promoted_jobs_count = get_option( self::PROMOTED_JOB_TRACK_OPTION );
+
+		if ( false === $promoted_jobs_count ) {
+			$promoted_jobs = new WP_Query(
+				[
+					'post_type'      => 'job_listing',
+					'post_status'    => 'any',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+					'meta_query'     => [
+						[
+							'key'     => self::PROMOTED_META_KEY,
+							'value'   => '1',
+							'compare' => '=',
+						],
+					],
+				]
+			);
+
+			$promoted_jobs_count = $promoted_jobs->found_posts;
+
+			update_option( self::PROMOTED_JOB_TRACK_OPTION, $promoted_jobs_count );
+		}
+
+		return (int) $promoted_jobs_count;
 	}
 }
 

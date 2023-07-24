@@ -31,14 +31,16 @@ class WP_Job_Manager_Admin_Notices {
 	const DISMISSED_NOTICES_USER_META   = 'wp_job_manager_dismissed_notices';
 
 	const ALLOWED_HTML = [
-		'div' => [
+		'div'    => [
 			'class' => [],
 		],
-		'a'   => [
+		'a'      => [
 			'target' => [],
 			'href'   => [],
 			'rel'    => [],
 		],
+		'em'     => [],
+		'strong' => [],
 	];
 
 	/**
