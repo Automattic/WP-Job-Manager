@@ -92,7 +92,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			wp_die( esc_html__( 'You do not have permission to deactivate the promotion for this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
-		$this->deactivate_promotion( $post_id );
+		WP_Job_Manager_Promoted_Jobs::deactivate_promotion( $post_id );
 
 		wp_safe_redirect(
 			add_query_arg(
@@ -121,7 +121,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		if (
 			is_null( $post )
 			|| 'job_listing' !== $post->post_type
-			|| ! $this->is_promoted( $post->ID )
+			|| ! WP_Job_Manager_Promoted_Jobs::is_promoted( $post->ID )
 		) {
 			return;
 		}
@@ -203,30 +203,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	}
 
 	/**
-	 * Check if a job is promoted.
-	 *
-	 * @param int $post_id
-	 *
-	 * @return boolean
-	 */
-	public function is_promoted( $post_id ) {
-		$promoted = get_post_meta( $post_id, '_promoted', true );
-
-		return (bool) $promoted;
-	}
-
-	/**
-	 * Deactivate promotion for a job.
-	 *
-	 * @param int $post_id
-	 *
-	 * @return boolean
-	 */
-	public function deactivate_promotion( $post_id ) {
-		return update_post_meta( $post_id, '_promoted', 0 );
-	}
-
-	/**
 	 * Handle display of new column
 	 *
 	 * @param string $column
@@ -244,7 +220,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 
 		$promote_url = self::get_promote_url( $post->ID );
 
-		if ( $this->is_promoted( $post->ID ) ) {
+		if ( WP_Job_Manager_Promoted_Jobs::is_promoted( $post->ID ) ) {
 			$deactivate_action_link = self::get_deactivate_url( $post->ID );
 			echo '
 			<span class="jm-promoted__status-promoted">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>

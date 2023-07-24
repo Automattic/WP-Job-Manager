@@ -25,11 +25,11 @@ class WP_Job_Manager_Promoted_Jobs {
 	private static $instance = null;
 
 	/**
-	 * Associated post meta.
+	 * Name for post meta that identify a `job_listing` post as promoted.
 	 *
 	 * @var string
 	 */
-	const META_KEY = '_promoted';
+	const PROMOTED_META_KEY = '_promoted';
 
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
@@ -71,6 +71,47 @@ class WP_Job_Manager_Promoted_Jobs {
 		( new WP_Job_Manager_Promoted_Jobs_API() )->register_routes();
 	}
 
+	/**
+	 * Check if a job is promoted.
+	 *
+	 * @param int $post_id
+	 *
+	 * @return boolean
+	 */
+	public static function is_promoted( $post_id ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
+		return '1' === get_post_meta( $post_id, self::PROMOTED_META_KEY, true );
+	}
+
+	/**
+	 * Update promotion.
+	 *
+	 * @param int  $post_id
+	 * @param bool $promoted
+	 *
+	 * @return boolean
+	 */
+	public static function update_promotion( $post_id, $promoted ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
+		return update_post_meta( $post_id, self::PROMOTED_META_KEY, $promoted ? '1' : '0' );
+	}
+
+	/**
+	 * Deactivate promotion for a job.
+	 *
+	 * @param int $post_id
+	 *
+	 * @return boolean
+	 */
+	public static function deactivate_promotion( $post_id ) {
+		return self::update_promotion( $post_id, false );
+	}
 }
 
 WP_Job_Manager_Promoted_Jobs::instance();

@@ -78,7 +78,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	public function __construct() {
 		$this->watched_fields = [
 			'post' => [ 'post_name', 'post_title', 'post_content', 'post_status' ],
-			'meta' => [ '_promoted' ],
+			'meta' => [ WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY ],
 		];
 		add_action( 'post_updated', [ $this, 'post_updated' ], 10, 3 );
 		add_action( 'update_postmeta', [ $this, 'meta_updated' ], 10, 4 );
@@ -93,7 +93,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @param WP_Post $post_before Post object before the update.
 	 */
 	public function post_updated( $post_id, $post_after, $post_before ) {
-		if ( ! $this->should_notify( $post_id ) ) {
+		if ( ! WP_Job_Manager_Promoted_Jobs::is_promoted( $post_id ) ) {
 			return;
 		}
 		$keys        = $this->watched_fields['post'];
@@ -125,7 +125,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @param mixed  $meta_value Meta value.
 	 */
 	public function meta_updated( $meta_id, $post_id, $meta_key, $meta_value ) {
-		if ( ! $this->should_notify( $post_id ) ) {
+		if ( ! WP_Job_Manager_Promoted_Jobs::is_promoted( $post_id ) ) {
 			return;
 		}
 		if ( in_array( $meta_key, $this->watched_fields['meta'], true ) ) {
@@ -173,32 +173,6 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Check if a job is promoted.
-	 *
-	 * @param int $post_id Post ID.
-	 * @return bool
-	 */
-	private function is_promoted_job( $post_id ) {
-		return '1' === get_post_meta( $post_id, '_promoted', true );
-	}
-
-	/**
-	 * Check if we should notify wpjobmanager.com of a change.
-	 *
-	 * @param int $post_id Post ID.
-	 * @return bool
-	 */
-	public function should_notify( $post_id ) {
-		if ( 'job_listing' !== get_post_type( $post_id ) ) {
-			return false;
-		}
-		if ( ! $this->is_promoted_job( $post_id ) ) {
-			return false;
-		}
-		return true;
 	}
 
 	/**
