@@ -376,9 +376,10 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		}
 
 		$notices['has-promoted-job'] = [
-			'type'       => 'info',
+			'type'       => 'user',
+			'level'      => 'info',
 			'heading'    => __( 'Congratulations! Your first job has been successfully promoted.', 'wp-job-manager' ),
-			'message'    => __( 'To manage your promoted job, use the <em>Edit</em> and <em>Deactivate</em> links beside the job listing under the <strong>Promote</strong> column. Unpublishing a post will not remove the promotion.', 'wp-job-manager' ),
+			'message'    => __( 'To manage your promoted job, use the <em>Edit</em> and <em>Deactivate</em> links beside the job listing under the <strong>Promote</strong> column. Unpublishing a job listing will not deactivate the promotion.', 'wp-job-manager' ),
 			'conditions' => [
 				[
 					'type'    => 'screens',
