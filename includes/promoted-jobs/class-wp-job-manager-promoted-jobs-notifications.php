@@ -52,6 +52,13 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	private $watched_fields;
 
 	/**
+	 * Whether watched fields were changed.
+	 *
+	 * @var bool
+	 */
+	private $watched_fields_changed;
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -82,6 +89,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 		];
 		add_action( 'post_updated', [ $this, 'post_updated' ], 10, 3 );
 		add_action( 'update_postmeta', [ $this, 'meta_updated' ], 10, 4 );
+		add_action( 'shutdown', [ $this, 'maybe_trigger_notification' ] );
 		add_action( 'job_manager_promoted_jobs_notification', [ $this, 'send_notification' ] );
 	}
 
@@ -112,7 +120,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 			ARRAY_FILTER_USE_KEY
 		);
 		if ( $this->post_has_changed( $post_before, $post_after ) ) {
-			$this->send_notification();
+			$this->watched_fields_changed = true;
 		}
 	}
 
@@ -131,8 +139,17 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 		if ( in_array( $meta_key, $this->watched_fields['meta'], true ) ) {
 			$current_value = get_post_meta( $post_id, $meta_key, true );
 			if ( $current_value !== $meta_value ) {
-				$this->send_notification();
+				$this->watched_fields_changed = true;
 			}
+		}
+	}
+
+	/**
+	 * Trigger notification if watched fields were changed.
+	 */
+	public function maybe_trigger_notification() {
+		if ( true === $this->watched_fields_changed ) {
+			$this->send_notification();
 		}
 	}
 
