@@ -151,7 +151,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * @return array The data to send.
 	 */
 	private function get_notification_data() {
-		$site_url = home_url();
+		$site_url = home_url( '', 'https' );
 		$feed_url = rest_url( '/wpjm-internal/v1/promoted-jobs' );
 		$feed_url = substr( $feed_url, strlen( $site_url ) );
 		return [
