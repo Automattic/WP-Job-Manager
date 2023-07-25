@@ -116,7 +116,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 
 		$args = [
 			'post_type'           => 'job_listing',
-			'post_status'         => array_merge( get_job_listing_post_statuses(), [ 'trash' ] ),
+			'post_status'         => array_merge( array_keys( get_job_listing_post_statuses() ), [ 'trash' ] ),
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
 			'posts_per_page'      => -1,
