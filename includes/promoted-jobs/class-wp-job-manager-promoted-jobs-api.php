@@ -116,7 +116,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 
 		$args = [
 			'post_type'           => 'job_listing',
-			'post_status'         => 'publish',
+			'post_status'         => [ 'any', 'trash' ],
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
 			'posts_per_page'      => -1,
