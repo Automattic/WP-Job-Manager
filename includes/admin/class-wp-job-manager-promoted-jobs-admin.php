@@ -172,7 +172,9 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		if ( ! $post_id ) {
 			wp_die( esc_html__( 'No job listing ID provided for promotion.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
-		if ( ! $this->can_promote_job( $post_id ) ) {
+
+		$is_promoted_or_published = WP_Job_Manager_Promoted_Jobs::is_promoted( $post_id ) || 'publish' === get_post_status( $post_id );
+		if ( ! $this->can_promote_job( $post_id ) || ! $is_promoted_or_published ) {
 			wp_die( esc_html__( 'You do not have permission to promote this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 		$current_user = get_current_user_id();
