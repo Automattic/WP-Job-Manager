@@ -217,7 +217,8 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 */
 	public function get_job_data( $request ) {
 		$job_id = $request->get_param( 'job_id' );
-		if ( 'job_listing' !== get_post_type( $job_id ) ) {
+		$post   = get_post( $job_id );
+		if ( 'job_listing' !== get_post_type( $post ) ) {
 			return new WP_Error( 'not_found', __( 'The promoted job was not found', 'wp-job-manager' ), [ 'status' => 404 ] );
 		}
 		$job_data = $this->prepare_item_for_response( get_post( $job_id ) );
