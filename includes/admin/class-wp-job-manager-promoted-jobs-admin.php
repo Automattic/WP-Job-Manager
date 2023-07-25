@@ -138,7 +138,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * @return bool Returns true if they can promote a job.
 	 */
 	private function can_promote_job( int $post_id ) {
-		if ( 'job_listing' !== get_post_type( $post_id ) || 'publish' !== get_post_status( $post_id ) ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
 			return false;
 		}
 
@@ -231,7 +231,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				<a class="jm-promoted__deactivate delete" href="#" data-href="' . esc_url( $deactivate_action_link ) . '">' . esc_html__( 'Deactivate', 'wp-job-manager' ) . '</a>
 			</div>
 			';
-		} else {
+		} elseif ( 'publish' === $post->post_status ) {
 			echo '<button class="promote_job button button-primary" data-href=' . esc_url( $promote_url ) . '>' . esc_html__( 'Promote', 'wp-job-manager' ) . '</button>';
 		}
 	}
