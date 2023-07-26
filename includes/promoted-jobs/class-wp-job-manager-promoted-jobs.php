@@ -64,7 +64,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	/**
 	 * Includes promoted jobs dependencies.
 	 *
-	 * @access private
+	 * @internal
 	 * @return void
 	 */
 	public function include_dependencies() {
@@ -75,7 +75,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	/**
 	 * Loads the REST API functionality.
 	 *
-	 * @access private
+	 * @internal
 	 */
 	public function rest_init() {
 		( new WP_Job_Manager_Promoted_Jobs_API() )->register_routes();
@@ -84,7 +84,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	/**
 	 * Cancel promoted jobs deletion.
 	 *
-	 * @access private
+	 * @internal
 	 *
 	 * @param WP_Post|false|null $delete
 	 * @param WP_Post            $post
