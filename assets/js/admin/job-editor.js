@@ -30,8 +30,10 @@ domReady( () => {
 				'publish' !== coreEditorSelector.getCurrentPostAttribute( 'status' );
 		},
 		onSave: () => {
-			// Open dialog when job was published.
-			if ( jobWasPublished ) {
+			const meta = coreEditorSelector.getCurrentPostAttribute( 'meta' );
+
+			// Open dialog when job was published and it's not promoted.
+			if ( jobWasPublished && '1' !== meta?._promoted ) {
 				promoteDialog.showModal();
 				postOpenPromoteModal( promoteDialog, window.wpjm.promoteUrl );
 			}
