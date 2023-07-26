@@ -64,6 +64,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		add_action( 'admin_footer', [ $this, 'promoted_jobs_admin_footer' ] );
 		add_action( 'wpjm_job_listing_bulk_actions', [ $this, 'add_action_notice' ] );
 		add_action( 'wpjm_admin_notices', [ $this, 'maybe_add_promoted_jobs_notice' ] );
+		add_action( 'wpjm_admin_notices', [ $this, 'maybe_add_trash_notice' ] );
 	}
 
 	/**
@@ -384,6 +385,52 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				[
 					'type'    => 'screens',
 					'screens' => [ 'edit-job_listing' ],
+				],
+			],
+		];
+
+		return $notices;
+	}
+
+	/**
+	 * Add a notice to the job listing admin page if there are promoted jobs on trash.
+	 *
+	 * @internal
+	 *
+	 * @param array $notices Notices to filter on.
+	 *
+	 * @return array
+	 */
+	public function maybe_add_trash_notice( $notices ) {
+		$promoted_trash_count = WP_Job_Manager_Promoted_Jobs::query_promoted_jobs_count( [ 'post_status' => 'trash' ] );
+		if ( 0 === $promoted_trash_count ) {
+			return $notices;
+		}
+
+		$trash_url = add_query_arg(
+			[
+				'post_type'   => 'job_listing',
+				'post_status' => 'trash',
+			],
+			admin_url( 'edit.php' )
+		);
+
+		$notices['promoted-job-on-trash'] = [
+			'type'        => 'user',
+			'dismissible' => false,
+			'level'       => 'info',
+			'heading'     => __( 'You have promoted jobs on trash.', 'wp-job-manager' ),
+			'message'     => __( 'Deactivate trashed jobs in order to stop the promotion or publish it again, so applicants can see the job on your site.', 'wp-job-manager' ),
+			'conditions'  => [
+				[
+					'type'    => 'screens',
+					'screens' => [ 'edit-job_listing' ],
+				],
+			],
+			'actions'     => [
+				[
+					'label' => __( 'Check the trash', 'wp-job-manager' ),
+					'url'   => $trash_url,
 				],
 			],
 		];
