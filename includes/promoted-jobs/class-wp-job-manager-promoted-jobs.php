@@ -147,6 +147,38 @@ class WP_Job_Manager_Promoted_Jobs {
 	}
 
 	/**
+	 * Get the number of active promoted jobs filtering with specific args.
+	 *
+	 * @internal
+	 *
+	 * @param array $args Extra args for the counter query.
+	 *
+	 * @return int
+	 */
+	public static function query_promoted_jobs_count( $args = [] ) {
+		$args = wp_parse_args(
+			$args,
+			[
+				'post_type'      => 'job_listing',
+				'post_status'    => 'any',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'meta_query'     => [
+					[
+						'key'     => self::PROMOTED_META_KEY,
+						'value'   => '1',
+						'compare' => '=',
+					],
+				],
+			]
+		);
+
+		$promoted_jobs = new WP_Query( $args );
+
+		return $promoted_jobs->found_posts;
+	}
+
+	/**
 	 * Get the number of active promoted jobs.
 	 *
 	 * @return int
@@ -155,23 +187,7 @@ class WP_Job_Manager_Promoted_Jobs {
 		$promoted_jobs_count = get_option( self::PROMOTED_JOB_TRACK_OPTION );
 
 		if ( false === $promoted_jobs_count ) {
-			$promoted_jobs = new WP_Query(
-				[
-					'post_type'      => 'job_listing',
-					'post_status'    => 'any',
-					'posts_per_page' => 1,
-					'fields'         => 'ids',
-					'meta_query'     => [
-						[
-							'key'     => self::PROMOTED_META_KEY,
-							'value'   => '1',
-							'compare' => '=',
-						],
-					],
-				]
-			);
-
-			$promoted_jobs_count = $promoted_jobs->found_posts;
+			$promoted_jobs_count = self::query_promoted_jobs_count();
 
 			update_option( self::PROMOTED_JOB_TRACK_OPTION, $promoted_jobs_count );
 		}
