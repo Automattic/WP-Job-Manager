@@ -58,6 +58,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	public function __construct() {
 		add_action( 'init', [ $this, 'include_dependencies' ] );
 		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
+		add_filter( 'pre_delete_post', [ $this, 'cancel_promoted_jobs_deletion' ], 10, 2 );
 	}
 
 	/**
@@ -73,9 +74,32 @@ class WP_Job_Manager_Promoted_Jobs {
 
 	/**
 	 * Loads the REST API functionality.
+	 *
+	 * @access private
 	 */
 	public function rest_init() {
 		( new WP_Job_Manager_Promoted_Jobs_API() )->register_routes();
+	}
+
+	/**
+	 * Cancel promoted jobs deletion.
+	 *
+	 * @access private
+	 *
+	 * @param WP_Post|false|null $delete
+	 * @param WP_Post            $post
+	 *
+	 * @return WP_Post|false|null
+	 */
+	public function cancel_promoted_jobs_deletion( $delete, $post ) {
+		if (
+			'job_listing' !== $post->post_type
+			|| ! self::is_promoted( $post->ID )
+		) {
+			return $delete;
+		}
+
+		return false;
 	}
 
 	/**
