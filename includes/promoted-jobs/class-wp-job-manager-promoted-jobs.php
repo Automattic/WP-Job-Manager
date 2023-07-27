@@ -57,6 +57,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'include_dependencies' ] );
+		add_action( 'init', [ $this, 'register_post_metas' ] );
 		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
 	}
 
@@ -69,6 +70,24 @@ class WP_Job_Manager_Promoted_Jobs {
 	public function include_dependencies() {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-notifications.php';
+	}
+
+	/**
+	 * Register post metas.
+	 */
+	public function register_post_metas() {
+		register_post_meta(
+			'job_listing',
+			self::PROMOTED_META_KEY,
+			[
+				'show_in_rest'  => true,
+				'single'        => true,
+				'type'          => 'string',
+				'auth_callback' => function ( $allowed, $meta_key, $post_id ) {
+					return current_user_can( 'edit_post', $post_id );
+				},
+			]
+		);
 	}
 
 	/**
