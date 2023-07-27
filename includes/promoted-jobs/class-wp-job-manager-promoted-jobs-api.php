@@ -222,7 +222,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			return new WP_Error( 'not_found', __( 'The promoted job was not found', 'wp-job-manager' ), [ 'status' => 404 ] );
 		}
 		$controller = get_post_type_object( 'job_listing' )->get_rest_controller();
-		if ( $controller instanceof WP_REST_Posts_Controller && ! $controller->check_read_permission( $post ) ) {
+		if ( ! ( $controller instanceof WP_REST_Posts_Controller ) || ! $controller->check_read_permission( $post ) ) {
 			return new WP_Error( 'rest_forbidden', __( 'Sorry, you are not allowed to view this job.', 'wp-job-manager' ), [ 'status' => rest_authorization_required_code() ] );
 		}
 		$job_data = $this->prepare_item_for_response( get_post( $job_id ) );
