@@ -175,8 +175,8 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			'job_type'     => $terms_array,
 			'salary'       => [
 				'salary_amount'   => get_post_meta( $item->ID, '_job_salary', true ),
-				'salary_currency' => get_post_meta( $item->ID, '_job_salary_currency', true ),
-				'salary_unit'     => get_post_meta( $item->ID, '_job_salary_unit', true ),
+				'salary_currency' => get_the_job_salary_currency( $item ),
+				'salary_unit'     => get_the_job_salary_unit_display_text( $item ),
 			],
 		];
 	}
