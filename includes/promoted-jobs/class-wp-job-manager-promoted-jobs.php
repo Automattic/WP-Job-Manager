@@ -92,10 +92,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return WP_Post|false|null
 	 */
 	public function cancel_promoted_jobs_deletion( $delete, $post ) {
-		if (
-			'job_listing' !== $post->post_type
-			|| ! self::is_promoted( $post->ID )
-		) {
+		if ( ! self::is_promoted( $post->ID ) ) {
 			return $delete;
 		}
 
