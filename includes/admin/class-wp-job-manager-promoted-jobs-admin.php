@@ -420,8 +420,8 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			'type'        => 'user',
 			'dismissible' => false,
 			'level'       => 'info',
-			'heading'     => __( 'You have promoted jobs on trash.', 'wp-job-manager' ),
-			'message'     => __( 'Deactivate trashed jobs in order to stop the promotion or publish it again, so applicants can see the job on your site.', 'wp-job-manager' ),
+			'heading'     => __( 'You have promoted jobs in the trash.', 'wp-job-manager' ),
+			'message'     => __( 'Trashed jobs are not be available to your applicants. Deactivate the promotion or publish the job again to fix this.', 'wp-job-manager' ),
 			'conditions'  => [
 				[
 					'type'    => 'screens',
