@@ -89,7 +89,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			wp_die( esc_html__( 'No job listing ID provided for deactivation of the promotion.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
-		if ( ! $this->can_promote_job( $post_id ) ) {
+		if ( ! $this->can_manage_job_promotion( $post_id ) ) {
 			wp_die( esc_html__( 'You do not have permission to deactivate the promotion for this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
@@ -141,13 +141,13 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	}
 
 	/**
-	 * Check if a user can promote a job. They must have permission to manage job listings and the post type must be a published job_listing.
+	 * Check if a user can manage job promotion. They must have permission to manage job listings.
 	 *
 	 * @param int $post_id Post ID.
 	 *
 	 * @return bool Returns true if they can promote a job.
 	 */
-	private function can_promote_job( int $post_id ) {
+	private function can_manage_job_promotion( int $post_id ) {
 		if ( 'job_listing' !== get_post_type( $post_id ) ) {
 			return false;
 		}
@@ -183,10 +183,18 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			wp_die( esc_html__( 'No job listing ID provided for promotion.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
 		}
 
-		$is_promoted_or_published = WP_Job_Manager_Promoted_Jobs::is_promoted( $post_id ) || 'publish' === get_post_status( $post_id );
-		if ( ! $this->can_promote_job( $post_id ) || ! $is_promoted_or_published ) {
-			wp_die( esc_html__( 'You do not have permission to promote this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
+		$is_editing = WP_Job_Manager_Promoted_Jobs::is_promoted( $post_id );
+		$can_manage = $this->can_manage_job_promotion( $post_id );
+		if ( $is_editing ) {
+			if ( ! $can_manage ) {
+				wp_die( esc_html__( 'You do not have permission to edit this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
+			}
+		} else {
+			if ( ! $can_manage || 'publish' !== get_post_status( $post_id ) ) {
+				wp_die( esc_html__( 'You do not have permission to promote this job listing.', 'wp-job-manager' ), '', [ 'back_link' => true ] );
+			}
 		}
+
 		$current_user = get_current_user_id();
 		$site_trust   = WP_Job_Manager_Site_Trust_Token::instance();
 		$token        = $site_trust->generate( 'user', $current_user );
@@ -227,7 +235,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			return;
 		}
 
-		if ( ! $this->can_promote_job( $post->ID ) ) {
+		if ( ! $this->can_manage_job_promotion( $post->ID ) ) {
 			return;
 		}
 
