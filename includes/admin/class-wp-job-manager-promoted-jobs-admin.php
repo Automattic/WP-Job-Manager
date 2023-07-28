@@ -127,17 +127,17 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			return;
 		}
 
-		$tooltip      = '';
+		$title        = '';
 		$status_class = '';
 
 		if ( 'publish' !== $post->post_status ) {
-			$tooltip      = __( 'Your job is promoted and being exposed through API but it\'s not published in your site. You can fix it by publishing it again or deactivating the promotion.', 'wp-job-manager' );
+			$title        = __( 'Your job is promoted and being exposed through API but it\'s not published in your site. You can fix it by publishing it again or deactivating the promotion.', 'wp-job-manager' );
 			$status_class = 'job_manager_admin_badge--not_published';
 		} else {
-			$tooltip = __( 'This job has been promoted to external job boards.', 'wp-job-manager' );
+			$title = __( 'This job has been promoted to external job boards.', 'wp-job-manager' );
 		}
 
-		echo '<span title="' . esc_attr( $tooltip ) . '" class="job_manager_admin_badge job_manager_admin_badge--promoted ' . esc_attr( $status_class ) . '">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>';
+		echo '<span class="job_manager_admin_badge job_manager_admin_badge--promoted ' . esc_attr( $status_class ) . ' tips" title="' . esc_attr( $title ) . '" data-tip="' . esc_attr( $title ) . '">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>';
 	}
 
 	/**
