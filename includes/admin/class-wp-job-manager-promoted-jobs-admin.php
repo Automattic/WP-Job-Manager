@@ -457,7 +457,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 
 			$actions['delete'] = preg_replace(
 				'/<a(.*?)>/',
-				'<a onclick="return false;" style="opacity:0.3; cursor:help;" title="' . $title . '" $1>',
+				'<a onclick="return false;" style="opacity:0.3; cursor:help;" title="' . $title . '" data-tip="' . $title . '" class="tips" $1>',
 				$actions['delete'],
 				1
 			);
