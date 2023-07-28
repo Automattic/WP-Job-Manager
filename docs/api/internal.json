@@ -256,6 +256,11 @@
             "example": "9788656",
             "description": "The unique identifier for the job in the site (post ID)."
           },
+          "status": {
+            "type": "string",
+            "example": "publish",
+            "description": "The job status."
+          },
           "title": {
             "type": "string",
             "example": "Senior Software Engineer"

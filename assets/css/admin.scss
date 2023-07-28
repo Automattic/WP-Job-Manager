@@ -380,10 +380,15 @@ a.wpjm-activate-licence-link:active {
 			border-radius: 10px;
 			font-size: 12px;
 			font-weight: regular;
+			cursor: help;
 
 			&--promoted {
 				background-color: #1b00e6;
 				color: #fff;
+			}
+
+			&--not_published {
+				background-color: #f00;
 			}
 		}
 	}
