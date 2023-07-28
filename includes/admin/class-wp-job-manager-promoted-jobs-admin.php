@@ -64,6 +64,8 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		add_action( 'admin_footer', [ $this, 'promoted_jobs_admin_footer' ] );
 		add_action( 'wpjm_job_listing_bulk_actions', [ $this, 'add_action_notice' ] );
 		add_action( 'wpjm_admin_notices', [ $this, 'maybe_add_promoted_jobs_notice' ] );
+		add_action( 'wpjm_admin_notices', [ $this, 'maybe_add_trash_notice' ] );
+		add_action( 'post_row_actions', [ $this, 'remove_delete_from_promoted_jobs' ], 10, 2 );
 	}
 
 	/**
@@ -389,6 +391,79 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		];
 
 		return $notices;
+	}
+
+	/**
+	 * Add a notice to the job listing admin page if there are promoted jobs on trash.
+	 *
+	 * @internal
+	 *
+	 * @param array $notices Notices to filter on.
+	 *
+	 * @return array
+	 */
+	public function maybe_add_trash_notice( $notices ) {
+		$promoted_trash_count = WP_Job_Manager_Promoted_Jobs::query_promoted_jobs_count( [ 'post_status' => 'trash' ] );
+		if ( 0 === $promoted_trash_count ) {
+			return $notices;
+		}
+
+		$trash_url = add_query_arg(
+			[
+				'post_type'   => 'job_listing',
+				'post_status' => 'trash',
+			],
+			admin_url( 'edit.php' )
+		);
+
+		$notices['promoted-job-on-trash'] = [
+			'type'        => 'user',
+			'dismissible' => false,
+			'level'       => 'info',
+			'heading'     => __( 'You have promoted jobs in the trash.', 'wp-job-manager' ),
+			'message'     => __( 'Trashed jobs are not be available to your applicants. Deactivate the promotion or publish the job again to fix this.', 'wp-job-manager' ),
+			'conditions'  => [
+				[
+					'type'    => 'screens',
+					'screens' => [ 'edit-job_listing' ],
+				],
+			],
+			'actions'     => [
+				[
+					'label' => __( 'Check the trash', 'wp-job-manager' ),
+					'url'   => $trash_url,
+				],
+			],
+		];
+
+		return $notices;
+	}
+
+	/**
+	 * Remove delete link from promoted jobs.
+	 * The delete action is also canceled as part of
+	 * `WP_Job_Manager_Promoted_Jobs::cancel_promoted_jobs_deletion`.
+	 *
+	 * @internal
+	 *
+	 * @param array   $actions
+	 * @param WP_Post $post
+	 *
+	 * @return array
+	 */
+	public function remove_delete_from_promoted_jobs( $actions, $post ) {
+		if ( WP_Job_Manager_Promoted_Jobs::is_promoted( $post->ID ) ) {
+			$title = __( 'You need to deactivate the promotion before deleting the job.', 'wp-job-manager' );
+
+			$actions['delete'] = preg_replace(
+				'/<a(.*?)>/',
+				'<a onclick="return false;" style="opacity:0.3; cursor:help;" title="' . esc_attr( $title ) . '" data-tip="' . esc_attr( $title ) . '" class="tips" $1>',
+				$actions['delete'],
+				1
+			);
+		}
+
+		return $actions;
 	}
 }
 
