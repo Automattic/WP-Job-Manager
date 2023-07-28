@@ -306,7 +306,7 @@
                 "type": "string",
                 "example": "USD"
               },
-              "value": {
+              "amount": {
                 "type": "string",
                 "example": "$50,000 - $100,000"
               },
