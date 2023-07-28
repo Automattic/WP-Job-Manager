@@ -65,6 +65,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		add_action( 'wpjm_job_listing_bulk_actions', [ $this, 'add_action_notice' ] );
 		add_action( 'wpjm_admin_notices', [ $this, 'maybe_add_promoted_jobs_notice' ] );
 		add_action( 'wpjm_admin_notices', [ $this, 'maybe_add_trash_notice' ] );
+		add_action( 'post_row_actions', [ $this, 'remove_delete_from_promoted_jobs' ], 10, 2 );
 	}
 
 	/**
@@ -436,6 +437,33 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		];
 
 		return $notices;
+	}
+
+	/**
+	 * Remove delete link from promoted jobs.
+	 * The delete action is also canceled as part of
+	 * `WP_Job_Manager_Promoted_Jobs::cancel_promoted_jobs_deletion`.
+	 *
+	 * @internal
+	 *
+	 * @param array   $actions
+	 * @param WP_Post $post
+	 *
+	 * @return array
+	 */
+	public function remove_delete_from_promoted_jobs( $actions, $post ) {
+		if ( WP_Job_Manager_Promoted_Jobs::is_promoted( $post->ID ) ) {
+			$title = __( 'You need to deactivate the promotion before deleting the job.', 'wp-job-manager' );
+
+			$actions['delete'] = preg_replace(
+				'/<a(.*?)>/',
+				'<a onclick="return false;" style="opacity:0.3; cursor:help;" title="' . $title . '" $1>',
+				$actions['delete'],
+				1
+			);
+		}
+
+		return $actions;
 	}
 }
 
