@@ -256,7 +256,7 @@
             "example": "9788656",
             "description": "The unique identifier for the job in the site (post ID)."
           },
-          "job_status": {
+          "status": {
             "type": "string",
             "example": "publish",
             "description": "The job status."
