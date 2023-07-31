@@ -199,60 +199,139 @@ class WP_Job_Manager_Helper {
 	 * @return array
 	 */
 	public function check_for_updates( $check_for_updates_data ) {
-		$available_addon_updates = [];
+		$updates = $this->get_plugin_update_info();
+
 		// Set version variables.
-		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
-			$response = $this->get_plugin_version( $plugin_data['_filename'] );
+		foreach ( $this->get_installed_plugins() as $plugin_data ) {
+			if ( ! isset( $updates[ $plugin_data['_filename'] ] ) ) {
+				continue;
+			}
+
+			$response = $updates[ $plugin_data['_filename'] ];
+
 			// If there is a new version, modify the transient to reflect an update is available.
 			if (
-				$response
-				&& isset( $response['new_version'] )
+				isset( $response['new_version'] )
 				&& ! empty( $response['new_version'] )
 				&& version_compare( $response['new_version'], $plugin_data['Version'], '>' )
 			) {
-				$available_addon_updates[ $product_slug ]                      = $response;
-				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
+				$check_for_updates_data->response[ $plugin_data['_filename'] ]              = (object) $updates[ $plugin_data['_filename'] ];
+				$check_for_updates_data->response[ $plugin_data['_filename'] ]->OLD_VERSION = $plugin_data['Version'];
 			}
 		}
-		set_site_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
 
 		return $check_for_updates_data;
 	}
 
 	/**
-	 * Get plugin version info from API.
+	 * Get the updates available from WPJobManager.com.
 	 *
-	 * @param string $plugin_filename
-	 *
-	 * @return array|bool
+	 * @return array
 	 */
-	private function get_plugin_version( $plugin_filename ) {
-		$plugin_data = $this->get_licence_managed_plugin( $plugin_filename );
-		if ( ! $plugin_data || empty( $plugin_data['_product_slug'] ) ) {
-			return false;
+	private function get_plugin_update_info() {
+		$plugin_data    = [];
+		$plugin_package = [];
+		foreach ( $this->get_installed_plugins() as $plugin_slug => $plugin ) {
+			$license_key = $this->get_plugin_licence( $plugin_slug );
+
+			$plugin_package[ $plugin_slug ] = [
+				'installed_version' => $plugin['Version'],
+				'license_key'       => $license_key['license_key'] ?? '',
+			];
+
+			$plugin_data[ $plugin_slug ] = [
+				'plugin_name' => $plugin['Name'],
+				'_filename'   => $plugin['_filename'],
+			];
+		}
+		ksort( $plugin_package );
+
+		$hash = md5( wp_json_encode( $plugin_package ) );
+
+		$cache_key = '_wpjm_helper_updates';
+		$data      = get_site_transient( $cache_key );
+		if ( false !== $data ) {
+			if ( $hash !== $data['hash'] ) {
+				return $data['products'];
+			}
 		}
 
-		$product_slug = $plugin_data['_product_slug'];
-		$licence      = $this->get_plugin_licence( $product_slug );
-
-		$response = $this->api->plugin_update_check(
-			[
-				'plugin_name'    => $plugin_data['Name'],
-				'version'        => $plugin_data['Version'],
-				'api_product_id' => $product_slug,
-				'licence_key'    => $licence['licence_key'] ?? null,
-				'email'          => $licence['email'] ?? null,
-			]
-		);
-
-		$this->handle_api_errors( $product_slug, $response );
-
-		// Set version variables.
-		if ( ! empty( $response ) ) {
-			return $response;
+		$response = $this->api->bulk_update_check( $plugin_package );
+		if ( ! $response || ! empty( $response['error_code'] ) ) {
+			return [];
 		}
 
-		return false;
+		$data = [];
+
+		$meta    = $response['meta'] ?? [];
+		$plugins = $response['plugins'] ?? [];
+		foreach ( $plugins as $plugin_slug => $plugin ) {
+			if ( ! isset( $plugin_data[ $plugin_slug ] ) ) {
+				continue;
+			}
+
+			$data[ $plugin_data[ $plugin_slug ]['_filename'] ] = [
+				'plugin'       => $plugin_data[ $plugin_slug ]['plugin_name'],
+				'slug'         => $plugin_slug,
+				'new_version'  => $plugin['version'] ?? null,
+				'url'          => $plugin['plugin_url'] ?? null,
+				'package'      => $plugin['package'] ?? null,
+				'requires'     => $plugin['requires_wp'] ?? null,
+				'requires_php' => $plugin['requires_php'] ?? null,
+				'banners'      => $plugin['banners'] ?? [],
+				'banners_rtl'  => $plugin['banners_rtl'] ?? [],
+				'icons'        => $plugin['icons'] ?? [],
+			];
+
+			// Set any errors that might have occurred.
+			$replacements = $meta + [
+				'plugin_name' => $plugin_data[ $plugin_slug ]['plugin_name'] ?? __( 'your WP Job Manager plugin', 'wp-job-manager' ),
+				'plugin_url'  => $plugin['plugin_url'] ?? null,
+			];
+
+			$this->handle_plugin_errors( $plugin_slug, $plugin['errors'], $replacements );
+		}
+
+		set_transient( $cache_key, $data, 12 * HOUR_IN_SECONDS );
+
+		return $data;
+	}
+
+	/**
+	 * Set the plugin license errors.
+	 *
+	 * @param string $plugin_slug The plugin slug.
+	 * @param array  $error_keys  The error keys.
+	 * @param array  $replacements The replacements.
+	 */
+	private function handle_plugin_errors( $plugin_slug, $error_keys, $replacements ) {
+		$plugin_name = null;
+
+		$fallback_url   = 'https://wpjobmanager.com/';
+		$plugin_name    = $replacements['plugin_name'];
+		$purchase_url   = $replacements['plugin_url'] ?? $fallback_url;
+		$my_account_url = $replacements['my_account_url'] ?? $fallback_url;
+
+		$errors = [];
+		if ( in_array( 'no_activation', $error_keys, true ) ) {
+			// translators: First placeholder is the plugin name, second placeholder is the My Account URL.
+			$errors['no_activation'] = sprintf( __( '<strong>Error:</strong> The license for <strong>%1$s</strong> is not activated on this website and has been removed. Manage your activations on your <a href="%2$s" rel="noopener noreferrer" target="_blank">My Account page</a>.', 'wp-job-manager' ), $plugin_name, $my_account_url );
+
+			$this->deactivate_licence( $plugin_slug, true );
+		} elseif ( in_array( 'invalid_license', $error_keys, true ) ) {
+			// translators: First placeholder is the plugin name; second placeholder is the URL to purchase the plugin.
+			$errors['invalid_license'] = sprintf( __( '<strong>Error:</strong> The license for <strong>%1$s</strong> is not valid and has been removed. <a href="%2$s" rel="noopener noreferrer" target="_blank">Purchase a new license</a> to receive updates and support.', 'wp-job-manager' ), $plugin_name, $purchase_url );
+
+			$this->deactivate_licence( $plugin_slug, true );
+		} elseif ( in_array( 'expired_key', $error_keys, true ) ) {
+			// translators: First placeholder is the plugin name, second placeholder is the My Account URL.
+			$errors['expired_key'] = sprintf( __( '<strong>Error:</strong> The license for <strong>%1$s</strong> has expired. You must <a href="%2$s" rel="noopener noreferrer" target="_blank">renew your license</a> to receive updates and support.', 'wp-job-manager' ), $plugin_name, $my_account_url );
+		} elseif ( in_array( 'expiring_soon', $error_keys, true ) ) {
+			// translators: First placeholder is the plugin name, second placeholder is the My Account URL.
+			$errors['expiring_soon'] = sprintf( __( '<strong>Error:</strong> The license for <strong>%1$s</strong> is expiring soon. Please <a href="%2$s" rel="noopener noreferrer" target="_blank">renew your license</a> to continue receiving updates and support.', 'wp-job-manager' ), $plugin_name, $my_account_url );
+		}
+
+		WP_Job_Manager_Helper_Options::update( $plugin_slug, 'errors', $errors );
 	}
 
 	/**
@@ -360,7 +439,6 @@ class WP_Job_Manager_Helper {
 		$args['api_product_id'] = $product_slug;
 
 		$response = $this->api->plugin_information( $args );
-		$this->handle_api_errors( $product_slug, $response );
 
 		return $response;
 	}
@@ -560,7 +638,6 @@ class WP_Job_Manager_Helper {
 		return false;
 	}
 
-
 	/**
 	 * Outputs unset license key notices.
 	 *
@@ -570,7 +647,6 @@ class WP_Job_Manager_Helper {
 		_deprecated_function( __METHOD__, '1.33.0', 'maybe_add_license_error_notices()' );
 		$this->maybe_add_license_error_notices();
 	}
-
 
 	/**
 	 * Outputs unset licence key notices.
@@ -745,8 +821,9 @@ class WP_Job_Manager_Helper {
 	 * Deactivate a licence key for a WPJM add-on plugin.
 	 *
 	 * @param string $product_slug
+	 * @param bool   $silently     Whether to add a notice.
 	 */
-	private function deactivate_licence( $product_slug ) {
+	private function deactivate_licence( $product_slug, $silently = false ) {
 		$licence = $this->get_plugin_licence( $product_slug );
 		if ( empty( $licence['licence_key'] ) ) {
 			$this->add_error( $product_slug, __( 'license is not active.', 'wp-job-manager' ) );
@@ -765,7 +842,10 @@ class WP_Job_Manager_Helper {
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
 		delete_site_transient( 'update_plugins' );
-		$this->add_success( $product_slug, __( 'Plugin license has been deactivated.', 'wp-job-manager' ) );
+
+		if ( $silently ) {
+			$this->add_success( $product_slug, __( 'Plugin license has been deactivated.', 'wp-job-manager' ) );
+		}
 
 		self::log_event(
 			'license_deactivated',
@@ -773,33 +853,6 @@ class WP_Job_Manager_Helper {
 				'slug' => $product_slug,
 			]
 		);
-	}
-
-	/**
-	 * Handle errors from the API.
-	 *
-	 * @param string $product_slug
-	 * @param array  $response
-	 */
-	private function handle_api_errors( $product_slug, $response ) {
-		$plugin_products = $this->get_installed_plugins();
-		if ( ! isset( $plugin_products[ $product_slug ] ) ) {
-			return;
-		}
-
-		$errors         = ! empty( $response['errors'] ) ? $response['errors'] : [];
-		$allowed_errors = [ 'no_activation', 'expired_key', 'expiring_soon', 'update_available' ];
-		$ignored_errors = array_diff( array_keys( $errors ), $allowed_errors );
-
-		foreach ( $ignored_errors as $key ) {
-			unset( $errors[ $key ] );
-		}
-
-		if ( ! empty( $errors['no_activation'] ) ) {
-			$this->deactivate_licence( $product_slug );
-		}
-
-		WP_Job_Manager_Helper_Options::update( $product_slug, 'errors', $errors );
 	}
 
 	/**
