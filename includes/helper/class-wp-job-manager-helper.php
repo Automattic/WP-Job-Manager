@@ -215,8 +215,7 @@ class WP_Job_Manager_Helper {
 				&& ! empty( $response['new_version'] )
 				&& version_compare( $response['new_version'], $plugin_data['Version'], '>' )
 			) {
-				$check_for_updates_data->response[ $plugin_data['_filename'] ]              = (object) $updates[ $plugin_data['_filename'] ];
-				$check_for_updates_data->response[ $plugin_data['_filename'] ]->OLD_VERSION = $plugin_data['Version'];
+				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $updates[ $plugin_data['_filename'] ];
 			}
 		}
 
