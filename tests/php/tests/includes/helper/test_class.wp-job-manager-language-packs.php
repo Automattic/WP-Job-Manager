@@ -3,7 +3,7 @@
  * @group helper
  * @group helper-language-packs
  */
-class WP_Test_WP_Job_Manager_Helper_Language_Packs extends WPJM_Helper_Base_Test {
+class WP_Test_WP_Job_Manager_Helper_Language_Packs extends WPJM_BaseTest {
 	public function tear_down() {
 		parent::tear_down();
 		remove_all_filters( 'pre_http_request' );
