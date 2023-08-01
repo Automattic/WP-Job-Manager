@@ -199,10 +199,11 @@ class WP_Job_Manager_Helper {
 	 * @return object
 	 */
 	public function check_for_updates( $check_for_updates_data ) {
-		$updates = $this->get_plugin_update_info();
+		$installed_plugins = $this->get_installed_plugins( false, true );
+		$updates           = $this->get_plugin_update_info( $installed_plugins );
 
 		// Set version variables.
-		foreach ( $this->get_installed_plugins( false, true ) as $filename => $plugin_data ) {
+		foreach ( $installed_plugins as $filename => $plugin_data ) {
 			$wpjmcom_plugin_slug = $plugin_data['_product_slug'];
 			if ( ! isset( $updates[ $wpjmcom_plugin_slug ] ) ) {
 				continue;
@@ -226,11 +227,14 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Prepare the plugin update data for the WPJobManager.com request.
 	 *
+	 * @param array $installed_plugins The array of installed WP Job Manager managed plugins.
+	 *
 	 * @return array
 	 */
-	private function get_plugin_update_package() {
+	private function get_plugin_update_package( $installed_plugins ) {
 		$plugin_package = [];
-		foreach ( $this->get_installed_plugins( false, false ) as $plugin_slug => $plugin ) {
+		foreach ( $installed_plugins as $plugin ) {
+			$plugin_slug = $plugin['_product_slug'];
 			$license_key = $this->get_plugin_licence( $plugin_slug );
 
 			$plugin_package[ $plugin_slug ] = [
@@ -246,10 +250,12 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Get the updates available from WPJobManager.com.
 	 *
+	 * @param array $installed_plugins The array of installed WP Job Manager managed plugins.
+	 *
 	 * @return array
 	 */
-	private function get_plugin_update_info() {
-		$plugin_package = $this->get_plugin_update_package();
+	private function get_plugin_update_info( $installed_plugins ) {
+		$plugin_package = $this->get_plugin_update_package( $installed_plugins );
 		$hash           = md5( wp_json_encode( $plugin_package ) );
 
 		// Check the cache.
@@ -471,7 +477,7 @@ class WP_Job_Manager_Helper {
 	 * @param string $plugin_filename
 	 * @return bool|array
 	 */
-	private function get_licence_managed_plugin( $plugin_filename ) {
+	protected function get_licence_managed_plugin( $plugin_filename ) {
 		$plugins = $this->get_installed_plugins( false, true );
 		if ( isset( $plugins[ $plugin_filename ] ) ) {
 			return $plugins[ $plugin_filename ];
