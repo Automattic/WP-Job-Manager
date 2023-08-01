@@ -4,6 +4,85 @@
  * @group helper-base
  */
 class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
+	private function getStandardInstalledPluginsFileKeyed() {
+		return [
+			'test-a/test-a.php' => [
+				'_filename'	    => 'test/test.php',
+				'_product_slug' => 'test-a',
+				'_type'		    => 'plugin',
+				'Version'	    => '1.0.0',
+			],
+			'test-b/test-b.php' => [
+				'_filename'	    => 'test-b/test-b.php',
+				'_product_slug' => 'test-b',
+				'_type'		    => 'plugin',
+				'Version'	    => '1.0.0',
+			],
+		];
+	}
+
+	public function testCheckForUpdates_ValidPluginsNoUpdates_ReturnsEmptyResponse() {
+		// Arrange.
+		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
+			->onlyMethods( [ 'get_installed_plugins', 'get_plugin_update_info' ] )
+			->getMock();
+
+		$instance->method( 'get_installed_plugins' )->willReturn( $this->getStandardInstalledPluginsFileKeyed() );
+		$instance->method( 'get_plugin_update_info' )->willReturn( [
+			'test-a' => [
+				'new_version' => '1.0.0',
+			],
+		] );
+
+		// Act.
+		$data = (object) ['response' => [] ];
+		$instance->check_for_updates($data);
+
+		// Assert.
+		$this->assertEmpty( $data->response );
+	}
+
+	public function testCheckForUpdates_ValidPluginsWithUpdates_ReturnsUpdatedPluginResponse() {
+		// Arrange.
+		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
+			->onlyMethods( [ 'get_installed_plugins', 'get_plugin_update_info' ] )
+			->getMock();
+
+		$instance->method( 'get_installed_plugins' )->willReturn( $this->getStandardInstalledPluginsFileKeyed() );
+		$instance->method( 'get_plugin_update_info' )->willReturn( [
+			'test-a' => [
+				'new_version' => '2.0.0',
+			],
+		] );
+
+		// Act.
+		$data = (object) ['response' => [] ];
+		$instance->check_for_updates($data);
+
+		// Assert.
+		$this->assertTrue( isset( $data->response['test/test.php'] ) );
+	}
+
+	public function testCheckForUpdates_ValidPluginsWithNullVersion_ReturnsEmptyResponse() {
+		// Arrange.
+		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
+			->onlyMethods( [ 'get_installed_plugins', 'get_plugin_update_info' ] )
+			->getMock();
+
+		$instance->method( 'get_installed_plugins' )->willReturn( $this->getStandardInstalledPluginsFileKeyed() );
+		$instance->method( 'get_plugin_update_info' )->willReturn( [
+			'test-a' => [
+				'new_version' => null,
+			],
+		] );
+
+		// Act.
+		$data = (object) ['response' => [] ];
+		$instance->check_for_updates($data);
+
+		// Assert.
+		$this->assertEmpty( $data->response );
+	}
 
 	public function testPluginLinks_InvalidLicense_AddsManageLicense() {
 		// Arrange.

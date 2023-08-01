@@ -254,7 +254,7 @@ class WP_Job_Manager_Helper {
 	 *
 	 * @return array
 	 */
-	private function get_plugin_update_info( $installed_plugins ) {
+	protected function get_plugin_update_info( $installed_plugins ) {
 		$plugin_package = $this->get_plugin_update_package( $installed_plugins );
 		$hash           = md5( wp_json_encode( $plugin_package ) );
 
