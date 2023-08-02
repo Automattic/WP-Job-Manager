@@ -108,7 +108,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @internal
 	 */
 	public function rest_init() {
-		( new WP_Job_Manager_Promoted_Jobs_API() )->register_routes();
+		( new WP_Job_Manager_Promoted_Jobs_API( $this->status_handler ) )->register_routes();
 	}
 
 	/**

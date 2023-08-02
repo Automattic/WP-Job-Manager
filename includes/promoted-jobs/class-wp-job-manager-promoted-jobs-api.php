@@ -27,6 +27,23 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	private const REST_BASE = '/promoted-jobs';
 
 	/**
+	 * The status handler.
+	 *
+	 * @var WP_Job_Manager_Promoted_Jobs_Status_Handler
+	 */
+	private WP_Job_Manager_Promoted_Jobs_Status_Handler $status_handler;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param WP_Job_Manager_Promoted_Jobs_Status_Handler $status_handler The status handler.
+	 */
+	public function __construct( WP_Job_Manager_Promoted_Jobs_Status_Handler $status_handler ) {
+		$this->status_handler = $status_handler;
+	}
+
+
+	/**
 	 * Register the routes for the objects of the controller.
 	 */
 	public function register_routes() {
