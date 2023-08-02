@@ -88,12 +88,12 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	}
 
 	/**
-	 * Gets the URL for the site feed of promoted jobs.
+	 * Gets the URL for the site feed of promoted jobs in WPJMCOM.
 	 *
-	 * @return string The site feed URL.
+	 * @return string The site feed URL in WPJMCOM.
 	 */
 	private function get_site_feed_url() {
-		return add_query_arg( 'site_url', home_url( '', 'https' ), WP_Job_Manager_Helper_API::get_wpjmcom_url() . '/wp-json/wpjm/v1/promoted-jobs/job_status' );
+		return add_query_arg( 'site_url', home_url( '', 'https' ), WP_Job_Manager_Helper_API::get_wpjmcom_url() . '/wp-json/promoted-jobs/v1/site/jobs' );
 	}
 
 }
