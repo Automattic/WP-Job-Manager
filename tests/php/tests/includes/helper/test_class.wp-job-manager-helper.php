@@ -30,6 +30,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		$instance->method( 'get_installed_plugins' )->willReturn( $this->getStandardInstalledPluginsFileKeyed() );
 		$instance->method( 'get_plugin_update_info' )->willReturn( [
 			'test-a' => [
+				'plugin_name' => 'Test Plugin',
 				'new_version' => '1.0.0',
 			],
 		] );
@@ -51,6 +52,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		$instance->method( 'get_installed_plugins' )->willReturn( $this->getStandardInstalledPluginsFileKeyed() );
 		$instance->method( 'get_plugin_update_info' )->willReturn( [
 			'test-a' => [
+				'plugin_name' => 'Test Plugin',
 				'new_version' => '2.0.0',
 			],
 		] );
@@ -72,6 +74,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		$instance->method( 'get_installed_plugins' )->willReturn( $this->getStandardInstalledPluginsFileKeyed() );
 		$instance->method( 'get_plugin_update_info' )->willReturn( [
 			'test-a' => [
+				'plugin_name' => 'Test Plugin',
 				'new_version' => null,
 			],
 		] );
