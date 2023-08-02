@@ -248,7 +248,7 @@ class WP_Job_Manager_Helper {
 
 			$plugin_package[ $plugin_slug ] = [
 				'installed_version' => $plugin['Version'],
-				'license_key'       => $license_key['license_key'] ?? '',
+				'license_key'       => $license_key['licence_key'] ?? '',
 			];
 		}
 		ksort( $plugin_package );
