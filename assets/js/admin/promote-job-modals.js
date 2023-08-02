@@ -11,7 +11,7 @@ export const postOpenPromoteModal = ( dialog, href ) => {
 	<promote-job-template>
 		<div slot="buttons" class="promote-buttons-group">
 			<a id="wpjm-promote-button" class="promote-button button button-primary" target="_blank" rel="noopener noreferrer" href="${ href }">${ job_manager_admin_params.job_listing_promote_strings.promote_job }</a>
-			<a class="promote-button button button-secondary" target="_blank" rel="noopener noreferrer" href="https://wpjobmanager.com/document/promoted-jobs?utm_source=plugin_wpjm&utm_medium=promote-dialog&utm_campaign=promoted-jobs">${ job_manager_admin_params.job_listing_promote_strings.learn_more }</a>
+			<a class="promote-button button button-secondary" target="_blank" rel="noopener noreferrer" href="https://wpjobmanager.com/jobtarget?utm_source=plugin_wpjm&utm_medium=promote-dialog&utm_campaign=promoted-jobs">${ job_manager_admin_params.job_listing_promote_strings.learn_more }</a>
 		</div>
 	<promote-job-template>`;
 
