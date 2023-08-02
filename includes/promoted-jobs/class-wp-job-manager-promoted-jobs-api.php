@@ -44,6 +44,15 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		add_filter( 'rest_post_dispatch', [ $this, 'add_nocache_headers' ], 10, 3 );
 	}
 
+	/**
+	 * Initializes the REST API.
+	 *
+	 * @return void
+	 */
+	public function init() {
+		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
+	}
+
 
 	/**
 	 * Register the routes for the objects of the controller.
