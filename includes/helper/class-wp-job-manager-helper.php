@@ -202,6 +202,8 @@ class WP_Job_Manager_Helper {
 		$installed_plugins = $this->get_installed_plugins( false, true );
 		$updates           = $this->get_plugin_update_info( $installed_plugins );
 
+		$notice_data = [];
+
 		// Set version variables.
 		foreach ( $installed_plugins as $filename => $plugin_data ) {
 			$wpjmcom_plugin_slug = $plugin_data['_product_slug'];
@@ -218,8 +220,15 @@ class WP_Job_Manager_Helper {
 				&& version_compare( $response->new_version, $plugin_data['Version'], '>' )
 			) {
 				$check_for_updates_data->response[ $plugin_data['_filename'] ] = $response;
+
+				$notice_data[] = [
+					'plugin_name' => $response->plugin_name,
+					'new_version' => $response->new_version,
+				];
 			}
 		}
+
+		set_site_transient( 'wpjm_addon_updates_available', $notice_data );
 
 		return $check_for_updates_data;
 	}
