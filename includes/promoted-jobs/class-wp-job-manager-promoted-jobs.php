@@ -39,6 +39,13 @@ class WP_Job_Manager_Promoted_Jobs {
 	const PROMOTED_JOB_TRACK_OPTION = 'jm_promoted_job_count';
 
 	/**
+	 * The status handler.
+	 *
+	 * @var WP_Job_Manager_Promoted_Jobs_Status_Handler
+	 */
+	private WP_Job_Manager_Promoted_Jobs_Status_Handler $status_handler;
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  $$next-version$$
@@ -71,6 +78,10 @@ class WP_Job_Manager_Promoted_Jobs {
 	public function include_dependencies() {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-notifications.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-status-handler.php';
+
+		$this->status_handler = new WP_Job_Manager_Promoted_Jobs_Status_Handler();
+		$this->status_handler->init();
 	}
 
 	/**
