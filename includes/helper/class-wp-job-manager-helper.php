@@ -275,7 +275,7 @@ class WP_Job_Manager_Helper {
 		$cached_data            = [];
 		$cached_data['plugins'] = $response['plugins'];
 		$cached_data['hash']    = $hash;
-		set_transient( $cache_key, $cached_data, 12 * HOUR_IN_SECONDS );
+		set_site_transient( $cache_key, $cached_data, 12 * HOUR_IN_SECONDS );
 
 		return $response['plugins'];
 	}
