@@ -222,6 +222,7 @@ class WP_Job_Manager_Helper {
 				$check_for_updates_data->response[ $plugin_data['_filename'] ] = $response;
 
 				$notice_data[] = [
+					'plugin'      => $response->plugin,
 					'plugin_name' => $response->plugin_name,
 					'new_version' => $response->new_version,
 				];
@@ -268,7 +269,7 @@ class WP_Job_Manager_Helper {
 		$hash           = md5( wp_json_encode( $plugin_package ) );
 
 		// Check the cache.
-		$cache_key = '_wpjm_helper_updates';
+		$cache_key = 'wpjm_helper_updates';
 		$data      = get_site_transient( $cache_key );
 		if ( isset( $data['hash'], $data['plugins'] ) && $hash === $data['hash'] ) {
 			return $data['plugins'];
@@ -871,6 +872,7 @@ class WP_Job_Manager_Helper {
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
 		delete_site_transient( 'update_plugins' );
+		delete_site_transient( 'wpjm_helper_updates' );
 
 		if ( $silently ) {
 			$this->add_success( $product_slug, __( 'Plugin license has been deactivated.', 'wp-job-manager' ) );
@@ -990,6 +992,9 @@ class WP_Job_Manager_Helper {
 			self::log_event( 'license_activation_error', $event_properties );
 		} else {
 			self::log_event( 'license_activated', $event_properties );
+
+			// Clear the update cache so we can get the packages.
+			delete_site_transient( 'wpjm_helper_updates' );
 		}
 	}
 
