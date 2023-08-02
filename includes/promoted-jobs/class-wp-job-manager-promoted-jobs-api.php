@@ -121,6 +121,17 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				],
 			]
 		);
+		register_rest_route(
+			self::NAMESPACE,
+			self::REST_BASE . '/refresh-status',
+			[
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'refresh_status' ],
+					'permission_callback' => '__return_true',
+				],
+			]
+		);
 	}
 
 	/**
@@ -280,5 +291,16 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				'verified' => $verified,
 			]
 		);
+	}
+
+	/**
+	 * Refreshes the status of the promoted jobs.
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return WP_REST_Response The response.
+	 */
+	public function refresh_status( $request ) {
+		$this->status_handler->fetch_updates();
+		return new WP_REST_Response( [ 'success' => true ] );
 	}
 }
