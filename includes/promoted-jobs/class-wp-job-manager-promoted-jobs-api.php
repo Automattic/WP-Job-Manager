@@ -147,7 +147,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 */
 	public function add_nocache_headers_to_rest_response( $response, $server, $request ) {
 		// Check if the request belongs to the specified namespace and the response is successful.
-		if ( strpos( $request->get_route(), '/' . self::NAMESPACE ) === 0 && $response->get_status() >= 200 && $response->get_status() < 300 ) {
+		if ( str_starts_with( $request->get_route(), '/' . self::NAMESPACE ) && $response->get_status() >= 200 && $response->get_status() < 300 ) {
 			// Get the no-cache headers array.
 			$nocache_headers = wp_get_nocache_headers();
 
