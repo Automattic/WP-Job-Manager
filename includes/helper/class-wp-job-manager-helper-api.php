@@ -168,6 +168,12 @@ class WP_Job_Manager_Helper_API {
 			'email'          => '',
 		];
 
+		// These legacy endpoints are temporary. For now, translate `license_key` => `licence_key` at this point.
+		if ( ! empty( $args['license_key'] ) ) {
+			$args['licence_key'] = $args['license_key'];
+			unset( $args['license_key'] );
+		}
+
 		$args     = wp_parse_args( $args, $defaults );
 		$response = wp_safe_remote_get(
 			$this->get_api_base_url() . '?' . http_build_query( $args, '', '&' ),
