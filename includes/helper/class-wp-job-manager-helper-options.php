@@ -13,7 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WP_Job_Manager_Helper_Options
  */
 class WP_Job_Manager_Helper_Options {
-	const OPTION_NAME = 'job_manager_helper';
+	const LICENSE_STORAGE_VERSION = 2;
+	const OPTION_NAME             = 'job_manager_helper';
 
 	/**
 	 * Update a WPJM plugin's license data.
@@ -25,12 +26,12 @@ class WP_Job_Manager_Helper_Options {
 	 * @return bool
 	 */
 	public static function update( $product_slug, $key, $value ) {
-		$options = self::get_master_option();
+		$options = self::get_license_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
 			$options[ $product_slug ] = [];
 		}
 		$options[ $product_slug ][ $key ] = $value;
-		return self::update_master_option( $options );
+		return self::update_license_option( $options );
 	}
 
 	/**
@@ -43,13 +44,14 @@ class WP_Job_Manager_Helper_Options {
 	 * @return mixed
 	 */
 	public static function get( $product_slug, $key, $default = false ) {
-		$options = self::get_master_option();
+		$options = self::get_license_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
 			$options[ $product_slug ] = self::attempt_legacy_restore( $product_slug );
 		}
 		if ( isset( $options[ $product_slug ][ $key ] ) ) {
 			return $options[ $product_slug ][ $key ];
 		}
+
 		return $default;
 	}
 
@@ -62,12 +64,12 @@ class WP_Job_Manager_Helper_Options {
 	 * @return bool
 	 */
 	public static function delete( $product_slug, $key ) {
-		$options = self::get_master_option();
+		$options = self::get_license_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
 			$options[ $product_slug ] = [];
 		}
 		unset( $options[ $product_slug ][ $key ] );
-		return self::update_master_option( $options );
+		return self::update_license_option( $options );
 	}
 
 	/**
@@ -78,43 +80,88 @@ class WP_Job_Manager_Helper_Options {
 	 * @return array
 	 */
 	private static function attempt_legacy_restore( $product_slug ) {
-		$options = self::get_master_option();
+		$options = self::get_license_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
 			$options[ $product_slug ] = [];
 		}
 		foreach ( [ 'licence_key', 'email', 'errors', 'hide_key_notice' ] as $key ) {
 			$option_value = get_option( $product_slug . '_' . $key, false );
 			if ( ! empty( $option_value ) ) {
+				// If we have any more legacy licenses, migrate the licence_key => license_key.
+				if ( 'licence_key' === $key ) {
+					$key = 'license_key';
+				}
 				$options[ $product_slug ][ $key ] = $option_value;
 				delete_option( $product_slug . '_' . $key );
 			}
 		}
-		self::update_master_option( $options );
+
+		// Save if we migrated from the very legacy storage.
+		if ( ! empty( $options[ $product_slug ] ) ) {
+			self::update_license_option( $options );
+		}
+
 		return $options[ $product_slug ];
 	}
 
 	/**
-	 * Retrieve the master option.
+	 * Retrieve the license option.
 	 *
 	 * @return array
 	 */
-	private static function get_master_option() {
+	private static function get_license_option() {
+		$default = [
+			'_version' => self::LICENSE_STORAGE_VERSION,
+		];
+
 		if ( is_multisite() || is_network_admin() ) {
-			return get_site_option( self::OPTION_NAME, [] );
+			$licenses = get_site_option( self::OPTION_NAME, $default );
+		} else {
+			$licenses = get_option( self::OPTION_NAME, $default );
 		}
-		return get_option( self::OPTION_NAME, [] );
+
+		$current_version = $licenses['_version'] ?? false;
+		if ( self::LICENSE_STORAGE_VERSION !== $current_version ) {
+			$licenses = self::migrate_license_option( $licenses );
+		}
+
+		return $licenses;
 	}
 
 	/**
-	 * Update the master option.
+	 * Update the license option.
 	 *
 	 * @param array $value Master license container array.
 	 * @return bool
 	 */
-	private static function update_master_option( $value ) {
+	private static function update_license_option( $value ) {
 		if ( is_multisite() || is_network_admin() ) {
 			return update_site_option( self::OPTION_NAME, $value );
 		}
 		return update_option( self::OPTION_NAME, $value );
+	}
+
+	/**
+	 * Migrate license data to the latest version.
+	 *
+	 * @param array $licenses
+	 */
+	private static function migrate_license_option( $licenses ) {
+		foreach ( $licenses as $key => $license_data ) {
+			if ( '_version' === $key || ! is_array( $license_data ) ) {
+				continue;
+			}
+
+			// v1 -> v2: Migrate `licence_key` to `license_key`.
+			if ( isset( $license_data['licence_key'] ) && empty( $license_data['license_key'] ) ) {
+				$licenses[ $key ]['license_key'] = $license_data['licence_key'];
+				unset( $licenses[ $key ]['licence_key'] );
+			}
+		}
+
+		$licenses['_version'] = self::LICENSE_STORAGE_VERSION;
+		self::update_license_option( $licenses );
+
+		return $licenses;
 	}
 }
