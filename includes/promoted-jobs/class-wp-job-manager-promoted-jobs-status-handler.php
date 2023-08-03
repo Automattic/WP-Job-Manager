@@ -20,7 +20,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	/**
 	 * The name of the option that stores the last time the cron job was executed.
 	 */
-	private const OPTION_KEY = self::CRON_HOOK . '_last_execution';
+	const OPTION_KEY = self::CRON_HOOK . '_last_execution';
 
 	/**
 	 * The frequency at which the cron job should be executed.
