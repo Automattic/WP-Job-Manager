@@ -263,6 +263,7 @@ class WP_Job_Manager {
 		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
 		wp_clear_scheduled_hook( 'job_manager_email_daily_notices' );
 		wp_clear_scheduled_hook( 'job_manager_promoted_jobs_notification' );
+		wp_clear_scheduled_hook( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK );
 	}
 
 	/**
