@@ -103,15 +103,15 @@ class WP_Job_Manager_Helper {
 		$deprecated_methods = [
 			'has_licenced_products' => [
 				'replacement' => [ $this, 'has_licensed_products' ],
-				'version'     => '$$next-version',
+				'version'     => '$$next-version$$',
 			],
 			'get_plugin_licence'    => [
 				'replacement' => [ $this, 'get_plugin_license' ],
-				'version'     => '$$next-version',
+				'version'     => '$$next-version$$',
 			],
 			'licence_output'        => [
 				'replacement' => [ $this, 'license_output' ],
-				'version'     => '$$next-version',
+				'version'     => '$$next-version$$',
 			],
 			'licence_error_notices' => [
 				'replacement' => [ $this, 'maybe_add_license_error_notices' ],
