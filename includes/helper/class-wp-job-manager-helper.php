@@ -102,7 +102,7 @@ class WP_Job_Manager_Helper {
 	public function __call( $name, $arguments ) {
 		$deprecated_methods = [
 			'has_licenced_products' => [
-				'replacement' => [ $this, 'has_licenced_products' ],
+				'replacement' => [ $this, 'has_licensed_products' ],
 				'version'     => '$$next-version',
 			],
 			'get_plugin_licence'    => [
