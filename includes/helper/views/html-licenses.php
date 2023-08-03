@@ -16,7 +16,7 @@ $plugin_section_first = 'plugin-license-section--first';
 	<?php if ( ! empty( $licensed_plugins ) ) : ?>
 		<?php
 		if ( ! empty( $show_bulk_activate ) ) :
-			$notices   = WP_Job_Manager_Helper::get_messages( 'bulk-activate' );
+			$notices   = WP_Job_Manager_Helper::instance()->get_messages( 'bulk-activate' );
 			$has_error = in_array( 'error', array_column( $notices, 'type' ), true );
 			?>
 		<div class="wpjm-bulk-activate">
@@ -32,7 +32,7 @@ $plugin_section_first = 'plugin-license-section--first';
 				<?php wp_nonce_field( 'wpjm-manage-license' ); ?>
 				<?php
 				foreach ( $licensed_plugins as $product_slug => $plugin_data ) :
-					$license = WP_Job_Manager_Helper::get_plugin_license( $product_slug );
+					$license = WP_Job_Manager_Helper::instance()->get_plugin_license( $product_slug );
 					if ( empty( $license['license_key'] ) ) :
 						?>
 					<input type="hidden" name="product_slugs[]" value="<?php echo esc_attr( $product_slug ); ?>"/>
@@ -64,7 +64,7 @@ $plugin_section_first = 'plugin-license-section--first';
 		</div>
 			<?php foreach ( $active_plugins as $product_slug => $plugin_data ) : ?>
 				<?php
-				$license = WP_Job_Manager_Helper::get_plugin_license( $product_slug );
+				$license = WP_Job_Manager_Helper::instance()->get_plugin_license( $product_slug );
 				?>
 		<div class="license-row">
 				<?php // translators: placeholder is the addon name. ?>
@@ -83,7 +83,7 @@ $plugin_section_first = 'plugin-license-section--first';
 			</div>
 			<div class="plugin-license">
 				<?php
-				$notices = WP_Job_Manager_Helper::get_messages( $product_slug );
+				$notices = WP_Job_Manager_Helper::instance()->get_messages( $product_slug );
 				if ( empty( $notices ) && ! empty( $license['errors'] ) ) {
 					$notices = [];
 					foreach ( $license['errors'] as $key => $error_message ) {
@@ -129,7 +129,7 @@ $plugin_section_first = 'plugin-license-section--first';
 				</div>
 			<?php foreach ( $inactive_plugins as $product_slug => $plugin_data ) : ?>
 				<?php
-				$license = WP_Job_Manager_Helper::get_plugin_license( $product_slug );
+				$license = WP_Job_Manager_Helper::instance()->get_plugin_license( $product_slug );
 				?>
 				<div class="license-row">
 					<?php // translators: placeholder is the addon name. ?>
@@ -148,7 +148,7 @@ $plugin_section_first = 'plugin-license-section--first';
 					</div>
 					<div class="plugin-license">
 						<?php
-						$notices = WP_Job_Manager_Helper::get_messages( $product_slug );
+						$notices = WP_Job_Manager_Helper::instance()->get_messages( $product_slug );
 						if ( empty( $notices ) && ! empty( $license['errors'] ) ) {
 							$notices = [];
 							foreach ( $license['errors'] as $key => $error_message ) {
