@@ -15,7 +15,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	/**
 	 * The name of the cron hook for updating the promoted job status.
 	 */
-	private const CRON_HOOK = 'wpjm_promoted_jobs_status_update';
+	const CRON_HOOK = 'wpjm_promoted_jobs_status_update';
 
 	/**
 	 * The name of the option that stores the last time the cron job was executed.
