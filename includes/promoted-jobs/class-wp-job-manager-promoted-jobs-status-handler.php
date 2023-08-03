@@ -38,9 +38,6 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	 * @since $$next-version$$
 	 */
 	public function init() {
-		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
-			wp_schedule_event( time(), 'twicedaily', self::CRON_HOOK );
-		}
 		add_action( self::CRON_HOOK, [ $this, 'fetch_updates' ] );
 	}
 
