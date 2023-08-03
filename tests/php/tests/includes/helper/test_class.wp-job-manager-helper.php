@@ -91,10 +91,10 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		// Arrange.
 		$this->enable_update_plugins_cap();
 		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
-			->onlyMethods( [ 'get_licence_managed_plugin', 'get_plugin_licence' ] )
+			->onlyMethods( [ 'get_license_managed_plugin', 'get_plugin_license' ] )
 			->getMock();
 
-		$instance->method( 'get_licence_managed_plugin' )->willReturn(
+		$instance->method( 'get_license_managed_plugin' )->willReturn(
 			[
 				'_product_slug' => 'test',
 				'_filename'     => 'test/test.php',
@@ -103,9 +103,9 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 			]
 		);
 
-		$instance->method( 'get_plugin_licence' )->willReturn(
+		$instance->method( 'get_plugin_license' )->willReturn(
 			[
-				'licence_key' => 'xxxx-xxxx-xxxx-xxxx',
+				'license_key' => 'xxxx-xxxx-xxxx-xxxx',
 				'email'       => 'me@example.com',
 				'errors'      => [
 					'invalid_key' => 'Invalid license key',
@@ -126,10 +126,10 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		// Arrange.
 		$this->enable_update_plugins_cap();
 		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
-			->onlyMethods( [ 'get_licence_managed_plugin', 'get_plugin_licence' ] )
+			->onlyMethods( [ 'get_license_managed_plugin', 'get_plugin_license' ] )
 			->getMock();
 
-		$instance->method( 'get_licence_managed_plugin' )->willReturn(
+		$instance->method( 'get_license_managed_plugin' )->willReturn(
 			[
 				'_product_slug' => 'test',
 				'_filename'     => 'test/test.php',
@@ -138,9 +138,9 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 			]
 		);
 
-		$instance->method( 'get_plugin_licence' )->willReturn(
+		$instance->method( 'get_plugin_license' )->willReturn(
 			[
-				'licence_key' => null,
+				'license_key' => null,
 				'email'       => null,
 				'errors'      => null,
 			]
@@ -159,10 +159,10 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		// Arrange.
 		$this->enable_update_plugins_cap();
 		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
-			->onlyMethods( [ 'get_licence_managed_plugin' ] )
+			->onlyMethods( [ 'get_license_managed_plugin' ] )
 			->getMock();
 
-		$instance->method( 'get_licence_managed_plugin' )->willReturn( false );
+		$instance->method( 'get_license_managed_plugin' )->willReturn( false );
 
 		// Act.
 		$actions = $instance->plugin_links( [], 'test/test.php' );
@@ -175,10 +175,10 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 	public function testPluginLinks_NoCaps_NoActions() {
 		// Arrange.
 		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
-			->onlyMethods( [ 'get_licence_managed_plugin' ] )
+			->onlyMethods( [ 'get_license_managed_plugin' ] )
 			->getMock();
 
-		$instance->method( 'get_licence_managed_plugin' )->willReturn(
+		$instance->method( 'get_license_managed_plugin' )->willReturn(
 			[
 				'_product_slug' => 'test',
 				'_filename'     => 'test/test.php',
@@ -243,7 +243,7 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		$this->assertFalse( $result );
 	}
 
-	public function testHasLicencedProducts_WithLicencedProduct_ReturnsTrue() {
+	public function testHasLicensedProducts_WithLicensedProduct_ReturnsTrue() {
 		// Arrange.
 		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
 			->onlyMethods( [ 'get_installed_plugins' ] )
@@ -261,14 +261,14 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		);
 
 		// Act.
-		$result = $instance->has_licenced_products();
+		$result = $instance->has_licensed_products();
 
 		// Assert.
 		$this->assertTrue( $result );
 	}
 
 
-	public function testHasLicencedProducts_WithoutLicencedProduct_ReturnsFalse() {
+	public function testHasLicensedProducts_WithoutLicensedProduct_ReturnsFalse() {
 		// Arrange.
 		$instance = $this->getMockBuilder( WP_Job_Manager_Helper::class )
 			->onlyMethods( [ 'get_installed_plugins' ] )
@@ -277,34 +277,34 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		$instance->method( 'get_installed_plugins' )->willReturn( [] );
 
 		// Act.
-		$result = $instance->has_licenced_products();
+		$result = $instance->has_licensed_products();
 
 		// Assert.
 		$this->assertFalse( $result );
 	}
 
-	public function testGetPluginLicence_WithLicense_ReturnsLicense() {
+	public function testGetPluginLicense_WithLicense_ReturnsLicense() {
 		// Arrange.
 		$license_key = '1234';
 		$email       = 'me@example.com';
 		$errors      = [ 'error' ];
 
-		WP_Job_Manager_Helper_Options::update( 'test', 'licence_key', $license_key );
+		WP_Job_Manager_Helper_Options::update( 'test', 'license_key', $license_key );
 		WP_Job_Manager_Helper_Options::update( 'test', 'email', $email );
 		WP_Job_Manager_Helper_Options::update( 'test', 'errors', $errors );
 
 		$instance = new WP_Job_Manager_Helper();
 
 		// Act.
-		$result = $instance->get_plugin_licence( 'test' );
-		WP_Job_Manager_Helper_Options::delete( 'test', 'licence_key' );
+		$result = $instance->get_plugin_license( 'test' );
+		WP_Job_Manager_Helper_Options::delete( 'test', 'license_key' );
 		WP_Job_Manager_Helper_Options::delete( 'test', 'email' );
 		WP_Job_Manager_Helper_Options::delete( 'test', 'errors' );
 
 		// Assert.
 		$this->assertEquals(
 			[
-				'licence_key' => $license_key,
+				'license_key' => $license_key,
 				'email'       => $email,
 				'errors'      => $errors,
 			],
@@ -312,28 +312,28 @@ class WP_Test_WP_Job_Manager_Helper extends WPJM_BaseTest {
 		);
 	}
 
-	public function testGetPluginLicence_WithoutLicense_ReturnsLicense() {
+	public function testGetPluginLicense_WithoutLicense_ReturnsLicense() {
 		// Arrange.
 		$license_key = '1234';
 		$email       = 'me@example.com';
 		$errors      = [ 'error' ];
 
-		WP_Job_Manager_Helper_Options::update( 'test', 'licence_key', $license_key );
+		WP_Job_Manager_Helper_Options::update( 'test', 'license_key', $license_key );
 		WP_Job_Manager_Helper_Options::update( 'test', 'email', $email );
 		WP_Job_Manager_Helper_Options::update( 'test', 'errors', $errors );
 
 		$instance = new WP_Job_Manager_Helper();
 
 		// Act.
-		$result = $instance->get_plugin_licence( 'rhino' );
-		WP_Job_Manager_Helper_Options::delete( 'test', 'licence_key' );
+		$result = $instance->get_plugin_license( 'rhino' );
+		WP_Job_Manager_Helper_Options::delete( 'test', 'license_key' );
 		WP_Job_Manager_Helper_Options::delete( 'test', 'email' );
 		WP_Job_Manager_Helper_Options::delete( 'test', 'errors' );
 
 		// Assert.
 		$this->assertEquals(
 			[
-				'licence_key' => null,
+				'license_key' => null,
 				'email'       => null,
 				'errors'      => null,
 			],

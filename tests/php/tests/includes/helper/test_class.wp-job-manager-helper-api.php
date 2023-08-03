@@ -188,7 +188,7 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 			'plugin_name'    => 'test',
 			'version'        => '1.0.0',
 			'api_product_id' => 'test',
-			'licence_key'    => 'abcd',
+			'license_key'    => 'abcd',
 			'email'          => 'test@local.dev',
 		];
 	}

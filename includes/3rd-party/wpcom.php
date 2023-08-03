@@ -20,7 +20,7 @@ function wpjm_dotcom_marketplace_configure_license_for_wp_job_manager_addon( $re
 	}
 
 	$helper = WP_Job_Manager_Helper::instance();
-	$helper->activate_licence( $payload['wpjm_product_slug'], $payload['license_code'], $payload['email_address'] );
+	$helper->activate_license( $payload['wpjm_product_slug'], $payload['license_code'], $payload['email_address'] );
 
 	$messages = $helper->get_messages( $payload['wpjm_product_slug'] );
 

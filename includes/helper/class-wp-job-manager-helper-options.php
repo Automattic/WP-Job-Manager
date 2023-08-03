@@ -16,7 +16,7 @@ class WP_Job_Manager_Helper_Options {
 	const OPTION_NAME = 'job_manager_helper';
 
 	/**
-	 * Update a WPJM plugin's licence data.
+	 * Update a WPJM plugin's license data.
 	 *
 	 * @param string $product_slug
 	 * @param string $key
@@ -34,7 +34,7 @@ class WP_Job_Manager_Helper_Options {
 	}
 
 	/**
-	 * Retrieve a WPJM plugin's licence data.
+	 * Retrieve a WPJM plugin's license data.
 	 *
 	 * @param string $product_slug
 	 * @param string $key
@@ -54,7 +54,7 @@ class WP_Job_Manager_Helper_Options {
 	}
 
 	/**
-	 * Delete a WPJM plugin's licence data.
+	 * Delete a WPJM plugin's license data.
 	 *
 	 * @param string $product_slug
 	 * @param string $key
@@ -71,7 +71,7 @@ class WP_Job_Manager_Helper_Options {
 	}
 
 	/**
-	 * Attempt to retrieve licence data from legacy storage.
+	 * Attempt to retrieve license data from legacy storage.
 	 *
 	 * @param string $product_slug
 	 *

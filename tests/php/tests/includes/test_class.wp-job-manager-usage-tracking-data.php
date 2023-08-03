@@ -780,7 +780,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * Adds fake license to one of the products.
 	 */
 	private function set_fake_license() {
-		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'licence_key', 'FAKE-LICENSE' );
+		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'license_key', 'FAKE-LICENSE' );
 		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'email', 'fake@example.com' );
 		WP_Job_Manager_Helper_Options::update( 'wp-job-manager-official-licensed-tester', 'errors', [] );
 	}
@@ -789,7 +789,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * Removes fake license to one of the products.
 	 */
 	private function remove_fake_license() {
-		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'licence_key' );
+		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'license_key' );
 		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'email' );
 		WP_Job_Manager_Helper_Options::delete( 'wp-job-manager-official-licensed-tester', 'errors' );
 	}

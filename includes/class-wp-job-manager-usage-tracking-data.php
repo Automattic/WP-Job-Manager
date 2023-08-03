@@ -331,7 +331,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 
 		if ( $licensed_only ) {
 			foreach ( $active_plugins as $plugin_slug => $data ) {
-				if ( ! $helper->has_plugin_licence( $plugin_slug ) ) {
+				if ( ! $helper->has_plugin_license( $plugin_slug ) ) {
 					unset( $active_plugins[ $plugin_slug ] );
 				}
 			}
