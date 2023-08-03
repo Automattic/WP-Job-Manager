@@ -159,6 +159,12 @@ class WP_Job_Manager_Helper_API {
 	 * @return array|false The response as an array, or false if the request failed.
 	 */
 	protected function request( $args, $return_error = false ) {
+		// These legacy endpoints are temporary. For now, translate `license_key` => `licence_key` at this point.
+		if ( ! empty( $args['license_key'] ) ) {
+			$args['licence_key'] = $args['license_key'];
+			unset( $args['license_key'] );
+		}
+
 		$defaults = [
 			'instance'       => $this->get_site_url(),
 			'plugin_name'    => '',
@@ -167,12 +173,6 @@ class WP_Job_Manager_Helper_API {
 			'licence_key'    => '',
 			'email'          => '',
 		];
-
-		// These legacy endpoints are temporary. For now, translate `license_key` => `licence_key` at this point.
-		if ( ! empty( $args['license_key'] ) ) {
-			$args['licence_key'] = $args['license_key'];
-			unset( $args['license_key'] );
-		}
 
 		$args     = wp_parse_args( $args, $defaults );
 		$response = wp_safe_remote_get(
