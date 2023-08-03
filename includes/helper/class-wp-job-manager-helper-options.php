@@ -26,6 +26,10 @@ class WP_Job_Manager_Helper_Options {
 	 * @return bool
 	 */
 	public static function update( $product_slug, $key, $value ) {
+		if ( '_' === substr( $product_slug, 0, 1 ) ) {
+			return false;
+		}
+
 		$options = self::get_license_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
 			$options[ $product_slug ] = [];
@@ -44,6 +48,10 @@ class WP_Job_Manager_Helper_Options {
 	 * @return mixed
 	 */
 	public static function get( $product_slug, $key, $default = false ) {
+		if ( '_' === substr( $product_slug, 0, 1 ) ) {
+			return $default;
+		}
+
 		$options = self::get_license_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
 			$options[ $product_slug ] = self::attempt_legacy_restore( $product_slug );
@@ -64,6 +72,10 @@ class WP_Job_Manager_Helper_Options {
 	 * @return bool
 	 */
 	public static function delete( $product_slug, $key ) {
+		if ( '_' === substr( $product_slug, 0, 1 ) ) {
+			return false;
+		}
+
 		$options = self::get_license_option();
 		if ( ! isset( $options[ $product_slug ] ) ) {
 			$options[ $product_slug ] = [];
