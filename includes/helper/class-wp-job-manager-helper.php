@@ -871,7 +871,7 @@ class WP_Job_Manager_Helper {
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'email' );
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
-		delete_site_transient( 'update_plugins' );
+		wp_clean_plugins_cache( true );
 		delete_site_transient( 'wpjm_helper_updates' );
 
 		if ( $silently ) {
@@ -995,6 +995,7 @@ class WP_Job_Manager_Helper {
 
 			// Clear the update cache so we can get the packages.
 			delete_site_transient( 'wpjm_helper_updates' );
+			wp_clean_plugins_cache( true );
 		}
 	}
 
