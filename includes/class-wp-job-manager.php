@@ -89,7 +89,7 @@ class WP_Job_Manager {
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
 
 		// Schedule cron jobs.
-		add_action( 'init', [ $this, 'maybe_schedule_cron_jobs' ] );
+		add_action( 'init', [ __CLASS__, 'maybe_schedule_cron_jobs' ] );
 
 		// Switch theme.
 		add_action( 'after_switch_theme', [ 'WP_Job_Manager_Ajax', 'add_endpoint' ], 10 );
@@ -240,7 +240,7 @@ class WP_Job_Manager {
 	/**
 	 * Schedule cron jobs for WPJM events.
 	 */
-	public function maybe_schedule_cron_jobs() {
+	public static function maybe_schedule_cron_jobs() {
 		if ( ! wp_next_scheduled( 'job_manager_check_for_expired_jobs' ) ) {
 			wp_schedule_event( time(), 'hourly', 'job_manager_check_for_expired_jobs' );
 		}
