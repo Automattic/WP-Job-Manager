@@ -51,6 +51,10 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	 * Updates the promotion status of the jobs accordingly.
 	 */
 	public function fetch_updates() {
+		if ( ! get_option( self::HAS_PROMOTED_JOBS_OPTION_KEY, false ) ) {
+			// We don't fetch updates if the site doesn't have promoted jobs.
+			return;
+		}
 		$last_execution_time = get_option( self::LAST_EXECUTION_OPTION_KEY, 0 );
 		$current_time        = time();
 
