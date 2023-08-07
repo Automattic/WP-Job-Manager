@@ -9,11 +9,11 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Helper_Options::update
 	 */
 	public function test_update_simple() {
-		$this->setup_master_option();
-		WP_Job_Manager_Helper_Options::update( 'test', 'licence_key', 'new-value' );
-		$new_option = $this->get_master_option();
-		$this->assertTrue( isset( $new_option['test']['licence_key'] ) );
-		$this->assertEquals( 'new-value', $new_option['test']['licence_key'] );
+		$this->setup_license_option();
+		WP_Job_Manager_Helper_Options::update( 'test', 'license_key', 'new-value' );
+		$new_option = $this->get_license_option();
+		$this->assertTrue( isset( $new_option['test']['license_key'] ) );
+		$this->assertEquals( 'new-value', $new_option['test']['license_key'] );
 	}
 
 	/**
@@ -22,7 +22,7 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_BaseTest {
 	 */
 	public function test_get_return_default() {
 		$result_expected = 'simple';
-		$result          = WP_Job_Manager_Helper_Options::get( 'test', 'licence_key', $result_expected );
+		$result          = WP_Job_Manager_Helper_Options::get( 'test', 'license_key', $result_expected );
 		$this->assertEquals( $result_expected, $result );
 	}
 
@@ -31,8 +31,8 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Helper_Options::get
 	 */
 	public function test_get_return_value() {
-		$this->setup_master_option();
-		$result = WP_Job_Manager_Helper_Options::get( 'test', 'licence_key', 'simple' );
+		$this->setup_license_option();
+		$result = WP_Job_Manager_Helper_Options::get( 'test', 'license_key', 'simple' );
 		$this->assertEquals( 'abcd', $result );
 	}
 
@@ -43,8 +43,8 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_BaseTest {
 	 */
 	public function test_get_return_legacy() {
 		$this->setup_legacy_options();
-		$licence_key_result = WP_Job_Manager_Helper_Options::get( 'legacy', 'licence_key', 'simple' );
-		$this->assertEquals( 'legacy-abcd', $licence_key_result );
+		$license_key_result = WP_Job_Manager_Helper_Options::get( 'legacy', 'license_key', 'simple' );
+		$this->assertEquals( 'legacy-abcd', $license_key_result );
 
 		$email_result = WP_Job_Manager_Helper_Options::get( 'legacy', 'email', 'simple' );
 		$this->assertEquals( 'legacy@test.dev', $email_result );
@@ -61,11 +61,36 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Helper_Options::delete
 	 */
 	public function test_delete_simple() {
-		$this->setup_master_option();
-		$result = WP_Job_Manager_Helper_Options::delete( 'test', 'licence_key' );
+		$this->setup_license_option();
+		$result = WP_Job_Manager_Helper_Options::delete( 'test', 'license_key' );
 
-		$new_option = $this->get_master_option();
-		$this->assertFalse( isset( $new_option['test']['licence_key'] ) );
+		$new_option = $this->get_license_option();
+		$this->assertFalse( isset( $new_option['test']['license_key'] ) );
+	}
+
+	public function testMigrateLicenseOption_HasLicence_MigratesToLicense() {
+		// Arrange.
+		$test_license_data = [
+			'test-a' => [
+				'licence_key'     => 'abcd-fake',
+				'errors' => [ 'invalid_key' ],
+			],
+			'test-b' => [
+				'licence_key'     => 'abcd-1234',
+				'errors' => [ 'invalid_key' ],
+			]
+		];
+		$this->setup_license_option( $test_license_data );
+
+		// Act.
+		$license_a = WP_Job_Manager_Helper_Options::get( 'test-a', 'license_key' );
+		$license_b = WP_Job_Manager_Helper_Options::get( 'test-b', 'license_key' );
+
+		// Assert.
+		$raw_license_option = $this->get_license_option();
+		$this->assertEquals( 'abcd-fake', $license_a );
+		$this->assertEquals( 'abcd-1234', $license_b );
+		$this->assertEquals( WP_Job_Manager_Helper_Options::LICENSE_STORAGE_VERSION, $raw_license_option['_version'] );
 	}
 
 	private function setup_legacy_options() {
@@ -75,11 +100,11 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_BaseTest {
 		update_option( 'legacy_hide_key_notice', 'legacy-hide' );
 	}
 
-	private function setup_master_option( $value = null ) {
+	private function setup_license_option( $value = null ) {
 		if ( null === $value ) {
 			$value = [
 				'test' => [
-					'licence_key'     => 'abcd',
+					'license_key'     => 'abcd',
 					'email'           => 'local@local.dev',
 					'errors'          => null,
 					'hide_key_notice' => false,
@@ -89,7 +114,7 @@ class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_BaseTest {
 		update_option( 'job_manager_helper', $value );
 	}
 
-	private function get_master_option() {
+	private function get_license_option() {
 		return get_option( 'job_manager_helper', [] );
 	}
 }
