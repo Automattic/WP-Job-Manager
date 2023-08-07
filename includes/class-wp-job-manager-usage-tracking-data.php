@@ -327,7 +327,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		}
 
 		$helper         = WP_Job_Manager_Helper::instance();
-		$active_plugins = $helper->get_installed_plugins( true );
+		$active_plugins = $helper->get_installed_plugins( true, false );
 
 		if ( $licensed_only ) {
 			foreach ( $active_plugins as $plugin_slug => $data ) {

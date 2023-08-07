@@ -132,6 +132,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'_job_manager_activation_redirect', // Legacy transient that should still be removed.
 		'get_job_listings-transient-version',
 		'jm_.*',
+		'wpjm_.*',
 	];
 
 	/**

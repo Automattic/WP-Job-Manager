@@ -3,7 +3,7 @@
  * @group helper
  * @group helper-api
  */
-class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
+class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 
 	public function setUp(): void {
 		parent::setUp();
@@ -30,42 +30,6 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_Helper_Base_Test {
 
 		// check it always returns the same object.
 		$this->assertSame( WP_Job_Manager_Helper_API::instance(), $instance, 'WP_Job_Manager_Helper_API::instance() must always return the same object' );
-	}
-
-	/**
-	 * @since 1.29.0
-	 * @covers WP_Job_Manager_Helper_API::plugin_update_check
-	 */
-	public function test_plugin_update_check_valid() {
-		$base_args = $this->get_base_args();
-		$this->set_expected_response(
-			[
-				'args' => wp_parse_args(
-					[
-						'wc-api'  => 'wp_plugin_licencing_update_api',
-						'request' => 'pluginupdatecheck',
-					],
-					$base_args
-				),
-			]
-		);
-		$instance = new WP_Job_Manager_Helper_API();
-		$response = $instance->plugin_update_check( $base_args );
-
-		// If a request was made that we don't expect, `$response` would be false.
-		$this->assertEquals( $this->default_valid_response(), $response );
-	}
-
-	/**
-	 * @since 1.29.0
-	 * @covers WP_Job_Manager_Helper_API::plugin_update_check
-	 */
-	public function test_plugin_update_check_invalid() {
-		$base_args = $this->get_base_args();
-		$instance  = new WP_Job_Manager_Helper_API();
-		$response  = $instance->plugin_update_check( $base_args );
-
-		$this->assertFalse( $response );
 	}
 
 	/**

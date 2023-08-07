@@ -3,7 +3,7 @@
  * @group helper
  * @group helper-options
  */
-class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_Helper_Base_Test {
+class WP_Test_WP_Job_Manager_Helper_Options extends WPJM_BaseTest {
 	/**
 	 * @since 1.29.0
 	 * @covers WP_Job_Manager_Helper_Options::update

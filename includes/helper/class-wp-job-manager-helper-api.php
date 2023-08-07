@@ -41,14 +41,36 @@ class WP_Job_Manager_Helper_API {
 	/**
 	 * Checks if there is an update for the plugin using the WPJobManager.com API.
 	 *
+	 * @deprecated $$next-version$$ Use WP_Job_Manager_Helper_API::bulk_update_check() instead.
+	 *
 	 * @param array $args The arguments to pass to the endpoint.
 	 * @return array|false The response, or false if the request failed.
 	 */
 	public function plugin_update_check( $args ) {
-		$args            = wp_parse_args( $args );
-		$args['wc-api']  = 'wp_plugin_licencing_update_api';
-		$args['request'] = 'pluginupdatecheck';
-		return $this->request( $args );
+		_deprecated_file( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Helper_API::bulk_update_check' );
+
+		return false;
+	}
+
+	/**
+	 * Check for plugin updates for several plugins.
+	 *
+	 * @param array $plugins Array of plugins keyed by slug with the associated license and installed version.
+	 * @return array|false The response, or false if the request failed.
+	 */
+	public function bulk_update_check( array $plugins ) {
+		return $this->request_endpoint(
+			'wp-json/wpjmcom-licensing/v1/updates',
+			[
+				'method' => 'POST',
+				'body'   => wp_json_encode(
+					[
+						'site_url' => $this->get_site_url(),
+						'plugins'  => $plugins,
+					]
+				),
+			]
+		);
 	}
 
 	/**
