@@ -23,6 +23,11 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	const LAST_EXECUTION_OPTION_KEY = self::CRON_HOOK . '_last_execution';
 
 	/**
+	 * The name of the option that stores whether the site has promoted jobs or not.
+	 */
+	const HAS_PROMOTED_JOBS_OPTION_KEY = 'job_manager_has_promoted_jobs';
+
+	/**
 	 * The frequency at which the cron job should be executed.
 	 */
 	private const FREQUENCY_UPDATE = HOUR_IN_SECONDS;
