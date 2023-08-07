@@ -20,7 +20,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	/**
 	 * The name of the option that stores the last time the cron job was executed.
 	 */
-	const OPTION_KEY = self::CRON_HOOK . '_last_execution';
+	const LAST_EXECUTION_OPTION_KEY = self::CRON_HOOK . '_last_execution';
 
 	/**
 	 * The frequency at which the cron job should be executed.
@@ -46,7 +46,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	 * Updates the promotion status of the jobs accordingly.
 	 */
 	public function fetch_updates() {
-		$last_execution_time = get_option( self::OPTION_KEY, 0 );
+		$last_execution_time = get_option( self::LAST_EXECUTION_OPTION_KEY, 0 );
 		$current_time        = time();
 
 		if ( $current_time - $last_execution_time < self::FREQUENCY_UPDATE ) {
@@ -55,7 +55,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		}
 
 		// We always update the last execution time, even if the request fails.
-		update_option( self::OPTION_KEY, $current_time );
+		update_option( self::LAST_EXECUTION_OPTION_KEY, $current_time );
 
 		$jobs     = $this->request_site_feed();
 		$statuses = wp_list_pluck( $jobs, 'wpjm_status', 'wpjm_id' );
