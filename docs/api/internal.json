@@ -244,6 +244,48 @@
         }
       },
       "parameters": []
+    },
+    "/wp-json/wpjm-internal/v1/promoted-jobs/refresh-status": {
+      "post": {
+        "summary": "Promoted Jobs - Refresh status of the Promoted Jobs",
+        "description": "Refresh promoted jobs status",
+        "operationId": "refresh-promotedjobs-status",
+        "tags": [
+          "promoted-jobs"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            },
+            "description": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Whether the status was refreshed successfully. It's always true",
+                      "enum": [
+                        true
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

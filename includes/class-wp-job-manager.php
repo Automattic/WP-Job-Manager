@@ -89,7 +89,7 @@ class WP_Job_Manager {
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
 
 		// Schedule cron jobs.
-		self::maybe_schedule_cron_jobs();
+		add_action( 'init', [ __CLASS__, 'maybe_schedule_cron_jobs' ] );
 
 		// Switch theme.
 		add_action( 'after_switch_theme', [ 'WP_Job_Manager_Ajax', 'add_endpoint' ], 10 );
@@ -250,6 +250,9 @@ class WP_Job_Manager {
 		if ( ! wp_next_scheduled( 'job_manager_email_daily_notices' ) ) {
 			wp_schedule_event( time(), 'daily', 'job_manager_email_daily_notices' );
 		}
+		if ( ! wp_next_scheduled( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK ) ) {
+			wp_schedule_event( time(), 'twicedaily', WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK );
+		}
 	}
 
 	/**
@@ -260,6 +263,7 @@ class WP_Job_Manager {
 		wp_clear_scheduled_hook( 'job_manager_delete_old_previews' );
 		wp_clear_scheduled_hook( 'job_manager_email_daily_notices' );
 		wp_clear_scheduled_hook( 'job_manager_promoted_jobs_notification' );
+		wp_clear_scheduled_hook( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK );
 	}
 
 	/**

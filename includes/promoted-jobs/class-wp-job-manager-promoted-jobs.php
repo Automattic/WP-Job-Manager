@@ -39,6 +39,13 @@ class WP_Job_Manager_Promoted_Jobs {
 	const PROMOTED_JOB_TRACK_OPTION = 'jm_promoted_job_count';
 
 	/**
+	 * The status handler.
+	 *
+	 * @var WP_Job_Manager_Promoted_Jobs_Status_Handler
+	 */
+	private WP_Job_Manager_Promoted_Jobs_Status_Handler $status_handler;
+
+	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
 	 * @since  $$next-version$$
@@ -56,27 +63,42 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action( 'init', [ $this, 'include_dependencies' ] );
-		add_action( 'init', [ $this, 'register_post_metas' ] );
-		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
+		add_action( 'init', [ $this, 'init' ] );
+	}
+
+	/**
+	 * Initializes Promoted Jobs feature.
+	 *
+	 * @return void
+	 */
+	public function init() {
+		$this->include_dependencies();
+		$this->register_post_metas();
+		$this->status_handler = new WP_Job_Manager_Promoted_Jobs_Status_Handler();
+		$this->status_handler->init();
+
+		( new WP_Job_Manager_Promoted_Jobs_API( $this->status_handler ) )->init();
+
 		add_filter( 'pre_delete_post', [ $this, 'cancel_promoted_jobs_deletion' ], 10, 2 );
 	}
 
 	/**
 	 * Includes promoted jobs dependencies.
 	 *
-	 * @internal
 	 * @return void
 	 */
-	public function include_dependencies() {
+	private function include_dependencies() {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-notifications.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-status-handler.php';
 	}
 
 	/**
 	 * Register post metas.
+	 *
+	 * @return void
 	 */
-	public function register_post_metas() {
+	private function register_post_metas() {
 		register_post_meta(
 			'job_listing',
 			self::PROMOTED_META_KEY,
@@ -89,15 +111,6 @@ class WP_Job_Manager_Promoted_Jobs {
 				},
 			]
 		);
-	}
-
-	/**
-	 * Loads the REST API functionality.
-	 *
-	 * @internal
-	 */
-	public function rest_init() {
-		( new WP_Job_Manager_Promoted_Jobs_API() )->register_routes();
 	}
 
 	/**

@@ -27,6 +27,34 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	private const REST_BASE = '/promoted-jobs';
 
 	/**
+	 * The status handler.
+	 *
+	 * @var WP_Job_Manager_Promoted_Jobs_Status_Handler
+	 */
+	private WP_Job_Manager_Promoted_Jobs_Status_Handler $status_handler;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param WP_Job_Manager_Promoted_Jobs_Status_Handler $status_handler The status handler.
+	 */
+	public function __construct( WP_Job_Manager_Promoted_Jobs_Status_Handler $status_handler ) {
+		$this->status_handler = $status_handler;
+
+		add_filter( 'rest_post_dispatch', [ $this, 'add_nocache_headers' ], 10, 3 );
+	}
+
+	/**
+	 * Initializes the REST API.
+	 *
+	 * @return void
+	 */
+	public function init() {
+		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
+	}
+
+
+	/**
 	 * Register the routes for the objects of the controller.
 	 */
 	public function register_routes() {
@@ -104,6 +132,45 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				],
 			]
 		);
+		register_rest_route(
+			self::NAMESPACE,
+			self::REST_BASE . '/refresh-status',
+			[
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'refresh_status' ],
+					'permission_callback' => '__return_true',
+				],
+			]
+		);
+	}
+
+	/**
+	 * Adds no-cache headers to the REST response if they're in the Promoted Jobs API namespace.
+	 *
+	 * @param WP_REST_Response $response The response data.
+	 * @param WP_REST_Server   $server The REST server instance.
+	 * @param WP_REST_Request  $request The request used to generate the response.
+	 *
+	 * @return WP_REST_Response The response data.
+	 */
+	public function add_nocache_headers( $response, $server, $request ) {
+		// Check if the request belongs to the specified namespace and the response is successful.
+		if ( str_starts_with( $request->get_route(), '/' . self::NAMESPACE . self::REST_BASE ) && $response->get_status() >= 200 && $response->get_status() < 300 ) {
+			// Get the no-cache headers array.
+			$nocache_headers = wp_get_nocache_headers();
+
+			// Add nocache headers to the response.
+			foreach ( $nocache_headers as $header => $header_value ) {
+				if ( empty( $header_value ) ) {
+					$server->remove_header( $header );
+				} else {
+					$server->send_header( $header, $header_value );
+				}
+			}
+		}
+
+		return $response;
 	}
 
 	/**
@@ -263,5 +330,16 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				'verified' => $verified,
 			]
 		);
+	}
+
+	/**
+	 * Refreshes the status of the promoted jobs.
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return WP_REST_Response The response.
+	 */
+	public function refresh_status( $request ) {
+		$this->status_handler->fetch_updates();
+		return new WP_REST_Response( [ 'success' => true ] );
 	}
 }
