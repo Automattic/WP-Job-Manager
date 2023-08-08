@@ -28,9 +28,9 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	const USED_PROMOTED_JOBS_OPTION_KEY = 'job_manager_used_promoted_jobs';
 
 	/**
-	 * The frequency at which the cron job should be executed.
+	 * Time interval (in seconds) between update fetches from the site.
 	 */
-	private const FREQUENCY_UPDATE = HOUR_IN_SECONDS;
+	private const UPDATE_INTERVAL = 5 * MINUTE_IN_SECONDS;
 
 	/**
 	 * Constructor.
@@ -58,8 +58,8 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		$last_execution_time = get_option( self::LAST_EXECUTION_OPTION_KEY, 0 );
 		$current_time        = time();
 
-		if ( $current_time - $last_execution_time < self::FREQUENCY_UPDATE ) {
-			// We block the execution if the last execution was less than 1 hour ago.
+		if ( $current_time - $last_execution_time < self::UPDATE_INTERVAL ) {
+			// We block the execution if the last execution was less than self::UPDATE_INTERVAL seconds ago.
 			return;
 		}
 
