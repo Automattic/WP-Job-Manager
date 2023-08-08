@@ -209,7 +209,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		$verify_endpoint_url = rest_url( '/wpjm-internal/v1/promoted-jobs/verify-token', 'https' );
 		$verify_endpoint_url = substr( $verify_endpoint_url, strlen( $site_url ) );
 
-		update_option( WP_Job_Manager_Promoted_Jobs_Status_Handler::HAS_PROMOTED_JOBS_OPTION_KEY, true );
+		update_option( WP_Job_Manager_Promoted_Jobs_Status_Handler::USED_PROMOTED_JOBS_OPTION_KEY, true );
 
 		$url = add_query_arg(
 			[

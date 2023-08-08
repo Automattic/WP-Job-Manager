@@ -25,7 +25,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	/**
 	 * The name of the option that stores whether the site has promoted jobs or not.
 	 */
-	const HAS_PROMOTED_JOBS_OPTION_KEY = 'job_manager_has_promoted_jobs';
+	const USED_PROMOTED_JOBS_OPTION_KEY = 'job_manager_used_promoted_jobs';
 
 	/**
 	 * The frequency at which the cron job should be executed.
@@ -51,7 +51,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	 * Updates the promotion status of the jobs accordingly.
 	 */
 	public function fetch_updates() {
-		if ( ! get_option( self::HAS_PROMOTED_JOBS_OPTION_KEY, false ) ) {
+		if ( ! get_option( self::USED_PROMOTED_JOBS_OPTION_KEY, false ) ) {
 			// We don't fetch updates if the site doesn't have promoted jobs.
 			return;
 		}
