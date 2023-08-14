@@ -339,6 +339,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * @return WP_REST_Response The response.
 	 */
 	public function refresh_status( $request ) {
+		update_option( WP_Job_Manager_Promoted_Jobs_Status_Handler::USED_PROMOTED_JOBS_OPTION_KEY, true );
 		$this->status_handler->fetch_updates();
 		return new WP_REST_Response( [ 'success' => true ] );
 	}

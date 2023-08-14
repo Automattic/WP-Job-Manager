@@ -23,7 +23,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	const LAST_EXECUTION_OPTION_KEY = self::CRON_HOOK . '_last_execution';
 
 	/**
-	 * The name of the option that stores whether the site has promoted jobs or not.
+	 * The name of the option that stores whether the site used promoted jobs or not.
 	 */
 	const USED_PROMOTED_JOBS_OPTION_KEY = 'job_manager_used_promoted_jobs';
 
