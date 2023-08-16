@@ -149,8 +149,9 @@ class WP_Job_Manager_Promoted_Jobs {
 	/**
 	 * Update promotion.
 	 *
-	 * @param int  $post_id
-	 * @param bool $promoted
+	 * @param int         $post_id
+	 * @param bool|string $promoted `true` to promoted, `false` to not promoted, `force_delete` to delete.
+	 *                              The deletion is used to force a removal from the feed, deactivating the promotion while syncing.
 	 *
 	 * @return boolean
 	 */
@@ -160,6 +161,10 @@ class WP_Job_Manager_Promoted_Jobs {
 		}
 
 		delete_option( self::PROMOTED_JOB_TRACK_OPTION );
+
+		if ( 'force_delete' === $promoted ) {
+			return delete_post_meta( $post_id, self::PROMOTED_META_KEY );
+		}
 
 		return update_post_meta( $post_id, self::PROMOTED_META_KEY, $promoted ? '1' : '0' );
 	}
@@ -172,7 +177,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public static function deactivate_promotion( $post_id ) {
-		return self::update_promotion( $post_id, false );
+		return self::update_promotion( $post_id, 'force_delete' );
 	}
 
 	/**
