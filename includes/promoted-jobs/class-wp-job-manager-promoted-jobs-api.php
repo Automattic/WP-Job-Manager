@@ -234,6 +234,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		return [
 			'id'           => (string) $item->ID,
 			'status'       => $item->post_status,
+			'promoted'     => WP_Job_Manager_Promoted_Jobs::is_promoted( $item->ID ),
 			'title'        => $item->post_title,
 			'description'  => $item->post_content,
 			'permalink'    => get_permalink( $item ),

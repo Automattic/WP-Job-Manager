@@ -300,8 +300,13 @@
           },
           "status": {
             "type": "string",
-            "example": "publish",
+            "example": true,
             "description": "The job status."
+          },
+          "promoted": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether the job has promoted status on the plugin."
           },
           "title": {
             "type": "string",
