@@ -85,10 +85,9 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	public function __construct() {
 		$this->watched_fields = [
 			'post' => [ 'post_name', 'post_title', 'post_content', 'post_status' ],
-			'meta' => [ WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY ],
 		];
 		add_action( 'post_updated', [ $this, 'post_updated' ], 10, 3 );
-		add_action( 'update_postmeta', [ $this, 'meta_updated' ], 10, 4 );
+		add_action( 'deleted_post_meta', [ $this, 'deleted_meta' ], 10, 3 );
 		add_action( 'shutdown', [ $this, 'maybe_trigger_notification' ] );
 		add_action( 'job_manager_promoted_jobs_notification', [ $this, 'send_notification' ] );
 	}
@@ -125,22 +124,18 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	}
 
 	/**
-	 * Checks if we should send a notification to wpjobmanager.com after a post meta is updated.
+	 * Checks if we should send a notification to wpjobmanager.com after promoted meta key is deleted.
 	 *
-	 * @param int    $meta_id Meta ID.
-	 * @param int    $post_id Post ID.
-	 * @param string $meta_key Meta key.
-	 * @param mixed  $meta_value Meta value.
+	 * @param string[] $meta_ids
+	 * @param int      $post_id  Post ID.
+	 * @param string   $meta_key Meta key.
 	 */
-	public function meta_updated( $meta_id, $post_id, $meta_key, $meta_value ) {
-		if ( ! WP_Job_Manager_Promoted_Jobs::is_promoted( $post_id ) ) {
-			return;
-		}
-		if ( in_array( $meta_key, $this->watched_fields['meta'], true ) ) {
-			$current_value = get_post_meta( $post_id, $meta_key, true );
-			if ( $current_value !== $meta_value ) {
-				$this->watched_fields_changed = true;
-			}
+	public function deleted_meta( $meta_ids, $post_id, $meta_key ) {
+		if (
+			WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY === $meta_key
+			&& 'job_listing' === get_post_type( $post_id )
+		) {
+			$this->watched_fields_changed = true;
 		}
 	}
 
