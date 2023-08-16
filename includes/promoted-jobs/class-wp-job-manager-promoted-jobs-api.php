@@ -190,8 +190,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			'meta_query'          => [
 				[
 					'key'     => WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY,
-					'value'   => '1',
-					'compare' => '=',
+					'compare' => 'EXISTS',
 				],
 			],
 		];
