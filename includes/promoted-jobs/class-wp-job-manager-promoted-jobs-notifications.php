@@ -125,6 +125,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 
 	/**
 	 * Checks if we should send a notification to wpjobmanager.com after promoted meta key is deleted.
+	 * It happens when a job promotion is deactivated.
 	 *
 	 * @param string[] $meta_ids
 	 * @param int      $post_id  Post ID.
