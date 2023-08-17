@@ -104,11 +104,11 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	private function request_site_feed() {
 		$url      = $this->get_site_feed_url();
 		$response = wp_remote_get( $url );
+		$this->update_interval( $response, 'X-WPJM-Cron-Interval', self::CRON_INTERVAL_OPTION_KEY );
+		$this->update_interval( $response, 'X-WPJM-Webhook-Interval', self::WEBHOOK_INTERVAL_OPTION_KEY );
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return [];
 		}
-		$this->update_interval( $response, 'X-WPJM-Cron-Interval', self::CRON_INTERVAL_OPTION_KEY );
-		$this->update_interval( $response, 'X-WPJM-Webhook-Interval', self::WEBHOOK_INTERVAL_OPTION_KEY );
 		$body = wp_remote_retrieve_body( $response );
 		$json = \json_decode( $body, true );
 		if ( ! array_key_exists( 'jobs', $json ) ) {
