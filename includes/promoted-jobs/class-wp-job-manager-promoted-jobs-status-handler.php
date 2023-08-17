@@ -53,15 +53,8 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	 * Updates the promotion status of the jobs accordingly.
 	 */
 	public function fetch_updates() {
-		if ( ! get_option( self::USED_PROMOTED_JOBS_OPTION_KEY, false ) ) {
-			// We don't fetch updates if the site doesn't have promoted jobs.
-			return;
-		}
-		$last_execution_time = get_option( self::LAST_EXECUTION_OPTION_KEY, 0 );
-		$current_time        = time();
-
-		if ( $current_time - $last_execution_time < self::UPDATE_INTERVAL ) {
-			// We block the execution if the last execution was less than self::UPDATE_INTERVAL seconds ago.
+		$current_time = time();
+		if ( ! $this->should_update( $current_time ) ) {
 			return;
 		}
 
@@ -73,6 +66,33 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		foreach ( $statuses as $job_id => $job_status ) {
 			WP_Job_Manager_Promoted_Jobs::update_promotion( $job_id, '1' === $job_status );
 		}
+	}
+
+	/**
+	 * Checks if the update logic should be executed or not.
+	 *
+	 * @param int $current_time The current time.
+	 * @return bool True if the update logic should be executed, false otherwise.
+	 */
+	private function should_update( $current_time ) {
+		$interval = $this->get_current_interval();
+		if ( ! $interval ) {
+			// If the interval is not set or is zero, we don't update.
+			return false;
+		}
+		$last_execution = get_option( self::LAST_EXECUTION_OPTION_KEY, 0 );
+		return $current_time - $last_execution >= $interval;
+	}
+
+	/**
+	 * Get the current interval for fetching updates. This is either the interval for the cron or the webhook, depending
+	 * on the context of the current request.
+	 *
+	 * @return int The current interval for fetching updates.
+	 */
+	private function get_current_interval() {
+		$option_name = wp_doing_cron() ? self::CRON_INTERVAL_OPTION_KEY : self::WEBHOOK_INTERVAL_OPTION_KEY;
+		return (int) get_option( $option_name, 0 );
 	}
 
 	/**
