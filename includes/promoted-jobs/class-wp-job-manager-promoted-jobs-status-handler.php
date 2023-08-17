@@ -59,7 +59,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		}
 
 		// We always update the last execution time, even if the request fails.
-		update_option( self::LAST_EXECUTION_OPTION_KEY, $current_time );
+		update_option( self::LAST_EXECUTION_OPTION_KEY, $current_time, false );
 
 		$jobs     = $this->request_site_feed();
 		$statuses = wp_list_pluck( $jobs, 'wpjm_status', 'wpjm_id' );
