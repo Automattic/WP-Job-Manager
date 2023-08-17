@@ -139,7 +139,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		if ( array_key_exists( $header_name, $headers ) ) {
 			$header = $headers [ $header_name ];
 			if ( rest_is_integer( $header ) ) {
-				update_option( $option_name, (int) $header );
+				update_option( $option_name, (int) $header, false );
 			}
 		}
 	}
