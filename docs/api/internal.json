@@ -300,7 +300,7 @@
           },
           "status": {
             "type": "string",
-            "example": true,
+            "example": "publish",
             "description": "The job status."
           },
           "promoted": {
