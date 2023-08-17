@@ -149,21 +149,14 @@ class WP_Job_Manager_Promoted_Jobs {
 	/**
 	 * Update promotion.
 	 *
-	 * @param int         $post_id
-	 * @param bool|string $promoted `true` to promoted, `false` to not promoted, `force_delete` to delete.
-	 *                              The deletion is used to force a removal from the feed, deactivating the promotion while syncing.
+	 * @param int  $post_id
+	 * @param bool $promoted
 	 *
 	 * @return boolean
 	 */
 	public static function update_promotion( $post_id, $promoted ) {
-		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+		if ( ! self::pre_change_promotion( $post_id ) ) {
 			return false;
-		}
-
-		delete_option( self::PROMOTED_JOB_TRACK_OPTION );
-
-		if ( 'force_delete' === $promoted ) {
-			return delete_post_meta( $post_id, self::PROMOTED_META_KEY );
 		}
 
 		return update_post_meta( $post_id, self::PROMOTED_META_KEY, $promoted ? '1' : '0' );
@@ -177,7 +170,30 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public static function deactivate_promotion( $post_id ) {
-		return self::update_promotion( $post_id, 'force_delete' );
+		if ( ! self::pre_change_promotion( $post_id ) ) {
+			return false;
+		}
+
+		return delete_post_meta( $post_id, self::PROMOTED_META_KEY );
+	}
+
+	/**
+	 * Run necessary things before promotion change.
+	 * - Check post type.
+	 * - Clear job counter option.
+	 *
+	 * @param int $post_id
+	 *
+	 * @return boolean Whether pre change passed correctly.
+	 */
+	private static function pre_change_promotion( $post_id ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
+		delete_option( self::PROMOTED_JOB_TRACK_OPTION );
+
+		return true;
 	}
 
 	/**
