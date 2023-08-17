@@ -23,14 +23,16 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	const LAST_EXECUTION_OPTION_KEY = self::CRON_HOOK . '_last_execution';
 
 	/**
-	 * The name of the option that stores whether the site has promoted jobs or not.
+	 * The name of the option that stores the time interval (in seconds) between update fetches from the site
+	 * triggered by the webhook.
 	 */
-	const USED_PROMOTED_JOBS_OPTION_KEY = 'job_manager_used_promoted_jobs';
+	const WEBHOOK_INTERVAL_OPTION_KEY = 'job_manager_promoted_jobs_webhook_interval';
 
 	/**
-	 * Time interval (in seconds) between update fetches from the site.
+	 * The name of the option that stores the time interval (in seconds) between update fetches from the site
+	 * triggered by the cron.
 	 */
-	private const UPDATE_INTERVAL = 5 * MINUTE_IN_SECONDS;
+	const CRON_INTERVAL_OPTION_KEY = 'job_manager_promoted_jobs_cron_interval';
 
 	/**
 	 * Constructor.
@@ -85,6 +87,8 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return [];
 		}
+		$this->update_interval( $response, 'X-WPJM-Cron-Interval', self::CRON_INTERVAL_OPTION_KEY );
+		$this->update_interval( $response, 'X-WPJM-Webhook-Interval', self::WEBHOOK_INTERVAL_OPTION_KEY );
 		$body = wp_remote_retrieve_body( $response );
 		$json = \json_decode( $body, true );
 		if ( ! array_key_exists( 'jobs', $json ) ) {
@@ -100,6 +104,24 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	 */
 	private function get_site_feed_url() {
 		return add_query_arg( 'site', home_url( '', 'https' ), WP_Job_Manager_Helper_API::get_wpjmcom_url() . '/wp-json/promoted-jobs/v1/site/jobs' );
+	}
+
+	/**
+	 * Updates the interval option with the value from the response header from the feed.
+	 *
+	 * @param array|\WP_Error $response The HTTP response from the feed.
+	 * @param string          $header_name The name of the header to check for the interval value.
+	 * @param string          $option_name The name of the option to update with the interval value.
+	 * @return void
+	 */
+	private function update_interval( $response, $header_name, $option_name ) {
+		$headers = wp_remote_retrieve_headers( $response );
+		if ( array_key_exists( $header_name, $headers ) ) {
+			$header = $headers [ $header_name ];
+			if ( rest_is_integer( $header ) ) {
+				update_option( $option_name, (int) $header );
+			}
+		}
 	}
 
 }
