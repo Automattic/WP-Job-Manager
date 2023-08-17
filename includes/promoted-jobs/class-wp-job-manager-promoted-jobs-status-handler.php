@@ -80,7 +80,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 			// If the interval is not set or is zero, we don't update.
 			return false;
 		}
-		$last_execution = get_option( self::LAST_EXECUTION_OPTION_KEY, 0 );
+		$last_execution = (int) get_option( self::LAST_EXECUTION_OPTION_KEY, 0 );
 		return $current_time - $last_execution >= $interval;
 	}
 
