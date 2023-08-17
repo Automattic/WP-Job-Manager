@@ -138,7 +138,9 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		$headers = wp_remote_retrieve_headers( $response );
 		if ( array_key_exists( $header_name, $headers ) ) {
 			$header = $headers [ $header_name ];
-			if ( rest_is_integer( $header ) ) {
+			if ( 'false' === $header ) {
+				delete_option( $option_name );
+			} elseif ( rest_is_integer( $header ) ) {
 				update_option( $option_name, (int) $header, false );
 			}
 		}
