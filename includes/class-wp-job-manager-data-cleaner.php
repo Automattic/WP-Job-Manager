@@ -112,6 +112,8 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_enable_salary_currency',
 		'job_manager_default_salary_currency',
 		'job_manager_promoted_jobs_status_update_last_execution',
+		'job_manager_promoted_jobs_webhook_interval',
+		'job_manager_promoted_jobs_cron_interval',
 	];
 
 	/**
