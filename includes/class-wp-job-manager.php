@@ -251,7 +251,7 @@ class WP_Job_Manager {
 			wp_schedule_event( time(), 'daily', 'job_manager_email_daily_notices' );
 		}
 		if ( ! wp_next_scheduled( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK ) ) {
-			wp_schedule_event( time(), 'twicedaily', WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK );
+			wp_schedule_event( time(), 'hourly', WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK );
 		}
 	}
 
