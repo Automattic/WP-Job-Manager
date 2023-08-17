@@ -136,7 +136,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	 */
 	private function update_interval( $response, $header_name, $option_name ) {
 		$headers = wp_remote_retrieve_headers( $response );
-		if ( array_key_exists( $header_name, $headers ) ) {
+		if ( isset( $headers[ $header_name ] ) ) {
 			$header = $headers [ $header_name ];
 			if ( 'false' === $header ) {
 				delete_option( $option_name );
