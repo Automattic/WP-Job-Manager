@@ -209,12 +209,12 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		$verify_endpoint_url = rest_url( '/wpjm-internal/v1/promoted-jobs/verify-token', 'https' );
 		$verify_endpoint_url = substr( $verify_endpoint_url, strlen( $site_url ) );
 
+		WP_Job_Manager_Promoted_Jobs_Status_Handler::initialize_defaults();
+
 		// Make sure the job contains the promoted job meta to be listed in the feed.
 		if ( ! $is_editing ) {
 			WP_Job_Manager_Promoted_Jobs::update_promotion( $post_id, false );
 		}
-
-		update_option( WP_Job_Manager_Promoted_Jobs_Status_Handler::USED_PROMOTED_JOBS_OPTION_KEY, true );
 
 		$url = add_query_arg(
 			[
