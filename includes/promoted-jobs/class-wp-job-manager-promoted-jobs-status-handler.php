@@ -164,7 +164,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	 */
 	public static function initialize_defaults() {
 		$webhook_interval = 5 * MINUTE_IN_SECONDS;
-		add_option( self::LAST_CHECK_OPTION_KEY, time() - $webhook_interval, '', false );
+		update_option( self::LAST_CHECK_OPTION_KEY, time() - $webhook_interval, '', false );
 		add_option( self::CRON_INTERVAL_OPTION_KEY, 12 * HOUR_IN_SECONDS, '', false );
 		add_option( self::WEBHOOK_INTERVAL_OPTION_KEY, $webhook_interval, '', false );
 	}
