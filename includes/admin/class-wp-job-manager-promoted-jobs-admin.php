@@ -209,6 +209,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		$verify_endpoint_url = rest_url( '/wpjm-internal/v1/promoted-jobs/verify-token', 'https' );
 		$verify_endpoint_url = substr( $verify_endpoint_url, strlen( $site_url ) );
 
+		add_option( WP_Job_Manager_Promoted_Jobs_Status_Handler::LAST_CHECK_OPTION_KEY, time() - ( 5 * MINUTE_IN_SECONDS ), '', false );
 		add_option( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_INTERVAL_OPTION_KEY, 12 * HOUR_IN_SECONDS, '', false );
 		add_option( WP_Job_Manager_Promoted_Jobs_Status_Handler::WEBHOOK_INTERVAL_OPTION_KEY, 5 * MINUTE_IN_SECONDS, '', false );
 
