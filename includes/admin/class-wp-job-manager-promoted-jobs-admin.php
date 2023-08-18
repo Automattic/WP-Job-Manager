@@ -211,6 +211,11 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 
 		WP_Job_Manager_Promoted_Jobs_Status_Handler::initialize_defaults();
 
+		// Make sure the job contains the promoted job meta to be listed in the feed.
+		if ( ! $is_editing ) {
+			WP_Job_Manager_Promoted_Jobs::update_promotion( $post_id, false );
+		}
+
 		$url = add_query_arg(
 			[
 				'user_id'             => $current_user,
