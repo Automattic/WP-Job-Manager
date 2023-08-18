@@ -155,11 +155,9 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public static function update_promotion( $post_id, $promoted ) {
-		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+		if ( ! self::pre_change_promotion( $post_id ) ) {
 			return false;
 		}
-
-		delete_option( self::PROMOTED_JOB_TRACK_OPTION );
 
 		return update_post_meta( $post_id, self::PROMOTED_META_KEY, $promoted ? '1' : '0' );
 	}
@@ -172,7 +170,30 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public static function deactivate_promotion( $post_id ) {
-		return self::update_promotion( $post_id, false );
+		if ( ! self::pre_change_promotion( $post_id ) ) {
+			return false;
+		}
+
+		return delete_post_meta( $post_id, self::PROMOTED_META_KEY );
+	}
+
+	/**
+	 * Run necessary things before promotion change.
+	 * - Check post type.
+	 * - Clear job counter option.
+	 *
+	 * @param int $post_id
+	 *
+	 * @return boolean Whether pre change passed correctly.
+	 */
+	private static function pre_change_promotion( $post_id ) {
+		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+			return false;
+		}
+
+		delete_option( self::PROMOTED_JOB_TRACK_OPTION );
+
+		return true;
 	}
 
 	/**

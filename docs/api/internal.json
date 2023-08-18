@@ -303,6 +303,11 @@
             "example": "publish",
             "description": "The job status."
           },
+          "promoted": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether the job has promoted status on the plugin."
+          },
           "title": {
             "type": "string",
             "example": "Senior Software Engineer"
