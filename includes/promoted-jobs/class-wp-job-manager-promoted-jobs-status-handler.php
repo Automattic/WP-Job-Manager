@@ -18,9 +18,9 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	const CRON_HOOK = 'job_manager_promoted_jobs_status_update';
 
 	/**
-	 * The name of the option that stores the last time the cron job was executed.
+	 * The name of the option that stores the last time the check was made.
 	 */
-	const LAST_EXECUTION_OPTION_KEY = self::CRON_HOOK . '_last_execution';
+	const LAST_CHECK_OPTION_KEY = self::CRON_HOOK . '_last_check';
 
 	/**
 	 * The name of the option that stores the time interval (in seconds) between update fetches from the site
@@ -59,7 +59,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		}
 
 		// We always update the last execution time, even if the request fails.
-		update_option( self::LAST_EXECUTION_OPTION_KEY, $current_time, false );
+		update_option( self::LAST_CHECK_OPTION_KEY, $current_time, false );
 
 		$jobs     = $this->request_site_feed();
 		$statuses = wp_list_pluck( $jobs, 'wpjm_status', 'wpjm_id' );
@@ -80,7 +80,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 			// If the interval is not set or is zero, we don't update.
 			return false;
 		}
-		$last_execution = (int) get_option( self::LAST_EXECUTION_OPTION_KEY, 0 );
+		$last_execution = (int) get_option( self::LAST_CHECK_OPTION_KEY, 0 );
 		return $current_time - $last_execution >= $interval;
 	}
 
