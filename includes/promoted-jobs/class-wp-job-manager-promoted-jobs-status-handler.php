@@ -139,9 +139,20 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 		if ( isset( $headers[ $header_name ] ) ) {
 			$header = $headers [ $header_name ];
 			if ( 'false' === $header ) {
+				$header = '0';
+			} elseif ( ! rest_is_integer( $header ) ) {
+				return;
+			}
+			$value = (int) $header;
+			if ( self::WEBHOOK_INTERVAL_OPTION_KEY === $option_name && 0 === $value ) {
+				// If the webhook interval is zero, we don't remove the option, to not block webhook updates.
+				return;
+			}
+			if ( 0 === $value ) {
+				// If the interval is zero, we remove the option, because it is the default anyway.
 				delete_option( $option_name );
-			} elseif ( rest_is_integer( $header ) ) {
-				update_option( $option_name, (int) $header, false );
+			} else {
+				update_option( $option_name, $value, false );
 			}
 		}
 	}
