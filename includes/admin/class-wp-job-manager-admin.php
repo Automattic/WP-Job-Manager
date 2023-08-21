@@ -151,6 +151,8 @@ class WP_Job_Manager_Admin {
 		}
 
 		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', [], true );
+
+		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', null, true );
 		wp_enqueue_script( 'job_manager_notice_dismiss' );
 
 		WP_Job_Manager::register_style( 'job_manager_admin_menu_css', 'css/menu.css', [] );
@@ -166,7 +168,7 @@ class WP_Job_Manager_Admin {
 	public function admin_menu() {
 		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'wp-job-manager' ), __( 'Settings', 'wp-job-manager' ), 'manage_options', 'job-manager-settings', [ $this->settings_page, 'output' ] );
 
-		if ( WP_Job_Manager_Helper::instance()->has_licenced_products() || apply_filters( 'job_manager_show_addons_page', true ) ) {
+		if ( WP_Job_Manager_Helper::instance()->has_licensed_products() || apply_filters( 'job_manager_show_addons_page', true ) ) {
 			add_submenu_page( 'edit.php?post_type=job_listing', __( 'WP Job Manager Add-ons', 'wp-job-manager' ), __( 'Add-ons', 'wp-job-manager' ), 'manage_options', 'job-manager-addons', [ $this, 'addons_page' ] );
 		}
 	}

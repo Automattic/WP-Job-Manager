@@ -9,11 +9,11 @@
 	}
 }
 
-a.wpjm-activate-licence-link,
-a.wpjm-activate-licence-link:link,
-a.wpjm-activate-licence-link:hover,
-a.wpjm-activate-licence-link:visited,
-a.wpjm-activate-licence-link:active {
+a.wpjm-activate-license-link,
+a.wpjm-activate-license-link:link,
+a.wpjm-activate-license-link:hover,
+a.wpjm-activate-license-link:visited,
+a.wpjm-activate-license-link:active {
 	color: orangered;
 }
 
@@ -93,10 +93,10 @@ a.wpjm-activate-licence-link:active {
 	}
 }
 
-.wpjm-licences {
+.wpjm-licenses {
 	margin-top: 10px;
 
-	.licence-row {
+	.license-row {
 		align-items: center;
 		border: solid 1px #e2e0e2;
 		display: flex;
@@ -117,34 +117,34 @@ a.wpjm-activate-licence-link:active {
 			font-weight: 400;
 		}
 	}
-	.plugin-licence {
+	.plugin-license {
 		flex: 1;
 		flex-basis: 40%;
 		padding-bottom: 5px;
 	}
-	.plugin-licence-icon {
+	.plugin-license-icon {
 		width: 44px;
 		height: 44px;
 		margin: 14px 16px 14px 12px;
 	}
-	.plugin-licence-form {
+	.plugin-license-form {
 		text-align: right;
 		margin-right: 24px;
 		line-height: 36px;
 		height: 36px;
 	}
-	.plugin-licence-checkmark {
+	.plugin-license-checkmark {
 		// The resulting color shoudl be #008A20. Computed using https://codepen.io/sosuke/pen/Pjoqqp
 		filter: invert(23%) sepia(74%) saturate(6542%) hue-rotate(143deg) brightness(100%) contrast(101%);
 		vertical-align: middle;
 	}
-	.plugin-licence-label {
+	.plugin-license-label {
 		line-height: 36px;
 		font-weight: 600;
 		margin-left: 22px;
 		white-space: nowrap;
 	}
-	.plugin-licence-field {
+	.plugin-license-field {
 		height: 36px;
 		margin-left: 25px;
 		width: 100%;
@@ -153,13 +153,13 @@ a.wpjm-activate-licence-link:active {
 			border: 1px solid #CC1818;
 		}
 	}
-	.plugin-licence-button {
+	.plugin-license-button {
 		margin-left: 30px;
 		height: 36px;
 		width: 100%;
 		max-width: 140px;
 	}
-	.plugin-licence-notice {
+	.plugin-license-notice {
 		width: 100%;
 		margin: 0 24px 14px 12px;
 		// Apply background colors from gutenberg notices in the HTML for each notice type
@@ -238,26 +238,26 @@ a.wpjm-activate-licence-link:active {
 	}
 }
 
-.plugin-licence-search {
+.plugin-license-search {
 	width: 100%;
 	margin: 18px 0;
 	display: flex;
 	justify-content: end;
 	min-height: 40px;
-	.plugin-licence-search-field {
+	.plugin-license-search-field {
 		max-width: 180px;
 		width: 100%;
 		min-height: 40px;
 		margin-right: 3px;
 	}
-	.plugin-licence-search-button {
+	.plugin-license-search-button {
 		min-height: 40px;
 		max-width: 75px;
 		width: 100%;
 	}
 }
 
-.plugin-licence-section {
+.plugin-license-section {
 	font-size: 13px;
 	line-height: 16px;
 	font-weight: 700;
@@ -830,13 +830,13 @@ tr.email-setting-row {
  */
 @media only screen and (max-width: 782px) {
 
-	.wpjm-licences {
+	.wpjm-licenses {
 
 		.plugin-info {
 			padding: 10px;
 		}
 
-		.plugin-licence {
+		.plugin-license {
 			padding: 10px;
 		}
 	}

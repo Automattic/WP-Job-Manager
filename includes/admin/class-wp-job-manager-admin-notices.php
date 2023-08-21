@@ -463,7 +463,7 @@ class WP_Job_Manager_Admin_Notices {
 		$update_action_label = __( 'Update', 'wp-job-manager' );
 		$first_update        = current( $updates );
 		// translators: %s is the name of the wpjm addon to be updated.
-		$message = sprintf( esc_html__( 'Good news, reminder to update to the latest version of %s.', 'wp-job-manager' ), $first_update['plugin'] );
+		$message = sprintf( esc_html__( 'Good news, reminder to update to the latest version of %s.', 'wp-job-manager' ), $first_update['plugin_name'] );
 		$actions = [
 			[
 				'url'     => 'https://wpjobmanager.com/release-notes/',
@@ -481,7 +481,7 @@ class WP_Job_Manager_Admin_Notices {
 			$actions             = []; // Remove more_info link.
 			foreach ( $updates as $update ) {
 				$extra_details .= '<div class="wpjm-addon-update-notice-info">';
-				$extra_details .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $update['plugin'] ) . '</div>';
+				$extra_details .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $update['plugin_name'] ) . '</div>';
 				$extra_details .= '<div class="wpjm-addon-update-notice-info__version">';
 				$extra_details .= '<a href="https://wpjobmanager.com/release-notes/" target="_blank">';
 				// translators: %s is the new version number for the addon.
