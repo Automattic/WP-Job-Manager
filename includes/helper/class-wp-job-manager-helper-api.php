@@ -41,14 +41,36 @@ class WP_Job_Manager_Helper_API {
 	/**
 	 * Checks if there is an update for the plugin using the WPJobManager.com API.
 	 *
+	 * @deprecated $$next-version$$ Use WP_Job_Manager_Helper_API::bulk_update_check() instead.
+	 *
 	 * @param array $args The arguments to pass to the endpoint.
 	 * @return array|false The response, or false if the request failed.
 	 */
 	public function plugin_update_check( $args ) {
-		$args            = wp_parse_args( $args );
-		$args['wc-api']  = 'wp_plugin_licencing_update_api';
-		$args['request'] = 'pluginupdatecheck';
-		return $this->request( $args );
+		_deprecated_file( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Helper_API::bulk_update_check' );
+
+		return false;
+	}
+
+	/**
+	 * Check for plugin updates for several plugins.
+	 *
+	 * @param array $plugins Array of plugins keyed by slug with the associated license and installed version.
+	 * @return array|false The response, or false if the request failed.
+	 */
+	public function bulk_update_check( array $plugins ) {
+		return $this->request_endpoint(
+			'wp-json/wpjmcom-licensing/v1/updates',
+			[
+				'method' => 'POST',
+				'body'   => wp_json_encode(
+					[
+						'site_url' => $this->get_site_url(),
+						'plugins'  => $plugins,
+					]
+				),
+			]
+		);
 	}
 
 	/**
@@ -65,7 +87,7 @@ class WP_Job_Manager_Helper_API {
 	}
 
 	/**
-	 * Attempt to activate a plugin licence.
+	 * Attempt to activate a plugin license.
 	 *
 	 * @param array $args The arguments to pass to the API.
 	 * @return array|false JSON response or false if failed.
@@ -73,7 +95,7 @@ class WP_Job_Manager_Helper_API {
 	public function activate( $args ) {
 		$args         = wp_parse_args( $args );
 		$product_slug = $args['api_product_id'];
-		$response     = $this->bulk_activate( $args['licence_key'], [ $product_slug ] );
+		$response     = $this->bulk_activate( $args['license_key'], [ $product_slug ] );
 		if ( false === $response || ! array_key_exists( $product_slug, $response ) ) {
 			return false;
 		}
@@ -93,13 +115,13 @@ class WP_Job_Manager_Helper_API {
 	}
 
 	/**
-	 * Attempt to activate multiple WPJM products with a single licence key.
+	 * Attempt to activate multiple WPJM products with a single license key.
 	 *
-	 * @param string $licence_key The licence key to activate.
+	 * @param string $license_key The license key to activate.
 	 * @param array  $product_slugs The slugs of the products to activate.
 	 * @return array|false The response, or false if the request failed.
 	 */
-	public function bulk_activate( $licence_key, $product_slugs ) {
+	public function bulk_activate( $license_key, $product_slugs ) {
 		return $this->request_endpoint(
 			'/wp-json/wpjmcom-licensing/v1/activate',
 			[
@@ -107,7 +129,7 @@ class WP_Job_Manager_Helper_API {
 				'body'   => wp_json_encode(
 					[
 						'site_url'      => $this->get_site_url(),
-						'license_key'   => $licence_key,
+						'license_key'   => $license_key,
 						'product_slugs' => $product_slugs,
 					]
 				),
@@ -116,7 +138,7 @@ class WP_Job_Manager_Helper_API {
 	}
 
 	/**
-	 * Attempt to deactivate a plugin licence.
+	 * Attempt to deactivate a plugin license.
 	 *
 	 * @param array|string $args
 	 * @return array|false JSON response or false if failed.
@@ -129,7 +151,7 @@ class WP_Job_Manager_Helper_API {
 	}
 
 	/**
-	 * Make a licence helper API request.
+	 * Make a license helper API request.
 	 *
 	 * @param array $args The arguments to pass to the API.
 	 * @param bool  $return_error If we should return the error details or not.
@@ -137,6 +159,12 @@ class WP_Job_Manager_Helper_API {
 	 * @return array|false The response as an array, or false if the request failed.
 	 */
 	protected function request( $args, $return_error = false ) {
+		// These legacy endpoints are temporary. For now, translate `license_key` => `licence_key` at this point.
+		if ( ! empty( $args['license_key'] ) ) {
+			$args['licence_key'] = $args['license_key'];
+			unset( $args['license_key'] );
+		}
+
 		$defaults = [
 			'instance'       => $this->get_site_url(),
 			'plugin_name'    => '',
@@ -161,7 +189,7 @@ class WP_Job_Manager_Helper_API {
 	}
 
 	/**
-	 * Make a licence helper API request to a WP REST API Endpoint.
+	 * Make a license helper API request to a WP REST API Endpoint.
 	 *
 	 * @param string $endpoint The endpoint to make the API request to.
 	 * @param array  $args The arguments to pass to the request.

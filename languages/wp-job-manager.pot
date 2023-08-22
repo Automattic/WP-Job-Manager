@@ -72,7 +72,7 @@ msgid "WP Job Manager Add-ons"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-addons.php:104
-#: includes/helper/views/html-licences.php:14
+#: includes/helper/views/html-licenses.php:14
 msgid "Licenses"
 msgstr ""
 
@@ -1982,8 +1982,8 @@ msgid "Manage License"
 msgstr ""
 
 #: includes/helper/class-wp-job-manager-helper.php:340
-#: includes/helper/views/html-licences.php:44
-#: includes/helper/views/html-licences.php:170
+#: includes/helper/views/html-licenses.php:44
+#: includes/helper/views/html-licenses.php:170
 #: tests/php/tests/includes/helper/test_class.wp-job-manager-helper.php:259
 msgid "Activate License"
 msgstr ""
@@ -2020,68 +2020,68 @@ msgstr ""
 msgid "An unknown error occurred while attempting to activate the license"
 msgstr ""
 
-#. translators: %1$s is the URL to the licence key page, %2$s is the plugin name.
+#. translators: %1$s is the URL to the license key page, %2$s is the plugin name.
 #: includes/helper/class-wp-job-manager-helper.php:936
 msgid "<a href=\"%1$s\">Please enter your license key</a> to get updates for \"%2$s\"."
 msgstr ""
 
-#. translators: %1$s is the plugin name, %2$s is the URL to the licence key page.
+#. translators: %1$s is the plugin name, %2$s is the URL to the license key page.
 #: includes/helper/class-wp-job-manager-helper.php:968
 msgid "There is a problem with the license for \"%1$s\". Please <a href=\"%2$s\">manage the license</a> to check for a solution and continue receiving updates."
 msgstr ""
 
-#: includes/helper/views/html-licences.php:24
+#: includes/helper/views/html-licenses.php:24
 msgid "Activate Job Manager Licenses"
 msgstr ""
 
-#: includes/helper/views/html-licences.php:27
+#: includes/helper/views/html-licenses.php:27
 msgid "Activate all licenses at once. Easy, everything in one place."
 msgstr ""
 
-#: includes/helper/views/html-licences.php:43
+#: includes/helper/views/html-licenses.php:43
 msgid "ENTER YOUR LICENSE KEY"
 msgstr ""
 
-#: includes/helper/views/html-licences.php:54
-#: includes/helper/views/html-licences.php:55
+#: includes/helper/views/html-licenses.php:54
+#: includes/helper/views/html-licenses.php:55
 msgid "Search"
 msgstr ""
 
 #. translators: placeholder is the number of active addons, which will never be zero.
-#: includes/helper/views/html-licences.php:62
+#: includes/helper/views/html-licenses.php:62
 msgid "Active (%d)"
 msgstr ""
 
 #. translators: placeholder is the addon name.
-#: includes/helper/views/html-licences.php:71
-#: includes/helper/views/html-licences.php:136
+#: includes/helper/views/html-licenses.php:71
+#: includes/helper/views/html-licenses.php:136
 msgid "Plugin Icon for %s"
 msgstr ""
 
-#: includes/helper/views/html-licences.php:100
+#: includes/helper/views/html-licenses.php:100
 msgid "Plugin is activated"
 msgstr ""
 
-#: includes/helper/views/html-licences.php:104
-#: includes/helper/views/html-licences.php:168
+#: includes/helper/views/html-licenses.php:104
+#: includes/helper/views/html-licenses.php:168
 msgid "LICENSE"
 msgstr ""
 
-#: includes/helper/views/html-licences.php:107
+#: includes/helper/views/html-licenses.php:107
 msgid "Deactivate License"
 msgstr ""
 
 #. translators: placeholder is the number of inactive addons, which will never be zero.
-#: includes/helper/views/html-licences.php:127
+#: includes/helper/views/html-licenses.php:127
 msgid "Inactive (%d)"
 msgstr ""
 
 #. translators: Placeholder %s is the lost license key URL.
-#: includes/helper/views/html-licences.php:186
+#: includes/helper/views/html-licenses.php:186
 msgid "Lost your license key? <a href=\"%s\">Retrieve it here</a>."
 msgstr ""
 
-#: includes/helper/views/html-licences.php:188
+#: includes/helper/views/html-licenses.php:188
 msgid "No plugins are activated that have licenses managed by WP Job Manager."
 msgstr ""
 
