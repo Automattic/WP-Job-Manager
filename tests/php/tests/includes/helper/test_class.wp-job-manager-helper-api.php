@@ -225,6 +225,24 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	}
 
 	protected function build_url( $args ) {
+		// The legacy endpoints are temporary. For now, translate `license_key` => `licence_key` at this point.
+		$args = $this->updateArrayKey( $args, 'license_key', 'licence_key' );
+
 		return 'https://wpjobmanager.com/?' . http_build_query( $args, '', '&' );
+	}
+
+	private function updateArrayKey( $array, $oldKey, $newKey ) {
+		if ( array_key_exists( $oldKey, $array ) ) {
+			$newArray = array();
+			foreach ( $array as $key => $value ) {
+				if ( $key === $oldKey ) {
+					$newArray[ $newKey ] = $value;
+				} else {
+					$newArray[ $key ] = $value;
+				}
+			}
+			return $newArray;
+		}
+		return $array;
 	}
 }
