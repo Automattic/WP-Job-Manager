@@ -255,7 +255,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			echo '
 			<span class="jm-promoted__status-promoted">' . esc_html__( 'Promoted', 'wp-job-manager' ) . '</span>
 			<div class="row-actions">
-				<a href="' . esc_url( $promote_url ) . '" class="jm-promoted__edit" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Edit', 'wp-job-manager' ) . '</a>
+				<a href="' . esc_url( $promote_url ) . '" class="jm-promoted__edit" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Manage', 'wp-job-manager' ) . '</a>
 				|
 				<a class="jm-promoted__deactivate delete" href="#" data-href="' . esc_url( $deactivate_action_link ) . '">' . esc_html__( 'Deactivate', 'wp-job-manager' ) . '</a>
 			</div>
