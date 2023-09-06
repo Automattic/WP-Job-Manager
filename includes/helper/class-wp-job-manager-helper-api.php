@@ -60,7 +60,7 @@ class WP_Job_Manager_Helper_API {
 	 */
 	public function bulk_update_check( array $plugins ) {
 		return $this->request_endpoint(
-			'wp-json/wpjmcom-licensing/v1/updates',
+			'/wp-json/wpjmcom-licensing/v1/updates',
 			[
 				'method' => 'POST',
 				'body'   => wp_json_encode(
