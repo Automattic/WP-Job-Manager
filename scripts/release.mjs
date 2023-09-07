@@ -352,7 +352,7 @@ ${ changelog }
 `;
 	body     = body.replace( '"', '\"' );
 
-	execSync( `gh pr create -R ${ plugin.repo } --assignee @me --base trunk --draft --title "Release ${ version }" --label "[Type] Maintenance" --label "Release" --body "${ body }"  2> /dev/null` );
+	execSync( `gh pr create -R ${ plugin.repo } --assignee @me --base trunk --draft --title "Release ${ version }" --label "[Type] Maintenance" --body "${ body }"  2> /dev/null` );
 }
 
 /**
