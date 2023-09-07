@@ -5,6 +5,9 @@ jQuery(document).ready(function($) {
 		$(this).closest( '.job-manager-uploaded-file' ).remove();
 		$inputField.trigger( 'update_status' );
 
+		$( '#company_logo' ).show();
+		$( '.fieldset-company_logo small.description' ).show();
+
 		return false;
 	});
 
