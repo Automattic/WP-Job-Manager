@@ -11,6 +11,7 @@ const PLUGINS = {
 	'wp-job-manager': {
 		file: 'wp-job-manager.php',
 		constant: 'JOB_MANAGER_VERSION',
+		repo: 'Automattic/wp-job-manager',
 	},
 };
 
@@ -26,12 +27,20 @@ config();
 
 // Get plugin information.
 const pluginSlug         = getPluginSlug();
-const pluginFileName     = PLUGINS[ pluginSlug ].file;
+const plugin             = PLUGINS[ pluginSlug ];
+const pluginFileName     = plugin.file;
 const pluginFileContents = readFileContents( pluginFileName );
 const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ];
-const pluginName      = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
+const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
 
 const version = process.argv[ 3 ];
+
+//
+// const changelog = generateChangelog( version );
+// console.log( changelog );
+// createPR( version, changelog );
+//
+// process.exit();
 
 // Confirm versions through CLI.
 if (
@@ -276,11 +285,11 @@ function updatePackageJsonFiles( version ) {
 function generatePotFiles() {
 	console.log( 'Updating POT files...' );
 	try {
-		execSync( `npm run i18n:build` );
+		execSync( `npm run i18n:build 2> /dev/null` );
 	} catch {
 		throw new Error( 'POT file generation failed.' );
 	}
-	execSync( `git add lang/ && git commit -m "Generate pot files."` );
+	execSync( `git add languages/ && git commit -m "Generate pot files."` );
 }
 
 /**
@@ -288,12 +297,27 @@ function generatePotFiles() {
  * This method also creates a commit in the current branch.
  */
 function generateChangelog( version ) {
-
 	const search = `milestone:${ version }`;
-	let prs      = execSync( `gh pr list --state merged --base trunk -search "${ search }" --json number,title,body,labels` ); //  | jq -r '.[] | [.number,.title,.body]
+	let prs      = execSync(
+		`gh pr list --state all --base trunk --search "${ search }" --json number,title,body,labels`,
+	);
 	prs          = JSON.parse( prs );
 
-	return prs.map( pr => ` - ${ pr.title } (#{ pr.number })` ).join( "\n" )
+	const changelogs = prs.map( ( pr ) => {
+		const body         = pr.body;
+		let changelogIndex = body.indexOf( "### Changelog" );
+		if ( changelogIndex === -1 ) {
+			// Fall back to PR title.
+			return `* ${ pr.title } (#${ pr.number })`;
+		}
+		changelogIndex += "### Changelog".length;
+		const nextSectionIndex  = body.indexOf( "###", changelogIndex + 1 );
+		const changelogEndIndex =
+			      nextSectionIndex === -1 ? body.length : nextSectionIndex;
+		return body.substring( changelogIndex, changelogEndIndex );
+	} );
+
+	return changelogs.join( "\n" );
 }
 
 /**
@@ -328,7 +352,7 @@ ${ changelog }
 `;
 	body     = body.replace( '"', '\"' );
 
-	execSync( `gh pr create --assignee @me --base trunk --draft --title "Release ${ version }" --label "[Type] Maintenance" --label "Release" --body="${ body }"  2> /dev/null` );
+	execSync( `gh pr create -R ${ plugin.repo } --assignee @me --base trunk --draft --title "Release ${ version }" --label "[Type] Maintenance" --label "Release" --body "${ body }"  2> /dev/null` );
 }
 
 /**
