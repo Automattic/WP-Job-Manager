@@ -1,15 +1,20 @@
 Fixes #
 
-### Changes proposed in this Pull Request
+### Changes Proposed in this Pull Request
 
 *
 
-### Testing instructions
+### Testing Instructions
 
 *
 
-<!-- Add the following only if there are new/updated actions or filters. Please provide a brief description of what they do and any arguments they may take. Be sure to also add the "Hooks" label to this PR. -->
-### New/Updated Hooks
+<!-- Add changelog entries meant for end-users. Leave empty to skip changelog. Delete section to use PR title. -->
+### Release Notes
+
+* 
+
+### New or Updated Hooks and Templates
+<!-- Add notes for developers on hook/template changes. Add the following only if there are new/updated actions or filters. Please provide a brief description of what they do and any arguments they may take. Be sure to also add the "Hooks" label to this PR. -->
 
 *
 
@@ -18,8 +23,4 @@ Fixes #
 
 *
 
-<!--
-Helpful tips for screenshots:
-https://en.support.wordpress.com/make-a-screenshot/
--->
 ### Screenshot / Video

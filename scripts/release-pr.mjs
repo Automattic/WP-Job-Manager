@@ -5,25 +5,23 @@ import { config } from 'dotenv';
 import fs from 'fs';
 import process from 'process';
 import inquirer from 'inquirer';
+import chalk from 'chalk';
 import { execSync } from 'child_process';
 
 const PLUGINS = {
 	'wp-job-manager': {
 		file: 'wp-job-manager.php',
 		constant: 'JOB_MANAGER_VERSION',
-		repo: 'Automattic/wp-job-manager',
+		repo: 'yscik/wp-job-manager',
 	},
 };
+
+const REMOTE = `testing`;
 
 /* eslint-disable no-console */
 
 // Processes the .env variables.
 config();
-
-// // Assert git status if not disabled by env variable.
-// if ( process.env.SENSEI_RELEASE_SKIP_REPOSITORY_CHECK !== 'true' ) {
-// 	assertGitStatus();
-// }
 
 // Get plugin information.
 const pluginSlug         = getPluginSlug();
@@ -32,24 +30,14 @@ const pluginFileName     = plugin.file;
 const pluginFileContents = readFileContents( pluginFileName );
 const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ];
 const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
+const version            = process.argv[ 3 ];
 
-const version = process.argv[ 3 ];
-
-//
-// const changelog = generateChangelog( version );
-// console.log( changelog );
-// createPR( version, changelog );
+// updateVersionInFile( 'readme.txt', version );
 //
 // process.exit();
 
-// Confirm versions through CLI.
-if (
-	! ( await askForConfirmationOnVersionsInformation(
-		version,
-		pluginFileContents,
-	) )
-) {
-	console.log( 'Aborted!' );
+// Confirm release through CLI.
+if ( ! ( await askForConfirmation( version, pluginFileContents ) ) ) {
 	process.exit( 0 );
 }
 
@@ -60,14 +48,12 @@ const { originalBranchName, releaseBranchName } = createReleaseBranch(
 );
 try {
 	// Add changes to release branch.
-	setNewPluginVersion(
-		pluginFileName,
-		pluginFileContents,
-		version,
-	);
-	replaceNextVersionPlaceholder( version );
-	// TODO Update the readme.txt and commit (Sensei LMS only).
-	updatePackageJsonFiles( version );
+	updateVersionInFile( pluginFileName );
+	updateVersionInFile( 'readme.txt' );
+	execSync( 'git commit -m "Update plugin file versions.' );
+
+	replaceNextVersionPlaceholder();
+	updatePackageJsonFiles();
 	generatePotFiles();
 	const changelog = generateChangelog();
 
@@ -84,32 +70,6 @@ try {
 /*
  * HELPER FUNCTIONS FROM HERE.
  */
-
-/**
- * Check that we are in the default branch and there are no uncommitted changes.
- * If check is not successful an error will be thrown finishing the execution.
- */
-function assertGitStatus() {
-	const defaultBranchName = execSync(
-		'basename $(git symbolic-ref --short refs/remotes/origin/HEAD)',
-	)
-		.toString()
-		.trim();
-	const currentBranchName = execSync( 'git branch --show-current' )
-		.toString()
-		.trim();
-	if ( currentBranchName !== defaultBranchName ) {
-		throw new Error(
-			`Release script must only be run while on '${ defaultBranchName }' branch. You are on '${ currentBranchName }'.`,
-		);
-	}
-	const gitStatus = execSync( 'git status -suno\n' ).toString().trim();
-	if ( gitStatus !== '' ) {
-		throw new Error(
-			`Uncommitted changes detected in your repository! Please ensure you are in a clean status before releasing.`,
-		);
-	}
-}
 
 /**
  * Get plugin slug from command arguments.
@@ -153,7 +113,7 @@ function readFileContents( filepath ) {
  * @param {string} fileContents The current contents of the main plugin file.
  * @return {boolean} Whether the confirmation was accepted or not.
  */
-async function askForConfirmationOnVersionsInformation(
+async function askForConfirmation(
 	newVersion,
 	fileContents,
 ) {
@@ -173,22 +133,42 @@ async function askForConfirmationOnVersionsInformation(
 	// )[ 1 ] ?? ' - ';
 
 	// Display all versioning information and ask for confirmation.
-	console.log( 'New release version:' );
-	console.log( `Version: ${ newVersion }` );
-	console.log( '---' );
-	console.log( `(WP)  Requires at least: ${ currentWPRequiresAtLeast }` );
-	console.log( `(WP)  Tested up to: ${ currentWPTestedUpTo }` );
-	console.log( `(PHP) Requires PHP: ${ currentRequiresPhp }` );
-	// console.log( `(WC)  WC requires at least: ${ currentWCRequiresAtLeast }` );
-	// console.log( `(WC)  WC tested up to: ${ currentWCTestedUpTo }` );
-	// const { confirmation } = await inquirer.prompt( {
-	// 	type: 'confirm',
-	// 	name: 'confirmation',
-	// 	message: 'Is the above information correct?',
-	// 	default: false,
-	// } );
-	// return confirmation;
-	return true;
+	console.log( `🚀 Preparing new release:`, chalk.bold( `${ pluginSlug } ${ newVersion }` ) );
+	console.log( `-----------------------------` );
+	console.log( chalk.bold( '📦 Plugin header:' ) );
+	console.log( `   Version:`, chalk.bold.green( newVersion ) );
+	console.log( `   (WP)  Requires at least:`, chalk.bold( currentWPRequiresAtLeast ) );
+	console.log( `   (WP)  Tested up to:`, chalk.bold( currentWPTestedUpTo ) );
+	console.log( `   (PHP) Requires PHP:`, chalk.bold( currentRequiresPhp ) );
+	console.log( `-----------------------------` );
+	console.log( `ℹ️️  Make sure a ` + chalk.bold( `milestone ${ newVersion }` ) + ` exists GitHub, and all PRs are assigned to the milestone.` );
+	console.log( `-----------------------------` );
+	execSync( 'gh auth status' );
+	console.log( `-----------------------------` );
+	console.log( `Pull requests to include:` );
+	const search = `milestone:${ version }`;
+	execSync( `gh pr list --state all --base trunk --search "${ search }"`, { stdio: 'inherit' } );
+
+	const branch = execSync( 'git branch --show-current' ).toString().trim();
+
+	const defaultBranch = execSync(
+		`basename $(git symbolic-ref --short refs/remotes/${ REMOTE }/HEAD)`,
+	)
+		.toString()
+		.trim();
+	const warning       = ( branch !== defaultBranch ) ? chalk.bgRed( ` ‼️  Not ${ defaultBranch }! ‼️ ` ) : '';
+
+	console.log( 'Branch:', chalk.bold[ branch !== defaultBranch ? 'red' : 'green' ]( branch ), warning );
+
+	console.log( `-----------------------------` );
+
+	const { confirmation } = await inquirer.prompt( {
+		type: 'confirm',
+		name: 'confirmation',
+		message: 'Proceed with release preparation?',
+		default: false,
+	} );
+	return confirmation;
 }
 
 /**
@@ -222,14 +202,12 @@ function createReleaseBranch( slug, version ) {
  * This method also creates a commit in the current branch.
  *
  * @param {string} filename     The path to the main plugin file.
- * @param {string} fileContents The contents of the main plugin file.
- * @param {string} version      The new version to be released.
  */
-function setNewPluginVersion( filename, fileContents, version ) {
+function updateVersionInFile( filename ) {
 	console.log( 'Updating plugin file versions ...' );
-	let newPluginFileContents = fileContents.replace(
-		/Version: (.*)/,
-		`Version: ${ version }`,
+	let newPluginFileContents = readFileContents( filename ).replace(
+		/(Version|Stable tag): (.*)/,
+		`$1: ${ version }`,
 	);
 
 	// Update version constant.
@@ -241,17 +219,15 @@ function setNewPluginVersion( filename, fileContents, version ) {
 
 	fs.writeFileSync( filename, newPluginFileContents, 'utf-8' );
 	execSync(
-		`git add ${ filename } && git commit -m "Update plugin file versions."`,
+		`git add ${ filename }`,
 	);
 }
 
 /**
  * Replaces the next-version placeholder with the new version to be released.
  * This method also creates a commit in the current branch.
- *
- * @param {string} version The new version.
  */
-function replaceNextVersionPlaceholder( version ) {
+function replaceNextVersionPlaceholder() {
 	console.log( `Replacing next version placeholder with ${ version } ...` );
 	execSync( `bash scripts/replace-next-version-tag.sh ${ version }` );
 	execSync(
@@ -262,10 +238,8 @@ function replaceNextVersionPlaceholder( version ) {
 /**
  * Update package.json and package-lock.json files with the new version to be released.
  * This method also creates a commit in the current branch.
- *
- * @param {string} version The new version.
  */
-function updatePackageJsonFiles( version ) {
+function updatePackageJsonFiles() {
 	console.log( 'Updating package.json version...' );
 	try {
 		execSync( `npm version ${ version } --no-git-tag-version` );
@@ -293,28 +267,30 @@ function generatePotFiles() {
 }
 
 /**
- * Generates the changelog using the changelogger script.
+ * Generates the changelog based on the PRs.
  * This method also creates a commit in the current branch.
  */
-function generateChangelog( version ) {
+function generateChangelog() {
 	const search = `milestone:${ version }`;
 	let prs      = execSync(
-		`gh pr list --state all --base trunk --search "${ search }" --json number,title,body,labels`,
+		`gh pr list -R ${ plugin.repo } --state all --base trunk --search "${ search }" --json number,title,body,labels`,
 	);
 	prs          = JSON.parse( prs );
 
 	const changelogs = prs.map( ( pr ) => {
-		const body         = pr.body;
-		let changelogIndex = body.indexOf( "### Changelog" );
-		if ( changelogIndex === -1 ) {
-			// Fall back to PR title.
+		const body              = pr.body;
+		const changelogSections = body.match( /### Changelog([\S\s]*?)(?:###|<!--)/ );
+
+		if ( ! changelogSections ) {
 			return `* ${ pr.title } (#${ pr.number })`;
 		}
-		changelogIndex += "### Changelog".length;
-		const nextSectionIndex  = body.indexOf( "###", changelogIndex + 1 );
-		const changelogEndIndex =
-			      nextSectionIndex === -1 ? body.length : nextSectionIndex;
-		return body.substring( changelogIndex, changelogEndIndex );
+		const changelog = changelogSections[ 1 ].trim();
+
+		if ( ! changelog.match( /\w/ ) ) {
+			return '';
+		}
+
+		return changelog;
 	} );
 
 	return changelogs.join( "\n" );
@@ -323,10 +299,12 @@ function generateChangelog( version ) {
 /**
  * Create release PR.
  *
- * @param version
  * @param changelog
  */
-function createPR( version, changelog ) {
+function createPR( changelog ) {
+
+	const title = `Release ${ pluginName } ${ version }`;
+
 	let body = `
 
 ### Changelog
@@ -337,22 +315,24 @@ ${ changelog }
 
 ...
 
-### Release
+### Release Automation
 
-- [ ] Click 'Ready for review' if everything looks right.
-- [ ] Plugin zip built.
-- [ ] New version deployed at test site.
-- [ ] Merge PR.
-- [ ] GH release tag created.
-- [ ] Plugin pushed to WordPress.org
-- [ ] WPJobManager.com release created.
-- [ ] P2 release post created.
+- [ ] 🤖 Plugin zip built.
+- [ ] 🤖 New version deployed at test site.
+- [ ] 🤠 Merge PR.
+- [ ] 🤖 GH release tag created.
+- [ ] 🤖 Plugin pushed to WordPress.org
+- [ ] 🤖 WPJobManager.com release created.
+- [ ] 🤖 P2 release post created.
 
+⚠️ Merging this PR will publish the new release automatically.
 
 `;
 	body     = body.replace( '"', '\"' );
 
-	execSync( `gh pr create -R ${ plugin.repo } --assignee @me --base trunk --draft --title "Release ${ version }" --label "[Type] Maintenance" --label "Release" --body "${ body }"  2> /dev/null` );
+	const prLink = execSync( `gh pr create -R ${ plugin.repo } --assignee @me --base trunk --draft --title "${ title }" --label "[Type] Maintenance" --body "${ body }"` );
+	execSync( `open ${ prLink }` );
+	console.log( `PR: ${ prLink }` );
 }
 
 /**
@@ -363,7 +343,7 @@ ${ changelog }
 function pushBranch( branch ) {
 	console.log( 'Pushing branch ...' );
 	try {
-		execSync( `git push origin ${ branch } 2> /dev/null` );
+		execSync( `git push ${ REMOTE } ${ branch } 2> /dev/null` );
 	} catch {
 		throw Error( `New branch '${ branch }' could not be pushed.` );
 	}

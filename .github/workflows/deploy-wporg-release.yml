@@ -1,0 +1,32 @@
+name: Release
+on:
+  release:
+    types: [published]
+jobs:
+  wporg:
+    name: Deploy Release to WordPress.org
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install JS dependencies
+        run: npm ci
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer
+          coverage: none
+      - name: Install PHP dependencies
+        run: composer install --no-ansi --no-interaction --prefer-dist --no-progress
+      - name: Build Plugin
+        run: npm run build
+      - name: Decompress plugin
+        run: unzip wp-job-manager.zip -d wp-job-manager
+      - name: WordPress Plugin Deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          dry-run: true
+        env:
+          SVN_PASSWORD: ${{ secrets.WORDPRESSORG_SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.WORDPRESSORG_SVN_USERNAME }}
+          BUILD_DIR: wp-job-manager
+          SLUG: wp-job-manager
