@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-// import { config } from 'dotenv';
 import fs from 'fs';
 import process from 'process';
 import chalk from 'chalk';
@@ -15,12 +14,9 @@ const PLUGINS = {
 	},
 };
 
-const REMOTE = `testing`;
+const REMOTE = `origin`;
 
 /* eslint-disable no-console */
-
-// // Processes the .env variables.
-// config();
 
 // Get plugin information.
 const pluginSlug         = process.argv[ 2 ];
@@ -93,13 +89,11 @@ function buildPluginZip() {
 
 function createGithubRelease() {
 	const notes = releaseNotes.replace( '"', '\\"' );
-	execSync( `gh release create ${ pluginVersion } -R ${ plugin.repo } --draft --title "Version ${ pluginVersion }" --notes "${ notes }" "${ pluginSlug }.zip"` );
+	return execSync( `gh release create ${ pluginVersion } -R ${ plugin.repo } --title "Version ${ pluginVersion }" --notes "${ notes }" "${ pluginSlug }.zip"` ).toString();
 }
 
 function success() {
-	const deployWorkflow = `https://github.com/${ plugin.repo }/actions/workflows/deploy-wporg-release.yml`;
-	console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } released!` ) );
-	console.log( `The GitHub release entry will trigger a deploy to WordPress.org. \nTrack here: ${ deployWorkflow } ` );
-	execSync( `open ${ deployWorkflow }` );
+	console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } release created!` ) );
+	execSync(`gh pr comment ${ prNumber } -R ${ plugin.repo } --body "✅ ${ pluginName } ${ pluginVersion } release created!`)
 
 }

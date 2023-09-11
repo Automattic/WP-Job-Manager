@@ -7,21 +7,14 @@ jobs:
     name: Deploy Release to WordPress.org
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install JS dependencies
-        run: npm ci
-      - uses: shivammathur/setup-php@v2
+      - name: Fetch plugin zip from release
+        uses: dsaltares/fetch-gh-release-asset@1.1.1
         with:
-          php-version: '7.4'
-          tools: composer
-          coverage: none
-      - name: Install PHP dependencies
-        run: composer install --no-ansi --no-interaction --prefer-dist --no-progress
-      - name: Build Plugin
-        run: npm run build
+          version: ${{ github.event.release.id }}
+          file: wp-job-manager.zip
       - name: Decompress plugin
         run: unzip wp-job-manager.zip
-      - name: WordPress Plugin Deploy
+      - name: Deploy to WordPress.org
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
           dry-run: true
@@ -30,3 +23,8 @@ jobs:
           SVN_USERNAME: ${{ secrets.WORDPRESSORG_SVN_USERNAME }}
           BUILD_DIR: wp-job-manager
           SLUG: wp-job-manager
+      - name: Comment
+        run: gh pr comment $(gh pr list -s closed -S "Release ${{ github.event.release.tag_name }}" --json=number -q ".[0].number") --body "✅ Release ${{ github.event.release.tag_name }} deployed to WordPress.org"
+        
+  
+  
