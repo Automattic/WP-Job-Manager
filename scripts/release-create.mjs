@@ -32,31 +32,23 @@ const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
 
 const prNumber = process.argv[ 3 ];
 
-const releaseNotes = getReleaseChangelog();
-
+const releaseNotes = getReleaseNotes();
 updateChangelog();
 commitChangelog();
 tagRelease();
 buildPluginZip();
 createGithubRelease();
+success();
 
-console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } released!` ) );
-console.log( `The GitHub release entry will trigger a deploy to WordPress.org. \nTrack here: https://github.com/${ plugin.repo }/actions/workflows/deploy-wporg-release.yml` );
-execSync( ` open https://github.com/${ plugin.repo }/actions/workflows/deploy-wporg-release.yml` );
+function getReleaseNotes() {
 
-function getReleaseChangelog() {
-	// Get PR description
-	const prDescription    = execSync( `gh pr view ${ prNumber } -R ${ plugin.repo } --json body` ).toString();
-	// Get changelog section
-	const changelogSection = prDescription
-		.match( /### (?:Changelog|Release Notes)([\S\s]*?)(?:###|<!--)/ )[ 1 ]
-		.match('---\n([\S\s]*?)\n---')[ 1 ]
-		.replace( /\\n/g, '\n' )
-		.replace( /\\r/g, '\r' )
+	const prDescription = JSON.parse( execSync( `gh pr view ${ prNumber } -R ${ plugin.repo } --json body` ).toString() ).body;
+	const releaseNotes  = prDescription
+		.match( /### Release Notes\s*\n---([\S\s]*?)---/ )[ 1 ]
 		.replace( /^- /gm, '* ' )
 		.trim();
 
-	return changelogSection;
+	return releaseNotes;
 }
 
 function updateChangelog() {
@@ -102,4 +94,12 @@ function buildPluginZip() {
 function createGithubRelease() {
 	const notes = releaseNotes.replace( '"', '\\"' );
 	execSync( `gh release create ${ pluginVersion } -R ${ plugin.repo } --draft --title "Version ${ pluginVersion }" --notes "${ notes }" "${ pluginSlug }.zip"` );
+}
+
+function success() {
+	const deployWorkflow = `https://github.com/${ plugin.repo }/actions/workflows/deploy-wporg-release.yml`;
+	console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } released!` ) );
+	console.log( `The GitHub release entry will trigger a deploy to WordPress.org. \nTrack here: ${ deployWorkflow } ` );
+	execSync( `open ${ deployWorkflow }` );
+
 }
