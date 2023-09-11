@@ -32,6 +32,8 @@ const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ];
 const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
 const version            = process.argv[ 3 ];
 
+const ghPrs = `gh pr list -R ${ 'Automattic/wp-job-manager' } --state all --base trunk --search "milestone:${ version }"`;
+
 // updateVersionInFile( 'readme.txt', version );
 //
 // process.exit();
@@ -50,7 +52,7 @@ try {
 	// Add changes to release branch.
 	updateVersionInFile( pluginFileName );
 	updateVersionInFile( 'readme.txt' );
-	execSync( 'git commit -m "Update plugin file versions.' );
+	execSync( `git commit -m "Update plugin file versions to ${ version }."` );
 
 	replaceNextVersionPlaceholder();
 	updatePackageJsonFiles();
@@ -146,16 +148,12 @@ async function askForConfirmation(
 	execSync( 'gh auth status' );
 	console.log( `-----------------------------` );
 	console.log( `Pull requests to include:` );
-	const search = `milestone:${ version }`;
-	execSync( `gh pr list --state all --base trunk --search "${ search }"`, { stdio: 'inherit' } );
+
+	execSync( ghPrs, { stdio: 'inherit' } );
 
 	const branch = execSync( 'git branch --show-current' ).toString().trim();
 
-	const defaultBranch = execSync(
-		`basename $(git symbolic-ref --short refs/remotes/${ REMOTE }/HEAD)`,
-	)
-		.toString()
-		.trim();
+	const defaultBranch = 'trunk';
 	const warning       = ( branch !== defaultBranch ) ? chalk.bgRed( ` ‼️  Not ${ defaultBranch }! ‼️ ` ) : '';
 
 	console.log( 'Branch:', chalk.bold[ branch !== defaultBranch ? 'red' : 'green' ]( branch ), warning );
@@ -231,7 +229,7 @@ function replaceNextVersionPlaceholder() {
 	console.log( `Replacing next version placeholder with ${ version } ...` );
 	execSync( `bash scripts/replace-next-version-tag.sh ${ version }` );
 	execSync(
-		`git add . && git commit --allow-empty -m "Replace next version placeholders."`,
+		`git add . && git commit --allow-empty -m "Replace next version placeholders with ${ version }."`,
 	);
 }
 
@@ -248,7 +246,7 @@ function updatePackageJsonFiles() {
 	}
 
 	execSync(
-		`git add package.json package-lock.json && git commit -m "Update package.json versions."`,
+		`git add package.json package-lock.json && git commit -m "Update package.json versions to ${ version }."`,
 	);
 }
 
@@ -263,7 +261,7 @@ function generatePotFiles() {
 	} catch {
 		throw new Error( 'POT file generation failed.' );
 	}
-	execSync( `git add languages/ && git commit -m "Generate pot files."` );
+	execSync( `git add languages/ && git commit -m "Generate pot files for ${ version }"` );
 }
 
 /**
@@ -271,15 +269,12 @@ function generatePotFiles() {
  * This method also creates a commit in the current branch.
  */
 function generateChangelog() {
-	const search = `milestone:${ version }`;
-	let prs      = execSync(
-		`gh pr list -R ${ plugin.repo } --state all --base trunk --search "${ search }" --json number,title,body,labels`,
-	);
+	let prs = execSync( ghPrs );
 	prs          = JSON.parse( prs );
 
 	const changelogs = prs.map( ( pr ) => {
 		const body              = pr.body;
-		const changelogSections = body.match( /### Changelog([\S\s]*?)(?:###|<!--)/ );
+		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:###|<!--)/ );
 
 		if ( ! changelogSections ) {
 			return `* ${ pr.title } (#${ pr.number })`;
