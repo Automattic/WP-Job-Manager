@@ -32,11 +32,9 @@ const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ];
 const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
 const version            = process.argv[ 3 ];
 
-const ghPrs = `gh pr list -R ${ 'Automattic/wp-job-manager' } --state all --base trunk --search "milestone:${ version }"`;
+// const ghPrs = `gh pr list -R ${ plugin.repo } --state merged --base trunk --search "milestone:${ version }"`
 
-// updateVersionInFile( 'readme.txt', version );
-//
-// process.exit();
+const ghPrs = `gh pr list -R ${ 'Automattic/wp-job-manager' } --state all --base trunk --search "milestone:${ version }"`;
 
 // Confirm release through CLI.
 if ( ! ( await askForConfirmation( version, pluginFileContents ) ) ) {
@@ -49,14 +47,14 @@ const { originalBranchName, releaseBranchName } = createReleaseBranch(
 	version,
 );
 try {
-	// Add changes to release branch.
 	updateVersionInFile( pluginFileName );
 	updateVersionInFile( 'readme.txt' );
-	execSync( `git commit -m "Update plugin file versions to ${ version }."` );
-
 	replaceNextVersionPlaceholder();
 	updatePackageJsonFiles();
 	generatePotFiles();
+
+	execSync( `git commit -m "Update plugin to ${ version }."` );
+
 	const changelog = generateChangelog();
 
 	// Create PR
@@ -229,7 +227,7 @@ function replaceNextVersionPlaceholder() {
 	console.log( `Replacing next version placeholder with ${ version } ...` );
 	execSync( `bash scripts/replace-next-version-tag.sh ${ version }` );
 	execSync(
-		`git add . && git commit --allow-empty -m "Replace next version placeholders with ${ version }."`,
+		`git add .`,
 	);
 }
 
@@ -246,7 +244,7 @@ function updatePackageJsonFiles() {
 	}
 
 	execSync(
-		`git add package.json package-lock.json && git commit -m "Update package.json versions to ${ version }."`,
+		`git add package.json package-lock.json"`,
 	);
 }
 
@@ -261,7 +259,7 @@ function generatePotFiles() {
 	} catch {
 		throw new Error( 'POT file generation failed.' );
 	}
-	execSync( `git add languages/ && git commit -m "Generate pot files for ${ version }"` );
+	execSync( `git add languages/` );
 }
 
 /**
@@ -269,12 +267,12 @@ function generatePotFiles() {
  * This method also creates a commit in the current branch.
  */
 function generateChangelog() {
-	let prs = execSync( ghPrs );
-	prs          = JSON.parse( prs );
+	let prs = execSync( `${ ghPrs }  --json number,title,body,labels` );
+	prs     = JSON.parse( prs );
 
 	const changelogs = prs.map( ( pr ) => {
 		const body              = pr.body;
-		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:###|<!--)/ );
+		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:###|<!--|$)/ );
 
 		if ( ! changelogSections ) {
 			return `* ${ pr.title } (#${ pr.number })`;
@@ -287,6 +285,10 @@ function generateChangelog() {
 
 		return changelog;
 	} );
+
+
+	console.log( 'Proposed changelog: ' );
+	console.log( changelogs.join( "\n" ) );
 
 	return changelogs.join( "\n" );
 }
