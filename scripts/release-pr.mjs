@@ -42,7 +42,7 @@ if ( ! ( await askForConfirmation( version, pluginFileContents ) ) ) {
 }
 
 // Create release branch.
-const { originalBranchName, releaseBranchName } = createReleaseBranch(
+const { originalBranchName, releaseBranch } = createReleaseBranch(
 	pluginSlug,
 	version,
 );
@@ -58,23 +58,24 @@ try {
 	const changelog = buildReleaseNotes();
 
 	// Create PR
-	pushBranch( releaseBranchName );
+	pushBranch();
 	createPR( changelog );
 
 } catch ( error ) {
 
 	console.log( chalk.bold.red( error.message ) );
-	console.log( error );
+	console.log( error.message );
+	console.log( error.stack );
 
 	const { confirmation } = await inquirer.prompt( {
 		type: 'confirm',
 		name: 'confirmation',
-		message: 'Roll back a delete release branch?',
+		message: 'Roll back and delete release branch?',
 		default: true,
 	} );
 
 	if ( confirmation ) {
-		revertOnError( originalBranchName, releaseBranchName );
+		revertOnError( originalBranchName, releaseBranch );
 	}
 }
 
@@ -200,7 +201,7 @@ function createReleaseBranch( slug, version ) {
 	}
 	return {
 		originalBranchName: currentBranchName,
-		releaseBranchName: branchName,
+		releaseBranch: branchName,
 	};
 }
 
@@ -341,7 +342,7 @@ ${ changelog }
 `;
 	body     = body.replace( '"', '\"' );
 
-	const prLink = execSync( `gh pr create -R ${ plugin.repo } --assignee @me --base trunk --draft --title "${ title }" --body "${ body }"` );
+	const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --draft --title "${ title }" --body "${ body }"` );
 	execSync( `open ${ prLink }` );
 	console.log( `PR: ${ prLink }` );
 }
@@ -351,12 +352,12 @@ ${ changelog }
  *
  * @param {string} branch The release branch name.
  */
-function pushBranch( branch ) {
+function pushBranch() {
 	console.log( 'Pushing branch ...' );
 	try {
-		execSync( `git push ${ REMOTE } ${ branch } 2> /dev/null` );
+		execSync( `git push -u ${ REMOTE } ${ releaseBranch }` );
 	} catch {
-		throw Error( `New branch '${ branch }' could not be pushed.` );
+		throw Error( `New branch '${ releaseBranch }' could not be pushed.` );
 	}
 }
 
