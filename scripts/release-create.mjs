@@ -48,7 +48,9 @@ function getReleaseChangelog() {
 	// Get PR description
 	const prDescription    = execSync( `gh pr view ${ prNumber } -R ${ plugin.repo } --json body` ).toString();
 	// Get changelog section
-	const changelogSection = prDescription.match( /### (?:Changelog|Release Notes)([\S\s]*?)(?:###|<!--)/ )[ 1 ]
+	const changelogSection = prDescription
+		.match( /### (?:Changelog|Release Notes)([\S\s]*?)(?:###|<!--)/ )[ 1 ]
+		.match('---\n([\S\s]*?)\n---')[ 1 ]
 		.replace( /\\n/g, '\n' )
 		.replace( /\\r/g, '\r' )
 		.replace( /^- /gm, '* ' )
