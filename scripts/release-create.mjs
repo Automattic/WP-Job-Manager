@@ -94,6 +94,6 @@ function createGithubRelease() {
 
 function success() {
 	console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } release created!` ) );
-	execSync(`gh pr comment ${ prNumber } -R ${ plugin.repo } --body "✅ ${ pluginName } ${ pluginVersion } release created!`)
+	execSync(`gh pr comment ${ prNumber } -R ${ plugin.repo } --body "✅ ${ pluginName } ${ pluginVersion } release created!"`)
 
 }

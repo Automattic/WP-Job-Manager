@@ -25,9 +25,24 @@ jobs:
         run: composer install --no-ansi --no-interaction --prefer-dist --no-progress
       - name: Setup Git
         run: |
-          git config user.name "WPJM GitHub Actions Bot"
-          git config user.email "<>"
+          git config user.name "WPJM Bot"
+          git config user.email "<robot@wpjobmanager.com>"
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: npm run release:create ${{ github.event.number }}
+        run: |
+          npm run release:create ${{ github.event.number }}
+          unzip wp-job-manager.zip
+      - name: Deploy to WordPress.org
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          dry-run: true
+        env:
+          SVN_PASSWORD: ${{ secrets.WORDPRESSORG_SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.WORDPRESSORG_SVN_USERNAME }}
+          BUILD_DIR: wp-job-manager
+          SLUG: wp-job-manager
+      - name: Comment on PR
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: gh pr comment ${{ github.event.number }} --body "✅ Release ${{ github.event.release.tag_name }} deployed to WordPress.org"
