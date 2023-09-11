@@ -8,4 +8,4 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 
-node scripts/release.mjs wp-job-manager $1
+node scripts/release-pr.mjs wp-job-manager $1
