@@ -41,8 +41,8 @@ buildPluginZip();
 createGithubRelease();
 
 console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } released!` ) );
-console.log( `The GitHub release entry will trigger a deploy to WordPress.org. Track here: https://github.com/${ plugin.repo }/actions` );
-execSync( ` open https://github.com/${ plugin.repo }/actions` );
+console.log( `The GitHub release entry will trigger a deploy to WordPress.org. \nTrack here: https://github.com/${ plugin.repo }/actions/workflows/deploy-wporg-release.yml` );
+execSync( ` open https://github.com/${ plugin.repo }/actions/workflows/deploy-wporg-release.yml` );
 
 function getReleaseChangelog() {
 	// Get PR description

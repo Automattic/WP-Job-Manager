@@ -1,4 +1,4 @@
-name: Release
+name: Deploy Plugin Release
 on:
   release:
     types: [published]

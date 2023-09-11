@@ -1,4 +1,4 @@
-name: Deploy Plugin Release
+name: Create Plugin Release
 
 on:
   pull_request:
@@ -23,7 +23,11 @@ jobs:
         run: npm ci
       - name: Install PHP dependencies
         run: composer install --no-ansi --no-interaction --prefer-dist --no-progress
+      - name: Setup Git
+        run: |
+          git config user.name "WPJM GitHub Actions Bot"
+          git config user.email "<>"
       - name: Create Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: npm run release:create ${{ github.event.number }}
