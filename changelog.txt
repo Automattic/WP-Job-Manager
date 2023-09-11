@@ -1,13 +1,5 @@
 # WP Job Manager
 
-## 1.41.0 - 2023-09-11
-* Support dynamically added date form fields
-* Show/Hide company logo File Upload button (#2569)
-* Allow plugins to override renewal values (#2566)
-* Fix notice dismiss JS dependency error (#2557)
-* Test changelog generation
-* Always show search actions (#2454)
-
 ## 1.41.0 - 2023-06-10
 * Enhancement: Introduce listing renewals #2422
 * Enhancement: Allow searching multiple job locations at once #2433
