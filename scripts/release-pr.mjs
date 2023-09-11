@@ -46,25 +46,36 @@ const { originalBranchName, releaseBranchName } = createReleaseBranch(
 	pluginSlug,
 	version,
 );
+
 try {
 	updateVersionInFile( pluginFileName );
 	updateVersionInFile( 'readme.txt' );
 	replaceNextVersionPlaceholder();
 	updatePackageJsonFiles();
 	generatePotFiles();
+	commitFiles();
 
-	execSync( `git commit -m "Update plugin to ${ version }."` );
-
-	const changelog = generateChangelog();
+	const changelog = buildReleaseNotes();
 
 	// Create PR
 	pushBranch( releaseBranchName );
-	createPR( version, changelog );
+	createPR( changelog );
 
 } catch ( error ) {
-	revertOnError( originalBranchName, releaseBranchName );
-	console.log( `\n\nORIGINAL ERROR: '${ error.name }'` );
-	console.log( error.message );
+
+	console.log( chalk.bold.red( error.message ) );
+	console.log( error );
+
+	const { confirmation } = await inquirer.prompt( {
+		type: 'confirm',
+		name: 'confirmation',
+		message: 'Roll back a delete release branch?',
+		default: true,
+	} );
+
+	if ( confirmation ) {
+		revertOnError( originalBranchName, releaseBranchName );
+	}
 }
 
 /*
@@ -262,11 +273,15 @@ function generatePotFiles() {
 	execSync( `git add languages/` );
 }
 
+function commitFiles() {
+	execSync( `git commit -m "Update plugin to ${ version }."` );
+}
+
 /**
  * Generates the changelog based on the PRs.
  * This method also creates a commit in the current branch.
  */
-function generateChangelog() {
+function buildReleaseNotes() {
 	let prs = execSync( `${ ghPrs }  --json number,title,body,labels` );
 	prs     = JSON.parse( prs );
 
@@ -286,7 +301,6 @@ function generateChangelog() {
 		return changelog;
 	} );
 
-
 	console.log( 'Proposed changelog: ' );
 	console.log( changelogs.join( "\n" ) );
 
@@ -304,7 +318,7 @@ function createPR( changelog ) {
 
 	let body = `
 
-### Changelog
+### Release Notes
 
 ${ changelog }
 
@@ -327,7 +341,7 @@ ${ changelog }
 `;
 	body     = body.replace( '"', '\"' );
 
-	const prLink = execSync( `gh pr create -R ${ plugin.repo } --assignee @me --base trunk --draft --title "${ title }" --label "[Type] Maintenance" --body "${ body }"` );
+	const prLink = execSync( `gh pr create -R ${ plugin.repo } --assignee @me --base trunk --draft --title "${ title }" --body "${ body }"` );
 	execSync( `open ${ prLink }` );
 	console.log( `PR: ${ prLink }` );
 }
@@ -353,7 +367,6 @@ function pushBranch( branch ) {
  * @param {string} releaseBranch  The new release branch name.
  */
 function revertOnError( originalBranch, releaseBranch ) {
-	console.log( '❌ ERROR!' );
 	console.log( 'Trying to move back to previous branch...' );
 	execSync( `git checkout . && git checkout ${ originalBranch }` );
 	console.log( `Deleting '${ releaseBranch }'....` );

@@ -40,11 +40,15 @@ tagRelease();
 buildPluginZip();
 createGithubRelease();
 
+console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } released!` ) );
+console.log( `The GitHub release entry will trigger a deploy to WordPress.org. Track here: https://github.com/${ plugin.repo }/actions` );
+execSync( ` open https://github.com/${ plugin.repo }/actions` );
+
 function getReleaseChangelog() {
 	// Get PR description
 	const prDescription    = execSync( `gh pr view ${ prNumber } --json body` ).toString();
 	// Get changelog section
-	const changelogSection = prDescription.match( /### Changelog([\S\s]*?)(?:###|<!--)/ )[ 1 ]
+	const changelogSection = prDescription.match( /### (Changelog|Release Notes)([\S\s]*?)(?:###|<!--)/ )[ 1 ]
 		.replace( /\\n/g, '\n' )
 		.replace( /\\r/g, '\r' )
 		.replace( /^- /gm, '* ' )
