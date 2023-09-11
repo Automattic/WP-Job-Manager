@@ -315,7 +315,9 @@ function createPR( changelog ) {
 	const title = `Release ${ pluginName } ${ version }`;
 
 	let body = prTemplate( { changelog, version } );
-	body     = body.replace( '"', '\"' );
+	body     = body
+		.replace( '"', '\"' )
+		.replace( '`', '\`' )
 
 	const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --draft --title "${ title }" --body "${ body }"` );
 	execSync( `open ${ prLink }` );

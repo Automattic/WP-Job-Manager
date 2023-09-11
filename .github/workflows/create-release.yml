@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     name: WPJM Release
     steps:
+      - name: Comment on PR
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: gh pr comment ${{ github.event.number }} --body "🚀 Starting release ..."
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
         with:
