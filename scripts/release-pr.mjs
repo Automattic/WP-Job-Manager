@@ -7,6 +7,7 @@ import process from 'process';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { execSync } from 'child_process';
+import prTemplate from './RELEASE_PR_TEMPLATE.md.mjs';
 
 const PLUGINS = {
 	'wp-job-manager': {
@@ -136,13 +137,6 @@ async function askForConfirmation(
 	const currentWPTestedUpTo      = fileContents.match( /Tested up to: (.*)/ )[ 1 ];
 	// PHP
 	const currentRequiresPhp       = fileContents.match( /Requires PHP: (.*)/ )[ 1 ];
-	// WC
-	// const currentWCRequiresAtLeast = fileContents.match(
-	// 	/WC requires at least: (.*)/,
-	// )[ 1 ] ?? ' - ';
-	// const currentWCTestedUpTo      = fileContents.match(
-	// 	/WC tested up to: (.*)/,
-	// )[ 1 ] ?? ' - ';
 
 	// Display all versioning information and ask for confirmation.
 	console.log( `🚀 Preparing new release:`, chalk.bold( `${ pluginSlug } ${ newVersion }` ) );
@@ -155,9 +149,10 @@ async function askForConfirmation(
 	console.log( `-----------------------------` );
 	console.log( `ℹ️️  Make sure a ` + chalk.bold( `milestone ${ newVersion }` ) + ` exists GitHub, and all PRs are assigned to the milestone.` );
 	console.log( `-----------------------------` );
+	console.log( `ℹ️️  Make sure you are logged in to GH CLI with \`gh auth login\`.` );
 	execSync( 'gh auth status' );
 	console.log( `-----------------------------` );
-	console.log( `Pull requests to include:` );
+	console.log( `Pull requests to include (milestone ${ newVersion }):` );
 
 	execSync( ghPrs, { stdio: 'inherit' } );
 
@@ -165,6 +160,8 @@ async function askForConfirmation(
 
 	const defaultBranch = 'trunk';
 	const warning       = ( branch !== defaultBranch ) ? chalk.bgRed( ` ‼️  Not ${ defaultBranch }! ‼️ ` ) : '';
+
+	console.log( `-----------------------------` );
 
 	console.log( 'Branch:', chalk.bold[ branch !== defaultBranch ? 'red' : 'green' ]( branch ), warning );
 
@@ -317,29 +314,7 @@ function createPR( changelog ) {
 
 	const title = `Release ${ pluginName } ${ version }`;
 
-	let body = `
-
-### Release Notes
-
-${ changelog }
-
-### Hooks, templates
-
-...
-
-### Release Automation
-
-- [ ] 🤖 Plugin zip built.
-- [ ] 🤖 New version deployed at test site.
-- [ ] 🤠 Merge PR.
-- [ ] 🤖 GH release tag created.
-- [ ] 🤖 Plugin pushed to WordPress.org
-- [ ] 🤖 WPJobManager.com release created.
-- [ ] 🤖 P2 release post created.
-
-⚠️ Merging this PR will publish the new release automatically.
-
-`;
+	let body = prTemplate( { changelog, version } );
 	body     = body.replace( '"', '\"' );
 
 	const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --draft --title "${ title }" --body "${ body }"` );
