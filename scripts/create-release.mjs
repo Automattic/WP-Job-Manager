@@ -10,7 +10,7 @@ const PLUGINS = {
 	'wp-job-manager': {
 		file: 'wp-job-manager.php',
 		constant: 'JOB_MANAGER_VERSION',
-		repo: 'yscik/wp-job-manager',
+		repo: 'Automattic/wp-job-manager',
 	},
 };
 
@@ -84,7 +84,7 @@ function tagRelease() {
 }
 
 function buildPluginZip() {
-	execSync( `npm run build` );
+	execSync( `npm run build 1> /dev/null` );
 }
 
 function createGithubRelease() {

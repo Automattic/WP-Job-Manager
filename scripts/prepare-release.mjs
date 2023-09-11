@@ -13,11 +13,11 @@ const PLUGINS = {
 	'wp-job-manager': {
 		file: 'wp-job-manager.php',
 		constant: 'JOB_MANAGER_VERSION',
-		repo: 'yscik/wp-job-manager',
+		repo: 'Automattic/wp-job-manager',
 	},
 };
 
-const REMOTE = `testing`;
+const REMOTE = `origin`;
 
 /* eslint-disable no-console */
 

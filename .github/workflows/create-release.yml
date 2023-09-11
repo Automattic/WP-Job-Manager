@@ -35,8 +35,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          npm run release:create ${{ github.event.number }}
-          unzip wp-job-manager.zip
+          node scripts/create-release.mjs wp-job-manager ${{ github.event.number }}
+          unzip -q wp-job-manager.zip
       - name: Deploy to WordPress.org
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
