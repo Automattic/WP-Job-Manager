@@ -244,7 +244,7 @@ function updatePackageJsonFiles() {
 	}
 
 	execSync(
-		`git add package.json package-lock.json"`,
+		`git add package.json package-lock.json`,
 	);
 }
 
