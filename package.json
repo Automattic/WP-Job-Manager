@@ -54,7 +54,7 @@
     "i18n:build": "npm run i18n:php",
     "i18n:php": "wp i18n make-pot --exclude=lib,build,vendor,node_modules --skip-js --headers='{\"Last-Translator\":null,\"Language-Team\":null,\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/wp-job-manager/\"}' . languages/wp-job-manager.pot",
     "release": "./scripts/prepare-release.sh",
-    "release:Create": "./scripts/create-release.sh"
+    "release:create": "./scripts/create-release.sh"
   },
   "lint-staged": {
     "*.php": [
