@@ -33,9 +33,7 @@ const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ];
 const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
 const version            = process.argv[ 3 ];
 
-// const ghPrs = `gh pr list -R ${ plugin.repo } --state merged --base trunk --search "milestone:${ version }"`
-
-const ghPrs = `gh pr list -R ${ 'Automattic/wp-job-manager' } --state all --base trunk --search "milestone:${ version }"`;
+const ghPrs = `gh pr list -R ${ plugin.repo } --state merged --base trunk --search "milestone:${ version }"`;
 
 // Confirm release through CLI.
 if ( ! ( await askForConfirmation( version, pluginFileContents ) ) ) {
