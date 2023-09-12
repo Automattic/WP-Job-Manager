@@ -172,6 +172,15 @@ class WP_Job_Manager_Helper_Renewals {
 	public static function renew_job_listing( $job ) {
 		$old_expiry = date_create_immutable_from_format( 'Y-m-d', get_post_meta( $job->ID, '_job_expires', true ) );
 		$new_expiry = calculate_job_expiry( $job->ID, false, $old_expiry );
+
+		/**
+		 * Filters the expiry date after a renewal.
+		 *
+		 * @param string $new_expiry The new expiry date (Y-m-d).
+		 * @param WP_Post $job       The job that is being renewed.
+		 */
+		$new_expiry = apply_filters( 'job_manager_renewal_expiry_date', $new_expiry, $job );
+
 		update_post_meta( $job->ID, '_job_expires', $new_expiry );
 
 		/**
@@ -216,6 +225,14 @@ class WP_Job_Manager_Helper_Renewals {
 		$current_time_stamp = current_datetime()->getTimestamp();
 		$status             = get_post_status( $job );
 
-		return 'publish' === $status && $expiry - $current_time_stamp < $expiring_soon_days * DAY_IN_SECONDS;
+		$can_be_renewed = 'publish' === $status && $expiry - $current_time_stamp < $expiring_soon_days * DAY_IN_SECONDS;
+
+		/**
+		 * Filters whether a job can be renewed.
+		 *
+		 * @param boolean $can_be_renewed Whether the job can be renewed.
+		 * @param WP_Post $job            The job.
+		 */
+		return apply_filters( 'job_manager_job_can_be_renewed', $can_be_renewed, $job );
 	}
 }
