@@ -102,6 +102,8 @@ jQuery(function($) {
 						if ( $.inArray( file.extension, image_types ) >= 0 ) {
 							html = $.parseHTML( job_manager_ajax_file_upload.js_field_html_img );
 							$( html ).find('.job-manager-uploaded-file-preview img').attr( 'src', file.url );
+							$( '#company_logo' ).hide();
+							$( '.fieldset-company_logo small.description' ).hide();
 						} else {
 							html = $.parseHTML( job_manager_ajax_file_upload.js_field_html );
 							$( html ).find('.job-manager-uploaded-file-name code').text( file.name );
