@@ -1,49 +1,51 @@
 name: Plugin Build
 
-on: pull_request
+on:
+  - pull_request
 
 jobs:
-    build:
-        name: Plugin Build
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - name: Get npm cache directory
-              id: npm-cache
-              run: |
-                  echo "::set-output name=dir::$(npm config get cache)"
-            - uses: actions/cache@v2
-              with:
-                  path: ${{ steps.npm-cache.outputs.dir }}
-                  key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-node-
-            - uses: shivammathur/setup-php@v2
-              with:
-                php-version: '7.4'
-                tools: composer
-                coverage: none
-            - name: Get composer cache directory
-              id: composer-cache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-            - uses: actions/cache@v2
-              with:
-                  path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-composer-
-            - name: Install JS dependencies
-              run: npm ci
-            - name: Install PHP dependencies
-              run: composer install --no-ansi --no-interaction --prefer-dist --no-progress
-            - name: Build Plugin
-              run: npm run build
-            - name: Decompress plugin
-              run: unzip wp-job-manager.zip -d wp-job-manager
-            - name: Store Artifact
-              uses: actions/upload-artifact@v2
-              with:
-                name: wp-job-manager-${{ github.event.pull_request.head.sha }}
-                path: ${{ github.workspace }}/wp-job-manager/
-                retention-days: 7
-                  
+  build:
+    name: Plugin Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer
+          coverage: none
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: Install JS dependencies
+        run: npm ci
+      - name: Install PHP dependencies
+        run: composer install --no-ansi --no-interaction --prefer-dist --no-progress
+      - name: Build Plugin
+        run: npm run build
+      - name: Decompress plugin
+        run: unzip wp-job-manager.zip -d wp-job-manager
+      - name: Store Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: wp-job-manager-${{ github.event.pull_request.head.sha }}
+          path: ${{ github.workspace }}/wp-job-manager/
+          retention-days: 7
+      - name: Save plugin zip and add link to it in a comment 
+        run: node scripts/upload-and-link-plugin-zip.mjs --pr ${{ github.event.number }} --commit ${{ github.event.pull_request.head.sha }} ${{ github.event.pull_request.merged && '--merged' }}
