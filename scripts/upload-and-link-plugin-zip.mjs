@@ -15,7 +15,7 @@ const { values: { pr, commit, merged } } = parseArgs( {
 
 const MEDIA_LIBRARY_ENDPOINT = "https://wpjobmanager.com/wp-json/wp/v2/media"
 
-const login = `${ env.WPJMCOM_API_USER }:${ env.WPJMCOM_API_PASSWORD }`;
+const login = env.WPJMCOM_API_LOGIN;
 
 ( function main() {
 
