@@ -58,7 +58,7 @@ function deleteOldZips() {
  */
 function uploadZip() {
 
-	const id = `${ pr }-${ commit }`;
+	const id = `${ pr }-${ commit.substring( 0, 8 ) }`;
 
 	const zip = execSync( `curl -u "${ login }" --http1.1 --data-binary @wp-job-manager.zip -H "Content-Disposition: attachment; filename=\"wp-job-manager-zip-${ id }.zip\"" ${ MEDIA_LIBRARY_ENDPOINT }?title=wp-job-manager-zip-${ id } | jq .source_url` ).toString().replaceAll( '"', '' ).trim();
 	console.log( chalk.green( '✓' ), `Plugin file uploaded to ${ zip }` )
