@@ -606,6 +606,8 @@ class WP_Job_Manager_Helper {
 			$keyed_by_filename = false;
 		}
 
+		$clear_plugin_cache = ! function_exists( 'did_filter' ) || did_filter( 'extra_plugin_headers' );
+
 		/**
 		 * Clear the plugin cache on first request for installed WPJM add-on plugins. This happens in installations
 		 * that get_plugins() is called before WPJM has a chance to register its custom plugin headers.
@@ -615,7 +617,7 @@ class WP_Job_Manager_Helper {
 		 *
 		 * @param bool $clear_plugin_cache True if we should clear the plugin cache.
 		 */
-		if ( ! self::$cleared_plugin_cache && apply_filters( 'job_manager_clear_plugin_cache', did_filter( 'extra_plugin_headers' ) ) ) {
+		if ( ! self::$cleared_plugin_cache && apply_filters( 'job_manager_clear_plugin_cache', $clear_plugin_cache ) ) {
 			// Reset the plugin cache on the first call. Some plugins prematurely hydrate the cache.
 			wp_clean_plugins_cache( false );
 			self::$cleared_plugin_cache = true;
