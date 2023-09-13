@@ -50,4 +50,5 @@ jobs:
       - name: Save plugin zip and add link to it in a comment 
         env:
           WPJMCOM_API_LOGIN: ${{ secrets.WPJMCOM_API_LOGIN }}
+          GH_TOKEN: ${{ github.token }}
         run: node scripts/upload-and-link-plugin-zip.mjs --pr ${{ github.event.number }} --commit ${{ github.event.pull_request.head.sha }} ${{ github.event.pull_request.merged && '--merged' || '' }}
