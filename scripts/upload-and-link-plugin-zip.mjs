@@ -19,13 +19,14 @@ const login = env.WPJMCOM_API_LOGIN;
 
 ( function main() {
 
-	deleteOldZips();
-
-	if ( merged ) {
-		return;
-	}
-
-	const zip = uploadZip();
+	// deleteOldZips();
+	//
+	// if ( merged ) {
+	// 	return;
+	// }
+	//
+	// const zip = uploadZip();
+	const zip = "https://wpjobmanager.com/wp-content/uploads/2023/09/wp-job-manager-zip-2577-26255dc9.zip";
 	addComment( zip );
 
 } )();
@@ -75,12 +76,22 @@ function addComment( zip ) {
 	const [ , path, id ] = zip.match( 'wp-content/uploads/(.*)/wp-job-manager-zip-(.*).zip' );
 	const playgroundLink = `https://wpjobmanager.com/playground/?core=${ path }/${ id }`
 
-	const body = `Plugin built with the proposed changes (${ commit }):
-📦 [Download plugin zip](${ zip })
-▶️ [Open in playground](${ playgroundLink })`;
+	const links = `
+<!-- wpjm:plugin-zip -->
+----
 
-	const hasComment = JSON.parse( execSync( `gh pr view ${ pr } --comments --json comments --jq '.comments | map(.author.login)'` ).toString() ).includes( 'github-actions' );
+| Plugin build for ${ commit } <a href="#"><img width=600></a> |
+| ------------------------------------------------------------ |
+| 📦 [Download plugin zip](${ zip })                       |
+| ▶️ [Open in playground](${ playgroundLink })             |
 
-	execSync( `gh pr comment ${ pr } ${ hasComment ? '--edit-last' : '' } --body "${ body.replaceAll( '"', '\\"' ) }"` )
-	console.log( chalk.green( '✓' ), 'Comment added to PR.' );
+<!-- /wpjm:plugin-zip -->
+`;
+
+	let body = execSync( `gh pr view ${ pr } --json body --jq .body` ).toString();
+
+	body = body.replace( /((<!-- wpjm:plugin-zip -->([\s\S]*)<!-- \/wpjm:plugin-zip -->)|$)/, links );
+
+	execSync( `gh pr edit ${ pr } --body "${ body.replaceAll( '"', '\\"' ) }"`, {stdio: 'inherit'} )
+	console.log( chalk.green( '✓' ), 'Plugin build links added to PR.' );
 }
