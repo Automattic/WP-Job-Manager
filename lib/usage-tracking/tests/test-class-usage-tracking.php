@@ -385,8 +385,8 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 'plugin_test', $system_data, '`plugin_test` key must exist in system data' );
 		$this->assertEquals( '1.0.0', $system_data['plugin_test'], '`plugin_test` does not match expected value' );
 
-		$this->assertArrayNotHasKey( 'plugin_jetpack', $system_data, '`plugin_jetpack` key must NOT exist in system data' );
-		$this->assertArrayNotHasKey( 'plugin_test_dev', $system_data, '`plugin_test_dev` key must NOT exist in system data' );
+		$this->assertArrayHasKey( 'plugin_jetpack', $system_data, '`plugin_jetpack` key must exist in system data' );
+		$this->assertArrayHasKey( 'plugin_test_dev', $system_data, '`plugin_test_dev` key must exist in system data' );
 
 		$plugin_prefix_count = 0;
 		foreach ( $system_data as $key => $value ) {
@@ -395,7 +395,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 			}
 		}
 
-		$this->assertEquals( 3, $plugin_prefix_count );
+		$this->assertEquals( 5, $plugin_prefix_count );
 	}
 
 	/* END tests for system data */

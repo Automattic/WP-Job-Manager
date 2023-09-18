@@ -613,7 +613,7 @@ class WP_Job_Manager_Helper {
 		 * that get_plugins() is called before WPJM has a chance to register its custom plugin headers.
 		 *
 		 * @since 1.29.1
-		 * @since $$next-version$$ Only do this when get_plugins is called before this filter.
+		 * @since $$next-version$$ Only do this when get_plugins was called before this filter.
 		 *
 		 * @param bool $clear_plugin_cache True if we should clear the plugin cache.
 		 */
