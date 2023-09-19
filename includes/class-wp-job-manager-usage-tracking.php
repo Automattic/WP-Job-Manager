@@ -235,32 +235,6 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		);
 	}
 
-	/**
-	 * Check if we should track the status of a plugin.
-	 *
-	 * @param string $plugin_slug
-	 * @return bool
-	 */
-	protected function do_track_plugin( $plugin_slug ) {
-		if ( 1 === preg_match( '/^wp\-job\-manager/', $plugin_slug ) ) {
-			return true;
-		}
-		$third_party_plugins = [
-			'all-in-one-seo-pack',
-			'polylang',
-			'jetpack',
-			'wordpress-seo', // Yoast.
-			'sitepress-multilingual-cms', // WPML.
-			'bibblio-related-posts', // Related Posts for WordPress.
-		];
-		if ( in_array( $plugin_slug, $third_party_plugins, true ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-
 	/*
 	 * Public functions.
 	 */

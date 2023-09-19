@@ -38,13 +38,6 @@ class Usage_Tracking_Test_Subclass extends WP_Job_Manager_Usage_Tracking_Base {
 		return 'Please enable Usage Tracking!';
 	}
 
-	public function do_track_plugin( $plugin_slug ) {
-		if ( in_array( $plugin_slug, array( 'hello', 'test', 'my-favorite-plugin' ), true ) ) {
-			return true;
-		}
-		return false;
-	}
-
 	protected function get_plugins() {
 		return array(
 			'Hello.php'                                 => array(
