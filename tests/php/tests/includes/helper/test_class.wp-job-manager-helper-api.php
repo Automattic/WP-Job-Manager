@@ -162,18 +162,19 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	 *
 	 * @param string $endpoint The request URI/path of the endpoint to mock the response for.
 	 * @param mixed $body The response body to return for the specified endpoint.
+	 * @param int $status The HTTP status code to return for the specified endpoint.
 	 *
 	 * @return void
 	 */
-	protected function mock_http_request($endpoint, $body) {
-		add_filter('pre_http_request', function($preempt, $args, $url) use ($endpoint, $body) {
+	protected function mock_http_request($endpoint, $body, $status = 200) {
+		add_filter('pre_http_request', function($preempt, $args, $url) use ($endpoint, $body, $status) {
 			if ($endpoint === wp_parse_url($url, PHP_URL_PATH)) {
 				return array(
 					'headers' => array(),
 					'body' => wp_json_encode($body),
 					'response' => array(
-						'code' => 200,
-						'message' => 'OK',
+						'code' => $status,
+						'message' => 200 === $status ? 'OK' : 'Error'
 					),
 					'cookies' => array(),
 				);
