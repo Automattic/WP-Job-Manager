@@ -9,19 +9,21 @@ jQuery(document).on( 'ready', function() {
 	}
 
 	var initializeDatepicker = function ( targetInput ) {
-		var $hidden_input = jQuery( '<input />', { type: 'hidden', name: jQuery(targetInput).attr( 'name' ) } ).insertAfter( jQuery( targetInput ) );
-		jQuery(targetInput).attr( 'name', jQuery(targetInput).attr( 'name' ) + '-datepicker' );
-		jQuery(targetInput).keyup( function() {
-			if ( '' === jQuery(targetInput).val() ) {
+		var $target = jQuery( targetInput );
+		var $hidden_input = jQuery( '<input />', { type: 'hidden', name: $target.attr( 'name' ) } ).insertAfter( $target );
+
+		$target.attr( 'name', $target.attr( 'name' ) + '-datepicker' );
+		$target.keyup( function() {
+			if ( '' === $target.val() ) {
 				$hidden_input.val( '' );
 			}
 		} );
-		jQuery(targetInput).datepicker( jQuery.extend( {}, datePickerOptions, { altField: $hidden_input } ) );
-		if ( jQuery(targetInput).val() ) {
-			var dateParts = jQuery(targetInput).val().split('-');
+		$target.datepicker( jQuery.extend( {}, datePickerOptions, { altField: $hidden_input } ) );
+		if ( $target.val() ) {
+			var dateParts = $target.val().split('-');
 			if ( 3 === dateParts.length ) {
 				var selectedDate = new Date(parseInt(dateParts[0], 10), (parseInt(dateParts[1], 10) - 1), parseInt(dateParts[2], 10));
-				jQuery(targetInput).datepicker('setDate', selectedDate);
+				$target.datepicker('setDate', selectedDate);
 			}
 		}
 	};
