@@ -127,16 +127,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	 */
 	public function test_deactivate_valid() {
 		$base_args = $this->get_base_args();
-		$this->set_expected_response(
-			[
-				'args' => wp_parse_args(
-					[
-						'wc-api'  => 'wp_plugin_licencing_activation_api',
-						'request' => 'deactivate',
-					],
-					$base_args
-				),
-			]
+		$this->mock_http_request( '/wp-json/wpjmcom-licensing/v1/deactivate',
+			$this->default_valid_response()
 		);
 		$instance = new WP_Job_Manager_Helper_API();
 		$response = $instance->deactivate( $base_args );
@@ -151,6 +143,12 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	 */
 	public function test_deactivate_invalid() {
 		$base_args = $this->get_base_args();
+		$this->mock_http_request( '/wp-json/wpjmcom-licensing/v1/deactivate',
+			[
+				'error_code' => 'license_not_found'
+			],
+			404
+		);
 		$instance  = new WP_Job_Manager_Helper_API();
 		$response  = $instance->deactivate( $base_args );
 
