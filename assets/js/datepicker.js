@@ -1,5 +1,5 @@
 /* global job_manager_datepicker */
-jQuery(document).on( 'ready', function() {
+jQuery(document).ready( function() {
 	var datePickerOptions = {
 		altFormat  : 'yy-mm-dd',
 	};
@@ -13,7 +13,7 @@ jQuery(document).on( 'ready', function() {
 		var $hidden_input = jQuery( '<input />', { type: 'hidden', name: $target.attr( 'name' ) } ).insertAfter( $target );
 
 		$target.attr( 'name', $target.attr( 'name' ) + '-datepicker' );
-		$target.keyup( function() {
+		$target.on( 'keyup', function() {
 			if ( '' === $target.val() ) {
 				$hidden_input.val( '' );
 			}
