@@ -41,7 +41,7 @@ const login = env.WPJMCOM_API_LOGIN;
 		const zip = uploadZip();
 		addComment( zip );
 	} catch ( error ) {
-		console.log( 'Plugin upload failed.' );
+		console.log( 'Failed to upload plugin zip.' );
 		console.log( error.message );
 		console.log( error.stack );
 		process.exit( 1 );
@@ -51,7 +51,6 @@ const login = env.WPJMCOM_API_LOGIN;
 
 /**
  * Remove previously uploaded plugin zip files for the PR.
- *
  */
 function deleteOldZips() {
 
@@ -79,7 +78,12 @@ function uploadZip() {
 
 	const id = `${ pr }-${ commit.substring( 0, 8 ) }`;
 
-	const zip = execSync( `curl -u "${ login }" --http1.1 --data-binary @wp-job-manager.zip -H "Content-Disposition: attachment; filename=\"wp-job-manager-zip-${ id }.zip\"" ${ MEDIA_LIBRARY_ENDPOINT }?title=wp-job-manager-zip-${ id } | jq .source_url` ).toString().replaceAll( '"', '' ).trim();
+	const response = execSync( `curl -u "${ login }" --http1.1 --data-binary @wp-job-manager.zip -H "Content-Disposition: attachment; filename=\"wp-job-manager-zip-${ id }.zip\"" ${ MEDIA_LIBRARY_ENDPOINT }?title=wp-job-manager-zip-${ id }` ).toString();
+
+	const zip = JSON.parse( response )?.source_url?.replaceAll( '"', '' ).trim();
+	if ( ! zip ) {
+		throw new Error( response );
+	}
 	console.log( chalk.green( '✓' ), `Plugin file uploaded to ${ zip }` )
 
 	return zip;
@@ -87,6 +91,7 @@ function uploadZip() {
 
 /**
  * Post a comment on the PR with a link to the plugin zip and playground.
+ *
  * @param {string} zip URL to plugin zip file.
  */
 function addComment( zip ) {
