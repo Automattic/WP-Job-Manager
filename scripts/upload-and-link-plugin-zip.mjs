@@ -19,15 +19,33 @@ const login = env.WPJMCOM_API_LOGIN;
 
 ( function main() {
 
-	// deleteOldZips();
-	//
-	// if ( merged ) {
-	// 	return;
-	// }
-	//
-	// const zip = uploadZip();
-	const zip = "https://wpjobmanager.com/wp-content/uploads/2023/09/wp-job-manager-zip-2577-26255dc9.zip";
-	addComment( zip );
+	if ( ! login ) {
+		console.log( 'WPJobManager.com secrets not available, exiting.' );
+		process.exit( 0 );
+	}
+
+	try {
+		deleteOldZips();
+	} catch ( error ) {
+		console.log( 'Failed to delete old plugin zips.' );
+		console.log( error.message );
+		console.log( error.stack );
+		process.exit( 1 );
+	}
+
+	if ( merged ) {
+		return;
+	}
+
+	try {
+		const zip = uploadZip();
+		addComment( zip );
+	} catch ( error ) {
+		console.log( 'Plugin upload failed.' );
+		console.log( error.message );
+		console.log( error.stack );
+		process.exit( 1 );
+	}
 
 } )();
 
@@ -92,6 +110,6 @@ function addComment( zip ) {
 
 	body = body.replace( /((<!-- wpjm:plugin-zip -->([\s\S]*)<!-- \/wpjm:plugin-zip -->)|$)/, links );
 
-	execSync( `gh pr edit ${ pr } --body "${ body.replaceAll( '"', '\\"' ) }"`, {stdio: 'inherit'} )
+	execSync( `gh pr edit ${ pr } --body "${ body.replaceAll( '"', '\\"' ) }"`, { stdio: 'inherit' } )
 	console.log( chalk.green( '✓' ), 'Plugin build links added to PR.' );
 }
