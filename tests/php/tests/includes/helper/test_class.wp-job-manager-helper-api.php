@@ -214,7 +214,7 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	}
 
 	protected function default_valid_response() {
-		return [ 'status' => 1 ];
+		return [ 'success' => true ];
 	}
 
 	protected function default_invalid_response() {
