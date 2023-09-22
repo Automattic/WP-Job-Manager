@@ -84,14 +84,12 @@ class WP_Job_Manager_Helper_API {
 		$data = $this->request_endpoint(
 			'wp-json/wpjmcom-licensing/v1/plugin-information',
 			[
-				'method' => 'POST',
-				'body'   => wp_json_encode(
-					[
-						'site_url'     => $this->get_site_url(),
-						'license_key'  => $args['license_key'],
-						'product_slug' => $args['api_product_id'],
-					]
-				),
+				'method' => 'GET',
+				'body'   => [
+					'site_url'     => $this->get_site_url(),
+					'license_key'  => $args['license_key'],
+					'product_slug' => $args['api_product_id'],
+				],
 			]
 		);
 		if ( ! is_array( $data ) ) {
