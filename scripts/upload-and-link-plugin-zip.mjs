@@ -62,7 +62,7 @@ function deleteOldZips() {
 	oldZips?.forEach( ( zip ) => {
 		const
 			title = zip.title.rendered;
-		if ( title.match( new RegExp( `wp-job-manager-zip-${pr}` ) ) ) {
+		if ( title.startsWith( `wp-job-manager-zip-${pr}-`  ) ) {
 			console.log( `Deleting old plugin build ${ title }.zip` );
 			execSync( `curl -s -u "${ login }" -X DELETE "${ MEDIA_LIBRARY_ENDPOINT }/${ zip.id }?force=true"` );
 		}
