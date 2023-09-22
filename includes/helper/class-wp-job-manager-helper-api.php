@@ -77,13 +77,46 @@ class WP_Job_Manager_Helper_API {
 	 * Sends and receives data related to plugin information from the WPJobManager.com API.
 	 *
 	 * @param array $args  The arguments to pass to the endpoint.
-	 * @return array|false The response, or false if the request failed.
+	 * @return \stdClass|false The response, or false if the request failed.
 	 */
 	public function plugin_information( $args ) {
-		$args            = wp_parse_args( $args );
-		$args['wc-api']  = 'wp_plugin_licencing_update_api';
-		$args['request'] = 'plugininformation';
-		return $this->request( $args );
+		$args = wp_parse_args( $args );
+		$data = $this->request_endpoint(
+			'wp-json/wpjmcom-licensing/v1/plugin-information',
+			[
+				'method' => 'POST',
+				'body'   => wp_json_encode(
+					[
+						'site_url'     => $this->get_site_url(),
+						'license_key'  => $args['license_key'],
+						'product_slug' => $args['api_product_id'],
+					]
+				),
+			]
+		);
+		if ( ! is_array( $data ) ) {
+			return false;
+		}
+		$response               = new \stdClass();
+		$response->name         = $data['name'];
+		$slug                   = $data['slug'];
+		$response->plugin       = $slug . '/' . $slug . '.php';
+		$response->slug         = $slug;
+		$response->version      = $data['version'];
+		$response->last_updated = $data['last_updated'];
+		$response->author       = $data['author'];
+		$response->requires     = $data['requires'];
+		$response->tested       = $data['tested'];
+		$response->homepage     = $data['homepage'];
+
+		// set sections.
+		$response->sections = [
+			'description' => $data['sections']['description'],
+			'changelog'   => $data['sections']['changelog'],
+		];
+
+		$response->download_link = $data['download_link'];
+		return $response;
 	}
 
 	/**
