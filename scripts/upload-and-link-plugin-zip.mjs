@@ -39,7 +39,7 @@ const login = env.WPJMCOM_API_LOGIN;
 
 	try {
 		const zip = uploadZip();
-		addComment( zip );
+		addLinksToPR( zip );
 	} catch ( error ) {
 		console.log( 'Failed to upload plugin zip.' );
 		console.log( error.message );
@@ -90,11 +90,11 @@ function uploadZip() {
 }
 
 /**
- * Post a comment on the PR with a link to the plugin zip and playground.
+ * Add a link to the plugin zip and the playground to the PR description.
  *
  * @param {string} zip URL to plugin zip file.
  */
-function addComment( zip ) {
+function addLinksToPR( zip ) {
 
 	const [ , path, id ] = zip.match( 'wp-content/uploads/(.*)/wp-job-manager-zip-(.*).zip' );
 	const playgroundLink = `https://wpjobmanager.com/playground/?core=${ path }/${ id }`
