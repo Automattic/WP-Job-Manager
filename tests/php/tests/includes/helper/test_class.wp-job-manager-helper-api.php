@@ -38,22 +38,44 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	 */
 	public function test_plugin_information_valid() {
 		$base_args = $this->get_base_args();
-		$this->set_expected_response(
-			[
-				'args' => wp_parse_args(
-					[
-						'wc-api'  => 'wp_plugin_licencing_update_api',
-						'request' => 'plugininformation',
-					],
-					$base_args
-				),
-			]
-		);
+		$data = [
+			'name'         => 'Sample Plugin',
+			'slug'         => 'sample-plugin',
+			'version'      => '1.0.0',
+			'last_updated' => '2023-09-22',
+			'author'       => 'John Doe',
+			'requires'     => 'WordPress 5.0+',
+			'tested'       => 'WordPress 5.8',
+			'homepage'     => 'https://www.example.com/sample-plugin',
+			'sections'     => array(
+				'description' => 'This is a sample plugin for demonstration purposes.',
+				'changelog'   => 'Version 1.0.0 - Initial release',
+			),
+			'download_link' => 'https://www.example.com/sample-plugin/sample-plugin.zip',
+		];
+		$this->mock_http_request( '/wp-json/wpjmcom-licensing/v1/plugin-information', $data);
 		$instance = new WP_Job_Manager_Helper_API();
 		$response = $instance->plugin_information( $base_args );
 
 		// If a request was made that we don't expect, `$response` would be false.
-		$this->assertEquals( $this->default_valid_response(), $response );
+
+		$this->assertInstanceOf(stdClass::class, $response);
+		$this->assertEquals($data['name'], $response->name);
+		$this->assertEquals($data['slug'], $response->slug);
+		$this->assertEquals($data['version'], $response->version);
+		$this->assertEquals($data['last_updated'], $response->last_updated);
+		$this->assertEquals($data['author'], $response->author);
+		$this->assertEquals($data['requires'], $response->requires);
+		$this->assertEquals($data['tested'], $response->tested);
+		$this->assertEquals($data['homepage'], $response->homepage);
+
+		$this->assertEquals($data['sections']['description'], $response->sections['description']);
+		$this->assertEquals($data['sections']['changelog'], $response->sections['changelog']);
+
+		$this->assertEquals($data['download_link'], $response->download_link);
+
+		$expectedPlugin = $data['slug'] . '/' . $data['slug'] . '.php';
+		$this->assertEquals($expectedPlugin, $response->plugin);
 	}
 
 	/**
