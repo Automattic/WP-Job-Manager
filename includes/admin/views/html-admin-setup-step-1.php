@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <p>
 	<?php
 	// translators: Placeholder %s is the path to WPJM documentation site.
-	echo wp_kses_post( sprintf( __( 'If you\'d prefer to skip this and set up your pages manually, our <a href="%s">documentation</a> will walk you through each step.', 'wp-job-manager' ), 'https://wpjobmanager.com/documentation/' ) );
+	echo wp_kses_post( sprintf( __( 'If you\'d prefer to skip this and set up your pages manually, our <a target="_blank" href="%s">documentation</a> will walk you through each step.', 'wp-job-manager' ), 'https://wpjobmanager.com/documentation/' ) );
 	?>
 </p>
 
