@@ -452,6 +452,23 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	/**
+	 * Check if the plugin option is active.
+	 *
+	 * @return bool Returns true if the plugin option is active, false otherwise.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @author /Users/mikeyarce/Local Sites/wpjm/app/public/wp-content/plugins/WP-Job-Manager/lib/usage-tracking/class-usage-tracking-base.php
+	 */
+	function delay_tracking_notice() {
+		$activation_time = get_transient( 'job_manager_activation_time' );
+		if ( $activation_time && ( time() - $activation_time ) > 604800 ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * If needed, display opt-in dialog to enable tracking. Should not be
 	 * called externally.
 	 **/
@@ -459,8 +476,9 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$opt_in_hidden         = $this->is_opt_in_hidden();
 		$user_tracking_enabled = $this->is_tracking_enabled();
 		$can_manage_tracking   = $this->current_user_can_manage_tracking();
+		$delay_tracking_notice   = $this->delay_tracking_notice();
 
-		if ( ! $user_tracking_enabled && ! $opt_in_hidden && $can_manage_tracking ) { ?>
+		if ( ! $user_tracking_enabled && ! $opt_in_hidden && $can_manage_tracking && ! $delay_tracking_notice ) { ?>
 			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-notice" class="notice notice-info"
 				data-nonce="<?php echo esc_attr( wp_create_nonce( 'tracking-opt-in' ) ); ?>">
 				<p>

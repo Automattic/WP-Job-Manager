@@ -141,6 +141,7 @@ class WP_Job_Manager {
 		$this->post_types->register_post_types();
 		remove_filter( 'pre_option_job_manager_enable_types', '__return_true' );
 		WP_Job_Manager_Install::install();
+		$this->set_activation_time();
 		flush_rewrite_rules();
 	}
 
@@ -614,5 +615,20 @@ class WP_Job_Manager {
 		if ( is_admin() && ! class_exists( 'WP_Job_Manager_Admin' ) ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';
 		}
+	}
+
+	/**
+	 * Sets a transient to track the activation time of WP Job Manager plugin.
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 *
+	 * @author Your Name
+	 *
+	 * @see set_transient()
+	 */
+	public function set_activation_time() {
+		set_transient( 'job_manager_activation_time', time() );
 	}
 }
