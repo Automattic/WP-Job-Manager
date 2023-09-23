@@ -30,13 +30,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	?>
 </p>
 
-<form method="post" action="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>">
+<form method="post">
 	<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'enable-usage-tracking' ) ); ?>" />
 
 	<?php $this->maybe_output_opt_in_checkbox(); ?>
 
 	<p class="submit">
-		<input type="submit" value="<?php esc_html_e( 'Start setup', 'wp-job-manager' ); ?>" class="button button-primary" />
-		<a href="<?php echo esc_url( add_query_arg( 'skip-job-manager-setup', 1, admin_url( 'index.php?page=job-manager-setup&step=3' ) ) ); ?>" class="button"><?php esc_html_e( 'Skip setup. I will set up the plugin manually.', 'wp-job-manager' ); ?></a>
+		<input type="submit" name="start-setup" value="<?php esc_html_e( 'Start setup', 'wp-job-manager' ); ?>" class="button button-primary" formaction="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>" />
+
+		<input type="submit" name="skip-setup" value="<?php esc_html_e( 'Save and skip setup', 'wp-job-manager' ); ?>" class="button" formaction="<?php echo esc_url( add_query_arg( 'step', 3 ) ); ?>">
+
 	</p>
 </form>
