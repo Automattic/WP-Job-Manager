@@ -11,6 +11,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <h3><?php esc_html_e( 'Welcome to the Setup Wizard!', 'wp-job-manager' ); ?></h3>
 
+<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function() {
+		const usageTrackingEnabled = document.querySelector("input[name='job_manager_usage_tracking_enabled']");
+
+		if (usageTrackingEnabled) {
+			usageTrackingEnabled.checked = true;
+		}
+	});
+</script>
+
 <p><?php echo wp_kses_post( __( 'Thanks for installing <em>WP Job Manager</em>! Let\'s get your site ready to accept job listings.', 'wp-job-manager' ) ); ?></p>
 <p><?php echo wp_kses_post( __( 'This setup wizard will walk you through the process of creating pages for job submissions, management, and listings.', 'wp-job-manager' ) ); ?></p>
 <p>
