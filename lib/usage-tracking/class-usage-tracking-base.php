@@ -456,7 +456,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *
 	 * @return bool Returns true if the plugin option is active, false otherwise.
 	 *
-	 * @since 1.0.0
+	 * @since $$next-version$$
 	 *
 	 * @author /Users/mikeyarce/Local Sites/wpjm/app/public/wp-content/plugins/WP-Job-Manager/lib/usage-tracking/class-usage-tracking-base.php
 	 */

@@ -627,7 +627,7 @@ class WP_Job_Manager {
 	 *
 	 * @return void
 	 *
-	 * @since 1.0.0
+	 * @since $$next-version$$
 	 *
 	 * @author Your Name
 	 *
