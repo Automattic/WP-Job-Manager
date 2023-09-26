@@ -452,13 +452,11 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	/**
-	 * Check if the plugin option is active.
+	 * Check if the plugin has been active for more than a week.
 	 *
-	 * @return bool Returns true if the plugin option is active, false otherwise.
+	 * @return bool Returns true if the plugin has been active for more than a week, false otherwise.
 	 *
 	 * @since $$next-version$$
-	 *
-	 * @author /Users/mikeyarce/Local Sites/wpjm/app/public/wp-content/plugins/WP-Job-Manager/lib/usage-tracking/class-usage-tracking-base.php
 	 */
 	function delay_tracking_notice() {
 		$activation_time = get_transient( 'job_manager_activation_time' );

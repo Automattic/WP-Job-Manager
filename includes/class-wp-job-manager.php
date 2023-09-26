@@ -628,10 +628,6 @@ class WP_Job_Manager {
 	 * @return void
 	 *
 	 * @since $$next-version$$
-	 *
-	 * @author Your Name
-	 *
-	 * @see set_transient()
 	 */
 	public function set_activation_time() {
 		set_transient( 'job_manager_activation_time', time() );
