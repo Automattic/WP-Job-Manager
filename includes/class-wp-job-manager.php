@@ -152,6 +152,11 @@ class WP_Job_Manager {
 		if ( version_compare( JOB_MANAGER_VERSION, get_option( 'wp_job_manager_version' ), '>' ) ) {
 			WP_Job_Manager_Install::install();
 
+			// Set the Usage Tracking notice to show again, but only do it one time.
+			if ( ! get_option( 'display_usage_tracking_on_update_once' ) ) {
+				update_option( 'job_manager_usage_tracking_opt_in_hide', false );
+				add_option( 'display_usage_tracking_on_update_once', true );
+			}
 			flush_rewrite_rules();
 		}
 	}
