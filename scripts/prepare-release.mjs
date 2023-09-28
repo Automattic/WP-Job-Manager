@@ -317,7 +317,7 @@ function createPR( changelog ) {
 		.replace( '"', '\"' )
 		.replace( '`', '\`' )
 
-	const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --draft --title "${ title }" --body "${ body }"` );
+	const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --title "${ title }" --body "${ body }"` );
 	execSync( `open ${ prLink }` );
 	console.log( `PR: ${ prLink }` );
 }
