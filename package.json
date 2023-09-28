@@ -24,9 +24,12 @@
   "devDependencies": {
     "@wordpress/jest-preset-default": "11.1.0",
     "@wordpress/scripts": "26.1.0",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.3.1",
     "file-loader": "6.2.0",
     "grunt": "^1.5.3",
     "husky": "7.0.4",
+    "inquirer": "^9.2.10",
     "lint-staged": "12.3.4"
   },
   "scripts": {
@@ -48,7 +51,8 @@
     "test": "npm run test-php",
     "test-php": "./vendor/bin/phpunit",
     "i18n:build": "npm run i18n:php",
-    "i18n:php": "wp i18n make-pot --exclude=lib,build,vendor,node_modules --skip-js --headers='{\"Last-Translator\":null,\"Language-Team\":null,\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/wp-job-manager/\"}' . languages/wp-job-manager.pot"
+    "i18n:php": "wp i18n make-pot --exclude=lib,build,vendor,node_modules --skip-js --headers='{\"Last-Translator\":null,\"Language-Team\":null,\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/wp-job-manager/\"}' . languages/wp-job-manager.pot",
+    "release": "./scripts/prepare-release.sh"
   },
   "lint-staged": {
     "*.php": [
