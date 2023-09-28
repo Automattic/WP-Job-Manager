@@ -3,10 +3,10 @@
  */
 import { config } from 'dotenv';
 import fs from 'fs';
-import process from 'process';
+import process from 'node:process';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 import prTemplate from './RELEASE_PR_TEMPLATE.md.mjs';
 
 const PLUGINS = {
@@ -29,7 +29,6 @@ const pluginSlug         = getPluginSlug();
 const plugin             = PLUGINS[ pluginSlug ];
 const pluginFileName     = plugin.file;
 const pluginFileContents = readFileContents( pluginFileName );
-const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ];
 const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
 const version            = process.argv[ 3 ];
 
@@ -78,10 +77,6 @@ try {
 	}
 }
 
-/*
- * HELPER FUNCTIONS FROM HERE.
- */
-
 /**
  * Get plugin slug from command arguments.
  * Throws an error if invalid.
@@ -122,7 +117,7 @@ function readFileContents( filepath ) {
  *
  * @param {string} newVersion   The new version.
  * @param {string} fileContents The current contents of the main plugin file.
- * @return {boolean} Whether the confirmation was accepted or not.
+ * @return {Promise<boolean>} Whether the confirmation was accepted or not.
  */
 async function askForConfirmation(
 	newVersion,

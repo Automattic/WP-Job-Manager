@@ -79,8 +79,6 @@ for FILE in $(git ls-files); do
 
 	sed -i.bak -E -e 's!\$\$next-version\$\$!'"$VE"'!g' "$FILE"
 	rm "$FILE.bak" # We need a backup file because macOS requires it.
-#	sed -i.bak -E -e $'s!(^\t*_deprecated_(function|constructor|file|argument|hook)\\( .*, \'[^\']*)\\$\\$next-version\\$\\$\'!\\1'"$VE"$'\'!g' "$FILE"
-#	rm "$FILE.bak" # We need a backup file because macOS requires it.
 
 	if grep -F -q '$$next-version$$' "$FILE"; then
 		EXIT=1
