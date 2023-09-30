@@ -10,9 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 echo '<h1 class="screen-reader-text">' . esc_html__( 'WP Job Manager Add-ons', 'wp-job-manager' ) . '</h1>';
+echo '<div class="wpjm-extensions-filter-search">';
 if ( ! empty( $categories ) ) {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 	$current_category = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : '_all';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+	if ( isset( $_GET['search'] ) && ! empty( $_GET['search'] ) ) {
+		$current_category = null;
+	}
 	echo '<ul class="subsubsub">';
 	foreach ( $categories as $category ) {
 		?>
@@ -26,7 +31,16 @@ if ( ! empty( $categories ) ) {
 	}
 	echo '</ul>';
 }
+?>
+<form class="extension-search" method="get" action="<?php esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ) ); ?>">
+	<input type="hidden" name="post_type" value="job_listing" />
+	<input type="hidden" name="page" value="job-manager-addons" />
+	<input class="wpjm-extension-search-input" type="text" name="search" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php echo esc_attr__( 'Search', 'wp-job-manager' ); ?>" />
+	<input class="wpjm-extension-search-button button" type="submit" value="<?php echo esc_attr__( 'Search', 'wp-job-manager' ); ?>" />
+</form>
+<?php
 
+echo '</div>';
 echo '<br class="clear" />';
 
 if ( empty( $add_ons ) ) {
@@ -34,6 +48,13 @@ if ( empty( $add_ons ) ) {
 } else {
 	echo '<ul class="products">';
 	foreach ( $add_ons as $add_on ) {
+		$class = '';
+
+		if ( 'Core Add-on&nbsp;Bundle' === $add_on->title ) {
+			$add_on->image = 'https://wpjobmanager.com/wp-content/uploads/2023/09/core-bundle-icon.gif';
+			$class         = 'wpjm-core-bundle';
+		}
+
 		$url = add_query_arg(
 			[
 				'utm_source'   => 'product',
@@ -45,17 +66,36 @@ if ( empty( $add_ons ) ) {
 		);
 		?>
 		<li class="product">
-			<a href="<?php echo esc_url( $url, [ 'http', 'https' ] ); ?>">
+
+			<div class="add-on-header">
 				<?php if ( ! empty( $add_on->image ) ) : ?>
-					<img src="<?php echo esc_url( $add_on->image ); ?>" />
+					<img class="<?php echo esc_attr( $class ); ?>" src="<?php echo esc_url( remove_query_arg( [ 'w', 'h', 'crop' ], $add_on->image ) ); ?>" />
 				<?php endif; ?>
-				<h2><?php echo esc_html( $add_on->title ); ?></h2>
-				<p><?php echo esc_html( $add_on->excerpt ); ?>
+
+				<div class="product-info">
+					<div class="title"><?php echo esc_html( $add_on->title ); ?></div>
+					<?php if ( ! empty( $add_on->vendor_name ) && ! empty( $add_on->vendor_link ) ) : ?>
+						<div class="author">By <a target="_blank" href="<?php echo esc_url( $add_on->vendor_link ); ?>"><?php echo esc_html( $add_on->vendor_name ); ?></a></div>
+					<?php endif; ?>
+				</div>
+
+				<a class="button-secondary" target="_blank" href="<?php echo esc_url( $url, [ 'http', 'https' ] ); ?>">Get Extension</a>
+
+			</div>
+
+			<div class="add-on-body">
+				<p><?php echo esc_html( $add_on->excerpt ); ?></p>
+			</div>
+			<div class="add-on-footer">
 				<?php if ( ! empty( $add_on->price ) ) : ?>
-					<span class="price"><?php echo esc_html( $add_on->price ); ?></span>
+					<strong>Paid Add-on</strong>
 				<?php endif; ?>
-				</p>
-			</a>
+
+				<?php if ( ! empty( $add_on->documentation ) ) : ?>
+					<a target="_blank" href="<?php echo esc_url( $add_on->documentation ); ?>">More details</a>
+				<?php endif; ?>
+			</div>
+
 		</li>
 		<?php
 	}
