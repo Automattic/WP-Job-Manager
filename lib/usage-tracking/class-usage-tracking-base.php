@@ -430,6 +430,14 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return bool true if the opt-in is hidden, false otherwise.
 	 **/
 	protected function is_opt_in_hidden() {
+		$delayed_notice_timestamp  = (int) get_option( 'job_manager_display_usage_tracking_once' );
+
+		// Display only once they delayed notice regardless if the user has declined in the past.
+		if ( $delayed_notice_timestamp > 0 && $delayed_notice_timestamp < time() ) {
+			update_option('job_manager_display_usage_tracking_once', 0 );
+			update_option( $this->hide_tracking_opt_in_option_name, false );
+		}
+
 		return (bool) get_option( $this->hide_tracking_opt_in_option_name );
 	}
 
@@ -452,21 +460,6 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	/**
-	 * Check if the plugin has been active for more than a week.
-	 *
-	 * @return bool Returns true if the plugin has been active for more than a week, false otherwise.
-	 *
-	 * @since $$next-version$$
-	 */
-	function delay_tracking_notice() {
-		$activation_time = get_transient( 'job_manager_activation_time' );
-		if ( $activation_time && ( time() - $activation_time ) > 604800 ) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * If needed, display opt-in dialog to enable tracking. Should not be
 	 * called externally.
 	 **/
@@ -474,9 +467,8 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$opt_in_hidden         = $this->is_opt_in_hidden();
 		$user_tracking_enabled = $this->is_tracking_enabled();
 		$can_manage_tracking   = $this->current_user_can_manage_tracking();
-		$delay_tracking_notice   = $this->delay_tracking_notice();
 
-		if ( ! $user_tracking_enabled && ! $opt_in_hidden && $can_manage_tracking && ! $delay_tracking_notice ) { ?>
+		if ( ! $user_tracking_enabled && ! $opt_in_hidden && $can_manage_tracking ) { ?>
 			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-notice" class="notice notice-info"
 				data-nonce="<?php echo esc_attr( wp_create_nonce( 'tracking-opt-in' ) ); ?>">
 				<p>

@@ -114,6 +114,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_promoted_jobs_status_update_last_check',
 		'job_manager_promoted_jobs_webhook_interval',
 		'job_manager_promoted_jobs_cron_interval',
+		'job_manager_display_usage_tracking_once',
 	];
 
 	/**
