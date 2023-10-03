@@ -70,7 +70,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @throws Exception When get_instance is not implemented.
 	 */
 	public static function get_instance() {
-		throw new Exception( 'Usage Tracking subclasses must implement get_instance. See class-usage-tracking-base.php' );
+		throw new Exception( 'Usage Tracking subclasses must implement get_instance. See class-wp-job-manager-usage-tracking-base.php' );
 	}
 
 
@@ -85,14 +85,6 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return string The prefix string.
 	 **/
 	abstract protected function get_prefix();
-
-	/**
-	 * Get the text domain used by this plugin. This class will add some
-	 * strings to be translated.
-	 *
-	 * @return string The text domain string.
-	 **/
-	abstract protected function get_text_domain();
 
 	/**
 	 * Determine whether usage tracking is enabled.

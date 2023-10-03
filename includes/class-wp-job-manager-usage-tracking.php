@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require dirname( __FILE__ ) . '/../lib/usage-tracking/class-usage-tracking-base.php';
+require dirname( __FILE__ ) . '/../lib/usage-tracking/class-wp-job-manager-usage-tracking-base.php';
 
 /**
  * WPJM Usage Tracking subclass.
@@ -182,7 +182,9 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	/**
-	 * Get the text domain used in the plugin.
+	 * Get the text domain used in the plugin. Deprecated - use 'wp-job-manager' directly.
+	 *
+	 * @deprecated 1.41.1
 	 *
 	 * @return string
 	 */
