@@ -2,6 +2,8 @@
 /**
  * Reusable Usage Tracking library. For sending plugin usage data and events to
  * Tracks.
+ *
+ * @package wp-job-manager
  **/
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -64,6 +66,8 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *
 	 * This function cannot be abstract (because it is static) but it *must* be
 	 * implemented by subclasses.
+	 *
+	 * @throws Exception When get_instance is not implemented.
 	 */
 	public static function get_instance() {
 		throw new Exception( 'Usage Tracking subclasses must implement get_instance. See class-usage-tracking-base.php' );
@@ -328,10 +332,9 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return array of $schedules.
 	 **/
 	public function add_usage_tracking_two_week_schedule( $schedules ) {
-		$day_in_seconds = 86400;
 		$schedules[ $this->get_prefix() . '_usage_tracking_two_weeks' ] = [
-			'interval' => 15 * $day_in_seconds,
-			'display'  => esc_html__( 'Every Two Weeks', $this->get_text_domain() ),
+			'interval' => 15 * DAY_IN_SECONDS,
+			'display'  => esc_html__( 'Every Two Weeks', 'wp-job-manager' ),
 		];
 
 		return $schedules;
@@ -476,22 +479,22 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 				</p>
 				<p>
 					<button class="button button-primary" data-enable-tracking="yes">
-						<?php esc_html_e( 'Enable Usage Tracking', $this->get_text_domain() ); ?>
+						<?php esc_html_e( 'Enable Usage Tracking', 'wp-job-manager' ); ?>
 					</button>
 					<button class="button" data-enable-tracking="no">
-						<?php esc_html_e( 'Disable Usage Tracking', $this->get_text_domain() ); ?>
+						<?php esc_html_e( 'Disable Usage Tracking', 'wp-job-manager' ); ?>
 					</button>
 					<span id="progress" class="spinner alignleft"></span>
 				</p>
 			</div>
 			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-enable-success" class="notice notice-success hidden">
-				<p><?php esc_html_e( 'Usage data enabled. Thank you!', $this->get_text_domain() ); ?></p>
+				<p><?php esc_html_e( 'Usage data enabled. Thank you!', 'wp-job-manager' ); ?></p>
 			</div>
 			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-disable-success" class="notice notice-success hidden">
-				<p><?php esc_html_e( 'Disabled usage tracking.', $this->get_text_domain() ); ?></p>
+				<p><?php esc_html_e( 'Disabled usage tracking.', 'wp-job-manager' ); ?></p>
 			</div>
 			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-failure" class="notice notice-error hidden">
-				<p><?php esc_html_e( 'Something went wrong. Please try again later.', $this->get_text_domain() ); ?></p>
+				<p><?php esc_html_e( 'Something went wrong. Please try again later.', 'wp-job-manager' ); ?></p>
 			</div>
 			<?php
 		}
@@ -521,6 +524,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 **/
 	public function enqueue_script_deps() {
 		// Ensure jQuery is loaded.
+		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Enqueue is used to include dependencies only.
 		wp_enqueue_script(
 			$this->get_prefix() . '_usage-tracking-notice',
 			'',
