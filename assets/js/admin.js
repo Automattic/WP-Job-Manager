@@ -1,3 +1,8 @@
+/**
+ * Internal dependencies.
+ */
+import { initializePromoteModals } from './admin/promote-job-modals';
+
 jQuery(document).ready(function($) {
 	// Tooltips
 	$( '.tips, .help_tip' ).each( function() {
@@ -178,3 +183,5 @@ jQuery(document).ready(function($) {
 		$('#in-' + taxonomy + '-' + id + ', #in-popular-' + taxonomy + '-' + id).prop( 'checked', c );
 	});
 });
+
+initializePromoteModals();

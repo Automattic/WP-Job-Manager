@@ -17,6 +17,82 @@ a.wpjm-activate-license-link:active {
 	color: orangered;
 }
 
+.column-promoted_jobs {
+	.jm-promoted__status-promoted {
+		font-weight: bold;
+	}
+
+	.jm-promoted__deactivate {
+		color: #b32d2e;
+	}
+}
+
+/** Promote Job Modal **/
+.promote-buttons-group {
+	.button {
+		padding: 5px 16px;
+		margin-right: 18px;
+	}
+	.button-secondary {
+		background: #ffffff;
+	}
+}
+
+.wpjm-dialog {
+	border: 0;
+	border-radius: 8px;
+	form.dialog {
+		display: flex;
+		button.dialog-close {
+			cursor: pointer;
+			margin: 10px 15px auto auto;
+			content: '';
+			background: none;
+			border: 0;
+			font-size: 0;
+			&:after {
+				content: "\2715";
+				font-size: 20px;
+			}
+		}
+	}
+	&::backdrop {
+		background: rgba(0, 0, 0, 0.5);
+	}
+}
+
+/** Deactivate Modal **/
+.deactivate-dialog {
+	h2.deactivate-modal-heading {
+		font-size: 20px;
+		line-height: 28px;
+		margin-top: 0;
+		font-weight: 300;
+	}
+	max-width: 415px;
+	padding: 32px;
+	.deactivate-button {
+		display: block;
+		float: right;
+		button {
+			margin: 0 0 0 10px;
+		}
+	}
+	p {
+		margin: 40px 0;
+	}
+	.promote-buttons-group {
+		display: block;
+		float: right;
+		.button-secondary {
+			border: 0;
+		}
+		button:last-child {
+			margin-right: 0;
+		}
+	}
+}
+
 .wpjm-licenses {
 	margin-top: 10px;
 
@@ -293,6 +369,27 @@ a.wpjm-activate-license-link:active {
 		.status-expired::before {
 			content: "\e82e";
 			color: #a00;
+		}
+	}
+
+	.column-job_position {
+		.job_manager_admin_badge {
+			display: inline-block;
+			margin-left: 5px;
+			padding: 0 5px;
+			border-radius: 10px;
+			font-size: 12px;
+			font-weight: regular;
+			cursor: help;
+
+			&--promoted {
+				background-color: #1b00e6;
+				color: #fff;
+			}
+
+			&--not_published {
+				background-color: #f00;
+			}
 		}
 	}
 

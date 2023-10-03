@@ -75,6 +75,7 @@ class WP_Job_Manager_Helper {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-api.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-language-packs.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-renewals.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-site-trust-token.php';
 
 		$this->api = WP_Job_Manager_Helper_API::instance();
 
