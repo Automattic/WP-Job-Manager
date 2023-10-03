@@ -115,6 +115,7 @@ function addLinksToPR( zip ) {
 
 	body = body.replace( /((<!-- wpjm:plugin-zip -->([\s\S]*)<!-- \/wpjm:plugin-zip -->)|$)/, links );
 
+	// This line is falling in some cases, let's test.
 	execSync( `gh pr edit ${ pr } --body "${ body.replaceAll( '"', '\\"' ) }"`, { stdio: 'inherit' } )
 	console.log( chalk.green( '✓' ), 'Plugin build links added to PR.' );
 }
