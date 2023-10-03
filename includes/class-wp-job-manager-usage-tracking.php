@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require dirname( __FILE__ ) . '/../lib/usage-tracking/class-wp-job-manager-usage-tracking-base.php';
+require_once __DIR__ . '/../lib/usage-tracking/class-wp-job-manager-usage-tracking-base.php';
 
 /**
  * WPJM Usage Tracking subclass.

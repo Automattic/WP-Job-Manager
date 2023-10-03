@@ -429,13 +429,21 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	protected function is_opt_in_hidden() {
 		$delayed_notice_timestamp = (int) get_option( self::DISPLAY_ONCE_OPTION );
 
-		// Display only once the delayed notice regardless if the user has declined in the past.
-		if ( $delayed_notice_timestamp > 0 && $delayed_notice_timestamp < time() ) {
-			update_option( self::DISPLAY_ONCE_OPTION, 0 );
-			update_option( $this->hide_tracking_opt_in_option_name, false );
+		// The delay has passed, hide the notice if the user refused.
+		if ( 0 === $delayed_notice_timestamp ) {
+			return (bool) get_option( $this->hide_tracking_opt_in_option_name );
 		}
 
-		return (bool) get_option( $this->hide_tracking_opt_in_option_name );
+		// When the delay passes, display the tracking notice regardless if the user refused to enable usage tracking in the past.
+		if ( $delayed_notice_timestamp < time() ) {
+			update_option( self::DISPLAY_ONCE_OPTION, 0 );
+			update_option( $this->hide_tracking_opt_in_option_name, false );
+
+			return false;
+		}
+
+		// The delay hasn't passed, hide the notice.
+		return true;
 	}
 
 	/**
