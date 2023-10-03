@@ -427,7 +427,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	protected function is_opt_in_hidden() {
 		$delayed_notice_timestamp = (int) get_option( 'job_manager_display_usage_tracking_once' );
 
-		// Display only once they delayed notice regardless if the user has declined in the past.
+		// Display only once the delayed notice regardless if the user has declined in the past.
 		if ( $delayed_notice_timestamp > 0 && $delayed_notice_timestamp < time() ) {
 			update_option( 'job_manager_display_usage_tracking_once', 0 );
 			update_option( $this->hide_tracking_opt_in_option_name, false );
