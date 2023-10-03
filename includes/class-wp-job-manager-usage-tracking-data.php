@@ -30,7 +30,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			$categories = wp_count_terms( 'job_listing_category', [ 'hide_empty' => false ] );
 		}
 
-		return [
+		$usage_data = [
 			'employers'                   => self::get_employer_count(),
 			'job_categories'              => $categories,
 			'job_categories_desc'         => self::get_job_category_has_description_count(),
@@ -60,9 +60,19 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_part_time'              => self::get_jobs_by_type_count( 'part-time' ),
 			'jobs_temp'                   => self::get_jobs_by_type_count( 'temporary' ),
 			'jobs_by_guests'              => self::get_jobs_by_guests(),
-			'official_extensions'         => self::get_official_extensions_count(),
-			'licensed_extensions'         => self::get_licensed_extensions_count(),
 		];
+
+		$all_extenstions     = self::get_official_extensions( false );
+		$licensed_extensions = self::get_official_extensions( true );
+
+		$usage_data['official_extensions'] = count( $all_extenstions );
+		$usage_data['licensed_extensions'] = count( $licensed_extensions );
+
+		foreach ( array_keys( $all_extenstions ) as $installed_plugin ) {
+			$usage_data[ $installed_plugin ] = isset( $licensed_extensions[ $installed_plugin ] ) ? 'licensed' : 'unlicensed';
+		}
+
+		return $usage_data;
 	}
 
 	/**
@@ -345,13 +355,6 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 */
 	private static function get_official_extensions_count() {
 		return count( self::get_official_extensions( false ) );
-	}
-
-	/**
-	 * Gets the count of all official extensions that are installed, activated, and have active license.
-	 */
-	private static function get_licensed_extensions_count() {
-		return count( self::get_official_extensions( true ) );
 	}
 
 	/**

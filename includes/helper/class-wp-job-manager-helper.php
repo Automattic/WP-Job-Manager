@@ -607,23 +607,25 @@ class WP_Job_Manager_Helper {
 			$keyed_by_filename = false;
 		}
 
-		$wpjm_plugins = [];
-		$plugins      = get_plugins();
+		$clear_plugin_cache = ! function_exists( 'did_filter' ) || did_filter( 'extra_plugin_headers' );
 
 		/**
-		 * Clear the plugin cache on first request for installed WPJM add-on plugins when no plugins found.
+		 * Clear the plugin cache on first request for installed WPJM add-on plugins. This happens in installations
+		 * that get_plugins() is called before WPJM has a chance to register its custom plugin headers.
 		 *
 		 * @since 1.29.1
-		 * @since $$next-version$$ Only do this when we don't see WP Job Manager in the plugins list.
+		 * @since $$next-version$$ Only do this when get_plugins was called before this filter.
 		 *
 		 * @param bool $clear_plugin_cache True if we should clear the plugin cache.
 		 */
-		if ( ! self::$cleared_plugin_cache && apply_filters( 'job_manager_clear_plugin_cache', ! isset( $plugins[ JOB_MANAGER_PLUGIN_BASENAME ] ) ) ) {
+		if ( ! self::$cleared_plugin_cache && apply_filters( 'job_manager_clear_plugin_cache', $clear_plugin_cache ) ) {
 			// Reset the plugin cache on the first call. Some plugins prematurely hydrate the cache.
 			wp_clean_plugins_cache( false );
 			self::$cleared_plugin_cache = true;
-			$plugins                    = get_plugins();
 		}
+
+		$wpjm_plugins = [];
+		$plugins      = get_plugins();
 
 		foreach ( $plugins as $filename => $data ) {
 			if ( empty( $data['WPJM-Product'] ) || ( true === $active_only && ! is_plugin_active( $filename ) ) ) {
