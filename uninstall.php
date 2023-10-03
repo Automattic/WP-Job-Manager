@@ -21,10 +21,10 @@ if ( ! is_multisite() ) {
 	}
 } elseif ( function_exists( 'get_sites' ) ) {
 	$blog_ids = get_sites(
-		array(
+		[
 			'fields'            => 'ids',
 			'update_site_cache' => false,
-		)
+		]
 	);
 
 	$original_blog_id = get_current_blog_id();
