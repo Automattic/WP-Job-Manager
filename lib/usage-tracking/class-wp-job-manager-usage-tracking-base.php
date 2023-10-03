@@ -17,6 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 abstract class WP_Job_Manager_Usage_Tracking_Base {
 	const PLUGIN_PREFIX = 'plugin_';
 
+	const DISPLAY_ONCE_OPTION = 'job_manager_display_usage_tracking_once';
+
 	/*
 	 * Instance variables.
 	 */
@@ -425,11 +427,11 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return bool true if the opt-in is hidden, false otherwise.
 	 **/
 	protected function is_opt_in_hidden() {
-		$delayed_notice_timestamp = (int) get_option( 'job_manager_display_usage_tracking_once' );
+		$delayed_notice_timestamp = (int) get_option( self::DISPLAY_ONCE_OPTION );
 
 		// Display only once the delayed notice regardless if the user has declined in the past.
 		if ( $delayed_notice_timestamp > 0 && $delayed_notice_timestamp < time() ) {
-			update_option( 'job_manager_display_usage_tracking_once', 0 );
+			update_option( self::DISPLAY_ONCE_OPTION, 0 );
 			update_option( $this->hide_tracking_opt_in_option_name, false );
 		}
 

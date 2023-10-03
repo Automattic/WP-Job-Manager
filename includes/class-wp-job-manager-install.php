@@ -35,9 +35,9 @@ class WP_Job_Manager_Install {
 		}
 
 		// On new installs display the usage tracking notice with one week delay and for existing installs display it right away.
-		if ( false === get_option( 'job_manager_display_usage_tracking_once' ) ) {
+		if ( false === get_option( WP_Job_Manager_Usage_Tracking_Base::DISPLAY_ONCE_OPTION ) ) {
 			$time_to_show_notice = $is_new_install ? time() + WEEK_IN_SECONDS : time() - 10;
-			update_option( 'job_manager_display_usage_tracking_once', $time_to_show_notice );
+			update_option( WP_Job_Manager_Usage_Tracking_Base::DISPLAY_ONCE_OPTION, $time_to_show_notice );
 		}
 
 		// Update featured posts ordering.
