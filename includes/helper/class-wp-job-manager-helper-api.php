@@ -144,10 +144,24 @@ class WP_Job_Manager_Helper_API {
 	 * @return array|false JSON response or false if failed.
 	 */
 	public function deactivate( $args ) {
-		$args            = wp_parse_args( $args );
-		$args['wc-api']  = 'wp_plugin_licencing_activation_api';
-		$args['request'] = 'deactivate';
-		return $this->request( $args, false );
+		$args     = wp_parse_args( $args );
+		$response = $this->request_endpoint(
+			'wp-json/wpjmcom-licensing/v1/deactivate',
+			[
+				'method' => 'POST',
+				'body'   => wp_json_encode(
+					[
+						'product_slug' => $args['api_product_id'],
+						'license_key'  => $args['license_key'],
+						'site_url'     => $this->get_site_url(),
+					]
+				),
+			]
+		);
+		if ( ! is_array( $response ) || ! array_key_exists( 'success', $response ) ) {
+			return false;
+		}
+		return $response;
 	}
 
 	/**

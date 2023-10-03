@@ -127,16 +127,8 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	 */
 	public function test_deactivate_valid() {
 		$base_args = $this->get_base_args();
-		$this->set_expected_response(
-			[
-				'args' => wp_parse_args(
-					[
-						'wc-api'  => 'wp_plugin_licencing_activation_api',
-						'request' => 'deactivate',
-					],
-					$base_args
-				),
-			]
+		$this->mock_http_request( '/wp-json/wpjmcom-licensing/v1/deactivate',
+			$this->default_valid_response()
 		);
 		$instance = new WP_Job_Manager_Helper_API();
 		$response = $instance->deactivate( $base_args );
@@ -151,6 +143,12 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	 */
 	public function test_deactivate_invalid() {
 		$base_args = $this->get_base_args();
+		$this->mock_http_request( '/wp-json/wpjmcom-licensing/v1/deactivate',
+			[
+				'error_code' => 'license_not_found'
+			],
+			404
+		);
 		$instance  = new WP_Job_Manager_Helper_API();
 		$response  = $instance->deactivate( $base_args );
 
@@ -162,18 +160,19 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	 *
 	 * @param string $endpoint The request URI/path of the endpoint to mock the response for.
 	 * @param mixed $body The response body to return for the specified endpoint.
+	 * @param int $status The HTTP status code to return for the specified endpoint.
 	 *
 	 * @return void
 	 */
-	protected function mock_http_request($endpoint, $body) {
-		add_filter('pre_http_request', function($preempt, $args, $url) use ($endpoint, $body) {
+	protected function mock_http_request($endpoint, $body, $status = 200) {
+		add_filter('pre_http_request', function($preempt, $args, $url) use ($endpoint, $body, $status) {
 			if ($endpoint === wp_parse_url($url, PHP_URL_PATH)) {
 				return array(
 					'headers' => array(),
 					'body' => wp_json_encode($body),
 					'response' => array(
-						'code' => 200,
-						'message' => 'OK',
+						'code' => $status,
+						'message' => 200 === $status ? 'OK' : 'Error'
 					),
 					'cookies' => array(),
 				);
@@ -213,7 +212,7 @@ class WP_Test_WP_Job_Manager_Helper_API extends WPJM_BaseTest {
 	}
 
 	protected function default_valid_response() {
-		return [ 'status' => 1 ];
+		return [ 'success' => true ];
 	}
 
 	protected function default_invalid_response() {
