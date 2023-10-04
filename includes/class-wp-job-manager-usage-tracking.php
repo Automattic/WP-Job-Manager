@@ -184,7 +184,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Get the text domain used in the plugin. Deprecated - use 'wp-job-manager' directly.
 	 *
-	 * @deprecated $$next-version$$
+	 * @deprecated 1.42.0
 	 *
 	 * @return string
 	 */

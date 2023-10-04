@@ -613,7 +613,7 @@ class WP_Job_Manager_CPT {
 				/**
 				 * Fires after the job title in the Job Listings admin list table.
 				 *
-				 * @since $$next-version$$
+				 * @since 1.42.0
 				 *
 				 * @param WP_Post $post The current job listing post object.
 				 */
