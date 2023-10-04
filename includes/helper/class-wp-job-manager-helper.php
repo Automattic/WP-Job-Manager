@@ -793,7 +793,7 @@ class WP_Job_Manager_Helper {
 				$this->activate_license( $product_slug, $license_key, '' );
 				break;
 			case 'deactivate':
-				$this->deactivate_license( $product_slug );
+				$this->deactivate_license( $product_slug, true );
 				break;
 		}
 	}
@@ -901,13 +901,18 @@ class WP_Job_Manager_Helper {
 			$this->add_error( $product_slug, __( 'license is not active.', 'wp-job-manager' ) );
 			return;
 		}
-		$this->api->deactivate(
+		$response = $this->api->deactivate(
 			[
 				'api_product_id' => $product_slug,
 				'license_key'    => $license['license_key'],
 				'email'          => $license['email'],
 			]
 		);
+
+		if ( false === $response ) {
+			$this->add_error( $product_slug, __( 'There was an error while deactivating the plugin.', 'wp-job-manager' ) );
+			return;
+		}
 
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'license_key' );
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'email' );

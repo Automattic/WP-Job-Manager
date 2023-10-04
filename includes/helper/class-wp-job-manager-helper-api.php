@@ -82,7 +82,7 @@ class WP_Job_Manager_Helper_API {
 	public function plugin_information( $args ) {
 		$args = wp_parse_args( $args );
 		$data = $this->request_endpoint(
-			'wp-json/wpjmcom-licensing/v1/plugin-information',
+			'/wp-json/wpjmcom-licensing/v1/plugin-information',
 			[
 				'method' => 'GET',
 				'body'   => [
@@ -92,6 +92,7 @@ class WP_Job_Manager_Helper_API {
 				],
 			]
 		);
+
 		if ( ! is_array( $data ) ) {
 			return false;
 		}
@@ -177,7 +178,7 @@ class WP_Job_Manager_Helper_API {
 	public function deactivate( $args ) {
 		$args     = wp_parse_args( $args );
 		$response = $this->request_endpoint(
-			'wp-json/wpjmcom-licensing/v1/deactivate',
+			'/wp-json/wpjmcom-licensing/v1/deactivate',
 			[
 				'method' => 'POST',
 				'body'   => wp_json_encode(
