@@ -47,7 +47,7 @@ class WP_Job_Manager_Helper_API {
 	 * @return array|false The response, or false if the request failed.
 	 */
 	public function plugin_update_check( $args ) {
-		_deprecated_file( __METHOD__, '1.42.0', 'WP_Job_Manager_Helper_API::bulk_update_check' );
+		_deprecated_function( __METHOD__, '1.42.0', 'WP_Job_Manager_Helper_API::bulk_update_check' );
 
 		return false;
 	}
