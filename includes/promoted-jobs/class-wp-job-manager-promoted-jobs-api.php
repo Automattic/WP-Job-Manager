@@ -8,7 +8,7 @@
 /**
  * Handles functionality related to the Promoted Jobs REST API.
  *
- * @since $$next-version$$
+ * @since 1.42.0
  */
 class WP_Job_Manager_Promoted_Jobs_API {
 

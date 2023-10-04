@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Notifies wpjobmanager.com when a Job Listing changes.
  *
- * @since $$next-version$$
+ * @since 1.42.0
  */
 class WP_Job_Manager_Promoted_Jobs_Notifications {
 
@@ -62,14 +62,14 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  $$next-version$$
+	 * @since  1.42.0
 	 */
 	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class.
 	 *
-	 * @since  $$next-version$$
+	 * @since  1.42.0
 	 * @return self Main instance.
 	 */
 	public static function instance() {

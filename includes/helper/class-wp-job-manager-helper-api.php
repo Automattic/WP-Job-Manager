@@ -41,13 +41,13 @@ class WP_Job_Manager_Helper_API {
 	/**
 	 * Checks if there is an update for the plugin using the WPJobManager.com API.
 	 *
-	 * @deprecated $$next-version$$ Use WP_Job_Manager_Helper_API::bulk_update_check() instead.
+	 * @deprecated 1.42.0 Use WP_Job_Manager_Helper_API::bulk_update_check() instead.
 	 *
 	 * @param array $args The arguments to pass to the endpoint.
 	 * @return array|false The response, or false if the request failed.
 	 */
 	public function plugin_update_check( $args ) {
-		_deprecated_file( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Helper_API::bulk_update_check' );
+		_deprecated_function( __METHOD__, '1.42.0', 'WP_Job_Manager_Helper_API::bulk_update_check' );
 
 		return false;
 	}
