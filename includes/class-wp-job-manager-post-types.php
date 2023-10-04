@@ -585,7 +585,7 @@ class WP_Job_Manager_Post_Types {
 			'posts_per_page'      => $input_posts_per_page,
 			'paged'               => absint( get_query_var( 'paged', 1 ) ),
 			'tax_query'           => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Empty.
-			'meta_query'          => [], //// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
+			'meta_query'          => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
 		];
 
 		if ( ! empty( $input_search_location ) ) {
