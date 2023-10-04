@@ -104,15 +104,15 @@ class WP_Job_Manager_Helper {
 		$deprecated_methods = [
 			'has_licenced_products' => [
 				'replacement' => [ $this, 'has_licensed_products' ],
-				'version'     => '1.42.0',
+				'version'     => '$$next-version$$',
 			],
 			'get_plugin_licence'    => [
 				'replacement' => [ $this, 'get_plugin_license' ],
-				'version'     => '1.42.0',
+				'version'     => '$$next-version$$',
 			],
 			'licence_output'        => [
 				'replacement' => [ $this, 'license_output' ],
-				'version'     => '1.42.0',
+				'version'     => '$$next-version$$',
 			],
 			'licence_error_notices' => [
 				'replacement' => [ $this, 'maybe_add_license_error_notices' ],
@@ -120,11 +120,11 @@ class WP_Job_Manager_Helper {
 			],
 			'activate_licence'      => [
 				'replacement' => [ $this, 'activate_license' ],
-				'version'     => '1.42.0',
+				'version'     => '$$next-version$$',
 			],
 			'deactivate_licence'    => [
 				'replacement' => [ $this, 'deactivate_license' ],
-				'version'     => '1.42.0',
+				'version'     => '$$next-version$$',
 			],
 		];
 
@@ -591,7 +591,7 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Returns list of installed WPJM plugins with managed licenses indexed by product ID.
 	 *
-	 * @since 1.42.0 Added required $keyed_by_filename parameter.
+	 * @since $$next-version$$ Added required $keyed_by_filename parameter.
 	 *
 	 * @param bool $active_only       Only return active plugins.
 	 * @param bool $keyed_by_filename Key by plugin filename instead of product slug. Allows for multiple plugins with the same product slug.
@@ -603,7 +603,7 @@ class WP_Job_Manager_Helper {
 		}
 
 		if ( null === $keyed_by_filename ) {
-			_doing_it_wrong( __METHOD__, 'The $keyed_by_filename parameter is required.', '1.42.0' );
+			_doing_it_wrong( __METHOD__, 'The $keyed_by_filename parameter is required.', '$$next-version$$' );
 			$keyed_by_filename = false;
 		}
 
@@ -614,7 +614,7 @@ class WP_Job_Manager_Helper {
 		 * that get_plugins() is called before WPJM has a chance to register its custom plugin headers.
 		 *
 		 * @since 1.29.1
-		 * @since 1.42.0 Only do this when get_plugins was called before this filter.
+		 * @since $$next-version$$ Only do this when get_plugins was called before this filter.
 		 *
 		 * @param bool $clear_plugin_cache True if we should clear the plugin cache.
 		 */
