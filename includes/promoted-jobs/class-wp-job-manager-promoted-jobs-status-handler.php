@@ -8,7 +8,7 @@
 /**
  * Handles functionality related to the Promoted Jobs Status Update.
  *
- * @since 1.42.0
+ * @since $$next-version$$
  */
 class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 
@@ -42,7 +42,7 @@ class WP_Job_Manager_Promoted_Jobs_Status_Handler {
 	/**
 	 * Initialize the status handler, sets up the cron job and hooks for fetching updates.
 	 *
-	 * @since 1.42.0
+	 * @since $$next-version$$
 	 */
 	public function init() {
 		add_action( self::CRON_HOOK, [ $this, 'fetch_updates' ] );

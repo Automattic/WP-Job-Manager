@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles promoted jobs functionality.
  *
- * @since 1.42.0
+ * @since $$next-version$$
  */
 class WP_Job_Manager_Promoted_Jobs {
 
@@ -20,7 +20,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  1.42.0
+	 * @since  $$next-version$$
 	 */
 	private static $instance = null;
 
@@ -48,7 +48,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
-	 * @since  1.42.0
+	 * @since  $$next-version$$
 	 * @static
 	 * @return self Main instance.
 	 */
