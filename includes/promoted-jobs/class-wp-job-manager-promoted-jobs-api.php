@@ -187,7 +187,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
 			'posts_per_page'      => -1,
-			'meta_query'          => [
+			'meta_query'          => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Returns promoted jobs only which should be a small number.
 				[
 					'key'     => WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY,
 					'compare' => 'EXISTS',
