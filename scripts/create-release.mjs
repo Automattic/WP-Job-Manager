@@ -34,6 +34,7 @@ commitChangelog();
 tagRelease();
 buildPluginZip();
 createGithubRelease();
+setWorkflowStepOutput();
 success();
 
 function getReleaseNotes() {
@@ -87,6 +88,10 @@ function buildPluginZip() {
 	execSync( `npm run build 1> /dev/null` );
 }
 
+function setWorkflowStepOutput() {
+	execSync( `echo "version=${ pluginVersion }" >> "$GITHUB_OUTPUT"` );
+}
+
 function createGithubRelease() {
 	const notes = releaseNotes.replace( '"', '\\"' );
 	return execSync( `gh release create ${ pluginVersion } -R ${ plugin.repo } --title "Version ${ pluginVersion }" --notes "${ notes }" "${ pluginSlug }.zip"` ).toString();
@@ -94,6 +99,6 @@ function createGithubRelease() {
 
 function success() {
 	console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } release created!` ) );
-	execSync(`gh pr comment ${ prNumber } -R ${ plugin.repo } --edit-last --body "✅ **[${ pluginName } ${ pluginVersion } release](https://github.com/${plugin.repo}/releases/tag/${ pluginVersion })** created!"`)
+	execSync( `gh pr comment ${ prNumber } -R ${ plugin.repo } --edit-last --body "✅ **[${ pluginName } ${ pluginVersion } release](https://github.com/${ plugin.repo }/releases/tag/${ pluginVersion })** created!"` )
 
 }
