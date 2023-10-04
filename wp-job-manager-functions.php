@@ -62,8 +62,8 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			'posts_per_page'         => intval( $args['posts_per_page'] ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 			'orderby'                => $args['orderby'],
 			'order'                  => $args['order'],
-			'tax_query'              => [],
-			'meta_query'             => [],
+			'tax_query'              => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Empty.
+			'meta_query'             => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
 			'update_post_term_cache' => false,
 			'update_post_meta_cache' => false,
 			'cache_results'          => false,
@@ -390,8 +390,8 @@ if ( ! function_exists( 'get_featured_job_ids' ) ) :
 				'suppress_filters' => false,
 				'post_type'        => 'job_listing',
 				'post_status'      => 'publish',
-				'meta_key'         => '_featured',
-				'meta_value'       => '1',
+				'meta_key'         => '_featured', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Used in production with no issues.
+				'meta_value'       => '1', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Used in production with no issues.
 				'fields'           => 'ids',
 			]
 		);

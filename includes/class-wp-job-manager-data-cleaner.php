@@ -114,6 +114,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_promoted_jobs_status_update_last_check',
 		'job_manager_promoted_jobs_webhook_interval',
 		'job_manager_promoted_jobs_cron_interval',
+		'job_manager_display_usage_tracking_once',
 	];
 
 	/**
@@ -380,9 +381,9 @@ class WP_Job_Manager_Data_Cleaner {
 		global $wpdb;
 
 		foreach ( self::$user_meta_keys as $meta_key ) {
-			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Delete data across all users.
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Delete data across all users.
 			$wpdb->delete( $wpdb->usermeta, [ 'meta_key' => $meta_key ] );
-			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 		}
 	}
 

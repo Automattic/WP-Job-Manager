@@ -584,8 +584,8 @@ class WP_Job_Manager_Post_Types {
 			'ignore_sticky_posts' => 1,
 			'posts_per_page'      => $input_posts_per_page,
 			'paged'               => absint( get_query_var( 'paged', 1 ) ),
-			'tax_query'           => [],
-			'meta_query'          => [],
+			'tax_query'           => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Empty.
+			'meta_query'          => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
 		];
 
 		if ( ! empty( $input_search_location ) ) {
@@ -739,7 +739,7 @@ class WP_Job_Manager_Post_Types {
 				'post_status'    => 'publish',
 				'fields'         => 'ids',
 				'posts_per_page' => -1,
-				'meta_query'     => [
+				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
 					'relation' => 'AND',
 					[
 						'key'     => '_job_expires',
@@ -1370,7 +1370,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		if ( ! isset( $query_args['meta_query'] ) ) {
-			$query_args['meta_query'] = [];
+			$query_args['meta_query'] = []; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
 		}
 
 		$query_args['meta_query'][] = [

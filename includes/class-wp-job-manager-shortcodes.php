@@ -905,6 +905,7 @@ class WP_Job_Manager_Shortcodes {
 			$args['posts_per_page'] = $atts['limit'];
 			$args['orderby']        = 'rand';
 			if ( ! is_null( $atts['featured'] ) ) {
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Query results are limited.
 				$args['meta_query'] = [
 					[
 						'key'     => '_featured',

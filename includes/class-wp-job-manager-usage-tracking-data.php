@@ -191,7 +191,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 				'post_type'   => 'job_listing',
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'tax_query'   => [
+				'tax_query'   => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Used in production with no issues.
 					[
 						'field'    => 'slug',
 						'taxonomy' => 'job_listing_type',
@@ -217,7 +217,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 				'post_type'   => 'job_listing',
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'meta_query'  => [
+				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
 					[
 						'key'     => '_thumbnail_id',
 						'compare' => 'EXISTS',
@@ -242,7 +242,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 				'post_type'   => 'job_listing',
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'tax_query'   => [
+				'tax_query'   => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Used in production with no issues.
 					[
 						'taxonomy' => 'job_listing_type',
 						'operator' => 'EXISTS',
@@ -267,7 +267,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 				'post_type'   => 'job_listing',
 				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
-				'meta_query'  => [
+				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
 					[
 						'key'     => $meta_key,
 						'value'   => '[^[:space:]]',
@@ -294,7 +294,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 				'post_type'   => 'job_listing',
 				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
-				'meta_query'  => [
+				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
 					[
 						'key'   => $meta_key,
 						'value' => '1',

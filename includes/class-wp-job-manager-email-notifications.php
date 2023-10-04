@@ -600,7 +600,7 @@ final class WP_Job_Manager_Email_Notifications {
 				'post_status'    => 'publish',
 				'fields'         => 'ids',
 				'posts_per_page' => -1,
-				'meta_query'     => [
+				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
 					[
 						'key'   => '_job_expires',
 						'value' => $notice_before_datetime->format( 'Y-m-d' ),

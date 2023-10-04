@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require dirname( __FILE__ ) . '/../lib/usage-tracking/class-usage-tracking-base.php';
+require_once __DIR__ . '/../lib/usage-tracking/class-wp-job-manager-usage-tracking-base.php';
 
 /**
  * WPJM Usage Tracking subclass.
@@ -182,7 +182,9 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	/**
-	 * Get the text domain used in the plugin.
+	 * Get the text domain used in the plugin. Deprecated - use 'wp-job-manager' directly.
+	 *
+	 * @deprecated $$next-version$$
 	 *
 	 * @return string
 	 */
@@ -227,7 +229,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 			// translators: Placeholder %s is a URL to the document on wpjobmanager.com with info on usage tracking.
 			__(
 				'We\'d love if you helped us make WP Job Manager better by allowing us to collect
-				<a href="%s">usage tracking data</a>. No sensitive information is
+				<a target="_blank" href="%s">usage tracking data</a>. No sensitive information is
 				collected, and you can opt out at any time.',
 				'wp-job-manager'
 			),
@@ -266,7 +268,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 			// translators: the href tag contains the URL for the page telling users what data WPJM tracks.
 			__(
 				'Help us make WP Job Manager better by allowing us to collect
-				<a href="%s">usage tracking data</a>.
+				<a target="_blank" href="%s">usage tracking data</a>.
 				No sensitive information is collected.',
 				'wp-job-manager'
 			),

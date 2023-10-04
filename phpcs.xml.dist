@@ -15,10 +15,8 @@
 	<exclude-pattern>tmp/</exclude-pattern>
 	<exclude-pattern>build/</exclude-pattern>
 	<exclude-pattern>assets/dist/</exclude-pattern>
-
-	<!-- Temporarily exclude templates and lib for now -->
+	<exclude-pattern>lib/emogrifier</exclude-pattern>
 	<exclude-pattern>templates/</exclude-pattern>
-	<exclude-pattern>lib/</exclude-pattern>
 
 	<!-- PHP Config -->
 	<ini name="error_reporting" value="E_ALL &#38; ~E_DEPRECATED" />
@@ -29,23 +27,16 @@
 
 	<!-- Rules -->
 	<rule ref="PHPCompatibilityWP"/>
+	<rule ref="WordPress">
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+	</rule>
 	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-Extra" />
 
 	<rule ref="WordPress.Security.ValidatedSanitizedInput" />
 	<rule ref="WordPress.DB.DirectDatabaseQuery" />
 
-	<rule ref="Generic.Arrays.DisallowLongArraySyntax">
-		<exclude-pattern>includes/class-wp-job-manager-dependency-checker.php</exclude-pattern>
-		<exclude-pattern>/wp-job-manager.php</exclude-pattern>
-		<exclude-pattern>/uninstall.php</exclude-pattern>
-	</rule>
-
-	<rule ref="Generic.Arrays.DisallowShortArraySyntax">
-		<include-pattern>includes/class-wp-job-manager-dependency-checker.php</include-pattern>
-		<include-pattern>/wp-job-manager.php</include-pattern>
-		<include-pattern>/uninstall.php</include-pattern>
-	</rule>
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
 	<!-- Temporary Rule Exclusions -->
 	<rule ref="VariableAnalysis">

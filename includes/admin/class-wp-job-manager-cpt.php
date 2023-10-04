@@ -700,6 +700,7 @@ class WP_Job_Manager_CPT {
 	 * @return array
 	 */
 	public function sort_columns( $vars ) {
+		// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Query used in admin only.
 		if ( isset( $vars['orderby'] ) ) {
 			if ( 'job_expires' === $vars['orderby'] ) {
 				$vars = array_merge(
@@ -719,6 +720,8 @@ class WP_Job_Manager_CPT {
 				);
 			}
 		}
+		// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+
 		return $vars;
 	}
 

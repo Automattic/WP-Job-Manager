@@ -14,7 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<input
 			type="checkbox"
 			name="job_manager_usage_tracking_enabled"
-			value="1" />
+			value="1"
+			checked="checked" />
 		<?php
 		echo wp_kses(
 			$this->opt_in_text(),

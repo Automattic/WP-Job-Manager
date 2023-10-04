@@ -34,6 +34,14 @@ class WP_Job_Manager_Install {
 			$is_new_install = true;
 		}
 
+		require_once __DIR__ . '/../lib/usage-tracking/class-wp-job-manager-usage-tracking-base.php';
+
+		// On new installs display the usage tracking notice with one week delay and for existing installs display it right away.
+		if ( false === get_option( WP_Job_Manager_Usage_Tracking_Base::DISPLAY_ONCE_OPTION ) ) {
+			$time_to_show_notice = $is_new_install ? time() + WEEK_IN_SECONDS : time() - 10;
+			update_option( WP_Job_Manager_Usage_Tracking_Base::DISPLAY_ONCE_OPTION, $time_to_show_notice );
+		}
+
 		// Update featured posts ordering.
 		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '1.22.0', '<' ) ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One time data update.
