@@ -17,7 +17,7 @@ jobs:
       - name: Comment on PR
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh pr comment ${{ github.event.number }} --body "🚀 **[Release workflow started](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job }})**"
+        run: gh pr comment ${{ github.event.number }} --body "🚀 **[Release workflow started](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})**"
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'

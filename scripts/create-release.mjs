@@ -102,7 +102,7 @@ async function createGithubRelease() {
 
 async function success() {
 	console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } release created!` ) );
-	const comment = `✅ **[${ pluginName } ${ pluginVersion } release](https://github.com/${ plugin.repo }/releases/tag/${ pluginVersion })** created!"`;
+	const comment = `✅ **[${ pluginName } ${ pluginVersion } release](https://github.com/${ plugin.repo }/releases/tag/${ pluginVersion })** created!`;
 	await $`gh pr comment ${ prNumber } -R ${ plugin.repo } --edit-last --body ${ comment }`
 
 }
