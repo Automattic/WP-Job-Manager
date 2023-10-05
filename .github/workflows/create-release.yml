@@ -17,7 +17,7 @@ jobs:
       - name: Comment on PR
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh pr comment ${{ github.event.number }} --body "🚀 Starting release ..."
+        run: gh pr comment ${{ github.event.number }} --body "🚀 **[Release workflow started](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})**"
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
@@ -32,6 +32,7 @@ jobs:
           git config user.name "WPJM Bot"
           git config user.email "<robot@wpjobmanager.com>"
       - name: Create Release
+        id: create_release
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -44,7 +45,8 @@ jobs:
           SVN_USERNAME: ${{ secrets.WORDPRESSORG_SVN_USERNAME }}
           BUILD_DIR: wp-job-manager
           SLUG: wp-job-manager
+          VERSION: ${{ steps.create_release.outputs.version }}
       - name: Comment on PR
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh pr comment ${{ github.event.number }} --body "✅ Release ${{ github.event.release.tag_name }} deployed to WordPress.org"
+        run: gh pr comment ${{ github.event.number }} --body "✅ Release **${{ steps.create_release.outputs.version }}** [deployed to WordPress.org](https://wordpress.org/plugins/wp-job-manager/)."

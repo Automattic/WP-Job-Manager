@@ -1,10 +1,13 @@
+#!/usr/bin/env zx
+
+import 'zx/globals'
+
 /**
  * External dependencies
  */
-import fs from 'fs';
-import process from 'process';
-import chalk from 'chalk';
-import { execSync } from 'child_process';
+import fs from 'node:fs';
+import process from 'node:process';
+import { execSync } from 'node:child_process';
 
 const PLUGINS = {
 	'wp-job-manager': {
@@ -33,8 +36,9 @@ updateChangelog();
 commitChangelog();
 tagRelease();
 buildPluginZip();
-createGithubRelease();
-success();
+await createGithubRelease();
+setWorkflowStepOutput();
+await success();
 
 function getReleaseNotes() {
 
@@ -87,13 +91,18 @@ function buildPluginZip() {
 	execSync( `npm run build 1> /dev/null` );
 }
 
-function createGithubRelease() {
-	const notes = releaseNotes.replace( '"', '\\"' );
-	return execSync( `gh release create ${ pluginVersion } -R ${ plugin.repo } --title "Version ${ pluginVersion }" --notes "${ notes }" "${ pluginSlug }.zip"` ).toString();
+function setWorkflowStepOutput() {
+	execSync( `echo "version=${ pluginVersion }" >> "$GITHUB_OUTPUT"` );
 }
 
-function success() {
+async function createGithubRelease() {
+	const pluginZip = `${ pluginSlug }.zip`
+	await $`gh release create ${ pluginVersion } -R ${ plugin.repo } --title ${ `Version ${ pluginVersion }` } --notes ${ releaseNotes } ${ pluginZip }`
+}
+
+async function success() {
 	console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } release created!` ) );
-	execSync(`gh pr comment ${ prNumber } -R ${ plugin.repo } --edit-last --body "✅ **[${ pluginName } ${ pluginVersion } release](https://github.com/${plugin.repo}/releases/tag/${ pluginVersion })** created!"`)
+	const comment = `✅ **[${ pluginName } ${ pluginVersion } release](https://github.com/${ plugin.repo }/releases/tag/${ pluginVersion })** created!`;
+	await $`gh pr comment ${ prNumber } -R ${ plugin.repo } --edit-last --body ${ comment }`
 
 }

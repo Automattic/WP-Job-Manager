@@ -30,7 +30,8 @@
     "grunt": "^1.5.3",
     "husky": "7.0.4",
     "inquirer": "^9.2.10",
-    "lint-staged": "12.3.4"
+    "lint-staged": "12.3.4",
+    "zx": "^7.2.3"
   },
   "scripts": {
     "build": "npm run build:assets && npm run archive",
