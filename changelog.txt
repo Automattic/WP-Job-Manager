@@ -1,5 +1,24 @@
 # WP Job Manager
 
+## 1.42.0 - 2023-10-05
+New!
+
+* Easily promote job listings on Indeed, LinkedIn, and 1000s of job boards with JobTarget integration. See https://wpjobmanager.com/jobtarget for more information.
+
+Improvements:
+
+* Fix: Only show file upload input for company logo when it's empty (#2569)
+* Fix: Fix error when showing admin notices (#2557)
+* Fix: Show the links (RSS, Reset) below search even when there are no results (#2454)
+* Tweak: Improve usage tracking for plugins (#2576)
+
+For developers:
+
+* Fix: In forms, support dynamically added date inputs (#2573)
+* New: Allow plugins to override renewal values (#2566)
+* Tweak: Rename "licence" to "license" throughout codebase (#2554)
+* Fix: More efficient license checking for core add-ons (#2552)
+
 ## 1.41.0 - 2023-06-10
 * Enhancement: Introduce listing renewals #2422
 * Enhancement: Allow searching multiple job locations at once #2433
