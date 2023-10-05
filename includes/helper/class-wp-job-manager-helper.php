@@ -250,7 +250,11 @@ class WP_Job_Manager_Helper {
 	 */
 	public function check_for_updates( $check_for_updates_data ) {
 		$installed_plugins = $this->get_installed_plugins( false, true );
-		$updates           = $this->get_plugin_update_info( $installed_plugins );
+		if ( empty( $installed_plugins ) ) {
+			return $check_for_updates_data;
+		}
+
+		$updates = $this->get_plugin_update_info( $installed_plugins );
 
 		$notice_data = [];
 
