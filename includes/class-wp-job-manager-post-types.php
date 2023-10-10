@@ -247,7 +247,7 @@ class WP_Job_Manager_Post_Types {
 						'labels'               => [
 							'name'              => $plural,
 							'singular_name'     => $singular,
-							'menu_name'         => ucwords( $plural ),
+							'menu_name'         => __( 'Types', 'wp-job-manager' ),
 							// translators: Placeholder %s is the plural label of the job listing job type taxonomy type.
 							'search_items'      => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
 							// translators: Placeholder %s is the plural label of the job listing job type taxonomy type.
