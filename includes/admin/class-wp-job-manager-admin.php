@@ -60,8 +60,10 @@ class WP_Job_Manager_Admin {
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-settings.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-writepanels.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-setup.php';
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-addons-landing-page.php';
 
 		$this->settings_page = WP_Job_Manager_Settings::instance();
+		WP_Job_Manager_Addons_Landing_Page::instance();
 
 		add_action( 'admin_init', [ $this, 'admin_init' ] );
 		add_action( 'current_screen', [ $this, 'conditional_includes' ] );
@@ -96,6 +98,8 @@ class WP_Job_Manager_Admin {
 	 */
 	public function admin_enqueue_scripts() {
 		WP_Job_Manager::register_select2_assets();
+
+		WP_Job_Manager::register_style( 'job_manager_brand', 'css/wpjm-brand.css', [] );
 
 		$screen = get_current_screen();
 

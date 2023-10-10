@@ -15,6 +15,8 @@ const files = {
 	'js/admin/wpjm-notice-dismiss': 'js/admin/wpjm-notice-dismiss.js',
 	'css/admin': 'css/admin.scss',
 	'css/admin-notices': 'css/admin-notices.scss',
+	'css/admin-landing': 'css/admin-landing.scss',
+	'css/wpjm-brand': 'css/wpjm-brand.scss',
 	'css/frontend': 'css/frontend.scss',
 	'css/job-listings': 'css/job-listings.scss',
 	'css/job-submission': 'css/job-submission.scss',
