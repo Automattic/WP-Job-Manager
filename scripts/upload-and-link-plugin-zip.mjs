@@ -81,7 +81,7 @@ async function uploadZip() {
 
 	const id = `${ pr }-${ commit.substring( 0, 8 ) }`;
 
-	const headers  = `"Content-Disposition: attachment; filename=\"wp-job-manager-zip-${ id }.zip\""`;
+	const headers  = `Content-Disposition: attachment; filename="wp-job-manager-zip-${ id }.zip"`;
 	const url      = `${ MEDIA_LIBRARY_ENDPOINT }?title=wp-job-manager-zip-${ id }`;
 	const response = await $`curl -s -u ${ login } --http1.1 --data-binary @wp-job-manager.zip -H ${ headers } ${ url }`.quiet();
 
