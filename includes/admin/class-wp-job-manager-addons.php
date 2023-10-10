@@ -50,7 +50,7 @@ class WP_Job_Manager_Addons {
 	 * @return array of add-ons.
 	 */
 	private function get_add_ons( $category = null, $search_term = null ) {
-		if ( isset( $search ) && ! empty( $search_term ) ) {
+		if ( isset( $search_term ) && ! empty( $search_term ) ) {
 			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'term' => $search_term ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
 		} else {
 			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
