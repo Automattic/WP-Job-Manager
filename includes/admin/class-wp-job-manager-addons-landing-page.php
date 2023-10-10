@@ -47,10 +47,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_menu_items' ], 12 );
-		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ], 20 );
-
 		WP_Job_Manager::register_style( 'job_manager_admin_landing_css', 'css/admin-landing.css', [ 'job_manager_brand' ] );
-
 	}
 
 	/**
