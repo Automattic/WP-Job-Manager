@@ -44,14 +44,14 @@ class WP_Job_Manager_Addons {
 	 *
 	 * @since  1.30.0
 	 *
-	 * @param  string $category
-	 * @param  string $search
+	 * @param string $category     Category slug.
+	 * @param string $search_term  Search term.
 	 *
 	 * @return array of add-ons.
 	 */
-	private function get_add_ons( $category = null, $search = null ) {
-		if ( isset( $search ) && ! empty( $search ) ) {
-			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'term' => $search ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
+	private function get_add_ons( $category = null, $search_term = null ) {
+		if ( isset( $search ) && ! empty( $search_term ) ) {
+			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'term' => $search_term ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
 		} else {
 			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
 		}
