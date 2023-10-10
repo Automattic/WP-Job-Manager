@@ -54,22 +54,22 @@ try {
 async function deleteOldZips() {
 
 	const url      = `${ MEDIA_LIBRARY_ENDPOINT }?mime_type=application/zip&_fields=id,date,title,source_url`;
-	const response = await $`curl -s -u ${ login } ${ url }`;
+	const response = await $`curl -s -u ${ login } ${ url }`.quiet();
 
 	const oldZips = JSON.parse( response.toString() );
 	if ( oldZips?.code || ! Array.isArray( oldZips ) ) {
 		console.log( `[${ oldZips.code }]`, oldZips.message );
 		return;
 	}
-	oldZips?.forEach( ( zip ) => {
+	await Promise.all( [ oldZips?.map( async( zip ) => {
 		const
 			title = zip.title.rendered;
 		if ( title.startsWith( `wp-job-manager-zip-${ pr }-` ) ) {
 			console.log( `Deleting old plugin build ${ title }.zip` );
 			const deleteUrl = `${ MEDIA_LIBRARY_ENDPOINT }/${ zip.id }?force=true`;
-			$`curl -s -u ${ login } -X DELETE ${ deleteUrl }`;
+			await $`curl -s -u ${ login } -X DELETE ${ deleteUrl }`.quiet();
 		}
-	} )
+	} ) ] );
 }
 
 /**
@@ -83,7 +83,7 @@ async function uploadZip() {
 
 	const headers  = `"Content-Disposition: attachment; filename=\"wp-job-manager-zip-${ id }.zip\""`;
 	const url      = `${ MEDIA_LIBRARY_ENDPOINT }?title=wp-job-manager-zip-${ id }`;
-	const response = await $`curl -u ${ login } --http1.1 --data-binary @wp-job-manager.zip -H ${ headers } ${ url }`;
+	const response = await $`curl -u ${ login } --http1.1 --data-binary @wp-job-manager.zip -H ${ headers } ${ url }`.quiet();
 
 	const uploadedFileUrl = JSON.parse( response.toString() )?.source_url?.replaceAll( '"', '' ).trim();
 	if ( ! uploadedFileUrl ) {
@@ -116,10 +116,10 @@ async function addLinksToPR( zip ) {
 <!-- /wpjm:plugin-zip -->
 `;
 
-	let body = await $`gh pr view ${ pr } --json body --jq .body`;
+	let body = await $`gh pr view ${ pr } --json body --jq .body`.quiet();
 
 	body = body.toString().replace( /((<!-- wpjm:plugin-zip -->([\s\S]*)<!-- \/wpjm:plugin-zip -->)|$)/, links );
 
-	await $`gh pr edit ${ pr } --body ${ body }`;
+	await $`gh pr edit ${ pr } --body ${ body }`.quiet();
 	console.log( chalk.green( '✓' ), 'Plugin build links added to PR.' );
 }
