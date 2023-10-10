@@ -166,6 +166,7 @@ class WP_Job_Manager_Admin {
 	 * Adds pages to admin menu.
 	 */
 	public function admin_menu() {
+		remove_submenu_page( 'edit.php?post_type=job_listing', 'post-new.php?post_type=job_listing' );
 		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'wp-job-manager' ), __( 'Settings', 'wp-job-manager' ), 'manage_options', 'job-manager-settings', [ $this->settings_page, 'output' ] );
 
 		if ( WP_Job_Manager_Helper::instance()->has_licensed_products() || apply_filters( 'job_manager_show_addons_page', true ) ) {
