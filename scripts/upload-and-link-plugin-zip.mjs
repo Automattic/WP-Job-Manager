@@ -35,7 +35,7 @@ try {
 }
 
 if ( merged ) {
-	return;
+	process.exit( 0 );
 }
 
 try {
