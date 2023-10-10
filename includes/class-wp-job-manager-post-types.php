@@ -331,7 +331,7 @@ class WP_Job_Manager_Post_Types {
 					'labels'                => [
 						'name'                  => $plural,
 						'singular_name'         => $singular,
-						'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
+						'menu_name'             => __( 'Job Manager', 'wp-job-manager' ),
 						// translators: Placeholder %s is the plural label of the job listing post type.
 						'all_items'             => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
 						'add_new'               => __( 'Add New', 'wp-job-manager' ),
