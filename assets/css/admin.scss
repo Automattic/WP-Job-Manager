@@ -613,8 +613,8 @@ a.wpjm-activate-license-link:active {
 	max-width: 1244px;
 
 	.products {
-		display: flex;
-		flex-wrap: wrap;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
 		margin-top: 0;
 		gap: 20px;
 	}
@@ -625,7 +625,6 @@ a.wpjm-activate-license-link:active {
 		padding: 18px;
 		background: #ffffff;
 		border: 1px solid #cccccc;
-		width: 401px;
 		box-sizing: border-box;
 		gap: 18px;
 
