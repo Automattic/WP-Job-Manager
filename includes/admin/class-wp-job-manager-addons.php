@@ -50,7 +50,20 @@ class WP_Job_Manager_Addons {
 	 * @return array of add-ons.
 	 */
 	private function get_add_ons( $category = null, $search_term = null ) {
-		if ( isset( $search_term ) && ! empty( $search_term ) ) {
+
+		if ( ! empty( $search_term ) && ! empty( $category ) ) {
+			$raw_add_ons = wp_remote_get(
+				add_query_arg(
+					[
+						[
+							'term'     => $search_term,
+							'category' => $category,
+						],
+					],
+					self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search'
+				)
+			);
+		} elseif ( ! empty( $search_term ) ) {
 			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'term' => $search_term ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
 		} else {
 			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
@@ -59,7 +72,7 @@ class WP_Job_Manager_Addons {
 		if ( ! is_wp_error( $raw_add_ons ) && ( 200 === wp_remote_retrieve_response_code( $raw_add_ons ) ) ) {
 			$add_ons = json_decode( wp_remote_retrieve_body( $raw_add_ons ) )->products;
 		}
-		return $add_ons;
+		return $add_ons ?? [];
 	}
 
 	/**
