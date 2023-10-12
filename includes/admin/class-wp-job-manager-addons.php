@@ -56,7 +56,7 @@ class WP_Job_Manager_Addons {
 			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
 		}
 
-		if ( ! is_wp_error( $raw_add_ons ) ) {
+		if ( ! is_wp_error( $raw_add_ons ) && ( 200 === wp_remote_retrieve_response_code( $raw_add_ons ) ) ) {
 			$add_ons = json_decode( wp_remote_retrieve_body( $raw_add_ons ) )->products;
 		}
 		return $add_ons;
