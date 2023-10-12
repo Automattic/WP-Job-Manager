@@ -637,7 +637,7 @@ a.wpjm-activate-license-link:active {
 			img {
 				width: 48px;
 				height: 48px;
-				object-fit: cover;
+				object-fit: contain;
 				&.wpjm-core-bundle {
 					border-radius: 50%;
 				}
