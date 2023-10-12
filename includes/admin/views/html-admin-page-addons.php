@@ -89,11 +89,11 @@ if ( empty( $add_ons ) ) {
 				<div class="product-info">
 					<div class="title"><?php echo esc_html( $add_on->title ); ?></div>
 					<?php if ( ! empty( $add_on->vendor_name ) && ! empty( $add_on->vendor_link ) ) : ?>
-						<div class="author">By <a target="_blank" href="<?php echo esc_url( $add_on->vendor_link ); ?>"><?php echo esc_html( $add_on->vendor_name ); ?></a></div>
+						<div class="author"><?php esc_html_e( 'By', 'wp-job-manager' ); ?> <a target="_blank" href="<?php echo esc_url( $add_on->vendor_link ); ?>"><?php echo esc_html( $add_on->vendor_name ); ?></a></div>
 					<?php endif; ?>
 				</div>
 
-				<a class="button-secondary" target="_blank" href="<?php echo esc_url( $url, [ 'http', 'https' ] ); ?>">Get Extension</a>
+				<a class="button-secondary" target="_blank" href="<?php echo esc_url( $url, [ 'http', 'https' ] ); ?>"><?php esc_html_e( 'Get Extension', 'wp-job-manager' ); ?></a>
 
 			</div>
 
@@ -102,11 +102,11 @@ if ( empty( $add_ons ) ) {
 			</div>
 			<div class="add-on-footer">
 				<?php if ( ! empty( $add_on->price ) ) : ?>
-					<strong>Paid Add-on</strong>
+					<strong><?php esc_html_e( 'Paid Add-on', 'wp-job-manager' ); ?></strong>
 				<?php endif; ?>
 
 				<?php if ( ! empty( $add_on->documentation ) ) : ?>
-					<a target="_blank" href="<?php echo esc_url( $add_on->documentation ); ?>">More details</a>
+					<a target="_blank" href="<?php echo esc_url( $add_on->documentation ); ?>"><?php esc_html_e( 'More details', 'wp-job-manager' ); ?></a>
 				<?php endif; ?>
 			</div>
 
