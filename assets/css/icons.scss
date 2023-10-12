@@ -10,18 +10,6 @@
 	font-style: normal;
 }
 
-@font-face {
-	font-family: jm-logo;
-	src: url(../font/jm-logo/jm.eot?ycsbky);
-	src:
-		url(../font/jm-logo/jm.eot?#iefixycsbky) format("embedded-opentype"),
-		url(../font/jm-logo/jm.woff?ycsbky) format("woff"),
-		url(../font/jm-logo/jm.ttf?ycsbky) format("truetype"),
-		url(../font/jm-logo/jm.svg?ycsbky#icomoon) format("svg");
-	font-weight: normal;
-	font-style: normal;
-}
-
 @mixin jm-icon() {
 	font-family: job-manager !important;
 	font-style: normal;
