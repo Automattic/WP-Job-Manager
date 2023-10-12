@@ -15,7 +15,7 @@ if ( ! empty( $categories ) ) {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
 	$current_category = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : '_all';
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-	if ( isset( $_GET['search'] ) && ! empty( $_GET['search'] ) ) {
+	if ( ! empty( $_GET['search'] ) ) {
 		$current_category = null;
 	}
 	echo '<ul class="subsubsub">';
