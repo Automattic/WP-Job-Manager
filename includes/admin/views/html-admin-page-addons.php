@@ -48,16 +48,13 @@ if ( empty( $add_ons ) ) {
 } else {
 	echo '<ul class="products">';
 	foreach ( $add_ons as $add_on ) {
-		$class = '';
-		$url   = add_query_arg(
-			[
-				'utm_source'   => 'product',
-				'utm_medium'   => 'addonpage',
-				'utm_campaign' => 'wpjmplugin',
-				'utm_content'  => 'listing',
-			],
-			$add_on->link
-		);
+		$class     = '';
+		$link_args = [
+			'utm_source'   => 'product',
+			'utm_medium'   => 'addonpage',
+			'utm_campaign' => 'wpjmplugin',
+			'utm_content'  => 'listing',
+		];
 		?>
 		<li class="product">
 
@@ -89,11 +86,11 @@ if ( empty( $add_ons ) ) {
 				<div class="product-info">
 					<div class="title"><?php echo esc_html( $add_on->title ); ?></div>
 					<?php if ( ! empty( $add_on->vendor_name ) && ! empty( $add_on->vendor_link ) ) : ?>
-						<div class="author"><?php esc_html_e( 'By', 'wp-job-manager' ); ?> <a target="_blank" href="<?php echo esc_url( $add_on->vendor_link ); ?>"><?php echo esc_html( $add_on->vendor_name ); ?></a></div>
+						<div class="author"><?php esc_html_e( 'By', 'wp-job-manager' ); ?> <a target="_blank" href="<?php echo esc_url( add_query_arg( $link_args, $add_on->vendor_link ) ); ?>"><?php echo esc_html( $add_on->vendor_name ); ?></a></div>
 					<?php endif; ?>
 				</div>
 
-				<a class="button-secondary" target="_blank" href="<?php echo esc_url( $url, [ 'http', 'https' ] ); ?>"><?php esc_html_e( 'Get Extension', 'wp-job-manager' ); ?></a>
+				<a class="button-secondary" target="_blank" href="<?php echo esc_url( add_query_arg( $link_args, $add_on->link ), [ 'http', 'https' ] ); ?>"><?php esc_html_e( 'Get Extension', 'wp-job-manager' ); ?></a>
 
 			</div>
 
@@ -106,7 +103,7 @@ if ( empty( $add_ons ) ) {
 				<?php endif; ?>
 
 				<?php if ( ! empty( $add_on->documentation ) ) : ?>
-					<a target="_blank" href="<?php echo esc_url( $add_on->documentation ); ?>"><?php esc_html_e( 'More details', 'wp-job-manager' ); ?></a>
+					<a target="_blank" href="<?php echo esc_url( add_query_arg( $link_args, $add_on->documentation ) ); ?>"><?php esc_html_e( 'More details', 'wp-job-manager' ); ?></a>
 				<?php endif; ?>
 			</div>
 
