@@ -44,18 +44,35 @@ class WP_Job_Manager_Addons {
 	 *
 	 * @since  1.30.0
 	 *
-	 * @param  string $category
+	 * @param string $category     Category slug.
+	 * @param string $search_term  Search term.
 	 *
 	 * @return array of add-ons.
 	 */
-	private function get_add_ons( $category = null ) {
-		$raw_add_ons = wp_remote_get(
-			add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' )
-		);
-		if ( ! is_wp_error( $raw_add_ons ) ) {
+	private function get_add_ons( $category = null, $search_term = null ) {
+
+		if ( ! empty( $search_term ) && ! empty( $category ) ) {
+			$raw_add_ons = wp_remote_get(
+				add_query_arg(
+					[
+						[
+							'term'     => $search_term,
+							'category' => $category,
+						],
+					],
+					self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search'
+				)
+			);
+		} elseif ( ! empty( $search_term ) ) {
+			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'term' => $search_term ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
+		} else {
+			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
+		}
+
+		if ( ! is_wp_error( $raw_add_ons ) && ( 200 === wp_remote_retrieve_response_code( $raw_add_ons ) ) ) {
 			$add_ons = json_decode( wp_remote_retrieve_body( $raw_add_ons ) )->products;
 		}
-		return $add_ons;
+		return $add_ons ?? [];
 	}
 
 	/**
@@ -110,9 +127,16 @@ class WP_Job_Manager_Addons {
 				do_action( 'job_manager_helper_output' );
 			} else {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-				$category   = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : null;
+				$category = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : null;
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+				$search     = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : null;
 				$categories = $this->get_categories();
-				$add_ons    = $this->get_add_ons( $category );
+
+				if ( $search ) {
+					$add_ons = $this->get_add_ons( null, $search );
+				} else {
+					$add_ons = $this->get_add_ons( $category );
+				}
 
 				include_once dirname( __FILE__ ) . '/views/html-admin-page-addons.php';
 			}
