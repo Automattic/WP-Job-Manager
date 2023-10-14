@@ -2,7 +2,6 @@ const { registerPlugin } = wp.plugins
 const { PluginDocumentSettingPanel } = wp.editPost;
 import { ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import * as React from 'react';
 
 const PROMO_LINK = 'https://wpjobmanager.com/add-ons/job-tags/?utm_source=plugin_wpjm&utm_medium=upsell&utm_campaign=job_tags_editor_upsell';
 
