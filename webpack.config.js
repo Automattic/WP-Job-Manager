@@ -13,6 +13,7 @@ const files = {
 	'js/term-multiselect': 'js/term-multiselect.js',
 	'js/admin/job-editor': 'js/admin/job-editor.js',
 	'js/admin/wpjm-notice-dismiss': 'js/admin/wpjm-notice-dismiss.js',
+	'js/admin/job-tags-upsell': 'js/admin/job-tags-upsell.js',
 	'css/admin': 'css/admin.scss',
 	'css/admin-notices': 'css/admin-notices.scss',
 	'css/frontend': 'css/frontend.scss',
