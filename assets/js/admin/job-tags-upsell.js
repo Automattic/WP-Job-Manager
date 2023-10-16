@@ -8,7 +8,7 @@ const PROMO_LINK = 'https://wpjobmanager.com/add-ons/job-tags/?utm_source=plugin
 const WPJM_Job_Tags_Upsell_Panel = () => (
     <PluginDocumentSettingPanel
         name="job-tags-upsell-panel"
-        title="Job Tags"
+        title={ __( 'Job Tags', 'wp-job-manager' ) }
         className="job-tags-upsell-panel"
     >
 	<p>
