@@ -1,5 +1,5 @@
-const { registerPlugin } = wp.plugins
-const { PluginDocumentSettingPanel } = wp.editPost;
+import { registerPlugin } from '@wordpress/plugins';
+import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
