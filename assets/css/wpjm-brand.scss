@@ -20,12 +20,13 @@
 	padding: 8px 12px;
 	font-size: 14px;
 	line-height: 20px;
-	display: flex;
+	display: inline-flex;
 	gap: 10px;
 	align-items: center;
 	justify-content: center;
 	border: 1px solid transparent;
 	text-decoration: none;
+	white-space: nowrap;
 
 	background: var(--wpjm-brand-color-primary);
 	color: #ffffff;
