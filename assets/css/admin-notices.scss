@@ -48,7 +48,6 @@ $notice-success: #43af99;
 		height: 100%;
 		max-height: 52px;
 		aspect-ratio: 1;
-		margin-right: 10px;
 	}
 
 	&__heading {
@@ -117,8 +116,15 @@ $notice-success: #43af99;
 	flex-direction: row;
 	padding: 0;
 	margin: 10px 0;
+	align-items: center;
 
 
+	&__icon {
+		width: 26px;
+		aspect-ratio: 1;
+		margin-right: 10px;
+
+	}
 	&__name {
 		// Layout.
 		flex: 50%;

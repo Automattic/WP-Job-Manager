@@ -38,6 +38,12 @@ class WP_Job_Manager_Admin_Notices {
 			'target' => [],
 			'href'   => [],
 			'rel'    => [],
+			'class'  => [],
+		],
+		'img'    => [
+			'src'   => [],
+			'alt'   => [],
+			'class' => [],
 		],
 		'em'     => [],
 		'p'      => [],
@@ -423,7 +429,7 @@ class WP_Job_Manager_Admin_Notices {
 				'level'       => 'warning',
 				'icon'        => 'wpjm',
 				'dismissible' => false,
-				'heading'     => __( 'You are nearly ready to start listing jobs with <strong>WP Job Manager</strong>.', 'wp-job-manager' ),
+				'heading'     => __( 'You are nearly ready to start listing jobs with Job Manager', 'wp-job-manager' ),
 				'message'     => '<p>Go through the setup to start listing your jobs.</p>
 			<p>* See <a href="https://wpjobmanager.com/document/getting-started/installation/">manually creating pages</a>.</p>',
 				'actions'     => [
@@ -440,7 +446,12 @@ class WP_Job_Manager_Admin_Notices {
 				'conditions'  => [
 					[
 						'type'    => 'screens',
-						'screens' => [ 'edit-job_listing', 'job_listing_page_job-manager-settings', 'dashboard', 'plugins' ],
+						'screens' => [
+							'edit-job_listing',
+							'job_listing_page_job-manager-settings',
+							'dashboard',
+							'plugins',
+						],
 					],
 				],
 			];
@@ -514,55 +525,41 @@ class WP_Job_Manager_Admin_Notices {
 			return null;
 		}
 
-		// Default: Single update available.
-		$extra_details       = null;
-		$update_action_label = __( 'Update', 'wp-job-manager' );
-		$first_update        = current( $updates );
-		$heading             = esc_html__( 'Job Manager: Plugin updates available', 'wp-job-manager' );
-		// translators: %s is the name of the wpjm addon to be updated.
-		$message = sprintf( esc_html__( 'Good news, you can update to the latest version of %s.', 'wp-job-manager' ), $first_update['plugin_name'] );
+		$plugin_info = WP_Job_Manager_Helper::instance()->get_installed_plugins( false, true );
+
+		$heading = esc_html( _n( 'Job Manager: Plugin update available', 'Job Manager: Plugin updates available', count( $updates ), 'wp-job-manager' ) );
+		$message = __( 'Good news, you can update the following extensions to their latest versions.', 'wp-job-manager' );
 
 		$actions = [];
 
-		// Multiple updates: Change message, update action label, remove release notes secondary action and add extra info.
-		if ( count( $updates ) > 1 ) {
-			$message             = __( 'Good news, you can update these plugins to their latest versions.', 'wp-job-manager' );
-			$update_action_label = __( 'Update All', 'wp-job-manager' );
-			$extra_details       = '';
-			foreach ( $updates as $update ) {
-				$plugin_slug    = preg_replace( '/(^.*)\/.*/', '$1', $update['plugin'] );
-				$extra_details .= '<div class="wpjm-addon-update-notice-info">';
-				$extra_details .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $update['plugin_name'] ) . '</div>';
-				$extra_details .= '<div class="wpjm-addon-update-notice-info__version">';
-				$extra_details .= '<a href="https://wpjobmanager.com/release-notes/?job-manager-product=' . esc_attr( $plugin_slug ) . '" target="_blank">';
-				// translators: %s is the new version number for the addon.
-				$extra_details .= sprintf( esc_html__( 'New Version: %s', 'wp-job-manager' ), $update['new_version'] );
-				$extra_details .= '</a>';
-				$extra_details .= '</div>';
-				$extra_details .= '</div>';
-			}
+		$extra_details = '';
+		foreach ( $updates as $update ) {
+			$info           = $plugin_info[ $update['plugin'] ];
+			$plugin_slug    = $info['_product_slug'];
+			$icon           = WP_Job_Manager_Addons::instance()->get_icon( $info['PluginURI'] ?? null );
+			$extra_details .= '<div class="wpjm-addon-update-notice-info">';
+			$extra_details .= '<img class="wpjm-addon-update-notice-info__icon" src="' . esc_url( $icon ) . '" />';
+			$extra_details .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $info['Name'] ) . '</div>';
+			$extra_details .= '<div class="wpjm-addon-update-notice-info__version">';
+			$extra_details .= '<a href="https://wpjobmanager.com/release-notes/?job-manager-product=' . esc_attr( $plugin_slug ) . '" target="_blank">';
+			// translators: %s is the new version number for the addon.
+			$extra_details .= sprintf( esc_html__( 'New Version: %s', 'wp-job-manager' ), $update['new_version'] );
+			$extra_details .= '</a>';
+			$extra_details .= '</div>';
+			$extra_details .= '</div>';
 		}
 
 		$actions[] = [
-			'label' => $update_action_label,
+			'label' => _n( 'Update', 'Update All', count( $updates ), 'wp-job-manager' ),
 			'url'   => admin_url( 'plugins.php?s=wp-job-manager' ),
 		];
-
-		if ( 1 === count( $updates ) ) {
-			$plugin_slug = preg_replace( '/(^.*)\/.*/', '$1', $first_update['plugin'] );
-			$actions[]   = [
-				'url'     => 'https://wpjobmanager.com/release-notes/?job-manager-product=' . esc_attr( $plugin_slug ),
-				'label'   => __( 'Release notes', 'wp-job-manager' ),
-				'target'  => '_blank',
-				'primary' => false,
-			];
-		}
 
 		return [
 			'type'          => 'site-wide',
 			'heading'       => $heading,
 			'message'       => $message,
 			'actions'       => $actions,
+			'icon'          => false,
 			'extra_details' => $extra_details,
 			'conditions'    => [
 				[
@@ -607,7 +604,9 @@ class WP_Job_Manager_Admin_Notices {
 
 		echo '<div class="wpjm-admin-notice__top">';
 
-		$notice['icon'] = $notice['icon'] ?? 'wpjm';
+		if ( empty( $notice['icon'] ) && false !== $notice['icon'] ) {
+			$notice['icon'] = 'wpjm';
+		}
 		if ( ! empty( $notice['icon'] ) ) {
 			echo '<img src="' . esc_url( self::get_icon( $notice['icon'] ) ) . '" class="wpjm-admin-notice__icon" alt="WP Job Manager Icon" />';
 		}
