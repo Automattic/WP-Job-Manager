@@ -487,7 +487,7 @@ class WP_Job_Manager_Helper {
 			$manage_license_label = __( 'Activate License', 'wp-job-manager' );
 			$css_class            = 'wpjm-activate-license-link';
 		}
-		$actions[] = '<a class="' . esc_attr( $css_class ) . '" href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' ) ) . '">' . esc_html( $manage_license_label ) . '</a>';
+		$actions[] = '<a class="' . esc_attr( $css_class ) . '" href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper' ) ) . '">' . esc_html( $manage_license_label ) . '</a>';
 
 		return $actions;
 	}
@@ -1074,7 +1074,7 @@ class WP_Job_Manager_Helper {
 				// translators: %1$s is the URL to the license key page, %2$s is the plugin name.
 					__( '<a href="%1$s">Please enter your license key</a> to get updates for "%2$s".', 'wp-job-manager' )
 				),
-				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper#' . sanitize_title( $product_slug . '_row' ) ) ),
+				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper#' . sanitize_title( $product_slug . '_row' ) ) ),
 				esc_html( $plugin_data['Name'] )
 			),
 		];
@@ -1107,7 +1107,7 @@ class WP_Job_Manager_Helper {
 					__( 'There is a problem with the license for "%1$s". Please <a href="%2$s">manage the license</a> to check for a solution and continue receiving updates.', 'wp-job-manager' )
 				),
 				esc_html( $plugin_data['Name'] ),
-				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper#' . sanitize_title( $product_slug . '_row' ) ) )
+				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper#' . sanitize_title( $product_slug . '_row' ) ) )
 			),
 		];
 		$notices[ 'wpjm_license_error_notice_' . $product_slug ] = $notice;
