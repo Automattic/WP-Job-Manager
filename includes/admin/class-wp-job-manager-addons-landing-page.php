@@ -47,13 +47,23 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_menu_items' ], 12 );
+		add_action( 'admin_enqueue_scripts', [ $this, 'register_styles' ] );
+	}
+
+	/**
+	 * Register styles for landing pages.
+	 *
+	 * @access private
+	 * @since $$next-version$$
+	 */
+	public function register_styles() {
 		WP_Job_Manager::register_style( 'job_manager_admin_landing_css', 'css/admin-landing.css', [ 'job_manager_brand' ] );
 	}
 
 	/**
 	 * Add add-on menu items if needed.
 	 *
-	 * @access public
+	 * @access private
 	 * @since $$next-version$$
 	 */
 	public function add_menu_items() {
@@ -104,7 +114,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	/**
 	 * Render Applications landing page.
 	 *
-	 * @access public
+	 * @access private
 	 * @since $$next-version$$
 	 */
 	public function applications_landing_page() {
@@ -112,6 +122,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 		wp_enqueue_style( 'job_manager_admin_landing_css' );
 
 		$dismiss_action = 'dismiss_applications_landing_page';
+		$link           = 'https://wpjobmanager.com/add-ons/applications/?utm_source=plugin_wp-job-manager&utm_medium=upsell&utm_campaign=applications';
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce check.
 		if ( isset( $_GET[ $dismiss_action ] ) && wp_verify_nonce( $_GET['_wpnonce'] ?? null, $dismiss_action ) ) {
@@ -147,7 +158,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 						</p>
 						<ul class="wpjm-list-checkmarks">
 							<li>
-								<?php esc_html_e( 'Apply to jobs via forms and store applications', 'wp-job-manager' ); ?>
+								<?php esc_html_e( 'Apply to jobs via forms and save applications', 'wp-job-manager' ); ?>
 							</li>
 							<li>
 								<?php esc_html_e( 'List applications in the employer job and admin dashboard', 'wp-job-manager' ); ?>
@@ -161,11 +172,13 @@ class WP_Job_Manager_Addons_Landing_Page {
 
 					<div class="wpjm-landing__buttons">
 						<a class="wpjm-button"
-							href="https://wpjobmanager.com/add-ons/applications/?utm_source=plugin_wp-job-manager&utm_medium=upsell&utm_campaign=applications">
+							target="_blank"
+							href="<?php echo esc_url( $link ); ?>">
 							<?php esc_html_e( 'Get Applications', 'wp-job-manager' ); ?>
 						</a>
 						<a class="wpjm-button is-link"
-							href="https://wpjobmanager.com/add-ons/applications/?utm_source=plugin_wp-job-manager&utm_medium=upsell&utm_campaign=applications">
+							target="_blank"
+							href="<?php echo esc_url( $link ); ?>">
 							<?php esc_html_e( 'See all features', 'wp-job-manager' ); ?>
 						</a>
 					</div>
@@ -184,7 +197,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	/**
 	 * Render Resume Manager landing page.
 	 *
-	 * @access public
+	 * @access private
 	 * @since $$next-version$$
 	 */
 	public function resumes_landing_page() {
@@ -192,6 +205,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 		wp_enqueue_style( 'job_manager_admin_landing_css' );
 
 		$dismiss_action = 'dismiss_resumes_landing_page';
+		$link           = 'https://wpjobmanager.com/add-ons/resume-manager/?utm_source=plugin_wp-job-manager&utm_medium=upsell&utm_campaign=resumes';
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Nonce check.
 		if ( isset( $_GET[ $dismiss_action ] ) && wp_verify_nonce( $_GET['_wpnonce'] ?? null, $dismiss_action ) ) {
@@ -241,11 +255,13 @@ class WP_Job_Manager_Addons_Landing_Page {
 
 					<div class="wpjm-landing__buttons">
 						<a class="wpjm-button"
-							href="https://wpjobmanager.com/add-ons/resume-manager/?utm_source=plugin_wp-job-manager&utm_medium=upsell&utm_campaign=resumes">
+							target="_blank"
+							href="<?php echo esc_url( $link ); ?>">
 							<?php esc_html_e( 'Get Resume Manager', 'wp-job-manager' ); ?>
 						</a>
 						<a class="wpjm-button is-link"
-							href="https://wpjobmanager.com/add-ons/resume-manager/?utm_source=plugin_wp-job-manager&utm_medium=upsell&utm_campaign=resumes">
+							target="_blank"
+							href="<?php echo esc_url( $link ); ?>">
 							<?php esc_html_e( 'See all features', 'wp-job-manager' ); ?>
 						</a>
 					</div>
@@ -258,8 +274,5 @@ class WP_Job_Manager_Addons_Landing_Page {
 			</div>
 		</div>
 		<?php
-
 	}
-
-
 }
