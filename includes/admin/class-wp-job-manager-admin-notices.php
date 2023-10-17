@@ -530,7 +530,7 @@ class WP_Job_Manager_Admin_Notices {
 		$plugin_info = WP_Job_Manager_Helper::instance()->get_installed_plugins( false, true );
 
 		$heading = esc_html( _n( 'Job Manager: Plugin update available', 'Job Manager: Plugin updates available', count( $updates ), 'wp-job-manager' ) );
-		$message = __( 'Good news, you can update the following extensions to their latest versions.', 'wp-job-manager' );
+		$message = _n( 'Good news, you can update the following extension to its latest version:', 'Good news, you can update the following extensions to their latest versions:', count( $updates ), 'wp-job-manager' );
 
 		$actions = [];
 
