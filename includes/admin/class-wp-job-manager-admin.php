@@ -113,6 +113,11 @@ class WP_Job_Manager_Admin {
 			WP_Job_Manager::register_script( 'job_manager_admin_js', 'js/admin.js', [ 'jquery', 'jquery-tiptip', 'select2' ], true );
 			wp_enqueue_script( 'job_manager_admin_js' );
 
+			WP_Job_Manager::register_script( 'job_tags_upsell_js', 'js/admin/job-tags-upsell.js', [], true );
+			if ( ! class_exists( 'WP_Job_Manager_Job_Tags' ) ) {
+				wp_enqueue_script( 'job_tags_upsell_js' );
+			}
+
 			wp_localize_script(
 				'job_manager_admin_js',
 				'job_manager_admin_params',
