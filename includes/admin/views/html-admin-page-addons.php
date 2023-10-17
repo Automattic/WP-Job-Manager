@@ -44,7 +44,7 @@ echo '</div>';
 echo '<br class="clear" />';
 
 if ( empty( $add_ons ) ) {
-	echo '<div class="notice notice-warning below-h2"><p><strong>' . esc_html__( 'No add-ons were found.', 'wp-job-manager' ) . '</strong></p></div>';
+	echo '<div class="notice notice-warning below-h2"><p><strong>' . esc_html__( 'No extensions were found.', 'wp-job-manager' ) . '</strong></p></div>';
 } else {
 	echo '<ul class="products">';
 	foreach ( $add_ons as $add_on ) {
