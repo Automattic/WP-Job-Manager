@@ -20,4 +20,15 @@
 			content: "\e806";
 		}
 	}
+
+	li a[href="edit.php?post_type=job_listing&page=job-manager-landing-application"],
+	li a[href="edit.php?post_type=job_listing&page=job-manager-landing-resumes"],
+	{
+		border: solid 0 #5D6264;
+		border-width: 1px 0;
+		padding: 8px 12px 8px 12px !important;
+		margin-top: -1px;
+		position: relative;
+		top: 1px;
+	}
 }

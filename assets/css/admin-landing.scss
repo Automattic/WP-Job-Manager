@@ -1,0 +1,101 @@
+@import './wpjm-brand';
+
+.wpjm-landing {
+
+	&,
+	& * {
+		box-sizing: border-box;
+	}
+
+	& {
+		background: var(--wpjm-brand-color-shade-2);
+		border-radius: 2px;
+		padding: fluid(60, 20) fluid(80, 20);
+		display: flex;
+		gap: fluid(60, 20);
+		position: relative;
+		margin: fluid(32, 18) auto;
+		font-size: 14px;
+		color: #000;
+		flex-wrap: wrap;
+		align-items: center;
+		max-width: 1400px;
+	}
+
+	&__heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	&__left, &__right {
+		flex: 1;
+		min-width: min(100%, 400px);
+	}
+
+	&__left {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		align-items: flex-start;
+		justify-content: flex-start;
+		position: relative;
+	}
+
+	&__addon-logo {
+		flex-shrink: 0;
+		width: 60px;
+		height: 60px;
+		position: relative;
+	}
+
+	&__content {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		align-items: flex-start;
+		justify-content: flex-start;
+		flex: 1;
+		position: relative;
+		* {
+			margin: unset;
+		}
+		//max-width: 450px;
+		&, & p {
+			font-size: 14px;
+		}
+	}
+
+	&__title {
+		font-weight: 700;
+		font-size: 40px;
+		line-height: 120%;
+		letter-spacing: -0.8px;
+		margin: unset;
+	}
+	&__subtitle {
+		font-weight: 700;
+		font-size: 22px;
+		letter-spacing: -0.47px;
+		margin-top: -10px;
+	}
+
+	&__buttons {
+		margin-top: 10px;
+		display: flex;
+		gap: 20px;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		> * {
+			flex: 1;
+			white-space: nowrap;
+		}
+	}
+
+	&__right {
+	}
+	&__visual {
+		max-width: min(100%, 700px);
+	}
+}
