@@ -606,7 +606,7 @@ class WP_Job_Manager_Admin_Notices {
 
 		echo '<div class="wpjm-admin-notice__top">';
 
-		if ( empty( $notice['icon'] ) && false !== $notice['icon'] ) {
+		if ( ! isset( $notice['icon'] ) ) {
 			$notice['icon'] = 'wpjm';
 		}
 		if ( ! empty( $notice['icon'] ) ) {
