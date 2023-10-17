@@ -31,15 +31,15 @@ The plugin comes with several shortcodes to output jobs in various formats, and 
 
 = Documentation =
 
-Documentation for the core plugin and add-ons can be found [on the docs site here](https://wpjobmanager.com/documentation/). Please take a look before requesting support because it covers all frequently asked questions!
+Documentation for the core plugin and extensions can be found [on the docs site here](https://wpjobmanager.com/documentation/). Please take a look before requesting support because it covers all frequently asked questions!
 
-= Add-ons =
+= Extensions =
 
 The core WP Job Manager plugin is free and always will be. It covers all functionality we consider 'core' to running a simple job board site.
 
-Additional, advanced functionality is available through add-ons. Not only do these extend the usefulness of the core plugin, they also help fund the development and support of core.
+Additional, advanced functionality is available through extensions. Not only do these extend the usefulness of the core plugin, they also help fund the development and support of core.
 
-You can browse available add-ons after installing the plugin by going to `Job Listings > Add-ons`. Our popular add-ons include:
+You can browse available extensions after installing the plugin by going to `WP Job Manager > Marketplace`. Our popular extensions include:
 
 **[Applications](https://wpjobmanager.com/add-ons/applications/)**
 
@@ -57,9 +57,9 @@ Resume Manager is a plugin built on top of WP Job Manager which adds a resume su
 
 Allow registered users to save their job searches and create alerts which send new jobs via email daily, weekly or fortnightly.
 
-**[Core add-on bundle](https://wpjobmanager.com/add-ons/bundle/)**
+**[WPJM Pro Bundle](https://wpjobmanager.com/add-ons/bundle/)**
 
-You can get the above add-ons and several others at discount with our [Core Add-on Bundle](https://wpjobmanager.com/add-ons/bundle/). Take a look!
+You can get the above extensions and several others at discount with our [WPJM Pro Bundle](https://wpjobmanager.com/add-ons/bundle/). Take a look!
 
 = Contributing and reporting bugs =
 
@@ -71,7 +71,7 @@ Thanks to all of our contributors.
 
 Use the WordPress.org forums for community support where we try to help all users. If you spot a bug, you can log it (or fix it) on [Github](https://github.com/Automattic/WP-Job-Manager) where we can act upon them more efficiently.
 
-If you need help with one of our add-ons, [please raise a ticket in our help desk](https://wpjobmanager.com/support/).
+If you need help with one of our extensions, [please raise a ticket in our help desk](https://wpjobmanager.com/support/).
 
 If you want help with a customization, please consider hiring a developer! [http://jobs.wordpress.net/](http://jobs.wordpress.net/) is a good place to start.
 
