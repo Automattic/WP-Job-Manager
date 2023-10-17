@@ -66,6 +66,7 @@ class WP_Job_Manager_Admin_Notices {
 		add_action( 'wp_ajax_wp_job_manager_dismiss_notice', [ __CLASS__, 'handle_notice_dismiss' ] );
 		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'maybe_add_addon_update_available_notice' ], 10, 1 );
 		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'paid_listings_renewal_notice' ], 10, 1 );
+		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'we_have_addons_notice' ], 10, 1 );
 		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'maybe_add_core_setup_notice' ], 10, 1 );
 	}
 
@@ -151,11 +152,12 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Set up filters for core admin notices.
 	 *
+	 * @deprecated since $$next-version$$. See maybe_add_core_setup_notice
+	 *
 	 * Note: For internal use only. Do not call manually.
 	 */
 	public static function init_core_notices() {
-		// core_setup: Notice is used when first activating WP Job Manager.
-		add_action( 'job_manager_admin_notice_' . self::NOTICE_CORE_SETUP, [ __CLASS__, 'display_core_setup' ] );
+		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Admin_Notices::maybe_add_core_setup_notice' );
 	}
 
 	/**
@@ -692,6 +694,34 @@ class WP_Job_Manager_Admin_Notices {
 				),
 			];
 		}
+
+		return $notices;
+	}
+
+	/**
+	 * Add notice informing about extensions.
+	 *
+	 * @param array $notices Existing notices.
+	 *
+	 * @return array
+	 */
+	public static function we_have_addons_notice( $notices ) {
+		if ( ! current_user_can( 'install_plugins' ) || self::has_notice( self::NOTICE_CORE_SETUP ) ) {
+			return $notices;
+		}
+
+		$notices['we_have_addons'] = [
+			'level'       => 'info',
+			'dismissible' => true,
+			'heading'     => __( 'Did you know?', 'wp-job-manager' ),
+			'message'     => __( ' You can upgrade your job listings with Job Manager extensions and add applications, resumes, alerts, and more!', 'wp-job-manager' ),
+			'actions'     => [
+				[
+					'label' => __( 'View Extensions', 'wp-job-manager' ),
+					'url'   => admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ),
+				],
+			],
+		];
 
 		return $notices;
 	}
