@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the view for displaying the list of add-ons available to extend WP Job Manager.
+ * File containing the view for displaying the list of extensions available to extend WP Job Manager.
  *
  * @package wp-job-manager
  */
@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-echo '<h1 class="screen-reader-text">' . esc_html__( 'WP Job Manager Add-ons', 'wp-job-manager' ) . '</h1>';
+echo '<h1 class="screen-reader-text">' . esc_html__( 'WP Job Manager Marketplace', 'wp-job-manager' ) . '</h1>';
 echo '<div class="wpjm-extensions-filter-search">';
 if ( ! empty( $categories ) ) {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
