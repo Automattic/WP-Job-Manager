@@ -707,54 +707,75 @@ a.wpjm-activate-license-link:active {
 
 /* Addons */
 .wp_job_manager_add_ons_wrap {
+	max-width: 1244px;
 
 	.products {
-		overflow: hidden;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+		margin-top: 0;
+		gap: 20px;
+	}
 
-		li {
-			float: left;
-			margin: 0 1em 1em 0 !important;
-			padding: 0;
-			vertical-align: top;
-			width: 350px;
+	.product {
+		display: flex;
+		flex-direction: column;
+		padding: 18px;
+		background: #ffffff;
+		border: 1px solid #cccccc;
+		box-sizing: border-box;
+		gap: 18px;
 
-			a {
-				text-decoration: none;
-				color: inherit;
-				border: 1px solid #ddd;
-				display: block;
-				min-height: 220px;
-				overflow: hidden;
-				background: #f6f6f6;
-				-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-			}
+		.add-on-header {
+			display: flex;
+			flex-direction: row;
+			gap: 16px;
 
 			img {
-				display: inline-block;
-				width: auto;
-				max-height: 60px;
-				max-width: 90px;
-				margin: 0 5px 0 0;
-				float: left;
+				width: 48px;
+				height: 48px;
+				object-fit: contain;
+				&.wpjm-core-bundle {
+					border-radius: 50%;
+				}
 			}
-
-			h2 {
-				margin: 0 !important;
-				padding: 20px !important;
-				background: #fff;
-				height: 20px;
+			.title {
 				font-size: 16px;
+				font-weight: 600;
+				line-height: 24px;
 			}
-
+			a {
+				text-decoration: none;
+			}
+			a.button-secondary {
+				align-self: center;
+				text-decoration: none;
+				padding: 8px 12px;
+				line-height: 1.4em;
+				border-radius: 2px;
+				background: #ffffff;
+			}
+		}
+		.add-on-body {
 			p {
-				padding: 20px !important;
-				margin: 0 !important;
-				border-top: 1px solid #f1f1f1;
+				line-height: 20px;
+				color: #1E1E1E;
 			}
-
-			.price {
-				display: none;
+		}
+		.product-info {
+			flex: 1 1 0;
+			align-self: center;
+		}
+		.add-on-footer {
+			display: flex;
+			flex-direction: row;
+			margin-top: auto;
+			p {
+				margin: 0;
+			}
+			a {
+				align-self: center;
+				text-decoration: none;
+				margin-left: auto;
 			}
 		}
 	}
@@ -822,6 +843,125 @@ tr.email-setting-row {
 
 	td {
 		padding: 5px;
+	}
+}
+/**
+ * Extensions page
+ */
+.wp_job_manager_add_ons_wrap {
+	.wpjm-extensions-filter-search {
+		display: flex;
+		margin-top: 18px;
+		.wpjm-extension-search-input {
+			padding: 9px 12px;
+			border-radius: 2px;
+			line-height: 20px;
+			font-size: 13px;
+		}
+		.wpjm-extension-search-button {
+			padding: 5px 12px;
+			background: #ffffff;
+		}
+		.subsubsub {
+			text-align: left;
+			margin: 0;
+			align-self: end;
+			li {
+				margin: 0 0 6px 0;
+				a {
+					padding: 6px 8px;
+					background: #ffffff;
+					border-radius: 2px;
+					color: #3C434A;
+					font-weight: 400;
+					margin-right: 4px;
+					font-size: 13px;
+					&.current {
+						background: #1E1E1E;
+						color: #ffffff;
+					}
+				}
+			}
+		}
+		.extension-search {
+			margin-left: auto;
+			align-self: center;
+			display: flex;
+			gap: 2px;
+		}
+	}
+}
+@media screen and (max-width: 782px) {
+	.wp_job_manager_add_ons_wrap .wpjm-extensions-filter-search {
+		flex-direction: column-reverse;
+		gap: 18px;
+
+		.subsubsub {
+			align-self: start;
+		}
+		.extension-search {
+			margin-right: auto;
+			margin-left: 0;
+		}
+		.wpjm-extension-search-button {
+			padding: 0 15px;
+			margin-bottom: 0;
+		}
+	}
+}
+@media screen and (max-width: 428px ) {
+	.wp_job_manager_add_ons_wrap .wpjm-extensions-filter-search {
+		.extension-search {
+			margin: 0;
+			align-self: auto;
+
+			.wpjm-extension-search-input {
+				flex-basis: 100%;
+				margin-right: 3px;
+			}
+		}
+	}
+}
+
+
+/**
+ * Nav Tabs
+ */
+.nav-tab-wrapper, .wrap h2.nav-tab-wrapper {
+	border-bottom: 0;
+	margin-bottom: 18px;
+}
+.nav-tab {
+	border: none;
+	border-bottom: 3px solid transparent;
+	font-weight: 500;
+	background: none;
+	padding: 5px 0;
+	margin-left: 0;
+	margin-right: 24px;
+	color: #000000;
+	&:hover, &:focus, &:focus:active {
+		background: none;
+	}
+}
+
+h2 .nav-tab-active, nav .nav-tab-active {
+	border-bottom: 3px solid #2270B1;
+	box-sizing: border-box;
+	&:hover, &:focus, &:focus:active {
+		border-bottom: 3px solid #2270B1;
+		box-sizing: border-box;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	h2 {
+		.nav-tab:not(.nav-tab-active) {
+			border-bottom: 3px solid transparent;
+		}
+	}
+	nav .nav-tab:not(.nav-tab-active) {
+		border-bottom: 3px solid transparent;
 	}
 }
 
@@ -901,4 +1041,73 @@ tr.email-setting-row {
 			}
 		}
 	}
+}
+
+/**
+ * Core Add-on Bundle SVG Styles
+ */
+.jm-logo {
+	perspective: 450px;
+	perspective-origin: 50% 50%;
+	position: relative;
+	cursor: pointer;
+	clip-path: circle(50% at 50% 50%);
+	background: #ffef82;
+}
+
+.jm-logo__wrapper.jm-logo__wrapper {
+	gap: calc(var(--happy-sizing-scale) * (16 - 12) + 12px);
+}
+
+.jm-logo__wrapper,
+.jm-logo__wrapper path,
+.jm-logo__wrapper.jm-logo__wrapper a[href]
+{
+	color: #2404EB;
+	fill: currentColor;
+	text-decoration: none !important;
+}
+
+.jm-logo, .jm-logo__inner, .jm-logo__head, .jm-logo__face, .jm-logo__letters {
+	width: 48px;
+	height: 48px;
+}
+
+.jm-logo__inner {
+	clip-path: circle(40px);
+}
+
+.jm-logo__inner, .jm-logo__face, .jm-logo__letters {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.jm-logo__head {
+	transform: scale(1);
+}
+
+.jm-logo__face, .jm-logo__letters {
+	transform-origin: 50% 50% -60px;
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	transition: all 888ms cubic-bezier(.32, 1.29, .9, .98);
+}
+.jm-logo .jm-logo__face {
+	transform: rotateY(-90deg);
+	animation: jm-logo__face 888ms 1000ms cubic-bezier(.32, 1.29, .9, .98) alternate;
+	animation-iteration-count: 2;
+}
+
+.jm-logo .jm-logo__letters {
+	animation: jm-logo__letters 888ms 1000ms cubic-bezier(.32, 1.29, .9, .98) alternate;
+	animation-iteration-count: 2;
+}
+
+.jm-logo__wrapper:hover .jm-logo__face {
+	transform: rotateY(0deg);
+}
+
+.jm-logo__wrapper:hover .jm-logo__letters {
+	transform: rotateY(90deg);
 }
