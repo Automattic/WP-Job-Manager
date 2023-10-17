@@ -19,8 +19,6 @@
     "npm": ">=7.0.0"
   },
   "dependencies": {
-    "@wordpress/edit-post": "^7.20.1",
-    "@wordpress/plugins": "^6.11.1",
     "select2": "4.0.13"
   },
   "devDependencies": {
