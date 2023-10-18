@@ -150,7 +150,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		// Set up the opt-in dialog.
 		add_action( 'wpjm_admin_notices', [ $this, 'maybe_display_tracking_opt_in' ] );
 		add_action( 'admin_action_' . $this->get_prefix() . '_tracking_opt_in', [ $this, 'handle_tracking_opt_in' ] );
-		add_action( 'wp_job_manager_notice_dismissed', [ $this, 'handle_tracking_opt_out' ] );
+		add_action( 'wp_job_manager_notice_dismissed', [ $this, 'handle_tracking_opt_out' ], 10, 2 );
 
 		// Set up schedule and action needed for cron job.
 		add_filter( 'cron_schedules', [ $this, 'add_usage_tracking_two_week_schedule' ] );
@@ -544,9 +544,17 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	/**
 	 * Disable usage tracking when the notice is dismissed.
 	 *
+	 * @param array  $notice    Notice data.
+	 * @param string $notice_id Notice ID.
+	 *
 	 * @access private
 	 */
-	public function handle_tracking_opt_out() {
+	public function handle_tracking_opt_out( $notice, $notice_id ) {
+
+		if ( 'usage_tracking_opt_in' !== $notice_id ) {
+			return;
+		}
+
 		$this->set_tracking_enabled( false );
 		$this->hide_tracking_opt_in();
 	}
