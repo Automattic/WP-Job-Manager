@@ -239,7 +239,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function update_job_status( $request ) {
-		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Helper_API::bulk_update_check' );
+		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Promoted_Jobs_API::refresh_status' );
 
 		$post_id = $request->get_param( 'id' );
 		$status  = $request->get_param( 'status' );
