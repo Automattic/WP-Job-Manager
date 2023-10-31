@@ -191,7 +191,7 @@ class WP_Job_Manager_Addons {
 					}
 					?>
 				">
-					<?php esc_html_e( 'WP Job Manager Marketplace', 'wp-job-manager' ); ?>
+					<?php esc_html_e( 'Marketplace', 'wp-job-manager' ); ?>
 				</a>
 				<?php if ( current_user_can( 'update_plugins' ) ) : ?>
 					<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper' ) ); ?>"
