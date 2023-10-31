@@ -104,7 +104,7 @@ class WP_Job_Manager_Admin {
 
 		$screen = get_current_screen();
 
-		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', [ 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-addons', 'edit-job_listing_type' ] ), true ) ) {
+		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', [ 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-marketplace', 'edit-job_listing_type' ] ), true ) ) {
 
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'select2' );
@@ -181,12 +181,12 @@ class WP_Job_Manager_Admin {
 		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'wp-job-manager' ), __( 'Settings', 'wp-job-manager' ), 'manage_options', 'job-manager-settings', [ $this->settings_page, 'output' ] );
 
 		if ( WP_Job_Manager_Helper::instance()->has_licensed_products() || apply_filters( 'job_manager_show_addons_page', true ) ) {
-			add_submenu_page( 'edit.php?post_type=job_listing', __( 'WP Job Manager Marketplace', 'wp-job-manager' ), __( 'Marketplace', 'wp-job-manager' ), 'manage_options', 'job-manager-addons', [ $this, 'addons_page' ] );
+			add_submenu_page( 'edit.php?post_type=job_listing', __( 'WP Job Manager Marketplace', 'wp-job-manager' ), __( 'Marketplace', 'wp-job-manager' ), 'manage_options', 'job-manager-marketplace', [ $this, 'addons_page' ] );
 		}
 	}
 
 	/**
-	 * Displays addons page.
+	 * Displays marketplace page.
 	 */
 	public function addons_page() {
 		WP_Job_Manager_Addons::instance()->output();

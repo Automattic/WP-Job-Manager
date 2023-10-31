@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the view for displaying the list of add-ons available to extend WP Job Manager.
+ * File containing the view for displaying the list of extensions available to extend WP Job Manager.
  *
  * @package wp-job-manager
  */
@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-echo '<h1 class="screen-reader-text">' . esc_html__( 'WP Job Manager Add-ons', 'wp-job-manager' ) . '</h1>';
+echo '<h1 class="screen-reader-text">' . esc_html__( 'WP Job Manager Marketplace', 'wp-job-manager' ) . '</h1>';
 echo '<div class="wpjm-extensions-filter-search">';
 if ( ! empty( $categories ) ) {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
@@ -23,7 +23,7 @@ if ( ! empty( $categories ) ) {
 		?>
 		<li>
 			<a class="<?php echo $current_category === $category->slug ? 'current' : ''; ?>"
-				href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&category=' . esc_attr( $category->slug ) ) ); ?>">
+				href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&category=' . esc_attr( $category->slug ) ) ); ?>">
 				<?php echo esc_html( $category->label ); ?>
 			</a>
 		</li>
@@ -44,7 +44,7 @@ echo '</div>';
 echo '<br class="clear" />';
 
 if ( empty( $add_ons ) ) {
-	echo '<div class="notice notice-warning below-h2"><p><strong>' . esc_html__( 'No add-ons were found.', 'wp-job-manager' ) . '</strong></p></div>';
+	echo '<div class="notice notice-warning below-h2"><p><strong>' . esc_html__( 'No extensions were found.', 'wp-job-manager' ) . '</strong></p></div>';
 } else {
 	echo '<ul class="products">';
 	foreach ( $add_ons as $add_on ) {

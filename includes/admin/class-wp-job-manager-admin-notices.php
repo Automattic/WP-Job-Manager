@@ -383,7 +383,7 @@ class WP_Job_Manager_Admin_Notices {
 				'edit-job_listing',
 				'edit-job_listing_category',
 				'edit-job_listing_type',
-				'job_listing_page_job-manager-addons',
+				'job_listing_page_job-manager-marketplace',
 				'job_listing_page_job-manager-settings',
 			],
 			$additional_screens

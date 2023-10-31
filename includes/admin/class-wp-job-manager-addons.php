@@ -182,7 +182,7 @@ class WP_Job_Manager_Addons {
 		?>
 		<div class="wrap wp_job_manager wp_job_manager_add_ons_wrap">
 			<nav class="nav-tab-wrapper woo-nav-tab-wrapper">
-				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ) ); ?>"
+				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace' ) ); ?>"
 					class="nav-tab
 					<?php
 					// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
@@ -191,10 +191,10 @@ class WP_Job_Manager_Addons {
 					}
 					?>
 				">
-					<?php esc_html_e( 'WP Job Manager Marketplace', 'wp-job-manager' ); ?>
+					<?php esc_html_e( 'Marketplace', 'wp-job-manager' ); ?>
 				</a>
 				<?php if ( current_user_can( 'update_plugins' ) ) : ?>
-					<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' ) ); ?>"
+					<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper' ) ); ?>"
 						class="nav-tab
 						<?php
 						// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.

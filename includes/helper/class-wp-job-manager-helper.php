@@ -490,7 +490,7 @@ class WP_Job_Manager_Helper {
 			$manage_license_label = __( 'Activate License', 'wp-job-manager' );
 			$css_class            = 'wpjm-activate-license-link';
 		}
-		$actions[] = '<a class="' . esc_attr( $css_class ) . '" href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' ) ) . '">' . esc_html( $manage_license_label ) . '</a>';
+		$actions[] = '<a class="' . esc_attr( $css_class ) . '" href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper' ) ) . '">' . esc_html( $manage_license_label ) . '</a>';
 
 		return $actions;
 	}
@@ -1078,7 +1078,7 @@ class WP_Job_Manager_Helper {
 	 */
 	private function get_license_issues_notice( $plugins ) {
 
-		$manage_url = admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' );
+		$manage_url = admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper' );
 
 		return [
 			'level'         => 'warning',
