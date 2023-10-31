@@ -61,6 +61,7 @@ class WP_Job_Manager_Admin {
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-writepanels.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-setup.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-addons-landing-page.php';
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-addons.php';
 
 		$this->settings_page = WP_Job_Manager_Settings::instance();
 		WP_Job_Manager_Addons_Landing_Page::instance();
@@ -159,15 +160,13 @@ class WP_Job_Manager_Admin {
 			}
 		}
 
-		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', [], true );
-
 		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', null, true );
 		wp_enqueue_script( 'job_manager_notice_dismiss' );
 
 		WP_Job_Manager::register_style( 'job_manager_admin_menu_css', 'css/menu.css', [] );
 		wp_enqueue_style( 'job_manager_admin_menu_css' );
 
-		WP_Job_Manager::register_style( 'job_manager_admin_notices_css', 'css/admin-notices.css', [] );
+		WP_Job_Manager::register_style( 'job_manager_admin_notices_css', 'css/admin-notices.css', [ 'job_manager_brand' ] );
 		wp_enqueue_style( 'job_manager_admin_notices_css' );
 	}
 
@@ -190,8 +189,7 @@ class WP_Job_Manager_Admin {
 	 * Displays addons page.
 	 */
 	public function addons_page() {
-		$addons = include 'class-wp-job-manager-addons.php';
-		$addons->output();
+		WP_Job_Manager_Addons::instance()->output();
 	}
 }
 

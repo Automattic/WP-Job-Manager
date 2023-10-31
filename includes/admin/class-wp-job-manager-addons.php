@@ -36,6 +36,7 @@ class WP_Job_Manager_Addons {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
 
@@ -44,35 +45,90 @@ class WP_Job_Manager_Addons {
 	 *
 	 * @since  1.30.0
 	 *
-	 * @param string $category     Category slug.
-	 * @param string $search_term  Search term.
+	 * @param string $category Category slug.
+	 * @param string $search_term Search term.
 	 *
 	 * @return array of add-ons.
 	 */
 	private function get_add_ons( $category = null, $search_term = null ) {
-
-		if ( ! empty( $search_term ) && ! empty( $category ) ) {
-			$raw_add_ons = wp_remote_get(
-				add_query_arg(
-					[
+		$cache_key = 'jm_wpjmcom_add_ons_' . md5( wp_json_encode( compact( 'category', 'search_term' ) ) );
+		$add_ons   = get_transient( $cache_key );
+		if ( false === $add_ons ) {
+			if ( ! empty( $search_term ) && ! empty( $category ) ) {
+				$raw_add_ons = wp_remote_get(
+					add_query_arg(
 						[
-							'term'     => $search_term,
-							'category' => $category,
+							[
+								'term'     => $search_term,
+								'category' => $category,
+							],
 						],
-					],
-					self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search'
-				)
-			);
-		} elseif ( ! empty( $search_term ) ) {
-			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'term' => $search_term ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
-		} else {
-			$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
+						self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search'
+					)
+				);
+			} elseif ( ! empty( $search_term ) ) {
+				$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'term' => $search_term ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
+			} else {
+				$raw_add_ons = wp_remote_get( add_query_arg( [ [ 'category' => $category ] ], self::WPJM_COM_PRODUCTS_API_BASE_URL . '/search' ) );
+			}
+
+			if ( ! is_wp_error( $raw_add_ons ) && ( 200 === wp_remote_retrieve_response_code( $raw_add_ons ) ) ) {
+				$add_ons = json_decode( wp_remote_retrieve_body( $raw_add_ons ) )->products;
+				set_transient( $cache_key, $add_ons, HOUR_IN_SECONDS );
+			} else {
+				$add_ons = [];
+			}
 		}
 
-		if ( ! is_wp_error( $raw_add_ons ) && ( 200 === wp_remote_retrieve_response_code( $raw_add_ons ) ) ) {
-			$add_ons = json_decode( wp_remote_retrieve_body( $raw_add_ons ) )->products;
+		return $add_ons;
+	}
+
+	/**
+	 * Get product icon for a core add-on.
+	 *
+	 * @param string $slug Add-on plugin slug or product URL.
+	 *
+	 * @return string|false
+	 */
+	public function get_icon( $slug ) {
+		$addon = $this->get_add_on_product( $slug );
+
+		return $addon ? remove_query_arg( [ 'w', 'h', 'crop' ], $addon->image ) : false;
+
+	}
+
+	/**
+	 * Get product data for a core add-on.
+	 *
+	 * @param string $slug Add-on plugin slug.
+	 *
+	 * @return object|false
+	 */
+	public function get_add_on_product( $slug ) {
+		if ( ! $slug ) {
+			return false;
 		}
-		return $add_ons ?? [];
+
+		$addons = $this->get_add_ons();
+
+		$slug   = preg_replace( '/^wp-job-manager-/', '', $slug );
+		$is_url = str_starts_with( $slug, 'https://' );
+
+		$addon = array_filter(
+			$addons,
+			function( $addon ) use ( $slug, $is_url ) {
+
+				if ( $is_url ) {
+					return ! empty( $addon->link ) && $addon->link === $slug;
+				} else {
+					$url = preg_replace( '|add-ons/(.+)/$|', '$1', $addon->link );
+
+					return ! empty( $url ) && $url === $slug;
+				}
+			}
+		);
+
+		return current( $addon );
 	}
 
 	/**
@@ -93,6 +149,7 @@ class WP_Job_Manager_Addons {
 				}
 			}
 		}
+
 		return apply_filters( 'job_manager_add_on_categories', $add_on_categories );
 	}
 
@@ -125,22 +182,29 @@ class WP_Job_Manager_Addons {
 		?>
 		<div class="wrap wp_job_manager wp_job_manager_add_ons_wrap">
 			<nav class="nav-tab-wrapper woo-nav-tab-wrapper">
-				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ) ); ?>" class="nav-tab
-									<?php
-									// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-									if ( ! isset( $_GET['section'] ) || 'helper' !== $_GET['section'] ) {
-										echo ' nav-tab-active';
-									}
-									?>
-				"><?php esc_html_e( 'WP Job Manager Marketplace', 'wp-job-manager' ); ?></a>
+				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ) ); ?>"
+					class="nav-tab
+					<?php
+					// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+					if ( ! isset( $_GET['section'] ) || 'helper' !== $_GET['section'] ) {
+						echo ' nav-tab-active';
+					}
+					?>
+				">
+					<?php esc_html_e( 'WP Job Manager Marketplace', 'wp-job-manager' ); ?>
+				</a>
 				<?php if ( current_user_can( 'update_plugins' ) ) : ?>
-				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' ) ); ?>" class="nav-tab
-									<?php
-									// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-									if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
-										echo ' nav-tab-active'; }
-									?>
-				"><?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?></a>
+					<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper' ) ); ?>"
+						class="nav-tab
+						<?php
+						// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+						if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
+							echo ' nav-tab-active';
+						}
+						?>
+				">
+						<?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?>
+					</a>
 				<?php endif; ?>
 			</nav>
 			<?php
