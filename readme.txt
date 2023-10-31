@@ -39,7 +39,7 @@ The core WP Job Manager plugin is free and always will be. It covers all functio
 
 Additional, advanced functionality is available through extensions. Not only do these extend the usefulness of the core plugin, they also help fund the development and support of core.
 
-You can browse available extensions after installing the plugin by going to `WP Job Manager > Marketplace`. Our popular extensions include:
+You can browse available extensions after installing the plugin by going to `Job Manager > Marketplace`. Our popular extensions include:
 
 **[Applications](https://wpjobmanager.com/add-ons/applications/)**
 
