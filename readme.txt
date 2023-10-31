@@ -57,7 +57,7 @@ Resume Manager is a plugin built on top of WP Job Manager which adds a resume su
 
 Allow registered users to save their job searches and create alerts which send new jobs via email daily, weekly or fortnightly.
 
-**[WPJM Pro Bundle](https://wpjobmanager.com/add-ons/bundle/)**
+**[Job Manager Pro Bundle](https://wpjobmanager.com/add-ons/bundle/)**
 
 You can get the above extensions and several others at discount with our [WPJM Pro Bundle](https://wpjobmanager.com/add-ons/bundle/). Take a look!
 
