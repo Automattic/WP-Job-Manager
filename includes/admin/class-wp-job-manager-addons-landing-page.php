@@ -69,8 +69,8 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 * @since $$next-version$$
 	 */
 	public function add_applications_menu_item() {
-		$was_addon_installed = ! ! get_option( 'wp_job_manager_applications_version', false );
-		$was_page_dismissed  = ! ! get_option( 'job_manager_addon_upsell_applications', false );
+		$was_addon_installed = (bool) get_option( 'wp_job_manager_applications_version', false );
+		$was_page_dismissed  = (bool) get_option( 'job_manager_addon_upsell_applications', false );
 
 		/**
 		 * Filters whether the 'Applications' landing page should be added to the Job Manager menu.
