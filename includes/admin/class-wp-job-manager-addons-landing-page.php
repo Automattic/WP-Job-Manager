@@ -46,7 +46,8 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 * @since $$next-version$$
 	 */
 	public function __construct() {
-		add_action( 'admin_menu', [ $this, 'add_menu_items' ], 12 );
+		add_action( 'admin_menu', [ $this, 'add_applications_menu_item' ], 12 );
+		add_action( 'admin_menu', [ $this, 'add_resumes_menu_item' ], 12 );
 		add_action( 'admin_enqueue_scripts', [ $this, 'register_styles' ] );
 	}
 
@@ -60,16 +61,16 @@ class WP_Job_Manager_Addons_Landing_Page {
 		WP_Job_Manager::register_style( 'job_manager_admin_landing_css', 'css/admin-landing.css', [ 'job_manager_brand' ] );
 	}
 
+
 	/**
-	 * Add add-on menu items if needed.
+	 * Add Applications add-on menu item if needed.
 	 *
 	 * @access private
 	 * @since $$next-version$$
 	 */
-	public function add_menu_items() {
-
-		$parent_page = 'edit.php?post_type=job_listing';
-		$badge_text  = __( 'Pro', 'wp-job-manager' );
+	public function add_applications_menu_item() {
+		$was_addon_installed = (bool) get_option( 'wp_job_manager_applications_version', false );
+		$was_page_dismissed  = (bool) get_option( 'job_manager_addon_upsell_applications', false );
 
 		/**
 		 * Filters whether the 'Applications' landing page should be added to the Job Manager menu.
@@ -78,17 +79,32 @@ class WP_Job_Manager_Addons_Landing_Page {
 		 *
 		 * @param bool $show True if the menu should be added.
 		 */
-		if ( apply_filters( 'job_manager_addon_upsell_applications', ! get_option( 'job_manager_addon_upsell_applications' ) ) ) {
+		if ( apply_filters( 'job_manager_addon_upsell_applications', ! $was_addon_installed && ! $was_page_dismissed ) ) {
 
 			add_submenu_page(
-				$parent_page,
+				'edit.php?post_type=job_listing',
 				__( 'WP Job Manager - Applications', 'wp-job-manager' ),
-				sprintf( '%s <span class="awaiting-mod wpjm-addon-upsell__badge">%s</span>', __( 'Applications', 'wp-job-manager' ), $badge_text ),
+				sprintf(
+					'%s <span class="awaiting-mod wpjm-addon-upsell__badge">%s</span>',
+					__( 'Applications', 'wp-job-manager' ),
+					__( 'Pro', 'wp-job-manager' )
+				),
 				'manage_options',
 				'job-manager-landing-application',
 				[ $this, 'applications_landing_page' ]
 			);
 		}
+	}
+
+	/**
+	 * Add Resumes add-on menu item if needed.
+	 *
+	 * @access private
+	 * @since $$next-version$$
+	 */
+	public function add_resumes_menu_item() {
+		$was_addon_installed = ! ! get_option( 'wp_resume_manager_version', false );
+		$was_page_dismissed  = ! ! get_option( 'job_manager_addon_upsell_resumes', false );
 
 		/**
 		 * Filters whether the 'Resumes' landing page should be added to the Job Manager menu.
@@ -97,18 +113,21 @@ class WP_Job_Manager_Addons_Landing_Page {
 		 *
 		 * @param bool $show True if the menu should be added.
 		 */
-		if ( apply_filters( 'job_manager_addon_upsell_resumes', ! get_option( 'job_manager_addon_upsell_resumes' ) ) ) {
+		if ( apply_filters( 'job_manager_addon_upsell_resumes', ! $was_addon_installed && ! $was_page_dismissed ) ) {
 
 			add_submenu_page(
-				$parent_page,
+				'edit.php?post_type=job_listing',
 				__( 'WP Job Manager - Resumes', 'wp-job-manager' ),
-				sprintf( '%s <span class="awaiting-mod wpjm-addon-upsell__badge">%s</span>', __( 'Resumes', 'wp-job-manager' ), $badge_text ),
+				sprintf(
+					'%s <span class="awaiting-mod wpjm-addon-upsell__badge">%s</span>',
+					__( 'Resumes', 'wp-job-manager' ),
+					__( 'Pro', 'wp-job-manager' )
+				),
 				'manage_options',
 				'job-manager-landing-resumes',
 				[ $this, 'resumes_landing_page' ]
 			);
 		}
-
 	}
 
 	/**
@@ -275,4 +294,6 @@ class WP_Job_Manager_Addons_Landing_Page {
 		</div>
 		<?php
 	}
+
+
 }
