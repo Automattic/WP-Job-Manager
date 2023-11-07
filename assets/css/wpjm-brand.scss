@@ -20,19 +20,31 @@
 	padding: 8px 12px;
 	font-size: 14px;
 	line-height: 20px;
-	display: flex;
+	display: inline-flex;
 	gap: 10px;
 	align-items: center;
 	justify-content: center;
 	border: 1px solid transparent;
 	text-decoration: none;
+	white-space: nowrap;
 
 	background: var(--wpjm-brand-color-primary);
 	color: #ffffff;
 
-	&:hover {
+	&:hover, &:active, &:focus {
 		background: #1D00D0;
 		color: #ffffff;
+		box-shadow: unset;
+	}
+	&:active {
+		background: #1E1E1E;
+		color: #ffffff;
+	}
+
+	&:focus-visible {
+		box-shadow: unset;
+		outline: 1.5px solid var(--wp-admin-theme-color, var(--wpjm-brand-color-tertiary));
+		outline-offset: 1.5px;
 	}
 
 	&.is-outline {
@@ -43,6 +55,10 @@
 		&:hover {
 			background: var(--wpjm-brand-color-shade-3);
 			color: var(--wpjm-brand-color-primary);
+		}
+		&:active {
+			border-color: #1E1E1E;
+			color: #1E1E1E;
 		}
 	}
 
@@ -65,10 +81,11 @@
 
 .wpjm-list-checkmarks {
 	padding-left: 20px;
-	list-style-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='15' height='11' fill='none' viewBox='0 0 15 11'%3e%3cpath fill='black' d='M5.03 10.6 0 5.55 1.06 4.5l3.97 3.97L13.5 0l1.06 1.06'/%3e%3c/svg%3e");
+	list-style-image: url('data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'15\' height=\'11\' fill=\'none\' viewBox=\'0 0 15 11\'%3e%3cpath fill=\'black\' d=\'M5.03 10.6 0 5.55 1.06 4.5l3.97 3.97L13.5 0l1.06 1.06\'/%3e%3c/svg%3e');
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+
 	li {
 		padding-left: 8px;
 	}

@@ -26,6 +26,10 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+
+		.notice {
+			display: none!important;
+		}
 	}
 
 	&__left, &__right {
