@@ -1073,6 +1073,10 @@ class WP_Job_Manager_Settings {
 	 * @param string   $ignored_placeholder We set the placeholder in the method. This is ignored.
 	 */
 	protected function input_capabilities( $option, $attributes, $value, $ignored_placeholder ) {
+		if ( ! is_array( $value ) ) {
+			$value = [ $value ];
+		}
+
 		$option['options']     = self::get_capabilities_and_roles( $value );
 		$option['placeholder'] = esc_html__( 'Everyone (Public)', 'wp-job-manager' );
 
@@ -1131,17 +1135,16 @@ class WP_Job_Manager_Settings {
 	 * @param array $caps Selected capabilities to ensure they show up in the list.
 	 * @return array
 	 */
-	private static function get_capabilities_and_roles( $caps = [] ) {
+	private static function get_capabilities_and_roles( array $caps = [] ) {
 		$capabilities_and_roles = [];
 		$roles                  = get_editable_roles();
 
 		foreach ( $roles as $key => $role ) {
 			$capabilities_and_roles[ $key ] = $role['name'];
 		}
-
 		// Go through custom user selected capabilities and add them to the list.
 		foreach ( $caps as $value ) {
-			if ( isset( $capabilities_and_roles[ $value ] ) ) {
+			if ( ! is_string( $value ) || empty( $value ) || isset( $capabilities_and_roles[ $value ] ) ) {
 				continue;
 			}
 			$capabilities_and_roles[ $value ] = $value;
