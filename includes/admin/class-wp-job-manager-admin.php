@@ -60,8 +60,11 @@ class WP_Job_Manager_Admin {
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-settings.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-writepanels.php';
 		include_once dirname( __FILE__ ) . '/class-wp-job-manager-setup.php';
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-addons-landing-page.php';
+		include_once dirname( __FILE__ ) . '/class-wp-job-manager-addons.php';
 
 		$this->settings_page = WP_Job_Manager_Settings::instance();
+		WP_Job_Manager_Addons_Landing_Page::instance();
 
 		add_action( 'admin_init', [ $this, 'admin_init' ] );
 		add_action( 'current_screen', [ $this, 'conditional_includes' ] );
@@ -97,9 +100,11 @@ class WP_Job_Manager_Admin {
 	public function admin_enqueue_scripts() {
 		WP_Job_Manager::register_select2_assets();
 
+		WP_Job_Manager::register_style( 'job_manager_brand', 'css/wpjm-brand.css', [] );
+
 		$screen = get_current_screen();
 
-		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', [ 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-addons', 'edit-job_listing_type' ] ), true ) ) {
+		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', [ 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-marketplace', 'edit-job_listing_type' ] ), true ) ) {
 
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'select2' );
@@ -112,6 +117,11 @@ class WP_Job_Manager_Admin {
 
 			WP_Job_Manager::register_script( 'job_manager_admin_js', 'js/admin.js', [ 'jquery', 'jquery-tiptip', 'select2' ], true );
 			wp_enqueue_script( 'job_manager_admin_js' );
+
+			WP_Job_Manager::register_script( 'job_tags_upsell_js', 'js/admin/job-tags-upsell.js', [], true );
+			if ( ! class_exists( 'WP_Job_Manager_Job_Tags' ) ) {
+				wp_enqueue_script( 'job_tags_upsell_js' );
+			}
 
 			wp_localize_script(
 				'job_manager_admin_js',
@@ -150,15 +160,13 @@ class WP_Job_Manager_Admin {
 			}
 		}
 
-		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', [], true );
-
 		WP_Job_manager::register_script( 'job_manager_notice_dismiss', 'js/admin/wpjm-notice-dismiss.js', null, true );
 		wp_enqueue_script( 'job_manager_notice_dismiss' );
 
 		WP_Job_Manager::register_style( 'job_manager_admin_menu_css', 'css/menu.css', [] );
 		wp_enqueue_style( 'job_manager_admin_menu_css' );
 
-		WP_Job_Manager::register_style( 'job_manager_admin_notices_css', 'css/admin-notices.css', [] );
+		WP_Job_Manager::register_style( 'job_manager_admin_notices_css', 'css/admin-notices.css', [ 'job_manager_brand' ] );
 		wp_enqueue_style( 'job_manager_admin_notices_css' );
 	}
 
@@ -166,19 +174,22 @@ class WP_Job_Manager_Admin {
 	 * Adds pages to admin menu.
 	 */
 	public function admin_menu() {
+		remove_submenu_page( 'edit.php?post_type=job_listing', 'post-new.php?post_type=job_listing' );
+		$item = remove_submenu_page( 'edit.php?post_type=job_listing', 'edit.php?post_type=job_listing' );
+		// change item label to "Job Listings".
+		add_submenu_page( 'edit.php?post_type=job_listing', $item[0], __( 'Job Listings', 'wp-job-manager' ), $item[1], $item[2], '', 0 );
 		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'wp-job-manager' ), __( 'Settings', 'wp-job-manager' ), 'manage_options', 'job-manager-settings', [ $this->settings_page, 'output' ] );
 
 		if ( WP_Job_Manager_Helper::instance()->has_licensed_products() || apply_filters( 'job_manager_show_addons_page', true ) ) {
-			add_submenu_page( 'edit.php?post_type=job_listing', __( 'WP Job Manager Add-ons', 'wp-job-manager' ), __( 'Add-ons', 'wp-job-manager' ), 'manage_options', 'job-manager-addons', [ $this, 'addons_page' ] );
+			add_submenu_page( 'edit.php?post_type=job_listing', __( 'WP Job Manager Marketplace', 'wp-job-manager' ), __( 'Marketplace', 'wp-job-manager' ), 'manage_options', 'job-manager-marketplace', [ $this, 'addons_page' ] );
 		}
 	}
 
 	/**
-	 * Displays addons page.
+	 * Displays marketplace page.
 	 */
 	public function addons_page() {
-		$addons = include 'class-wp-job-manager-addons.php';
-		$addons->output();
+		WP_Job_Manager_Addons::instance()->output();
 	}
 }
 

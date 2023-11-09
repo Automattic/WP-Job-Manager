@@ -10,7 +10,7 @@ domReady( () => {
 	 *
 	 * @param  element The DOM element of the container of the notice being dismissed.
 	 */
-	const handleDismiss = ( element ) => {
+	const handleDismiss = async( element ) => {
 		const formData = new FormData();
 		if ( element.dataset.dismissNotice ) {
 			formData.append( 'notice', element.dataset.dismissNotice );
@@ -22,23 +22,36 @@ domReady( () => {
 			method: 'POST',
 			body: formData,
 		} );
+
+		await element.animate( [ { opacity: 0 } ], 100 ).finished;
+		await element.animate(
+			[ { opacity: 0 }, {
+				opacity: 0,
+				height: 0,
+				paddingTop: 0,
+				paddingBottom: 0,
+			} ], 100,
+		).finished;
+		element.remove();
+
 	};
 
-	const wpjmNotices = document.querySelectorAll('.wpjm-admin-notice' );
-	for (const wpjmNotice of wpjmNotices) {
-		wpjmNotice.addEventListener('click', (event) => {
-			const noticeContainer = event.target.closest('.wpjm-admin-notice');
-			if (!noticeContainer) {
-				return;
+	const wpjmNotices = document.querySelectorAll( '.wpjm-admin-notice' );
+	for ( const wpjmNotice of wpjmNotices ) {
+		wpjmNotice.addEventListener( 'click', ( event ) => {
+			const noticeContainer = event.target.closest( '.wpjm-admin-notice' );
+			if ( ! noticeContainer ) {
+				return true;
 			}
 
 			if (
 				noticeContainer.dataset.dismissNonce &&
 				noticeContainer.dataset.dismissAction &&
-				event.target.classList.contains('notice-dismiss')
+				event.target.classList.contains( 'notice-dismiss' )
 			) {
-				handleDismiss(noticeContainer);
+				handleDismiss( noticeContainer );
 			}
-		});
+			return true;
+		} );
 	}
 } );
