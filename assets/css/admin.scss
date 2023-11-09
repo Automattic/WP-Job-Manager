@@ -38,6 +38,22 @@ a.wpjm-activate-license-link:active {
 	}
 }
 
+.wpjm-dialog:not(.is-dismissible) {
+	.promote-dismiss {
+		display: none;
+	}
+}
+.promote-dismiss {
+	color: #50575e;
+	display: block;
+	font-size: 12px;
+	position: absolute;
+	right: 0;
+	left: 0;
+	text-align: center;
+	bottom: 20px;
+}
+
 .wpjm-dialog {
 	border: 0;
 	border-radius: 8px;
