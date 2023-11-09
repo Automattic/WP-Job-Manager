@@ -272,7 +272,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '0',
 							'label'      => __( 'Salary Unit', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable Job Salary Unit Customization', 'wp-job-manager' ),
-							'desc'       => __( 'This lets users add a salary currency when submitting a job.', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users add a salary unit when submitting a job.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
 						],
