@@ -36,20 +36,16 @@ domReady( () => {
 
 	};
 
-	const wpjmNotices = document.querySelectorAll( '.wpjm-admin-notice' );
+	const wpjmNotices = document.querySelectorAll( '.wpjm-admin-notice, .wpjm-admin-modal-notice' );
 	for ( const wpjmNotice of wpjmNotices ) {
 		wpjmNotice.addEventListener( 'click', ( event ) => {
-			const noticeContainer = event.target.closest( '.wpjm-admin-notice' );
-			if ( ! noticeContainer ) {
-				return true;
-			}
 
 			if (
-				noticeContainer.dataset.dismissNonce &&
-				noticeContainer.dataset.dismissAction &&
-				event.target.classList.contains( 'notice-dismiss' )
+				wpjmNotice.dataset.dismissNonce &&
+				wpjmNotice.dataset.dismissAction &&
+				event.target.classList.contains( 'wpjm-notice-dismiss' )
 			) {
-				handleDismiss( noticeContainer );
+				handleDismiss( wpjmNotice );
 			}
 			return true;
 		} );

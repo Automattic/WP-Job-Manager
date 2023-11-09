@@ -209,6 +209,18 @@ class WP_Job_Manager_Admin_Notices {
 	}
 
 	/**
+	 * Check if a notice was dismissed.
+	 *
+	 * @param string $notice_id Notice ID.
+	 * @param string $is_user_notification Whether it's a user-level or a global notification.
+	 *
+	 * @return bool
+	 */
+	public static function is_dismissed( $notice_id, $is_user_notification ) {
+		return ( in_array( $notice_id, self::get_dismissed_notices( $is_user_notification ), true ) );
+	}
+
+	/**
 	 * Displays notices in WP admin.
 	 *
 	 * Note: For internal use only. Do not call manually.
@@ -596,7 +608,7 @@ class WP_Job_Manager_Admin_Notices {
 		if ( $is_dismissible ) {
 			wp_enqueue_script( 'job_manager_notice_dismiss' );
 			$notice_class[]       = 'is-dismissible';
-			$notice_wrapper_extra = sprintf( ' data-dismiss-action="%1$s" data-dismiss-notice="%2$s" data-dismiss-nonce="%3$s"', esc_attr( self::DISMISS_NOTICE_ACTION ), esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_ACTION ) ) );
+			$notice_wrapper_extra = self::get_dismissible_notice_wrapper_attributes( $notice_id );
 		}
 
 		echo '<div class="notice wpjm-admin-notice ' . esc_attr( implode( ' ', $notice_class ) ) . '"';
@@ -636,7 +648,7 @@ class WP_Job_Manager_Admin_Notices {
 			}
 		}
 		if ( $is_dismissible ) {
-			echo '<button type="button" class="wpjm-button is-link notice-dismiss"><span class="screen-reader-text">' . esc_html__( 'Dismiss this notice', 'wp-job-manager' ) . '</span></button>';
+			echo '<button type="button" class="wpjm-button is-link notice-dismiss wpjm-notice-dismiss"><span class="screen-reader-text">' . esc_html__( 'Dismiss this notice', 'wp-job-manager' ) . '</span></button>';
 		}
 		echo '</div>';
 		echo '</div>';
@@ -648,6 +660,17 @@ class WP_Job_Manager_Admin_Notices {
 		}
 		echo '</div>';
 
+	}
+
+	/**
+	 * Get attributes for the notice wrapper for dismiss action.
+	 *
+	 * @param string $notice_id Notice ID.
+	 *
+	 * @return string
+	 */
+	public static function get_dismissible_notice_wrapper_attributes( $notice_id ) {
+		return sprintf( ' data-dismiss-action="%1$s" data-dismiss-notice="%2$s" data-dismiss-nonce="%3$s"', esc_attr( self::DISMISS_NOTICE_ACTION ), esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_ACTION ) ) );
 	}
 
 	/**
