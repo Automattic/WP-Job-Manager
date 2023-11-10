@@ -505,7 +505,6 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	public function register_job_editor_modal_notice( $notices ) {
 
 		// This notice is not rendered, it's only used to track user dismissal for the modal.
-
 		$notices[ self::JOB_EDITOR_MODAL_NOTICE ] = [
 			'type'       => 'user',
 			'conditions' => [

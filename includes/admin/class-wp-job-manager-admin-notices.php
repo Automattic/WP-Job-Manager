@@ -648,7 +648,7 @@ class WP_Job_Manager_Admin_Notices {
 			}
 		}
 		if ( $is_dismissible ) {
-			echo '<button type="button" class="wpjm-button is-link notice-dismiss wpjm-notice-dismiss"><span class="screen-reader-text">' . esc_html__( 'Dismiss this notice', 'wp-job-manager' ) . '</span></button>';
+			echo '<button type="button" class="wpjm-button is-link notice-dismiss wpjm-notice-dismiss wpjm-notice-dismiss--icon"><span class="screen-reader-text">' . esc_html__( 'Dismiss this notice', 'wp-job-manager' ) . '</span></button>';
 		}
 		echo '</div>';
 		echo '</div>';
