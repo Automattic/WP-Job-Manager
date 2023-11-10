@@ -13,7 +13,7 @@
     "squizlabs/php_codesniffer": "3.7.2",
     "wp-coding-standards/wpcs": "2.3.0",
     "sirbrillig/phpcs-variable-analysis": "^2.6",
-    "yoast/phpunit-polyfills": "1.0.2"
+    "yoast/phpunit-polyfills": "^1.0.2"
   },
   "archive": {
     "exclude": [
