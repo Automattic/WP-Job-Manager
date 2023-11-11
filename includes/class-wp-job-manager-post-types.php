@@ -1618,7 +1618,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => (bool) get_option( 'job_manager_enable_salary' ),
 				'show_in_rest'  => true,
 			],
-			'_job_salary_max'          => [
+			'_job_salary_max'	=> [
 				'label'         => __( 'Salary (max)', 'wp-job-manager' ),
 				'type'          => 'text',
 				'placeholder'   => __( 'e.g. 25000', 'wp-job-manager' ),
