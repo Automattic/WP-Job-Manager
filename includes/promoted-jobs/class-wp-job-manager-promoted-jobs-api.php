@@ -243,6 +243,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			'job_type'     => $terms_array,
 			'salary'       => [
 				'amount'   => get_post_meta( $item->ID, '_job_salary', true ),
+				'amountmax'=> get_post_meta( $item->ID, '_job_salary_max', true ),
 				'currency' => get_the_job_salary_currency( $item ),
 				'unit'     => get_the_job_salary_unit_display_text( $item ),
 			],
