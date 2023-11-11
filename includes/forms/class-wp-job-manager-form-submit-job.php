@@ -276,11 +276,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'    => 7,
 					],
 					'job_salary'          => [
-						'label'       => __( 'Salary', 'wp-job-manager' ),
+						'label'       => __( 'Salary / Salary (min)', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( 'e.g. 20000', 'wp-job-manager' ),
 						'priority'    => 8,
+					],
+					'job_salary_max'          => [
+						'label'         => __( 'Salary (max)', 'wp-job-manager' ),
+						'type'          => 'text',
+						'required'    => false,
+						'placeholder'   => __( 'e.g. 25000', 'wp-job-manager' ),
+						'priority'      => 9,
 					],
 					'job_salary_currency' => [
 						'label'       => __( 'Salary Currency', 'wp-job-manager' ),
@@ -288,7 +295,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'required'    => false,
 						'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
 						'description' => __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' ),
-						'priority'    => 9,
+						'priority'    => 10,
 					],
 					'job_salary_unit'     => [
 						'label'       => __( 'Salary Unit', 'wp-job-manager' ),
@@ -296,7 +303,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'options'     => job_manager_get_salary_unit_options(),
 						'description' => __( 'Add a salary period unit, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
 						'required'    => false,
-						'priority'    => 10,
+						'priority'    => 11,
 					],
 				],
 				'company' => [
