@@ -282,12 +282,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'e.g. 20000', 'wp-job-manager' ),
 						'priority'    => 8,
 					],
-					'job_salary_max'          => [
-						'label'         => __( 'Salary (max)', 'wp-job-manager' ),
-						'type'          => 'text',
-						'required'    => false,
-						'placeholder'   => __( 'e.g. 25000', 'wp-job-manager' ),
-						'priority'      => 9,
+					'job_salary_max'	=> [
+						'label'			=> __( 'Salary (max)', 'wp-job-manager' ),
+						'type'			=> 'text',
+						'required'		=> false,
+						'placeholder'	=> __( 'e.g. 25000', 'wp-job-manager' ),
+						'priority'		=> 9,
 					],
 					'job_salary_currency' => [
 						'label'       => __( 'Salary Currency', 'wp-job-manager' ),
