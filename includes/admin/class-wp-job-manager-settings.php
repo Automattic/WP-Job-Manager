@@ -159,9 +159,9 @@ class WP_Job_Manager_Settings {
 						[
 							'name'       => 'job_manager_hide_filled_positions',
 							'std'        => '0',
-							'label'      => __( 'Filled Positions', 'wp-job-manager' ),
-							'cb_label'   => __( 'Hide filled positions', 'wp-job-manager' ),
-							'desc'       => __( 'Filled positions will not display in your archives.', 'wp-job-manager' ),
+							'label'      => __( 'Filled Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Hide filled listings', 'wp-job-manager' ),
+							'desc'       => __( 'Job listings marked as "filled" will not display in your archives.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
 						],
