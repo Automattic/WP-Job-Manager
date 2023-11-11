@@ -418,10 +418,10 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		}
 	}
 
-	$salary       = get_the_job_salary( $post );
-	$salary_max   = get_the_job_salary_max( $post );
-	$currency     = get_the_job_salary_currency( $post );
-	$unit         = get_the_job_salary_unit( $post );
+	$salary     = get_the_job_salary( $post );
+	$salary_max = get_the_job_salary_max( $post );
+	$currency   = get_the_job_salary_currency( $post );
+	$unit       = get_the_job_salary_unit( $post );
 	if ( ! empty( $salary_max ) ) {
 		$data['baseSalary']                      = [];
 		$data['baseSalary']['@type']             = 'MonetaryAmount';
@@ -1345,11 +1345,11 @@ function get_the_job_salary_max( $post = null ) {
  * @return string|void
  */
 function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
-	$post     = get_post( $post );
-	$salary   = get_the_job_salary( $post );
+	$post      = get_post( $post );
+	$salary    = get_the_job_salary( $post );
 	$salarymax = get_the_job_salary_max( $post );
-	$currency = get_the_job_salary_currency( $post );
-	$unit     = get_the_job_salary_unit_display_text( $post );
+	$currency  = get_the_job_salary_currency( $post );
+	$unit      = get_the_job_salary_unit_display_text( $post );
 
 	if ( strlen( $salary ) === 0 ) {
 		return;
