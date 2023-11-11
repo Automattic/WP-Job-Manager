@@ -1323,11 +1323,11 @@ function get_the_job_salary_max( $post = null ) {
 	$job_salary_max = $post->_job_salary_max;
 
 	/**
-	 * Filter the returned job salary.
+	 * Filter the returned max job salary.
 	 *
 	 * @since 1.36.0
 	 *
-	 * @param string  $job_salary
+	 * @param string  $job_salary_max
 	 * @param WP_Post $post
 	 */
 	return apply_filters( 'the_job_salary_max', $job_salary_max, $post );
@@ -1372,11 +1372,12 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	 * @param WP_Post $post
 	 * @param string  $before
 	 * @param string  $salary
+	 * @param string  $salarymax
 	 * @param string  $currency
 	 * @param string  $unit
 	 * @param string  $after
 	 */
-	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $unit, $after );
+	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $salarymax, $unit, $after );
 
 	if ( $echo ) {
 		echo esc_html( $job_salary );
