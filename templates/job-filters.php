@@ -39,7 +39,7 @@ do_action( 'job_manager_job_filters_before', $atts );
 		<?php if( apply_filters( 'job_manager_job_filters_show_remote_position', get_option('job_manager_enable_remote_position', true ), $atts ) ) : ?>
 			<div class="search_remote_position">
 				<input type="checkbox" class="input-checkbox" name="remote_position" id="remote_position" placeholder="<?php esc_attr_e( 'Location', 'wp-job-manager' ); ?>" value="1" <?php checked(! empty( $remote_position ) ); ?> />
-				<label for="remote_position" id="remote_position_label"><?php esc_html_e( 'Remote positions only', 'wp-job-manager' ); ?></label>
+				<label for="remote_position" id="remote_position_label"><?php esc_html_e( 'Remote listings only', 'wp-job-manager' ); ?></label>
 			</div>
 		<?php endif; ?>
 
