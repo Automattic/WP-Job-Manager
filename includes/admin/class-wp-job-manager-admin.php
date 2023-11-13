@@ -138,6 +138,7 @@ class WP_Job_Manager_Admin {
 					'job_listing_promote_strings' => [
 						'promote_job' => _x( 'Promote your job', 'job promotion', 'wp-job-manager' ),
 						'learn_more'  => _x( 'Learn More', 'job promotion', 'wp-job-manager' ),
+						'dismiss'     => _x( 'Don\'t show this again', 'job promotion', 'wp-job-manager' ),
 					],
 					'ajax_url'                    => admin_url( 'admin-ajax.php' ),
 					'search_users_nonce'          => wp_create_nonce( 'search-users' ),
