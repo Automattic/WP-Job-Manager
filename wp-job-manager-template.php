@@ -1377,7 +1377,7 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	 * @param string  $unit
 	 * @param string  $after
 	 */
-	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $salarymax, $unit, $after );
+	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $unit, $after, $salarymax );
 
 	if ( $echo ) {
 		echo esc_html( $job_salary );
