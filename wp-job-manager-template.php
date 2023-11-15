@@ -418,10 +418,19 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		}
 	}
 
-	$salary   = get_the_job_salary( $post );
-	$currency = get_the_job_salary_currency( $post );
-	$unit     = get_the_job_salary_unit( $post );
-	if ( ! empty( $salary ) ) {
+	$salary     = get_the_job_salary( $post );
+	$salary_max = get_the_job_salary_max( $post );
+	$currency   = get_the_job_salary_currency( $post );
+	$unit       = get_the_job_salary_unit( $post );
+	if ( ! empty( $salary_max ) ) {
+		$data['baseSalary']                      = [];
+		$data['baseSalary']['@type']             = 'MonetaryAmount';
+		$data['baseSalary']['currency']          = $currency;
+		$data['baseSalary']['value']['@type']    = 'QuantitativeValue';
+		$data['baseSalary']['value']['minValue'] = $salary;
+		$data['baseSalary']['value']['maxValue'] = $salary_max;
+		$data['baseSalary']['value']['unitText'] = $unit;
+	} elseif ( ! empty( $salary ) ) {
 		$data['baseSalary']                      = [];
 		$data['baseSalary']['@type']             = 'MonetaryAmount';
 		$data['baseSalary']['currency']          = $currency;
@@ -1299,6 +1308,33 @@ function get_the_job_salary( $post = null ) {
 }
 
 /**
+ * Gets the max job salary.
+ *
+ * @since 1.37.0
+ * @param int|WP_Post|null $post (default: null).
+ * @return string|null
+ */
+function get_the_job_salary_max( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post || 'job_listing' !== $post->post_type ) {
+		return;
+	}
+
+	$job_salary_max = $post->_job_salary_max;
+
+	/**
+	 * Filter the returned max job salary.
+	 *
+	 * @since 1.36.0
+	 *
+	 * @param string  $job_salary_max
+	 * @param WP_Post $post
+	 */
+	return apply_filters( 'the_job_salary_max', $job_salary_max, $post );
+}
+
+
+/**
  * Displays or retrieves the job salary with optional content.
  *
  * @since 1.36.0
@@ -1309,16 +1345,20 @@ function get_the_job_salary( $post = null ) {
  * @return string|void
  */
 function the_job_salary( $before = '', $after = '', $echo = true, $post = null ) {
-	$post     = get_post( $post );
-	$salary   = get_the_job_salary( $post );
-	$currency = get_the_job_salary_currency( $post );
-	$unit     = get_the_job_salary_unit_display_text( $post );
+	$post      = get_post( $post );
+	$salary    = get_the_job_salary( $post );
+	$salarymax = get_the_job_salary_max( $post );
+	$currency  = get_the_job_salary_currency( $post );
+	$unit      = get_the_job_salary_unit_display_text( $post );
 
 	if ( strlen( $salary ) === 0 ) {
 		return;
 	}
 
 	$job_salary = $before . $salary . ' ' . $currency;
+	if ( ! empty( $salarymax ) ) {
+		$job_salary .= ' - ' . $salarymax . ' ' . $currency;
+	}
 	if ( ! empty( $unit ) ) {
 		$job_salary .= ' / ' . $unit;
 	}
@@ -1332,11 +1372,12 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	 * @param WP_Post $post
 	 * @param string  $before
 	 * @param string  $salary
+	 * @param string  $salarymax
 	 * @param string  $currency
 	 * @param string  $unit
 	 * @param string  $after
 	 */
-	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $unit, $after );
+	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $unit, $after, $salarymax );
 
 	if ( $echo ) {
 		echo esc_html( $job_salary );

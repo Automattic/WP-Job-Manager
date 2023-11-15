@@ -700,6 +700,7 @@ class WP_Job_Manager_Post_Types {
 		$company   = get_the_company_name( $post_id );
 		$job_types = wpjm_get_the_job_types( $post_id );
 		$salary    = get_the_job_salary( $post_id );
+		$salarymax = get_the_job_salary_max( $post_id );
 
 		if ( $location ) {
 			echo '<job_listing:location><![CDATA[' . esc_html( $location ) . "]]></job_listing:location>\n";
@@ -713,6 +714,9 @@ class WP_Job_Manager_Post_Types {
 		}
 		if ( $salary ) {
 			echo '<job_listing:salary><![CDATA[' . esc_html( $salary ) . "]]></job_listing:salary>\n";
+		}
+		if ( $salarymax ) {
+			echo '<job_listing:salarymax><![CDATA[' . esc_html( $salarymax ) . "]]></job_listing:salarymax>\n";
 		}
 
 		/**
@@ -1605,11 +1609,21 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'  => true,
 			],
 			'_job_salary'          => [
-				'label'         => __( 'Salary', 'wp-job-manager' ),
+				'label'         => __( 'Salary / Salary (min)', 'wp-job-manager' ),
 				'type'          => 'text',
 				'placeholder'   => __( 'e.g. 20000', 'wp-job-manager' ),
 				'priority'      => 13,
 				'description'   => __( 'Add a salary field, this field is optional.', 'wp-job-manager' ),
+				'data_type'     => 'string',
+				'show_in_admin' => (bool) get_option( 'job_manager_enable_salary' ),
+				'show_in_rest'  => true,
+			],
+			'_job_salary_max'      => [
+				'label'         => __( 'Salary (max)', 'wp-job-manager' ),
+				'type'          => 'text',
+				'placeholder'   => __( 'e.g. 25000', 'wp-job-manager' ),
+				'priority'      => 14,
+				'description'   => __( 'Add a max salary field, this field is optional.', 'wp-job-manager' ),
 				'data_type'     => 'string',
 				'show_in_admin' => (bool) get_option( 'job_manager_enable_salary' ),
 				'show_in_rest'  => true,
@@ -1619,7 +1633,7 @@ class WP_Job_Manager_Post_Types {
 				'type'          => 'text',
 				'data_type'     => 'string',
 				'placeholder'   => __( 'e.g. USD', 'wp-job-manager' ),
-				'priority'      => 14,
+				'priority'      => 15,
 				'description'   => __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' ),
 				'default'       => '',
 				'show_in_admin' => get_option( 'job_manager_enable_salary' ) && get_option( 'job_manager_enable_salary_currency' ),
@@ -1630,7 +1644,7 @@ class WP_Job_Manager_Post_Types {
 				'type'          => 'select',
 				'data_type'     => 'string',
 				'options'       => job_manager_get_salary_unit_options(),
-				'priority'      => 15,
+				'priority'      => 16,
 				'description'   => __( 'Add a salary period unit, this field is optional. Leave it empty to use the default salary unit, if one is defined.', 'wp-job-manager' ),
 				'default'       => '',
 				'show_in_admin' => get_option( 'job_manager_enable_salary' ) && get_option( 'job_manager_enable_salary_unit' ),
