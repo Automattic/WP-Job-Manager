@@ -33,7 +33,7 @@ $notice-success: #43af99;
 	}
 
 	.wp-core-ui &.is-dismissible {
-		padding-right: calc(52px + 24px);
+		padding-right: 24px;
 	}
 
 	&__top {
@@ -79,9 +79,7 @@ $notice-success: #43af99;
 	button.notice-dismiss {
 		padding: 6px;
 		color: inherit;
-		position: absolute;
-		top: 20px;
-		right: 24px;
+		position: static;
 
 		&::before {
 			color: inherit;
