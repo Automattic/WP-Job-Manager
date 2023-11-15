@@ -25,6 +25,7 @@ $notice-success: #43af99;
 
 	gap: 10px;
 	padding: 20px 24px;
+	padding-right: calc(48px + 24px);
 	transform-origin: top center;
 	overflow: hidden;
 
@@ -33,13 +34,13 @@ $notice-success: #43af99;
 	}
 
 	.wp-core-ui &.is-dismissible {
-		padding-right: calc(52px + 24px);
+		padding-right: 24px;
 	}
 
 	&__top {
 		display: flex;
 		flex-direction: row;
-		align-items: flex-start;
+		align-items: center;
 		flex-wrap: wrap;
 		gap: 20px;
 	}
@@ -79,9 +80,7 @@ $notice-success: #43af99;
 	button.wpjm-notice-dismiss--icon {
 		padding: 6px;
 		color: inherit;
-		position: absolute;
-		top: 20px;
-		right: 24px;
+		position: static;
 
 		&::before {
 			color: inherit;
@@ -97,6 +96,7 @@ $notice-success: #43af99;
 	&__extra_details {
 		font-size: 14px;
 		border-radius: 2px;
+		padding-right: 48px;
 	}
 
 	a:where(:not(.wpjm-button)) {
