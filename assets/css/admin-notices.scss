@@ -25,6 +25,7 @@ $notice-success: #43af99;
 
 	gap: 10px;
 	padding: 20px 24px;
+	padding-right: calc(48px + 24px);
 	transform-origin: top center;
 	overflow: hidden;
 
@@ -95,6 +96,7 @@ $notice-success: #43af99;
 	&__extra_details {
 		font-size: 14px;
 		border-radius: 2px;
+		padding-right: 48px;
 	}
 
 	a:where(:not(.wpjm-button)) {
