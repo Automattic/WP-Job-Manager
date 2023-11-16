@@ -48,11 +48,11 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 			'remote_position' => [
 				'type'    => 'select',
 				'std'     => 0,
-				'label'   => esc_html__( 'Remote Listings', 'wp-job-manager' ),
+				'label'   => esc_html__( 'Remote Positions', 'wp-job-manager' ),
 				'options' => [
 					'all'   => esc_html__( 'Show all', 'wp-job-manager' ),
-					'true'  => esc_html__( 'Show only remote listings', 'wp-job-manager' ),
-					'false' => esc_html__( 'Show only non-remote listings', 'wp-job-manager' ),
+					'true'  => esc_html__( 'Show only remote positions', 'wp-job-manager' ),
+					'false' => esc_html__( 'Show only non-remote positions', 'wp-job-manager' ),
 				],
 			],
 			'number'          => [
