@@ -136,8 +136,6 @@ If you wish to be notified of new postings on your site you can use a plugin suc
 = What language files are available? =
 You can view (and contribute) translations via the [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager).
 
-== Changelog ==
-
 == Screenshots ==
 
 1. The submit job form.
@@ -149,7 +147,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
-## 1.42.0 - 2023-10-05
+### 1.42.0 - 2023-10-05
 New!
 
 * Easily promote job listings on Indeed, LinkedIn, and 1000s of job boards with JobTarget integration. See https://wpjobmanager.com/jobtarget for more information.
@@ -168,7 +166,7 @@ For developers:
 * Tweak: Rename "licence" to "license" throughout codebase (#2554)
 * Fix: More efficient license checking for core add-ons (#2552)
 
-## 1.41.0 - 2023-06-10
+### 1.41.0 - 2023-06-10
 * Enhancement: Introduce listing renewals #2422
 * Enhancement: Allow searching multiple job locations at once #2433
 * Fix: Add check for job listing limit being 0 #2362
@@ -183,13 +181,13 @@ For developers:
 * Change: Run job_manager_job_submitted_content filter in every case #2474
 * Change: Update historical notices to use the new render_notice method. #2409
 
-## 1.40.2 - 2023-05-26
+### 1.40.2 - 2023-05-26
 * Revert: Hide expired job listings from archives
 
-## 1.40.1 - 2023-05-12
+### 1.40.1 - 2023-05-12
 * Fix: Icons not displaying properly
 
-## 1.40.0 - 2023-05-11
+### 1.40.0 - 2023-05-11
 * Enhancement: Improve licensing page experience
 * Enhancement: New email notifications setting
 * Enhancement: Improve discoverability of addon updates
