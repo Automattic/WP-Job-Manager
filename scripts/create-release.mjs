@@ -65,8 +65,10 @@ ${ releaseNotes }`;
 	console.log( chalk.bold( 'Adding new release to changelog: ' ) );
 	console.log( releases[ 0 ] )
 
+	const readmeReleases = releases.slice( 0, 5 ).map( release => release.replace( /^## /, '### ' ));
+
 	let readme = fs.readFileSync( 'readme.txt', 'utf8' );
-	readme     = readme.replace( /(== Changelog ==\n)([\s\S]+)/gm, `$1\n${ releases.slice( 0, 5 ).join( '' ) }` );
+	readme     = readme.replace( /(== Changelog ==\n)([\s\S]+)/gm, `$1\n${ readmeReleases.join( '' ) }` );
 
 	fs.writeFileSync( 'changelog.txt', changelog );
 	console.log( chalk.green( '✓' ), 'changelog.txt' );
