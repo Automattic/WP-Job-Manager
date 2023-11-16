@@ -161,7 +161,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '0',
 							'label'      => __( 'Filled Listings', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide filled listings', 'wp-job-manager' ),
-							'desc'       => __( 'Filled job listings will not be shown to the users on the jobboard. The individual page remains visible.', 'wp-job-manager' ),
+							'desc'       => __( 'Filled job listings will not be included in search results, sitemap and archives.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
 						],
