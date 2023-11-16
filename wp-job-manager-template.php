@@ -418,7 +418,7 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		}
 	}
 
-	$data['directApply'] = empty( get_the_job_application_method( $post ) ) ? false : true;
+	$data['directApply'] = ! empty( get_the_job_application_method( $post ) );
 
 	$salary   = get_the_job_salary( $post );
 	$currency = get_the_job_salary_currency( $post );
