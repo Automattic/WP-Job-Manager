@@ -572,15 +572,15 @@ msgid "Page numbered links"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:162
-msgid "Filled Positions"
+msgid "Filled Listings"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:163
-msgid "Hide filled positions"
+msgid "Hide filled listings"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:164
-msgid "Filled positions will not display in your archives."
+msgid "Filled listings will not display in your archives."
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-settings.php:171
@@ -2290,7 +2290,7 @@ msgid "Keyword"
 msgstr ""
 
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:51
-msgid "Remote Positions"
+msgid "Remote Listings"
 msgstr ""
 
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:53
@@ -2298,11 +2298,11 @@ msgid "Show all"
 msgstr ""
 
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:54
-msgid "Show only remote positions"
+msgid "Show only remote listings"
 msgstr ""
 
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:55
-msgid "Show only non-remote positions"
+msgid "Show only non-remote listings"
 msgstr ""
 
 #: templates/access-denied-browse-job_listings.php:19
@@ -2541,7 +2541,7 @@ msgid "Keywords"
 msgstr ""
 
 #: templates/job-filters.php:42
-msgid "Remote positions only"
+msgid "Remote listings only"
 msgstr ""
 
 #: templates/job-filters.php:54
