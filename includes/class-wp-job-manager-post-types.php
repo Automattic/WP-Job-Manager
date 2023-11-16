@@ -184,7 +184,7 @@ class WP_Job_Manager_Post_Types {
 						'labels'                => [
 							'name'              => $plural,
 							'singular_name'     => $singular,
-							'menu_name'         => ucwords( $plural ),
+							'menu_name'         => __( 'Categories', 'wp-job-manager' ),
 							// translators: Placeholder %s is the plural label of the job listing category taxonomy type.
 							'search_items'      => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
 							// translators: Placeholder %s is the plural label of the job listing category taxonomy type.
@@ -247,7 +247,7 @@ class WP_Job_Manager_Post_Types {
 						'labels'               => [
 							'name'              => $plural,
 							'singular_name'     => $singular,
-							'menu_name'         => ucwords( $plural ),
+							'menu_name'         => __( 'Types', 'wp-job-manager' ),
 							// translators: Placeholder %s is the plural label of the job listing job type taxonomy type.
 							'search_items'      => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
 							// translators: Placeholder %s is the plural label of the job listing job type taxonomy type.
@@ -331,36 +331,36 @@ class WP_Job_Manager_Post_Types {
 					'labels'                => [
 						'name'                  => $plural,
 						'singular_name'         => $singular,
-						'menu_name'             => __( 'Job Listings', 'wp-job-manager' ),
+						'menu_name'             => esc_html__( 'Job Manager', 'wp-job-manager' ),
 						// translators: Placeholder %s is the plural label of the job listing post type.
-						'all_items'             => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
-						'add_new'               => __( 'Add New', 'wp-job-manager' ),
+						'all_items'             => sprintf( esc_html__( 'All %s', 'wp-job-manager' ), $plural ),
+						'add_new'               => esc_html__( 'Add New', 'wp-job-manager' ),
 						// translators: Placeholder %s is the singular label of the job listing post type.
-						'add_new_item'          => sprintf( __( 'Add %s', 'wp-job-manager' ), $singular ),
-						'edit'                  => __( 'Edit', 'wp-job-manager' ),
+						'add_new_item'          => sprintf( esc_html__( 'Add %s', 'wp-job-manager' ), $singular ),
+						'edit'                  => esc_html__( 'Edit', 'wp-job-manager' ),
 						// translators: Placeholder %s is the singular label of the job listing post type.
-						'edit_item'             => sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+						'edit_item'             => sprintf( esc_html__( 'Edit %s', 'wp-job-manager' ), $singular ),
 						// translators: Placeholder %s is the singular label of the job listing post type.
-						'new_item'              => sprintf( __( 'New %s', 'wp-job-manager' ), $singular ),
+						'new_item'              => sprintf( esc_html__( 'New %s', 'wp-job-manager' ), $singular ),
 						// translators: Placeholder %s is the singular label of the job listing post type.
-						'view'                  => sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
+						'view'                  => sprintf( esc_html__( 'View %s', 'wp-job-manager' ), $singular ),
 						// translators: Placeholder %s is the singular label of the job listing post type.
-						'view_item'             => sprintf( __( 'View %s', 'wp-job-manager' ), $singular ),
+						'view_item'             => sprintf( esc_html__( 'View %s', 'wp-job-manager' ), $singular ),
 						// translators: Placeholder %s is the singular label of the job listing post type.
-						'search_items'          => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+						'search_items'          => sprintf( esc_html__( 'Search %s', 'wp-job-manager' ), $plural ),
 						// translators: Placeholder %s is the singular label of the job listing post type.
-						'not_found'             => sprintf( __( 'No %s found', 'wp-job-manager' ), $plural ),
+						'not_found'             => sprintf( esc_html__( 'No %s found', 'wp-job-manager' ), $plural ),
 						// translators: Placeholder %s is the plural label of the job listing post type.
-						'not_found_in_trash'    => sprintf( __( 'No %s found in trash', 'wp-job-manager' ), $plural ),
+						'not_found_in_trash'    => sprintf( esc_html__( 'No %s found in trash', 'wp-job-manager' ), $plural ),
 						// translators: Placeholder %s is the singular label of the job listing post type.
-						'parent'                => sprintf( __( 'Parent %s', 'wp-job-manager' ), $singular ),
-						'featured_image'        => __( 'Company Logo', 'wp-job-manager' ),
-						'set_featured_image'    => __( 'Set company logo', 'wp-job-manager' ),
-						'remove_featured_image' => __( 'Remove company logo', 'wp-job-manager' ),
-						'use_featured_image'    => __( 'Use as company logo', 'wp-job-manager' ),
+						'parent'                => sprintf( esc_html__( 'Parent %s', 'wp-job-manager' ), $singular ),
+						'featured_image'        => esc_html__( 'Company Logo', 'wp-job-manager' ),
+						'set_featured_image'    => esc_html__( 'Set company logo', 'wp-job-manager' ),
+						'remove_featured_image' => esc_html__( 'Remove company logo', 'wp-job-manager' ),
+						'use_featured_image'    => esc_html__( 'Use as company logo', 'wp-job-manager' ),
 					],
 					// translators: Placeholder %s is the plural label of the job listing post type.
-					'description'           => sprintf( __( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
+					'description'           => sprintf( esc_html__( 'This is where you can create and manage %s.', 'wp-job-manager' ), $plural ),
 					'public'                => true,
 					'show_ui'               => true,
 					'capability_type'       => 'job_listing',
@@ -434,7 +434,7 @@ class WP_Job_Manager_Post_Types {
 
 		// Try to pull menu_name from post type object to support themes/plugins that change the menu string.
 		$post_type = get_post_type_object( 'job_listing' );
-		$plural    = isset( $post_type->labels, $post_type->labels->menu_name ) ? $post_type->labels->menu_name : __( 'Job Listings', 'wp-job-manager' );
+		$plural    = isset( $post_type->labels, $post_type->labels->menu_name ) ? $post_type->labels->menu_name : esc_html__( 'Job Listings', 'wp-job-manager' );
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( strpos( $menu_item[0], $plural ) === 0 ) {

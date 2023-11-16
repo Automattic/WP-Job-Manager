@@ -56,35 +56,20 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->assertEquals( 1, $this->event_counts['schedule_event'], 'Does not schedule an additional job' );
 	}
 
-	/* Test ajax request cases */
+	/* Test admin request cases */
 
 	/**
-	 * Ensure ajax hook is set up properly.
-	 *
-	 * @covers {Prefix}_Usage_Tracking::hook
-	 */
-	public function testAjaxRequestSetup() {
-		$this->assertTrue( !! has_action( 'wp_ajax_' . $this->usage_tracking->get_prefix() . '_handle_tracking_opt_in', array( $this->usage_tracking, 'handle_tracking_opt_in' ) ) );
-	}
-
-	/**
-	 * Ensure tracking is enabled through ajax request.
+	 * Ensure tracking is enabled through admin request.
 	 *
 	 * @covers {Prefix}_Usage_Tracking::_handle_tracking_opt_in
 	 */
-	public function testAjaxRequestEnableTracking() {
-		$this->setupAjaxRequest();
-		$_POST['enable_tracking'] = '1';
+	public function testAdminRequestEnableTracking() {
+		$this->setupAdminRequest();
 
 		$this->assertFalse( !! $this->usage_tracking->is_tracking_enabled(), 'Usage tracking initially disabled' );
 		$this->assertFalse( !! get_option( $this->usage_tracking->get_prefix() . '_usage_tracking_opt_in_hide' ), 'Dialog initially shown' );
 
-		try {
-			$this->usage_tracking->handle_tracking_opt_in();
-		} catch ( WP_Die_Exception $e ) {
-			$wp_die_args = $e->get_wp_die_args();
-			$this->assertEquals( array(), $wp_die_args['args'], 'wp_die call has no non-success status' );
-		}
+		$this->usage_tracking->handle_tracking_opt_in();
 
 		$this->assertTrue( $this->usage_tracking->is_tracking_enabled(), 'Usage tracking enabled' );
 		$this->assertTrue( get_option( $this->usage_tracking->get_prefix() . '_usage_tracking_opt_in_hide' ), 'Dialog hidden' );
@@ -95,55 +80,43 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 *
 	 * @covers {Prefix}_Usage_Tracking::_handle_tracking_opt_in
 	 */
-	public function testAjaxRequestEnableTrackingSendsData() {
-		$this->setupAjaxRequest();
-		$_POST['enable_tracking'] = '1';
+	public function testAdminRequestEnableTrackingSendsData() {
+		$this->setupAdminRequest();
 
 		// Count the number of network requests.
 		$this->event_counts['http_request'] = 0;
 		add_filter( 'pre_http_request', array( $this, 'countHttpRequest' ) );
 
-		try {
-			$this->usage_tracking->handle_tracking_opt_in();
-		} catch ( WP_Die_Exception $e ) {
-			$wp_die_args = $e->get_wp_die_args();
-			$this->assertEquals( array(), $wp_die_args['args'], 'wp_die call has no non-success status' );
-		}
+		$this->usage_tracking->handle_tracking_opt_in();
 
 		$this->assertEquals( 2, $this->event_counts['http_request'], 'Data was sent on usage tracking enable' );
 	}
 
 	/**
-	 * Ensure tracking is disabled through ajax request.
+	 * Ensure tracking is disabled through admin request.
 	 *
 	 * @covers {Prefix}_Usage_Tracking::_handle_tracking_opt_in
 	 */
-	public function testAjaxRequestDisableTracking() {
-		$this->setupAjaxRequest();
-		$_POST['enable_tracking'] = '0';
+	public function testAdminRequestDisableTracking() {
+		$this->setupAdminRequest();
 
 		$this->assertFalse( !! $this->usage_tracking->is_tracking_enabled(), 'Usage tracking initially disabled' );
 		$this->assertFalse( !! get_option( $this->usage_tracking->get_prefix() . '_usage_tracking_opt_in_hide' ), 'Dialog initially shown' );
 
-		try {
-			$this->usage_tracking->handle_tracking_opt_in();
-		} catch ( WP_Die_Exception $e ) {
-			$wp_die_args = $e->get_wp_die_args();
-			$this->assertEquals( array(), $wp_die_args['args'], 'wp_die call has no non-success status' );
-		}
+		do_action('wp_job_manager_notice_dismissed', [], 'usage_tracking_opt_in');
 
 		$this->assertFalse( !! $this->usage_tracking->is_tracking_enabled(), 'Usage tracking disabled' );
 		$this->assertTrue( get_option( $this->usage_tracking->get_prefix() . '_usage_tracking_opt_in_hide' ), 'Dialog hidden' );
 	}
 
 	/**
-	 * Ensure ajax request fails on nonce failure and does not update option.
+	 * Ensure admin request fails on nonce failure and does not update option.
 	 *
 	 * @covers {Prefix}_Usage_Tracking::_handle_tracking_opt_in
 	 */
-	public function testAjaxRequestFailedNonce() {
-		$this->setupAjaxRequest();
-		$_REQUEST['nonce'] = 'invalid_nonce_1234';
+	public function testAdminRequestFailedNonce() {
+		$this->setupAdminRequest();
+		$_REQUEST['_wpnonce'] = 'invalid_nonce_1234';
 
 		$this->assertFalse( !! $this->usage_tracking->is_tracking_enabled(), 'Usage tracking initially disabled' );
 		$this->assertFalse( !! get_option( $this->usage_tracking->get_prefix() . '_usage_tracking_opt_in_hide' ), 'Dialog initially shown' );
@@ -160,12 +133,12 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Ensure ajax request fails on authorization failure and does not update option.
+	 * Ensure admin request fails on authorization failure and does not update option.
 	 *
 	 * @covers {Prefix}_Usage_Tracking::_handle_tracking_opt_in
 	 */
-	public function testAjaxRequestFailedAuth() {
-		$this->setupAjaxRequest();
+	public function testAdminRequestFailedAuth() {
+		$this->setupAdminRequest();
 
 		// Current user cannot enable tracking.
 		$this->allowCurrentUserToEnableTracking( false );
@@ -184,7 +157,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->assertFalse( !! get_option( $this->usage_tracking->get_prefix() . '_usage_tracking_opt_in_hide' ), 'Dialog not hidden' );
 	}
 
-	/* END test ajax request cases */
+	/* END test admin request cases */
 
 	/**
 	 * Ensure that a request is made to the correct URL with the given
@@ -290,8 +263,9 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	public function testDisplayTrackingOptIn() {
 		$this->setupOptInDialog();
 
-		$this->expectOutputRegex( '/Enable Usage Tracking/' );
-		$this->usage_tracking->maybe_display_tracking_opt_in();
+		$notices = $this->usage_tracking->maybe_display_tracking_opt_in( [] );
+
+		$this->assertArrayHasKey('usage_tracking_opt_in', $notices );
 	}
 
 	/**
@@ -303,8 +277,8 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->setupOptInDialog();
 		$this->usage_tracking->set_tracking_enabled( true );
 
-		$this->expectOutputString( '' );
-		$this->usage_tracking->maybe_display_tracking_opt_in();
+		$notices = $this->usage_tracking->maybe_display_tracking_opt_in( [] );
+		$this->assertArrayNotHasKey('usage_tracking_opt_in', $notices );
 	}
 
 	/**
@@ -317,7 +291,9 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		update_option( $this->usage_tracking->get_prefix() . '_usage_tracking_opt_in_hide', true );
 
 		$this->expectOutputString( '' );
-		$this->usage_tracking->maybe_display_tracking_opt_in();
+		$notices = $this->usage_tracking->maybe_display_tracking_opt_in( [] );
+		$this->assertArrayNotHasKey('usage_tracking_opt_in', $notices );
+
 	}
 
 	/**
@@ -330,8 +306,8 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 		$this->setupOptInDialog();
 		$this->allowCurrentUserToEnableTracking( false );
 
-		$this->expectOutputString( '' );
-		$this->usage_tracking->maybe_display_tracking_opt_in();
+		$notices = $this->usage_tracking->maybe_display_tracking_opt_in( [] );
+		$this->assertArrayNotHasKey('usage_tracking_opt_in', $notices );
 	}
 
 	/* END tests for tracking opt in dialog */
@@ -403,21 +379,21 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	/****** Helper methods ******/
 
 	/**
-	 * Helper method for ajax request.
+	 * Helper method for admin request.
 	 */
-	private function setupAjaxRequest() {
-		// Simulate an ajax request.
-		add_filter( 'wp_doing_ajax', '__return_true' );
+	private function setupAdminRequest() {
 
 		// Set up nonce.
-		$_REQUEST['nonce'] = wp_create_nonce( 'tracking-opt-in' );
+		$_REQUEST['_wpnonce'] = wp_create_nonce( 'testing_tracking_opt_in' );
 
 		// Ensure current user can enable tracking.
 		$this->allowCurrentUserToEnableTracking();
 
 		// When wp_die is called, save the args and throw an exception to stop.
 		// execution.
-		add_filter( 'wp_die_ajax_handler', array( $this, 'ajaxDieHandler' ) );
+		add_filter( 'wp_die_ajax_handler', array( $this, 'adminDieHandler' ) );
+
+		add_filter( 'wp_redirect', '__return_false' );
 	}
 
 	/**
@@ -462,16 +438,16 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Sets the die handler for ajax request.
+	 * Sets the die handler for admin request.
 	 *
 	 * @return array
 	 */
-	public function ajaxDieHandler() {
-		return array( $this, 'ajaxDieHandlerCallback' );
+	public function adminDieHandler() {
+		return array( $this, 'adminDieHandlerCallback' );
 	}
 
 	/**
-	 * Error handler for ajax requests.
+	 * Error handler for admin requests.
 	 *
 	 * @param string $message
 	 * @param string $title
@@ -479,7 +455,7 @@ class WP_Job_Manager_Usage_Tracking_Test extends WP_UnitTestCase {
 	 *
 	 * @throws WP_Die_Exception
 	 */
-	public function ajaxDieHandlerCallback( $message, $title, $args ) {
+	public function adminDieHandlerCallback( $message, $title, $args ) {
 		$e = new WP_Die_Exception( 'wp_die called' );
 		$e->set_wp_die_args( $message, $title, $args );
 		throw $e;

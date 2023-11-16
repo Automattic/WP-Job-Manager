@@ -38,8 +38,15 @@ class WP_Job_Manager_Admin_Notices {
 			'target' => [],
 			'href'   => [],
 			'rel'    => [],
+			'class'  => [],
+		],
+		'img'    => [
+			'src'   => [],
+			'alt'   => [],
+			'class' => [],
 		],
 		'em'     => [],
+		'p'      => [],
 		'strong' => [],
 	];
 
@@ -54,12 +61,13 @@ class WP_Job_Manager_Admin_Notices {
 	 * Initialize admin notice handling.
 	 */
 	public static function init() {
-		add_action( 'job_manager_init_admin_notices', [ __CLASS__, 'init_core_notices' ] );
 		add_action( 'admin_notices', [ __CLASS__, 'display_notices' ] );
 		add_action( 'wp_loaded', [ __CLASS__, 'dismiss_notices' ] );
 		add_action( 'wp_ajax_wp_job_manager_dismiss_notice', [ __CLASS__, 'handle_notice_dismiss' ] );
 		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'maybe_add_addon_update_available_notice' ], 10, 1 );
 		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'paid_listings_renewal_notice' ], 10, 1 );
+		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'we_have_addons_notice' ], 10, 1 );
+		add_filter( 'wpjm_admin_notices', [ __CLASS__, 'maybe_add_core_setup_notice' ], 10, 1 );
 	}
 
 	/**
@@ -74,6 +82,7 @@ class WP_Job_Manager_Admin_Notices {
 			case 'wpjm':
 				return JOB_MANAGER_PLUGIN_URL . '/assets/images/wpjm-logo.png';
 		}
+
 		return JOB_MANAGER_PLUGIN_URL . '/assets/images/wpjm-logo.png';
 	}
 
@@ -143,11 +152,12 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Set up filters for core admin notices.
 	 *
+	 * @deprecated since $$next-version$$. See maybe_add_core_setup_notice
+	 *
 	 * Note: For internal use only. Do not call manually.
 	 */
 	public static function init_core_notices() {
-		// core_setup: Notice is used when first activating WP Job Manager.
-		add_action( 'job_manager_admin_notice_' . self::NOTICE_CORE_SETUP, [ __CLASS__, 'display_core_setup' ] );
+		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Admin_Notices::maybe_add_core_setup_notice' );
 	}
 
 	/**
@@ -199,11 +209,24 @@ class WP_Job_Manager_Admin_Notices {
 	}
 
 	/**
+	 * Check if a notice was dismissed.
+	 *
+	 * @param string $notice_id Notice ID.
+	 * @param string $is_user_notification Whether it's a user-level or a global notification.
+	 *
+	 * @return bool
+	 */
+	public static function is_dismissed( $notice_id, $is_user_notification ) {
+		return ( in_array( $notice_id, self::get_dismissed_notices( $is_user_notification ), true ) );
+	}
+
+	/**
 	 * Displays notices in WP admin.
 	 *
 	 * Note: For internal use only. Do not call manually.
 	 */
 	public static function display_notices() {
+
 		/**
 		 * Allows WPJM related plugins to set up their notice hooks.
 		 *
@@ -305,7 +328,7 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Save dismissed notices.
 	 *
-	 * @param array $dismissed_notices    Array of dismissed notices.
+	 * @param array $dismissed_notices Array of dismissed notices.
 	 * @param bool  $is_user_notification True if we are setting user notifications (vs site-wide notifications).
 	 */
 	private static function save_dismissed_notices( $dismissed_notices, $is_user_notification ) {
@@ -347,7 +370,9 @@ class WP_Job_Manager_Admin_Notices {
 
 		self::save_dismissed_notices( $dismissed_notices, $is_user_notification );
 
-		wp_die();
+		do_action( 'wp_job_manager_notice_dismissed', $notices[ $notice_id ], $notice_id, $is_user_notification );
+
+		exit;
 	}
 
 	/**
@@ -355,9 +380,14 @@ class WP_Job_Manager_Admin_Notices {
 	 *
 	 * @param array $additional_screens Screen IDs to also show a notice on.
 	 *
+	 * @deprecated $$next_version$$ Removed. See WP_Job_Manager\Admin\Notices_Conditions_Checker::check instead.
+	 *
 	 * @return bool
 	 */
 	public static function is_admin_on_standard_job_manager_screen( $additional_screens = [] ) {
+
+		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager\Admin\Notices_Conditions_Checker::check' );
+
 		$screen          = get_current_screen();
 		$screen_id       = $screen ? $screen->id : '';
 		$show_on_screens = array_merge(
@@ -365,7 +395,7 @@ class WP_Job_Manager_Admin_Notices {
 				'edit-job_listing',
 				'edit-job_listing_category',
 				'edit-job_listing_type',
-				'job_listing_page_job-manager-addons',
+				'job_listing_page_job-manager-marketplace',
 				'job_listing_page_job-manager-settings',
 			],
 			$additional_screens
@@ -385,23 +415,73 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Displays the setup wizard notice when WPJM is first activated.
 	 *
+	 * @deprecated since $$next-version$$. See maybe_add_core_setup_notice
+	 *
 	 * Note: For internal use only. Do not call manually.
 	 */
 	public static function display_core_setup() {
-		if ( ! self::is_admin_on_standard_job_manager_screen( [ 'plugins', 'dashboard' ] ) ) {
-			return;
+		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Admin_Notices::maybe_add_core_setup_notice' );
+	}
+
+	/**
+	 * Displays the setup wizard notice when WPJM is first activated.
+	 *
+	 * @access private.
+	 *
+	 * @param array $notices WPJM notices.
+	 *
+	 * @return array
+	 */
+	public static function maybe_add_core_setup_notice( $notices ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return $notices;
 		}
-		include dirname( __FILE__ ) . '/views/html-admin-notice-core-setup.php';
+
+		if ( self::has_notice( self::NOTICE_CORE_SETUP ) ) {
+			$notices[ self::NOTICE_CORE_SETUP ] = [
+				'type'        => 'site-wide',
+				'level'       => 'warning',
+				'icon'        => 'wpjm',
+				'dismissible' => false,
+				'heading'     => __( 'You are nearly ready to start listing jobs with Job Manager', 'wp-job-manager' ),
+				'message'     => '<p>Go through the setup to start listing your jobs.</p>
+			<p>* See <a href="https://wpjobmanager.com/document/getting-started/installation/">manually creating pages</a>.</p>',
+				'actions'     => [
+					[
+						'label' => __( 'Run Setup Wizard', 'wp-job-manager' ),
+						'url'   => admin_url( 'index.php?page=job-manager-setup' ),
+					],
+					[
+						'primary' => false,
+						'url'     => esc_url( wp_nonce_url( add_query_arg( 'wpjm_hide_notice', self::NOTICE_CORE_SETUP ), 'job_manager_hide_notices_nonce', '_wpjm_notice_nonce' ) ),
+						'label'   => __( 'Skip Setup*', 'wp-job-manager' ),
+					],
+				],
+				'conditions'  => [
+					[
+						'type'    => 'screens',
+						'screens' => [
+							'edit-job_listing',
+							'job_listing_page_job-manager-settings',
+							'dashboard',
+							'plugins',
+						],
+					],
+				],
+			];
+		}
+
+		return $notices;
 	}
 
 	/**
 	 * Adds notice that informs about WPJM addon updates available if any.
 	 *
+	 * @access private
+	 *
 	 * @param array $notices Existing notices.
 	 *
-	 * @internal
-	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public static function maybe_add_addon_update_available_notice( $notices ) {
 		if ( ! current_user_can( 'install_plugins' ) ) {
@@ -416,6 +496,7 @@ class WP_Job_Manager_Admin_Notices {
 				$notices[ $notice_id ] = $notice;
 			}
 		}
+
 		return $notices;
 	}
 
@@ -458,54 +539,46 @@ class WP_Job_Manager_Admin_Notices {
 			return null;
 		}
 
-		// Default: Single update available.
-		$extra_details       = null;
-		$update_action_label = __( 'Update', 'wp-job-manager' );
-		$first_update        = current( $updates );
-		// translators: %s is the name of the wpjm addon to be updated.
-		$message = sprintf( esc_html__( 'Good news, reminder to update to the latest version of %s.', 'wp-job-manager' ), $first_update['plugin_name'] );
-		$actions = [
-			[
-				'url'     => 'https://wpjobmanager.com/release-notes/',
-				'label'   => __( 'View release notes', 'wp-job-manager' ),
-				'target'  => '_blank',
-				'primary' => false,
-			],
-		];
+		$plugin_info = WP_Job_Manager_Helper::instance()->get_installed_plugins( false, true );
 
-		// Multiple updates: Change message, update action label, remove release notes secondary action and add extra info.
-		if ( count( $updates ) > 1 ) {
-			$message             = __( 'Good news, reminder to update these plugins to their latest versions.', 'wp-job-manager' );
-			$update_action_label = __( 'Update All', 'wp-job-manager' );
-			$extra_details       = '';
-			$actions             = []; // Remove more_info link.
-			foreach ( $updates as $update ) {
-				$extra_details .= '<div class="wpjm-addon-update-notice-info">';
-				$extra_details .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $update['plugin_name'] ) . '</div>';
-				$extra_details .= '<div class="wpjm-addon-update-notice-info__version">';
-				$extra_details .= '<a href="https://wpjobmanager.com/release-notes/" target="_blank">';
-				// translators: %s is the new version number for the addon.
-				$extra_details .= sprintf( esc_html__( 'New Version: %s', 'wp-job-manager' ), $update['new_version'] );
-				$extra_details .= '</a>';
-				$extra_details .= '</div>';
-				$extra_details .= '</div>';
-			}
+		$heading = esc_html( _n( 'Job Manager: Plugin update available', 'Job Manager: Plugin updates available', count( $updates ), 'wp-job-manager' ) );
+		$message = _n( 'Good news, you can update the following extension to its latest version:', 'Good news, you can update the following extensions to their latest versions:', count( $updates ), 'wp-job-manager' );
+
+		$actions = [];
+
+		$extra_details = '';
+		foreach ( $updates as $update ) {
+			$info           = $plugin_info[ $update['plugin'] ];
+			$plugin_slug    = $info['_product_slug'];
+			$icon           = WP_Job_Manager_Addons::instance()->get_icon( $info['PluginURI'] ?? null );
+			$extra_details .= '<div class="wpjm-addon-update-notice-info">';
+			$extra_details .= '<img class="wpjm-addon-update-notice-info__icon" src="' . esc_url( $icon ) . '" />';
+			$extra_details .= '<div class="wpjm-addon-update-notice-info__name">' . esc_html( $info['Name'] ) . '</div>';
+			$extra_details .= '<div class="wpjm-addon-update-notice-info__version">';
+			$extra_details .= '<a href="https://wpjobmanager.com/release-notes/?job-manager-product=' . esc_attr( $plugin_slug ) . '" target="_blank">';
+			// translators: %s is the new version number for the addon.
+			$extra_details .= sprintf( esc_html__( 'New Version: %s', 'wp-job-manager' ), $update['new_version'] );
+			$extra_details .= '</a>';
+			$extra_details .= '</div>';
+			$extra_details .= '</div>';
 		}
 
 		$actions[] = [
-			'label' => $update_action_label,
-			'url'   => admin_url( 'plugins.php' ),
+			'label' => _n( 'Update', 'Update All', count( $updates ), 'wp-job-manager' ),
+			'url'   => admin_url( 'plugins.php?s=wp-job-manager' ),
 		];
 
 		return [
 			'type'          => 'site-wide',
+			'heading'       => $heading,
 			'message'       => $message,
 			'actions'       => $actions,
+			'icon'          => false,
 			'extra_details' => $extra_details,
 			'conditions'    => [
 				[
 					'type'    => 'screens',
-					'screens' => [ 'wpjm*', 'dashboard' ],
+					'screens' => [ 'edit-job_listing', 'dashboard' ],
 				],
 			],
 		];
@@ -515,7 +588,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Renders a notice.
 	 *
 	 * @param string $notice_id Unique identifier for the notice.
-	 * @param array  $notice    See `generate_notice_from_updates` for format.
+	 * @param array  $notice See `generate_notice_from_updates` for format.
 	 */
 	private static function render_notice( $notice_id, $notice ) {
 		if ( empty( $notice['actions'] ) || ! is_array( $notice['actions'] ) ) {
@@ -523,7 +596,7 @@ class WP_Job_Manager_Admin_Notices {
 		}
 
 		$notice_class  = [];
-		$notice_levels = [ 'error', 'warning', 'success', 'info' ];
+		$notice_levels = [ 'error', 'warning', 'success', 'info', 'upsell' ];
 		if ( isset( $notice['level'] ) && in_array( $notice['level'], $notice_levels, true ) ) {
 			$notice_class[] = 'wpjm-admin-notice--' . $notice['level'];
 		} else {
@@ -535,7 +608,7 @@ class WP_Job_Manager_Admin_Notices {
 		if ( $is_dismissible ) {
 			wp_enqueue_script( 'job_manager_notice_dismiss' );
 			$notice_class[]       = 'is-dismissible';
-			$notice_wrapper_extra = sprintf( ' data-dismiss-action="%1$s" data-dismiss-notice="%2$s" data-dismiss-nonce="%3$s"', esc_attr( self::DISMISS_NOTICE_ACTION ), esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_ACTION ) ) );
+			$notice_wrapper_extra = self::get_dismissible_notice_wrapper_attributes( $notice_id );
 		}
 
 		echo '<div class="notice wpjm-admin-notice ' . esc_attr( implode( ' ', $notice_class ) ) . '"';
@@ -545,7 +618,9 @@ class WP_Job_Manager_Admin_Notices {
 
 		echo '<div class="wpjm-admin-notice__top">';
 
-		$notice['icon'] = 'wpjm';
+		if ( ! isset( $notice['icon'] ) ) {
+			$notice['icon'] = 'wpjm';
+		}
 		if ( ! empty( $notice['icon'] ) ) {
 			echo '<img src="' . esc_url( self::get_icon( $notice['icon'] ) ) . '" class="wpjm-admin-notice__icon" alt="WP Job Manager Icon" />';
 		}
@@ -557,20 +632,25 @@ class WP_Job_Manager_Admin_Notices {
 		}
 		echo wp_kses( $notice['message'], self::ALLOWED_HTML );
 		echo '</div>';
+		echo '<div class="wpjm-admin-notice__actions">';
 		if ( ! empty( $notice['actions'] ) ) {
-			echo '<div class="wpjm-admin-notice__actions">';
 			foreach ( $notice['actions'] as $action ) {
 				if ( ! isset( $action['label'], $action['url'] ) ) {
 					continue;
 				}
 
-				$button_class = ! isset( $action['primary'] ) || $action['primary'] ? 'button-primary' : 'button-secondary';
-				echo '<a href="' . esc_url( $action['url'] ) . '" target="' . esc_attr( $action['target'] ?? '_self' ) . '" rel="noopener noreferrer" class="button ' . esc_attr( $button_class ) . '">';
+				$button_class = ! isset( $action['primary'] ) || $action['primary'] ? 'is-primary' : 'is-outline';
+
+				echo '<a href="' . esc_url( $action['url'] ) . '" target="' . esc_attr( $action['target'] ?? '_self' ) . '" rel="noopener noreferrer" class="wpjm-button ' . esc_attr( $button_class ) . '">';
 				echo esc_html( $action['label'] );
 				echo '</a>';
+
 			}
-			echo '</div>';
 		}
+		if ( $is_dismissible ) {
+			echo '<button type="button" class="wpjm-button is-link notice-dismiss wpjm-notice-dismiss wpjm-notice-dismiss--icon"><span class="screen-reader-text">' . esc_html__( 'Dismiss this notice', 'wp-job-manager' ) . '</span></button>';
+		}
+		echo '</div>';
 		echo '</div>';
 
 		if ( ! empty( $notice['extra_details'] ) ) {
@@ -583,9 +663,21 @@ class WP_Job_Manager_Admin_Notices {
 	}
 
 	/**
+	 * Get attributes for the notice wrapper for dismiss action.
+	 *
+	 * @param string $notice_id Notice ID.
+	 *
+	 * @return string
+	 */
+	public static function get_dismissible_notice_wrapper_attributes( $notice_id ) {
+		return sprintf( ' data-dismiss-action="%1$s" data-dismiss-notice="%2$s" data-dismiss-nonce="%3$s"', esc_attr( self::DISMISS_NOTICE_ACTION ), esc_attr( $notice_id ), esc_attr( wp_create_nonce( self::DISMISS_NOTICE_ACTION ) ) );
+	}
+
+	/**
 	 * Generate unique notice ID based on the updates available.
 	 *
 	 * @param array $updates The updates available.
+	 *
 	 * @return string The notice ID.
 	 */
 	private static function generate_notice_id_from_updates( $updates ) {
@@ -593,6 +685,7 @@ class WP_Job_Manager_Admin_Notices {
 		foreach ( $updates as $update ) {
 			$updates_info .= $update['plugin'] . '@' . $update['new_version'];
 		}
+
 		return self::NOTICE_ADDON_UPDATE_AVAILABLE . '-' . md5( $updates_info );
 	}
 
@@ -600,6 +693,7 @@ class WP_Job_Manager_Admin_Notices {
 	 * Adds notice to update Simple or WC paid listings plugin to use listing renewal feature.
 	 *
 	 * @since 1.41.0
+	 *
 	 * @param array $notices Existing notices.
 	 *
 	 * @return array Notices.
@@ -623,6 +717,35 @@ class WP_Job_Manager_Admin_Notices {
 				),
 			];
 		}
+
+		return $notices;
+	}
+
+	/**
+	 * Add notice informing about extensions.
+	 *
+	 * @param array $notices Existing notices.
+	 *
+	 * @return array
+	 */
+	public static function we_have_addons_notice( $notices ) {
+		if ( ! current_user_can( 'install_plugins' ) || self::has_notice( self::NOTICE_CORE_SETUP ) ) {
+			return $notices;
+		}
+
+		$notices['we_have_addons'] = [
+			'level'       => 'info',
+			'dismissible' => true,
+			'heading'     => __( 'Did you know?', 'wp-job-manager' ),
+			'message'     => __( ' You can upgrade your job listings with Job Manager extensions and add applications, resumes, alerts, and more!', 'wp-job-manager' ),
+			'actions'     => [
+				[
+					'label' => __( 'View Extensions', 'wp-job-manager' ),
+					'url'   => admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ),
+				],
+			],
+		];
+
 		return $notices;
 	}
 }

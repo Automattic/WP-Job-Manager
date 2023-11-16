@@ -547,6 +547,8 @@ class WP_Job_Manager_CPT {
 			unset( $actions['inline hide-if-no-js'] );
 			unset( $actions['trash'] );
 
+			$admin_actions = [];
+
 			if ( in_array( $post->post_status, [ 'pending', 'pending_payment' ], true ) && current_user_can( 'publish_post', $post->ID ) ) {
 				$admin_actions['approve'] = [
 					'action' => 'approved',
