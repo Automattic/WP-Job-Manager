@@ -170,7 +170,7 @@ class WP_Job_Manager_Settings {
 							'std'        => get_option( 'job_manager_hide_expired_content' ) ? '1' : '0', // back compat.
 							'label'      => __( 'Expired Listings', 'wp-job-manager' ),
 							'cb_label'   => __( 'Hide expired listings', 'wp-job-manager' ),
-							'desc'       => __( 'Expired job listings will not be shown to the users on the job board., 'wp-job-manager' ),
+							'desc'       => __( 'Expired job listings will not be shown to the users on the job board.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
 						],
