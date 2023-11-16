@@ -8,7 +8,7 @@ Stable tag: 1.42.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Manage job listings from the WordPress admin panel, and allow users to post job listings directly to your site.
+Create a careers page for your company website, or build a public job board for your community. 
 
 == Description ==
 
@@ -17,6 +17,7 @@ WP Job Manager is a **lightweight** job listing plugin for adding job-board like
 = Features =
 
 * Add, manage, and categorize job listings using the familiar WordPress UI.
+* Post jobs on your own site, then promote them across a worldwide job network — on LinkedIn, Indeed and more.
 * Searchable & filterable ajax powered job listings added to your pages via shortcodes.
 * Frontend forms for guests and registered users to submit & manage job listings.
 * Allow job listers to preview their listing before it goes live. The preview matches the appearance of a live job listing.
@@ -32,6 +33,10 @@ The plugin comes with several shortcodes to output jobs in various formats, and 
 = Documentation =
 
 Documentation for the core plugin and extensions can be found [on the docs site here](https://wpjobmanager.com/documentation/). Please take a look before requesting support because it covers all frequently asked questions!
+
+= Demo =
+
+For a real-life example site, check out [jobs.blog](https://jobs.blog), built by the WP Job Manager team!
 
 = Extensions =
 
@@ -131,17 +136,6 @@ If you wish to be notified of new postings on your site you can use a plugin suc
 = What language files are available? =
 You can view (and contribute) translations via the [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager).
 
-== Unit Testing ==
-
-The plugin contains all the files needed for running tests.
-Developers who would like to run the existing tests or add their tests to the test suite and execute them will have to follow these steps:
-1. `cd` into the plugin directory.
-2. Run the install script(you will need to have `wget` installed) - `bash tests/bin/install-wp-tests.sh <db-name> <db-user> <db-pass> <db-host> <wp-version>`.
-3. Run the plugin tests - `phpunit`
-
-The install script installs a copy of WordPress in the `/tmp` directory along with the WordPress unit testing tools.
-It then creates a database based on the parameters passed to it.
-
 == Screenshots ==
 
 1. The submit job form.
@@ -153,7 +147,7 @@ It then creates a database based on the parameters passed to it.
 
 == Changelog ==
 
-## 1.42.0 - 2023-10-05
+### 1.42.0 - 2023-10-05
 New!
 
 * Easily promote job listings on Indeed, LinkedIn, and 1000s of job boards with JobTarget integration. See https://wpjobmanager.com/jobtarget for more information.
@@ -172,7 +166,7 @@ For developers:
 * Tweak: Rename "licence" to "license" throughout codebase (#2554)
 * Fix: More efficient license checking for core add-ons (#2552)
 
-## 1.41.0 - 2023-06-10
+### 1.41.0 - 2023-06-10
 * Enhancement: Introduce listing renewals #2422
 * Enhancement: Allow searching multiple job locations at once #2433
 * Fix: Add check for job listing limit being 0 #2362
@@ -187,13 +181,13 @@ For developers:
 * Change: Run job_manager_job_submitted_content filter in every case #2474
 * Change: Update historical notices to use the new render_notice method. #2409
 
-## 1.40.2 - 2023-05-26
+### 1.40.2 - 2023-05-26
 * Revert: Hide expired job listings from archives
 
-## 1.40.1 - 2023-05-12
+### 1.40.1 - 2023-05-12
 * Fix: Icons not displaying properly
 
-## 1.40.0 - 2023-05-11
+### 1.40.0 - 2023-05-11
 * Enhancement: Improve licensing page experience
 * Enhancement: New email notifications setting
 * Enhancement: Improve discoverability of addon updates
