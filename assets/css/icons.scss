@@ -1,6 +1,12 @@
 @font-face {
 	font-family: job-manager;
-	src: url(../font/job-manager.woff2?16367094) format('woff2');
+	src: url(../font/job-manager.eot?16367094);
+	src:
+		url(../font/job-manager.eot?16367094#iefix) format("embedded-opentype"),
+		url(../font/job-manager.woff2?16367094) format('woff2'),
+		url(../font/job-manager.woff?16367094) format("woff"),
+		url(../font/job-manager.ttf?16367094) format("truetype"),
+		url(../font/job-manager.svg?16367094#job-manager) format("svg");
 	font-weight: normal;
 	font-style: normal;
 }
