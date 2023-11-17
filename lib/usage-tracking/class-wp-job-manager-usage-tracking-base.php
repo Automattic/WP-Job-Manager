@@ -563,7 +563,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * Ensure that jQuery has been enqueued since the opt-in dialog JS depends
 	 * on it. Should not be called externally.
 	 *
-	 * @deprecated since $$next-version$$
+	 * @deprecated since 2.0.0
 	 **/
 	public function enqueue_script_deps() {
 		_deprecated_function( __METHOD__, '$$next-version' );
@@ -573,7 +573,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * Output the JS code to handle the opt-in dialog. Should not be called
 	 * externally.
 	 *
-	 * @deprecated since $$next-version$$
+	 * @deprecated since 2.0.0
 	 **/
 	public function output_opt_in_js() {
 		_deprecated_function( __METHOD__, '$$next-version' );

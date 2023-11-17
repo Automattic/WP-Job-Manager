@@ -152,12 +152,12 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Set up filters for core admin notices.
 	 *
-	 * @deprecated since $$next-version$$. See maybe_add_core_setup_notice
+	 * @deprecated since 2.0.0. See maybe_add_core_setup_notice
 	 *
 	 * Note: For internal use only. Do not call manually.
 	 */
 	public static function init_core_notices() {
-		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Admin_Notices::maybe_add_core_setup_notice' );
+		_deprecated_function( __METHOD__, '2.0.0', 'WP_Job_Manager_Admin_Notices::maybe_add_core_setup_notice' );
 	}
 
 	/**
@@ -386,7 +386,7 @@ class WP_Job_Manager_Admin_Notices {
 	 */
 	public static function is_admin_on_standard_job_manager_screen( $additional_screens = [] ) {
 
-		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager\Admin\Notices_Conditions_Checker::check' );
+		_deprecated_function( __METHOD__, '2.0.0', 'WP_Job_Manager\Admin\Notices_Conditions_Checker::check' );
 
 		$screen          = get_current_screen();
 		$screen_id       = $screen ? $screen->id : '';
@@ -415,12 +415,12 @@ class WP_Job_Manager_Admin_Notices {
 	/**
 	 * Displays the setup wizard notice when WPJM is first activated.
 	 *
-	 * @deprecated since $$next-version$$. See maybe_add_core_setup_notice
+	 * @deprecated since 2.0.0. See maybe_add_core_setup_notice
 	 *
 	 * Note: For internal use only. Do not call manually.
 	 */
 	public static function display_core_setup() {
-		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Admin_Notices::maybe_add_core_setup_notice' );
+		_deprecated_function( __METHOD__, '2.0.0', 'WP_Job_Manager_Admin_Notices::maybe_add_core_setup_notice' );
 	}
 
 	/**
