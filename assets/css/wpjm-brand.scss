@@ -8,6 +8,7 @@
 	--wpjm-brand-color-shade-4: #FFEF82;
 	--wpjm-brand-color-shade-5: #FFFCE8;
 	--wpjm-brand-sizing-scale: clamp(0px, (100vw - 400px) / (1200 - 400), 1px);
+	--wpjm-brand-color-text: #1A1A1A;
 }
 
 @function fluid($desktop, $mobile) {
@@ -30,6 +31,7 @@
 
 	background: var(--wpjm-brand-color-primary);
 	color: #ffffff;
+	cursor: pointer;
 
 	&:hover, &:active, &:focus {
 		background: #1D00D0;
