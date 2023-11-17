@@ -147,6 +147,20 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+### 2.0.0 - 2023-11-17
+* Enhancement: Improve settings descriptions (#2639)
+* Enhancement: Add directApply in Google job schema (#2635)
+* Enhancement: Add 'Don't show this again' link to dismiss promote job modal in the editor (#2632)
+* Enhancement: Add landing pages for Applications and Resumes extensions (#2621)
+* Fix: Align actions in notices in the center (#2637)
+* Fix: Safeguard array in WP_Job_Manager_Settings::input_capabilities (#2631)
+* Fix: Escape menu titles and various admin labels (#2630)
+* Fix: Incorrectly duplicated string in settings (#2628)
+* Fix: Add array initialization to avoid warning (#2619)
+* Fix: Do not check for plugin updates when there are no plugins (#2605)
+* Change: Reorganize administration menu (#2621)
+* Change: Update naming from Add-ons to Extensions, Marketplace (#2621)
+
 ### 1.42.0 - 2023-10-05
 New!
 
@@ -186,17 +200,4 @@ For developers:
 
 ### 1.40.1 - 2023-05-12
 * Fix: Icons not displaying properly
-
-### 1.40.0 - 2023-05-11
-* Enhancement: Improve licensing page experience
-* Enhancement: New email notifications setting
-* Enhancement: Improve discoverability of addon updates
-* Enhancement: New admin notices sytem with redesign
-* Fix: "Hide Expired Listings Content" setting
-* Fix: Hide expired job listings from archives
-* Fix: Show license notice only to users who can manage licenses
-* Fix: Select menu overlapping in Job Listing frontend
-* Fix: Company video overlapping when no tagline set
-* Change: Update tipTip library to use WooCommerce’s version
-* Change: Bumped minimum PHP version from 7.2 to 7.4
 
