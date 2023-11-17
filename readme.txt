@@ -147,6 +147,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+### 2.1.0 - 2023-11-17
+* Fix: Remove public update endpoint and add nonce check (#2642)
+
 ### 2.0.0 - 2023-11-17
 * Enhancement: Improve settings descriptions (#2639)
 * Enhancement: Add directApply in Google job schema (#2635)
@@ -197,7 +200,4 @@ For developers:
 
 ### 1.40.2 - 2023-05-26
 * Revert: Hide expired job listings from archives
-
-### 1.40.1 - 2023-05-12
-* Fix: Icons not displaying properly
 
