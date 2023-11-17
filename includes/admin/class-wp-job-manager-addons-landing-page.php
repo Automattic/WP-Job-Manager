@@ -3,7 +3,7 @@
  * File WP_Job_Manager_Addons_Landing_Page class.
  *
  * @package wp-job-manager
- * @since $$next-version$$
+ * @since 2.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Landing pages for Applications and Resumes add-ons.
  *
- * @since $$next-version$$
+ * @since 2.0.0
  */
 class WP_Job_Manager_Addons_Landing_Page {
 
@@ -21,14 +21,14 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  $$next-version$$
+	 * @since  2.0.0
 	 */
 	private static $instance = null;
 
 	/**
 	 * Singleton accessor.
 	 *
-	 * @since  $$next-version$$
+	 * @since  2.0.0
 	 * @static
 	 * @return self Main instance.
 	 */
@@ -43,7 +43,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	/**
 	 * Initialize class for landing pages.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_applications_menu_item' ], 12 );
@@ -55,7 +55,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 * Register styles for landing pages.
 	 *
 	 * @access private
-	 * @since $$next-version$$
+	 * @since 2.0.0
 	 */
 	public function register_styles() {
 		WP_Job_Manager::register_style( 'job_manager_admin_landing_css', 'css/admin-landing.css', [ 'job_manager_brand' ] );
@@ -66,7 +66,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 * Add Applications add-on menu item if needed.
 	 *
 	 * @access private
-	 * @since $$next-version$$
+	 * @since 2.0.0
 	 */
 	public function add_applications_menu_item() {
 		$was_addon_installed = (bool) get_option( 'wp_job_manager_applications_version', false );
@@ -75,7 +75,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 		/**
 		 * Filters whether the 'Applications' landing page should be added to the Job Manager menu.
 		 *
-		 * @since $$next-version$$
+		 * @since 2.0.0
 		 *
 		 * @param bool $show True if the menu should be added.
 		 */
@@ -100,7 +100,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 * Add Resumes add-on menu item if needed.
 	 *
 	 * @access private
-	 * @since $$next-version$$
+	 * @since 2.0.0
 	 */
 	public function add_resumes_menu_item() {
 		$was_addon_installed = ! ! get_option( 'wp_resume_manager_version', false );
@@ -109,7 +109,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 		/**
 		 * Filters whether the 'Resumes' landing page should be added to the Job Manager menu.
 		 *
-		 * @since $$next-version$$
+		 * @since 2.0.0
 		 *
 		 * @param bool $show True if the menu should be added.
 		 */
@@ -134,7 +134,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 * Render Applications landing page.
 	 *
 	 * @access private
-	 * @since $$next-version$$
+	 * @since 2.0.0
 	 */
 	public function applications_landing_page() {
 
@@ -217,7 +217,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 	 * Render Resume Manager landing page.
 	 *
 	 * @access private
-	 * @since $$next-version$$
+	 * @since 2.0.0
 	 */
 	public function resumes_landing_page() {
 
