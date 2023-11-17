@@ -69,27 +69,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				],
 			]
 		);
-		register_rest_route(
-			self::NAMESPACE,
-			self::REST_BASE . '/(?P<id>[\d]+)',
-			[
-				[
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => [ $this, 'update_job_status' ],
-					'permission_callback' => '__return_true',
-					'args'                => [
-						'id'     => [
-							'type'     => 'integer',
-							'required' => true,
-						],
-						'status' => [
-							'type'     => 'boolean',
-							'required' => true,
-						],
-					],
-				],
-			]
-		);
+
 		register_rest_route(
 			self::NAMESPACE,
 			self::REST_BASE . '/(?P<job_id>[\d]+)',
@@ -252,11 +232,15 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	/**
 	 * Update the promoted job status.
 	 *
+	 * @deprecated $$next-version$$
+	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
 	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function update_job_status( $request ) {
+		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Promoted_Jobs_API::refresh_status' );
+
 		$post_id = $request->get_param( 'id' );
 		$status  = $request->get_param( 'status' );
 		$post    = get_post( $post_id );
