@@ -34,7 +34,7 @@ if ( ! empty( $categories ) ) {
 ?>
 <form class="extension-search" method="get" action="<?php esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ) ); ?>">
 	<input type="hidden" name="post_type" value="job_listing" />
-	<input type="hidden" name="page" value="job-manager-addons" />
+	<input type="hidden" name="page" value="job-manager-marketplace" />
 	<input class="wpjm-extension-search-input" type="text" name="search" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php echo esc_attr__( 'Search', 'wp-job-manager' ); ?>" />
 	<input class="wpjm-extension-search-button button" type="submit" value="<?php echo esc_attr__( 'Search', 'wp-job-manager' ); ?>" />
 </form>

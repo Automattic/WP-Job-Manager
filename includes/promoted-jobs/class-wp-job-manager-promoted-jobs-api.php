@@ -232,14 +232,14 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	/**
 	 * Update the promoted job status.
 	 *
-	 * @deprecated $$next-version$$
+	 * @deprecated 2.1.0
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
 	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function update_job_status( $request ) {
-		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Promoted_Jobs_API::refresh_status' );
+		_deprecated_function( __METHOD__, '2.1.0', 'WP_Job_Manager_Promoted_Jobs_API::refresh_status' );
 
 		$post_id = $request->get_param( 'id' );
 		$status  = $request->get_param( 'status' );
