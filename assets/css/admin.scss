@@ -767,7 +767,9 @@ a.wpjm-activate-license-link:active {
 
 /* Addons */
 .wp_job_manager_add_ons_wrap {
-	max-width: 1244px;
+	.job-manager-settings-header-wrap {
+		position: static;
+	}
 
 	.products {
 		display: grid;
