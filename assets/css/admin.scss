@@ -33,6 +33,8 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	padding: 24px 0;
+	gap: 20px 24px;
 }
 .job-manager-settings-footer {
 	margin-top: 40px;
@@ -48,7 +50,29 @@
 
 .job-manager-settings-logo {
 	width: 177px;
-	margin: 24px 0;
+}
+.job-manager-settings-footer-mobile {
+	display: none;
+}
+@media (max-width: 782px) {
+
+	.job-manager-settings-header-wrap {
+		position: static;
+	}
+
+	.job-manager-settings-logo-wrap {
+		width: 40px;
+		overflow: hidden;
+	}
+
+	.job-manager-settings-footer-mobile {
+		margin-top: 20px;
+		margin-bottom: -60px;
+		display: flex;
+		.job-manager-settings-submit {
+			flex: 1;
+		}
+	}
 }
 
 a.wpjm-activate-license-link,
@@ -791,6 +815,7 @@ a.wpjm-activate-license-link:active {
 			display: flex;
 			flex-direction: row;
 			gap: 16px;
+			flex-wrap: wrap;
 
 			img {
 				width: 48px;
@@ -826,6 +851,9 @@ a.wpjm-activate-license-link:active {
 		.product-info {
 			flex: 1 1 0;
 			align-self: center;
+			@media screen and (max-width: 550px) {
+				flex: 1 1 calc(100% - 68px);
+			}
 		}
 		.add-on-footer {
 			display: flex;
@@ -994,6 +1022,9 @@ tr.email-setting-row {
 	border-bottom: 0;
 	margin: unset;
 	padding: unset;
+	display: flex;
+	gap: 10px 24px;
+	flex-wrap: wrap;
 }
 .nav-tab {
 	border: none;
@@ -1001,11 +1032,14 @@ tr.email-setting-row {
 	font-weight: 500;
 	background: none;
 	padding: 5px 0;
-	margin-left: 0;
-	margin-right: 24px;
+	margin: 0;
 	color: #000000;
 	&:hover, &:focus, &:focus:active {
 		background: none;
+	}
+
+	&.nav-tab-active {
+		margin-bottom: unset;
 	}
 }
 

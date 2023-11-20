@@ -604,6 +604,9 @@ class WP_Job_Manager_Settings {
 				}
 				?>
 				</div>
+				<div class="job-manager-settings-footer-mobile">
+					<input type="submit" class="job-manager-settings-submit wpjm-button is-outline" value="<?php esc_attr_e( 'Save Changes', 'wp-job-manager' ); ?>" />
+				</div>
 			</form>
 		</div>
 		<script type="text/javascript">
