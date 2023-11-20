@@ -85,7 +85,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 				'edit.php?post_type=job_listing',
 				__( 'WP Job Manager - Applications', 'wp-job-manager' ),
 				sprintf(
-					'%s <span class="awaiting-mod wpjm-addon-upsell__badge">%s</span>',
+					'%s <span class="wpjm-addon-upsell__badge">%s</span>',
 					esc_html__( 'Applications', 'wp-job-manager' ),
 					esc_html__( 'Pro', 'wp-job-manager' )
 				),
@@ -119,7 +119,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 				'edit.php?post_type=job_listing',
 				__( 'WP Job Manager - Resumes', 'wp-job-manager' ),
 				sprintf(
-					'%s <span class="awaiting-mod wpjm-addon-upsell__badge">%s</span>',
+					'%s <span class="wpjm-addon-upsell__badge">%s</span>',
 					esc_html__( 'Resumes', 'wp-job-manager' ),
 					esc_html__( 'Pro', 'wp-job-manager' )
 				),
