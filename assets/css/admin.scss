@@ -1130,24 +1130,3 @@ h2 .nav-tab-active, nav .nav-tab-active {
 	transform: rotateY(90deg);
 }
 
-/**
- * Adjust upsells styles
- */
-.wpjm-addon-upsell__badge {
-	display: inline-block;
-	vertical-align: middle;
-	box-sizing: border-box;
-	margin: 1px 0 -1px 2px;
-	padding: 0 3px;
-	min-width: 15px;
-	height: 15px;
-	border-radius: 5px;
-	background-color: #6C737C;
-	color: #fff;
-	font-size: 10px;
-	line-height: 1.6;
-	text-align: center;
-	z-index: 26;
-	position: absolute;
-	right: 10px;
-}
