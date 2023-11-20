@@ -555,16 +555,18 @@ class WP_Job_Manager_Settings {
 				<div class="job-manager-settings-header-wrap">
 					<div class="job-manager-settings-header">
 						<div class="job-manager-settings-header-row">
-							<img class="job-manager-settings-logo"
-								src="<?php echo esc_attr( JOB_MANAGER_PLUGIN_URL . '/assets/images/jm-full-logo.png' ); ?>"
-								alt="<?php esc_attr_e( 'Job Manager', 'wp-job-manager' ); ?>" />
+							<div class="job-manager-settings-logo-wrap">
+								<img class="job-manager-settings-logo"
+									src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/jm-full-logo.png' ); ?>"
+									alt="<?php esc_attr_e( 'Job Manager', 'wp-job-manager' ); ?>" />
+							</div>
 							<input type="submit" class="job-manager-settings-submit wpjm-button is-outline" value="<?php esc_attr_e( 'Save Changes', 'wp-job-manager' ); ?>" />
 						</div>
 
 						<div class="nav-tab-wrapper">
 							<?php
 							foreach ( $this->settings as $key => $section ) {
-								echo '<a href="#settings-' . esc_attr( sanitize_title( $key ) ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
+								echo '<a href="' . esc_url( '#settings-' . sanitize_title( $key ) ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
 							}
 							?>
 						</div>

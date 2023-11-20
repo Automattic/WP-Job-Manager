@@ -185,7 +185,7 @@ class WP_Job_Manager_Addons {
 				<div class="job-manager-settings-header">
 					<div class="job-manager-settings-header-row">
 						<img class="job-manager-settings-logo"
-							src="<?php echo esc_attr( JOB_MANAGER_PLUGIN_URL . '/assets/images/jm-full-logo.png' ); ?>"
+							src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/jm-full-logo.png' ); ?>"
 							alt="<?php esc_attr_e( 'Job Manager', 'wp-job-manager' ); ?>" />
 					</div>
 					<nav class="nav-tab-wrapper woo-nav-tab-wrapper">
