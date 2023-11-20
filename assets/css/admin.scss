@@ -1129,3 +1129,27 @@ h2 .nav-tab-active, nav .nav-tab-active {
 .jm-logo__wrapper:hover .jm-logo__letters {
 	transform: rotateY(90deg);
 }
+
+/**
+ * Adjust upsells styles
+ */
+.wpjm-addon-upsell__badge {
+	display: inline-block;
+	vertical-align: middle;
+	box-sizing: border-box;
+	margin: 1px 0 -1px 2px;
+	padding: 0 5px;
+	min-width: 18px;
+	height: 18px;
+	border: 2px solid #d63638;
+	border-radius: 9px;
+	background-color: transparent;
+	color: #fff;
+	font-size: 11px;
+	line-height: 1.6;
+	text-align: center;
+	z-index: 26;
+	/* Move upsell to the right */
+	position: absolute;
+	right: 10px;
+}
