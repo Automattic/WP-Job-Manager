@@ -741,7 +741,7 @@ class WP_Job_Manager_Admin_Notices {
 			'actions'     => [
 				[
 					'label' => __( 'View Extensions', 'wp-job-manager' ),
-					'url'   => admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons' ),
+					'url'   => admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace' ),
 				],
 			],
 		];
