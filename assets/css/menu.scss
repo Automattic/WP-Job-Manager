@@ -40,24 +40,21 @@
 	 * Adjust upsells styles
 	 */
 	.wpjm-addon-upsell__badge {
-		display: flex;
+		border-radius: 16px;
+		color: inherit;
+		font-size: 8px;
+		margin: 0;
+		padding: 4px 8px;
+		text-align: center;
+		height: fit-content;
+		width: fit-content;
+		display: block;
+		line-height: 8px;
 		vertical-align: middle;
 		box-sizing: border-box;
-		margin: auto 0;
-		padding: 0 3px;
 		min-width: 16px;
-		height: 16px;
-		border-radius: 5px;
-		background-color: #6C737C;
-		color: #fff;
-		font-size: 8px;
-		line-height: 1.6;
-		text-align: center;
+		border: 1px solid currentColor;
+		font-weight: 600;
 		z-index: 26;
-		position: absolute;
-		right: 10px;
-		top: 0;
-		bottom: 0;
-		align-items: center;
 	}
 }
