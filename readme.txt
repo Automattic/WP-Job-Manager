@@ -147,6 +147,10 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+### 2.1.1 - 2023-11-21
+* Fix link to extensions page (#2650)
+* Update Twitter to the new X logo
+
 ### 2.1.0 - 2023-11-17
 * Fix: Remove public update endpoint and add nonce check (#2642)
 
@@ -197,7 +201,4 @@ For developers:
 * Change: Add hook in job-submitted template #2458
 * Change: Run job_manager_job_submitted_content filter in every case #2474
 * Change: Update historical notices to use the new render_notice method. #2409
-
-### 1.40.2 - 2023-05-26
-* Revert: Hide expired job listings from archives
 
