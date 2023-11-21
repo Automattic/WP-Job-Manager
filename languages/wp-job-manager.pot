@@ -2,16 +2,16 @@
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 2.1.0\n"
+"Project-Id-Version: WP Job Manager 2.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager/\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-11-17T13:34:50+00:00\n"
+"POT-Creation-Date: 2023-11-21T19:04:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.5.0\n"
+"X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: wp-job-manager\n"
 
 #. Plugin Name of the plugin
@@ -2259,7 +2259,6 @@ msgstr ""
 #: includes/helper/class-wp-job-manager-helper.php:490
 #: includes/helper/views/html-licenses.php:44
 #: includes/helper/views/html-licenses.php:170
-#: tests/php/tests/includes/helper/test_class.wp-job-manager-helper.php:155
 msgid "Activate License"
 msgstr ""
 
@@ -2768,10 +2767,6 @@ msgstr ""
 #. translators: %1$s is the job listing post type name.
 #: templates/job-submitted.php:92
 msgid "%1$s submitted successfully."
-msgstr ""
-
-#: tests/php/tests/includes/helper/test_class.wp-job-manager-helper.php:122
-msgid "Requires Attention"
 msgstr ""
 
 #: wp-job-manager-functions.php:368
