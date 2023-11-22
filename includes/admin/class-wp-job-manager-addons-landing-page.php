@@ -86,7 +86,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 				sprintf(
 					'<div class="wpjm-addon-upsell">%s <span class="wpjm-addon-upsell__badge">%s</span></div>',
 					esc_html__( 'Applications', 'wp-job-manager' ),
-					esc_html__( 'PRO', 'wp-job-manager' )
+					esc_html__( 'Pro', 'wp-job-manager' )
 				),
 				'manage_options',
 				'job-manager-landing-application',
@@ -120,7 +120,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 				sprintf(
 					'<div class="wpjm-addon-upsell resumes">%s <span class="wpjm-addon-upsell__badge">%s</span></div>',
 					esc_html__( 'Resumes', 'wp-job-manager' ),
-					esc_html__( 'PRO', 'wp-job-manager' )
+					esc_html__( 'Pro', 'wp-job-manager' )
 				),
 				'manage_options',
 				'job-manager-landing-resumes',
