@@ -19,6 +19,7 @@ jQuery(document).ready( function() {
 			}
 		} );
 		$target.datepicker( jQuery.extend( {}, datePickerOptions, { altField: $hidden_input } ) );
+		$target.datepicker("option", "dateFormat", $target.datepicker("option", "dateFormat") || "MM d, yy");
 		if ( $target.val() ) {
 			var dateParts = $target.val().split('-');
 			if ( 3 === dateParts.length ) {
