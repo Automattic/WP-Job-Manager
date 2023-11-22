@@ -48,7 +48,6 @@ class WP_Job_Manager_Addons_Landing_Page {
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_applications_menu_item' ], 12 );
 		add_action( 'admin_menu', [ $this, 'add_resumes_menu_item' ], 12 );
-		add_action( 'admin_init', [ $this, 'add_css_class' ] );
 		add_action( 'admin_enqueue_scripts', [ $this, 'register_styles' ] );
 	}
 
@@ -61,30 +60,6 @@ class WP_Job_Manager_Addons_Landing_Page {
 	public function register_styles() {
 		WP_Job_Manager::register_style( 'job_manager_admin_landing_css', 'css/admin-landing.css', [ 'job_manager_brand' ] );
 	}
-
-	/**
-	 * Add CSS class to the menu items with the upsells.
-	 *
-	 * @access private
-	 * @since $$next-version$$
-	 */
-	public function add_css_class() {
-		global $submenu;
-		if ( ! isset( $submenu['edit.php?post_type=job_listing'] ) ) {
-			return;
-		}
-		foreach ( $submenu['edit.php?post_type=job_listing'] as $key => $menu ) {
-			if ( in_array( $menu[2], [ 'job-manager-landing-application', 'job-manager-landing-resumes' ], true ) ) {
-				if ( ! isset( $menu[4] ) ) {
-					$menu[4] = '';
-				}
-				$menu[4] .= add_cssclass( 'wpjm-addon-upsell', $menu[4] );
-			}
-			//phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- This is the only way to add the CSS class to the menu.
-			$submenu['edit.php?post_type=job_listing'][ $key ] = $menu;
-		}
-	}
-
 
 	/**
 	 * Add Applications add-on menu item if needed.
@@ -109,7 +84,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 				'edit.php?post_type=job_listing',
 				__( 'WP Job Manager - Applications', 'wp-job-manager' ),
 				sprintf(
-					'%s <span class="wpjm-addon-upsell__badge">%s</span>',
+					'<div class="wpjm-addon-upsell">%s <span class="wpjm-addon-upsell__badge">%s</span></div>',
 					esc_html__( 'Applications', 'wp-job-manager' ),
 					esc_html__( 'PRO', 'wp-job-manager' )
 				),
@@ -143,7 +118,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 				'edit.php?post_type=job_listing',
 				__( 'WP Job Manager - Resumes', 'wp-job-manager' ),
 				sprintf(
-					'%s <span class="wpjm-addon-upsell__badge">%s</span>',
+					'<div class="wpjm-addon-upsell resumes">%s <span class="wpjm-addon-upsell__badge">%s</span></div>',
 					esc_html__( 'Resumes', 'wp-job-manager' ),
 					esc_html__( 'PRO', 'wp-job-manager' )
 				),
