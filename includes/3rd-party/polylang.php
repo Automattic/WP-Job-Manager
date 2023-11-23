@@ -83,3 +83,23 @@ function polylang_wpjm_doing_ajax( $is_ajax ) {
 	return isset( $_SERVER['REQUEST_URI'] ) && false === strpos( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), '/jm-ajax/' ) ? $is_ajax : true;
 }
 add_filter( 'pll_is_ajax_on_front', 'polylang_wpjm_doing_ajax' );
+
+/**
+ * Set Job Listings Categories to be translatable.
+ * This is needed because Polylang doesn't support custom taxonomies by default.
+ *
+ * @since $$next_version$$
+ * @param array $taxonomies
+ * @param bool  $is_settings
+ * @return array
+ */
+function add_job_listing_category_to_pll_taxonomies( $taxonomies, $is_settings ) {
+	if ( $is_settings ) {
+		unset( $taxonomies['job_listing_category'] );
+	} else {
+		$taxonomies['job_listing_category'] = 'job_listing_category';
+	}
+	return $taxonomies;
+
+}
+add_filter( 'pll_get_taxonomies', 'add_job_listing_category_to_pll_taxonomies', 10, 2 );
