@@ -21,14 +21,22 @@
 		}
 	}
 
-	li a[href="edit.php?post_type=job_listing&page=job-manager-landing-application"],
-	li a[href="edit.php?post_type=job_listing&page=job-manager-landing-resumes"],
-	{
-		border: solid 0 #5D6264;
-		border-width: 1px 0;
-		padding: 8px 12px 8px 12px !important;
-		margin-top: -1px;
-		position: relative;
-		top: 1px;
+	.wpjm-addon-upsell {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+
+		.wpjm-addon-upsell__badge {
+			text-transform: uppercase;
+			border-radius: 16px;
+			color: inherit;
+			opacity: 0.8;
+			font-size: 8px;
+			margin: 0;
+			padding: 4px 6px;
+			line-height: 8px;
+			border: 1px solid currentColor;
+			font-weight: 600;
+		}
 	}
 }

@@ -61,7 +61,6 @@ class WP_Job_Manager_Addons_Landing_Page {
 		WP_Job_Manager::register_style( 'job_manager_admin_landing_css', 'css/admin-landing.css', [ 'job_manager_brand' ] );
 	}
 
-
 	/**
 	 * Add Applications add-on menu item if needed.
 	 *
@@ -85,7 +84,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 				'edit.php?post_type=job_listing',
 				__( 'WP Job Manager - Applications', 'wp-job-manager' ),
 				sprintf(
-					'%s <span class="awaiting-mod wpjm-addon-upsell__badge">%s</span>',
+					'<div class="wpjm-addon-upsell">%s <span class="wpjm-addon-upsell__badge">%s</span></div>',
 					esc_html__( 'Applications', 'wp-job-manager' ),
 					esc_html__( 'Pro', 'wp-job-manager' )
 				),
@@ -119,7 +118,7 @@ class WP_Job_Manager_Addons_Landing_Page {
 				'edit.php?post_type=job_listing',
 				__( 'WP Job Manager - Resumes', 'wp-job-manager' ),
 				sprintf(
-					'%s <span class="awaiting-mod wpjm-addon-upsell__badge">%s</span>',
+					'<div class="wpjm-addon-upsell">%s <span class="wpjm-addon-upsell__badge">%s</span></div>',
 					esc_html__( 'Resumes', 'wp-job-manager' ),
 					esc_html__( 'Pro', 'wp-job-manager' )
 				),
