@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     name: WPJM Release
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Comment on PR
         env:
           GITHUB_TOKEN: ${{ github.token }}

@@ -276,26 +276,30 @@ function buildReleaseNotes() {
 	let prs = execSync( `${ ghPrs }  --json number,title,body,labels` );
 	prs     = JSON.parse( prs );
 
-	const changelogs = prs.map( ( pr ) => {
+	let changelog = prs.map( ( pr ) => {
 		const body              = pr.body;
 		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:###|<!--|$)/ );
 
 		if ( ! changelogSections ) {
 			return `* ${ pr.title } (#${ pr.number })`;
 		}
-		const changelog = changelogSections[ 1 ].trim();
+		const prChangelog = changelogSections[ 1 ].trim();
 
-		if ( ! changelog.match( /\w/ ) ) {
+		if ( ! prChangelog.match( /\w/ ) ) {
 			return '';
 		}
 
-		return changelog;
-	} );
+		return prChangelog;
+	} ).join( "\n" );
+
+	if ( changelog.trim().length === 0 ) {
+		changelog = '* Updated plugin headers';
+	}
 
 	console.log( 'Proposed changelog: ' );
-	console.log( changelogs.join( "\n" ) );
+	console.log( changelog );
 
-	return changelogs.join( "\n" );
+	return changelog;
 }
 
 /**
