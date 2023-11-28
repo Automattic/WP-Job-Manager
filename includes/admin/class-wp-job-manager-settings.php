@@ -294,6 +294,19 @@ class WP_Job_Manager_Settings {
 							'desc'     => __( 'Display the full address of the job listing location if it is detected by Google Maps Geocoding API. If full address is not available then it will display whatever text the user submitted for the location.', 'wp-job-manager' ),
 							'type'     => 'checkbox',
 						],
+						[
+							'name'     => 'job_manager_handle_job_shortcodes',
+							'std'      => 'allow',
+							'label'    => __( 'Shortcodes on Job Listings', 'wp-job-manager' ),
+							'cb_label' => __( 'Define how to handle shortcode in Job Listing', 'wp-job-manager' ),
+							'desc'     => __( 'Sets how to handle shortcodes in the job listing.', 'wp-job-manager' ),
+							'type'     => 'select',
+							'options'  => [
+								'allow' => __( 'Shortcodes are completely allowed', 'wp-job-manager' ),
+								'strip' => __( 'Shortcodes are stripped from the content', 'wp-job-manager' ),
+								'keep'  => __( 'Shortcodes are kept as is', 'wp-job-manager' ),
+							],
+						],
 					],
 				],
 				'job_submission' => [
