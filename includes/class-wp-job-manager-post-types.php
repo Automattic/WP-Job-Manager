@@ -437,7 +437,7 @@ class WP_Job_Manager_Post_Types {
 						'hierarchical'        => false,
 						'rewrite'             => false,
 						'query_var'           => false,
-						'supports'            => [ 'title', 'custom-fields', 'thumbnail' ],
+						'supports'            => [ 'title', 'custom-fields' ],
 						'has_archive'         => false,
 						'show_in_nav_menus'   => false,
 						'show_in_rest'        => false,
