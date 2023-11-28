@@ -3,9 +3,75 @@
 
 .job-manager-settings-wrap {
 
+	min-height: calc(100vh - 65px);
+	margin: 0px 40px 0 20px;
+
 	.job-manager-updated {
 		display: block;
 		margin: 1em 0 0;
+	}
+
+	&, .form-table th, .form-wrap label, p.description {
+		color: var(--wpjm-brand-color-text, #3c434a);
+	}
+
+	p.description {
+		margin: 12px 0;
+		font-size: 12px;
+	}
+}
+
+.job-manager-settings-header-wrap {
+	margin: 0 -40px 20px -40px;
+	padding: 0 40px;
+	background: #fff;
+	position: sticky;
+	top: var(--wp-admin--admin-bar--height, 32px);
+
+}
+.job-manager-settings-header-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 24px 0;
+	gap: 20px 24px;
+}
+.job-manager-settings-footer {
+	margin-top: 40px;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.job-manager-settings-header,
+.job-manager-settings-body {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.job-manager-settings-logo {
+	width: 177px;
+}
+.job-manager-settings-footer-mobile {
+	display: none;
+}
+@media (max-width: 782px) {
+
+	.job-manager-settings-header-wrap {
+		position: static;
+	}
+
+	.job-manager-settings-logo-wrap {
+		width: 40px;
+		overflow: hidden;
+	}
+
+	.job-manager-settings-footer-mobile {
+		margin-top: 20px;
+		margin-bottom: -60px;
+		display: flex;
+		.job-manager-settings-submit {
+			flex: 1;
+		}
 	}
 }
 
@@ -725,7 +791,9 @@ a.wpjm-activate-license-link:active {
 
 /* Addons */
 .wp_job_manager_add_ons_wrap {
-	max-width: 1244px;
+	.job-manager-settings-header-wrap {
+		position: static;
+	}
 
 	.products {
 		display: grid;
@@ -747,6 +815,7 @@ a.wpjm-activate-license-link:active {
 			display: flex;
 			flex-direction: row;
 			gap: 16px;
+			flex-wrap: wrap;
 
 			img {
 				width: 48px;
@@ -782,6 +851,9 @@ a.wpjm-activate-license-link:active {
 		.product-info {
 			flex: 1 1 0;
 			align-self: center;
+			@media screen and (max-width: 550px) {
+				flex: 1 1 calc(100% - 68px);
+			}
 		}
 		.add-on-footer {
 			display: flex;
@@ -945,9 +1017,14 @@ tr.email-setting-row {
 /**
  * Nav Tabs
  */
+
 .nav-tab-wrapper, .wrap h2.nav-tab-wrapper {
 	border-bottom: 0;
-	margin-bottom: 18px;
+	margin: unset;
+	padding: unset;
+	display: flex;
+	gap: 10px 24px;
+	flex-wrap: wrap;
 }
 .nav-tab {
 	border: none;
@@ -955,19 +1032,22 @@ tr.email-setting-row {
 	font-weight: 500;
 	background: none;
 	padding: 5px 0;
-	margin-left: 0;
-	margin-right: 24px;
+	margin: 0;
 	color: #000000;
 	&:hover, &:focus, &:focus:active {
 		background: none;
 	}
+
+	&.nav-tab-active {
+		margin-bottom: unset;
+	}
 }
 
-h2 .nav-tab-active, nav .nav-tab-active {
-	border-bottom: 3px solid #2270B1;
+.nav-tab-wrapper .nav-tab-active, nav .nav-tab-active {
+	border-bottom: 3px solid var(--wpjm-brand-color-primary, #2270B1);
 	box-sizing: border-box;
 	&:hover, &:focus, &:focus:active {
-		border-bottom: 3px solid #2270B1;
+		border-bottom: 3px solid var(--wpjm-brand-color-primary, #2270B1);
 		box-sizing: border-box;
 	}
 }

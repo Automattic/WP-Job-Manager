@@ -552,13 +552,28 @@ class WP_Job_Manager_Settings {
 
 				<?php settings_fields( $this->settings_group ); ?>
 
-				<h2 class="nav-tab-wrapper">
-					<?php
-					foreach ( $this->settings as $key => $section ) {
-						echo '<a href="#settings-' . esc_attr( sanitize_title( $key ) ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
-					}
-					?>
-				</h2>
+				<div class="job-manager-settings-header-wrap">
+					<div class="job-manager-settings-header">
+						<div class="job-manager-settings-header-row">
+							<div class="job-manager-settings-logo-wrap">
+								<img class="job-manager-settings-logo"
+									src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/jm-full-logo.png' ); ?>"
+									alt="<?php esc_attr_e( 'Job Manager', 'wp-job-manager' ); ?>" />
+							</div>
+							<input type="submit" class="job-manager-settings-submit wpjm-button is-outline" value="<?php esc_attr_e( 'Save Changes', 'wp-job-manager' ); ?>" />
+						</div>
+
+						<div class="nav-tab-wrapper">
+							<?php
+							foreach ( $this->settings as $key => $section ) {
+								echo '<a href="' . esc_url( '#settings-' . sanitize_title( $key ) ) . '" class="nav-tab">' . esc_html( $section[0] ) . '</a>';
+							}
+							?>
+						</div>
+					</div>
+				</div>
+				<div class="job-manager-settings-body">
+					<div class="wp-header-end"></div>
 
 				<?php
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Used for basic flow.
@@ -588,9 +603,10 @@ class WP_Job_Manager_Settings {
 
 				}
 				?>
-				<p class="submit">
-					<input type="submit" class="button-primary" value="<?php esc_attr_e( 'Save Changes', 'wp-job-manager' ); ?>" />
-				</p>
+				</div>
+				<div class="job-manager-settings-footer-mobile">
+					<input type="submit" class="job-manager-settings-submit wpjm-button is-outline" value="<?php esc_attr_e( 'Save Changes', 'wp-job-manager' ); ?>" />
+				</div>
 			</form>
 		</div>
 		<script type="text/javascript">

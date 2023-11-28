@@ -183,7 +183,7 @@ $plugin_section_first = 'plugin-license-section--first';
 			<?php endforeach; ?>
 		<?php endif; ?>
 		<?php // translators: Placeholder %s is the lost license key URL. ?>
-		<p><?php printf( wp_kses_post( __( 'Lost your license key? <a href="%s">Retrieve it here</a>.', 'wp-job-manager' ) ), 'https://wpjobmanager.com/lost-license-key/' ); ?></p>
+		<p><?php printf( wp_kses_post( __( 'Lost your license key? <a href="%s">You can find them on the My Account page</a>.', 'wp-job-manager' ) ), 'https://wpjobmanager.com/my-account/' ); ?></p>
 	<?php else : ?>
 		<div class="notice notice-warning inline"><p><?php esc_html_e( 'No plugins are activated that have licenses managed by WP Job Manager.', 'wp-job-manager' ); ?></p></div>
 	<?php endif; ?>

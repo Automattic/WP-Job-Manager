@@ -180,53 +180,65 @@ class WP_Job_Manager_Addons {
 	 */
 	public function output() {
 		?>
-		<div class="wrap wp_job_manager wp_job_manager_add_ons_wrap">
-			<nav class="nav-tab-wrapper woo-nav-tab-wrapper">
-				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace' ) ); ?>"
-					class="nav-tab
-					<?php
-					// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-					if ( ! isset( $_GET['section'] ) || 'helper' !== $_GET['section'] ) {
-						echo ' nav-tab-active';
-					}
-					?>
-				">
-					<?php esc_html_e( 'Marketplace', 'wp-job-manager' ); ?>
-				</a>
-				<?php if ( current_user_can( 'update_plugins' ) ) : ?>
-					<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper' ) ); ?>"
-						class="nav-tab
+		<div class="wrap wp_job_manager wp_job_manager_add_ons_wrap job-manager-settings-wrap">
+			<div class="job-manager-settings-header-wrap">
+				<div class="job-manager-settings-header">
+					<div class="job-manager-settings-header-row">
+						<img class="job-manager-settings-logo"
+							src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/jm-full-logo.png' ); ?>"
+							alt="<?php esc_attr_e( 'Job Manager', 'wp-job-manager' ); ?>" />
+					</div>
+					<nav class="nav-tab-wrapper woo-nav-tab-wrapper">
+						<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace' ) ); ?>"
+							class="nav-tab
 						<?php
 						// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-						if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
+						if ( ! isset( $_GET['section'] ) || 'helper' !== $_GET['section'] ) {
 							echo ' nav-tab-active';
 						}
 						?>
-				">
-						<?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?>
-					</a>
-				<?php endif; ?>
-			</nav>
-			<?php
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-			if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
-				do_action( 'job_manager_helper_output' );
-			} else {
+					">
+							<?php esc_html_e( 'Marketplace', 'wp-job-manager' ); ?>
+						</a>
+						<?php if ( current_user_can( 'update_plugins' ) ) : ?>
+							<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-marketplace&section=helper' ) ); ?>"
+								class="nav-tab
+							<?php
+							// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+							if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
+								echo ' nav-tab-active';
+							}
+							?>
+					">
+								<?php esc_html_e( 'Licenses', 'wp-job-manager' ); ?>
+							</a>
+						<?php endif; ?>
+					</nav>
+					</div>
+			</div>
+			<div class="job-manager-settings-body">
+				<div class="wp-header-end"></div>
+				<?php
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-				$category = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : null;
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-				$search     = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : null;
-				$categories = $this->get_categories();
-
-				if ( $search ) {
-					$add_ons = $this->get_add_ons( null, $search );
+				if ( isset( $_GET['section'] ) && 'helper' === $_GET['section'] ) {
+					do_action( 'job_manager_helper_output' );
 				} else {
-					$add_ons = $this->get_add_ons( $category );
-				}
+					// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+					$category = isset( $_GET['category'] ) ? sanitize_text_field( wp_unslash( $_GET['category'] ) ) : null;
+					// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+					$search     = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : null;
+					$categories = $this->get_categories();
 
-				include_once dirname( __FILE__ ) . '/views/html-admin-page-addons.php';
-			}
-			?>
+					if ( $search ) {
+						$add_ons = $this->get_add_ons( null, $search );
+					} else {
+						$add_ons = $this->get_add_ons( $category );
+					}
+
+					include_once dirname( __FILE__ ) . '/views/html-admin-page-addons.php';
+				}
+				?>
+			</div>
 		</div>
 		<?php
 	}

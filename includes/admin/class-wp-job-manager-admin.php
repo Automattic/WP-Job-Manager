@@ -109,7 +109,7 @@ class WP_Job_Manager_Admin {
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'select2' );
 
-			WP_Job_Manager::register_style( 'job_manager_admin_css', 'css/admin.css', [] );
+			WP_Job_Manager::register_style( 'job_manager_admin_css', 'css/admin.css', [ 'job_manager_brand' ] );
 			wp_enqueue_style( 'job_manager_admin_css' );
 
 			wp_enqueue_script( 'wp-job-manager-datepicker' );
