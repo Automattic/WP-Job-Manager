@@ -417,6 +417,34 @@ class WP_Job_Manager_Post_Types {
 				'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
 			]
 		);
+
+		/**
+		 * Custom post type used to store guest user data.
+		 */
+		register_post_type(
+			'job_guest_user',
+			[
+				apply_filters(
+					'register_post_type_job_guest_user',
+					[
+						'description'         => esc_html__( 'This is where guest user data is stored.', 'wp-job-manager' ),
+						'public'              => false,
+						'show_ui'             => false,
+						'capability_type'     => 'job_guest_user',
+						'map_meta_cap'        => false,
+						'publicly_queryable'  => false,
+						'exclude_from_search' => true,
+						'hierarchical'        => false,
+						'rewrite'             => false,
+						'query_var'           => false,
+						'supports'            => [ 'title', 'custom-fields', 'thumbnail' ],
+						'has_archive'         => false,
+						'show_in_nav_menus'   => false,
+						'show_in_rest'        => false,
+					]
+				),
+			]
+		);
 	}
 
 	/**
