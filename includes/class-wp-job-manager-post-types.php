@@ -70,6 +70,7 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_job_description', 'wpautop' );
 		add_filter( 'the_job_description', 'shortcode_unautop' );
 		add_filter( 'the_job_description', 'prepend_attachment' );
+		add_filter( 'job_manager_single_job_content', [ $this, 'handle_job_shortcodes' ] );
 		if ( ! empty( $GLOBALS['wp_embed'] ) ) {
 			add_filter( 'the_job_description', [ $GLOBALS['wp_embed'], 'run_shortcode' ], 8 );
 			add_filter( 'the_job_description', [ $GLOBALS['wp_embed'], 'autoembed' ], 8 );
@@ -549,6 +550,49 @@ class WP_Job_Manager_Post_Types {
 		$this->job_content_filter( true );
 
 		return apply_filters( 'job_manager_single_job_content', ob_get_clean(), $post );
+	}
+
+	/**
+	 * Handles shortcodes in single job content.
+	 *
+	 * @param string $content The content to filter.
+	 * @return string The filtered content.
+	 */
+	public function handle_job_shortcodes( $content ) {
+		$option = get_option( 'job_manager_handle_job_shortcodes' );
+		if ( 'strip' === $option ) {
+			return strip_shortcodes( $content );
+		}
+		if ( 'keep' === $option ) {
+			add_action( 'loop_end', [ $this, 'remove_shortcode_keeper' ] );
+			add_filter( 'pre_do_shortcode_tag', [ $this, 'keep_shortcode' ], 10, 4 );
+			add_action( 'the_post', [ $this, 'remove_shortcode_keeper' ] );
+		}
+		return $content;
+	}
+
+	/**
+	 * Remove the shortcode keeper after job processing was done.
+	 *
+	 * @return void
+	 */
+	public function remove_shortcode_keeper() {
+		remove_filter( 'pre_do_shortcode_tag', [ $this, 'keep_shortcode' ], 10, 4 );
+		remove_action( 'loop_end', [ $this, 'remove_shortcode_keeper' ] );
+		remove_action( 'the_post', [ $this, 'remove_shortcode_keeper' ] );
+	}
+
+	/**
+	 * Keep the shortcode in the content.
+	 *
+	 * @param false|string $return The content to return in the shortcode.
+	 * @param string       $tag The shortcode tag.
+	 * @param array|string $attr The shortcode attributes.
+	 * @param array        $m The regex array that matched the shortcode.
+	 * @return false|string The content to return in the shortcode.ph
+	 */
+	public function keep_shortcode( $return, $tag, $attr, $m ) {
+		return $m[0];
 	}
 
 	/**
