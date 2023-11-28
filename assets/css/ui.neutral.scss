@@ -1,0 +1,53 @@
+
+/**
+ * Fade current text color to the given opacity.
+ */
+@function currentColor( $opacity ) {
+	@return color-mix(in srgb, transparent, currentColor #{$opacity});
+}
+
+:root {
+	--jm-ui-border-light: #{currentColor(15%)};
+	--jm-ui-border-strong: currentColor;
+	--jm-ui-border-size: 1px;
+
+	--jm-ui-background-color: transparent;
+	--jm-ui-text-color: inherit;
+	--jm-ui-background-opacity: 0;
+
+	--jm-ui-radius: 2px;
+	--jm-ui-radius-2x: calc(2 * var(--jm-ui-radius));
+	--jm-ui-radius-4x: calc(4 * var(--jm-ui-radius));
+
+	--jm-ui-accent-color: inherit;
+	--jm-ui-accent-color-contrast: #ffffff;
+
+	--jm-ui-button-color: var(--jm-ui-accent-color, inherit);
+	--jm-ui-button-contrast: var(--jm-ui-accent-color-contrast, #ffffff);
+	--jm-ui-link-color: var(--jm-ui-accent-color, inherit);
+
+	--jm-ui-notice-error: #cc1818;
+	--jm-ui-notice-info: #4e71ec;
+	--jm-ui-notice-success: #4ab866;
+	--jm-ui-notice-strong: var(--jm-ui-border-strong);
+
+	--jm-ui-space-base: 4px;
+
+	--jm-ui-space-xxxs: calc(0.5 * var(--jm-ui-space-base)); // 2px
+	--jm-ui-space-xxs: calc(1 * var(--jm-ui-space-base)); // 4px
+	--jm-ui-space-xs: calc(1.5 * var(--jm-ui-space-base)); // 6px
+	--jm-ui-space-s2: calc(2 * var(--jm-ui-space-base)); // 8px
+
+	--jm-ui-space-s: calc(3 * var(--jm-ui-space-base)); // 12px
+	--jm-ui-space-sm: calc(4.5 * var(--jm-ui-space-base)); // 18px
+	--jm-ui-space-m: calc(6 * var(--jm-ui-space-base)); // 24px
+
+	--jm-ui-space-ml: calc(8 * var(--jm-ui-space-base)); // 32px
+	--jm-ui-space-l: calc(12 * var(--jm-ui-space-base)); // 48px
+	--jm-ui-space-xl: calc(16 * var(--jm-ui-space-base)); // 64px
+	--jm-ui-space-xxl: calc(24 * var(--jm-ui-space-base)); // 96px
+
+	--jm-ui-font-size: 16px;
+	--jm-ui-heading-font-size: 22px;
+	--jm-ui-icon-size: 24px;
+}

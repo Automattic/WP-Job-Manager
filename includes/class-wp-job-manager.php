@@ -64,6 +64,9 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-post-types.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ajax.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-shortcodes.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ui.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ui-notice.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ui-settings.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-api.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-forms.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-geocode.php';
@@ -394,7 +397,6 @@ class WP_Job_Manager {
 			'is_rtl'                  => is_rtl() ? 1 : 0,
 			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' ),
 		];
-
 		/**
 		 * Retrieves the current language for use when caching requests.
 		 *
