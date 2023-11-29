@@ -19,6 +19,16 @@ class WP_Job_Manager_Post_Types {
 	const PERMALINK_OPTION_NAME = 'job_manager_permalinks';
 
 	/**
+	 * Constant for the post type name used for saving guest user data.
+	 */
+	public const PT_GUEST_USER = 'job_guest_user';
+
+	/**
+	 * Constant for the capability name used for the post type used for saving guest user data.
+	 */
+	public const CAP_GUEST_USER = 'job_guest_user';
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -422,7 +432,7 @@ class WP_Job_Manager_Post_Types {
 		 * Custom post type used to store guest user data.
 		 */
 		register_post_type(
-			'job_guest_user',
+			self::PT_GUEST_USER,
 			[
 				apply_filters(
 					'register_post_type_job_guest_user',
@@ -430,7 +440,7 @@ class WP_Job_Manager_Post_Types {
 						'description'         => esc_html__( 'This is where guest user data is stored.', 'wp-job-manager' ),
 						'public'              => false,
 						'show_ui'             => false,
-						'capability_type'     => 'job_guest_user',
+						'capability_type'     => self::CAP_GUEST_USER,
 						'map_meta_cap'        => false,
 						'publicly_queryable'  => false,
 						'exclude_from_search' => true,
