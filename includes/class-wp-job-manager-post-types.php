@@ -70,7 +70,9 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_job_description', 'wpautop' );
 		add_filter( 'the_job_description', 'shortcode_unautop' );
 		add_filter( 'the_job_description', 'prepend_attachment' );
-		add_filter( 'job_manager_single_job_content', [ $this, 'handle_job_shortcodes' ] );
+		if ( '1' === get_option( 'job_manager_strip_job_description_shortcodes' ) ) {
+			add_filter( 'the_job_description', 'strip_shortcodes' );
+		}
 		if ( ! empty( $GLOBALS['wp_embed'] ) ) {
 			add_filter( 'the_job_description', [ $GLOBALS['wp_embed'], 'run_shortcode' ], 8 );
 			add_filter( 'the_job_description', [ $GLOBALS['wp_embed'], 'autoembed' ], 8 );
@@ -550,38 +552,6 @@ class WP_Job_Manager_Post_Types {
 		$this->job_content_filter( true );
 
 		return apply_filters( 'job_manager_single_job_content', ob_get_clean(), $post );
-	}
-
-	/**
-	 * Handles shortcodes in single job content.
-	 *
-	 * @param string $content The content to filter.
-	 * @return string The filtered content.
-	 */
-	public function handle_job_shortcodes( $content ) {
-		$option = get_option( 'job_manager_handle_job_shortcodes' );
-		if ( 'strip' === $option ) {
-			return strip_shortcodes( $content );
-		}
-		if ( 'keep' === $option ) {
-			$has_filter = remove_filter( 'the_content', [ $this, 'do_shortcode' ], 11 );
-			if ( $has_filter ) {
-				add_filter( 'the_content', [ $this, 'readd_do_shortcode' ], 0 );
-			}
-		}
-		return $content;
-	}
-
-	/**
-	 * Remove the shortcode keeper after job processing was done.
-	 *
-	 * @param string $content The content to filter.
-	 * @return string The filtered content.
-	 */
-	public function readd_do_shortcode( $content ) {
-		add_filter( 'the_content', 'do_shortcode', 11 );
-		remove_action( 'the_content', [ $this, 'readd_do_shortcode' ], 0 );
-		return $content;
 	}
 
 	/**
