@@ -1,9 +1,9 @@
 <?php
 /**
- * Handles Job Manager's Gutenberg Blocks.
+ * Preview and settings for UI elements.
  *
  * @package wp-job-manager
- * @since 1.32.0
+ * @since $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @internal
  */
-class WP_Job_Manager_Ui_Settings {
+class WP_Job_Manager_UI_Settings {
 	/**
 	 * The static instance of the WP_Job_Manager_Ui
 	 *
@@ -56,7 +56,7 @@ class WP_Job_Manager_Ui_Settings {
 	public function preview_ui_elements() {
 		$elements = [];
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'title'        => 'Job listing active',
 				'message_icon' => 'info',
@@ -65,20 +65,20 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'message' => 'This is a test notice message with a checkmark.',
 				'icon'    => 'check',
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'message' => 'This is a test notice message.',
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'classes' => [ 'type-error' ],
 				'message' => 'This is a test notice message with an alert icon and red colors.',
@@ -86,7 +86,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'classes' => [ 'type-success' ],
 				'message' => 'This is a super green test notice message.',
@@ -94,7 +94,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'classes' => [ 'type-info' ],
 				'message' => 'This is an informational blue message.',
@@ -102,7 +102,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'title' => 'Test Notice Created',
 				'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -114,7 +114,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'title'   => 'Test Notice Created',
 				'icon'    => 'check',
@@ -143,7 +143,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'title'   => 'Test Notice Created',
 				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
@@ -163,7 +163,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'title'   => 'Test Notice Created',
 				'message' => 'This is a test Job Manager notice.',
@@ -180,7 +180,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'title'   => 'Test Notice Created',
 				'icon'    => 'check',
@@ -194,7 +194,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'icon'    => 'check',
 				'message' => 'This is a test Job Manager notice, with an icon, message and an action.',
@@ -207,7 +207,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'icon'    => 'check',
 				'classes' => [ 'alignwide' ],
@@ -221,7 +221,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'message' => 'This is a test Job Manager notice, with only a message and an action.',
 				'links'   => [
@@ -233,7 +233,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
 				'buttons' => [
@@ -245,7 +245,7 @@ class WP_Job_Manager_Ui_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_Ui::notice(
+		$elements[] = WP_Job_Manager_UI::notice(
 			[
 				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
 				'buttons' => [
@@ -263,4 +263,4 @@ class WP_Job_Manager_Ui_Settings {
 	}
 }
 
-WP_Job_Manager_Ui_Settings::instance();
+WP_Job_Manager_UI_Settings::instance();

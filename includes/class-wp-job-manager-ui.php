@@ -3,7 +3,7 @@
  * Frontend UI elements of Job Manager.
  *
  * @package wp-job-manager
- * @since 1.32.0
+ * @since $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @internal This API is still under development and subject to change.
  * @access private
  */
-class WP_Job_Manager_Ui {
+class WP_Job_Manager_UI {
 
 	/**
 	 * The singleton instance of the class.
@@ -64,7 +64,7 @@ class WP_Job_Manager_Ui {
 	public static function notice( $options ) {
 		self::ensure_styles();
 
-		return WP_Job_Manager_Ui_Notice::notice( $options );
+		return WP_Job_Manager_UI_Notice::notice( $options );
 	}
 
 	/**
@@ -88,4 +88,4 @@ class WP_Job_Manager_Ui {
 	}
 }
 
-WP_Job_Manager_Ui::instance();
+WP_Job_Manager_UI::instance();

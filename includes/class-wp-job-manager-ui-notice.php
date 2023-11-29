@@ -3,7 +3,7 @@
  * Notice component for the frontend.
  *
  * @package wp-job-manager
- * @since 1.32.0
+ * @since $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @internal This API is still under development and subject to change.
  * @access private
  */
-class WP_Job_Manager_Ui_Notice {
+class WP_Job_Manager_UI_Notice {
 
 	/**
 	 * The singleton instance of the class.
@@ -208,26 +208,6 @@ class WP_Job_Manager_Ui_Notice {
 		return $html;
 
 	}
-
-	/**
-	 * Register and enqueue styles.
-	 *
-	 * @access private
-	 */
-	public function enqueue_styles() {
-		WP_Job_Manager::register_style( 'wp-job-manager-ui', 'css/ui.css', [] );
-
-		if ( $this->has_ui ) {
-			wp_enqueue_style( 'wp-job-manager-ui' );
-		}
-	}
-
-	/**
-	 * Request the styles to be loaded for the page.
-	 */
-	public static function ensure_styles() {
-		self::instance()->has_ui = true;
-	}
 }
 
-WP_Job_Manager_Ui::instance();
+WP_Job_Manager_UI::instance();
