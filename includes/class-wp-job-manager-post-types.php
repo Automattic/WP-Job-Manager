@@ -564,9 +564,10 @@ class WP_Job_Manager_Post_Types {
 			return strip_shortcodes( $content );
 		}
 		if ( 'keep' === $option ) {
-			add_action( 'loop_end', [ $this, 'remove_shortcode_keeper' ] );
-			add_filter( 'pre_do_shortcode_tag', [ $this, 'keep_shortcode' ], 10, 4 );
-			add_action( 'the_post', [ $this, 'remove_shortcode_keeper' ] );
+			$has_filter = remove_filter( 'the_content', [ $this, 'do_shortcode' ], 11 );
+			if ( $has_filter ) {
+				add_filter( 'the_content', [ $this, 'readd_do_shortcode' ], 0 );
+			}
 		}
 		return $content;
 	}
@@ -574,25 +575,13 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Remove the shortcode keeper after job processing was done.
 	 *
-	 * @return void
+	 * @param string $content The content to filter.
+	 * @return string The filtered content.
 	 */
-	public function remove_shortcode_keeper() {
-		remove_filter( 'pre_do_shortcode_tag', [ $this, 'keep_shortcode' ], 10, 4 );
-		remove_action( 'loop_end', [ $this, 'remove_shortcode_keeper' ] );
-		remove_action( 'the_post', [ $this, 'remove_shortcode_keeper' ] );
-	}
-
-	/**
-	 * Keep the shortcode in the content.
-	 *
-	 * @param false|string $return The content to return in the shortcode.
-	 * @param string       $tag The shortcode tag.
-	 * @param array|string $attr The shortcode attributes.
-	 * @param array        $m The regex array that matched the shortcode.
-	 * @return false|string The content to return in the shortcode.ph
-	 */
-	public function keep_shortcode( $return, $tag, $attr, $m ) {
-		return $m[0];
+	public function readd_do_shortcode( $content ) {
+		add_filter( 'the_content', 'do_shortcode', 11 );
+		remove_action( 'the_content', [ $this, 'readd_do_shortcode' ], 0 );
+		return $content;
 	}
 
 	/**
