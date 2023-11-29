@@ -19,6 +19,16 @@ class WP_Job_Manager_Post_Types {
 	const PERMALINK_OPTION_NAME = 'job_manager_permalinks';
 
 	/**
+	 * Constant for the post type name used for saving guest user data.
+	 */
+	public const PT_GUEST_USER = 'job_guest_user';
+
+	/**
+	 * Constant for the capability name used for the post type used for saving guest user data.
+	 */
+	public const CAP_GUEST_USER = 'job_guest_user';
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -415,6 +425,34 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin_status_list' => true,
 				// translators: Placeholder %s is the number of posts in a preview state.
 				'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
+			]
+		);
+
+		/**
+		 * Custom post type used to store guest user data.
+		 */
+		register_post_type(
+			self::PT_GUEST_USER,
+			[
+				apply_filters(
+					'register_post_type_job_guest_user',
+					[
+						'description'         => esc_html__( 'This is where guest user data is stored.', 'wp-job-manager' ),
+						'public'              => false,
+						'show_ui'             => false,
+						'capability_type'     => self::CAP_GUEST_USER,
+						'map_meta_cap'        => false,
+						'publicly_queryable'  => false,
+						'exclude_from_search' => true,
+						'hierarchical'        => false,
+						'rewrite'             => false,
+						'query_var'           => false,
+						'supports'            => [ 'title', 'custom-fields' ],
+						'has_archive'         => false,
+						'show_in_nav_menus'   => false,
+						'show_in_rest'        => false,
+					]
+				),
 			]
 		);
 	}
