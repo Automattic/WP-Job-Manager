@@ -131,7 +131,7 @@
 }
 
 .jm-notice__details {
-
+	font-weight: normal;
 }
 
 .jm-notice__footer,
@@ -179,6 +179,8 @@
 	font-weight: 400;
 	letter-spacing: -0.1px;
 
+	transition: color 0.2s ease-out, background 0.2s ease-out;
+
 	&:focus-visible {
 		outline: 1.5px solid currentColor(85%);
 		outline-offset: 1.5px;
@@ -195,7 +197,7 @@
 
 	&:hover, &:focus {
 		&:where(:not(:active)) {
-			color: color-mix(in srgb, #fff, currentColor 90%);
+			color: color-mix(in srgb, #fff, currentColor 85%);
 		}
 	}
 }
