@@ -211,7 +211,7 @@ function updateVersionInFile( filename ) {
 	// Update version constant.
 	const { constant }    = PLUGINS[ pluginSlug ];
 	newPluginFileContents = newPluginFileContents.replace(
-		new RegExp( `define\( '${constant}', '.*' \);` ),
+		new RegExp( `define\\( '${constant}', '.*' \\);` ),
 		`define( '${ constant }', '${ version }' );`,
 	);
 
