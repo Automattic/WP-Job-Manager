@@ -18,15 +18,30 @@
 	position: relative;
 	font-size: var(--jm-ui-font-size);
 	line-height: var(--jm-ui-icon-size);
+	box-shadow: var(--jm-ui-notice-shadow);
 
-	margin: 32px auto;
+	margin: var(--jm-ui-space-ml) auto;
 
-
-	&.has-actions {
-		//gap: var(--jm-ui-space-m);
+	&.has-header.has-actions {
+		padding: var(--jm-ui-space-ml) var(--jm-ui-space-m);
+		gap: var(--jm-ui-space-sm);
 	}
 
-	&.alignwide {
+	@each $color in (info, error, success, strong) {
+		&.color-#{$color} {
+			border-color: var(--jm-ui-notice-#{$color});
+			background-color: color-mix(in srgb, transparent, var(--jm-ui-notice-#{$color}) var(--jm-ui-background-opacity));
+			.jm-notice__icon {
+				color: var(--jm-ui-notice-#{$color});
+			}
+		}
+	}
+	&.color-error {
+		color: var(--jm-ui-notice-error);
+	}
+
+	&.alignwide,
+	&.type-hint {
 		flex-direction: row;
 		flex-wrap: wrap;
 		gap: var(--jm-ui-space-s) var(--jm-ui-space-m);
@@ -37,22 +52,20 @@
 		}
 
 		.jm-notice__footer {
+			margin-top: unset;
 			margin-left: auto;
 		}
 	}
 
-	&.large {
-		padding: var(--jm-ui-space-l) var(--jm-ui-space-ml) var(--jm-ui-space-l) var(--jm-ui-space-ml);
-		gap: var(--jm-ui-space-m);
-	}
-
-	@each $type in (info, error, success, strong) {
-		&.type-#{$type} {
-			border-color: var(--jm-ui-notice-#{$type});
-			background-color: color-mix(in srgb, transparent, var(--jm-ui-notice-#{$type}) var(--jm-ui-background-opacity));
-			.jm-notice__icon {
-				background-color: var(--jm-ui-notice-#{$type});
-			}
+	&.type-hint {
+		background: currentColor(3%);
+		border: unset;
+		.jm-notice__message {
+			font-weight: 400;
+		}
+		.jm-notice__button,
+		.jm-notice__action, {
+			font-size: 16px;
 		}
 	}
 }
@@ -111,6 +124,7 @@
 }
 
 .jm-notice__message {
+	font-weight: 500;
 	&.has-details {
 		font-weight: 600;
 	}
@@ -165,10 +179,9 @@
 	font-weight: 400;
 	letter-spacing: -0.1px;
 
-
 	&:focus-visible {
-		outline: 2px solid currentColor(70%);
-		outline-offset: 1px;
+		outline: 1.5px solid currentColor(85%);
+		outline-offset: 1.5px;
 	}
 }
 
@@ -180,8 +193,10 @@
 	}
 	background: currentColor;
 
-	&:hover, &:active, &:focus {
-		color: color-mix(in srgb, #fff, currentColor 90%);
+	&:hover, &:focus {
+		&:where(:not(:active)) {
+			color: color-mix(in srgb, #fff, currentColor 90%);
+		}
 	}
 }
 

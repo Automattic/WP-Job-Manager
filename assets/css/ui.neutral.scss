@@ -31,6 +31,8 @@
 	--jm-ui-notice-success: #4ab866;
 	--jm-ui-notice-strong: var(--jm-ui-border-strong);
 
+	--jm-ui-notice-shadow: none;
+
 	--jm-ui-space-base: 4px;
 
 	--jm-ui-space-xxxs: calc(0.5 * var(--jm-ui-space-base)); // 2px
@@ -48,6 +50,6 @@
 	--jm-ui-space-xxl: calc(24 * var(--jm-ui-space-base)); // 96px
 
 	--jm-ui-font-size: 16px;
-	--jm-ui-heading-font-size: 22px;
+	--jm-ui-heading-font-size: 20px;
 	--jm-ui-icon-size: 24px;
 }
