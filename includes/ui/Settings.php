@@ -48,10 +48,10 @@ class Settings {
 
 		$elements[] = Notice::render(
 			[
-				'title'        => 'Job listing active',
-				'message_icon' => 'info',
-				'classes'      => [ 'color-strong' ],
-				'message'      => 'Expires  in 25 days.',
+				'title'   => 'Job listing active',
+				'icon'    => 'info',
+				'classes' => [ 'color-strong', 'message-icon' ],
+				'message' => 'Expires  in 25 days.',
 			]
 		);
 

@@ -65,14 +65,21 @@ class Notice {
 	 * @param array $options {
 	 *    Options for the notice.
 	 *
+	 * @type string $id Unique ID of the notice.
 	 * @type string $title Optional title.
 	 * @type string $icon Notice icon. Should be a supported icon name, or safe SVG code.
 	 * @type string $message Main notice message.
-	 * @type string $message_icon Alternative to icon, if it should be placed next to the message, not the title.
-	 * @type string $details Additional details.
+	 * @type string $details Additional HTML content for the notice. Displayed below the message.
 	 * @type array  $buttons Action links styled as buttons.
 	 * @type array  $links Action links.
-	 * @type array  $classes Additional classes for the notice.
+	 * @type array  $classes Additional classes for the notice. Possible options:
+	 *      color-error:     Error-style coloring.
+	 *      color-success:   Green highlight.
+	 *      color-info:      Blue highlight.
+	 *      color-strong:    Stronger border opacity highlight.
+	 *      type-hint:       Variation for a persistent hint.
+	 *      message-icon:    Show the icon next to the message instead of the title.
+	 *      alignwide:       Wide notice, with actions on the side.
 	 * }
 	 *
 	 * @return string HTML.
@@ -84,14 +91,14 @@ class Notice {
 		$options = wp_parse_args(
 			$options,
 			[
-				'title'        => '',
-				'icon'         => '',
-				'message'      => '',
-				'message_icon' => '',
-				'details'      => '',
-				'buttons'      => [],
-				'links'        => [],
-				'classes'      => [],
+				'id'      => '',
+				'title'   => '',
+				'icon'    => '',
+				'message' => '',
+				'details' => '',
+				'buttons' => [],
+				'links'   => [],
+				'classes' => [],
 			]
 		);
 
@@ -109,72 +116,59 @@ class Notice {
 			$links[] = self::get_button_html( $link, $class );
 		}
 
-		$has_actions_footer = $buttons || $links;
-
-		$icon         = self::get_icon_html( $options['icon'] );
-		$message_icon = self::get_icon_html( $options['message_icon'] );
-
-		$classes = $options['classes'] ?? [];
-
-		if ( $has_actions_footer ) {
-			$classes[] = 'has-actions';
-		}
-
-		if ( $options['title'] ) {
-			$classes[] = 'has-header';
-		}
+		$icon = self::get_icon_html( $options['icon'] );
 
 		ob_start();
-		?>
 
-		<div class="jm-notice <?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-			<?php if ( $options['title'] ) : ?>
-				<div class="jm-notice__header">
-					<?php echo $icon; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in helper function. ?>
-					<div class="jm-notice__title"><?php echo esc_html( $options['title'] ); ?></div>
-				</div>
-			<?php endif; ?>
-			<?php if ( $options['message'] ) : ?>
-				<div
-					class="jm-notice__message-wrap">
-					<?php if ( ! $options['title'] && ( $icon ) ) : ?>
-						<?php echo $icon; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in helper function. ?>
-					<?php endif; ?>
-					<?php echo $message_icon; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in helper function. ?>
-					<div
-						class="jm-notice__message <?php echo esc_attr( $options['details'] ? 'has-details' : '' ); ?> "><?php echo wp_kses_post( $options['message'] ); ?></div>
-				</div>
-			<?php endif; ?>
-			<?php if ( $options['details'] ) : ?>
-				<div class="jm-notice__details"><?php echo wp_kses_post( $options['details'] ); ?></div>
-			<?php endif; ?>
-			<?php if ( $has_actions_footer ) : ?>
-				<div class="jm-notice__footer">
-					<?php if ( $buttons ) : ?>
-						<div class="jm-notice__buttons">
-							<?php echo implode( '', $buttons ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in helper function. ?>
-						</div>
-					<?php endif; ?>
-					<?php if ( $links ) : ?>
-						<div class="jm-notice__actions">
-							<?php echo implode( '', $links ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in helper function. ?>
-						</div>
-					<?php endif; ?>
-				</div>
-			<?php endif; ?>
-		</div>
+		$template_options = [
+			'options'      => $options,
+			'title'        => $options['title'],
+			'classes'      => $options['classes'] ?? [],
+			'message'      => $options['message'],
+			'details'      => $options['details'],
+			'icon_html'    => $icon,
+			'buttons_html' => $buttons,
+			'links_html'   => $links,
+		];
 
-		<?php
+		get_job_manager_template(
+			'notice.php',
+			$template_options
+		);
 
-		return ob_get_clean();
+		$notice_html = ob_get_clean();
+
+		/**
+		 * Filters notices. Return false to disable the notice.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param string $notice_html Generated HTML for the notice.
+		 * @param array  $options Notice template options.
+		 */
+		$notice_html = apply_filters( 'wpjm_notice', $notice_html, $template_options );
+
+		if ( ! empty( $options['id'] ) ) {
+			/**
+			 * Filters an individual notice.Return false to disable the notice.
+			 *
+			 * @since $$next-version$$
+			 *
+			 * @param string $notice_html Generated HTML for the notice.
+			 * @param array  $options Notice template options.
+			 */
+			$notice_html = apply_filters( 'wpjm_notice_' . $options['id'], $notice_html, $template_options );
+		}
+
+		return is_string( $notice_html ) ? $notice_html : '';
 	}
 
 	/**
 	 * Generate HTML for a notice icon.
 	 *
-	 * @param string|null $icon Icon name or an SVG code.
+	 * @param string|null $icon Icon name or a safe SVG code.
 	 *
-	 * @return string
+	 * @return string Icon HTML.
 	 */
 	private static function get_icon_html( $icon ) {
 		$html = '';
@@ -204,10 +198,10 @@ class Notice {
 	/**
 	 * Generate HTML for a button or action link.
 	 *
-	 * @param array  $args
-	 * @param string $class
+	 * @param array  $args Button options.
+	 * @param string $class Base classname.
 	 *
-	 * @return string
+	 * @return string Button HTML.
 	 */
 	private static function get_button_html( $args, $class ) {
 
