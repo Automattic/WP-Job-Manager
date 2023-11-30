@@ -70,6 +70,9 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_job_description', 'wpautop' );
 		add_filter( 'the_job_description', 'shortcode_unautop' );
 		add_filter( 'the_job_description', 'prepend_attachment' );
+		if ( '1' === get_option( 'job_manager_strip_job_description_shortcodes' ) ) {
+			add_filter( 'the_job_description', 'strip_shortcodes' );
+		}
 		if ( ! empty( $GLOBALS['wp_embed'] ) ) {
 			add_filter( 'the_job_description', [ $GLOBALS['wp_embed'], 'run_shortcode' ], 8 );
 			add_filter( 'the_job_description', [ $GLOBALS['wp_embed'], 'autoembed' ], 8 );
