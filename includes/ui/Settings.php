@@ -6,6 +6,10 @@
  * @since $$next-version$$
  */
 
+namespace WP_Job_Manager\UI;
+
+use WP_Job_Manager\Singleton;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -17,26 +21,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @internal
  */
-class WP_Job_Manager_UI_Settings {
-	/**
-	 * The static instance of the WP_Job_Manager_Ui
-	 *
-	 * @var self
-	 */
-	private static $instance = null;
+class Settings {
 
-	/**
-	 * Singleton instance getter
-	 *
-	 * @return self
-	 */
-	public static function instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
+	use Singleton;
 
 	/**
 	 * Instance constructor
@@ -56,53 +43,69 @@ class WP_Job_Manager_UI_Settings {
 	public function preview_ui_elements() {
 		$elements = [];
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::success( 'Notice rendered successfully.' );
+		$elements[] = Notice::error( 'Invalid notice message.' );
+
+		$elements[] = Notice::render(
 			[
 				'title'        => 'Job listing active',
 				'message_icon' => 'info',
-				'classes'      => [ 'type-strong' ],
+				'classes'      => [ 'color-strong' ],
 				'message'      => 'Expires  in 25 days.',
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'message' => 'This is a test notice message with a checkmark.',
 				'icon'    => 'check',
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'message' => 'This is a test notice message.',
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
-				'classes' => [ 'type-error' ],
+				'classes' => [ 'type-hint' ],
+				'message' => 'Already have an account?',
+				'links'   => [
+					[
+						'text' => 'Sign In',
+						'href' => '/',
+					],
+				],
+			]
+		);
+
+		$elements[] = Notice::render(
+			[
+				'classes' => [ 'color-error' ],
 				'message' => 'This is a test notice message with an alert icon and red colors.',
 				'icon'    => 'alert',
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
-				'classes' => [ 'type-success' ],
+				'classes' => [ 'color-success' ],
 				'message' => 'This is a super green test notice message.',
 				'icon'    => 'check',
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
-				'classes' => [ 'type-info' ],
+				'classes' => [ 'color-info' ],
 				'message' => 'This is an informational blue message.',
 				'icon'    => 'info',
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'title' => 'Test Notice Created',
 				'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -114,11 +117,10 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'title'   => 'Test Notice Created',
 				'icon'    => 'check',
-				'classes' => [ 'large' ],
 				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
 				'buttons' => [
 					[
@@ -143,7 +145,7 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'title'   => 'Test Notice Created',
 				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
@@ -163,7 +165,7 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'title'   => 'Test Notice Created',
 				'message' => 'This is a test Job Manager notice.',
@@ -180,7 +182,7 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'title'   => 'Test Notice Created',
 				'icon'    => 'check',
@@ -194,7 +196,7 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'icon'    => 'check',
 				'message' => 'This is a test Job Manager notice, with an icon, message and an action.',
@@ -207,11 +209,11 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'icon'    => 'check',
 				'classes' => [ 'alignwide' ],
-				'message' => 'This is a test Job Manager notice, with an icon, message and an action. Actions on the side.',
+				'message' => 'This is a wide Job Manager notice, with an icon, message and an action. Actions are on the side.',
 				'links'   => [
 					[
 						'text' => 'Action',
@@ -221,7 +223,7 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
 				'message' => 'This is a test Job Manager notice, with only a message and an action.',
 				'links'   => [
@@ -233,9 +235,9 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
-				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
+				'message' => 'This is a test Job Manager notice.',
 				'buttons' => [
 					[
 						'text' => 'Primary Button',
@@ -245,9 +247,9 @@ class WP_Job_Manager_UI_Settings {
 			]
 		);
 
-		$elements[] = WP_Job_Manager_UI::notice(
+		$elements[] = Notice::render(
 			[
-				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
+				'message' => 'This is a test Job Manager notice.',
 				'buttons' => [
 					[
 						'text'    => 'Outlined Button',
@@ -263,4 +265,4 @@ class WP_Job_Manager_UI_Settings {
 	}
 }
 
-WP_Job_Manager_UI_Settings::instance();
+Settings::instance();

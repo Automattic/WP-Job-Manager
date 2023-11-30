@@ -64,9 +64,6 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-post-types.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ajax.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-shortcodes.php';
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ui.php';
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ui-notice.php';
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ui-settings.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-api.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-forms.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-geocode.php';
@@ -80,6 +77,11 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-com-api.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-access-token.php';
+
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/traits/Singleton.php';
+
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/UI.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/Settings.php';
 
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';

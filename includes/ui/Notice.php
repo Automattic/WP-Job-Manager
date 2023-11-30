@@ -6,6 +6,8 @@
  * @since $$next-version$$
  */
 
+namespace WP_Job_Manager\UI;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -18,26 +20,43 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @internal This API is still under development and subject to change.
  * @access private
  */
-class WP_Job_Manager_UI_Notice {
+class Notice {
 
 	/**
-	 * The singleton instance of the class.
+	 * A success message.
 	 *
-	 * @var self
+	 * @param string|array $args A message, or an array of options accepted by Notice::render.
 	 */
-	private static $instance = null;
+	public static function success( $args ) {
+		$args = is_array( $args ) ? $args : [ 'message' => $args ];
+
+		return self::render(
+			array_merge(
+				[
+					'icon' => 'check',
+				],
+				$args
+			)
+		);
+	}
 
 	/**
-	 * Singleton instance getter.
+	 * An error message.
 	 *
-	 * @return self
+	 * @param string|array $args A message, or an array of options accepted by Notice::render.
 	 */
-	public static function instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
-		}
+	public static function error( $args ) {
+		$args = is_array( $args ) ? $args : [ 'message' => $args ];
 
-		return self::$instance;
+		return self::render(
+			array_merge(
+				[
+					'icon'    => 'alert',
+					'classes' => array_merge( [ 'color-error' ], $args['classes'] ?? [] ),
+				],
+				$args
+			)
+		);
 	}
 
 	/**
@@ -58,7 +77,9 @@ class WP_Job_Manager_UI_Notice {
 	 *
 	 * @return string HTML.
 	 */
-	public static function notice( $options ) {
+	public static function render( $options ) {
+
+		UI::ensure_styles();
 
 		$options = wp_parse_args(
 			$options,
@@ -209,5 +230,3 @@ class WP_Job_Manager_UI_Notice {
 
 	}
 }
-
-WP_Job_Manager_UI::instance();
