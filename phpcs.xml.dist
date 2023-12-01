@@ -29,6 +29,7 @@
 	<rule ref="PHPCompatibilityWP"/>
 	<rule ref="WordPress">
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+		<exclude name="WordPress.PHP.DisallowShortTernary.Found"/>
 	</rule>
 	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-Extra" />
