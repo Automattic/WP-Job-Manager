@@ -74,7 +74,7 @@ class Access_Token {
 	 * @return bool True if the token is correct.
 	 */
 	public function verify( string $token ) : bool {
-		$token_data = $this->lood_token_data( $this->payload );
+		$token_data = $this->load_token_data( $this->payload );
 
 		if ( true === $this->check_token_expiry( $token_data['payload'] ) ) {
 			return false;
@@ -89,7 +89,7 @@ class Access_Token {
 	 * @return bool
 	 */
 	public function is_expired() : bool {
-		$token_data = $this->lood_token_data( $this->payload );
+		$token_data = $this->load_token_data( $this->payload );
 
 		return $this->check_token_expiry( $token_data['payload'] );
 	}
@@ -116,7 +116,7 @@ class Access_Token {
 	 * @type string $payload    The token payload.
 	 * }
 	 */
-	protected function lood_token_data( array $payload ): array {
+	protected function load_token_data( array $payload ): array {
 		$token_hash = get_user_meta( $payload['user_id'], 'job_manager_alerts_secret_key', true );
 		$payload    = get_user_meta( $payload['user_id'], 'job_manager_alerts_token_payload', true );
 
