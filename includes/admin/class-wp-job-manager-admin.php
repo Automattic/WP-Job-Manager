@@ -177,6 +177,9 @@ class WP_Job_Manager_Admin {
 	public function admin_menu() {
 		remove_submenu_page( 'edit.php?post_type=job_listing', 'post-new.php?post_type=job_listing' );
 		$item = remove_submenu_page( 'edit.php?post_type=job_listing', 'edit.php?post_type=job_listing' );
+		if ( ! $item ) {
+			return;
+		}
 		// change item label to "Job Listings".
 		add_submenu_page( 'edit.php?post_type=job_listing', $item[0], esc_html__( 'Job Listings', 'wp-job-manager' ), $item[1], $item[2], '', 0 );
 		add_submenu_page( 'edit.php?post_type=job_listing', __( 'Settings', 'wp-job-manager' ), esc_html__( 'Settings', 'wp-job-manager' ), 'manage_options', 'job-manager-settings', [ $this->settings_page, 'output' ] );
