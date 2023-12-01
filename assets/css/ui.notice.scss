@@ -22,7 +22,7 @@
 
 	margin: var(--jm-ui-space-ml) auto;
 
-	&.has-header.has-actions {
+	&.has-header {
 		padding: var(--jm-ui-space-ml) var(--jm-ui-space-m);
 		gap: var(--jm-ui-space-sm);
 	}
@@ -96,7 +96,6 @@
 	display: flex;
 	flex-direction: row;
 	gap: var(--jm-ui-space-xs);
-	margin-bottom: var(--jm-ui-space-xs);
 	align-items: center;
 	justify-content: flex-start;
 	flex-shrink: 0;
