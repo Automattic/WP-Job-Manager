@@ -812,6 +812,29 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
+	 * Color input field.
+	 *
+	 * @param array  $option
+	 * @param array  $ignored_attributes
+	 * @param mixed  $value
+	 * @param string $ignored_placeholder
+	 */
+	protected function input_color( $option, $ignored_attributes, $value, $ignored_placeholder ) {
+		?>
+		<input
+			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
+			class="job-alerts-color-picker"
+			type="color"
+			name="<?php echo esc_attr( $option['name'] ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+		/>
+		<?php
+		if ( ! empty( $option['desc'] ) ) {
+			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
+		}
+	}
+
+	/**
 	 * Radio input field.
 	 *
 	 * @param array  $option
