@@ -812,13 +812,13 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-	 * Radio and Checkbox Outputs.
+	 * Multiple Choice field output (radio or checkbox).
 	 *
 	 * @param array  $option Option data.
 	 * @param mixed  $value  Current value.
 	 * @param string $type   'radio' or 'checkbox'.
 	 */
-	protected function radio_checkbox_outputs( $option, $value, $type ) {
+	protected function multiple_choice_output( $option, $value, $type ) {
 		?>
 		<fieldset>
 		<legend class="screen-reader-text">
@@ -851,7 +851,7 @@ class WP_Job_Manager_Settings {
 	 * @param string $ignored_placeholder
 	 */
 	protected function input_radio( $option, $ignored_attributes, $value, $ignored_placeholder ) {
-		$this->radio_checkbox_outputs( $option, $value, 'radio' );
+		$this->multiple_choice_output( $option, $value, 'radio' );
 	}
 
 	/**
@@ -863,7 +863,7 @@ class WP_Job_Manager_Settings {
 	 * @param string $ignored_placeholder
 	 */
 	protected function input_multi_checkbox( $option, $ignored_attributes, $value, $ignored_placeholder ) {
-		$this->radio_checkbox_outputs( $option, $value, 'checkbox' );
+		$this->multiple_choice_output( $option, $value, 'checkbox' );
 	}
 	/**
 	 * Page input field.
