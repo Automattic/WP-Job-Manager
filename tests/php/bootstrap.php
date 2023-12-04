@@ -1,4 +1,26 @@
 <?php /** @noinspection PhpCSValidationInspection */
+function log7( ...$val ) {
+	if ( is_array( $val ) ) {
+		foreach ( $val as $v ) {
+			error_log(print_r($v,true));
+		}
+	} else {
+		error_log(print_r($val,true));
+	}
+
+}
+
+function log8( ...$val ){
+	ob_start();
+	if ( is_array( $val ) ) {
+		foreach ( $val as $v ) {
+			var_dump($v);
+		}
+	} else {
+		var_dump($val);
+	}
+	error_log(ob_get_clean());
+}
 
 /**
  * WPJM Unit Tests Bootstrap
