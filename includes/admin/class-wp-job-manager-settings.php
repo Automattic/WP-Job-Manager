@@ -828,15 +828,16 @@ class WP_Job_Manager_Settings {
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
-		if ( 'checkbox' === $type ) {
-			foreach ( $option['options'] as $key => $name ) {
-				$value = (array) $value;
-				echo '<label><input name="' . esc_attr( $option['name'] . '[fields][]' ) . '" type="' . esc_attr( $type ) . '" value="' . esc_attr( strtolower( $name ) ) . '" ' . checked( isset( $value['fields'] ) && is_array( $value['fields'] ) && in_array( strtolower( $name ), $value['fields'], true ), true, 0 ) . '/>' . esc_html( $name ) . '</label><br>';
-			}
-		} else {
-			foreach ( $option['options'] as $key => $name ) {
-				echo '<label><input name="' . esc_attr( $option['name'] ) . '" type="radio" value="' . esc_attr( $key ) . '" ' . checked( $value, $key, false ) . ' />' . esc_html( $name ) . '</label><br>';
-			}
+		foreach ( $option['options'] as $key => $name ) {
+			$input_name  = esc_attr( 'checkbox' === $type ? $option['name'] . '[fields][]' : $option['name'] );
+			$input_type  = esc_attr( $type );
+			$input_value = esc_attr( 'checkbox' === $type ? strtolower( $name ) : $key );
+			$is_checked  = 'checkbox' === $type
+				? checked( isset( $value['fields'] ) && is_array( $value['fields'] ) && in_array( strtolower( $name ), $value['fields'], true ), true, 0 )
+				: checked( $value, $key, false );
+			$label       = esc_html( $name );
+
+			echo "<label><input name='{$input_name}' type='{$input_type}' value='{$input_value}' {$is_checked} />{$label}</label><br>"; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 		?>
 		</fieldset>
