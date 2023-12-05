@@ -835,14 +835,13 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-	 * Radio input field.
+	 * Multiple Choice field output (radio or checkbox).
 	 *
-	 * @param array  $option
-	 * @param array  $ignored_attributes
-	 * @param mixed  $value
-	 * @param string $ignored_placeholder
+	 * @param array  $option Option data.
+	 * @param mixed  $value  Current value.
+	 * @param string $type   'radio' or 'checkbox'.
 	 */
-	protected function input_radio( $option, $ignored_attributes, $value, $ignored_placeholder ) {
+	protected function multiple_choice_output( $option, $value, $type ) {
 		?>
 		<fieldset>
 		<legend class="screen-reader-text">
@@ -852,15 +851,44 @@ class WP_Job_Manager_Settings {
 		if ( ! empty( $option['desc'] ) ) {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
-
 		foreach ( $option['options'] as $key => $name ) {
-			echo '<label><input name="' . esc_attr( $option['name'] ) . '" type="radio" value="' . esc_attr( $key ) . '" ' . checked( $value, $key, false ) . ' />' . esc_html( $name ) . '</label><br>';
+			$input_name  = esc_attr( 'checkbox' === $type ? $option['name'] . '[fields][]' : $option['name'] );
+			$input_type  = esc_attr( $type );
+			$input_value = esc_attr( 'checkbox' === $type ? strtolower( $name ) : $key );
+			$is_checked  = 'checkbox' === $type
+				? checked( isset( $value['fields'] ) && is_array( $value['fields'] ) && in_array( strtolower( $name ), $value['fields'], true ), true, 0 )
+				: checked( $value, $key, false );
+			$label       = esc_html( $name );
+
+			echo "<label><input name='{$input_name}' type='{$input_type}' value='{$input_value}' {$is_checked} />{$label}</label><br>"; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 		?>
 		</fieldset>
 		<?php
 	}
+	/**
+	 * Radio input field.
+	 *
+	 * @param array  $option
+	 * @param array  $ignored_attributes
+	 * @param mixed  $value
+	 * @param string $ignored_placeholder
+	 */
+	protected function input_radio( $option, $ignored_attributes, $value, $ignored_placeholder ) {
+		$this->multiple_choice_output( $option, $value, 'radio' );
+	}
 
+	/**
+	 * Multiple Checkbox input field.
+	 *
+	 * @param array  $option
+	 * @param array  $ignored_attributes
+	 * @param mixed  $value
+	 * @param string $ignored_placeholder
+	 */
+	protected function input_multi_checkbox( $option, $ignored_attributes, $value, $ignored_placeholder ) {
+		$this->multiple_choice_output( $option, $value, 'checkbox' );
+	}
 	/**
 	 * Page input field.
 	 *
