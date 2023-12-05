@@ -58,7 +58,7 @@
 	}
 
 	&.type-hint {
-		background: currentColor(3%);
+		background: fadeCurrentColor(3%);
 		border: unset;
 		.jm-notice__message {
 			font-weight: 400;
@@ -181,7 +181,7 @@
 	transition: color 0.2s ease-out, background 0.2s ease-out;
 
 	&:focus-visible {
-		outline: 1.5px solid currentColor(85%);
+		outline: 1.5px solid fadeCurrentColor(85%);
 		outline-offset: 1.5px;
 	}
 }
@@ -225,10 +225,10 @@
 .jm-notice__button--outline
 {
 	&:hover {
-		background: currentColor(5%);
+		background: fadeCurrentColor(5%);
 	}
 	&:active {
-		background: currentColor(10%);
+		background: fadeCurrentColor(10%);
 	}
 }
 

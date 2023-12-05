@@ -2,12 +2,12 @@
 /**
  * Fade current text color to the given opacity.
  */
-@function currentColor( $opacity ) {
+@function fadeCurrentColor( $opacity ) {
 	@return color-mix(in srgb, transparent, currentColor #{$opacity});
 }
 
 :root {
-	--jm-ui-border-light: #{currentColor(15%)};
+	--jm-ui-border-light: #{fadeCurrentColor(15%)};
 	--jm-ui-border-strong: currentColor;
 	--jm-ui-border-size: 1px;
 
