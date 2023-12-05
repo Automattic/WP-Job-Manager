@@ -834,7 +834,7 @@ class WP_Job_Manager_Settings {
 		}
 	}
 
-  /**
+	/**
 	 * Multiple Choice field output (radio or checkbox).
 	 *
 	 * @param array  $option Option data.
