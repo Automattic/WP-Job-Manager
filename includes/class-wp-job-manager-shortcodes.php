@@ -328,7 +328,7 @@ class WP_Job_Manager_Shortcodes {
 	private function get_job_dashboard_query_args( $posts_per_page = -1 ) {
 		$job_dashboard_args = [
 			'post_type'           => 'job_listing',
-			'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview' ],
+			'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview', 'pending_payment' ],
 			'ignore_sticky_posts' => 1,
 			'posts_per_page'      => $posts_per_page,
 			'orderby'             => 'date',
@@ -489,6 +489,10 @@ class WP_Job_Manager_Shortcodes {
 				break;
 			case 'pending_payment':
 			case 'pending':
+				$actions['continue'] = [
+					'label' => __( 'Continue Submission', 'wp-job-manager' ),
+					'nonce' => $base_nonce_action_name,
+				];
 				if ( WP_Job_Manager_Post_Types::job_is_editable( $job->ID ) ) {
 					$actions['edit'] = [
 						'label' => __( 'Edit', 'wp-job-manager' ),
