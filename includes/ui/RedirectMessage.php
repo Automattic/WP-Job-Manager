@@ -62,15 +62,15 @@ class RedirectMessage {
 
 		$content = self::get_transient_message( $key );
 
-		if ( $content ) {
-			$content .= self::add_inline_script( $query_var );
-
-			UI::ensure_styles();
-
-			return $content;
+		if ( ! $content ) {
+			return null;
 		}
 
-		return null;
+		$content .= self::add_inline_script( $query_var );
+
+		UI::ensure_styles();
+
+		return $content;
 	}
 
 	/**
@@ -99,15 +99,15 @@ class RedirectMessage {
 	private static function get_transient_message( $key, $delete = true ) {
 		$content = get_transient( self::TRANSIENT_PREFIX . $key );
 
-		if ( is_string( $content ) ) {
-			if ( $delete ) {
-				delete_transient( self::TRANSIENT_PREFIX . $key );
-			}
-
-			return $content;
+		if ( ! is_string( $content ) ) {
+			return null;
 		}
 
-		return null;
+		if ( $delete ) {
+			delete_transient( self::TRANSIENT_PREFIX . $key );
+		}
+
+		return $content;
 	}
 
 	/**
