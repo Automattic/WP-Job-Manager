@@ -40,7 +40,7 @@ class Access_Token {
 	 * @return string The token.
 	 */
 	public function create() : string {
-		$tick = wp_nonce_tick();
+		$tick = $this->token_tick();
 
 		return $this->generate_token( $tick );
 	}
@@ -67,10 +67,9 @@ class Access_Token {
 	 * @return bool True if the token is correct.
 	 */
 	public function verify( string $token, int $duration_days ) : bool {
-		$duration_ticks = $duration_days * 2;
-		$tick           = wp_nonce_tick();
+		$tick = $this->token_tick();
 
-		for ( $i = 0; $i < $duration_ticks; $i++ ) {
+		for ( $i = 0; $i < $duration_days; $i++ ) {
 			if ( hash_equals( $this->generate_token( $tick - $i ), $token ) ) {
 				return true;
 			}
@@ -78,6 +77,14 @@ class Access_Token {
 
 		return false;
 	}
+
+	/**
+	 * The tick controls how often the token is going to be rotated. Copied from wp_nonce_tick to avoid the nonce_life
+	 * filter.
+	 *
+	 * @return false|float
+	 */
+	private function token_tick() {
+		return ceil( time() / DAY_IN_SECONDS );
+	}
 }
-
-

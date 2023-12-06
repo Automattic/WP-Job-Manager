@@ -19,22 +19,20 @@ class WP_Test_Access_Token extends WP_UnitTestCase {
 		$access_token = new Access_Token( [ 'user_id' => 10 ] );
 		$token = $access_token->create();
 
-		$generate_token = ( new ReflectionObject( $access_token ) )->getMethod( 'generate_token' );
-		$generate_token->setAccessible( true );
-		$tick = wp_nonce_tick();
+		$reflection_object = new ReflectionObject( $access_token );
+		$tick_method = $reflection_object->getMethod( 'token_tick' );
+		$tick_method->setAccessible(true);
+		$tick = $tick_method->invoke( $access_token );
 
-		$token_12_hours = $generate_token->invoke( $access_token, $tick - 1 );
-		$token_24_hours = $generate_token->invoke( $access_token, $tick - 2 );
-		$token_36_hours = $generate_token->invoke( $access_token, $tick - 3 );
-		$token_48_hours = $generate_token->invoke( $access_token, $tick - 4 );
-		$token_60_hours = $generate_token->invoke( $access_token, $tick - 5 );
+		$generate_token_method = ( new ReflectionObject( $access_token ) )->getMethod( 'generate_token' );
+		$generate_token_method->setAccessible( true );
+
+		$token_previous_day = $generate_token_method->invoke( $access_token, $tick - 1 );
+		$token_2_days_ago   = $generate_token_method->invoke( $access_token, $tick - 2 );
 
 		self::assertTrue( ( new Access_Token( [ 'user_id' => 10] ))->verify( $token, 2 ) );
-		self::assertTrue( ( new Access_Token( [ 'user_id' => 10] ))->verify( $token_12_hours, 2 ) );
-		self::assertTrue( ( new Access_Token( [ 'user_id' => 10] ))->verify( $token_24_hours, 2 ) );
-		self::assertTrue( ( new Access_Token( [ 'user_id' => 10] ))->verify( $token_36_hours, 2 ) );
-		self::assertFalse( ( new Access_Token( [ 'user_id' => 10] ))->verify( $token_48_hours, 2 ) );
-		self::assertFalse( ( new Access_Token( [ 'user_id' => 10] ))->verify( $token_60_hours, 2 ) );
+		self::assertTrue( ( new Access_Token( [ 'user_id' => 10] ))->verify( $token_previous_day, 2 ) );
+		self::assertFalse( ( new Access_Token( [ 'user_id' => 10] ))->verify( $token_2_days_ago, 2 ) );
 	}
 
 	public function test_incorrect_payload_not_verified() {
