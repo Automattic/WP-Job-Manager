@@ -35,8 +35,12 @@ class RedirectMessage {
 	 * @param string $query_var A query variable added to the redirect URL, referencing the message transient.
 	 */
 	public static function redirect( $url, $message = null, $query_var = '' ) {
+		if ( empty( $query_var ) ) {
+			$query_var = self::DEFAULT_QUERY_VAR;
+		}
+
 		if ( ! empty( $message ) ) {
-			$url = add_query_arg( [ $query_var ?? self::DEFAULT_QUERY_VAR => self::set_transient_message( $message ) ], $url );
+			$url = add_query_arg( [ $query_var => self::set_transient_message( $message ) ], $url );
 		}
 		wp_safe_redirect( $url );
 		exit;
@@ -51,7 +55,9 @@ class RedirectMessage {
 	 */
 	public static function get_message( $query_var = '' ) {
 
-		$query_var = $query_var ?? self::DEFAULT_QUERY_VAR;
+		if ( empty( $query_var ) ) {
+			$query_var = self::DEFAULT_QUERY_VAR;
+		}
 
 		//phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No action is performed.
 		$key = sanitize_key( wp_unslash( $_GET[ $query_var ] ?? null ) );
