@@ -38,10 +38,10 @@ class WP_Test_Access_Token extends WP_UnitTestCase {
 	}
 
 	public function test_incorrect_payload_not_verified() {
-		$access_token = new Access_Token( [ 'user_id' => 10 ], time() + 1000 );
+		$access_token = new Access_Token( [ 'user_id' => 10, 'email' => 'email@email.com' ] );
 		$token = $access_token->create();
 
-		self::assertTrue( ( new Access_Token( [ 'user_id' => 10 ] ))->verify( $token, 1 ) );
-		self::assertFalse( ( new Access_Token( [ 'user_id' => 110 ] ) )->verify( $token, 1 ) );
+		self::assertTrue( ( new Access_Token( [ 'email' => 'email@email.com', 'user_id' => 10 ] ))->verify( $token, 1 ) );
+		self::assertFalse( ( new Access_Token( [ 'user_id' => 110, 'email' => 'email@email.com' ] ) )->verify( $token, 1 ) );
 	}
 }

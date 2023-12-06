@@ -31,6 +31,7 @@ class Access_Token {
 	 */
 	public function __construct( array $metadata ) {
 		$this->metadata = $metadata;
+		ksort( $this->metadata );
 	}
 
 	/**
