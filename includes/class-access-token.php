@@ -55,7 +55,7 @@ class Access_Token {
 	private function generate_token( float $tick ) {
 		$metadata_json = wp_json_encode( $this->metadata );
 
-		return substr( wp_hash( $tick . '|' . $metadata_json, 'nonce' ), -12, 10 );
+		return substr( wp_hash( $tick . '|' . $metadata_json, 'nonce' ), -18, 16 );
 	}
 
 	/**
