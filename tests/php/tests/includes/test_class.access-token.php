@@ -14,7 +14,7 @@ function time() : int {
 }
 class WP_Test_Access_Token extends WP_UnitTestCase {
 
-	public static ?int $time;
+	public static ?int $time = null;
 
 	protected function tearDown() : void {
 		self::$time = null;
