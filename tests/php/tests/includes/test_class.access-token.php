@@ -4,15 +4,21 @@ namespace WP_Job_Manager;
 
 use WP_UnitTestCase;
 
-function time() {
+/**
+ * Mocks global time().
+ *
+ * @return int
+ */
+function time() : int {
 	return WP_Test_Access_Token::$time ?: \time();
 }
 class WP_Test_Access_Token extends WP_UnitTestCase {
 
-	public static $time;
+	public static ?int $time;
+
 	protected function tearDown() : void {
 		self::$time = null;
-	    parent::tearDown();
+		parent::tearDown();
 	}
 
 	public function test_correct_token_verified_succesfully() {
@@ -51,5 +57,4 @@ class WP_Test_Access_Token extends WP_UnitTestCase {
 		self::assertTrue( ( new Access_Token( [ 'user_id' => 10 ] ) )->verify( $token ) );
 		self::assertFalse( ( new Access_Token( [ 'user_id' => 10 ] ) )->verify( $token_with_expiry ) );
 	}
-
 }
