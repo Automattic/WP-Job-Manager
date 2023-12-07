@@ -12,9 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * A token that provides access to a private resource.
- *
- * @since $$next-version$$
+ * An access token which can be used to provide access to a resource.
  */
 class Access_Token {
 	/**
@@ -37,54 +35,69 @@ class Access_Token {
 	/**
 	 * Creates a new token.
 	 *
+	 * @param int $expiry The expiry timestamp of the token.
+	 *
 	 * @return string The token.
 	 */
-	public function create() : string {
-		$tick = $this->token_tick();
-
-		return $this->generate_token( $tick );
-	}
-
-	/**
-	 * Generates a token for a tick.
-	 *
-	 * @param float $tick
-	 *
-	 * @return false|string
-	 */
-	private function generate_token( float $tick ) {
+	public function create( int $expiry = 0 ) : string {
 		$metadata_json = wp_json_encode( $this->metadata );
 
-		return substr( wp_hash( $tick . '|' . $metadata_json, 'nonce' ), -18, 16 );
+		$hash = substr( wp_hash( $expiry . '|' . $metadata_json, 'nonce' ), -18, 16 );
+
+		return $this->encode( $expiry, $hash );
 	}
 
 	/**
 	 * Verifies that a token is correct.
 	 *
 	 * @param string $token The token to verify.
-	 * @param int    $duration_days Days that the token should be valid.
 	 *
 	 * @return bool True if the token is correct.
 	 */
-	public function verify( string $token, int $duration_days ) : bool {
-		$tick = $this->token_tick();
+	public function verify( string $token ) : bool {
+		$decoded_token = $this->decode( $token );
 
-		for ( $i = 0; $i < $duration_days; $i++ ) {
-			if ( hash_equals( $this->generate_token( $tick - $i ), $token ) ) {
-				return true;
-			}
+		if ( false === $decoded_token ) {
+			return false;
 		}
 
-		return false;
+		$expiry = $decoded_token[0];
+
+		if ( '' === $expiry || ( '0' !== $expiry && time() > $expiry ) ) {
+			return false;
+		}
+
+		return hash_equals( $token, $this->create( (int) $expiry ) );
 	}
 
 	/**
-	 * The tick controls how often the token is going to be rotated. Copied from wp_nonce_tick to avoid the nonce_life
-	 * filter.
+	 * Encodes the hash and expiry into a URL-friendly format.
 	 *
-	 * @return false|float
+	 * @param int    $expiry The expiry timestamp.
+	 * @param string $hash The hash of the metadata.
+	 *
+	 * @return string
 	 */
-	private function token_tick() {
-		return ceil( time() / DAY_IN_SECONDS );
+	private function encode( int $expiry, string $hash ): string {
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- It encodes known values.
+		return rtrim( strtr( base64_encode( $expiry . ':' . $hash ), '+/', '-_' ), '=' );
+	}
+
+	/**
+	 * Decodes a token into the expiry and hash parts.
+	 *
+	 * @param string $token The token to decode.
+	 *
+	 * @return false|array A two element array with the expiry and the hash or false on failure.
+	 */
+	private function decode( string $token ) {
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- Output used for comparisons only.
+		$decoded_str = base64_decode( str_pad( strtr( $token, '-_', '+/' ), strlen( $token ) % 4, '=', STR_PAD_RIGHT ) );
+
+		if ( false === $decoded_str || 1 !== substr_count( $decoded_str, ':' ) ) {
+			return false;
+		}
+
+		return explode( ':', $decoded_str );
 	}
 }
