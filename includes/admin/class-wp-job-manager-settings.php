@@ -554,7 +554,9 @@ class WP_Job_Manager_Settings {
 	 */
 	public function output() {
 		$this->init_settings();
+
 		?>
+
 		<div class="wrap job-manager-settings-wrap">
 			<form class="job-manager-options" method="post" action="options.php">
 
@@ -564,9 +566,10 @@ class WP_Job_Manager_Settings {
 					<div class="job-manager-settings-header">
 						<div class="job-manager-settings-header-row">
 							<div class="job-manager-settings-logo-wrap">
-								<img class="job-manager-settings-logo"
-									src="<?php echo esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/jm-full-logo.png' ); ?>"
-									alt="<?php esc_attr_e( 'Job Manager', 'wp-job-manager' ); ?>" />
+								<?php
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes escaped in method.
+								echo $this->get_logo();
+								?>
 							</div>
 							<input type="submit" class="job-manager-settings-submit wpjm-button is-outline" value="<?php esc_attr_e( 'Save Changes', 'wp-job-manager' ); ?>" />
 						</div>
@@ -1226,5 +1229,16 @@ class WP_Job_Manager_Settings {
 		}
 
 		return $capabilities_and_roles;
+	}
+
+	/**
+	 * Get the logo for the page.
+	 *
+	 * @return string
+	 */
+	protected function get_logo(): string {
+		return '<img class="job-manager-settings-logo"
+					src="' . esc_url( JOB_MANAGER_PLUGIN_URL . '/assets/images/jm-full-logo.png' ) . '"
+					alt="' . esc_attr__( 'Job Manager', 'wp-job-manager' ) . '" />';
 	}
 }
