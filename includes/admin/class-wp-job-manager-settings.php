@@ -855,15 +855,14 @@ class WP_Job_Manager_Settings {
 			echo ' <p class="description">' . wp_kses_post( $option['desc'] ) . '</p>';
 		}
 		foreach ( $option['options'] as $key => $name ) {
-			$input_name  = esc_attr( 'checkbox' === $type ? $option['name'] . '[fields][]' : $option['name'] );
-			$input_type  = esc_attr( $type );
-			$input_value = esc_attr( 'checkbox' === $type ? strtolower( $name ) : $key );
-			$is_checked  = 'checkbox' === $type
-				? checked( isset( $value['fields'] ) && is_array( $value['fields'] ) && in_array( strtolower( $name ), $value['fields'], true ), true, 0 )
+			$input_name = esc_attr( 'checkbox' === $type ? $option['name'] . '[fields][' . $key . ']' : $option['name'] );
+			$input_type = esc_attr( $type );
+			$is_checked = 'checkbox' === $type
+				? checked( isset( $value['fields'] ) && is_array( $value['fields'] ) && in_array( $key, $value['fields'], true ), true, 0 )
 				: checked( $value, $key, false );
-			$label       = esc_html( $name );
+			$label      = esc_html( $name );
 
-			echo "<label><input name='{$input_name}' type='{$input_type}' value='{$input_value}' {$is_checked} />{$label}</label><br>"; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo "<label><input name='{$input_name}' type='{$input_type}' value='{$key}' {$is_checked} />{$label}</label><br>"; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 		?>
 		</fieldset>
