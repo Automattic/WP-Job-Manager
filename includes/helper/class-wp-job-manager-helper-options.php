@@ -85,6 +85,18 @@ class WP_Job_Manager_Helper_Options {
 	}
 
 	/**
+	 * Save the previous license key for a product.
+	 *
+	 * @param string $product_slug
+	 * @param string $key
+	 *
+	 * @return void
+	 */
+	public static function set_previous_license_key( $product_slug, $key ) {
+		update_option( 'job_manager_previous_license_' . $product_slug, $key );
+	}
+
+	/**
 	 * Attempt to retrieve license data from legacy storage.
 	 *
 	 * @param string $product_slug

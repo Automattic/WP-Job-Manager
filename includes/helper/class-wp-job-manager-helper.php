@@ -934,6 +934,7 @@ class WP_Job_Manager_Helper {
 			return;
 		}
 
+		WP_Job_Manager_Helper_Options::set_previous_license_key( $product_slug, $license['license_key'] );
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'license_key' );
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'email' );
 		WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
