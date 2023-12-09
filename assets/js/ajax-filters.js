@@ -309,6 +309,7 @@ jQuery( document ).ready( function( $ ) {
 			var $results = $target.find( '.job_listings' );
 			var per_page = $target.data( 'per_page' );
 			var orderby = $target.data( 'orderby' );
+			var featured_first = $target.data( 'featured_first' );
 			var order = $target.data( 'order' );
 			var featured = $target.data( 'featured' );
 			var filled = $target.data( 'filled' );
@@ -380,6 +381,7 @@ jQuery( document ).ready( function( $ ) {
 					filter_post_status: post_status,
 					per_page: per_page,
 					orderby: orderby,
+					featured_first: featured_first,
 					order: order,
 					page: page,
 					featured: featured,
