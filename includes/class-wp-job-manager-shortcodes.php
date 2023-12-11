@@ -627,9 +627,6 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! is_null( $atts['remote_position'] ) ) {
 			$atts['remote_position'] = ( is_bool( $atts['remote_position'] ) && $atts['remote_position'] ) || in_array( $atts['remote_position'], [ 1, '1', 'true', 'yes' ], true );
 		}
-		if ( ! is_null( $atts['featured_first'] ) ) {
-			$atts['featured_first'] = ( is_bool( $atts['featured_first'] ) && $atts['featured_first'] ) || in_array( $atts['featured_first'], [ 1, '1', 'true', 'yes' ], true );
-		}
 
 		// By default, use client-side state to populate form fields.
 		$disable_client_state = false;
