@@ -769,9 +769,6 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $atts['post_status'] ) ) {
 			$data_attributes['post_status'] = implode( ',', $atts['post_status'] );
 		}
-		if ( ! empty( $atts['featured_first'] ) ) {
-			$data_attributes['featured_first'] = $atts['featured_first'] ? 'true' : 'false';
-		}
 
 		$data_attributes['post_id'] = isset( $GLOBALS['post'] ) ? $GLOBALS['post']->ID : 0;
 
