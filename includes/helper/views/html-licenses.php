@@ -159,14 +159,15 @@ $plugin_section_first = 'plugin-license-section--first';
 							}
 						}
 						if ( apply_filters( 'wpjm_display_license_form_for_addon', true, $product_slug ) ) {
-							$has_error = in_array( 'error', array_column( $notices, 'type' ), true );
+							$has_error            = in_array( 'error', array_column( $notices, 'type' ), true );
+							$previous_license_key = get_option( 'job_manager_previous_license_' . $product_slug, null ) ?? '';
 							?>
 							<form method="post" class='plugin-license-form'>
 								<?php wp_nonce_field( 'wpjm-manage-license' ); ?>
 								<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_action" name="action" value="activate"/>
 								<input type="hidden" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_plugin" name="product_slug" value="<?php echo esc_attr( $product_slug ); ?>"/>
 								<label for="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_license_key" class="plugin-license-label"><?php esc_html_e( 'LICENSE', 'wp-job-manager' ); ?></label>
-								<input type="text" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_license_key" class="plugin-license-field<?php echo $has_error ? ' plugin-license-field--error' : ''; ?>" name="license_key" placeholder="XXXX-XXXX-XXXX-XXXX"/>
+								<input type="text" id="<?php echo esc_attr( sanitize_title( $product_slug ) ); ?>_license_key" class="plugin-license-field<?php echo $has_error ? ' plugin-license-field--error' : ''; ?>" name="license_key" placeholder="XXXX-XXXX-XXXX-XXXX" value="<?php echo esc_attr( $previous_license_key ); ?>"/>
 								<input type="submit" class="button plugin-license-button" name="submit" value="<?php esc_attr_e( 'Activate License', 'wp-job-manager' ); ?>" />
 							</form>
 							<?php
