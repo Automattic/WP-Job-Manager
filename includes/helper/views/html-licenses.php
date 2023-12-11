@@ -160,7 +160,7 @@ $plugin_section_first = 'plugin-license-section--first';
 						}
 						if ( apply_filters( 'wpjm_display_license_form_for_addon', true, $product_slug ) ) {
 							$has_error            = in_array( 'error', array_column( $notices, 'type' ), true );
-							$previous_license_key = get_option( 'job_manager_previous_license_' . $product_slug ) ? get_option( 'job_manager_previous_license_' . $product_slug ) : '';
+							$previous_license_key = get_option( 'job_manager_previous_license_' . $product_slug, null ) ?? '';
 							?>
 							<form method="post" class='plugin-license-form'>
 								<?php wp_nonce_field( 'wpjm-manage-license' ); ?>
