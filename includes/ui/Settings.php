@@ -107,7 +107,7 @@ class Settings {
 
 		$elements[] = Notice::render(
 			[
-				'title' => 'Test Notice Created',
+				'title' => 'Custom SVG Icon',
 				'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
   <path stroke="#1E1E1E" stroke-width="1.5" d="M19.25 19.25v-9.5H4.75v9.5z"/>
   <path fill="#1E1E1E" fill-rule="evenodd" d="M13 19V9h-1.5v10H13Z" clip-rule="evenodd"/>

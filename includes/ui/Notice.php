@@ -171,26 +171,28 @@ class Notice {
 	 * @return string Icon HTML.
 	 */
 	private static function get_icon_html( $icon ) {
+
+		if ( empty( $icon ) ) {
+			return '';
+		}
+
 		$html = '';
 
-		if ( ! empty( $icon ) ) {
+		$is_classname = preg_match( '/^[\w-]+$/i', $icon );
 
-			$is_classname = preg_match( '/^[\w-]+$/i', $icon );
+		$html = '<div class="jm-notice__icon"';
 
-			$html = '<div class="jm-notice__icon"';
-
-			if ( $is_classname ) {
-				$html .= ' data-icon="' . esc_attr( $icon ) . '"';
-			}
-
-			$html .= '>';
-
-			if ( ! $is_classname ) {
-				$html .= ( $icon );
-			}
-
-			$html .= '</div>';
+		if ( $is_classname ) {
+			$html .= ' data-icon="' . esc_attr( $icon ) . '"';
 		}
+
+		$html .= '>';
+
+		if ( ! $is_classname ) {
+			$html .= self::esc_svg( $icon );
+		}
+
+		$html .= '</div>';
 
 		return $html;
 	}
@@ -205,22 +207,57 @@ class Notice {
 	 */
 	private static function get_button_html( $args, $class ) {
 
-		$html = '';
-
-		if ( ! empty( $args ) ) {
-
-			$args = wp_parse_args(
-				$args,
-				[
-					'label' => '',
-					'url'   => '',
-				]
-			);
-
-			$html = '<a href="' . esc_url( $args['url'] ) . '" class="' . esc_attr( $class ) . '"><span>' . esc_html( $args['text'] ) . '</span></a>';
+		if ( empty( $args ) ) {
+			return '';
 		}
 
-		return $html;
+		$args = wp_parse_args(
+			$args,
+			[
+				'label' => '',
+				'url'   => '',
+			]
+		);
 
+		return '<a href="' . esc_url( $args['url'] ) . '" class="' . esc_attr( $class ) . '"><span>' . esc_html( $args['text'] ) . '</span></a>';
+
+	}
+
+	/**
+	 * Escape SVG code.
+	 *
+	 * TODO Extend rules to support more SVG tags and attributes.
+	 *
+	 * @param string $code SVG code.
+	 *
+	 * @return string Sanitized SVG code.
+	 */
+	private static function esc_svg( $code ) {
+		$kses_defaults = wp_kses_allowed_html( 'post' );
+		$svg_args      = [
+			'svg'  => [
+				'class'           => true,
+				'aria-hidden'     => true,
+				'aria-labelledby' => true,
+				'role'            => true,
+				'xmlns'           => true,
+				'width'           => true,
+				'height'          => true,
+				'viewbox'         => true,
+				'fill'            => true,
+			],
+			'path' => [
+				'd'            => true,
+				'fill'         => true,
+				'fill-rule'    => true,
+				'stroke-width' => true,
+				'stroke'       => true,
+				'clip-rule'    => true,
+			],
+		];
+
+		$allowed_tags = array_merge( $kses_defaults, $svg_args );
+
+		return wp_kses( $code, $allowed_tags );
 	}
 }
