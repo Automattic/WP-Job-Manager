@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/Notice.php';
+require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-notice.php';
 
 /**
  * Frontend UI elements of Job Manager.

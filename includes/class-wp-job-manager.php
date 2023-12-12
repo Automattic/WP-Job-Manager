@@ -78,10 +78,10 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-access-token.php';
 
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/traits/Singleton.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/trait-singleton.php';
 
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/UI.php';
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/Settings.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui-settings.php';
 
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';

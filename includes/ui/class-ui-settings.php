@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @internal
  */
-class Settings {
+class UISettings {
 
 	use Singleton;
 
@@ -265,4 +265,4 @@ class Settings {
 	}
 }
 
-Settings::instance();
+UISettings::instance();
