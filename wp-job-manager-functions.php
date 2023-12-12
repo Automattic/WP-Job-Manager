@@ -34,6 +34,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				'filled'            => null,
 				'remote_position'   => null,
 				'fields'            => 'all',
+				'featured_first'    => 0,
 			]
 		);
 
@@ -177,6 +178,13 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$query_args['orderby'] = [
 				'menu_order' => 'ASC',
 				'rand'       => 'ASC',
+			];
+		}
+
+		if ( 'true' === $args['featured_first'] && 'featured' !== $args['orderby'] && 'rand_featured' !== $args['orderby'] ) {
+			$query_args['orderby'] = [
+				'menu_order'           => 'ASC',
+				$query_args['orderby'] => $query_args['order'],
 			];
 		}
 

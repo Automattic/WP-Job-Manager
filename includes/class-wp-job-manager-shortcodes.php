@@ -592,6 +592,7 @@ class WP_Job_Manager_Shortcodes {
 					'featured'                  => null, // True to show only featured, false to hide featured, leave null to show both.
 					'filled'                    => null, // True to show only filled, false to hide filled, leave null to show both/use the settings.
 					'remote_position'           => null, // True to show only remote, false to hide remote, leave null to show both.
+					'featured_first'            => false, // True to show featured first, false to show in default order.
 
 					// Default values for filters.
 					'location'                  => '',
@@ -613,6 +614,7 @@ class WP_Job_Manager_Shortcodes {
 		$atts['show_category_multiselect'] = $this->string_to_bool( $atts['show_category_multiselect'] );
 		$atts['show_more']                 = $this->string_to_bool( $atts['show_more'] );
 		$atts['show_pagination']           = $this->string_to_bool( $atts['show_pagination'] );
+		$atts['featured_first']            = $this->string_to_bool( $atts['featured_first'] );
 
 		if ( ! is_null( $atts['featured'] ) ) {
 			$atts['featured'] = ( is_bool( $atts['featured'] ) && $atts['featured'] ) || in_array( $atts['featured'], [ 1, '1', 'true', 'yes' ], true );
@@ -679,6 +681,7 @@ class WP_Job_Manager_Shortcodes {
 			'order'                      => $atts['order'],
 			'categories'                 => implode( ',', $atts['categories'] ),
 			'disable-form-state-storage' => $disable_client_state,
+			'featured_first'             => $atts['featured_first'] ? 'true' : 'false',
 		];
 
 		if ( $atts['show_filters'] ) {
