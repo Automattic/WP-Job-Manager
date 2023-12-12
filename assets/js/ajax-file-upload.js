@@ -52,6 +52,8 @@ jQuery(function($) {
 
 				if ( uploadErrors.length > 0 ) {
 					this.validation_errors = this.validation_errors.concat( uploadErrors );
+					data.context = $('<progress value="" max="100"></progress>').appendTo( $uploaded_files );
+					data.submit();
 				} else {
 					if ( false !== fileLimitLeft ) {
 						$file_field.data( 'file_limit_left', fileLimitLeft - 1 );
