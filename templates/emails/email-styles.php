@@ -11,19 +11,19 @@
  * @version     1.31.0
  */
 
-if ( ! defined( "ABSPATH" ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$style_vars                  = [];
-$style_vars["color_bg"]      = "#FFF";
-$style_vars["color_fg"]      = "#000";
-$style_vars["color_light"]   = "#F6F7F7";
-$style_vars["color_stroke"]  = "#E6E6E6";
-$style_vars["color_link"]    = "#0453EB";
-$style_vars["color_button"]  = $style_vars["color_link"];
-$style_vars["color_button_text"]  = "#FFF";
-$style_vars["font_family"]   = "-apple-system, 'SF Pro Text', BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif";
+$style_vars                      = [];
+$style_vars['color_bg']          = '#FFF';
+$style_vars['color_fg']          = '#000';
+$style_vars['color_light']       = '#F6F7F7';
+$style_vars['color_stroke']      = '#E6E6E6';
+$style_vars['color_link']        = '#0453EB';
+$style_vars['color_button']      = $style_vars['color_link'];
+$style_vars['color_button_text'] = '#FFF';
+$style_vars['font_family']       = '-apple-system, "SF Pro Text", BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif';
 
 /**
  * Change the style vars used in email generation stylesheet.
@@ -32,7 +32,7 @@ $style_vars["font_family"]   = "-apple-system, 'SF Pro Text', BlinkMacSystemFont
  *
  * @param array $style_vars Variables used in style generation.
  */
-$style_vars = apply_filters( "job_manager_email_style_vars", $style_vars );
+$style_vars = apply_filters( 'job_manager_email_style_vars', $style_vars );
 
 /**
  * Inject styles before the core styles.
@@ -41,16 +41,16 @@ $style_vars = apply_filters( "job_manager_email_style_vars", $style_vars );
  *
  * @param array $style_vars Variables used in style generation.
  */
-do_action( "job_manager_email_style_before", $style_vars );
+do_action( 'job_manager_email_style_before', $style_vars );
 
-$color_bg = esc_attr( $style_vars["color_bg"] );
-$color_fg = esc_attr( $style_vars["color_fg"] );
-$color_light = esc_attr( $style_vars["color_light"] );
-$color_stroke = esc_attr( $style_vars["color_stroke"] );
-$color_link = esc_attr( $style_vars["color_link"] );
-$color_button = esc_attr( $style_vars["color_button"] );
-$color_button_text = esc_attr( $style_vars["color_button_text"] );
-$font_family = strip_tags( $style_vars["font_family"] );
+$color_bg          = esc_attr( $style_vars['color_bg'] );
+$color_fg          = esc_attr( $style_vars['color_fg'] );
+$color_light       = esc_attr( $style_vars['color_light'] );
+$color_stroke      = esc_attr( $style_vars['color_stroke'] );
+$color_link        = esc_attr( $style_vars['color_link'] );
+$color_button      = esc_attr( $style_vars['color_button'] );
+$color_button_text = esc_attr( $style_vars['color_button_text'] );
+$font_family       = wp_strip_all_tags( $style_vars['font_family'] );
 
 echo <<<CSS
 
@@ -183,9 +183,7 @@ td.detail-label {
 	}
 }
 
-
 CSS;
-
 
 /**
  * Inject styles after the core styles.
@@ -194,4 +192,4 @@ CSS;
  *
  * @param array $style_vars Variables used in style generation.
  */
-do_action( "job_manager_email_style_after", $style_vars );
+do_action( 'job_manager_email_style_after', $style_vars );
