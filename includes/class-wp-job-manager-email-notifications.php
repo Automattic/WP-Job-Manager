@@ -99,6 +99,8 @@ final class WP_Job_Manager_Email_Notifications {
 
 			self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_notification_key ) ) );
 		}
+
+		self::$deferred_notifications = [];
 	}
 
 	/**
