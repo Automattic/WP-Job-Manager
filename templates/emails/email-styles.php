@@ -63,7 +63,6 @@ body {
 	background-color: {$color_light};
 	color: {$color_fg};
 	margin: 0;
-	width: 100%;
 	padding: 0;
 	font-size: initial;
 	font-family: {$font_family};
