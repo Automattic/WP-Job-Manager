@@ -18,6 +18,7 @@ final class WP_Job_Manager_Email_Notifications {
 	const EMAIL_SETTING_PREFIX     = 'job_manager_email_';
 	const EMAIL_SETTING_ENABLED    = 'enabled';
 	const EMAIL_SETTING_PLAIN_TEXT = 'plain_text';
+	const MULTIPART_BOUNDARY       = '--jm-boundary';
 
 	/**
 	 * Notifications to be scheduled.
@@ -83,6 +84,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 */
 	public static function send_deferred_notifications() {
 		$email_notifications = self::get_email_notifications( true );
+
 		foreach ( self::$deferred_notifications as $email ) {
 			if (
 				! is_string( $email[0] )
@@ -97,6 +99,8 @@ final class WP_Job_Manager_Email_Notifications {
 
 			self::send_email( $email[0], new $email_class( $email_args, self::get_email_settings( $email_notification_key ) ) );
 		}
+
+		self::$deferred_notifications = [];
 	}
 
 	/**
@@ -763,6 +767,10 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return bool
 	 */
 	private static function send_email( $email_notification_key, WP_Job_Manager_Email $email ) {
+		add_filter( 'wp_mail_content_type', [ __CLASS__, 'mail_content_type' ] );
+		global $job_manager_doing_email;
+		$job_manager_doing_email = true;
+
 		if ( ! $email->is_valid() ) {
 			return false;
 		}
@@ -792,7 +800,15 @@ final class WP_Job_Manager_Email_Notifications {
 		$sent_count = 0;
 		foreach ( $send_to as $to_email ) {
 			$args['to'] = $to_email;
-			$content    = self::get_email_content( $email_notification_key, $args );
+
+			$is_plain_text_only = self::send_as_plain_text( $email_notification_key, $args );
+
+			$content_plain = self::get_email_content( $email_notification_key, $args, true );
+			$content_html  = null;
+
+			if ( ! $is_plain_text_only ) {
+				$content_html = self::get_email_content( $email_notification_key, $args, false );
+			}
 
 			/**
 			 * Filter all email arguments for job manager notifications.
@@ -813,9 +829,7 @@ final class WP_Job_Manager_Email_Notifications {
 				$headers[] = 'CC: ' . $args['cc'];
 			}
 
-			if ( ! self::send_as_plain_text( $email_notification_key, $args ) ) {
-				$headers[] = 'Content-Type: text/html';
-			}
+			$multipart_body = self::get_multipart_body( $content_html, $content_plain );
 
 			/**
 			 * Allows for short-circuiting the actual sending of email notifications.
@@ -828,16 +842,32 @@ final class WP_Job_Manager_Email_Notifications {
 			 * @param string                $content                Email content.
 			 * @param array                 $headers                Email headers.
 			 */
-			if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $content, $headers ) ) {
+			if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $multipart_body, $headers ) ) {
 				continue;
 			}
 
-			if ( wp_mail( $to_email, $args['subject'], $content, $headers, $args['attachments'] ) ) {
+			if ( wp_mail( $to_email, $args['subject'], $multipart_body, $headers, $args['attachments'] ) ) {
 				$sent_count++;
 			}
 		}
 
+		remove_filter( 'wp_mail_content_type', [ __CLASS__, 'mail_content_type' ] );
+		$job_manager_doing_email = false;
+
 		return $sent_count > 0;
+	}
+
+	/**
+	 * Set the "Content Type" header of the e-mail to multipart/alternative.
+	 *
+	 * @access private
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @return string
+	 */
+	public static function mail_content_type() {
+		return 'multipart/alternative; boundary="' . self::MULTIPART_BOUNDARY . '"';
 	}
 
 	/**
@@ -846,11 +876,12 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @access private
 	 *
 	 * @param string $email_notification_key Unique email notification key.
-	 * @param array  $args                   Arguments passed for generating email.
+	 * @param array  $args Arguments passed for generating email.
+	 * @param bool   $is_plain_text Whether to generate plain text or rich text content.
+	 *
 	 * @return string
 	 */
-	private static function get_email_content( $email_notification_key, $args ) {
-		$plain_text = self::send_as_plain_text( $email_notification_key, $args );
+	private static function get_email_content( $email_notification_key, $args, $is_plain_text ) {
 
 		ob_start();
 
@@ -860,15 +891,16 @@ final class WP_Job_Manager_Email_Notifications {
 		 * @since 1.31.0
 		 *
 		 * @param string $email_notification_key Unique email notification key.
-		 * @param array  $args                   Arguments passed for generating email.
-		 * @param bool   $plain_text             True if sending plain text email.
+		 * @param array  $args Arguments passed for generating email.
+		 * @param bool   $is_plain_text True if sending plain text email.
 		 */
-		do_action( 'job_manager_email_header', $email_notification_key, $args, $plain_text );
+		do_action( 'job_manager_email_header', $email_notification_key, $args, $is_plain_text );
 
-		if ( $plain_text ) {
-			echo wp_kses_post( html_entity_decode( wptexturize( $args['plain_content'] ) ) );
+		if ( $is_plain_text ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Plain text e-mail.
+			echo wp_specialchars_decode( wp_strip_all_tags( $args['plain_content'] ) );
 		} else {
-			echo wp_kses_post( wpautop( wptexturize( $args['rich_content'] ) ) );
+			echo wp_kses_post( ( $args['rich_content'] ) );
 		}
 
 		/**
@@ -877,13 +909,13 @@ final class WP_Job_Manager_Email_Notifications {
 		 * @since 1.31.0
 		 *
 		 * @param string $email_notification_key Unique email notification key.
-		 * @param array  $args                   Arguments passed for generating email.
-		 * @param bool   $plain_text             True if sending plain text email.
+		 * @param array  $args Arguments passed for generating email.
+		 * @param bool   $is_plain_text True if sending plain text email.
 		 */
-		do_action( 'job_manager_email_footer', $email_notification_key, $args, $plain_text );
+		do_action( 'job_manager_email_footer', $email_notification_key, $args, $is_plain_text );
 
 		$content = ob_get_clean();
-		if ( ! $plain_text ) {
+		if ( ! $is_plain_text ) {
 			$content = self::inject_styles( $content );
 		}
 
@@ -892,12 +924,12 @@ final class WP_Job_Manager_Email_Notifications {
 		 *
 		 * @since 1.31.0
 		 *
-		 * @param string $content                Email content.
+		 * @param string $content Email content.
 		 * @param string $email_notification_key Unique email notification key.
-		 * @param array  $args                   Arguments passed for generating email.
-		 * @param bool   $plain_text             True if sending plain text email.
+		 * @param array  $args Arguments passed for generating email.
+		 * @param bool   $is_plain_text True if sending plain text email.
 		 */
-		return apply_filters( 'job_manager_email_content', $content, $email_notification_key, $args, $plain_text );
+		return apply_filters( 'job_manager_email_content', $content, $email_notification_key, $args, $is_plain_text );
 	}
 
 	/**
@@ -931,6 +963,37 @@ final class WP_Job_Manager_Email_Notifications {
 		ob_start();
 		include $email_styles_template;
 		return ob_get_clean();
+	}
+
+	/**
+	 * Assemble multipart e-mail body.
+	 *
+	 * @param string $content_html
+	 * @param string $content_plain
+	 *
+	 * @return string
+	 */
+	private static function get_multipart_body( string $content_html, string $content_plain ): string {
+		$multipart_body = '';
+
+		if ( ! empty( $content_html ) ) {
+			$multipart_body .= '
+--' . self::MULTIPART_BOUNDARY . '
+Content-Type: text/html; charset="utf-8"
+
+' . $content_html;
+		}
+
+		if ( ! empty( $content_plain ) ) {
+
+			$multipart_body .= '
+--' . self::MULTIPART_BOUNDARY . '
+Content-Type: text/plain; charset="utf-8"
+
+' . $content_plain;
+		}
+
+		return $multipart_body;
 	}
 
 }

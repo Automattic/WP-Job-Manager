@@ -63,7 +63,6 @@ body {
 	background-color: {$color_light};
 	color: {$color_fg};
 	margin: 0;
-	width: 100%;
 	padding: 0;
 	font-size: initial;
 	font-family: {$font_family};
@@ -143,6 +142,7 @@ a:hover {
 
 .footer__content {
 	margin: 24px 0;
+	font-size: 87.5%;
 }
 
 
