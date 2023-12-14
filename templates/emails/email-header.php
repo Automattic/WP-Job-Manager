@@ -15,23 +15,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 ?>
+
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo( 'charset' ); ?>" />
 	<title><?php echo esc_html( get_bloginfo( 'name' ) ); ?></title>
 </head>
-<body <?php echo is_rtl() ? 'rightmargin' : 'leftmargin'; ?>="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
-<div id="wrapper" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'?>">
-	<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+<body>
+<div id="wrapper" dir="<?php echo is_rtl() ? 'rtl' : 'ltr'?>" class="email-wrap">
+
+	<!--[if mso]>
+	<table cellpadding="0" cellspacing="0" border="0" style="padding:0px;margin:0px;width:100%;">
+		<tr><td colspan="3" style="padding:0px;margin:0px;font-size:20px;height:20px;" height="20">&nbsp;</td></tr>
 		<tr>
-			<td align="center" valign="top">
-				<!-- Body -->
-				<table border="0" cellpadding="0" cellspacing="0" width="600" id="template_body">
-					<tr>
-						<td valign="top" id="body_content">
-							<!-- Content -->
-							<table border="0" cellpadding="20" cellspacing="0" width="100%">
-								<tr>
-									<td valign="top">
-										<div id="body_content_inner">
+			<td style="padding:0px;margin:0px;">&nbsp;</td>
+			<td style="padding:0px;margin:0px;" width="560">
+	<![endif]-->
+
+	<div class="content-wrap">
