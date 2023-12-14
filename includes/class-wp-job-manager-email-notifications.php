@@ -84,6 +84,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 */
 	public static function send_deferred_notifications() {
 		$email_notifications = self::get_email_notifications( true );
+
 		foreach ( self::$deferred_notifications as $email ) {
 			if (
 				! is_string( $email[0] )
@@ -765,6 +766,8 @@ final class WP_Job_Manager_Email_Notifications {
 	 */
 	private static function send_email( $email_notification_key, WP_Job_Manager_Email $email ) {
 		add_filter( 'wp_mail_content_type', [ __CLASS__, 'mail_content_type' ] );
+		global $job_manager_doing_email;
+		$job_manager_doing_email = true;
 
 		if ( ! $email->is_valid() ) {
 			return false;
