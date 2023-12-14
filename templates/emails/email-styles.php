@@ -142,6 +142,7 @@ a:hover {
 
 .footer__content {
 	margin: 24px 0;
+	font-size: 87.5%;
 }
 
 
