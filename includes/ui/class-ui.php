@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-notice.php';
+require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-redirect-message.php';
 
 /**
  * Frontend UI elements of Job Manager.
