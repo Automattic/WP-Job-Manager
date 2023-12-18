@@ -18,10 +18,14 @@ class WP_Job_Manager_Post_Types {
 
 	const PERMALINK_OPTION_NAME = 'job_manager_permalinks';
 
+	/** Post Types */
+
 	/**
 	 * Constant for the post type name used for saving guest user data.
 	 */
 	public const PT_GUEST_USER = 'job_guest_user';
+
+	/** Capabilities */
 
 	/**
 	 * Constant for the capability name used for the post type used for saving guest user data.
