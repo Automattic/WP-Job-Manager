@@ -673,7 +673,7 @@ function wpjm_get_the_job_categories( $post = null ) {
 		return false;
 	}
 
-	$categories = get_the_terms( $post->ID, 'job_listing_category' );
+	$categories = get_the_terms( $post->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 
 	if ( empty( $categories ) || is_wp_error( $categories ) ) {
 		$categories = [];

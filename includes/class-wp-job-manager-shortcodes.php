@@ -662,7 +662,7 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $atts['selected_category'] ) ) {
 			foreach ( $atts['selected_category'] as $cat_index => $category ) {
 				if ( ! is_numeric( $category ) ) {
-					$term = get_term_by( 'slug', $category, 'job_listing_category' );
+					$term = get_term_by( 'slug', $category, \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 
 					if ( $term ) {
 						$atts['selected_category'][ $cat_index ] = $term->term_id;

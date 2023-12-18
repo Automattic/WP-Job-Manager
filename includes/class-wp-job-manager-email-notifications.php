@@ -286,7 +286,7 @@ final class WP_Job_Manager_Email_Notifications {
 			}
 		}
 
-		if ( get_option( 'job_manager_enable_categories' ) && wp_count_terms( 'job_listing_category' ) > 0 ) {
+		if ( get_option( 'job_manager_enable_categories' ) && wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) > 0 ) {
 			$job_categories = wpjm_get_the_job_categories( $job );
 			if ( ! empty( $job_categories ) ) {
 				$fields['job_category'] = [

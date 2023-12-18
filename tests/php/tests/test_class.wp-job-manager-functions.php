@@ -233,8 +233,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_categories() {
-		$this->assertTrue( taxonomy_exists( 'job_listing_category' ) );
-		$this->assertTrue( current_user_can( get_taxonomy( 'job_listing_category' )->cap->assign_terms ) );
+		$this->assertTrue( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) );
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY )->cap->assign_terms ) );
 		$categories      = [
 			'main'  => [],
 			'weird' => [],
@@ -243,11 +243,11 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			'none'  => [],
 		];
 		$terms           = [];
-		$terms['jazz']   = $categories['main'][] = $categories['all'][] = wp_create_term( 'jazz', 'job_listing_category' );
-		$terms['swim']   = $categories['main'][] = $categories['all'][] = wp_create_term( 'swim', 'job_listing_category' );
-		$terms['dev']    = $categories['main'][] = $categories['all'][] = wp_create_term( 'dev', 'job_listing_category' );
-		$terms['potato'] = $categories['weird'][] = $categories['all'][] = wp_create_term( 'potato', 'job_listing_category' );
-		$terms['coffee'] = $categories['happy'][] = $categories['all'][] = wp_create_term( 'coffee', 'job_listing_category' );
+		$terms['jazz']   = $categories['main'][] = $categories['all'][] = wp_create_term( 'jazz', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$terms['swim']   = $categories['main'][] = $categories['all'][] = wp_create_term( 'swim', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$terms['dev']    = $categories['main'][] = $categories['all'][] = wp_create_term( 'dev', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$terms['potato'] = $categories['weird'][] = $categories['all'][] = wp_create_term( 'potato', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$terms['coffee'] = $categories['happy'][] = $categories['all'][] = wp_create_term( 'coffee', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 		foreach ( $categories as $k => $category ) {
 			$categories[ $k ] = wp_list_pluck( $category, 'term_id' );
 		}
@@ -263,7 +263,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			3,
 			[
 				'tax_input' => [
-					'job_listing_category' => $categories['main'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $categories['main'],
 				],
 			]
 		);
@@ -271,7 +271,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			2,
 			[
 				'tax_input' => [
-					'job_listing_category' => $categories['weird'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $categories['weird'],
 				],
 			]
 		);
@@ -279,7 +279,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			2,
 			[
 				'tax_input' => [
-					'job_listing_category' => $categories['happy'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $categories['happy'],
 				],
 			]
 		);
@@ -781,8 +781,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	public function test_is_wpjm_taxonomy_success() {
 		$this->assertFalse( is_wpjm_taxonomy() );
 		$this->assertFalse( is_wpjm() );
-		$this->assertTrue( taxonomy_exists( 'job_listing_category' ) );
-		$this->assertTrue( current_user_can( get_taxonomy( 'job_listing_category' )->cap->assign_terms ) );
+		$this->assertTrue( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) );
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY )->cap->assign_terms ) );
 		$this->set_up_request_taxonomy();
 		$this->assertTrue( is_wpjm_taxonomy() );
 		$this->assertTrue( is_wpjm() );
@@ -839,7 +839,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::wpjm_get_categories_by_slug
 	 */
 	public function test_get_categories_by_slug() {
-		$taxonomy_name = 'job_listing_category';
+		$taxonomy_name = \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY;
 		$default_args  = [
 			'orderby' => 'slug',
 			'order'   => 'ASC',
@@ -867,7 +867,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::wpjm_get_categories_by_slug
 	 */
 	public function test_get_categories_by_slug_excluding_categories() {
-		$taxonomy_name = 'job_listing_category';
+		$taxonomy_name = \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY;
 		$default_args  = [
 			'orderby' => 'slug',
 			'order'   => 'ASC',
@@ -922,7 +922,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	protected function set_up_request_taxonomy() {
-		$term = wp_create_term( 'jazz', 'job_listing_category' );
+		$term = wp_create_term( 'jazz', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 		$this->go_to( get_term_link( $term['term_id'] ) );
 	}
 

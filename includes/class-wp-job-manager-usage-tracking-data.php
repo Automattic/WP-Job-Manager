@@ -26,8 +26,8 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$categories  = 0;
 		$count_posts = wp_count_posts( 'job_listing' );
 
-		if ( taxonomy_exists( 'job_listing_category' ) ) {
-			$categories = wp_count_terms( 'job_listing_category', [ 'hide_empty' => false ] );
+		if ( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
+			$categories = wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY, [ 'hide_empty' => false ] );
 		}
 
 		$usage_data = [
@@ -99,14 +99,14 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int Number of job categories with a description.
 	 **/
 	private static function get_job_category_has_description_count() {
-		if ( ! taxonomy_exists( 'job_listing_category' ) ) {
+		if ( ! taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
 			return 0;
 		}
 
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_category',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'hide_empty' => false,
 			]
 		);

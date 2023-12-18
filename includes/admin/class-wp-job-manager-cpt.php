@@ -306,14 +306,14 @@ class WP_Job_Manager_CPT {
 	public function jobs_by_category() {
 		global $typenow, $wp_query;
 
-		if ( 'job_listing' !== $typenow || ! taxonomy_exists( 'job_listing_category' ) ) {
+		if ( 'job_listing' !== $typenow || ! taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
 			return;
 		}
 
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-category-walker.php';
 
 		$r                 = [];
-		$r['taxonomy']     = 'job_listing_category';
+		$r['taxonomy']     = \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY;
 		$r['pad_counts']   = 1;
 		$r['hierarchical'] = 1;
 		$r['hide_empty']   = 0;
@@ -496,18 +496,18 @@ class WP_Job_Manager_CPT {
 
 		unset( $columns['title'], $columns['date'], $columns['author'] );
 
-		$columns['job_position']         = __( 'Position', 'wp-job-manager' );
-		$columns['job_listing_type']     = __( 'Type', 'wp-job-manager' );
-		$columns['job_location']         = __( 'Location', 'wp-job-manager' );
-		$columns['job_status']           = '<span class="tips" data-tip="' . __( 'Status', 'wp-job-manager' ) . '">' . __( 'Status', 'wp-job-manager' ) . '</span>';
-		$columns['job_posted']           = __( 'Posted', 'wp-job-manager' );
-		$columns['job_expires']          = __( 'Expires', 'wp-job-manager' );
-		$columns['job_listing_category'] = __( 'Categories', 'wp-job-manager' );
-		$columns['featured_job']         = '<span class="tips" data-tip="' . __( 'Featured?', 'wp-job-manager' ) . '">' . __( 'Featured?', 'wp-job-manager' ) . '</span>';
-		$columns['filled']               = '<span class="tips" data-tip="' . __( 'Filled?', 'wp-job-manager' ) . '">' . __( 'Filled?', 'wp-job-manager' ) . '</span>';
+		$columns['job_position']                                     = __( 'Position', 'wp-job-manager' );
+		$columns['job_listing_type']                                 = __( 'Type', 'wp-job-manager' );
+		$columns['job_location']                                     = __( 'Location', 'wp-job-manager' );
+		$columns['job_status']                                       = '<span class="tips" data-tip="' . __( 'Status', 'wp-job-manager' ) . '">' . __( 'Status', 'wp-job-manager' ) . '</span>';
+		$columns['job_posted']                                       = __( 'Posted', 'wp-job-manager' );
+		$columns['job_expires']                                      = __( 'Expires', 'wp-job-manager' );
+		$columns[ \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ] = __( 'Categories', 'wp-job-manager' );
+		$columns['featured_job']                                     = '<span class="tips" data-tip="' . __( 'Featured?', 'wp-job-manager' ) . '">' . __( 'Featured?', 'wp-job-manager' ) . '</span>';
+		$columns['filled'] = '<span class="tips" data-tip="' . __( 'Filled?', 'wp-job-manager' ) . '">' . __( 'Filled?', 'wp-job-manager' ) . '</span>';
 
 		if ( ! get_option( 'job_manager_enable_categories' ) ) {
-			unset( $columns['job_listing_category'] );
+			unset( $columns[ \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ] );
 		}
 
 		if ( ! get_option( 'job_manager_enable_types' ) ) {
@@ -638,7 +638,7 @@ class WP_Job_Manager_CPT {
 			case 'job_location':
 				the_job_location( true, $post );
 				break;
-			case 'job_listing_category':
+			case \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY:
 				$terms = get_the_term_list( $post->ID, $column, '', ', ', '' );
 				if ( ! $terms ) {
 					echo '<span class="na">&ndash;</span>';

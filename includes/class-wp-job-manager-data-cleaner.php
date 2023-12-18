@@ -33,7 +33,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @var $taxonomies
 	 */
 	private static $taxonomies = [
-		'job_listing_category',
+		\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 		'job_listing_type',
 	];
 

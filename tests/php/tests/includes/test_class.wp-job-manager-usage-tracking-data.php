@@ -128,7 +128,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_job_categories_count() {
-		$terms = $this->factory->term->create_many( 14, [ 'taxonomy' => 'job_listing_category' ] );
+		$terms = $this->factory->term->create_many( 14, [ 'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ] );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -159,13 +159,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$valid   = $this->factory->term->create_many(
 			2,
 			[
-				'taxonomy'    => 'job_listing_category',
+				'taxonomy'    => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'description' => ' Valid description ',
 			]
 		);
 		$invalid = $this->factory->term->create(
 			[
-				'taxonomy'    => 'job_listing_category',
+				'taxonomy'    => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'description' => "\t\n",
 			]
 		);

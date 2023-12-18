@@ -259,7 +259,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => '',
 						'priority'    => 5,
 						'default'     => '',
-						'taxonomy'    => 'job_listing_category',
+						'taxonomy'    => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 					],
 					'job_description'     => [
 						'label'    => __( 'Description', 'wp-job-manager' ),
@@ -357,7 +357,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			]
 		);
 
-		if ( ! get_option( 'job_manager_enable_categories' ) || 0 === intval( wp_count_terms( 'job_listing_category' ) ) ) {
+		if ( ! get_option( 'job_manager_enable_categories' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) ) {
 			unset( $this->fields['job']['job_category'] );
 		}
 		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
@@ -634,7 +634,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							}
 							break;
 						case 'job_category':
-							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_category', [ 'fields' => 'ids' ] );
+							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY, [ 'fields' => 'ids' ] );
 							break;
 						case 'company_logo':
 							$this->fields[ $group_key ][ $key ]['value'] = has_post_thumbnail( $job->ID ) ? get_post_thumbnail_id( $job->ID ) : get_post_meta( $job->ID, '_' . $key, true );

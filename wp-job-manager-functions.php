@@ -158,7 +158,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$field                     = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
 			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
 			$query_args['tax_query'][] = [
-				'taxonomy'         => 'job_listing_category',
+				'taxonomy'         => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'field'            => $field,
 				'terms'            => array_values( $args['search_categories'] ),
 				'include_children' => 'AND' !== $operator,
@@ -463,7 +463,7 @@ if ( ! function_exists( 'get_job_listing_categories' ) ) :
 		$args = apply_filters( 'get_job_listing_category_args', $args );
 
 		// Prevent users from filtering the taxonomy.
-		$args['taxonomy'] = 'job_listing_category';
+		$args['taxonomy'] = \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY;
 
 		return get_terms( $args );
 	}
@@ -485,7 +485,7 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 		if ( $args['search_categories'] ) {
 			foreach ( $args['search_categories'] as $category ) {
 				if ( is_numeric( $category ) ) {
-					$category_object = get_term_by( 'id', $category, 'job_listing_category' );
+					$category_object = get_term_by( 'id', $category, \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 					if ( ! is_wp_error( $category_object ) ) {
 						$job_categories[] = $category_object->slug;
 					}
@@ -1169,7 +1169,7 @@ function job_manager_dropdown_categories( $args = '' ) {
 		'id'              => '',
 		'class'           => 'job-manager-category-dropdown ' . ( is_rtl() ? 'chosen-rtl' : '' ),
 		'depth'           => 0,
-		'taxonomy'        => 'job_listing_category',
+		'taxonomy'        => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 		'value'           => 'id',
 		'multiple'        => true,
 		'show_option_all' => false,

@@ -32,6 +32,13 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public const CAP_GUEST_USER = 'job_guest_user';
 
+	/** Taxonomies */
+
+	/**
+	 * Constant for the job listing category taxonomy name.
+	 */
+	public const TAX_LISTING_CATEGORY = 'job_listing_category';
+
 	/**
 	 * The single instance of the class.
 	 *
@@ -190,7 +197,7 @@ class WP_Job_Manager_Post_Types {
 			}
 
 			register_taxonomy(
-				'job_listing_category',
+				self::TAX_LISTING_CATEGORY,
 				apply_filters( 'register_taxonomy_job_listing_category_object_type', [ 'job_listing' ] ),
 				apply_filters(
 					'register_taxonomy_job_listing_category_args',
@@ -675,7 +682,7 @@ class WP_Job_Manager_Post_Types {
 			$field                     = is_numeric( $cats ) ? 'term_id' : 'slug';
 			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $cats ) > 1 ? 'AND' : 'IN';
 			$query_args['tax_query'][] = [
-				'taxonomy'         => 'job_listing_category',
+				'taxonomy'         => self::TAX_LISTING_CATEGORY,
 				'field'            => $field,
 				'terms'            => $cats,
 				'include_children' => 'AND' !== $operator,
