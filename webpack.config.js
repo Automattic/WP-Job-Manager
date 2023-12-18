@@ -19,6 +19,7 @@ const files = {
 	'css/admin-landing': 'css/admin-landing.scss',
 	'css/wpjm-brand': 'css/wpjm-brand.scss',
 	'css/frontend': 'css/frontend.scss',
+	'css/ui': 'css/ui.scss',
 	'css/job-listings': 'css/job-listings.scss',
 	'css/job-submission': 'css/job-submission.scss',
 	'css/setup': 'css/setup.scss',

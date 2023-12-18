@@ -78,6 +78,11 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-access-token.php';
 
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/trait-singleton.php';
+
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui-settings.php';
+
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';
 		}
@@ -394,7 +399,6 @@ class WP_Job_Manager {
 			'is_rtl'                  => is_rtl() ? 1 : 0,
 			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' ),
 		];
-
 		/**
 		 * Retrieves the current language for use when caching requests.
 		 *
