@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @internal This API is still under development and subject to change.
  * @access private
  */
-class RedirectMessage {
+class Redirect_Message {
 
 	const DEFAULT_QUERY_VAR = 'message';
 	const TRANSIENT_PREFIX  = 'wpjm_message_';
