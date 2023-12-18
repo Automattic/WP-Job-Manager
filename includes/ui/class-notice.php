@@ -60,6 +60,42 @@ class Notice {
 	}
 
 	/**
+	 * A permanent informational message.
+	 *
+	 * @param string|array $args A message, or an array of options accepted by Notice::render.
+	 */
+	public static function hint( $args ) {
+		$args = is_array( $args ) ? $args : [ 'message' => $args ];
+
+		return self::render(
+			array_merge(
+				[
+					'classes' => array_merge( [ 'type-hint' ], $args['classes'] ?? [] ),
+				],
+				$args
+			)
+		);
+	}
+
+	/**
+	 * A permanent message that requires action to proceed.
+	 *
+	 * @param string|array $args
+	 */
+	public static function dialog( $args ) {
+		$args = is_array( $args ) ? $args : [ 'message' => $args ];
+
+		return self::render(
+			array_merge(
+				[
+					'classes' => array_merge( [ 'type-dialog' ], $args['classes'] ?? [] ),
+				],
+				$args
+			)
+		);
+	}
+
+	/**
 	 * Notice element.
 	 *
 	 * @param array $options {
@@ -150,7 +186,7 @@ class Notice {
 
 		if ( ! empty( $options['id'] ) ) {
 			/**
-			 * Filters an individual notice.Return false to disable the notice.
+			 * Filters an individual notice. Return false to disable the notice.
 			 *
 			 * @since $$next-version$$
 			 *
@@ -219,7 +255,7 @@ class Notice {
 			]
 		);
 
-		return '<a href="' . esc_url( $args['url'] ) . '" class="' . esc_attr( $class ) . '"><span>' . esc_html( $args['text'] ) . '</span></a>';
+		return '<a href="' . esc_url( $args['url'] ) . '" class="' . esc_attr( $class ) . '"><span>' . esc_html( $args['label'] ) . '</span></a>';
 
 	}
 
