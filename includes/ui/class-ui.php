@@ -73,7 +73,7 @@ class UI {
 	 *
 	 * @param array $css_variables An array of CSS variables to be enqueued: <variable_name> => <value>.
 	 */
-	public static function ensure_styles( $css_variables = null ) {
+	public static function ensure_styles( array $css_variables = [] ) {
 		self::instance()->has_ui        = true;
 		self::instance()->css_variables = $css_variables;
 	}
