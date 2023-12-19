@@ -2,21 +2,16 @@
 
 namespace WP_Job_Manager;
 
-use WP_UnitTestCase;
-
-/**
- * Mocks global time().
- *
- * @return int
- */
-function time() : int {
-	return WP_Test_Access_Token::$time ?: \time();
-}
-class WP_Test_Access_Token extends WP_UnitTestCase {
+class WP_Test_Access_Token extends \WPJM_BaseTest {
 
 	public static ?int $time = null;
 
-	protected function tearDown() : void {
+	public function setUp() : void {
+		parent::setUp();
+		Function_Mocks::mock( 'time', fn() => self::$time ?? \time() );
+	}
+
+	public function tearDown() : void {
 		self::$time = null;
 		parent::tearDown();
 	}
