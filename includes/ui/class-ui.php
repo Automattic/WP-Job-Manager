@@ -41,7 +41,7 @@ class UI {
 	 *
 	 * @var array
 	 */
-	private $css_variables;
+	private array $css_variables;
 
 	/**
 	 * Instance constructor
