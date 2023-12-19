@@ -34,12 +34,21 @@ class UI {
 	 *
 	 * @var bool
 	 */
-	private $has_ui = false;
+	private bool $has_ui;
+
+	/**
+	 * An array of css variables to be enqueued with the styles.
+	 *
+	 * @var array
+	 */
+	private array $css_variables;
 
 	/**
 	 * Instance constructor
 	 */
 	private function __construct() {
+		$this->has_ui        = false;
+		$this->css_variables = [];
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles' ] );
 	}
 
@@ -53,14 +62,39 @@ class UI {
 
 		if ( $this->has_ui ) {
 			wp_enqueue_style( 'wp-job-manager-ui' );
+
+			if ( ! empty( $this->css_variables ) ) {
+				wp_add_inline_style( 'wp-job-manager-ui', $this->generate_inline_css() );
+			}
 		}
 	}
 
 	/**
 	 * Request the styles to be loaded for the page.
+	 *
+	 * @param array $css_variables An array of CSS variables to be enqueued: <variable_name> => <value>.
 	 */
-	public static function ensure_styles() {
-		self::instance()->has_ui = true;
+	public static function ensure_styles( array $css_variables = [] ) {
+		self::instance()->has_ui        = true;
+		self::instance()->css_variables = array_merge( self::instance()->css_variables, $css_variables );
+	}
+
+	/**
+	 * Generates CSS to be inlined with the UI styles.
+	 *
+	 * @return string The CSS.
+	 */
+	private function generate_inline_css() {
+
+		$css = ':root{';
+
+		foreach ( $this->css_variables as $name => $value ) {
+			$css .= esc_attr( $name ) . ': ' . esc_attr( $value ) . ';';
+		}
+
+		$css .= '}';
+
+		return $css;
 	}
 }
 
