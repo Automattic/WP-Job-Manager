@@ -34,7 +34,7 @@ class UI {
 	 *
 	 * @var bool
 	 */
-	private $has_ui;
+	private bool $has_ui;
 
 	/**
 	 * An array of css variables to be enqueued with the styles.
