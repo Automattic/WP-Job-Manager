@@ -30,6 +30,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 
 	public function tearDown(): void {
 		parent::tearDown();
+		\WP_Job_Manager\Function_Mocks::tearDown();
 		$this->disable_manage_job_listings_cap();
 		$this->logout();
 	}

@@ -8,7 +8,7 @@
 	border: var(--jm-ui-border-size) solid var(--jm-ui-border-light);
 	background: var(--jm-ui-background-color, transparent);
 	color: var(--jm-ui-text-color, inherit);
-	padding: var(--jm-ui-space-m);
+	padding: var(--jm-ui-space-m) var(--jm-ui-space-ml);
 	display: flex;
 	flex-direction: column;
 	gap: var(--jm-ui-space-xs);
@@ -23,8 +23,11 @@
 	margin: var(--jm-ui-space-ml) auto;
 
 	&.has-header {
-		padding: var(--jm-ui-space-ml) var(--jm-ui-space-m);
+		padding: var(--jm-ui-space-ml) var(--jm-ui-space-ml);
 		gap: var(--jm-ui-space-sm);
+	}
+	&.has-header.has-actions {
+		gap: var(--jm-ui-space-m);
 	}
 
 	@each $color in (info, error, success, strong) {
@@ -66,6 +69,23 @@
 		.jm-notice__button,
 		.jm-notice__action, {
 			font-size: 16px;
+		}
+	}
+
+	&.type-dialog {
+		align-items: center;
+
+		padding: var(--jm-ui-space-xxl) var(--jm-ui-space-ml);
+		gap: var(--jm-ui-space-ml);
+
+		.jm-notice__buttons {
+			gap: var(--jm-ui-space-sm);
+		}
+		.jm-notice__button,
+		.jm-notice__button--outline,
+		.jm-notice__button--link,
+		{
+			padding: var(--jm-ui-space-s2) var(--jm-ui-space-sm);
 		}
 	}
 }
