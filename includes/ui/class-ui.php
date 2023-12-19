@@ -47,7 +47,8 @@ class UI {
 	 * Instance constructor
 	 */
 	private function __construct() {
-		$this->has_ui = false;
+		$this->has_ui        = false;
+		$this->css_variables = [];
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_styles' ] );
 	}
 
