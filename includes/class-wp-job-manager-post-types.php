@@ -40,6 +40,11 @@ class WP_Job_Manager_Post_Types {
 	public const TAX_LISTING_CATEGORY = 'job_listing_category';
 
 	/**
+	 * Constant for the job listing type taxonomy name.
+	 */
+	public const TAX_LISTING_TYPE = 'job_listing_type';
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -157,7 +162,7 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function hide_job_type_block_editor_selector( $response, $taxonomy, $request ) {
 		if (
-			'job_listing_type' === $taxonomy->name
+			self::TAX_LISTING_TYPE === $taxonomy->name
 			&& 'edit' === $request->get_param( 'context' )
 		) {
 			$response->data['visibility']['show_ui'] = false;
@@ -261,7 +266,7 @@ class WP_Job_Manager_Post_Types {
 			}
 
 			register_taxonomy(
-				'job_listing_type',
+				self::TAX_LISTING_TYPE,
 				apply_filters( 'register_taxonomy_job_listing_type_object_type', [ 'job_listing' ] ),
 				apply_filters(
 					'register_taxonomy_job_listing_type_args',
@@ -310,7 +315,7 @@ class WP_Job_Manager_Post_Types {
 					'term',
 					'employment_type',
 					[
-						'object_subtype'    => 'job_listing_type',
+						'object_subtype'    => self::TAX_LISTING_TYPE,
 						'show_in_rest'      => true,
 						'type'              => 'string',
 						'single'            => true,
@@ -671,7 +676,7 @@ class WP_Job_Manager_Post_Types {
 
 		if ( ! empty( $input_job_types ) ) {
 			$query_args['tax_query'][] = [
-				'taxonomy' => 'job_listing_type',
+				'taxonomy' => self::TAX_LISTING_TYPE,
 				'field'    => 'slug',
 				'terms'    => $input_job_types + [ 0 ],
 			];

@@ -281,15 +281,15 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_job_feed_item() {
 		$instance       = WP_Job_Manager_Post_Types::instance();
 		$new_jobs       = [];
-		$type_a         = wp_create_term( 'Job Type A', 'job_listing_type' );
-		$type_b         = wp_create_term( 'Job Type B', 'job_listing_type' );
+		$type_a         = wp_create_term( 'Job Type A', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$type_b         = wp_create_term( 'Job Type B', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 		$new_job_args   = [];
 		$new_job_args[] = [
 			'meta_input' => [
 				'_company_name' => 'Custom Company A',
 			],
 			'tax_input'  => [
-				'job_listing_type' => $type_a['term_id'],
+				\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $type_a['term_id'],
 			],
 		];
 		$new_job_args[] = [
@@ -298,7 +298,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'_company_name' => '',
 			],
 			'tax_input'  => [
-				'job_listing_type' => $type_b['term_id'],
+				\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $type_b['term_id'],
 			],
 		];
 		$new_job_args[] = [
@@ -324,7 +324,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		while ( $jobs->have_posts() ) {
 			$has_location = ! empty( $new_job_args[ $index ]['meta_input']['_job_location'] );
 			$has_company  = ! empty( $new_job_args[ $index ]['meta_input']['_company_name'] );
-			$has_job_type = ! empty( $new_job_args[ $index ]['tax_input']['job_listing_type'] );
+			$has_job_type = ! empty( $new_job_args[ $index ]['tax_input'][\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE] );
 			$index++;
 
 			$jobs->the_post();

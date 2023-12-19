@@ -195,7 +195,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_job_types_count() {
-		$terms = $this->factory->term->create_many( 14, [ 'taxonomy' => 'job_listing_type' ] );
+		$terms = $this->factory->term->create_many( 14, [ 'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ] );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -214,13 +214,13 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$valid   = $this->factory->term->create_many(
 			2,
 			[
-				'taxonomy'    => 'job_listing_type',
+				'taxonomy'    => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'description' => ' Valid description ',
 			]
 		);
 		$invalid = $this->factory->term->create(
 			[
-				'taxonomy'    => 'job_listing_type',
+				'taxonomy'    => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'description' => "\t\n",
 			]
 		);
@@ -238,7 +238,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_job_type_has_employment_type_count
 	 */
 	public function test_get_job_type_has_employment_type_count() {
-		$terms = $this->factory->term->create_many( 5, [ 'taxonomy' => 'job_listing_type' ] );
+		$terms = $this->factory->term->create_many( 5, [ 'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ] );
 
 		// Set the employment type for some terms.
 		add_term_meta( $terms[1], 'employment_type', 'FULL_TIME' );
@@ -260,12 +260,12 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_freelance_jobs_count() {
 		$this->create_default_job_listings();
 
-		wp_set_object_terms( $this->draft[0], 'freelance', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[5], 'freelance', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[6], 'freelance', 'job_listing_type', false );
-		wp_set_object_terms( $this->preview[0], 'freelance', 'job_listing_type', false );
-		wp_set_object_terms( $this->pending[3], 'freelance', 'job_listing_type', false );
-		wp_set_object_terms( $this->publish[9], 'freelance', 'job_listing_type', false );
+		wp_set_object_terms( $this->draft[0], 'freelance', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[5], 'freelance', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[6], 'freelance', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->preview[0], 'freelance', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->pending[3], 'freelance', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->publish[9], 'freelance', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -282,12 +282,12 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_full_time_jobs_count() {
 		$this->create_default_job_listings();
 
-		wp_set_object_terms( $this->draft[0], 'full-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[5], 'full-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[6], 'full-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->preview[0], 'full-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->pending[3], 'full-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->publish[9], 'full-time', 'job_listing_type', false );
+		wp_set_object_terms( $this->draft[0], 'full-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[5], 'full-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[6], 'full-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->preview[0], 'full-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->pending[3], 'full-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->publish[9], 'full-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -304,12 +304,12 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_internship_jobs_count() {
 		$this->create_default_job_listings();
 
-		wp_set_object_terms( $this->draft[0], 'internship', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[5], 'internship', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[6], 'internship', 'job_listing_type', false );
-		wp_set_object_terms( $this->preview[0], 'internship', 'job_listing_type', false );
-		wp_set_object_terms( $this->pending[3], 'internship', 'job_listing_type', false );
-		wp_set_object_terms( $this->publish[9], 'internship', 'job_listing_type', false );
+		wp_set_object_terms( $this->draft[0], 'internship', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[5], 'internship', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[6], 'internship', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->preview[0], 'internship', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->pending[3], 'internship', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->publish[9], 'internship', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -326,12 +326,12 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_part_time_jobs_count() {
 		$this->create_default_job_listings();
 
-		wp_set_object_terms( $this->draft[0], 'part-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[5], 'part-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[6], 'part-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->preview[0], 'part-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->pending[3], 'part-time', 'job_listing_type', false );
-		wp_set_object_terms( $this->publish[9], 'part-time', 'job_listing_type', false );
+		wp_set_object_terms( $this->draft[0], 'part-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[5], 'part-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[6], 'part-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->preview[0], 'part-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->pending[3], 'part-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->publish[9], 'part-time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -348,12 +348,12 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	public function test_get_temporary_jobs_count() {
 		$this->create_default_job_listings();
 
-		wp_set_object_terms( $this->draft[0], 'temporary', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[5], 'temporary', 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[6], 'temporary', 'job_listing_type', false );
-		wp_set_object_terms( $this->preview[0], 'temporary', 'job_listing_type', false );
-		wp_set_object_terms( $this->pending[3], 'temporary', 'job_listing_type', false );
-		wp_set_object_terms( $this->publish[9], 'temporary', 'job_listing_type', false );
+		wp_set_object_terms( $this->draft[0], 'temporary', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[5], 'temporary', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[6], 'temporary', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->preview[0], 'temporary', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->pending[3], 'temporary', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->publish[9], 'temporary', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 
@@ -467,15 +467,15 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 */
 	public function test_get_job_type_count() {
 		$this->create_default_job_listings();
-		$terms = $this->factory->term->create_many( 6, [ 'taxonomy' => 'job_listing_type' ] );
+		$terms = $this->factory->term->create_many( 6, [ 'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ] );
 
 		// Assign job types to some jobs.
-		wp_set_object_terms( $this->draft[0], $terms[0], 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[5], $terms[1], 'job_listing_type', false );
-		wp_set_object_terms( $this->expired[6], $terms[2], 'job_listing_type', false );
-		wp_set_object_terms( $this->preview[0], $terms[3], 'job_listing_type', false );
-		wp_set_object_terms( $this->pending[3], $terms[4], 'job_listing_type', false );
-		wp_set_object_terms( $this->publish[9], $terms[5], 'job_listing_type', false );
+		wp_set_object_terms( $this->draft[0], $terms[0], \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[5], $terms[1], \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->expired[6], $terms[2], \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->preview[0], $terms[3], \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->pending[3], $terms[4], \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
+		wp_set_object_terms( $this->publish[9], $terms[5], \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, false );
 
 		$data = WP_Job_Manager_Usage_Tracking_Data::get_usage_data();
 

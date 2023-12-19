@@ -193,6 +193,6 @@ class WP_Test_WP_Job_Manager_Job_Types_Test extends WPJM_REST_TestCase {
 	}
 
 	protected function get_job_type() {
-		return $this->factory->term->create( [ 'taxonomy' => 'job_listing_type' ] );
+		return $this->factory->term->create( [ 'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ] );
 	}
 }

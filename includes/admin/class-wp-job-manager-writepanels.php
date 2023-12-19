@@ -152,12 +152,12 @@ class WP_Job_Manager_Writepanels {
 
 		// translators: Placeholder %s is the singular name for a job listing post type.
 		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ), [ $this, 'job_listing_data' ], 'job_listing', 'normal', 'high' );
-		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
+		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ) ) ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
 		} elseif ( false === job_manager_multi_job_type() ) {
 			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
-			$job_listing_type = get_taxonomy( 'job_listing_type' );
-			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, [ $this, 'job_type_single_meta_box' ], 'job_listing', 'side', 'core' );
+			$job_listing_type = get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+			add_meta_box( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, $job_listing_type->labels->menu_name, [ $this, 'job_type_single_meta_box' ], 'job_listing', 'side', 'core' );
 		}
 	}
 
@@ -168,7 +168,7 @@ class WP_Job_Manager_Writepanels {
 	 */
 	public function job_type_single_meta_box( $post ) {
 		// Set up the taxonomy object and get terms.
-		$taxonomy_name = 'job_listing_type';
+		$taxonomy_name = \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE;
 
 		// Get all the terms for this taxonomy.
 		$terms     = get_terms(

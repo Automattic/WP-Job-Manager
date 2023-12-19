@@ -494,7 +494,7 @@ class WP_Job_Manager_CPT {
 		unset( $columns['title'], $columns['date'], $columns['author'] );
 
 		$columns['job_position']                                     = __( 'Position', 'wp-job-manager' );
-		$columns['job_listing_type']                                 = __( 'Type', 'wp-job-manager' );
+		$columns[ \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ]     = __( 'Type', 'wp-job-manager' );
 		$columns['job_location']                                     = __( 'Location', 'wp-job-manager' );
 		$columns['job_status']                                       = '<span class="tips" data-tip="' . __( 'Status', 'wp-job-manager' ) . '">' . __( 'Status', 'wp-job-manager' ) . '</span>';
 		$columns['job_posted']                                       = __( 'Posted', 'wp-job-manager' );
@@ -508,7 +508,7 @@ class WP_Job_Manager_CPT {
 		}
 
 		if ( ! get_option( 'job_manager_enable_types' ) ) {
-			unset( $columns['job_listing_type'] );
+			unset( $columns[ \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ] );
 		}
 
 		return $columns;
@@ -595,7 +595,7 @@ class WP_Job_Manager_CPT {
 		global $post;
 
 		switch ( $column ) {
-			case 'job_listing_type':
+			case \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE:
 				$types = wpjm_get_the_job_types( $post );
 
 				if ( $types && ! empty( $types ) ) {

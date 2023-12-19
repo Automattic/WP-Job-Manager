@@ -250,7 +250,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'Choose job type&hellip;', 'wp-job-manager' ),
 						'priority'    => 4,
 						'default'     => 'full-time',
-						'taxonomy'    => 'job_listing_type',
+						'taxonomy'    => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 					],
 					'job_category'        => [
 						'label'       => __( 'Job category', 'wp-job-manager' ),
@@ -360,7 +360,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! get_option( 'job_manager_enable_categories' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) ) {
 			unset( $this->fields['job']['job_category'] );
 		}
-		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
+		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ) ) ) {
 			unset( $this->fields['job']['job_type'] );
 		}
 		if ( get_option( 'job_manager_enable_salary' ) ) {
@@ -628,7 +628,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							$this->fields[ $group_key ][ $key ]['value'] = $job->post_content;
 							break;
 						case 'job_type':
-							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, 'job_listing_type', [ 'fields' => 'ids' ] );
+							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, [ 'fields' => 'ids' ] );
 							if ( ! job_manager_multi_job_type() ) {
 								$this->fields[ $group_key ][ $key ]['value'] = current( $this->fields[ $group_key ][ $key ]['value'] );
 							}
@@ -865,7 +865,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					$terms = $values['job']['job_type'];
 
 					foreach ( $terms as $term ) {
-						$term = get_term_by( 'id', intval( $term ), 'job_listing_type' );
+						$term = get_term_by( 'id', intval( $term ), \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 
 						if ( $term ) {
 							$job_slug[] = $term->slug;

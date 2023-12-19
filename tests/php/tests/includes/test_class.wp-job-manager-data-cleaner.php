@@ -73,7 +73,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		$this->job_listing_types = [];
 
 		for ( $i = 1; $i <= 3; $i++ ) {
-			$this->job_listing_types[] = wp_insert_term( 'Job Type ' . $i, 'job_listing_type' );
+			$this->job_listing_types[] = wp_insert_term( 'Job Type ' . $i, \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 		}
 
 		wp_set_object_terms(
@@ -82,7 +82,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 				$this->job_listing_types[0]['term_id'],
 				$this->job_listing_types[1]['term_id'],
 			],
-			'job_listing_type'
+			\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE
 		);
 		wp_set_object_terms(
 			$this->job_listing_ids[1],
@@ -90,7 +90,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 				$this->job_listing_types[1]['term_id'],
 				$this->job_listing_types[2]['term_id'],
 			],
-			'job_listing_type'
+			\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE
 		);
 		wp_set_object_terms(
 			$this->job_listing_ids[2],
@@ -99,7 +99,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 				$this->job_listing_types[1]['term_id'],
 				$this->job_listing_types[2]['term_id'],
 			],
-			'job_listing_type'
+			\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE
 		);
 
 		// Setup some categories.

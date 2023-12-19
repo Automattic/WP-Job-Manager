@@ -64,7 +64,7 @@ if ( ! function_exists( 'get_the_job_type' ) ) :
 			return;
 		}
 
-		$types = wp_get_post_terms( $post->ID, 'job_listing_type' );
+		$types = wp_get_post_terms( $post->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 
 		if ( $types ) {
 			$type = current( $types );

@@ -614,7 +614,7 @@ function wpjm_get_the_job_types( $post = null ) {
 		return false;
 	}
 
-	$types = get_the_terms( $post->ID, 'job_listing_type' );
+	$types = get_the_terms( $post->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 
 	if ( empty( $types ) || is_wp_error( $types ) ) {
 		$types = [];

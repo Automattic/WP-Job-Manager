@@ -148,7 +148,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 
 		if ( ! empty( $args['job_types'] ) ) {
 			$query_args['tax_query'][] = [
-				'taxonomy' => 'job_listing_type',
+				'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'field'    => 'slug',
 				'terms'    => $args['job_types'],
 			];
@@ -428,7 +428,7 @@ if ( ! function_exists( 'get_job_listing_types' ) ) :
 			$args = apply_filters( 'get_job_listing_types_args', $args );
 
 			// Prevent users from filtering the taxonomy.
-			$args['taxonomy'] = 'job_listing_type';
+			$args['taxonomy'] = \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE;
 
 			return get_terms( $args );
 		}

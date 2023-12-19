@@ -171,7 +171,7 @@ class WP_Job_Manager_Install {
 	 */
 	private static function get_default_taxonomy_terms() {
 		return [
-			'job_listing_type' => [
+			\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => [
 				'Full Time'  => [
 					'employment_type' => 'FULL_TIME',
 				],
@@ -196,10 +196,10 @@ class WP_Job_Manager_Install {
 	 */
 	private static function add_employment_types() {
 		$taxonomies = self::get_default_taxonomy_terms();
-		$terms      = $taxonomies['job_listing_type'];
+		$terms      = $taxonomies[ \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ];
 
 		foreach ( $terms as $term => $meta ) {
-			$term = get_term_by( 'slug', sanitize_title( $term ), 'job_listing_type' );
+			$term = get_term_by( 'slug', sanitize_title( $term ), \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 			if ( $term ) {
 				foreach ( $meta as $meta_key => $meta_value ) {
 					if ( ! get_term_meta( (int) $term->term_id, $meta_key, true ) ) {

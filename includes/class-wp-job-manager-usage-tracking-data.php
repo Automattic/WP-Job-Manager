@@ -34,7 +34,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'employers'                   => self::get_employer_count(),
 			'job_categories'              => $categories,
 			'job_categories_desc'         => self::get_job_category_has_description_count(),
-			'job_types'                   => wp_count_terms( 'job_listing_type', [ 'hide_empty' => false ] ),
+			'job_types'                   => wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, [ 'hide_empty' => false ] ),
 			'job_types_desc'              => self::get_job_type_has_description_count(),
 			'job_types_emp_type'          => self::get_job_type_has_employment_type_count(),
 			'jobs_type'                   => self::get_job_type_count(),
@@ -133,7 +133,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_type',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'hide_empty' => false,
 			]
 		);
@@ -160,7 +160,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_type',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'hide_empty' => false,
 			]
 		);
@@ -194,7 +194,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 				'tax_query'   => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Used in production with no issues.
 					[
 						'field'    => 'slug',
-						'taxonomy' => 'job_listing_type',
+						'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 						'terms'    => $job_type,
 					],
 				],
@@ -244,7 +244,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 				'fields'      => 'ids',
 				'tax_query'   => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Used in production with no issues.
 					[
-						'taxonomy' => 'job_listing_type',
+						'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 						'operator' => 'EXISTS',
 					],
 				],

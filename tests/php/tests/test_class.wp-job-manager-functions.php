@@ -352,8 +352,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_job_types() {
-		$this->assertTrue( taxonomy_exists( 'job_listing_type' ) );
-		$this->assertTrue( current_user_can( get_taxonomy( 'job_listing_type' )->cap->assign_terms ) );
+		$this->assertTrue( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ) );
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE )->cap->assign_terms ) );
 		$tags            = [
 			'main'  => [],
 			'weird' => [],
@@ -362,11 +362,11 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			'none'  => [],
 		];
 		$terms           = [];
-		$terms['jazz']   = $tags['main'][] = $tags['all'][] = wp_create_term( 'jazz', 'job_listing_type' );
-		$terms['swim']   = $tags['main'][] = $tags['all'][] = wp_create_term( 'swim', 'job_listing_type' );
-		$terms['dev']    = $tags['main'][] = $tags['all'][] = wp_create_term( 'dev', 'job_listing_type' );
-		$terms['potato'] = $tags['weird'][] = $tags['all'][] = wp_create_term( 'potato', 'job_listing_type' );
-		$terms['coffee'] = $tags['happy'][] = $tags['all'][] = wp_create_term( 'coffee', 'job_listing_type' );
+		$terms['jazz']   = $tags['main'][] = $tags['all'][] = wp_create_term( 'jazz', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$terms['swim']   = $tags['main'][] = $tags['all'][] = wp_create_term( 'swim', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$terms['dev']    = $tags['main'][] = $tags['all'][] = wp_create_term( 'dev', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$terms['potato'] = $tags['weird'][] = $tags['all'][] = wp_create_term( 'potato', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$terms['coffee'] = $tags['happy'][] = $tags['all'][] = wp_create_term( 'coffee', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 		foreach ( $tags as $k => $category ) {
 			$tags[ $k ] = wp_list_pluck( $category, 'term_id' );
 		}
@@ -382,7 +382,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			3,
 			[
 				'tax_input' => [
-					'job_listing_type' => $tags['main'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $tags['main'],
 				],
 			]
 		);
@@ -390,7 +390,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			2,
 			[
 				'tax_input' => [
-					'job_listing_type' => $tags['weird'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $tags['weird'],
 				],
 			]
 		);
@@ -398,7 +398,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			2,
 			[
 				'tax_input' => [
-					'job_listing_type' => $tags['happy'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $tags['happy'],
 				],
 			]
 		);

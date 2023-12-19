@@ -34,7 +34,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 */
 	private static $taxonomies = [
 		\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
-		'job_listing_type',
+		\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 	];
 
 	/** Cron jobs to be unscheduled.
