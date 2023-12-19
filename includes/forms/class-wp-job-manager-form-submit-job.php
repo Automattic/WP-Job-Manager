@@ -840,7 +840,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$job_data = [
 			'post_title'     => $post_title,
 			'post_content'   => $post_content,
-			'post_type'      => 'job_listing',
+			'post_type'      => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'comment_status' => 'closed',
 		];
 

@@ -134,7 +134,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	public function deleted_meta( $meta_ids, $post_id, $meta_key ) {
 		if (
 			WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY === $meta_key
-			&& 'job_listing' === get_post_type( $post_id )
+			&& \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type( $post_id )
 		) {
 			$this->watched_fields_changed = true;
 		}

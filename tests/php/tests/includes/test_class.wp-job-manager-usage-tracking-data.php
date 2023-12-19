@@ -62,7 +62,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		// Ensure job categories and types are enabled.
 		update_option( 'job_manager_enable_categories', 1 );
 		update_option( 'job_manager_enable_types', 1 );
-		unregister_post_type( 'job_listing' );
+		unregister_post_type( \WP_Job_Manager_Post_Types::PT_LISTING );
 		$post_type_instance = WP_Job_Manager_Post_Types::instance();
 		$post_type_instance->register_post_types();
 	}
@@ -439,7 +439,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 		$media = $this->factory->attachment->create_many(
 			6,
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => 'publish',
 			]
 		);

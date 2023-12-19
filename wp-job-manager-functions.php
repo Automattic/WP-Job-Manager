@@ -56,7 +56,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		$query_args = [
-			'post_type'              => 'job_listing',
+			'post_type'              => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status'            => $post_status,
 			'ignore_sticky_posts'    => 1,
 			'offset'                 => absint( $args['offset'] ),
@@ -396,7 +396,7 @@ if ( ! function_exists( 'get_featured_job_ids' ) ) :
 			[
 				'posts_per_page'   => -1,
 				'suppress_filters' => false,
-				'post_type'        => 'job_listing',
+				'post_type'        => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status'      => 'publish',
 				'meta_key'         => '_featured', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Used in production with no issues.
 				'meta_value'       => '1', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Used in production with no issues.
@@ -760,7 +760,7 @@ function job_manager_user_can_edit_job( $job_id ) {
 	} else {
 		$job = get_post( $job_id );
 
-		if ( ! $job || 'job_listing' !== $job->post_type || ( absint( $job->post_author ) !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
+		if ( ! $job || \WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type || ( absint( $job->post_author ) !== get_current_user_id() && ! current_user_can( 'edit_post', $job_id ) ) ) {
 			$can_edit = false;
 		}
 	}
@@ -794,7 +794,7 @@ function is_wpjm() {
  * @return bool
  */
 function is_wpjm_page() {
-	$is_wpjm_page = is_post_type_archive( 'job_listing' );
+	$is_wpjm_page = is_post_type_archive( \WP_Job_Manager_Post_Types::PT_LISTING );
 
 	if ( ! $is_wpjm_page ) {
 		$wpjm_page_ids = array_filter(
@@ -890,7 +890,7 @@ function has_wpjm_shortcode( $content = null, $tag = null ) {
  * @return bool
  */
 function is_wpjm_job_listing() {
-	return is_singular( [ 'job_listing' ] );
+	return is_singular( [ \WP_Job_Manager_Post_Types::PT_LISTING ] );
 }
 
 /**
@@ -901,7 +901,7 @@ function is_wpjm_job_listing() {
  * @return bool
  */
 function is_wpjm_taxonomy() {
-	return is_tax( get_object_taxonomies( 'job_listing' ) );
+	return is_tax( get_object_taxonomies( \WP_Job_Manager_Post_Types::PT_LISTING ) );
 }
 
 /**
@@ -1521,7 +1521,7 @@ function job_manager_duplicate_listing( $post_id ) {
 	}
 
 	$post = get_post( $post_id );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return 0;
 	}
 

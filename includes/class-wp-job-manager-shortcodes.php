@@ -198,7 +198,7 @@ class WP_Job_Manager_Shortcodes {
 			}
 
 			try {
-				if ( empty( $job ) || 'job_listing' !== $job->post_type || ! job_manager_user_can_edit_job( $job_id ) ) {
+				if ( empty( $job ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type || ! job_manager_user_can_edit_job( $job_id ) ) {
 					throw new Exception( __( 'Invalid ID', 'wp-job-manager' ) );
 				}
 
@@ -327,7 +327,7 @@ class WP_Job_Manager_Shortcodes {
 	 */
 	private function get_job_dashboard_query_args( $posts_per_page = -1 ) {
 		$job_dashboard_args = [
-			'post_type'           => 'job_listing',
+			'post_type'           => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview' ],
 			'ignore_sticky_posts' => 1,
 			'posts_per_page'      => $posts_per_page,
@@ -434,7 +434,7 @@ class WP_Job_Manager_Shortcodes {
 		if (
 			! get_current_user_id()
 			|| ! $job instanceof WP_Post
-			|| 'job_listing' !== $job->post_type
+			|| \WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type
 			|| ! $this->is_job_available_on_dashboard( $job )
 		) {
 			return [];
@@ -738,7 +738,7 @@ class WP_Job_Manager_Shortcodes {
 				get_job_manager_template( 'job-listings-start.php' );
 				while ( $jobs->have_posts() ) {
 					$jobs->the_post();
-					get_job_manager_template_part( 'content', 'job_listing' );
+					get_job_manager_template_part( 'content', \WP_Job_Manager_Post_Types::PT_LISTING );
 				}
 				get_job_manager_template( 'job-listings-end.php' );
 				if ( $jobs->found_posts > $atts['per_page'] && $atts['show_more'] ) {
@@ -859,7 +859,7 @@ class WP_Job_Manager_Shortcodes {
 		ob_start();
 
 		$args = [
-			'post_type'   => 'job_listing',
+			'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status' => 'publish',
 			'p'           => $atts['id'],
 		];
@@ -870,7 +870,7 @@ class WP_Job_Manager_Shortcodes {
 			while ( $jobs->have_posts() ) {
 				$jobs->the_post();
 				echo '<h1>' . wp_kses_post( wpjm_get_the_job_title() ) . '</h1>';
-				get_job_manager_template_part( 'content-single', 'job_listing' );
+				get_job_manager_template_part( 'content-single', \WP_Job_Manager_Post_Types::PT_LISTING );
 			}
 		}
 
@@ -900,7 +900,7 @@ class WP_Job_Manager_Shortcodes {
 		ob_start();
 
 		$args = [
-			'post_type'   => 'job_listing',
+			'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status' => 'publish',
 		];
 
@@ -928,7 +928,7 @@ class WP_Job_Manager_Shortcodes {
 				$jobs->the_post();
 				$width = $atts['width'] ? $atts['width'] : 'auto';
 				echo '<div class="job_summary_shortcode align' . esc_attr( $atts['align'] ) . '" style="width: ' . esc_attr( $width ) . '">';
-				get_job_manager_template_part( 'content-summary', 'job_listing' );
+				get_job_manager_template_part( 'content-summary', \WP_Job_Manager_Post_Types::PT_LISTING );
 				echo '</div>';
 			}
 		}
@@ -956,7 +956,7 @@ class WP_Job_Manager_Shortcodes {
 		ob_start();
 
 		$args = [
-			'post_type'   => 'job_listing',
+			'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status' => 'publish',
 		];
 

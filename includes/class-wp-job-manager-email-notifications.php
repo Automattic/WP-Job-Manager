@@ -600,7 +600,7 @@ final class WP_Job_Manager_Email_Notifications {
 
 		$job_ids = get_posts(
 			[
-				'post_type'      => 'job_listing',
+				'post_type'      => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status'    => 'publish',
 				'fields'         => 'ids',
 				'posts_per_page' => -1,

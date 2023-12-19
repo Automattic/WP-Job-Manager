@@ -264,7 +264,7 @@ class WP_Job_Manager_Ajax {
 		if ( $result['found_jobs'] ) {
 			while ( $jobs->have_posts() ) {
 				$jobs->the_post();
-				get_job_manager_template_part( 'content', 'job_listing' );
+				get_job_manager_template_part( 'content', \WP_Job_Manager_Post_Types::PT_LISTING );
 			}
 		} else {
 			get_job_manager_template_part( 'content', 'no-jobs-found' );

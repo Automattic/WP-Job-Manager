@@ -229,7 +229,7 @@ function get_the_job_permalink( $post = null ) {
 function get_the_job_application_method( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 
@@ -304,7 +304,7 @@ function wpjm_get_job_employment_types( $post = null ) {
 function wpjm_allow_indexing_job_listing( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return true;
 	}
 
@@ -333,7 +333,7 @@ function wpjm_allow_indexing_job_listing( $post = null ) {
 function wpjm_output_job_listing_structured_data( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
@@ -363,7 +363,7 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 function wpjm_get_job_listing_structured_data( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
@@ -454,7 +454,7 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 function wpjm_get_job_listing_location_structured_data( $post ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
@@ -523,7 +523,7 @@ function wpjm_the_job_title( $post = null ) {
  */
 function wpjm_get_the_job_title( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -561,7 +561,7 @@ function wpjm_the_job_description( $post = null ) {
  */
 function wpjm_get_the_job_description( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -610,7 +610,7 @@ function wpjm_the_job_types( $post = null, $separator = ', ' ) {
 function wpjm_get_the_job_types( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
@@ -669,7 +669,7 @@ function wpjm_the_job_categories( $post = null, $separator = ', ' ) {
 function wpjm_get_the_job_categories( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
@@ -837,7 +837,7 @@ function the_job_location( $map_link = true, $post = null ) {
  */
 function get_the_job_location( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -1006,7 +1006,7 @@ function the_company_video( $post = null ) {
  */
 function get_the_company_video( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 	return apply_filters( 'the_company_video', $post->_company_video, $post );
@@ -1049,7 +1049,7 @@ function the_company_name( $before = '', $after = '', $echo = true, $post = null
  */
 function get_the_company_name( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return '';
 	}
 
@@ -1066,7 +1066,7 @@ function get_the_company_name( $post = null ) {
 function get_the_company_website( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 
@@ -1116,7 +1116,7 @@ function the_company_tagline( $before = '', $after = '', $echo = true, $post = n
 function get_the_company_tagline( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -1158,7 +1158,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
  */
 function get_the_company_twitter( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -1198,7 +1198,7 @@ function job_listing_class( $class = '', $post_id = null ) {
 function get_job_listing_class( $class = '', $post_id = null ) {
 	$post = get_post( $post_id );
 
-	if ( empty( $post ) || 'job_listing' !== $post->post_type ) {
+	if ( empty( $post ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return [];
 	}
 
@@ -1227,11 +1227,11 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 function wpjm_add_post_class( $classes, $class, $post_id ) {
 	$post = get_post( $post_id );
 
-	if ( empty( $post ) || 'job_listing' !== $post->post_type ) {
+	if ( empty( $post ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return $classes;
 	}
 
-	$classes[] = 'job_listing';
+	$classes[] = \WP_Job_Manager_Post_Types::PT_LISTING;
 
 	if ( get_option( 'job_manager_enable_types' ) ) {
 		$job_types = wpjm_get_the_job_types( $post );
@@ -1283,7 +1283,7 @@ add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
  */
 function get_the_job_salary( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 
@@ -1356,7 +1356,7 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
  */
 function get_the_job_salary_currency( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 
@@ -1385,7 +1385,7 @@ function get_the_job_salary_currency( $post = null ) {
  */
 function get_the_job_salary_unit( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 

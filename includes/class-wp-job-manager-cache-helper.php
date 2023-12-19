@@ -38,7 +38,7 @@ class WP_Job_Manager_Cache_Helper {
 	 * @param int|WP_Post $post_id
 	 */
 	public static function flush_get_job_listings_cache( $post_id ) {
-		if ( 'job_listing' === get_post_type( $post_id ) ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type( $post_id ) ) {
 			self::get_transient_version( 'get_job_listings', true );
 		}
 	}
@@ -155,7 +155,7 @@ class WP_Job_Manager_Cache_Helper {
 		 * @param string  $old_status Old post status.
 		 * @param WP_Post $post       Post object.
 		 */
-		$post_types = apply_filters( 'wpjm_count_cache_supported_post_types', [ 'job_listing' ], $new_status, $old_status, $post );
+		$post_types = apply_filters( 'wpjm_count_cache_supported_post_types', [ \WP_Job_Manager_Post_Types::PT_LISTING ], $new_status, $old_status, $post );
 
 		// Only proceed when statuses do not match, and post type is supported post type.
 		if ( $new_status === $old_status || ! in_array( $post->post_type, $post_types, true ) ) {
@@ -219,7 +219,7 @@ class WP_Job_Manager_Cache_Helper {
 	 *
 	 * @return int
 	 */
-	public static function get_listings_count( $post_type = 'job_listing', $status = 'pending', $force = false ) {
+	public static function get_listings_count( $post_type = \WP_Job_Manager_Post_Types::PT_LISTING, $status = 'pending', $force = false ) {
 
 		// Get user based cache transient.
 		$user_id   = get_current_user_id();

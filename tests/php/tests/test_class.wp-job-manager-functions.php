@@ -891,7 +891,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	protected function set_up_request_page() {
-		$this->go_to( get_post_type_archive_link( 'job_listing' ) );
+		$this->go_to( get_post_type_archive_link( \WP_Job_Manager_Post_Types::PT_LISTING ) );
 	}
 
 	protected function set_up_request_shortcode( $tag = 'jobs' ) {
