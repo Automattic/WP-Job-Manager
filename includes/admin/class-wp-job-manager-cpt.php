@@ -318,7 +318,7 @@ class WP_Job_Manager_CPT {
 		$r['hierarchical'] = 1;
 		$r['hide_empty']   = 0;
 		$r['show_count']   = 1;
-		$r['selected']     = ( isset( $wp_query->query['job_listing_category'] ) ) ? $wp_query->query['job_listing_category'] : '';
+		$r['selected']     = ( isset( $wp_query->query[ \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ] ) ) ? $wp_query->query[ \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ] : '';
 		$r['menu_order']   = false;
 		$terms             = get_terms( $r );
 		$walker            = new WP_Job_Manager_Category_Walker();
@@ -334,11 +334,8 @@ class WP_Job_Manager_CPT {
 				'class'    => [],
 			],
 		];
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes or data exposed based on input.
-		$selected_category = isset( $_GET['job_listing_category'] ) ? sanitize_text_field( wp_unslash( $_GET['job_listing_category'] ) ) : '';
-		echo "<select name='job_listing_category' id='dropdown_job_listing_category'>";
-		echo '<option value="" ' . selected( $selected_category, '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
+		echo "<select name='" . esc_attr( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) . "' id='dropdown_job_listing_category'>";
+		echo '<option value="" ' . selected( $r['selected'], '', false ) . '>' . esc_html__( 'Select category', 'wp-job-manager' ) . '</option>';
 		echo wp_kses( $walker->walk( $terms, 0, $r ), $allowed_html );
 		echo '</select>';
 
