@@ -89,7 +89,7 @@ class UI {
 		$css = ':root{';
 
 		foreach ( $this->css_variables as $name => $value ) {
-			$css .= $name . ': ' . $value . ';';
+			$css .= esc_attr( $name ) . ': ' . esc_attr( $value ) . ';';
 		}
 
 		$css .= '}';
