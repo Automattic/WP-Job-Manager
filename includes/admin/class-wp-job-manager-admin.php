@@ -175,7 +175,6 @@ class WP_Job_Manager_Admin {
 	 * Adds pages to admin menu.
 	 */
 	public function admin_menu() {
-		remove_submenu_page( 'edit.php?post_type=job_listing', 'post-new.php?post_type=job_listing' );
 		$item = remove_submenu_page( 'edit.php?post_type=job_listing', 'edit.php?post_type=job_listing' );
 		if ( ! $item ) {
 			return;

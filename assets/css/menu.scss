@@ -10,6 +10,10 @@
 			@include jm-icon();
 			content: "\e830";
 		}
+
+		a[href="post-new.php?post_type=job_listing"] {
+			display: none;
+		}
 	}
 
 	#menu-posts-resume {
