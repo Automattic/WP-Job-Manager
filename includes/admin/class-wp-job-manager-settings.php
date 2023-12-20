@@ -1086,6 +1086,10 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder
 	 */
 	protected function input_multi_enable_expand( $option, $attributes, $values, $placeholder ) {
+		if ( empty( $values ) ) {
+			$values = [];
+		}
+
 		echo '<div class="setting-enable-expand">';
 		$enable_option               = $option['enable_field'];
 		$enable_option['name']       = $option['name'] . '[' . $enable_option['name'] . ']';
@@ -1103,7 +1107,9 @@ class WP_Job_Manager_Settings {
 			$enable_option['attributes'][] = 'disabled="disabled"';
 		}
 
-		$this->input_checkbox( $enable_option, $enable_option['attributes'], $values[ $option['enable_field']['name'] ], null );
+		$value = $values[ $option['enable_field']['name'] ] ?? '';
+
+		$this->input_checkbox( $enable_option, $enable_option['attributes'], $value, null );
 
 		echo '<div class="sub-settings-expandable">';
 		$this->input_multi( $option, $attributes, $values, $placeholder );
