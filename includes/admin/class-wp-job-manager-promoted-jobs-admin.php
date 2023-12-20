@@ -161,7 +161,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			return false;
 		}
 
-		return current_user_can( 'manage_job_listings', $post_id );
+		return current_user_can( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $post_id );
 	}
 
 	/**

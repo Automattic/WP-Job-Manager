@@ -112,7 +112,7 @@ class WP_Job_Manager_CPT {
 		 *
 		 * @param array $actions_handled {
 		 *     Bulk actions that can be handled, indexed by a unique key name (approve_jobs, expire_jobs, etc). Handlers
-		 *     are responsible for checking abilities (`current_user_can( 'manage_job_listings', $post_id )`) before
+		 *     are responsible for checking abilities (`current_user_can( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $post_id )`) before
 		 *     performing action.
 		 *
 		 *     @type string   $label   Label for the bulk actions dropdown. Passed through sprintf with label name of job listing post type.
@@ -206,7 +206,7 @@ class WP_Job_Manager_CPT {
 			'post_status' => 'expired',
 		];
 		if (
-			current_user_can( 'manage_job_listings', $post_id )
+			current_user_can( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $post_id )
 			&& wp_update_post( $job_data )
 		) {
 			return true;
@@ -223,7 +223,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function bulk_action_handle_mark_job_filled( $post_id ) {
 		if (
-			current_user_can( 'manage_job_listings', $post_id )
+			current_user_can( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $post_id )
 			&& update_post_meta( $post_id, '_filled', 1 )
 		) {
 			return true;
@@ -239,7 +239,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function bulk_action_handle_mark_job_not_filled( $post_id ) {
 		if (
-			current_user_can( 'manage_job_listings', $post_id )
+			current_user_can( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $post_id )
 			&& update_post_meta( $post_id, '_filled', 0 )
 		) {
 			return true;

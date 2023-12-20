@@ -304,7 +304,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		$verified = false;
 		// We only verify the token if the job_id exists and user has access to it.
 		if ( 'job_listing' === get_post_type( $job_id ) ) {
-			if ( user_can( $user_id, 'manage_job_listings', $job_id ) ) {
+			if ( user_can( $user_id, \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $job_id ) ) {
 				$verified = WP_Job_Manager_Site_Trust_Token::instance()->validate( 'user', $user_id, $token );
 			}
 		}

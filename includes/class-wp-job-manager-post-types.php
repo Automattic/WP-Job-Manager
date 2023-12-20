@@ -33,6 +33,11 @@ class WP_Job_Manager_Post_Types {
 	/** Capabilities */
 
 	/**
+	 * Constant for the capability name used for managing the job listings.
+	 */
+	public const CAP_MANAGE_LISTINGS = 'manage_job_listings';
+
+	/**
 	 * Constant for the capability name used for the post type used for saving guest user data.
 	 */
 	public const CAP_GUEST_USER = 'job_guest_user';
@@ -183,7 +188,7 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		$admin_capability = 'manage_job_listings';
+		$admin_capability = self::CAP_MANAGE_LISTINGS;
 
 		$permalink_structure = self::get_permalink_structure();
 
@@ -1900,7 +1905,7 @@ class WP_Job_Manager_Post_Types {
 			return false;
 		}
 
-		return $user->has_cap( 'manage_job_listings' );
+		return $user->has_cap( self::CAP_MANAGE_LISTINGS );
 	}
 
 	/**

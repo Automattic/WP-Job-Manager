@@ -210,13 +210,13 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		$this->regular_user_id = $this->factory->user->create( [ 'role' => 'author' ] );
 		$regular_user          = get_user_by( 'id', $this->regular_user_id );
 		$regular_user->add_cap( 'edit_others_posts' );
-		$regular_user->add_cap( 'manage_job_listings' );
+		$regular_user->add_cap( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS );
 
 		// Create a teacher user and assign some caps.
 		$this->employer_user_id = $this->factory->user->create( [ 'role' => 'employer' ] );
 		$employer_user          = get_user_by( 'id', $this->employer_user_id );
 		$employer_user->add_cap( 'edit_others_posts' );
-		$employer_user->add_cap( 'manage_job_listings' );
+		$employer_user->add_cap( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS );
 
 		// Add a WPJM cap to an existing role.
 		$role = get_role( 'editor' );
@@ -476,16 +476,16 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		$regular_user = get_user_by( 'id', $this->regular_user_id );
 		$this->assertTrue( in_array( 'author', $regular_user->roles, true ), 'Author role should not be removed' );
 		$this->assertTrue( $regular_user->has_cap( 'edit_others_posts' ), 'Non-WPJM cap should not be removed from user' );
-		$this->assertFalse( $regular_user->has_cap( 'manage_job_listings' ), 'WPJM cap should be removed from user' );
+		$this->assertFalse( $regular_user->has_cap( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS ), 'WPJM cap should be removed from user' );
 
 		$employer_user = get_user_by( 'id', $this->employer_user_id );
 		$this->assertFalse( in_array( 'employer', $employer_user->roles, true ), 'Employer role should be removed from user' );
 		$this->assertFalse( array_key_exists( 'employer', $employer_user->caps ), 'Employer role should be removed from user caps' );
 		$this->assertTrue( $employer_user->has_cap( 'edit_others_posts' ), 'Non-WPJM cap should not be removed from employer' );
-		$this->assertFalse( $employer_user->has_cap( 'manage_job_listings' ), 'WPJM cap should be removed from employer' );
+		$this->assertFalse( $employer_user->has_cap( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS ), 'WPJM cap should be removed from employer' );
 
 		$role = get_role( 'editor' );
-		$this->assertFalse( $role->has_cap( 'manage_job_listings' ), 'WPJM cap should be removed from role' );
+		$this->assertFalse( $role->has_cap( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS ), 'WPJM cap should be removed from role' );
 
 		$role = get_role( 'employer' );
 		$this->assertNull( $role, 'Employer role should be removed overall' );

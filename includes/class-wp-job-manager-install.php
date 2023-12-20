@@ -115,7 +115,7 @@ class WP_Job_Manager_Install {
 	private static function get_core_capabilities() {
 		return [
 			'core'        => [
-				'manage_job_listings',
+				\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS,
 			],
 			'job_listing' => [
 				'edit_job_listing',
