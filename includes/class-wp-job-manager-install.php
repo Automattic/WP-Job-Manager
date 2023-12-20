@@ -114,10 +114,10 @@ class WP_Job_Manager_Install {
 	 */
 	private static function get_core_capabilities() {
 		return [
-			'core'        => [
+			'core'                                 => [
 				\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS,
 			],
-			'job_listing' => [
+			\WP_Job_Manager_Post_Types::PT_LISTING => [
 				'edit_job_listing',
 				'read_job_listing',
 				'delete_job_listing',

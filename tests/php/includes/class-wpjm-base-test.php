@@ -46,7 +46,7 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 	 * When needed, this allows you to re-register post type.
 	 */
 	protected function reregister_post_type() {
-		unregister_post_type( 'job_listing' );
+		unregister_post_type( \WP_Job_Manager_Post_Types::PT_LISTING );
 		WP_Job_Manager_Post_Types::instance()->register_post_types();
 	}
 

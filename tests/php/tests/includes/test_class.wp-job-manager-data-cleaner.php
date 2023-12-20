@@ -59,7 +59,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 			8,
 			[
 				'post_status' => 'publish',
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 			]
 		);
 	}

@@ -23,7 +23,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @var $custom_post_types
 	 */
 	private static $custom_post_types = [
-		'job_listing',
+		\WP_Job_Manager_Post_Types::PT_LISTING,
 		'job_guest_user',
 	];
 

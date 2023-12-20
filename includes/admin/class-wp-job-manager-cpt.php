@@ -134,7 +134,7 @@ class WP_Job_Manager_CPT {
 
 		foreach ( $this->get_bulk_actions() as $key => $bulk_action ) {
 			if ( isset( $bulk_action['label'] ) ) {
-				$bulk_actions[ $key ] = sprintf( $bulk_action['label'], $wp_post_types['job_listing']->labels->name );
+				$bulk_actions[ $key ] = sprintf( $bulk_action['label'], $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->name );
 			}
 		}
 		return $bulk_actions;
@@ -158,7 +158,7 @@ class WP_Job_Manager_CPT {
 			if ( ! empty( $post_ids ) ) {
 				foreach ( $post_ids as $post_id ) {
 					if (
-						'job_listing' === get_post_type( $post_id )
+						\WP_Job_Manager_Post_Types::PT_LISTING === get_post_type( $post_id )
 						&& call_user_func( $actions_handled[ $action ]['handler'], $post_id )
 					) {
 						$handled_jobs[] = $post_id;
@@ -282,7 +282,7 @@ class WP_Job_Manager_CPT {
 
 		if (
 			'edit.php' === $pagenow
-			&& 'job_listing' === $post_type
+			&& \WP_Job_Manager_Post_Types::PT_LISTING === $post_type
 			&& $action
 			&& ! empty( $handled_jobs )
 			&& isset( $actions_handled[ $action ] )
@@ -306,7 +306,7 @@ class WP_Job_Manager_CPT {
 	public function jobs_by_category() {
 		global $typenow, $wp_query;
 
-		if ( 'job_listing' !== $typenow || ! taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $typenow || ! taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
 			return;
 		}
 
@@ -350,7 +350,7 @@ class WP_Job_Manager_CPT {
 		global $typenow;
 
 		// Only add the filters for job_listings.
-		if ( 'job_listing' !== $typenow ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $typenow ) {
 			return;
 		}
 
@@ -432,7 +432,7 @@ class WP_Job_Manager_CPT {
 	 * @return string
 	 */
 	public function enter_title_here( $text, $post ) {
-		if ( 'job_listing' === $post->post_type ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING === $post->post_type ) {
 			return esc_html__( 'Position', 'wp-job-manager' );
 		}
 		return $text;
@@ -450,31 +450,31 @@ class WP_Job_Manager_CPT {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes based on input.
 		$revision_title = isset( $_GET['revision'] ) ? wp_post_revision_title( (int) $_GET['revision'], false ) : false;
 
-		$messages['job_listing'] = [
+		$messages[ \WP_Job_Manager_Post_Types::PT_LISTING ] = [
 			0  => '',
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
-			1  => sprintf( __( '%1$s updated. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
+			1  => sprintf( __( '%1$s updated. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
 			2  => __( 'Custom field updated.', 'wp-job-manager' ),
 			3  => __( 'Custom field deleted.', 'wp-job-manager' ),
 			// translators: %s is the singular name of the job listing post type.
-			4  => sprintf( esc_html__( '%s updated.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			4  => sprintf( esc_html__( '%s updated.', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name ),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the revision number.
-			5  => $revision_title ? sprintf( __( '%1$s restored to revision from %2$s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, $revision_title ) : false,
+			5  => $revision_title ? sprintf( __( '%1$s restored to revision from %2$s', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name, $revision_title ) : false,
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
-			6  => sprintf( __( '%1$s published. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
+			6  => sprintf( __( '%1$s published. <a href="%2$s">View</a>', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name, esc_url( get_permalink( $post_ID ) ) ),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
-			7  => sprintf( esc_html__( '%s saved.', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ),
+			7  => sprintf( esc_html__( '%s saved.', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name ),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to preview the listing.
-			8  => sprintf( __( '%1$s submitted. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
+			8  => sprintf( __( '%1$s submitted. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 			9  => sprintf(
 				// translators: %1$s is the singular name of the post type; %2$s is the date the post will be published; %3$s is the URL to preview the listing.
 				__( '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview</a>', 'wp-job-manager' ),
-				$wp_post_types['job_listing']->labels->singular_name,
+				$wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name,
 				wp_date( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), get_post_timestamp() ),
 				esc_url( get_permalink( $post_ID ) )
 			),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
-			10 => sprintf( __( '%1$s draft updated. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
+			10 => sprintf( __( '%1$s draft updated. <a target="_blank" href="%2$s">Preview</a>', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name, esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) ),
 		];
 
 		return $messages;
@@ -539,7 +539,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function row_actions( $actions, $post ) {
 
-		if ( 'job_listing' === get_post_type() ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type() ) {
 
 			unset( $actions['inline hide-if-no-js'] );
 			unset( $actions['trash'] );
@@ -732,7 +732,7 @@ class WP_Job_Manager_CPT {
 	public function search_meta( $wp ) {
 		global $pagenow, $wpdb;
 
-		if ( 'edit.php' !== $pagenow || empty( $wp->query_vars['s'] ) || 'job_listing' !== $wp->query_vars['post_type'] ) {
+		if ( 'edit.php' !== $pagenow || empty( $wp->query_vars['s'] ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $wp->query_vars['post_type'] ) {
 			return;
 		}
 
@@ -776,7 +776,7 @@ class WP_Job_Manager_CPT {
 	public function filter_meta( $wp ) {
 		global $pagenow;
 
-		if ( 'edit.php' !== $pagenow || empty( $wp->query_vars['post_type'] ) || 'job_listing' !== $wp->query_vars['post_type'] ) {
+		if ( 'edit.php' !== $pagenow || empty( $wp->query_vars['post_type'] ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $wp->query_vars['post_type'] ) {
 			return;
 		}
 
@@ -822,7 +822,7 @@ class WP_Job_Manager_CPT {
 		global $pagenow, $typenow;
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-		if ( 'edit.php' !== $pagenow || 'job_listing' !== $typenow || ! get_query_var( 'job_listing_search' ) || ! isset( $_GET['s'] ) ) {
+		if ( 'edit.php' !== $pagenow || \WP_Job_Manager_Post_Types::PT_LISTING !== $typenow || ! get_query_var( 'job_listing_search' ) || ! isset( $_GET['s'] ) ) {
 			return $query;
 		}
 
@@ -837,7 +837,7 @@ class WP_Job_Manager_CPT {
 		global $post, $post_type;
 
 		// Abort if we're on the wrong post type, but only if we got a restriction.
-		if ( 'job_listing' !== $post_type ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
 			return;
 		}
 
@@ -876,7 +876,7 @@ class WP_Job_Manager_CPT {
 	 * @return array            Array of post types that support view mode, without job_listing post type.
 	 */
 	public function disable_view_mode( $post_types ) {
-		unset( $post_types['job_listing'] );
+		unset( $post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ] );
 		return $post_types;
 	}
 }
