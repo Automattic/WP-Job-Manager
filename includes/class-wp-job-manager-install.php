@@ -131,7 +131,7 @@ class WP_Job_Manager_Install {
 				\WP_Job_Manager_Post_Types::CAP_DELETE_OTHERS_LISTINGS,
 				\WP_Job_Manager_Post_Types::CAP_EDIT_PRIVATE_LISTINGS,
 				\WP_Job_Manager_Post_Types::CAP_EDIT_PUBLISHED_LISTINGS,
-				'manage_job_listing_terms',
+				\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTING_TERMS,
 				'edit_job_listing_terms',
 				'delete_job_listing_terms',
 				'assign_job_listing_terms',
