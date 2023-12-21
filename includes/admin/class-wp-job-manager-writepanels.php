@@ -60,7 +60,7 @@ class WP_Job_Manager_Writepanels {
 
 		$fields = [];
 
-		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
+		if ( $current_user->has_cap( \WP_Job_Manager_Post_Types::CAP_EDIT_OTHERS_LISTINGS ) ) {
 			$fields['_job_author'] = [
 				'label'    => __( 'Posted by', 'wp-job-manager' ),
 				'type'     => 'author',

@@ -2034,7 +2034,7 @@ class WP_Job_Manager_Post_Types {
 			return false;
 		}
 
-		return $user->has_cap( 'edit_others_job_listings' );
+		return $user->has_cap( self::CAP_EDIT_OTHERS_LISTINGS );
 	}
 
 	/**
