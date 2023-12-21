@@ -169,7 +169,7 @@ class WP_Job_Manager_Data_Cleaner {
 		\WP_Job_Manager_Post_Types::CAP_EDIT_PUBLISHED_LISTINGS,
 		\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTING_TERMS,
 		\WP_Job_Manager_Post_Types::CAP_EDIT_LISTING_TERMS,
-		'delete_job_listing_terms',
+		\WP_Job_Manager_Post_Types::CAP_DELETE_LISTING_TERMS,
 		'assign_job_listing_terms',
 	];
 
