@@ -2011,7 +2011,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		if ( empty( $post_id ) ) {
-			return current_user_can( 'edit_job_listings' );
+			return current_user_can( self::CAP_EDIT_LISTINGS );
 		}
 
 		return job_manager_user_can_edit_job( $post_id );
