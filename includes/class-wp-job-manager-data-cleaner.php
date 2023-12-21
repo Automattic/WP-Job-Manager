@@ -154,7 +154,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 */
 	private static $caps = [
 		\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS,
-		'edit_job_listing',
+		\WP_Job_Manager_Post_Types::CAP_EDIT_LISTING,
 		'read_job_listing',
 		'delete_job_listing',
 		'edit_job_listings',

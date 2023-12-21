@@ -118,7 +118,7 @@ class WP_Job_Manager_Install {
 				\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS,
 			],
 			\WP_Job_Manager_Post_Types::PT_LISTING => [
-				'edit_job_listing',
+				\WP_Job_Manager_Post_Types::CAP_EDIT_LISTING,
 				'read_job_listing',
 				'delete_job_listing',
 				'edit_job_listings',
