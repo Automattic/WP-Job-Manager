@@ -162,7 +162,7 @@ class WP_Job_Manager_Data_Cleaner {
 		\WP_Job_Manager_Post_Types::CAP_PUBLISH_LISTINGS,
 		\WP_Job_Manager_Post_Types::CAP_READ_PRIVATE_LISTINGS,
 		\WP_Job_Manager_Post_Types::CAP_DELETE_LISTINGS,
-		'delete_private_job_listings',
+		\WP_Job_Manager_Post_Types::CAP_DELETE_PRIVATE_LISTINGS,
 		'delete_published_job_listings',
 		'delete_others_job_listings',
 		'edit_private_job_listings',
