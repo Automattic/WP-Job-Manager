@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/class-function-mocks.php';
+
 class WPJM_BaseTest extends WP_UnitTestCase {
 	/**
 	 * @var Requests_Transport
