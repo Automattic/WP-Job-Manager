@@ -38,6 +38,91 @@ class WP_Job_Manager_Post_Types {
 	public const CAP_MANAGE_LISTINGS = 'manage_job_listings';
 
 	/**
+	 * Constant for the capability name used for editing a job listing.
+	 */
+	public const CAP_EDIT_LISTING = 'edit_job_listing';
+
+	/**
+	 * Constant for the capability name used for reading job listings.
+	 */
+	public const CAP_READ_LISTING = 'read_job_listing';
+
+	/**
+	 * Constant for the capability name used for deleting job listings.
+	 */
+	public const CAP_DELETE_LISTING = 'delete_job_listing';
+
+	/**
+	 * Constant for the capability name used for editing job listings.
+	 */
+	public const CAP_EDIT_LISTINGS = 'edit_job_listings';
+
+	/**
+	 * Constant for the capability name used for editing others job listings.
+	 */
+	public const CAP_EDIT_OTHERS_LISTINGS = 'edit_others_job_listings';
+
+	/**
+	 * Constant for the capability name used for publishing job listings.
+	 */
+	public const CAP_PUBLISH_LISTINGS = 'publish_job_listings';
+
+	/**
+	 * Constant for the capability name used for reading private job listings.
+	 */
+	public const CAP_READ_PRIVATE_LISTINGS = 'read_private_job_listings';
+
+	/**
+	 * Constant for the capability name used for deleting job listings.
+	 */
+	public const CAP_DELETE_LISTINGS = 'delete_job_listings';
+
+	/**
+	 * Constant for the capability name used for deleting private job listings.
+	 */
+	public const CAP_DELETE_PRIVATE_LISTINGS = 'delete_private_job_listings';
+
+	/**
+	 * Constant for the capability name used for deleting published job listings.
+	 */
+	public const CAP_DELETE_PUBLISHED_LISTINGS = 'delete_published_job_listings';
+
+	/**
+	 * Constant for the capability name used for deleting others job listings.
+	 */
+	public const CAP_DELETE_OTHERS_LISTINGS = 'delete_others_job_listings';
+
+	/**
+	 * Constant for the capability name used for editing private job listings.
+	 */
+	public const CAP_EDIT_PRIVATE_LISTINGS = 'edit_private_job_listings';
+
+	/**
+	 * Constant for the capability name used for editing published job listings.
+	 */
+	public const CAP_EDIT_PUBLISHED_LISTINGS = 'edit_published_job_listings';
+
+	/**
+	 * Constant for the capability name used for managing job listing terms.
+	 */
+	public const CAP_MANAGE_LISTING_TERMS = 'manage_job_listing_terms';
+
+	/**
+	 * Constant for the capability name used for editing job listing terms.
+	 */
+	public const CAP_EDIT_LISTING_TERMS = 'edit_job_listing_terms';
+
+	/**
+	 * Constant for the capability name used for deleting job listing terms.
+	 */
+	public const CAP_DELETE_LISTING_TERMS = 'delete_job_listing_terms';
+
+	/**
+	 * Constant for the capability name used for assigning job listing terms.
+	 */
+	public const CAP_ASSIGN_LISTING_TERMS = 'assign_job_listing_terms';
+
+	/**
 	 * Constant for the capability name used for the post type used for saving guest user data.
 	 */
 	public const CAP_GUEST_USER = 'job_guest_user';
