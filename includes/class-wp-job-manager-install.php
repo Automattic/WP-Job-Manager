@@ -124,7 +124,7 @@ class WP_Job_Manager_Install {
 				\WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS,
 				\WP_Job_Manager_Post_Types::CAP_EDIT_OTHERS_LISTINGS,
 				\WP_Job_Manager_Post_Types::CAP_PUBLISH_LISTINGS,
-				'read_private_job_listings',
+				\WP_Job_Manager_Post_Types::CAP_READ_PRIVATE_LISTINGS,
 				'delete_job_listings',
 				'delete_private_job_listings',
 				'delete_published_job_listings',
