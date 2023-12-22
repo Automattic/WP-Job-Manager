@@ -9,7 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require __DIR__ . '/class-wp-job-manager-post-types.php';
 
 /**
  * Methods for cleaning up all plugin data.
