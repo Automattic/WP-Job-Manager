@@ -335,7 +335,7 @@ class WP_Job_Manager_Ajax {
 		 *
 		 * @param array $user_caps Array of capabilities/roles that are allowed to search for users.
 		 */
-		$allowed_capabilities = apply_filters( 'job_manager_caps_can_search_users', [ 'edit_job_listings' ] );
+		$allowed_capabilities = apply_filters( 'job_manager_caps_can_search_users', [ \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ] );
 		foreach ( $allowed_capabilities as $cap ) {
 			if ( current_user_can( $cap ) ) {
 				$user_can_search_users = true;
