@@ -494,8 +494,8 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 	}
 
 	protected function get_valid_job() {
-		$full_time_term = wp_create_term( 'Full Time', 'job_listing_type' );
-		$weird_cat_term = wp_create_term( 'Weird', 'job_listing_category' );
+		$full_time_term = wp_create_term( 'Full Time', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$weird_cat_term = wp_create_term( 'Weird', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 		$job_args       = [
 			'post_title'   => 'Job Post-' . md5( microtime( true ) ),
 			'post_content' => 'Job Description-' . md5( microtime( true ) ),
@@ -505,8 +505,8 @@ class WP_Test_WP_Job_Manager_Email_Notifications extends WPJM_BaseTest {
 				'_company_website' => 'http://' . md5( microtime( true ) ) . '.com',
 			],
 			'tax_input'    => [
-				'job_listing_type'     => $full_time_term['term_id'],
-				'job_listing_category' => $weird_cat_term['term_id'],
+				\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE     => $full_time_term['term_id'],
+				\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $weird_cat_term['term_id'],
 			],
 		];
 		return get_post( $this->factory->job_listing->create( $job_args ) );

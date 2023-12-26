@@ -104,7 +104,7 @@ class WP_Job_Manager_Admin {
 
 		$screen = get_current_screen();
 
-		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', [ 'edit-job_listing', 'plugins', 'job_listing', 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-marketplace', 'edit-job_listing_type' ] ), true ) ) {
+		if ( in_array( $screen->id, apply_filters( 'job_manager_admin_screen_ids', [ 'edit-job_listing', 'plugins', \WP_Job_Manager_Post_Types::PT_LISTING, 'job_listing_page_job-manager-settings', 'job_listing_page_job-manager-marketplace', 'edit-job_listing_type' ] ), true ) ) {
 
 			wp_enqueue_style( 'jquery-ui' );
 			wp_enqueue_style( 'select2' );
@@ -146,7 +146,7 @@ class WP_Job_Manager_Admin {
 			);
 		}
 
-		if ( 'job_listing' === $screen->id && $screen->is_block_editor() ) { // Check if it's block editor in job post.
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING === $screen->id && $screen->is_block_editor() ) { // Check if it's block editor in job post.
 			$post = get_post();
 
 			if ( ! empty( $post ) ) {

@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+
 /**
  * Methods for cleaning up all plugin data.
  *
@@ -23,8 +24,8 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @var $custom_post_types
 	 */
 	private static $custom_post_types = [
-		'job_listing',
-		'job_guest_user',
+		\WP_Job_Manager_Post_Types::PT_LISTING,
+		\WP_Job_Manager_Post_Types::PT_GUEST_USER,
 	];
 
 	/**
@@ -33,8 +34,8 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @var $taxonomies
 	 */
 	private static $taxonomies = [
-		'job_listing_category',
-		'job_listing_type',
+		\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+		\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 	];
 
 	/** Cron jobs to be unscheduled.
@@ -153,24 +154,24 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @var $caps
 	 */
 	private static $caps = [
-		'manage_job_listings',
-		'edit_job_listing',
-		'read_job_listing',
-		'delete_job_listing',
-		'edit_job_listings',
-		'edit_others_job_listings',
-		'publish_job_listings',
-		'read_private_job_listings',
-		'delete_job_listings',
-		'delete_private_job_listings',
-		'delete_published_job_listings',
-		'delete_others_job_listings',
-		'edit_private_job_listings',
-		'edit_published_job_listings',
-		'manage_job_listing_terms',
-		'edit_job_listing_terms',
-		'delete_job_listing_terms',
-		'assign_job_listing_terms',
+		\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_EDIT_LISTING,
+		\WP_Job_Manager_Post_Types::CAP_READ_LISTING,
+		\WP_Job_Manager_Post_Types::CAP_DELETE_LISTING,
+		\WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_EDIT_OTHERS_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_PUBLISH_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_READ_PRIVATE_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_DELETE_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_DELETE_PRIVATE_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_DELETE_PUBLISHED_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_DELETE_OTHERS_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_EDIT_PRIVATE_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_EDIT_PUBLISHED_LISTINGS,
+		\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTING_TERMS,
+		\WP_Job_Manager_Post_Types::CAP_EDIT_LISTING_TERMS,
+		\WP_Job_Manager_Post_Types::CAP_DELETE_LISTING_TERMS,
+		\WP_Job_Manager_Post_Types::CAP_ASSIGN_LISTING_TERMS,
 	];
 
 	/**

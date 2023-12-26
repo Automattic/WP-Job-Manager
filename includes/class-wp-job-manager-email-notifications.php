@@ -276,7 +276,7 @@ final class WP_Job_Manager_Email_Notifications {
 			];
 		}
 
-		if ( get_option( 'job_manager_enable_types' ) && wp_count_terms( 'job_listing_type' ) > 0 ) {
+		if ( get_option( 'job_manager_enable_types' ) && wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ) > 0 ) {
 			$job_types = wpjm_get_the_job_types( $job );
 			if ( ! empty( $job_types ) ) {
 				$fields['job_type'] = [
@@ -286,7 +286,7 @@ final class WP_Job_Manager_Email_Notifications {
 			}
 		}
 
-		if ( get_option( 'job_manager_enable_categories' ) && wp_count_terms( 'job_listing_category' ) > 0 ) {
+		if ( get_option( 'job_manager_enable_categories' ) && wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) > 0 ) {
 			$job_categories = wpjm_get_the_job_categories( $job );
 			if ( ! empty( $job_categories ) ) {
 				$fields['job_category'] = [
@@ -600,7 +600,7 @@ final class WP_Job_Manager_Email_Notifications {
 
 		$job_ids = get_posts(
 			[
-				'post_type'      => 'job_listing',
+				'post_type'      => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status'    => 'publish',
 				'fields'         => 'ids',
 				'posts_per_page' => -1,

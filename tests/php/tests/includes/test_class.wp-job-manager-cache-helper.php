@@ -277,8 +277,8 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 		$posts_expired   = $this->factory->job_listing->create_many( 5, [ 'post_status' => 'expired' ] );
 		$posts_shifted   = [];
 
-		$expired_count   = WP_Job_Manager_Cache_Helper::get_listings_count( 'job_listing', 'expired' );
-		$published_count = WP_Job_Manager_Cache_Helper::get_listings_count( 'job_listing', 'publish' );
+		$expired_count   = WP_Job_Manager_Cache_Helper::get_listings_count( \WP_Job_Manager_Post_Types::PT_LISTING, 'expired' );
+		$published_count = WP_Job_Manager_Cache_Helper::get_listings_count( \WP_Job_Manager_Post_Types::PT_LISTING, 'publish' );
 		$initial_count   = WP_Job_Manager_Cache_Helper::get_listings_count();
 		$this->assertEquals( count( $posts_pending ), $initial_count );
 
@@ -295,13 +295,13 @@ class WP_Test_WP_Job_Manager_Cache_Helper extends WPJM_BaseTest {
 
 		// Unhandled status.
 		WP_Job_Manager_Cache_Helper::maybe_clear_count_transients( 'expired', 'publish', get_post( $published_post_id ) );
-		$middle_expired_count = WP_Job_Manager_Cache_Helper::get_listings_count( 'job_listing', 'expired' );
+		$middle_expired_count = WP_Job_Manager_Cache_Helper::get_listings_count( \WP_Job_Manager_Post_Types::PT_LISTING, 'expired' );
 		$this->assertEquals( $expired_count, $middle_expired_count );
 
 		add_filter( 'wpjm_count_cache_supported_statuses', [ $this, 'helper_add_expired_status' ] );
 
 		WP_Job_Manager_Cache_Helper::maybe_clear_count_transients( 'expired', 'publish', get_post( $published_post_id ) );
-		$second_middle_expired_count = WP_Job_Manager_Cache_Helper::get_listings_count( 'job_listing', 'expired' );
+		$second_middle_expired_count = WP_Job_Manager_Cache_Helper::get_listings_count( \WP_Job_Manager_Post_Types::PT_LISTING, 'expired' );
 		$this->assertLessThan( $second_middle_expired_count, $middle_expired_count );
 
 		// Legit call for method.

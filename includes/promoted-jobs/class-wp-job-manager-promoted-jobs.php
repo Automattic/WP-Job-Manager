@@ -100,7 +100,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 */
 	private function register_post_metas() {
 		register_post_meta(
-			'job_listing',
+			\WP_Job_Manager_Post_Types::PT_LISTING,
 			self::PROMOTED_META_KEY,
 			[
 				'show_in_rest'  => true,
@@ -139,7 +139,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean
 	 */
 	public static function is_promoted( $post_id ) {
-		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== get_post_type( $post_id ) ) {
 			return false;
 		}
 
@@ -187,7 +187,7 @@ class WP_Job_Manager_Promoted_Jobs {
 	 * @return boolean Whether pre change passed correctly.
 	 */
 	private static function pre_change_promotion( $post_id ) {
-		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== get_post_type( $post_id ) ) {
 			return false;
 		}
 
@@ -209,7 +209,7 @@ class WP_Job_Manager_Promoted_Jobs {
 		$args = wp_parse_args(
 			$args,
 			[
-				'post_type'      => 'job_listing',
+				'post_type'      => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status'    => 'any',
 				'posts_per_page' => 1,
 				'fields'         => 'ids',

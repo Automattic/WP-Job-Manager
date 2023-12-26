@@ -24,17 +24,17 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 **/
 	public static function get_usage_data() {
 		$categories  = 0;
-		$count_posts = wp_count_posts( 'job_listing' );
+		$count_posts = wp_count_posts( \WP_Job_Manager_Post_Types::PT_LISTING );
 
-		if ( taxonomy_exists( 'job_listing_category' ) ) {
-			$categories = wp_count_terms( 'job_listing_category', [ 'hide_empty' => false ] );
+		if ( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
+			$categories = wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY, [ 'hide_empty' => false ] );
 		}
 
 		$usage_data = [
 			'employers'                   => self::get_employer_count(),
 			'job_categories'              => $categories,
 			'job_categories_desc'         => self::get_job_category_has_description_count(),
-			'job_types'                   => wp_count_terms( 'job_listing_type', [ 'hide_empty' => false ] ),
+			'job_types'                   => wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, [ 'hide_empty' => false ] ),
 			'job_types_desc'              => self::get_job_type_has_description_count(),
 			'job_types_emp_type'          => self::get_job_type_has_employment_type_count(),
 			'jobs_type'                   => self::get_job_type_count(),
@@ -99,14 +99,14 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int Number of job categories with a description.
 	 **/
 	private static function get_job_category_has_description_count() {
-		if ( ! taxonomy_exists( 'job_listing_category' ) ) {
+		if ( ! taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
 			return 0;
 		}
 
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_category',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'hide_empty' => false,
 			]
 		);
@@ -133,7 +133,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_type',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'hide_empty' => false,
 			]
 		);
@@ -160,7 +160,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_type',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'hide_empty' => false,
 			]
 		);
@@ -188,13 +188,13 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_by_type_count( $job_type ) {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
 				'tax_query'   => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Used in production with no issues.
 					[
 						'field'    => 'slug',
-						'taxonomy' => 'job_listing_type',
+						'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 						'terms'    => $job_type,
 					],
 				],
@@ -214,7 +214,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_company_logo_count() {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
 				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
@@ -239,12 +239,12 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_job_type_count() {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
 				'tax_query'   => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Used in production with no issues.
 					[
-						'taxonomy' => 'job_listing_type',
+						'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 						'operator' => 'EXISTS',
 					],
 				],
@@ -264,7 +264,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_count_with_meta( $meta_key ) {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
 				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
@@ -291,7 +291,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_count_with_checked_meta( $meta_key ) {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
 				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
@@ -314,7 +314,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_by_guests() {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
 				'author__in'  => [ 0 ],
@@ -375,7 +375,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 */
 	public static function get_event_logging_base_fields() {
 		$base_fields = [
-			'job_listings' => wp_count_posts( 'job_listing' )->publish,
+			'job_listings' => wp_count_posts( \WP_Job_Manager_Post_Types::PT_LISTING )->publish,
 			'paid'         => self::has_paid_extensions() ? 1 : 0,
 		];
 

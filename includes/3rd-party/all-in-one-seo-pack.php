@@ -13,7 +13,7 @@
  */
 function wpjm_aiosp_sitemap_filter_filled_jobs( $posts ) {
 	foreach ( $posts as $index => $post ) {
-		if ( $post instanceof WP_Post && 'job_listing' !== $post->post_type ) {
+		if ( $post instanceof WP_Post && \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 			continue;
 		}
 		if ( is_position_filled( $post ) ) {

@@ -431,7 +431,7 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 	private function reset_meta_keys() {
 		global $wp_meta_keys;
 
-		unset( $wp_meta_keys['post']['job_listing'] );
+		unset( $wp_meta_keys['post'][\WP_Job_Manager_Post_Types::PT_LISTING] );
 
 		WP_Job_Manager_Post_Types::instance()->register_meta_fields();
 	}

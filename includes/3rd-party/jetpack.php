@@ -13,7 +13,7 @@
  * @return bool
  */
 function wpjm_jetpack_skip_filled_job_listings( $skip_post, $post ) {
-	if ( 'job_listing' !== $post->post_type ) {
+	if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return $skip_post;
 	}
 
@@ -32,7 +32,7 @@ add_action( 'jetpack_sitemap_skip_post', 'wpjm_jetpack_skip_filled_job_listings'
  * @return array
  */
 function wpjm_jetpack_add_post_type( $post_types ) {
-	$post_types[] = 'job_listing';
+	$post_types[] = \WP_Job_Manager_Post_Types::PT_LISTING;
 	return $post_types;
 }
 add_filter( 'jetpack_sitemap_post_types', 'wpjm_jetpack_add_post_type' );

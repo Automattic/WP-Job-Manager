@@ -34,7 +34,7 @@ switch ( $job->post_status ) :
 			sprintf(
 				// translators: %1$s is the job listing post type name, %2$s is the job listing URL.
 				__( '%1$s listed successfully. To view your listing <a href="%2$s">click here</a>.', 'wp-job-manager' ),
-				esc_html( $wp_post_types['job_listing']->labels->singular_name ),
+				esc_html( $wp_post_types[\WP_Job_Manager_Post_Types::PT_LISTING]->labels->singular_name ),
 				get_permalink( $job->ID )
 			)
 		) . '</div>';
@@ -45,7 +45,7 @@ switch ( $job->post_status ) :
 			sprintf(
 				// translators: Placeholder %s is the job listing post type name.
 				esc_html__( '%s submitted successfully. Your listing will be visible once approved.', 'wp-job-manager' ),
-				esc_html( $wp_post_types['job_listing']->labels->singular_name )
+				esc_html( $wp_post_types[\WP_Job_Manager_Post_Types::PT_LISTING]->labels->singular_name )
 			)
 		);
 
@@ -60,7 +60,7 @@ switch ( $job->post_status ) :
 					// the plural name of the job listing post type
 					__( '  <a href="%1$s"> View your %2$s</a>', 'wp-job-manager' ),
 					$job_dashboard_link,
-					esc_html( $wp_post_types['job_listing' ]->labels->name )
+					esc_html( $wp_post_types[\WP_Job_Manager_Post_Types::PT_LISTING ]->labels->name )
 				)
 			);
 		} elseif ( $job_dashboard_link && $job_dashboard_title ) { // If there is both a job_dashboard page and a title on the page
@@ -90,7 +90,7 @@ switch ( $job->post_status ) :
 			sprintf(
 			// translators: %1$s is the job listing post type name.
 				__( '%1$s submitted successfully.', 'wp-job-manager' ),
-				esc_html( $wp_post_types['job_listing']->labels->singular_name )
+				esc_html( $wp_post_types[\WP_Job_Manager_Post_Types::PT_LISTING]->labels->singular_name )
 			)
 		) . '</div>';
 

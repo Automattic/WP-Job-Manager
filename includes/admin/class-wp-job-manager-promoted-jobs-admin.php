@@ -109,7 +109,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 				[
 					'action_performed' => 'promotion_deactivated',
 					'handled_jobs'     => [ $post_id ],
-					'post_type'        => 'job_listing',
+					'post_type'        => \WP_Job_Manager_Post_Types::PT_LISTING,
 					'action'           => false,
 					'post_id'          => false,
 					'_wpnonce'         => false,
@@ -130,7 +130,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	public function add_promoted_badge( $post ) {
 		if (
 			is_null( $post )
-			|| 'job_listing' !== $post->post_type
+			|| \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type
 			|| ! WP_Job_Manager_Promoted_Jobs::is_promoted( $post->ID )
 		) {
 			return;
@@ -157,11 +157,11 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 	 * @return bool Returns true if they can promote a job.
 	 */
 	private function can_manage_job_promotion( int $post_id ) {
-		if ( 'job_listing' !== get_post_type( $post_id ) ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== get_post_type( $post_id ) ) {
 			return false;
 		}
 
-		return current_user_can( 'manage_job_listings', $post_id );
+		return current_user_can( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $post_id );
 	}
 
 	/**
@@ -365,7 +365,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 		$screen = get_current_screen();
 
 		// Job editor.
-		if ( 'job_listing' === $screen->id && ! \WP_Job_Manager_Admin_Notices::is_dismissed( self::JOB_EDITOR_MODAL_NOTICE, true ) ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING === $screen->id && ! \WP_Job_Manager_Admin_Notices::is_dismissed( self::JOB_EDITOR_MODAL_NOTICE, true ) ) {
 
 			$notice_wrapper_attributes = \WP_Job_Manager_Admin_Notices::get_dismissible_notice_wrapper_attributes( self::JOB_EDITOR_MODAL_NOTICE );
 
@@ -464,7 +464,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 
 		$trash_url = add_query_arg(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => 'trash',
 			],
 			admin_url( 'edit.php' )

@@ -16,7 +16,7 @@
  * @return string|bool False if we're skipping.
  */
 function wpjm_yoast_skip_filled_job_listings( $url, $type, $post ) {
-	if ( 'job_listing' !== $post->post_type ) {
+	if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return $url;
 	}
 

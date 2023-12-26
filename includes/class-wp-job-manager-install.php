@@ -114,27 +114,27 @@ class WP_Job_Manager_Install {
 	 */
 	private static function get_core_capabilities() {
 		return [
-			'core'        => [
-				'manage_job_listings',
+			'core'                                 => [
+				\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS,
 			],
-			'job_listing' => [
-				'edit_job_listing',
-				'read_job_listing',
-				'delete_job_listing',
-				'edit_job_listings',
-				'edit_others_job_listings',
-				'publish_job_listings',
-				'read_private_job_listings',
-				'delete_job_listings',
-				'delete_private_job_listings',
-				'delete_published_job_listings',
-				'delete_others_job_listings',
-				'edit_private_job_listings',
-				'edit_published_job_listings',
-				'manage_job_listing_terms',
-				'edit_job_listing_terms',
-				'delete_job_listing_terms',
-				'assign_job_listing_terms',
+			\WP_Job_Manager_Post_Types::PT_LISTING => [
+				\WP_Job_Manager_Post_Types::CAP_EDIT_LISTING,
+				\WP_Job_Manager_Post_Types::CAP_READ_LISTING,
+				\WP_Job_Manager_Post_Types::CAP_DELETE_LISTING,
+				\WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_EDIT_OTHERS_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_PUBLISH_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_READ_PRIVATE_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_DELETE_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_DELETE_PRIVATE_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_DELETE_PUBLISHED_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_DELETE_OTHERS_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_EDIT_PRIVATE_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_EDIT_PUBLISHED_LISTINGS,
+				\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTING_TERMS,
+				\WP_Job_Manager_Post_Types::CAP_EDIT_LISTING_TERMS,
+				\WP_Job_Manager_Post_Types::CAP_DELETE_LISTING_TERMS,
+				\WP_Job_Manager_Post_Types::CAP_ASSIGN_LISTING_TERMS,
 			],
 		];
 	}
@@ -171,7 +171,7 @@ class WP_Job_Manager_Install {
 	 */
 	private static function get_default_taxonomy_terms() {
 		return [
-			'job_listing_type' => [
+			\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => [
 				'Full Time'  => [
 					'employment_type' => 'FULL_TIME',
 				],
@@ -196,10 +196,10 @@ class WP_Job_Manager_Install {
 	 */
 	private static function add_employment_types() {
 		$taxonomies = self::get_default_taxonomy_terms();
-		$terms      = $taxonomies['job_listing_type'];
+		$terms      = $taxonomies[ \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ];
 
 		foreach ( $terms as $term => $meta ) {
-			$term = get_term_by( 'slug', sanitize_title( $term ), 'job_listing_type' );
+			$term = get_term_by( 'slug', sanitize_title( $term ), \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 			if ( $term ) {
 				foreach ( $meta as $meta_key => $meta_value ) {
 					if ( ! get_term_meta( (int) $term->term_id, $meta_key, true ) ) {

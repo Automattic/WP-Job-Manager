@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="job_listing_preview single_job_listing">
 		<h1><?php wpjm_the_job_title(); ?></h1>
 
-		<?php get_job_manager_template_part( 'content-single', 'job_listing' ); ?>
+		<?php get_job_manager_template_part( 'content-single', \WP_Job_Manager_Post_Types::PT_LISTING ); ?>
 
 		<input type="hidden" name="job_id" value="<?php echo esc_attr( $form->get_job_id() ); ?>" />
 		<input type="hidden" name="step" value="<?php echo esc_attr( $form->get_step() ); ?>" />

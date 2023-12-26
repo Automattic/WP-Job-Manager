@@ -10,6 +10,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Cleanup all data.
+require 'includes/class-wp-job-manager-post-types.php';
 require 'includes/class-wp-job-manager-data-cleaner.php';
 
 if ( ! is_multisite() ) {
