@@ -18,7 +18,7 @@ final class WP_Job_Manager_Email_Notifications {
 	const EMAIL_SETTING_PREFIX     = 'job_manager_email_';
 	const EMAIL_SETTING_ENABLED    = 'enabled';
 	const EMAIL_SETTING_PLAIN_TEXT = 'plain_text';
-	const MULTIPART_BOUNDARY       = '--jm-boundary';
+	const MULTIPART_BOUNDARY       = 'jm-boundary';
 
 	/**
 	 * Notifications to be scheduled.
