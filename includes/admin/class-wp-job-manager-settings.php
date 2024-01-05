@@ -17,6 +17,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Job_Manager_Settings {
 
 	/**
+	 * Maximium value for the "Listing duration" setting (100 years).
+	 */
+	public const MAX_ALLOWED_SUBMISSION_DAYS = 36500;
+
+	/**
+	 * Maximum value for the "Listing limit" setting (1,000,000 listings).
+	 */
+	public const MAX_ALLOWED_SUBMISSION_LIMIT = 1000000;
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -384,27 +394,33 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
-							'name'       => 'job_manager_submission_duration',
-							'std'        => '30',
-							'label'      => __( 'Listing Duration', 'wp-job-manager' ),
-							'desc'       => __( 'Listings will display for the set number of days, then expire. Leave this field blank if you don\'t want listings to have an expiration date.', 'wp-job-manager' ),
-							'attributes' => [],
+							'name'              => 'job_manager_submission_duration',
+							'std'               => '30',
+							'label'             => __( 'Listing Duration', 'wp-job-manager' ),
+							'desc'              => __( 'Listings will display for the set number of days, then expire. Leave this field blank if you don\'t want listings to have an expiration date.', 'wp-job-manager' ),
+							'type'              => 'number',
+							'attributes'        => [],
+							'sanitize_callback' => [ $this, 'sanitize_submission_duration' ],
+							'placeholder'       => __( 'No limit', 'wp-job-manager' ),
 						],
 						[
-							'name'       => 'job_manager_renewal_days',
-							'std'        => 5,
-							'label'      => __( 'Renewal Window', 'wp-job-manager' ),
-							'desc'       => __( 'Sets the number of days before expiration where users are given the option to renew their listings. For example, entering "7" will allow users to renew their listing one week before expiration. Entering "0" will disable renewals entirely.', 'wp-job-manager' ),
-							'type'       => 'number',
-							'attributes' => [],
+							'name'              => 'job_manager_renewal_days',
+							'std'               => 5,
+							'label'             => __( 'Renewal Window', 'wp-job-manager' ),
+							'desc'              => __( 'Sets the number of days before expiration where users are given the option to renew their listings. For example, entering "7" will allow users to renew their listing one week before expiration. Entering "0" will disable renewals entirely.', 'wp-job-manager' ),
+							'type'              => 'number',
+							'attributes'        => [],
+							'sanitize_callback' => [ $this, 'sanitize_renewal_days' ],
 						],
 						[
-							'name'        => 'job_manager_submission_limit',
-							'std'         => '',
-							'label'       => __( 'Listing Limit', 'wp-job-manager' ),
-							'desc'        => __( 'How many listings are users allowed to post. Can be left blank to allow unlimited listings per account.', 'wp-job-manager' ),
-							'attributes'  => [],
-							'placeholder' => __( 'No limit', 'wp-job-manager' ),
+							'name'              => 'job_manager_submission_limit',
+							'std'               => '',
+							'label'             => __( 'Listing Limit', 'wp-job-manager' ),
+							'desc'              => __( 'How many listings are users allowed to post. Can be left blank to allow unlimited listings per account.', 'wp-job-manager' ),
+							'type'              => 'number',
+							'attributes'        => [],
+							'sanitize_callback' => [ $this, 'sanitize_submission_limit' ],
+							'placeholder'       => __( 'No limit', 'wp-job-manager' ),
 						],
 						[
 							'name'    => 'job_manager_allowed_application_method',
@@ -985,13 +1001,25 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder
 	 */
 	protected function input_number( $option, $attributes, $value, $placeholder ) {
+		$field_name      = $option['name'] ?? '';
+		$text_class_name = 'small-text';
+
+		$regular_text_inputs = [
+			'job_manager_submission_duration' => true,
+			'job_manager_submission_limit'    => true,
+		];
+
+		if ( isset( $regular_text_inputs[ $field_name ] ) ) {
+			$text_class_name = 'regular-text';
+		}
+
 		echo isset( $option['before'] ) ? wp_kses_post( $option['before'] ) : '';
 		?>
 		<input
-			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
-			class="small-text"
+			id="setting-<?php echo esc_attr( $field_name ); ?>"
+			class="<?php echo esc_attr( $text_class_name ); ?>"
 			type="number"
-			name="<?php echo esc_attr( $option['name'] ); ?>"
+			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
 			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -1210,6 +1238,60 @@ class WP_Job_Manager_Settings {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Internal helper for numeric sanitization.
+	 *
+	 * @param stirng|int $value
+	 * @param int        $min
+	 * @param int        $max
+	 * @param mixed      $default (optional).
+	 * @param bool       $include_min (optional).
+	 * @return string|int
+	 */
+	private function sanitize_numeric_boundaries( $value, $min, $max, $default = '', $include_min = true ) {
+		if ( ! is_numeric( $value ) ) {
+			return $default;
+		}
+
+		if ( ! $include_min && $value <= $min ) {
+			return $default;
+		} elseif ( $value < $min ) {
+			return $default;
+		}
+
+		return $value > $max ? $default : $value;
+	}
+
+	/**
+	 * Sanitize the submission duration value between 1 and MAX_ALLOWED_SUBMISSION_DAYS days
+	 *
+	 * @param string|int $value
+	 * @return string|int
+	 */
+	public function sanitize_submission_duration( $value ) {
+		return $this->sanitize_numeric_boundaries( $value, 0, self::MAX_ALLOWED_SUBMISSION_DAYS, '', false );
+	}
+
+	/**
+	 * Sanitizes the renewal days value between 0 and MAX_ALLOWED_SUBMISSION_DAYS days
+	 *
+	 * @param string|int $value
+	 * @return string|int
+	 */
+	public function sanitize_renewal_days( $value ) {
+		return $this->sanitize_numeric_boundaries( $value, 0, self::MAX_ALLOWED_SUBMISSION_DAYS );
+	}
+
+	/**
+	 * Sanitize the submission limit between 0 and MAX_ALLOWED_SUBMISSION_LIMIT
+	 *
+	 * @param string|int $value
+	 * @return string|int
+	 */
+	public function sanitize_submission_limit( $value ) {
+		return $this->sanitize_numeric_boundaries( $value, 0, self::MAX_ALLOWED_SUBMISSION_LIMIT );
 	}
 
 	/**
