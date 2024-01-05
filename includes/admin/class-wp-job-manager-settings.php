@@ -1241,17 +1241,37 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
+	 * Internal helper for numeric sanitization.
+	 *
+	 * @param stirng|int $value
+	 * @param int        $min
+	 * @param int        $max
+	 * @param mixed      $default (optional).
+	 * @param bool       $include_min (optional).
+	 * @return string|int
+	 */
+	private function sanitize_numeric_boundaries( $value, $min, $max, $default = '', $include_min = true ) {
+		if ( ! is_numeric( $value ) ) {
+			return $default;
+		}
+
+		if ( ! $include_min && $value <= $min ) {
+			return $default;
+		} elseif ( $value < $min ) {
+			return $default;
+		}
+
+		return $value > $max ? $default : $value;
+	}
+
+	/**
 	 * Sanitize the submission duration value between 1 and MAX_ALLOWED_SUBMISSION_DAYS days
 	 *
 	 * @param string|int $value
 	 * @return string|int
 	 */
 	public function sanitize_submission_duration( $value ) {
-		if ( ! is_numeric( $value ) ) {
-			return '';
-		}
-
-		return ( $value <= 0 || $value > self::MAX_ALLOWED_SUBMISSION_DAYS ) ? '' : $value;
+		return $this->sanitize_numeric_boundaries( $value, 0, self::MAX_ALLOWED_SUBMISSION_DAYS, '', false );
 	}
 
 	/**
@@ -1261,11 +1281,7 @@ class WP_Job_Manager_Settings {
 	 * @return string|int
 	 */
 	public function sanitize_renewal_days( $value ) {
-		if ( ! is_numeric( $value ) ) {
-			return '';
-		}
-
-		return ( $value < 0 || $value > self::MAX_ALLOWED_SUBMISSION_DAYS ) ? '' : $value;
+		return $this->sanitize_numeric_boundaries( $value, 0, self::MAX_ALLOWED_SUBMISSION_DAYS );
 	}
 
 	/**
@@ -1275,11 +1291,7 @@ class WP_Job_Manager_Settings {
 	 * @return string|int
 	 */
 	public function sanitize_submission_limit( $value ) {
-		if ( ! is_numeric( $value ) ) {
-			return '';
-		}
-
-		return ( $value < 0 || $value > self::MAX_ALLOWED_SUBMISSION_LIMIT ) ? '' : $value;
+		return $this->sanitize_numeric_boundaries( $value, 0, self::MAX_ALLOWED_SUBMISSION_LIMIT );
 	}
 
 	/**
