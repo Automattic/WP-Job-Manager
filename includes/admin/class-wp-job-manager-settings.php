@@ -384,11 +384,14 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
-							'name'       => 'job_manager_submission_duration',
-							'std'        => '30',
-							'label'      => __( 'Listing Duration', 'wp-job-manager' ),
-							'desc'       => __( 'Listings will display for the set number of days, then expire. Leave this field blank if you don\'t want listings to have an expiration date.', 'wp-job-manager' ),
-							'attributes' => [],
+							'name'              => 'job_manager_submission_duration',
+							'std'               => '30',
+							'label'             => __( 'Listing Duration', 'wp-job-manager' ),
+							'desc'              => __( 'Listings will display for the set number of days, then expire. Leave this field blank if you don\'t want listings to have an expiration date.', 'wp-job-manager' ),
+							'type'              => 'number',
+							'attributes'        => [],
+							'sanitize_callback' => [ $this, 'sanitize_submission_duration' ],
+							'placeholder'       => __( 'No limit', 'wp-job-manager' ),
 						],
 						[
 							'name'       => 'job_manager_renewal_days',
@@ -985,13 +988,19 @@ class WP_Job_Manager_Settings {
 	 * @param string $placeholder
 	 */
 	protected function input_number( $option, $attributes, $value, $placeholder ) {
+		$field_name      = $option['name'] ?? '';
+		$text_class_name = 'small-text';
+		if ( 'job_manager_submission_duration' === $field_name ) {
+			$text_class_name = 'regular-text';
+		}
+
 		echo isset( $option['before'] ) ? wp_kses_post( $option['before'] ) : '';
 		?>
 		<input
-			id="setting-<?php echo esc_attr( $option['name'] ); ?>"
-			class="small-text"
+			id="setting-<?php echo esc_attr( $field_name ); ?>"
+			class="<?php echo esc_attr( $text_class_name ); ?>"
 			type="number"
-			name="<?php echo esc_attr( $option['name'] ); ?>"
+			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php
 			echo implode( ' ', $attributes ) . ' '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -1210,6 +1219,20 @@ class WP_Job_Manager_Settings {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Sanitize the submission duration value between 1 and 100 years
+	 *
+	 * @param string|int $value
+	 * @return int
+	 */
+	public function sanitize_submission_duration( $value ) {
+		if ( ! is_numeric( $value ) ) {
+			return '';
+		}
+
+		return ( $value <= 0 || $value > 36500 ) ? '' : $value;
 	}
 
 	/**
