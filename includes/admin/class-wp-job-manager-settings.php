@@ -17,6 +17,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Job_Manager_Settings {
 
 	/**
+	 * Maximium value for the "Listing duration" setting (100 years).
+	 */
+	public const MAX_ALLOWED_SUBMISSION_DAYS = 36500;
+
+	/**
+	 * Maximum value for the "Listing limit" setting (1,000,000 listings).
+	 */
+	public const MAX_ALLOWED_SUBMISSION_LIMIT = 1000000;
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -394,20 +404,23 @@ class WP_Job_Manager_Settings {
 							'placeholder'       => __( 'No limit', 'wp-job-manager' ),
 						],
 						[
-							'name'       => 'job_manager_renewal_days',
-							'std'        => 5,
-							'label'      => __( 'Renewal Window', 'wp-job-manager' ),
-							'desc'       => __( 'Sets the number of days before expiration where users are given the option to renew their listings. For example, entering "7" will allow users to renew their listing one week before expiration. Entering "0" will disable renewals entirely.', 'wp-job-manager' ),
-							'type'       => 'number',
-							'attributes' => [],
+							'name'              => 'job_manager_renewal_days',
+							'std'               => 5,
+							'label'             => __( 'Renewal Window', 'wp-job-manager' ),
+							'desc'              => __( 'Sets the number of days before expiration where users are given the option to renew their listings. For example, entering "7" will allow users to renew their listing one week before expiration. Entering "0" will disable renewals entirely.', 'wp-job-manager' ),
+							'type'              => 'number',
+							'attributes'        => [],
+							'sanitize_callback' => [ $this, 'sanitize_renewal_days' ],
 						],
 						[
-							'name'        => 'job_manager_submission_limit',
-							'std'         => '',
-							'label'       => __( 'Listing Limit', 'wp-job-manager' ),
-							'desc'        => __( 'How many listings are users allowed to post. Can be left blank to allow unlimited listings per account.', 'wp-job-manager' ),
-							'attributes'  => [],
-							'placeholder' => __( 'No limit', 'wp-job-manager' ),
+							'name'              => 'job_manager_submission_limit',
+							'std'               => '',
+							'label'             => __( 'Listing Limit', 'wp-job-manager' ),
+							'desc'              => __( 'How many listings are users allowed to post. Can be left blank to allow unlimited listings per account.', 'wp-job-manager' ),
+							'type'              => 'number',
+							'attributes'        => [],
+							'sanitize_callback' => [ $this, 'sanitize_submission_limit' ],
+							'placeholder'       => __( 'No limit', 'wp-job-manager' ),
 						],
 						[
 							'name'    => 'job_manager_allowed_application_method',
@@ -990,7 +1003,13 @@ class WP_Job_Manager_Settings {
 	protected function input_number( $option, $attributes, $value, $placeholder ) {
 		$field_name      = $option['name'] ?? '';
 		$text_class_name = 'small-text';
-		if ( 'job_manager_submission_duration' === $field_name ) {
+
+		$regular_text_inputs = [
+			'job_manager_submission_duration' => true,
+			'job_manager_submission_limit'    => true,
+		];
+
+		if ( isset( $regular_text_inputs[ $field_name ] ) ) {
 			$text_class_name = 'regular-text';
 		}
 
@@ -1222,17 +1241,45 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
-	 * Sanitize the submission duration value between 1 and 100 years
+	 * Sanitize the submission duration value between 1 and MAX_ALLOWED_SUBMISSION_DAYS days
 	 *
 	 * @param string|int $value
-	 * @return int
+	 * @return string|int
 	 */
 	public function sanitize_submission_duration( $value ) {
 		if ( ! is_numeric( $value ) ) {
 			return '';
 		}
 
-		return ( $value <= 0 || $value > 36500 ) ? '' : $value;
+		return ( $value <= 0 || $value > self::MAX_ALLOWED_SUBMISSION_DAYS ) ? '' : $value;
+	}
+
+	/**
+	 * Sanitizes the renewal days value between 0 and MAX_ALLOWED_SUBMISSION_DAYS days
+	 *
+	 * @param string|int $value
+	 * @return string|int
+	 */
+	public function sanitize_renewal_days( $value ) {
+		if ( ! is_numeric( $value ) ) {
+			return '';
+		}
+
+		return ( $value < 0 || $value > self::MAX_ALLOWED_SUBMISSION_DAYS ) ? '' : $value;
+	}
+
+	/**
+	 * Sanitize the submission limit between 0 and MAX_ALLOWED_SUBMISSION_LIMIT
+	 *
+	 * @param string|int $value
+	 * @return string|int
+	 */
+	public function sanitize_submission_limit( $value ) {
+		if ( ! is_numeric( $value ) ) {
+			return '';
+		}
+
+		return ( $value < 0 || $value > self::MAX_ALLOWED_SUBMISSION_LIMIT ) ? '' : $value;
 	}
 
 	/**
