@@ -976,6 +976,15 @@ final class WP_Job_Manager_Email_Notifications {
 	private static function get_multipart_body( string $content_html, string $content_plain ): string {
 		$multipart_body = '';
 
+		if ( ! empty( $content_plain ) ) {
+
+			$multipart_body .= '
+--' . self::MULTIPART_BOUNDARY . '
+Content-Type: text/plain; charset="utf-8"
+
+' . $content_plain;
+		}
+
 		if ( ! empty( $content_html ) ) {
 			$multipart_body .= '
 --' . self::MULTIPART_BOUNDARY . '
@@ -984,13 +993,10 @@ Content-Type: text/html; charset="utf-8"
 ' . $content_html;
 		}
 
-		if ( ! empty( $content_plain ) ) {
-
+		if ( ! empty( $multipart_body ) ) {
 			$multipart_body .= '
---' . self::MULTIPART_BOUNDARY . '
-Content-Type: text/plain; charset="utf-8"
-
-' . $content_plain;
+--' . self::MULTIPART_BOUNDARY . '--
+';
 		}
 
 		return $multipart_body;
