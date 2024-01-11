@@ -296,10 +296,12 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function sort_by_priority( $a, $b ) {
-		if ( floatval( $a['priority'] ) === floatval( $b['priority'] ) ) {
+		$a_priority = isset( $a['priority'] ) ? $a['priority'] : 100000;
+		$b_priority = isset( $b['priority'] ) ? $b['priority'] : 100000;
+		if ( floatval( $a_priority ) === floatval( $b_priority ) ) {
 			return 0;
 		}
-		return ( floatval( $a['priority'] ) < floatval( $b['priority'] ) ) ? -1 : 1;
+		return ( floatval( $a_priority ) < floatval( $b_priority ) ) ? -1 : 1;
 	}
 
 	/**
