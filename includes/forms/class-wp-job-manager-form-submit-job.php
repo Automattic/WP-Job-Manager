@@ -376,12 +376,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! get_option( 'job_manager_enable_remote_position' ) ) {
 			unset( $this->fields['job']['remote_position'] );
 		}
-		if ( true || get_option( 'job_manager_enable_scheduled_listings' ) ) {
+
+		if ( ! get_option( 'job_manager_disable_scheduled_listings' ) ) {
 			$field_type = version_compare( JOB_MANAGER_VERSION, '1.30.0', '>=' ) ? 'date' : 'text';
 
 			$this->fields['job']['job_schedule_listing'] = [
 				'label'       => __( 'Schedule date', 'wp-job-manager' ),
-				'description' => __( 'schedule a date for this listing to go public. leave empty if you want to publish now.', 'wp-job-manager' ),
+				'description' => __( 'Optionally schedule a date for this listing to go public.', 'wp-job-manager' ),
 				'type'        => $field_type,
 				'required'    => false,
 				'placeholder' => '',
