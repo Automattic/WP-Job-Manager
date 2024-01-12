@@ -197,9 +197,9 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 
 			update_post_meta( $this->job_id, '_job_edited', time() );
 
-			if ( 'publish' === $post_status ) {
+			if ( in_array( $post_status, [ 'future', 'publish' ], true ) ) {
 				$save_message = $save_message . ' <a href="' . get_permalink( $this->job_id ) . '">' . __( 'View &rarr;', 'wp-job-manager' ) . '</a>';
-			} elseif ( 'publish' === $original_post_status && 'pending' === $post_status ) {
+			} elseif ( in_array( $original_post_status, [ 'future', 'publish' ], true ) && 'pending' === $post_status ) {
 				$save_message = __( 'Your changes have been submitted and your listing will be visible again once approved.', 'wp-job-manager' );
 
 				/**
