@@ -763,8 +763,15 @@ function the_job_publish_date( $post = null ) {
 	if ( 'default' === $date_format ) {
 		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . wp_date( get_option( 'date_format' ), get_post_timestamp( $post ) );
 	} else {
+		$post_timestamp = get_post_timestamp( $post );
+		$current_time   = time();
+
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
-		$display_date = sprintf( esc_html__( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp( $post ), time() ) );
+		$display_date = sprintf( esc_html__( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( $post_timestamp, $current_time ) );
+		if ( $post_timestamp > $current_time ) {
+			// translators: Placeholder %s is the relative, human readable time the job listing is scheduled to be published.
+			$display_date = sprintf( esc_html__( 'Scheduled to publish in %s', 'wp-job-manager' ), human_time_diff( $post_timestamp, $current_time ) );
+		}
 	}
 
 	echo '<time datetime="' . esc_attr( get_post_datetime( $post )->format( 'Y-m-d' ) ) . '">' . wp_kses_post( $display_date ) . '</time>';
