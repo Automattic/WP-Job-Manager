@@ -376,6 +376,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! get_option( 'job_manager_enable_remote_position' ) ) {
 			unset( $this->fields['job']['remote_position'] );
 		}
+		if ( true || get_option( 'job_manager_enable_scheduled_listings' ) ) {
+			$field_type = version_compare( JOB_MANAGER_VERSION, '1.30.0', '>=' ) ? 'date' : 'text';
+
+			$this->fields['job']['job_schedule_listing'] = [
+				'label'       => __( 'Schedule date', 'wp-job-manager' ),
+				'description' => __( 'schedule a date for this listing to go public. leave empty if you want to publish now.', 'wp-job-manager' ),
+				'type'        => $field_type,
+				'required'    => false,
+				'placeholder' => '',
+				'priority'    => '6.5',
+			];
+		}
+
+		return $this->fields;
 	}
 
 	/**
@@ -844,6 +858,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'comment_status' => 'closed',
 		];
 
+		if ( ! empty( $values['job']['job_schedule_listing'] ) ) {
+			$maybe_formatted_date = $this->maybe_format_datetime_if_valid( $values['job']['job_schedule_listing'] );
+
+			if ( false !== $maybe_formatted_date ) {
+				$job_data['post_date']     = $maybe_formatted_date;
+				$job_data['post_date_gmt'] = $maybe_formatted_date;
+			} else {
+				unset( $values['job']['job_schedule_listing'] );
+			}
+		}
+
 		if ( $update_slug ) {
 			$job_slug = [];
 
@@ -1063,6 +1088,27 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Checks that a string is a valid datetime. Formats datetime for post date.
+	 *
+	 * @param string $maybe_date_string The date to format.
+	 *
+	 * @return false|mixed
+	 */
+	private function maybe_format_datetime_if_valid( string $maybe_date_string ): mixed {
+		if ( empty( $maybe_date_string ) ) {
+			return false;
+		}
+
+		$time = strtotime( $maybe_date_string );
+		if ( false === $time ) {
+			return false;
+		}
+
+		$fmt = 'Y-m-d H:i:s';
+		return wp_date( $fmt, $time );
+	}
+
+	/**
 	 * Handles the preview step form response.
 	 */
 	public function preview_handler() {
@@ -1086,12 +1132,23 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				// Reset expiry.
 				delete_post_meta( $job->ID, '_job_expires' );
 
+				$post_date     = current_time( 'mysql' );
+				$post_date_gmt = current_time( 'mysql', 1 );
+
+				$job_schedule_listing_date = get_post_meta( $job->ID, '_job_schedule_listing', true );
+				$maybe_formatted_date      = $this->maybe_format_datetime_if_valid( $job_schedule_listing_date );
+
+				if ( false !== $maybe_formatted_date ) {
+					$post_date     = $maybe_formatted_date;
+					$post_date_gmt = $maybe_formatted_date;
+				}
+
 				// Update job listing.
 				$update_job                  = [];
 				$update_job['ID']            = $job->ID;
 				$update_job['post_status']   = apply_filters( 'submit_job_post_status', get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish', $job );
-				$update_job['post_date']     = current_time( 'mysql' );
-				$update_job['post_date_gmt'] = current_time( 'mysql', 1 );
+				$update_job['post_date']     = $post_date;
+				$update_job['post_date_gmt'] = $post_date_gmt;
 				$update_job['post_author']   = get_current_user_id();
 
 				wp_update_post( $update_job );
