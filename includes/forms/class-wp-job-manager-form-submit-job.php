@@ -377,7 +377,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			unset( $this->fields['job']['remote_position'] );
 		}
 
-		if ( ! get_option( 'job_manager_disable_scheduled_listings' ) ) {
+		if ( get_option( 'job_manager_enable_scheduled_listings' ) ) {
 			$field_type = version_compare( JOB_MANAGER_VERSION, '1.30.0', '>=' ) ? 'date' : 'text';
 
 			$this->fields['job']['job_schedule_listing'] = [

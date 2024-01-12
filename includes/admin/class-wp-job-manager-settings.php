@@ -336,6 +336,16 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
+
+							'name'       => 'job_manager_enable_scheduled_listings',
+							'std'        => '0',
+							'label'      => __( 'Scheduled listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Scheduled listings', 'wp-job-manager' ),
+							'desc'       => __( 'Allow employers to set a date in the future for the listing to publish.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
 							'name'       => 'job_manager_generate_username_from_email',
 							'std'        => '1',
 							'label'      => __( 'Account Username', 'wp-job-manager' ),
