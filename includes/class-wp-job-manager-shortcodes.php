@@ -336,6 +336,10 @@ class WP_Job_Manager_Shortcodes {
 			'author'              => get_current_user_id(),
 		];
 
+		if ( get_option( 'job_manager_enable_scheduled_listings' ) ) {
+			$job_dashboard_args['post_status'][] = 'future';
+		}
+
 		if ( $posts_per_page > 0 ) {
 			$job_dashboard_args['offset'] = ( max( 1, get_query_var( 'paged' ) ) - 1 ) * $posts_per_page;
 		}

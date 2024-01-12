@@ -379,6 +379,7 @@ if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
 				'pending'         => _x( 'Pending approval', 'post status', 'wp-job-manager' ),
 				'pending_payment' => _x( 'Pending payment', 'post status', 'wp-job-manager' ),
 				'publish'         => _x( 'Active', 'post status', 'wp-job-manager' ),
+				'future'          => _x( 'Scheduled', 'post status', 'wp-job-manager' ),
 			]
 		);
 	}
