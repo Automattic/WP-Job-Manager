@@ -859,7 +859,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		];
 
 		if ( ! empty( $values['job']['job_schedule_listing'] ) ) {
-			$maybe_formatted_date = $this->maybe_format_datetime_if_valid( $values['job']['job_schedule_listing'] );
+			$maybe_formatted_date = $this->maybe_format_future_datetime( $values['job']['job_schedule_listing'] );
 
 			if ( false !== $maybe_formatted_date ) {
 				$job_data['post_date']     = $maybe_formatted_date;
@@ -1088,19 +1088,23 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Checks that a string is a valid datetime. Formats datetime for post date.
+	 * Checks that a string is a valid future datetime. Formats datetime for post date.
 	 *
 	 * @param string $maybe_date_string The date to format.
 	 *
 	 * @return false|mixed
 	 */
-	private function maybe_format_datetime_if_valid( string $maybe_date_string ): mixed {
+	private function maybe_format_future_datetime( string $maybe_date_string ): mixed {
 		if ( empty( $maybe_date_string ) ) {
 			return false;
 		}
 
 		$time = strtotime( $maybe_date_string );
 		if ( false === $time ) {
+			return false;
+		}
+
+		if ( $time < time() ) {
 			return false;
 		}
 
@@ -1136,7 +1140,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$post_date_gmt = current_time( 'mysql', 1 );
 
 				$job_schedule_listing_date = get_post_meta( $job->ID, '_job_schedule_listing', true );
-				$maybe_formatted_date      = $this->maybe_format_datetime_if_valid( $job_schedule_listing_date );
+				$maybe_formatted_date      = $this->maybe_format_future_datetime( $job_schedule_listing_date );
 
 				if ( false !== $maybe_formatted_date ) {
 					$post_date     = $maybe_formatted_date;
