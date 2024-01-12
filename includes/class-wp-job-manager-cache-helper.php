@@ -22,6 +22,7 @@ class WP_Job_Manager_Cache_Helper {
 	 */
 	public static function init() {
 		add_action( 'save_post', [ __CLASS__, 'flush_get_job_listings_cache' ] );
+		add_action( 'update_post_meta', [ __CLASS__, 'maybe_flush_get_job_listings_cache_on_meta_update' ], 10, 2 );
 		add_action( 'delete_post', [ __CLASS__, 'flush_get_job_listings_cache' ] );
 		add_action( 'trash_post', [ __CLASS__, 'flush_get_job_listings_cache' ] );
 		add_action( 'job_manager_my_job_do_action', [ __CLASS__, 'job_manager_my_job_do_action' ] );
@@ -41,6 +42,16 @@ class WP_Job_Manager_Cache_Helper {
 		if ( \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type( $post_id ) ) {
 			self::get_transient_version( 'get_job_listings', true );
 		}
+	}
+
+	/**
+	 * Flush the cache on updates to job listing meta.
+	 *
+	 * @param int $meta_id
+	 * @param int $post_id
+	 */
+	public static function maybe_flush_get_job_listings_cache_on_meta_update( $meta_id, $post_id ) {
+		self::flush_get_job_listings_cache( $post_id );
 	}
 
 	/**
