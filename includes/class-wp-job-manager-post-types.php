@@ -1075,7 +1075,7 @@ class WP_Job_Manager_Post_Types {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 		$input_job_expires          = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
-		$input_job_expires_datetime = DateTimeImmutable::createFromFormat( 'Y-m-d', $input_job_expires, wp_timezone() );
+		$input_job_expires_datetime = ! empty( $input_job_expires ) ? DateTimeImmutable::createFromFormat( 'Y-m-d', $input_job_expires, wp_timezone() ) : null;
 
 		// See if the user has set the expiry manually.
 		if ( ! empty( $input_job_expires_datetime ) ) {
