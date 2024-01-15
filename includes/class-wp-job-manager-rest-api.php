@@ -36,6 +36,10 @@ class WP_Job_Manager_REST_API {
 		$fields       = WP_Job_Manager_Post_Types::get_job_listing_fields();
 		$data         = $response->get_data();
 
+		if ( ! isset( $data['meta'] ) ) {
+			$data['meta'] = [];
+		}
+
 		foreach ( $data['meta'] as $meta_key => $meta_value ) {
 			if ( isset( $fields[ $meta_key ] ) && is_callable( $fields[ $meta_key ]['auth_view_callback'] ) ) {
 				$is_viewable = call_user_func( $fields[ $meta_key ]['auth_view_callback'], false, $meta_key, $post->ID, $current_user->ID );
