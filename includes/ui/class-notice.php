@@ -105,7 +105,7 @@ class Notice {
 	 * @type string $title Optional title.
 	 * @type string $icon Notice icon. Should be a supported icon name, or safe SVG code.
 	 * @type string $message Main notice message.
-	 * @type string $details Additional HTML content for the notice. Displayed below the message.
+	 * @type string $html Raw HTML content. User input must be escaped by the caller function.
 	 * @type array  $buttons Action links styled as buttons.
 	 * @type array  $links Action links.
 	 * @type array  $classes Additional classes for the notice. Possible options:
@@ -131,28 +131,16 @@ class Notice {
 				'title'   => '',
 				'icon'    => '',
 				'message' => '',
-				'details' => '',
+				'html'    => '',
 				'buttons' => [],
 				'links'   => [],
 				'classes' => [],
 			]
 		);
 
-		$buttons = [];
+		$actions = UI_Elements::actions( $options['buttons'], $options['links'] );
 
-		foreach ( $options['buttons'] as $index => $button ) {
-			$primary   = $button['primary'] ?? ( 0 === $index );
-			$class     = $primary ? 'jm-notice__button' : 'jm-notice__button--outline';
-			$buttons[] = self::get_button_html( $button, $class );
-		}
-
-		$links = [];
-		foreach ( $options['links'] as $link ) {
-			$class   = $buttons ? 'jm-notice__button--link' : 'jm-notice__action';
-			$links[] = self::get_button_html( $link, $class );
-		}
-
-		$icon = self::get_icon_html( $options['icon'] );
+		$icon = UI_Elements::icon( $options['icon'] );
 
 		ob_start();
 
@@ -161,10 +149,9 @@ class Notice {
 			'title'        => $options['title'],
 			'classes'      => $options['classes'] ?? [],
 			'message'      => $options['message'],
-			'details'      => $options['details'],
+			'content_html' => $options['html'],
 			'icon_html'    => $icon,
-			'buttons_html' => $buttons,
-			'links_html'   => $links,
+			'actions_html' => $actions,
 		];
 
 		get_job_manager_template(
@@ -199,101 +186,4 @@ class Notice {
 		return is_string( $notice_html ) ? $notice_html : '';
 	}
 
-	/**
-	 * Generate HTML for a notice icon.
-	 *
-	 * @param string|null $icon Icon name or a safe SVG code.
-	 *
-	 * @return string Icon HTML.
-	 */
-	private static function get_icon_html( $icon ) {
-
-		if ( empty( $icon ) ) {
-			return '';
-		}
-
-		$html = '';
-
-		$is_classname = preg_match( '/^[\w-]+$/i', $icon );
-
-		$html = '<div class="jm-notice__icon"';
-
-		if ( $is_classname ) {
-			$html .= ' data-icon="' . esc_attr( $icon ) . '"';
-		}
-
-		$html .= '>';
-
-		if ( ! $is_classname ) {
-			$html .= self::esc_svg( $icon );
-		}
-
-		$html .= '</div>';
-
-		return $html;
-	}
-
-	/**
-	 * Generate HTML for a button or action link.
-	 *
-	 * @param array  $args Button options.
-	 * @param string $class Base classname.
-	 *
-	 * @return string Button HTML.
-	 */
-	private static function get_button_html( $args, $class ) {
-
-		if ( empty( $args ) ) {
-			return '';
-		}
-
-		$args = wp_parse_args(
-			$args,
-			[
-				'label' => '',
-				'url'   => '',
-			]
-		);
-
-		return '<a href="' . esc_url( $args['url'] ) . '" class="' . esc_attr( $class ) . '"><span>' . esc_html( $args['label'] ) . '</span></a>';
-
-	}
-
-	/**
-	 * Escape SVG code.
-	 *
-	 * TODO Extend rules to support more SVG tags and attributes.
-	 *
-	 * @param string $code SVG code.
-	 *
-	 * @return string Sanitized SVG code.
-	 */
-	private static function esc_svg( $code ) {
-		$kses_defaults = wp_kses_allowed_html( 'post' );
-		$svg_args      = [
-			'svg'  => [
-				'class'           => true,
-				'aria-hidden'     => true,
-				'aria-labelledby' => true,
-				'role'            => true,
-				'xmlns'           => true,
-				'width'           => true,
-				'height'          => true,
-				'viewbox'         => true,
-				'fill'            => true,
-			],
-			'path' => [
-				'd'            => true,
-				'fill'         => true,
-				'fill-rule'    => true,
-				'stroke-width' => true,
-				'stroke'       => true,
-				'clip-rule'    => true,
-			],
-		];
-
-		$allowed_tags = array_merge( $kses_defaults, $svg_args );
-
-		return wp_kses( $code, $allowed_tags );
-	}
 }

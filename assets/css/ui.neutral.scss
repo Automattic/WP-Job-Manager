@@ -1,18 +1,11 @@
 
-/**
- * Fade current text color to the given opacity.
- */
-@function fadeCurrentColor( $opacity ) {
-	@return color-mix(in srgb, transparent, currentColor #{$opacity});
-}
-
 :root {
 	--jm-ui-border-light: #{fadeCurrentColor(15%)};
 	--jm-ui-border-strong: currentColor;
 	--jm-ui-border-size: 1px;
 
-	--jm-ui-background-color: transparent;
-	--jm-ui-text-color: inherit;
+	--jm-ui-background-color: initial;
+	--jm-ui-text-color: initial;
 	--jm-ui-background-opacity: 0;
 
 	--jm-ui-radius: 2px;
@@ -22,7 +15,7 @@
 	--jm-ui-accent-color: inherit;
 	--jm-ui-accent-color-contrast: #ffffff;
 
-	--jm-ui-button-color: var(--jm-ui-accent-color, inherit);
+	--jm-ui-button-color: var(--jm-ui-accent-color);
 	--jm-ui-button-contrast: var(--jm-ui-accent-color-contrast, #ffffff);
 	--jm-ui-link-color: var(--jm-ui-accent-color, inherit);
 
@@ -52,4 +45,11 @@
 	--jm-ui-font-size: 16px;
 	--jm-ui-heading-font-size: 20px;
 	--jm-ui-icon-size: 24px;
+
+	--jm-ui-shadow-modal: 0 0.7px 1px 0 rgba(0, 0, 0, 0.15),
+	0 2.7px 3.8px -0.2px rgba(0, 0, 0, 0.15),
+	0px 5.5px 7.8px -0.3px rgba(0, 0, 0, 0.15),
+	0.1px 11.5px 16.4px -0.5px rgba(0, 0, 0, 0.15);
+
+	--jm-ui-svg-close: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3e%3cpath fill='black' d='m12 13.06 3.71 3.71 1.06-1.06-3.7-3.71 3.7-3.71-1.06-1.06-3.71 3.7-3.71-3.7-1.06 1.06 3.7 3.71-3.7 3.71 1.06 1.06 3.71-3.7Z'/%3e%3c/svg%3e");
 }

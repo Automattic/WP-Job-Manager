@@ -1,0 +1,117 @@
+
+.jm-ui-button,
+.jm-ui-button--outline,
+.jm-ui-button--link,
+.jm-ui-button--icon,
+{
+	border-radius: 4px;
+	padding: var(--jm-ui-space-xs) var(--jm-ui-space-s);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--jm-ui-space-xs);
+
+	text-decoration: none;
+	outline: unset;
+	cursor: pointer;
+}
+
+.jm-ui-button,
+.jm-ui-button--outline,
+.jm-ui-button--link,
+.jm-ui-button--icon,
+.jm-ui-link,
+{
+	font-size: 14px;
+	font-weight: 400;
+	letter-spacing: -0.1px;
+
+	transition: color 0.2s ease-out, background 0.2s ease-out;
+
+	&:focus-visible {
+		outline: 1.5px solid fadeCurrentColor(85%);
+		outline-offset: 1.5px;
+	}
+}
+
+.jm-ui-button {
+	border: 1px solid currentColor;
+
+	* {
+		color: var(--jm-ui-button-color-contrast, #ffffff);
+	}
+
+	background: currentColor;
+
+	&:hover, &:focus {
+		&:where(:not(:active)) {
+			background-color: color-mix(in srgb, #fff, currentColor 85%);
+		}
+	}
+}
+
+.jm-ui-button__a {
+	text-decoration: none;
+}
+
+.jm-ui-button--outline {
+	background: unset;
+	border: 1px solid currentColor;
+}
+
+.jm-ui-button--icon {
+	padding: var(--jm-ui-space-xs) var(--jm-ui-space-xs);
+}
+
+.jm-ui-button--link,
+.jm-ui-button--icon, {
+	&:focus-visible {
+		outline-offset: -2px;
+	}
+}
+
+.jm-ui-link,
+.jm-ui-button--link,
+.jm-ui-button--icon {
+	outline: unset;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.jm-ui-button--link,
+.jm-ui-button--icon,
+.jm-ui-button--outline {
+	&:hover {
+		background: fadeCurrentColor(5%);
+	}
+
+	&:active {
+		background: fadeCurrentColor(10%);
+	}
+}
+
+.jm-ui-link {
+	border-radius: 2px;
+
+	&:hover, &:active, &:focus {
+		color: color-mix(in srgb, #fff, currentColor 80%);
+	}
+
+	&:focus-visible {
+		outline-offset: 4px;
+	}
+}
+
+.jm-ui-actions {
+	display: flex;
+	flex-direction: row;
+	gap: var(--jm-ui-space-s);
+	align-items: center;
+	justify-content: flex-start;
+	flex-shrink: 0;
+	position: relative;
+
+	.jm-ui-button--link ~ .jm-ui-button--link {
+		margin-left: calc(-1 * var(--jm-ui-space-s));
+	}
+}
