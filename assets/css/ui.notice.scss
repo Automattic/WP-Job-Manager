@@ -42,6 +42,7 @@
 		color: var(--jm-ui-notice-error);
 	}
 
+	&.actions-right,
 	&.alignwide,
 	&.type-hint {
 		flex-direction: row;
@@ -49,6 +50,10 @@
 		gap: var(--jm-ui-space-s) var(--jm-ui-space-m);
 		justify-content: flex-start;
 		align-items: baseline;
+
+		.jm-notice__message {
+			align-self: baseline;
+		}
 
 		.jm-notice__message-wrap {
 			max-width: 600px;

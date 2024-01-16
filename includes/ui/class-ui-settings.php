@@ -83,6 +83,19 @@ class UISettings {
 
 		$elements[] = Notice::success( 'Notice rendered successfully.' );
 		$elements[] = Notice::error( 'Invalid notice message.' );
+		$elements[] = Notice::error(
+			[
+				'classes' => [ 'actions-right' ],
+				'message' => 'A user account already exists for this e-mail.',
+				'buttons' => [
+					[
+						'url'   => '/',
+						'label' => 'Sign in',
+						'class' => [],
+					],
+				],
+			]
+		);
 
 		$elements[] = Notice::render(
 			[
