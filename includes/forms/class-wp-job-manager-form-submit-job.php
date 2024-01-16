@@ -381,8 +381,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$field_type = version_compare( JOB_MANAGER_VERSION, '1.30.0', '>=' ) ? 'date' : 'text';
 
 			$this->fields['job']['job_schedule_listing'] = [
-				'label'       => __( 'Schedule date', 'wp-job-manager' ),
-				'description' => __( 'Optionally schedule a date for this listing to go public.', 'wp-job-manager' ),
+				'label'       => __( 'Scheduled Date', 'wp-job-manager' ),
+				'description' => __( 'Optionally set the date when this listing will be published.', 'wp-job-manager' ),
 				'type'        => $field_type,
 				'required'    => false,
 				'placeholder' => '',
