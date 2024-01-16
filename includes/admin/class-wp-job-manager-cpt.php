@@ -497,7 +497,7 @@ class WP_Job_Manager_CPT {
 		$columns[ \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ]     = __( 'Type', 'wp-job-manager' );
 		$columns['job_location']                                     = __( 'Location', 'wp-job-manager' );
 		$columns['job_status']                                       = '<span class="tips" data-tip="' . __( 'Status', 'wp-job-manager' ) . '">' . __( 'Status', 'wp-job-manager' ) . '</span>';
-		$columns['job_posted']                                       = __( 'Posted', 'wp-job-manager' );
+		$columns['job_posted']                                       = __( 'Date', 'wp-job-manager' );
 		$columns['job_expires']                                      = __( 'Expires', 'wp-job-manager' );
 		$columns[ \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ] = __( 'Categories', 'wp-job-manager' );
 		$columns['featured_job']                                     = '<span class="tips" data-tip="' . __( 'Featured?', 'wp-job-manager' ) . '">' . __( 'Featured?', 'wp-job-manager' ) . '</span>';
