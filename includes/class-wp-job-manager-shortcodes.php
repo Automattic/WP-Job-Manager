@@ -404,7 +404,7 @@ class WP_Job_Manager_Shortcodes {
 			[
 				'job_title' => __( 'Title', 'wp-job-manager' ),
 				'filled'    => __( 'Filled?', 'wp-job-manager' ),
-				'date'      => __( 'Date Posted', 'wp-job-manager' ),
+				'date'      => __( 'Date', 'wp-job-manager' ),
 				'expires'   => __( 'Listing Expires', 'wp-job-manager' ),
 			]
 		);
