@@ -339,8 +339,8 @@ class WP_Job_Manager_Settings {
 
 							'name'       => 'job_manager_enable_scheduled_listings',
 							'std'        => '0',
-							'label'      => __( 'Scheduled listings', 'wp-job-manager' ),
-							'cb_label'   => __( 'Enable Scheduled listings', 'wp-job-manager' ),
+							'label'      => __( 'Scheduled Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable scheduled listings', 'wp-job-manager' ),
 							'desc'       => __( 'Allow employers to set a date in the future for the listing to publish.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
