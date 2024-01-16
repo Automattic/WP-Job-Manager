@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui-elements.php';
 require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-notice.php';
+require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-modal-dialog.php';
 require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-redirect-message.php';
 
 /**
