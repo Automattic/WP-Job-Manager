@@ -43,6 +43,44 @@ class UISettings {
 	public function preview_ui_elements() {
 		$elements = [];
 
+		$modal         = new Modal_Dialog();
+		$modal_content = Notice::render(
+			[
+				'title'   => 'Test Modal Dialog',
+				'message' => 'This is a test dialog message.',
+				'buttons' => [
+					[
+						'label' => 'Primary Button',
+						'url'   => '/',
+					],
+				],
+				'links'   => [
+					[
+						'label'   => 'Close',
+						'onclick' => '{close}',
+					],
+				],
+			]
+		);
+
+		$elements[] = '<h2>Modal Dialog</h2>';
+
+		$elements[] = Notice::dialog(
+			[
+				'message' => 'Test opening a modal dialog from here.',
+				'buttons' => [
+					[
+						'label'   => 'Open Modal',
+						'onclick' => $modal->open(),
+					],
+				],
+			]
+		);
+
+		$elements[] = $modal->render( $modal_content );
+
+		$elements[] = '<h2>Notices</h2>';
+
 		$elements[] = Notice::success( 'Notice rendered successfully.' );
 		$elements[] = Notice::error( 'Invalid notice message.' );
 
@@ -72,10 +110,28 @@ class UISettings {
 			[
 				'classes' => [ 'type-hint' ],
 				'message' => 'Already have an account?',
-				'links'   => [
+				'buttons' => [
 					[
-						'text' => 'Sign In',
-						'href' => '/',
+						'label' => 'Sign In',
+						'url'   => '/',
+					],
+				],
+			]
+		);
+
+		$elements[] = Notice::dialog(
+			[
+				'message' => __( 'Sign in or create an account to manage your listings.', 'wp-job-manager' ),
+				'buttons' => [
+					[
+						'url'   => '/',
+						'label' => 'Sign in',
+						'class' => [],
+					],
+					[
+						'url'   => '/',
+						'label' => 'Create Account',
+						'class' => [],
 					],
 				],
 			]
@@ -124,22 +180,22 @@ class UISettings {
 				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
 				'buttons' => [
 					[
-						'text' => 'Primary Button',
-						'href' => '/',
+						'label' => 'Primary Button',
+						'url'   => '/',
 					],
 					[
-						'text' => 'Secondary Button',
-						'href' => '/',
+						'label' => 'Secondary Button',
+						'url'   => '/',
 					],
 				],
 				'links'   => [
 					[
-						'text' => 'Action',
-						'href' => '/',
+						'label' => 'Action',
+						'url'   => '/',
 					],
 					[
-						'text' => 'Action',
-						'href' => '/',
+						'label' => 'Action',
+						'url'   => '/',
 					],
 				],
 			]
@@ -151,15 +207,15 @@ class UISettings {
 				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
 				'buttons' => [
 					[
-						'text'    => 'Light Button',
-						'href'    => '/',
+						'label'   => 'Light Button',
+						'url'     => '/',
 						'primary' => false,
 					],
 				],
 				'links'   => [
 					[
-						'text' => 'Action',
-						'href' => '/',
+						'label' => 'Action',
+						'url'   => '/',
 					],
 				],
 			]
@@ -171,12 +227,12 @@ class UISettings {
 				'message' => 'This is a test Job Manager notice.',
 				'links'   => [
 					[
-						'text' => 'Action',
-						'href' => '/',
+						'label' => 'Action',
+						'url'   => '/',
 					],
 					[
-						'text' => 'Action',
-						'href' => '/',
+						'label' => 'Action',
+						'url'   => '/',
 					],
 				],
 			]
@@ -189,8 +245,8 @@ class UISettings {
 				'message' => 'This is a test Job Manager notice. Should be large with a checkmark.',
 				'buttons' => [
 					[
-						'text' => 'Primary Button',
-						'href' => '/',
+						'label' => 'Primary Button',
+						'url'   => '/',
 					],
 				],
 			]
@@ -202,8 +258,8 @@ class UISettings {
 				'message' => 'This is a test Job Manager notice, with an icon, message and an action.',
 				'links'   => [
 					[
-						'text' => 'Action',
-						'href' => '/',
+						'label' => 'Action',
+						'url'   => '/',
 					],
 				],
 			]
@@ -216,8 +272,8 @@ class UISettings {
 				'message' => 'This is a wide Job Manager notice, with an icon, message and an action. Actions are on the side.',
 				'links'   => [
 					[
-						'text' => 'Action',
-						'href' => '/',
+						'label' => 'Action',
+						'url'   => '/',
 					],
 				],
 			]
@@ -228,8 +284,8 @@ class UISettings {
 				'message' => 'This is a test Job Manager notice, with only a message and an action.',
 				'links'   => [
 					[
-						'text' => 'Action',
-						'href' => '/',
+						'label' => 'Action',
+						'url'   => '/',
 					],
 				],
 			]
@@ -240,8 +296,8 @@ class UISettings {
 				'message' => 'This is a test Job Manager notice.',
 				'buttons' => [
 					[
-						'text' => 'Primary Button',
-						'href' => '/',
+						'label' => 'Primary Button',
+						'url'   => '/',
 					],
 				],
 			]
@@ -252,8 +308,8 @@ class UISettings {
 				'message' => 'This is a test Job Manager notice.',
 				'buttons' => [
 					[
-						'text'    => 'Outlined Button',
-						'href'    => '/',
+						'label'   => 'Outlined Button',
+						'url'     => '/',
 						'primary' => false,
 					],
 				],
