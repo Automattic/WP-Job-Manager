@@ -32,10 +32,10 @@ class Notice {
 
 		return self::render(
 			array_merge(
+				$args,
 				[
 					'icon' => 'check',
-				],
-				$args
+				]
 			)
 		);
 	}
@@ -50,11 +50,11 @@ class Notice {
 
 		return self::render(
 			array_merge(
+				$args,
 				[
 					'icon'    => 'alert',
 					'classes' => array_merge( [ 'color-error' ], $args['classes'] ?? [] ),
-				],
-				$args
+				]
 			)
 		);
 	}
@@ -69,10 +69,10 @@ class Notice {
 
 		return self::render(
 			array_merge(
+				$args,
 				[
 					'classes' => array_merge( [ 'type-hint' ], $args['classes'] ?? [] ),
 				],
-				$args
 			)
 		);
 	}
