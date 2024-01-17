@@ -47,6 +47,21 @@ class Guest_Session {
 	}
 
 	/**
+	 * Checks if the current guest user has an account.
+	 *
+	 * @return bool
+	 */
+	public static function current_guest_has_account() : bool {
+		$user = self::get_current_guest();
+
+		if ( false === $user ) {
+			return false;
+		}
+
+		return (bool) get_user_by( 'email', $user->user_email );
+	}
+
+	/**
 	 * Initialize the guest session based on URL token or session cookie.
 	 * If only a URL token is present, it will be set as a session cookie.
 	 *
