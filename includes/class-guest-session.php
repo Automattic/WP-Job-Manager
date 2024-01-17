@@ -52,14 +52,13 @@ class Guest_Session {
 	 * @return bool
 	 */
 	public static function current_guest_has_account() : bool {
-		$session = self::instance();
-		$session->init();
+		$user = self::get_current_guest();
 
-		if ( false === $session->user ) {
+		if ( false === $user ) {
 			return false;
 		}
 
-		return (bool) get_user_by( 'email', $session->user->user_email );
+		return (bool) get_user_by( 'email', $user->user_email );
 	}
 
 	/**
