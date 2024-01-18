@@ -1,6 +1,6 @@
 <?php
 /**
- * Notice component for the frontend.
+ * UI Elements.
  *
  * @package wp-job-manager
  * @since $$next-version$$
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Notice component for the frontend.
+ * Collection of rendering functions for various UI elements.
  *
  * @since $$next-version$$
  *
