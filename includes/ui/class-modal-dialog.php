@@ -30,6 +30,13 @@ class Modal_Dialog {
 	private string $id;
 
 	/**
+	 * Options for the dialog.
+	 *
+	 * @var array
+	 */
+	private array $options;
+
+	/**
 	 * Create a new dialog instance.
 	 *
 	 * @param array $options {
@@ -42,11 +49,14 @@ class Modal_Dialog {
 		$options = wp_parse_args(
 			$options,
 			[
-				'id' => null,
+				'id'    => null,
+				'class' => null,
+				'style' => null,
 			]
 		);
 
-		$this->id = $options['id'] ?? 'jm' . uniqid();
+		$this->options = $options;
+		$this->id      = $options['id'] ?? 'jm' . uniqid();
 	}
 
 	/**
@@ -69,13 +79,15 @@ class Modal_Dialog {
 		$id          = $this->id;
 		$close_label = __( 'Close', 'wp-job-manager' );
 
+		$class   = esc_attr( $this->options['class'] ?? '' );
+		$style   = esc_attr( $this->options['style'] ?? '' );
 		$content = str_replace( '{close}', $id . '.close(); event.preventDefault();', $content );
 
 		return <<<HTML
 <dialog class="jm-dialog" id="{$id}">
 	<div class="jm-dialog-open">
 		<div class="jm-dialog-backdrop" onclick="{$id}.close()"></div>
-		<div class="jm-dialog-modal">
+		<div class="jm-dialog-modal {$class}" style="{$style}">
 			{$content}
 			<a href="#" role="button" class="jm-ui-button--icon jm-dialog-close" onclick="{$id}.close()" aria-label="{$close_label}"><span class="jm-ui-button__icon"></span></a>
 		</div>
