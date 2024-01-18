@@ -22,7 +22,7 @@
 .jm-ui-button--icon,
 .jm-ui-link,
 {
-	font-size: 14px;
+	font-size: var(--jm-ui-button-font-size);
 	font-weight: 400;
 	letter-spacing: -0.1px;
 
