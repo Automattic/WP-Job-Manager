@@ -14,7 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui-elements.php';
 require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-notice.php';
+require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-modal-dialog.php';
 require_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-redirect-message.php';
 
 /**
@@ -77,6 +79,10 @@ class UI {
 	public static function ensure_styles( array $css_variables = [] ) {
 		self::instance()->has_ui        = true;
 		self::instance()->css_variables = array_merge( self::instance()->css_variables, $css_variables );
+
+		if ( did_action( 'wp_enqueue_scripts' ) ) {
+			self::instance()->enqueue_styles();
+		}
 	}
 
 	/**

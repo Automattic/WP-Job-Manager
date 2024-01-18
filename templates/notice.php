@@ -16,9 +16,8 @@
  * @var string $title Notice title.
  * @var string $icon_html Rendered icon HTML.
  * @var string $message Message text or HTML.
- * @var string $details Additional content HTML.
- * @var array  $buttons_html Array of rendered HTML for buttons.
- * @var array  $links_html Array of rendered HTML for links.
+ * @var string $content_html Additional content HTML.
+ * @var array  $actions_html Rendered HTML for buttons and links.
  *
  */
 
@@ -26,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-$has_actions_footer = $buttons_html || $links_html;
+$has_actions_footer = ! ! $actions_html;
 
 if ( $has_actions_footer ) {
 	$classes[] = 'has-actions';
@@ -58,24 +57,15 @@ if ( in_array( 'message-icon', $classes, true ) ) {
 			<?php endif; ?>
 			<?php echo $message_icon_html ?? ''; ?>
 			<div
-				class="jm-notice__message <?php echo esc_attr( $details ? 'has-details' : '' ); ?> "><?php echo wp_kses_post( $message ); ?></div>
+				class="jm-notice__message <?php echo esc_attr( $content_html ? 'has-details' : '' ); ?> "><?php echo wp_kses_post( $message ); ?></div>
 		</div>
 	<?php endif; ?>
-	<?php if ( $details ) : ?>
-		<div class="jm-notice__details"><?php echo wp_kses_post( $details ); ?></div>
+	<?php if ( $content_html ) : ?>
+		<div class="jm-notice__details"><?php echo $content_html; ?></div>
 	<?php endif; ?>
 	<?php if ( $has_actions_footer ) : ?>
 		<div class="jm-notice__footer">
-			<?php if ( $buttons_html ) : ?>
-				<div class="jm-notice__buttons">
-					<?php echo implode( '', $buttons_html ); ?>
-				</div>
-			<?php endif; ?>
-			<?php if ( $links_html ) : ?>
-				<div class="jm-notice__actions">
-					<?php echo implode( '', $links_html ); ?>
-				</div>
-			<?php endif; ?>
+			<?php echo $actions_html; ?>
 		</div>
 	<?php endif; ?>
 </div>

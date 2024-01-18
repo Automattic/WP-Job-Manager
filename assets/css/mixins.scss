@@ -125,3 +125,8 @@ $temporary: #d93674;
 	-moz-animation: $animation;
 	animation: $animation;
 }
+
+// Fade current text color to the given opacity.
+@function fadeCurrentColor( $opacity ) {
+	@return color-mix(in srgb, transparent, currentColor #{$opacity});
+}
