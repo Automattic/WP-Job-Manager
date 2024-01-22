@@ -83,19 +83,17 @@ class UI_Elements {
 			$args['url'] = '#';
 		}
 
-		$button = new \WP_HTML_Tag_Processor( '<a><span>' . esc_html( $args['label'] ) . '</span></a>' );
-		$button->next_tag();
-
-		$button->add_class( $class );
-		$button->set_attribute( 'href', $args['url'] );
+		$attrs = [
+			'class' => $class,
+			'href'  => esc_url( $args['url'] ),
+		];
 
 		if ( ! empty( $args['onclick'] ) ) {
-			$button->set_attribute( 'onclick', $args['onclick'] );
-			$button->set_attribute( 'role', 'button' );
+			$attrs['onclick'] = $args['onclick'];
+			$attrs['role']    = 'button';
 		}
 
-		return $button->get_updated_html();
-
+		return '<a ' . self::html_attrs( $attrs ) . '><span>' . esc_html( $args['label'] ) . '</span></a>';
 	}
 
 	/**
@@ -172,5 +170,24 @@ class UI_Elements {
 		$allowed_tags = array_merge( $kses_defaults, $svg_args );
 
 		return wp_kses( $code, $allowed_tags );
+	}
+
+	/**
+	 * Generate HTML attributes string. Escapes attributes.
+	 *
+	 * @param array $attributes Attributes array with key => value pairs.
+	 *
+	 * @return string HTML attributes string.
+	 */
+	private static function html_attrs( $attributes ) {
+		$attributes_html = array_map(
+			function( $key, $value ) {
+				return esc_attr( $key ) . '="' . esc_attr( $value ) . '"';
+			},
+			array_keys( $attributes ),
+			array_values( $attributes )
+		);
+
+		return implode( ' ', $attributes_html );
 	}
 }
