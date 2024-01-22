@@ -4,7 +4,6 @@
 }
 
 .jm-dialog-open {
-
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -21,6 +20,7 @@
 }
 
 .jm-dialog {
+	font-size: var(--jm-ui-font-size);
 	--jm-local-notice-padding: var(--jm-ui-space-l);
 }
 
@@ -74,7 +74,7 @@
 	z-index: 1;
 	padding: var(--jm-ui-space-xxxs);
 	top: calc(var(--jm-local-notice-padding) - var(--jm-ui-space-xxxs));
-	right: calc(var(--jm-local-notice-padding) - var(--jm-ui-space-xxxs));
+	right: calc(var(--jm-local-notice-padding) - var(--jm-ui-space-xxxs) - 8px);
 	cursor: pointer;
 	opacity: 0.7;
 
@@ -151,5 +151,15 @@
 
 	100% {
 		opacity: 1;
+	}
+}
+
+.jm-dialog .jm-form {
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--jm-ui-space-sm);
+	> * {
+		margin: unset;
 	}
 }

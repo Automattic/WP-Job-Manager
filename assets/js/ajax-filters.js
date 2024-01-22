@@ -217,8 +217,8 @@ jQuery( document ).ready( function( $ ) {
 			append = false;
 		}
 
-		if ( typeof result.showing === 'string' && result.showing ) {
-			var $showing_el = jQuery( '<span>' ).html( result.showing );
+		if ( typeof result.showing === 'string' && result.showing || result.showing_links ) {
+			var $showing_el = jQuery( '<span>' ).html( result.showing || '&nbsp;' );
 			$showing
 				.show()
 				.html( '' )

@@ -534,7 +534,8 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 		$return = '';
 
 		foreach ( $links as $key => $link ) {
-			$return .= '<a href="' . esc_url( $link['url'] ) . '" class="' . esc_attr( $key ) . '">' . wp_kses_post( $link['name'] ) . '</a>';
+			$attrs   = ! empty( $link['onclick'] ) ? ' onclick="' . esc_attr( $link['onclick'] ) . '"' : '';
+			$return .= '<a href="' . esc_url( $link['url'] ) . '" class="' . esc_attr( $key ) . '"' . $attrs . '>' . wp_kses_post( $link['name'] ) . '</a>';
 		}
 
 		return $return;

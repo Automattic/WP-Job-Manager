@@ -71,10 +71,6 @@
 		.jm-notice__message {
 			font-weight: 400;
 		}
-		.jm-ui-button,
-		.jm-ui-action, {
-			font-size: 16px;
-		}
 	}
 
 	&.type-dialog {
@@ -137,7 +133,6 @@
 	position: relative;
 	line-height: var(--jm-ui-icon-size);
 }
-
 
 .jm-notice__message-wrap {
 	display: flex;
