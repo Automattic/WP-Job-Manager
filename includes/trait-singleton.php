@@ -23,7 +23,7 @@ trait Singleton {
 	/**
 	 * Allows for accessing single instance of class. Class should only be constructed once per call.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.2.0
 	 * @static
 	 * @return self Main instance.
 	 */

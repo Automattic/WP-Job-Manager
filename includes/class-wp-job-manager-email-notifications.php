@@ -862,7 +862,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 *
 	 * @access private
 	 *
-	 * @since $$next-version$$
+	 * @since 2.2.0
 	 *
 	 * @return string
 	 */

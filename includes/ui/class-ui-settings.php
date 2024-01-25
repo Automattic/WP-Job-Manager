@@ -3,7 +3,7 @@
  * Preview and settings for UI elements.
  *
  * @package wp-job-manager
- * @since $$next-version$$
+ * @since 2.2.0
  */
 
 namespace WP_Job_Manager\UI;
