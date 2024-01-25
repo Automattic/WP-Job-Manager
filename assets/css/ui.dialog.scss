@@ -1,22 +1,23 @@
 .jm-dialog[open] {
 	border: unset;
 	background: unset;
+	padding: unset;
+	margin: unset;
+	position: static;
 }
 
 .jm-dialog-open {
 	position: fixed;
-	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	z-index: 1000;
 	display: flex;
-
 }
 
 .jm-dialog {
@@ -29,7 +30,6 @@
 	border: unset;
 	width: 100%;
 	min-width: unset;
-
 	padding: var(--jm-local-notice-padding);
 
 	.jm-notice__details {
@@ -38,8 +38,7 @@
 }
 
 .jm-dialog::backdrop {
-	background-color: rgb(0 0 0 / 0.1);
-	backdrop-filter: blur(4px);
+	background-color: unset;
 }
 
 .jm-dialog-modal {
@@ -49,11 +48,11 @@
 	align-items: center;
 	justify-content: center;
 	width: var(--wp--style--global--content-size, 640px);
-	max-width: calc(100% - var(--jm-ui-space-s));
-	margin: auto;
-	max-height: 80vh;
+	max-width: calc(100% - var(--jm-ui-space-s) * 2);
+	max-height: 100%;
+	margin: var(--jm-ui-space-s);
 	overflow: hidden;
-	border-radius: var(--jm-ui-radius);
+	border-radius: var(--jm-ui-radius-2x);
 	background-color: var(--jm-ui-background-color, #fff);
 	color: var(--jm-ui-text-color, #1a1a1a);
 	box-shadow: var(--jm-ui-shadow-modal);
@@ -61,12 +60,14 @@
 }
 
 .jm-dialog-backdrop {
-	position: absolute;
-	top: 0;
+	position: fixed;
 	left: 0;
 	right: 0;
+	height: 110vh;
 	bottom: 0;
 	z-index: -1;
+	background-color: rgb(0 0 0 / 0.1);
+	backdrop-filter: blur(4px);
 }
 
 .jm-dialog-close {
@@ -85,21 +86,6 @@
 		height: var(--jm-ui-icon-size);
 	}
 
-}
-
-@media (max-width: 600px) {
-	.jm-dialog-open {
-		align-items: flex-end;
-	}
-
-	.jm-dialog-modal {
-		margin-bottom: var(--jm-ui-space-xs);
-
-	}
-
-	.jm-dialog {
-		--jm-local-notice-padding: var(--jm-ui-space-m);
-	}
 }
 
 .jm-dialog[open] .jm-dialog-open {
@@ -161,5 +147,25 @@
 	gap: var(--jm-ui-space-sm);
 	> * {
 		margin: unset;
+	}
+}
+
+@media (max-width: 600px) {
+
+	.jm-dialog-open {
+		justify-content: flex-end;
+	}
+
+	.jm-dialog-modal {
+		margin-bottom: var(--jm-ui-space-xs);
+
+	}
+
+	.jm-dialog {
+		--jm-local-notice-padding: var(--jm-ui-space-sm);
+	}
+
+	.jm-dialog .jm-form, .jm-dialog .jm-notice {
+		gap: var(--jm-ui-space-s);
 	}
 }
