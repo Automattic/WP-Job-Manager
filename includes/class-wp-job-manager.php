@@ -82,6 +82,15 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-guest-session.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui-settings.php';
+		// include everything from stats/
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/stats/AggregationProcessor.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/stats/Aggregation.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/stats/Event.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/stats/Period.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/stats/Record.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/stats/Stats.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/stats/UniqueVisitors.php';
+		\WP_Job_Manager\Stats\Stats::instance();
 
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';

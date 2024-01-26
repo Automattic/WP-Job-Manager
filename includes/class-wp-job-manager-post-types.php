@@ -211,7 +211,16 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
-
+		if ( ! isset( $_COOKIE['visitor_id'] ) ) {
+			$visitor_id = uniqid();
+			setcookie( 'visitor_id', $visitor_id, [
+				'expires' => time() + 60 * 60 * 24 * 365,
+				'path'    => COOKIEPATH,
+				'domain'  => COOKIE_DOMAIN,
+				'secure'  => wp_is_using_https(),
+			] );
+			$_COOKIE['visitor_id'] = $visitor_id;
+		}
 		// Single job content.
 		$this->job_content_filter( true );
 	}
@@ -687,6 +696,11 @@ class WP_Job_Manager_Post_Types {
 		) {
 			return $content;
 		}
+		// create visitor_id cookie with random hash if it is not defined
+
+		\WP_Job_Manager\Stats\Stats::instance()->collect('page_view', [
+			'visitor_id' => $_COOKIE['visitor_id'],
+		], 'job_listing', $post->ID);
 
 		ob_start();
 
