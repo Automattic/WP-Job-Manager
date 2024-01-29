@@ -5,6 +5,8 @@
  * @package wp-job-manager
  */
 
+use WP_Job_Manager\Singleton;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -13,31 +15,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * This class is responsible for initializing all aspects of stats for wpjm.
  */
 class WP_Job_Manager_Stats {
-	/**
-	 * Holds the one instance of stats.
-	 *
-	 * @var null|WP_Job_Manager_Stats
-	 */
-	private static $instance = null;
+	use Singleton;
 
 	/**
 	 * Constructor.
 	 */
 	private function __construct() {
 		$this->init();
-	}
-
-	/**
-	 * Get the instance.
-	 *
-	 * @return WP_Job_Manager_Stats
-	 */
-	public static function instance(): WP_Job_Manager_Stats {
-		if ( null === self::$instance ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
 	}
 
 	/**
