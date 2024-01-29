@@ -3,7 +3,7 @@
  * Notice component for the frontend.
  *
  * @package wp-job-manager
- * @since $$next-version$$
+ * @since 2.2.0
  */
 
 namespace WP_Job_Manager\UI;
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Notice component for the frontend.
  *
- * @since $$next-version$$
+ * @since 2.2.0
  *
  * @internal This API is still under development and subject to change.
  * @access private
@@ -162,7 +162,7 @@ class Notice {
 		/**
 		 * Filters notices. Return false to disable the notice.
 		 *
-		 * @since $$next-version$$
+		 * @since 2.2.0
 		 *
 		 * @param string $notice_html Generated HTML for the notice.
 		 * @param array  $options Notice template options.
@@ -173,7 +173,7 @@ class Notice {
 			/**
 			 * Filters an individual notice. Return false to disable the notice.
 			 *
-			 * @since $$next-version$$
+			 * @since 2.2.0
 			 *
 			 * @param string $notice_html Generated HTML for the notice.
 			 * @param array  $options Notice template options.

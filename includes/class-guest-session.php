@@ -10,7 +10,7 @@ namespace WP_Job_Manager;
 /**
  * Manage the guest user session.
  *
- * @since $$next-version$$
+ * @since 2.2.0
  */
 class Guest_Session {
 

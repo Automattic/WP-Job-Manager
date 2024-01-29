@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * A guest user is a site visitors without a full account, identified by their email address.
  *
- * @since $$next-version$$
+ * @since 2.2.0
  */
 class Guest_User {
 	const TOKEN_EXPIRY    = 35 * DAY_IN_SECONDS;

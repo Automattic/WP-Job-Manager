@@ -3,7 +3,7 @@
  * UI Elements.
  *
  * @package wp-job-manager
- * @since $$next-version$$
+ * @since 2.2.0
  */
 
 namespace WP_Job_Manager\UI;
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Collection of rendering functions for various UI elements.
  *
- * @since $$next-version$$
+ * @since 2.2.0
  *
  * @internal This API is still under development and subject to change.
  * @access private

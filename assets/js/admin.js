@@ -32,6 +32,10 @@ jQuery(document).ready(function($) {
 		setTimeout( () => window.scrollTo( 0, 0 ), 0 );
 	}
 
+	$( '.job-manager-settings-wrap' ).each( function() {
+		$( '#wpbody-content > .notice' ).hide();
+	})
+
 	// Author
 	$( 'p.form-field-author' ).on( 'click', 'a.change-author', function() {
 		$(this).closest( 'p' ).find('.current-author').hide();

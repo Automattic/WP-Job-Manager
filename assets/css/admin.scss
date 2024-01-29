@@ -32,6 +32,7 @@
 	background: #fff;
 	position: sticky;
 	top: var(--wp-admin--admin-bar--height, 32px);
+	z-index: 1;
 
 }
 .job-manager-settings-header-row {

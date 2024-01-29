@@ -3,7 +3,7 @@
  * Frontend redirect messages.
  *
  * @package wp-job-manager
- * @since $$next-version$$
+ * @since 2.2.0
  */
 
 namespace WP_Job_Manager\UI;
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Stores the messages in a transient with an ID, and passes along the ID as a query string to the redirected URL.
  *
- * @since $$next-version$$
+ * @since 2.2.0
  *
  * @internal This API is still under development and subject to change.
  * @access private
