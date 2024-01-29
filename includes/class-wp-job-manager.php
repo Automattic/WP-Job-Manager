@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use WP_Job_Manager\Stats;
+
 /**
  * Handles core plugin hooks and action setup.
  *
@@ -87,7 +89,7 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-access-token.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-guest-user.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-guest-session.php';
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-stats.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-stats.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui-settings.php';
 
@@ -101,7 +103,7 @@ class WP_Job_Manager {
 		// Init classes.
 		$this->forms      = WP_Job_Manager_Forms::instance();
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
-		$this->stats      = WP_Job_Manager_Stats::instance();
+		$this->stats      = Stats::instance();
 
 		// Schedule cron jobs.
 		add_action( 'init', [ __CLASS__, 'maybe_schedule_cron_jobs' ] );
