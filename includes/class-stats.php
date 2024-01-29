@@ -5,7 +5,7 @@
  * @package wp-job-manager
  */
 
-use WP_Job_Manager\Singleton;
+namespace WP_Job_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * This class is responsible for initializing all aspects of stats for wpjm.
  */
-class WP_Job_Manager_Stats {
+class Stats {
 	use Singleton;
 
 	/**
