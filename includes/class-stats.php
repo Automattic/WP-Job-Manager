@@ -30,4 +30,12 @@ class Stats {
 	public function init() {
 		// Do init stuff.
 	}
+
+	/**
+	 * Perform plugin activation-related stats actions.
+	 *
+	 * @return void
+	 */
+	public function activate() {
+	}
 }
