@@ -152,6 +152,7 @@ class WP_Job_Manager {
 	 * Performs plugin activation steps.
 	 */
 	public function activate() {
+		Stats::instance()->activate();
 		WP_Job_Manager_Ajax::add_endpoint();
 		unregister_post_type( \WP_Job_Manager_Post_Types::PT_LISTING );
 		add_filter( 'pre_option_job_manager_enable_types', '__return_true' );
