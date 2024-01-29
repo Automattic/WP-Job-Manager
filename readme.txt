@@ -147,6 +147,31 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+### 2.2.0 - 2024-01-29
+New:
+
+* Allow scheduling listings during job submission — add an option to show a 'Scheduled Date' field in the job submission form
+* Add new [jobs] shortcode parameter, featured_first so you can ensure featured listings always show up on top.
+* Add support for user sessions without a full account (used in the Job Alerts extension)
+
+Changes:
+
+* Improve styling for rich text e-mails
+* Include plain text alternative for rich text e-mails for better compatibility
+* Store previous license when plugin is deactivated for easier reactivation later.
+* Update design for settings and marketplace pages
+
+Fixes:
+
+* Fix custom role permission issues (#2673)
+* Fix RSS, Reset, Add Alert links not showing on search page without a keyword
+* Improve PHP 8 support
+* Fix numeric settings field issues
+* Improve e-mail formatting and encoding, remove extra whitespace
+* Add file type validation and error message to company logo upload
+* Fix cache issue when marking jobs as filled/not filled via bulk actions
+* Do not emit warning when user with insufficient access to Job Manager menu tries to access wp-admin
+
 ### 2.1.1 - 2023-11-21
 * Fix link to extensions page (#2650)
 * Update Twitter to the new X logo
@@ -186,19 +211,4 @@ For developers:
 * New: Allow plugins to override renewal values (#2566)
 * Tweak: Rename "licence" to "license" throughout codebase (#2554)
 * Fix: More efficient license checking for core add-ons (#2552)
-
-### 1.41.0 - 2023-06-10
-* Enhancement: Introduce listing renewals #2422
-* Enhancement: Allow searching multiple job locations at once #2433
-* Fix: Add check for job listing limit being 0 #2362
-* Fix: Trigger search when submitting search form #2457
-* Fix: Always show search actions #2454
-* Fix: Fix PHP 8.2 deprecations #2456
-* Fix: Make forms responsive #2453
-* Fix: Update $company_tagline check for PHP8+ #2430
-* Fix:  Update notice string from 'c' to 's' license spelling #2429
-* Change: Update WPJM logo #2482
-* Change: Add hook in job-submitted template #2458
-* Change: Run job_manager_job_submitted_content filter in every case #2474
-* Change: Update historical notices to use the new render_notice method. #2409
 
