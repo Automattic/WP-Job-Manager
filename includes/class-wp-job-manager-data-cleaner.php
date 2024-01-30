@@ -31,9 +31,9 @@ class WP_Job_Manager_Data_Cleaner {
 	/**
 	 * Taxonomies to be deleted.
 	 *
-	 * @var $taxonomies
+	 * @var array
 	 */
-	private static $taxonomies = [
+	private const TAXONOMIES = [
 		\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 		\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 	];
@@ -241,7 +241,7 @@ class WP_Job_Manager_Data_Cleaner {
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
-		foreach ( self::$taxonomies as $taxonomy ) {
+		foreach ( self::TAXONOMIES as $taxonomy ) {
 			$terms = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s",
