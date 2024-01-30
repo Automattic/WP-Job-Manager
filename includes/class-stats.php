@@ -55,7 +55,7 @@ class Stats {
 			[
 				"CREATE TABLE {$wpdb->job_manager_stats} (
 				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-				`date` DATE NOT NULL,
+				`date` date NOT NULL,
 				`post_id` bigint(20) DEFAULT NULL,
 				`name` varchar(255) NOT NULL,
 				`group` varchar(255) DEFAULT '',
