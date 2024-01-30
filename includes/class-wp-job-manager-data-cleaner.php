@@ -55,9 +55,9 @@ class WP_Job_Manager_Data_Cleaner {
 	/**
 	 * Options to be deleted.
 	 *
-	 * @var $options
+	 * @var array
 	 */
-	private static $options = [
+	private const OPTIONS = [
 		'wp_job_manager_version',
 		'job_manager_installed_terms',
 		'wpjm_permalinks',
@@ -297,7 +297,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @access private
 	 */
 	private static function cleanup_options() {
-		foreach ( self::$options as $option ) {
+		foreach ( self::OPTIONS as $option ) {
 			delete_option( $option );
 		}
 	}
