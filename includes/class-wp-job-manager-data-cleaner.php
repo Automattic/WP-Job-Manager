@@ -21,9 +21,9 @@ class WP_Job_Manager_Data_Cleaner {
 	/**
 	 * Custom post types to be deleted.
 	 *
-	 * @var $custom_post_types
+	 * @var array
 	 */
-	private static $custom_post_types = [
+	private const CUSTOM_POST_TYPES = [
 		\WP_Job_Manager_Post_Types::PT_LISTING,
 		\WP_Job_Manager_Post_Types::PT_GUEST_USER,
 	];
@@ -211,7 +211,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @access private
 	 */
 	private static function cleanup_custom_post_types() {
-		foreach ( self::$custom_post_types as $post_type ) {
+		foreach ( self::CUSTOM_POST_TYPES as $post_type ) {
 			$items = get_posts(
 				[
 					'post_type'   => $post_type,
