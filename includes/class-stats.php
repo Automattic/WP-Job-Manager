@@ -64,7 +64,7 @@ class Stats {
 				`group` varchar(255) DEFAULT '',
 				`count` bigint(20) unsigned not null default 1,
 				PRIMARY KEY (`id`),
-				KEY `name_date_group`  (`name`, `date`, `group`)
+				INDEX `idx_wpjm_stats_name_date_group`  (`name`, `date`, `group`)
 			) {$collate}",
 			]
 		);
