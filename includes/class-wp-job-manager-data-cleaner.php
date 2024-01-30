@@ -132,7 +132,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * Transient names (as MySQL regexes) to be deleted. The prefixes
 	 * "_transient_" and "_transient_timeout_" will be prepended.
 	 *
-	 * @var ARRAY
+	 * @var array
 	 */
 	private const TRANSIENTS = [
 		'_job_manager_activation_redirect', // Legacy transient that should still be removed.
