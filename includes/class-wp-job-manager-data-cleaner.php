@@ -144,9 +144,9 @@ class WP_Job_Manager_Data_Cleaner {
 	/**
 	 * Role to be removed.
 	 *
-	 * @var $role
+	 * @var array
 	 */
-	private static $role = 'employer';
+	private const ROLE = 'employer';
 
 	/**
 	 * Capabilities to be deleted.
@@ -356,11 +356,11 @@ class WP_Job_Manager_Data_Cleaner {
 		$users = get_users( [] );
 		foreach ( $users as $user ) {
 			self::remove_all_job_manager_caps( $user );
-			$user->remove_role( self::$role );
+			$user->remove_role( self::ROLE );
 		}
 
 		// Remove role.
-		remove_role( self::$role );
+		remove_role( self::ROLE );
 	}
 
 	/**
