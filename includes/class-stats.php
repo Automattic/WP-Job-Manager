@@ -28,7 +28,18 @@ class Stats {
 	 * Do initialization of all the things needed for stats.
 	 */
 	public function init() {
-		// Do init stuff.
+		$this->initialize_wpdb();
+	}
+
+	/**
+	 * Initialize the alias for the stats table on the wpdb object.
+	 *
+	 * @return void
+	 */
+	private function initialize_wpdb() {
+		global $wpdb;
+		$wpdb->job_manager_stats = $wpdb->prefix . 'job_manager_stats';
+		$wpdb->tables[]          = 'job_manager_stats';
 	}
 
 	/**
