@@ -29,6 +29,15 @@ class WP_Job_Manager_Data_Cleaner {
 	];
 
 	/**
+	 * Custom tables to be deleted.
+	 *
+	 * @var $custom_tables
+	 */
+	private static $custom_tables = [
+		'job_manager_stats',
+	];
+
+	/**
 	 * Taxonomies to be deleted.
 	 *
 	 * @var $taxonomies
@@ -195,6 +204,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 */
 	public static function cleanup_all() {
 		self::cleanup_custom_post_types();
+		self::cleanup_custom_tables();
 		self::cleanup_taxonomies();
 		self::cleanup_pages();
 		self::cleanup_cron_jobs();
@@ -228,6 +238,24 @@ class WP_Job_Manager_Data_Cleaner {
 					wp_delete_post( $item, true );
 				}
 			}
+		}
+	}
+
+	/**
+	 * Cleanup data for custom tables.
+	 *
+	 * @return void
+	 */
+	private static function cleanup_custom_tables() {
+		global $wpdb;
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- We need to delete the custom tables.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- We don't cache DROP TABLE.
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnsupportedPlaceholder -- %i is supported since WP 6.2.
+		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- %i is supported since WP 6.2.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange -- We really need to delete the custom tables.
+		foreach ( self::$custom_tables as $custom_table ) {
+			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . $custom_table ) );
 		}
 	}
 
