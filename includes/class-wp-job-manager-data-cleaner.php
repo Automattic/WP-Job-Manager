@@ -122,9 +122,9 @@ class WP_Job_Manager_Data_Cleaner {
 	/**
 	 * Site options to be deleted.
 	 *
-	 * @var $site_options
+	 * @var array
 	 */
-	private static $site_options = [
+	private const SITE_OPTIONS = [
 		'job_manager_helper',
 	];
 
@@ -308,7 +308,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @access private
 	 */
 	private static function cleanup_site_options() {
-		foreach ( self::$site_options as $option ) {
+		foreach ( self::SITE_OPTIONS as $option ) {
 			delete_site_option( $option );
 		}
 	}
