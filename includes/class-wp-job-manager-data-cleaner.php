@@ -31,9 +31,9 @@ class WP_Job_Manager_Data_Cleaner {
 	/**
 	 * Custom tables to be deleted.
 	 *
-	 * @var $custom_tables
+	 * @var array
 	 */
-	private static $custom_tables = [
+	private const CUSTOM_TABLES = [
 		'wpjm_stats',
 	];
 
@@ -254,7 +254,7 @@ class WP_Job_Manager_Data_Cleaner {
 		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnsupportedPlaceholder -- %i is supported since WP 6.2.
 		// phpcs:disable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- %i is supported since WP 6.2.
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.SchemaChange -- We really need to delete the custom tables.
-		foreach ( self::$custom_tables as $custom_table ) {
+		foreach ( self::CUSTOM_TABLES as $custom_table ) {
 			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . $custom_table ) );
 		}
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
