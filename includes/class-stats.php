@@ -43,6 +43,31 @@ class Stats {
 	}
 
 	/**
+	 * Migrate the stats table to the latest version.
+	 *
+	 * @return void
+	 */
+	public function migrate() {
+		global $wpdb;
+		$collate = $wpdb->get_charset_collate();
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		\dbDelta(
+			[
+				"CREATE TABLE {$wpdb->job_manager_stats} (
+				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+				`date` DATE NOT NULL CURRENT_DATE
+				`post_id` bigint(20) DEFAULT NULL,
+				`name` varchar(255) NOT NULL,
+				`group` varchar(255) DEFAULT '',
+				`count` bigint(20) unsigned not null default 1,
+				PRIMARY KEY (id),
+				KEY name_date_group (`name`, `date`, `group`)
+			) {$collate}",
+			]
+		);
+	}
+
+	/**
 	 * Perform plugin activation-related stats actions.
 	 *
 	 * @return void
