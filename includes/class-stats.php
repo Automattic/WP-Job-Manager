@@ -38,6 +38,9 @@ class Stats {
 	 */
 	private function initialize_wpdb() {
 		global $wpdb;
+		if ( isset( $wpdb->job_manager_stats ) ) {
+			return;
+		}
 		$wpdb->job_manager_stats = $wpdb->prefix . 'job_manager_stats';
 		$wpdb->tables[]          = 'job_manager_stats';
 	}
