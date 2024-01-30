@@ -55,13 +55,13 @@ class Stats {
 			[
 				"CREATE TABLE {$wpdb->job_manager_stats} (
 				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-				`date` DATE NOT NULL CURRENT_DATE
+				`date` DATE NOT NULL,
 				`post_id` bigint(20) DEFAULT NULL,
 				`name` varchar(255) NOT NULL,
 				`group` varchar(255) DEFAULT '',
 				`count` bigint(20) unsigned not null default 1,
-				PRIMARY KEY (id),
-				KEY name_date_group (`name`, `date`, `group`)
+				PRIMARY KEY (`id`),
+				KEY `name_date_group`  (`name`, `date`, `group`)
 			) {$collate}",
 			]
 		);
