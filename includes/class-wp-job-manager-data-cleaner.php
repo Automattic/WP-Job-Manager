@@ -151,9 +151,9 @@ class WP_Job_Manager_Data_Cleaner {
 	/**
 	 * Capabilities to be deleted.
 	 *
-	 * @var $caps
+	 * @var array
 	 */
-	private static $caps = [
+	private const CAPS = [
 		\WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS,
 		\WP_Job_Manager_Post_Types::CAP_EDIT_LISTING,
 		\WP_Job_Manager_Post_Types::CAP_READ_LISTING,
@@ -369,7 +369,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @param (WP_User|WP_Role) $object the user or role object.
 	 */
 	private static function remove_all_job_manager_caps( $object ) {
-		foreach ( self::$caps as $cap ) {
+		foreach ( self::CAPS as $cap ) {
 			$object->remove_cap( $cap );
 		}
 	}
