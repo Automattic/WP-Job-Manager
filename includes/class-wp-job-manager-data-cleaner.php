@@ -34,7 +34,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @var $custom_tables
 	 */
 	private static $custom_tables = [
-		'job_manager_stats',
+		'wpjm_stats',
 	];
 
 	/**

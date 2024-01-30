@@ -38,11 +38,11 @@ class Stats {
 	 */
 	private function initialize_wpdb() {
 		global $wpdb;
-		if ( isset( $wpdb->job_manager_stats ) ) {
+		if ( isset( $wpdb->wpjm_stats ) ) {
 			return;
 		}
-		$wpdb->job_manager_stats = $wpdb->prefix . 'job_manager_stats';
-		$wpdb->tables[]          = 'job_manager_stats';
+		$wpdb->wpjm_stats = $wpdb->prefix . 'wpjm_stats';
+		$wpdb->tables[]   = 'wpjm_stats';
 	}
 
 	/**
@@ -56,7 +56,7 @@ class Stats {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		\dbDelta(
 			[
-				"CREATE TABLE {$wpdb->job_manager_stats} (
+				"CREATE TABLE {$wpdb->wpjm_stats} (
 				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 				`date` date NOT NULL,
 				`post_id` bigint(20) DEFAULT NULL,
