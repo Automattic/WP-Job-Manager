@@ -132,9 +132,9 @@ class WP_Job_Manager_Data_Cleaner {
 	 * Transient names (as MySQL regexes) to be deleted. The prefixes
 	 * "_transient_" and "_transient_timeout_" will be prepended.
 	 *
-	 * @var $transients
+	 * @var ARRAY
 	 */
-	private static $transients = [
+	private const TRANSIENTS = [
 		'_job_manager_activation_redirect', // Legacy transient that should still be removed.
 		'get_job_listings-transient-version',
 		'jm_.*',
@@ -324,7 +324,7 @@ class WP_Job_Manager_Data_Cleaner {
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
 		foreach ( [ '_transient_', '_transient_timeout_' ] as $prefix ) {
-			foreach ( self::$transients as $transient ) {
+			foreach ( self::TRANSIENTS as $transient ) {
 				$wpdb->query(
 					$wpdb->prepare(
 						"DELETE FROM $wpdb->options WHERE option_name RLIKE %s",
