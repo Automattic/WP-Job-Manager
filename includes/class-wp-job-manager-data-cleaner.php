@@ -40,9 +40,9 @@ class WP_Job_Manager_Data_Cleaner {
 
 	/** Cron jobs to be unscheduled.
 	 *
-	 * @var $cron_jobs
+	 * @var array
 	 */
-	private static $cron_jobs = [
+	private const CRON_JOBS = [
 		'job_manager_check_for_expired_jobs',
 		'job_manager_delete_old_previews',
 		'job_manager_email_daily_notices',
@@ -396,7 +396,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 * @access private
 	 */
 	private static function cleanup_cron_jobs() {
-		foreach ( self::$cron_jobs as $job ) {
+		foreach ( self::CRON_JOBS as $job ) {
 			wp_clear_scheduled_hook( $job );
 		}
 	}
