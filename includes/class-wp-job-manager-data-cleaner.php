@@ -257,6 +257,11 @@ class WP_Job_Manager_Data_Cleaner {
 		foreach ( self::$custom_tables as $custom_table ) {
 			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . $custom_table ) );
 		}
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnsupportedPlaceholder
+		// phpcs:enable WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.SchemaChange
 	}
 
 	/**
