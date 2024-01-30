@@ -177,9 +177,9 @@ class WP_Job_Manager_Data_Cleaner {
 	/**
 	 * User meta key names to be deleted.
 	 *
-	 * @var array $user_meta_keys
+	 * @var array
 	 */
-	private static $user_meta_keys = [
+	private const USER_META_KEYS = [
 		'_company_logo',
 		'_company_name',
 		'_company_website',
@@ -382,7 +382,7 @@ class WP_Job_Manager_Data_Cleaner {
 	private static function cleanup_user_meta() {
 		global $wpdb;
 
-		foreach ( self::$user_meta_keys as $meta_key ) {
+		foreach ( self::USER_META_KEYS as $meta_key ) {
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Delete data across all users.
 			$wpdb->delete( $wpdb->usermeta, [ 'meta_key' => $meta_key ] );
 			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
