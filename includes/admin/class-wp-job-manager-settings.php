@@ -561,7 +561,7 @@ class WP_Job_Manager_Settings {
 							'name'       => 'job_manager_stats_retention',
 							'std'        => '90',
 							'label'      => __( 'Retention Period (days)', 'wp-job-manager' ),
-							'desc'       => __( 'Max time stats data will be retained.', 'wp-job-manager' ),
+							'desc'       => __( 'Enter the maximum number of days for which statistics data will be retained.', 'wp-job-manager' ),
 							'type'       => 'number',
 							'attributes' => [],
 						],
