@@ -66,12 +66,11 @@ class Stats {
 				"CREATE TABLE {$wpdb->wpjm_stats} (
 				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 				`date` date NOT NULL,
-				`post_id` bigint(20) DEFAULT 0,
+				`post_id` bigint(20) DEFAULT NULL,
 				`name` varchar(255) NOT NULL,
 				`group` varchar(255) DEFAULT '',
 				`count` bigint(20) unsigned not null default 1,
 				PRIMARY KEY (`id`),
-				INDEX `idx_wpjm_stats_name_date_group`  (`name`, `date`, `group`),
 				UNIQUE INDEX `idx_wpjm_stats_name_date_group_post_id`  (`name`, `date`, `group`, `post_id`)
 			) {$collate}",
 			]
