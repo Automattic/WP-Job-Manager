@@ -164,25 +164,19 @@ class Stats {
 	 * @return void
 	 */
 	private function hook() {
-		add_action( 'wp', [ $this, 'maybe_log_listing_view' ] );
+		add_filter( 'job_manager_single_job_content', [ $this, 'maybe_log_listing_view' ], 10, 2 );
 	}
 
 	/**
 	 * Log a (non-unique) listing page view.
 	 *
-	 * @return void
+	 * @param string   $content The post content for the job listing.
+	 * @param \WP_Post $post The job listing post object.
+	 * @return string
 	 */
-	public function maybe_log_listing_view() {
-		if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-			return;
-		}
+	public function maybe_log_listing_view( $content, $post ) {
+		$this->log_stat( 'job_listing_view', [ 'post_id' => get_post( $post )->ID ] );
 
-		$post_id   = absint( get_queried_object_id() );
-		$post_type = get_post_type( $post_id );
-		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
-			return;
-		}
-
-		$this->log_stat( 'job_listing_view', [ 'post_id' => $post_id ] );
+		return $content;
 	}
 }
