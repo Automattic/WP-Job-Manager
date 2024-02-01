@@ -541,15 +541,6 @@ class WP_Job_Manager_Settings {
 							'attributes' => [],
 						],
 						[
-							'name'       => 'job_manager_stats_require_paid_listing',
-							'std'        => '0',
-							'label'      => __( 'Require paid listing', 'wp-job-manager' ),
-							'cb_label'   => __( 'Require paid listing', 'wp-job-manager' ),
-							'desc'       => __( 'Only display stats to employers that purchased a paid-listing package', 'wp-job-manager' ),
-							'type'       => 'checkbox',
-							'attributes' => [],
-						],
-						[
 							'name'       => 'job_manager_stats_default_date_range',
 							'std'        => '30',
 							'label'      => __( 'Stats default date range', 'wp-job-manager' ),
