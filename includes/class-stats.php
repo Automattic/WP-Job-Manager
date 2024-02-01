@@ -17,6 +17,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Stats {
 	use Singleton;
 
+	const DEFAULT_LOG_STAT_ARGS = [
+		'group'        => '',
+		'post_id'      => 0,
+		'increment_by' => 1,
+	];
+
 	/**
 	 * Constructor.
 	 */
@@ -76,14 +82,23 @@ class Stats {
 	 * Log a stat into the db.
 	 *
 	 * @param string $name         The stat name.
-	 * @param string $group        The group this stat belongs to.
-	 * @param int    $post_id      The post_id this stat belongs to.
-	 * @param int    $increment_by The amount to increment the stat by.
+	 * @param array  $args {
+	 * Optional args for this stat.
+	 *
+	 * @type string $group        The group this stat belongs to.
+	 * @type int    $post_id      The post_id this stat belongs to.
+	 * @type int    $increment_by The amount to increment the stat by.
+	 * }
 	 *
 	 * @return bool
 	 */
-	public function log_stat( string $name, string $group = '', int $post_id = 0, int $increment_by = 1 ) {
+	public function log_stat( string $name, array $args = [] ) {
 		global $wpdb;
+
+		$args         = array_merge( self::DEFAULT_LOG_STAT_ARGS, $args );
+		$group        = $args['group'];
+		$post_id      = $args['post_id'];
+		$increment_by = $args['increment_by'];
 
 		if (
 			strlen( $name ) > 255 ||
@@ -169,6 +184,6 @@ class Stats {
 			return;
 		}
 
-		$this->log_stat( 'job_listing_view', '', $post_id );
+		$this->log_stat( 'job_listing_view', [ 'post_id' => $post_id ] );
 	}
 }
