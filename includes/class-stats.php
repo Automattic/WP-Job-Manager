@@ -165,7 +165,7 @@ class Stats {
 
 		$post_id   = absint( get_queried_object_id() );
 		$post_type = get_post_type( $post_id );
-		if ( 'job_listing' !== $post_type ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
 			return;
 		}
 
