@@ -181,7 +181,11 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			];
 		}
 
-		if ( 'true' === $args['featured_first'] && 'featured' !== $args['orderby'] && 'rand_featured' !== $args['orderby'] ) {
+		if ( isset( $args['featured_first'] ) ) {
+			$args['featured_first'] = filter_var( $args['featured_first'], FILTER_VALIDATE_BOOLEAN );
+		}
+
+		if ( true === $args['featured_first'] && 'featured' !== $args['orderby'] && 'rand_featured' !== $args['orderby'] ) {
 			$query_args['orderby'] = [
 				'menu_order'           => 'ASC',
 				$query_args['orderby'] => $query_args['order'],

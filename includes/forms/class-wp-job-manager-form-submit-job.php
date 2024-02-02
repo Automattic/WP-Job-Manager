@@ -1093,7 +1093,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @return false|mixed
 	 */
-	private function maybe_format_future_datetime( string $maybe_date_string ): mixed {
+	private function maybe_format_future_datetime( string $maybe_date_string ) {
 		if ( empty( $maybe_date_string ) ) {
 			return false;
 		}

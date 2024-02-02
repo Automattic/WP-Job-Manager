@@ -730,6 +730,7 @@ class WP_Job_Manager_Shortcodes {
 						'featured'          => $atts['featured'],
 						'filled'            => $atts['filled'],
 						'remote_position'   => $atts['remote_position'],
+						'featured_first'    => $atts['featured_first'],
 					]
 				)
 			);

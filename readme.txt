@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 6.2
 Tested up to: 6.4
 Requires PHP: 7.2
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -147,6 +147,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+### 2.2.1 - 2024-01-31
+* Fix PHP 7.x error for mixed returned type (#2726)
+
 ### 2.2.0 - 2024-01-29
 New:
 
@@ -192,23 +195,4 @@ Fixes:
 * Fix: Do not check for plugin updates when there are no plugins (#2605)
 * Change: Reorganize administration menu (#2621)
 * Change: Update naming from Add-ons to Extensions, Marketplace (#2621)
-
-### 1.42.0 - 2023-10-05
-New!
-
-* Easily promote job listings on Indeed, LinkedIn, and 1000s of job boards with JobTarget integration. See https://wpjobmanager.com/jobtarget for more information.
-
-Improvements:
-
-* Fix: Only show file upload input for company logo when it's empty (#2569)
-* Fix: Fix error when showing admin notices (#2557)
-* Fix: Show the links (RSS, Reset) below search even when there are no results (#2454)
-* Tweak: Improve usage tracking for plugins (#2576)
-
-For developers:
-
-* Fix: In forms, support dynamically added date inputs (#2573)
-* New: Allow plugins to override renewal values (#2566)
-* Tweak: Rename "licence" to "license" throughout codebase (#2554)
-* Fix: More efficient license checking for core add-ons (#2552)
 

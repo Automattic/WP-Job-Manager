@@ -1,5 +1,8 @@
 # WP Job Manager
 
+## 2.2.1 - 2024-01-31
+* Fix PHP 7.x error for mixed returned type (#2726)
+
 ## 2.2.0 - 2024-01-29
 New:
 
