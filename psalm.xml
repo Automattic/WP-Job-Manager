@@ -12,7 +12,6 @@
 >
     <projectFiles>
         <file name="wp-job-manager-functions.php" />
-        <file name="rector.php" />
         <file name="wp-job-manager-template.php" />
         <file name="uninstall.php" />
         <file name="wp-job-manager.php" />
