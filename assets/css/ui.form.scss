@@ -29,6 +29,10 @@
 		}
 	}
 
+	[hidden] {
+		display: none;
+	}
+
 	input,
 	input[type],
 	textarea,
@@ -117,17 +121,50 @@
 
 	input[type='checkbox'],
 	input[type='radio'] {
-		border: unset;
 		padding: var(--jm-ui-space-xs);
-		flex-grow: 0;
 		width: var(--jm-ui-icon-size);
-		height: var(--jm-ui-icon-size);
-		margin-left: 0;
-		margin-right: var(--jm-ui-space-s);
-		vertical-align: middle;
+		aspect-ratio: 1;
+		flex: 0 0 var(--jm-ui-icon-size);
+		align-self: baseline;
+		accent-color: currentColor;
+		appearance: unset;
+		position: relative;
 
 		+ label {
 			page-break-before: avoid;
+		}
+
+		&:focus, &:focus-visible, &:focus-within {
+			outline: unset;
+			outline: 2px solid currentColor;
+		}
+
+		&:checked::before {
+			content: '';
+			background: currentColor;
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+			width: 100%;
+			aspect-ratio: 1;
+		}
+	}
+
+	input[type='checkbox']:checked::before {
+		mask: var(--jm-ui-svg-check) center center;
+		mask-size: contain;
+	}
+
+	input[type='radio'] {
+		border-radius: 50%;
+		transform: scale(0.9);
+		&:checked::before {
+			background: currentColor;
+			border-radius: 50%;
+			width: 50%;
 		}
 	}
 
@@ -144,6 +181,8 @@
 
 		input {
 			background: unset;
+			border: unset;
+			outline: unset;
 		}
 
 		.select2-selection {
@@ -219,12 +258,26 @@
 	.jm-form-field {
 		margin: var(--jm-ui-space-s) 0;
 
+		&:empty {
+			display: none;
+		}
+	}
+
+	.jm-form-field:has(label:first-child) {
 		display: flex;
 		align-items: baseline;
 		gap: var(--jm-ui-space-m);
 		> * {
 			flex: 1;
 		}
+	}
+
+	.jm-form-field:has(input[type=checkbox]),
+	.jm-form-field:has(input[type=radio]),
+	{
+		display: flex;
+		align-items: center;
+		gap: var(--jm-ui-space-s2);
 	}
 
 	.jm-form-large-field {
@@ -234,7 +287,7 @@
 	}
 
 	.jm-form-fine-print {
-		font-size: 80%;
+		font-size: 90%;
 	}
 
 	.jm-form-input--inline {
@@ -273,7 +326,7 @@ body:has(.jm-form) .select2-dropdown {
 		background-color: fadeCurrentColor(15%);
 	}
 
-	.select2-results__option[aria-selected="true"] {
+	.select2-results__option[aria-selected='true'] {
 		color: inherit;
 		background-color: fadeCurrentColor(5%);
 	}
