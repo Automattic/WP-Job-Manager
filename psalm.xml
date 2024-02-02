@@ -9,7 +9,6 @@
     findUnusedBaselineEntry="true"
     findUnusedCode="true"
     errorBaseline=".psalm/psalm-baseline.xml"
-	phpVersion="7.4"
 >
     <projectFiles>
         <file name="wp-job-manager-functions.php" />
