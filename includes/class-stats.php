@@ -164,7 +164,9 @@ class Stats {
 	 * @return void
 	 */
 	private function hook() {
-		add_action( 'wp', [ $this, 'maybe_log_listing_view' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'frontend_scripts' ] );
+		add_action( 'wp_ajax_job_manager_log_stat', [ $this, 'maybe_log_stat_ajax' ] );
+		add_action( 'wp_ajax_nopriv_job_manager_log_stat', [ $this, 'maybe_log_stat_ajax' ] );
 	}
 
 	/**
@@ -184,5 +186,127 @@ class Stats {
 		}
 
 		$this->log_stat( 'job_listing_view', [ 'post_id' => $post_id ] );
+	}
+
+	/**
+	 * Log multiple stats in one go. Triggered in an ajax call.
+	 *
+	 * @return void
+	 */
+	public function maybe_log_stat_ajax() {
+		if ( ! ( defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+			return;
+		}
+
+		$post_data = stripslashes_deep( $_POST );
+
+		if ( ! isset( $post_data['_ajax_nonce'] ) || ! wp_verify_nonce( $post_data['_ajax_nonce'], 'ajax-nonce' ) ) {
+			return;
+		}
+
+		$post_id = isset( $post_data['post_id'] ) ? absint( $post_data['post_id'] ) : 0;
+
+		if ( empty( $post_id ) ) {
+			return;
+		}
+
+		$post_type = get_post_type( $post_id );
+
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
+			return;
+		}
+
+		$stats = isset( $post_data['stats'] ) ? explode( ',', sanitize_text_field( $post_data['stats'] ) ) : [];
+
+		// TODO: Maybe optimize this into a single insert?
+		foreach ( $stats as $stat_name ) {
+			$stat_name = trim( strtolower( $stat_name ) );
+			if ( ! in_array( $stat_name, $this->get_registered_stat_names(), true ) ) {
+				continue;
+			}
+			$this->log_stat( trim( $stat_name ), [ 'post_id' => $post_id ] );
+		}
+	}
+
+	/**
+	 * Get stat names.
+	 *
+	 * @return int[]|string[]
+	 */
+	private function get_registered_stat_names() {
+		return array_keys( $this->get_registered_stats() );
+	}
+
+	/**
+	 * Register any frontend JS scripts.
+	 *
+	 * @return void
+	 */
+	public function frontend_scripts() {
+		$post_id   = absint( get_queried_object_id() );
+		$post_type = get_post_type( $post_id );
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
+			return;
+		}
+
+		\WP_Job_Manager::register_script(
+			'wp-job-manager-stats',
+			'js/wpjm-stats.js',
+			[ 'jquery' ],
+			true
+		);
+
+		$script_data = [
+			'ajax_url'     => admin_url( 'admin-ajax.php' ),
+			'ajax_nonce'   => wp_create_nonce( 'ajax-nonce' ),
+			'post_id'      => $post_id,
+			'stats_to_log' => $this->get_stats_for_ajax( $post_id ),
+		];
+
+		wp_enqueue_script( 'wp-job-manager-stats' );
+		wp_localize_script(
+			'wp-job-manager-stats',
+			'job_manager_stats',
+			$script_data
+		);
+	}
+
+	/**
+	 * Get all the registered stats.
+	 *
+	 * @return array
+	 */
+	private function get_registered_stats() {
+		return (array) apply_filters(
+			'wpjm_get_registered_stats',
+			[
+				'job_listing_view'        => [],
+				'job_listing_view_unique' => [
+					'unique' => true,
+				],
+			]
+		);
+	}
+
+	/**
+	 * Prepare stats for wp_localize.
+	 *
+	 * @param int $post_id Optional post id.
+	 *
+	 * @return array
+	 */
+	private function get_stats_for_ajax( $post_id = 0 ) {
+		$ajax_stats = [];
+		foreach ( $this->get_registered_stats() as $stat_name => $stat_data ) {
+			$stat_ajax = [
+				'name' => $stat_name,
+			];
+			if ( ! empty( $stat_data['unique'] ) ) {
+				$stat_ajax['unique_key'] = $stat_name . '_' . $post_id;
+			}
+			$ajax_stats[] = $stat_ajax;
+		}
+
+		return $ajax_stats;
 	}
 }
