@@ -71,7 +71,7 @@
       <code><![CDATA[$value && $value > 0 ? absint( $value ) : '']]></code>
     </InvalidReturnStatement>
     <InvalidReturnType>
-      <code>get_posted_term_select_field</code>
+      <code>int</code>
     </InvalidReturnType>
     <NullableReturnStatement>
       <code>$value</code>
@@ -210,7 +210,7 @@
       <code>true</code>
     </InvalidArgument>
     <InvalidReturnType>
-      <code>handle_promote_job</code>
+      <code>void</code>
     </InvalidReturnType>
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
@@ -440,6 +440,9 @@
     <InvalidDocblock>
       <code>class WP_Job_Manager_Category_Walker extends Walker {</code>
     </InvalidDocblock>
+    <ParamNameMismatch>
+      <code>$object</code>
+    </ParamNameMismatch>
   </file>
   <file src="includes/class-wp-job-manager-com-api.php">
     <NullableReturnStatement>
@@ -566,8 +569,8 @@
 			]]]></code>
     </InvalidArgument>
     <InvalidNullableReturnType>
-      <code>sanitize_employment_type</code>
-      <code>set_job_expiration</code>
+      <code>false</code>
+      <code>string</code>
     </InvalidNullableReturnType>
     <NullArgument>
       <code>null</code>
@@ -674,6 +677,9 @@
     </TypeDoesNotContainType>
   </file>
   <file src="includes/class-wp-job-manager-widget.php">
+    <ImplementedReturnTypeMismatch>
+      <code>void</code>
+    </ImplementedReturnTypeMismatch>
     <UnusedForeachValue>
       <code>$setting</code>
     </UnusedForeachValue>
@@ -717,6 +723,9 @@
     <InvalidDocblock>
       <code>class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Template {</code>
     </InvalidDocblock>
+    <LessSpecificImplementedReturnType>
+      <code>mixed</code>
+    </LessSpecificImplementedReturnType>
     <PossiblyUnusedMethod>
       <code>get_from</code>
       <code>get_subject</code>
@@ -741,9 +750,6 @@
     <InvalidScalarArgument>
       <code><![CDATA[$this->job_id]]></code>
     </InvalidScalarArgument>
-    <MethodSignatureMustProvideReturnType>
-      <code>use_recaptcha_field</code>
-    </MethodSignatureMustProvideReturnType>
     <MissingFile>
       <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/image.php']]></code>
       <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/media.php']]></code>
@@ -820,7 +826,7 @@
       <code>$text</code>
     </InvalidReturnStatement>
     <InvalidReturnType>
-      <code>submit_button_text_renewal</code>
+      <code>string</code>
     </InvalidReturnType>
     <PossiblyUnusedMethod>
       <code>renew_preview_handler</code>
@@ -895,7 +901,7 @@
 		)]]></code>
     </InvalidReturnStatement>
     <InvalidReturnType>
-      <code>verify_token</code>
+      <code>WP_REST_Response</code>
     </InvalidReturnType>
     <PossiblyUnusedMethod>
       <code>get_items</code>
@@ -930,7 +936,7 @@
       <code><![CDATA[update_post_meta( $post_id, self::PROMOTED_META_KEY, $promoted ? '1' : '0' )]]></code>
     </InvalidReturnStatement>
     <InvalidReturnType>
-      <code>update_promotion</code>
+      <code>boolean</code>
     </InvalidReturnType>
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
@@ -1027,7 +1033,7 @@
       <code>true</code>
     </InvalidReturnStatement>
     <InvalidReturnType>
-      <code>send_event</code>
+      <code>null|WP_Error</code>
     </InvalidReturnType>
     <MissingFile>
       <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/plugin.php']]></code>
@@ -1054,13 +1060,6 @@
     </UnusedForeachValue>
   </file>
   <file src="lib/usage-tracking/tests/support/class-usage-tracking-test-subclass.php">
-    <MethodSignatureMustProvideReturnType>
-      <code>current_user_can_manage_tracking</code>
-      <code>get_plugins</code>
-      <code>get_prefix</code>
-      <code>get_tracking_enabled</code>
-      <code>opt_in_dialog_text</code>
-    </MethodSignatureMustProvideReturnType>
     <TypeDoesNotContainType>
       <code>false</code>
     </TypeDoesNotContainType>
