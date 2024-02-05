@@ -9,30 +9,20 @@
 		}
 	}
 
-	// Cookie funcs are copied verbatim from http://www.quirksmode.org/js/cookies.html, tweaked to include path.
-	function createCookie( name, value, days, path ) {
-		var expires = '';
-		if ( days ) {
+	function updateDailyUnique( key ) {
+		var date = new Date();
+		var expiresAtTimestamp = date.getTime() + 24 * 60 * 60 * 1000;
+		window.localStorage[key] = expiresAtTimestamp;
+	}
+
+	function getDailyUnique( name ) {
+		if ( window.localStorage[name] ) {
 			var date = new Date();
-			date.setTime( date.getTime() + days * 24 * 60 * 60 * 1000 );
-			var expires = '; expires=' + date.toGMTString();
-		} else var expires = '';
-		document.cookie = name + '=' + value + expires + '; path=' + path;
-	}
-
-	function readCookie( name ) {
-		var nameEQ = name + '=';
-		var ca = document.cookie.split( ';' );
-		for ( var i = 0; i < ca.length; i++ ) {
-			var c = ca[ i ];
-			while ( c.charAt( 0 ) == ' ' ) c = c.substring( 1, c.length );
-			if ( c.indexOf( nameEQ ) == 0 ) return c.substring( nameEQ.length, c.length );
+			var now = date.getTime();
+			var expiration = parseInt( window.localStorage[name], 10 );
+			return expiration >= now;
 		}
-		return null;
-	}
-
-	function eraseCookie( name ) {
-		createCookie( name, '', -1 );
+		return false;
 	}
 
 	ready( function () {
@@ -40,10 +30,10 @@
 		var jobStatsSettings = window.job_manager_stats;
 		var ajaxUrl = jobStatsSettings.ajax_url;
 		var ajaxNonce = jobStatsSettings.ajax_nonce;
-		var cookiesToSet = [];
-		var setCookies = function () {
-			cookiesToSet.forEach( function ( uniqueKey ) {
-				createCookie( uniqueKey, 1, 1, '' );
+		var uniquesToSet = [];
+		var setUniques = function () {
+			uniquesToSet.forEach( function ( uniqueKey ) {
+				updateDailyUnique( uniqueKey );
 			} );
 		};
 
@@ -54,24 +44,26 @@
 			if ( uniqueKey.length === 0 ) {
 				statsToRecord.push( statToRecordKey );
 			} else {
-				if ( null === readCookie( uniqueKey ) ) {
-					cookiesToSet.push( uniqueKey );
+				if ( false === getDailyUnique( uniqueKey ) ) {
+					uniquesToSet.push( uniqueKey );
 					statsToRecord.push( statToRecordKey );
 				}
 			}
 		} );
 
-		var postData = new URLSearchParams();
-		postData.append( '_ajax_nonce', ajaxNonce );
-		postData.append( 'post_id', jobStatsSettings.post_id || 0 );
-		postData.append( 'action', 'job_manager_log_stat' );
-		postData.append( 'stats', statsToRecord.join( ',' ) );
+		var postData = new URLSearchParams( {
+			_ajax_nonce: ajaxNonce,
+			post_id: jobStatsSettings.post_id || 0,
+			action: 'job_manager_log_stat',
+			stats: statsToRecord.join( ',' )
+		} );
+
 		fetch( ajaxUrl, {
 			method: 'POST',
 			credentials: 'same-origin',
 			body: postData,
 		} ).finally( function () {
-			setCookies();
+			setUniques();
 			console.log( 'sent' );
 		} );
 	} );
