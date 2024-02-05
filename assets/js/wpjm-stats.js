@@ -1,42 +1,41 @@
 /* global job_manager_stats */
 ( function () {
 	// From https://youmightnotneedjquery.com/#ready
-	function ready(fn) {
-		if (document.readyState !== 'loading') {
+	function ready( fn ) {
+		if ( document.readyState !== 'loading' ) {
 			fn();
 		} else {
-			document.addEventListener('DOMContentLoaded', fn);
+			document.addEventListener( 'DOMContentLoaded', fn );
 		}
 	}
 
 	// Cookie funcs are copied verbatim from http://www.quirksmode.org/js/cookies.html, tweaked to include path.
 	function createCookie( name, value, days, path ) {
-		var expires = "";
-		if (days) {
+		var expires = '';
+		if ( days ) {
 			var date = new Date();
-			date.setTime( date.getTime() + ( days * 24 * 60 * 60 * 1000 ) );
-			var expires = "; expires=" + date.toGMTString();
-		}
-		else var expires = "";
-		document.cookie = name+"="+value+expires+"; path=" + path;
+			date.setTime( date.getTime() + days * 24 * 60 * 60 * 1000 );
+			var expires = '; expires=' + date.toGMTString();
+		} else var expires = '';
+		document.cookie = name + '=' + value + expires + '; path=' + path;
 	}
 
-	function readCookie(name) {
-		var nameEQ = name + "=";
-		var ca = document.cookie.split(';');
-		for(var i=0;i < ca.length;i++) {
-			var c = ca[i];
-			while (c.charAt(0)==' ') c = c.substring(1,c.length);
-			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	function readCookie( name ) {
+		var nameEQ = name + '=';
+		var ca = document.cookie.split( ';' );
+		for ( var i = 0; i < ca.length; i++ ) {
+			var c = ca[ i ];
+			while ( c.charAt( 0 ) == ' ' ) c = c.substring( 1, c.length );
+			if ( c.indexOf( nameEQ ) == 0 ) return c.substring( nameEQ.length, c.length );
 		}
 		return null;
 	}
 
-	function eraseCookie(name) {
-		createCookie(name,"",-1);
+	function eraseCookie( name ) {
+		createCookie( name, '', -1 );
 	}
 
-	ready( function ()  {
+	ready( function () {
 		var statsToRecord = [];
 		var jobStatsSettings = window.job_manager_stats;
 		var ajaxUrl = jobStatsSettings.ajax_url;
@@ -48,7 +47,6 @@
 			} );
 		};
 
-
 		jobStatsSettings.stats_to_log.forEach( function ( statToRecord ) {
 			// do something.
 			var statToRecordKey = statToRecord.name;
@@ -56,7 +54,7 @@
 			if ( uniqueKey.length === 0 ) {
 				statsToRecord.push( statToRecordKey );
 			} else {
-				if ( null === readCookie( uniqueKey) ) {
+				if ( null === readCookie( uniqueKey ) ) {
 					cookiesToSet.push( uniqueKey );
 					statsToRecord.push( statToRecordKey );
 				}
@@ -68,14 +66,14 @@
 		postData.append( '_ajax_nonce', ajaxNonce );
 		postData.append( 'post_id', jobStatsSettings.post_id || 0 );
 		postData.append( 'action', 'job_manager_log_stat' );
-		postData.append( 'stats', statsToRecord.join(',') );
+		postData.append( 'stats', statsToRecord.join( ',' ) );
 		fetch( ajaxUrl, {
 			method: 'POST',
-			credentials: "same-origin",
+			credentials: 'same-origin',
 			body: postData,
 		} ).finally( function () {
 			setCookies();
-			console.log( 'sent');
+			console.log( 'sent' );
 		} );
 	} );
-}() );
+} )();
