@@ -17,6 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Stats {
 	use Singleton;
 
+	const TABLE       = 'wpjm_stats';
+	const CACHE_GROUP = 'wpjm_stats';
+
 	const DEFAULT_LOG_STAT_ARGS = [
 		'group'        => '',
 		'post_id'      => 0,
@@ -34,6 +37,12 @@ class Stats {
 	 * Do initialization of all the things needed for stats.
 	 */
 	public function init() {
+
+		include_once __DIR__ . '/class-job-listing-stats.php';
+		include_once __DIR__ . '/class-stats-dashboard.php';
+
+		Stats_Dashboard::instance();
+
 		$this->initialize_wpdb();
 		$this->hook();
 	}
@@ -48,8 +57,8 @@ class Stats {
 		if ( isset( $wpdb->wpjm_stats ) ) {
 			return;
 		}
-		$wpdb->wpjm_stats = $wpdb->prefix . 'wpjm_stats';
-		$wpdb->tables[]   = 'wpjm_stats';
+		$wpdb->wpjm_stats = $wpdb->prefix . self::TABLE;
+		$wpdb->tables[]   = self::TABLE;
 	}
 
 	/**
@@ -75,6 +84,15 @@ class Stats {
 			) {$collate}",
 			]
 		);
+	}
+
+	/**
+	 * Check if collecting and showing statistics are enabled.
+	 *
+	 * @return bool
+	 */
+	public static function is_enabled() {
+		return get_option( 'job_manager_stats_enable', false );
 	}
 
 	/**
