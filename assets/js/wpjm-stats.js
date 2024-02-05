@@ -1,5 +1,6 @@
 /* global job_manager_stats */
 ( function () {
+	// From https://youmightnotneedjquery.com/#ready
 	function ready(fn) {
 		if (document.readyState !== 'loading') {
 			fn();
@@ -8,11 +9,13 @@
 		}
 	}
 
-	function createCookie(name,value,days,path) {
+	// Cookie funcs are copied verbatim from http://www.quirksmode.org/js/cookies.html, tweaked to include path.
+	function createCookie( name, value, days, path ) {
+		var expires = "";
 		if (days) {
 			var date = new Date();
-			date.setTime(date.getTime()+(days*24*60*60*1000));
-			var expires = "; expires="+date.toGMTString();
+			date.setTime( date.getTime() + ( days * 24 * 60 * 60 * 1000 ) );
+			var expires = "; expires=" + date.toGMTString();
 		}
 		else var expires = "";
 		document.cookie = name+"="+value+expires+"; path=" + path;
