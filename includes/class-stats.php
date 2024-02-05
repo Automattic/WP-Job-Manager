@@ -194,7 +194,7 @@ class Stats {
 	 * @return void
 	 */
 	public function maybe_log_stat_ajax() {
-		if ( ! ( defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
+		if ( ! wp_doing_ajax() ) {
 			return;
 		}
 
