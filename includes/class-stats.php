@@ -289,7 +289,7 @@ class Stats {
 				],
 				'job_listing_view_unique' => [
 					'unique'          => true,
-					'unique_callback' => [ self::class, 'unique_by_post_id' ],
+					'unique_callback' => [ $this, 'unique_by_post_id' ],
 				],
 			]
 		);
