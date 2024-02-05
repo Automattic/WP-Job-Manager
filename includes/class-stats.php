@@ -256,7 +256,7 @@ class Stats {
 		\WP_Job_Manager::register_script(
 			'wp-job-manager-stats',
 			'js/wpjm-stats.js',
-			[],
+			[ 'wp-dom-ready' ],
 			true
 		);
 

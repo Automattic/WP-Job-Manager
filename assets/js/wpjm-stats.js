@@ -1,14 +1,8 @@
 /* global job_manager_stats */
-( function () {
-	// From https://youmightnotneedjquery.com/#ready
-	function ready( fn ) {
-		if ( document.readyState !== 'loading' ) {
-			fn();
-		} else {
-			document.addEventListener( 'DOMContentLoaded', fn );
-		}
-	}
 
+import domReady from '@wordpress/dom-ready';
+
+( function () {
 	function updateDailyUnique( key ) {
 		var date = new Date();
 		var expiresAtTimestamp = date.getTime() + 24 * 60 * 60 * 1000;
@@ -25,7 +19,7 @@
 		return false;
 	}
 
-	ready( function () {
+	domReady( function () {
 		var statsToRecord = [];
 		var jobStatsSettings = window.job_manager_stats;
 		var ajaxUrl = jobStatsSettings.ajax_url;
