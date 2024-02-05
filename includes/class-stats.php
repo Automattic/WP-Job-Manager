@@ -218,13 +218,17 @@ class Stats {
 
 		$stats = isset( $post_data['stats'] ) ? explode( ',', sanitize_text_field( $post_data['stats'] ) ) : [];
 
+		$registered_stats = $this->get_registered_stats();
+
 		// TODO: Maybe optimize this into a single insert?
 		foreach ( $stats as $stat_name ) {
 			$stat_name = trim( strtolower( $stat_name ) );
 			if ( ! in_array( $stat_name, $this->get_registered_stat_names(), true ) ) {
 				continue;
 			}
-			$this->log_stat( trim( $stat_name ), [ 'post_id' => $post_id ] );
+
+			$log_callback = $registered_stats[ $stat_name ]['log_callback'] ?? [ $this, 'log_stat' ];
+			call_user_func( $log_callback, trim( $stat_name ), [ 'post_id' => $post_id ] );
 		}
 	}
 
@@ -280,9 +284,12 @@ class Stats {
 		return (array) apply_filters(
 			'wpjm_get_registered_stats',
 			[
-				'job_listing_view'        => [],
+				'job_listing_view'        => [
+					'log_callback' => [ $this, 'log_stat' ], // Example of overriding how we log this.
+				],
 				'job_listing_view_unique' => [
-					'unique' => true,
+					'unique'          => true,
+					'unique_callback' => [ self::class, 'unique_by_post_id' ],
 				],
 			]
 		);
@@ -301,12 +308,27 @@ class Stats {
 			$stat_ajax = [
 				'name' => $stat_name,
 			];
+
 			if ( ! empty( $stat_data['unique'] ) ) {
-				$stat_ajax['unique_key'] = $stat_name . '_' . $post_id;
+				$unique_callback         = $stat_data['unique_callback'];
+				$stat_ajax['unique_key'] = call_user_func( $unique_callback, $stat_name, $post_id );
 			}
+
 			$ajax_stats[] = $stat_ajax;
 		}
 
 		return $ajax_stats;
+	}
+
+	/**
+	 * Derive unique key by post id.
+	 *
+	 * @param string $stat_name Name.
+	 * @param int    $post_id Post id.
+	 *
+	 * @return string
+	 */
+	public function unique_by_post_id( $stat_name, $post_id ) {
+		return $stat_name . '_' . $post_id;
 	}
 }
