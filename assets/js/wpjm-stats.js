@@ -1,4 +1,4 @@
-/* global wpjm_stats */
+/* global job_manager_stats */
 ( function () {
 	function ready(fn) {
 		if (document.readyState !== 'loading') {
