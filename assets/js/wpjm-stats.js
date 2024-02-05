@@ -60,7 +60,6 @@
 				}
 			}
 		} );
-		// console.log( statsToRecord ); return;
 
 		var postData = new URLSearchParams();
 		postData.append( '_ajax_nonce', ajaxNonce );
