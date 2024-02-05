@@ -64,7 +64,6 @@
 			body: postData,
 		} ).finally( function () {
 			setUniques();
-			console.log( 'sent' );
 		} );
 	} );
 } )();
