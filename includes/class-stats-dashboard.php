@@ -16,6 +16,8 @@ class Stats_Dashboard {
 
 	use Singleton;
 
+	private const COLUMN_NAME = 'stats';
+
 	/**
 	 * Constructor.
 	 */
@@ -26,7 +28,7 @@ class Stats_Dashboard {
 		}
 
 		add_filter( 'job_manager_job_dashboard_columns', [ $this, 'add_stats_column' ] );
-		add_action( 'job_manager_job_dashboard_column_stats', [ $this, 'render_stats_column' ] );
+		add_action( 'job_manager_job_dashboard_column_' . self::COLUMN_NAME, [ $this, 'render_stats_column' ] );
 
 		add_filter( 'manage_edit-job_listing_columns', [ $this, 'add_stats_column' ], 20 );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'maybe_render_job_listing_posts_custom_column' ], 2 );
@@ -39,7 +41,7 @@ class Stats_Dashboard {
 	 * @return array
 	 */
 	public function add_stats_column( $columns ) {
-		$columns['stats'] = __( 'Views', 'wp-job-manager' );
+		$columns[ self::COLUMN_NAME ] = __( 'Views', 'wp-job-manager' );
 		return $columns;
 
 	}
@@ -52,7 +54,6 @@ class Stats_Dashboard {
 	public function render_stats_column( $job ) {
 		$stats = new Job_Listing_Stats( $job->ID );
 		$total = $stats->get_total_stats();
-		$daily = $stats->get_daily_stats();
 
 		$views = $total['view'];
 
@@ -70,7 +71,7 @@ class Stats_Dashboard {
 	public function maybe_render_job_listing_posts_custom_column( $column ) {
 		global $post;
 
-		if ( 'stats' === $column ) {
+		if ( self::COLUMN_NAME === $column ) {
 			$this->render_stats_column( $post );
 		}
 	}

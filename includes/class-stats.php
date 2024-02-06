@@ -17,14 +17,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Stats {
 	use Singleton;
 
-	const TABLE       = 'wpjm_stats';
-	const CACHE_GROUP = 'wpjm_stats';
+	const         CACHE_GROUP = 'wpjm_stats';
 
 	const DEFAULT_LOG_STAT_ARGS = [
 		'group'        => '',
 		'post_id'      => 0,
 		'increment_by' => 1,
 	];
+
+	private const TABLE = 'wpjm_stats';
 
 	/**
 	 * Constructor.
