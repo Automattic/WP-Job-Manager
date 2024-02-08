@@ -8,8 +8,9 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.41.0
+ * @version     $$next-version$$
  *
+ * @since $$next-version$$ Switched to a responsive layout. job_manager_job_dashboard_column_{$key} action is called for all columns.
  * @since 1.34.4 Available job actions are passed in an array (`$job_actions`, keyed by job ID) and not generated in the template.
  * @since 1.35.0 Switched to new date functions.
  *
