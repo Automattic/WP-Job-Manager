@@ -5,6 +5,9 @@
  * @package wp-job-manager
  */
 
+use WP_Job_Manager\UI\Notice;
+use WP_Job_Manager\UI\UI_Elements;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -71,6 +74,9 @@ class WP_Job_Manager_Shortcodes {
 		add_shortcode( 'job_apply', [ $this, 'output_job_apply' ] );
 
 		add_filter( 'paginate_links', [ $this, 'filter_paginate_links' ], 10, 1 );
+
+		add_action( 'job_manager_job_dashboard_column_date', [ $this, 'job_dashboard_date_column_expires' ] );
+		add_action( 'job_manager_job_dashboard_column_job_title', [ $this, 'job_dashboard_title_column_status' ] );
 	}
 
 	/**
@@ -214,7 +220,7 @@ class WP_Job_Manager_Shortcodes {
 
 						// Message.
 						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = '<div class="job-manager-message">' . wp_kses_post( sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
+						$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
 						break;
 					case 'mark_not_filled':
 						// Check status.
@@ -227,7 +233,7 @@ class WP_Job_Manager_Shortcodes {
 
 						// Message.
 						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = '<div class="job-manager-message">' . wp_kses_post( sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
+						$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
 						break;
 					case 'delete':
 						// Trash it.
@@ -235,7 +241,7 @@ class WP_Job_Manager_Shortcodes {
 
 						// Message.
 						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = '<div class="job-manager-message">' . wp_kses_post( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) ) . '</div>';
+						$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
 
 						break;
 					case 'duplicate':
@@ -288,10 +294,10 @@ class WP_Job_Manager_Shortcodes {
 				 */
 				$success_message = apply_filters( 'job_manager_job_dashboard_success_message', '', $action, $job_id );
 				if ( $success_message ) {
-					$this->job_dashboard_message = '<div class="job-manager-message">' . $success_message . '</div>';
+					$this->job_dashboard_message = Notice::success( $success_message );
 				}
 			} catch ( Exception $e ) {
-				$this->job_dashboard_message = '<div class="job-manager-error">' . wp_kses_post( $e->getMessage() ) . '</div>';
+				$this->job_dashboard_message = Notice::error( $e->getMessage() );
 			}
 		}
 	}
@@ -375,6 +381,8 @@ class WP_Job_Manager_Shortcodes {
 		);
 		$posts_per_page = $new_atts['posts_per_page'];
 
+		WP_Job_Manager::register_style( 'wp-job-manager-job-dashboard', 'css/job-dashboard.css', [ 'wp-job-manager-ui' ] );
+		wp_enqueue_style( 'wp-job-manager-job-dashboard' );
 		wp_enqueue_script( 'wp-job-manager-job-dashboard' );
 
 		ob_start();
@@ -397,15 +405,13 @@ class WP_Job_Manager_Shortcodes {
 		// Cache IDs for access check later on.
 		$this->job_dashboard_job_ids = wp_list_pluck( $jobs->posts, 'ID' );
 
-		echo wp_kses_post( $this->job_dashboard_message );
+		echo '<div class="alignwide">' . wp_kses_post( $this->job_dashboard_message ) . '</div>';
 
 		$job_dashboard_columns = apply_filters(
 			'job_manager_job_dashboard_columns',
 			[
 				'job_title' => __( 'Title', 'wp-job-manager' ),
-				'filled'    => __( 'Filled?', 'wp-job-manager' ),
 				'date'      => __( 'Date', 'wp-job-manager' ),
-				'expires'   => __( 'Listing Expires', 'wp-job-manager' ),
 			]
 		);
 
@@ -989,6 +995,52 @@ class WP_Job_Manager_Shortcodes {
 		}
 
 		return ob_get_clean();
+	}
+
+	/**
+	 * Add expiration details to the job dashboard date column.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @output string
+	 */
+	public function job_dashboard_date_column_expires( $job ) {
+		$expiration = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+
+		if ( 'publish' === $job->post_status && ! empty( $expiration ) ) {
+
+			// translators: Placeholder is the expiration date of the job listing.
+			echo '<div class="job-expires"><small>' . UI_Elements::rel_time( $expiration, __( 'Expires in %s', 'wp-job-manager' ) ) . '</small></div>';
+		}
+	}
+
+	/**
+	 * Add job status to the job dashboard title column.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @output string
+	 */
+	public function job_dashboard_title_column_status( $job ) {
+
+		echo '<div class="job-status">';
+
+		$status = [];
+
+		if ( is_position_filled( $job ) ) {
+			$status[] = '<span class="job-status-filled">' . esc_html__( 'Filled', 'wp-job-manager' ) . '</span>';
+		}
+
+		if ( is_position_featured( $job ) && 'publish' === $job->post_status ) {
+			$status[] = '<span class="job-status-featured">' . esc_html__( 'Featured', 'wp-job-manager' ) . '</span>';
+		}
+
+		$status[] = '<span class="job-status-' . esc_attr( $job->post_status ) . '">' . esc_html( get_the_job_status( $job ) ) . '</span>';
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
+		echo implode( ', ', $status );
+
+		echo '</div>';
 	}
 }
 
