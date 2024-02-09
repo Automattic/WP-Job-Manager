@@ -102,10 +102,10 @@ class WP_Job_Manager_Shortcodes {
 		return $GLOBALS['job_manager']->forms->get_form( 'submit-job', $atts );
 	}
 
-
-
 	/**
 	 * Handles shortcode which lists the logged in user's jobs.
+	 *
+	 * @deprecated $$next-version$$ - Moved to Job_Dashboard_Shortcode.
 	 *
 	 * @param array $atts
 	 * @return string
@@ -113,11 +113,13 @@ class WP_Job_Manager_Shortcodes {
 	public function job_dashboard( $atts ) {
 		_deprecated_function( __METHOD__, '$$next-version$$', 'Job_Dashboard_Shortcode::output_job_dashboard_shortcode' );
 
-		return Job_Dashboard_Shortcode::instance()->output_job_dashboard_shortcode( $atts );
+		return Job_Dashboard_Shortcode::instance()->output_job_dashboard( $atts );
 	}
 
 	/**
 	 * Get the actions available to the user for a job listing on the job dashboard page.
+	 *
+	 * @deprecated $$next-version$$ - Moved to Job_Dashboard_Shortcode.
 	 *
 	 * @param WP_Post $job The job post object.
 	 *
@@ -132,6 +134,8 @@ class WP_Job_Manager_Shortcodes {
 	/**
 	 * Filters the url from paginate_links to avoid multiple calls for same action in job dashboard
 	 *
+	 * @deprecated $$next-version$$ - Moved to Job_Dashboard_Shortcode.
+	 *
 	 * @param string $link
 	 * @return string
 	 */
@@ -143,6 +147,8 @@ class WP_Job_Manager_Shortcodes {
 
 	/**
 	 * Displays edit job form.
+	 *
+	 * @deprecated $$next-version$$ - Moved to Job_Dashboard_Shortcode.
 	 */
 	public function edit_job() {
 		_deprecated_function( __METHOD__, '$$next-version$$', 'Job_Dashboard_Shortcode::edit_job' );
