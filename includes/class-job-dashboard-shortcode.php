@@ -43,9 +43,9 @@ class Job_Dashboard_Shortcode {
 	 */
 	public function __construct() {
 
-		add_action( 'wp', [ $this, 'shortcode_action_handler' ] );
+		add_shortcode( 'job_dashboard', [ $this, 'output_job_dashboard' ] );
 
-		add_shortcode( 'job_dashboard', [ $this, 'output_job_dashboard_shortcode' ] );
+		add_action( 'wp', [ $this, 'handle_actions' ] );
 
 		add_action( 'job_manager_job_dashboard_content_edit', [ $this, 'edit_job' ] );
 
@@ -62,7 +62,7 @@ class Job_Dashboard_Shortcode {
 	 *
 	 * @return string
 	 */
-	public function output_job_dashboard_shortcode( $attrs ) {
+	public function output_job_dashboard( $attrs ) {
 		if ( ! is_user_logged_in() ) {
 			ob_start();
 			get_job_manager_template( 'job-dashboard-login.php' );
@@ -144,7 +144,7 @@ class Job_Dashboard_Shortcode {
 		$should_run_handler = apply_filters( 'job_manager_should_run_shortcode_action_handler', $this->is_job_dashboard_page() );
 
 		if ( $should_run_handler ) {
-			$this->job_dashboard_handler();
+			$this->handle_actions();
 		}
 	}
 
@@ -313,125 +313,136 @@ class Job_Dashboard_Shortcode {
 	 *
 	 * @throws \Exception On action handling error.
 	 */
-	public function job_dashboard_handler() {
-		if (
-			! empty( $_REQUEST['action'] )
-			&& ! empty( $_REQUEST['job_id'] )
-			&& ! empty( $_REQUEST['_wpnonce'] )
+	public function handle_actions() {
+
+		/**
+		 * Determine if the shortcode action handler should run.
+		 *
+		 * @since 1.35.0
+		 *
+		 * @param bool $should_run_handler Should the handler run.
+		 */
+		$should_run_handler = apply_filters( 'job_manager_should_run_shortcode_action_handler', $this->is_job_dashboard_page() );
+
+		if ( ! $should_run_handler ||
+			empty( $_REQUEST['action'] )
+			|| empty( $_REQUEST['job_id'] )
+			|| empty( $_REQUEST['_wpnonce'] )
 		) {
-
-			$job_id = isset( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : 0;
-			$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
-
-			$job         = get_post( $job_id );
-			$job_actions = $this->get_job_actions( $job );
-
-			if (
-				! isset( $job_actions[ $action ] )
-				|| empty( $job_actions[ $action ]['nonce'] )
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
-				|| ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), $job_actions[ $action ]['nonce'] )
-			) {
-				return;
-			}
-
-			try {
-				if ( empty( $job ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type || ! job_manager_user_can_edit_job( $job_id ) ) {
-					throw new \Exception( __( 'Invalid ID', 'wp-job-manager' ) );
-				}
-
-				switch ( $action ) {
-					case 'mark_filled':
-						// Check status.
-						if ( 1 === intval( $job->_filled ) ) {
-							throw new \Exception( __( 'This position has already been filled', 'wp-job-manager' ) );
-						}
-
-						// Update.
-						update_post_meta( $job_id, '_filled', 1 );
-
-						// Message.
-						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
-						break;
-					case 'mark_not_filled':
-						// Check status.
-						if ( 1 !== intval( $job->_filled ) ) {
-							throw new \Exception( __( 'This position is not filled', 'wp-job-manager' ) );
-						}
-
-						// Update.
-						update_post_meta( $job_id, '_filled', 0 );
-
-						// Message.
-						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
-						break;
-					case 'delete':
-						// Trash it.
-						wp_trash_post( $job_id );
-
-						// Message.
-						// translators: Placeholder %s is the job listing title.
-						$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
-
-						break;
-					case 'duplicate':
-						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
-							throw new \Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
-						}
-
-						$new_job_id = job_manager_duplicate_listing( $job_id );
-
-						if ( $new_job_id ) {
-							wp_safe_redirect( add_query_arg( [ 'job_id' => absint( $new_job_id ) ], job_manager_get_permalink( 'submit_job_form' ) ) );
-							exit;
-						}
-
-						break;
-					case 'relist':
-					case 'renew':
-					case 'continue':
-						if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
-							throw new \Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
-						}
-
-						$query_args = [
-							'job_id' => absint( $job_id ),
-							'action' => $action,
-						];
-
-						if ( 'renew' === $action ) {
-							$query_args['nonce'] = wp_create_nonce( 'job_manager_renew_job_' . $job_id );
-						}
-						wp_safe_redirect( add_query_arg( $query_args, job_manager_get_permalink( 'submit_job_form' ) ) );
-						exit;
-					default:
-						do_action( 'job_manager_job_dashboard_do_action_' . $action, $job_id );
-						break;
-				}
-
-				do_action( 'job_manager_my_job_do_action', $action, $job_id );
-
-				/**
-				 * Set a success message for a custom dashboard action handler.
-				 *
-				 * When left empty, no success message will be shown.
-				 *
-				 * @since 1.31.1
-				 *
-				 * @param string  $message  Text for the success message. Default: empty string.
-				 * @param string  $action   The name of the custom action.
-				 * @param int     $job_id   The ID for the job that's been altered.
-				 */
-				$success_message = apply_filters( 'job_manager_job_dashboard_success_message', '', $action, $job_id );
-				if ( $success_message ) {
-					$this->job_dashboard_message = Notice::success( $success_message );
-				}
-			} catch ( Exception $e ) {
-				$this->job_dashboard_message = Notice::error( $e->getMessage() );
-			}
+			return;
 		}
+
+		$job_id = absint( $_REQUEST['job_id'] );
+		$action = sanitize_title( wp_unslash( $_REQUEST['action'] ) );
+
+		$job         = get_post( $job_id );
+		$job_actions = $this->get_job_actions( $job );
+
+		if ( ! isset( $job_actions[ $action ] )
+			|| empty( $job_actions[ $action ]['nonce'] )
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+			|| ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpnonce'] ), $job_actions[ $action ]['nonce'] )
+		) {
+			return;
+		}
+
+		try {
+			if ( empty( $job ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type || ! job_manager_user_can_edit_job( $job_id ) ) {
+				throw new \Exception( __( 'Invalid ID', 'wp-job-manager' ) );
+			}
+
+			switch ( $action ) {
+				case 'mark_filled':
+					// Check status.
+					if ( 1 === intval( $job->_filled ) ) {
+						throw new \Exception( __( 'This position has already been filled', 'wp-job-manager' ) );
+					}
+
+					// Update.
+					update_post_meta( $job_id, '_filled', 1 );
+
+					// Message.
+					// translators: Placeholder %s is the job listing title.
+					$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
+					break;
+				case 'mark_not_filled':
+					// Check status.
+					if ( 1 !== intval( $job->_filled ) ) {
+						throw new \Exception( __( 'This position is not filled', 'wp-job-manager' ) );
+					}
+
+					// Update.
+					update_post_meta( $job_id, '_filled', 0 );
+
+					// Message.
+					// translators: Placeholder %s is the job listing title.
+					$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been marked as not filled', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
+					break;
+				case 'delete':
+					// Trash it.
+					wp_trash_post( $job_id );
+
+					// Message.
+					// translators: Placeholder %s is the job listing title.
+					$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
+
+					break;
+				case 'duplicate':
+					if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
+						throw new \Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
+					}
+
+					$new_job_id = job_manager_duplicate_listing( $job_id );
+
+					if ( $new_job_id ) {
+						wp_safe_redirect( add_query_arg( [ 'job_id' => absint( $new_job_id ) ], job_manager_get_permalink( 'submit_job_form' ) ) );
+						exit;
+					}
+
+					break;
+				case 'relist':
+				case 'renew':
+				case 'continue':
+					if ( ! job_manager_get_permalink( 'submit_job_form' ) ) {
+						throw new \Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
+					}
+
+					$query_args = [
+						'job_id' => absint( $job_id ),
+						'action' => $action,
+					];
+
+					if ( 'renew' === $action ) {
+						$query_args['nonce'] = wp_create_nonce( 'job_manager_renew_job_' . $job_id );
+					}
+					wp_safe_redirect( add_query_arg( $query_args, job_manager_get_permalink( 'submit_job_form' ) ) );
+					exit;
+				default:
+					do_action( 'job_manager_job_dashboard_do_action_' . $action, $job_id );
+					break;
+			}
+
+			do_action( 'job_manager_my_job_do_action', $action, $job_id );
+
+			/**
+			 * Set a success message for a custom dashboard action handler.
+			 *
+			 * When left empty, no success message will be shown.
+			 *
+			 * @since 1.31.1
+			 *
+			 * @param string  $message  Text for the success message. Default: empty string.
+			 * @param string  $action   The name of the custom action.
+			 * @param int     $job_id   The ID for the job that's been altered.
+			 */
+			$success_message = apply_filters( 'job_manager_job_dashboard_success_message', '', $action, $job_id );
+			if ( $success_message ) {
+				$this->job_dashboard_message = Notice::success( $success_message );
+			}
+		} catch ( \Exception $e ) {
+			$this->job_dashboard_message = Notice::error( $e->getMessage() );
+		}
+
 	}
 
 	/**
