@@ -18,7 +18,6 @@ final class WP_Job_Manager_Email_Notifications {
 	const EMAIL_SETTING_PREFIX     = 'job_manager_email_';
 	const EMAIL_SETTING_ENABLED    = 'enabled';
 	const EMAIL_SETTING_PLAIN_TEXT = 'plain_text';
-	const MULTIPART_BOUNDARY       = 'jm-boundary';
 
 	/**
 	 * Notifications to be scheduled.
@@ -767,7 +766,7 @@ final class WP_Job_Manager_Email_Notifications {
 	 * @return bool
 	 */
 	private static function send_email( $email_notification_key, WP_Job_Manager_Email $email ) {
-		add_filter( 'wp_mail_content_type', [ __CLASS__, 'mail_content_type' ] );
+
 		global $job_manager_doing_email;
 		$job_manager_doing_email = true;
 
@@ -804,10 +803,11 @@ final class WP_Job_Manager_Email_Notifications {
 			$is_plain_text_only = self::send_as_plain_text( $email_notification_key, $args );
 
 			$content_plain = self::get_email_content( $email_notification_key, $args, true );
-			$content_html  = null;
 
-			if ( ! $is_plain_text_only ) {
-				$content_html = self::get_email_content( $email_notification_key, $args, false );
+			if ( $is_plain_text_only ) {
+				$body = $content_plain;
+			} else {
+				$body = self::get_email_content( $email_notification_key, $args, false );
 			}
 
 			/**
@@ -829,8 +829,6 @@ final class WP_Job_Manager_Email_Notifications {
 				$headers[] = 'CC: ' . $args['cc'];
 			}
 
-			$multipart_body = self::get_multipart_body( $content_html, $content_plain );
-
 			/**
 			 * Allows for short-circuiting the actual sending of email notifications.
 			 *
@@ -842,32 +840,43 @@ final class WP_Job_Manager_Email_Notifications {
 			 * @param string                $content                Email content.
 			 * @param array                 $headers                Email headers.
 			 */
-			if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $multipart_body, $headers ) ) {
+			if ( ! apply_filters( 'job_manager_email_do_send_notification', true, $email, $args, $body, $headers ) ) {
 				continue;
 			}
 
-			if ( wp_mail( $to_email, $args['subject'], $multipart_body, $headers, $args['attachments'] ) ) {
+			$set_alt_body = function( $mailer ) use ( $content_plain ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$mailer->AltBody = $content_plain;
+
+				return $mailer;
+			};
+
+			$set_content_type = fn() => 'multipart/alternative';
+
+			if ( ! $is_plain_text_only ) {
+				add_filter( 'wp_mail_content_type', $set_content_type );
+				add_filter( 'phpmailer_init', $set_alt_body );
+			}
+
+			if ( wp_mail( $to_email, $args['subject'], $body, $headers, $args['attachments'] ) ) {
 				$sent_count++;
+			}
+
+			remove_filter( 'wp_mail_content_type', $set_content_type );
+			remove_filter( 'phpmailer_init', $set_alt_body );
+
+			// Make sure AltBody is not sticking around for a different email.
+			global $phpmailer;
+
+			if ( $phpmailer instanceof \PHPMailer\PHPMailer\PHPMailer ) {
+				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				$phpmailer->AltBody = '';
 			}
 		}
 
-		remove_filter( 'wp_mail_content_type', [ __CLASS__, 'mail_content_type' ] );
 		$job_manager_doing_email = false;
 
 		return $sent_count > 0;
-	}
-
-	/**
-	 * Set the "Content Type" header of the e-mail to multipart/alternative.
-	 *
-	 * @access private
-	 *
-	 * @since 2.2.0
-	 *
-	 * @return string
-	 */
-	public static function mail_content_type() {
-		return 'multipart/alternative; boundary="' . self::MULTIPART_BOUNDARY . '"';
 	}
 
 	/**
@@ -963,43 +972,6 @@ final class WP_Job_Manager_Email_Notifications {
 		ob_start();
 		include $email_styles_template;
 		return ob_get_clean();
-	}
-
-	/**
-	 * Assemble multipart e-mail body.
-	 *
-	 * @param string $content_html
-	 * @param string $content_plain
-	 *
-	 * @return string
-	 */
-	private static function get_multipart_body( string $content_html, string $content_plain ): string {
-		$multipart_body = '';
-
-		if ( ! empty( $content_plain ) ) {
-
-			$multipart_body .= '
---' . self::MULTIPART_BOUNDARY . '
-Content-Type: text/plain; charset="utf-8"
-
-' . $content_plain;
-		}
-
-		if ( ! empty( $content_html ) ) {
-			$multipart_body .= '
---' . self::MULTIPART_BOUNDARY . '
-Content-Type: text/html; charset="utf-8"
-
-' . $content_html;
-		}
-
-		if ( ! empty( $multipart_body ) ) {
-			$multipart_body .= '
---' . self::MULTIPART_BOUNDARY . '--
-';
-		}
-
-		return $multipart_body;
 	}
 
 }
