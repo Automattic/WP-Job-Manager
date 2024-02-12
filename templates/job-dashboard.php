@@ -18,8 +18,10 @@
  * @var int       $max_num_pages Maximum number of pages
  * @var WP_Post[] $jobs Array of job post results.
  * @var array     $job_actions Array of actions available for each job.
+ * @var string    $search_input Search input.
  */
 
+use WP_Job_Manager\UI\Notice;
 use WP_Job_Manager\UI\UI_Elements;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -31,27 +33,45 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 
 <div id="job-manager-job-dashboard" class="alignwide">
 	<div class="jm-dashboard__intro">
-		<p><?php esc_html_e( 'Your listings are shown in the table below.', 'wp-job-manager' ); ?></p>
-		<?php if ( job_manager_user_can_submit_job_listing() ) : ?>
-			<div>
-				<a class="wp-element-button button"
-					href="<?php echo esc_url( get_permalink( $submit_job_form_page_id ) ); ?>"><?php esc_html_e( 'Add Job', 'wp-job-manager' ); ?></a>
-			</div>
-		<?php endif; ?>
+		<div class="jm-dashboard__filters">
+			<form method="GET" action="" class="jm-form">
+				<div style="display: flex; gap: 12px;">
+					<input type="search" name="search" class="jm-ui-input--search-icon"
+						placeholder="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>"
+						value="<?php echo esc_attr( $search_input ); ?>"
+						aria-label="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>" />
+				</div>
+			</form>
+		</div>
+		<div class="jm-dashboard__actions">
+			<?php if ( job_manager_user_can_submit_job_listing() ) : ?>
+				<a class="jm-ui-button"
+					href="<?php echo esc_url( get_permalink( $submit_job_form_page_id ) ); ?>"><span><?php esc_html_e( 'Add Job', 'wp-job-manager' ); ?></span></a>
+			<?php endif; ?>
+		</div>
 	</div>
 	<div class="job-manager-jobs jm-dashboard">
-		<div class="jm-dashboard-header">
-			<?php foreach ( $job_dashboard_columns as $key => $column ) : ?>
-				<div
-					class="jm-dashboard-job-column <?php echo esc_attr( $key ); ?>"><?php echo esc_html( $column ); ?></div>
-			<?php endforeach; ?>
-			<div class="jm-dashboard-job-column actions"><?php esc_html_e( 'Actions', 'wp-job-manager' ); ?></div>
-		</div>
-		<div class="jm-dashboard-rows">
-			<?php if ( ! $jobs ) : ?>
-				<div
-					class="jm-dashboard-empty"><?php esc_html_e( 'You do not have any active listings.', 'wp-job-manager' ); ?></div>
-			<?php else : ?>
+		<?php if ( ! $jobs ) : ?>
+			<div
+				class="jm-dashboard-empty">
+				<?php echo Notice::dialog(
+					[
+						'message' => $search_input
+							// translators: Placeholder is the search term.
+							? sprintf( __( 'No results found for "%s".', 'wp-job-manager' ), $search_input )
+							: __( 'You do not have any active listings.', 'wp-job-manager' )
+					]
+				); ?>
+			</div>
+		<?php else : ?>
+			<div class="jm-dashboard-header">
+				<?php foreach ( $job_dashboard_columns as $key => $column ) : ?>
+					<div
+						class="jm-dashboard-job-column <?php echo esc_attr( $key ); ?>"><?php echo esc_html( $column ); ?></div>
+				<?php endforeach; ?>
+				<div class="jm-dashboard-job-column actions"><?php esc_html_e( 'Actions', 'wp-job-manager' ); ?></div>
+			</div>
+			<div class="jm-dashboard-rows">
 				<?php foreach ( $jobs as $job ) : ?>
 					<div class="jm-dashboard-job">
 						<?php foreach ( $job_dashboard_columns as $key => $column ) : ?>
@@ -95,8 +115,8 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 						</div>
 					</div>
 				<?php endforeach; ?>
-			<?php endif; ?>
-		</div>
+			</div>
+		<?php endif; ?>
 	</div>
 	<?php get_job_manager_template( 'pagination.php', [ 'max_num_pages' => $max_num_pages ] ); ?>
 </div>
