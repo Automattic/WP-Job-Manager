@@ -99,14 +99,20 @@ class Job_Dashboard_Shortcode {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$search = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$status = isset( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
+
 		// ....If not show the job dashboard.
 		$jobs = new \WP_Query(
 			$this->get_job_dashboard_query_args(
-				[
-					'posts_per_page' => $posts_per_page,
-					's'              => $search,
-				]
-			),
+				array_merge(
+					[
+						'posts_per_page' => $posts_per_page,
+						's'              => $search,
+					],
+					! empty( $status ) ? [ 'post_status' => [ $status ] ] : []
+				),
+			)
 		);
 
 		// Cache IDs for access check later on.
@@ -135,6 +141,7 @@ class Job_Dashboard_Shortcode {
 				'max_num_pages'         => $jobs->max_num_pages,
 				'job_dashboard_columns' => $job_dashboard_columns,
 				'search_input'          => $search,
+				'filter_job_status'     => $status,
 			]
 		);
 
