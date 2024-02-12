@@ -96,8 +96,18 @@ class Job_Dashboard_Shortcode {
 			}
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$search = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
+
 		// ....If not show the job dashboard.
-		$jobs = new \WP_Query( $this->get_job_dashboard_query_args( $posts_per_page ) );
+		$jobs = new \WP_Query(
+			$this->get_job_dashboard_query_args(
+				[
+					'posts_per_page' => $posts_per_page,
+					's'              => $search,
+				]
+			),
+		);
 
 		// Cache IDs for access check later on.
 		$this->job_dashboard_job_ids = wp_list_pluck( $jobs->posts, 'ID' );
@@ -124,6 +134,7 @@ class Job_Dashboard_Shortcode {
 				'job_actions'           => $job_actions,
 				'max_num_pages'         => $jobs->max_num_pages,
 				'job_dashboard_columns' => $job_dashboard_columns,
+				'search_input'          => $search,
 			]
 		);
 
@@ -222,7 +233,7 @@ class Job_Dashboard_Shortcode {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param array   $actions Actions to filter.
+		 * @param array    $actions Actions to filter.
 		 * @param \WP_Post $job Job post object.
 		 */
 		$actions = apply_filters( 'job_manager_my_job_actions', $actions, $job );
@@ -306,8 +317,8 @@ class Job_Dashboard_Shortcode {
 		 */
 		$should_run_handler = apply_filters( 'job_manager_should_run_shortcode_action_handler', $this->is_job_dashboard_page() );
 
-		if ( ! $should_run_handler ||
-			empty( $_REQUEST['action'] )
+		if ( ! $should_run_handler
+			|| empty( $_REQUEST['action'] )
 			|| empty( $_REQUEST['job_id'] )
 			|| empty( $_REQUEST['_wpnonce'] )
 		) {
@@ -413,9 +424,9 @@ class Job_Dashboard_Shortcode {
 			 *
 			 * @since 1.31.1
 			 *
-			 * @param string  $message  Text for the success message. Default: empty string.
-			 * @param string  $action   The name of the custom action.
-			 * @param int     $job_id   The ID for the job that's been altered.
+			 * @param string $message Text for the success message. Default: empty string.
+			 * @param string $action The name of the custom action.
+			 * @param int    $job_id The ID for the job that's been altered.
 			 */
 			$success_message = apply_filters( 'job_manager_job_dashboard_success_message', '', $action, $job_id );
 			if ( $success_message ) {
@@ -498,27 +509,29 @@ class Job_Dashboard_Shortcode {
 	/**
 	 * Helper that generates the job dashboard query args.
 	 *
-	 * @param int $posts_per_page Number of posts per page.
+	 * @param array $args Additional query args.
 	 *
 	 * @return array
 	 */
-	private function get_job_dashboard_query_args( $posts_per_page = -1 ) {
-		$job_dashboard_args = [
-			'post_type'           => \WP_Job_Manager_Post_Types::PT_LISTING,
-			'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview' ],
-			'ignore_sticky_posts' => 1,
-			'posts_per_page'      => $posts_per_page,
-			'orderby'             => 'date',
-			'order'               => 'desc',
-			'author'              => get_current_user_id(),
-		];
+	private function get_job_dashboard_query_args( $args = [] ) {
+		$args = wp_parse_args(
+			$args,
+			[
+				'post_type'           => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview' ],
+				'ignore_sticky_posts' => 1,
+				'orderby'             => 'date',
+				'order'               => 'desc',
+				'author'              => get_current_user_id(),
+			]
+		);
 
 		if ( get_option( 'job_manager_enable_scheduled_listings' ) ) {
-			$job_dashboard_args['post_status'][] = 'future';
+			$args['post_status'][] = 'future';
 		}
 
-		if ( $posts_per_page > 0 ) {
-			$job_dashboard_args['offset'] = ( max( 1, get_query_var( 'paged' ) ) - 1 ) * $posts_per_page;
+		if ( $args['posts_per_page'] > 0 ) {
+			$args['offset'] = ( max( 1, get_query_var( 'paged' ) ) - 1 ) * $args['posts_per_page'];
 		}
 
 		/**
@@ -526,9 +539,9 @@ class Job_Dashboard_Shortcode {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param array $job_dashboard_args Arguments to pass to \WP_Query.
+		 * @param array $args Arguments to pass to \WP_Query.
 		 */
-		return apply_filters( 'job_manager_get_dashboard_jobs_args', $job_dashboard_args );
+		return apply_filters( 'job_manager_get_dashboard_jobs_args', $args );
 	}
 
 }
