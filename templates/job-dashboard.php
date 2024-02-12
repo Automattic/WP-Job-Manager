@@ -19,6 +19,7 @@
  * @var WP_Post[] $jobs Array of job post results.
  * @var array     $job_actions Array of actions available for each job.
  * @var string    $search_input Search input.
+ * @var string    $filter_job_status Search input.
  */
 
 use WP_Job_Manager\UI\Notice;
@@ -33,16 +34,23 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 
 <div id="job-manager-job-dashboard" class="alignwide">
 	<div class="jm-dashboard__intro">
-		<div class="jm-dashboard__filters">
-			<form method="GET" action="" class="jm-form">
-				<div style="display: flex; gap: 12px;">
-					<input type="search" name="search" class="jm-ui-input--search-icon"
-						placeholder="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>"
-						value="<?php echo esc_attr( $search_input ); ?>"
-						aria-label="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>" />
-				</div>
-			</form>
-		</div>
+		<form class="jm-dashboard__filters jm-form" method="GET" action="">
+			<input type="search" name="search" class="jm-ui-input--search-icon"
+				placeholder="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>"
+				value="<?php echo esc_attr( $search_input ); ?>"
+				aria-label="<?php esc_attr_e( 'Search', 'wp-job-manager' ); ?>" />
+
+			<select name="status" aria-label="<?php esc_attr_e( 'Status', 'wp-job-manager' ); ?>"
+				onchange="this.form.submit()">
+				<option value=""
+					disabled <?php selected( ! $filter_job_status ); ?>><?php esc_html_e( 'Status', 'wp-job-manager' ); ?></option>
+				<option value=""><?php esc_html_e( 'Any', 'wp-job-manager' ); ?></option>
+				<?php foreach ( get_job_listing_post_statuses() as $key => $label ) : ?>
+					<option
+						value="<?php echo esc_attr( $key ); ?>" <?php selected( $filter_job_status, $key ); ?>><?php echo esc_html( $label ); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</form>
 		<div class="jm-dashboard__actions">
 			<?php if ( job_manager_user_can_submit_job_listing() ) : ?>
 				<a class="jm-ui-button"
@@ -56,10 +64,10 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 				class="jm-dashboard-empty">
 				<?php echo Notice::dialog(
 					[
-						'message' => $search_input
+						'message' => ( $search_input || $filter_job_status )
 							// translators: Placeholder is the search term.
-							? sprintf( __( 'No results found for "%s".', 'wp-job-manager' ), $search_input )
-							: __( 'You do not have any active listings.', 'wp-job-manager' )
+							? __( 'No matching listings found.', 'wp-job-manager' )
+							: __( 'You do not have any active listings.', 'wp-job-manager' ),
 					]
 				); ?>
 			</div>
@@ -101,7 +109,7 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 								foreach ( $job_actions[ $job->ID ] as $action => $value ) {
 									$action_url = add_query_arg( [
 										'action' => $action,
-										'job_id' => $job->ID
+										'job_id' => $job->ID,
 									] );
 									if ( $value['nonce'] ) {
 										$action_url = wp_nonce_url( $action_url, $value['nonce'] );

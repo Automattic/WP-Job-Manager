@@ -28,6 +28,11 @@
 	gap: var(--jm-ui-space-sm);
 }
 
+.jm-dashboard__filters {
+	display: flex;
+	gap: var(--jm-ui-space-s);
+}
+
 .jm-dashboard-job {
 	border: var(--jm-ui-border-size) solid var(--jm-ui-border-light);
 }
