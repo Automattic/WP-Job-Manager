@@ -53,6 +53,8 @@ class Job_Dashboard_Shortcode {
 
 		add_action( 'job_manager_job_dashboard_column_date', [ $this, 'job_dashboard_date_column_expires' ] );
 		add_action( 'job_manager_job_dashboard_column_job_title', [ $this, 'job_dashboard_title_column_status' ] );
+
+		add_action( 'job_manager_ajax_job_dashboard_overlay', [ $this, 'ajax_job_overlay' ] );
 	}
 
 	/**
@@ -439,6 +441,39 @@ class Job_Dashboard_Shortcode {
 	}
 
 	/**
+	 * Render the job dashboard overlay content for an AJAX request.
+	 */
+	public function ajax_job_overlay() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$job_id = isset( $_REQUEST['job_id'] ) ? absint( $_REQUEST['job_id'] ) : null;
+
+		$job = $job_id ? get_post( $job_id ) : null;
+
+		if ( empty( $job ) || ! $this->is_job_available_on_dashboard( $job ) ) {
+			wp_send_json_error( __( 'Invalid Job ID.', 'wp-job-manager' ) );
+
+			return;
+		}
+
+		$job_actions = $this->get_job_actions( $job );
+
+		ob_start();
+
+		get_job_manager_template(
+			'job-dashboard-overlay.php',
+			[
+				'job'         => $job,
+				'job_actions' => $job_actions,
+			]
+		);
+
+		$content = ob_get_clean();
+
+		wp_send_json_success( $content );
+
+	}
+
+	/**
 	 * Add expiration details to the job dashboard date column.
 	 *
 	 * @param \WP_Post $job
@@ -482,6 +517,20 @@ class Job_Dashboard_Shortcode {
 		echo implode( ', ', $status );
 
 		echo '</div>';
+	}
+
+	/**
+	 * Get the URL of the [job_dashboard] page.
+	 *
+	 * @return string
+	 */
+	public static function get_job_dashboard_page_url() {
+		$page_id = get_option( 'job_manager_job_dashboard_page_id' );
+		if ( $page_id ) {
+			return get_permalink( $page_id );
+		} else {
+			return home_url( '/' );
+		}
 	}
 
 	/**

@@ -578,7 +578,8 @@ class WP_Job_Manager {
 			'wp-job-manager-job-dashboard',
 			'job_manager_job_dashboard',
 			[
-				'i18n_confirm_delete' => esc_html__( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
+				'i18nConfirmDelete' => esc_html__( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
+				'overlayEndpoint'   => WP_Job_Manager_Ajax::get_endpoint( 'job_dashboard_overlay' ),
 			]
 		);
 
