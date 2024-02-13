@@ -21,6 +21,7 @@
  * @var string    $search_input Search input.
  */
 
+use WP_Job_Manager\UI\Modal_Dialog;
 use WP_Job_Manager\UI\Notice;
 use WP_Job_Manager\UI\UI_Elements;
 
@@ -81,7 +82,7 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 
 								switch ( $key ) {
 									case 'job_title':
-										echo '<a class="job-title" href="' . esc_url( get_permalink( $job->ID ) ) . '">' . ( wpjm_get_the_job_title( $job ) ?? $job->ID ) . '</a>';
+										echo '<a class="job-title" data-job-id="' . esc_attr( $job->ID ) . '" href="' . esc_url( get_permalink( $job->ID ) ) . '">' . esc_html( get_the_title( $job ) ?? $job->ID ) . '</a>';
 										break;
 									case 'date':
 										echo '<div>' . esc_html( wp_date( apply_filters( 'job_manager_get_dashboard_date_format', 'M d, Y' ), get_post_datetime( $job )->getTimestamp() ) ) . '</div>';
@@ -101,7 +102,7 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 								foreach ( $job_actions[ $job->ID ] as $action => $value ) {
 									$action_url = add_query_arg( [
 										'action' => $action,
-										'job_id' => $job->ID
+										'job_id' => $job->ID,
 									] );
 									if ( $value['nonce'] ) {
 										$action_url = wp_nonce_url( $action_url, $value['nonce'] );
@@ -119,4 +120,12 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 		<?php endif; ?>
 	</div>
 	<?php get_job_manager_template( 'pagination.php', [ 'max_num_pages' => $max_num_pages ] ); ?>
+
+	<?php
+	$overlay = new Modal_Dialog( [
+		'id'    => 'jmDashboardOverlay',
+		'class' => 'jm-dashboard__overlay',
+	] );
+
+	echo $overlay->render( '' ); ?>
 </div>

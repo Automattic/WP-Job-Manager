@@ -1,6 +1,7 @@
 
 :root {
 	--jm-ui-border-light: #{fadeCurrentColor(15%)};
+	--jm-ui-border-faint: #{fadeCurrentColor(5%)};
 	--jm-ui-border-strong: currentColor;
 	--jm-ui-border-size: 1px;
 
@@ -12,6 +13,7 @@
 	--jm-ui-radius-2x: calc(2 * var(--jm-ui-radius));
 	--jm-ui-radius-4x: calc(4 * var(--jm-ui-radius));
 
+	--jm-ui-faint-color: #{fadeCurrentColor(2.5%)};
 	--jm-ui-accent-color: inherit;
 	--jm-ui-danger-color: #cc1818;
 	--jm-ui-error-color: #cc1818;

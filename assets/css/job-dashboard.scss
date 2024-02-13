@@ -1,5 +1,6 @@
 
-@import "mixins";
+@import 'mixins';
+@import 'job-overlay';
 
 #job-manager-job-dashboard {
 
@@ -41,20 +42,20 @@
 	font-size: var(--jm-ui-font-size-s);
 }
 
-.jm-dashboard-job-column.job_title {
+.jm-dashboard .job_title {
 	flex: 1 1 200%;
+}
 
-	.job-status {
-		text-transform: uppercase;
-		font-weight: 500;
-		font-size: var(--jm-ui-font-size-s);
-		line-height: var(--jm-ui-icon-size-s);
-		color: fadeCurrentColor( 80% );
+.jm-dashboard .job-status {
+	text-transform: uppercase;
+	font-weight: 500;
+	font-size: var(--jm-ui-font-size-s);
+	line-height: var(--jm-ui-icon-size-s);
+	color: fadeCurrentColor( 80% );
 
-		.jm-ui-icon {
-			width: var(--jm-ui-icon-size-s);
-			height: var(--jm-ui-icon-size-s);
-		}
+	.jm-ui-icon {
+		width: var(--jm-ui-icon-size-s);
+		height: var(--jm-ui-icon-size-s);
 	}
 }
 
