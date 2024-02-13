@@ -22,7 +22,7 @@
 
 .jm-dialog {
 	font-size: var(--jm-ui-font-size);
-	--jm-local-notice-padding: var(--jm-ui-space-l);
+	--jm-dialog-padding: var(--jm-ui-space-l);
 }
 
 .jm-dialog .jm-notice {
@@ -30,7 +30,7 @@
 	border: unset;
 	width: 100%;
 	min-width: unset;
-	padding: var(--jm-local-notice-padding);
+	padding: var(--jm-dialog-padding);
 
 	.jm-notice__details {
 		align-self: stretch;
@@ -43,10 +43,6 @@
 
 .jm-dialog-modal {
 	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
 	width: var(--wp--style--global--content-size, 640px);
 	max-width: calc(100% - var(--jm-ui-space-s) * 2);
 	max-height: 100%;
@@ -57,6 +53,17 @@
 	color: var(--jm-ui-text-color, #1a1a1a);
 	box-shadow: var(--jm-ui-shadow-modal);
 
+	overscroll-behavior: contain;
+
+}
+
+.jm-dialog-modal-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
 }
 
 .jm-dialog-backdrop {
@@ -73,9 +80,8 @@
 .jm-dialog-close {
 	position: absolute;
 	z-index: 1;
-	padding: var(--jm-ui-space-xxxs);
-	top: calc(var(--jm-local-notice-padding) - var(--jm-ui-space-xxxs));
-	right: calc(var(--jm-local-notice-padding) - var(--jm-ui-space-xxxs) - 8px);
+	top: calc(var(--jm-dialog-padding) - var(--jm-ui-space-xs));
+	right: calc(var(--jm-dialog-padding) - var(--jm-ui-space-xs) - 8px);
 	cursor: pointer;
 	opacity: 0.7;
 
@@ -159,7 +165,7 @@
 	}
 
 	.jm-dialog {
-		--jm-local-notice-padding: var(--jm-ui-space-sm);
+		--jm-dialog-padding: var(--jm-ui-space-sm);
 	}
 
 	.jm-dialog .jm-form, .jm-dialog .jm-notice {
