@@ -275,7 +275,10 @@ class Stats {
 		\WP_Job_Manager::register_script(
 			'wp-job-manager-stats',
 			'js/wpjm-stats.js',
-			[ 'wp-dom-ready' ],
+			[
+				'wp-dom-ready',
+				'wp-hooks',
+			],
 			true
 		);
 
@@ -303,10 +306,19 @@ class Stats {
 		return (array) apply_filters(
 			'wpjm_get_registered_stats',
 			[
-				'job_listing_view'        => [
+				'job_listing_view'                 => [
 					'log_callback' => [ $this, 'log_stat' ], // Example of overriding how we log this.
+					'trigger'      => 'page-load',
 				],
-				'job_listing_view_unique' => [
+				'job_listing_view_unique'          => [
+					'unique'          => true,
+					'unique_callback' => [ $this, 'unique_by_post_id' ],
+					'trigger'         => 'page-load',
+				],
+				'job_listing_apply_button_clicked' => [
+					'trigger'         => 'apply-button-clicked',
+					'element'         => 'input.application_button',
+					'event'           => 'click',
 					'unique'          => true,
 					'unique_callback' => [ $this, 'unique_by_post_id' ],
 				],
@@ -325,7 +337,10 @@ class Stats {
 		$ajax_stats = [];
 		foreach ( $this->get_registered_stats() as $stat_name => $stat_data ) {
 			$stat_ajax = [
-				'name' => $stat_name,
+				'name'    => $stat_name,
+				'trigger' => $stat_data['trigger'] ?? '',
+				'element' => $stat_data['element'] ?? '',
+				'event'   => $stat_data['event'] ?? '',
 			];
 
 			if ( ! empty( $stat_data['unique'] ) ) {
