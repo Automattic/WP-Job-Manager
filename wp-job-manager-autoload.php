@@ -53,7 +53,11 @@ class WP_Job_Manager_Autoload {
 			return;
 		}
 
-		list( $namespace, $file_name ) = explode( '\\', $class_name, 2 );
+		[ $namespace, $file_name ] = explode( '\\', $class_name, 2 );
+
+		if ( empty( $namespace ) || empty( $file_name ) || empty( self::$autoload_map[ $namespace ] ) ) {
+			return;
+		}
 
 		$root_dir = self::$autoload_map[ $namespace ];
 
@@ -73,7 +77,7 @@ class WP_Job_Manager_Autoload {
 			$file_path = $file_dir . '/' . $file_path;
 			if ( file_exists( $file_path ) ) {
 				require $file_path;
-				break;
+				return;
 			}
 		}
 
