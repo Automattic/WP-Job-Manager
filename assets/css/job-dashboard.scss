@@ -29,6 +29,10 @@
 	gap: var(--jm-ui-space-sm);
 }
 
+.jm-dashboard__filters {
+	font-size: var(--jm-ui-button-font-size);
+}
+
 .jm-dashboard-job {
 	border: var(--jm-ui-border-size) solid var(--jm-ui-border-light);
 }
@@ -51,12 +55,31 @@
 	font-weight: 500;
 	font-size: var(--jm-ui-font-size-s);
 	line-height: var(--jm-ui-icon-size-s);
-	color: fadeCurrentColor( 80% );
+	color: fadeCurrentColor( 70% );
+	margin: var(--jm-ui-space-xxs) 0;
+
+	.jm-ui-row {
+		gap: var(--jm-ui-space-xxxs);
+	}
+
+	.jm-separator {
+		color: fadeCurrentColor( 20% );
+	}
 
 	.jm-ui-icon {
 		width: var(--jm-ui-icon-size-s);
 		height: var(--jm-ui-icon-size-s);
 	}
+
+	.job-status-rejected {
+		color: var(--jm-ui-error-color);
+	}
+}
+
+.jm-dashboard img.company_logo {
+	width: var(--jm-ui-icon-size);
+	height: var(--jm-ui-icon-size);
+	object-fit: contain;
 }
 
 
@@ -68,6 +91,7 @@
 .jm-dashboard-job-column a.job-title {
 	font-weight: 600;
 	font-size: var(--jm-ui-font-size);
+	line-height: 1.2;
 	text-decoration: unset;
 }
 
