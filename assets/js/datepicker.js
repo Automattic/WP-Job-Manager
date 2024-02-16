@@ -1,5 +1,13 @@
 /* global job_manager_datepicker */
 jQuery(document).ready( function() {
+	var date_format_function = function(_dateValue) {
+		var dateValue = _dateValue;
+		var date_tokens = _dateValue.split("-");
+		if((date_tokens)&&(date_tokens.length == 3)) {
+			date_tokens[2] = "" + (parseInt(date_tokens[2], 10) + 1);
+			dateValue = new Date(date_tokens.join("-")).toLocaleDateString("en-us",{ year: 'numeric', month: 'long', day: 'numeric' });}
+		return dateValue;
+	}
 	var $date_today = new Date();
 	var datePickerOptions = {
 		altFormat  : 'yy-mm-dd',
@@ -39,4 +47,8 @@ jQuery(document).ready( function() {
 	jQuery( document ).on( 'wpJobManagerFieldAdded', function ( e ) {
 		initializeDatepicker( e.target );
 	});
+
+	// Fix for the hidden and displayed datepicker fields not holding the current values for _job_expires.
+	jQuery("[name='_job_expires']").val(jQuery("input[name='_job_expires-datepicker']")[0].getAttribute("value"));
+	jQuery("input[name='_job_expires-datepicker']").val(date_format_function(jQuery("input[name='_job_expires-datepicker']")[0].getAttribute("value")));
 });
