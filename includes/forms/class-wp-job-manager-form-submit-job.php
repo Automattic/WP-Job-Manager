@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once dirname( __DIR__ ) . '/class-wp-job-manager-recaptcha.php';
+
 /**
  * Handles the editing of Job Listings from the public facing frontend (from within `[submit_job_form]` shortcode).
  *
@@ -82,12 +84,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
-		}
-
-		if ( $this->use_recaptcha_field() ) {
-			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
-			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
-			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
 		}
 
 		$this->steps = (array) apply_filters(
@@ -389,18 +385,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		return $this->fields;
-	}
-
-	/**
-	 * Use reCAPTCHA field on the form?
-	 *
-	 * @return bool
-	 */
-	public function use_recaptcha_field() {
-		if ( ! $this->is_recaptcha_available() ) {
-			return false;
-		}
-		return 1 === absint( get_option( 'job_manager_enable_recaptcha_job_submission' ) );
 	}
 
 	/**
