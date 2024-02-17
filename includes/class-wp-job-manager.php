@@ -82,6 +82,7 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-guest-session.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/ui/class-ui-settings.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-recaptcha.php';
 
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';

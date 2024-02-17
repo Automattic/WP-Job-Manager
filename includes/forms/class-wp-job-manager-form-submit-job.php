@@ -9,8 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once dirname( __DIR__ ) . '/class-wp-job-manager-recaptcha.php';
-
 /**
  * Handles the editing of Job Listings from the public facing frontend (from within `[submit_job_form]` shortcode).
  *
@@ -80,6 +78,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Listing renewal support.
 		WP_Job_Manager_Helper_Renewals::instance( $this );
+		WP_Job_Manager_Recaptcha::instance( $this );
 
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );

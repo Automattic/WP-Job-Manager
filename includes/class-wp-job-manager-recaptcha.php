@@ -18,6 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Job_Manager_Recaptcha {
 
 	/**
+	 * Stores static instance of class.
+	 *
+	 * @var WP_Job_Manager_Helper_Renewals The single instance of the class.
+	 */
+	private static $instance = null;
+
+	/**
 	 * Initialize class for landing pages.
 	 *
 	 * @since 2.0.0
@@ -29,6 +36,20 @@ class WP_Job_Manager_Recaptcha {
 			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
 		}
 	}
+
+	/**
+	 * Returns static instance of class.
+	 *
+	 * @param WP_Job_Manager_Form_Submit_Job $form Form object.
+	 * @return self
+	 */
+	public static function instance( WP_Job_Manager_Form_Submit_Job $form ) {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self( $form );
+		}
+		return self::$instance;
+	}
+
 
 	/**
 	 * Use reCAPTCHA field on the form?
