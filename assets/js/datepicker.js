@@ -5,7 +5,8 @@ jQuery(document).ready( function() {
 		var dateTokens = _dateValue.split("-");
 		if((dateTokens)&&(dateTokens.length == 3)) {
 			dateTokens[2] = "" + (parseInt(dateTokens[2], 10) + 1);
-			dateValue = new Date(dateTokens.join("-")).toLocaleDateString("en-us",{ year: 'numeric', month: 'long', day: 'numeric' });}
+			dateValue = new Date(dateTokens.join("-")).toLocaleDateString("en-us",{ year: 'numeric', month: 'long', day: 'numeric' });
+		}
 		return dateValue;
 	}
 	var $date_today = new Date();
