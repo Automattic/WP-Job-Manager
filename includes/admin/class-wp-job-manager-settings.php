@@ -528,6 +528,36 @@ class WP_Job_Manager_Settings {
 						],
 					],
 				],
+				'stats'          => [
+					__( 'Stats', 'wp-job-manager' ),
+					[
+						[
+							'name'       => 'job_manager_stats_enable',
+							'std'        => '0',
+							'label'      => __( 'Enable stats', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable stats', 'wp-job-manager' ),
+							'desc'       => __( 'Enable recording various stats (e.g. listing views) and showing them to employers', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
+						[
+							'name'       => 'job_manager_stats_default_date_range',
+							'std'        => '30',
+							'label'      => __( 'Stats default date range', 'wp-job-manager' ),
+							'desc'       => __( 'The default date range (in days) of stats to display in the frontend dashboard', 'wp-job-manager' ),
+							'type'       => 'number',
+							'attributes' => [],
+						],
+						[
+							'name'       => 'job_manager_stats_retention',
+							'std'        => '90',
+							'label'      => __( 'Retention Period (days)', 'wp-job-manager' ),
+							'desc'       => __( 'Enter the maximum number of days for which statistics data will be retained.', 'wp-job-manager' ),
+							'type'       => 'number',
+							'attributes' => [],
+						],
+					],
+				],
 				'job_visibility' => [
 					__( 'Job Visibility', 'wp-job-manager' ),
 					[
