@@ -4,7 +4,7 @@ Tags: job manager, job listing, job board, job management, job lists, job list, 
 Requires at least: 6.2
 Tested up to: 6.4
 Requires PHP: 7.2
-Stable tag: 2.2.1
+Stable tag: 2.2.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -147,6 +147,11 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+### 2.2.2 - 2024-02-15
+* Fix issue with rich e-mails on some e-mail providers (#2753)
+* Fix: 'featured_first' argument now works when 'show_filters' is set to false.
+* Improve checkbox and radio inputs for styled forms
+
 ### 2.2.1 - 2024-01-31
 * Fix PHP 7.x error for mixed returned type (#2726)
 
@@ -181,18 +186,4 @@ Fixes:
 
 ### 2.1.0 - 2023-11-17
 * Fix: Remove public update endpoint and add nonce check (#2642)
-
-### 2.0.0 - 2023-11-17
-* Enhancement: Improve settings descriptions (#2639)
-* Enhancement: Add directApply in Google job schema (#2635)
-* Enhancement: Add 'Don't show this again' link to dismiss promote job modal in the editor (#2632)
-* Enhancement: Add landing pages for Applications and Resumes extensions (#2621)
-* Fix: Align actions in notices in the center (#2637)
-* Fix: Safeguard array in WP_Job_Manager_Settings::input_capabilities (#2631)
-* Fix: Escape menu titles and various admin labels (#2630)
-* Fix: Incorrectly duplicated string in settings (#2628)
-* Fix: Add array initialization to avoid warning (#2619)
-* Fix: Do not check for plugin updates when there are no plugins (#2605)
-* Change: Reorganize administration menu (#2621)
-* Change: Update naming from Add-ons to Extensions, Marketplace (#2621)
 
