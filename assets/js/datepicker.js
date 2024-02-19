@@ -5,7 +5,14 @@ jQuery(document).ready( function() {
 		var dateTokens = _dateValue.split("-");
 		if((dateTokens)&&(dateTokens.length == 3)) {
 			dateTokens[2] = "" + (parseInt(dateTokens[2], 10) + 1);
-			dateValue = new Date(dateTokens.join("-")).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+
+			// Need to ensure the length of the days is always 2 digits for consistent behaviour with the Date constructor.
+			// E.G. "2024-02-4" gets converted to "February 4, 2024", but "2024-02-04" gets converted to "February 3, 2024", going back a day for some reason.
+			dateTokens[2] = (dateTokens[2].length == 1) ? "0" + dateTokens[2] : dateTokens[2];
+
+			// Using JQuery UI's datepicker functionality for consistency. However, we could alternatively use:
+			//   dateValue = new Date(dateTokens.join("-").toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+			dateValue = jQuery.datepicker.formatDate("MM d, yy", new Date(dateTokens.join("-")));
 		}
 		return dateValue;
 	}
@@ -38,6 +45,10 @@ jQuery(document).ready( function() {
 				$target.datepicker('setDate', selectedDate);
 			}
 		}
+
+		// Fix for the hidden and displayed datepicker fields not holding the current values for _job_expires.
+		$hidden_input.val($target[0].getAttribute("value"));
+		$target.val(dateFormatFunction($target[0].getAttribute("value")));
 	};
 
 	jQuery( 'input.job-manager-datepicker, input#_job_expires' ).each( function() {
@@ -48,8 +59,4 @@ jQuery(document).ready( function() {
 	jQuery( document ).on( 'wpJobManagerFieldAdded', function ( e ) {
 		initializeDatepicker( e.target );
 	});
-
-	// Fix for the hidden and displayed datepicker fields not holding the current values for _job_expires.
-	jQuery("[name='_job_expires']").val(jQuery("input[name='_job_expires-datepicker']")[0].getAttribute("value"));
-	jQuery("input[name='_job_expires-datepicker']").val(dateFormatFunction(jQuery("input[name='_job_expires-datepicker']")[0].getAttribute("value")));
 });
