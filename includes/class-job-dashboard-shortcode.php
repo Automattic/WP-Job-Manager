@@ -53,13 +53,27 @@ class Job_Dashboard_Shortcode {
 
 		add_filter( 'paginate_links', [ $this, 'filter_paginate_links' ], 10, 1 );
 
+		add_action( 'job_manager_job_dashboard_column_company', [ self::class, 'the_company' ] );
 		add_action( 'job_manager_job_dashboard_column_date', [ self::class, 'the_date' ] );
 		add_action( 'job_manager_job_dashboard_column_date', [ self::class, 'the_expiration_date' ] );
 
+		add_action( 'job_manager_job_dashboard_columns', [ $this, 'maybe_display_company_column' ], 8 );
 		add_action( 'job_manager_job_dashboard_column_job_title', [ self::class, 'the_job_title' ], 10 );
 		add_action( 'job_manager_job_dashboard_column_job_title', [ self::class, 'the_status' ], 12 );
 
 		Job_Overlay::instance();
+	}
+	/**
+	 * Add 'company' column if user has multiple companies.
+	 *
+	 * @param array $columns
+	 */
+	public function maybe_display_company_column( $columns ) {
+		if ( $this->user_has_multiple_companies() ) {
+			$columns = array_merge( [ 'company' => __( 'Company', 'wp-job-manager' ) ], $columns );
+		}
+
+		return $columns;
 	}
 
 	/**
@@ -460,6 +474,17 @@ class Job_Dashboard_Shortcode {
 			// translators: Placeholder is the expiration date of the job listing.
 			echo '<div class="job-expires"><small>' . UI_Elements::rel_time( $expiration, __( 'Expires in %s', 'wp-job-manager' ) ) . '</small></div>';
 		}
+	}
+
+	/**
+	 * Show company details.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @output string
+	 */
+	public static function the_company( $job ) {
+		the_company_logo( 'thumbnail', '', $job );
 	}
 
 	/**

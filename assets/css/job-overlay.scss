@@ -60,6 +60,7 @@
 .jm-job-overlay-details-box {
 	background: var(--jm-ui-faint-color);
 	padding: var(--jm-ui-space-m);
+	--jm-dashboard-company-logo-size: var(--jm-ui-icon-size);
 }
 
 @media (max-width: 600px) {

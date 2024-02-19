@@ -2,8 +2,10 @@
 @import 'mixins';
 @import 'job-overlay';
 
-#job-manager-job-dashboard {
+.jm-dashboard {
+	container-type: inline-size;
 
+	--jm-dashboard-company-logo-size: calc(var(--jm-ui-icon-size) + 2 * var(--jm-ui-space-xs));
 }
 
 .jm-dashboard-job, .jm-dashboard-header {
@@ -50,6 +52,14 @@
 	flex: 1 1 200%;
 }
 
+.jm-dashboard-job-column.company {
+
+	flex: 0 0 var(--jm-dashboard-company-logo-size);
+	.jm-dashboard-header & {
+		visibility: hidden;
+	}
+}
+
 .jm-dashboard .job-status {
 	text-transform: uppercase;
 	font-weight: 500;
@@ -77,8 +87,8 @@
 }
 
 .jm-dashboard img.company_logo {
-	width: var(--jm-ui-icon-size);
-	height: var(--jm-ui-icon-size);
+	width: var(--jm-dashboard-company-logo-size);
+	height: var(--jm-dashboard-company-logo-size);
 	object-fit: contain;
 }
 
@@ -112,12 +122,19 @@
 	color: var(--jm-ui-danger-color);
 }
 
-@media (max-width: 600px) {
+@container (width < 540px)
+{
 	.jm-dashboard-job {
 		flex-wrap: wrap;
 	}
 
 	.jm-dashboard-header {
 		display: none;
+	}
+
+
+	.jm-dashboard-job-column.company ~ .jm-dashboard-job-column.job_title {
+		flex-basis: calc( 100% - var(--jm-dashboard-company-logo-size) - var(--jm-ui-space-sm) );
+		order: -1;
 	}
 }
