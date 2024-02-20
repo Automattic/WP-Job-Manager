@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.13.1@086b94371304750d1c673315321a55d15fc59015">
-  <file src="includes/3rd-party/rp4wp.php">
-    <UnusedParam>
-      <code>$meta_field</code>
-    </UnusedParam>
-  </file>
   <file src="includes/3rd-party/wpcom.php">
     <InvalidReturnStatement>
       <code>$result</code>
@@ -29,14 +24,6 @@
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
     </ParadoxicalCondition>
-    <PossiblyUnusedReturnValue>
-      <code>string</code>
-      <code>string</code>
-    </PossiblyUnusedReturnValue>
-    <UnusedVariable>
-      <code>$args</code>
-      <code>$email</code>
-    </UnusedVariable>
   </file>
   <file src="includes/abstracts/abstract-wp-job-manager-email.php">
     <FalsableReturnStatement>
@@ -46,21 +33,6 @@
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
     </ParadoxicalCondition>
-    <PossiblyUnusedMethod>
-      <code>__construct</code>
-      <code>get_attachments</code>
-      <code>get_cc</code>
-      <code>get_description</code>
-      <code>get_enabled_force_value</code>
-      <code>get_from</code>
-      <code>get_headers</code>
-      <code>get_settings</code>
-      <code>get_subject</code>
-      <code>is_default_enabled</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>string</code>
-    </PossiblyUnusedReturnValue>
   </file>
   <file src="includes/abstracts/abstract-wp-job-manager-form.php">
     <InvalidArgument>
@@ -76,26 +48,6 @@
     <NullableReturnStatement>
       <code>$value</code>
     </NullableReturnStatement>
-    <PossiblyUnusedMethod>
-      <code>clear_fields</code>
-      <code>get_form_name</code>
-      <code>get_posted_file_field</code>
-      <code>get_posted_multiselect_field</code>
-      <code>get_posted_term_checklist_field</code>
-      <code>get_posted_term_multiselect_field</code>
-      <code>get_posted_term_select_field</code>
-      <code>get_posted_wp_editor_field</code>
-      <code>previous_step</code>
-      <code>set_step</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$key</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>bool|WP_Error</code>
-      <code>bool|WP_Error</code>
-      <code>int</code>
-    </PossiblyUnusedReturnValue>
     <UndefinedConstant>
       <code>COOKIEPATH</code>
       <code>COOKIEPATH</code>
@@ -107,25 +59,6 @@
     <MissingFile>
       <code><![CDATA[require_once ABSPATH . 'wp-admin/includes/plugin.php']]></code>
     </MissingFile>
-    <UnusedForeachValue>
-      <code>$plugin_data</code>
-    </UnusedForeachValue>
-  </file>
-  <file src="includes/admin/class-wp-job-manager-addons-landing-page.php">
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-  </file>
-  <file src="includes/admin/class-wp-job-manager-addons.php">
-    <UndefinedConstant>
-      <code>HOUR_IN_SECONDS</code>
-      <code>WEEK_IN_SECONDS</code>
-    </UndefinedConstant>
-    <UnusedVariable>
-      <code>$add_ons</code>
-      <code>$add_ons</code>
-      <code>$categories</code>
-    </UnusedVariable>
   </file>
   <file src="includes/admin/class-wp-job-manager-admin-notices.php">
     <InternalClass>
@@ -137,18 +70,6 @@
     <InvalidArgument>
       <code>$is_user_notification</code>
     </InvalidArgument>
-    <PossiblyUnusedMethod>
-      <code>display_core_setup</code>
-      <code>init_core_notices</code>
-      <code>is_admin_on_standard_job_manager_screen</code>
-      <code>reset_notices</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-    </PossiblyUnusedReturnValue>
     <TooManyArguments>
       <code><![CDATA[get_site_transient( 'wpjm_addon_updates_available', [] )]]></code>
     </TooManyArguments>
@@ -161,49 +82,15 @@
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
     </ParadoxicalCondition>
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-    <UnusedVariable>
-      <code>$wp_version</code>
-    </UnusedVariable>
   </file>
   <file src="includes/admin/class-wp-job-manager-cpt.php">
     <InvalidArgument>
       <code>$r</code>
     </InvalidArgument>
-    <PossiblyUnusedMethod>
-      <code>bulk_action_handle_approve_job</code>
-      <code>bulk_action_handle_expire_job</code>
-      <code>bulk_action_handle_mark_job_filled</code>
-      <code>bulk_action_handle_mark_job_not_filled</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>self</code>
-      <code>string</code>
-      <code>string</code>
-      <code>string</code>
-      <code>string</code>
-    </PossiblyUnusedReturnValue>
     <RedundantCondition>
       <code><![CDATA[$types && ! empty( $types )]]></code>
       <code>is_array( $handled_jobs )</code>
     </RedundantCondition>
-    <UnusedVariable>
-      <code>$post</code>
-    </UnusedVariable>
-  </file>
-  <file src="includes/admin/class-wp-job-manager-permalink-settings.php">
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
   </file>
   <file src="includes/admin/class-wp-job-manager-promoted-jobs-admin.php">
     <InvalidArgument>
@@ -215,21 +102,6 @@
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
     </ParadoxicalCondition>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>array</code>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-    <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
-    </UndefinedConstant>
-    <UnusedVariable>
-      <code>$title</code>
-    </UnusedVariable>
   </file>
   <file src="includes/admin/class-wp-job-manager-settings.php">
     <InvalidArgument>
@@ -237,108 +109,23 @@
       <code><![CDATA[$this->settings_group]]></code>
       <code>0</code>
     </InvalidArgument>
-    <InvalidCast>
-      <code><![CDATA[$this->settings_group]]></code>
-      <code><![CDATA[$this->settings_group]]></code>
-    </InvalidCast>
     <InvalidPropertyAssignmentValue>
       <code><![CDATA['job_manager']]></code>
     </InvalidPropertyAssignmentValue>
     <NullArgument>
       <code>null</code>
     </NullArgument>
-    <PossiblyUnusedMethod>
-      <code>get_settings</code>
-      <code>input_capabilities</code>
-      <code>input_color</code>
-      <code>input_hidden</code>
-      <code>input_input</code>
-      <code>input_multi_checkbox</code>
-      <code>input_multi_enable_expand</code>
-      <code>input_number</code>
-      <code>input_page</code>
-      <code>input_password</code>
-      <code>input_radio</code>
-      <code>input_select</code>
-      <code>input_textarea</code>
-      <code>sanitize_capabilities</code>
-      <code>sanitize_renewal_days</code>
-      <code>sanitize_submission_duration</code>
-      <code>sanitize_submission_limit</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$ignored_attributes</code>
-      <code>$ignored_attributes</code>
-      <code>$ignored_attributes</code>
-      <code>$ignored_attributes</code>
-      <code>$ignored_attributes</code>
-      <code>$ignored_placeholder</code>
-      <code>$ignored_placeholder</code>
-      <code>$ignored_placeholder</code>
-      <code>$ignored_placeholder</code>
-      <code>$ignored_placeholder</code>
-      <code>$ignored_placeholder</code>
-      <code>$ignored_placeholder</code>
-      <code>$ignored_placeholder</code>
-      <code>$ignored_placeholder</code>
-    </PossiblyUnusedParam>
     <UndefinedDocblockClass>
       <code>stirng|int</code>
     </UndefinedDocblockClass>
-  </file>
-  <file src="includes/admin/class-wp-job-manager-setup.php">
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-    <UnusedMethod>
-      <code>maybe_output_opt_in_checkbox</code>
-      <code>opt_in_text</code>
-    </UnusedMethod>
-  </file>
-  <file src="includes/admin/class-wp-job-manager-taxonomy-meta.php">
-    <PossiblyUnusedParam>
-      <code>$taxonomy</code>
-      <code>$taxonomy</code>
-      <code>$tt_id</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>array</code>
-      <code>self</code>
-      <code>string</code>
-    </PossiblyUnusedReturnValue>
   </file>
   <file src="includes/admin/class-wp-job-manager-writepanels.php">
     <InvalidArgument>
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
     </InvalidArgument>
-    <PossiblyUnusedMethod>
-      <code>input_author</code>
-      <code>input_checkbox</code>
-      <code>input_file</code>
-      <code>input_info</code>
-      <code>input_multiselect</code>
-      <code>input_radio</code>
-      <code>input_select</code>
-      <code>input_text</code>
-      <code>input_textarea</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$post</code>
-      <code>$post</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>int</code>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
     <UndefinedConstant>
       <code>DOING_AUTOSAVE</code>
     </UndefinedConstant>
-    <UnusedVariable>
-      <code>$name</code>
-      <code>$name</code>
-      <code>$post</code>
-    </UnusedVariable>
   </file>
   <file src="includes/admin/views/html-admin-page-addons.php">
     <UndefinedGlobalVariable>
@@ -368,73 +155,15 @@
     </InvalidScope>
   </file>
   <file src="includes/class-guest-session.php">
-    <PossiblyUnusedMethod>
-      <code>current_guest_has_account</code>
-    </PossiblyUnusedMethod>
     <UndefinedConstant>
       <code>COOKIEPATH</code>
       <code>COOKIE_DOMAIN</code>
-      <code>DAY_IN_SECONDS</code>
     </UndefinedConstant>
-  </file>
-  <file src="includes/class-guest-user.php">
-    <PossiblyUnusedMethod>
-      <code>create</code>
-      <code>create_token</code>
-    </PossiblyUnusedMethod>
-    <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
-    </UndefinedConstant>
-    <UnusedProperty>
-      <code>$post</code>
-    </UnusedProperty>
   </file>
   <file src="includes/class-wp-job-manager-ajax.php">
     <InvalidArgument>
       <code>-1</code>
     </InvalidArgument>
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-    <UnevaluatedCode>
-      <code>return;</code>
-    </UnevaluatedCode>
-  </file>
-  <file src="includes/class-wp-job-manager-api.php">
-    <PossiblyUnusedMethod>
-      <code>add_endpoint</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-    <UndefinedConstant>
-      <code>EP_ALL</code>
-    </UndefinedConstant>
-    <UnusedVariable>
-      <code>$api_class</code>
-    </UnusedVariable>
-  </file>
-  <file src="includes/class-wp-job-manager-blocks.php">
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-  </file>
-  <file src="includes/class-wp-job-manager-cache-helper.php">
-    <PossiblyUnusedMethod>
-      <code>clear_expired_transients</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$meta_id</code>
-      <code>$object_id</code>
-      <code>$term_id</code>
-      <code>$terms</code>
-      <code>$tt_id</code>
-      <code>$tt_ids</code>
-    </PossiblyUnusedParam>
-    <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
-    </UndefinedConstant>
   </file>
   <file src="includes/class-wp-job-manager-category-walker.php">
     <InvalidDocblock>
@@ -448,31 +177,11 @@
     <NullableReturnStatement>
       <code>$remote_data</code>
     </NullableReturnStatement>
-    <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
-      <code>DAY_IN_SECONDS</code>
-    </UndefinedConstant>
   </file>
   <file src="includes/class-wp-job-manager-data-cleaner.php">
-    <InvalidCast>
-      <code>$role_name</code>
-    </InvalidCast>
     <InvalidConstantAssignmentValue>
       <code><![CDATA[ROLE = 'employer']]></code>
     </InvalidConstantAssignmentValue>
-  </file>
-  <file src="includes/class-wp-job-manager-data-exporter.php">
-    <PossiblyUnusedMethod>
-      <code>user_data_exporter</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-    </PossiblyUnusedReturnValue>
-  </file>
-  <file src="includes/class-wp-job-manager-dependency-checker.php">
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-    </PossiblyUnusedReturnValue>
   </file>
   <file src="includes/class-wp-job-manager-email-notifications.php">
     <InvalidArgument>
@@ -482,9 +191,6 @@
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY</code>
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
     </InvalidArgument>
-    <InvalidCast>
-      <code>$email_class</code>
-    </InvalidCast>
     <InvalidGlobal>
       <code>global $phpmailer;</code>
     </InvalidGlobal>
@@ -493,26 +199,9 @@
       <code>$template_segment</code>
       <code>$template_segment</code>
     </InvalidScalarArgument>
-    <PossiblyUnusedMethod>
-      <code>clear_deferred_notifications</code>
-      <code>get_deferred_notification_count</code>
-      <code>get_deferred_notification_hashes</code>
-      <code>send_notifications</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-    </PossiblyUnusedReturnValue>
     <UndefinedClass>
       <code>$email_class::get_enabled_force_value()</code>
     </UndefinedClass>
-    <UnusedParam>
-      <code>$email</code>
-      <code>$sent_to_admin</code>
-      <code>$sent_to_admin</code>
-    </UnusedParam>
-    <UnusedVariable>
-      <code>$fields</code>
-    </UnusedVariable>
   </file>
   <file src="includes/class-wp-job-manager-forms.php">
     <RedundantCondition>
@@ -526,18 +215,6 @@
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
     </ParadoxicalCondition>
-    <PossiblyUnusedParam>
-      <code>$key</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-      <code>string</code>
-      <code>string|bool</code>
-    </PossiblyUnusedReturnValue>
-    <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
-      <code>HOUR_IN_SECONDS</code>
-    </UndefinedConstant>
   </file>
   <file src="includes/class-wp-job-manager-install.php">
     <UndefinedPropertyFetch>
@@ -580,55 +257,12 @@
     <NullableReturnStatement>
       <code>null</code>
     </NullableReturnStatement>
-    <PossiblyUnusedMethod>
-      <code>auth_check_can_edit_job_listings</code>
-      <code>auth_check_can_edit_others_job_listings</code>
-      <code>auth_check_can_manage_job_listings</code>
-      <code>force_classic_block</code>
-      <code>maybe_generate_geolocation_data</code>
-      <code>sanitize_employment_type</code>
-      <code>sanitize_job_type_meta_box_input</code>
-      <code>sanitize_meta_field_application</code>
-      <code>sanitize_meta_field_based_on_input_type</code>
-      <code>sanitize_meta_field_date</code>
-      <code>set_expirey</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$allowed</code>
-      <code>$allowed</code>
-      <code>$allowed</code>
-      <code>$meta_id</code>
-      <code>$meta_id</code>
-      <code>$meta_key</code>
-      <code>$meta_key</code>
-      <code>$meta_key</code>
-      <code>$meta_key</code>
-      <code>$meta_key</code>
-      <code>$post_id</code>
-      <code>$post_id</code>
-      <code>$taxonomy</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>WP_REST_Response</code>
-      <code>array</code>
-      <code>array</code>
-      <code>false</code>
-      <code>string</code>
-    </PossiblyUnusedReturnValue>
     <RedundantCondition>
       <code><![CDATA['slug']]></code>
     </RedundantCondition>
     <TypeDoesNotContainType>
       <code>is_numeric( $cats )</code>
     </TypeDoesNotContainType>
-  </file>
-  <file src="includes/class-wp-job-manager-rest-api.php">
-    <PossiblyUnusedReturnValue>
-      <code>WP_REST_Response</code>
-    </PossiblyUnusedReturnValue>
-    <UnusedForeachValue>
-      <code>$meta_value</code>
-    </UnusedForeachValue>
   </file>
   <file src="includes/class-wp-job-manager-shortcodes.php">
     <InvalidArgument>
@@ -637,16 +271,6 @@
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
     </ParadoxicalCondition>
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-      <code>string</code>
-      <code>string</code>
-      <code>string</code>
-      <code>string</code>
-      <code>string</code>
-      <code>string|null</code>
-      <code>string|null</code>
-    </PossiblyUnusedReturnValue>
     <RedundantPropertyInitializationCheck>
       <code><![CDATA[isset( $this->job_dashboard_job_ids )]]></code>
     </RedundantPropertyInitializationCheck>
@@ -659,21 +283,8 @@
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY</code>
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
     </InvalidArgument>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-    </PossiblyUnusedReturnValue>
-    <UnusedForeachValue>
-      <code>$data</code>
-    </UnusedForeachValue>
   </file>
   <file src="includes/class-wp-job-manager-usage-tracking.php">
-    <PossiblyUnusedMethod>
-      <code>__construct</code>
-      <code>get_text_domain</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-    </PossiblyUnusedReturnValue>
     <TypeDoesNotContainType>
       <code>false</code>
     </TypeDoesNotContainType>
@@ -682,16 +293,8 @@
     <ImplementedReturnTypeMismatch>
       <code>void</code>
     </ImplementedReturnTypeMismatch>
-    <UnusedForeachValue>
-      <code>$setting</code>
-    </UnusedForeachValue>
   </file>
   <file src="includes/class-wp-job-manager.php">
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>bool</code>
-      <code>bool</code>
-    </PossiblyUnusedReturnValue>
     <UndefinedConstant>
       <code>COOKIEPATH</code>
       <code>COOKIEPATH</code>
@@ -709,17 +312,11 @@
     <InvalidDocblock>
       <code>class WP_Job_Manager_Email_Admin_New_Job extends WP_Job_Manager_Email_Template {</code>
     </InvalidDocblock>
-    <UnusedClass>
-      <code>WP_Job_Manager_Email_Admin_New_Job</code>
-    </UnusedClass>
   </file>
   <file src="includes/emails/class-wp-job-manager-email-admin-updated-job.php">
     <InvalidDocblock>
       <code>class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Template {</code>
     </InvalidDocblock>
-    <UnusedClass>
-      <code>WP_Job_Manager_Email_Admin_Updated_Job</code>
-    </UnusedClass>
   </file>
   <file src="includes/emails/class-wp-job-manager-email-employer-expiring-job.php">
     <InvalidDocblock>
@@ -728,10 +325,6 @@
     <LessSpecificImplementedReturnType>
       <code>mixed</code>
     </LessSpecificImplementedReturnType>
-    <PossiblyUnusedMethod>
-      <code>get_from</code>
-      <code>get_subject</code>
-    </PossiblyUnusedMethod>
   </file>
   <file src="includes/forms/class-wp-job-manager-form-edit-job.php">
     <InvalidDocblock>
@@ -756,17 +349,6 @@
       <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/image.php']]></code>
       <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/media.php']]></code>
     </MissingFile>
-    <PossiblyUnusedMethod>
-      <code>done</code>
-      <code>done_before</code>
-      <code>instance</code>
-      <code>localize_job_form_scripts</code>
-      <code>preview</code>
-      <code>preview_handler</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedProperty>
-      <code>$preview_job</code>
-    </PossiblyUnusedProperty>
     <TypeDoesNotContainType>
       <code>! is_string( $attachment_url )</code>
       <code>empty( $attachment_url ) || ! is_string( $attachment_url )</code>
@@ -782,22 +364,6 @@
     <UndefinedPropertyFetch>
       <code><![CDATA[$term->slug]]></code>
     </UndefinedPropertyFetch>
-    <UnusedForeachValue>
-      <code>$field</code>
-      <code>$field</code>
-    </UnusedForeachValue>
-    <UnusedMethod>
-      <code>job_types</code>
-    </UnusedMethod>
-  </file>
-  <file src="includes/helper/class-wp-job-manager-helper-api.php">
-    <PossiblyUnusedMethod>
-      <code>plugin_update_check</code>
-      <code>request</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$args</code>
-    </PossiblyUnusedParam>
   </file>
   <file src="includes/helper/class-wp-job-manager-helper-language-packs.php">
     <InvalidArgument>
@@ -810,18 +376,6 @@
     <InvalidPropertyAssignmentValue>
       <code>$plugin_versions</code>
     </InvalidPropertyAssignmentValue>
-    <PossiblyUnusedReturnValue>
-      <code>\stdClass</code>
-    </PossiblyUnusedReturnValue>
-    <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
-    </UndefinedConstant>
-  </file>
-  <file src="includes/helper/class-wp-job-manager-helper-options.php">
-    <PossiblyUnusedReturnValue>
-      <code>bool</code>
-      <code>bool</code>
-    </PossiblyUnusedReturnValue>
   </file>
   <file src="includes/helper/class-wp-job-manager-helper-renewals.php">
     <InvalidReturnStatement>
@@ -830,16 +384,7 @@
     <InvalidReturnType>
       <code>string</code>
     </InvalidReturnType>
-    <PossiblyUnusedMethod>
-      <code>renew_preview_handler</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>self</code>
-      <code>string</code>
-    </PossiblyUnusedReturnValue>
     <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
       <code>JOB_MANAGER_SPL_VERSION</code>
       <code>JOB_MANAGER_WCPL_VERSION</code>
     </UndefinedConstant>
@@ -854,45 +399,10 @@
     <MissingFile>
       <code><![CDATA[require_once ABSPATH . 'wp-admin/includes/plugin.php']]></code>
     </MissingFile>
-    <PossiblyUnusedMethod>
-      <code>__call</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>array</code>
-      <code>bool</code>
-      <code>false|object|array</code>
-      <code>mixed</code>
-      <code>object</code>
-    </PossiblyUnusedReturnValue>
-    <UndefinedConstant>
-      <code>HOUR_IN_SECONDS</code>
-    </UndefinedConstant>
     <UndefinedVariable>
       <code>$item</code>
       <code>$plugin_data</code>
     </UndefinedVariable>
-    <UnusedVariable>
-      <code>$active_plugins</code>
-      <code>$inactive_plugins</code>
-      <code>$plugin_name</code>
-      <code>$show_bulk_activate</code>
-    </UnusedVariable>
-  </file>
-  <file src="includes/helper/class-wp-job-manager-site-trust-token.php">
-    <UndefinedConstant>
-      <code>MINUTE_IN_SECONDS</code>
-    </UndefinedConstant>
-  </file>
-  <file src="includes/helper/views/html-licenses.php">
-    <UnusedForeachValue>
-      <code>$plugin_data</code>
-    </UnusedForeachValue>
-    <UnusedVariable>
-      <code>$key</code>
-      <code>$key</code>
-      <code>$plugin_section_first</code>
-    </UnusedVariable>
   </file>
   <file src="includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php">
     <InvalidReturnStatement>
@@ -905,33 +415,6 @@
     <InvalidReturnType>
       <code>WP_REST_Response</code>
     </InvalidReturnType>
-    <PossiblyUnusedMethod>
-      <code>get_items</code>
-      <code>get_job_data</code>
-      <code>refresh_status</code>
-      <code>update_job_status</code>
-      <code>verify_token</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$request</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>WP_REST_Response</code>
-    </PossiblyUnusedReturnValue>
-  </file>
-  <file src="includes/promoted-jobs/class-wp-job-manager-promoted-jobs-notifications.php">
-    <PossiblyUnusedParam>
-      <code>$meta_ids</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-  </file>
-  <file src="includes/promoted-jobs/class-wp-job-manager-promoted-jobs-status-handler.php">
-    <UndefinedConstant>
-      <code>HOUR_IN_SECONDS</code>
-      <code>MINUTE_IN_SECONDS</code>
-    </UndefinedConstant>
   </file>
   <file src="includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php">
     <InvalidReturnStatement>
@@ -943,44 +426,6 @@
     <ParadoxicalCondition>
       <code><![CDATA[! defined( 'ABSPATH' )]]></code>
     </ParadoxicalCondition>
-    <PossiblyUnusedReturnValue>
-      <code>WP_Post|false|null</code>
-      <code>boolean</code>
-      <code>self</code>
-    </PossiblyUnusedReturnValue>
-  </file>
-  <file src="includes/ui/class-notice.php">
-    <PossiblyUnusedMethod>
-      <code>hint</code>
-    </PossiblyUnusedMethod>
-  </file>
-  <file src="includes/ui/class-redirect-message.php">
-    <UndefinedConstant>
-      <code>MINUTE_IN_SECONDS</code>
-    </UndefinedConstant>
-    <UnusedClass>
-      <code>Redirect_Message</code>
-    </UnusedClass>
-  </file>
-  <file src="includes/ui/class-ui-elements.php">
-    <UnusedVariable>
-      <code>$html</code>
-    </UnusedVariable>
-  </file>
-  <file src="includes/ui/class-ui-settings.php">
-    <PossiblyUnusedReturnValue>
-      <code>string</code>
-    </PossiblyUnusedReturnValue>
-  </file>
-  <file src="includes/widgets/class-wp-job-manager-widget-featured-jobs.php">
-    <UnusedClass>
-      <code>WP_Job_Manager_Widget_Featured_Jobs</code>
-    </UnusedClass>
-  </file>
-  <file src="includes/widgets/class-wp-job-manager-widget-recent-jobs.php">
-    <UnusedClass>
-      <code>WP_Job_Manager_Widget_Recent_Jobs</code>
-    </UnusedClass>
   </file>
   <file src="lib/emogrifier/class-emogrifier.php">
     <InvalidArgument>
@@ -993,36 +438,9 @@
       <code><![CDATA[$this->caches[self::CACHE_KEY_CSS][$cssKey]]]></code>
       <code><![CDATA[$this->caches[self::CACHE_KEY_SELECTOR][$selectorKey]]]></code>
     </InvalidReturnStatement>
-    <PossiblyUnusedMethod>
-      <code>addAllowedMediaType</code>
-      <code>addExcludedSelector</code>
-      <code>addUnprocessableHtmlTag</code>
-      <code>disableInlineStyleAttributesParsing</code>
-      <code>disableInvisibleNodeRemoval</code>
-      <code>disableStyleBlocksParsing</code>
-      <code>emogrifyBodyContent</code>
-      <code>enableCssToHtmlMapping</code>
-      <code>removeAllowedMediaType</code>
-      <code>removeExcludedSelector</code>
-      <code>removeUnprocessableHtmlTag</code>
-      <code>setDebug</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$type</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>bool</code>
-    </PossiblyUnusedReturnValue>
     <RedundantCondition>
       <code><![CDATA[$node->parentNode && is_callable([$node->parentNode, 'removeChild'])]]></code>
     </RedundantCondition>
-    <UnnecessaryVarAnnotation>
-      <code>string[]</code>
-      <code>string[]</code>
-    </UnnecessaryVarAnnotation>
-    <UnusedReturnValue>
-      <code>int</code>
-    </UnusedReturnValue>
   </file>
   <file src="lib/usage-tracking/class-wp-job-manager-usage-tracking-base.php">
     <FalsableReturnStatement>
@@ -1040,379 +458,16 @@
     <MissingFile>
       <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/plugin.php']]></code>
     </MissingFile>
-    <PossiblyUnusedMethod>
-      <code>enqueue_script_deps</code>
-      <code>output_opt_in_js</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$notice</code>
-    </PossiblyUnusedParam>
-    <PossiblyUnusedReturnValue>
-      <code>array</code>
-      <code>null|WP_Error</code>
-    </PossiblyUnusedReturnValue>
-    <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
-    </UndefinedConstant>
-    <UnnecessaryVarAnnotation>
-      <code>WP_Theme</code>
-    </UnnecessaryVarAnnotation>
-    <UnusedForeachValue>
-      <code>$plugin_data</code>
-    </UnusedForeachValue>
   </file>
   <file src="lib/usage-tracking/tests/support/class-usage-tracking-test-subclass.php">
     <TypeDoesNotContainType>
       <code>false</code>
     </TypeDoesNotContainType>
   </file>
-  <file src="lib/usage-tracking/tests/support/wp-die-exception.php">
-    <UnusedClass>
-      <code>WP_Die_Exception</code>
-    </UnusedClass>
-  </file>
   <file src="lib/usage-tracking/tests/test-class-usage-tracking.php">
-    <PossiblyUnusedParam>
-      <code>$args</code>
-      <code>$event</code>
-      <code>$message</code>
-      <code>$preempt</code>
-      <code>$r</code>
-      <code>$title</code>
-      <code>$url</code>
-    </PossiblyUnusedParam>
     <UndefinedClass>
       <code>WP_UnitTestCase</code>
     </UndefinedClass>
-    <UnusedClass>
-      <code>WP_Job_Manager_Usage_Tracking_Test</code>
-    </UnusedClass>
-  </file>
-  <file src="templates/account-signin.php">
-    <TooFewArguments>
-      <code>printf</code>
-    </TooFewArguments>
-  </file>
-  <file src="templates/content-job_listing.php">
-    <InvalidGlobal>
-      <code>global $post;</code>
-    </InvalidGlobal>
-    <UndefinedMagicPropertyFetch>
-      <code><![CDATA[$post->geolocation_lat]]></code>
-      <code><![CDATA[$post->geolocation_long]]></code>
-    </UndefinedMagicPropertyFetch>
-  </file>
-  <file src="templates/content-single-job_listing-meta.php">
-    <InvalidGlobal>
-      <code>global $post;</code>
-    </InvalidGlobal>
-  </file>
-  <file src="templates/content-single-job_listing.php">
-    <InvalidGlobal>
-      <code>global $post;</code>
-    </InvalidGlobal>
-  </file>
-  <file src="templates/content-summary-job_listing.php">
-    <InvalidGlobal>
-      <code>global $job_manager;</code>
-    </InvalidGlobal>
-    <UnusedVariable>
-      <code>$job_manager</code>
-    </UnusedVariable>
-  </file>
-  <file src="templates/emails/admin-expiring-job.php">
-    <UndefinedGlobalVariable>
-      <code>$args</code>
-      <code>$args</code>
-      <code>$email</code>
-      <code>$plain_text</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/emails/admin-new-job.php">
-    <TooFewArguments>
-      <code>printf</code>
-    </TooFewArguments>
-    <UndefinedGlobalVariable>
-      <code>$args</code>
-      <code>$email</code>
-      <code>$plain_text</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/emails/admin-updated-job.php">
-    <TooFewArguments>
-      <code>printf</code>
-    </TooFewArguments>
-    <UndefinedGlobalVariable>
-      <code>$args</code>
-      <code>$email</code>
-      <code>$plain_text</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/emails/employer-expiring-job.php">
-    <UndefinedGlobalVariable>
-      <code>$args</code>
-      <code>$args</code>
-      <code>$email</code>
-      <code>$plain_text</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/emails/plain/admin-expiring-job.php">
-    <UndefinedGlobalVariable>
-      <code>$args</code>
-      <code>$args</code>
-      <code>$email</code>
-      <code>$plain_text</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/emails/plain/admin-new-job.php">
-    <TooFewArguments>
-      <code>printf</code>
-    </TooFewArguments>
-    <UndefinedGlobalVariable>
-      <code>$args</code>
-      <code>$email</code>
-      <code>$plain_text</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/emails/plain/admin-updated-job.php">
-    <TooFewArguments>
-      <code>printf</code>
-    </TooFewArguments>
-    <UndefinedGlobalVariable>
-      <code>$args</code>
-      <code>$email</code>
-      <code>$plain_text</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/emails/plain/employer-expiring-job.php">
-    <UndefinedGlobalVariable>
-      <code>$args</code>
-      <code>$args</code>
-      <code>$email</code>
-      <code>$plain_text</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/checkbox-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/date-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/file-field.php">
-    <RedundantCondition>
-      <code><![CDATA[$value = $field['value']]]></code>
-    </RedundantCondition>
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-      <code>$key</code>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/full-line-checkbox-field.php">
-    <UndefinedGlobalVariable>
-      <code>$field</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/multiselect-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/password-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/radio-field.php">
-    <UndefinedGlobalVariable>
-      <code>$field</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/recaptcha-field.php">
-    <UndefinedGlobalVariable>
-      <code>$field</code>
-      <code>$field</code>
-      <code>$field</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/select-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/term-checklist-field.php">
-    <MissingFile>
-      <code><![CDATA[require_once( ABSPATH . '/wp-admin/includes/template.php' )]]></code>
-    </MissingFile>
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/term-multiselect-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-    <UndefinedPropertyFetch>
-      <code><![CDATA[$term->term_id]]></code>
-    </UndefinedPropertyFetch>
-  </file>
-  <file src="templates/form-fields/term-select-field.php">
-    <UndefinedGlobalVariable>
-      <code>$field</code>
-      <code>$field</code>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-    <UndefinedPropertyFetch>
-      <code><![CDATA[$term->term_id]]></code>
-    </UndefinedPropertyFetch>
-  </file>
-  <file src="templates/form-fields/text-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/textarea-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/uploaded-file-html.php">
-    <UndefinedGlobalVariable>
-      <code>$name</code>
-      <code>$value</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/form-fields/wp-editor-field.php">
-    <UndefinedGlobalVariable>
-      <code>$key</code>
-      <code>$key</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/job-application-email.php">
-    <UndefinedGlobalVariable>
-      <code>$apply</code>
-      <code>$apply</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/job-application-url.php">
-    <UndefinedGlobalVariable>
-      <code>$apply</code>
-      <code>$apply</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/job-dashboard.php">
-    <UnusedForeachValue>
-      <code>$column</code>
-    </UnusedForeachValue>
-    <UnusedVariable>
-      <code>$submission_limit</code>
-    </UnusedVariable>
-  </file>
-  <file src="templates/job-filter-job-types.php">
-    <UndefinedGlobalVariable>
-      <code>$job_types</code>
-      <code>$selected_job_types</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/job-filters.php">
-    <UndefinedGlobalVariable>
-      <code>$atts</code>
-      <code>$atts</code>
-      <code>$atts</code>
-      <code>$atts</code>
-      <code>$atts</code>
-      <code>$atts</code>
-      <code>$atts</code>
-      <code>$categories</code>
-      <code>$keywords</code>
-      <code>$location</code>
-      <code>$selected_category</code>
-      <code>$selected_category</code>
-      <code>$show_categories</code>
-      <code>$show_category_multiselect</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/job-pagination.php">
-    <InvalidArgument>
-      <code>$page</code>
-      <code>$page</code>
-      <code>$page</code>
-      <code>$page</code>
-    </InvalidArgument>
-    <UndefinedGlobalVariable>
-      <code>$current_page</code>
-      <code>$current_page</code>
-      <code>$current_page</code>
-      <code>$max_num_pages</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/job-preview.php">
-    <UndefinedGlobalVariable>
-      <code>$form</code>
-      <code>$form</code>
-      <code>$form</code>
-      <code>$form</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/job-submit.php">
-    <InvalidGlobal>
-      <code>global $job_manager;</code>
-    </InvalidGlobal>
-    <UndefinedGlobalVariable>
-      <code>$action</code>
-      <code>$company_fields</code>
-      <code>$form</code>
-      <code>$job_fields</code>
-      <code>$job_id</code>
-      <code>$job_id</code>
-      <code>$step</code>
-      <code>$submit_button_text</code>
-    </UndefinedGlobalVariable>
-    <UnusedVariable>
-      <code>$job_manager</code>
-    </UnusedVariable>
-  </file>
-  <file src="templates/job-submitted.php">
-    <InvalidGlobal>
-      <code>global $wp_post_types;</code>
-    </InvalidGlobal>
-    <RedundantCondition>
-      <code>$job_dashboard_title</code>
-    </RedundantCondition>
-    <UndefinedGlobalVariable>
-      <code>$job</code>
-      <code>$job</code>
-    </UndefinedGlobalVariable>
-  </file>
-  <file src="templates/notice.php">
-    <InvalidArgument>
-      <code>$actions_html</code>
-    </InvalidArgument>
-  </file>
-  <file src="templates/pagination.php">
-    <InvalidArgument>
-      <code>999999999</code>
-    </InvalidArgument>
-    <UndefinedGlobalVariable>
-      <code>$max_num_pages</code>
-    </UndefinedGlobalVariable>
   </file>
   <file src="wp-job-manager-deprecated.php">
     <InvalidNullableReturnType>
@@ -1454,13 +509,8 @@
       <code><![CDATA[$return_datetime ? null : '']]></code>
     </NullableReturnStatement>
     <UndefinedConstant>
-      <code>DAY_IN_SECONDS</code>
-      <code>DAY_IN_SECONDS</code>
       <code>LOGGED_IN_COOKIE</code>
     </UndefinedConstant>
-    <UnusedForeachValue>
-      <code>$file_data_value</code>
-    </UnusedForeachValue>
   </file>
   <file src="wp-job-manager-template.php">
     <ImplicitToStringCast>
@@ -1476,8 +526,5 @@
       <code>WP_CONTENT_URL</code>
       <code>WP_CONTENT_URL</code>
     </UndefinedConstant>
-    <UnusedParam>
-      <code>$post</code>
-    </UnusedParam>
   </file>
 </files>
