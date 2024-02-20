@@ -25,11 +25,36 @@ class WP_Job_Manager_Recaptcha {
 	private static $instance = null;
 
 	/**
+	 * Site key.
+	 *
+	 * @var string
+	 */
+	private $site_key;
+
+	/**
+	 * Secret key.
+	 *
+	 * @var string
+	 */
+	private $secret_key;
+
+	/**
+	 * The reCAPTCHA version.
+	 *
+	 * @var string
+	 */
+	private $recaptcha_version;
+
+	/**
 	 * Initialize class for landing pages.
 	 *
 	 * @since 2.0.0
 	 */
 	public function __construct() {
+		$this->site_key          = get_option( 'job_manager_recaptcha_site_key' );
+		$this->secret_key        = get_option( 'job_manager_recaptcha_secret_key' );
+		$this->recaptcha_version = get_option( 'job_manager_recaptcha_version' );
+
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
@@ -40,16 +65,14 @@ class WP_Job_Manager_Recaptcha {
 	/**
 	 * Returns static instance of class.
 	 *
-	 * @param WP_Job_Manager_Form_Submit_Job $form Form object.
-	 * @return self
+	 * @return self Main instance.
 	 */
-	public static function instance( WP_Job_Manager_Form_Submit_Job $form ) {
+	public static function instance() {
 		if ( is_null( self::$instance ) ) {
-			self::$instance = new self( $form );
+			self::$instance = new self();
 		}
 		return self::$instance;
 	}
-
 
 	/**
 	 * Use reCAPTCHA field on the form?
@@ -66,10 +89,22 @@ class WP_Job_Manager_Recaptcha {
 	/**
 	 * Enqueue the scripts for the form.
 	 */
-	public function enqueue_scripts() {
-		if ( $this->use_recaptcha_field() ) {
-			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NoExplicitVersion
-			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js', [], false, false );
+	public static function enqueue_scripts() {
+		$instance = self::instance();
+
+		if (
+			$instance->use_recaptcha_field() &&
+			in_array( $instance->recaptcha_version, [ 'v2', 'v3' ], true )
+		) {
+			$recaptcha_version = $instance->recaptcha_version;
+			$recaptcha_url     = '';
+
+			if ( 'v2' === $recaptcha_version ) {
+				$recaptcha_url = 'https://www.google.com/recaptcha/api.js';
+			} elseif ( 'v3' === $recaptcha_version ) {
+				$recaptcha_url = 'https://www.google.com/recaptcha/api.js?render=' . $instance->site_key;
+			}
+			wp_enqueue_script( 'recaptcha', $recaptcha_url, [], JOB_MANAGER_VERSION, [ 'strategy' => 'defer' ] );
 		}
 	}
 
@@ -79,9 +114,7 @@ class WP_Job_Manager_Recaptcha {
 	 * @return bool
 	 */
 	public function is_recaptcha_available() {
-		$site_key               = get_option( 'job_manager_recaptcha_site_key' );
-		$secret_key             = get_option( 'job_manager_recaptcha_secret_key' );
-		$is_recaptcha_available = ! empty( $site_key ) && ! empty( $secret_key );
+		$is_recaptcha_available = ! empty( $this->site_key ) && ! empty( $this->secret_key );
 
 		/**
 		 * Filter whether reCAPTCHA should be available for this form.
@@ -102,14 +135,25 @@ class WP_Job_Manager_Recaptcha {
 		$field             = [];
 		$field['label']    = get_option( 'job_manager_recaptcha_label' );
 		$field['required'] = true;
-		$field['site_key'] = get_option( 'job_manager_recaptcha_site_key' );
-		get_job_manager_template(
-			'form-fields/recaptcha-field.php',
-			[
-				'key'   => 'recaptcha',
-				'field' => $field,
-			]
-		);
+		$field['site_key'] = $this->site_key;
+
+		if ( 'v2' === $this->recaptcha_version ) {
+			get_job_manager_template(
+				'form-fields/recaptcha-field.php',
+				[
+					'key'   => 'recaptcha',
+					'field' => $field,
+				]
+			);
+		} elseif ( 'v3' === $this->recaptcha_version ) {
+			get_job_manager_template(
+				'form-fields/recaptcha-v3-field.php',
+				[
+					'key'   => 'recaptcha',
+					'field' => $field,
+				]
+			);
+		}
 	}
 
 	/**
@@ -120,39 +164,78 @@ class WP_Job_Manager_Recaptcha {
 	 * @return bool|WP_Error
 	 */
 	public function validate_recaptcha_field( $success ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier (when possible).
-		$input_recaptcha_response = isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '';
-
 		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
-		if ( empty( $input_recaptcha_response ) ) {
-			// translators: Placeholder is for the label of the reCAPTCHA field.
-			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
-		}
-
-		$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-		$response            = wp_remote_get(
-			add_query_arg(
-				[
-					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
-					'response' => $input_recaptcha_response,
-					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : $default_remote_addr,
-				],
-				'https://www.google.com/recaptcha/api/siteverify'
-			)
-		);
 
 		// translators: %s is the name of the form validation that failed.
 		$validation_error = new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 
-		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier (when possible).
+		$input_recaptcha_response = isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '';
+
+		if ( empty( $input_recaptcha_response ) ) {
 			return $validation_error;
 		}
 
-		$json = json_decode( $response['body'] );
-		if ( ! $json || ! $json->success ) {
-			return $validation_error;
-		}
+		if ( 'v2' === $this->recaptcha_version ) {
+			$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+			$response            = wp_remote_get(
+				add_query_arg(
+					[
+						'secret'   => $this->secret_key,
+						'response' => $input_recaptcha_response,
+						'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : $default_remote_addr,
+					],
+					'https://www.google.com/recaptcha/api/siteverify'
+				)
+			);
+			if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
+				return $validation_error;
+			} else {
+				$json = json_decode( $response['body'] );
+				if ( ! $json || ! $json->success ) {
+					return $validation_error;
+				}
+			}
+		} elseif ( 'v3' === $this->recaptcha_version ) {
+			$recaptcha_url  = 'https://www.google.com/recaptcha/api/siteverify';
+			$recaptcha_data = [
+				'secret'   => $this->secret_key,
+				'response' => $input_recaptcha_response,
+				'remoteip' => sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ),
+			];
 
+			$response = wp_remote_post(
+				$recaptcha_url,
+				[
+					'body'    => $recaptcha_data,
+					'headers' => [
+						'Content-Type' => 'application/x-www-form-urlencoded',
+					],
+				]
+			);
+
+			if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
+				return $validation_error;
+			} else {
+				$response_body = wp_remote_retrieve_body( $response );
+				$response_body = json_decode( $response_body );
+			}
+
+			/**
+			 * Filter the score tolerance for reCAPTCHA v3.
+			 *
+			 * The score tolerance determines how strict the reCAPTCHA v3 validation is. A higher tolerance allows more leniency in accepting scores. A higher score means more certainty that the user is human.
+			 *
+			 * @since $$next-version$$
+			 *
+			 * @param float The score tolerance value. Default is 0.5.
+			 */
+			$score_tolerance = apply_filters( 'job_manager_recaptcha_v3_score_tolerance', 0.5 );
+
+			if ( ! $response_body->success || $response_body->score < $score_tolerance ) {
+				return $validation_error;
+			}
+		}
 		return $success;
 	}
 

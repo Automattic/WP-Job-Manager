@@ -136,7 +136,7 @@ abstract class WP_Job_Manager_Form {
 	 * @param array $atts Attributes to use in the view handler.
 	 */
 	public function output( $atts = [] ) {
-		WP_Job_Manager_Recaptcha::instance( $this )->enqueue_scripts();
+		WP_Job_Manager_Recaptcha::enqueue_scripts();
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
 		$this->show_messages();

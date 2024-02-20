@@ -78,6 +78,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Listing renewal support.
 		WP_Job_Manager_Helper_Renewals::instance( $this );
+
+		// Recaptcha support.
 		WP_Job_Manager_Recaptcha::instance( $this );
 
 		if ( $this->use_agreement_checkbox() ) {
