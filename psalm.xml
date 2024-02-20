@@ -6,6 +6,7 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 	autoloader=".psalm/psalm-loader.php"
+	findUnusedCode="false"
     findUnusedBaselineEntry="true"
     errorBaseline=".psalm/psalm-baseline.xml"
 >
