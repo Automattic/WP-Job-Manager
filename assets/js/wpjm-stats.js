@@ -16,6 +16,23 @@ import { createHooks } from '@wordpress/hooks';
 		};
 	}
 
+	function filterZeroes( list ) {
+		return list.filter( function (i) { return i > 0; } );
+	}
+	function findIdInClassNames( node ) {
+		const classes = node.classList;
+		for ( let i = 0; i < classes.length; i++ ) {
+			const className = classes[i];
+			if ( 0 === className.indexOf( 'post-' ) ) {
+				const maybeId = parseInt( className.substring(5), 10 );
+				if ( ! isNaN( maybeId ) ) {
+					return maybeId;
+				}
+			}
+		}
+		return 0;
+	}
+
 	function createStatsQueue() {
 		const alreadySent = {};
 		let queue = [];
@@ -52,13 +69,14 @@ import { createHooks } from '@wordpress/hooks';
 			threshold: 1.0,
 		};
 
+
 		const observer = new IntersectionObserver(function ( entries ) {
 			entries.forEach(function ( entry ) {
 				if ( entry.isIntersecting && entry.intersectionRatio > 0.99 ) {
 					const node = entry.target;
 					if ( 1 === node.nodeType && node.classList.contains( 'job_listing' ) ) {
-						const nodeId = node.dataset.id;
-						if ( ! alreadyViewedListings[nodeId] ) {
+						const nodeId = findIdInClassNames( node );
+						if ( nodeId > 0 && ! alreadyViewedListings[nodeId] ) {
 							alreadyViewedListings[nodeId] = true;
 							visibleCallback( node );
 						}
@@ -131,13 +149,14 @@ import { createHooks } from '@wordpress/hooks';
 			const debouncedSender = createStatsQueue();
 			waitForSelector( 'li.job_listing' ).then( function () {
 				const allVisibleListings = document.querySelectorAll('li.job_listing');
-				const initialListingIds = [...allVisibleListings].map( function ( elem ) {
-					return parseInt( elem.dataset.id, 10 );
-				} );
+				const initialListingIds = filterZeroes( [...allVisibleListings].map( function ( elem ) {
+					return findIdInClassNames( elem );
+				} ) );
 				debouncedSender.queueListingImpressionStats( initialListingIds );
 
 				waitForNextVisibleListing( function ( elem ) {
-					debouncedSender.queueListingImpressionStats( [ parseInt( elem.dataset.id, 10 ) ] );
+					const maybeId = findIdInClassNames( elem );
+					maybeId > 0 && debouncedSender.queueListingImpressionStats( [ maybeId ] );
 				} );
 
 			} );
