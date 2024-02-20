@@ -485,6 +485,9 @@
     <InvalidCast>
       <code>$email_class</code>
     </InvalidCast>
+    <InvalidGlobal>
+      <code>global $phpmailer;</code>
+    </InvalidGlobal>
     <InvalidScalarArgument>
       <code>$email_class</code>
       <code>$template_segment</code>
@@ -498,7 +501,6 @@
     </PossiblyUnusedMethod>
     <PossiblyUnusedReturnValue>
       <code>array</code>
-      <code>string</code>
     </PossiblyUnusedReturnValue>
     <UndefinedClass>
       <code>$email_class::get_enabled_force_value()</code>
