@@ -143,6 +143,33 @@ import { createHooks } from '@wordpress/hooks';
 	}
 
 	const WPJMStats =  {
+		init: function ( statsToRecord ) {
+			const statsByTrigger = statsToRecord?.reduce( function ( accum, statToRecord ) {
+				const triggerName = statToRecord.trigger || '';
+
+				if ( triggerName.length < 1 ) {
+					return accum;
+				}
+
+				if ( ! accum[triggerName] ) {
+					accum[triggerName] = [];
+				}
+
+				accum[triggerName].push( statToRecord );
+
+				return accum;
+			}, {} );
+
+			Object.keys( statsByTrigger ).forEach( function ( triggerName) {
+				hookStatsForTrigger( statsByTrigger, triggerName );
+			} );
+
+			WPJMStats.initCallbacks.forEach( function ( initCallback ) {
+				initCallback.call( null );
+			} );
+
+			WPJMStats.hooks.doAction( 'page-load' );
+		},
 		hooks: createHooks(),
 		// New style of declaration, a stat that relies on calling a custom js func.
 		initListingImpression: function () {
@@ -278,30 +305,7 @@ import { createHooks } from '@wordpress/hooks';
 	domReady( function () {
 		const jobStatsSettings = window.job_manager_stats;
 
-		const statsByTrigger = jobStatsSettings.stats_to_log?.reduce( function ( accum, statToRecord ) {
-			const triggerName = statToRecord.trigger || '';
+		WPJMStats.init( jobStatsSettings.stats_to_log );
 
-			if ( triggerName.length < 1 ) {
-				return accum;
-			}
-
-			if ( ! accum[triggerName] ) {
-				accum[triggerName] = [];
-			}
-
-			accum[triggerName].push( statToRecord );
-
-			return accum;
-		}, {} );
-
-		Object.keys( statsByTrigger ).forEach( function ( triggerName) {
-			hookStatsForTrigger( statsByTrigger, triggerName );
-		} );
-
-		WPJMStats.initCallbacks.forEach( function ( initCallback ) {
-			initCallback.call( null );
-		} );
-
-		WPJMStats.hooks.doAction( 'page-load' );
 	} );
 } )();
