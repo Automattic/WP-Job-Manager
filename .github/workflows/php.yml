@@ -97,3 +97,37 @@ jobs:
 
       - name: Run tests
         run: npm run test-php
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        php: [ '7.4', '8.2' ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get cached composer directories
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/composer/
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+      - uses: actions/cache@v3
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer
+          coverage: none
+
+      - name: Install
+        run: composer self-update && composer install --no-ansi --no-interaction --prefer-dist --no-progress
+
+      - name: Run Psalm
+        run: ./vendor/bin/psalm
