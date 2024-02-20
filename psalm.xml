@@ -17,7 +17,6 @@
         <file name="wp-job-manager.php" />
         <file name="wp-job-manager-deprecated.php" />
         <directory name="includes" />
-        <directory name="templates" />
         <directory name="lib" />
         <ignoreFiles>
             <directory name="vendor" />
