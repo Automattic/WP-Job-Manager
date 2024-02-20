@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="4"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+	autoloader=".psalm/psalm-loader.php"
+    findUnusedBaselineEntry="true"
+    findUnusedCode="true"
+    errorBaseline=".psalm/psalm-baseline.xml"
+>
+    <projectFiles>
+        <file name="wp-job-manager-functions.php" />
+        <file name="wp-job-manager-template.php" />
+        <file name="uninstall.php" />
+        <file name="wp-job-manager.php" />
+        <file name="wp-job-manager-deprecated.php" />
+        <directory name="includes" />
+        <directory name="templates" />
+        <directory name="lib" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
+    </projectFiles>
+	<stubs>
+		<file name="wp-job-manager.php" />
+		<file name="wp-job-manager-deprecated.php" />
+		<file name="wp-job-manager-functions.php" />
+		<file name="wp-job-manager-template.php" />
+	</stubs>
+	<globals>
+		<var name="post" type="\WP_Post|null"/>
+		<var name="job_manager" type="\WP_Job_Manager"/>
+		<var name="wp_post_types" type="array"/>
+	</globals>
+</psalm>
