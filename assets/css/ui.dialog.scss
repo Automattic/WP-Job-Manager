@@ -80,10 +80,7 @@
 	opacity: 0.7;
 
 	.jm-ui-button__icon {
-		background-color: currentColor;
-		mask: var(--jm-ui-svg-close) no-repeat center center;
-		width: var(--jm-ui-icon-size);
-		height: var(--jm-ui-icon-size);
+		mask-image: var(--jm-ui-svg-close);
 	}
 
 }

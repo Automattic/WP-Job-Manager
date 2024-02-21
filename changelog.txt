@@ -1,5 +1,10 @@
 # WP Job Manager
 
+## 2.2.2 - 2024-02-15
+* Fix issue with rich e-mails on some e-mail providers (#2753)
+* Fix: 'featured_first' argument now works when 'show_filters' is set to false.
+* Improve checkbox and radio inputs for styled forms
+
 ## 2.2.1 - 2024-01-31
 * Fix PHP 7.x error for mixed returned type (#2726)
 

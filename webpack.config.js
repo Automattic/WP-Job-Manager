@@ -23,6 +23,7 @@ const files = {
 	'css/ui': 'css/ui.scss',
 	'css/job-listings': 'css/job-listings.scss',
 	'css/job-submission': 'css/job-submission.scss',
+	'css/job-dashboard': 'css/job-dashboard.scss',
 	'css/setup': 'css/setup.scss',
 	'css/menu': 'css/menu.scss',
 };
