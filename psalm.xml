@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="4"
-    resolveFromConfigFile="true"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+	errorLevel="4"
+	resolveFromConfigFile="true"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="https://getpsalm.org/schema/config"
+	xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 	autoloader=".psalm/psalm-loader.php"
 	findUnusedCode="false"
-    findUnusedBaselineEntry="true"
-    errorBaseline=".psalm/psalm-baseline.xml"
+	findUnusedBaselineEntry="true"
+	errorBaseline=".psalm/psalm-baseline.xml"
 >
-    <projectFiles>
-        <file name="wp-job-manager-functions.php" />
-        <file name="wp-job-manager-template.php" />
-        <file name="uninstall.php" />
-        <file name="wp-job-manager.php" />
-        <file name="wp-job-manager-deprecated.php" />
-        <directory name="includes" />
-        <directory name="lib" />
-        <ignoreFiles>
-            <directory name="vendor" />
-        </ignoreFiles>
-    </projectFiles>
+	<projectFiles>
+		<file name="wp-job-manager-functions.php" />
+		<file name="wp-job-manager-template.php" />
+		<file name="uninstall.php" />
+		<file name="wp-job-manager.php" />
+		<file name="wp-job-manager-deprecated.php" />
+		<directory name="includes" />
+		<directory name="lib" />
+		<ignoreFiles>
+			<directory name="vendor" />
+		</ignoreFiles>
+	</projectFiles>
 	<issueHandlers>
 		<MissingFile errorLevel="info" />
 	</issueHandlers>
