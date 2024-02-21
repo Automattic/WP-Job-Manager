@@ -22,6 +22,9 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+	<issueHandlers>
+		<MissingFile errorLevel="info" />
+	</issueHandlers>
 	<stubs>
 		<file name="wp-job-manager.php" />
 		<file name="wp-job-manager-deprecated.php" />
