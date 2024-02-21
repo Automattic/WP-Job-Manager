@@ -127,20 +127,6 @@ import { createHooks } from '@wordpress/hooks';
 		});
 	}
 
-	function existsAndCallable( globalAsString ) {
-		let root = window;
-		const parts = globalAsString.split('.');
-		for ( let i = 0; i < parts.length; i++ ) {
-			const key = parts[i];
-			if ( ! root[key] ) {
-				return null;
-			}
-			root = root[key];
-		}
-
-		return typeof root === 'function' ? root : null;
-	}
-
 	const WPJMStats =  {
 		init: function ( statsToRecord ) {
 			const statsByTrigger = statsToRecord?.reduce( function ( accum, statToRecord ) {
