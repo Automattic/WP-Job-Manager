@@ -405,20 +405,18 @@ class Stats {
 					'page'         => 'listing',
 				],
 				'job_listing_view_unique'          => [
-					'unique'          => true,
-					'unique_callback' => [ $this, 'unique_by_post_id' ],
-					'type'            => 'pageLoad',
-					'trigger'         => 'page-load',
-					'page'            => 'listing',
+					'unique'  => true,
+					'type'    => 'pageLoad',
+					'trigger' => 'page-load',
+					'page'    => 'listing',
 				],
 				'job_listing_apply_button_clicked' => [
-					'trigger'         => 'apply-button-clicked',
-					'type'            => 'domEvent',
-					'element'         => 'input.application_button',
-					'event'           => 'click',
-					'unique'          => true,
-					'unique_callback' => [ $this, 'unique_by_post_id' ],
-					'page'            => 'listing',
+					'trigger' => 'apply-button-clicked',
+					'type'    => 'domEvent',
+					'element' => 'input.application_button',
+					'event'   => 'click',
+					'unique'  => true,
+					'page'    => 'listing',
 				],
 				'jobs_view'                        => [
 					'trigger' => 'page-load',
@@ -426,18 +424,15 @@ class Stats {
 					'page'    => 'jobs',
 				],
 				'jobs_view_unique'                 => [
-					'trigger'         => 'page-load',
-					'type'            => 'pageLoad',
-					'page'            => 'jobs',
-					'unique'          => true,
-					'unique_callback' => [ $this, 'unique_by_post_id' ],
+					'trigger' => 'page-load',
+					'type'    => 'pageLoad',
+					'page'    => 'jobs',
+					'unique'  => true,
 				],
-				// New style of declaration, a stat that relies on calling a custom js func.
 				'job_listing_impressions'          => [
-					'trigger'     => 'job-listing-impression',
-					'type'        => 'initListingImpression',
-					'js_callback' => 'WPJMStats.initListingImpression',
-					'page'        => 'jobs',
+					'trigger' => 'job-listing-impression',
+					'type'    => 'initListingImpression',
+					'page'    => 'jobs',
 				],
 			]
 		);
@@ -459,17 +454,16 @@ class Stats {
 			}
 
 			$stat_ajax = [
-				'name'        => $stat_name,
-				'post_id'     => $post_id,
-				'type'        => $stat_data['type'] ?? '',
-				'trigger'     => $stat_data['trigger'] ?? '',
-				'element'     => $stat_data['element'] ?? '',
-				'event'       => $stat_data['event'] ?? '',
-				'js_callback' => $stat_data['js_callback'] ?? null,
+				'name'    => $stat_name,
+				'post_id' => $post_id,
+				'type'    => $stat_data['type'] ?? '',
+				'trigger' => $stat_data['trigger'] ?? '',
+				'element' => $stat_data['element'] ?? '',
+				'event'   => $stat_data['event'] ?? '',
 			];
 
 			if ( ! empty( $stat_data['unique'] ) ) {
-				$unique_callback         = $stat_data['unique_callback'];
+				$unique_callback         = $stat_data['unique_callback'] ?? [ $this, 'unique_by_post_id' ];
 				$stat_ajax['unique_key'] = call_user_func( $unique_callback, $stat_name, $post_id );
 			}
 
