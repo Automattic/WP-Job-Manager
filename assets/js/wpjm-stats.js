@@ -69,7 +69,6 @@ import { createHooks } from '@wordpress/hooks';
 			threshold: 1.0,
 		};
 
-
 		const observer = new IntersectionObserver(function ( entries ) {
 			entries.forEach(function ( entry ) {
 				if ( entry.isIntersecting && entry.intersectionRatio > 0.99 ) {
@@ -161,7 +160,7 @@ import { createHooks } from '@wordpress/hooks';
 			}, {} );
 
 			Object.keys( statsByTrigger ).forEach( function ( triggerName) {
-				hookStatsForTrigger( statsByTrigger, triggerName );
+				WPJMStats.hookStatsForTrigger( statsByTrigger, triggerName );
 			} );
 
 			WPJMStats.initCallbacks.forEach( function ( initCallback ) {
@@ -170,23 +169,79 @@ import { createHooks } from '@wordpress/hooks';
 
 			WPJMStats.hooks.doAction( 'page-load' );
 		},
-		hooks: createHooks(),
-		// New style of declaration, a stat that relies on calling a custom js func.
-		initListingImpression: function () {
-			const debouncedSender = createStatsQueue();
-			waitForSelector( 'li.job_listing' ).then( function () {
-				const allVisibleListings = document.querySelectorAll('li.job_listing');
-				const initialListingIds = filterZeroes( [...allVisibleListings].map( function ( elem ) {
-					return findIdInClassNames( elem );
-				} ) );
-				debouncedSender.queueListingImpressionStats( initialListingIds );
 
-				waitForNextVisibleListing( function ( elem ) {
-					const maybeId = findIdInClassNames( elem );
-					maybeId > 0 && debouncedSender.queueListingImpressionStats( [ maybeId ] );
-				} );
+		hookStatsForTrigger: function ( statsByTrigger, triggerName ) {
+			console.log( 'hookStatsForTrigger' );
+			const statsToRecord    = [];
+			const stats            = statsByTrigger[triggerName] || [];
+			const events           = {};
+			const statsByType      = {};
 
+			stats.forEach( function ( statToRecord ) {
+				if ( ! statsByType[statToRecord.type] ) {
+					statsByType[statToRecord.type] = [];
+				}
+
+				statsByType[statToRecord.type].push( statToRecord );
+				statsToRecord.push( statToRecord );
 			} );
+
+			// Hook action to call logStats.
+			WPJMStats.hooks.addAction( triggerName, 'wpjm-stats', function () {
+				window.wpjmLogStats( statsToRecord );
+			}, 10 );
+
+			Object.keys( statsByType ).forEach( function ( type ) {
+				console.log( 'stats by type', type );
+				WPJMStats.types[type] && WPJMStats.types[type]( statsByType[type] );
+			} );
+		},
+
+		hooks: createHooks(),
+		types: {
+			pageLoad: function ( stats ) {
+				console.log( 'pageLoad init script.' );
+				// This does not need to do anything special.
+			},
+			domEvent: function ( stats ) {
+				console.log( 'pageLoad init script.' );
+				const events = {};
+				stats.forEach( function ( statToRecord ) {
+					const triggerName = statToRecord.trigger;
+					if ( statToRecord.element && statToRecord.event ) {
+						const elemToAttach = document.querySelector( statToRecord.element );
+						if ( elemToAttach && ! events[statToRecord.element] ) {
+							elemToAttach.addEventListener( statToRecord.event, function ( e ) {
+								if ( checkUniqueRecordedToday( statToRecord ) ) {
+									return;
+								}
+
+								WPJMStats.hooks.doAction( triggerName );
+							} );
+							events[statToRecord.element] = true;
+						}
+					}
+				} );
+			},
+			// New style of declaration, a stat that relies on calling a custom js func.
+			initListingImpression: function ( stats ) {
+				console.log( 'initListingImpression init script.' );
+				const debouncedSender = createStatsQueue();
+				waitForSelector( 'li.job_listing' ).then( function () {
+					const allVisibleListings = document.querySelectorAll('li.job_listing');
+					const initialListingIds = filterZeroes( [...allVisibleListings].map( function ( elem ) {
+						return findIdInClassNames( elem );
+					} ) );
+					debouncedSender.queueListingImpressionStats( initialListingIds );
+
+					waitForNextVisibleListing( function ( elem ) {
+						const maybeId = findIdInClassNames( elem );
+						maybeId > 0 && debouncedSender.queueListingImpressionStats( [ maybeId ] );
+					} );
+
+				} );
+			},
+
 		},
 		initCallbacks: []
 	};
@@ -266,46 +321,8 @@ import { createHooks } from '@wordpress/hooks';
 		} );
 	};
 
-	function hookStatsForTrigger( statsByTrigger, triggerName ) {
-		const statsToRecord    = [];
-		const stats            = statsByTrigger[triggerName] || [];
-		const events           = {};
-
-		stats.forEach( function ( statToRecord ) {
-			statsToRecord.push( statToRecord );
-
-			if ( statToRecord.element && statToRecord.event ) {
-				const elemToAttach = document.querySelector( statToRecord.element );
-				if ( elemToAttach && ! events[statToRecord.element] ) {
-					elemToAttach.addEventListener( statToRecord.event, function ( e ) {
-						if ( checkUniqueRecordedToday( statToRecord ) ) {
-							return;
-						}
-
-						WPJMStats.hooks.doAction( triggerName );
-					} );
-					events[statToRecord.element] = true;
-				}
-			} else if ( null !== statToRecord.js_callback ) {
-				const callable = existsAndCallable( statToRecord.js_callback );
-				if ( callable ) {
-					WPJMStats.initCallbacks.push( function () {
-						callable.call( null, statToRecord );
-					} );
-				}
-			}
-		} );
-
-		// Hook action to call logStats.
-		WPJMStats.hooks.addAction( triggerName, 'wpjm-stats', function () {
-			window.wpjmLogStats( statsToRecord );
-		}, 10 );
-	}
-
 	domReady( function () {
 		const jobStatsSettings = window.job_manager_stats;
-
 		WPJMStats.init( jobStatsSettings.stats_to_log );
-
 	} );
 } )();

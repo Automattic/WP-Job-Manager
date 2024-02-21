@@ -401,16 +401,19 @@ class Stats {
 				'job_listing_view'                 => [
 					'log_callback' => [ $this, 'log_stat' ], // Example of overriding how we log this.
 					'trigger'      => 'page-load',
+					'type'         => 'pageLoad',
 					'page'         => 'listing',
 				],
 				'job_listing_view_unique'          => [
 					'unique'          => true,
 					'unique_callback' => [ $this, 'unique_by_post_id' ],
+					'type'            => 'pageLoad',
 					'trigger'         => 'page-load',
 					'page'            => 'listing',
 				],
 				'job_listing_apply_button_clicked' => [
 					'trigger'         => 'apply-button-clicked',
+					'type'            => 'domEvent',
 					'element'         => 'input.application_button',
 					'event'           => 'click',
 					'unique'          => true,
@@ -419,21 +422,22 @@ class Stats {
 				],
 				'jobs_view'                        => [
 					'trigger' => 'page-load',
+					'type'    => 'pageLoad',
 					'page'    => 'jobs',
 				],
 				'jobs_view_unique'                 => [
 					'trigger'         => 'page-load',
+					'type'            => 'pageLoad',
 					'page'            => 'jobs',
 					'unique'          => true,
 					'unique_callback' => [ $this, 'unique_by_post_id' ],
 				],
 				// New style of declaration, a stat that relies on calling a custom js func.
 				'job_listing_impressions'          => [
-					'trigger'         => 'job-listing-impression',
-					'unique'          => true,
-					'js_callback'     => 'WPJMStats.initListingImpression',
-					'unique_callback' => [ $this, 'unique_by_post_id' ],
-					'page'            => 'jobs',
+					'trigger'     => 'job-listing-impression',
+					'type'        => 'initListingImpression',
+					'js_callback' => 'WPJMStats.initListingImpression',
+					'page'        => 'jobs',
 				],
 			]
 		);
@@ -457,6 +461,7 @@ class Stats {
 			$stat_ajax = [
 				'name'        => $stat_name,
 				'post_id'     => $post_id,
+				'type'        => $stat_data['type'] ?? '',
 				'trigger'     => $stat_data['trigger'] ?? '',
 				'element'     => $stat_data['element'] ?? '',
 				'event'       => $stat_data['event'] ?? '',
