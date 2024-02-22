@@ -5,10 +5,10 @@ function createStatsQueue() {
 	const alreadySent = {};
 	let queue = [];
 
-	const logThem = debounce( function ( listingIds ) {
+	const logThem = debounce( function ( statName, listingIds ) {
 		const stats = listingIds.map( function ( id ) {
 			alreadySent[id] = true;
-			return { name: 'job_listing_impressions', post_id: id };
+			return { name: statName, post_id: id };
 		});
 
 		return window.wpjmLogStats( stats ).finally( function () {
@@ -17,13 +17,13 @@ function createStatsQueue() {
 	}, 1000 );
 
 	return {
-		queueListingImpressionStats: function ( listingIds ) {
+		queueListingImpressionStats: function ( statName, listingIds ) {
 			listingIds.forEach( function (listingId ) {
 				if ( ! alreadySent[listingId] ) {
 					queue.push(listingId);
 				}
 			} );
-			logThem( queue );
+			logThem( statName, queue );
 
 		}
 	};
@@ -75,17 +75,21 @@ function waitForNextVisibleListing( listingVisibleCallback ) {
 }
 
 export function initListingImpression( stats ) {
+	if ( 0 === stats.length ) {
+		return;
+	}
+	const statName = stats[0].name;
 	const debouncedSender = createStatsQueue();
 	waitForSelector( 'li.job_listing' ).then( function () {
 		const allVisibleListings = document.querySelectorAll('li.job_listing');
 		const initialListingIds = filterZeroes( [...allVisibleListings].map( function ( elem ) {
 			return findIdInClassNames( elem );
 		} ) );
-		debouncedSender.queueListingImpressionStats( initialListingIds );
+		debouncedSender.queueListingImpressionStats( statName, initialListingIds );
 
 		waitForNextVisibleListing( function ( elem ) {
 			const maybeId = findIdInClassNames( elem );
-			maybeId > 0 && debouncedSender.queueListingImpressionStats( [ maybeId ] );
+			maybeId > 0 && debouncedSender.queueListingImpressionStats( statName, [ maybeId ] );
 		} );
 
 	} );

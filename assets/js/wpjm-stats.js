@@ -11,6 +11,8 @@ import { initListingImpression } from "./stats/impressions";
 
 const WPJMStats =  {
 	init: function ( statsToRecord ) {
+		WPJMStats.hooks.doAction( 'init', WPJMStats );
+
 		const statsByTrigger = statsToRecord?.reduce( function ( accum, statToRecord ) {
 			const triggerName = statToRecord.trigger || '';
 
@@ -29,10 +31,6 @@ const WPJMStats =  {
 
 		Object.keys( statsByTrigger ).forEach( function ( triggerName) {
 			WPJMStats.hookStatsForTrigger( statsByTrigger, triggerName );
-		} );
-
-		WPJMStats.initCallbacks.forEach( function ( initCallback ) {
-			initCallback.call( null );
 		} );
 
 		WPJMStats.hooks.doAction( 'page-load' );
