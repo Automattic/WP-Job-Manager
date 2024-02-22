@@ -212,24 +212,24 @@ class Stats {
 	/**
 	 * Log multiple stats in one go. Triggered in an ajax call.
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function maybe_log_stat_ajax() {
 		if ( ! wp_doing_ajax() ) {
-			return;
+			return false;
 		}
 
 		$post_data = stripslashes_deep( $_POST );
 
 		if ( ! isset( $post_data['_ajax_nonce'] ) || ! wp_verify_nonce( $post_data['_ajax_nonce'], 'ajax-nonce' ) ) {
-			return;
+			return false;
 		}
 
 		$stats_json = $post_data['stats'] ?? '[]';
-		$stats      = json_decode( $stats_json, ARRAY_A );
+		$stats      = json_decode( $stats_json, true );
 
 		if ( empty( $stats ) ) {
-			return;
+			return false;
 		}
 
 		$errors           = [];
@@ -263,6 +263,10 @@ class Stats {
 
 			$log_callback = $registered_stats[ $stat_name ]['log_callback'] ?? [ $this, 'log_stat' ];
 			call_user_func( $log_callback, trim( $stat_name ), [ 'post_id' => $post_id ] );
+		}
+
+		if ( ! empty( $errors ) ) {
+			return false;
 		}
 
 		return true;
@@ -333,7 +337,6 @@ class Stats {
 	 * @return bool
 	 */
 	private function can_record_stats_for_post( $post ) {
-		$can_record = false;
 		if ( $this->page_has_jobs_shortcode( $post ) ) {
 			return $this->filter_can_record_stats_for_post( true, $post );
 		} elseif ( \WP_Job_Manager_Post_Types::PT_LISTING === $post->post_type ) {
