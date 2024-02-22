@@ -55,6 +55,8 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 			</div>
 
 		</div>
+		<?php do_action( 'job_manager_job_overlay_content', $job ); ?>
+
 	</div>
 	<div class="jm-job-overlay-footer">
 		<?php
