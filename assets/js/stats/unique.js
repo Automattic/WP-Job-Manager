@@ -9,7 +9,7 @@ export function getDailyUnique( name ) {
 		const date = new Date();
 		const now  = date.getTime();
 		const expiration = parseInt( window.localStorage[ name ], 10 );
-		return expiration >= now;
+		return Number.isNaN( expiration ) ? false : expiration >= now;
 	}
 	return false;
 }
