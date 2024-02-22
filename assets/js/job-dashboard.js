@@ -31,11 +31,20 @@ async function showOverlay( event ) {
 	const contentElement = overlayDialog.querySelector( '.jm-dialog-modal-content' );
 	contentElement.innerHTML = '<a class="jm-ui-spinner"></a>';
 
-	const { success, data } = await (
-		await fetch( `${ overlayEndpoint }?job_id=${ this.dataset.jobId }` )
-	 ).json();
+	try {
+		const response = await fetch( `${ overlayEndpoint }?job_id=${ this.dataset.jobId }` );
 
-	contentElement.innerHTML = data;
+		if ( ! response.ok ) {
+			throw new Error( response.statusText );
+		}
+
+		const { data } = await response.json();
+
+		contentElement.innerHTML = data;
+	}
+	catch ( error ) {
+		contentElement.innerHTML = `<div class="jm-notice color-error has-text-align-center" role="status">${ error.message }</div>`;
+	}
 
 	setupEvents( contentElement );
 }

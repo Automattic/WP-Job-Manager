@@ -543,7 +543,7 @@ class WP_Job_Manager {
 
 		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-deserialize/jquery.deserialize.js', [ 'jquery' ], '1.2.1', true );
 		self::register_script( 'wp-job-manager-ajax-filters', 'js/ajax-filters.js', $ajax_filter_deps, true );
-		self::register_script( 'wp-job-manager-job-dashboard', 'js/job-dashboard.js', [ 'jquery' ], true );
+		self::register_script( 'wp-job-manager-job-dashboard', 'js/job-dashboard.js', null, true );
 		self::register_script( 'wp-job-manager-job-application', 'js/job-application.js', [ 'jquery' ], true );
 		self::register_script( 'wp-job-manager-job-submission', 'js/job-submission.js', [ 'jquery' ], true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
