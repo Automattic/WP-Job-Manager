@@ -429,7 +429,7 @@ class Stats {
 					'page'    => 'jobs',
 					'unique'  => true,
 				],
-				'job_listing_impressions'          => [
+				'job_listing_impression'           => [
 					'trigger' => 'job-listing-impression',
 					'type'    => 'initListingImpression',
 					'page'    => 'jobs',
