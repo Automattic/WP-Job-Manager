@@ -47,7 +47,6 @@ function observeForVisibility( jobListingContainer, jobListingElement, visibleCa
 						visibleCallback( node );
 					}
 				}
-				node.classList.add( 'viewed' );
 				observer.unobserve( node );
 			}
 		} );
@@ -64,7 +63,7 @@ function waitForNextVisibleListing( listingVisibleCallback ) {
 	const observer = new MutationObserver(function ( mutations ) {
 		mutations.forEach(function ( mutation ) {
 			mutation.addedNodes.forEach( function ( node ) {
-				if ( 1 === node.nodeType && node.classList.contains( 'job_listing' ) && ! node.classList.contains( 'viewed' ) ) {
+				if ( 1 === node.nodeType && node.classList.contains( 'job_listing' ) ) {
 					observeForVisibility( jobListingsContainer, node, listingVisibleCallback, alreadyViewed );
 				}
 			} );
