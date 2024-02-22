@@ -43,18 +43,22 @@
 }
 
 .jm-dialog-modal {
-	position: relative;
 	width: var(--wp--style--global--content-size, 640px);
 	max-width: calc(100% - var(--jm-ui-space-s) * 2);
 	max-height: 100%;
 	margin: var(--jm-ui-space-s);
-	overflow: hidden;
 	border-radius: var(--jm-ui-radius-2x);
 	background-color: var(--jm-ui-background-color, #fff);
 	color: var(--jm-ui-text-color, #1a1a1a);
 	box-shadow: var(--jm-ui-shadow-modal);
-
+	overflow: auto;
 	overscroll-behavior: contain;
+
+}
+.jm-dialog-modal-container {
+	position: relative;
+	min-height: 100%;
+	display: flex;
 
 }
 
@@ -63,7 +67,6 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 100%;
 	width: 100%;
 }
 
