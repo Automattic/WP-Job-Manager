@@ -115,14 +115,14 @@ class Stats {
 
 		$args         = array_merge( self::DEFAULT_LOG_STAT_ARGS, $args );
 		$group        = $args['group'];
-		$post_id      = $args['post_id'];
+		$post_id      = absint( $args['post_id'] );
 		$increment_by = $args['increment_by'];
 
 		if (
 			strlen( $name ) > 255 ||
 			strlen( $group ) > 255 ||
-			! is_numeric( $post_id ) ||
-			! is_numeric( $increment_by ) ) {
+			! $post_id ||
+			! is_integer( $increment_by ) ) {
 			return false;
 		}
 

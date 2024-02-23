@@ -517,7 +517,7 @@ class Job_Dashboard_Shortcode {
 	 * @output string
 	 */
 	public static function the_job_title( $job ) {
-		echo '<a class="job-title" data-job-id="' . esc_attr( $job->ID ) . '" href="' . esc_url( get_permalink( $job->ID ) ) . '">' . esc_html( get_the_title( $job ) ?? $job->ID ) . '</a>';
+		echo '<a class="job-title" data-job-id="' . esc_attr( (string) $job->ID ) . '" href="' . esc_url( get_permalink( $job->ID ) ) . '">' . esc_html( get_the_title( $job ) ?? $job->ID ) . '</a>';
 	}
 
 	/**
@@ -581,7 +581,7 @@ class Job_Dashboard_Shortcode {
 	public static function get_job_dashboard_page_url() {
 		$page_id = get_option( 'job_manager_job_dashboard_page_id' );
 		if ( $page_id ) {
-			return get_permalink( $page_id );
+			return (string) get_permalink( $page_id );
 		} else {
 			return home_url( '/' );
 		}
@@ -596,7 +596,7 @@ class Job_Dashboard_Shortcode {
 	 */
 	public function is_job_available_on_dashboard( \WP_Post $job ) {
 		// Check cache of currently displayed job dashboard IDs first to avoid lots of queries.
-		if ( isset( $this->job_dashboard_job_ids ) && in_array( (int) $job->ID, $this->job_dashboard_job_ids, true ) ) {
+		if ( ! empty( $this->job_dashboard_job_ids ) && in_array( (int) $job->ID, $this->job_dashboard_job_ids, true ) ) {
 			return true;
 		}
 

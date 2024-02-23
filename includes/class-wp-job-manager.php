@@ -43,7 +43,7 @@ class WP_Job_Manager {
 	/**
 	 * Stats.
 	 *
-	 * @var WP_Job_Manager_Stats
+	 * @var WP_Job_Manager\Stats
 	 */
 	public $stats;
 
