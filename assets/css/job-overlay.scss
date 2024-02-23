@@ -1,8 +1,14 @@
 
+@import 'mixins';
+
 .jm-dashboard__overlay {
 	width: var(--wp--style--global--wide-size, 1200px);
-	height: 80vh;
+	height: 100vh;
 	--jm-dialog-padding: var(--jm-ui-space-ml);
+
+	&, * {
+		box-sizing: border-box;
+	}
 
 	.jm-ui-spinner {
 		--size: 64px;
@@ -12,6 +18,18 @@
 		top: var(--jm-dialog-padding);
 		right: var(--jm-dialog-padding);
 		color: inherit;
+	}
+
+	.jm-dialog-modal {
+		display: block;
+		overflow: unset;
+	}
+	.jm-dialog-modal-container {
+		display: block;
+		height: 100%;
+	}
+	.jm-dialog-modal-content {
+		height: 100%;
 	}
 }
 
@@ -23,8 +41,9 @@
 	flex-direction: column;
 	gap: var(--jm-ui-space-sm);
 	animation: jm-fade-in 200ms ease-in;
-
 	font-size: var(--jm-ui-font-size-m);
+	height: 100%;
+
 }
 
 .jm-job-overlay-header {
@@ -45,11 +64,13 @@
 .jm-job-overlay-content {
 	flex: 1 1 auto;
 	overflow: auto;
+	margin: 0 calc( -1 * var(--jm-ui-space-m) );
+	padding: 0 var(--jm-ui-space-m);
 }
 
 .jm-job-overlay-footer {
 	border-top: var(--jm-ui-border-size) solid var(--jm-ui-border-faint);
-	padding-top: var(--jm-dialog-padding);
+	padding-top: var(--jm-ui-space-m);
 
 	.jm-ui-actions-row {
 		gap: var(--jm-ui-space-sm);
@@ -79,7 +100,14 @@
 	}
 }
 
+
 .jm-job-stats {
+
+	--jm-stat-color-page-view: var(--jm-ui-accent-color);
+	--jm-stat-color-unique-view: color-mix(in srgb, #000, var(--jm-stat-color-page-view) 40%);
+}
+
+.jm-job-stat-details {
 	margin: var(--jm-ui-space-m) 0;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
@@ -100,8 +128,6 @@
 		//margin-left: -1px;
 	}
 
-	--jm-stat-color-page-view: var(--jm-ui-accent-color);
-	--jm-stat-color-unique-view: color-mix(in srgb, #000, var(--jm-stat-color-page-view) 40%);
 
 	.jm-stat-section {
 		display: flex;
@@ -170,5 +196,99 @@
 		&[data-icon=message] {
 			mask-image: url('data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' fill=\'none\' viewBox=\'0 0 24 24\'%3e%3cpath fill=\'black\' fill-rule=\'evenodd\' d=\'M3 7c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm2-.5h14c.28 0 .5.22.5.5v.94L12 13.56 4.5 7.94V7c0-.28.22-.5.5-.5Zm-.5 3.31V17c0 .28.22.5.5.5h14a.5.5 0 0 0 .5-.5V9.81L12 15.44 4.5 9.8Z\' clip-rule=\'evenodd\'/%3e%3c/svg%3e');
 		}
+	}
+}
+
+.jm-job-chart {
+	margin: var(--jm-ui-space-m) 0;
+
+	padding: 2px;
+	border-bottom: 2px solid var(--jm-ui-border-faint);
+
+	.jm-stat-section-header {
+		text-transform: uppercase;
+		font-weight: 200;
+		letter-spacing: -0.2px;
+		margin-bottom: var(--jm-ui-space-xs);
+	}
+
+	.jm-chart-bar-tooltip {
+		font-size: var(--jm-ui-font-size-s);
+		position: absolute;
+		display: none;
+		color: var(--jm-ui-background-color, #fff);
+		background-color: var(--jm-ui-text-color, #1a1a1a);
+		padding: var(--jm-ui-space-s);
+		border-radius: var(--jm-ui-radius);
+		top: calc(100% + 6px);
+		width: 120px;
+		left: -50px;
+		z-index: 1;
+
+		.jm-ui-row {
+			justify-content: space-between;
+			margin: var(--jm-ui-space-xs) 0;
+		}
+		strong {
+			font-weight: 600;
+		}
+	}
+	.jm-chart-bar:hover {
+		background: var(--jm-ui-faint-color);
+		.jm-chart-bar-tooltip {
+			display: block;
+		}
+	}
+
+	.jm-chart-bars {
+		padding-top: 10px;
+		display: flex;
+		gap: 4px;
+	}
+	.jm-chart-bar {
+		flex: 1;
+		min-width: 6px;
+		max-width: 20px;
+		position: relative;
+		height: 150px;
+		--jm-local-padding: 20%;
+
+	}
+	.jm-chart-bar-value,
+	.jm-chart-bar-inner-value,
+	{
+		position: absolute;
+		bottom: 0;
+		--jm-local-radius: 1px;
+		border-radius: var(--jm-local-radius) var(--jm-local-radius) 0 0;
+		animation: jm-chart-bar-scale-up 350ms ease-out;
+		transform-origin: bottom center;
+	}
+	.jm-chart-bar-value {
+		left: 0;
+		right: 0;
+		padding-top: var(--jm-local-padding);
+		background: var(--jm-stat-color-page-view);
+		box-sizing: content-box;
+	}
+	.jm-chart-bar-inner-value {
+		background: var(--jm-stat-color-unique-view);
+		left: var(--jm-local-padding);
+		right: var(--jm-local-padding);
+	}
+
+	.jm-chart-bar.future-day .jm-chart-bar-value {
+		background: fadeCurrentColor(10%);
+		height: 0px !important;
+		animation: unset;
+	}
+}
+
+@keyframes jm-chart-bar-scale-up {
+	from {
+		transform: scaleY(0);
+	}
+	to {
+		transform: scaleY(1);
 	}
 }

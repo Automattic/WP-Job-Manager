@@ -185,10 +185,55 @@ class Job_Overlay {
 			[]
 		);
 
+		$daily_views   = $job_stats->get_event_daily( Job_Listing_Stats::JOB_LISTING_VIEW );
+		$daily_uniques = $job_stats->get_event_daily( Job_Listing_Stats::JOB_LISTING_VIEW_UNIQUE );
+
+		$max = max( $daily_views );
+
+		foreach ( $daily_views as $date => $views ) {
+			$by_day[ $date ] = [
+				'date'    => $date,
+				'views'   => $views,
+				'uniques' => $daily_uniques[ $date ] ?? 0,
+			];
+		}
+
+		$publish_date = get_post_datetime( $job );
+
+		$job_expires = \WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+
+		if ( ! $job_expires ) {
+			$job_expires = $publish_date->modify( '+30 days' );
+		}
+
+		$today = new \DateTime();
+
+		$all_days = $publish_date->diff( $job_expires )->days;
+
+		$all_days = min( $all_days, 60 );
+
+		for ( $i = 0; $i < $all_days; $i++ ) {
+			$date = $publish_date->modify( '+' . $i . ' day' )->format( 'Y-m-d' );
+			if ( empty( $by_day[ $date ] ) ) {
+				$by_day[ $date ] = [
+					'date'    => $date,
+					'views'   => 0,
+					'uniques' => 0,
+					'class'   => 'future-day',
+				];
+			}
+		}
+
+		ksort( $by_day );
+
 		get_job_manager_template(
 			'job-stats.php',
 			[
 				'stats' => $stat_columns,
+				'chart' => [
+					'values' => $by_day,
+					'max'    => $max,
+				],
 			]
 		);
 	}

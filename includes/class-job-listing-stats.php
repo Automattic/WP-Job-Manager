@@ -127,14 +127,16 @@ class Job_Listing_Stats {
 			$wpdb->prepare(
 				"SELECT date, count FROM {$wpdb->wpjm_stats}
 		  WHERE post_id = %d AND name = %s AND date BETWEEN %s AND %s
-		  ORDER BY date DESC",
+		  ORDER BY date ASC",
 				$this->job_id,
 				$event,
 				$this->start_date,
-				( new \DateTime( 'yesterday' ) )->format( 'Y-m-d' )
+				( new \DateTime( 'today' ) )->format( 'Y-m-d' )
 			),
 			OBJECT_K
 		);
+
+		$views = array_map( fn( $view ) => (int) $view->count, $views );
 
 		wp_cache_set( $cache_key, $views, Stats::CACHE_GROUP, strtotime( 'tomorrow' ) - time() );
 

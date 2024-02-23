@@ -5,6 +5,8 @@
 	--jm-ui-border-strong: currentColor;
 	--jm-ui-border-size: 1px;
 
+	--jm-ui-responsive-scale: clamp(0px, (100vw - 400px) / (1200 - 400), 1px);
+
 	--jm-ui-background-color: initial;
 	--jm-ui-text-color: initial;
 	--jm-ui-background-opacity: 0;

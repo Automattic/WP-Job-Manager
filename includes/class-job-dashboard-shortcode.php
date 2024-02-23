@@ -576,7 +576,7 @@ class Job_Dashboard_Shortcode {
 	/**
 	 * Get the URL of the [job_dashboard] page.
 	 *
-	 * @return string
+	 * @return string|false
 	 */
 	public static function get_job_dashboard_page_url() {
 		$page_id = get_option( 'job_manager_job_dashboard_page_id' );
