@@ -53,13 +53,27 @@ class Job_Dashboard_Shortcode {
 
 		add_filter( 'paginate_links', [ $this, 'filter_paginate_links' ], 10, 1 );
 
+		add_action( 'job_manager_job_dashboard_column_company', [ self::class, 'the_company' ] );
 		add_action( 'job_manager_job_dashboard_column_date', [ self::class, 'the_date' ] );
 		add_action( 'job_manager_job_dashboard_column_date', [ self::class, 'the_expiration_date' ] );
 
+		add_action( 'job_manager_job_dashboard_columns', [ $this, 'maybe_display_company_column' ], 8 );
 		add_action( 'job_manager_job_dashboard_column_job_title', [ self::class, 'the_job_title' ], 10 );
 		add_action( 'job_manager_job_dashboard_column_job_title', [ self::class, 'the_status' ], 12 );
 
 		Job_Overlay::instance();
+	}
+	/**
+	 * Add 'company' column if user has multiple companies.
+	 *
+	 * @param array $columns
+	 */
+	public function maybe_display_company_column( $columns ) {
+		if ( $this->user_has_multiple_companies() ) {
+			$columns = array_merge( [ 'company' => __( 'Company', 'wp-job-manager' ) ], $columns );
+		}
+
+		return $columns;
 	}
 
 	/**
@@ -463,6 +477,17 @@ class Job_Dashboard_Shortcode {
 	}
 
 	/**
+	 * Show company details.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @output string
+	 */
+	public static function the_company( $job ) {
+		the_company_logo( 'thumbnail', '', $job );
+	}
+
+	/**
 	 * Show location.
 	 *
 	 * @param \WP_Post $job
@@ -492,7 +517,7 @@ class Job_Dashboard_Shortcode {
 	 * @output string
 	 */
 	public static function the_job_title( $job ) {
-		echo '<a class="job-title" data-job-id="' . esc_attr( $job->ID ) . '" href="' . esc_url( get_permalink( $job->ID ) ) . '">' . esc_html( get_the_title( $job ) ?? $job->ID ) . '</a>';
+		echo '<a class="job-title" data-job-id="' . esc_attr( (string) $job->ID ) . '" href="' . esc_url( get_permalink( $job->ID ) ) . '">' . esc_html( get_the_title( $job ) ?? $job->ID ) . '</a>';
 	}
 
 	/**
@@ -556,7 +581,7 @@ class Job_Dashboard_Shortcode {
 	public static function get_job_dashboard_page_url() {
 		$page_id = get_option( 'job_manager_job_dashboard_page_id' );
 		if ( $page_id ) {
-			return get_permalink( $page_id );
+			return (string) get_permalink( $page_id );
 		} else {
 			return home_url( '/' );
 		}
@@ -571,7 +596,7 @@ class Job_Dashboard_Shortcode {
 	 */
 	public function is_job_available_on_dashboard( \WP_Post $job ) {
 		// Check cache of currently displayed job dashboard IDs first to avoid lots of queries.
-		if ( isset( $this->job_dashboard_job_ids ) && in_array( (int) $job->ID, $this->job_dashboard_job_ids, true ) ) {
+		if ( ! empty( $this->job_dashboard_job_ids ) && in_array( (int) $job->ID, $this->job_dashboard_job_ids, true ) ) {
 			return true;
 		}
 
