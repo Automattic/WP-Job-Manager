@@ -78,10 +78,6 @@ const WPJMStats =  {
 					const elemToAttach = document.querySelector( statToRecord.element );
 					if ( elemToAttach && ! events[statToRecord.element] ) {
 						elemToAttach.addEventListener( statToRecord.event, function ( e ) {
-							if ( checkUniqueRecordedToday( statToRecord ) ) {
-								return;
-							}
-
 							WPJMStats.hooks.doAction( triggerName );
 						} );
 						events[statToRecord.element] = true;
@@ -125,12 +121,12 @@ window.wpjmLogStats = window.wpjmLogStats || function ( stats ) {
 			return { name, group, post_id }; } ) )
 	} );
 
+	setUniques( uniquesToSet );
+
 	return fetch( ajaxUrl, {
 		method: 'POST',
 		credentials: 'same-origin',
 		body: postData,
-	} ).finally( function () {
-		setUniques( uniquesToSet );
 	} );
 };
 
