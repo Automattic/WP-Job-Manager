@@ -16,17 +16,7 @@ export function filterZeroes( list ) {
 }
 
 export function findIdInClassNames( node ) {
-	const classes = node.classList;
-	for ( let i = 0; i < classes.length; i++ ) {
-		const className = classes[i];
-		if ( 0 === className.indexOf( 'post-' ) ) {
-			const maybeId = parseInt( className.substring(5), 10 );
-			if ( ! isNaN( maybeId ) ) {
-				return maybeId;
-			}
-		}
-	}
-	return 0;
+	return + node.className.match(/\bpost-(\d+)\b/)?.[1] || 0;
 }
 
 
