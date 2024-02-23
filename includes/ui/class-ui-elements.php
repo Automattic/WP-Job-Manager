@@ -81,6 +81,7 @@ class UI_Elements {
 				'label'   => '',
 				'url'     => '',
 				'onclick' => '',
+				'class'   => '',
 			]
 		);
 
@@ -89,7 +90,7 @@ class UI_Elements {
 		}
 
 		$attrs = [
-			'class' => $class,
+			'class' => join( ' ', [ $class, $args['class'] ] ),
 			'href'  => esc_url( $args['url'] ),
 		];
 

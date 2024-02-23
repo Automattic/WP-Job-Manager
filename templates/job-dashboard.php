@@ -21,6 +21,7 @@
  * @var string    $search_input Search input.
  */
 
+use WP_Job_Manager\Job_Overlay;
 use WP_Job_Manager\UI\Notice;
 use WP_Job_Manager\UI\UI_Elements;
 
@@ -77,21 +78,7 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 						<?php foreach ( $job_dashboard_columns as $key => $column ) : ?>
 							<div class="jm-dashboard-job-column <?php echo esc_attr( $key ); ?>"
 								aria-label="<?php echo esc_attr( $column ); ?>">
-								<?php
-
-								switch ( $key ) {
-									case 'job_title':
-										echo '<a class="job-title" href="' . esc_url( get_permalink( $job->ID ) ) . '">' . ( wpjm_get_the_job_title( $job ) ?? $job->ID ) . '</a>';
-										break;
-									case 'date':
-										echo '<div>' . esc_html( wp_date( apply_filters( 'job_manager_get_dashboard_date_format', 'M d, Y' ), get_post_datetime( $job )->getTimestamp() ) ) . '</div>';
-
-										break;
-								}
-
-								do_action( 'job_manager_job_dashboard_column_' . $key, $job );
-
-								?>
+								<?php do_action( 'job_manager_job_dashboard_column_' . $key, $job ); ?>
 							</div>
 						<?php endforeach; ?>
 						<div class="jm-dashboard-job-column actions job-dashboard-job-actions">
@@ -101,7 +88,7 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 								foreach ( $job_actions[ $job->ID ] as $action => $value ) {
 									$action_url = add_query_arg( [
 										'action' => $action,
-										'job_id' => $job->ID
+										'job_id' => $job->ID,
 									] );
 									if ( $value['nonce'] ) {
 										$action_url = wp_nonce_url( $action_url, $value['nonce'] );
@@ -119,4 +106,6 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 		<?php endif; ?>
 	</div>
 	<?php get_job_manager_template( 'pagination.php', [ 'max_num_pages' => $max_num_pages ] ); ?>
+
+	<?php Job_Overlay::instance()->output_modal_element(); ?>
 </div>

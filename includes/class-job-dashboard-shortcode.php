@@ -14,6 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once __DIR__ . '/class-job-overlay.php';
+
 /**
  * Job Dashboard Shortcode.
  *
@@ -51,8 +53,13 @@ class Job_Dashboard_Shortcode {
 
 		add_filter( 'paginate_links', [ $this, 'filter_paginate_links' ], 10, 1 );
 
-		add_action( 'job_manager_job_dashboard_column_date', [ $this, 'job_dashboard_date_column_expires' ] );
-		add_action( 'job_manager_job_dashboard_column_job_title', [ $this, 'job_dashboard_title_column_status' ] );
+		add_action( 'job_manager_job_dashboard_column_date', [ self::class, 'the_date' ] );
+		add_action( 'job_manager_job_dashboard_column_date', [ self::class, 'the_expiration_date' ] );
+
+		add_action( 'job_manager_job_dashboard_column_job_title', [ self::class, 'the_job_title' ], 10 );
+		add_action( 'job_manager_job_dashboard_column_job_title', [ self::class, 'the_status' ], 12 );
+
+		Job_Overlay::instance();
 	}
 
 	/**
@@ -445,7 +452,7 @@ class Job_Dashboard_Shortcode {
 	 *
 	 * @output string
 	 */
-	public function job_dashboard_date_column_expires( $job ) {
+	public static function the_expiration_date( $job ) {
 		$expiration = \WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
 
 		if ( 'publish' === $job->post_status && ! empty( $expiration ) ) {
@@ -456,32 +463,103 @@ class Job_Dashboard_Shortcode {
 	}
 
 	/**
+	 * Show location.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @output string
+	 */
+	public static function the_location( $job ) {
+		$location = get_the_job_location( $job );
+
+		if ( ! $location ) {
+			return;
+		}
+
+		?>
+		<div class="jm-ui-row">
+			<?php echo UI_Elements::icon( 'location' ); ?>
+			<?php echo esc_html( $location ); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Show job title.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @output string
+	 */
+	public static function the_job_title( $job ) {
+		echo '<a class="job-title" data-job-id="' . esc_attr( $job->ID ) . '" href="' . esc_url( get_permalink( $job->ID ) ) . '">' . esc_html( get_the_title( $job ) ?? $job->ID ) . '</a>';
+	}
+
+	/**
+	 * Show job title.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @output string
+	 */
+	public static function the_date( $job ) {
+		echo '<div>' . esc_html( wp_date( apply_filters( 'job_manager_get_dashboard_date_format', 'M d, Y' ), get_post_datetime( $job )->getTimestamp() ) ) . '</div>';
+	}
+
+	/**
 	 * Add job status to the job dashboard title column.
 	 *
 	 * @param \WP_Post $job
 	 *
 	 * @output string
 	 */
-	public function job_dashboard_title_column_status( $job ) {
+	public static function the_status( $job ) {
 
-		echo '<div class="job-status">';
+		echo '<div class="job-status jm-ui-row">';
 
 		$status = [];
 
 		if ( is_position_filled( $job ) ) {
-			$status[] = '<span class="job-status-filled">' . esc_html__( 'Filled', 'wp-job-manager' ) . '</span>';
+			$status[] = '<span class="job-status-filled jm-ui-row">'
+						. UI_Elements::icon( 'check' )
+						. esc_html__( 'Filled', 'wp-job-manager' ) . '</span>';
 		}
 
 		if ( is_position_featured( $job ) && 'publish' === $job->post_status ) {
-			$status[] = '<span class="job-status-featured">' . esc_html__( 'Featured', 'wp-job-manager' ) . '</span>';
+			$status[] = '<span class="job-status-featured jm-ui-row">'
+						. UI_Elements::icon( 'star' )
+						. esc_html__( 'Featured', 'wp-job-manager' ) . '</span>';
 		}
 
-		$status[] = '<span class="job-status-' . esc_attr( $job->post_status ) . '">' . esc_html( get_the_job_status( $job ) ) . '</span>';
+		$status_icon = [
+			'pending'         => 'alert',
+			'pending_payment' => 'alert',
+			'draft'           => 'edit',
+			'expired'         => 'alert',
+		][ $job->post_status ] ?? null;
+
+		$status[] = '<span class="job-status-' . esc_attr( $job->post_status ) . ' jm-ui-row">'
+					. ( $status_icon ? UI_Elements::icon( $status_icon ) : '' )
+					. esc_html( get_the_job_status( $job ) ) . '</span>';
 
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
-		echo implode( ', ', $status );
+		echo implode( '<span class="jm-separator">|</span>', $status );
 
 		echo '</div>';
+	}
+
+	/**
+	 * Get the URL of the [job_dashboard] page.
+	 *
+	 * @return string
+	 */
+	public static function get_job_dashboard_page_url() {
+		$page_id = get_option( 'job_manager_job_dashboard_page_id' );
+		if ( $page_id ) {
+			return get_permalink( $page_id );
+		} else {
+			return home_url( '/' );
+		}
 	}
 
 	/**
@@ -491,7 +569,7 @@ class Job_Dashboard_Shortcode {
 	 *
 	 * @return bool
 	 */
-	private function is_job_available_on_dashboard( \WP_Post $job ) {
+	public function is_job_available_on_dashboard( \WP_Post $job ) {
 		// Check cache of currently displayed job dashboard IDs first to avoid lots of queries.
 		if ( isset( $this->job_dashboard_job_ids ) && in_array( (int) $job->ID, $this->job_dashboard_job_ids, true ) ) {
 			return true;
@@ -542,6 +620,29 @@ class Job_Dashboard_Shortcode {
 		 * @param array $args Arguments to pass to \WP_Query.
 		 */
 		return apply_filters( 'job_manager_get_dashboard_jobs_args', $args );
+	}
+
+	/**
+	 * Check if the current user has multiple companies.
+	 *
+	 * @return bool
+	 */
+	private function user_has_multiple_companies() {
+		global $wpdb;
+
+		$user_id = get_current_user_id();
+
+		$cache_key       = 'wpjm_user_' . $user_id . '_companies_count';
+		$companies_count = get_transient( $cache_key );
+
+		if ( false === $companies_count ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is cached.
+			$companies_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(DISTINCT meta_value) FROM {$wpdb->postmeta} WHERE meta_key = '_company_name' AND `meta_value` != '' AND post_id IN (SELECT ID FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'job_listing')", $user_id ) );
+
+			set_transient( $cache_key, $companies_count, 24 * HOUR_IN_SECONDS );
+		}
+
+		return $companies_count > 1;
 	}
 
 }

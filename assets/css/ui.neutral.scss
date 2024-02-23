@@ -1,6 +1,7 @@
 
 :root {
 	--jm-ui-border-light: #{fadeCurrentColor(15%)};
+	--jm-ui-border-faint: #{fadeCurrentColor(5%)};
 	--jm-ui-border-strong: currentColor;
 	--jm-ui-border-size: 1px;
 
@@ -12,6 +13,7 @@
 	--jm-ui-radius-2x: calc(2 * var(--jm-ui-radius));
 	--jm-ui-radius-4x: calc(4 * var(--jm-ui-radius));
 
+	--jm-ui-faint-color: #{fadeCurrentColor(2.5%)};
 	--jm-ui-accent-color: inherit;
 	--jm-ui-danger-color: #cc1818;
 	--jm-ui-error-color: #cc1818;
@@ -54,7 +56,7 @@
 	--jm-ui-button-font-size: 14px;
 	--jm-ui-icon-size: 24px;
 	--jm-ui-icon-size-m: 20px;
-	--jm-ui-icon-size-s: 18px;
+	--jm-ui-icon-size-s: 14px;
 
 	--jm-ui-shadow-modal: 0 0.7px 1px 0 rgba(0, 0, 0, 0.15),
 	0 2.7px 3.8px -0.2px rgba(0, 0, 0, 0.15),

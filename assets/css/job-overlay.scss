@@ -1,0 +1,79 @@
+
+.jm-dashboard__overlay {
+	width: var(--wp--style--global--wide-size, 1200px);
+	height: 80vh;
+	--jm-dialog-padding: var(--jm-ui-space-ml);
+
+	.jm-ui-spinner {
+		--size: 64px;
+	}
+
+	.jm-dialog-close {
+		top: var(--jm-dialog-padding);
+		right: var(--jm-dialog-padding);
+		color: inherit;
+	}
+}
+
+.jm-job-overlay {
+	align-self: stretch;
+	flex: 1;
+	padding: var(--jm-ui-space-ml);
+	display: flex;
+	flex-direction: column;
+	gap: var(--jm-ui-space-sm);
+	animation: jm-fade-in 200ms ease-in;
+
+	font-size: var(--jm-ui-font-size-m);
+}
+
+.jm-job-overlay-header {
+	border-bottom: var(--jm-ui-border-size) solid var(--jm-ui-border-faint);
+	display: flex;
+	justify-content: space-between;
+	gap: var(--jm-ui-space-m);
+	padding-right: calc( var(--jm-ui-icon-size) + var(--jm-ui-space-s) );
+	padding-bottom: var(--jm-ui-space-sm);
+	flex: 0 0 min-content;
+
+	.job_title {
+		font-size: var(--jm-ui-heading-font-size);
+		line-height: 1.2;
+		font-weight: 600;
+	}
+}
+.jm-job-overlay-content {
+	flex: 1 1 auto;
+	overflow: auto;
+}
+
+.jm-job-overlay-footer {
+	border-top: var(--jm-ui-border-size) solid var(--jm-ui-border-faint);
+	padding-top: var(--jm-dialog-padding);
+
+	.jm-ui-actions-row {
+		gap: var(--jm-ui-space-sm);
+	}
+
+}
+
+.jm-job-overlay-details-box {
+	background: var(--jm-ui-faint-color);
+	padding: var(--jm-ui-space-m);
+}
+
+@media (max-width: 600px) {
+	.jm-dashboard__overlay
+	{
+		height: 100%;
+	}
+}
+
+@keyframes jm-job-overlay-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
