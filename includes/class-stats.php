@@ -496,6 +496,6 @@ class Stats {
 	 * @return bool
 	 */
 	public function page_has_jobs_shortcode( $post ) {
-		return is_page() && has_shortcode( $post->post_content, 'jobs' );
+		return has_shortcode( $post->post_content, 'jobs' );
 	}
 }
