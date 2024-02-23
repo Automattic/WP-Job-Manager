@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.13.1@086b94371304750d1c673315321a55d15fc59015">
+  <file src="includes/3rd-party/wpcom.php">
+    <InvalidReturnStatement>
+      <code>$result</code>
+      <code>$result</code>
+      <code><![CDATA[new \WP_Error( 'error', 'An error has occurred while installing ' . $payload['wpjm_product_slug'], $errors )]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code>bool</code>
+      <code>false|void</code>
+    </InvalidReturnType>
+  </file>
+  <file src="includes/3rd-party/yoast.php">
+    <InvalidReturnStatement>
+      <code>$url</code>
+      <code>$url</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code>string|bool</code>
+    </InvalidReturnType>
+  </file>
+  <file src="includes/abstracts/abstract-wp-job-manager-email-template.php">
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
+  <file src="includes/abstracts/abstract-wp-job-manager-email.php">
+    <FalsableReturnStatement>
+      <code>false</code>
+      <code>false</code>
+    </FalsableReturnStatement>
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
+  <file src="includes/abstracts/abstract-wp-job-manager-form.php">
+    <InvalidArgument>
+      <code><![CDATA[sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) )]]></code>
+      <code><![CDATA[sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) )]]></code>
+    </InvalidArgument>
+    <InvalidReturnStatement>
+      <code><![CDATA[$value && $value > 0 ? absint( $value ) : '']]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code>int</code>
+    </InvalidReturnType>
+    <NullableReturnStatement>
+      <code>$value</code>
+    </NullableReturnStatement>
+    <UndefinedConstant>
+      <code>COOKIEPATH</code>
+      <code>COOKIEPATH</code>
+      <code>COOKIE_DOMAIN</code>
+      <code>COOKIE_DOMAIN</code>
+    </UndefinedConstant>
+  </file>
+  <file src="includes/admin/class-notices-conditions-checker.php">
+    <MissingFile>
+      <code><![CDATA[require_once ABSPATH . 'wp-admin/includes/plugin.php']]></code>
+    </MissingFile>
+  </file>
+  <file src="includes/admin/class-wp-job-manager-admin-notices.php">
+    <InternalClass>
+      <code>new Notices_Conditions_Checker()</code>
+    </InternalClass>
+    <InternalMethod>
+      <code>check</code>
+    </InternalMethod>
+    <InvalidArgument>
+      <code>$is_user_notification</code>
+    </InvalidArgument>
+    <TooManyArguments>
+      <code><![CDATA[get_site_transient( 'wpjm_addon_updates_available', [] )]]></code>
+    </TooManyArguments>
+  </file>
+  <file src="includes/admin/class-wp-job-manager-admin.php">
+    <InvalidClass>
+      <code>WP_Job_manager</code>
+      <code>WP_Job_manager</code>
+    </InvalidClass>
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
+  <file src="includes/admin/class-wp-job-manager-cpt.php">
+    <InvalidArgument>
+      <code>$r</code>
+    </InvalidArgument>
+    <RedundantCondition>
+      <code><![CDATA[$types && ! empty( $types )]]></code>
+      <code>is_array( $handled_jobs )</code>
+    </RedundantCondition>
+  </file>
+  <file src="includes/admin/class-wp-job-manager-promoted-jobs-admin.php">
+    <InvalidArgument>
+      <code>true</code>
+    </InvalidArgument>
+    <InvalidReturnType>
+      <code>void</code>
+    </InvalidReturnType>
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
+  <file src="includes/admin/class-wp-job-manager-settings.php">
+    <InvalidArgument>
+      <code><![CDATA[$this->settings_group]]></code>
+      <code><![CDATA[$this->settings_group]]></code>
+      <code>0</code>
+    </InvalidArgument>
+    <InvalidPropertyAssignmentValue>
+      <code><![CDATA['job_manager']]></code>
+    </InvalidPropertyAssignmentValue>
+    <NullArgument>
+      <code>null</code>
+    </NullArgument>
+    <UndefinedDocblockClass>
+      <code>stirng|int</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="includes/admin/class-wp-job-manager-writepanels.php">
+    <InvalidArgument>
+      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
+    </InvalidArgument>
+    <UndefinedConstant>
+      <code>DOING_AUTOSAVE</code>
+    </UndefinedConstant>
+  </file>
+  <file src="includes/admin/views/html-admin-page-addons.php">
+    <UndefinedGlobalVariable>
+      <code>$search</code>
+    </UndefinedGlobalVariable>
+  </file>
+  <file src="includes/admin/views/html-admin-setup-footer.php">
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
+  <file src="includes/admin/views/html-admin-setup-header.php">
+    <UndefinedGlobalVariable>
+      <code>$step</code>
+    </UndefinedGlobalVariable>
+  </file>
+  <file src="includes/admin/views/html-admin-setup-opt-in-usage-tracking.php">
+    <InvalidScope>
+      <code>$this</code>
+      <code><![CDATA[$this->opt_in_text()]]></code>
+    </InvalidScope>
+  </file>
+  <file src="includes/admin/views/html-admin-setup-step-1.php">
+    <InvalidScope>
+      <code>$this</code>
+      <code><![CDATA[$this->maybe_output_opt_in_checkbox()]]></code>
+    </InvalidScope>
+  </file>
+  <file src="includes/class-guest-session.php">
+    <UndefinedConstant>
+      <code>COOKIEPATH</code>
+      <code>COOKIE_DOMAIN</code>
+    </UndefinedConstant>
+  </file>
+  <file src="includes/class-wp-job-manager-ajax.php">
+    <InvalidArgument>
+      <code>-1</code>
+    </InvalidArgument>
+  </file>
+  <file src="includes/class-wp-job-manager-category-walker.php">
+    <InvalidDocblock>
+      <code>class WP_Job_Manager_Category_Walker extends Walker {</code>
+    </InvalidDocblock>
+    <ParamNameMismatch>
+      <code>$object</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="includes/class-wp-job-manager-com-api.php">
+    <NullableReturnStatement>
+      <code>$remote_data</code>
+    </NullableReturnStatement>
+  </file>
+  <file src="includes/class-wp-job-manager-data-cleaner.php">
+    <InvalidConstantAssignmentValue>
+      <code><![CDATA[ROLE = 'employer']]></code>
+    </InvalidConstantAssignmentValue>
+  </file>
+  <file src="includes/class-wp-job-manager-email-notifications.php">
+    <InvalidArgument>
+      <code>$email_class</code>
+      <code>$job</code>
+      <code>$job</code>
+      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY</code>
+      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
+    </InvalidArgument>
+    <InvalidGlobal>
+      <code>global $phpmailer;</code>
+    </InvalidGlobal>
+    <InvalidScalarArgument>
+      <code>$email_class</code>
+      <code>$template_segment</code>
+      <code>$template_segment</code>
+    </InvalidScalarArgument>
+    <UndefinedClass>
+      <code>$email_class::get_enabled_force_value()</code>
+    </UndefinedClass>
+  </file>
+  <file src="includes/class-wp-job-manager-forms.php">
+    <RedundantCondition>
+      <code>! class_exists( $form_class )</code>
+    </RedundantCondition>
+  </file>
+  <file src="includes/class-wp-job-manager-geocode.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[new WP_Error( 'error', $e->getMessage() )]]></code>
+    </InvalidReturnStatement>
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
+  <file src="includes/class-wp-job-manager-install.php">
+    <UndefinedPropertyFetch>
+      <code><![CDATA[$term->term_id]]></code>
+    </UndefinedPropertyFetch>
+  </file>
+  <file src="includes/class-wp-job-manager-post-types.php">
+    <InvalidArgument>
+      <code>$job_data</code>
+      <code>$pending_jobs</code>
+      <code><![CDATA[[
+				apply_filters(
+					'register_post_type_job_guest_user',
+					[
+						'description'         => esc_html__( 'This is where guest user data is stored.', 'wp-job-manager' ),
+						'public'              => false,
+						'show_ui'             => false,
+						'capability_type'     => self::CAP_GUEST_USER,
+						'map_meta_cap'        => false,
+						'publicly_queryable'  => false,
+						'exclude_from_search' => true,
+						'hierarchical'        => false,
+						'rewrite'             => false,
+						'query_var'           => false,
+						'supports'            => [ 'title', 'custom-fields' ],
+						'has_archive'         => false,
+						'show_in_nav_menus'   => false,
+						'show_in_rest'        => false,
+					]
+				),
+			]]]></code>
+    </InvalidArgument>
+    <InvalidNullableReturnType>
+      <code>false</code>
+      <code>string</code>
+    </InvalidNullableReturnType>
+    <NullArgument>
+      <code>null</code>
+    </NullArgument>
+    <NullableReturnStatement>
+      <code>null</code>
+    </NullableReturnStatement>
+    <RedundantCondition>
+      <code><![CDATA['slug']]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code>is_numeric( $cats )</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="includes/class-wp-job-manager-shortcodes.php">
+    <InvalidArgument>
+      <code><![CDATA[array_values( get_job_listing_types( 'id=>slug' ) )]]></code>
+    </InvalidArgument>
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+    <RedundantPropertyInitializationCheck>
+      <code><![CDATA[isset( $this->job_dashboard_job_ids )]]></code>
+    </RedundantPropertyInitializationCheck>
+    <UndefinedPropertyFetch>
+      <code><![CDATA[$term->term_id]]></code>
+    </UndefinedPropertyFetch>
+  </file>
+  <file src="includes/class-wp-job-manager-usage-tracking-data.php">
+    <InvalidArgument>
+      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY</code>
+      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
+    </InvalidArgument>
+  </file>
+  <file src="includes/class-wp-job-manager-usage-tracking.php">
+    <TypeDoesNotContainType>
+      <code>false</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="includes/class-wp-job-manager-widget.php">
+    <ImplementedReturnTypeMismatch>
+      <code>void</code>
+    </ImplementedReturnTypeMismatch>
+  </file>
+  <file src="includes/class-wp-job-manager.php">
+    <UndefinedConstant>
+      <code>COOKIEPATH</code>
+      <code>COOKIEPATH</code>
+      <code>COOKIE_DOMAIN</code>
+      <code>COOKIE_DOMAIN</code>
+      <code>WP_LANG_DIR</code>
+    </UndefinedConstant>
+  </file>
+  <file src="includes/emails/class-wp-job-manager-email-admin-expiring-job.php">
+    <InvalidDocblock>
+      <code>class WP_Job_Manager_Email_Admin_Expiring_Job extends WP_Job_Manager_Email_Employer_Expiring_Job {</code>
+    </InvalidDocblock>
+  </file>
+  <file src="includes/emails/class-wp-job-manager-email-admin-new-job.php">
+    <InvalidDocblock>
+      <code>class WP_Job_Manager_Email_Admin_New_Job extends WP_Job_Manager_Email_Template {</code>
+    </InvalidDocblock>
+  </file>
+  <file src="includes/emails/class-wp-job-manager-email-admin-updated-job.php">
+    <InvalidDocblock>
+      <code>class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Template {</code>
+    </InvalidDocblock>
+  </file>
+  <file src="includes/emails/class-wp-job-manager-email-employer-expiring-job.php">
+    <InvalidDocblock>
+      <code>class WP_Job_Manager_Email_Employer_Expiring_Job extends WP_Job_Manager_Email_Template {</code>
+    </InvalidDocblock>
+    <LessSpecificImplementedReturnType>
+      <code>mixed</code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="includes/forms/class-wp-job-manager-form-edit-job.php">
+    <InvalidDocblock>
+      <code>class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {</code>
+    </InvalidDocblock>
+  </file>
+  <file src="includes/forms/class-wp-job-manager-form-submit-job.php">
+    <InvalidArgument>
+      <code><![CDATA['post_parent=' . $this->job_id . '&post_type=attachment&fields=ids&numberposts=-1']]></code>
+      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY</code>
+      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
+      <code>false</code>
+      <code>false</code>
+    </InvalidArgument>
+    <InvalidDocblock>
+      <code>class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {</code>
+    </InvalidDocblock>
+    <InvalidScalarArgument>
+      <code><![CDATA[$this->job_id]]></code>
+    </InvalidScalarArgument>
+    <MissingFile>
+      <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/image.php']]></code>
+      <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/media.php']]></code>
+    </MissingFile>
+    <TypeDoesNotContainType>
+      <code>! is_string( $attachment_url )</code>
+      <code>empty( $attachment_url ) || ! is_string( $attachment_url )</code>
+    </TypeDoesNotContainType>
+    <UndefinedConstant>
+      <code>COOKIEPATH</code>
+      <code>COOKIEPATH</code>
+      <code>COOKIE_DOMAIN</code>
+      <code>COOKIE_DOMAIN</code>
+      <code>WP_CONTENT_DIR</code>
+      <code>WP_CONTENT_URL</code>
+    </UndefinedConstant>
+    <UndefinedPropertyFetch>
+      <code><![CDATA[$term->slug]]></code>
+    </UndefinedPropertyFetch>
+  </file>
+  <file src="includes/helper/class-wp-job-manager-helper-language-packs.php">
+    <InvalidArgument>
+      <code><![CDATA[[
+				'body'    => wp_json_encode( $request_body ),
+				'headers' => [ 'Content-Type: application/json' ],
+				'timeout' => $timeout,
+			]]]></code>
+    </InvalidArgument>
+    <InvalidPropertyAssignmentValue>
+      <code>$plugin_versions</code>
+    </InvalidPropertyAssignmentValue>
+  </file>
+  <file src="includes/helper/class-wp-job-manager-helper-renewals.php">
+    <InvalidReturnStatement>
+      <code>$text</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code>string</code>
+    </InvalidReturnType>
+    <UndefinedConstant>
+      <code>JOB_MANAGER_SPL_VERSION</code>
+      <code>JOB_MANAGER_WCPL_VERSION</code>
+    </UndefinedConstant>
+  </file>
+  <file src="includes/helper/class-wp-job-manager-helper.php">
+    <FalsableReturnStatement>
+      <code>false</code>
+    </FalsableReturnStatement>
+    <InvalidArgument>
+      <code><![CDATA[$this->get_plugin_versions()]]></code>
+    </InvalidArgument>
+    <MissingFile>
+      <code><![CDATA[require_once ABSPATH . 'wp-admin/includes/plugin.php']]></code>
+    </MissingFile>
+    <UndefinedVariable>
+      <code>$item</code>
+      <code>$plugin_data</code>
+    </UndefinedVariable>
+  </file>
+  <file src="includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[rest_ensure_response(
+			[
+				'verified' => $verified,
+			]
+		)]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code>WP_REST_Response</code>
+    </InvalidReturnType>
+  </file>
+  <file src="includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[update_post_meta( $post_id, self::PROMOTED_META_KEY, $promoted ? '1' : '0' )]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code>boolean</code>
+    </InvalidReturnType>
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
+  <file src="lib/emogrifier/class-emogrifier.php">
+    <InvalidArgument>
+      <code><![CDATA[function ($matches) use (&$media) {
+				$media .= $matches[0];
+			}]]></code>
+      <code><![CDATA[usort($cssRules, [$this, 'sortBySelectorPrecedence'])]]></code>
+    </InvalidArgument>
+    <InvalidReturnStatement>
+      <code><![CDATA[$this->caches[self::CACHE_KEY_CSS][$cssKey]]]></code>
+      <code><![CDATA[$this->caches[self::CACHE_KEY_SELECTOR][$selectorKey]]]></code>
+    </InvalidReturnStatement>
+    <RedundantCondition>
+      <code><![CDATA[$node->parentNode && is_callable([$node->parentNode, 'removeChild'])]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="lib/usage-tracking/class-wp-job-manager-usage-tracking-base.php">
+    <FalsableReturnStatement>
+      <code>false</code>
+    </FalsableReturnStatement>
+    <InvalidPropertyAssignmentValue>
+      <code>$callback</code>
+    </InvalidPropertyAssignmentValue>
+    <InvalidReturnStatement>
+      <code>true</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code>null|WP_Error</code>
+    </InvalidReturnType>
+    <MissingFile>
+      <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/plugin.php']]></code>
+    </MissingFile>
+  </file>
+  <file src="lib/usage-tracking/tests/support/class-usage-tracking-test-subclass.php">
+    <TypeDoesNotContainType>
+      <code>false</code>
+    </TypeDoesNotContainType>
+  </file>
+  <file src="lib/usage-tracking/tests/test-class-usage-tracking.php">
+    <UndefinedClass>
+      <code>WP_UnitTestCase</code>
+    </UndefinedClass>
+  </file>
+  <file src="wp-job-manager-deprecated.php">
+    <InvalidNullableReturnType>
+      <code>string</code>
+    </InvalidNullableReturnType>
+    <InvalidPropertyFetch>
+      <code><![CDATA[$job_type->name]]></code>
+    </InvalidPropertyFetch>
+  </file>
+  <file src="wp-job-manager-functions.php">
+    <InvalidArgument>
+      <code>$categories</code>
+      <code>$category</code>
+      <code>$password</code>
+      <code><![CDATA[array_map( 'esc_sql', $searchable_meta_keys )]]></code>
+    </InvalidArgument>
+    <InvalidNullableReturnType>
+      <code>string|DateTimeImmutable</code>
+    </InvalidNullableReturnType>
+    <InvalidReturnStatement>
+      <code>-1</code>
+      <code>1</code>
+      <code>get_terms( $args )</code>
+      <code>get_terms( $args )</code>
+      <code>get_terms( $args )</code>
+      <code>wp_rand( -1, 1 )</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code>WP_Term[]</code>
+      <code>WP_Term[]</code>
+      <code>array</code>
+      <code>bool</code>
+    </InvalidReturnType>
+    <MissingFile>
+      <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/file.php']]></code>
+      <code><![CDATA[include_once ABSPATH . 'wp-admin/includes/media.php']]></code>
+    </MissingFile>
+    <NullableReturnStatement>
+      <code><![CDATA[$return_datetime ? null : '']]></code>
+    </NullableReturnStatement>
+    <UndefinedConstant>
+      <code>LOGGED_IN_COOKIE</code>
+    </UndefinedConstant>
+  </file>
+  <file src="wp-job-manager-template.php">
+    <ImplicitToStringCast>
+      <code>wp_get_theme()</code>
+    </ImplicitToStringCast>
+    <RedundantCondition>
+      <code><![CDATA[$args && is_array( $args )]]></code>
+      <code>is_array( $args )</code>
+      <code>is_array( $class )</code>
+    </RedundantCondition>
+    <UndefinedConstant>
+      <code>WP_CONTENT_DIR</code>
+      <code>WP_CONTENT_URL</code>
+      <code>WP_CONTENT_URL</code>
+    </UndefinedConstant>
+  </file>
+</files>
