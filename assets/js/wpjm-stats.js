@@ -6,11 +6,14 @@ import {
 	setUniques,
 	checkUniqueRecordedToday,
 	checkUnique,
+	scheduleStaleUniqueCleanup,
 } from './stats/unique';
 import { initListingImpression } from "./stats/impressions";
 
 const WPJMStats =  {
+	statsToRecord: [],
 	init: function ( statsToRecord ) {
+		WPJMStats.statsToRecord = statsToRecord;
 		WPJMStats.hooks.doAction( 'init', WPJMStats );
 
 		const statsByTrigger = statsToRecord?.reduce( function ( accum, statToRecord ) {
@@ -34,7 +37,9 @@ const WPJMStats =  {
 		} );
 
 		WPJMStats.hooks.doAction( 'page-load' );
+		scheduleStaleUniqueCleanup( statsToRecord );
 	},
+
 
 	hookStatsForTrigger: function ( statsByTrigger, triggerName ) {
 		const statsToRecord    = [];
@@ -85,9 +90,7 @@ const WPJMStats =  {
 			} );
 		},
 		initListingImpression
-
-	},
-	initCallbacks: []
+	}
 };
 
 window.WPJMStats = window.WPJMStats || WPJMStats;
