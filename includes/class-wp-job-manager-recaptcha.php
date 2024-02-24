@@ -139,23 +139,15 @@ class WP_Job_Manager_Recaptcha {
 		$field['required'] = true;
 		$field['site_key'] = $this->site_key;
 
-		if ( 'v2' === $this->recaptcha_version ) {
-			get_job_manager_template(
-				'form-fields/recaptcha-field.php',
-				[
-					'key'   => 'recaptcha',
-					'field' => $field,
-				]
-			);
-		} elseif ( 'v3' === $this->recaptcha_version ) {
-			get_job_manager_template(
-				'form-fields/recaptcha-v3-field.php',
-				[
-					'key'   => 'recaptcha',
-					'field' => $field,
-				]
-			);
-		}
+		$template = 'form-fields/recaptcha-' . ( 'v3' === $this->recaptcha_version ? 'v3-' : '' ) . 'field.php';
+
+		get_job_manager_template(
+			$template,
+			[
+				'key'   => 'recaptcha',
+				'field' => $field,
+			]
+		);
 	}
 
 	/**
