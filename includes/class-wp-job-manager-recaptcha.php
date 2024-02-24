@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Notices_Conditions_Checker class.
  *
- * @since 1.40.0
+ * @since $$next-version$$
  * @internal
  */
 class WP_Job_Manager_Recaptcha {
