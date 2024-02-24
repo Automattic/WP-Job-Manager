@@ -2,13 +2,13 @@
 /**
  * Shows the `recaptcha` form field on job listing forms.
  *
- * This template can be overridden by copying it to yourtheme/job_manager/form-fields/recaptcha-field.php.
+ * This template can be overridden by copying it to yourtheme/job_manager/form-fields/recaptcha-v3-field.php.
  *
  * @see         https://wpjobmanager.com/document/template-overrides/
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.31.1
+ * @version     $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
