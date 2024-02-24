@@ -511,7 +511,7 @@ class WP_Job_Manager_Shortcodes {
 		 *
 		 * @param array Post statuses to filter - default is just 'publish'.
 		 */
-		$post_status = apply_filters( 'custom_post_status_filter', [ 'publish' ] );
+		$post_status = apply_filters( 'job_manager_allowed_post_status_duplicate_jobs', [ 'publish' ] );
 
 		if ( in_array( $job->post_status, $post_status, true ) ) {
 			$actions['duplicate'] = [
