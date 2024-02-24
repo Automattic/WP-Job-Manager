@@ -477,11 +477,6 @@ class WP_Job_Manager_Shortcodes {
 						'nonce' => $base_nonce_action_name,
 					];
 				}
-
-				$actions['duplicate'] = [
-					'label' => __( 'Duplicate', 'wp-job-manager' ),
-					'nonce' => $base_nonce_action_name,
-				];
 				break;
 			case 'expired':
 				if ( job_manager_get_permalink( 'submit_job_form' ) ) {
@@ -509,6 +504,21 @@ class WP_Job_Manager_Shortcodes {
 				break;
 		}
 
+		/**
+		 * Filter the post statuses that are allowed to be duplicated.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param array Post statuses to filter - default is just 'publish'.
+		 */
+		$post_status = apply_filters( 'custom_post_status_filter', [ 'publish' ] );
+
+		if ( in_array( $job->post_status, $post_status, true ) ) {
+			$actions['duplicate'] = [
+				'label' => __( 'Duplicate', 'wp-job-manager' ),
+				'nonce' => $base_nonce_action_name,
+			];
+		}
 		$actions['delete'] = [
 			'label' => __( 'Delete', 'wp-job-manager' ),
 			'nonce' => $base_nonce_action_name,
