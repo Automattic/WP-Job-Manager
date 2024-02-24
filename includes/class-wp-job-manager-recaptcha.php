@@ -5,6 +5,8 @@
  * @package wp-job-manager
  */
 
+namespace WP_Job_Manager;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
