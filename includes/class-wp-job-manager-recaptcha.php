@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Notices_Conditions_Checker class.
+ * WP_Job_Manager_Recaptcha class.
  *
  * @since $$next-version$$
  * @internal
@@ -20,7 +20,7 @@ class WP_Job_Manager_Recaptcha {
 	/**
 	 * Stores static instance of class.
 	 *
-	 * @var WP_Job_Manager_Helper_Renewals The single instance of the class.
+	 * @var WP_Job_Manager_Recaptcha The single instance of the class.
 	 */
 	private static $instance = null;
 
