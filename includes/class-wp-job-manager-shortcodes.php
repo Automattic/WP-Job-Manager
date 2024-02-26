@@ -504,22 +504,11 @@ class WP_Job_Manager_Shortcodes {
 				break;
 		}
 
-		/**
-		 * Filter the post statuses that are allowed to be duplicated.
-		 *
-		 * @since $$next-version$$
-		 *
-		 * @param array Post statuses to filter - default is just 'publish'.
-		 */
-		$post_status = apply_filters( 'job_manager_allowed_post_status_duplicate_jobs', [ 'publish' ] );
-
-		if ( in_array( $job->post_status, $post_status, true ) ) {
-			$actions['duplicate'] = [
-				'label' => __( 'Duplicate', 'wp-job-manager' ),
-				'nonce' => $base_nonce_action_name,
-			];
-		}
-		$actions['delete'] = [
+		$actions['duplicate'] = [
+			'label' => __( 'Duplicate', 'wp-job-manager' ),
+			'nonce' => $base_nonce_action_name,
+		];
+		$actions['delete']    = [
 			'label' => __( 'Delete', 'wp-job-manager' ),
 			'nonce' => $base_nonce_action_name,
 		];
