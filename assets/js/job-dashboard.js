@@ -20,21 +20,29 @@ function confirmDelete( event ) {
 	}
 }
 
-async function showOverlay( event ) {
+async function showOverlay( eventOrId ) {
 	const overlayDialog = document.getElementById( 'jmDashboardOverlay' );
 
 	if ( ! overlayDialog ) {
 		return true;
 	}
 
-	event.preventDefault();
+	eventOrId.preventDefault?.();
 	overlayDialog.showModal();
+
+	const id = eventOrId.target?.dataset.jobId ?? eventOrId;
+
+	if ( ! id ) {
+		return;
+	}
+
+	location.hash = id;
 
 	const contentElement = overlayDialog.querySelector( '.jm-dialog-modal-content' );
 	contentElement.innerHTML = '<a class="jm-ui-spinner"></a>';
 
 	try {
-		const response = await fetch( `${ overlayEndpoint }?job_id=${ this.dataset.jobId }` );
+		const response = await fetch( `${ overlayEndpoint }?job_id=${ id }` );
 
 		if ( ! response.ok ) {
 			throw new Error( response.statusText );
@@ -43,10 +51,16 @@ async function showOverlay( event ) {
 		const { data } = await response.json();
 
 		contentElement.innerHTML = data;
-	}
-	catch ( error ) {
+	} catch ( error ) {
 		contentElement.innerHTML = `<div class="jm-notice color-error has-text-align-center" role="status">${ error.message }</div>`;
 	}
+
+	const clearHash = () => {
+		history.replaceState( null, '', window.location.pathname );
+		overlayDialog.removeEventListener( 'close', clearHash );
+	};
+
+	overlayDialog.addEventListener( 'close', clearHash );
 
 	setupEvents( contentElement );
 }
@@ -57,4 +71,10 @@ domReady( () => {
 	document
 		.querySelectorAll( '.jm-dashboard-job .job-title' )
 		.forEach( el => el.addEventListener( 'click', showOverlay ) );
+
+	const urlHash = window.location.hash?.substring( 1 );
+
+	if ( urlHash > 0 ) {
+		showOverlay( +urlHash );
+	}
 } );
