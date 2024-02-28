@@ -38,12 +38,12 @@ class Stats_Dashboard {
 	 * Add a new column to the job dashboards.
 	 *
 	 * @param array $columns
+	 *
 	 * @return array
 	 */
 	public function add_stats_column( $columns ) {
 		$columns[ self::COLUMN_NAME ] = __( 'Views', 'wp-job-manager' );
 		return $columns;
-
 	}
 
 	/**
@@ -52,13 +52,14 @@ class Stats_Dashboard {
 	 * @param \WP_Post $job
 	 */
 	public function render_stats_column( $job ) {
-		$stats = new Job_Listing_Stats( $job->ID );
-		$total = $stats->get_total_stats();
+		$stats       = new Job_Listing_Stats( $job->ID );
+		$views       = $stats->get_event_total( Job_Listing_Stats::VIEW );
+		$impressions = $stats->get_event_total( Job_Listing_Stats::SEARCH_IMPRESSION );
 
-		$views = $total['view'];
-
-		// translators: %1d is the number of views.
-		$views_str = '<span>' . sprintf( _n( '%1d view', '%1d views', $views, 'wp-job-manager' ), $views ) . '</span>';
+		// translators: %1d is the number of page views.
+		$views_str = '<div>' . sprintf( _n( '%1d view', '%1d views', $views, 'wp-job-manager' ), $views ) . '</div>';
+		// translators: %1d is the number of impressions.
+		$views_str .= '<small>' . sprintf( _n( '%1d impression', '%1d impressions', $impressions, 'wp-job-manager' ), $impressions ) . '</small>';
 
 		echo wp_kses_post( $views_str );
 	}
@@ -66,7 +67,7 @@ class Stats_Dashboard {
 	/**
 	 * Output stats column for the job listing post type admin screen.
 	 *
-	 * @param  string $column
+	 * @param string $column
 	 */
 	public function maybe_render_job_listing_posts_custom_column( $column ) {
 		global $post;
