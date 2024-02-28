@@ -94,7 +94,7 @@ class Stats_Dashboard {
 			'job-stats.php',
 			[
 				'stats' => $stat_summaries,
-				'chart' => $chart ?? null,
+				'chart' => $chart,
 			]
 		);
 	}
