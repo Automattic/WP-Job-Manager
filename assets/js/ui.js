@@ -3,15 +3,14 @@
 export const ACCENT_COLOR_CSS_VAR = '--jm-ui-accent-color';
 
 function computeAccentColor() {
-
 	if ( getComputedStyle( document.documentElement ).getPropertyValue( ACCENT_COLOR_CSS_VAR ) ) {
 		return;
 	}
 
-	let linkTag = document.createElement( 'a' );
+	const linkTag = document.createElement( 'a' );
 	linkTag.setAttribute( 'href', '#?' );
 	linkTag.style.display = 'none';
-	const main = document.querySelector('main') ?? document.body;
+	const main = document.querySelector( 'main' ) ?? document.body;
 	main.appendChild( linkTag );
 	const color = getComputedStyle( linkTag ).color;
 	linkTag.remove();
@@ -21,7 +20,6 @@ function computeAccentColor() {
 	}
 
 	document.documentElement.style.setProperty( ACCENT_COLOR_CSS_VAR, color );
-
 }
 
 computeAccentColor();
