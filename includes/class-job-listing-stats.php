@@ -16,8 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Job_Listing_Stats {
 
-	const JOB_LISTING_VIEW        = 'job_listing_view';
-	const JOB_LISTING_VIEW_UNIQUE = 'job_listing_view_unique';
+	const VIEW              = 'job_listing_view';
+	const VIEW_UNIQUE       = 'job_listing_view_unique';
+	const SEARCH_IMPRESSION = 'job_listing_impression';
+	const APPLY_CLICK       = 'job_listing_apply_button_clicked';
 
 	/**
 	 * Job listing post ID.
@@ -52,8 +54,9 @@ class Job_Listing_Stats {
 	 */
 	public function get_total_stats() {
 		return [
-			'view'        => $this->get_event_total( self::JOB_LISTING_VIEW ),
-			'view_unique' => $this->get_event_total( self::JOB_LISTING_VIEW_UNIQUE ),
+			'view'        => $this->get_event_total( self::VIEW ),
+			'view_unique' => $this->get_event_total( self::VIEW_UNIQUE ),
+			'search'      => $this->get_event_total( self::SEARCH_IMPRESSION ),
 		];
 	}
 
@@ -64,8 +67,8 @@ class Job_Listing_Stats {
 	 */
 	public function get_daily_stats() {
 		return [
-			'view'        => $this->get_event_daily( self::JOB_LISTING_VIEW ),
-			'view_unique' => $this->get_event_daily( self::JOB_LISTING_VIEW_UNIQUE ),
+			'view'        => $this->get_event_daily( self::VIEW ),
+			'view_unique' => $this->get_event_daily( self::VIEW_UNIQUE ),
 		];
 	}
 
@@ -143,6 +146,5 @@ class Job_Listing_Stats {
 		return $views;
 
 	}
-
 
 }

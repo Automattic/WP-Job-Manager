@@ -20,9 +20,10 @@ class Stats {
 	const         CACHE_GROUP = 'wpjm_stats';
 
 	const DEFAULT_LOG_STAT_ARGS = [
-		'group'        => '',
-		'post_id'      => 0,
-		'increment_by' => 1,
+		'group'   => '',
+		'post_id' => 0,
+		'count'   => 1,
+		'date'    => '',
 	];
 
 	private const TABLE = 'wpjm_stats';
@@ -99,13 +100,14 @@ class Stats {
 	/**
 	 * Log a stat into the db.
 	 *
-	 * @param string $name         The stat name.
+	 * @param string $name    The stat name.
 	 * @param array  $args {
 	 * Optional args for this stat.
 	 *
-	 * @type string $group        The group this stat belongs to.
-	 * @type int    $post_id      The post_id this stat belongs to.
-	 * @type int    $increment_by The amount to increment the stat by.
+	 * @type string $group    The group this stat belongs to.
+	 * @type int    $post_id  The post_id this stat belongs to.
+	 * @type int    $count    The amount to increment the stat by.
+	 * @type string $date     Date in YYYY-MM-DD format.
 	 * }
 	 *
 	 * @return bool
@@ -113,20 +115,20 @@ class Stats {
 	public function log_stat( string $name, array $args = [] ) {
 		global $wpdb;
 
-		$args         = array_merge( self::DEFAULT_LOG_STAT_ARGS, $args );
-		$group        = $args['group'];
-		$post_id      = absint( $args['post_id'] );
-		$increment_by = $args['increment_by'];
+		$args    = array_merge( self::DEFAULT_LOG_STAT_ARGS, $args );
+		$group   = $args['group'];
+		$post_id = absint( $args['post_id'] );
+		$count   = $args['count'];
 
 		if (
 			strlen( $name ) > 255 ||
 			strlen( $group ) > 255 ||
 			! $post_id ||
-			! is_integer( $increment_by ) ) {
+			! is_integer( $count ) ) {
 			return false;
 		}
 
-		$date_today = gmdate( 'Y-m-d' );
+		$date = ! empty( $args['date'] ) ? $args['date'] : gmdate( 'Y-m-d' );
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$result = $wpdb->query(
@@ -136,11 +138,11 @@ class Stats {
 				'VALUES (%s, %s, %s, %d, %d) ' .
 				'ON DUPLICATE KEY UPDATE `count` = `count` + %d',
 				$name,
-				$date_today,
+				$date,
 				$group,
 				$post_id,
-				$increment_by,
-				$increment_by
+				$count,
+				$count
 			)
 		);
 
@@ -153,6 +155,19 @@ class Stats {
 		wp_cache_delete( $cache_key, 'wpjm_stats' );
 
 		return true;
+	}
+
+	/**
+	 * Delete all stats for a given job.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int $post_id
+	 */
+	public function clear_stats( $post_id ) {
+		global $wpdb;
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->wpjm_stats} WHERE post_id = %d", $post_id ) );
 	}
 
 	/**
