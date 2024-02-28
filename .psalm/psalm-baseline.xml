@@ -485,9 +485,6 @@
     <InvalidCast>
       <code>$email_class</code>
     </InvalidCast>
-    <InvalidGlobal>
-      <code>global $phpmailer;</code>
-    </InvalidGlobal>
     <InvalidScalarArgument>
       <code>$email_class</code>
       <code>$template_segment</code>
