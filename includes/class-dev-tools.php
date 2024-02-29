@@ -68,8 +68,8 @@ class Dev_Tools {
 		for ( $i = 0; $i <= $days + 1; $i++ ) {
 			$views        = (int) max( 0, $views + $trend * wp_rand( 0, 1000 ) );
 			$trend        = wp_rand( 0, 10 ) / 10 - 0.5;
-			$unique_views = wp_rand( $views * 0.3, $views * 0.8 );
-			$impressions  = wp_rand( $views * 1.6, $views * 2.6 );
+			$unique_views = wp_rand( (int) $views * 0.3, (int) $views * 0.8 );
+			$impressions  = wp_rand( (int) $views * 1.6, (int) $views * 2.6 );
 			$date         = $start_date->modify( "+{$i} days" )->format( 'Y-m-d' );
 
 			$log .= $views . ' ';
