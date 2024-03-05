@@ -468,7 +468,7 @@ class WP_Job_Manager_Settings {
 						],
 						[
 							'name'        => 'job_manager_recaptcha_version',
-							'std'         => '',
+							'std'         => 'v2',
 							'placeholder' => '',
 							'label'       => __( 'reCAPTCHA Version', 'wp-job-manager' ),
 							'desc'        => __( 'Choose between reCAPTCHA v2 or v3. Note: you will need API keys for the specific version you choose.', 'wp-job-manager' ),
