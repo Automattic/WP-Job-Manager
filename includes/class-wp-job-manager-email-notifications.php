@@ -311,9 +311,10 @@ final class WP_Job_Manager_Email_Notifications {
 			];
 		}
 
-		$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+		$job_expires    = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+		$wp_date_format = get_option( 'date_format' ) ?: 'F j, Y';
 		if ( ! empty( $job_expires ) ) {
-			$job_expires_str       = wp_date( get_option( 'date_format' ), $job_expires->getTimestamp() );
+			$job_expires_str       = wp_date( $wp_date_format, $job_expires->getTimestamp() );
 			$fields['job_expires'] = [
 				'label' => __( 'Listing expires', 'wp-job-manager' ),
 				'value' => $job_expires_str,

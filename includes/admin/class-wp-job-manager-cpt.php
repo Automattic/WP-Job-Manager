@@ -446,6 +446,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function post_updated_messages( $messages ) {
 		global $post, $post_ID, $wp_post_types;
+		$wp_date_format = get_option( 'date_format' ) ?: 'F j, Y';
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes based on input.
 		$revision_title = isset( $_GET['revision'] ) ? wp_post_revision_title( (int) $_GET['revision'], false ) : false;
@@ -470,7 +471,7 @@ class WP_Job_Manager_CPT {
 				// translators: %1$s is the singular name of the post type; %2$s is the date the post will be published; %3$s is the URL to preview the listing.
 				__( '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview</a>', 'wp-job-manager' ),
 				$wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name,
-				wp_date( get_option( 'date_format' ) . ' @ ' . get_option( 'time_format' ), get_post_timestamp() ),
+				wp_date( $wp_date_format . ' @ ' . get_option( 'time_format' ), get_post_timestamp() ),
 				esc_url( get_permalink( $post_ID ) )
 			),
 			// translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
