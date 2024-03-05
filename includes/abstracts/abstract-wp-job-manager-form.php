@@ -319,6 +319,14 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Enqueue the scripts for the form.
+	 */
+	public function enqueue_scripts() {
+		_deprecated_function( __METHOD__, '$$next-version$$', 'WP_Job_Manager\WP_Job_Manager_Form::enqueue_scripts' );
+		WP_Job_Manager\WP_Job_Manager_Recaptcha::enqueue_scripts();
+	}
+
+	/**
 	 * Output the agreement checkbox field.
 	 *
 	 * @since 1.35.2
