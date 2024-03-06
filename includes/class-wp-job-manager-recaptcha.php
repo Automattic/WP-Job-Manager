@@ -19,12 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WP_Job_Manager_Recaptcha {
 
-	/**
-	 * Stores static instance of class.
-	 *
-	 * @var WP_Job_Manager_Recaptcha The single instance of the class.
-	 */
-	private static $instance = null;
+	use Singleton;
 
 	/**
 	 * Site key.
@@ -62,18 +57,6 @@ class WP_Job_Manager_Recaptcha {
 			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
 			add_filter( 'submit_draft_job_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
 		}
-	}
-
-	/**
-	 * Returns static instance of class.
-	 *
-	 * @return self Main instance.
-	 */
-	public static function instance() {
-		if ( is_null( self::$instance ) ) {
-			self::$instance = new self();
-		}
-		return self::$instance;
 	}
 
 	/**
