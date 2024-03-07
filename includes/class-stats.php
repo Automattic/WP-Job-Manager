@@ -19,12 +19,10 @@ class Stats {
 
 	const         CACHE_GROUP = 'wpjm_stats';
 
-	const DEFAULT_LOG_STAT_ARGS = [
-		'group'   => '',
-		'post_id' => 0,
-		'count'   => 1,
-		'date'    => '',
-	];
+	/**
+	 * Setting key for enabling stats.
+	 */
+	const OPTION_ENABLE_STATS = 'job_manager_stats_enable';
 
 	private const TABLE = 'wpjm_stats';
 
@@ -40,8 +38,11 @@ class Stats {
 	 */
 	public function init() {
 
-		include_once __DIR__ . '/class-job-listing-stats.php';
-		include_once __DIR__ . '/class-stats-dashboard.php';
+		$this->init_wpdb_alias();
+
+		if ( ! self::is_enabled() ) {
+			return;
+		}
 
 		Stats_Dashboard::instance();
 
@@ -115,7 +116,20 @@ class Stats {
 	public function log_stat( string $name, array $args = [] ) {
 		global $wpdb;
 
-		$args    = array_merge( self::DEFAULT_LOG_STAT_ARGS, $args );
+		if ( ! self::is_enabled() ) {
+			return false;
+		}
+
+		$args = wp_parse_args(
+			$args,
+			[
+				'group'   => '',
+				'post_id' => 0,
+				'count'   => 1,
+				'date'    => gmdate( 'Y-m-d' ),
+			]
+		);
+
 		$group   = $args['group'];
 		$post_id = absint( $args['post_id'] );
 		$count   = $args['count'];
@@ -128,7 +142,7 @@ class Stats {
 			return false;
 		}
 
-		$date = ! empty( $args['date'] ) ? $args['date'] : gmdate( 'Y-m-d' );
+		global $wpdb;
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$result = $wpdb->query(
@@ -138,7 +152,7 @@ class Stats {
 				'VALUES (%s, %s, %s, %d, %d) ' .
 				'ON DUPLICATE KEY UPDATE `count` = `count` + %d',
 				$name,
-				$date,
+				$args['date'],
 				$group,
 				$post_id,
 				$count,

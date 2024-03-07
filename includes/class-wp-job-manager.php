@@ -577,6 +577,7 @@ class WP_Job_Manager {
 			[
 				'i18nConfirmDelete' => esc_html__( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 				'overlayEndpoint'   => WP_Job_Manager_Ajax::get_endpoint( 'job_dashboard_overlay' ),
+				'statsEnabled'      => \WP_Job_Manager\Stats::is_enabled(),
 			]
 		);
 
