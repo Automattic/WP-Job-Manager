@@ -63,7 +63,7 @@ class Dev_Tools {
 
 		$log = '';
 
-		$stats->clear_stats( $job_id );
+		$stats->delete_stats( $job_id );
 
 		for ( $i = 0; $i <= $days + 1; $i++ ) {
 			$views        = (int) max( 0, $views + $trend * wp_rand( 0, 1000 ) );
