@@ -42,15 +42,19 @@ class WP_Job_Manager_Recaptcha {
 	 */
 	private $recaptcha_version;
 
+	const RECAPTCHA_SITE_KEY   = 'job_manager_recaptcha_site_key';
+	const RECAPTCHA_SECRET_KEY = 'job_manager_recaptcha_secret_key';
+	const RECAPTCHA_VERSION    = 'job_manager_recaptcha_version';
+
 	/**
 	 * Initialize class for landing pages.
 	 *
 	 * @since 2.0.0
 	 */
 	public function __construct() {
-		$this->site_key          = get_option( 'job_manager_recaptcha_site_key' );
-		$this->secret_key        = get_option( 'job_manager_recaptcha_secret_key' );
-		$this->recaptcha_version = get_option( 'job_manager_recaptcha_version' );
+		$this->site_key          = get_option( self::RECAPTCHA_SITE_KEY );
+		$this->secret_key        = get_option( self::RECAPTCHA_SECRET_KEY );
+		$this->recaptcha_version = get_option( self::RECAPTCHA_VERSION, 'v2' );
 
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_recaptcha_field' ] );
@@ -216,4 +220,12 @@ class WP_Job_Manager_Recaptcha {
 		return $success;
 	}
 
+	/**
+	 * Get the reCAPTCHA version.
+	 *
+	 * @return string
+	 */
+	public function get_recaptcha_version() {
+		return $this->recaptcha_version;
+	}
 }

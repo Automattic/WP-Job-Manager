@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $site_key = get_option( 'job_manager_recaptcha_site_key' );
 ?>
 <script>
-	function onClick(e) {
+	function jm_job_submit_click(e) {
 		e.preventDefault();
 		grecaptcha.ready(function() {
 			grecaptcha.execute( decodeURIComponent( '<?php echo rawurlencode( (string) $site_key ) ?>' ), { action: 'submit' } ).then( function( token ) {
