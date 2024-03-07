@@ -1,100 +1,99 @@
-import { debounce, filterZeroes, findIdInClassNames } from './utils';
+import { debounce, getPostId } from './utils';
 import { waitForSelector } from './observers';
 
-function createStatsQueue() {
-	const alreadySent = {};
+function createStatsQueue( statName ) {
+	const sent = {};
 	let queue = [];
 
-	const logThem = debounce( function ( statName, listingIds ) {
-		const stats = listingIds.map( function ( id ) {
-			alreadySent[ id ] = true;
-			return { name: statName, post_id: id };
+	function sendNow() {
+		const stats = queue.map( stat => {
+			sent[ stat.post_id ] = true;
+			return stat;
 		} );
 
-		return window.wpjmLogStats( stats ).finally( function () {
-			queue = [];
-		} );
-	}, 1000 );
+		queue = [];
 
-	return {
-		queueListingImpressionStats( statName, listingIds ) {
-			listingIds.forEach( function ( listingId ) {
-				if ( ! alreadySent[ listingId ] ) {
-					queue.push( listingId );
-				}
-			} );
-			logThem( statName, queue );
-		},
-	};
+		window.WPJMStats.log( stats );
+	}
+
+	const sendLater = debounce( sendNow, 1000 );
+
+	function maybeSendLogs() {
+		if ( queue.length >= 10 ) {
+			sendNow();
+		} else {
+			sendLater();
+		}
+	}
+
+	function queueLogStat( id ) {
+		if ( ! sent[ id ] ) {
+			queue.push( { name: statName, post_id: id } );
+			maybeSendLogs();
+		}
+	}
+
+	return { queueLogStat };
 }
 
-function observeForVisibility(
-	jobListingContainer,
-	jobListingElement,
-	visibleCallback,
-	alreadyViewedListings
-) {
+function createIntersectionObserver( container, onVisible ) {
+	const viewed = {};
+
 	const options = {
 		root: null,
 		rootMargin: '0px',
 		threshold: 1.0,
 	};
 
-	const observer = new IntersectionObserver( function ( entries ) {
-		entries.forEach( function ( entry ) {
+	const observer = new IntersectionObserver( entries => {
+		entries.forEach( entry => {
 			if ( entry.isIntersecting && entry.intersectionRatio > 0.99 ) {
 				const node = entry.target;
-				if ( 1 === node.nodeType && node.classList.contains( 'job_listing' ) ) {
-					const nodeId = findIdInClassNames( node );
-					if ( nodeId > 0 && ! alreadyViewedListings[ nodeId ] ) {
-						alreadyViewedListings[ nodeId ] = true;
-						visibleCallback( node );
-					}
+				const nodeId = getPostId( node );
+				if ( nodeId > 0 && ! viewed[ nodeId ] ) {
+					viewed[ nodeId ] = true;
+					onVisible( nodeId );
 				}
 				observer.unobserve( node );
 			}
 		} );
 	}, options );
 
-	observer.observe( jobListingElement );
+	return observer;
 }
 
-function waitForNextVisibleListing( listingVisibleCallback ) {
-	const jobListingsContainer = document.querySelector( 'ul.job_listings' );
-	const config = { childList: true };
-	const alreadyViewed = {};
-
-	const observer = new MutationObserver( function ( mutations ) {
-		mutations.forEach( function ( mutation ) {
-			mutation.addedNodes.forEach( function ( node ) {
-				if ( 1 === node.nodeType && node.classList.contains( 'job_listing' ) ) {
-					observeForVisibility( jobListingsContainer, node, listingVisibleCallback, alreadyViewed );
+function observeMutations( container, { selector: itemSelector, onAdded, onRemoved } ) {
+	const observer = new MutationObserver( mutations => {
+		mutations.forEach( mutation => {
+			mutation.removedNodes.forEach( node => {
+				if ( node.matches?.( itemSelector ) ) {
+					onRemoved( node );
+				}
+			} );
+			mutation.addedNodes.forEach( node => {
+				if ( node.matches?.( itemSelector ) ) {
+					onAdded( node );
 				}
 			} );
 		} );
 	} );
 
-	observer.observe( jobListingsContainer, config );
+	observer.observe( container, { childList: true } );
 }
 
-export function initListingImpression( stats ) {
-	if ( 0 === stats.length ) {
-		return;
-	}
-	const statName = stats[ 0 ].name;
-	const debouncedSender = createStatsQueue();
-	waitForSelector( 'li.job_listing' ).then( function () {
-		const allVisibleListings = document.querySelectorAll( 'li.job_listing' );
-		const initialListingIds = filterZeroes(
-			[ ...allVisibleListings ].map( function ( elem ) {
-				return findIdInClassNames( elem );
-			} )
-		);
-		debouncedSender.queueListingImpressionStats( statName, initialListingIds );
+export async function initImpressionStat( stat ) {
+	const { args: selectors } = stat;
+	const { queueLogStat } = createStatsQueue( stat.name );
+	const container = await waitForSelector( selectors.container );
 
-		waitForNextVisibleListing( function ( elem ) {
-			const maybeId = findIdInClassNames( elem );
-			maybeId > 0 && debouncedSender.queueListingImpressionStats( statName, [ maybeId ] );
-		} );
+	const intersections = createIntersectionObserver( container, queueLogStat );
+
+	const initialItems = container.querySelectorAll( selectors.item );
+	initialItems.forEach( node => intersections.observe( node ) );
+
+	observeMutations( container, {
+		selector: selectors.item,
+		onAdded: node => intersections.observe( node ),
+		onRemoved: node => intersections.unobserve( node ),
 	} );
 }
