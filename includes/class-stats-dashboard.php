@@ -125,7 +125,7 @@ class Stats_Dashboard {
 			$start_date = $start_date->modify( '+' . ( $past_days - self::DAYS_PER_PAGE ) . ' day' );
 		}
 
-		$job_stats = new Job_Listing_Stats( $job->ID, [ $start_date ] );
+		$job_stats = new Job_Listing_Stats( $job->ID, $start_date ? [ $start_date ] : [] );
 
 		$daily_views       = $job_stats->get_event_daily( Job_Listing_Stats::VIEW );
 		$daily_uniques     = $job_stats->get_event_daily( Job_Listing_Stats::VIEW_UNIQUE );
