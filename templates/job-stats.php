@@ -91,16 +91,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php foreach ( $stats as $column_name => $column ) : ?>
 			<div class="jm-ui-col">
 				<?php foreach ( $column as $i => $section ) :
-					$tooltip_id = $section['help'] ? 'jm-stat-section-tooltip-' . $column_name . '-' . $i : '';
+					$help_text = $section['help'] ?? '';
+					$tooltip_id = $help_text ? 'jm-stat-section-tooltip-' . $column_name . '-' . $i : '';
 					?>
 					<div class="jm-stat-section">
 						<div class="jm-section-header" aria-describedby="<?php echo esc_attr( $tooltip_id ); ?>">
 							<span><?php echo esc_html( $section['title'] ); ?></span>
-							<?php if ( $section['help'] ): ?>
+							<?php if ( ! empty( $help_text ) ): ?>
 								<span class="jm-section-header__help jm-ui-has-tooltip" tabindex="0">
 									<?php echo UI_Elements::icon( 'help' ); ?>
 									<div role="tooltip" class="jm-ui-tooltip" id="<?php echo esc_attr( $tooltip_id ); ?>">
-										<?php echo esc_html( $section['help'] ); ?>
+										<?php echo esc_html( $help_text ); ?>
 									</div>
 								</span>
 							<?php endif; ?>
