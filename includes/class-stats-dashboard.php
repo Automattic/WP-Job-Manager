@@ -19,6 +19,11 @@ class Stats_Dashboard {
 	private const COLUMN_NAME = 'stats';
 
 	/**
+	 * Max number of days to display in the daily stats chart.
+	 */
+	private const DAYS_PER_PAGE = 180;
+
+	/**
 	 * Constructor.
 	 */
 	private function __construct() {
@@ -108,7 +113,19 @@ class Stats_Dashboard {
 	 */
 	private function get_daily_stats_chart( \WP_Post $job ): array {
 
-		$job_stats = new Job_Listing_Stats( $job->ID );
+		$start_date = get_post_datetime( $job );
+
+		if ( ! $start_date ) {
+			return [];
+		}
+
+		$past_days = $start_date->diff( new \DateTime() )->days + 1;
+
+		if ( $past_days > self::DAYS_PER_PAGE ) {
+			$start_date = $start_date->modify( '+' . ( $past_days - self::DAYS_PER_PAGE ) . ' day' );
+		}
+
+		$job_stats = new Job_Listing_Stats( $job->ID, [ $start_date ] );
 
 		$daily_views       = $job_stats->get_event_daily( Job_Listing_Stats::VIEW );
 		$daily_uniques     = $job_stats->get_event_daily( Job_Listing_Stats::VIEW_UNIQUE );
@@ -127,20 +144,20 @@ class Stats_Dashboard {
 			];
 		}
 
-		$publish_date = get_post_datetime( $job );
+		$end_date = \WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
 
-		$job_expires = \WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
-
-		if ( ! $job_expires ) {
-			$job_expires = $publish_date->modify( '+30 days' );
+		if ( ! $end_date ) {
+			$end_date = $start_date->modify( '+1 month' );
 		}
 
-		$all_days = $publish_date->diff( $job_expires )->days + 1;
+		$all_days = $start_date->diff( $end_date )->days + 1;
+
+		$all_days = min( $all_days, self::DAYS_PER_PAGE );
 
 		$today = ( new \DateTime() )->format( 'Y-m-d' );
 
 		for ( $i = 0; $i < $all_days; $i++ ) {
-			$date = $publish_date->modify( '+' . $i . ' day' )->format( 'Y-m-d' );
+			$date = $start_date->modify( '+' . $i . ' day' )->format( 'Y-m-d' );
 			if ( empty( $by_day[ $date ] ) ) {
 				$by_day[ $date ] = [
 					'date'        => $date,
