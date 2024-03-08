@@ -45,8 +45,8 @@ class Job_Listing_Stats {
 	/**
 	 * Stats for a single job listing.
 	 *
-	 * @param int         $job_id
-	 * @param \DateTime[] $date_range Array of start and end date. Defaults to a range from the job's publishing date to the current day.
+	 * @param int               $job_id
+	 * @param \DateTime|false[] $date_range Array of start and end date. Defaults to a range from the job's publishing date to the current day.
 	 */
 	public function __construct( $job_id, $date_range = [] ) {
 
