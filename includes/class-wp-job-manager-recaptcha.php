@@ -148,7 +148,7 @@ class WP_Job_Manager_Recaptcha {
 		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
 
 		// translators: %s is the name of the form validation that failed.
-		$validation_error = new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
+		$validation_error = new \WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier (when possible).
 		$input_recaptcha_response = isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '';
