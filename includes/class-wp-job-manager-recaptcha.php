@@ -51,7 +51,7 @@ class WP_Job_Manager_Recaptcha {
 	 *
 	 * @since 2.0.0
 	 */
-	public function __construct() {
+	private function __construct() {
 		$this->site_key          = get_option( self::RECAPTCHA_SITE_KEY );
 		$this->secret_key        = get_option( self::RECAPTCHA_SECRET_KEY );
 		$this->recaptcha_version = get_option( self::RECAPTCHA_VERSION, 'v2' );
