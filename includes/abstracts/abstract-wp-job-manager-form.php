@@ -138,11 +138,7 @@ abstract class WP_Job_Manager_Form {
 	public function output( $atts = [] ) {
 		$resumes_enabled_recaptcha = (bool) get_option( 'resume_manager_enable_recaptcha_resume_submission', false );
 		if ( is_array( $atts ) ) {
-			if ( in_array( 'resume', $atts, true ) ) {
-				if ( $resumes_enabled_recaptcha ) {
-					WP_Job_Manager\WP_Job_Manager_Recaptcha::enqueue_scripts();
-				}
-			} else {
+			if ( ! in_array( 'resume', $atts, true ) || $resumes_enabled_recaptcha ) {
 				WP_Job_Manager\WP_Job_Manager_Recaptcha::enqueue_scripts();
 			}
 		}
