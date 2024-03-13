@@ -212,6 +212,10 @@ class Stats_Dashboard {
 	private function get_stat_summaries( \WP_Post $job ) {
 		$job_stats = new Job_Listing_Stats( $job->ID );
 
+		$views        = $job_stats->get_event_total( Job_Listing_Stats::VIEW );
+		$views_unique = $job_stats->get_event_total( Job_Listing_Stats::VIEW_UNIQUE );
+		$views_repeat = $views - $views_unique;
+
 		/**
 		 * Filter the job stat summaries, displayed in the job overlay.
 		 *
@@ -227,12 +231,12 @@ class Stats_Dashboard {
 						[
 							'icon'  => 'color-page-view',
 							'label' => __( 'Page Views', 'wp-job-manager' ),
-							'value' => $job_stats->get_event_total( Job_Listing_Stats::VIEW ),
+							'value' => $views,
 						],
 						[
 							'icon'  => 'color-unique-view',
 							'label' => __( 'Unique Visitors', 'wp-job-manager' ),
-							'value' => $job_stats->get_event_total( Job_Listing_Stats::VIEW_UNIQUE ),
+							'value' => $views_unique,
 						],
 					],
 					'column' => 1,
@@ -253,19 +257,14 @@ class Stats_Dashboard {
 					'title'  => __( 'Interest', 'wp-job-manager' ),
 					'stats'  => [
 						[
-							'icon'  => 'search',
-							'label' => __( 'Search clicks', 'wp-job-manager' ),
-							'value' => 'TODO',
-						],
-						[
 							'icon'  => 'cursor',
-							'label' => __( 'Apply clicks', 'wp-job-manager' ),
+							'label' => __( 'Apply Clicks', 'wp-job-manager' ),
 							'value' => $job_stats->get_event_total( Job_Listing_Stats::APPLY_CLICK ),
 						],
 						[
-							'icon'  => 'history',
-							'label' => __( 'Repeat viewers', 'wp-job-manager' ),
-							'value' => 'TODO',
+							'icon'  => 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' fill=\'none\' viewBox=\'0 0 24 24\'%3e%3cg fill=\'black\'%3e%3cpath d=\'M16.6 7.4a6.5 6.5 0 0 0-9.17-.02L8.7 8.66l-3.9.36.36-3.9 1.2 1.2a8 8 0 1 1-2.3 6.72l1.49-.2A6.5 6.5 0 1 0 16.6 7.4Z\'/%3e%3cpath d=\'m12 7-1 5c0 .37.2.7.51.87l4.13 2.76-2.74-4.11L12 7Z\'/%3e%3c/g%3e%3c/svg%3e")',
+							'label' => __( 'Repeat Views', 'wp-job-manager' ),
+							'value' => $views_repeat,
 						],
 					],
 					'column' => 2,
