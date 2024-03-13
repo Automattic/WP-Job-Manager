@@ -136,13 +136,7 @@ abstract class WP_Job_Manager_Form {
 	 * @param array $atts Attributes to use in the view handler.
 	 */
 	public function output( $atts = [] ) {
-		$resumes_enabled_recaptcha = (bool) get_option( 'resume_manager_enable_recaptcha_resume_submission', false );
-		if ( is_array( $atts ) ) {
-			if ( ! in_array( 'resume', $atts, true ) || $resumes_enabled_recaptcha ) {
-				WP_Job_Manager\WP_Job_Manager_Recaptcha::enqueue_scripts();
-			}
-		}
-
+		WP_Job_Manager\WP_Job_Manager_Recaptcha::enqueue_scripts();
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
 		$this->show_messages();
