@@ -1,13 +1,15 @@
 export function waitForSelector( selector ) {
 	return new Promise( function ( resolve ) {
-		if ( document.querySelector( selector ) ) {
-			return resolve( document.querySelector( selector ) );
+		let node = document.querySelector( selector );
+		if ( node ) {
+			return resolve( node );
 		}
 
 		const observer = new MutationObserver( function () {
-			if ( document.querySelector( selector ) ) {
+			node = document.querySelector( selector );
+			if ( node ) {
 				observer.disconnect();
-				resolve( document.querySelector( selector ) );
+				resolve( node );
 			}
 		} );
 

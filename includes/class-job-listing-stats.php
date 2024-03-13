@@ -16,10 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Job_Listing_Stats {
 
-	const VIEW              = 'job_listing_view';
-	const VIEW_UNIQUE       = 'job_listing_view_unique';
-	const SEARCH_IMPRESSION = 'job_listing_impression';
-	const APPLY_CLICK       = 'job_listing_apply_button_clicked';
+	const VIEW              = 'job_view';
+	const VIEW_UNIQUE       = 'job_view_unique';
+	const SEARCH_IMPRESSION = 'job_search_impression';
+	const APPLY_CLICK       = 'job_apply_click';
 
 	/**
 	 * Job listing post ID.
@@ -45,6 +45,8 @@ class Job_Listing_Stats {
 	/**
 	 * Stats for a single job listing.
 	 *
+	 * @since $$next-version$$
+	 *
 	 * @param int                  $job_id
 	 * @param \DateTimeInterface[] $date_range Array of start and end date. Defaults to a range from the job's publishing date to the current day.
 	 */
@@ -69,19 +71,7 @@ class Job_Listing_Stats {
 	}
 
 	/**
-	 * Get daily stats for a job listing.
-	 *
-	 * @return array
-	 */
-	public function get_daily_stats() {
-		return [
-			'view'        => $this->get_event_daily( self::VIEW ),
-			'view_unique' => $this->get_event_daily( self::VIEW_UNIQUE ),
-		];
-	}
-
-	/**
-	 * Get totals for an event.
+	 * Get total counts for an event.
 	 *
 	 * @param string $event
 	 *

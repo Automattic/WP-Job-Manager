@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the class WP_Job_Manager_Stats
+ * File containing the class WP_Job_Manager\Stats
  *
  * @package wp-job-manager
  */
@@ -12,19 +12,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * This class is responsible for initializing all aspects of stats for wpjm.
+ * Collect and retrieve job statistics.
+ *
+ * @since $$next-version$$
  */
 class Stats {
 	use Singleton;
 
-	const         CACHE_GROUP = 'wpjm_stats';
+	/**
+	 * Cache group for stat queries.
+	 */
+	const CACHE_GROUP = 'wpjm_stats';
 
-	const DEFAULT_LOG_STAT_ARGS = [
-		'group'   => '',
-		'post_id' => 0,
-		'count'   => 1,
-		'date'    => '',
-	];
+	/**
+	 * Setting key for enabling stats.
+	 */
+	const OPTION_ENABLE_STATS = 'job_manager_stats_enable';
 
 	private const TABLE = 'wpjm_stats';
 
@@ -40,13 +43,15 @@ class Stats {
 	 */
 	public function init() {
 
-		include_once __DIR__ . '/class-job-listing-stats.php';
-		include_once __DIR__ . '/class-stats-dashboard.php';
+		$this->init_wpdb_alias();
+
+		if ( ! self::is_enabled() ) {
+			return;
+		}
 
 		Stats_Dashboard::instance();
 
-		$this->initialize_wpdb();
-		$this->hook();
+		$this->init_hooks();
 	}
 
 	/**
@@ -54,7 +59,7 @@ class Stats {
 	 *
 	 * @return void
 	 */
-	private function initialize_wpdb() {
+	private function init_wpdb_alias() {
 		global $wpdb;
 		if ( isset( $wpdb->wpjm_stats ) ) {
 			return;
@@ -68,7 +73,7 @@ class Stats {
 	 *
 	 * @return void
 	 */
-	public function migrate() {
+	public function migrate_db() {
 		global $wpdb;
 		$collate = $wpdb->get_charset_collate();
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -94,28 +99,40 @@ class Stats {
 	 * @return bool
 	 */
 	public static function is_enabled() {
-		return get_option( 'job_manager_stats_enable', false );
+		return (bool) get_option( self::OPTION_ENABLE_STATS, false );
 	}
 
 	/**
 	 * Log a stat into the db.
 	 *
-	 * @param string $name    The stat name.
+	 * @param string $name The stat name.
 	 * @param array  $args {
 	 * Optional args for this stat.
 	 *
-	 * @type string $group    The group this stat belongs to.
-	 * @type int    $post_id  The post_id this stat belongs to.
-	 * @type int    $count    The amount to increment the stat by.
-	 * @type string $date     Date in YYYY-MM-DD format.
+	 * @type string  $group The group this stat belongs to.
+	 * @type int     $post_id The post_id this stat belongs to.
+	 * @type int     $count The amount to increment the stat by.
+	 * @type string  $date Date in YYYY-MM-DD format.
 	 * }
 	 *
 	 * @return bool
 	 */
 	public function log_stat( string $name, array $args = [] ) {
-		global $wpdb;
 
-		$args    = array_merge( self::DEFAULT_LOG_STAT_ARGS, $args );
+		if ( ! self::is_enabled() ) {
+			return false;
+		}
+
+		$args = wp_parse_args(
+			$args,
+			[
+				'group'   => '',
+				'post_id' => 0,
+				'count'   => 1,
+				'date'    => gmdate( 'Y-m-d' ),
+			]
+		);
+
 		$group   = $args['group'];
 		$post_id = absint( $args['post_id'] );
 		$count   = $args['count'];
@@ -128,9 +145,9 @@ class Stats {
 			return false;
 		}
 
-		$date = ! empty( $args['date'] ) ? $args['date'] : gmdate( 'Y-m-d' );
+		global $wpdb;
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = $wpdb->query(
 			$wpdb->prepare(
 				"INSERT INTO {$wpdb->wpjm_stats} " .
@@ -138,7 +155,7 @@ class Stats {
 				'VALUES (%s, %s, %s, %d, %d) ' .
 				'ON DUPLICATE KEY UPDATE `count` = `count` + %d',
 				$name,
-				$date,
+				$args['date'],
 				$group,
 				$post_id,
 				$count,
@@ -150,38 +167,18 @@ class Stats {
 			return false;
 		}
 
-		$cache_key = $this->get_cache_key_for_stat( $name, $group, $post_id );
-
-		wp_cache_delete( $cache_key, 'wpjm_stats' );
-
 		return true;
 	}
 
 	/**
 	 * Delete all stats for a given job.
 	 *
-	 * @since $$next-version$$
-	 *
 	 * @param int $post_id
 	 */
-	public function clear_stats( $post_id ) {
+	public function delete_stats( $post_id ) {
 		global $wpdb;
 		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->wpjm_stats} WHERE post_id = %d", $post_id ) );
-	}
-
-	/**
-	 * Get a cache key for a stat.
-	 *
-	 * @param string $name    The name.
-	 * @param string $group   The optional group.
-	 * @param int    $post_id The optional post id.
-	 *
-	 * @return string
-	 */
-	private function get_cache_key_for_stat( string $name, string $group = '', int $post_id = 0 ) {
-		$hash = md5( "{$name}_{$group}_{$post_id}" );
-		return "wpjm_stat_{$hash}";
 	}
 
 	/**
@@ -197,31 +194,10 @@ class Stats {
 	 *
 	 * @return void
 	 */
-	private function hook() {
-		add_action( 'wp_enqueue_scripts', [ $this, 'frontend_scripts' ] );
-		add_action( 'wp_ajax_job_manager_log_stat', [ $this, 'maybe_log_stat_ajax' ] );
-		add_action( 'wp_ajax_nopriv_job_manager_log_stat', [ $this, 'maybe_log_stat_ajax' ] );
-		add_action( 'wpjm_stats_frontend_scripts', [ $this, 'job_listing_frontend_scripts' ], 10, 1 );
-		add_action( 'wpjm_stats_frontend_scripts', [ $this, 'jobs_frontend_scripts' ], 10, 1 );
-	}
-
-	/**
-	 * Log a (non-unique) listing page view.
-	 *
-	 * @return void
-	 */
-	public function maybe_log_listing_view() {
-		if ( is_admin() || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-			return;
-		}
-
-		$post_id   = absint( get_queried_object_id() );
-		$post_type = get_post_type( $post_id );
-		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
-			return;
-		}
-
-		$this->log_stat( 'job_listing_view', [ 'post_id' => $post_id ] );
+	private function init_hooks() {
+		add_action( 'wp_ajax_job_manager_log_stat', [ $this, 'ajax_log_stat' ] );
+		add_action( 'wp_ajax_nopriv_job_manager_log_stat', [ $this, 'ajax_log_stat' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_stats_scripts' ] );
 	}
 
 	/**
@@ -229,7 +205,7 @@ class Stats {
 	 *
 	 * @return bool
 	 */
-	public function maybe_log_stat_ajax() {
+	public function ajax_log_stat() {
 		if ( ! wp_doing_ajax() ) {
 			return false;
 		}
@@ -258,9 +234,8 @@ class Stats {
 				continue;
 			}
 
-			$post = get_post( $post_id );
-			if ( ! $this->can_record_stats_for_post( $post ) ) {
-				$errors[] = [ 'cannot record', $stat_data, $post ];
+			if ( ! \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type( $post_id ) ) {
+				$errors[] = [ 'cannot record', $stat_data, $post_id ];
 				continue;
 			}
 
@@ -271,7 +246,7 @@ class Stats {
 
 			$stat_name = trim( strtolower( $stat_data['name'] ) );
 
-			if ( ! in_array( $stat_name, $this->get_registered_stat_names(), true ) ) {
+			if ( empty( $registered_stats[ $stat_name ] ) ) {
 				$errors[] = [ 'not registered', $stat_data ];
 				continue;
 			}
@@ -297,90 +272,12 @@ class Stats {
 	}
 
 	/**
-	 * Register any frontend JS scripts.
-	 *
-	 * @return void
-	 */
-	public function frontend_scripts() {
-		$post_id = absint( get_queried_object_id() );
-		$post    = get_post( $post_id );
-
-		if ( 0 === $post_id ) {
-			return;
-		}
-
-		/**
-		 * Delegate registration to dedicated hooks per-screen.
-		 */
-		do_action( 'wpjm_stats_frontend_scripts', $post );
-	}
-
-	/**
 	 * Register any frontend scripts for job listings.
 	 *
-	 * @param \WP_Post $post The post.
-	 *
-	 * @return void
+	 * @access private
 	 */
-	public function job_listing_frontend_scripts( $post ) {
-		$post_type = $post->post_type;
-		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
-			return;
-		}
+	public function maybe_enqueue_stats_scripts() {
 
-		$this->register_frontend_scripts_for_screen( 'listing', $post->ID );
-	}
-
-	/**
-	 * Register any frontend scripts for a page containing 'jobs' shortcode.
-	 *
-	 * @param \WP_Post $post The post.
-	 *
-	 * @return void
-	 */
-	public function jobs_frontend_scripts( $post ) {
-		if ( $this->page_has_jobs_shortcode( $post ) ) {
-			$this->register_frontend_scripts_for_screen( 'jobs', $post->ID );
-		}
-	}
-
-	/**
-	 * Check that a certain post/page is eligible for getting recorded stats.
-	 *
-	 * @param \WP_Post $post The post.
-	 *
-	 * @return bool
-	 */
-	private function can_record_stats_for_post( $post ) {
-		if ( $this->page_has_jobs_shortcode( $post ) ) {
-			return $this->filter_can_record_stats_for_post( true, $post );
-		} elseif ( \WP_Job_Manager_Post_Types::PT_LISTING === $post->post_type ) {
-			return $this->filter_can_record_stats_for_post( true, $post );
-		}
-
-		return $this->filter_can_record_stats_for_post( false, $post );
-	}
-
-	/**
-	 * Run filter.
-	 *
-	 * @param bool     $can_record Can record.
-	 * @param \WP_Post $post       The post.
-	 *
-	 * @return bool
-	 */
-	private function filter_can_record_stats_for_post( $can_record, $post ) {
-		return (bool) apply_filters( 'wpjm_stats_can_record_stats_for_post', $can_record, $post );
-	}
-
-	/**
-	 * Register scripts for given screen.
-	 *
-	 * @param string $page    Which page.
-	 * @param int    $post_id Which id.
-	 * @return void
-	 */
-	private function register_frontend_scripts_for_screen( $page = 'listing', $post_id = 0 ) {
 		\WP_Job_Manager::register_script(
 			'wp-job-manager-stats',
 			'js/wpjm-stats.js',
@@ -391,11 +288,33 @@ class Stats {
 			true
 		);
 
+		global $post;
+
+		if ( is_wpjm_job_listing() ) {
+			$this->enqueue_stats_script( 'listing', $post->ID );
+		}
+
+		if ( $this->page_has_jobs_shortcode( $post ) ) {
+			$this->enqueue_stats_script( 'jobs', $post->ID );
+		}
+
+	}
+
+	/**
+	 * Register scripts for given screen.
+	 *
+	 * @param string $page Which page.
+	 * @param int    $post_id Which id.
+	 *
+	 * @return void
+	 */
+	private function enqueue_stats_script( $page = 'listing', $post_id = 0 ) {
+
 		$script_data = [
-			'ajax_url'     => admin_url( 'admin-ajax.php' ),
-			'ajax_nonce'   => wp_create_nonce( 'ajax-nonce' ),
-			'post_id'      => $post_id,
-			'stats_to_log' => $this->get_stats_for_ajax( $post_id, $page ),
+			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+			'ajaxNonce' => wp_create_nonce( 'ajax-nonce' ),
+			'postId'    => $post_id,
+			'stats'     => $this->get_stats_for_ajax( $post_id, $page ),
 		];
 
 		wp_enqueue_script( 'wp-job-manager-stats' );
@@ -416,41 +335,44 @@ class Stats {
 		return (array) apply_filters(
 			'wpjm_get_registered_stats',
 			[
-				'job_listing_view'                 => [
-					'log_callback' => [ $this, 'log_stat' ], // Example of overriding how we log this.
-					'trigger'      => 'page-load',
-					'type'         => 'pageLoad',
-					'page'         => 'listing',
+				Job_Listing_Stats::VIEW              => [
+					'type'   => 'action',
+					'action' => 'page-load',
+					'page'   => 'listing',
 				],
-				'job_listing_view_unique'          => [
-					'unique'  => true,
-					'type'    => 'pageLoad',
-					'trigger' => 'page-load',
-					'page'    => 'listing',
+				Job_Listing_Stats::VIEW_UNIQUE       => [
+					'type'   => 'action',
+					'action' => 'page-load',
+					'unique' => true,
+					'page'   => 'listing',
 				],
-				'job_listing_apply_button_clicked' => [
-					'trigger' => 'apply-button-clicked',
-					'type'    => 'domEvent',
-					'element' => 'input.application_button',
-					'event'   => 'click',
-					'unique'  => true,
-					'page'    => 'listing',
+				Job_Listing_Stats::APPLY_CLICK       => [
+					'type'   => 'domEvent',
+					'args'   => [
+						'element' => 'input.application_button',
+						'event'   => 'click',
+					],
+					'unique' => true,
+					'page'   => 'listing',
 				],
-				'jobs_view'                        => [
-					'trigger' => 'page-load',
-					'type'    => 'pageLoad',
-					'page'    => 'jobs',
+				'search_view'                        => [
+					'type'   => 'action',
+					'action' => 'page-load',
+					'page'   => 'jobs',
 				],
-				'jobs_view_unique'                 => [
-					'trigger' => 'page-load',
-					'type'    => 'pageLoad',
-					'page'    => 'jobs',
-					'unique'  => true,
+				'search_view_unique'                 => [
+					'type'   => 'action',
+					'action' => 'page-load',
+					'page'   => 'jobs',
+					'unique' => true,
 				],
-				'job_listing_impression'           => [
-					'trigger' => 'job-listing-impression',
-					'type'    => 'initListingImpression',
-					'page'    => 'jobs',
+				Job_Listing_Stats::SEARCH_IMPRESSION => [
+					'type' => 'impression',
+					'args' => [
+						'container' => 'ul.job_listings',
+						'item'      => 'li.job_listing',
+					],
+					'page' => 'jobs',
 				],
 			]
 		);
@@ -460,7 +382,7 @@ class Stats {
 	 * Determine what stats should be added to the kind of page the user is viewing.
 	 *
 	 * @param int    $post_id Optional post id.
-	 * @param string $page    The page in question.
+	 * @param string $page The page in question.
 	 *
 	 * @return array
 	 */
@@ -475,9 +397,8 @@ class Stats {
 				'name'    => $stat_name,
 				'post_id' => $post_id,
 				'type'    => $stat_data['type'] ?? '',
-				'trigger' => $stat_data['trigger'] ?? '',
-				'element' => $stat_data['element'] ?? '',
-				'event'   => $stat_data['event'] ?? '',
+				'action'  => $stat_data['action'] ?? '',
+				'args'    => $stat_data['args'] ?? '',
 			];
 
 			if ( ! empty( $stat_data['unique'] ) ) {
@@ -493,6 +414,8 @@ class Stats {
 
 	/**
 	 * Derive unique key by post id.
+	 *
+	 * @access private
 	 *
 	 * @param string $stat_name Name.
 	 * @param int    $post_id Post id.
@@ -511,6 +434,6 @@ class Stats {
 	 * @return bool
 	 */
 	public function page_has_jobs_shortcode( $post ) {
-		return has_shortcode( $post->post_content, 'jobs' );
+		return $post && has_shortcode( $post->post_content, 'jobs' );
 	}
 }

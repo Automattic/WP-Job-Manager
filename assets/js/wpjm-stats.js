@@ -1,143 +1,90 @@
 import domReady from '@wordpress/dom-ready';
-import { createHooks } from '@wordpress/hooks';
-import {
-	setUniques,
-	checkUniqueRecordedToday,
-	checkUnique,
-	scheduleStaleUniqueCleanup,
-} from './stats/unique';
-import { initListingImpression } from './stats/impressions';
+import { scheduleStaleUniqueCleanup, filterAndRecordUniques } from './stats/unique';
+import { initImpressionStat } from './stats/impressions';
+import { requestIdleCallback } from './stats/utils';
 
 const WPJMStats = {
-	statsToRecord: [],
-	init( statsToRecord ) {
-		WPJMStats.statsToRecord = statsToRecord;
-		WPJMStats.hooks.doAction( 'init', WPJMStats );
+	stats: [],
+	actions: [],
+	init( stats ) {
+		WPJMStats.stats = stats;
 
-		const statsByTrigger = statsToRecord?.reduce( function ( accum, statToRecord ) {
-			const triggerName = statToRecord.trigger || '';
-
-			if ( triggerName.length < 1 ) {
-				return accum;
-			}
-
-			if ( ! accum[ triggerName ] ) {
-				accum[ triggerName ] = [];
-			}
-
-			accum[ triggerName ].push( statToRecord );
-
-			return accum;
-		}, {} );
-
-		Object.keys( statsByTrigger ).forEach( function ( triggerName ) {
-			WPJMStats.hookStatsForTrigger( statsByTrigger, triggerName );
+		stats.forEach( stat => {
+			WPJMStats.types[ stat.type ]?.( stat );
 		} );
 
-		WPJMStats.hooks.doAction( 'page-load' );
-		scheduleStaleUniqueCleanup( statsToRecord );
+		WPJMStats.doAction( 'page-load' );
+		scheduleStaleUniqueCleanup();
 	},
 
-	hookStatsForTrigger( statsByTrigger, triggerName ) {
-		const statsToRecord = [];
-		const stats = statsByTrigger[ triggerName ] || [];
-		const statsByType = {};
-
-		stats.forEach( function ( statToRecord ) {
-			if ( ! statsByType[ statToRecord.type ] ) {
-				statsByType[ statToRecord.type ] = [];
-			}
-
-			statsByType[ statToRecord.type ].push( statToRecord );
-			statsToRecord.push( statToRecord );
-		} );
-
-		// Hook action to call logStats.
-		WPJMStats.hooks.addAction(
-			triggerName,
-			'wpjm-stats',
-			function () {
-				window.wpjmLogStats( statsToRecord );
-			},
-			10
-		);
-
-		Object.keys( statsByType ).forEach( function ( type ) {
-			WPJMStats.types[ type ] && WPJMStats.types[ type ]( statsByType[ type ] );
-		} );
+	doAction( action ) {
+		const stats = WPJMStats.actions[ action ];
+		if ( stats ) {
+			WPJMStats.log( stats );
+		}
 	},
-
-	hooks: createHooks(),
 	types: {
-		pageLoad( stats ) {
-			// This does not need to do anything special.
+		action( stat ) {
+			const { action } = stat;
+			if ( ! WPJMStats.actions[ action ] ) {
+				WPJMStats.actions[ action ] = [];
+			}
+			WPJMStats.actions[ action ].push( stat );
 		},
-		domEvent( stats ) {
-			const events = {};
-			stats.forEach( function ( statToRecord ) {
-				const triggerName = statToRecord.trigger;
-				if ( statToRecord.element && statToRecord.event ) {
-					const elemToAttach = document.querySelector( statToRecord.element );
-					if ( elemToAttach && ! events[ statToRecord.element ] ) {
-						elemToAttach.addEventListener( statToRecord.event, function ( e ) {
-							WPJMStats.hooks.doAction( triggerName );
-						} );
-						events[ statToRecord.element ] = true;
-					}
-				}
-			} );
+		domEvent( stat ) {
+			const { args } = stat;
+			if ( args.element && args.event ) {
+				const domElement = document.querySelector( args.element );
+				const handler = stat.action
+					? () => WPJMStats.doAction( stat.action )
+					: () => WPJMStats.log( stat );
+				domElement?.addEventListener( args.event, handler );
+			}
 		},
-		initListingImpression,
+		impression: initImpressionStat,
 	},
-};
-
-window.WPJMStats = window.WPJMStats || WPJMStats;
-
-window.wpjmLogStats =
-	window.wpjmLogStats ||
-	function ( stats ) {
-		const jobStatsSettings = window.job_manager_stats;
-		const ajaxUrl = jobStatsSettings.ajax_url;
-		const ajaxNonce = jobStatsSettings.ajax_nonce;
-
-		const uniquesToSet = [];
-		const statsToRecord = [];
-
-		if ( stats.length < 1 ) {
-			return Promise.resolve(); // Could also be an error.
+	async log( stats ) {
+		if ( stats.name ) {
+			stats = [ stats ];
 		}
 
-		stats.forEach( function ( statToRecord ) {
-			if ( ! checkUniqueRecordedToday( statToRecord ) ) {
-				uniquesToSet.push( statToRecord.unique_key );
-				statsToRecord.push( statToRecord );
-			} else if ( ! checkUnique( statToRecord ) ) {
-				statsToRecord.push( statToRecord );
-			}
+		const { ajaxUrl, ajaxNonce, postId } = window.job_manager_stats;
+
+		stats = filterAndRecordUniques( stats );
+
+		if ( ! stats.length ) {
+			return false;
+		}
+
+		const payload = stats.map( stat => {
+			return [ 'name', 'group', 'post_id' ].reduce( ( m, field ) => {
+				if ( stat[ field ] ) {
+					m[ field ] = stat[ field ];
+				}
+				return m;
+			}, {} );
 		} );
 
 		const postData = new URLSearchParams( {
 			_ajax_nonce: ajaxNonce,
-			post_id: jobStatsSettings.post_id || 0,
+			post_id: postId,
 			action: 'job_manager_log_stat',
-			stats: JSON.stringify(
-				statsToRecord.map( function ( stat ) {
-					const { name = '', group = '', post_id = 0 } = stat;
-					return { name, group, post_id };
-				} )
-			),
+			stats: JSON.stringify( payload ),
 		} );
-
-		setUniques( uniquesToSet );
 
 		return fetch( ajaxUrl, {
 			method: 'POST',
 			credentials: 'same-origin',
 			body: postData,
 		} );
-	};
+	},
+};
 
-domReady( function () {
-	const jobStatsSettings = window.job_manager_stats;
-	WPJMStats.init( jobStatsSettings.stats_to_log );
+window.WPJMStats = WPJMStats;
+
+domReady( () => {
+	requestIdleCallback( () => {
+		const { stats } = window.job_manager_stats;
+		WPJMStats.init( stats );
+	} );
 } );

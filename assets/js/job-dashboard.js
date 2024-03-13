@@ -5,7 +5,7 @@ import domReady from '@wordpress/dom-ready';
 import './ui';
 
 // eslint-disable-next-line camelcase
-const { i18nConfirmDelete, overlayEndpoint } = job_manager_job_dashboard;
+const { i18nConfirmDelete, overlayEndpoint, statsEnabled } = job_manager_job_dashboard;
 
 function setupEvents( root ) {
 	root
@@ -65,9 +65,7 @@ async function showOverlay( eventOrId ) {
 	setupEvents( contentElement );
 }
 
-domReady( () => {
-	setupEvents( document );
-
+function setupStatsOverlay() {
 	document
 		.querySelectorAll( '.jm-dashboard-job .job-title' )
 		.forEach( el => el.addEventListener( 'click', showOverlay ) );
@@ -76,5 +74,13 @@ domReady( () => {
 
 	if ( urlHash > 0 ) {
 		showOverlay( +urlHash );
+	}
+}
+
+domReady( () => {
+	setupEvents( document );
+
+	if ( statsEnabled ) {
+		setupStatsOverlay();
 	}
 } );
