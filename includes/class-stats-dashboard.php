@@ -19,6 +19,11 @@ class Stats_Dashboard {
 	private const COLUMN_NAME = 'stats';
 
 	/**
+	 * Max number of days to display in the daily stats chart.
+	 */
+	private const DAYS_PER_PAGE = 180;
+
+	/**
 	 * Constructor.
 	 */
 	private function __construct() {
@@ -32,18 +37,21 @@ class Stats_Dashboard {
 
 		add_filter( 'manage_edit-job_listing_columns', [ $this, 'add_stats_column' ], 20 );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'maybe_render_job_listing_posts_custom_column' ], 2 );
+
+		add_action( 'job_manager_job_overlay_content', [ $this, 'output_job_stats' ], 12 );
 	}
 
 	/**
 	 * Add a new column to the job dashboards.
 	 *
 	 * @param array $columns
+	 *
 	 * @return array
 	 */
 	public function add_stats_column( $columns ) {
 		$columns[ self::COLUMN_NAME ] = __( 'Views', 'wp-job-manager' );
-		return $columns;
 
+		return $columns;
 	}
 
 	/**
@@ -52,13 +60,14 @@ class Stats_Dashboard {
 	 * @param \WP_Post $job
 	 */
 	public function render_stats_column( $job ) {
-		$stats = new Job_Listing_Stats( $job->ID );
-		$total = $stats->get_total_stats();
+		$stats       = new Job_Listing_Stats( $job->ID );
+		$views       = $stats->get_event_total( Job_Listing_Stats::VIEW );
+		$impressions = $stats->get_event_total( Job_Listing_Stats::SEARCH_IMPRESSION );
 
-		$views = $total['view'];
-
-		// translators: %1d is the number of views.
-		$views_str = '<span>' . sprintf( _n( '%1d view', '%1d views', $views, 'wp-job-manager' ), $views ) . '</span>';
+		// translators: %1d is the number of page views.
+		$views_str = '<div>' . sprintf( _n( '%1d view', '%1d views', $views, 'wp-job-manager' ), $views ) . '</div>';
+		// translators: %1d is the number of impressions.
+		$views_str .= '<small>' . sprintf( _n( '%1d impression', '%1d impressions', $impressions, 'wp-job-manager' ), $impressions ) . '</small>';
 
 		echo wp_kses_post( $views_str );
 	}
@@ -66,7 +75,7 @@ class Stats_Dashboard {
 	/**
 	 * Output stats column for the job listing post type admin screen.
 	 *
-	 * @param  string $column
+	 * @param string $column
 	 */
 	public function maybe_render_job_listing_posts_custom_column( $column ) {
 		global $post;
@@ -74,5 +83,206 @@ class Stats_Dashboard {
 		if ( self::COLUMN_NAME === $column ) {
 			$this->render_stats_column( $post );
 		}
+	}
+
+	/**
+	 * Output job analytics section.
+	 *
+	 * @param \WP_Post $job
+	 */
+	public function output_job_stats( $job ) {
+
+		$stat_summaries = $this->get_stat_summaries( $job );
+
+		$chart = $this->get_daily_stats_chart( $job );
+
+		get_job_manager_template(
+			'job-stats.php',
+			[
+				'stats' => $stat_summaries,
+				'chart' => $chart,
+			]
+		);
+	}
+
+	/**
+	 * Get data for the daily stats chart for a job.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @return array
+	 */
+	private function get_daily_stats_chart( \WP_Post $job ): array {
+
+		$start_date = get_post_datetime( $job );
+
+		if ( ! $start_date ) {
+			return [];
+		}
+
+		$past_days = $start_date->diff( new \DateTime() )->days + 1;
+
+		if ( $past_days > self::DAYS_PER_PAGE ) {
+			$start_date = $start_date->modify( '+' . ( $past_days - self::DAYS_PER_PAGE ) . ' day' );
+		}
+
+		$job_stats = new Job_Listing_Stats( $job->ID, $start_date ? [ $start_date ] : [] );
+
+		$daily_views       = $job_stats->get_event_daily( Job_Listing_Stats::VIEW );
+		$daily_uniques     = $job_stats->get_event_daily( Job_Listing_Stats::VIEW_UNIQUE );
+		$daily_impressions = $job_stats->get_event_daily( Job_Listing_Stats::SEARCH_IMPRESSION );
+
+		$max_views  = ! empty( $daily_views ) ? max( $daily_views ) : 100;
+		$resolution = $max_views < 1000 ? 100 : 1000;
+		$max        = max( ceil( $max_views / $resolution ) * $resolution, 100 );
+		$by_day     = [];
+
+		foreach ( $daily_views as $date => $views ) {
+			$by_day[ $date ] = [
+				'date'        => $date,
+				'views'       => $views,
+				'uniques'     => $daily_uniques[ $date ] ?? 0,
+				'impressions' => $daily_impressions[ $date ] ?? 0,
+				'class'       => '',
+			];
+		}
+
+		$end_date = \WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+
+		if ( ! $end_date ) {
+			$end_date = $start_date->modify( '+1 month' );
+		}
+
+		$all_days = $start_date->diff( $end_date )->days + 1;
+
+		$all_days = min( $all_days, self::DAYS_PER_PAGE );
+
+		$today = ( new \DateTime() )->format( 'Y-m-d' );
+
+		for ( $i = 0; $i < $all_days; $i++ ) {
+			$date = $start_date->modify( '+' . $i . ' day' )->format( 'Y-m-d' );
+			if ( empty( $by_day[ $date ] ) ) {
+				$by_day[ $date ] = [
+					'date'        => $date,
+					'views'       => 0,
+					'uniques'     => 0,
+					'impressions' => 0,
+					'class'       => 'future-day',
+				];
+			}
+		}
+
+		if ( ! empty( $by_day[ $today ] ) ) {
+			$by_day[ $today ]['class'] = 'today';
+		}
+
+		ksort( $by_day );
+
+		$date_format = apply_filters( 'job_manager_get_dashboard_date_format', 'M d, Y' );
+
+		$by_day_formatted = [];
+		foreach ( $by_day as $date => $data ) {
+			$date_fmt                              = wp_date( $date_format, strtotime( $date ) );
+			$by_day_formatted[ $date_fmt ]         = $by_day[ $date ];
+			$by_day_formatted[ $date_fmt ]['date'] = $date_fmt;
+		}
+
+		$chart = [
+			'values'   => $by_day_formatted,
+			'max'      => $max,
+			'y-labels' => [ $max / 2, $max ],
+		];
+
+		/**
+		 * Filter the job daily stat data, displayed as a chart in the job overlay.
+		 *
+		 * @param array    $stats Stat definition.
+		 * @param \WP_Post $job Job post object.
+		 */
+		return apply_filters( 'job_manager_job_stats_chart', $chart, $job );
+	}
+
+	/**
+	 * Get summaries grouped into sections for various stats.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @return mixed
+	 */
+	private function get_stat_summaries( \WP_Post $job ) {
+		$job_stats = new Job_Listing_Stats( $job->ID );
+
+		/**
+		 * Filter the job stat summaries, displayed in the job overlay.
+		 *
+		 * @param array    $stats Stat definition.
+		 * @param \WP_Post $job Job post object.
+		 */
+		$stats = apply_filters(
+			'job_manager_job_stats_summary',
+			[
+				'views'       => [
+					'title'  => __( 'Total Views', 'wp-job-manager' ),
+					'stats'  => [
+						[
+							'icon'  => 'color-page-view',
+							'label' => __( 'Page Views', 'wp-job-manager' ),
+							'value' => $job_stats->get_event_total( Job_Listing_Stats::VIEW ),
+						],
+						[
+							'icon'  => 'color-unique-view',
+							'label' => __( 'Unique Visitors', 'wp-job-manager' ),
+							'value' => $job_stats->get_event_total( Job_Listing_Stats::VIEW_UNIQUE ),
+						],
+					],
+					'column' => 1,
+				],
+				'impressions' => [
+					'title'  => __( 'Impressions', 'wp-job-manager' ),
+					'help'   => __( 'How many times the listing was seen in search results.', 'wp-job-manager' ),
+					'stats'  => [
+						[
+							'icon'  => 'search',
+							'label' => __( 'Search Impressions', 'wp-job-manager' ),
+							'value' => $job_stats->get_event_total( Job_Listing_Stats::SEARCH_IMPRESSION ),
+						],
+					],
+					'column' => 1,
+				],
+				'interest'    => [
+					'title'  => __( 'Interest', 'wp-job-manager' ),
+					'stats'  => [
+						[
+							'icon'  => 'search',
+							'label' => __( 'Search clicks', 'wp-job-manager' ),
+							'value' => 'TODO',
+						],
+						[
+							'icon'  => 'cursor',
+							'label' => __( 'Apply clicks', 'wp-job-manager' ),
+							'value' => $job_stats->get_event_total( Job_Listing_Stats::APPLY_CLICK ),
+						],
+						[
+							'icon'  => 'history',
+							'label' => __( 'Repeat viewers', 'wp-job-manager' ),
+							'value' => 'TODO',
+						],
+					],
+					'column' => 2,
+				],
+			],
+			$job
+		);
+
+		$stat_columns = array_reduce(
+			$stats,
+			fn( $columns, $section ) => array_merge_recursive(
+				$columns,
+				[ 'column-' . $section['column'] => [ $section ] ]
+			),
+			[]
+		);
+
+		return $stat_columns;
 	}
 }

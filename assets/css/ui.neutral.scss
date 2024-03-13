@@ -5,6 +5,8 @@
 	--jm-ui-border-strong: currentColor;
 	--jm-ui-border-size: 1px;
 
+	--jm-ui-responsive-scale: clamp(0px, (100vw - 400px) / (1200 - 400), 1px);
+
 	--jm-ui-background-color: initial;
 	--jm-ui-text-color: initial;
 	--jm-ui-background-opacity: 0;
@@ -21,7 +23,7 @@
 	--jm-ui-success-color: #4ab866;
 	--jm-ui-accent-color-contrast: #ffffff;
 
-	--jm-ui-button-color: var(--jm-ui-accent-color);
+	--jm-ui-button-color: var(--jm-ui-accent-color, inherit);
 	--jm-ui-button-contrast: var(--jm-ui-accent-color-contrast, #ffffff);
 	--jm-ui-link-color: var(--jm-ui-accent-color, inherit);
 

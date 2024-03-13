@@ -10,8 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use WP_Job_Manager\Stats;
-
 /**
  * Handles core plugin hooks and action setup.
  *
@@ -100,7 +98,9 @@ class WP_Job_Manager {
 		// Init classes.
 		$this->forms      = WP_Job_Manager_Forms::instance();
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
-		$this->stats      = Stats::instance();
+		$this->stats      = WP_Job_Manager\Stats::instance();
+
+		WP_Job_Manager\Dev_Tools::init();
 
 		// Schedule cron jobs.
 		add_action( 'init', [ __CLASS__, 'maybe_schedule_cron_jobs' ] );
@@ -149,7 +149,7 @@ class WP_Job_Manager {
 	 * Performs plugin activation steps.
 	 */
 	public function activate() {
-		Stats::instance()->activate();
+		\WP_Job_Manager\Stats::instance()->activate();
 		WP_Job_Manager_Ajax::add_endpoint();
 		unregister_post_type( \WP_Job_Manager_Post_Types::PT_LISTING );
 		add_filter( 'pre_option_job_manager_enable_types', '__return_true' );

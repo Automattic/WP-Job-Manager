@@ -28,6 +28,7 @@ class Job_Overlay {
 	 */
 	public function __construct() {
 		add_action( 'job_manager_ajax_job_dashboard_overlay', [ $this, 'ajax_job_overlay' ] );
+
 	}
 
 	/**
@@ -54,19 +55,7 @@ class Job_Overlay {
 			return;
 		}
 
-		$job_actions = $shortcode->get_job_actions( $job );
-
-		ob_start();
-
-		get_job_manager_template(
-			'job-dashboard-overlay.php',
-			[
-				'job'         => $job,
-				'job_actions' => $job_actions,
-			]
-		);
-
-		$content = ob_get_clean();
+		$content = $this->get_job_overlay( $job );
 
 		wp_send_json_success( $content );
 
@@ -86,4 +75,32 @@ class Job_Overlay {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped in Modal_Dialog class.
 		echo $overlay->render( '' );
 	}
+
+	/**
+	 * Get the job overlay content.
+	 *
+	 * @param \WP_Post $job
+	 *
+	 * @return string
+	 */
+	private function get_job_overlay( $job ) {
+
+		$job_actions = Job_Dashboard_Shortcode::instance()->get_job_actions( $job );
+
+		ob_start();
+
+		get_job_manager_template(
+			'job-dashboard-overlay.php',
+			[
+				'job'         => $job,
+				'job_actions' => $job_actions,
+			]
+		);
+
+		$content = ob_get_clean();
+
+		return $content;
+	}
+
+
 }

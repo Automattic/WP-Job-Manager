@@ -16,8 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Job_Listing_Stats {
 
-	const JOB_LISTING_VIEW        = 'job_listing_view';
-	const JOB_LISTING_VIEW_UNIQUE = 'job_listing_view_unique';
+	const VIEW              = 'job_listing_view';
+	const VIEW_UNIQUE       = 'job_listing_view_unique';
+	const SEARCH_IMPRESSION = 'job_listing_impression';
+	const APPLY_CLICK       = 'job_listing_apply_button_clicked';
 
 	/**
 	 * Job listing post ID.
@@ -27,22 +29,30 @@ class Job_Listing_Stats {
 	private $job_id;
 
 	/**
-	 * Publish date of the job listing.
+	 * Start date of the period queried.
 	 *
 	 * @var string
 	 */
 	private $start_date;
 
 	/**
+	 * End date of the period queried.
+	 *
+	 * @var string
+	 */
+	private $end_date;
+
+	/**
 	 * Stats for a single job listing.
 	 *
-	 * @param int $job_id
+	 * @param int                  $job_id
+	 * @param \DateTimeInterface[] $date_range Array of start and end date. Defaults to a range from the job's publishing date to the current day.
 	 */
-	public function __construct( $job_id ) {
+	public function __construct( $job_id, $date_range = [] ) {
 
 		$this->job_id     = $job_id;
-		$this->start_date = get_post_datetime( $job_id )->format( 'Y-m-d' );
-
+		$this->start_date = ( $date_range[0] ?? get_post_datetime( $job_id ) )->format( 'Y-m-d' );
+		$this->end_date   = ( $date_range[1] ?? new \DateTime() )->format( 'Y-m-d' );
 	}
 
 	/**
@@ -52,8 +62,9 @@ class Job_Listing_Stats {
 	 */
 	public function get_total_stats() {
 		return [
-			'view'        => $this->get_event_total( self::JOB_LISTING_VIEW ),
-			'view_unique' => $this->get_event_total( self::JOB_LISTING_VIEW_UNIQUE ),
+			'view'        => $this->get_event_total( self::VIEW ),
+			'view_unique' => $this->get_event_total( self::VIEW_UNIQUE ),
+			'search'      => $this->get_event_total( self::SEARCH_IMPRESSION ),
 		];
 	}
 
@@ -64,8 +75,8 @@ class Job_Listing_Stats {
 	 */
 	public function get_daily_stats() {
 		return [
-			'view'        => $this->get_event_daily( self::JOB_LISTING_VIEW ),
-			'view_unique' => $this->get_event_daily( self::JOB_LISTING_VIEW_UNIQUE ),
+			'view'        => $this->get_event_daily( self::VIEW ),
+			'view_unique' => $this->get_event_daily( self::VIEW_UNIQUE ),
 		];
 	}
 
@@ -91,10 +102,11 @@ class Job_Listing_Stats {
 		$sum = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT SUM(count) FROM {$wpdb->wpjm_stats}
-              WHERE post_id = %d AND name = %s AND date >= %s",
+              WHERE post_id = %d AND name = %s AND date BETWEEN %s AND %s",
 				$this->job_id,
 				$event,
-				$this->start_date
+				$this->start_date,
+				$this->end_date,
 			)
 		);
 
@@ -127,20 +139,21 @@ class Job_Listing_Stats {
 			$wpdb->prepare(
 				"SELECT date, count FROM {$wpdb->wpjm_stats}
 		  WHERE post_id = %d AND name = %s AND date BETWEEN %s AND %s
-		  ORDER BY date DESC",
+		  ORDER BY date ASC",
 				$this->job_id,
 				$event,
 				$this->start_date,
-				( new \DateTime( 'yesterday' ) )->format( 'Y-m-d' )
+				$this->end_date,
 			),
 			OBJECT_K
 		);
+
+		$views = array_map( fn( $view ) => (int) $view->count, $views );
 
 		wp_cache_set( $cache_key, $views, Stats::CACHE_GROUP, strtotime( 'tomorrow' ) - time() );
 
 		return $views;
 
 	}
-
 
 }

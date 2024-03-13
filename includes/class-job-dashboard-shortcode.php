@@ -576,7 +576,7 @@ class Job_Dashboard_Shortcode {
 	/**
 	 * Get the URL of the [job_dashboard] page.
 	 *
-	 * @return string
+	 * @return string|false
 	 */
 	public static function get_job_dashboard_page_url() {
 		$page_id = get_option( 'job_manager_job_dashboard_page_id' );
@@ -626,6 +626,7 @@ class Job_Dashboard_Shortcode {
 				'orderby'             => 'date',
 				'order'               => 'desc',
 				'author'              => get_current_user_id(),
+				'posts_per_page'      => -1,
 			]
 		);
 
@@ -633,7 +634,7 @@ class Job_Dashboard_Shortcode {
 			$args['post_status'][] = 'future';
 		}
 
-		if ( $args['posts_per_page'] > 0 ) {
+		if ( ! empty( $args['posts_per_page'] ) && $args['posts_per_page'] > 0 ) {
 			$args['offset'] = ( max( 1, get_query_var( 'paged' ) ) - 1 ) * $args['posts_per_page'];
 		}
 
