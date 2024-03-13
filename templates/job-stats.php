@@ -116,7 +116,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								</div>
 								<div class="jm-stat-value">
 									<?php echo esc_html( $stat['value'] ); ?>
-									<?php if ( $stat['percent'] ) : ?>
+									<?php if ( ! empty( $stat['percent'] ) ) : ?>
 										<span
 											class="jm-stat-value-percent"><?php echo esc_html( $stat['percent'] ); ?>%</span>
 									<?php endif; ?>

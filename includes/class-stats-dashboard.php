@@ -50,6 +50,7 @@ class Stats_Dashboard {
 	 */
 	public function add_stats_column( $columns ) {
 		$columns[ self::COLUMN_NAME ] = __( 'Views', 'wp-job-manager' );
+
 		return $columns;
 	}
 
@@ -131,8 +132,10 @@ class Stats_Dashboard {
 		$daily_uniques     = $job_stats->get_event_daily( Job_Listing_Stats::VIEW_UNIQUE );
 		$daily_impressions = $job_stats->get_event_daily( Job_Listing_Stats::SEARCH_IMPRESSION );
 
-		$resolution = max( $daily_views ) < 1000 ? 100 : 1000;
-		$max        = ceil( max( $daily_views ) / $resolution ) * $resolution;
+		$max_views  = ! empty( $daily_views ) ? max( $daily_views ) : 100;
+		$resolution = $max_views < 1000 ? 100 : 1000;
+		$max        = max( ceil( $max_views / $resolution ) * $resolution, 100 );
+		$by_day     = [];
 
 		foreach ( $daily_views as $date => $views ) {
 			$by_day[ $date ] = [
@@ -169,7 +172,9 @@ class Stats_Dashboard {
 			}
 		}
 
-		$by_day[ $today ]['class'] = 'today';
+		if ( ! empty( $by_day[ $today ] ) ) {
+			$by_day[ $today ]['class'] = 'today';
+		}
 
 		ksort( $by_day );
 
