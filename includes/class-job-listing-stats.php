@@ -58,19 +58,6 @@ class Job_Listing_Stats {
 	}
 
 	/**
-	 * Get total stats for a job listing.
-	 *
-	 * @return array
-	 */
-	public function get_total_stats() {
-		return [
-			'view'        => $this->get_event_total( self::VIEW ),
-			'view_unique' => $this->get_event_total( self::VIEW_UNIQUE ),
-			'search'      => $this->get_event_total( self::SEARCH_IMPRESSION ),
-		];
-	}
-
-	/**
 	 * Get total counts for an event.
 	 *
 	 * @param string $event
