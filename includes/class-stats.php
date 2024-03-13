@@ -82,8 +82,8 @@ class Stats {
 				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 				`date` date NOT NULL,
 				`post_id` bigint(20) DEFAULT NULL,
-				`name` varchar(255) NOT NULL,
-				`group` varchar(255) DEFAULT '',
+				`name` varchar(50) NOT NULL,
+				`group` varchar(50) DEFAULT '',
 				`count` bigint(20) unsigned not null default 1,
 				PRIMARY KEY (`id`),
 				UNIQUE INDEX `idx_wpjm_stats_name_date_group_post_id`  (`name`, `date`, `group`, `post_id`)
@@ -214,8 +214,8 @@ class Stats {
 
 		if (
 			empty( $args['name'] ) ||
-			strlen( $args['name'] ) > 255 ||
-			strlen( $args['group'] ) > 255 ||
+			strlen( $args['name'] ) > 50 ||
+			strlen( $args['group'] ) > 50 ||
 			empty( $args['post_id'] ) ||
 			! is_integer( $args['count'] ) ) {
 			return false;
