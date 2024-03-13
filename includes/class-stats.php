@@ -123,44 +123,57 @@ class Stats {
 			return false;
 		}
 
-		$args = wp_parse_args(
-			$args,
+		return $this->batch_log_stats(
 			[
-				'group'   => '',
-				'post_id' => 0,
-				'count'   => 1,
-				'date'    => gmdate( 'Y-m-d' ),
+				'name' => $name,
+				... $args,
 			]
 		);
+	}
 
-		$group   = $args['group'];
-		$post_id = absint( $args['post_id'] );
-		$count   = $args['count'];
+	/**
+	 * Log a stat for multiple posts in one query.
+	 *
+	 * @param array[] $stats {
+	 * Array of stats to log, with the following fields.
+	 *
+	 * @type string  $name The stat name.
+	 * @type int     $post_id Post ids to log the stat for.
+	 * @type string  $group Additional data (eg keyword) for the stat.
+	 * @type int     $count The amount to increment the stat by.
+	 * @type string  $date Date in YYYY-MM-DD format.
+	 * }
+	 *
+	 * @return bool
+	 */
+	public function batch_log_stats( array $stats ) {
 
-		if (
-			strlen( $name ) > 255 ||
-			strlen( $group ) > 255 ||
-			! $post_id ||
-			! is_integer( $count ) ) {
+		if ( ! self::is_enabled() ) {
+			return false;
+		}
+
+		$stats = array_map( [ $this, 'parse_stats' ], $stats );
+		$stats = array_filter( $stats );
+
+		if ( empty( $stats ) ) {
 			return false;
 		}
 
 		global $wpdb;
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$values = [];
+
+		foreach ( $stats as $stat ) {
+			$values[] = $wpdb->prepare( '(%s, %s, %s, %d, %d)', $stat['name'], $stat['date'], $stat['group'], $stat['post_id'], $stat['count'] );
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching,
 		$result = $wpdb->query(
-			$wpdb->prepare(
-				"INSERT INTO {$wpdb->wpjm_stats} " .
-				'(`name`, `date`, `group`, `post_id`, `count` ) ' .
-				'VALUES (%s, %s, %s, %d, %d) ' .
-				'ON DUPLICATE KEY UPDATE `count` = `count` + %d',
-				$name,
-				$args['date'],
-				$group,
-				$post_id,
-				$count,
-				$count
-			)
+			"INSERT INTO {$wpdb->wpjm_stats} " .
+			'(`name`, `date`, `group`, `post_id`, `count` )' .
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			'VALUES ' . implode( ', ', $values ) .
+			'ON DUPLICATE KEY UPDATE `count` = `count` + VALUES(`count`)',
 		);
 
 		if ( false === $result ) {
@@ -168,6 +181,46 @@ class Stats {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Process and validate stat details.
+	 *
+	 * @param array $args {
+	 * Stat data.
+	 *
+	 * @type string  $name The stat name.
+	 * @type string  $group Additional data (eg keyword) for the stat.
+	 * @type int     $post_id The post_id this stat belongs to.
+	 * @type int     $count The amount to increment the stat by.
+	 * @type string  $date Date in YYYY-MM-DD format.
+	 * }
+	 *
+	 * @return array|false
+	 */
+	private function parse_stats( $args ) {
+		$args = wp_parse_args(
+			$args,
+			[
+				'name'    => '',
+				'group'   => '',
+				'post_id' => 0,
+				'count'   => 1,
+				'date'    => gmdate( 'Y-m-d' ),
+			]
+		);
+
+		$args['post_id'] = absint( $args['post_id'] );
+
+		if (
+			strlen( $args['name'] ) > 255 ||
+			strlen( $args['group'] ) > 255 ||
+			! $args['post_id'] ||
+			! is_integer( $args['count'] ) ) {
+			return false;
+		}
+
+		return $args;
 	}
 
 	/**
@@ -224,42 +277,16 @@ class Stats {
 		}
 
 		$errors           = [];
-		$registered_stats = $this->get_registered_stats();
+		$registered_stats = $this->get_registered_stat_names();
 
-		foreach ( $stats as $stat_data ) {
-			$post_id = isset( $stat_data['post_id'] ) ? absint( $stat_data['post_id'] ) : 0;
-
-			if ( empty( $post_id ) ) {
-				$errors[] = [ 'missing post_id', $stat_data ];
-				continue;
+		$stats = array_filter(
+			$stats,
+			function( $stat ) use ( $registered_stats ) {
+				return in_array( $stat['name'], $registered_stats, true );
 			}
+		);
 
-			if ( ! \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type( $post_id ) ) {
-				$errors[] = [ 'cannot record', $stat_data, $post_id ];
-				continue;
-			}
-
-			if ( ! isset( $stat_data['name'] ) ) {
-				$errors[] = [ 'no name', $stat_data ];
-				continue;
-			}
-
-			$stat_name = trim( strtolower( $stat_data['name'] ) );
-
-			if ( empty( $registered_stats[ $stat_name ] ) ) {
-				$errors[] = [ 'not registered', $stat_data ];
-				continue;
-			}
-
-			$log_callback = $registered_stats[ $stat_name ]['log_callback'] ?? [ $this, 'log_stat' ];
-			call_user_func( $log_callback, trim( $stat_name ), [ 'post_id' => $post_id ] );
-		}
-
-		if ( ! empty( $errors ) ) {
-			return false;
-		}
-
-		return true;
+		return $this->batch_log_stats( $stats );
 	}
 
 	/**
