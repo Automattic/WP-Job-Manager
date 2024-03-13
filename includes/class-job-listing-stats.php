@@ -47,7 +47,7 @@ class Job_Listing_Stats {
 	 *
 	 * @since $$next-version$$
 	 *
-	 * @param int  $job_id
+	 * @param int                  $job_id
 	 * @param \DateTimeInterface[] $date_range Array of start and end date. Defaults to a range from the job's publishing date to the current day.
 	 */
 	public function __construct( $job_id, $date_range = [] ) {
@@ -68,8 +68,6 @@ class Job_Listing_Stats {
 			'view_unique' => $this->get_event_total( self::VIEW_UNIQUE ),
 			'search'      => $this->get_event_total( self::SEARCH_IMPRESSION ),
 		];
-	}
-
 	}
 
 	/**
