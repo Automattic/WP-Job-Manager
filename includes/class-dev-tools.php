@@ -65,6 +65,8 @@ class Dev_Tools {
 
 		$stats->delete_stats( $job_id );
 
+		$records = [];
+
 		for ( $i = 0; $i <= $days + 1; $i++ ) {
 			$views        = (int) max( 0, $views + $trend * wp_rand( 0, 1000 ) );
 			$trend        = wp_rand( 0, 10 ) / 10 - 0.5;
@@ -74,34 +76,30 @@ class Dev_Tools {
 
 			$log .= $views . ' ';
 
-			$stats->log_stat(
-				Job_Listing_Stats::VIEW,
-				[
-					'post_id' => $job_id,
-					'count'   => $views,
-					'date'    => $date,
-				]
-			);
+			$records[] = [
+				'name'    => Job_Listing_Stats::VIEW,
+				'post_id' => $job_id,
+				'count'   => $views,
+				'date'    => $date,
+			];
 
-			$stats->log_stat(
-				Job_Listing_Stats::VIEW_UNIQUE,
-				[
-					'post_id' => $job_id,
-					'count'   => $unique_views,
-					'date'    => $date,
-				]
-			);
+			$records[] = [
+				'name'    => Job_Listing_Stats::VIEW_UNIQUE,
+				'post_id' => $job_id,
+				'count'   => $unique_views,
+				'date'    => $date,
+			];
 
-			$stats->log_stat(
-				Job_Listing_Stats::SEARCH_IMPRESSION,
-				[
-					'post_id' => $job_id,
-					'count'   => $impressions,
-					'date'    => $date,
-				]
-			);
+			$records[] = [
+				'name'    => Job_Listing_Stats::SEARCH_IMPRESSION,
+				'post_id' => $job_id,
+				'count'   => $impressions,
+				'date'    => $date,
+			];
 
 		}
+
+		$stats->batch_log_stats( $records );
 
 		\WP_CLI::log( \WP_CLI::colorize( 'Stats generated from %C' . $start_date->format( 'Y-m-d' ) . '%n for %C' . $days . ' days%n: ' ) . $log );
 
