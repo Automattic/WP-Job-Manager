@@ -191,9 +191,6 @@
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY</code>
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
     </InvalidArgument>
-    <InvalidGlobal>
-      <code>global $phpmailer;</code>
-    </InvalidGlobal>
     <InvalidScalarArgument>
       <code>$email_class</code>
       <code>$template_segment</code>

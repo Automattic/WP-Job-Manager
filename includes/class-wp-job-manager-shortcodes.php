@@ -477,11 +477,6 @@ class WP_Job_Manager_Shortcodes {
 						'nonce' => $base_nonce_action_name,
 					];
 				}
-
-				$actions['duplicate'] = [
-					'label' => __( 'Duplicate', 'wp-job-manager' ),
-					'nonce' => $base_nonce_action_name,
-				];
 				break;
 			case 'expired':
 				if ( job_manager_get_permalink( 'submit_job_form' ) ) {
@@ -509,7 +504,11 @@ class WP_Job_Manager_Shortcodes {
 				break;
 		}
 
-		$actions['delete'] = [
+		$actions['duplicate'] = [
+			'label' => __( 'Duplicate', 'wp-job-manager' ),
+			'nonce' => $base_nonce_action_name,
+		];
+		$actions['delete']    = [
 			'label' => __( 'Delete', 'wp-job-manager' ),
 			'nonce' => $base_nonce_action_name,
 		];
