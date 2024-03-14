@@ -94,15 +94,15 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		if ( isset( $fields['_job_expires'] ) && ! isset( $fields['_job_expires']['value'] ) ) {
-			$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post_id );
-
+			$job_expires                           = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post_id );
+			$wp_date_format                        = get_option( 'date_format' ) ?: 'F j, Y';
 			$fields['_job_expires']['placeholder'] = null;
 			if ( ! empty( $job_expires ) ) {
 				$fields['_job_expires']['value'] = $job_expires->format( 'Y-m-d' );
 			} else {
 				$assumed_expiration_date = calculate_job_expiry( $post_id, true );
 				if ( $assumed_expiration_date ) {
-					$fields['_job_expires']['placeholder'] = wp_date( get_option( 'date_format' ), $assumed_expiration_date->getTimestamp() );
+					$fields['_job_expires']['placeholder'] = wp_date( $wp_date_format, $assumed_expiration_date->getTimestamp() );
 				}
 				$fields['_job_expires']['value'] = '';
 			}
@@ -584,8 +584,8 @@ class WP_Job_Manager_Writepanels {
 	public function job_listing_data( $post ) {
 		global $post, $thepostid, $wp_post_types;
 
-		$thepostid = $post->ID;
-
+		$thepostid      = $post->ID;
+		$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 		echo '<div class="wp_job_manager_meta_data">';
 
 		wp_nonce_field( 'save_meta_data', 'job_manager_nonce' );
@@ -618,7 +618,7 @@ class WP_Job_Manager_Writepanels {
 				// translators: %1$s is placeholder for singular name of the job listing post type; %2$s is the intl formatted date the listing was last modified.
 				esc_html__( '%1$s was last modified by the user on %2$s.', 'wp-job-manager' ),
 				esc_html( $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name ),
-				esc_html( wp_date( get_option( 'date_format' ), (int) $user_edited_timestamp ) )
+				esc_html( wp_date( $wp_date_format, (int) $user_edited_timestamp ) )
 			);
 			echo '</em>';
 			echo '</p>';

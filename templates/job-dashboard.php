@@ -25,6 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $submission_limit			= ! empty( get_option( 'job_manager_submission_limit' ) ) ? absint( get_option( 'job_manager_submission_limit' ) ) : false;
 $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
+$wp_date_format             = get_option( 'date_format' ) ?: 'F j, Y';
 ?>
 <div id="job-manager-job-dashboard">
 	<p><?php esc_html_e( 'Your listings are shown in the table below.', 'wp-job-manager' ); ?></p>
@@ -73,11 +74,11 @@ $submit_job_form_page_id	= get_option( 'job_manager_submit_job_form_page_id' );
 										?>
 									</ul>
 								<?php elseif ('date' === $key ) : ?>
-									<?php echo esc_html( wp_date( get_option( 'date_format' ), get_post_datetime( $job )->getTimestamp() ) ); ?>
+									<?php echo esc_html( wp_date( $wp_date_format, get_post_datetime( $job )->getTimestamp() ) ); ?>
 								<?php elseif ('expires' === $key ) : ?>
 									<?php
 									$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
-									echo esc_html( $job_expires ? wp_date( get_option( 'date_format' ), $job_expires->getTimestamp() ) : '&ndash;' );
+									echo esc_html( $job_expires ? wp_date( $wp_date_format, $job_expires->getTimestamp() ) : '&ndash;' );
 									?>
 								<?php elseif ('filled' === $key ) : ?>
 									<?php echo is_position_filled( $job ) ? '&#10004;' : '&ndash;'; ?>
