@@ -212,9 +212,11 @@ class Stats_Dashboard {
 	private function get_stat_summaries( \WP_Post $job ) {
 		$job_stats = new Job_Listing_Stats( $job->ID );
 
-		$views        = $job_stats->get_event_total( Job_Listing_Stats::VIEW );
-		$views_unique = $job_stats->get_event_total( Job_Listing_Stats::VIEW_UNIQUE );
-		$views_repeat = $views - $views_unique;
+		$views              = $job_stats->get_event_total( Job_Listing_Stats::VIEW );
+		$views_unique       = $job_stats->get_event_total( Job_Listing_Stats::VIEW_UNIQUE );
+		$views_repeat       = $views - $views_unique;
+		$search_impressions = $job_stats->get_event_total( Job_Listing_Stats::SEARCH_IMPRESSION );
+		$search_clicks      = $views_unique / $search_impressions * 100;
 
 		/**
 		 * Filter the job stat summaries, displayed in the job overlay.
@@ -230,12 +232,12 @@ class Stats_Dashboard {
 					'stats'  => [
 						[
 							'icon'  => 'color-page-view',
-							'label' => __( 'Page Views', 'wp-job-manager' ),
+							'label' => __( 'Page views', 'wp-job-manager' ),
 							'value' => $views,
 						],
 						[
 							'icon'  => 'color-unique-view',
-							'label' => __( 'Unique Visitors', 'wp-job-manager' ),
+							'label' => __( 'Unique visitors', 'wp-job-manager' ),
 							'value' => $views_unique,
 						],
 					],
@@ -247,8 +249,8 @@ class Stats_Dashboard {
 					'stats'  => [
 						[
 							'icon'  => 'search',
-							'label' => __( 'Search Impressions', 'wp-job-manager' ),
-							'value' => $job_stats->get_event_total( Job_Listing_Stats::SEARCH_IMPRESSION ),
+							'label' => __( 'Search impressions', 'wp-job-manager' ),
+							'value' => $search_impressions,
 						],
 					],
 					'column' => 1,
@@ -257,8 +259,13 @@ class Stats_Dashboard {
 					'title'  => __( 'Interest', 'wp-job-manager' ),
 					'stats'  => [
 						[
+							'icon'    => 'search',
+							'label'   => __( 'Search click-through rate', 'wp-job-manager' ),
+							'percent' => $search_clicks,
+						],
+						[
 							'icon'  => 'cursor',
-							'label' => __( 'Apply Clicks', 'wp-job-manager' ),
+							'label' => __( 'Apply clicks', 'wp-job-manager' ),
 							'value' => $job_stats->get_event_total( Job_Listing_Stats::APPLY_CLICK ),
 						],
 						[

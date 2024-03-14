@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				foreach ( $chart['y-labels'] as $label ) {
 					$position = ( $label / $chart['max'] ) * 100;
-					echo '<div class="jm-chart-y-axis__label" style="bottom: ' . esc_attr( $position ) . '%;"><span>' . esc_html( $label ) . '</span></div>';
+					echo '<div class="jm-chart-y-axis__label" style="bottom: ' . esc_attr( $position ) . '%;"><span>' . esc_html( number_format_i18n( $label ) ) . '</span></div>';
 				}
 				?>
 			</div>
@@ -56,16 +56,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<strong><?php echo esc_html( $day['date'] ); ?></strong>
 							</div>
 							<div class="jm-ui-row">
-								<?php esc_html_e( 'Search Impressions', 'wp-job-manager' ); ?>
-								<strong><?php echo esc_html( $day['impressions'] ); ?></strong>
+								<?php esc_html_e( 'Search impressions', 'wp-job-manager' ); ?>
+								<strong><?php echo esc_html( number_format_i18n( $day['impressions'] ) ); ?></strong>
 							</div>
 							<div class="jm-ui-row">
-								<?php esc_html_e( 'Page Views', 'wp-job-manager' ); ?>
-								<strong><?php echo esc_html( $day['views'] ); ?></strong>
+								<?php esc_html_e( 'Page views', 'wp-job-manager' ); ?>
+								<strong><?php echo esc_html( number_format_i18n( $day['views'] ) ); ?></strong>
 							</div>
 							<div class="jm-ui-row">
-								<?php esc_html_e( 'Unique Visitors', 'wp-job-manager' ); ?>
-								<strong><?php echo esc_html( $day['uniques'] ); ?></strong>
+								<?php esc_html_e( 'Unique visitors', 'wp-job-manager' ); ?>
+								<strong><?php echo esc_html( number_format_i18n( $day['uniques'] ) ); ?></strong>
 							</div>
 
 
@@ -115,10 +115,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<?php echo esc_html( $stat['label'] ); ?>
 								</div>
 								<div class="jm-stat-value">
-									<?php echo esc_html( $stat['value'] ); ?>
-									<?php if ( ! empty( $stat['percent'] ) ) : ?>
+									<?php if ( isset( $stat['value'] ) ) : ?>
+										<?php echo esc_html( number_format_i18n( $stat['value'] ) ); ?>
+									<?php endif; ?>
+									<?php if ( isset( $stat['percent'] ) ) : ?>
 										<span
-											class="jm-stat-value-percent"><?php echo esc_html( $stat['percent'] ); ?>%</span>
+											class="jm-stat-value-percent"><?php echo esc_html( number_format_i18n( $stat['percent'], 2 ) ); ?>%</span>
 									<?php endif; ?>
 								</div>
 								<?php if ( isset( $stat['background'] ) ) : ?>
