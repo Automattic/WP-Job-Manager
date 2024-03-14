@@ -446,7 +446,7 @@ class WP_Job_Manager_CPT {
 	 */
 	public function post_updated_messages( $messages ) {
 		global $post, $post_ID, $wp_post_types;
-		$wp_date_format = get_option( 'date_format' ) ?: 'F j, Y';
+		$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No changes based on input.
 		$revision_title = isset( $_GET['revision'] ) ? wp_post_revision_title( (int) $_GET['revision'], false ) : false;

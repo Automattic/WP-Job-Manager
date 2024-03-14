@@ -312,7 +312,7 @@ final class WP_Job_Manager_Email_Notifications {
 		}
 
 		$job_expires    = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
-		$wp_date_format = get_option( 'date_format' ) ?: 'F j, Y';
+		$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 		if ( ! empty( $job_expires ) ) {
 			$job_expires_str       = wp_date( $wp_date_format, $job_expires->getTimestamp() );
 			$fields['job_expires'] = [

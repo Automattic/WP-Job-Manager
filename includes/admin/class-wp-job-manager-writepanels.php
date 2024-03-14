@@ -585,7 +585,7 @@ class WP_Job_Manager_Writepanels {
 		global $post, $thepostid, $wp_post_types;
 
 		$thepostid      = $post->ID;
-		$wp_date_format = get_option( 'date_format' ) ?: 'F j, Y';
+		$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 		echo '<div class="wp_job_manager_meta_data">';
 
 		wp_nonce_field( 'save_meta_data', 'job_manager_nonce' );

@@ -759,7 +759,7 @@ function wpjm_get_registration_fields() {
  */
 function the_job_publish_date( $post = null ) {
 	$date_format    = get_option( 'job_manager_date_format' );
-	$wp_date_format = get_option( 'date_format' ) ?: 'F j, Y';
+	$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 
 	if ( 'default' === $date_format ) {
 		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . wp_date( $wp_date_format, get_post_timestamp( $post ) );
@@ -788,7 +788,7 @@ function the_job_publish_date( $post = null ) {
  */
 function get_the_job_publish_date( $post = null ) {
 	$date_format    = get_option( 'job_manager_date_format' );
-	$wp_date_format = get_option( 'date_format' ) ?: 'F j, Y';
+	$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 
 	if ( 'default' === $date_format ) {
 		return wp_date( $wp_date_format, get_post_datetime()->getTimestamp() );
