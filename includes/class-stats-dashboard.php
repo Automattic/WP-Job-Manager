@@ -216,7 +216,7 @@ class Stats_Dashboard {
 		$views_unique       = $job_stats->get_event_total( Job_Listing_Stats::VIEW_UNIQUE );
 		$views_repeat       = $views - $views_unique;
 		$search_impressions = $job_stats->get_event_total( Job_Listing_Stats::SEARCH_IMPRESSION );
-		$search_clicks      = $views_unique / $search_impressions * 100;
+		$search_clicks      = $search_impressions ? $views_unique / $search_impressions * 100 : 0;
 
 		/**
 		 * Filter the job stat summaries, displayed in the job overlay.
