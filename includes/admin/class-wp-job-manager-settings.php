@@ -464,16 +464,28 @@ class WP_Job_Manager_Settings {
 						],
 					],
 				],
-				'recaptcha'      => [
-					__( 'reCAPTCHA', 'wp-job-manager' ),
+				'captcha'        => [
+					__( 'CAPTCHA', 'wp-job-manager' ),
 					[
 						[
 							'name'        => 'job_manager_recaptcha_label',
 							'std'         => __( 'Are you human?', 'wp-job-manager' ),
 							'placeholder' => '',
 							'label'       => __( 'Field Label', 'wp-job-manager' ),
-							'desc'        => __( 'The label used for the reCAPTCHA field on forms.', 'wp-job-manager' ),
+							'desc'        => __( 'The label used for the CAPTCHA field on forms.', 'wp-job-manager' ),
 							'attributes'  => [],
+						],
+						[
+							'name'        => 'job_manager_recaptcha_version',
+							'std'         => 'v2',
+							'placeholder' => '',
+							'label'       => __( 'reCAPTCHA Version', 'wp-job-manager' ),
+							'desc'        => __( 'Choose between reCAPTCHA v2 or v3. Note: you will need API keys for the specific version you choose.', 'wp-job-manager' ),
+							'type'        => 'radio',
+							'options'     => [
+								'v2' => __( 'reCaptcha v2', 'wp-job-manager' ),
+								'v3' => __( 'reCaptcha v3', 'wp-job-manager' ),
+							],
 						],
 						[
 							'name'        => 'job_manager_recaptcha_site_key',
@@ -481,7 +493,7 @@ class WP_Job_Manager_Settings {
 							'placeholder' => '',
 							'label'       => __( 'Site Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
-							'desc'        => sprintf( __( 'You can retrieve your reCAPTCHA v2 "I\'m not a robot" Checkbox site key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
+							'desc'        => sprintf( __( 'You can retrieve your reCAPTCHA site key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'attributes'  => [],
 						],
 						[
@@ -490,14 +502,14 @@ class WP_Job_Manager_Settings {
 							'placeholder' => '',
 							'label'       => __( 'Secret Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
-							'desc'        => sprintf( __( 'You can retrieve your reCAPTCHA v2 "I\'m not a robot" Checkbox secret key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
+							'desc'        => sprintf( __( 'You can retrieve your reCAPTCHA secret key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'attributes'  => [],
 						],
 						[
 							'name'       => 'job_manager_enable_recaptcha_job_submission',
 							'std'        => '0',
 							'label'      => __( 'Job Submission Form', 'wp-job-manager' ),
-							'cb_label'   => __( 'Display a reCAPTCHA field on job submission form.', 'wp-job-manager' ),
+							'cb_label'   => __( 'Display a CAPTCHA field on job submission form.', 'wp-job-manager' ),
 							'desc'       => sprintf( __( 'This will help prevent bots from submitting job listings. You must have entered a valid site key and secret key above.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'type'       => 'checkbox',
 							'attributes' => [],

@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $job_manager;
+$captcha_version = WP_Job_Manager\WP_Job_Manager_Recaptcha::instance()->get_recaptcha_version();
 ?>
 <form action="<?php echo esc_url( $action ); ?>" method="post" id="submit-job-form" class="job-manager-form" enctype="multipart/form-data">
 
@@ -73,7 +74,8 @@ global $job_manager;
 			<input type="hidden" name="job_manager_form" value="<?php echo esc_attr( $form ); ?>" />
 			<input type="hidden" name="job_id" value="<?php echo esc_attr( $job_id ); ?>" />
 			<input type="hidden" name="step" value="<?php echo esc_attr( $step ); ?>" />
-			<input type="submit" name="submit_job" class="button" value="<?php echo esc_attr( $submit_button_text ); ?>" />
+			<input type="submit" name="submit_job" class="button"
+    		<?php if ('v3' === $captcha_version) echo 'onclick="jm_job_submit_click(event)"'; ?> value="<?php echo esc_attr($submit_button_text); ?>" />
 			<?php
 			if ( isset( $can_continue_later ) && $can_continue_later ) {
 				echo '<input type="submit" name="save_draft" class="button secondary save_draft" value="' . esc_attr__( 'Save Draft', 'wp-job-manager' ) . '" formnovalidate />';

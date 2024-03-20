@@ -1,5 +1,8 @@
 /* global job_manager_datepicker */
 jQuery(document).ready( function() {
+	if ( jQuery.datepicker._defaults.dateFormat == '' ) {
+		jQuery.datepicker._defaults.dateFormat = 'MM d, yy';
+	}
 	var $date_today = new Date();
 	var datePickerOptions = {
 		altFormat  : 'yy-mm-dd',
@@ -21,7 +24,6 @@ jQuery(document).ready( function() {
 			}
 		} );
 		$target.datepicker( jQuery.extend( {}, datePickerOptions, { altField: $hidden_input } ) );
-		$target.datepicker("option", "dateFormat", $target.datepicker("option", "dateFormat") || "MM d, yy");
 		if ( $target.val() ) {
 			var dateParts = $target.val().split('-');
 			if ( 3 === dateParts.length ) {
