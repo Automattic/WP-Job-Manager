@@ -39,6 +39,13 @@ class WP_Job_Manager {
 	public $post_types;
 
 	/**
+	 * Stats.
+	 *
+	 * @var WP_Job_Manager\Stats
+	 */
+	public $stats;
+
+	/**
 	 * Main WP Job Manager Instance.
 	 *
 	 * Ensures only one instance of WP Job Manager is loaded or can be loaded.
@@ -91,6 +98,9 @@ class WP_Job_Manager {
 		// Init classes.
 		$this->forms      = WP_Job_Manager_Forms::instance();
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
+		$this->stats      = WP_Job_Manager\Stats::instance();
+
+		WP_Job_Manager\Dev_Tools::init();
 
 		// Schedule cron jobs.
 		add_action( 'init', [ __CLASS__, 'maybe_schedule_cron_jobs' ] );
@@ -529,7 +539,7 @@ class WP_Job_Manager {
 
 		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-deserialize/jquery.deserialize.js', [ 'jquery' ], '1.2.1', true );
 		self::register_script( 'wp-job-manager-ajax-filters', 'js/ajax-filters.js', $ajax_filter_deps, true );
-		self::register_script( 'wp-job-manager-job-dashboard', 'js/job-dashboard.js', [ 'jquery' ], true );
+		self::register_script( 'wp-job-manager-job-dashboard', 'js/job-dashboard.js', null, true );
 		self::register_script( 'wp-job-manager-job-application', 'js/job-application.js', [ 'jquery' ], true );
 		self::register_script( 'wp-job-manager-job-submission', 'js/job-submission.js', [ 'jquery' ], true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
@@ -564,7 +574,9 @@ class WP_Job_Manager {
 			'wp-job-manager-job-dashboard',
 			'job_manager_job_dashboard',
 			[
-				'i18n_confirm_delete' => esc_html__( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
+				'i18nConfirmDelete' => esc_html__( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
+				'overlayEndpoint'   => WP_Job_Manager_Ajax::get_endpoint( 'job_dashboard_overlay' ),
+				'statsEnabled'      => \WP_Job_Manager\Stats::is_enabled(),
 			]
 		);
 
