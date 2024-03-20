@@ -30,7 +30,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
-$wp_date_format             = get_option( 'date_format' ) ?: 'F j, Y';
 ?>
 
 <div id="job-manager-job-dashboard" class="alignwide">
