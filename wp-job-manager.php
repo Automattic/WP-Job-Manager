@@ -25,6 +25,7 @@ define( 'JOB_MANAGER_VERSION', '2.2.2' );
 define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'JOB_MANAGER_DATE_FORMAT_FALLBACK', 'F j, Y' );
 
 require_once dirname( __FILE__ ) . '/wp-job-manager-autoload.php';
 WP_Job_Manager_Autoload::init();

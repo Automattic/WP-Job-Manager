@@ -758,10 +758,11 @@ function wpjm_get_registration_fields() {
  * @param int|WP_Post $post (default: null).
  */
 function the_job_publish_date( $post = null ) {
-	$date_format = get_option( 'job_manager_date_format' );
+	$date_format    = get_option( 'job_manager_date_format' );
+	$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 
 	if ( 'default' === $date_format ) {
-		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . wp_date( get_option( 'date_format' ), get_post_timestamp( $post ) );
+		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . wp_date( $wp_date_format, get_post_timestamp( $post ) );
 	} else {
 		$post_timestamp = get_post_timestamp( $post );
 		$current_time   = time();
@@ -786,10 +787,11 @@ function the_job_publish_date( $post = null ) {
  * @return string|int|false
  */
 function get_the_job_publish_date( $post = null ) {
-	$date_format = get_option( 'job_manager_date_format' );
+	$date_format    = get_option( 'job_manager_date_format' );
+	$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 
 	if ( 'default' === $date_format ) {
-		return wp_date( get_option( 'date_format' ), get_post_datetime()->getTimestamp() );
+		return wp_date( $wp_date_format, get_post_datetime()->getTimestamp() );
 	} else {
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
 		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp(), time() ) );

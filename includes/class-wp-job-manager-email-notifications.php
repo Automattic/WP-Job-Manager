@@ -311,9 +311,10 @@ final class WP_Job_Manager_Email_Notifications {
 			];
 		}
 
-		$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+		$job_expires    = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $job );
+		$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 		if ( ! empty( $job_expires ) ) {
-			$job_expires_str       = wp_date( get_option( 'date_format' ), $job_expires->getTimestamp() );
+			$job_expires_str       = wp_date( $wp_date_format, $job_expires->getTimestamp() );
 			$fields['job_expires'] = [
 				'label' => __( 'Listing expires', 'wp-job-manager' ),
 				'value' => $job_expires_str,
@@ -844,18 +845,10 @@ final class WP_Job_Manager_Email_Notifications {
 				continue;
 			}
 
-			$set_alt_body = function( $mailer ) use ( $content_plain ) {
-				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				$mailer->AltBody = $content_plain;
-
-				return $mailer;
-			};
-
-			$set_content_type = fn() => 'multipart/alternative';
+			$set_content_type = fn() => 'text/html';
 
 			if ( ! $is_plain_text_only ) {
 				add_filter( 'wp_mail_content_type', $set_content_type );
-				add_filter( 'phpmailer_init', $set_alt_body );
 			}
 
 			if ( wp_mail( $to_email, $args['subject'], $body, $headers, $args['attachments'] ) ) {
@@ -863,15 +856,6 @@ final class WP_Job_Manager_Email_Notifications {
 			}
 
 			remove_filter( 'wp_mail_content_type', $set_content_type );
-			remove_filter( 'phpmailer_init', $set_alt_body );
-
-			// Make sure AltBody is not sticking around for a different email.
-			global $phpmailer;
-
-			if ( $phpmailer instanceof \PHPMailer\PHPMailer\PHPMailer ) {
-				// phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-				$phpmailer->AltBody = '';
-			}
 		}
 
 		$job_manager_doing_email = false;
