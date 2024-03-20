@@ -179,10 +179,12 @@ class Stats_Dashboard {
 		ksort( $by_day );
 
 		$date_format = apply_filters( 'job_manager_get_dashboard_date_format', 'M d, Y' );
+		$timezone    = new \DateTimeZone( wp_timezone_string() );
 
 		$by_day_formatted = [];
 		foreach ( $by_day as $date => $data ) {
-			$date_fmt                              = wp_date( $date_format, strtotime( $date ) );
+			$date_obj                              = new \DateTime( $date, $timezone );
+			$date_fmt                              = wp_date( $date_format, $date_obj->getTimestamp(), $timezone );
 			$by_day_formatted[ $date_fmt ]         = $by_day[ $date ];
 			$by_day_formatted[ $date_fmt ]['date'] = $date_fmt;
 		}
@@ -192,7 +194,6 @@ class Stats_Dashboard {
 			'max'      => $max,
 			'y-labels' => [ $max / 2, $max ],
 		];
-
 		/**
 		 * Filter the job daily stat data, displayed as a chart in the job overlay.
 		 *
