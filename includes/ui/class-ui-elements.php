@@ -39,8 +39,10 @@ class UI_Elements {
 		$html = '';
 
 		$is_classname = preg_match( '/^[\w-]+$/i', $icon );
+		$is_url       = preg_match( '/^url\(/i', $icon );
+		$is_svg       = preg_match( '/^<svg/i', $icon );
 
-		$html = '<span class="jm-ui-icon"';
+		$html = '<span class="jm-ui-icon' . ( $is_svg ? ' jm-ui-icon--svg' : '' ) . '"';
 
 		if ( $is_classname ) {
 			$html .= ' data-icon="' . esc_attr( $icon ) . '"';
@@ -50,9 +52,13 @@ class UI_Elements {
 			$html .= ' aria-label="' . esc_attr( $label ) . '"';
 		}
 
+		if ( $is_url ) {
+			$html .= ' style="mask-image: ' . esc_attr( $icon ) . '"';
+		}
+
 		$html .= '>';
 
-		if ( ! $is_classname ) {
+		if ( $is_svg ) {
 			$html .= self::esc_svg( $icon );
 		}
 
