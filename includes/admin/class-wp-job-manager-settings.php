@@ -83,6 +83,16 @@ class WP_Job_Manager_Settings {
 	}
 
 	/**
+	 * Set a single setting.
+	 *
+	 * @param string $option Option name.
+	 * @param mixed  $value Value.
+	 */
+	public function set_setting( $option, $value ) {
+		update_option( $option, $value );
+	}
+
+	/**
 	 * Initializes the configuration for the plugin's setting fields.
 	 *
 	 * @access protected
