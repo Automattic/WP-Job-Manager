@@ -601,7 +601,7 @@ class Job_Dashboard_Shortcode {
 	 * @output string
 	 */
 	public static function the_date( $job ) {
-		echo '<div>' . esc_html( wp_date( apply_filters( 'job_manager_get_dashboard_date_format', 'M d, Y' ), get_post_datetime( $job )->getTimestamp() ) ) . '</div>';
+		echo '<div>' . esc_html( wp_date( apply_filters( 'job_manager_get_dashboard_date_format', get_option( 'date_format' ) ), get_post_datetime( $job )->getTimestamp() ) ) . '</div>';
 	}
 
 	/**
