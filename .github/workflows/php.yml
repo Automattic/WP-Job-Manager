@@ -18,11 +18,11 @@ jobs:
           fetch-depth: 0
 
       - name: Get cached composer directories
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
@@ -72,11 +72,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Get cached composer directories
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
@@ -111,11 +111,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Get cached composer directories
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
