@@ -900,6 +900,11 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
 function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 	$post = get_post( $post );
 
+	// Called with invalid post ID or without post ID outside the loop.
+	if ( ! $post ) {
+		return '';
+	}
+
 	if ( has_post_thumbnail( $post->ID ) ) {
 		$src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $size );
 		return $src ? $src[0] : '';
