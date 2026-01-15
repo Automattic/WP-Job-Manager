@@ -3,7 +3,7 @@ name: "\U0001F41E Bug report"
 about: Report a bug if something isn't working as expected in the core WP Job Manager
   plugin.
 title: ''
-labels: "[Type] Bug"
+labels: "Bug"
 assignees: ''
 
 ---
