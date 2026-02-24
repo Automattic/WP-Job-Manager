@@ -337,8 +337,10 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 		return false;
 	}
 
-	// Only show structured data for un-filled and published job listings.
-	$output_structured_data = ! is_position_filled( $post ) && 'publish' === $post->post_status;
+	// Only show structured data for un-filled, published, and non-password-protected job listings.
+	$output_structured_data = ! is_position_filled( $post )
+		&& 'publish' === $post->post_status
+		&& ! post_password_required( $post );
 
 	/**
 	 * Filter if we should output structured data.
@@ -353,6 +355,10 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 
 /**
  * Gets the structured data for the job listing.
+ *
+ * Note: This function does not check if the job listing is published, filled,
+ * password-protected, or otherwise hidden. Use wpjm_output_job_listing_structured_data()
+ * to check if structured data should be output for a given job listing.
  *
  * @since 1.28.0
  * @see https://developers.google.com/search/docs/data-types/job-postings
