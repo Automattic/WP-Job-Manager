@@ -144,6 +144,11 @@ class WP_Job_Manager_Ajax {
 			$search_categories = array_filter( [ sanitize_text_field( wp_unslash( $search_categories ) ) ] );
 		}
 
+		// Ensure the current user can filter by post_status.
+		if ( is_array( $filter_post_status ) && ! current_user_can( \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ) ) {
+			$filter_post_status = null;
+		}
+
 		$types              = get_job_listing_types();
 		$job_types_filtered = ! is_null( $filter_job_types ) && count( $types ) !== count( $filter_job_types );
 
