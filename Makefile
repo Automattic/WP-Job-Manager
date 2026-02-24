@@ -14,7 +14,7 @@ logs: ## Show WordPress environment logs
 	npx wp-env logs
 
 ## Testing
-test: ## Run PHPUnit tests in wp-env
+test: ## Run PHPUnit tests in wp-env (requires: make start)
 	npx wp-env run tests-cli --env-cwd=wp-content/plugins/wp-job-manager vendor/bin/phpunit
 
 lint: ## Run PHP CodeSniffer
