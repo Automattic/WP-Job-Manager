@@ -1,8 +1,35 @@
 # WP Job Manager Unit Tests
 
-## Initial Setup
+## Running Tests with wp-env (Recommended)
 
-From the WP Job Manager root directory (if you are using VVV you might need to `vagrant ssh` first), run the following:
+wp-env provides a Docker-based WordPress environment with MySQL. Requires [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+1. Install dependencies:
+    ```
+    $ composer install
+    $ npm install
+    ```
+
+2. Start the test environment:
+    ```
+    $ make start
+    ```
+
+3. Run the tests:
+    ```
+    $ make test
+    ```
+
+4. Stop the environment when done:
+    ```
+    $ make stop
+    ```
+
+Run `make help` to see all available commands.
+
+## Running Tests Manually
+
+If you prefer not to use Docker, you can set up the test environment manually.
 
 1. Install [PHPUnit](http://phpunit.de/) via Composer by running:
     ```
@@ -14,23 +41,16 @@ From the WP Job Manager root directory (if you are using VVV you might need to `
     $ tests/bin/install-wp-tests.sh <db-name> <db-user> <db-password> [db-host]
     ```
 
-You may need to quote strings with backslashes to prevent them from being processed by the shell or other programs.
+    Example:
 
-Example:
+        $ tests/bin/install-wp-tests.sh wordpress root root localhost
 
-    $ tests/bin/install-wp-tests.sh wordpress root root localhost
+    **Important**: The `<db-name>` database will be created if it doesn't exist and all data will be removed during testing.
 
-    #  wordpress is the database name and root is both the MySQL user and its password.
-
-**Important**: The `<db-name>` database will be created if it doesn't exist and all data will be removed during testing.
-
-## Running Tests
-
-Change to the plugin root directory and type:
-
+3. Run the tests:
+    ```
     $ vendor/bin/phpunit
-
-The tests will execute and you'll be presented with a summary.
+    ```
 
 You can run specific tests by providing the path and filename to the test class:
 
@@ -54,4 +74,4 @@ A text code coverage summary can be displayed using the `--coverage-text` option
 
 ## Automated Tests
 
-Tests are automatically run with [Travis-CI](https://travis-ci.org/automattic/wp-job-manager) for each commit and pull request.
+Tests are automatically run with GitHub Actions for each commit and pull request.
