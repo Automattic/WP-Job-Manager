@@ -28,3 +28,6 @@ wp-job-manager/assets/font/*
 wp-job-manager/assets/js/*
 wp-job-manager/renovate.json
 wp-job-manager/webpack.config.js
+wp-job-manager/.wp-env.json
+wp-job-manager/blueprint.json
+wp-job-manager/Makefile
