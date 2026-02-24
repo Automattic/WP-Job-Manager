@@ -148,10 +148,10 @@ class WP_Job_Manager_Shortcodes {
 	/**
 	 * Handles actions which need to be run before the shortcode e.g. post actions.
 	 *
-	 * @deprecated $$next-version$$ - Moved to Job_Dashboard_Shortcode.
+	 * @deprecated 2.4.1 - Moved to Job_Dashboard_Shortcode.
 	 */
 	public function shortcode_action_handler() {
-		_deprecated_function( __METHOD__, '$$next-version$$', 'Job_Dashboard_Shortcode::handle_actions' );
+		_deprecated_function( __METHOD__, '2.4.1', 'Job_Dashboard_Shortcode::handle_actions' );
 		Job_Dashboard_Shortcode::instance()->handle_actions();
 	}
 
@@ -160,10 +160,10 @@ class WP_Job_Manager_Shortcodes {
 	 *
 	 * @throws Exception On action handling error.
 	 *
-	 * @deprecated $$next-version$$ - Moved to Job_Dashboard_Shortcode.
+	 * @deprecated 2.4.1 - Moved to Job_Dashboard_Shortcode.
 	 */
 	public function job_dashboard_handler() {
-		_deprecated_function( __METHOD__, '$$next-version$$', 'Job_Dashboard_Shortcode::handle_actions' );
+		_deprecated_function( __METHOD__, '2.4.1', 'Job_Dashboard_Shortcode::handle_actions' );
 		Job_Dashboard_Shortcode::instance()->handle_actions();
 	}
 
@@ -614,12 +614,12 @@ class WP_Job_Manager_Shortcodes {
 	 *
 	 * @param \WP_Post $job
 	 *
-	 * @deprecated $$next-version$$ - Moved to Job_Dashboard_Shortcode.
+	 * @deprecated 2.4.1 - Moved to Job_Dashboard_Shortcode.
 	 *
 	 * @output string
 	 */
 	public function job_dashboard_date_column_expires( $job ) {
-		_deprecated_function( __METHOD__, '$$next-version$$', 'Job_Dashboard_Shortcode::the_expiration_date' );
+		_deprecated_function( __METHOD__, '2.4.1', 'Job_Dashboard_Shortcode::the_expiration_date' );
 		Job_Dashboard_Shortcode::instance()->the_expiration_date( $job );
 	}
 
@@ -628,12 +628,12 @@ class WP_Job_Manager_Shortcodes {
 	 *
 	 * @param \WP_Post $job
 	 *
-	 * @deprecated $$next-version$$ - Moved to Job_Dashboard_Shortcode.
+	 * @deprecated 2.4.1 - Moved to Job_Dashboard_Shortcode.
 	 *
 	 * @output string
 	 */
 	public function job_dashboard_title_column_status( $job ) {
-		_deprecated_function( __METHOD__, '$$next-version$$', 'Job_Dashboard_Shortcode::the_job_status' );
+		_deprecated_function( __METHOD__, '2.4.1', 'Job_Dashboard_Shortcode::the_job_status' );
 		Job_Dashboard_Shortcode::instance()->the_status( $job );
 	}
 
