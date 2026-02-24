@@ -545,7 +545,7 @@ class Job_Dashboard_Shortcode {
 		if ( 'publish' === $job->post_status && ! empty( $expiration ) ) {
 
 			// translators: Placeholder is the expiration date of the job listing.
-			echo '<div class="job-expires"><small>' . UI_Elements::rel_time( $expiration, __( 'Expires in %s', 'wp-job-manager' ) ) . '</small></div>';
+			echo '<div class="job-expires"><small>' . wp_kses_post( UI_Elements::rel_time( $expiration, __( 'Expires in %s', 'wp-job-manager' ) ) ) . '</small></div>';
 		}
 	}
 
@@ -576,7 +576,7 @@ class Job_Dashboard_Shortcode {
 
 		?>
 		<div class="jm-ui-row">
-			<?php echo UI_Elements::icon( 'location' ); ?>
+			<?php echo wp_kses_post( UI_Elements::icon( 'location' ) ); ?>
 			<?php echo esc_html( $location ); ?>
 		</div>
 		<?php
@@ -620,14 +620,14 @@ class Job_Dashboard_Shortcode {
 			return;
 		}
 
-		echo UI_Elements::button(
+		echo wp_kses_post( UI_Elements::button(
 			[
 				'label' => $action['label'],
 				'url'   => $action['url'],
 				'class' => 'job-dashboard-action-' . esc_attr( $action['name'] ) . ' jm-dashboard-action jm-dashboard-action--primary jm-ui-button--small',
 			],
 			'jm-ui-button--outline'
-		);
+		) );
 	}
 
 	/**

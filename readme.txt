@@ -2,13 +2,13 @@
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
 Tags: jobs, careers, company, hiring, job board
 Requires at least: 6.4
-Tested up to: 6.6
-Requires PHP: 7.2
+Tested up to: 6.9
+Requires PHP: 7.4
 Stable tag: 2.4.0
-License: GPLv3
+License: GPL-2.0-or-later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Create a careers page for your company website, or build a public job board for your community. 
+Create a careers page for your company website, or build a public job board for your community.
 
 == Description ==
 
@@ -160,15 +160,15 @@ New!
 * Job Statistics — enable insights like job listing page views, unique visits and search impressions to be collected and displayed to employers in the jobs dashboard.
 * Add Google reCAPTCHA v3 support
 
-Improvements: 
+Improvements:
 
 * New: Job statistics overlay
 * Change: Redesign job dashboard
-* Change: Allow job duplication in the job dashboard for any job 
+* Change: Allow job duplication in the job dashboard for any job
 * Security: Don't return unpublished jobs only in the promote job endpoint
 * Fix renewals for WordPress.com licenses
 * Fix issues with rich e-mails on some e-mail providers
-* Fix e-mail styling in some e-mail clients  
+* Fix e-mail styling in some e-mail clients
 * Fix expiry date not showing up in backend editor
 * Fix: Add fallback to date format in case it's missing
 * Fix: Prevent past dates from being used in the datepicker

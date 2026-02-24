@@ -23,7 +23,7 @@ $job = $args['job'];
 	<p><?php
 		echo wp_kses_post(
 			// translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
-			sprintf( __( 'A job listing has been updated on <a href="%s">%s</a>.', 'wp-job-manager' ), home_url(), esc_html( get_bloginfo( 'name' ) ) ) );
+			sprintf( __( 'A job listing has been updated on <a href="%1$s">%2$s</a>.', 'wp-job-manager' ), home_url(), esc_html( get_bloginfo( 'name' ) ) ) );
 		switch ( $job->post_status ) {
 			case 'publish':
 				printf( ' ' . esc_html__( 'The changes have been published and are now available to the public.', 'wp-job-manager' ) );

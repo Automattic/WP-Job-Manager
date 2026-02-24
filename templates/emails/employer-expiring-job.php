@@ -30,7 +30,7 @@ if ( $expiring_today ) {
 	echo wp_kses_post(
 		sprintf(
 			// translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
-			__( 'The following job listing is expiring today from <a href="%s">%s</a>.', 'wp-job-manager' ),
+			__( 'The following job listing is expiring today from <a href="%1$s">%2$s</a>.', 'wp-job-manager' ),
 			home_url(),
 			get_bloginfo( 'name' )
 		)
@@ -39,7 +39,7 @@ if ( $expiring_today ) {
 	echo wp_kses_post(
 		sprintf(
 			// translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
-			__( 'The following job listing is expiring soon from <a href="%s">%s</a>.', 'wp-job-manager' ),
+			__( 'The following job listing is expiring soon from <a href="%1$s">%2$s</a>.', 'wp-job-manager' ),
 			home_url(),
 			get_bloginfo( 'name' )
 		)

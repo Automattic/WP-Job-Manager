@@ -24,7 +24,7 @@ $job = $args['job'];
 		echo wp_kses_post(
 			sprintf(
 				// translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
-				__( 'A new job listing has been submitted to <a href="%s">%s</a>.', 'wp-job-manager' ),
+				__( 'A new job listing has been submitted to <a href="%1$s">%2$s</a>.', 'wp-job-manager' ),
 				home_url(),
 				get_bloginfo( 'name' )
 			)

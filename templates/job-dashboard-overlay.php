@@ -30,10 +30,10 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 		</div>
 		<div class="actions">
 			<?php
-			echo UI_Elements::button( [
+			echo wp_kses_post( UI_Elements::button( [
 				'url'   => get_permalink( $job->ID ),
 				'label' => __( 'View', 'wp-job-manager' ),
-			], 'jm-ui-button--link' );
+			], 'jm-ui-button--link' ) );
 			?>
 		</div>
 	</div>

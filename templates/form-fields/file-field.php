@@ -58,6 +58,9 @@ if ( ! empty( $field['ajax'] ) && job_manager_user_can_upload_file_via_ajax() ) 
 	<?php if ( ! empty( $field['description'] ) ) : ?>
 		<?php echo wp_kses_post( $field['description'] ); ?>
 	<?php else : ?>
-		<?php printf( esc_html__( 'Maximum file size: %s.', 'wp-job-manager' ), size_format( wp_max_upload_size() ) ); ?>
+		<?php
+		// translators: %s is the maximum file size (e.g. "2 MB").
+		printf( esc_html__( 'Maximum file size: %s.', 'wp-job-manager' ), esc_html( size_format( wp_max_upload_size() ) ) );
+		?>
 	<?php endif; ?>
 </small>

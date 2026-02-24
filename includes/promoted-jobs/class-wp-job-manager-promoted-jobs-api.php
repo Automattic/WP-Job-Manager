@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * File containing the class WP_Job_Manager_Promoted_Jobs_API.
  *

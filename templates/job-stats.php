@@ -99,7 +99,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<span><?php echo esc_html( $section['title'] ); ?></span>
 							<?php if ( ! empty( $help_text ) ): ?>
 								<span class="jm-section-header__help jm-ui-has-tooltip" tabindex="0">
-									<?php echo UI_Elements::icon( 'help' ); ?>
+									<?php echo wp_kses_post( UI_Elements::icon( 'help' ) ); ?>
 									<div role="tooltip" class="jm-ui-tooltip" id="<?php echo esc_attr( $tooltip_id ); ?>">
 										<?php echo esc_html( $help_text ); ?>
 									</div>
@@ -109,7 +109,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php foreach ( $section['stats'] as $stat ) : ?>
 							<div class="jm-stat-row jm-ui-row">
 								<?php if ( isset( $stat['icon'] ) ) {
-									echo UI_Elements::icon( $stat['icon'], $stat['label'] );
+									echo wp_kses_post( UI_Elements::icon( $stat['icon'], $stat['label'] ) );
 								} ?>
 								<div class="jm-stat-label">
 									<?php echo esc_html( $stat['label'] ); ?>
