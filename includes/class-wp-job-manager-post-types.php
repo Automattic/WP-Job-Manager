@@ -1699,7 +1699,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'  => true,
 			],
 			'_company_twitter'     => [
-				'label'         => __( 'Company Twitter', 'wp-job-manager' ),
+				'label'         => __( 'Company X / Twitter', 'wp-job-manager' ),
 				'placeholder'   => '@yourcompany',
 				'priority'      => 6,
 				'data_type'     => 'string',
