@@ -1037,7 +1037,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						unset( $url );
 
 						if ( ! empty( $urls ) ) {
-							$meta_value = $is_array ? array_values( $urls ) : reset( $urls );
+							$meta_value = $is_array ? $urls : reset( $urls );
 						}
 					}
 
