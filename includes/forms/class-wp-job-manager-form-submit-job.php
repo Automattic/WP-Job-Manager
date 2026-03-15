@@ -219,7 +219,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job_type = 'term-select';
 		}
 
-		$default_salary_currency = get_option( 'job_manager_default_salary_currency' );
+		$default_salary_currency     = get_option( 'job_manager_default_salary_currency' );
 		$salary_currency_placeholder = $default_salary_currency ?: __( 'e.g. USD', 'wp-job-manager' );
 		$salary_currency_description = $default_salary_currency
 			// translators: %s is the default salary currency code (e.g. USD).
