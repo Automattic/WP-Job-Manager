@@ -912,12 +912,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Creates a file attachment.
+	 * Creates an attachment for the given URL and attaches it to the current job.
 	 *
-	 * @param  string $attachment_url
-	 * @return int attachment id.
+	 * @param string      $attachment_url URL of the file to attach.
+	 * @param string|null &$actual_url    Set to the canonical attachment URL after creation.
+	 *                                    On WP 5.3+, may differ from $attachment_url if the image was scaled.
+	 * @return int Attachment post ID, or 0 on failure.
 	 */
-	protected function create_attachment( $attachment_url ) {
+	protected function create_attachment( $attachment_url, &$actual_url = null ) {
 		include_once ABSPATH . 'wp-admin/includes/image.php';
 		include_once ABSPATH . 'wp-admin/includes/media.php';
 
@@ -957,7 +959,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$attachment_id = wp_insert_attachment( $attachment, $attachment_url, $this->job_id );
 
 		if ( ! is_wp_error( $attachment_id ) ) {
-			wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $attachment_url ) );
+			$metadata = wp_generate_attachment_metadata( $attachment_id, $attachment_url );
+			wp_update_attachment_metadata( $attachment_id, $metadata );
+
+			// If the image was scaled (WP 5.3+), original_image is set and
+			// _wp_attached_file now points to the -scaled version.
+			if ( isset( $metadata['original_image'] ) ) {
+				$actual_url = wp_get_attachment_url( $attachment_id );
+			}
+
 			return $attachment_id;
 		}
 
@@ -974,7 +984,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		add_post_meta( $this->job_id, '_filled', 0, true );
 		add_post_meta( $this->job_id, '_featured', 0, true );
 
-		$maybe_attach = [];
+		// Pre-load existing attachment URLs to avoid duplicates.
+		$attach_uploads  = apply_filters( 'job_manager_attach_uploaded_files', true );
+		$attachment_urls = [];
+		if ( $attach_uploads ) {
+			foreach ( get_posts( 'post_parent=' . $this->job_id . '&post_type=attachment&fields=ids&numberposts=-1' ) as $existing_id ) {
+				$attachment_urls[] = wp_get_attachment_url( $existing_id );
+			}
+		}
 
 		// Loop fields and save meta and term data.
 		foreach ( $this->fields as $group_key => $group_fields ) {
@@ -999,38 +1016,32 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 					// Save meta data.
 				} else {
-					update_post_meta( $this->job_id, '_' . $key, $values[ $group_key ][ $key ] );
+					$meta_value = $values[ $group_key ][ $key ];
 
-					// Handle attachments.
-					if ( 'file' === $field['type'] ) {
-						if ( is_array( $values[ $group_key ][ $key ] ) ) {
-							foreach ( $values[ $group_key ][ $key ] as $file_url ) {
-								$maybe_attach[] = $file_url;
+					// Create the attachment before saving meta so wp_generate_attachment_metadata
+					// runs first; on WP 5.3+, this resolves any scaled URL before it is persisted.
+					if ( 'file' === $field['type'] && $attach_uploads ) {
+						$is_array = is_array( $meta_value );
+						$urls     = array_filter( $is_array ? $meta_value : [ $meta_value ] );
+
+						foreach ( $urls as &$url ) {
+							if ( ! in_array( $url, $attachment_urls, true ) ) {
+								$actual_url = null;
+								$this->create_attachment( $url, $actual_url );
+								if ( $actual_url ) {
+									$attachment_urls[] = $actual_url;
+									$url               = $actual_url;
+								}
 							}
-						} else {
-							$maybe_attach[] = $values[ $group_key ][ $key ];
+						}
+						unset( $url );
+
+						if ( ! empty( $urls ) ) {
+							$meta_value = $is_array ? array_values( $urls ) : reset( $urls );
 						}
 					}
-				}
-			}
-		}
 
-		$maybe_attach = array_filter( $maybe_attach );
-
-		// Handle attachments.
-		if ( count( $maybe_attach ) && apply_filters( 'job_manager_attach_uploaded_files', true ) ) {
-			// Get attachments.
-			$attachments     = get_posts( 'post_parent=' . $this->job_id . '&post_type=attachment&fields=ids&numberposts=-1' );
-			$attachment_urls = [];
-
-			// Loop attachments already attached to the job.
-			foreach ( $attachments as $attachment_id ) {
-				$attachment_urls[] = wp_get_attachment_url( $attachment_id );
-			}
-
-			foreach ( $maybe_attach as $attachment_url ) {
-				if ( ! in_array( $attachment_url, $attachment_urls, true ) ) {
-					$this->create_attachment( $attachment_url );
+					update_post_meta( $this->job_id, '_' . $key, $meta_value );
 				}
 			}
 		}
