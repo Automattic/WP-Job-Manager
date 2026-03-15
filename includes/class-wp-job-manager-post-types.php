@@ -865,7 +865,6 @@ class WP_Job_Manager_Post_Types {
 			$job_categories_names = implode( ', ', wp_list_pluck( $job_categories, 'name' ) );
 			echo '<job_listing:job_category><![CDATA[' . esc_html( $job_categories_names ) . "]]></job_listing:job_category>\n";
 		}
-		
 		if ( $company ) {
 			echo '<job_listing:company><![CDATA[' . esc_html( $company ) . "]]></job_listing:company>\n";
 		}
