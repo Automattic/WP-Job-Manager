@@ -28,7 +28,10 @@ if ( ! get_the_company_name() ) {
 	<div class="company_header">
 		<p class="name">
 			<?php if ( $website = get_the_company_website() ) : ?>
-				<a class="website" href="<?php echo esc_url( $website ); ?>" rel="nofollow"><?php esc_html_e( 'Website', 'wp-job-manager' ); ?></a>
+				$_rel      = apply_filters( 'job_manager_company_link_rel', 'nofollow', 'website', get_post() );
+				$_rel_attr = $_rel ? ' rel="' . esc_attr( $_rel ) . '"' : '';
+				?>
+				<a class="website" href="<?php echo esc_url( $website ); ?>"<?php echo $_rel_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above. ?>><?php esc_html_e( 'Website', 'wp-job-manager' ); ?></a>
 			<?php endif; ?>
 			<?php the_company_twitter(); ?>
 			<?php the_company_name( '<strong>', '</strong>' ); ?>
