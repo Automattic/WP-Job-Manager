@@ -39,6 +39,7 @@ jobs:
 
       - name: Run PHP Linter
         run: npm run lint:php
+
   test:
     name: PHP Unit Tests
     runs-on: ubuntu-22.04
@@ -46,16 +47,28 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        wp: [ 'latest' ]
+        wp: [ '6.4', '6.5', '6.6', '6.7', '6.8', '6.9' ]
         wpmu: [ 0 ]
-        php: [ '7.4', '8.0', '8.1' ]
-        include:
-          - php: '7.4'
-            wp: '6.2'
-          - php: '7.4'
-            wp: '6.3'
-          - php: '7.4'
+        php: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5' ]
+        exclude:
+          # PHP 8.4 is only Y* from WP 6.7+ per compatibility matrix
+          - php: '8.4'
             wp: '6.4'
+          - php: '8.4'
+            wp: '6.5'
+          - php: '8.4'
+            wp: '6.6'
+          # PHP 8.5 is only Y* from WP 6.9+ per compatibility matrix
+          - php: '8.5'
+            wp: '6.4'
+          - php: '8.5'
+            wp: '6.5'
+          - php: '8.5'
+            wp: '6.6'
+          - php: '8.5'
+            wp: '6.7'
+          - php: '8.5'
+            wp: '6.8'
     env:
       WP_VERSION: ${{ matrix.wp }}
       PHP_VERSION: ${{ matrix.php }}
@@ -97,6 +110,7 @@ jobs:
 
       - name: Run tests
         run: npm run test-php
+
   psalm:
     name: Psalm
     runs-on: ubuntu-latest
@@ -104,7 +118,7 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        php: [ '7.4', '8.2' ]
+        php: [ '7.4', '8.4', '8.5' ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
