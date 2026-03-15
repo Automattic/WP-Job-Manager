@@ -218,6 +218,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		} else {
 			$job_type = 'term-select';
 		}
+
+		$default_salary_currency = get_option( 'job_manager_default_salary_currency' );
+		$salary_currency_placeholder = $default_salary_currency ?: __( 'e.g. USD', 'wp-job-manager' );
+		$salary_currency_description = $default_salary_currency
+			// translators: %s is the default salary currency code (e.g. USD).
+			? sprintf( __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency (%s).', 'wp-job-manager' ), $default_salary_currency )
+			: __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' );
+
 		$this->fields = apply_filters(
 			'submit_job_form_fields',
 			[
@@ -287,8 +295,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'label'       => __( 'Salary Currency', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
-						'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
-						'description' => __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' ),
+						'placeholder' => $salary_currency_placeholder,
+						'description' => $salary_currency_description,
 						'priority'    => 9,
 					],
 					'job_salary_unit'     => [
