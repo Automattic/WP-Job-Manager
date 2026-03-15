@@ -915,7 +915,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Creates an attachment for the given URL and attaches it to the current job.
 	 *
 	 * @param string      $attachment_url URL of the file to attach.
-	 * @param string|null &$actual_url    Set to the canonical attachment URL after creation.
+	 * @param string|null $actual_url     Set to the canonical attachment URL after creation.
 	 *                                    On WP 5.3+, may differ from $attachment_url if the image was scaled.
 	 * @return int Attachment post ID, or 0 on failure.
 	 */
