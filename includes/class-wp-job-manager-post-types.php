@@ -847,11 +847,12 @@ class WP_Job_Manager_Post_Types {
 	 * Adds custom data to the job feed.
 	 */
 	public function job_feed_item() {
-		$post_id   = get_the_ID();
-		$location  = get_the_job_location( $post_id );
-		$company   = get_the_company_name( $post_id );
-		$job_types = wpjm_get_the_job_types( $post_id );
-		$salary    = get_the_job_salary( $post_id );
+		$post_id        = get_the_ID();
+		$location       = get_the_job_location( $post_id );
+		$company        = get_the_company_name( $post_id );
+		$job_types      = wpjm_get_the_job_types( $post_id );
+		$job_categories = wpjm_get_the_job_categories( $post_id );
+		$salary         = get_the_job_salary( $post_id );
 
 		if ( $location ) {
 			echo '<job_listing:location><![CDATA[' . esc_html( $location ) . "]]></job_listing:location>\n";
@@ -860,6 +861,11 @@ class WP_Job_Manager_Post_Types {
 			$job_types_names = implode( ', ', wp_list_pluck( $job_types, 'name' ) );
 			echo '<job_listing:job_type><![CDATA[' . esc_html( $job_types_names ) . "]]></job_listing:job_type>\n";
 		}
+		if ( ! empty( $job_categories ) ) {
+			$job_categories_names = implode( ', ', wp_list_pluck( $job_categories, 'name' ) );
+			echo '<job_listing:job_category><![CDATA[' . esc_html( $job_categories_names ) . "]]></job_listing:job_category>\n";
+		}
+		
 		if ( $company ) {
 			echo '<job_listing:company><![CDATA[' . esc_html( $company ) . "]]></job_listing:company>\n";
 		}
