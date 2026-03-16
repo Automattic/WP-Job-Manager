@@ -399,7 +399,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'priority'    => '6.6',
 				'class'       => 'job-manager-datepicker',
 				'attributes'  => [
-					'min' => current_time( 'Y-m-d' )
+					'min' => current_time( 'Y-m-d' ),
 				],
 			];
 		}
@@ -545,7 +545,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( ! $expires_date ) {
 				return new WP_Error( 'validation-error', __( 'Please enter a valid expiry date.', 'wp-job-manager' ) );
 			}
-			
+
 			$today = new DateTimeImmutable( 'now', wp_timezone() );
 			if ( $expires_date < $today ) {
 				return new WP_Error( 'validation-error', __( 'Expiry date cannot be in the past.', 'wp-job-manager' ) );
@@ -589,14 +589,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			}
 		}
 
-		// Validate expiry date field if enabled and provided
+		// Validate expiry date field if enabled and provided.
 		if ( get_option( 'job_manager_enable_expiry_date_field' ) && ! empty( $values['job']['job_expires'] ) ) {
 			$expires_date = DateTimeImmutable::createFromFormat( 'Y-m-d', $values['job']['job_expires'], wp_timezone() );
 			if ( ! $expires_date ) {
 				throw new Exception( __( 'Please enter a valid expiry date', 'wp-job-manager' ) );
 			}
-			
-			// Check if the date is in the past
+
+			// Check if the date is in the past.
 			$today = new DateTimeImmutable( 'today', wp_timezone() );
 			if ( $expires_date < $today ) {
 				throw new Exception( __( 'Expiry date cannot be in the past', 'wp-job-manager' ) );
@@ -1041,10 +1041,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 					// Handle custom expiry date field.
 				} elseif ( 'job_expires' === $key ) {
-					// Always save the raw value first
+					// Always save the raw value first.
 					update_post_meta( $this->job_id, '_job_expires', $values[ $group_key ][ $key ] );
-					
-					// If a date is provided, also set the job expiration
+
+					// If a date is provided, also set the job expiration.
 					if ( ! empty( $values[ $group_key ][ $key ] ) ) {
 						$expires_date = DateTimeImmutable::createFromFormat( 'Y-m-d', $values[ $group_key ][ $key ], wp_timezone() );
 						if ( $expires_date ) {
