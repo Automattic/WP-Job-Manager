@@ -4,7 +4,7 @@ Tags: jobs, careers, company, hiring, job board
 Requires at least: 6.4
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 2.4.0
+Stable tag: 2.4.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -147,6 +147,17 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+### 2.4.1 - 2026-02-24
+* Add permission check to listing query parameters (#2914)
+* Fix structured data output for password-protected listings (#2913)
+
+* Update actions/cache to use v4 (#2896)
+* reCaptcha script not being loaded (#2893)
+* add a additional action to the do_feed_rss2
+* fix hardcoded dashboard expiration date format
+* Dev: Fix deprecated  methods
+* Fix file input field for forms not marked as required
+
 ### 2.4.0 - 2024-08-08
 * Fix job dashboard actions menu in Safari
 * Fix PHP 8.3 support
@@ -186,29 +197,4 @@ For developers:
 
 ### 2.2.1 - 2024-01-31
 * Fix PHP 7.x error for mixed returned type (#2726)
-
-### 2.2.0 - 2024-01-29
-New:
-
-* Allow scheduling listings during job submission — add an option to show a 'Scheduled Date' field in the job submission form
-* Add new [jobs] shortcode parameter, featured_first so you can ensure featured listings always show up on top.
-* Add support for user sessions without a full account (used in the Job Alerts extension)
-
-Changes:
-
-* Improve styling for rich text e-mails
-* Include plain text alternative for rich text e-mails for better compatibility
-* Store previous license when plugin is deactivated for easier reactivation later.
-* Update design for settings and marketplace pages
-
-Fixes:
-
-* Fix custom role permission issues (#2673)
-* Fix RSS, Reset, Add Alert links not showing on search page without a keyword
-* Improve PHP 8 support
-* Fix numeric settings field issues
-* Improve e-mail formatting and encoding, remove extra whitespace
-* Add file type validation and error message to company logo upload
-* Fix cache issue when marking jobs as filled/not filled via bulk actions
-* Do not emit warning when user with insufficient access to Job Manager menu tries to access wp-admin
 

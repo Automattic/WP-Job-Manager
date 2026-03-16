@@ -1000,6 +1000,23 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		}
 	}
 
+	/**
+	 * Test that structured data is turned off for password-protected job listings.
+	 *
+	 * @since 1.28.0
+	 * @covers ::wpjm_output_job_listing_structured_data
+	 */
+	public function test_password_protected_no_structured_data() {
+		$job_id = $this->factory->job_listing->create(
+			[
+				'post_password' => 'test123',
+				'post_status'   => 'publish',
+			]
+		);
+
+		$this->assertFalse( wpjm_output_job_listing_structured_data( $job_id ) );
+	}
+
 	protected function get_wp_no_robots() {
 		ob_start();
 		wp_no_robots();

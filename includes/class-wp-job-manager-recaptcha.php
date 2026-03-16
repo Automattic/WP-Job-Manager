@@ -77,7 +77,11 @@ class WP_Job_Manager_Recaptcha {
 				add_filter( $validate_hook, [ $this, 'validate_recaptcha_field' ] );
 			}
 
-			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+			if ( did_action( 'wp_enqueue_scripts' ) ) {
+				$this->enqueue_scripts();
+			} else {
+				add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+			}
 		}
 	}
 

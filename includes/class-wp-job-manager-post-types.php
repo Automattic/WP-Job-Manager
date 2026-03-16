@@ -807,7 +807,7 @@ class WP_Job_Manager_Post_Types {
 		query_posts( apply_filters( 'job_feed_args', $query_args ) );
 		add_action( 'rss2_ns', [ $this, 'job_feed_namespace' ] );
 		add_action( 'rss2_item', [ $this, 'job_feed_item' ] );
-		do_feed_rss2( false );
+		do_action( 'do_feed_rss2', false );
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search', 10 );
 	}
 

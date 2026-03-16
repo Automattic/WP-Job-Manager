@@ -38,6 +38,8 @@ jobs:
         run: |
           node scripts/create-release.mjs wp-job-manager ${{ github.event.number }}
           cd build && unzip -q wp-job-manager.zip
+      - name: Install SVN
+        run: sudo apt-get update && sudo apt-get install -y subversion
       - name: Deploy to WordPress.org
         uses: 10up/action-wordpress-plugin-deploy@abb939a0d0bfd01063e8d1933833209201557381
         env:
