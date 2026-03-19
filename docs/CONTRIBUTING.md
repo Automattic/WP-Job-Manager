@@ -20,7 +20,7 @@ If you have questions about the process to contribute code or want to discuss de
 ## Getting started
 
 - **Prerequisites:** [Docker Desktop](https://www.docker.com/products/docker-desktop/), Node.js, Composer
-- **Quick start:** `composer install && npm install && make start` — then visit http://localhost:8888
+- **Quick start:** `make install && make up` — then visit http://localhost:8888
 - **Run tests:** `make test`
 - **All commands:** `make help`
 - [Git Flow and PR Review](https://github.com/Automattic/WP-Job-Manager/wiki/Our-Git-Flow-and-PR-Review)

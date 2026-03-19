@@ -5,7 +5,7 @@ rm -rf build
 mkdir -p build/wp-job-manager
 
 # Step 2: Copy the current folder to the build folder, excluding undesired directories
-rsync -av --progress . build/wp-job-manager --exclude build --exclude node_modules --exclude vendor --exclude .git --exclude .github --exclude .psalm --exclude tests --exclude .husky --exclude docs --exclude .wp-env.json --exclude blueprint.json --exclude Makefile
+rsync -av --progress . build/wp-job-manager --exclude build --exclude node_modules --exclude vendor --exclude .git --exclude .github --exclude .psalm --exclude tests --exclude .husky --exclude docs --exclude .wp-env.json --exclude .wp-env.tests.json --exclude blueprint.json --exclude Makefile
 
 # Navigate to build directory
 cd build/wp-job-manager

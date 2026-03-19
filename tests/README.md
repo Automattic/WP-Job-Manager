@@ -6,13 +6,12 @@ wp-env provides a Docker-based WordPress environment with MySQL. Requires [Docke
 
 1. Install dependencies:
     ```
-    $ composer install
-    $ npm install
+    $ make install
     ```
 
-2. Start the test environment:
+2. Start the environment:
     ```
-    $ make start
+    $ make up
     ```
 
 3. Run the tests:
@@ -22,7 +21,7 @@ wp-env provides a Docker-based WordPress environment with MySQL. Requires [Docke
 
 4. Stop the environment when done:
     ```
-    $ make stop
+    $ make down
     ```
 
 Run `make help` to see all available commands.

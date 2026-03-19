@@ -35,6 +35,7 @@ down: ## Stop WordPress development and test environments
 
 destroy: ## Remove WordPress environment containers and data
 	$(WP_ENV) destroy
+	$(WP_ENV_TESTS) destroy
 
 logs: ## Show WordPress environment logs
 	$(WP_ENV) logs
