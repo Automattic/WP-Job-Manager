@@ -2,9 +2,25 @@
 
 PLUGIN_NAME := wp-job-manager
 WP_ENV := COMPOSE_PROJECT_NAME=$(PLUGIN_NAME) npx @wordpress/env
+NODE_MIN_VERSION := 20
+
+define check_node
+	@NODE_VERSION=$$(node --version 2>/dev/null | sed 's/v//'); \
+	if [ -z "$$NODE_VERSION" ]; then \
+		echo "Error: Node.js is not installed. Please install Node.js $(NODE_MIN_VERSION)+ from https://nodejs.org"; \
+		exit 1; \
+	fi; \
+	NODE_MAJOR=$$(echo "$$NODE_VERSION" | cut -d. -f1); \
+	if [ "$$NODE_MAJOR" -lt "$(NODE_MIN_VERSION)" ]; then \
+		echo "Error: Node.js v$$NODE_VERSION found, but $(NODE_MIN_VERSION)+ is required."; \
+		echo "If using nvm: nvm install $(NODE_MIN_VERSION) && nvm use $(NODE_MIN_VERSION)"; \
+		exit 1; \
+	fi
+endef
 
 ## Development environment
 up: ## Start WordPress development environment
+	$(check_node)
 	$(WP_ENV) start
 
 down: ## Stop WordPress development environment
