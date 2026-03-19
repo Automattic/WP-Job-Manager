@@ -16,6 +16,8 @@ sftp-config.json
 /*.zip
 .idea
 .phpunit.result.cache
+/.wp-env/
+.claude/
 
 # Ignore lib/wpjm_rest but keep folder
 lib/wpjm_rest/*

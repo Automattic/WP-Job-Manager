@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
-# Step 1: Create a new folder called `build`
+# Step 1: Clean and create build folder
+rm -rf build
 mkdir -p build/wp-job-manager
 
 # Step 2: Copy the current folder to the build folder, excluding undesired directories
-rsync -av --progress . build/wp-job-manager --exclude build --exclude node_modules --exclude vendor --exclude .git --exclude .github --exclude .psalm --exclude tests --exclude .husky --exclude docs
+# Strip the wp-job-manager/ prefix from exclude.lst so rsync can use it too
+# Keep package.json/composer.* — they're needed for build:assets and composer install
+sed 's|^wp-job-manager/||' scripts/exclude.lst | grep -v -E '^(package\.json|package-lock\.json|composer\.\*)$' > /tmp/rsync-exclude.lst
+rsync -av --progress . build/wp-job-manager --exclude build --exclude vendor --exclude-from /tmp/rsync-exclude.lst
+rm -f /tmp/rsync-exclude.lst
 
 # Navigate to build directory
 cd build/wp-job-manager
