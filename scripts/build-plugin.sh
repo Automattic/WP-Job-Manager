@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Step 1: Create a new folder called `build`
+# Step 1: Clean and create build folder
+rm -rf build
 mkdir -p build/wp-job-manager
 
 # Step 2: Copy the current folder to the build folder, excluding undesired directories
