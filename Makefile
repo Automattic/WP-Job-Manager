@@ -19,8 +19,11 @@ define check_node
 endef
 
 ## Development environment
-up: ## Start WordPress development environment
+install: ## Install dependencies (requires Node 20+)
 	$(check_node)
+	npm install
+
+up: ## Start WordPress development environment
 	$(WP_ENV) start
 
 down: ## Stop WordPress development environment
@@ -50,4 +53,4 @@ build: ## Build plugin zip
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: up down destroy logs test lint lint-fix build help
+.PHONY: install up down destroy logs test lint lint-fix build help
