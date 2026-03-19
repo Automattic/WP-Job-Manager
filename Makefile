@@ -20,8 +20,9 @@ define check_node
 endef
 
 ## Development environment
-install: ## Install dependencies (requires Node 20+)
+install: ## Install dependencies (requires Node 20+, PHP/Composer)
 	$(check_node)
+	composer install
 	npm install
 
 up: ## Start WordPress development and test environments
