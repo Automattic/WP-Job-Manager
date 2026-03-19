@@ -26,6 +26,7 @@ install: ## Install dependencies (requires Node 20+, PHP/Composer)
 	npm install
 
 up: ## Start WordPress development and test environments
+	$(check_node)
 	$(WP_ENV) start
 	$(WP_ENV_TESTS) start
 

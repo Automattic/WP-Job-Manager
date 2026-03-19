@@ -11,7 +11,7 @@ wp-env provides a Docker-based WordPress environment with MySQL. Requires [Docke
 
 2. Start the environment:
     ```
-    $ make up
+    $ make test-up
     ```
 
 3. Run the tests:
