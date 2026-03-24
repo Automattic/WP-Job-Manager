@@ -347,12 +347,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'           => 6,
 						'ajax'               => true,
 						'multiple'           => false,
-						'allowed_mime_types' => [
-							'jpg'  => 'image/jpeg',
-							'jpeg' => 'image/jpeg',
-							'gif'  => 'image/gif',
-							'png'  => 'image/png',
-						],
+						'allowed_mime_types' => apply_filters(
+							'job_manager_company_logo_allowed_mime_types',
+							[
+								'jpg'  => 'image/jpeg',
+								'jpeg' => 'image/jpeg',
+								'gif'  => 'image/gif',
+								'png'  => 'image/png',
+								'webp' => 'image/webp',
+							]
+						),
 					],
 				],
 			]
