@@ -215,6 +215,7 @@ class WP_Job_Manager_Shortcodes {
 					'filled'                    => null, // True to show only filled, false to hide filled, leave null to show both/use the settings.
 					'remote_position'           => null, // True to show only remote, false to hide remote, leave null to show both.
 					'featured_first'            => false, // True to show featured first, false to show in default order.
+					'author'                    => 0, // Limit listings to a specific author by user ID. 0 shows all.
 
 					// Default values for filters.
 					'location'                  => '',
@@ -237,6 +238,7 @@ class WP_Job_Manager_Shortcodes {
 		$atts['show_more']                 = $this->string_to_bool( $atts['show_more'] );
 		$atts['show_pagination']           = $this->string_to_bool( $atts['show_pagination'] );
 		$atts['featured_first']            = $this->string_to_bool( $atts['featured_first'] );
+		$atts['author']                    = sanitize_text_field( $atts['author'] );
 
 		if ( ! is_null( $atts['featured'] ) ) {
 			$atts['featured'] = ( is_bool( $atts['featured'] ) && $atts['featured'] ) || in_array( $atts['featured'], [ 1, '1', 'true', 'yes' ], true );
@@ -349,6 +351,7 @@ class WP_Job_Manager_Shortcodes {
 						'filled'            => $atts['filled'],
 						'remote_position'   => $atts['remote_position'],
 						'featured_first'    => $atts['featured_first'],
+						'author'            => $atts['author'],
 					]
 				)
 			);
@@ -391,6 +394,9 @@ class WP_Job_Manager_Shortcodes {
 		}
 		if ( ! empty( $atts['post_status'] ) ) {
 			$data_attributes['post_status'] = implode( ',', $atts['post_status'] );
+		}
+		if ( ! empty( $atts['author'] ) ) {
+			$data_attributes['author'] = $atts['author'];
 		}
 
 		$data_attributes['post_id'] = isset( $GLOBALS['post'] ) ? $GLOBALS['post']->ID : 0;
