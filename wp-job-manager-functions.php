@@ -192,6 +192,15 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			];
 		}
 
+		if ( ! empty( $args['author'] ) ) {
+			$author_ids = is_array( $args['author'] )
+				? array_filter( array_map( 'absint', $args['author'] ) )
+				: array_filter( array_map( 'absint', explode( ',', $args['author'] ) ) );
+			if ( ! empty( $author_ids ) ) {
+				$query_args['author__in'] = $author_ids;
+			}
+		}
+
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
 
 		if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
@@ -218,6 +227,11 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		do_action( 'before_get_job_listings', $query_args, $args );
 
 		$should_cache = 'rand_featured' !== $args['orderby'] && 'rand' !== $args['orderby'];
+
+		// Bypass cache when author filter is active to avoid stale results.
+		if ( ! empty( $query_args['author__in'] ) ) {
+			$should_cache = false;
+		}
 
 		// Cache results.
 		if ( apply_filters( 'get_job_listings_cache_results', $should_cache ) ) {
