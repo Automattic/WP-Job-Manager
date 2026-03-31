@@ -1560,11 +1560,15 @@ function job_manager_upload_file( $file, $args = [] ) {
  */
 function job_manager_get_allowed_mime_types( $field = '' ) {
 	if ( 'company_logo' === $field ) {
-		$allowed_mime_types = [
-			'jpg|jpeg|jpe' => 'image/jpeg',
-			'gif'          => 'image/gif',
-			'png'          => 'image/png',
-		];
+		$allowed_mime_types = apply_filters(
+			'job_manager_company_logo_allowed_mime_types',
+			[
+				'jpg|jpeg|jpe' => 'image/jpeg',
+				'gif'          => 'image/gif',
+				'png'          => 'image/png',
+				'webp'         => 'image/webp',
+			]
+		);
 	} else {
 		$allowed_mime_types = [
 			'jpg|jpeg|jpe' => 'image/jpeg',
