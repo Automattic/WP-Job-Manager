@@ -138,7 +138,6 @@ class WP_Job_Manager {
 		add_action( 'plugins_loaded', [ $this, 'include_admin_files' ] );
 
 		// Filters.
-		add_filter( 'plugin_action_links_' . JOB_MANAGER_PLUGIN_BASENAME, [ $this, 'plugin_action_links' ] );
 		add_filter( 'wp_privacy_personal_data_exporters', [ 'WP_Job_Manager_Data_Exporter', 'register_wpjm_user_data_exporter' ] );
 		add_filter( 'allowed_redirect_hosts', [ $this, 'add_to_allowed_redirect_hosts' ] );
 
@@ -157,18 +156,6 @@ class WP_Job_Manager {
 	public function add_to_allowed_redirect_hosts( $hosts ) {
 		$hosts[] = wp_parse_url( WP_Job_Manager_Helper_API::get_wpjmcom_url(), PHP_URL_HOST );
 		return $hosts;
-	}
-
-	/**
-	 * Adds a Settings link to the plugin action links on the Plugins screen.
-	 *
-	 * @param array $links Existing plugin action links.
-	 * @return array Plugin action links with Settings prepended.
-	 */
-	public function plugin_action_links( $links ) {
-		$settings_link = '<a href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-settings#settings-general' ) ) . '">' . esc_html__( 'Settings', 'wp-job-manager' ) . '</a>';
-		array_unshift( $links, $settings_link );
-		return $links;
 	}
 
 	/**
