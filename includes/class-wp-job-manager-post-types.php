@@ -728,7 +728,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
-		$input_featured      = isset( $_GET['featured'] ) && 'true' === sanitize_text_field( wp_unslash( $_GET['featured'] ) );
+		$input_featured      = isset( $_GET['featured'] ) ? sanitize_text_field( wp_unslash( $_GET['featured'] ) ) : null;
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$query_args = [
@@ -762,10 +762,10 @@ class WP_Job_Manager_Post_Types {
 			$query_args['meta_query'][] = $location_search;
 		}
 
-		if ( $input_featured ) {
+		if ( null !== $input_featured ) {
 			$query_args['meta_query'][] = [
 				'key'   => '_featured',
-				'value' => '1',
+				'value' => '1' === $input_featured ? '1' : '0',
 			];
 		}
 
