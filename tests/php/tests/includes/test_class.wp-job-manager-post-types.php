@@ -340,7 +340,8 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			$result_arr = xml_to_array( $result );
 			$this->assertNotEmpty( $result_arr );
 			$this->assertTrue( isset( $result_arr[0]['child'] ) );
-			$this->assertCount( 3, $result_arr[0]['child'] );
+			$expected_count = (int) $has_location + (int) $has_job_type + (int) $has_job_category + (int) $has_company;
+			$this->assertCount( $expected_count, $result_arr[0]['child'] );
 
 			if ( $has_location ) {
 				$job_location = get_the_job_location( $post );
