@@ -33,6 +33,10 @@ class WP_Job_Manager_REST_API {
 	 * @return array
 	 */
 	public static function exclude_filled_from_query( $args, $request ) {
+		if ( 1 !== absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
+			return $args;
+		}
+
 		if ( ! isset( $args['meta_query'] ) ) {
 			$args['meta_query'] = []; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
 		}
