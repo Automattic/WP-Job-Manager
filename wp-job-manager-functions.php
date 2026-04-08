@@ -644,6 +644,7 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 								'search_location' => $args['search_location'],
 								'job_categories'  => implode( ',', $job_categories ),
 								'search_keywords' => $args['search_keywords'],
+								'author'          => ! empty( $args['author'] ) ? $args['author'] : '',
 							]
 						)
 					),
