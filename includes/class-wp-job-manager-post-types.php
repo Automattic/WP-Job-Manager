@@ -727,6 +727,13 @@ class WP_Job_Manager_Post_Types {
 			$input_job_categories = false;
 		}
 
+		if ( isset( $_GET['author'] ) ) {
+			$sanitized_author = sanitize_text_field( wp_unslash( $_GET['author'] ) );
+			$input_author     = empty( $sanitized_author ) ? false : array_filter( array_map( 'absint', explode( ',', $sanitized_author ) ) );
+		} else {
+			$input_author = false;
+		}
+
 		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
@@ -788,6 +795,10 @@ class WP_Job_Manager_Post_Types {
 				'include_children' => 'AND' !== $operator,
 				'operator'         => $operator,
 			];
+		}
+
+		if ( ! empty( $input_author ) ) {
+			$query_args['author__in'] = $input_author;
 		}
 
 		if ( ! empty( $job_manager_keyword ) ) {
