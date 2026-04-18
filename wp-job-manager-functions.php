@@ -228,11 +228,6 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 
 		$should_cache = 'rand_featured' !== $args['orderby'] && 'rand' !== $args['orderby'];
 
-		// Bypass cache when author filter is active to avoid stale results.
-		if ( ! empty( $query_args['author__in'] ) ) {
-			$should_cache = false;
-		}
-
 		// Cache results.
 		if ( apply_filters( 'get_job_listings_cache_results', $should_cache ) ) {
 			$to_hash            = wp_json_encode( $query_args );
