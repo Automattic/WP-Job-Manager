@@ -158,12 +158,16 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Dev: Fix deprecated  methods
 * Fix file input field for forms not marked as required
 
-* Fix broken access control issue reported by Tristan Jay Neale via Patchstack.
+* Fix broken access control issue reported on Patchstack.
 
 ### 2.4.0 - 2024-08-08
-* Fix job dashboard actions menu in Safari
-* Fix PHP 8.3 support
-* Remove support for Internet Explorer 11
-* Fix Wordpress 6.6 compatibility
+* Fix job dashboard actions menu in Safari
+
+* Fix PHP 8.3 support
+
+* Remove support for Internet Explorer 11
+
+* Fix Wordpress 6.6 compatibility
+
 * Fix classic editor support for job listings
 
