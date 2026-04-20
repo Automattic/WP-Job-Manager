@@ -221,6 +221,15 @@ class Stats {
 			return false;
 		}
 
+		if ( ! is_string( $args['date'] ) || 1 !== preg_match( '/^\d{4}-\d{2}-\d{2}$/', $args['date'] ) ) {
+			return false;
+		}
+
+		$post_status = get_post_status( $args['post_id'] );
+		if ( ! $post_status || 'trash' === $post_status ) {
+			return false;
+		}
+
 		return $args;
 	}
 

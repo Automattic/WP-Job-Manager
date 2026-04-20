@@ -31,39 +31,191 @@ class Stats_Script {
 	}
 
 	/**
+	 * Max stats accepted in a single AJAX request.
+	 */
+	const AJAX_BATCH_LIMIT = 50;
+
+	/**
+	 * Requests allowed per client per minute.
+	 */
+	const AJAX_RATE_LIMIT = 60;
+
+	/**
 	 * Log multiple stats in one go. Triggered in an ajax call.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	public function ajax_log_stat() {
 		if ( ! wp_doing_ajax() ) {
-			return false;
+			return;
 		}
 
 		$post_data = stripslashes_deep( $_POST );
+		$post_id   = absint( $post_data['post_id'] ?? 0 );
 
-		if ( ! isset( $post_data['_ajax_nonce'] ) || ! wp_verify_nonce( $post_data['_ajax_nonce'], 'ajax-nonce' ) ) {
-			return false;
+		if (
+			! isset( $post_data['_ajax_nonce'] )
+			|| ! $post_id
+			|| ! wp_verify_nonce( $post_data['_ajax_nonce'], 'wpjm_log_stat_' . $post_id )
+		) {
+			wp_send_json_error( 'Invalid request.', 403 );
+			return;
 		}
 
-		$stats_json = $post_data['stats'] ?? '[]';
-		$stats      = json_decode( $stats_json, true );
-
-		if ( empty( $stats ) ) {
-			return false;
+		if ( $this->is_rate_limited() ) {
+			wp_send_json_error( 'Too many requests.', 429 );
+			return;
 		}
 
-		$errors           = [];
+		$stats = json_decode( $post_data['stats'] ?? '[]', true );
+		if ( empty( $stats ) || ! is_array( $stats ) ) {
+			wp_send_json_error( 'No stats to log.', 400 );
+			return;
+		}
+
+		$stats = array_slice( $stats, 0, self::AJAX_BATCH_LIMIT );
+
+		$today = gmdate( 'Y-m-d' );
+		$stats = array_map(
+			function ( $stat ) use ( $today ) {
+				if ( ! is_array( $stat ) ) {
+					return null;
+				}
+				$stat['count'] = 1;
+				$stat['date']  = $today;
+				return $stat;
+			},
+			$stats
+		);
+		$stats = array_filter( $stats );
+
 		$registered_stats = $this->get_registered_stat_names();
-
-		$stats = array_filter(
+		$stats            = array_filter(
 			$stats,
-			function( $stat ) use ( $registered_stats ) {
-				return in_array( $stat['name'], $registered_stats, true );
+			function ( $stat ) use ( $registered_stats ) {
+				return isset( $stat['name'] ) && in_array( $stat['name'], $registered_stats, true );
 			}
 		);
 
-		return Stats::instance()->batch_log_stats( $stats );
+		$stats = $this->filter_by_post_validity( $stats );
+		$stats = $this->filter_server_unique( $stats );
+
+		if ( empty( $stats ) ) {
+			wp_send_json_success();
+			return;
+		}
+
+		Stats::instance()->batch_log_stats( $stats );
+		wp_send_json_success();
+	}
+
+	/**
+	 * Validate stat post_ids against the expected post type and status.
+	 *
+	 * Listing-scope stats (page=listing or type=impression) require a published job_listing.
+	 * Other stats require any published post.
+	 *
+	 * @param array $stats Stat rows.
+	 * @return array Filtered stat rows.
+	 */
+	private function filter_by_post_validity( $stats ) {
+		$listing_stat_names = [];
+		foreach ( $this->get_registered_stats() as $name => $def ) {
+			$is_listing_page = ( $def['page'] ?? '' ) === 'listing';
+			$is_impression   = ( $def['type'] ?? '' ) === 'impression';
+			if ( $is_listing_page || $is_impression ) {
+				$listing_stat_names[] = $name;
+			}
+		}
+
+		$cache = [];
+		return array_filter(
+			$stats,
+			function ( $stat ) use ( &$cache, $listing_stat_names ) {
+				$post_id = absint( $stat['post_id'] ?? 0 );
+				if ( ! $post_id ) {
+					return false;
+				}
+
+				$requires_listing = in_array( $stat['name'] ?? '', $listing_stat_names, true );
+				$cache_key        = $post_id . '|' . ( $requires_listing ? 'L' : 'P' );
+
+				if ( ! isset( $cache[ $cache_key ] ) ) {
+					$status = get_post_status( $post_id );
+					$type   = get_post_type( $post_id );
+					if ( 'publish' !== $status ) {
+						$cache[ $cache_key ] = false;
+					} elseif ( $requires_listing && \WP_Job_Manager_Post_Types::PT_LISTING !== $type ) {
+						$cache[ $cache_key ] = false;
+					} else {
+						$cache[ $cache_key ] = true;
+					}
+				}
+
+				return $cache[ $cache_key ];
+			}
+		);
+	}
+
+	/**
+	 * Server-side per-client dedup for "_unique" stats.
+	 *
+	 * @param array $stats Stat rows.
+	 * @return array Filtered stat rows.
+	 */
+	private function filter_server_unique( $stats ) {
+		$client = $this->get_client_ip();
+		if ( '' === $client ) {
+			return $stats;
+		}
+		$today = gmdate( 'Y-m-d' );
+		$ttl   = strtotime( 'tomorrow UTC' ) - time();
+		$ttl   = $ttl > 0 ? $ttl : DAY_IN_SECONDS;
+
+		return array_filter(
+			$stats,
+			function ( $stat ) use ( $client, $today, $ttl ) {
+				$name = $stat['name'] ?? '';
+				if ( strlen( $name ) < 7 || '_unique' !== substr( $name, -7 ) ) {
+					return true;
+				}
+				$key = 'wpjm_u_' . md5( $client . '|' . $name . '|' . ( $stat['post_id'] ?? 0 ) . '|' . $today );
+				if ( get_transient( $key ) ) {
+					return false;
+				}
+				set_transient( $key, 1, $ttl );
+				return true;
+			}
+		);
+	}
+
+	/**
+	 * Soft per-client rate limit. Not an auth boundary — absorbs drive-by abuse.
+	 *
+	 * @return bool
+	 */
+	private function is_rate_limited() {
+		$client = $this->get_client_ip();
+		if ( '' === $client ) {
+			return false;
+		}
+		$key   = 'wpjm_rl_' . md5( $client );
+		$count = (int) get_transient( $key );
+		if ( $count >= self::AJAX_RATE_LIMIT ) {
+			return true;
+		}
+		set_transient( $key, $count + 1, MINUTE_IN_SECONDS );
+		return false;
+	}
+
+	/**
+	 * Client IP from REMOTE_ADDR only (X-Forwarded-For is spoofable by design here).
+	 *
+	 * @return string
+	 */
+	private function get_client_ip() {
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
+		return is_string( $ip ) ? $ip : '';
 	}
 
 	/**
@@ -116,7 +268,7 @@ class Stats_Script {
 
 		$script_data = [
 			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
-			'ajaxNonce' => wp_create_nonce( 'ajax-nonce' ),
+			'ajaxNonce' => wp_create_nonce( 'wpjm_log_stat_' . $post_id ),
 			'postId'    => $post_id,
 			'stats'     => $this->get_stats_for_ajax( $post_id, $page ),
 		];
