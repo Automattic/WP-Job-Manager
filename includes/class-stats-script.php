@@ -171,6 +171,10 @@ class Stats_Script {
 	 * than guessing from the stat name. Covers `*_unique` stats and any other stat
 	 * (e.g. `job_apply_click`) registered with `unique => true`.
 	 *
+	 * Uses a 24-hour sliding window starting at the first observed click. A calendar-day
+	 * (midnight UTC) boundary would let a visitor near the boundary re-count within
+	 * minutes of their first click.
+	 *
 	 * @param array $stats Stat rows.
 	 * @return array Filtered stat rows.
 	 */
@@ -190,22 +194,18 @@ class Stats_Script {
 			return $stats;
 		}
 
-		$today = gmdate( 'Y-m-d' );
-		$ttl   = strtotime( 'tomorrow UTC' ) - time();
-		$ttl   = $ttl > 0 ? $ttl : DAY_IN_SECONDS;
-
 		return array_filter(
 			$stats,
-			function ( $stat ) use ( $client, $today, $ttl, $unique_stat_names ) {
+			function ( $stat ) use ( $client, $unique_stat_names ) {
 				$name = $stat['name'] ?? '';
 				if ( ! in_array( $name, $unique_stat_names, true ) ) {
 					return true;
 				}
-				$key = 'wpjm_u_' . md5( $client . '|' . $name . '|' . ( $stat['post_id'] ?? 0 ) . '|' . $today );
+				$key = 'wpjm_u_' . md5( $client . '|' . $name . '|' . ( $stat['post_id'] ?? 0 ) );
 				if ( get_transient( $key ) ) {
 					return false;
 				}
-				set_transient( $key, 1, $ttl );
+				set_transient( $key, 1, DAY_IN_SECONDS );
 				return true;
 			}
 		);
