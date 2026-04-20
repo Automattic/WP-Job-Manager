@@ -334,8 +334,9 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 	}
 
 	public function test_ajax_caps_batch_size() {
-		$job_ids = [];
-		for ( $i = 0; $i < 60; $i++ ) {
+		$over_limit = Stats_Script::AJAX_BATCH_LIMIT + 10;
+		$job_ids    = [];
+		for ( $i = 0; $i < $over_limit; $i++ ) {
 			$job_ids[] = $this->factory->job_listing->create();
 		}
 
@@ -351,7 +352,7 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		$this->invoke_ajax();
 
 		$stats = Stats::instance()->get_stats( 'job_view' );
-		$this->assertCount( 50, $stats );
+		$this->assertCount( Stats_Script::AJAX_BATCH_LIMIT, $stats );
 	}
 
 	public function test_ajax_server_dedup_blocks_duplicate_unique() {
@@ -368,6 +369,27 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		$this->invoke_ajax();
 
 		$stats = Stats::instance()->get_stats( 'job_view_unique', $job_id );
+		$this->assertNotEmpty( $stats );
+		$this->assertEquals( 1, $stats[0]->count );
+	}
+
+	public function test_ajax_server_dedup_blocks_apply_click_without_unique_suffix() {
+		// Regression: job_apply_click is registered as unique: true but the name
+		// does not end in "_unique". Dedup must key on the definition flag, not
+		// on the suffix heuristic.
+		$job_id = $this->factory->job_listing->create();
+
+		$this->set_request( $job_id, [
+			[ 'post_id' => $job_id, 'name' => 'job_apply_click' ],
+		] );
+		$this->invoke_ajax();
+
+		$this->set_request( $job_id, [
+			[ 'post_id' => $job_id, 'name' => 'job_apply_click' ],
+		] );
+		$this->invoke_ajax();
+
+		$stats = Stats::instance()->get_stats( 'job_apply_click', $job_id );
 		$this->assertNotEmpty( $stats );
 		$this->assertEquals( 1, $stats[0]->count );
 	}

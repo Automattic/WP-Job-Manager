@@ -115,6 +115,13 @@ class Stats_Script {
 	 * Listing-scope stats (page=listing or type=impression) require a published job_listing.
 	 * Other stats require any published post.
 	 *
+	 * Residual: on a [jobs]-shortcode page the nonce is tied to the page post, but impression
+	 * stats legitimately carry per-listing post_ids. A client with a valid page nonce can
+	 * submit impressions for any published job_listing, not just ones visible on the page.
+	 * Rate limiting + dedup constrain the volume; the dashboard footnote discloses that
+	 * public-page stats are approximate. Eliminating this would require server-side
+	 * impression recording, which is incompatible with full-page caching.
+	 *
 	 * @param array $stats Stat rows.
 	 * @return array Filtered stat rows.
 	 */
@@ -158,7 +165,11 @@ class Stats_Script {
 	}
 
 	/**
-	 * Server-side per-client dedup for "_unique" stats.
+	 * Server-side per-client dedup for stats flagged `unique` in their definition.
+	 *
+	 * Authoritative: reads the `unique` flag from registered-stat definitions rather
+	 * than guessing from the stat name. Covers `*_unique` stats and any other stat
+	 * (e.g. `job_apply_click`) registered with `unique => true`.
 	 *
 	 * @param array $stats Stat rows.
 	 * @return array Filtered stat rows.
@@ -168,15 +179,26 @@ class Stats_Script {
 		if ( '' === $client ) {
 			return $stats;
 		}
+
+		$unique_stat_names = [];
+		foreach ( $this->get_registered_stats() as $name => $def ) {
+			if ( ! empty( $def['unique'] ) ) {
+				$unique_stat_names[] = $name;
+			}
+		}
+		if ( empty( $unique_stat_names ) ) {
+			return $stats;
+		}
+
 		$today = gmdate( 'Y-m-d' );
 		$ttl   = strtotime( 'tomorrow UTC' ) - time();
 		$ttl   = $ttl > 0 ? $ttl : DAY_IN_SECONDS;
 
 		return array_filter(
 			$stats,
-			function ( $stat ) use ( $client, $today, $ttl ) {
+			function ( $stat ) use ( $client, $today, $ttl, $unique_stat_names ) {
 				$name = $stat['name'] ?? '';
-				if ( strlen( $name ) < 7 || '_unique' !== substr( $name, -7 ) ) {
+				if ( ! in_array( $name, $unique_stat_names, true ) ) {
 					return true;
 				}
 				$key = 'wpjm_u_' . md5( $client . '|' . $name . '|' . ( $stat['post_id'] ?? 0 ) . '|' . $today );
@@ -265,6 +287,13 @@ class Stats_Script {
 	 * @return void
 	 */
 	private function enqueue_stats_script( $page = 'listing', $post_id = 0 ) {
+
+		// If a page is both a single job_listing and hosts the [jobs] shortcode,
+		// only the first call wins — double-localizing would overwrite the first
+		// nonce and break listing-page stats.
+		if ( wp_script_is( 'wp-job-manager-stats', 'enqueued' ) ) {
+			return;
+		}
 
 		$script_data = [
 			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
