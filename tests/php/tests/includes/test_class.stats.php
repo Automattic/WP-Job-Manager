@@ -4,6 +4,13 @@ namespace WP_Job_Manager;
 
 class WP_Test_Stats extends \WPJM_BaseTest {
 
+	/**
+	 * Previous REMOTE_ADDR value, restored in tearDown to avoid leaking global state.
+	 *
+	 * @var mixed Original value; null sentinel if the key was unset.
+	 */
+	private $previous_remote_addr;
+
 	//setup
 	public function setUp(): void {
 		parent::setUp();
@@ -15,7 +22,8 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		add_action( 'wp_ajax_job_manager_log_stat', [ Stats_Script::instance(), 'ajax_log_stat' ] );
 		add_action( 'wp_ajax_nopriv_job_manager_log_stat', [ Stats_Script::instance(), 'ajax_log_stat' ] );
 
-		$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+		$this->previous_remote_addr = $_SERVER['REMOTE_ADDR'] ?? null;
+		$_SERVER['REMOTE_ADDR']     = '127.0.0.1';
 		$this->clear_stats_transients();
 
 		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
@@ -26,16 +34,37 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
 		remove_filter( 'wp_doing_ajax', '__return_true' );
 		$this->clear_stats_transients();
+
+		if ( null === $this->previous_remote_addr ) {
+			unset( $_SERVER['REMOTE_ADDR'] );
+		} else {
+			$_SERVER['REMOTE_ADDR'] = $this->previous_remote_addr;
+		}
 		$_POST = [];
 		parent::tearDown();
 
 	}
 
+	/**
+	 * Clear the specific transient families the stats endpoint writes, so they don't leak
+	 * across tests. Narrowed to the `wpjm_u_` (unique dedup) and `wpjm_rl_` (rate limit)
+	 * prefixes — `delete_transient()` evicts both the DB row and the object-cache entry,
+	 * so no broad `wp_cache_flush()` is needed.
+	 */
 	private function clear_stats_transients() {
+		$this->delete_transients_by_prefix( 'wpjm_u_' );
+		$this->delete_transients_by_prefix( 'wpjm_rl_' );
+	}
+
+	private function delete_transients_by_prefix( $prefix ) {
 		global $wpdb;
+		$like = $wpdb->esc_like( '_transient_' . $prefix ) . '%';
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_transient\_wpjm\_%' OR option_name LIKE '\_transient\_timeout\_wpjm\_%'" );
-		wp_cache_flush();
+		$names = $wpdb->get_col( $wpdb->prepare( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s", $like ) );
+		foreach ( $names as $name ) {
+			$transient = substr( $name, strlen( '_transient_' ) );
+			delete_transient( $transient );
+		}
 	}
 
 	/**
@@ -444,6 +473,40 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		);
 
 		$this->assertFalse( $result );
+	}
+
+	public function test_parse_stats_rejects_impossible_calendar_date() {
+		// Regression: the regex would accept any YYYY-MM-DD shape. 2024-02-31 is
+		// not a real date; wp_checkdate() catches it.
+		$job_id = $this->factory->job_listing->create();
+
+		$result = Stats::instance()->log_stat(
+			'job_view',
+			[ 'post_id' => $job_id, 'count' => 1, 'date' => '2024-02-31' ]
+		);
+
+		$this->assertFalse( $result );
+	}
+
+	public function test_ajax_dedup_survives_noninteger_post_id() {
+		// Regression: before canonicalization, `post_id: "<int><garbage>"` would
+		// pass filter_by_post_validity (via absint) but produce a distinct
+		// transient key from the plain integer form, bypassing server-side dedup.
+		$job_id = $this->factory->job_listing->create();
+
+		$this->set_request( $job_id, [
+			[ 'post_id' => $job_id, 'name' => 'job_view_unique' ],
+		] );
+		$this->invoke_ajax();
+
+		$this->set_request( $job_id, [
+			[ 'post_id' => $job_id . 'abc', 'name' => 'job_view_unique' ],
+		] );
+		$this->invoke_ajax();
+
+		$stats = Stats::instance()->get_stats( 'job_view_unique', $job_id );
+		$this->assertNotEmpty( $stats );
+		$this->assertEquals( 1, $stats[0]->count );
 	}
 
 }

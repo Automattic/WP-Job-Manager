@@ -81,8 +81,11 @@ class Stats_Script {
 				if ( ! is_array( $stat ) ) {
 					return null;
 				}
-				$stat['count'] = 1;
-				$stat['date']  = $today;
+				// Canonicalize post_id early so every downstream step (validity
+				// check, dedup keying, DB write) operates on the same integer.
+				$stat['post_id'] = absint( $stat['post_id'] ?? 0 );
+				$stat['count']   = 1;
+				$stat['date']    = $today;
 				return $stat;
 			},
 			$stats
