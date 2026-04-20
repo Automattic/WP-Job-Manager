@@ -100,7 +100,7 @@ class Stats_Script {
 			}
 		);
 
-		$stats = $this->filter_by_post_validity( $stats );
+		$stats = $this->filter_by_post_validity( $stats, $post_id );
 		$stats = $this->filter_server_unique( $stats );
 
 		if ( empty( $stats ) ) {
@@ -113,42 +113,64 @@ class Stats_Script {
 	}
 
 	/**
-	 * Validate stat post_ids against the expected post type and status.
+	 * Validate stat post_ids against expected post type, status, and request scope.
 	 *
-	 * Listing-scope stats (page=listing or type=impression) require a published job_listing.
-	 * Other stats require any published post.
+	 * Two checks are applied per stat row:
 	 *
-	 * Residual: on a [jobs]-shortcode page the nonce is tied to the page post, but impression
-	 * stats legitimately carry per-listing post_ids. A client with a valid page nonce can
-	 * submit impressions for any published job_listing, not just ones visible on the page.
-	 * Rate limiting + dedup constrain the volume; the dashboard footnote discloses that
-	 * public-page stats are approximate. Eliminating this would require server-side
-	 * impression recording, which is incompatible with full-page caching.
+	 * 1. Scope: for non-impression stats the stat's post_id must equal the request-level
+	 *    post_id (the page the client rendered, bound to the nonce). This stops a client
+	 *    with a valid nonce for one published post from logging `job_view`, `job_apply_click`,
+	 *    etc. for a different post.
 	 *
-	 * @param array $stats Stat rows.
+	 * 2. Validity: the target post must be published, and listing-scope stats
+	 *    (page=listing or type=impression) must target a `job_listing`.
+	 *
+	 * Impression stats (type=impression) are exempt from the scope check because the
+	 * `[jobs]` shortcode's JS client posts per-listing post_ids that legitimately differ
+	 * from the page post_id. Residual risk: on a `[jobs]` page a client with a valid page
+	 * nonce can still submit impressions for any published job_listing, not just ones
+	 * visible on the page. Rate limiting + dedup constrain the volume; the dashboard
+	 * footnote discloses that public-page stats are approximate. Eliminating this would
+	 * require server-side impression recording, which is incompatible with full-page
+	 * caching.
+	 *
+	 * @param array $stats            Stat rows.
+	 * @param int   $request_post_id  The page-level post_id the nonce is bound to.
 	 * @return array Filtered stat rows.
 	 */
-	private function filter_by_post_validity( $stats ) {
-		$listing_stat_names = [];
+	private function filter_by_post_validity( $stats, $request_post_id ) {
+		$listing_stat_names    = [];
+		$impression_stat_names = [];
 		foreach ( $this->get_registered_stats() as $name => $def ) {
 			$is_listing_page = ( $def['page'] ?? '' ) === 'listing';
 			$is_impression   = ( $def['type'] ?? '' ) === 'impression';
 			if ( $is_listing_page || $is_impression ) {
 				$listing_stat_names[] = $name;
 			}
+			if ( $is_impression ) {
+				$impression_stat_names[] = $name;
+			}
 		}
 
 		$cache = [];
 		return array_filter(
 			$stats,
-			function ( $stat ) use ( &$cache, $listing_stat_names ) {
+			function ( $stat ) use ( &$cache, $listing_stat_names, $impression_stat_names, $request_post_id ) {
 				$post_id = absint( $stat['post_id'] ?? 0 );
 				if ( ! $post_id ) {
 					return false;
 				}
 
-				$requires_listing = in_array( $stat['name'] ?? '', $listing_stat_names, true );
-				$cache_key        = $post_id . '|' . ( $requires_listing ? 'L' : 'P' );
+				$name             = $stat['name'] ?? '';
+				$is_impression    = in_array( $name, $impression_stat_names, true );
+				$requires_listing = in_array( $name, $listing_stat_names, true );
+
+				// Scope: non-impression stats must target the post the nonce was issued for.
+				if ( ! $is_impression && $post_id !== $request_post_id ) {
+					return false;
+				}
+
+				$cache_key = $post_id . '|' . ( $requires_listing ? 'L' : 'P' );
 
 				if ( ! isset( $cache[ $cache_key ] ) ) {
 					$status = get_post_status( $post_id );

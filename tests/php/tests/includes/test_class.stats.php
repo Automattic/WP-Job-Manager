@@ -322,6 +322,36 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		$this->assertNotEmpty( $stats );
 	}
 
+	public function test_ajax_rejects_cross_post_listing_stat() {
+		// A valid nonce for page A must not allow logging non-impression stats for post B,
+		// even if B is also a published job_listing.
+		$job_a = $this->factory->job_listing->create();
+		$job_b = $this->factory->job_listing->create();
+
+		$this->set_request( $job_a, [
+			[ 'post_id' => $job_b, 'name' => 'job_apply_click' ],
+		] );
+
+		$this->invoke_ajax();
+
+		$this->assertEmpty( Stats::instance()->get_stats( 'job_apply_click', $job_b ) );
+	}
+
+	public function test_ajax_allows_per_listing_impression_from_jobs_page() {
+		// Impression stats legitimately carry per-listing post_ids on a [jobs] page,
+		// so the scope check must not block them.
+		$page_id  = $this->factory->post->create( [ 'post_type' => 'page', 'post_status' => 'publish' ] );
+		$job_id   = $this->factory->job_listing->create();
+
+		$this->set_request( $page_id, [
+			[ 'post_id' => $job_id, 'name' => 'job_search_impression' ],
+		] );
+
+		$this->invoke_ajax();
+
+		$this->assertNotEmpty( Stats::instance()->get_stats( 'job_search_impression', $job_id ) );
+	}
+
 	public function test_ajax_rejects_impression_for_non_listing() {
 		$page_id = $this->factory->post->create( [ 'post_type' => 'page', 'post_status' => 'publish' ] );
 
@@ -363,24 +393,24 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 	}
 
 	public function test_ajax_caps_batch_size() {
+		// Use impression stats because they're the real-world case for posting many
+		// per-listing stat rows under a single page-level nonce (the [jobs] shortcode).
 		$over_limit = Stats_Script::AJAX_BATCH_LIMIT + 10;
-		$job_ids    = [];
-		for ( $i = 0; $i < $over_limit; $i++ ) {
-			$job_ids[] = $this->factory->job_listing->create();
-		}
-
-		$page_id = $job_ids[0];
+		$page_id    = $this->factory->post->create( [ 'post_type' => 'page', 'post_status' => 'publish' ] );
 
 		$payload = [];
-		foreach ( $job_ids as $id ) {
-			$payload[] = [ 'post_id' => $id, 'name' => 'job_view' ];
+		for ( $i = 0; $i < $over_limit; $i++ ) {
+			$payload[] = [
+				'post_id' => $this->factory->job_listing->create(),
+				'name'    => 'job_search_impression',
+			];
 		}
 
 		$this->set_request( $page_id, $payload );
 
 		$this->invoke_ajax();
 
-		$stats = Stats::instance()->get_stats( 'job_view' );
+		$stats = Stats::instance()->get_stats( 'job_search_impression' );
 		$this->assertCount( Stats_Script::AJAX_BATCH_LIMIT, $stats );
 	}
 
