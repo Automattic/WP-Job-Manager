@@ -58,18 +58,23 @@ class Stats_Script {
 			|| ! $post_id
 			|| ! wp_verify_nonce( $post_data['_ajax_nonce'], 'wpjm_log_stat_' . $post_id )
 		) {
-			wp_send_json_error( 'Invalid request.', 403 );
+			wp_send_json_error( __( 'Invalid request.', 'wp-job-manager' ), 403 );
 			return;
 		}
 
 		if ( $this->is_rate_limited() ) {
-			wp_send_json_error( 'Too many requests.', 429 );
+			wp_send_json_error( __( 'Too many requests.', 'wp-job-manager' ), 429 );
 			return;
 		}
 
-		$stats = json_decode( $post_data['stats'] ?? '[]', true );
+		$stats_raw = $post_data['stats'] ?? '[]';
+		if ( ! is_string( $stats_raw ) ) {
+			wp_send_json_error( __( 'Invalid payload.', 'wp-job-manager' ), 400 );
+			return;
+		}
+		$stats = json_decode( $stats_raw, true );
 		if ( empty( $stats ) || ! is_array( $stats ) ) {
-			wp_send_json_error( 'No stats to log.', 400 );
+			wp_send_json_error( __( 'No stats to log.', 'wp-job-manager' ), 400 );
 			return;
 		}
 
@@ -81,9 +86,13 @@ class Stats_Script {
 				if ( ! is_array( $stat ) ) {
 					return null;
 				}
-				// Canonicalize post_id early so every downstream step (validity
-				// check, dedup keying, DB write) operates on the same integer.
+				// Canonicalize types early so every downstream step (validity check,
+				// dedup keying, DB write) operates on consistent scalars. Without this,
+				// non-string name/group or non-integer post_id can trip strlen()/md5()
+				// later and turn the endpoint into a trivial DoS.
 				$stat['post_id'] = absint( $stat['post_id'] ?? 0 );
+				$stat['name']    = is_string( $stat['name'] ?? null ) ? $stat['name'] : '';
+				$stat['group']   = is_string( $stat['group'] ?? null ) ? $stat['group'] : '';
 				$stat['count']   = 1;
 				$stat['date']    = $today;
 				return $stat;
@@ -239,6 +248,12 @@ class Stats_Script {
 	/**
 	 * Soft per-client rate limit. Not an auth boundary — absorbs drive-by abuse.
 	 *
+	 * Fixed-window implementation: the transient stores `{count, start}` and the
+	 * window resets once `now - start >= MINUTE_IN_SECONDS`. Using just an integer
+	 * counter with `set_transient(..., MINUTE_IN_SECONDS)` would refresh the TTL
+	 * on every call, so a continuous trickle of requests would never let the
+	 * window expire and would eventually falsely block legitimately active users.
+	 *
 	 * @return bool
 	 */
 	private function is_rate_limited() {
@@ -246,12 +261,27 @@ class Stats_Script {
 		if ( '' === $client ) {
 			return false;
 		}
-		$key   = 'wpjm_rl_' . md5( $client );
-		$count = (int) get_transient( $key );
-		if ( $count >= self::AJAX_RATE_LIMIT ) {
+		$key    = 'wpjm_rl_' . md5( $client );
+		$now    = time();
+		$window = get_transient( $key );
+
+		if (
+			! is_array( $window )
+			|| ! isset( $window['count'], $window['start'] )
+			|| $now - (int) $window['start'] >= MINUTE_IN_SECONDS
+		) {
+			$window = [
+				'count' => 0,
+				'start' => $now,
+			];
+		}
+
+		if ( (int) $window['count'] >= self::AJAX_RATE_LIMIT ) {
 			return true;
 		}
-		set_transient( $key, $count + 1, MINUTE_IN_SECONDS );
+
+		$window['count']++;
+		set_transient( $key, $window, MINUTE_IN_SECONDS );
 		return false;
 	}
 

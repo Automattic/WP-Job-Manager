@@ -474,8 +474,12 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 	public function test_ajax_rate_limit_blocks_excess_requests() {
 		$job_id = $this->factory->job_listing->create();
 
-		// Seed the rate-limit transient near its ceiling so we don't need 60 iterations.
-		set_transient( 'wpjm_rl_' . md5( '127.0.0.1' ), 60, MINUTE_IN_SECONDS );
+		// Seed the rate-limit window at its ceiling so we don't need 60 iterations.
+		set_transient(
+			'wpjm_rl_' . md5( '127.0.0.1' ),
+			[ 'count' => Stats_Script::AJAX_RATE_LIMIT, 'start' => time() ],
+			MINUTE_IN_SECONDS
+		);
 
 		$this->set_request( $job_id, [
 			[ 'post_id' => $job_id, 'name' => 'job_view' ],
@@ -483,6 +487,63 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		$this->invoke_ajax();
 
 		$this->assertEmpty( Stats::instance()->get_stats( 'job_view', $job_id ) );
+	}
+
+	public function test_ajax_rate_limit_window_resets_after_minute() {
+		// Regression: an integer counter with TTL reset on every write would
+		// climb forever for an actively-browsing client. The fixed window must
+		// reset once start + MINUTE_IN_SECONDS has passed.
+		$job_id = $this->factory->job_listing->create();
+
+		// Window at ceiling but started more than a minute ago: stale, should reset.
+		set_transient(
+			'wpjm_rl_' . md5( '127.0.0.1' ),
+			[ 'count' => Stats_Script::AJAX_RATE_LIMIT, 'start' => time() - ( MINUTE_IN_SECONDS + 10 ) ],
+			MINUTE_IN_SECONDS
+		);
+
+		$this->set_request( $job_id, [
+			[ 'post_id' => $job_id, 'name' => 'job_view' ],
+		] );
+		$this->invoke_ajax();
+
+		$this->assertNotEmpty( Stats::instance()->get_stats( 'job_view', $job_id ) );
+	}
+
+	public function test_ajax_handles_non_string_stats_field_without_fatal() {
+		// Regression: `stats[]=foo` makes $_POST['stats'] an array, and
+		// json_decode(array) fatals on PHP 8+. Endpoint must reject cleanly.
+		$job_id = $this->factory->job_listing->create();
+
+		$_POST = [
+			'post_id'     => $job_id,
+			'stats'       => [ 'not', 'a', 'string' ],
+			'_ajax_nonce' => wp_create_nonce( 'wpjm_log_stat_' . $job_id ),
+		];
+
+		$this->invoke_ajax();
+
+		$this->assertEmpty( Stats::instance()->get_stats( null, $job_id ) );
+	}
+
+	public function test_ajax_handles_non_string_group_without_fatal() {
+		// Regression: non-string `group` would later hit strlen() in parse_stats()
+		// and fatal on PHP 8+. Must be normalized before any downstream processing.
+		$job_id = $this->factory->job_listing->create();
+
+		$this->set_request( $job_id, [
+			[
+				'post_id' => $job_id,
+				'name'    => 'job_view',
+				'group'   => [ 'malicious' => 'object' ],
+			],
+		] );
+
+		$this->invoke_ajax();
+
+		$stats = Stats::instance()->get_stats( 'job_view', $job_id );
+		$this->assertNotEmpty( $stats );
+		$this->assertEquals( '', $stats[0]->group );
 	}
 
 	public function test_parse_stats_rejects_trashed_post() {
