@@ -73,7 +73,11 @@ class Stats_Script {
 			return;
 		}
 		$stats = json_decode( $stats_raw, true );
-		if ( empty( $stats ) || ! is_array( $stats ) ) {
+		if ( JSON_ERROR_NONE !== json_last_error() || ! is_array( $stats ) ) {
+			wp_send_json_error( __( 'Invalid payload.', 'wp-job-manager' ), 400 );
+			return;
+		}
+		if ( empty( $stats ) ) {
 			wp_send_json_error( __( 'No stats to log.', 'wp-job-manager' ), 400 );
 			return;
 		}
@@ -117,7 +121,10 @@ class Stats_Script {
 			return;
 		}
 
-		Stats::instance()->batch_log_stats( $stats );
+		if ( ! Stats::instance()->batch_log_stats( $stats ) ) {
+			wp_send_json_error( __( 'Unable to log stats.', 'wp-job-manager' ), 500 );
+			return;
+		}
 		wp_send_json_success();
 	}
 
