@@ -41,13 +41,6 @@ class Stats_Script {
 	const AJAX_RATE_LIMIT = 60;
 
 	/**
-	 * Memoized result of the `wpjm_get_registered_stats` filter for the current request.
-	 *
-	 * @var array|null
-	 */
-	private $registered_stats_cache = null;
-
-	/**
 	 * Log multiple stats in one go. Triggered in an ajax call.
 	 *
 	 * @return void
@@ -127,17 +120,22 @@ class Stats_Script {
 		);
 		$stats = array_filter( $stats );
 
-		$registered_stats = $this->get_registered_stat_names();
+		// Snapshot the registered-stats filter result once for this request and thread
+		// it through the filter helpers. Caching this on a singleton property would
+		// break `apply_filters` semantics for callbacks added after the first call
+		// in the same request.
+		$registered_stats = $this->get_registered_stats();
+		$registered_names = array_keys( $registered_stats );
 		$stats            = array_filter(
 			$stats,
-			function ( $stat ) use ( $registered_stats ) {
-				return isset( $stat['name'] ) && in_array( $stat['name'], $registered_stats, true );
+			function ( $stat ) use ( $registered_names ) {
+				return isset( $stat['name'] ) && in_array( $stat['name'], $registered_names, true );
 			}
 		);
 
-		$stats          = $this->filter_by_post_validity( $stats, $post_id );
+		$stats          = $this->filter_by_post_validity( $stats, $post_id, $registered_stats );
 		$pending_unique = [];
-		$stats          = $this->filter_server_unique( $stats, $pending_unique );
+		$stats          = $this->filter_server_unique( $stats, $pending_unique, $registered_stats );
 
 		if ( empty( $stats ) ) {
 			wp_send_json_success();
@@ -180,12 +178,13 @@ class Stats_Script {
 	 *
 	 * @param array $stats            Stat rows.
 	 * @param int   $request_post_id  The page-level post_id the nonce is bound to.
+	 * @param array $registered_stats Snapshot of `wpjm_get_registered_stats` for this request.
 	 * @return array Filtered stat rows.
 	 */
-	private function filter_by_post_validity( $stats, $request_post_id ) {
+	private function filter_by_post_validity( $stats, $request_post_id, array $registered_stats ) {
 		$listing_stat_names    = [];
 		$impression_stat_names = [];
-		foreach ( $this->get_registered_stats() as $name => $def ) {
+		foreach ( $registered_stats as $name => $def ) {
 			$is_listing_page = ( $def['page'] ?? '' ) === 'listing';
 			$is_impression   = ( $def['type'] ?? '' ) === 'impression';
 			if ( $is_listing_page || $is_impression ) {
@@ -249,18 +248,19 @@ class Stats_Script {
 	 * the transient before `batch_log_stats()` ran risked suppressing a legitimate
 	 * retry for 24 hours when the DB write failed.
 	 *
-	 * @param array $stats        Stat rows.
-	 * @param array $pending_keys Out-param: transient keys to set after a successful DB write.
+	 * @param array $stats            Stat rows.
+	 * @param array $pending_keys     Out-param: transient keys to set after a successful DB write.
+	 * @param array $registered_stats Snapshot of `wpjm_get_registered_stats` for this request.
 	 * @return array Filtered stat rows.
 	 */
-	private function filter_server_unique( $stats, array &$pending_keys ) {
+	private function filter_server_unique( $stats, array &$pending_keys, array $registered_stats ) {
 		$client = $this->get_client_ip();
 		if ( '' === $client ) {
 			return $stats;
 		}
 
 		$unique_stat_names = [];
-		foreach ( $this->get_registered_stats() as $name => $def ) {
+		foreach ( $registered_stats as $name => $def ) {
 			if ( ! empty( $def['unique'] ) ) {
 				$unique_stat_names[] = $name;
 			}
@@ -336,15 +336,6 @@ class Stats_Script {
 	private function get_client_ip() {
 		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 		return is_string( $ip ) ? $ip : '';
-	}
-
-	/**
-	 * Get stat names.
-	 *
-	 * @return int[]|string[]
-	 */
-	private function get_registered_stat_names() {
-		return array_keys( $this->get_registered_stats() );
 	}
 
 	/**
@@ -424,10 +415,7 @@ class Stats_Script {
 	 * @return array
 	 */
 	private function get_registered_stats() {
-		if ( null !== $this->registered_stats_cache ) {
-			return $this->registered_stats_cache;
-		}
-		$this->registered_stats_cache = (array) apply_filters(
+		return (array) apply_filters(
 			'wpjm_get_registered_stats',
 			[
 				Job_Listing_Stats::VIEW              => [
@@ -471,7 +459,6 @@ class Stats_Script {
 				],
 			]
 		);
-		return $this->registered_stats_cache;
 	}
 
 	/**
