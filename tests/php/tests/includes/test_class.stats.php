@@ -637,4 +637,42 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		$this->assertEquals( 1, $stats[0]->count );
 	}
 
+	public function test_ajax_dedup_not_burned_on_db_failure() {
+		// Regression: filter_server_unique used to write the dedup transient
+		// before the DB write ran, so a failed insert silently suppressed the
+		// same (IP, name, post_id) for 24h. The pending-key rollback must keep
+		// the window open so a retry can succeed.
+		global $wpdb;
+		$job_id = $this->factory->job_listing->create();
+
+		$real_table          = $wpdb->wpjm_stats;
+		$wpdb->wpjm_stats    = $wpdb->prefix . 'wpjm_stats_missing_' . wp_rand();
+		$previous_suppress   = $wpdb->suppress_errors( true );
+		$previous_show_errors = $wpdb->hide_errors();
+
+		$this->set_request( $job_id, [
+			[ 'post_id' => $job_id, 'name' => 'job_view_unique' ],
+		] );
+		$this->invoke_ajax();
+
+		$wpdb->wpjm_stats = $real_table;
+		$wpdb->suppress_errors( $previous_suppress );
+		if ( $previous_show_errors ) {
+			$wpdb->show_errors();
+		}
+
+		$dedup_key = 'wpjm_u_' . md5( '127.0.0.1|job_view_unique|' . $job_id );
+		$this->assertFalse( get_transient( $dedup_key ), 'Dedup transient must not be set when the DB write failed.' );
+
+		// Retry on the real table must now succeed.
+		$this->set_request( $job_id, [
+			[ 'post_id' => $job_id, 'name' => 'job_view_unique' ],
+		] );
+		$this->invoke_ajax();
+
+		$stats = Stats::instance()->get_stats( 'job_view_unique', $job_id );
+		$this->assertNotEmpty( $stats );
+		$this->assertEquals( 1, $stats[0]->count );
+	}
+
 }

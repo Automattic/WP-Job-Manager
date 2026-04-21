@@ -41,6 +41,13 @@ class Stats_Script {
 	const AJAX_RATE_LIMIT = 60;
 
 	/**
+	 * Memoized result of the `wpjm_get_registered_stats` filter for the current request.
+	 *
+	 * @var array|null
+	 */
+	private $registered_stats_cache = null;
+
+	/**
 	 * Log multiple stats in one go. Triggered in an ajax call.
 	 *
 	 * @return void
@@ -107,6 +114,13 @@ class Stats_Script {
 				$stat['group']   = is_string( $stat['group'] ?? null ) ? $stat['group'] : '';
 				$stat['count']   = 1;
 				$stat['date']    = $today;
+				// Mirror Stats::parse_stats() length constraints here so the AJAX handler
+				// never hands batch_log_stats() a row that parse_stats() will reject. That
+				// keeps a `false` return from batch_log_stats unambiguously a DB error,
+				// so clients don't see spurious 500s for valid-but-oversized payloads.
+				if ( strlen( $stat['name'] ) > 50 || strlen( $stat['group'] ) > 50 ) {
+					return null;
+				}
 				return $stat;
 			},
 			$stats
@@ -121,8 +135,9 @@ class Stats_Script {
 			}
 		);
 
-		$stats = $this->filter_by_post_validity( $stats, $post_id );
-		$stats = $this->filter_server_unique( $stats );
+		$stats          = $this->filter_by_post_validity( $stats, $post_id );
+		$pending_unique = [];
+		$stats          = $this->filter_server_unique( $stats, $pending_unique );
 
 		if ( empty( $stats ) ) {
 			wp_send_json_success();
@@ -130,8 +145,13 @@ class Stats_Script {
 		}
 
 		if ( ! Stats::instance()->batch_log_stats( $stats ) ) {
+			// Don't burn the dedup window if the DB write failed — the client should be
+			// able to retry the same unique stat without being silently suppressed for 24h.
 			wp_send_json_error( __( 'Unable to log stats.', 'wp-job-manager' ), 500 );
 			return;
+		}
+		foreach ( $pending_unique as $key ) {
+			set_transient( $key, 1, DAY_IN_SECONDS );
 		}
 		wp_send_json_success();
 	}
@@ -224,10 +244,16 @@ class Stats_Script {
 	 * (midnight UTC) boundary would let a visitor near the boundary re-count within
 	 * minutes of their first click.
 	 *
-	 * @param array $stats Stat rows.
+	 * Dedup transient keys are collected into `$pending_keys` rather than written
+	 * inline, so the caller can commit them only after the DB write succeeds. Writing
+	 * the transient before `batch_log_stats()` ran risked suppressing a legitimate
+	 * retry for 24 hours when the DB write failed.
+	 *
+	 * @param array $stats        Stat rows.
+	 * @param array $pending_keys Out-param: transient keys to set after a successful DB write.
 	 * @return array Filtered stat rows.
 	 */
-	private function filter_server_unique( $stats ) {
+	private function filter_server_unique( $stats, array &$pending_keys ) {
 		$client = $this->get_client_ip();
 		if ( '' === $client ) {
 			return $stats;
@@ -245,16 +271,18 @@ class Stats_Script {
 
 		return array_filter(
 			$stats,
-			function ( $stat ) use ( $client, $unique_stat_names ) {
+			function ( $stat ) use ( $client, $unique_stat_names, &$pending_keys ) {
 				$name = $stat['name'] ?? '';
 				if ( ! in_array( $name, $unique_stat_names, true ) ) {
 					return true;
 				}
 				$key = 'wpjm_u_' . md5( $client . '|' . $name . '|' . ( $stat['post_id'] ?? 0 ) );
-				if ( get_transient( $key ) ) {
+				// Reject duplicates already claimed earlier in the same batch, so an
+				// attacker can't pack 50 identical rows into one request.
+				if ( in_array( $key, $pending_keys, true ) || get_transient( $key ) ) {
 					return false;
 				}
-				set_transient( $key, 1, DAY_IN_SECONDS );
+				$pending_keys[] = $key;
 				return true;
 			}
 		);
@@ -396,7 +424,10 @@ class Stats_Script {
 	 * @return array
 	 */
 	private function get_registered_stats() {
-		return (array) apply_filters(
+		if ( null !== $this->registered_stats_cache ) {
+			return $this->registered_stats_cache;
+		}
+		$this->registered_stats_cache = (array) apply_filters(
 			'wpjm_get_registered_stats',
 			[
 				Job_Listing_Stats::VIEW              => [
@@ -440,6 +471,7 @@ class Stats_Script {
 				],
 			]
 		);
+		return $this->registered_stats_cache;
 	}
 
 	/**
