@@ -98,19 +98,16 @@ class Stats_Script {
 				if ( ! is_array( $stat ) ) {
 					return null;
 				}
-				// Canonicalize types early so every downstream step (validity check,
-				// dedup keying, DB write) operates on consistent scalars. Without this,
-				// non-string name/group or non-integer post_id can trip strlen()/md5()
-				// later and turn the endpoint into a trivial DoS.
+				// Canonicalize types so every downstream step (validity check, dedup
+				// keying, DB write) operates on consistent scalars; strlen()/md5() on
+				// a non-string fatals on PHP 8+.
 				$stat['post_id'] = absint( $stat['post_id'] ?? 0 );
 				$stat['name']    = is_string( $stat['name'] ?? null ) ? $stat['name'] : '';
 				$stat['group']   = is_string( $stat['group'] ?? null ) ? $stat['group'] : '';
 				$stat['count']   = 1;
 				$stat['date']    = $today;
-				// Mirror Stats::parse_stats() length constraints here so the AJAX handler
-				// never hands batch_log_stats() a row that parse_stats() will reject. That
-				// keeps a `false` return from batch_log_stats unambiguously a DB error,
-				// so clients don't see spurious 500s for valid-but-oversized payloads.
+				// Mirror Stats::parse_stats() length constraints so a `false` return
+				// from batch_log_stats() unambiguously means a DB error.
 				if ( strlen( $stat['name'] ) > 50 || strlen( $stat['group'] ) > 50 ) {
 					return null;
 				}
@@ -121,9 +118,8 @@ class Stats_Script {
 		$stats = array_filter( $stats );
 
 		// Snapshot the registered-stats filter result once for this request and thread
-		// it through the filter helpers. Caching this on a singleton property would
-		// break `apply_filters` semantics for callbacks added after the first call
-		// in the same request.
+		// it through the filter helpers so the `wpjm_get_registered_stats` filter fires
+		// once per AJAX request.
 		$registered_stats = $this->get_registered_stats();
 		$registered_names = array_keys( $registered_stats );
 		$stats            = array_filter(
@@ -143,8 +139,6 @@ class Stats_Script {
 		}
 
 		if ( ! Stats::instance()->batch_log_stats( $stats ) ) {
-			// Don't burn the dedup window if the DB write failed — the client should be
-			// able to retry the same unique stat without being silently suppressed for 24h.
 			wp_send_json_error( __( 'Unable to log stats.', 'wp-job-manager' ), 500 );
 			return;
 		}
@@ -244,9 +238,7 @@ class Stats_Script {
 	 * minutes of their first click.
 	 *
 	 * Dedup transient keys are collected into `$pending_keys` rather than written
-	 * inline, so the caller can commit them only after the DB write succeeds. Writing
-	 * the transient before `batch_log_stats()` ran risked suppressing a legitimate
-	 * retry for 24 hours when the DB write failed.
+	 * inline, so the caller can commit them only after the DB write succeeds.
 	 *
 	 * @param array $stats            Stat rows.
 	 * @param array $pending_keys     Out-param: transient keys to set after a successful DB write.
@@ -292,10 +284,8 @@ class Stats_Script {
 	 * Soft per-client rate limit. Not an auth boundary — absorbs drive-by abuse.
 	 *
 	 * Fixed-window implementation: the transient stores `{count, start}` and the
-	 * window resets once `now - start >= MINUTE_IN_SECONDS`. Using just an integer
-	 * counter with `set_transient(..., MINUTE_IN_SECONDS)` would refresh the TTL
-	 * on every call, so a continuous trickle of requests would never let the
-	 * window expire and would eventually falsely block legitimately active users.
+	 * window resets once `now - start >= MINUTE_IN_SECONDS`, so the TTL isn't
+	 * refreshed by each write and an active client isn't falsely blocked.
 	 *
 	 * @return bool
 	 */
