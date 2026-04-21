@@ -330,38 +330,47 @@ class Stats_Script {
 
 		global $post;
 
+		$pages = [];
 		if ( is_wpjm_job_listing() ) {
-			$this->enqueue_stats_script( 'listing', $post->ID );
+			$pages[] = 'listing';
 		}
-
 		if ( $this->page_has_jobs_shortcode( $post ) ) {
-			$this->enqueue_stats_script( 'jobs', $post->ID );
+			$pages[] = 'jobs';
 		}
 
+		if ( empty( $pages ) ) {
+			return;
+		}
+
+		$this->enqueue_stats_script( $pages, $post->ID );
 	}
 
 	/**
-	 * Register scripts for given screen.
+	 * Register the stats script for the given page contexts.
 	 *
-	 * @param string $page Which page.
-	 * @param int    $post_id Which id.
+	 * A single request can match more than one context (e.g. a `job_listing`
+	 * post whose content embeds the `[jobs]` shortcode). All applicable stat
+	 * definitions are collected into one `wp_localize_script` call so the
+	 * client receives the union of listing-page and jobs-page stats under a
+	 * single nonce.
+	 *
+	 * @param string[] $pages    Page contexts (`listing`, `jobs`).
+	 * @param int      $post_id  The page-level post_id.
 	 *
 	 * @return void
 	 */
-	private function enqueue_stats_script( $page = 'listing', $post_id = 0 ) {
+	private function enqueue_stats_script( array $pages, $post_id = 0 ) {
 
-		// If a page is both a single job_listing and hosts the [jobs] shortcode,
-		// only the first call wins — double-localizing would overwrite the first
-		// nonce and break listing-page stats.
-		if ( wp_script_is( 'wp-job-manager-stats', 'enqueued' ) ) {
-			return;
+		$stats = [];
+		foreach ( $pages as $page ) {
+			$stats = array_merge( $stats, $this->get_stats_for_ajax( $post_id, $page ) );
 		}
 
 		$script_data = [
 			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
 			'ajaxNonce' => wp_create_nonce( 'wpjm_log_stat_' . $post_id ),
 			'postId'    => $post_id,
-			'stats'     => $this->get_stats_for_ajax( $post_id, $page ),
+			'stats'     => $stats,
 		];
 
 		wp_enqueue_script( 'wp-job-manager-stats' );
