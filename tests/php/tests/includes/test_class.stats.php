@@ -58,11 +58,27 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 
 	private function delete_transients_by_prefix( $prefix ) {
 		global $wpdb;
-		$like = $wpdb->esc_like( '_transient_' . $prefix ) . '%';
+		$value_like   = $wpdb->esc_like( '_transient_' . $prefix ) . '%';
+		$timeout_like = $wpdb->esc_like( '_transient_timeout_' . $prefix ) . '%';
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$names = $wpdb->get_col( $wpdb->prepare( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s", $like ) );
+		$names = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+				$value_like,
+				$timeout_like
+			)
+		);
+		// Collect the transient name from either the value row or the timeout row so that
+		// an orphaned `_transient_timeout_*` left by a prior run still gets evicted.
+		$transients = [];
 		foreach ( $names as $name ) {
-			$transient = substr( $name, strlen( '_transient_' ) );
+			if ( 0 === strpos( $name, '_transient_timeout_' ) ) {
+				$transients[ substr( $name, strlen( '_transient_timeout_' ) ) ] = true;
+			} elseif ( 0 === strpos( $name, '_transient_' ) ) {
+				$transients[ substr( $name, strlen( '_transient_' ) ) ] = true;
+			}
+		}
+		foreach ( array_keys( $transients ) as $transient ) {
 			delete_transient( $transient );
 		}
 	}
