@@ -195,7 +195,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		if ( ! empty( $args['author'] ) ) {
 			$author_ids = is_array( $args['author'] )
 				? array_filter( array_map( 'absint', $args['author'] ) )
-				: array_filter( array_map( 'absint', explode( ',', $args['author'] ) ) );
+				: array_filter( array_map( 'absint', explode( ',', (string) $args['author'] ) ) );
 			if ( ! empty( $author_ids ) ) {
 				$query_args['author__in'] = $author_ids;
 			}
