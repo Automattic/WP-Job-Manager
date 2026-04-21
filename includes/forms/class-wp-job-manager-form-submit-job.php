@@ -341,7 +341,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'    => 4,
 					],
 					'company_twitter' => [
-						'label'       => __( 'Twitter username', 'wp-job-manager' ),
+						'label'       => __( 'X / Twitter username', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( '@yourcompany', 'wp-job-manager' ),
