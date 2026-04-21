@@ -50,6 +50,14 @@ class Stats_Script {
 			return;
 		}
 
+		// If stats collection has been toggled off (e.g. between page render and
+		// this deferred AJAX call), short-circuit as a no-op so we don't emit 500s
+		// for what is an expected state.
+		if ( ! Stats::is_enabled() ) {
+			wp_send_json_success();
+			return;
+		}
+
 		$post_data = stripslashes_deep( $_POST );
 		$post_id   = absint( $post_data['post_id'] ?? 0 );
 

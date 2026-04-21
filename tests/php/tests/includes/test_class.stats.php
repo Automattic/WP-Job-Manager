@@ -526,6 +526,43 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 		$this->assertEmpty( Stats::instance()->get_stats( null, $job_id ) );
 	}
 
+	public function test_parse_stats_rejects_non_string_name_via_batch() {
+		// batch_log_stats() is an array-typed public API: third-party callers can
+		// pass non-string `name`. parse_stats must reject without fatalling on strlen().
+		$job_id = $this->factory->job_listing->create();
+
+		$result = Stats::instance()->batch_log_stats( [
+			[ 'name' => [ 'not', 'a', 'string' ], 'post_id' => $job_id, 'count' => 1 ],
+		] );
+
+		$this->assertFalse( $result );
+	}
+
+	public function test_parse_stats_rejects_non_string_group() {
+		$job_id = $this->factory->job_listing->create();
+
+		$result = Stats::instance()->log_stat(
+			'job_view',
+			[ 'post_id' => $job_id, 'count' => 1, 'group' => [ 'not', 'a', 'string' ] ]
+		);
+
+		$this->assertFalse( $result );
+	}
+
+	public function test_ajax_noop_when_stats_disabled() {
+		update_option( Stats::OPTION_ENABLE_STATS, false );
+		$job_id = $this->factory->job_listing->create();
+
+		$this->set_request( $job_id, [
+			[ 'post_id' => $job_id, 'name' => 'job_view' ],
+		] );
+		$this->invoke_ajax();
+
+		// No row written and no error surfaced; re-enable for assertion read.
+		update_option( Stats::OPTION_ENABLE_STATS, true );
+		$this->assertEmpty( Stats::instance()->get_stats( null, $job_id ) );
+	}
+
 	public function test_ajax_handles_non_string_group_without_fatal() {
 		// Regression: non-string `group` would later hit strlen() in parse_stats()
 		// and fatal on PHP 8+. Must be normalized before any downstream processing.

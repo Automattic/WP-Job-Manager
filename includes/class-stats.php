@@ -213,6 +213,8 @@ class Stats {
 		$args['post_id'] = absint( $args['post_id'] );
 
 		if (
+			! is_string( $args['name'] ) ||
+			! is_string( $args['group'] ) ||
 			empty( $args['name'] ) ||
 			strlen( $args['name'] ) > 50 ||
 			strlen( $args['group'] ) > 50 ||
