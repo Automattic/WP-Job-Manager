@@ -298,10 +298,7 @@ class Stats_Script {
 	 * @return string
 	 */
 	private function get_client_ip() {
-		if ( ! isset( $_SERVER['REMOTE_ADDR'] ) || ! is_string( $_SERVER['REMOTE_ADDR'] ) ) {
-			return '';
-		}
-		$ip = filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP );
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP ) : '';
 		return is_string( $ip ) ? $ip : '';
 	}
 
