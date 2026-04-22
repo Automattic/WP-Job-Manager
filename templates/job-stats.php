@@ -87,6 +87,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 		</div>
 	</div>
+	<p class="jm-job-stats__footnote">
+		<small><em><?php esc_html_e( 'Statistics reflect visitor activity on public pages and may include approximate counts.', 'wp-job-manager' ); ?></em></small>
+	</p>
 	<div class="jm-job-stat-details jm-ui-row">
 		<?php foreach ( $stats as $column_name => $column ) : ?>
 			<div class="jm-ui-col">

@@ -1,13 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Deprecated functions. Do not use these.
  *
  * @package wp-job-manager
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( ! function_exists( 'order_featured_job_listing' ) ) :
 	/**

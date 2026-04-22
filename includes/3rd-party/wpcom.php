@@ -1,13 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * WP.com Marketplace licensing integration for premium core addons.
  *
  * @package wp-job-manager
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Configure license configuration for WP Job Manager when purchased from WP.com Marketplace.

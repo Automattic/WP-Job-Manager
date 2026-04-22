@@ -1,17 +1,17 @@
-# Copyright (C) 2024 Automattic
+# Copyright (C) 2026 Automattic
 # This file is distributed under the GPL2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager 2.4.0\n"
+"Project-Id-Version: WP Job Manager 2.4.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-job-manager/\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-25T08:58:08+00:00\n"
+"POT-Creation-Date: 2026-02-24T15:29:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-job-manager\n"
 
 #. Plugin Name of the plugin
@@ -62,6 +62,7 @@ msgstr ""
 
 #. translators: Placeholder (%s) is the URL to edit the primary language in WPML.
 #: includes/3rd-party/wpml.php:108
+#, php-format
 msgid "<a href=\"%s\">Switch to primary language</a> to edit this setting."
 msgstr ""
 
@@ -71,6 +72,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the Terms and Conditions placeholder.
 #: includes/abstracts/abstract-wp-job-manager-form.php:383
+#, php-format
 msgid "I accept the %s."
 msgstr ""
 
@@ -247,6 +249,7 @@ msgstr[1] ""
 
 #. translators: %s is the new version number for the addon.
 #: includes/admin/class-wp-job-manager-admin-notices.php:647
+#, php-format
 msgid "New Version: %s"
 msgstr ""
 
@@ -342,41 +345,49 @@ msgstr ""
 
 #. translators: Placeholder (%s) is the plural name of the job listings post type.
 #: includes/admin/class-wp-job-manager-cpt.php:81
+#, php-format
 msgid "Approve %s"
 msgstr ""
 
 #. translators: Placeholder (%s) is the plural name of the job listings post type.
 #: includes/admin/class-wp-job-manager-cpt.php:83
+#, php-format
 msgid "%s approved"
 msgstr ""
 
 #. translators: Placeholder (%s) is the plural name of the job listings post type.
 #: includes/admin/class-wp-job-manager-cpt.php:88
+#, php-format
 msgid "Expire %s"
 msgstr ""
 
 #. translators: Placeholder (%s) is the plural name of the job listings post type.
 #: includes/admin/class-wp-job-manager-cpt.php:90
+#, php-format
 msgid "%s expired"
 msgstr ""
 
 #. translators: Placeholder (%s) is the plural name of the job listings post type.
 #: includes/admin/class-wp-job-manager-cpt.php:95
+#, php-format
 msgid "Mark %s Filled"
 msgstr ""
 
 #. translators: Placeholder (%s) is the plural name of the job listings post type.
 #: includes/admin/class-wp-job-manager-cpt.php:97
+#, php-format
 msgid "%s marked as filled"
 msgstr ""
 
 #. translators: Placeholder (%s) is the plural name of the job listings post type.
 #: includes/admin/class-wp-job-manager-cpt.php:102
+#, php-format
 msgid "Mark %s Not Filled"
 msgstr ""
 
 #. translators: Placeholder (%s) is the plural name of the job listings post type.
 #: includes/admin/class-wp-job-manager-cpt.php:104
+#, php-format
 msgid "%s marked as not filled"
 msgstr ""
 
@@ -389,7 +400,7 @@ msgid "Select Filled"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:367
-#: includes/class-job-dashboard-shortcode.php:648
+#: includes/class-job-dashboard-shortcode.php:649
 msgid "Filled"
 msgstr ""
 
@@ -402,7 +413,7 @@ msgid "Select Featured"
 msgstr ""
 
 #: includes/admin/class-wp-job-manager-cpt.php:386
-#: includes/class-job-dashboard-shortcode.php:654
+#: includes/class-job-dashboard-shortcode.php:655
 msgid "Featured"
 msgstr ""
 
@@ -417,6 +428,7 @@ msgstr ""
 
 #. translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 #: includes/admin/class-wp-job-manager-cpt.php:457
+#, php-format
 msgid "%1$s updated. <a href=\"%2$s\">View</a>"
 msgstr ""
 
@@ -430,36 +442,43 @@ msgstr ""
 
 #. translators: %s is the singular name of the job listing post type.
 #: includes/admin/class-wp-job-manager-cpt.php:461
+#, php-format
 msgid "%s updated."
 msgstr ""
 
 #. translators: %1$s is the singular name of the job listing post type; %2$s is the revision number.
 #: includes/admin/class-wp-job-manager-cpt.php:463
+#, php-format
 msgid "%1$s restored to revision from %2$s"
 msgstr ""
 
 #. translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 #: includes/admin/class-wp-job-manager-cpt.php:465
+#, php-format
 msgid "%1$s published. <a href=\"%2$s\">View</a>"
 msgstr ""
 
 #. translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 #: includes/admin/class-wp-job-manager-cpt.php:467
+#, php-format
 msgid "%s saved."
 msgstr ""
 
 #. translators: %1$s is the singular name of the job listing post type; %2$s is the URL to preview the listing.
 #: includes/admin/class-wp-job-manager-cpt.php:469
+#, php-format
 msgid "%1$s submitted. <a target=\"_blank\" href=\"%2$s\">Preview</a>"
 msgstr ""
 
 #. translators: %1$s is the singular name of the post type; %2$s is the date the post will be published; %3$s is the URL to preview the listing.
 #: includes/admin/class-wp-job-manager-cpt.php:472
+#, php-format
 msgid "%1$s scheduled for: <strong>%2$s</strong>. <a target=\"_blank\" href=\"%3$s\">Preview</a>"
 msgstr ""
 
 #. translators: %1$s is the singular name of the job listing post type; %2$s is the URL to view the listing.
 #: includes/admin/class-wp-job-manager-cpt.php:478
+#, php-format
 msgid "%1$s draft updated. <a target=\"_blank\" href=\"%2$s\">Preview</a>"
 msgstr ""
 
@@ -531,6 +550,7 @@ msgstr ""
 
 #. translators: %d is the post ID for the job listing.
 #: includes/admin/class-wp-job-manager-cpt.php:623
+#, php-format
 msgid "ID: %d"
 msgstr ""
 
@@ -545,6 +565,7 @@ msgstr ""
 
 #. translators: %s placeholder is the username of the user.
 #: includes/admin/class-wp-job-manager-cpt.php:676
+#, php-format
 msgid "by %s"
 msgstr ""
 
@@ -611,6 +632,7 @@ msgstr ""
 
 #. translators: Placeholder (%s) is the name of the job listing affected.
 #: includes/admin/class-wp-job-manager-promoted-jobs-admin.php:177
+#, php-format
 msgid "Promotion for %s deactivated"
 msgstr ""
 
@@ -713,6 +735,7 @@ msgstr ""
 
 #. translators: Placeholder %s is URL to set up a Google Maps API key.
 #: includes/admin/class-wp-job-manager-settings.php:145
+#, php-format
 msgid "Google requires an API key to retrieve location information for job listings. Acquire an API key from the <a href=\"%s\">Google Maps API developer site</a>."
 msgstr ""
 
@@ -1182,6 +1205,7 @@ msgstr ""
 
 #. translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
 #: includes/admin/class-wp-job-manager-settings.php:543
+#, php-format
 msgid "You can retrieve your reCAPTCHA site key from <a href=\"%s\">Google's reCAPTCHA admin dashboard</a>."
 msgstr ""
 
@@ -1191,6 +1215,7 @@ msgstr ""
 
 #. translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
 #: includes/admin/class-wp-job-manager-settings.php:552
+#, php-format
 msgid "You can retrieve your reCAPTCHA secret key from <a href=\"%s\">Google's reCAPTCHA admin dashboard</a>."
 msgstr ""
 
@@ -1252,6 +1277,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
 #: includes/admin/class-wp-job-manager-settings.php:614
+#, php-format
 msgid "Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to browse job listings. If no value is selected, everyone (including logged out guests) will be able to browse job listings."
 msgstr ""
 
@@ -1261,6 +1287,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
 #: includes/admin/class-wp-job-manager-settings.php:624
+#, php-format
 msgid "Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to view a single job listing. If no value is selected, everyone (including logged out guests) will be able to view job listings."
 msgstr ""
 
@@ -1307,6 +1334,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the singular name for a job listing post type.
 #: includes/admin/class-wp-job-manager-writepanels.php:154
+#, php-format
 msgid "%s Data"
 msgstr ""
 
@@ -1326,7 +1354,8 @@ msgstr ""
 
 #. translators: Used in user select. %1$s is the user's display name; #%2$s is the user ID; %3$s is the user email.
 #: includes/admin/class-wp-job-manager-writepanels.php:532
-#: includes/class-wp-job-manager-ajax.php:426
+#: includes/class-wp-job-manager-ajax.php:431
+#, php-format
 msgid "%1$s (#%2$s – %3$s)"
 msgstr ""
 
@@ -1344,6 +1373,7 @@ msgstr ""
 
 #. translators: %1$s is placeholder for singular name of the job listing post type; %2$s is the intl formatted date the listing was last modified.
 #: includes/admin/class-wp-job-manager-writepanels.php:619
+#, php-format
 msgid "%1$s was last modified by the user on %2$s."
 msgstr ""
 
@@ -1414,6 +1444,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the path to WPJM documentation site.
 #: includes/admin/views/html-admin-setup-step-1.php:19
+#, php-format
 msgid "If you'd prefer to skip this and set up your pages manually, our <a target=\"_blank\" href=\"%s\">documentation</a> will walk you through each step."
 msgstr ""
 
@@ -1435,6 +1466,7 @@ msgstr ""
 
 #. translators: %1$s is URL to WordPress core shortcode documentation. %2$s is URL to WPJM specific shortcode reference.
 #: includes/admin/views/html-admin-setup-step-2.php:20
+#, php-format
 msgid ""
 "(These pages are created using <a href=\"%1$s\" title=\"What is a shortcode?\" class=\"help-page-link\">shortcodes</a>,\n"
 "\t\t\t\t\t\t\t\twhich we take care of in this step. If you'd like to build these pages yourself or want to add one of these options to an existing\n"
@@ -1530,6 +1562,7 @@ msgstr ""
 
 #. translators: %1$s is the URL to WPJM support documentation; %2$s is the URL to WPJM support forums.
 #: includes/admin/views/html-admin-setup-step-3.php:52
+#, php-format
 msgid ""
 "If you need help, you can find more detail in our\n"
 "\t\t\t\t\t\t\t<a href=\"%1$s\">support documentation</a> or post your question on the\n"
@@ -1605,6 +1638,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
 #: includes/class-job-dashboard-shortcode.php:451
+#, php-format
 msgid "%s has been filled"
 msgstr ""
 
@@ -1614,11 +1648,13 @@ msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
 #: includes/class-job-dashboard-shortcode.php:464
+#, php-format
 msgid "%s has been marked as not filled"
 msgstr ""
 
 #. translators: Placeholder %s is the job listing title.
 #: includes/class-job-dashboard-shortcode.php:472
+#, php-format
 msgid "%s has been deleted"
 msgstr ""
 
@@ -1629,6 +1665,7 @@ msgstr ""
 
 #. translators: Placeholder is the expiration date of the job listing.
 #: includes/class-job-dashboard-shortcode.php:548
+#, php-format
 msgid "Expires in %s"
 msgstr ""
 
@@ -1650,6 +1687,7 @@ msgstr ""
 
 #. translators: %1d is the number of page views.
 #: includes/class-stats-dashboard.php:68
+#, php-format
 msgid "%1d view"
 msgid_plural "%1d views"
 msgstr[0] ""
@@ -1657,6 +1695,7 @@ msgstr[1] ""
 
 #. translators: %1d is the number of impressions.
 #: includes/class-stats-dashboard.php:70
+#, php-format
 msgid "%1d impression"
 msgid_plural "%1d impressions"
 msgstr[0] ""
@@ -1706,13 +1745,14 @@ msgid "Repeat Views"
 msgstr ""
 
 #. translators: Placeholder %d is the number of found search results.
-#: includes/class-wp-job-manager-ajax.php:193
+#: includes/class-wp-job-manager-ajax.php:198
+#, php-format
 msgid "Search completed. Found %d matching record."
 msgid_plural "Search completed. Found %d matching records."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-wp-job-manager-ajax.php:291
+#: includes/class-wp-job-manager-ajax.php:296
 msgid "You must be logged in to upload files using this method."
 msgstr ""
 
@@ -1752,6 +1792,7 @@ msgstr ""
 
 #. translators: %1$s is version of PHP that WP Job Manager requires; %2$s is the version of PHP WordPress is running on.
 #: includes/class-wp-job-manager-dependency-checker.php:66
+#, php-format
 msgid "<strong>WP Job Manager</strong> requires a minimum PHP version of %1$s, but you are running %2$s."
 msgstr ""
 
@@ -1766,6 +1807,7 @@ msgstr ""
 
 #. translators: %s is the URL for the page where users can go to update WordPress.
 #: includes/class-wp-job-manager-dependency-checker.php:118
+#, php-format
 msgid "Please <a href=\"%s\">update WordPress</a> to avoid issues."
 msgstr ""
 
@@ -1858,6 +1900,7 @@ msgstr ""
 #: includes/class-wp-job-manager-post-types.php:313
 #: includes/class-wp-job-manager-post-types.php:376
 #: includes/class-wp-job-manager-post-types.php:474
+#, php-format
 msgid "Search %s"
 msgstr ""
 
@@ -1867,6 +1910,7 @@ msgstr ""
 #: includes/class-wp-job-manager-post-types.php:315
 #: includes/class-wp-job-manager-post-types.php:378
 #: includes/class-wp-job-manager-post-types.php:460
+#, php-format
 msgid "All %s"
 msgstr ""
 
@@ -1876,6 +1920,7 @@ msgstr ""
 #: includes/class-wp-job-manager-post-types.php:317
 #: includes/class-wp-job-manager-post-types.php:380
 #: includes/class-wp-job-manager-post-types.php:480
+#, php-format
 msgid "Parent %s"
 msgstr ""
 
@@ -1883,6 +1928,7 @@ msgstr ""
 #. translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 #: includes/class-wp-job-manager-post-types.php:319
 #: includes/class-wp-job-manager-post-types.php:382
+#, php-format
 msgid "Parent %s:"
 msgstr ""
 
@@ -1892,6 +1938,7 @@ msgstr ""
 #: includes/class-wp-job-manager-post-types.php:321
 #: includes/class-wp-job-manager-post-types.php:384
 #: includes/class-wp-job-manager-post-types.php:466
+#, php-format
 msgid "Edit %s"
 msgstr ""
 
@@ -1899,6 +1946,7 @@ msgstr ""
 #. translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 #: includes/class-wp-job-manager-post-types.php:323
 #: includes/class-wp-job-manager-post-types.php:386
+#, php-format
 msgid "Update %s"
 msgstr ""
 
@@ -1906,6 +1954,7 @@ msgstr ""
 #. translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 #: includes/class-wp-job-manager-post-types.php:325
 #: includes/class-wp-job-manager-post-types.php:388
+#, php-format
 msgid "Add New %s"
 msgstr ""
 
@@ -1913,6 +1962,7 @@ msgstr ""
 #. translators: Placeholder %s is the singular label of the job listing job type taxonomy type.
 #: includes/class-wp-job-manager-post-types.php:327
 #: includes/class-wp-job-manager-post-types.php:390
+#, php-format
 msgid "New %s Name"
 msgstr ""
 
@@ -1934,27 +1984,32 @@ msgstr ""
 
 #. translators: Placeholder %s is the singular label of the job listing post type.
 #: includes/class-wp-job-manager-post-types.php:463
+#, php-format
 msgid "Add %s"
 msgstr ""
 
 #. translators: Placeholder %s is the singular label of the job listing post type.
 #: includes/class-wp-job-manager-post-types.php:468
+#, php-format
 msgid "New %s"
 msgstr ""
 
 #. translators: Placeholder %s is the singular label of the job listing post type.
 #: includes/class-wp-job-manager-post-types.php:470
 #: includes/class-wp-job-manager-post-types.php:472
+#, php-format
 msgid "View %s"
 msgstr ""
 
 #. translators: Placeholder %s is the singular label of the job listing post type.
 #: includes/class-wp-job-manager-post-types.php:476
+#, php-format
 msgid "No %s found"
 msgstr ""
 
 #. translators: Placeholder %s is the plural label of the job listing post type.
 #: includes/class-wp-job-manager-post-types.php:478
+#, php-format
 msgid "No %s found in trash"
 msgstr ""
 
@@ -1972,6 +2027,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the plural label of the job listing post type.
 #: includes/class-wp-job-manager-post-types.php:487
+#, php-format
 msgid "This is where you can create and manage %s."
 msgstr ""
 
@@ -1983,6 +2039,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the number of expired posts of this type.
 #: includes/class-wp-job-manager-post-types.php:529
+#, php-format
 msgid "Expired <span class=\"count\">(%s)</span>"
 msgid_plural "Expired <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -1996,6 +2053,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the number of posts in a preview state.
 #: includes/class-wp-job-manager-post-types.php:541
+#, php-format
 msgid "Preview <span class=\"count\">(%s)</span>"
 msgid_plural "Preview <span class=\"count\">(%s)</span>"
 msgstr[0] ""
@@ -2114,17 +2172,19 @@ msgid "Add a salary period unit, this field is optional. Leave it empty to use t
 msgstr ""
 
 #. translators: %s is the name of the form validation that failed.
-#: includes/class-wp-job-manager-recaptcha.php:177
+#: includes/class-wp-job-manager-recaptcha.php:181
+#, php-format
 msgid "\"%s\" check failed. Please try again."
 msgstr ""
 
-#: includes/class-wp-job-manager-shortcodes.php:311
-#: includes/class-wp-job-manager-shortcodes.php:351
+#: includes/class-wp-job-manager-shortcodes.php:333
+#: includes/class-wp-job-manager-shortcodes.php:373
 msgid "Load more listings"
 msgstr ""
 
 #. translators: Placeholder %s is a URL to the document on wpjobmanager.com with info on usage tracking.
 #: includes/class-wp-job-manager-usage-tracking.php:230
+#, php-format
 msgid ""
 "<p>We'd love if you helped us make WP Job Manager better by allowing us to collect\n"
 "\t\t\t\t<a target=\"_blank\" href=\"%s\">usage tracking data</a>.</p><p>No sensitive information is\n"
@@ -2133,6 +2193,7 @@ msgstr ""
 
 #. translators: the href tag contains the URL for the page telling users what data WPJM tracks.
 #: includes/class-wp-job-manager-usage-tracking.php:269
+#, php-format
 msgid ""
 "Help us make Job Manager better by allowing us to collect\n"
 "\t\t\t\t<a target=\"_blank\" href=\"%s\">usage tracking data</a>.\n"
@@ -2145,6 +2206,7 @@ msgstr ""
 
 #. translators: Placeholders %1$s and %2$s are the names of the two cookies used in WP Job Manager.
 #: includes/class-wp-job-manager.php:195
+#, php-format
 msgid ""
 "This site adds the following cookies to help users resume job submissions that they\n"
 "\t\t\t\thave started but have not completed: %1$s and %2$s"
@@ -2165,6 +2227,7 @@ msgstr ""
 #. translators: Placeholder %d is the number of files to that users are limited to.
 #: includes/class-wp-job-manager.php:581
 #: includes/forms/class-wp-job-manager-form-submit-job.php:516
+#, php-format
 msgid "You are only allowed to upload a maximum of %d files."
 msgstr ""
 
@@ -2190,6 +2253,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the job listing post title.
 #: includes/emails/class-wp-job-manager-email-admin-new-job.php:63
+#, php-format
 msgid "New Job Listing Submitted: %s"
 msgstr ""
 
@@ -2203,6 +2267,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the job listing post title.
 #: includes/emails/class-wp-job-manager-email-admin-updated-job.php:63
+#, php-format
 msgid "Job Listing Updated: %s"
 msgstr ""
 
@@ -2216,6 +2281,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the job listing post title.
 #: includes/emails/class-wp-job-manager-email-employer-expiring-job.php:79
+#, php-format
 msgid "Job Listing Expiring: %s"
 msgstr ""
 
@@ -2332,11 +2398,13 @@ msgstr ""
 
 #. translators: Placeholder %s is the label for the required field.
 #: includes/forms/class-wp-job-manager-form-submit-job.php:437
+#, php-format
 msgid "%s is a required field"
 msgstr ""
 
 #. translators: Placeholder %s is the field label that is did not validate.
 #: includes/forms/class-wp-job-manager-form-submit-job.php:448
+#, php-format
 msgid "%s is invalid"
 msgstr ""
 
@@ -2348,6 +2416,7 @@ msgstr ""
 #. translators: %1$s is the file field label; %2$s is the file type; %3$s is the list of allowed file types.
 #: includes/forms/class-wp-job-manager-form-submit-job.php:489
 #: wp-job-manager-functions.php:1529
+#, php-format
 msgid "\"%1$s\" (filetype %2$s) needs to be one of the following file types: %3$s"
 msgstr ""
 
@@ -2385,6 +2454,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the password hint.
 #: includes/forms/class-wp-job-manager-form-submit-job.php:761
+#, php-format
 msgid "Invalid Password: %s"
 msgstr ""
 
@@ -2398,6 +2468,7 @@ msgstr ""
 
 #. translators: placeholder is the URL to the job dashboard page.
 #: includes/forms/class-wp-job-manager-form-submit-job.php:821
+#, php-format
 msgid "Draft was saved. Job listing drafts can be resumed from the <a href=\"%s\">job dashboard</a>."
 msgstr ""
 
@@ -2419,21 +2490,25 @@ msgstr ""
 
 #. translators: First placeholder is the plugin name, second placeholder is the My Account URL.
 #: includes/helper/class-wp-job-manager-helper.php:400
+#, php-format
 msgid "<strong>Error:</strong> The license for <strong>%1$s</strong> is not activated on this website and has been removed. Manage your activations on your <a href=\"%2$s\" rel=\"noopener noreferrer\" target=\"_blank\">My Account page</a>."
 msgstr ""
 
 #. translators: First placeholder is the plugin name; second placeholder is the URL to purchase the plugin.
 #: includes/helper/class-wp-job-manager-helper.php:405
+#, php-format
 msgid "<strong>Error:</strong> The license for <strong>%1$s</strong> is not valid and has been removed. <a href=\"%2$s\" rel=\"noopener noreferrer\" target=\"_blank\">Purchase a new license</a> to receive updates and support."
 msgstr ""
 
 #. translators: First placeholder is the plugin name, second placeholder is the My Account URL.
 #: includes/helper/class-wp-job-manager-helper.php:410
+#, php-format
 msgid "<strong>Error:</strong> The license for <strong>%1$s</strong> has expired. You must <a href=\"%2$s\" rel=\"noopener noreferrer\" target=\"_blank\">renew your license</a> to receive updates and support."
 msgstr ""
 
 #. translators: First placeholder is the plugin name, second placeholder is the My Account URL.
 #: includes/helper/class-wp-job-manager-helper.php:413
+#, php-format
 msgid "<strong>Error:</strong> The license for <strong>%1$s</strong> is expiring soon. Please <a href=\"%2$s\" rel=\"noopener noreferrer\" target=\"_blank\">renew your license</a> to continue receiving updates and support."
 msgstr ""
 
@@ -2497,6 +2572,7 @@ msgstr[1] ""
 
 #. translators: %1$s is the URL to the license key page.
 #: includes/helper/class-wp-job-manager-helper.php:1136
+#, php-format
 msgid "<a href=\"%1$s\">Please add or review your license keys</a> to get updates for the following extensions:"
 msgstr ""
 
@@ -2534,12 +2610,14 @@ msgstr ""
 
 #. translators: placeholder is the number of active addons, which will never be zero.
 #: includes/helper/views/html-licenses.php:62
+#, php-format
 msgid "Active (%d)"
 msgstr ""
 
 #. translators: placeholder is the addon name.
 #: includes/helper/views/html-licenses.php:71
 #: includes/helper/views/html-licenses.php:136
+#, php-format
 msgid "Plugin Icon for %s"
 msgstr ""
 
@@ -2554,11 +2632,13 @@ msgstr ""
 
 #. translators: placeholder is the number of inactive addons, which will never be zero.
 #: includes/helper/views/html-licenses.php:127
+#, php-format
 msgid "Inactive (%d)"
 msgstr ""
 
 #. translators: Placeholder %s is the lost license key URL.
 #: includes/helper/views/html-licenses.php:187
+#, php-format
 msgid "Lost your license key? <a href=\"%s\">You can find them on the My Account page</a>."
 msgstr ""
 
@@ -2591,6 +2671,7 @@ msgstr ""
 #. translators: Placeholder %s is the plural label for the job listing post type.
 #: includes/widgets/class-wp-job-manager-widget-featured-jobs.php:27
 #: includes/widgets/class-wp-job-manager-widget-featured-jobs.php:35
+#, php-format
 msgid "Featured %s"
 msgstr ""
 
@@ -2635,6 +2716,7 @@ msgstr ""
 #. translators: Placeholder %s is the plural label for the job listing post type.
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:27
 #: includes/widgets/class-wp-job-manager-widget-recent-jobs.php:35
+#, php-format
 msgid "Recent %s"
 msgstr ""
 
@@ -2676,6 +2758,7 @@ msgstr ""
 
 #. translators: Placeholder %s is the username.
 #: templates/account-signin.php:26
+#, php-format
 msgid "You are currently signed in as <strong>%s</strong>."
 msgstr ""
 
@@ -2736,21 +2819,25 @@ msgstr ""
 
 #. translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
 #: templates/emails/admin-expiring-job.php:32
+#, php-format
 msgid "The following job listing is expiring today from <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
 #. translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
 #: templates/emails/admin-expiring-job.php:35
+#, php-format
 msgid "The following job listing is expiring soon from <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
 #. translators: Placeholder is URL to site's WP admin.
 #: templates/emails/admin-expiring-job.php:41
+#, php-format
 msgid "Visit <a href=\"%s\">WordPress admin</a> to manage the listing."
 msgstr ""
 
 #. translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
 #: templates/emails/admin-new-job.php:27
+#, php-format
 msgid "A new job listing has been submitted to <a href=\"%s\">%s</a>."
 msgstr ""
 
@@ -2761,11 +2848,13 @@ msgstr ""
 
 #. translators: Placeholder %s is the admin job listings URL.
 #: templates/emails/admin-new-job.php:40
+#, php-format
 msgid "It is awaiting approval by an administrator in <a href=\"%s\">WordPress admin</a>."
 msgstr ""
 
 #. translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
 #: templates/emails/admin-updated-job.php:26
+#, php-format
 msgid "A job listing has been updated on <a href=\"%s\">%s</a>."
 msgstr ""
 
@@ -2776,67 +2865,80 @@ msgstr ""
 
 #. translators: Placeholder %s is the admin job listings URL.
 #: templates/emails/admin-updated-job.php:34
+#, php-format
 msgid "The job listing is not publicly available until the changes are approved by an administrator in the site's <a href=\"%s\">WordPress admin</a>."
 msgstr ""
 
 #. translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
 #: templates/emails/employer-expiring-job.php:33
+#, php-format
 msgid "The following job listing is expiring today from <a href=\"%s\">%s</a>."
 msgstr ""
 
 #. translators: %1$s placeholder is URL to the blog. %2$s placeholder is the name of the site.
 #: templates/emails/employer-expiring-job.php:42
+#, php-format
 msgid "The following job listing is expiring soon from <a href=\"%s\">%s</a>."
 msgstr ""
 
 #. translators: Placeholder %s is the job listing dashboard URL.
 #: templates/emails/employer-expiring-job.php:51
+#, php-format
 msgid "Visit the <a href=\"%s\">job listing dashboard</a> to manage the listing."
 msgstr ""
 
 #. translators: %1$s placeholder is the name of the site, %2$s placeholder is URL to the blog.
 #: templates/emails/plain/admin-expiring-job.php:31
 #: templates/emails/plain/employer-expiring-job.php:30
+#, php-format
 msgid "The following job listing is expiring today from %1$s (%2$s)."
 msgstr ""
 
 #. translators: %1$s placeholder is the name of the site, %2$s placeholder is URL to the blog.
 #: templates/emails/plain/admin-expiring-job.php:38
 #: templates/emails/plain/employer-expiring-job.php:33
+#, php-format
 msgid "The following job listing is expiring soon from %1$s (%2$s)."
 msgstr ""
 
 #. translators: Placeholder %s is the edit job URL.
 #: templates/emails/plain/admin-expiring-job.php:46
+#, php-format
 msgid "Visit WordPress admin (%s) to manage the listing."
 msgstr ""
 
 #. translators: %1$s placeholder is the name of the site, %2$s placeholder is URL to the blog.
 #: templates/emails/plain/admin-new-job.php:24
+#, php-format
 msgid "A new job listing has been submitted to %1$s (%2$s)."
 msgstr ""
 
 #. translators: Placeholder %s is the admin job listings URL.
 #: templates/emails/plain/admin-new-job.php:31
+#, php-format
 msgid "It is awaiting approval by an administrator in WordPress admin (%s)."
 msgstr ""
 
 #. translators: %1$s placeholder is the name of the site, %2$s placeholder is URL to the blog.
 #: templates/emails/plain/admin-updated-job.php:24
+#, php-format
 msgid "A job listing has been updated on %1$s (%2$s)."
 msgstr ""
 
 #. translators: Placeholder %s is the admin job listings URL.
 #: templates/emails/plain/admin-updated-job.php:31
+#, php-format
 msgid "The job listing is not publicly available until the changes are approved by an administrator in the site's WordPress admin (%s)."
 msgstr ""
 
 #. translators: Placeholder %s is the job listing dashboard URL.
 #: templates/emails/plain/employer-expiring-job.php:36
+#, php-format
 msgid "Visit the job listing dashboard (%s) to manage the listing."
 msgstr ""
 
-#: templates/form-fields/file-field.php:60
+#: templates/form-fields/file-field.php:61
+#, php-format
 msgid "Maximum file size: %s."
 msgstr ""
 
@@ -2861,6 +2963,7 @@ msgstr ""
 
 #. translators: %1$s is the email address, %2$s is the subject query args.
 #: templates/job-application-email.php:19
+#, php-format
 msgid "To apply for this job <strong>email your details to</strong> <a class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
 msgstr ""
 
@@ -2882,6 +2985,7 @@ msgstr ""
 
 #. translators: Placeholder is the search term.
 #: templates/job-dashboard.php:64
+#, php-format
 msgid "No results found for \"%s\"."
 msgstr ""
 
@@ -2927,6 +3031,7 @@ msgid "Daily Views"
 msgstr ""
 
 #: templates/job-submit.php:25
+#, php-format
 msgid "You are editing an existing job. %s"
 msgstr ""
 
@@ -2944,24 +3049,29 @@ msgstr ""
 
 #. translators: %1$s is the job listing post type name, %2$s is the job listing URL.
 #: templates/job-submitted.php:36
+#, php-format
 msgid "%1$s listed successfully. To view your listing <a href=\"%2$s\">click here</a>."
 msgstr ""
 
 #. translators: Placeholder %s is the job listing post type name.
 #: templates/job-submitted.php:47
+#, php-format
 msgid "%s submitted successfully. Your listing will be visible once approved."
 msgstr ""
 
 #: templates/job-submitted.php:61
+#, php-format
 msgid "  <a href=\"%1$s\"> View your %2$s</a>"
 msgstr ""
 
 #: templates/job-submitted.php:69
+#, php-format
 msgid "  <a href=\"%s\"> %s</a>"
 msgstr ""
 
 #. translators: %1$s is the job listing post type name.
 #: templates/job-submitted.php:92
+#, php-format
 msgid "%1$s submitted successfully."
 msgstr ""
 
@@ -3052,6 +3162,7 @@ msgstr ""
 
 #. translators: %s is the list of allowed file types.
 #: wp-job-manager-functions.php:1532
+#, php-format
 msgid "Uploaded files need to be one of the following file types: %s"
 msgstr ""
 
@@ -3085,48 +3196,51 @@ msgstr ""
 
 #. translators: %1$s is the job listing title; %2$s is the URL for the current WordPress instance.
 #: wp-job-manager-template.php:249
+#, php-format
 msgid "Application via %1$s listing on %2$s"
 msgstr ""
 
-#: wp-job-manager-template.php:709
+#: wp-job-manager-template.php:715
 msgid "Your email"
 msgstr ""
 
-#: wp-job-manager-template.php:710
+#: wp-job-manager-template.php:716
 msgid "you@yourdomain.com"
 msgstr ""
 
-#: wp-job-manager-template.php:718
+#: wp-job-manager-template.php:724
 msgid "Username"
 msgstr ""
 
-#: wp-job-manager-template.php:727
+#: wp-job-manager-template.php:733
 msgid "Password"
 msgstr ""
 
-#: wp-job-manager-template.php:737
+#: wp-job-manager-template.php:743
 msgid "Verify Password"
 msgstr ""
 
-#: wp-job-manager-template.php:765
+#: wp-job-manager-template.php:771
 msgid "Posted on "
 msgstr ""
 
 #. translators: Placeholder %s is the relative, human readable time since the job listing was posted.
-#: wp-job-manager-template.php:771
-#: wp-job-manager-template.php:797
+#: wp-job-manager-template.php:777
+#: wp-job-manager-template.php:803
+#, php-format
 msgid "Posted %s ago"
 msgstr ""
 
 #. translators: Placeholder %s is the relative, human readable time the job listing is scheduled to be published.
-#: wp-job-manager-template.php:774
+#: wp-job-manager-template.php:780
+#, php-format
 msgid "Scheduled to publish in %s"
 msgstr ""
 
-#: wp-job-manager-template.php:812
+#: wp-job-manager-template.php:818
 msgid "Remote"
 msgstr ""
 
-#: wp-job-manager-template.php:836
+#: wp-job-manager-template.php:842
 msgid "Anywhere"
 msgstr ""

@@ -1,13 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * File containing the class WP_Job_Manager_Promoted_Jobs_API.
  *
  * @package wp-job-manager
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Handles functionality related to the Promoted Jobs REST API.

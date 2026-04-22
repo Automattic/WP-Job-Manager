@@ -1,8 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * File containing the class Stats_Dashboard.
  *
@@ -10,6 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 namespace WP_Job_Manager;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Job listing stats for the jobs dashboard.

@@ -1,13 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Adds additional compatibility with Related Post for WordPress.
  *
  * @package wp-job-manager
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 add_filter( 'rp4wp_get_template', 'wpjm_rp4wp_template', 10, 3 );
 add_filter( 'rp4wp_related_meta_fields', 'wpjm_rp4wp_related_meta_fields', 10, 3 );

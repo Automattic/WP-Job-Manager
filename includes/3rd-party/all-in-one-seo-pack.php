@@ -1,13 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Adds additional compatibility with All in One SEO Pack.
  *
  * @package wp-job-manager
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Skip filled job listings.

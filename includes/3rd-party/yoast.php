@@ -1,8 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Adds additional compatibility with Yoast SEO.
  *
@@ -10,6 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @package wp-job-manager
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Skip filled job listings.

@@ -85,7 +85,7 @@ jQuery(function($) {
 				var $form           = $file_field.closest( 'form' );
 				var $uploaded_files = $file_field.parent().find('.job-manager-uploaded-files');
 				var multiple        = $file_field.attr( 'multiple' ) ? 1 : 0;
-				var image_types     = [ 'jpg', 'gif', 'png', 'jpeg', 'jpe' ];
+				var image_types     = [ 'jpg', 'gif', 'png', 'jpeg', 'jpe', 'webp' ];
 
 				data.context.remove();
 

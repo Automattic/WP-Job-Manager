@@ -1,13 +1,13 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Load 3rd party compatibility tweaks.
  *
  * @package wp-job-manager
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 // Require files for each 3rd-party plugin.
 require_once JOB_MANAGER_PLUGIN_DIR . '/includes/3rd-party/jetpack.php';

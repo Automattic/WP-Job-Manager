@@ -4,6 +4,10 @@
 
 WP Job Manager is a **lightweight** job listing plugin for adding job-board like functionality to your WordPress site. Being shortcode based, it can work with any theme (given a bit of CSS styling) and is really simple to setup.
 
+### Try it ###
+
+[Open WP Job Manager in WordPress Playground](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/Automattic/WP-Job-Manager/trunk/blueprint.json) — no install required.
+
 ### Documentation ###
 
 Documentation for the core plugin and add-ons can be found [on the docs site here](https://wpjobmanager.com/documentation/). Please take a look before requesting support because it covers all frequently asked questions!

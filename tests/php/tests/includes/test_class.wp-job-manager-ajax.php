@@ -71,6 +71,13 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 				'meta_input'  => [],
 			]
 		);
+		$private   = $this->factory->job_listing->create_many(
+			2,
+			[
+				'post_status' => 'private',
+				'meta_input'  => [],
+			]
+		);
 		$instance  = WP_Job_Manager_Ajax::instance();
 
 		// Run the action.
@@ -95,6 +102,12 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 
 		// Make sure the HTML does NOT contain any of the draft post titles.
 		foreach ( $draft as $post_id ) {
+			$post = get_post( $post_id );
+			$this->assertStringNotContainsString( $post->post_title, $result['html'] );
+		}
+
+		// Make sure the HTML does NOT contain any of the private post titles.
+		foreach ( $private as $post_id ) {
 			$post = get_post( $post_id );
 			$this->assertStringNotContainsString( $post->post_title, $result['html'] );
 		}

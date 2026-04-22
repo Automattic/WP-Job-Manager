@@ -620,14 +620,16 @@ class Job_Dashboard_Shortcode {
 			return;
 		}
 
-		echo wp_kses_post( UI_Elements::button(
-			[
-				'label' => $action['label'],
-				'url'   => $action['url'],
-				'class' => 'job-dashboard-action-' . esc_attr( $action['name'] ) . ' jm-dashboard-action jm-dashboard-action--primary jm-ui-button--small',
-			],
-			'jm-ui-button--outline'
-		) );
+		echo wp_kses_post(
+			UI_Elements::button(
+				[
+					'label' => $action['label'],
+					'url'   => $action['url'],
+					'class' => 'job-dashboard-action-' . esc_attr( $action['name'] ) . ' jm-dashboard-action jm-dashboard-action--primary jm-ui-button--small',
+				],
+				'jm-ui-button--outline'
+			)
+		);
 	}
 
 	/**

@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.13.1@086b94371304750d1c673315321a55d15fc59015">
+  <file src="includes/3rd-party/all-in-one-seo-pack.php">
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
+  <file src="includes/3rd-party/wp-all-import.php">
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
+  </file>
   <file src="includes/3rd-party/wpcom.php">
     <InvalidReturnStatement>
       <code>$result</code>
@@ -10,6 +20,11 @@
       <code>bool</code>
       <code>false|void</code>
     </InvalidReturnType>
+  </file>
+  <file src="includes/3rd-party/wpml.php">
+    <ParadoxicalCondition>
+      <code><![CDATA[! defined( 'ABSPATH' )]]></code>
+    </ParadoxicalCondition>
   </file>
   <file src="includes/3rd-party/yoast.php">
     <InvalidReturnStatement>
@@ -260,12 +275,6 @@
       <code><![CDATA[$term->term_id]]></code>
     </UndefinedPropertyFetch>
   </file>
-  <file src="includes/class-wp-job-manager-usage-tracking-data.php">
-    <InvalidArgument>
-      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY</code>
-      <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
-    </InvalidArgument>
-  </file>
   <file src="includes/class-wp-job-manager-usage-tracking.php">
     <TypeDoesNotContainType>
       <code>false</code>
@@ -282,7 +291,6 @@
       <code>COOKIEPATH</code>
       <code>COOKIE_DOMAIN</code>
       <code>COOKIE_DOMAIN</code>
-      <code>WP_LANG_DIR</code>
     </UndefinedConstant>
   </file>
   <file src="includes/emails/class-wp-job-manager-email-admin-expiring-job.php">

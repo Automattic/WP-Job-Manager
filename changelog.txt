@@ -1,5 +1,16 @@
 # WP Job Manager
 
+## 2.4.1 - 2026-02-24
+* Add permission check to listing query parameters (#2914)
+* Fix structured data output for password-protected listings (#2913)
+
+* Update actions/cache to use v4 (#2896)
+* reCaptcha script not being loaded (#2893)
+* add a additional action to the do_feed_rss2
+* fix hardcoded dashboard expiration date format
+* Dev: Fix deprecated  methods
+* Fix file input field for forms not marked as required
+
 ## 2.4.0 - 2024-08-08
 * Fix job dashboard actions menu in Safari
 * Fix PHP 8.3 support

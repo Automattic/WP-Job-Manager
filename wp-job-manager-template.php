@@ -1,8 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Template Functions
  *
@@ -13,6 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package     wp-job-manager
  * @version     1.25.3
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Gets and includes template files.
@@ -341,8 +341,10 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 		return false;
 	}
 
-	// Only show structured data for un-filled and published job listings.
-	$output_structured_data = ! is_position_filled( $post ) && 'publish' === $post->post_status;
+	// Only show structured data for un-filled, published, and non-password-protected job listings.
+	$output_structured_data = ! is_position_filled( $post )
+		&& 'publish' === $post->post_status
+		&& ! post_password_required( $post );
 
 	/**
 	 * Filter if we should output structured data.
@@ -357,6 +359,10 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 
 /**
  * Gets the structured data for the job listing.
+ *
+ * Note: This function does not check if the job listing is published, filled,
+ * password-protected, or otherwise hidden. Use wpjm_output_job_listing_structured_data()
+ * to check if structured data should be output for a given job listing.
  *
  * @since 1.28.0
  * @see https://developers.google.com/search/docs/data-types/job-postings
@@ -904,6 +910,11 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
 function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 	$post = get_post( $post );
 
+	// Called with invalid post ID or without post ID outside the loop.
+	if ( ! $post ) {
+		return '';
+	}
+
 	if ( has_post_thumbnail( $post->ID ) ) {
 		$src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $size );
 		return $src ? $src[0] : '';
@@ -1137,7 +1148,7 @@ function get_the_company_tagline( $post = null ) {
 }
 
 /**
- * Displays or retrieves the current company Twitter link with optional content.
+ * Displays or retrieves the current company X / Twitter link with optional content.
  *
  * @since 1.0.0
  * @param string           $before (default: '').
@@ -1153,7 +1164,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 		return null;
 	}
 
-	$company_twitter = $before . '<a href="' . esc_url( 'https://twitter.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
+	$company_twitter = $before . '<a href="' . esc_url( 'https://x.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_twitter );
