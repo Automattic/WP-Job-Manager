@@ -15,7 +15,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-global $job_manager;
+global $job_manager, $post;
+
+// Defense in depth — see content-job_listing.php for rationale.
+if ( post_password_required( $post ) || ! job_manager_user_can_view_job_listing( $post->ID ) ) {
+	return;
+}
 ?>
 
 <a href="<?php the_permalink(); ?>">
