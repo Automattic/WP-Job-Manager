@@ -709,6 +709,22 @@ class WP_Job_Manager_Post_Types {
 	public function job_feed() {
 		global $job_manager_keyword;
 
+		// Browse-capability gate — emit an empty feed (matching the [jobs] shortcode denial)
+		// rather than 404 / 403, so feed readers don't error on a configured-private site.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			// phpcs:ignore WordPress.WP.DiscouragedFunctions
+			query_posts(
+				[
+					'post__in'  => [ 0 ],
+					'post_type' => self::PT_LISTING,
+				]
+			);
+			add_action( 'rss2_ns', [ $this, 'job_feed_namespace' ] );
+			add_action( 'rss2_item', [ $this, 'job_feed_item' ] );
+			do_action( 'do_feed_rss2', false );
+			return;
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input used to filter public data in feed.
 		$input_posts_per_page  = isset( $_GET['posts_per_page'] ) ? absint( $_GET['posts_per_page'] ) : 10;
 		$input_search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : false;
@@ -739,6 +755,7 @@ class WP_Job_Manager_Post_Types {
 			'paged'               => absint( get_query_var( 'paged', 1 ) ),
 			'tax_query'           => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Empty.
 			'meta_query'          => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
+			'has_password'        => false,
 		];
 
 		if ( ! empty( $input_search_location ) ) {
@@ -1645,7 +1662,7 @@ class WP_Job_Manager_Post_Types {
 			'show_in_admin'      => true,
 			'show_in_rest'       => false,
 			'auth_edit_callback' => [ __CLASS__, 'auth_check_can_edit_job_listings' ],
-			'auth_view_callback' => null,
+			'auth_view_callback' => [ __CLASS__, 'auth_check_can_view_job_listing' ],
 			'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_based_on_input_type' ],
 		];
 
@@ -2028,6 +2045,36 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		return job_manager_user_can_edit_job( $post_id );
+	}
+
+	/**
+	 * Checks if a user can view a job listing's meta in REST responses.
+	 *
+	 * Hides meta when the listing is password-protected (and the viewer hasn't unlocked it) or when
+	 * the site's view-capability gate denies the viewer. Used as the default `auth_view_callback`
+	 * for job listing meta fields, consumed by `WP_Job_Manager_REST_API::prepare_job_listing()`.
+	 *
+	 * @param bool   $allowed   Ignored — `prepare_job_listing()` always passes false.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Job listing's post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool True if the meta value can be exposed to the viewer.
+	 */
+	public static function auth_check_can_view_job_listing( $allowed, $meta_key, $post_id, $user_id ) {
+		if ( empty( $post_id ) ) {
+			return true;
+		}
+
+		if ( post_password_required( $post_id ) ) {
+			return false;
+		}
+
+		if ( ! job_manager_user_can_view_job_listing( $post_id ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
