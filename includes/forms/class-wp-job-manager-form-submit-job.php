@@ -1028,8 +1028,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 					// Handle custom expiry date field.
 				} elseif ( 'job_expires' === $key ) {
-					// Always save the raw value first.
-					update_post_meta( $this->job_id, '_job_expires', $values[ $group_key ][ $key ] );
 
 					// If a date is provided, also set the job expiration.
 					if ( ! empty( $values[ $group_key ][ $key ] ) ) {
