@@ -906,6 +906,11 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
 function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 	$post = get_post( $post );
 
+	// Called with invalid post ID or without post ID outside the loop.
+	if ( ! $post ) {
+		return '';
+	}
+
 	if ( has_post_thumbnail( $post->ID ) ) {
 		$src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $size );
 		return $src ? $src[0] : '';
@@ -1139,7 +1144,7 @@ function get_the_company_tagline( $post = null ) {
 }
 
 /**
- * Displays or retrieves the current company Twitter link with optional content.
+ * Displays or retrieves the current company X / Twitter link with optional content.
  *
  * @since 1.0.0
  * @param string           $before (default: '').
@@ -1157,7 +1162,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 
 	$_rel            = apply_filters( 'job_manager_company_link_rel', 'nofollow', 'twitter', get_post() );
 	$_rel_attr       = $_rel ? ' rel="' . esc_attr( $_rel ) . '"' : '';
-	$company_twitter = $before . '<a href="' . esc_url( 'https://twitter.com/' . $company_twitter ) . '" class="company_twitter"' . $_rel_attr . '>' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
+  $company_twitter = $before . '<a href="' . esc_url( 'https://x.com/' . $company_twitter ) . '" class="company_twitter"' . $_rel_attr . '>' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_twitter );

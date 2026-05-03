@@ -22,6 +22,39 @@ class WP_Job_Manager_REST_API {
 	 */
 	public static function init() {
 		add_filter( 'rest_prepare_job_listing', [ __CLASS__, 'prepare_job_listing' ], 10, 2 );
+		add_filter( 'rest_job_listing_query', [ __CLASS__, 'exclude_filled_from_query' ], 10, 2 );
+	}
+
+	/**
+	 * Excludes filled job listings from REST API query results.
+	 *
+	 * @param array           $args    Array of query arguments.
+	 * @param WP_REST_Request $request The REST API request.
+	 * @return array
+	 */
+	public static function exclude_filled_from_query( $args, $request ) {
+		if ( 1 !== absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
+			return $args;
+		}
+
+		if ( ! isset( $args['meta_query'] ) ) {
+			$args['meta_query'] = []; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
+		}
+
+		$args['meta_query'][] = [
+			'relation' => 'OR',
+			[
+				'key'     => '_filled',
+				'value'   => '1',
+				'compare' => '!=',
+			],
+			[
+				'key'     => '_filled',
+				'compare' => 'NOT EXISTS',
+			],
+		];
+
+		return $args;
 	}
 
 	/**

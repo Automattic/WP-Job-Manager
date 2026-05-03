@@ -104,7 +104,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 					'_company_name'    => 'Example',
 					'_company_website' => 'https://example.com/',
 					'_company_tagline' => 'Just another tagline',
-					'_company_twitter' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
+					'_company_twitter' => 'https://x.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
 					'_company_video'   => 'https://example.com/company/video',
 				],
 				[
@@ -131,8 +131,8 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 									'value' => 'Just another tagline',
 								],
 								[
-									'name'  => 'Company Twitter',
-									'value' => 'https://twitter.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
+									'name'  => 'Company X / Twitter',
+									'value' => 'https://x.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
 								],
 								[
 									'name'  => 'Company Video',
