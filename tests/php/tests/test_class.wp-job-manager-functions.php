@@ -980,4 +980,38 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		WP_Job_Manager_Helper_Renewals::renew_job_listing( get_post( $job_listing_id ) );
 		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
 	}
+
+	/**
+	 * @since 2.5.0
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_single_id() {
+	    $user_a = $this->factory->user->create();
+	    $user_b = $this->factory->user->create();
+	
+	    $jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+	    $jobs_b = $this->factory->job_listing->create_many( 3, [ 'post_author' => $user_b ] );
+	
+	    $result = get_job_listings( [ 'author' => (string) $user_a ] );
+	
+	    $this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
+	}
+	
+	/**
+	 * @since 2.5.0
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_multiple_ids() {
+	    $user_a = $this->factory->user->create();
+	    $user_b = $this->factory->user->create();
+	    $user_c = $this->factory->user->create();
+	
+	    $jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+	    $jobs_b = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+	    $jobs_c = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_c ] );
+	
+	    $result = get_job_listings( [ 'author' => $user_a . ',' . $user_b ] );
+	
+	    $this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
+	}
 }
