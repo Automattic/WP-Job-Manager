@@ -591,7 +591,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Validate expiry date field if enabled and provided.
 		if ( get_option( 'job_manager_enable_expiry_date_field' ) && ! empty( $values['job']['job_expires'] ) ) {
-			$expires_date = DateTimeImmutable::createFromFormat( 'Y-m-d', $values['job']['job_expires'], wp_timezone() );
+			$expires_date = DateTimeImmutable::createFromFormat( 'Y-m-d|', $values['job']['job_expires'], wp_timezone() );
 			if ( ! $expires_date ) {
 				throw new Exception( __( 'Please enter a valid expiry date', 'wp-job-manager' ) );
 			}
@@ -1046,7 +1046,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 					// If a date is provided, also set the job expiration.
 					if ( ! empty( $values[ $group_key ][ $key ] ) ) {
-						$expires_date = DateTimeImmutable::createFromFormat( 'Y-m-d', $values[ $group_key ][ $key ], wp_timezone() );
+						$expires_date = DateTimeImmutable::createFromFormat( 'Y-m-d|', $values[ $group_key ][ $key ], wp_timezone() );
 						if ( $expires_date ) {
 							WP_Job_Manager_Post_Types::instance()->set_job_expiration( $this->job_id, $expires_date );
 						}
