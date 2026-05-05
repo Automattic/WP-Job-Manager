@@ -247,4 +247,51 @@ class Tests_Password_Protected_Listing_REST extends WPJM_REST_TestCase {
 
 		delete_option( 'job_manager_view_job_listing_capability' );
 	}
+
+	/**
+	 * @covers WP_Job_Manager_REST_API::prepare_job_listing
+	 *
+	 * `?context=edit` also returns `title.raw` / `content.raw` / `excerpt.raw`. A user with
+	 * edit_post on the listing but lacking the view-capability must not receive the raw body
+	 * either — `prepare_job_listing()` must blank all three raw fields in the blocked branch.
+	 */
+	public function test_rest_single_blanks_raw_fields_for_view_cap_denied_editor() {
+		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
+
+		// Build a user that can edit this listing (so `?context=edit` is allowed) but lacks
+		// `manage_options` (so the view-capability gate denies them) and is not the post
+		// author (so the author short-circuit in `job_manager_user_can_view_job_listing` does
+		// not apply). The job_listing post type uses a custom capability_type with
+		// `map_meta_cap`, so we grant the relevant primitive caps explicitly.
+		$author_id = $this->factory->user->create( [ 'role' => 'author' ] );
+		$editor_id = $this->factory->user->create( [ 'role' => 'editor' ] );
+		$editor    = get_user_by( 'id', $editor_id );
+		foreach ( [ 'edit_job_listing', 'edit_job_listings', 'edit_others_job_listings', 'edit_published_job_listings', 'read_job_listing', 'read_private_job_listings' ] as $cap ) {
+			$editor->add_cap( $cap );
+		}
+
+		$post_id = $this->factory->job_listing->create(
+			[
+				'post_author'  => $author_id,
+				'post_title'   => 'Raw-leak-test listing',
+				'post_content' => 'sentinel-RAW-BODY confidential salary $250k',
+				'post_excerpt' => 'sentinel-RAW-EXCERPT confidential excerpt',
+			]
+		);
+
+		wp_set_current_user( $editor_id );
+
+		$response = $this->get( "/wp/v2/job-listings/{$post_id}", [ 'context' => 'edit' ] );
+		$this->assertResponseStatus( $response, 200 );
+		$data = $response->get_data();
+
+		$this->assertEmpty( $data['title']['raw'] ?? '', 'title.raw must be blanked.' );
+		$this->assertEmpty( $data['content']['raw'] ?? '', 'content.raw must be blanked.' );
+		$this->assertEmpty( $data['excerpt']['raw'] ?? '', 'excerpt.raw must be blanked.' );
+		$this->assertStringNotContainsString( 'RAW-BODY', (string) ( $data['content']['raw'] ?? '' ) );
+		$this->assertStringNotContainsString( 'RAW-EXCERPT', (string) ( $data['excerpt']['raw'] ?? '' ) );
+
+		wp_set_current_user( 0 );
+		delete_option( 'job_manager_view_job_listing_capability' );
+	}
 }

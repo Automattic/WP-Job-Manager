@@ -94,14 +94,23 @@ class WP_Job_Manager_REST_API {
 			if ( isset( $data['title']['rendered'] ) ) {
 				$data['title']['rendered'] = '';
 			}
+			if ( isset( $data['title']['raw'] ) ) {
+				$data['title']['raw'] = '';
+			}
 			if ( isset( $data['content']['rendered'] ) ) {
 				$data['content']['rendered'] = '';
+			}
+			if ( isset( $data['content']['raw'] ) ) {
+				$data['content']['raw'] = '';
 			}
 			if ( isset( $data['content'] ) && is_array( $data['content'] ) ) {
 				$data['content']['protected'] = true;
 			}
 			if ( isset( $data['excerpt']['rendered'] ) ) {
 				$data['excerpt']['rendered'] = '';
+			}
+			if ( isset( $data['excerpt']['raw'] ) ) {
+				$data['excerpt']['raw'] = '';
 			}
 			if ( array_key_exists( 'link', $data ) ) {
 				unset( $data['link'] );
