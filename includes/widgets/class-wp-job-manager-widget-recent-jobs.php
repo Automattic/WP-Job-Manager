@@ -85,6 +85,11 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		// Browse-capability gate — match the [jobs] shortcode denial without rendering a partial widget.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			return;
+		}
+
 		wp_enqueue_style( 'wp-job-manager-job-listings' );
 
 		if ( $this->get_cached_widget( $args ) ) {
