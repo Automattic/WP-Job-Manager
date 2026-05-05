@@ -145,4 +145,69 @@ class Tests_Password_Protected_Listing_REST extends WPJM_REST_TestCase {
 		$this->assertArrayHasKey( '_company_name', $data['meta'] );
 		$this->assertArrayHasKey( '_job_location', $data['meta'] );
 	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::gate_feed_query_for_listings
+	 *
+	 * The default core RSS feed scoped to `post_type=job_listing` (distinct from the custom
+	 * `job_feed` slug) must exclude password-protected listings. The custom job_feed already
+	 * sets `has_password=false` explicitly; this test covers the `pre_get_posts` gate that
+	 * applies to every other core feed slug routed at the post type.
+	 */
+	public function test_default_feed_query_excludes_password_protected() {
+		$query              = new \WP_Query();
+		$query->is_feed     = true;
+		$query->set( 'post_type', \WP_Job_Manager_Post_Types::PT_LISTING );
+		// `is_main_query()` returns true only when $query === $wp_the_query.
+		$GLOBALS['wp_the_query'] = $query;
+
+		\WP_Job_Manager_Post_Types::instance()->gate_feed_query_for_listings( $query );
+
+		$this->assertFalse(
+			$query->get( 'has_password' ),
+			'Default feed query for job_listing must set has_password=false.'
+		);
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::gate_feed_query_for_listings
+	 *
+	 * When browse capability denies the viewer, the default feed query for `job_listing`
+	 * must short-circuit to an empty result (matching the AJAX / REST / job_feed gate).
+	 */
+	public function test_default_feed_query_short_circuits_when_browse_cap_denies() {
+		update_option( 'job_manager_browse_job_listings_capability', [ 'manage_options' ] );
+		$this->logout();
+
+		$query              = new \WP_Query();
+		$query->is_feed     = true;
+		$query->set( 'post_type', \WP_Job_Manager_Post_Types::PT_LISTING );
+		$GLOBALS['wp_the_query'] = $query;
+
+		\WP_Job_Manager_Post_Types::instance()->gate_feed_query_for_listings( $query );
+
+		$this->assertSame(
+			[ 0 ],
+			$query->get( 'post__in' ),
+			'Browse-cap-denied feed query must be forced to an empty result-set.'
+		);
+
+		delete_option( 'job_manager_browse_job_listings_capability' );
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::gate_feed_query_for_listings
+	 *
+	 * Sanity: non-job-listing feed queries (e.g. the standard post feed) are not touched.
+	 */
+	public function test_default_feed_query_leaves_non_job_listing_queries_alone() {
+		$query              = new \WP_Query();
+		$query->is_feed     = true;
+		$query->set( 'post_type', 'post' );
+		$GLOBALS['wp_the_query'] = $query;
+
+		\WP_Job_Manager_Post_Types::instance()->gate_feed_query_for_listings( $query );
+
+		$this->assertNotSame( false, $query->get( 'has_password' ) );
+	}
 }

@@ -211,6 +211,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
+		add_action( 'pre_get_posts', [ $this, 'gate_feed_query_for_listings' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -834,6 +835,32 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'rss2_item', [ $this, 'job_feed_item' ] );
 		do_action( 'do_feed_rss2', false );
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search', 10 );
+	}
+
+	/**
+	 * Gates core feed queries for the job_listing post type so the default RSS / Atom
+	 * endpoints (?feed=rss2&post_type=job_listing, etc.) honor the browse capability and
+	 * exclude password-protected listings — matching the hardening applied to the custom
+	 * job_feed and AJAX / REST paths.
+	 *
+	 * @param WP_Query $query The query.
+	 */
+	public function gate_feed_query_for_listings( $query ) {
+		if ( ! $query->is_feed() || ! $query->is_main_query() ) {
+			return;
+		}
+
+		$post_types = (array) $query->get( 'post_type' );
+		if ( ! in_array( self::PT_LISTING, $post_types, true ) ) {
+			return;
+		}
+
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			$query->set( 'post__in', [ 0 ] );
+			return;
+		}
+
+		$query->set( 'has_password', false );
 	}
 
 	/**
