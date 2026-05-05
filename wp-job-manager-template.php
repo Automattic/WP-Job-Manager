@@ -337,10 +337,13 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 		return false;
 	}
 
-	// Only show structured data for un-filled, published, and non-password-protected job listings.
+	// Only show structured data for un-filled, published, non-password-protected listings the
+	// viewer is allowed to see; the JSON-LD emitter must honor the same view-capability check
+	// the visible template applies.
 	$output_structured_data = ! is_position_filled( $post )
 		&& 'publish' === $post->post_status
-		&& ! post_password_required( $post );
+		&& ! post_password_required( $post )
+		&& job_manager_user_can_view_job_listing( $post->ID );
 
 	/**
 	 * Filter if we should output structured data.

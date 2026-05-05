@@ -26,13 +26,23 @@ class WP_Job_Manager_REST_API {
 	}
 
 	/**
-	 * Excludes filled job listings from REST API query results.
+	 * Excludes filled job listings from REST API query results, and short-circuits the query when
+	 * the requester does not have the browse-listings capability.
 	 *
 	 * @param array           $args    Array of query arguments.
 	 * @param WP_REST_Request $request The REST API request.
 	 * @return array
 	 */
 	public static function exclude_filled_from_query( $args, $request ) {
+		// Browse-capability gate — match the same denial the [jobs] shortcode applies, but without surfacing a 403.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			$args['post__in'] = [ 0 ];
+			return $args;
+		}
+
+		// Password-protected listings are excluded from REST collections regardless of post-type config.
+		$args['has_password'] = false;
+
 		if ( 1 !== absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
 			return $args;
 		}
@@ -71,6 +81,36 @@ class WP_Job_Manager_REST_API {
 
 		if ( ! isset( $data['meta'] ) ) {
 			$data['meta'] = [];
+		}
+
+		// When the listing is password-protected (and the viewer hasn't unlocked it) or the
+		// view-capability gate denies the viewer, blank out the identifying top-level fields too. WP core
+		// only gates `content.rendered` / `excerpt.rendered`; for job listings the title / link /
+		// slug / featured-media references can themselves carry sensitive information.
+		$is_blocked = post_password_required( $post ) || ! job_manager_user_can_view_job_listing( $post->ID );
+
+		if ( $is_blocked ) {
+			if ( isset( $data['title']['rendered'] ) ) {
+				$data['title']['rendered'] = '';
+			}
+			if ( array_key_exists( 'link', $data ) ) {
+				unset( $data['link'] );
+			}
+			if ( array_key_exists( 'slug', $data ) ) {
+				$data['slug'] = '';
+			}
+			if ( array_key_exists( 'featured_media', $data ) ) {
+				$data['featured_media'] = 0;
+			}
+			// Links live on WP_REST_Response's private $links property and are merged into the
+			// serialized `_links` block later by WP_REST_Server::response_to_data(); they are not
+			// present in $data at this point, so remove_link() is the only effective way to drop
+			// the featured-media link before serialization.
+			$response->remove_link( 'https://api.w.org/featuredmedia' );
+			$data['meta'] = [];
+			$response->set_data( $data );
+
+			return $response;
 		}
 
 		foreach ( $data['meta'] as $meta_key => $meta_value ) {

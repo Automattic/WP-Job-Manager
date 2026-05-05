@@ -31,6 +31,20 @@ class WP_Job_Manager_Cache_Helper {
 		add_action( 'create_term', [ __CLASS__, 'edited_term' ], 10, 3 );
 		add_action( 'delete_term', [ __CLASS__, 'edited_term' ], 10, 3 );
 		add_action( 'transition_post_status', [ __CLASS__, 'maybe_clear_count_transients' ], 10, 3 );
+
+		// Bump the listings cache when capability gates change so cached results don't outlive the policy that produced them.
+		foreach ( [ 'job_manager_browse_job_listings_capability', 'job_manager_view_job_listing_capability' ] as $option ) {
+			add_action( "add_option_{$option}", [ __CLASS__, 'flush_get_job_listings_transient_version' ] );
+			add_action( "update_option_{$option}", [ __CLASS__, 'flush_get_job_listings_transient_version' ] );
+			add_action( "delete_option_{$option}", [ __CLASS__, 'flush_get_job_listings_transient_version' ] );
+		}
+	}
+
+	/**
+	 * Bumps the get_job_listings transient version unconditionally.
+	 */
+	public static function flush_get_job_listings_transient_version() {
+		self::get_transient_version( 'get_job_listings', true );
 	}
 
 	/**
