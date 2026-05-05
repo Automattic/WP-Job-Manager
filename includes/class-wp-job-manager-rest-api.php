@@ -85,13 +85,23 @@ class WP_Job_Manager_REST_API {
 
 		// When the listing is password-protected (and the viewer hasn't unlocked it) or the
 		// view-capability gate denies the viewer, blank out the identifying top-level fields too. WP core
-		// only gates `content.rendered` / `excerpt.rendered`; for job listings the title / link /
+		// only gates `content.rendered` / `excerpt.rendered` for the password branch; for the
+		// view-capability branch core leaves them populated, so we blank them here. Title / link /
 		// slug / featured-media references can themselves carry sensitive information.
 		$is_blocked = post_password_required( $post ) || ! job_manager_user_can_view_job_listing( $post->ID );
 
 		if ( $is_blocked ) {
 			if ( isset( $data['title']['rendered'] ) ) {
 				$data['title']['rendered'] = '';
+			}
+			if ( isset( $data['content']['rendered'] ) ) {
+				$data['content']['rendered'] = '';
+			}
+			if ( isset( $data['content'] ) && is_array( $data['content'] ) ) {
+				$data['content']['protected'] = true;
+			}
+			if ( isset( $data['excerpt']['rendered'] ) ) {
+				$data['excerpt']['rendered'] = '';
 			}
 			if ( array_key_exists( 'link', $data ) ) {
 				unset( $data['link'] );

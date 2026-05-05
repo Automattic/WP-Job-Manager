@@ -210,4 +210,41 @@ class Tests_Password_Protected_Listing_REST extends WPJM_REST_TestCase {
 
 		$this->assertNotSame( false, $query->get( 'has_password' ) );
 	}
+
+	/**
+	 * @covers WP_Job_Manager_REST_API::prepare_job_listing
+	 *
+	 * Regression for #2941. Core gates `content.rendered` / `excerpt.rendered` for
+	 * password-protected posts but not for posts blocked solely by view capability. Ensure
+	 * `prepare_job_listing()` blanks both branches so a viewer denied by the view-cap option
+	 * does not receive the listing body.
+	 */
+	public function test_rest_single_blanks_content_and_excerpt_for_view_cap_denied() {
+		// Restrict view to a capability anonymous viewers do not have.
+		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
+
+		$post_id = $this->factory->job_listing->create(
+			[
+				'post_title'   => 'View-cap-restricted listing',
+				'post_content' => 'sentinel-VIEWCAP-BODY confidential salary $250k',
+				'post_excerpt' => 'sentinel-VIEWCAP-EXCERPT confidential excerpt',
+			]
+		);
+		$this->logout();
+
+		$response = $this->get( "/wp/v2/job-listings/{$post_id}" );
+		$this->assertResponseStatus( $response, 200 );
+		$data = $response->get_data();
+
+		$this->assertSame( '', $data['title']['rendered'] ?? null, 'Title must be blanked.' );
+		$this->assertEmpty( $data['content']['rendered'] ?? '', 'Body content must not surface when view-cap denies the viewer.' );
+		$this->assertEmpty( $data['excerpt']['rendered'] ?? '', 'Excerpt must not surface when view-cap denies the viewer.' );
+		// Sentinel-level check: the original body / excerpt strings must not appear anywhere in
+		// the rendered fields, regardless of whether the field is `''`, `null`, or absent.
+		$this->assertStringNotContainsString( 'VIEWCAP-BODY', (string) ( $data['content']['rendered'] ?? '' ) );
+		$this->assertStringNotContainsString( 'VIEWCAP-EXCERPT', (string) ( $data['excerpt']['rendered'] ?? '' ) );
+		$this->assertTrue( $data['content']['protected'] ?? false, 'content.protected must be true to mirror the password-protected contract.' );
+
+		delete_option( 'job_manager_view_job_listing_capability' );
+	}
 }
