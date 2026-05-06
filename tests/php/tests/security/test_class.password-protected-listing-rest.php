@@ -212,6 +212,86 @@ class Tests_Password_Protected_Listing_REST extends WPJM_REST_TestCase {
 	}
 
 	/**
+	 * @covers WP_Job_Manager_REST_API::gate_view_capability_for_single
+	 *
+	 * Regression: when a listing is BOTH password-protected AND view-capability-restricted,
+	 * the gate must still return 404. An earlier version short-circuited on
+	 * `post_password_required()` *before* the view-cap check, leaving these doubly-restricted
+	 * listings to return the standard 200 + `content.protected` envelope — which itself
+	 * confirmed the listing existed at that ID, defeating the indistinguishability goal.
+	 */
+	public function test_rest_single_returns_404_for_password_protected_and_view_cap_denied() {
+		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
+
+		try {
+			$post_id = $this->factory->job_listing->create(
+				[
+					'post_password' => 'secret',
+					'post_title'    => 'Double-restricted listing',
+					'post_content'  => 'sentinel-DOUBLE-BODY confidential',
+				]
+			);
+			$this->logout();
+
+			$response = $this->get( "/wp/v2/job-listings/{$post_id}" );
+			$this->assertResponseStatus( $response, 404 );
+
+			$data = $response->get_data();
+			$this->assertSame( 'rest_post_invalid_id', $data['code'] ?? null, 'Doubly-restricted listing must 404 with the same code core uses for missing posts.' );
+
+			$body = (string) wp_json_encode( $data );
+			$this->assertStringNotContainsString( 'Double-restricted listing', $body, 'Title must not surface.' );
+			$this->assertStringNotContainsString( 'DOUBLE-BODY', $body, 'Body content must not surface.' );
+			$this->assertArrayNotHasKey( 'protected', is_array( $data ) ? $data : [], '`content.protected` envelope must not appear (would reveal listing exists).' );
+		} finally {
+			delete_option( 'job_manager_view_job_listing_capability' );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::auth_check_can_view_job_listing
+	 *
+	 * Regression: an editor opening a password-protected listing in the block editor needs
+	 * meta access (location, company name, application target, etc.) to drive Gutenberg —
+	 * the per-meta `auth_view_callback` must mirror the editor-bypass added to
+	 * `prepare_job_listing()`. Without this, saving the post in the editor overwrites the
+	 * meta fields with empty values, which is data loss rather than just a display bug.
+	 */
+	public function test_rest_single_preserves_meta_for_password_protected_editor() {
+		$editor_id = $this->factory->user->create( [ 'role' => 'editor' ] );
+		$editor    = get_user_by( 'id', $editor_id );
+		foreach ( [ 'edit_job_listing', 'edit_job_listings', 'edit_others_job_listings', 'edit_published_job_listings', 'read_job_listing', 'read_private_job_listings' ] as $cap ) {
+			$editor->add_cap( $cap );
+		}
+
+		$post_id = $this->factory->job_listing->create(
+			[
+				'post_password' => 'secret',
+				'post_title'    => 'Editor meta preservation test',
+				'meta_input'    => [
+					'_company_name' => 'sentinel-PWMETA-COMPANY',
+					'_job_location' => 'sentinel-PWMETA-LOCATION',
+					'_application'  => 'sentinel-PWMETA-APPLY@example.com',
+				],
+			]
+		);
+
+		wp_set_current_user( $editor_id );
+
+		try {
+			$response = $this->get( "/wp/v2/job-listings/{$post_id}", [ 'context' => 'edit' ] );
+			$this->assertResponseStatus( $response, 200 );
+
+			$meta = $response->get_data()['meta'] ?? [];
+			$this->assertSame( 'sentinel-PWMETA-COMPANY', $meta['_company_name'] ?? '', 'Editor must see _company_name meta on a password-protected listing.' );
+			$this->assertSame( 'sentinel-PWMETA-LOCATION', $meta['_job_location'] ?? '', 'Editor must see _job_location meta on a password-protected listing.' );
+			$this->assertSame( 'sentinel-PWMETA-APPLY@example.com', $meta['_application'] ?? '', 'Editor must see _application meta on a password-protected listing.' );
+		} finally {
+			wp_set_current_user( 0 );
+		}
+	}
+
+	/**
 	 * @covers WP_Job_Manager_REST_API::prepare_job_listing
 	 *
 	 * An editor opening a password-protected listing in the block editor needs the raw fields

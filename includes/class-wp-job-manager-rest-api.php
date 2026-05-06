@@ -27,13 +27,17 @@ class WP_Job_Manager_REST_API {
 	}
 
 	/**
-	 * Returns 404 for GET requests to a single job listing when the current user is denied by
-	 * the `job_manager_view_job_listing_capability` option. Mirrors WP core's "post not found"
-	 * shape so the existence of restricted listings is not revealed.
+	 * Returns 404 for GET requests to a single job listing when the current user is
+	 * denied by the `job_manager_view_job_listing_capability` option. Mirrors WP core's
+	 * "post not found" shape so the existence of restricted listings is not revealed.
 	 *
-	 * Password-protected listings are intentionally not gated here — WP's password-form contract
-	 * requires a 200 with `content.protected = true`, which `prepare_job_listing()` produces.
-	 * Author and `preview` short-circuits are inside `job_manager_user_can_view_job_listing()`.
+	 * The view-capability check is the only gate. For view-cap-*passing* users on
+	 * password-protected listings the request continues and WP core's controller +
+	 * `prepare_job_listing()` produce the password contract (200 + `content.protected`)
+	 * downstream. View-cap-*failing* users always get 404, even on password-protected
+	 * listings — otherwise the password envelope would itself reveal that the listing
+	 * exists at that ID. Author and `preview` short-circuits live inside
+	 * `job_manager_user_can_view_job_listing()`.
 	 *
 	 * @param mixed           $response Result from the dispatched request, prior to invoking the callback.
 	 * @param array           $handler  Route handler used for the request.
@@ -58,9 +62,6 @@ class WP_Job_Manager_REST_API {
 		}
 		$post = get_post( $post_id );
 		if ( ! $post || WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
-			return $response;
-		}
-		if ( post_password_required( $post ) ) {
 			return $response;
 		}
 		if ( job_manager_user_can_view_job_listing( $post_id ) ) {
