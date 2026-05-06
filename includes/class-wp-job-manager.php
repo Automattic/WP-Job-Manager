@@ -124,6 +124,7 @@ class WP_Job_Manager {
 		add_action( 'after_switch_theme', 'flush_rewrite_rules', 15 );
 
 		// Actions.
+		add_action( 'init', [ $this, 'load_legacy_textdomain' ] );
 		add_action( 'after_setup_theme', [ $this, 'include_template_functions' ], 11 );
 		add_action( 'widgets_init', [ $this, 'widgets_init' ] );
 		add_action( 'wp_loaded', [ $this, 'register_shared_assets' ] );
@@ -204,6 +205,23 @@ class WP_Job_Manager {
 			'WP Job Manager',
 			wp_kses_post( wpautop( $content, false ) )
 		);
+	}
+
+	/**
+	 * Loads translations from the legacy `WP_LANG_DIR/wp-job-manager/` path.
+	 *
+	 * WordPress auto-loads translations from `WP_LANG_DIR/plugins/` for
+	 * .org-distributed plugins, so a general `load_plugin_textdomain()` call
+	 * isn't needed. This keeps the old custom path working for sites that
+	 * already place `.mo` files there.
+	 */
+	public function load_legacy_textdomain() {
+		$locale = apply_filters( 'plugin_locale', determine_locale(), 'wp-job-manager' );
+		$mofile = WP_LANG_DIR . '/wp-job-manager/wp-job-manager-' . $locale . '.mo';
+
+		if ( is_readable( $mofile ) ) {
+			load_textdomain( 'wp-job-manager', $mofile );
+		}
 	}
 
 	/**
