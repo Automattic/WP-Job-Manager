@@ -35,7 +35,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	ob_start();
 	wp_terms_checklist( 0, $args );
 	$checklist = ob_get_clean();
-	echo wp_kses_post( str_replace( "disabled='disabled'", '', $checklist ) );
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_terms_checklist() returns trusted core HTML; wp_kses_post() would strip the <input type="checkbox"> elements.
+	echo str_replace( "disabled='disabled'", '', $checklist );
 ?>
 </ul>
 <?php if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo wp_kses_post( $field['description'] ); ?></small><?php endif; ?>

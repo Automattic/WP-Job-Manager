@@ -57,14 +57,17 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 		<?php if ( ! $jobs ) : ?>
 			<div
 				class="jm-dashboard-empty">
-				<?php echo wp_kses_post( Notice::dialog(
+				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by Notice::dialog(), which renders a sanitized template; wp_kses_post() would strip action-button onclick handlers.
+				echo Notice::dialog(
 					[
 						'message' => $search_input
 							// translators: Placeholder is the search term.
 							? sprintf( __( 'No results found for "%s".', 'wp-job-manager' ), esc_html( $search_input ) )
-							: __( 'You do not have any active listings.', 'wp-job-manager' )
+							: __( 'You do not have any active listings.', 'wp-job-manager' ),
 					]
-				) ); ?>
+				);
+				?>
 			</div>
 		<?php else : ?>
 			<div class="jm-dashboard-header">
@@ -97,7 +100,8 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 								}
 							}
 
-							echo wp_kses_post( UI_Elements::actions_menu( $actions_html ) );
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by UI_Elements::actions_menu(); wp_kses_post() would strip the onfocusout handler that auto-closes the menu.
+							echo UI_Elements::actions_menu( $actions_html );
 							?>
 						</div>
 					</div>

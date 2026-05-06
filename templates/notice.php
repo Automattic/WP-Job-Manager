@@ -45,7 +45,10 @@ if ( in_array( 'message-icon', $classes, true ) ) {
 <div class="jm-notice <?php echo esc_attr( implode( ' ', $classes ) ); ?>" role="status">
 	<?php if ( $title ) : ?>
 		<div class="jm-notice__header">
-			<?php echo wp_kses_post( $icon_html ); ?>
+			<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by UI_Elements::icon(), which sanitizes its own input.
+			echo $icon_html;
+			?>
 			<div class="jm-notice__title"><?php echo esc_html( $title ); ?></div>
 		</div>
 	<?php endif; ?>
@@ -53,19 +56,33 @@ if ( in_array( 'message-icon', $classes, true ) ) {
 		<div
 			class="jm-notice__message-wrap">
 			<?php if ( ! $title && $icon_html ) : ?>
-				<?php echo wp_kses_post( $icon_html ); ?>
+				<?php
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by UI_Elements::icon().
+				echo $icon_html;
+				?>
 			<?php endif; ?>
-			<?php echo wp_kses_post( $message_icon_html ?? '' ); ?>
+			<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by UI_Elements::icon().
+			echo $message_icon_html ?? '';
+			?>
 			<div
 				class="jm-notice__message <?php echo esc_attr( $content_html ? 'has-details' : '' ); ?> "><?php echo wp_kses_post( $message ); ?></div>
 		</div>
 	<?php endif; ?>
 	<?php if ( $content_html ) : ?>
-		<div class="jm-notice__details"><?php echo wp_kses_post( $content_html ); ?></div>
+		<div class="jm-notice__details">
+			<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Caller is responsible for escaping per Notice::render docblock; wp_kses_post() would strip onclick handlers and SVG icons.
+			echo $content_html;
+			?>
+		</div>
 	<?php endif; ?>
 	<?php if ( $has_actions_footer ) : ?>
 		<div class="jm-notice__footer">
-			<?php echo wp_kses_post( $actions_html ); ?>
+			<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by UI_Elements::actions(); wp_kses_post() would strip onclick handlers used for modal open/close.
+			echo $actions_html;
+			?>
 		</div>
 	<?php endif; ?>
 </div>
