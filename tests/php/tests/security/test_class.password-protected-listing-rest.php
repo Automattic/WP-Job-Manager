@@ -214,56 +214,13 @@ class Tests_Password_Protected_Listing_REST extends WPJM_REST_TestCase {
 	/**
 	 * @covers WP_Job_Manager_REST_API::prepare_job_listing
 	 *
-	 * Regression for #2941. Core gates `content.rendered` / `excerpt.rendered` for
-	 * password-protected posts but not for posts blocked solely by view capability. Ensure
-	 * `prepare_job_listing()` blanks both branches so a viewer denied by the view-cap option
-	 * does not receive the listing body.
+	 * An editor opening a password-protected listing in the block editor needs the raw fields
+	 * and identifying metadata (title, link, featured-media) to drive Gutenberg — saving
+	 * blanked raw values would overwrite the body. WP core's controller already permits this
+	 * request because of edit_post, and core itself blanks `content.rendered` for the password
+	 * contract. The plugin's extra hardening must back off so it doesn't break legit editing.
 	 */
-	public function test_rest_single_blanks_content_and_excerpt_for_view_cap_denied() {
-		// Restrict view to a capability anonymous viewers do not have.
-		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
-
-		$post_id = $this->factory->job_listing->create(
-			[
-				'post_title'   => 'View-cap-restricted listing',
-				'post_content' => 'sentinel-VIEWCAP-BODY confidential salary $250k',
-				'post_excerpt' => 'sentinel-VIEWCAP-EXCERPT confidential excerpt',
-			]
-		);
-		$this->logout();
-
-		$response = $this->get( "/wp/v2/job-listings/{$post_id}" );
-		$this->assertResponseStatus( $response, 200 );
-		$data = $response->get_data();
-
-		$this->assertSame( '', $data['title']['rendered'] ?? null, 'Title must be blanked.' );
-		$this->assertEmpty( $data['content']['rendered'] ?? '', 'Body content must not surface when view-cap denies the viewer.' );
-		$this->assertEmpty( $data['excerpt']['rendered'] ?? '', 'Excerpt must not surface when view-cap denies the viewer.' );
-		// Sentinel-level check: the original body / excerpt strings must not appear anywhere in
-		// the rendered fields, regardless of whether the field is `''`, `null`, or absent.
-		$this->assertStringNotContainsString( 'VIEWCAP-BODY', (string) ( $data['content']['rendered'] ?? '' ) );
-		$this->assertStringNotContainsString( 'VIEWCAP-EXCERPT', (string) ( $data['excerpt']['rendered'] ?? '' ) );
-		$this->assertTrue( $data['content']['protected'] ?? false, 'content.protected must be true to mirror the password-protected contract.' );
-
-		delete_option( 'job_manager_view_job_listing_capability' );
-	}
-
-	/**
-	 * @covers WP_Job_Manager_REST_API::prepare_job_listing
-	 *
-	 * `?context=edit` also returns `title.raw` / `content.raw` / `excerpt.raw`. A user with
-	 * edit_post on the listing but lacking the view-capability must not receive the raw body
-	 * either — `prepare_job_listing()` must blank all three raw fields in the blocked branch.
-	 */
-	public function test_rest_single_blanks_raw_fields_for_view_cap_denied_editor() {
-		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
-
-		// Build a user that can edit this listing (so `?context=edit` is allowed) but lacks
-		// `manage_options` (so the view-capability gate denies them) and is not the post
-		// author (so the author short-circuit in `job_manager_user_can_view_job_listing` does
-		// not apply). The job_listing post type uses a custom capability_type with
-		// `map_meta_cap`, so we grant the relevant primitive caps explicitly.
-		$author_id = $this->factory->user->create( [ 'role' => 'author' ] );
+	public function test_rest_single_preserves_raw_fields_for_password_protected_editor() {
 		$editor_id = $this->factory->user->create( [ 'role' => 'editor' ] );
 		$editor    = get_user_by( 'id', $editor_id );
 		foreach ( [ 'edit_job_listing', 'edit_job_listings', 'edit_others_job_listings', 'edit_published_job_listings', 'read_job_listing', 'read_private_job_listings' ] as $cap ) {
@@ -272,26 +229,107 @@ class Tests_Password_Protected_Listing_REST extends WPJM_REST_TestCase {
 
 		$post_id = $this->factory->job_listing->create(
 			[
-				'post_author'  => $author_id,
-				'post_title'   => 'Raw-leak-test listing',
-				'post_content' => 'sentinel-RAW-BODY confidential salary $250k',
-				'post_excerpt' => 'sentinel-RAW-EXCERPT confidential excerpt',
+				'post_password' => 'secret',
+				'post_title'    => 'Editor Edit Test',
+				'post_content'  => 'sentinel-PWEDIT-BODY confidential salary $250k',
+				'post_excerpt'  => 'sentinel-PWEDIT-EXCERPT confidential excerpt',
 			]
 		);
 
 		wp_set_current_user( $editor_id );
 
-		$response = $this->get( "/wp/v2/job-listings/{$post_id}", [ 'context' => 'edit' ] );
-		$this->assertResponseStatus( $response, 200 );
-		$data = $response->get_data();
+		try {
+			$response = $this->get( "/wp/v2/job-listings/{$post_id}", [ 'context' => 'edit' ] );
+			$this->assertResponseStatus( $response, 200 );
+			$data = $response->get_data();
 
-		$this->assertEmpty( $data['title']['raw'] ?? '', 'title.raw must be blanked.' );
-		$this->assertEmpty( $data['content']['raw'] ?? '', 'content.raw must be blanked.' );
-		$this->assertEmpty( $data['excerpt']['raw'] ?? '', 'excerpt.raw must be blanked.' );
-		$this->assertStringNotContainsString( 'RAW-BODY', (string) ( $data['content']['raw'] ?? '' ) );
-		$this->assertStringNotContainsString( 'RAW-EXCERPT', (string) ( $data['excerpt']['raw'] ?? '' ) );
+			// `job_listing` does not declare `excerpt` in `supports`, so `$data['excerpt']`
+			// is never populated by the core controller — only content + title are testable.
+			$this->assertStringContainsString( 'sentinel-PWEDIT-BODY', (string) ( $data['content']['raw'] ?? '' ), 'Editor must see raw content for password-protected listing.' );
+			$this->assertStringContainsString( 'Editor Edit Test', (string) ( $data['title']['raw'] ?? '' ), 'Editor must see raw title for password-protected listing.' );
+		} finally {
+			wp_set_current_user( 0 );
+		}
+	}
 
-		wp_set_current_user( 0 );
-		delete_option( 'job_manager_view_job_listing_capability' );
+	/**
+	 * @covers WP_Job_Manager_REST_API::gate_view_capability_for_single
+	 *
+	 * Regression for #2941. A viewer denied by `job_manager_view_job_listing_capability`
+	 * must not receive the listing — REST returns the same 404 + `rest_post_invalid_id`
+	 * shape WP core uses for unknown posts so the listing's existence is not revealed,
+	 * and no listing fields (title / content / excerpt) appear anywhere in the body.
+	 */
+	public function test_rest_single_returns_404_for_view_cap_denied() {
+		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
+
+		try {
+			$post_id = $this->factory->job_listing->create(
+				[
+					'post_title'   => 'View-cap-restricted listing',
+					'post_content' => 'sentinel-VIEWCAP-BODY confidential salary $250k',
+					'post_excerpt' => 'sentinel-VIEWCAP-EXCERPT confidential excerpt',
+				]
+			);
+			$this->logout();
+
+			$response = $this->get( "/wp/v2/job-listings/{$post_id}" );
+			$this->assertResponseStatus( $response, 404 );
+
+			$data = $response->get_data();
+			$this->assertSame( 'rest_post_invalid_id', $data['code'] ?? null, '404 must use the same code as WP core for missing posts.' );
+
+			$body = (string) wp_json_encode( $data );
+			$this->assertStringNotContainsString( 'View-cap-restricted listing', $body, 'Title must not surface in the 404 body.' );
+			$this->assertStringNotContainsString( 'VIEWCAP-BODY', $body, 'Post content must not surface in the 404 body.' );
+			$this->assertStringNotContainsString( 'VIEWCAP-EXCERPT', $body, 'Post excerpt must not surface in the 404 body.' );
+		} finally {
+			delete_option( 'job_manager_view_job_listing_capability' );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_REST_API::gate_view_capability_for_single
+	 *
+	 * A user with `edit_post` on the listing but lacking the view-capability must still get
+	 * 404 on a GET — even with `?context=edit`. The previous "blank raw fields" approach
+	 * left the 200 envelope visible (revealing the listing exists); the gate closes that.
+	 */
+	public function test_rest_single_returns_404_for_view_cap_denied_editor_in_edit_context() {
+		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
+
+		try {
+			$author_id = $this->factory->user->create( [ 'role' => 'author' ] );
+			$editor_id = $this->factory->user->create( [ 'role' => 'editor' ] );
+			$editor    = get_user_by( 'id', $editor_id );
+			foreach ( [ 'edit_job_listing', 'edit_job_listings', 'edit_others_job_listings', 'edit_published_job_listings', 'read_job_listing', 'read_private_job_listings' ] as $cap ) {
+				$editor->add_cap( $cap );
+			}
+
+			$post_id = $this->factory->job_listing->create(
+				[
+					'post_author'  => $author_id,
+					'post_title'   => 'Raw-leak-test listing',
+					'post_content' => 'sentinel-RAW-BODY confidential salary $250k',
+					'post_excerpt' => 'sentinel-RAW-EXCERPT confidential excerpt',
+				]
+			);
+
+			wp_set_current_user( $editor_id );
+
+			$response = $this->get( "/wp/v2/job-listings/{$post_id}", [ 'context' => 'edit' ] );
+			$this->assertResponseStatus( $response, 404 );
+
+			$data = $response->get_data();
+			$this->assertSame( 'rest_post_invalid_id', $data['code'] ?? null, '404 must use the same code as WP core for missing posts.' );
+
+			$body = (string) wp_json_encode( $data );
+			$this->assertStringNotContainsString( 'Raw-leak-test listing', $body, 'Title must not surface even in edit context.' );
+			$this->assertStringNotContainsString( 'RAW-BODY', $body, 'Raw body must not surface even in edit context.' );
+			$this->assertStringNotContainsString( 'RAW-EXCERPT', $body, 'Raw excerpt must not surface even in edit context.' );
+		} finally {
+			wp_set_current_user( 0 );
+			delete_option( 'job_manager_view_job_listing_capability' );
+		}
 	}
 }
