@@ -10,6 +10,10 @@
  * @version     1.25.3
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Gets and includes template files.
  *

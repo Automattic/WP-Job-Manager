@@ -5,6 +5,10 @@
  * @package wp-job-manager
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Load routines only if WPML is loaded.
  *

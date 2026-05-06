@@ -5,6 +5,10 @@
  * @package wp-job-manager
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! function_exists( 'order_featured_job_listing' ) ) :
 	/**
 	 * Was used for sorting.

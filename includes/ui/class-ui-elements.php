@@ -158,17 +158,15 @@ class UI_Elements {
 
 		$close = esc_attr( 'event.currentTarget.contains(event.relatedTarget) || setTimeout(() => this.open = false, 100 )' );
 
-		return <<<HTML
-<details class="jm-ui-actions-menu" onfocusout="{$close}">
-	<summary tabindex="0" class="jm-ui-action-menu__open-button jm-ui-button--icon"
-		aria-label="{$label}">
-		<span class="jm-ui-button__icon"></span>
-	</summary>
-	<div class="jm-ui-action-menu__content">
-	{$content}
-	</div>
-</details>
-HTML;
+		return '<details class="jm-ui-actions-menu" onfocusout="' . $close . '">'
+			. '<summary tabindex="0" class="jm-ui-action-menu__open-button jm-ui-button--icon"'
+			. ' aria-label="' . $label . '">'
+			. '<span class="jm-ui-button__icon"></span>'
+			. '</summary>'
+			. '<div class="jm-ui-action-menu__content">'
+			. $content
+			. '</div>'
+			. '</details>';
 
 	}
 

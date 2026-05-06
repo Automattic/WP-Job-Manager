@@ -66,7 +66,8 @@ switch ( $job->post_status ) :
 		} elseif ( $job_dashboard_link && $job_dashboard_title ) { // If there is both a job_dashboard page and a title on the page
 			$job_submitted_content .= wp_kses_post(
 				sprintf(
-					__( '  <a href="%s"> %s</a>', 'wp-job-manager' ),
+					// translators: %1$s is the URL to the job dashboard; %2$s is the page title.
+					__( '  <a href="%1$s"> %2$s</a>', 'wp-job-manager' ),
 					$job_dashboard_link,
 					$job_dashboard_title
 				)

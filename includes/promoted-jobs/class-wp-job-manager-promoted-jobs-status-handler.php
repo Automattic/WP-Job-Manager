@@ -5,6 +5,10 @@
  * @package wp-job-manager
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Handles functionality related to the Promoted Jobs Status Update.
  *

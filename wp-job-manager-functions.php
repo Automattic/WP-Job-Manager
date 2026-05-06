@@ -7,6 +7,10 @@
  * @package wp-job-manager
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ! function_exists( 'get_job_listings' ) ) :
 	/**
 	 * Queries job listings with certain criteria and returns them.

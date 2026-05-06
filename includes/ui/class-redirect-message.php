@@ -125,14 +125,11 @@ class Redirect_Message {
 	 */
 	private static function add_inline_script( $query_var ) {
 		$query_var = esc_js( $query_var );
-		return <<<HTML
-			<script>
-				const url = new URL( location.href );
-				url.searchParams.delete('{$query_var}');
-				history.replaceState(null, '', url)
-
-			</script>
-HTML;
+		return '<script>'
+			. 'const url = new URL( location.href );'
+			. "url.searchParams.delete('" . $query_var . "');"
+			. "history.replaceState(null, '', url)"
+			. '</script>';
 	}
 
 }

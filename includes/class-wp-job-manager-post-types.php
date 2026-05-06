@@ -1607,11 +1607,7 @@ class WP_Job_Manager_Post_Types {
 			return;
 		}
 
-		if ( function_exists( 'wp_robots_no_robots' ) ) {
-			add_filter( 'wp_robots', 'wp_robots_no_robots' );
-		} else {
-			wp_no_robots();
-		}
+		add_filter( 'wp_robots', 'wp_robots_no_robots' );
 	}
 
 	/**

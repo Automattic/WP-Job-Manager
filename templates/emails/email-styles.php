@@ -52,26 +52,25 @@ $color_button      = esc_attr( $style_vars['color_button'] );
 $color_button_text = esc_attr( $style_vars['color_button_text'] );
 $font_family       = wp_strip_all_tags( $style_vars['font_family'] );
 
-echo <<<CSS
-
+echo '
 body {
 	padding: 0;
 	margin: 0;
 }
 
 #wrapper {
-	background-color: {$color_light};
-	color: {$color_fg};
+	background-color: ' . $color_light . ';
+	color: ' . $color_fg . ';
 	margin: 0;
 	padding: 0;
 	font-size: initial;
-	font-family: {$font_family};
+	font-family: ' . $font_family . ';
 }
 
 .content-wrap {
 	max-width: 600px;
 	padding: 32px 12px;
-	background: {$color_bg};
+	background: ' . $color_bg . ';
 	border-radius: 2px;
 	line-height: 150%;
 	word-wrap: break-word;
@@ -83,7 +82,7 @@ p {
 }
 
 a {
-	color: {$color_link};
+	color: ' . $color_link . ';
 	text-decoration: underline;
 }
 
@@ -95,8 +94,8 @@ a:hover {
 	margin: 24px 0;
 	text-align: center;
 	padding: 12px 24px;
-	background: {$color_button};
-	color: {$color_button_text};
+	background: ' . $color_button . ';
+	color: ' . $color_button_text . ';
 	cursor: pointer;
 	font-style: normal;
 	font-weight: 600;
@@ -107,12 +106,12 @@ a:hover {
 }
 
 .button-single:hover {
-	background: {$color_fg};
-	color: {$color_bg};
+	background: ' . $color_fg . ';
+	color: ' . $color_bg . ';
 }
 
 .box {
-	border: 1px solid {$color_stroke};
+	border: 1px solid ' . $color_stroke . ';
 	padding: 24px;
 	margin: 24px 0;
 }
@@ -125,18 +124,18 @@ a:hover {
 	margin: 24px 0;
 	width: 80px;
 	height: 1px;
-	background: {$color_light};
+	background: ' . $color_light . ';
 }
 
 .actions {
 	margin: 24px 0;
 	text-align: center;
 	padding: 18px 24px;
-	background: {$color_light};
+	background: ' . $color_light . ';
 }
 
 .action {
-	color: {$color_link};
+	color: ' . $color_link . ';
 	text-decoration: underline;
 }
 
@@ -153,7 +152,7 @@ a:hover {
 td.detail-label,
 td.detail-value {
 	vertical-align: middle;
-	border: 1px solid {$color_light};
+	border: 1px solid ' . $color_light . ';
 }
 
 td.detail-label {
@@ -182,8 +181,7 @@ td.detail-label {
 		display: none !important;
 	}
 }
-
-CSS;
+';
 
 /**
  * Inject styles after the core styles.

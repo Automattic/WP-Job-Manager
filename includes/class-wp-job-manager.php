@@ -124,7 +124,7 @@ class WP_Job_Manager {
 		add_action( 'after_switch_theme', 'flush_rewrite_rules', 15 );
 
 		// Actions.
-		add_action( 'after_setup_theme', [ $this, 'load_plugin_textdomain' ] );
+		add_action( 'init', [ $this, 'load_legacy_textdomain' ] );
 		add_action( 'after_setup_theme', [ $this, 'include_template_functions' ], 11 );
 		add_action( 'widgets_init', [ $this, 'widgets_init' ] );
 		add_action( 'wp_loaded', [ $this, 'register_shared_assets' ] );
@@ -208,11 +208,20 @@ class WP_Job_Manager {
 	}
 
 	/**
-	 * Loads textdomain for plugin.
+	 * Loads translations from the legacy `WP_LANG_DIR/wp-job-manager/` path.
+	 *
+	 * WordPress auto-loads translations from `WP_LANG_DIR/plugins/` for
+	 * .org-distributed plugins, so a general `load_plugin_textdomain()` call
+	 * isn't needed. This keeps the old custom path working for sites that
+	 * already place `.mo` files there.
 	 */
-	public function load_plugin_textdomain() {
-		load_textdomain( 'wp-job-manager', WP_LANG_DIR . '/wp-job-manager/wp-job-manager-' . apply_filters( 'plugin_locale', get_locale(), 'wp-job-manager' ) . '.mo' );
-		load_plugin_textdomain( 'wp-job-manager', false, JOB_MANAGER_PLUGIN_DIR . '/languages/' );
+	public function load_legacy_textdomain() {
+		$locale = apply_filters( 'plugin_locale', determine_locale(), 'wp-job-manager' );
+		$mofile = WP_LANG_DIR . '/wp-job-manager/wp-job-manager-' . $locale . '.mo';
+
+		if ( is_readable( $mofile ) ) {
+			load_textdomain( 'wp-job-manager', $mofile );
+		}
 	}
 
 	/**
@@ -312,8 +321,7 @@ class WP_Job_Manager {
 		global $wp_scripts;
 
 		$jquery_version = isset( $wp_scripts->registered['jquery-ui-core']->ver ) ? $wp_scripts->registered['jquery-ui-core']->ver : '1.9.2';
-		$jquery_version = preg_replace( '/-wp/', '', $jquery_version );
-		wp_register_style( 'jquery-ui', '//code.jquery.com/ui/' . $jquery_version . '/themes/smoothness/jquery-ui.min.css', [], $jquery_version );
+		wp_register_style( 'jquery-ui', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-ui/jquery-ui.min.css', [], $jquery_version );
 
 		// Register datepicker JS. It will be enqueued if needed when a date field is used.
 		self::register_script( 'wp-job-manager-datepicker', 'js/datepicker.js', [ 'jquery', 'jquery-ui-datepicker' ], true );

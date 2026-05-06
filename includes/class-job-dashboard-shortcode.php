@@ -545,7 +545,7 @@ class Job_Dashboard_Shortcode {
 		if ( 'publish' === $job->post_status && ! empty( $expiration ) ) {
 
 			// translators: Placeholder is the expiration date of the job listing.
-			echo '<div class="job-expires"><small>' . UI_Elements::rel_time( $expiration, __( 'Expires in %s', 'wp-job-manager' ) ) . '</small></div>';
+			echo '<div class="job-expires"><small>' . UI_Elements::rel_time( $expiration, __( 'Expires in %s', 'wp-job-manager' ) ) . '</small></div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by UI_Elements::rel_time(), which escapes its own input.
 		}
 	}
 
@@ -576,7 +576,10 @@ class Job_Dashboard_Shortcode {
 
 		?>
 		<div class="jm-ui-row">
-			<?php echo UI_Elements::icon( 'location' ); ?>
+			<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by UI_Elements::icon(), which sanitizes its own input.
+			echo UI_Elements::icon( 'location' );
+			?>
 			<?php echo esc_html( $location ); ?>
 		</div>
 		<?php
@@ -620,6 +623,7 @@ class Job_Dashboard_Shortcode {
 			return;
 		}
 
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered by UI_Elements::button(), which escapes its own input.
 		echo UI_Elements::button(
 			[
 				'label' => $action['label'],

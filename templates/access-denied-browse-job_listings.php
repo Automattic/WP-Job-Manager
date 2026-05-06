@@ -16,4 +16,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<p class="job-manager-error"><?php _e( 'Sorry, you do not have permission to browse job listings.', 'wp-job-manager' ); ?></p>
+<p class="job-manager-error"><?php esc_html_e( 'Sorry, you do not have permission to browse job listings.', 'wp-job-manager' ); ?></p>

@@ -2,13 +2,13 @@
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
 Tags: jobs, careers, company, hiring, job board
 Requires at least: 6.4
-Tested up to: 6.6
-Requires PHP: 7.2
+Tested up to: 6.9
+Requires PHP: 7.4
 Stable tag: 2.4.1
-License: GPLv3
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Create a careers page for your company website, or build a public job board for your community. 
+Create a careers page for your company website, or build a public job board for your community.
 
 == Description ==
 
@@ -150,24 +150,76 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 ### 2.4.1 - 2026-02-24
 * Add permission check to listing query parameters (#2914)
 * Fix structured data output for password-protected listings (#2913)
-
 * Update actions/cache to use v4 (#2896)
 * reCaptcha script not being loaded (#2893)
 * add a additional action to the do_feed_rss2
 * fix hardcoded dashboard expiration date format
 * Dev: Fix deprecated  methods
 * Fix file input field for forms not marked as required
-
 * Fix broken access control issue reported on Patchstack.
 
 ### 2.4.0 - 2024-08-08
 * Fix job dashboard actions menu in Safari
-
 * Fix PHP 8.3 support
-
 * Remove support for Internet Explorer 11
-
 * Fix Wordpress 6.6 compatibility
-
 * Fix classic editor support for job listings
+
+### 2.3.0 - 2024-04-29
+New!
+
+* Job Statistics — enable insights like job listing page views, unique visits and search impressions to be collected and displayed to employers in the jobs dashboard.
+* Add Google reCAPTCHA v3 support
+
+Improvements:
+
+* New: Job statistics overlay
+* Change: Redesign job dashboard
+* Change: Allow job duplication in the job dashboard for any job
+* Security: Don't return unpublished jobs only in the promote job endpoint
+* Fix renewals for WordPress.com licenses
+* Fix issues with rich e-mails on some e-mail providers
+* Fix e-mail styling in some e-mail clients
+* Fix expiry date not showing up in backend editor
+* Fix: Add fallback to date format in case it's missing
+* Fix: Prevent past dates from being used in the datepicker
+
+For developers:
+
+* Add filter to disable promoted jobs
+* Add placeholder options to select field
+* Job dashboard template has been rewritten
+
+### 2.2.2 - 2024-02-15
+* Fix issue with rich e-mails on some e-mail providers (#2753)
+* Fix: 'featured_first' argument now works when 'show_filters' is set to false.
+* Improve checkbox and radio inputs for styled forms
+
+### 2.2.1 - 2024-01-31
+* Fix PHP 7.x error for mixed returned type (#2726)
+
+### 2.2.0 - 2024-01-29
+New:
+
+* Allow scheduling listings during job submission — add an option to show a 'Scheduled Date' field in the job submission form
+* Add new [jobs] shortcode parameter, featured_first so you can ensure featured listings always show up on top.
+* Add support for user sessions without a full account (used in the Job Alerts extension)
+
+Changes:
+
+* Improve styling for rich text e-mails
+* Include plain text alternative for rich text e-mails for better compatibility
+* Store previous license when plugin is deactivated for easier reactivation later.
+* Update design for settings and marketplace pages
+
+Fixes:
+
+* Fix custom role permission issues (#2673)
+* Fix RSS, Reset, Add Alert links not showing on search page without a keyword
+* Improve PHP 8 support
+* Fix numeric settings field issues
+* Improve e-mail formatting and encoding, remove extra whitespace
+* Add file type validation and error message to company logo upload
+* Fix cache issue when marking jobs as filled/not filled via bulk actions
+* Do not emit warning when user with insufficient access to Job Manager menu tries to access wp-admin
 

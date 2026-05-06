@@ -5,6 +5,10 @@
  * @package wp-job-manager
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Configure license configuration for WP Job Manager when purchased from WP.com Marketplace.
  *

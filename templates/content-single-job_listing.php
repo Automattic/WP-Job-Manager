@@ -21,7 +21,7 @@ global $post;
 if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
 	<div class="single_job_listing">
 		<?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
-			<div class="job-manager-info"><?php _e( 'This listing has expired.', 'wp-job-manager' ); ?></div>
+			<div class="job-manager-info"><?php esc_html_e( 'This listing has expired.', 'wp-job-manager' ); ?></div>
 		<?php else : ?>
 			<?php
 				/**

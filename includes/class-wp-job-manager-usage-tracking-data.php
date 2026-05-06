@@ -27,14 +27,24 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count_posts = wp_count_posts( \WP_Job_Manager_Post_Types::PT_LISTING );
 
 		if ( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
-			$categories = wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY, [ 'hide_empty' => false ] );
+			$categories = wp_count_terms(
+				[
+					'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+					'hide_empty' => false,
+				]
+			);
 		}
 
 		$usage_data = [
 			'employers'                   => self::get_employer_count(),
 			'job_categories'              => $categories,
 			'job_categories_desc'         => self::get_job_category_has_description_count(),
-			'job_types'                   => wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, [ 'hide_empty' => false ] ),
+			'job_types'                   => wp_count_terms(
+				[
+					'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
+					'hide_empty' => false,
+				]
+			),
 			'job_types_desc'              => self::get_job_type_has_description_count(),
 			'job_types_emp_type'          => self::get_job_type_has_employment_type_count(),
 			'jobs_type'                   => self::get_job_type_count(),
