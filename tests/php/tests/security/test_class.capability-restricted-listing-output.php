@@ -91,6 +91,63 @@ class Tests_Capability_Restricted_Listing_Output extends WPJM_REST_TestCase {
 	}
 
 	/**
+	 * @covers WP_Job_Manager_Widget_Recent_Jobs::widget
+	 *
+	 * Regression for the cache-amplification path. WP_Widget's built-in cache stores rendered
+	 * HTML keyed only by widget instance id. With view capability configured, the per-listing
+	 * template gate makes output viewer-dependent — a capable viewer would prime the cache
+	 * with their listing cards, and a denied viewer would receive them on the next request.
+	 *
+	 * The widget bypasses both `get_cached_widget()` and `cache_widget()` whenever the
+	 * view-capability option is set, so no cross-viewer cache slot is ever written.
+	 */
+	public function test_recent_jobs_widget_does_not_share_cache_when_view_cap_configured() {
+		$post_id = $this->factory->job_listing->create(
+			[
+				'post_title' => 'sentinel-WIDGETCACHE listing',
+			]
+		);
+
+		// Capable viewer (admin) renders the widget — must not write the shared cache.
+		$this->login_as_admin();
+		ob_start();
+		the_widget(
+			'WP_Job_Manager_Widget_Recent_Jobs',
+			// `remote_position` defaults are conditionally registered on `job_manager_enable_remote_position`;
+			// pass an explicit value so `widget()` does not warn on PHP 8+ for the unset key.
+			[ 'remote_position' => 'all' ],
+			[ 'widget_id' => 'widget_recent_jobs-cache-probe' ]
+		);
+		$admin_html = (string) ob_get_clean();
+		$this->assertStringContainsString( "post-{$post_id}", $admin_html, 'Capable viewer must see the listing card.' );
+
+		// Inspect the shared cache — must be empty for this widget instance.
+		$cache = wp_cache_get( 'widget_recent_jobs', 'widget' );
+		$this->assertTrue(
+			! is_array( $cache ) || ! isset( $cache['widget_recent_jobs-cache-probe'] ),
+			'Widget cache must NOT be populated when view-capability is configured.'
+		);
+
+		// Denied viewer (anonymous) must render fresh and the per-listing template gate must
+		// suppress the listing card. Without the bypass, the admin's HTML would be served here.
+		$this->logout();
+		ob_start();
+		the_widget(
+			'WP_Job_Manager_Widget_Recent_Jobs',
+			// `remote_position` defaults are conditionally registered on `job_manager_enable_remote_position`;
+			// pass an explicit value so `widget()` does not warn on PHP 8+ for the unset key.
+			[ 'remote_position' => 'all' ],
+			[ 'widget_id' => 'widget_recent_jobs-cache-probe' ]
+		);
+		$anon_html = (string) ob_get_clean();
+		$this->assertStringNotContainsString(
+			"post-{$post_id}",
+			$anon_html,
+			'Denied viewer must not receive the capable viewer\'s cached listing card.'
+		);
+	}
+
+	/**
 	 * Captures the RSS feed output for the job_feed handler.
 	 *
 	 * Mirrors the helper in test_class.wp-job-manager-post-types.php.

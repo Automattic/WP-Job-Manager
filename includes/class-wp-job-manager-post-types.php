@@ -2093,15 +2093,19 @@ class WP_Job_Manager_Post_Types {
 			return true;
 		}
 
-		if ( post_password_required( $post_id ) ) {
-			return false;
+		$is_password_blocked = post_password_required( $post_id );
+		$is_viewcap_blocked  = ! job_manager_user_can_view_job_listing( $post_id );
+
+		// Mirror the bypass in WP_Job_Manager_REST_API::prepare_job_listing(): a user with
+		// edit_post on a *password-only* protected listing legitimately needs meta access
+		// to drive Gutenberg — without this, saving the post in the editor overwrites
+		// `_company_name`, `_job_location`, `_application`, etc. with empty values.
+		// View-capability denials do NOT get this bypass — they remain the harder gate.
+		if ( $is_password_blocked && ! $is_viewcap_blocked && user_can( $user_id, 'edit_post', $post_id ) ) {
+			return true;
 		}
 
-		if ( ! job_manager_user_can_view_job_listing( $post_id ) ) {
-			return false;
-		}
-
-		return true;
+		return ! ( $is_password_blocked || $is_viewcap_blocked );
 	}
 
 	/**
