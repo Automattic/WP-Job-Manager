@@ -48,7 +48,10 @@ class WP_Job_Manager_REST_API {
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
-		if ( 'GET' !== $request->get_method() ) {
+		// HEAD falls back to the GET handler in WP_REST_Server but keeps `HEAD` as the method;
+		// without HEAD coverage a status-code probe (200 empty body vs 404) could distinguish
+		// a restricted listing from a missing one.
+		if ( ! in_array( $request->get_method(), [ 'GET', 'HEAD' ], true ) ) {
 			return $response;
 		}
 		// Match the item route and its children (revisions, autosaves) — all of them can

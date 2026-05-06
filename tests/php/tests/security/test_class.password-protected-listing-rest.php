@@ -214,6 +214,35 @@ class Tests_Password_Protected_Listing_REST extends WPJM_REST_TestCase {
 	/**
 	 * @covers WP_Job_Manager_REST_API::gate_view_capability_for_single
 	 *
+	 * Regression: HEAD requests fall back to the GET handler in WP_REST_Server but keep
+	 * `HEAD` as the method, so a method check guarded only on `GET` would let HEAD through.
+	 * `WP_REST_Posts_Controller::prepare_item_for_response()` returns an empty 200 for HEAD,
+	 * which lets a denied client distinguish a real listing from a missing one by status
+	 * code alone. The gate must treat HEAD identically to GET.
+	 */
+	public function test_rest_single_returns_404_for_view_cap_denied_head_request() {
+		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
+
+		try {
+			$post_id = $this->factory->job_listing->create(
+				[
+					'post_title' => 'View-cap-restricted listing for HEAD probe',
+				]
+			);
+			$this->logout();
+
+			$response = $this->request( "/wp/v2/job-listings/{$post_id}", 'HEAD' );
+			$this->assertResponseStatus( $response, 404 );
+			$data = $response->get_data();
+			$this->assertSame( 'rest_post_invalid_id', $data['code'] ?? null, 'HEAD must 404 with the same code as a missing post.' );
+		} finally {
+			delete_option( 'job_manager_view_job_listing_capability' );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_REST_API::gate_view_capability_for_single
+	 *
 	 * Regression: when a listing is BOTH password-protected AND view-capability-restricted,
 	 * the gate must still return 404. An earlier version short-circuited on
 	 * `post_password_required()` *before* the view-cap check, leaving these doubly-restricted
