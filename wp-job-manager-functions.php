@@ -12,7 +12,11 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 	 * Queries job listings with certain criteria and returns them.
 	 *
 	 * @since 1.0.5
-	 * @param string|array|object $args Arguments used to retrieve job listings.
+	 * @param string|array|object $args {
+	 *     Arguments used to retrieve job listings.
+	 *
+	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Default 0 (no filter).
+	 * }
 	 * @return WP_Query
 	 */
 	function get_job_listings( $args = [] ) {
@@ -194,12 +198,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['author'] ) ) {
-			$author_ids = is_array( $args['author'] )
-				? array_filter( array_map( 'absint', $args['author'] ) )
-				: array_filter( array_map( 'absint', explode( ',', (string) $args['author'] ) ) );
-			if ( ! empty( $author_ids ) ) {
-				$query_args['author__in'] = $author_ids;
-			}
+			$raw_author = $args['author'];
+			$author_ids = is_array( $raw_author )
+				? array_values( array_filter( array_map( 'intval', $raw_author ), fn( $v ) => $v > 0 ) )
+				: array_values( array_filter( array_map( 'intval', explode( ',', (string) $raw_author ) ), fn( $v ) => $v > 0 ) );
+			// Fails-closed: if author was supplied but yielded no valid IDs, return zero results.
+			$query_args['author__in'] = ! empty( $author_ids ) ? $author_ids : [ 0 ];
 		}
 
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
