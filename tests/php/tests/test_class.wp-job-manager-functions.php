@@ -986,32 +986,128 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_single_id() {
-	    $user_a = $this->factory->user->create();
-	    $user_b = $this->factory->user->create();
-	
-	    $jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
-	    $jobs_b = $this->factory->job_listing->create_many( 3, [ 'post_author' => $user_b ] );
-	
-	    $result = get_job_listings( [ 'author' => (string) $user_a ] );
-	
-	    $this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 3, [ 'post_author' => $user_b ] );
+
+		$result = get_job_listings( [ 'author' => (string) $user_a ] );
+
+		$this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
 	}
-	
+
 	/**
 	 * @since 2.5.0
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_multiple_ids() {
-	    $user_a = $this->factory->user->create();
-	    $user_b = $this->factory->user->create();
-	    $user_c = $this->factory->user->create();
-	
-	    $jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
-	    $jobs_b = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
-	    $jobs_c = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_c ] );
-	
-	    $result = get_job_listings( [ 'author' => $user_a . ',' . $user_b ] );
-	
-	    $this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+		$user_c = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+		$jobs_c = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_c ] );
+
+		$result = get_job_listings( [ 'author' => $user_a . ',' . $user_b ] );
+
+		$this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since 2.5.0
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_empty_string_shows_no_filter() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '' ] );
+
+		// Empty string means no filter — all listings are returned.
+		$this->assertGreaterThanOrEqual( 2, $result->found_posts );
+	}
+
+	/**
+	 * Non-numeric input should return zero results (fails-closed).
+	 *
+	 * @since 2.5.0
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_non_numeric_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => 'abc' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * Negative IDs should not be converted to positive via absint and must return zero results.
+	 *
+	 * @since 2.5.0
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_negative_id_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '-5' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * @since 2.5.0
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_zero_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '0' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * Mixed valid and invalid IDs: only valid IDs should be used.
+	 *
+	 * @since 2.5.0
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_mixed_valid_and_invalid() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+
+		// 'abc' parses to 0 and should be dropped; only $user_a's listings are returned.
+		$result = get_job_listings( [ 'author' => $user_a . ',abc' ] );
+
+		$this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * Array input with valid user IDs should work.
+	 *
+	 * @since 2.5.0
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_array_input() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+		$user_c = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_c ] );
+
+		$result = get_job_listings( [ 'author' => [ $user_a, $user_b ] ] );
+
+		$this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
 	}
 }
