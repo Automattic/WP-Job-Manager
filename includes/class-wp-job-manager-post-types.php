@@ -744,9 +744,13 @@ class WP_Job_Manager_Post_Types {
 			$input_job_categories = false;
 		}
 
-		if ( isset( $_GET['author'] ) ) {
+		if ( isset( $_GET['author'] ) && ! is_array( $_GET['author'] ) ) {
 			$sanitized_author = sanitize_text_field( wp_unslash( $_GET['author'] ) );
-			$input_author     = empty( $sanitized_author ) ? false : array_filter( array_map( 'absint', explode( ',', $sanitized_author ) ) );
+			$input_author     = empty( $sanitized_author ) ? false : array_values( array_filter( array_map( 'intval', explode( ',', $sanitized_author ) ), fn( $v ) => $v > 0 ) );
+			// Fails-closed: author was supplied but yielded no valid IDs → force empty results.
+			if ( false !== $input_author && empty( $input_author ) ) {
+				$input_author = [ 0 ];
+			}
 		} else {
 			$input_author = false;
 		}
