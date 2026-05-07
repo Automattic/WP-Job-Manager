@@ -85,9 +85,19 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		// Browse-capability gate — match the [jobs] shortcode denial without rendering a partial widget.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			return;
+		}
+
 		wp_enqueue_style( 'wp-job-manager-job-listings' );
 
-		if ( $this->get_cached_widget( $args ) ) {
+		// Skip the shared widget cache when view capability is configured: the per-listing template
+		// gate in `content-widget-job_listing.php` makes output viewer-dependent, and the base
+		// cache is keyed only by widget instance id (no auth partition).
+		$view_cap_can_filter = ! empty( get_option( 'job_manager_view_job_listing_capability' ) );
+
+		if ( ! $view_cap_can_filter && $this->get_cached_widget( $args ) ) {
 			return;
 		}
 
@@ -169,7 +179,9 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-		$this->cache_widget( $args, $content );
+		if ( ! $view_cap_can_filter ) {
+			$this->cache_widget( $args, $content );
+		}
 	}
 }
 

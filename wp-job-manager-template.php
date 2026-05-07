@@ -337,10 +337,13 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 		return false;
 	}
 
-	// Only show structured data for un-filled, published, and non-password-protected job listings.
+	// Only show structured data for un-filled, published, non-password-protected listings the
+	// viewer is allowed to see; the JSON-LD emitter must honor the same view-capability check
+	// the visible template applies.
 	$output_structured_data = ! is_position_filled( $post )
 		&& 'publish' === $post->post_status
-		&& ! post_password_required( $post );
+		&& ! post_password_required( $post )
+		&& job_manager_user_can_view_job_listing( $post->ID );
 
 	/**
 	 * Filter if we should output structured data.
@@ -906,6 +909,11 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
 function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 	$post = get_post( $post );
 
+	// Called with invalid post ID or without post ID outside the loop.
+	if ( ! $post ) {
+		return '';
+	}
+
 	if ( has_post_thumbnail( $post->ID ) ) {
 		$src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $size );
 		return $src ? $src[0] : '';
@@ -1139,7 +1147,7 @@ function get_the_company_tagline( $post = null ) {
 }
 
 /**
- * Displays or retrieves the current company Twitter link with optional content.
+ * Displays or retrieves the current company X / Twitter link with optional content.
  *
  * @since 1.0.0
  * @param string           $before (default: '').
@@ -1155,7 +1163,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 		return null;
 	}
 
-	$company_twitter = $before . '<a href="' . esc_url( 'https://twitter.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
+	$company_twitter = $before . '<a href="' . esc_url( 'https://x.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_twitter );

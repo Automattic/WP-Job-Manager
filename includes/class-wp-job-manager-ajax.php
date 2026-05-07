@@ -150,6 +150,21 @@ class WP_Job_Manager_Ajax {
 			$filter_post_status = null;
 		}
 
+		// Browse-capability gate — match the [jobs] shortcode denial without surfacing partial results.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			wp_send_json(
+				[
+					'found_jobs'    => false,
+					'showing'       => '',
+					'showing_all'   => false,
+					'showing_links' => '',
+					'max_num_pages' => 0,
+					'html'          => '',
+				]
+			);
+			return;
+		}
+
 		$types              = get_job_listing_types();
 		$job_types_filtered = ! is_null( $filter_job_types ) && count( $types ) !== count( $filter_job_types );
 
