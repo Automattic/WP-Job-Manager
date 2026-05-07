@@ -197,7 +197,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			];
 		}
 
-		if ( isset( $args['author'] ) && '' !== (string) $args['author'] ) {
+		if ( isset( $args['author'] ) && ( is_array( $args['author'] ) || '' !== $args['author'] ) ) {
 			$raw_author = $args['author'];
 			$author_ids = is_array( $raw_author )
 				? array_values( array_filter( array_map( 'intval', $raw_author ), fn( $v ) => $v > 0 ) )
