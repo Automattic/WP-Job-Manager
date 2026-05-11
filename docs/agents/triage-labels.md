@@ -4,7 +4,7 @@ The skills speak in terms of five canonical triage roles. This file maps those r
 
 | Canonical role    | Label in this repo                       | Notes                                                                                        |
 | ----------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `needs-triage`    | *(no label — unlabeled)*                 | This repo doesn't carry an explicit "needs triage" label. Treat any issue with no `[Status] *` label as needing triage. |
+| `needs-triage`    | `needs-triage` *or* unlabeled            | Apply `needs-triage` to **new** issues only. Old unlabeled issues count as needing triage too but are not retro-labeled (would be too noisy). |
 | `needs-info`      | `[Status] Needs Author Reply`            | Exact fit.                                                                                   |
 | `ready-for-agent` | `ready-for-agent` + `[Status] Accepted`  | Both labels required (see below).                                                            |
 | `ready-for-human` | `ready-for-human` + `[Status] Accepted`  | Both labels required (see below).                                                            |
@@ -43,8 +43,18 @@ The triage skill may also want to apply or read these orthogonal labels:
 
 ## Listing untriaged issues
 
-To find issues that need triage (no `[Status] *` label):
+Two populations to check:
 
-```sh
-gh issue list --state open --search 'no:label OR -label:"[Status] Accepted" -label:"[Status] Needs Author Reply" -label:"[Status] In Progress" -label:"[Status] Won't Fix"'
-```
+1. **New issues explicitly marked for triage** — filter by the `needs-triage` label:
+
+   ```sh
+   gh issue list --state open --label "needs-triage"
+   ```
+
+2. **Old unlabeled issues** — anything open with no `[Status] *` label and no `needs-triage`:
+
+   ```sh
+   gh issue list --state open --search 'no:label OR (-label:"needs-triage" -label:"[Status] Accepted" -label:"[Status] Needs Author Reply" -label:"[Status] In Progress" -label:"[Status] Won't Fix")'
+   ```
+
+   Don't bulk-apply `needs-triage` to these — that generates notification noise on every subscriber.
