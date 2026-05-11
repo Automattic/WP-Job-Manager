@@ -15,3 +15,12 @@ Two-axis mapping: `[Status] Accepted` (approved in principle) plus `ready-for-ag
 ### Domain docs
 
 Single-context (`CONTEXT.md` + `docs/adr/` at repo root). See `docs/agents/domain.md`.
+
+## Contributor conventions
+
+For human contributor docs that also bind agents — branch naming, PR style, coding standards, test setup, localisation — read:
+
+- `docs/CONTRIBUTING.md` — getting started, coding guidelines, PR review
+- `readme.md` — WordPress.org-facing plugin readme
+- `tests/README.md` — unit test setup and conventions
+- [Git Flow and PR Review wiki](https://github.com/Automattic/WP-Job-Manager/wiki/Our-Git-Flow-and-PR-Review)

@@ -15,7 +15,12 @@ Infer the repo from `git remote -v` — `gh` does this automatically when run in
 
 ## When a skill says "publish to the issue tracker"
 
-Create a GitHub issue.
+Create a GitHub issue. Follow `.github/ISSUE_TEMPLATE.md` — that file is the canonical bug-report shape (Steps to Reproduce, What I Expected, What Happened Instead, PHP / WordPress / WP Job Manager Version, Browser / OS Version, Screenshot / Video, Context / Source). For non-bug issues (proposals, cleanup, questions) the template structure is a useful starting point; drop sections that don't apply.
+
+**Don't file these as issues:**
+
+- **End-user support questions** — direct to https://wordpress.org/support/plugin/wp-job-manager.
+- **Security vulnerabilities** — direct to https://hackerone.com/automattic. Never paste exploit details into a public GitHub issue.
 
 ## When a skill says "fetch the relevant ticket"
 
