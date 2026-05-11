@@ -154,12 +154,10 @@ class UI_Elements {
 	 * @return string Actions menu HTML.
 	 */
 	public static function actions_menu( $content ) {
-		$label = __( 'Actions', 'wp-job-manager' );
-
-		$close = esc_attr( 'event.currentTarget.contains(event.relatedTarget) || setTimeout(() => this.open = false, 100 )' );
+		$label = esc_attr__( 'Actions', 'wp-job-manager' );
 
 		return <<<HTML
-<details class="jm-ui-actions-menu" onfocusout="{$close}">
+<details class="jm-ui-actions-menu">
 	<summary tabindex="0" class="jm-ui-action-menu__open-button jm-ui-button--icon"
 		aria-label="{$label}">
 		<span class="jm-ui-button__icon"></span>
