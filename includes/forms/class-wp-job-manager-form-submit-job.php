@@ -913,10 +913,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->job_id = wp_insert_post( $job_data );
 
 			if ( ! headers_sent() ) {
-				$submitting_key = uniqid();
+				$submitting_key = wp_generate_password( 32, false );
 
-				setcookie( 'wp-job-manager-submitting-job-id', $this->job_id, false, COOKIEPATH, COOKIE_DOMAIN, false );
-				setcookie( 'wp-job-manager-submitting-job-key', $submitting_key, false, COOKIEPATH, COOKIE_DOMAIN, false );
+				$cookie_options = [
+					'expires'  => 0,
+					'path'     => COOKIEPATH,
+					'domain'   => COOKIE_DOMAIN,
+					'secure'   => is_ssl(),
+					'httponly' => true,
+					'samesite' => 'Lax',
+				];
+
+				setcookie( 'wp-job-manager-submitting-job-id', $this->job_id, $cookie_options );
+				setcookie( 'wp-job-manager-submitting-job-key', $submitting_key, $cookie_options );
 
 				update_post_meta( $this->job_id, '_submitting_key', $submitting_key );
 			}

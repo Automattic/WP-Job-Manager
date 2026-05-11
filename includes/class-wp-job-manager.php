@@ -297,11 +297,20 @@ class WP_Job_Manager {
 	 * Cleanup job posting cookies.
 	 */
 	public function cleanup_job_posting_cookies() {
+		$cookie_options = [
+			'expires'  => 0,
+			'path'     => COOKIEPATH,
+			'domain'   => COOKIE_DOMAIN,
+			'secure'   => is_ssl(),
+			'httponly' => true,
+			'samesite' => 'Lax',
+		];
+
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) {
-			setcookie( 'wp-job-manager-submitting-job-id', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
+			setcookie( 'wp-job-manager-submitting-job-id', '', $cookie_options );
 		}
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
-			setcookie( 'wp-job-manager-submitting-job-key', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
+			setcookie( 'wp-job-manager-submitting-job-key', '', $cookie_options );
 		}
 	}
 
