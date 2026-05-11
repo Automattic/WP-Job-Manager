@@ -100,8 +100,18 @@ abstract class WP_Job_Manager_Form {
 			get_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
 		) {
 			delete_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key' );
-			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
-			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
+
+			$cookie_options = [
+				'expires'  => time() - 3600,
+				'path'     => COOKIEPATH,
+				'domain'   => COOKIE_DOMAIN,
+				'secure'   => is_ssl(),
+				'httponly' => true,
+				'samesite' => 'Lax',
+			];
+
+			setcookie( 'wp-job-manager-submitting-job-id', '', $cookie_options );
+			setcookie( 'wp-job-manager-submitting-job-key', '', $cookie_options );
 			wp_safe_redirect( remove_query_arg( [ 'new', 'key', 'job_manager_form' ] ) );
 			exit;
 		}
