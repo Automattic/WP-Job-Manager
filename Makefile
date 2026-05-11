@@ -61,8 +61,17 @@ lint-fix: ## Auto-fix PHP CodeSniffer issues
 build: ## Build plugin zip
 	npm run build
 
+## Release
+release: ## Prepare release PR (usage: make release VERSION=2.4.2)
+	$(check_node)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION is required. Usage: make release VERSION=2.4.2"; \
+		exit 1; \
+	fi
+	npm run release $(VERSION)
+
 ## Help
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: install up down destroy logs test-up test-down test lint lint-fix build help
+.PHONY: install up down destroy logs test-up test-down test lint lint-fix build release help
