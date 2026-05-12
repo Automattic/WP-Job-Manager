@@ -2,9 +2,9 @@
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
 Tags: jobs, careers, company, hiring, job board
 Requires at least: 6.4
-Tested up to: 6.6
-Requires PHP: 7.2
-Stable tag: 2.4.1
+Tested up to: 6.9
+Requires PHP: 7.4
+Stable tag: 2.4.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
