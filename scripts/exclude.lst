@@ -20,6 +20,7 @@ wp-job-manager/.psalm/*
 wp-job-manager/psalm.xml
 wp-job-manager/scripts/*
 wp-job-manager/tests/*
+wp-job-manager/lib/usage-tracking/tests
 wp-job-manager/.git/*
 wp-job-manager/.github/*
 wp-job-manager/readme.md
@@ -36,3 +37,5 @@ wp-job-manager/.wp-env.json
 wp-job-manager/.wp-env.tests.json
 wp-job-manager/blueprint.json
 wp-job-manager/Makefile
+wp-job-manager/CLAUDE.md
+wp-job-manager/AGENTS.md
