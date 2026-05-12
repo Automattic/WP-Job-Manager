@@ -3,6 +3,8 @@
  */
 import { config } from 'dotenv';
 import fs from 'fs';
+import os from 'node:os';
+import path from 'node:path';
 import process from 'node:process';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
@@ -228,8 +230,11 @@ function updateVersionInFile( filename ) {
 function replaceNextVersionPlaceholder() {
 	console.log( `Replacing next version placeholder with ${ version } ...` );
 	execSync( `bash scripts/replace-next-version-tag.sh ${ version }` );
+	// Stage only modifications to tracked files. The replacer rewrites existing source
+	// files in place, so `git add -u` is sufficient and avoids sweeping in unrelated
+	// untracked files that may be in the working tree.
 	execSync(
-		`git add .`,
+		`git add -u`,
 	);
 }
 
@@ -278,7 +283,7 @@ function buildReleaseNotes() {
 
 	let changelog = prs.map( ( pr ) => {
 		const body              = pr.body;
-		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:###|<!--|$)/ );
+		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:\n#{1,6} |\n<!--|$)/ );
 
 		if ( ! changelogSections ) {
 			return `* ${ pr.title } (#${ pr.number })`;
@@ -311,14 +316,20 @@ function createPR( changelog ) {
 
 	const title = `Release ${ pluginName } ${ version }`;
 
-	let body = prTemplate( { changelog, version } );
-	body     = body
-		.replace( '"', '\"' )
-		.replace( '`', '\`' )
+	const body = prTemplate( { changelog, version } );
 
-	const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --title "${ title }" --body "${ body }"` );
-	execSync( `open ${ prLink }` );
-	console.log( `PR: ${ prLink }` );
+	// Pass the body via a temp file so backticks, quotes and other shell metacharacters
+	// inside changelog entries can't be interpreted by the shell when invoking gh.
+	const bodyFile = path.join( os.tmpdir(), `release-pr-body-${ pluginSlug }-${ version }.md` );
+	fs.writeFileSync( bodyFile, body, 'utf-8' );
+
+	try {
+		const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --title "${ title }" --body-file "${ bodyFile }"` );
+		execSync( `open ${ prLink }` );
+		console.log( `PR: ${ prLink }` );
+	} finally {
+		fs.unlinkSync( bodyFile );
+	}
 }
 
 /**
