@@ -73,11 +73,6 @@ class Release_Notice {
 					'url'     => \WP_Job_Manager_Admin_Notices::get_dismiss_url( self::NOTICE_ID ),
 					'primary' => false,
 				],
-				[
-					'label' => __( 'See what\'s new in 2.3', 'wp-job-manager' ),
-					'url'   => 'https://wpjobmanager.com/2024/04/29/new-in-2-3-job-statistics/',
-					'class' => 'is-link',
-				],
 			],
 			'icon'          => false,
 			'level'         => 'landing',
