@@ -744,15 +744,33 @@ class WP_Job_Manager_Post_Types {
 			$input_job_categories = false;
 		}
 
-		if ( isset( $_GET['author'] ) && ! is_array( $_GET['author'] ) ) {
-			$sanitized_author = sanitize_text_field( wp_unslash( $_GET['author'] ) );
-			$input_author     = empty( $sanitized_author ) ? false : array_values( array_filter( array_map( 'intval', explode( ',', $sanitized_author ) ), fn( $v ) => $v > 0 ) );
-			// Fails-closed: author was supplied but yielded no valid IDs → force empty results.
-			if ( false !== $input_author && empty( $input_author ) ) {
-				$input_author = [ 0 ];
-			}
+		if ( isset( $_GET['author'] ) ) {
+		    if ( is_array( $_GET['author'] ) ) {
+		        // Array-shaped input (?author[]=1) is not a supported format - fails-closed.
+		        $input_author = [ 0 ];
+		    } else {
+		        $sanitized_author = sanitize_text_field( wp_unslash( $_GET['author'] ) );
+		        // Note: '' === '' is false, so empty string = unset (no filter).
+		        if ( '' === $sanitized_author ) {
+		            $input_author = false;
+		        } else {
+		            $input_author = array_values(
+		                array_filter(
+		                    array_map(
+		                        fn( $v ) => ctype_digit( trim( $v ) ) && (int) trim( $v ) > 0 ? (int) trim( $v ) : 0,
+		                        explode( ',', $sanitized_author )
+		                    ),
+		                    fn( $v ) => $v > 0
+		                )
+		            );
+		            // Fails-closed: author was supplied but yielded no valid IDs (e.g. '0', 'abc') -> force empty results.
+		            if ( empty( $input_author ) ) {
+		                $input_author = [ 0 ];
+		            }
+		        }
+		    }
 		} else {
-			$input_author = false;
+		    $input_author = false;
 		}
 
 		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
