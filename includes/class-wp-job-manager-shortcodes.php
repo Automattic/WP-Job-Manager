@@ -215,7 +215,7 @@ class WP_Job_Manager_Shortcodes {
 					'filled'                    => null, // True to show only filled, false to hide filled, leave null to show both/use the settings.
 					'remote_position'           => null, // True to show only remote, false to hide remote, leave null to show both.
 					'featured_first'            => false, // True to show featured first, false to show in default order.
-					'author'                    => 0, // Limit listings to a specific author by user ID. 0 shows all.
+					'author'                    => '', // Limit listings to a specific author by user ID. Empty string shows all.
 
 					// Default values for filters.
 					'location'                  => '',
