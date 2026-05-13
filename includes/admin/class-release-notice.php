@@ -48,7 +48,6 @@ class Release_Notice {
 		$action_url                 = \WP_Job_Manager_Admin_Notices::get_action_url( 'enable_stats', self::NOTICE_ID );
 		$notices[ self::NOTICE_ID ] = [
 			'type'          => 'site-wide',
-			'label'         => 'New',
 			'heading'       => 'Job Statistics',
 			'message'       => '<div>' . __(
 				'
