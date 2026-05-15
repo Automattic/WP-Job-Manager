@@ -48,7 +48,7 @@ class Release_Notice {
 		$action_url                 = \WP_Job_Manager_Admin_Notices::get_action_url( 'enable_stats', self::NOTICE_ID );
 		$notices[ self::NOTICE_ID ] = [
 			'type'          => 'site-wide',
-			'label'         => 'New',
+			'label'         => '',
 			'heading'       => 'Job Statistics',
 			'message'       => '<div>' . __(
 				'
@@ -72,11 +72,6 @@ class Release_Notice {
 					'label'   => __( 'Dismiss', 'wp-job-manager' ),
 					'url'     => \WP_Job_Manager_Admin_Notices::get_dismiss_url( self::NOTICE_ID ),
 					'primary' => false,
-				],
-				[
-					'label' => __( 'See what\'s new in 2.3', 'wp-job-manager' ),
-					'url'   => 'https://wpjobmanager.com/2024/04/29/new-in-2-3-job-statistics/',
-					'class' => 'is-link',
 				],
 			],
 			'icon'          => false,
