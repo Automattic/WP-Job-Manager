@@ -499,6 +499,19 @@ class WP_Job_Manager_Settings {
 							'track'   => 'value',
 						],
 						[
+							'name'        => 'job_manager_company_logo_max_size',
+							'std'         => '',
+							'placeholder' => '',
+							'label'       => __( 'Company Logo Max Size', 'wp-job-manager' ),
+							'desc'        => __( 'Maximum file size for company logo uploads, in kilobytes. Leave blank to use the server default.', 'wp-job-manager' ),
+							'type'        => 'text',
+							'attributes'  => [
+								'type' => 'number',
+								'min'  => '0',
+								'step' => '1',
+							],
+						],
+						[
 							'name'       => 'job_manager_show_agreement_job_submission',
 							'std'        => '0',
 							'label'      => __( 'Terms and Conditions Checkbox', 'wp-job-manager' ),

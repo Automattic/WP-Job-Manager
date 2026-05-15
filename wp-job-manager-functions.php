@@ -1470,6 +1470,20 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 }
 
 /**
+ * Returns the maximum allowed file size for company logo uploads, in bytes.
+ *
+ * Returns the value configured in settings (converted from KB), or falls back
+ * to the server's upload limit when no custom value is set.
+ *
+ * @since n.e.x.t
+ * @return int Maximum file size in bytes.
+ */
+function job_manager_get_company_logo_max_size(): int {
+	$max_size_kb = (int) get_option( 'job_manager_company_logo_max_size', 0 );
+	return $max_size_kb > 0 ? $max_size_kb * KB_IN_BYTES : wp_max_upload_size();
+}
+
+/**
  * Uploads a file using WordPress file API.
  *
  * @since 1.21.0
@@ -1517,6 +1531,20 @@ function job_manager_upload_file( $file, $args = [] ) {
 
 	if ( is_wp_error( $file ) ) {
 		return $file;
+	}
+
+	if ( 'company_logo' === $args['file_key'] ) {
+		$max_size = job_manager_get_company_logo_max_size();
+		if ( $file['size'] > $max_size ) {
+			return new WP_Error(
+				'upload',
+				sprintf(
+					// translators: %s is the maximum allowed file size.
+					__( 'The company logo exceeds the maximum allowed file size of %s.', 'wp-job-manager' ),
+					size_format( $max_size )
+				)
+			);
+		}
 	}
 
 	if ( ! in_array( $file['type'], $allowed_mime_types, true ) ) {

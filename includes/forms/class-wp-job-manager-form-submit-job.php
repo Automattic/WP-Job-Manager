@@ -355,6 +355,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'           => 6,
 						'ajax'               => true,
 						'multiple'           => false,
+						'description'        => __( 'Square format recommended (1:1 ratio).', 'wp-job-manager' ),
+						'max_size'           => job_manager_get_company_logo_max_size(),
 						'allowed_mime_types' => apply_filters(
 							'job_manager_company_logo_allowed_mime_types',
 							[
