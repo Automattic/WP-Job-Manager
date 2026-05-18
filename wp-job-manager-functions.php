@@ -199,9 +199,16 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 
 		if ( isset( $args['author'] ) && ( is_array( $args['author'] ) || '' !== $args['author'] ) ) {
 			$raw_author = $args['author'];
-			$author_ids = is_array( $raw_author )
-				? array_values( array_filter( array_map( 'intval', $raw_author ), fn( $v ) => $v > 0 ) )
-				: array_values( array_filter( array_map( 'intval', explode( ',', (string) $raw_author ) ), fn( $v ) => $v > 0 ) );
+			$tokens     = is_array( $raw_author ) ? $raw_author : explode( ',', (string) $raw_author );
+			$author_ids = array_values(
+				array_filter(
+					array_map(
+						fn( $v ) => ctype_digit( trim( $v ) ) && (int) trim( $v ) > 0 ? (int) trim( $v ) : 0,
+						$tokens
+					),
+					fn( $v ) => $v > 0
+				)
+			);
 			// Fails-closed: if author was supplied but yielded no valid IDs, return zero results.
 			$query_args['author__in'] = ! empty( $author_ids ) ? $author_ids : [ 0 ];
 		}
