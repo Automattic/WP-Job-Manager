@@ -1169,8 +1169,8 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Set the job expiration date.
 	 *
-	 * @param WP_Post|int       $job          Job post object or ID.
-	 * @param DateTimeImmutable $date_expires Date time object for the job expiration date. Null if to be cleared.
+	 * @param WP_Post|int            $job          Job post object or ID.
+	 * @param DateTimeImmutable|null $date_expires Date time object for the job expiration date. Null to clear.
 	 *
 	 * @return false
 	 * @throws TypeError When bad argument is passed to `$date_expires`.
