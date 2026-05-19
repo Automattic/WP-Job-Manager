@@ -136,6 +136,7 @@ class WP_Job_Manager_Ajax {
 		$remote_position    = isset( $_REQUEST['remote_position'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['remote_position'] ) ) : null;
 		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
 		$featured_first     = isset( $_REQUEST['featured_first'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured_first'] ) ) : null;
+		$author             = ( isset( $_REQUEST['author'] ) && ! is_array( $_REQUEST['author'] ) ) ? sanitize_text_field( wp_unslash( $_REQUEST['author'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( is_array( $search_categories ) ) {
@@ -176,6 +177,7 @@ class WP_Job_Manager_Ajax {
 			'orderby'           => $orderby,
 			'order'             => $order,
 			'featured_first'    => $featured_first,
+			'author'            => $author,
 			'offset'            => ( $page - 1 ) * $per_page,
 			'posts_per_page'    => max( 1, $per_page ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 		];
@@ -245,6 +247,7 @@ class WP_Job_Manager_Ajax {
 				'search_location'   => $search_location,
 				'search_categories' => $search_categories,
 				'search_keywords'   => $search_keywords,
+				'author'            => $author,
 			]
 		);
 
