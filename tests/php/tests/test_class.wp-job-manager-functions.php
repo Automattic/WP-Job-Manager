@@ -982,7 +982,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_single_id() {
@@ -998,7 +998,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_multiple_ids() {
@@ -1016,7 +1016,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_empty_string_shows_no_filter() {
@@ -1032,7 +1032,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Non-numeric input should return zero results (fails-closed).
 	 *
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_non_numeric_returns_no_results() {
@@ -1047,7 +1047,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Negative IDs should not be converted to positive via absint and must return zero results.
 	 *
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_negative_id_returns_no_results() {
@@ -1060,7 +1060,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_zero_returns_no_results() {
@@ -1075,7 +1075,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Mixed valid and invalid IDs: only valid IDs should be used.
 	 *
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_mixed_valid_and_invalid() {
@@ -1094,7 +1094,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Array input with valid user IDs should work.
 	 *
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_array_input() {
