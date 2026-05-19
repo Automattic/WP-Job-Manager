@@ -237,9 +237,6 @@
       <code>false</code>
       <code>string</code>
     </InvalidNullableReturnType>
-    <NullArgument>
-      <code>null</code>
-    </NullArgument>
     <NullableReturnStatement>
       <code>null</code>
     </NullableReturnStatement>
