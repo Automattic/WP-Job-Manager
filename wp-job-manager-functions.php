@@ -15,7 +15,8 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 	 * @param string|array|object $args {
 	 *     Arguments used to retrieve job listings.
 	 *
-	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Omit or pass an empty string for no filter. A supplied value that yields no valid positive integer IDs (e.g. `'0'`, `'abc'`, `[]`) fails closed and returns zero results. Added in $$next-version$$.
+	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Omit or pass an empty string for no filter. A supplied value that yields no valid positive integer IDs (e.g. `'0'`, `'abc'`, `[]`) fails closed and returns zero results.
+	 *                                    @since $$next-version$$
 	 * }
 	 * @return WP_Query
 	 */
