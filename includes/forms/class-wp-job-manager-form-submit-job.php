@@ -409,10 +409,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'required'    => false,
 				'placeholder' => '',
 				'priority'    => '6.6',
-				'class'       => 'job-manager-datepicker',
-				'attributes'  => [
-					'min' => current_time( 'Y-m-d' ),
-				],
 			];
 		}
 
@@ -591,14 +587,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Validate expiry date field if enabled and provided.
 		if ( get_option( 'job_manager_enable_expiry_date_field' ) && ! empty( $values['job']['job_expires'] ) ) {
 			$expires_date = DateTimeImmutable::createFromFormat( 'Y-m-d|', $values['job']['job_expires'], wp_timezone() );
-			if ( ! $expires_date ) {
+			$date_errors  = DateTimeImmutable::getLastErrors();
+			if ( ! $expires_date || ( is_array( $date_errors ) && $date_errors['warning_count'] > 0 ) ) {
 				throw new Exception( __( 'Please enter a valid expiry date', 'wp-job-manager' ) );
 			}
 
 			// Check if the date is in the past.
+			// Skip the check when editing an expired listing with an unchanged date — otherwise
+			// owners would be locked out of any unrelated edits on their expired listings.
 			$today = new DateTimeImmutable( 'today', wp_timezone() );
 			if ( $expires_date < $today ) {
-				throw new Exception( __( 'Expiry date cannot be in the past', 'wp-job-manager' ) );
+				$existing_expires = $this->job_id ? get_post_meta( $this->job_id, '_job_expires', true ) : '';
+				if ( $values['job']['job_expires'] !== $existing_expires ) {
+					throw new Exception( __( 'Expiry date cannot be in the past', 'wp-job-manager' ) );
+				}
 			}
 		}
 
@@ -1050,12 +1052,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					// Handle custom expiry date field.
 				} elseif ( 'job_expires' === $key ) {
 
-					// If a date is provided, also set the job expiration.
 					if ( ! empty( $values[ $group_key ][ $key ] ) ) {
+						// A date was provided — persist it.
 						$expires_date = DateTimeImmutable::createFromFormat( 'Y-m-d|', $values[ $group_key ][ $key ], wp_timezone() );
 						if ( $expires_date ) {
 							WP_Job_Manager_Post_Types::instance()->set_job_expiration( $this->job_id, $expires_date );
 						}
+					} else {
+						// Empty: clear the stored date so the default duration is recomputed on the
+						// next status transition (matches field description "Leave blank to use default duration").
+						WP_Job_Manager_Post_Types::instance()->set_job_expiration( $this->job_id, null );
 					}
 
 					// Save meta data.
@@ -1203,8 +1209,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( $this->job_id );
 
 			if ( in_array( $job->post_status, [ 'preview', 'expired' ], true ) ) {
-				// Reset expiry.
-				delete_post_meta( $job->ID, '_job_expires' );
+				// Reset expiry — but preserve a user-chosen date when the expiry date field is active.
+				$saved_expiry = get_post_meta( $job->ID, '_job_expires', true );
+				if ( ! get_option( 'job_manager_enable_expiry_date_field' ) || empty( $saved_expiry ) ) {
+					delete_post_meta( $job->ID, '_job_expires' );
+				}
 
 				// Update job listing.
 				$update_job                = [];
