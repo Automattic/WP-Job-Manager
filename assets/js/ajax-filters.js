@@ -316,6 +316,7 @@ jQuery( document ).ready( function( $ ) {
 			var remote_position = $target.data( 'remote_position' );
 			var job_types = $target.data( 'job_types' );
 			var post_status = $target.data( 'post_status' );
+			var author = $target.data( 'author' );
 			var index = $( 'div.job_listings' ).index( this );
 			var categories, keywords, location;
 
@@ -387,6 +388,7 @@ jQuery( document ).ready( function( $ ) {
 					featured: featured,
 					filled: filled,
 					remote_position: remote_position,
+					author: author,
 					show_pagination: $target.data( 'show_pagination' ),
 					form_data: $form.serialize(),
 				};
@@ -416,6 +418,7 @@ jQuery( document ).ready( function( $ ) {
 					featured: featured,
 					filled: filled,
 					remote_position: remote_position,
+					author: author,
 					show_pagination: $target.data( 'show_pagination' ),
 				};
 			}

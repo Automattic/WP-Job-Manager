@@ -136,6 +136,14 @@ class WP_Job_Manager_Ajax {
 		$remote_position    = isset( $_REQUEST['remote_position'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['remote_position'] ) ) : null;
 		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
 		$featured_first     = isset( $_REQUEST['featured_first'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured_first'] ) ) : null;
+		if ( ! isset( $_REQUEST['author'] ) ) {
+			$author = '';
+		} elseif ( is_array( $_REQUEST['author'] ) ) {
+			// Array-shaped input is not supported via AJAX - fails closed (passes '0' so get_job_listings returns zero results).
+			$author = '0';
+		} else {
+			$author = sanitize_text_field( wp_unslash( $_REQUEST['author'] ) );
+		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( is_array( $search_categories ) ) {
@@ -147,6 +155,21 @@ class WP_Job_Manager_Ajax {
 		// Ensure the current user can filter by post_status.
 		if ( is_array( $filter_post_status ) && ! current_user_can( \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ) ) {
 			$filter_post_status = null;
+		}
+
+		// Browse-capability gate — match the [jobs] shortcode denial without surfacing partial results.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			wp_send_json(
+				[
+					'found_jobs'    => false,
+					'showing'       => '',
+					'showing_all'   => false,
+					'showing_links' => '',
+					'max_num_pages' => 0,
+					'html'          => '',
+				]
+			);
+			return;
 		}
 
 		$types              = get_job_listing_types();
@@ -161,6 +184,7 @@ class WP_Job_Manager_Ajax {
 			'orderby'           => $orderby,
 			'order'             => $order,
 			'featured_first'    => $featured_first,
+			'author'            => $author,
 			'offset'            => ( $page - 1 ) * $per_page,
 			'posts_per_page'    => max( 1, $per_page ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 		];
@@ -230,6 +254,7 @@ class WP_Job_Manager_Ajax {
 				'search_location'   => $search_location,
 				'search_categories' => $search_categories,
 				'search_keywords'   => $search_keywords,
+				'author'            => $author,
 			]
 		);
 

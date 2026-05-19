@@ -12,7 +12,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 	 * Queries job listings with certain criteria and returns them.
 	 *
 	 * @since 1.0.5
-	 * @param string|array|object $args Arguments used to retrieve job listings.
+	 * @param string|array|object $args {
+	 *     Arguments used to retrieve job listings.
+	 *
+	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Omit or pass an empty string for no filter. A supplied value that yields no valid positive integer IDs (e.g. `'0'`, `'abc'`, `[]`) fails closed and returns zero results.
+	 *                                    @since $$next-version$$
+	 * }
 	 * @return WP_Query
 	 */
 	function get_job_listings( $args = [] ) {
@@ -69,6 +74,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			'update_post_meta_cache' => false,
 			'cache_results'          => false,
 			'fields'                 => $args['fields'],
+			'has_password'           => false,
 		];
 
 		if ( $args['posts_per_page'] < 0 ) {
@@ -192,6 +198,14 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			];
 		}
 
+		if ( isset( $args['author'] ) ) {
+			$author_ids = _wpjm_parse_author_ids( $args['author'] );
+			if ( null !== $author_ids ) {
+				// [0] is the fail-closed sentinel: no real post_author equals 0.
+				$query_args['author__in'] = $author_ids;
+			}
+		}
+
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
 
 		if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
@@ -222,7 +236,8 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		// Cache results.
 		if ( apply_filters( 'get_job_listings_cache_results', $should_cache ) ) {
 			$to_hash            = wp_json_encode( $query_args );
-			$query_args_hash    = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
+			$auth_state         = is_user_logged_in() ? 'u' . get_current_user_id() : 'anon';
+			$query_args_hash    = 'jm_' . md5( $to_hash . JOB_MANAGER_VERSION . $auth_state ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'get_job_listings' );
 			$result             = false;
 			$cached_query_posts = get_transient( $query_args_hash );
 			if ( is_string( $cached_query_posts ) ) {
@@ -269,6 +284,52 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search', 10 );
 
 		return $result;
+	}
+endif;
+
+if ( ! function_exists( '_wpjm_parse_author_ids' ) ) :
+	/**
+	 * Parse a raw author input (string, comma-separated string, integer, or array) into a list of positive user IDs.
+	 *
+	 * Returns `null` when the input represents "no filter" (the input was unset or an empty string).
+	 * Returns `[0]` as a fail-closed sentinel when the input was supplied but yielded no valid positive IDs
+	 * (e.g. `'0'`, `'abc'`, `[]`, `'-5'`). `[0]` is safe in `author__in` because no real `post_author` equals 0.
+	 *
+	 * @since $$next-version$$
+	 * @access private
+	 *
+	 * @param mixed $raw Raw author input.
+	 * @return array|null Array of positive integer user IDs, `[0]` sentinel, or null for "no filter".
+	 */
+	function _wpjm_parse_author_ids( $raw ) {
+		if ( null === $raw ) {
+			return null;
+		}
+
+		if ( is_array( $raw ) ) {
+			$tokens = $raw;
+		} else {
+			$raw = (string) $raw;
+			if ( '' === $raw ) {
+				return null;
+			}
+			$tokens = explode( ',', $raw );
+		}
+
+		$author_ids = array_values(
+			array_filter(
+				array_map(
+					static function ( $v ) {
+						$s = trim( (string) $v );
+						return ctype_digit( $s ) && (int) $s > 0 ? (int) $s : 0;
+					},
+					$tokens
+				),
+				static fn( $v ) => $v > 0
+			)
+		);
+
+		return ! empty( $author_ids ) ? $author_ids : [ 0 ];
 	}
 endif;
 
@@ -468,9 +529,6 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 
 		if ( ! empty( $new_search ) ) {
 			$new_search = " AND ({$new_search}) ";
-			if ( ! is_user_logged_in() ) {
-				$new_search .= " AND ({$wpdb->posts}.post_password = '') ";
-			}
 		} else {
 			return $search;
 		}
@@ -630,6 +688,7 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 								'search_location' => $args['search_location'],
 								'job_categories'  => implode( ',', $job_categories ),
 								'search_keywords' => $args['search_keywords'],
+								'author'          => ! empty( $args['author'] ) ? $args['author'] : '',
 							]
 						)
 					),
@@ -1560,11 +1619,15 @@ function job_manager_upload_file( $file, $args = [] ) {
  */
 function job_manager_get_allowed_mime_types( $field = '' ) {
 	if ( 'company_logo' === $field ) {
-		$allowed_mime_types = [
-			'jpg|jpeg|jpe' => 'image/jpeg',
-			'gif'          => 'image/gif',
-			'png'          => 'image/png',
-		];
+		$allowed_mime_types = apply_filters(
+			'job_manager_company_logo_allowed_mime_types',
+			[
+				'jpg|jpeg|jpe' => 'image/jpeg',
+				'gif'          => 'image/gif',
+				'png'          => 'image/png',
+				'webp'         => 'image/webp',
+			]
+		);
 	} else {
 		$allowed_mime_types = [
 			'jpg|jpeg|jpe' => 'image/jpeg',

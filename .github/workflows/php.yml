@@ -39,6 +39,7 @@ jobs:
 
       - name: Run PHP Linter
         run: npm run lint:php
+
   test:
     name: PHP Unit Tests
     runs-on: ubuntu-22.04
@@ -46,16 +47,16 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        wp: [ 'latest' ]
-        wpmu: [ 0 ]
-        php: [ '7.4', '8.0', '8.1' ]
+        # Targeted matrix rather than full WP × PHP cartesian product. Covers
+        # the declared compatibility floor and the WP-recommended PHP version.
+        # PHP 7.4 (EOL Nov 2022) is kept only as a smoke test against the
+        # plugin's declared floor; 8.0–8.2 are dropped as they're either EOL
+        # or security-only and a break on those would also surface against
+        # 7.4 or 8.3. PHP 8.4 coverage is pending bootstrap modernisation —
+        # see https://github.com/Automattic/WP-Job-Manager/issues/2950.
         include:
-          - php: '7.4'
-            wp: '6.2'
-          - php: '7.4'
-            wp: '6.3'
-          - php: '7.4'
-            wp: '6.4'
+          - { wp: '6.4', php: '7.4', wpmu: 0 }
+          - { wp: '6.9', php: '8.3', wpmu: 0 }
     env:
       WP_VERSION: ${{ matrix.wp }}
       PHP_VERSION: ${{ matrix.php }}
@@ -97,6 +98,7 @@ jobs:
 
       - name: Run tests
         run: npm run test-php
+
   psalm:
     name: Psalm
     runs-on: ubuntu-latest
@@ -104,7 +106,7 @@ jobs:
       fail-fast: false
       max-parallel: 10
       matrix:
-        php: [ '7.4', '8.2' ]
+        php: [ '7.4', '8.3' ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

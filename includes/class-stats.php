@@ -213,11 +213,25 @@ class Stats {
 		$args['post_id'] = absint( $args['post_id'] );
 
 		if (
+			! is_string( $args['name'] ) ||
+			! is_string( $args['group'] ) ||
 			empty( $args['name'] ) ||
 			strlen( $args['name'] ) > 50 ||
 			strlen( $args['group'] ) > 50 ||
 			empty( $args['post_id'] ) ||
 			! is_integer( $args['count'] ) ) {
+			return false;
+		}
+
+		if ( ! is_string( $args['date'] ) || 1 !== preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $args['date'], $date_parts ) ) {
+			return false;
+		}
+		if ( ! wp_checkdate( (int) $date_parts[2], (int) $date_parts[3], (int) $date_parts[1], $args['date'] ) ) {
+			return false;
+		}
+
+		$post_status = get_post_status( $args['post_id'] );
+		if ( ! $post_status || 'trash' === $post_status ) {
 			return false;
 		}
 

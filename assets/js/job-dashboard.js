@@ -11,6 +11,35 @@ function setupEvents( root ) {
 		.forEach( el => el.addEventListener( 'click', confirmDelete ) );
 }
 
+function setupActionsMenu() {
+	document.addEventListener( 'pointerdown', event => {
+		document.querySelectorAll( 'details.jm-ui-actions-menu[open]' ).forEach( menu => {
+			if ( ! menu.contains( event.target ) ) {
+				menu.open = false;
+			}
+		} );
+	} );
+
+	document.addEventListener( 'keydown', event => {
+		if ( event.key !== 'Escape' ) {
+			return;
+		}
+		document.querySelectorAll( 'details.jm-ui-actions-menu[open]' ).forEach( menu => {
+			menu.open = false;
+			menu.querySelector( 'summary' )?.focus();
+		} );
+	} );
+
+	window.addEventListener( 'pageshow', event => {
+		if ( ! event.persisted ) {
+			return;
+		}
+		document.querySelectorAll( 'details.jm-ui-actions-menu[open]' ).forEach( menu => {
+			menu.open = false;
+		} );
+	} );
+}
+
 function confirmDelete( event ) {
 	// eslint-disable-next-line no-alert
 	if ( ! window.confirm( i18nConfirmDelete ) ) {
@@ -80,6 +109,7 @@ function setupStatsOverlay() {
 
 domReady( () => {
 	setupEvents( document );
+	setupActionsMenu();
 
 	if ( statsEnabled ) {
 		setupStatsOverlay();

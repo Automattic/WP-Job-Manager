@@ -218,6 +218,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		} else {
 			$job_type = 'term-select';
 		}
+
+		$default_salary_currency     = get_option( 'job_manager_default_salary_currency' );
+		$salary_currency_placeholder = $default_salary_currency ?: __( 'e.g. USD', 'wp-job-manager' );
+		$salary_currency_description = $default_salary_currency
+			// translators: %s is the default salary currency code (e.g. USD).
+			? sprintf( __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency (%s).', 'wp-job-manager' ), $default_salary_currency )
+			: __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' );
+
 		$this->fields = apply_filters(
 			'submit_job_form_fields',
 			[
@@ -287,8 +295,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'label'       => __( 'Salary Currency', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
-						'placeholder' => __( 'e.g. USD', 'wp-job-manager' ),
-						'description' => __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' ),
+						'placeholder' => $salary_currency_placeholder,
+						'description' => $salary_currency_description,
 						'priority'    => 9,
 					],
 					'job_salary_unit'     => [
@@ -333,7 +341,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'    => 4,
 					],
 					'company_twitter' => [
-						'label'       => __( 'Twitter username', 'wp-job-manager' ),
+						'label'       => __( 'X / Twitter username', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( '@yourcompany', 'wp-job-manager' ),
@@ -347,12 +355,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'priority'           => 6,
 						'ajax'               => true,
 						'multiple'           => false,
-						'allowed_mime_types' => [
-							'jpg'  => 'image/jpeg',
-							'jpeg' => 'image/jpeg',
-							'gif'  => 'image/gif',
-							'png'  => 'image/png',
-						],
+						'allowed_mime_types' => apply_filters(
+							'job_manager_company_logo_allowed_mime_types',
+							[
+								'jpg'  => 'image/jpeg',
+								'jpeg' => 'image/jpeg',
+								'gif'  => 'image/gif',
+								'png'  => 'image/png',
+								'webp' => 'image/webp',
+							]
+						),
 					],
 				],
 			]
@@ -930,10 +942,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->job_id = wp_insert_post( $job_data );
 
 			if ( ! headers_sent() ) {
-				$submitting_key = uniqid();
+				$submitting_key = wp_generate_password( 32, false );
 
-				setcookie( 'wp-job-manager-submitting-job-id', $this->job_id, false, COOKIEPATH, COOKIE_DOMAIN, false );
-				setcookie( 'wp-job-manager-submitting-job-key', $submitting_key, false, COOKIEPATH, COOKIE_DOMAIN, false );
+				$cookie_options = [
+					'expires'  => 0,
+					'path'     => COOKIEPATH,
+					'domain'   => COOKIE_DOMAIN,
+					'secure'   => is_ssl(),
+					'httponly' => true,
+					'samesite' => 'Lax',
+				];
+
+				setcookie( 'wp-job-manager-submitting-job-id', $this->job_id, $cookie_options );
+				setcookie( 'wp-job-manager-submitting-job-key', $submitting_key, $cookie_options );
 
 				update_post_meta( $this->job_id, '_submitting_key', $submitting_key );
 			}

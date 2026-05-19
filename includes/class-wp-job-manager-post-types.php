@@ -211,6 +211,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'transition_post_status', [ $this, 'track_job_submission' ], 10, 3 );
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
+		add_action( 'pre_get_posts', [ $this, 'gate_feed_query_for_listings' ] );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -709,6 +710,22 @@ class WP_Job_Manager_Post_Types {
 	public function job_feed() {
 		global $job_manager_keyword;
 
+		// Browse-capability gate — emit an empty feed (matching the [jobs] shortcode denial)
+		// rather than 404 / 403, so feed readers don't error on a configured-private site.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			// phpcs:ignore WordPress.WP.DiscouragedFunctions
+			query_posts(
+				[
+					'post__in'  => [ 0 ],
+					'post_type' => self::PT_LISTING,
+				]
+			);
+			add_action( 'rss2_ns', [ $this, 'job_feed_namespace' ] );
+			add_action( 'rss2_item', [ $this, 'job_feed_item' ] );
+			do_action( 'do_feed_rss2', false );
+			return;
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Input used to filter public data in feed.
 		$input_posts_per_page  = isset( $_GET['posts_per_page'] ) ? absint( $_GET['posts_per_page'] ) : 10;
 		$input_search_location = isset( $_GET['search_location'] ) ? sanitize_text_field( wp_unslash( $_GET['search_location'] ) ) : false;
@@ -727,7 +744,19 @@ class WP_Job_Manager_Post_Types {
 			$input_job_categories = false;
 		}
 
+		if ( isset( $_GET['author'] ) ) {
+			if ( is_array( $_GET['author'] ) ) {
+				// Array-shaped query string (?author[]=1) is not a supported format - fails closed.
+				$input_author = [ 0 ];
+			} else {
+				$input_author = _wpjm_parse_author_ids( sanitize_text_field( wp_unslash( $_GET['author'] ) ) );
+			}
+		} else {
+			$input_author = null;
+		}
+
 		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
+		$input_featured      = isset( $_GET['featured'] ) ? sanitize_text_field( wp_unslash( $_GET['featured'] ) ) : null;
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		$query_args = [
@@ -738,6 +767,7 @@ class WP_Job_Manager_Post_Types {
 			'paged'               => absint( get_query_var( 'paged', 1 ) ),
 			'tax_query'           => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Empty.
 			'meta_query'          => [], // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Empty.
+			'has_password'        => false,
 		];
 
 		if ( ! empty( $input_search_location ) ) {
@@ -759,6 +789,13 @@ class WP_Job_Manager_Post_Types {
 				}
 			}
 			$query_args['meta_query'][] = $location_search;
+		}
+
+		if ( null !== $input_featured ) {
+			$query_args['meta_query'][] = [
+				'key'   => '_featured',
+				'value' => '1' === $input_featured ? '1' : '0',
+			];
 		}
 
 		// Hide filled positions from the job feed.
@@ -790,6 +827,11 @@ class WP_Job_Manager_Post_Types {
 			];
 		}
 
+		if ( null !== $input_author ) {
+			// [0] is the fail-closed sentinel: no real post_author equals 0.
+			$query_args['author__in'] = $input_author;
+		}
+
 		if ( ! empty( $job_manager_keyword ) ) {
 			$query_args['s'] = $job_manager_keyword;
 			add_filter( 'posts_search', 'get_job_listings_keyword_search', 10, 2 );
@@ -809,6 +851,32 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'rss2_item', [ $this, 'job_feed_item' ] );
 		do_action( 'do_feed_rss2', false );
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search', 10 );
+	}
+
+	/**
+	 * Gates core feed queries for the job_listing post type so the default RSS / Atom
+	 * endpoints (?feed=rss2&post_type=job_listing, etc.) honor the browse capability and
+	 * exclude password-protected listings — matching the hardening applied to the custom
+	 * job_feed and AJAX / REST paths.
+	 *
+	 * @param WP_Query $query The query.
+	 */
+	public function gate_feed_query_for_listings( $query ) {
+		if ( ! $query->is_feed() || ! $query->is_main_query() ) {
+			return;
+		}
+
+		$post_types = (array) $query->get( 'post_type' );
+		if ( ! in_array( self::PT_LISTING, $post_types, true ) ) {
+			return;
+		}
+
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			$query->set( 'post__in', [ 0 ] );
+			return;
+		}
+
+		$query->set( 'has_password', false );
 	}
 
 	/**
@@ -847,11 +915,12 @@ class WP_Job_Manager_Post_Types {
 	 * Adds custom data to the job feed.
 	 */
 	public function job_feed_item() {
-		$post_id   = get_the_ID();
-		$location  = get_the_job_location( $post_id );
-		$company   = get_the_company_name( $post_id );
-		$job_types = wpjm_get_the_job_types( $post_id );
-		$salary    = get_the_job_salary( $post_id );
+		$post_id        = get_the_ID();
+		$location       = get_the_job_location( $post_id );
+		$company        = get_the_company_name( $post_id );
+		$job_types      = wpjm_get_the_job_types( $post_id );
+		$job_categories = wpjm_get_the_job_categories( $post_id );
+		$salary         = get_the_job_salary( $post_id );
 
 		if ( $location ) {
 			echo '<job_listing:location><![CDATA[' . esc_html( $location ) . "]]></job_listing:location>\n";
@@ -859,6 +928,10 @@ class WP_Job_Manager_Post_Types {
 		if ( ! empty( $job_types ) ) {
 			$job_types_names = implode( ', ', wp_list_pluck( $job_types, 'name' ) );
 			echo '<job_listing:job_type><![CDATA[' . esc_html( $job_types_names ) . "]]></job_listing:job_type>\n";
+		}
+		if ( ! empty( $job_categories ) ) {
+			$job_categories_names = implode( ', ', wp_list_pluck( $job_categories, 'name' ) );
+			echo '<job_listing:job_category><![CDATA[' . esc_html( $job_categories_names ) . "]]></job_listing:job_category>\n";
 		}
 		if ( $company ) {
 			echo '<job_listing:company><![CDATA[' . esc_html( $company ) . "]]></job_listing:company>\n";
@@ -1632,7 +1705,7 @@ class WP_Job_Manager_Post_Types {
 			'show_in_admin'      => true,
 			'show_in_rest'       => false,
 			'auth_edit_callback' => [ __CLASS__, 'auth_check_can_edit_job_listings' ],
-			'auth_view_callback' => null,
+			'auth_view_callback' => [ __CLASS__, 'auth_check_can_view_job_listing' ],
 			'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_based_on_input_type' ],
 		];
 
@@ -1699,7 +1772,7 @@ class WP_Job_Manager_Post_Types {
 				'show_in_rest'  => true,
 			],
 			'_company_twitter'     => [
-				'label'         => __( 'Company Twitter', 'wp-job-manager' ),
+				'label'         => __( 'Company X / Twitter', 'wp-job-manager' ),
 				'placeholder'   => '@yourcompany',
 				'priority'      => 6,
 				'data_type'     => 'string',
@@ -2015,6 +2088,40 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		return job_manager_user_can_edit_job( $post_id );
+	}
+
+	/**
+	 * Checks if a user can view a job listing's meta in REST responses.
+	 *
+	 * Hides meta when the listing is password-protected (and the viewer hasn't unlocked it) or when
+	 * the site's view-capability gate denies the viewer. Used as the default `auth_view_callback`
+	 * for job listing meta fields, consumed by `WP_Job_Manager_REST_API::prepare_job_listing()`.
+	 *
+	 * @param bool   $allowed   Ignored — `prepare_job_listing()` always passes false.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Job listing's post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool True if the meta value can be exposed to the viewer.
+	 */
+	public static function auth_check_can_view_job_listing( $allowed, $meta_key, $post_id, $user_id ) {
+		if ( empty( $post_id ) ) {
+			return true;
+		}
+
+		$is_password_blocked = post_password_required( $post_id );
+		$is_viewcap_blocked  = ! job_manager_user_can_view_job_listing( $post_id );
+
+		// Mirror the bypass in WP_Job_Manager_REST_API::prepare_job_listing(): a user with
+		// edit_post on a *password-only* protected listing legitimately needs meta access
+		// to drive Gutenberg — without this, saving the post in the editor overwrites
+		// `_company_name`, `_job_location`, `_application`, etc. with empty values.
+		// View-capability denials do NOT get this bypass — they remain the harder gate.
+		if ( $is_password_blocked && ! $is_viewcap_blocked && user_can( $user_id, 'edit_post', $post_id ) ) {
+			return true;
+		}
+
+		return ! ( $is_password_blocked || $is_viewcap_blocked );
 	}
 
 	/**

@@ -484,6 +484,17 @@ class WP_Job_Manager_Helper {
 	 * @return array
 	 */
 	public function plugin_links( $actions, $plugin_filename ) {
+		if ( plugin_basename( JOB_MANAGER_PLUGIN_DIR . '/wp-job-manager.php' ) === $plugin_filename
+			&& current_user_can( 'manage_options' )
+		) {
+			array_unshift(
+				$actions,
+				'<a href="' . esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-settings' ) ) . '">'
+					. esc_html__( 'Settings', 'wp-job-manager' )
+				. '</a>'
+			);
+		}
+
 		$plugin = $this->get_license_managed_plugin( $plugin_filename );
 		if ( ! $plugin || ! current_user_can( 'update_plugins' ) ) {
 			return $actions;

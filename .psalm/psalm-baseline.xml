@@ -50,8 +50,6 @@
     </NullableReturnStatement>
     <UndefinedConstant>
       <code>COOKIEPATH</code>
-      <code>COOKIEPATH</code>
-      <code>COOKIE_DOMAIN</code>
       <code>COOKIE_DOMAIN</code>
     </UndefinedConstant>
   </file>
@@ -279,8 +277,6 @@
   <file src="includes/class-wp-job-manager.php">
     <UndefinedConstant>
       <code>COOKIEPATH</code>
-      <code>COOKIEPATH</code>
-      <code>COOKIE_DOMAIN</code>
       <code>COOKIE_DOMAIN</code>
       <code>WP_LANG_DIR</code>
     </UndefinedConstant>
@@ -318,8 +314,6 @@
       <code><![CDATA['post_parent=' . $this->job_id . '&post_type=attachment&fields=ids&numberposts=-1']]></code>
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY</code>
       <code>\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE</code>
-      <code>false</code>
-      <code>false</code>
     </InvalidArgument>
     <InvalidDocblock>
       <code>class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {</code>
@@ -333,8 +327,6 @@
     </TypeDoesNotContainType>
     <UndefinedConstant>
       <code>COOKIEPATH</code>
-      <code>COOKIEPATH</code>
-      <code>COOKIE_DOMAIN</code>
       <code>COOKIE_DOMAIN</code>
       <code>WP_CONTENT_DIR</code>
       <code>WP_CONTENT_URL</code>

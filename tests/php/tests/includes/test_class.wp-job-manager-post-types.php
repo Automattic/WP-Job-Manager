@@ -283,6 +283,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$new_jobs       = [];
 		$type_a         = wp_create_term( 'Job Type A', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 		$type_b         = wp_create_term( 'Job Type B', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$category_a     = wp_create_term( 'Job Category A', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 		$new_job_args   = [];
 		$new_job_args[] = [
 			'meta_input' => [
@@ -290,6 +291,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			],
 			'tax_input'  => [
 				\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $type_a['term_id'],
+				\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $category_a['term_id'],
 			],
 		];
 		$new_job_args[] = [
@@ -325,6 +327,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			$has_location = ! empty( $new_job_args[ $index ]['meta_input']['_job_location'] );
 			$has_company  = ! empty( $new_job_args[ $index ]['meta_input']['_company_name'] );
 			$has_job_type = ! empty( $new_job_args[ $index ]['tax_input'][\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE] );
+			$has_job_category = ! empty( $new_job_args[ $index ]['tax_input'][\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY] );
 			$index++;
 
 			$jobs->the_post();
@@ -337,7 +340,8 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			$result_arr = xml_to_array( $result );
 			$this->assertNotEmpty( $result_arr );
 			$this->assertTrue( isset( $result_arr[0]['child'] ) );
-			$this->assertCount( 2, $result_arr[0]['child'] );
+			$expected_count = (int) $has_location + (int) $has_job_type + (int) $has_job_category + (int) $has_company;
+			$this->assertCount( $expected_count, $result_arr[0]['child'] );
 
 			if ( $has_location ) {
 				$job_location = get_the_job_location( $post );
@@ -353,6 +357,14 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				$this->assertStringContainsString( $job_type->name, $result );
 			} else {
 				$this->assertStringNotContainsString( 'job_listing:job_type', $result );
+			}
+
+			if ( $has_job_category ) {
+				$job_category = current( wpjm_get_the_job_categories( $post ) );
+				$this->assertStringContainsString( 'job_listing:job_category', $result );
+				$this->assertStringContainsString( $job_category->name, $result );
+			} else {
+				$this->assertStringNotContainsString( 'job_listing:job_category', $result );
 			}
 
 			if ( $has_company ) {
