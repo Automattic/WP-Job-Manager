@@ -15,7 +15,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 	 * @param string|array|object $args {
 	 *     Arguments used to retrieve job listings.
 	 *
-	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Default 0 (no filter).
+	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Omit or pass an empty string for no filter. A supplied value that yields no valid positive integer IDs (e.g. `'0'`, `'abc'`, `[]`) fails closed and returns zero results. Added in $$next-version$$.
 	 * }
 	 * @return WP_Query
 	 */
@@ -197,20 +197,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			];
 		}
 
-		if ( isset( $args['author'] ) && ( is_array( $args['author'] ) || '' !== $args['author'] ) ) {
-			$raw_author = $args['author'];
-			$tokens     = is_array( $raw_author ) ? $raw_author : explode( ',', (string) $raw_author );
-			$author_ids = array_values(
-				array_filter(
-					array_map(
-						fn( $v ) => ctype_digit( trim( $v ) ) && (int) trim( $v ) > 0 ? (int) trim( $v ) : 0,
-						$tokens
-					),
-					fn( $v ) => $v > 0
-				)
-			);
-			// Fails-closed: if author was supplied but yielded no valid IDs, return zero results.
-			$query_args['author__in'] = ! empty( $author_ids ) ? $author_ids : [ 0 ];
+		if ( isset( $args['author'] ) ) {
+			$author_ids = _wpjm_parse_author_ids( $args['author'] );
+			if ( null !== $author_ids ) {
+				// [0] is the fail-closed sentinel: no real post_author equals 0.
+				$query_args['author__in'] = $author_ids;
+			}
 		}
 
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
@@ -291,6 +283,52 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search', 10 );
 
 		return $result;
+	}
+endif;
+
+if ( ! function_exists( '_wpjm_parse_author_ids' ) ) :
+	/**
+	 * Parse a raw author input (string, comma-separated string, integer, or array) into a list of positive user IDs.
+	 *
+	 * Returns `null` when the input represents "no filter" (the input was unset or an empty string).
+	 * Returns `[0]` as a fail-closed sentinel when the input was supplied but yielded no valid positive IDs
+	 * (e.g. `'0'`, `'abc'`, `[]`, `'-5'`). `[0]` is safe in `author__in` because no real `post_author` equals 0.
+	 *
+	 * @since $$next-version$$
+	 * @access private
+	 *
+	 * @param mixed $raw Raw author input.
+	 * @return array|null Array of positive integer user IDs, `[0]` sentinel, or null for "no filter".
+	 */
+	function _wpjm_parse_author_ids( $raw ) {
+		if ( null === $raw ) {
+			return null;
+		}
+
+		if ( is_array( $raw ) ) {
+			$tokens = $raw;
+		} else {
+			$raw = (string) $raw;
+			if ( '' === $raw ) {
+				return null;
+			}
+			$tokens = explode( ',', $raw );
+		}
+
+		$author_ids = array_values(
+			array_filter(
+				array_map(
+					static function ( $v ) {
+						$s = trim( (string) $v );
+						return ctype_digit( $s ) && (int) $s > 0 ? (int) $s : 0;
+					},
+					$tokens
+				),
+				static fn( $v ) => $v > 0
+			)
+		);
+
+		return ! empty( $author_ids ) ? $author_ids : [ 0 ];
 	}
 endif;
 

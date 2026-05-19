@@ -1085,7 +1085,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
 		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
 
-		// 'abc' parses to 0 and should be dropped; only $user_a's listings are returned.
+		// 'abc' fails ctype_digit and is dropped; only $user_a's listings are returned.
 		$result = get_job_listings( [ 'author' => $user_a . ',abc' ] );
 
 		$this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
@@ -1109,5 +1109,109 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$result = get_job_listings( [ 'author' => [ $user_a, $user_b ] ] );
 
 		$this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_null_returns_null() {
+		$this->assertNull( _wpjm_parse_author_ids( null ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_empty_string_returns_null() {
+		$this->assertNull( _wpjm_parse_author_ids( '' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_single_numeric_string() {
+		$this->assertSame( [ 5 ], _wpjm_parse_author_ids( '5' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_comma_separated() {
+		$this->assertSame( [ 1, 2, 3 ], _wpjm_parse_author_ids( '1,2,3' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_whitespace_tolerated() {
+		$this->assertSame( [ 1, 2, 3 ], _wpjm_parse_author_ids( '1, 2 , 3' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_non_numeric_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( 'abc' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_zero_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( '0' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_negative_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( '-5' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_mixed_drops_invalid_tokens() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( '1,abc,2' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_array_of_ints() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( [ 1, 2 ] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_array_mixed_drops_invalid() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( [ 1, 'abc', 2, '-5', 0 ] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_empty_array_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( [] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_integer_input() {
+		$this->assertSame( [ 7 ], _wpjm_parse_author_ids( 7 ) );
 	}
 }

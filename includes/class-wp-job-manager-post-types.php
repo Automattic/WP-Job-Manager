@@ -746,31 +746,13 @@ class WP_Job_Manager_Post_Types {
 
 		if ( isset( $_GET['author'] ) ) {
 			if ( is_array( $_GET['author'] ) ) {
-				// Array-shaped input (?author[]=1) is not a supported format - fails-closed.
+				// Array-shaped query string (?author[]=1) is not a supported format - fails closed.
 				$input_author = [ 0 ];
 			} else {
-				$sanitized_author = sanitize_text_field( wp_unslash( $_GET['author'] ) );
-				// Note: '' === '' is false, so empty string = unset (no filter).
-				if ( '' === $sanitized_author ) {
-					$input_author = false;
-				} else {
-					$input_author = array_values(
-						array_filter(
-							array_map(
-								fn( $v ) => ctype_digit( trim( $v ) ) && (int) trim( $v ) > 0 ? (int) trim( $v ) : 0,
-								explode( ',', $sanitized_author )
-							),
-							fn( $v ) => $v > 0
-						)
-					);
-					// Fails-closed: author was supplied but yielded no valid IDs (e.g. '0', 'abc') -> force empty results.
-					if ( empty( $input_author ) ) {
-						$input_author = [ 0 ];
-					}
-				}
+				$input_author = _wpjm_parse_author_ids( sanitize_text_field( wp_unslash( $_GET['author'] ) ) );
 			}
 		} else {
-			$input_author = false;
+			$input_author = null;
 		}
 
 		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
@@ -845,7 +827,8 @@ class WP_Job_Manager_Post_Types {
 			];
 		}
 
-		if ( ! empty( $input_author ) ) {
+		if ( null !== $input_author ) {
+			// [0] is the fail-closed sentinel: no real post_author equals 0.
 			$query_args['author__in'] = $input_author;
 		}
 
