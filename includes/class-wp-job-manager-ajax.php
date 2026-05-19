@@ -136,7 +136,14 @@ class WP_Job_Manager_Ajax {
 		$remote_position    = isset( $_REQUEST['remote_position'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['remote_position'] ) ) : null;
 		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
 		$featured_first     = isset( $_REQUEST['featured_first'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured_first'] ) ) : null;
-		$author             = ( isset( $_REQUEST['author'] ) && ! is_array( $_REQUEST['author'] ) ) ? sanitize_text_field( wp_unslash( $_REQUEST['author'] ) ) : '';
+		if ( ! isset( $_REQUEST['author'] ) ) {
+			$author = '';
+		} elseif ( is_array( $_REQUEST['author'] ) ) {
+			// Array-shaped input is not supported via AJAX - fails closed (passes '0' so get_job_listings returns zero results).
+			$author = '0';
+		} else {
+			$author = sanitize_text_field( wp_unslash( $_REQUEST['author'] ) );
+		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( is_array( $search_categories ) ) {
