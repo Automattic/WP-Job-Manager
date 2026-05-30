@@ -1,0 +1,186 @@
+.jm-dialog[open] {
+	border: unset;
+	background: unset;
+	padding: unset;
+	margin: unset;
+	position: static;
+}
+
+.jm-dialog:not([open]) {
+	display: none !important;
+}
+
+.jm-dialog-open {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	display: flex;
+}
+
+.jm-dialog {
+	font-family: var(--jm-ui-font-family);
+	font-size: var(--jm-ui-font-size);
+	--jm-dialog-padding: var(--jm-ui-space-l);
+}
+
+.jm-dialog .jm-notice {
+	margin: unset;
+	border: unset;
+	width: 100%;
+	min-width: unset;
+	padding: var(--jm-dialog-padding);
+
+	.jm-notice__details {
+		align-self: stretch;
+	}
+}
+
+.jm-dialog::backdrop {
+	background-color: transparent;
+	backdrop-filter: blur(4px);
+}
+
+.jm-dialog-modal {
+	width: var(--wp--style--global--content-size, 640px);
+	max-width: calc(100% - var(--jm-ui-space-s) * 2);
+	max-height: 100%;
+	margin: var(--jm-ui-space-s);
+	border-radius: var(--jm-ui-radius-2x);
+	background-color: var(--jm-ui-background-color, #fff);
+	color: var(--jm-ui-text-color, #1a1a1a);
+	box-shadow: var(--jm-ui-shadow-modal);
+	overflow: auto;
+	overscroll-behavior: contain;
+
+	body & a:not(:hover):not(:active):not(:focus) {
+		color: var(--jm-ui-accent-color, #1a1a1a);
+	}
+}
+.jm-dialog-modal-container {
+	position: relative;
+	min-height: 100%;
+	display: flex;
+
+}
+
+.jm-dialog-modal-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+.jm-dialog-backdrop {
+	position: fixed;
+	left: 0;
+	right: 0;
+	height: 110vh;
+	bottom: 0;
+	z-index: -1;
+	background-color: rgb(0 0 0 / 0.1);
+
+}
+
+.jm-dialog-close {
+	position: absolute;
+	z-index: 1;
+	top: calc(var(--jm-dialog-padding) - var(--jm-ui-space-xs));
+	right: calc(var(--jm-dialog-padding) - var(--jm-ui-space-xs) - 8px);
+	cursor: pointer;
+	opacity: 0.7;
+
+	.jm-ui-button__icon {
+		mask-image: var(--jm-ui-svg-close);
+	}
+
+}
+
+.jm-dialog[open] .jm-dialog-open {
+	animation: jm-dialog-open 0.2s cubic-bezier(.08, .6, .5, .98);
+}
+
+.jm-dialog[open] .jm-dialog-backdrop {
+	animation: jm-dialog-backdrop-fade-in 0.2s cubic-bezier(.08, .6, .5, .98);
+}
+
+.jm-dialog:not([open]) {
+	animation: jm-dialog-close 0.2s cubic-bezier(.08, .6, .5, .98);
+}
+
+.jm-dialog:not([open]) .jm-dialog-open {
+	animation: jm-dialog-open reverse 0.2s cubic-bezier(.08, .6, .5, .98);
+}
+
+@keyframes jm-dialog-open {
+	0% {
+		opacity: 0.1;
+		transform: translateY(100px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+
+@keyframes jm-dialog-close {
+	0% {
+		opacity: 1;
+		display: block;
+	}
+
+	100% {
+		opacity: 0.1;
+		display: none;
+	}
+}
+
+
+@keyframes jm-dialog-backdrop-fade-in {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+.jm-dialog .jm-form {
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--jm-ui-space-sm);
+	> * {
+		margin: unset;
+	}
+}
+
+@media (max-width: 600px) {
+
+	.jm-dialog-open {
+		justify-content: flex-end;
+	}
+
+	.jm-dialog-modal {
+		margin-bottom: var(--jm-ui-space-xs);
+
+	}
+
+	.jm-dialog {
+		--jm-dialog-padding: var(--jm-ui-space-sm);
+	}
+
+	.jm-dialog .jm-form, .jm-dialog .jm-notice {
+		gap: var(--jm-ui-space-s);
+	}
+}

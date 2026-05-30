@@ -24,7 +24,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 		global $wp_post_types;
 
 		// translators: Placeholder %s is the plural label for the job listing post type.
-		$this->widget_name        = sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name );
+		$this->widget_name        = sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->name );
 		$this->widget_cssclass    = 'job_manager widget_recent_jobs';
 		$this->widget_description = __( 'Display a list of recent listings on your site, optionally matching a keyword and location.', 'wp-job-manager' );
 		$this->widget_id          = 'widget_recent_jobs';
@@ -32,7 +32,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 			'title'           => [
 				'type'  => 'text',
 				// translators: Placeholder %s is the plural label for the job listing post type.
-				'std'   => sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->name ),
+				'std'   => sprintf( __( 'Recent %s', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->name ),
 				'label' => __( 'Title', 'wp-job-manager' ),
 			],
 			'keyword'         => [
@@ -85,9 +85,19 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		// Browse-capability gate — match the [jobs] shortcode denial without rendering a partial widget.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			return;
+		}
+
 		wp_enqueue_style( 'wp-job-manager-job-listings' );
 
-		if ( $this->get_cached_widget( $args ) ) {
+		// Skip the shared widget cache when view capability is configured: the per-listing template
+		// gate in `content-widget-job_listing.php` makes output viewer-dependent, and the base
+		// cache is keyed only by widget instance id (no auth partition).
+		$view_cap_can_filter = ! empty( get_option( 'job_manager_view_job_listing_capability' ) );
+
+		if ( ! $view_cap_can_filter && $this->get_cached_widget( $args ) ) {
 			return;
 		}
 
@@ -169,7 +179,9 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-		$this->cache_widget( $args, $content );
+		if ( ! $view_cap_can_filter ) {
+			$this->cache_widget( $args, $content );
+		}
 	}
 }
 

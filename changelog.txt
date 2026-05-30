@@ -1,5 +1,138 @@
 # WP Job Manager
 
+## 2.4.2 - 2026-05-12
+* Fix Job Dashboard actions menu on Safari (#2947)
+* Harden submit-form session cookies (#2945)
+* Fixes a REST API information disclosure where the body, excerpt, and existence of listings restricted by view-capability were exposed to denied viewers. Restricted listings now return 404 indistinguishable from a missing post, including HEAD probes and listings that are also password-protected.
+* Fixes a data-loss bug where editors opening a password-protected listing in the block editor would save empty meta values (location, company name, application target).
+* Fixes a series of information disclosure issues affecting password-protected and capability-restricted job listings.
+* Harden stats AJAX endpoint input validation and rate limiting (#2938)
+* Company logo uploads now accept WebP images by default
+* New filter `job_manager_company_logo_allowed_mime_types` allows customizing allowed file types for the company logo field
+* The salary currency field on the job submission form now correctly reflects the configured default currency in its placeholder and helper text.
+* Filled job listings are no longer exposed via the REST API.
+* Job categories are now included in the job RSS feed XML output.
+* Added `featured=true` query parameter support to the job RSS feed to allow filtering by featured listings only.
+* Fixed PHP 8+ undefined array key warning in the widget caching methods.
+* Updated Twitter profile links to use the new `x.com` domain and updated related labels to "X / Twitter" to reflect the platform rebrand.
+* Added a Settings link to the plugin action links on the Plugins screen for quicker access to plugin settings.
+
+## 2.4.1 - 2026-02-24
+* Add permission check to listing query parameters (#2914)
+* Fix structured data output for password-protected listings (#2913)
+
+* Update actions/cache to use v4 (#2896)
+* reCaptcha script not being loaded (#2893)
+* add a additional action to the do_feed_rss2
+* fix hardcoded dashboard expiration date format
+* Dev: Fix deprecated  methods
+* Fix file input field for forms not marked as required
+
+## 2.4.0 - 2024-08-08
+* Fix job dashboard actions menu in Safari
+* Fix PHP 8.3 support
+* Remove support for Internet Explorer 11
+* Fix Wordpress 6.6 compatibility
+* Fix classic editor support for job listings
+
+## 2.3.0 - 2024-04-29
+New!
+
+* Job Statistics — enable insights like job listing page views, unique visits and search impressions to be collected and displayed to employers in the jobs dashboard.
+* Add Google reCAPTCHA v3 support
+
+Improvements: 
+
+* New: Job statistics overlay
+* Change: Redesign job dashboard
+* Change: Allow job duplication in the job dashboard for any job 
+* Security: Don't return unpublished jobs only in the promote job endpoint
+* Fix renewals for WordPress.com licenses
+* Fix issues with rich e-mails on some e-mail providers
+* Fix e-mail styling in some e-mail clients  
+* Fix expiry date not showing up in backend editor
+* Fix: Add fallback to date format in case it's missing
+* Fix: Prevent past dates from being used in the datepicker
+
+For developers:
+
+* Add filter to disable promoted jobs
+* Add placeholder options to select field
+* Job dashboard template has been rewritten
+
+## 2.2.2 - 2024-02-15
+* Fix issue with rich e-mails on some e-mail providers (#2753)
+* Fix: 'featured_first' argument now works when 'show_filters' is set to false.
+* Improve checkbox and radio inputs for styled forms
+
+## 2.2.1 - 2024-01-31
+* Fix PHP 7.x error for mixed returned type (#2726)
+
+## 2.2.0 - 2024-01-29
+New:
+
+* Allow scheduling listings during job submission — add an option to show a 'Scheduled Date' field in the job submission form
+* Add new [jobs] shortcode parameter, featured_first so you can ensure featured listings always show up on top.
+* Add support for user sessions without a full account (used in the Job Alerts extension)
+
+Changes:
+
+* Improve styling for rich text e-mails
+* Include plain text alternative for rich text e-mails for better compatibility
+* Store previous license when plugin is deactivated for easier reactivation later.
+* Update design for settings and marketplace pages
+
+Fixes:
+
+* Fix custom role permission issues (#2673)
+* Fix RSS, Reset, Add Alert links not showing on search page without a keyword
+* Improve PHP 8 support
+* Fix numeric settings field issues
+* Improve e-mail formatting and encoding, remove extra whitespace
+* Add file type validation and error message to company logo upload
+* Fix cache issue when marking jobs as filled/not filled via bulk actions
+* Do not emit warning when user with insufficient access to Job Manager menu tries to access wp-admin
+
+## 2.1.1 - 2023-11-21
+* Fix link to extensions page (#2650)
+* Update Twitter to the new X logo
+
+## 2.1.0 - 2023-11-17
+* Fix: Remove public update endpoint and add nonce check (#2642)
+
+## 2.0.0 - 2023-11-17
+* Enhancement: Improve settings descriptions (#2639)
+* Enhancement: Add directApply in Google job schema (#2635)
+* Enhancement: Add 'Don't show this again' link to dismiss promote job modal in the editor (#2632)
+* Enhancement: Add landing pages for Applications and Resumes extensions (#2621)
+* Fix: Align actions in notices in the center (#2637)
+* Fix: Safeguard array in WP_Job_Manager_Settings::input_capabilities (#2631)
+* Fix: Escape menu titles and various admin labels (#2630)
+* Fix: Incorrectly duplicated string in settings (#2628)
+* Fix: Add array initialization to avoid warning (#2619)
+* Fix: Do not check for plugin updates when there are no plugins (#2605)
+* Change: Reorganize administration menu (#2621)
+* Change: Update naming from Add-ons to Extensions, Marketplace (#2621)
+
+## 1.42.0 - 2023-10-05
+New!
+
+* Easily promote job listings on Indeed, LinkedIn, and 1000s of job boards with JobTarget integration. See https://wpjobmanager.com/jobtarget for more information.
+
+Improvements:
+
+* Fix: Only show file upload input for company logo when it's empty (#2569)
+* Fix: Fix error when showing admin notices (#2557)
+* Fix: Show the links (RSS, Reset) below search even when there are no results (#2454)
+* Tweak: Improve usage tracking for plugins (#2576)
+
+For developers:
+
+* Fix: In forms, support dynamically added date inputs (#2573)
+* New: Allow plugins to override renewal values (#2566)
+* Tweak: Rename "licence" to "license" throughout codebase (#2554)
+* Fix: More efficient license checking for core add-ons (#2552)
+
 ## 1.41.0 - 2023-06-10
 * Enhancement: Introduce listing renewals #2422
 * Enhancement: Allow searching multiple job locations at once #2433

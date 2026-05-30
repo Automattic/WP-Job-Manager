@@ -11,7 +11,7 @@ jobs:
         name: Report Plugin Build
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
             - name: Publish commit status with the link to download the plugin 
               id: plugin_artifact
               uses: Automattic/github-action-report-artifact@v0

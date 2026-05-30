@@ -10,6 +10,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Cleanup all data.
+require 'includes/class-wp-job-manager-post-types.php';
 require 'includes/class-wp-job-manager-data-cleaner.php';
 
 if ( ! is_multisite() ) {
@@ -21,10 +22,10 @@ if ( ! is_multisite() ) {
 	}
 } elseif ( function_exists( 'get_sites' ) ) {
 	$blog_ids = get_sites(
-		array(
+		[
 			'fields'            => 'ids',
 			'update_site_cache' => false,
-		)
+		]
 	);
 
 	$original_blog_id = get_current_blog_id();

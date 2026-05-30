@@ -52,6 +52,8 @@ jQuery(function($) {
 
 				if ( uploadErrors.length > 0 ) {
 					this.validation_errors = this.validation_errors.concat( uploadErrors );
+					data.context = $('<progress value="" max="100"></progress>').appendTo( $uploaded_files );
+					data.submit();
 				} else {
 					if ( false !== fileLimitLeft ) {
 						$file_field.data( 'file_limit_left', fileLimitLeft - 1 );
@@ -83,7 +85,7 @@ jQuery(function($) {
 				var $form           = $file_field.closest( 'form' );
 				var $uploaded_files = $file_field.parent().find('.job-manager-uploaded-files');
 				var multiple        = $file_field.attr( 'multiple' ) ? 1 : 0;
-				var image_types     = [ 'jpg', 'gif', 'png', 'jpeg', 'jpe' ];
+				var image_types     = [ 'jpg', 'gif', 'png', 'jpeg', 'jpe', 'webp' ];
 
 				data.context.remove();
 

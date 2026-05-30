@@ -17,6 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $post;
+
+// Defense in depth: the listings query in get_job_listings() already excludes password-protected
+// posts and the AJAX/RSS dispatchers gate on browse capability, but theme overrides of this
+// template would bypass those checks. Re-assert here so any direct WP_Query consumer that picks
+// up this template can't surface protected or capability-restricted listings.
+if ( post_password_required( $post ) || ! job_manager_user_can_view_job_listing( $post->ID ) ) {
+	return;
+}
 ?>
 <li <?php job_listing_class(); ?> data-longitude="<?php echo esc_attr( $post->geolocation_long ); ?>" data-latitude="<?php echo esc_attr( $post->geolocation_lat ); ?>">
 	<a href="<?php the_job_permalink(); ?>">

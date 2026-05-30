@@ -60,7 +60,7 @@ class WP_Job_Manager_Writepanels {
 
 		$fields = [];
 
-		if ( $current_user->has_cap( 'edit_others_job_listings' ) ) {
+		if ( $current_user->has_cap( \WP_Job_Manager_Post_Types::CAP_EDIT_OTHERS_LISTINGS ) ) {
 			$fields['_job_author'] = [
 				'label'    => __( 'Posted by', 'wp-job-manager' ),
 				'type'     => 'author',
@@ -94,15 +94,15 @@ class WP_Job_Manager_Writepanels {
 		}
 
 		if ( isset( $fields['_job_expires'] ) && ! isset( $fields['_job_expires']['value'] ) ) {
-			$job_expires = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post_id );
-
+			$job_expires                           = WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post_id );
+			$wp_date_format                        = get_option( 'date_format' ) ?: 'F j, Y';
 			$fields['_job_expires']['placeholder'] = null;
 			if ( ! empty( $job_expires ) ) {
 				$fields['_job_expires']['value'] = $job_expires->format( 'Y-m-d' );
 			} else {
 				$assumed_expiration_date = calculate_job_expiry( $post_id, true );
 				if ( $assumed_expiration_date ) {
-					$fields['_job_expires']['placeholder'] = wp_date( get_option( 'date_format' ), $assumed_expiration_date->getTimestamp() );
+					$fields['_job_expires']['placeholder'] = wp_date( $wp_date_format, $assumed_expiration_date->getTimestamp() );
 				}
 				$fields['_job_expires']['value'] = '';
 			}
@@ -151,13 +151,13 @@ class WP_Job_Manager_Writepanels {
 		global $wp_post_types;
 
 		// translators: Placeholder %s is the singular name for a job listing post type.
-		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types['job_listing']->labels->singular_name ), [ $this, 'job_listing_data' ], 'job_listing', 'normal', 'high' );
-		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( 'job_listing_type' ) ) ) {
-			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
+		add_meta_box( 'job_listing_data', sprintf( __( '%s Data', 'wp-job-manager' ), $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name ), [ $this, 'job_listing_data' ], \WP_Job_Manager_Post_Types::PT_LISTING, 'normal', 'high' );
+		if ( ! get_option( 'job_manager_enable_types' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ) ) ) {
+			remove_meta_box( 'job_listing_typediv', \WP_Job_Manager_Post_Types::PT_LISTING, 'side' );
 		} elseif ( false === job_manager_multi_job_type() ) {
-			remove_meta_box( 'job_listing_typediv', 'job_listing', 'side' );
-			$job_listing_type = get_taxonomy( 'job_listing_type' );
-			add_meta_box( 'job_listing_type', $job_listing_type->labels->menu_name, [ $this, 'job_type_single_meta_box' ], 'job_listing', 'side', 'core' );
+			remove_meta_box( 'job_listing_typediv', \WP_Job_Manager_Post_Types::PT_LISTING, 'side' );
+			$job_listing_type = get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+			add_meta_box( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, $job_listing_type->labels->menu_name, [ $this, 'job_type_single_meta_box' ], \WP_Job_Manager_Post_Types::PT_LISTING, 'side', 'core' );
 		}
 	}
 
@@ -168,7 +168,7 @@ class WP_Job_Manager_Writepanels {
 	 */
 	public function job_type_single_meta_box( $post ) {
 		// Set up the taxonomy object and get terms.
-		$taxonomy_name = 'job_listing_type';
+		$taxonomy_name = \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE;
 
 		// Get all the terms for this taxonomy.
 		$terms     = get_terms(
@@ -584,8 +584,8 @@ class WP_Job_Manager_Writepanels {
 	public function job_listing_data( $post ) {
 		global $post, $thepostid, $wp_post_types;
 
-		$thepostid = $post->ID;
-
+		$thepostid      = $post->ID;
+		$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 		echo '<div class="wp_job_manager_meta_data">';
 
 		wp_nonce_field( 'save_meta_data', 'job_manager_nonce' );
@@ -617,8 +617,8 @@ class WP_Job_Manager_Writepanels {
 			printf(
 				// translators: %1$s is placeholder for singular name of the job listing post type; %2$s is the intl formatted date the listing was last modified.
 				esc_html__( '%1$s was last modified by the user on %2$s.', 'wp-job-manager' ),
-				esc_html( $wp_post_types['job_listing']->labels->singular_name ),
-				esc_html( wp_date( get_option( 'date_format' ), (int) $user_edited_timestamp ) )
+				esc_html( $wp_post_types[ \WP_Job_Manager_Post_Types::PT_LISTING ]->labels->singular_name ),
+				esc_html( wp_date( $wp_date_format, (int) $user_edited_timestamp ) )
 			);
 			echo '</em>';
 			echo '</p>';
@@ -657,7 +657,7 @@ class WP_Job_Manager_Writepanels {
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
-		if ( 'job_listing' !== $post->post_type ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 			return;
 		}
 

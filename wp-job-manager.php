@@ -3,11 +3,11 @@
  * Plugin Name: WP Job Manager
  * Plugin URI: https://wpjobmanager.com/
  * Description: Manage job listings from the WordPress admin panel, and allow users to post jobs directly to your site.
- * Version: 1.41.0
+ * Version: 2.4.2
  * Author: Automattic
  * Author URI: https://wpjobmanager.com/
- * Requires at least: 6.0
- * Tested up to: 6.2
+ * Requires at least: 6.4
+ * Tested up to: 6.9
  * Requires PHP: 7.4
  * Text Domain: wp-job-manager
  * Domain Path: /languages/
@@ -21,10 +21,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants.
-define( 'JOB_MANAGER_VERSION', '1.41.0-dev' );
+define( 'JOB_MANAGER_VERSION', '2.4.2' );
 define( 'JOB_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
 define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'JOB_MANAGER_DATE_FORMAT_FALLBACK', 'F j, Y' );
+
+require_once dirname( __FILE__ ) . '/wp-job-manager-autoload.php';
+WP_Job_Manager_Autoload::init();
+WP_Job_Manager_Autoload::register( 'WP_Job_Manager', JOB_MANAGER_PLUGIN_DIR . '/includes' );
 
 require_once dirname( __FILE__ ) . '/includes/class-wp-job-manager-dependency-checker.php';
 if ( ! WP_Job_Manager_Dependency_Checker::check_dependencies() ) {
@@ -48,8 +53,8 @@ function WPJM() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName
 $GLOBALS['job_manager'] = WPJM();
 
 // Activation - works with symlinks.
-register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), array( WPJM(), 'activate' ) );
+register_activation_hook( basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ), [ WPJM(), 'activate' ] );
 
 // Cleanup on deactivation.
-register_deactivation_hook( __FILE__, array( WPJM(), 'unschedule_cron_jobs' ) );
-register_deactivation_hook( __FILE__, array( WPJM(), 'usage_tracking_cleanup' ) );
+register_deactivation_hook( __FILE__, [ WPJM(), 'unschedule_cron_jobs' ] );
+register_deactivation_hook( __FILE__, [ WPJM(), 'usage_tracking_cleanup' ] );

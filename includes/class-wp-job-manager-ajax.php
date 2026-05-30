@@ -135,12 +135,41 @@ class WP_Job_Manager_Ajax {
 		$featured           = isset( $_REQUEST['featured'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured'] ) ) : null;
 		$remote_position    = isset( $_REQUEST['remote_position'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['remote_position'] ) ) : null;
 		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
+		$featured_first     = isset( $_REQUEST['featured_first'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured_first'] ) ) : null;
+		if ( ! isset( $_REQUEST['author'] ) ) {
+			$author = '';
+		} elseif ( is_array( $_REQUEST['author'] ) ) {
+			// Array-shaped input is not supported via AJAX - fails closed (passes '0' so get_job_listings returns zero results).
+			$author = '0';
+		} else {
+			$author = sanitize_text_field( wp_unslash( $_REQUEST['author'] ) );
+		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( is_array( $search_categories ) ) {
 			$search_categories = array_filter( array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) ) );
 		} else {
 			$search_categories = array_filter( [ sanitize_text_field( wp_unslash( $search_categories ) ) ] );
+		}
+
+		// Ensure the current user can filter by post_status.
+		if ( is_array( $filter_post_status ) && ! current_user_can( \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ) ) {
+			$filter_post_status = null;
+		}
+
+		// Browse-capability gate — match the [jobs] shortcode denial without surfacing partial results.
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			wp_send_json(
+				[
+					'found_jobs'    => false,
+					'showing'       => '',
+					'showing_all'   => false,
+					'showing_links' => '',
+					'max_num_pages' => 0,
+					'html'          => '',
+				]
+			);
+			return;
 		}
 
 		$types              = get_job_listing_types();
@@ -154,6 +183,8 @@ class WP_Job_Manager_Ajax {
 			'post_status'       => $filter_post_status,
 			'orderby'           => $orderby,
 			'order'             => $order,
+			'featured_first'    => $featured_first,
+			'author'            => $author,
 			'offset'            => ( $page - 1 ) * $per_page,
 			'posts_per_page'    => max( 1, $per_page ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 		];
@@ -223,6 +254,7 @@ class WP_Job_Manager_Ajax {
 				'search_location'   => $search_location,
 				'search_categories' => $search_categories,
 				'search_keywords'   => $search_keywords,
+				'author'            => $author,
 			]
 		);
 
@@ -262,7 +294,7 @@ class WP_Job_Manager_Ajax {
 		if ( $result['found_jobs'] ) {
 			while ( $jobs->have_posts() ) {
 				$jobs->the_post();
-				get_job_manager_template_part( 'content', 'job_listing' );
+				get_job_manager_template_part( 'content', \WP_Job_Manager_Post_Types::PT_LISTING );
 			}
 		} else {
 			get_job_manager_template_part( 'content', 'no-jobs-found' );
@@ -333,7 +365,7 @@ class WP_Job_Manager_Ajax {
 		 *
 		 * @param array $user_caps Array of capabilities/roles that are allowed to search for users.
 		 */
-		$allowed_capabilities = apply_filters( 'job_manager_caps_can_search_users', [ 'edit_job_listings' ] );
+		$allowed_capabilities = apply_filters( 'job_manager_caps_can_search_users', [ \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ] );
 		foreach ( $allowed_capabilities as $cap ) {
 			if ( current_user_can( $cap ) ) {
 				$user_can_search_users = true;

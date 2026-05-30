@@ -41,13 +41,13 @@ class WP_Job_Manager_Helper_API {
 	/**
 	 * Checks if there is an update for the plugin using the WPJobManager.com API.
 	 *
-	 * @deprecated $$next-version$$ Use WP_Job_Manager_Helper_API::bulk_update_check() instead.
+	 * @deprecated 1.42.0 Use WP_Job_Manager_Helper_API::bulk_update_check() instead.
 	 *
 	 * @param array $args The arguments to pass to the endpoint.
 	 * @return array|false The response, or false if the request failed.
 	 */
 	public function plugin_update_check( $args ) {
-		_deprecated_file( __METHOD__, '$$next-version$$', 'WP_Job_Manager_Helper_API::bulk_update_check' );
+		_deprecated_function( __METHOD__, '1.42.0', 'WP_Job_Manager_Helper_API::bulk_update_check' );
 
 		return false;
 	}
@@ -82,7 +82,7 @@ class WP_Job_Manager_Helper_API {
 	public function plugin_information( $args ) {
 		$args = wp_parse_args( $args );
 		$data = $this->request_endpoint(
-			'wp-json/wpjmcom-licensing/v1/plugin-information',
+			'/wp-json/wpjmcom-licensing/v1/plugin-information',
 			[
 				'method' => 'GET',
 				'body'   => [
@@ -92,6 +92,7 @@ class WP_Job_Manager_Helper_API {
 				],
 			]
 		);
+
 		if ( ! is_array( $data ) ) {
 			return false;
 		}
@@ -177,7 +178,7 @@ class WP_Job_Manager_Helper_API {
 	public function deactivate( $args ) {
 		$args     = wp_parse_args( $args );
 		$response = $this->request_endpoint(
-			'wp-json/wpjmcom-licensing/v1/deactivate',
+			'/wp-json/wpjmcom-licensing/v1/deactivate',
 			[
 				'method' => 'POST',
 				'body'   => wp_json_encode(
@@ -187,6 +188,37 @@ class WP_Job_Manager_Helper_API {
 						'site_url'     => $this->get_site_url(),
 					]
 				),
+			]
+		);
+		if ( ! is_array( $response ) || ! array_key_exists( 'success', $response ) ) {
+			return false;
+		}
+		return $response;
+	}
+
+	/**
+	 * Flush the WPCOM license for a given plugin.
+	 *
+	 * @param string $plugin_slug The plugin slug to flush the WPCOM license for.
+	 * @param string $activation_url The activation URL for WPJMCOM to request from this blog with the license information.
+	 * @return array|bool Pass through the API response from the licensing server, or false on error.
+	 */
+	public function flush_wpcom_license( string $plugin_slug, string $activation_url ) {
+		// Get domain.
+		$domain = wp_parse_url( $activation_url, PHP_URL_HOST );
+		// Call activation service.
+		$response = $this->request_endpoint(
+			'/wp-json/wpjmcom-licensing/v1/flush-wpcom-activation',
+			[
+				'method'  => 'POST',
+				'body'    => wp_json_encode(
+					[
+						'plugin_slug'    => $plugin_slug,
+						'domain'         => $domain,
+						'activation_url' => $activation_url,
+					]
+				),
+				'timeout' => 60,
 			]
 		);
 		if ( ! is_array( $response ) || ! array_key_exists( 'success', $response ) ) {

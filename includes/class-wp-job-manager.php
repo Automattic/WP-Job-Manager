@@ -6,6 +6,8 @@
  * @since   1.33.0
  */
 
+use WP_Job_Manager\Job_Overlay;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -39,6 +41,13 @@ class WP_Job_Manager {
 	public $post_types;
 
 	/**
+	 * Stats.
+	 *
+	 * @var WP_Job_Manager\Stats
+	 */
+	public $stats;
+
+	/**
 	 * Main WP Job Manager Instance.
 	 *
 	 * Ensures only one instance of WP Job Manager is loaded or can be loaded.
@@ -60,6 +69,7 @@ class WP_Job_Manager {
 	 */
 	public function __construct() {
 		// Includes.
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/trait-singleton.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-install.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-post-types.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-ajax.php';
@@ -74,12 +84,26 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email-template.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-email-notifications.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-data-exporter.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-settings.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-com-api.php';
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php';
+
+		/**
+		 * Controls whether promoted jobs are enabled.
+		 *
+		 * @since 2.3.0
+		 *
+		 * @param bool $enable_promoted_jobs Whether promoted jobs are enabled.
+		 */
+		if ( apply_filters( 'job_manager_enable_promoted_jobs', true ) ) {
+			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php';
+		}
 
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';
 		}
+
+		\WP_Job_Manager\UI\UI::instance();
+		\WP_Job_Manager\UI\UI_Settings::instance();
 
 		// Load 3rd party customizations.
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/3rd-party/3rd-party.php';
@@ -87,6 +111,9 @@ class WP_Job_Manager {
 		// Init classes.
 		$this->forms      = WP_Job_Manager_Forms::instance();
 		$this->post_types = WP_Job_Manager_Post_Types::instance();
+		$this->stats      = WP_Job_Manager\Stats::instance();
+
+		WP_Job_Manager\Dev_Tools::init();
 
 		// Schedule cron jobs.
 		add_action( 'init', [ __CLASS__, 'maybe_schedule_cron_jobs' ] );
@@ -136,7 +163,7 @@ class WP_Job_Manager {
 	 */
 	public function activate() {
 		WP_Job_Manager_Ajax::add_endpoint();
-		unregister_post_type( 'job_listing' );
+		unregister_post_type( \WP_Job_Manager_Post_Types::PT_LISTING );
 		add_filter( 'pre_option_job_manager_enable_types', '__return_true' );
 		$this->post_types->register_post_types();
 		remove_filter( 'pre_option_job_manager_enable_types', '__return_true' );
@@ -250,7 +277,7 @@ class WP_Job_Manager {
 		if ( ! wp_next_scheduled( 'job_manager_email_daily_notices' ) ) {
 			wp_schedule_event( time(), 'daily', 'job_manager_email_daily_notices' );
 		}
-		if ( ! wp_next_scheduled( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK ) ) {
+		if ( class_exists( 'WP_Job_Manager_Promoted_Jobs_Status_Handler' ) && ! wp_next_scheduled( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK ) ) {
 			wp_schedule_event( time(), 'hourly', WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK );
 		}
 	}
@@ -270,11 +297,20 @@ class WP_Job_Manager {
 	 * Cleanup job posting cookies.
 	 */
 	public function cleanup_job_posting_cookies() {
+		$cookie_options = [
+			'expires'  => 0,
+			'path'     => COOKIEPATH,
+			'domain'   => COOKIE_DOMAIN,
+			'secure'   => is_ssl(),
+			'httponly' => true,
+			'samesite' => 'Lax',
+		];
+
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) {
-			setcookie( 'wp-job-manager-submitting-job-id', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
+			setcookie( 'wp-job-manager-submitting-job-id', '', $cookie_options );
 		}
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
-			setcookie( 'wp-job-manager-submitting-job-key', '', 0, COOKIEPATH, COOKIE_DOMAIN, false );
+			setcookie( 'wp-job-manager-submitting-job-key', '', $cookie_options );
 		}
 	}
 
@@ -393,7 +429,6 @@ class WP_Job_Manager {
 			'is_rtl'                  => is_rtl() ? 1 : 0,
 			'i18n_load_prev_listings' => __( 'Load previous listings', 'wp-job-manager' ),
 		];
-
 		/**
 		 * Retrieves the current language for use when caching requests.
 		 *
@@ -526,7 +561,6 @@ class WP_Job_Manager {
 
 		wp_register_script( 'jquery-deserialize', JOB_MANAGER_PLUGIN_URL . '/assets/lib/jquery-deserialize/jquery.deserialize.js', [ 'jquery' ], '1.2.1', true );
 		self::register_script( 'wp-job-manager-ajax-filters', 'js/ajax-filters.js', $ajax_filter_deps, true );
-		self::register_script( 'wp-job-manager-job-dashboard', 'js/job-dashboard.js', [ 'jquery' ], true );
 		self::register_script( 'wp-job-manager-job-application', 'js/job-application.js', [ 'jquery' ], true );
 		self::register_script( 'wp-job-manager-job-submission', 'js/job-submission.js', [ 'jquery' ], true );
 		wp_localize_script( 'wp-job-manager-ajax-filters', 'job_manager_ajax_filters', $ajax_data );
@@ -554,14 +588,6 @@ class WP_Job_Manager {
 			[
 				// translators: Placeholder %d is the number of files to that users are limited to.
 				'i18n_over_upload_limit' => esc_html__( 'You are only allowed to upload a maximum of %d files.', 'wp-job-manager' ),
-			]
-		);
-
-		wp_localize_script(
-			'wp-job-manager-job-dashboard',
-			'job_manager_job_dashboard',
-			[
-				'i18n_confirm_delete' => esc_html__( 'Are you sure you want to delete this listing?', 'wp-job-manager' ),
 			]
 		);
 

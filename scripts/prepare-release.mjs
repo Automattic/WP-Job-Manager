@@ -3,6 +3,8 @@
  */
 import { config } from 'dotenv';
 import fs from 'fs';
+import os from 'node:os';
+import path from 'node:path';
 import process from 'node:process';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
@@ -211,7 +213,7 @@ function updateVersionInFile( filename ) {
 	// Update version constant.
 	const { constant }    = PLUGINS[ pluginSlug ];
 	newPluginFileContents = newPluginFileContents.replace(
-		new RegExp( `define\( '${constant}', '.*' \);` ),
+		new RegExp( `define\\( '${constant}', '.*' \\);` ),
 		`define( '${ constant }', '${ version }' );`,
 	);
 
@@ -228,8 +230,11 @@ function updateVersionInFile( filename ) {
 function replaceNextVersionPlaceholder() {
 	console.log( `Replacing next version placeholder with ${ version } ...` );
 	execSync( `bash scripts/replace-next-version-tag.sh ${ version }` );
+	// Stage only modifications to tracked files. The replacer rewrites existing source
+	// files in place, so `git add -u` is sufficient and avoids sweeping in unrelated
+	// untracked files that may be in the working tree.
 	execSync(
-		`git add .`,
+		`git add -u`,
 	);
 }
 
@@ -241,13 +246,13 @@ function updatePackageJsonFiles() {
 	console.log( 'Updating package.json version...' );
 	try {
 		execSync( `npm version ${ version } --no-git-tag-version` );
+		execSync(
+			`git add package.json package-lock.json`,
+		);
 	} catch {
-		throw new Error( 'Version could not be updated in package.json file.' );
+		console.log( 'Version could not be updated in package.json file.' );
 	}
 
-	execSync(
-		`git add package.json package-lock.json`,
-	);
 }
 
 /**
@@ -276,26 +281,30 @@ function buildReleaseNotes() {
 	let prs = execSync( `${ ghPrs }  --json number,title,body,labels` );
 	prs     = JSON.parse( prs );
 
-	const changelogs = prs.map( ( pr ) => {
+	let changelog = prs.map( ( pr ) => {
 		const body              = pr.body;
-		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:###|<!--|$)/ );
+		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:\n#{1,6} |\n<!--|$)/ );
 
 		if ( ! changelogSections ) {
 			return `* ${ pr.title } (#${ pr.number })`;
 		}
-		const changelog = changelogSections[ 1 ].trim();
+		const prChangelog = changelogSections[ 1 ].trim();
 
-		if ( ! changelog.match( /\w/ ) ) {
+		if ( ! prChangelog.match( /\w/ ) ) {
 			return '';
 		}
 
-		return changelog;
-	} );
+		return prChangelog;
+	} ).join( "\n" );
+
+	if ( changelog.trim().length === 0 ) {
+		changelog = '* Updated plugin headers';
+	}
 
 	console.log( 'Proposed changelog: ' );
-	console.log( changelogs.join( "\n" ) );
+	console.log( changelog );
 
-	return changelogs.join( "\n" );
+	return changelog;
 }
 
 /**
@@ -307,14 +316,20 @@ function createPR( changelog ) {
 
 	const title = `Release ${ pluginName } ${ version }`;
 
-	let body = prTemplate( { changelog, version } );
-	body     = body
-		.replace( '"', '\"' )
-		.replace( '`', '\`' )
+	const body = prTemplate( { changelog, version } );
 
-	const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --title "${ title }" --body "${ body }"` );
-	execSync( `open ${ prLink }` );
-	console.log( `PR: ${ prLink }` );
+	// Pass the body via a temp file so backticks, quotes and other shell metacharacters
+	// inside changelog entries can't be interpreted by the shell when invoking gh.
+	const bodyFile = path.join( os.tmpdir(), `release-pr-body-${ pluginSlug }-${ version }.md` );
+	fs.writeFileSync( bodyFile, body, 'utf-8' );
+
+	try {
+		const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --title "${ title }" --body-file "${ bodyFile }"` );
+		execSync( `open ${ prLink }` );
+		console.log( `PR: ${ prLink }` );
+	} finally {
+		fs.unlinkSync( bodyFile );
+	}
 }
 
 /**

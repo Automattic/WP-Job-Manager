@@ -22,6 +22,20 @@ jQuery(document).ready(function($) {
 		}
 	} );
 
+	// Settings page
+
+	const $settings_submit_button = $( '.job-manager-settings-submit' );
+	$( '.job-manager-options' ).on( 'change keyup', () => $settings_submit_button.removeClass( 'is-outline' ) )
+
+	if( $settings_submit_button.length ) {
+		window.scrollTo( 0, 0 );
+		setTimeout( () => window.scrollTo( 0, 0 ), 0 );
+	}
+
+	$( '.job-manager-settings-wrap' ).each( function() {
+		$( '#wpbody-content > .notice' ).hide();
+	})
+
 	// Author
 	$( 'p.form-field-author' ).on( 'click', 'a.change-author', function() {
 		$(this).closest( 'p' ).find('.current-author').hide();
@@ -184,4 +198,6 @@ jQuery(document).ready(function($) {
 	});
 });
 
-initializePromoteModals();
+if ( job_manager_admin_params.promoted_jobs_enabled ) {
+	initializePromoteModals();
+}

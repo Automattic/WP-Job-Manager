@@ -233,8 +233,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_categories() {
-		$this->assertTrue( taxonomy_exists( 'job_listing_category' ) );
-		$this->assertTrue( current_user_can( get_taxonomy( 'job_listing_category' )->cap->assign_terms ) );
+		$this->assertTrue( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) );
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY )->cap->assign_terms ) );
 		$categories      = [
 			'main'  => [],
 			'weird' => [],
@@ -243,11 +243,11 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			'none'  => [],
 		];
 		$terms           = [];
-		$terms['jazz']   = $categories['main'][] = $categories['all'][] = wp_create_term( 'jazz', 'job_listing_category' );
-		$terms['swim']   = $categories['main'][] = $categories['all'][] = wp_create_term( 'swim', 'job_listing_category' );
-		$terms['dev']    = $categories['main'][] = $categories['all'][] = wp_create_term( 'dev', 'job_listing_category' );
-		$terms['potato'] = $categories['weird'][] = $categories['all'][] = wp_create_term( 'potato', 'job_listing_category' );
-		$terms['coffee'] = $categories['happy'][] = $categories['all'][] = wp_create_term( 'coffee', 'job_listing_category' );
+		$terms['jazz']   = $categories['main'][] = $categories['all'][] = wp_create_term( 'jazz', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$terms['swim']   = $categories['main'][] = $categories['all'][] = wp_create_term( 'swim', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$terms['dev']    = $categories['main'][] = $categories['all'][] = wp_create_term( 'dev', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$terms['potato'] = $categories['weird'][] = $categories['all'][] = wp_create_term( 'potato', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$terms['coffee'] = $categories['happy'][] = $categories['all'][] = wp_create_term( 'coffee', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 		foreach ( $categories as $k => $category ) {
 			$categories[ $k ] = wp_list_pluck( $category, 'term_id' );
 		}
@@ -263,7 +263,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			3,
 			[
 				'tax_input' => [
-					'job_listing_category' => $categories['main'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $categories['main'],
 				],
 			]
 		);
@@ -271,7 +271,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			2,
 			[
 				'tax_input' => [
-					'job_listing_category' => $categories['weird'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $categories['weird'],
 				],
 			]
 		);
@@ -279,7 +279,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			2,
 			[
 				'tax_input' => [
-					'job_listing_category' => $categories['happy'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $categories['happy'],
 				],
 			]
 		);
@@ -352,8 +352,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_job_types() {
-		$this->assertTrue( taxonomy_exists( 'job_listing_type' ) );
-		$this->assertTrue( current_user_can( get_taxonomy( 'job_listing_type' )->cap->assign_terms ) );
+		$this->assertTrue( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ) );
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE )->cap->assign_terms ) );
 		$tags            = [
 			'main'  => [],
 			'weird' => [],
@@ -362,11 +362,11 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			'none'  => [],
 		];
 		$terms           = [];
-		$terms['jazz']   = $tags['main'][] = $tags['all'][] = wp_create_term( 'jazz', 'job_listing_type' );
-		$terms['swim']   = $tags['main'][] = $tags['all'][] = wp_create_term( 'swim', 'job_listing_type' );
-		$terms['dev']    = $tags['main'][] = $tags['all'][] = wp_create_term( 'dev', 'job_listing_type' );
-		$terms['potato'] = $tags['weird'][] = $tags['all'][] = wp_create_term( 'potato', 'job_listing_type' );
-		$terms['coffee'] = $tags['happy'][] = $tags['all'][] = wp_create_term( 'coffee', 'job_listing_type' );
+		$terms['jazz']   = $tags['main'][] = $tags['all'][] = wp_create_term( 'jazz', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$terms['swim']   = $tags['main'][] = $tags['all'][] = wp_create_term( 'swim', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$terms['dev']    = $tags['main'][] = $tags['all'][] = wp_create_term( 'dev', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$terms['potato'] = $tags['weird'][] = $tags['all'][] = wp_create_term( 'potato', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$terms['coffee'] = $tags['happy'][] = $tags['all'][] = wp_create_term( 'coffee', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 		foreach ( $tags as $k => $category ) {
 			$tags[ $k ] = wp_list_pluck( $category, 'term_id' );
 		}
@@ -382,7 +382,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			3,
 			[
 				'tax_input' => [
-					'job_listing_type' => $tags['main'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $tags['main'],
 				],
 			]
 		);
@@ -390,7 +390,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			2,
 			[
 				'tax_input' => [
-					'job_listing_type' => $tags['weird'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $tags['weird'],
 				],
 			]
 		);
@@ -398,7 +398,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			2,
 			[
 				'tax_input' => [
-					'job_listing_type' => $tags['happy'],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $tags['happy'],
 				],
 			]
 		);
@@ -781,8 +781,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	public function test_is_wpjm_taxonomy_success() {
 		$this->assertFalse( is_wpjm_taxonomy() );
 		$this->assertFalse( is_wpjm() );
-		$this->assertTrue( taxonomy_exists( 'job_listing_category' ) );
-		$this->assertTrue( current_user_can( get_taxonomy( 'job_listing_category' )->cap->assign_terms ) );
+		$this->assertTrue( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) );
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY )->cap->assign_terms ) );
 		$this->set_up_request_taxonomy();
 		$this->assertTrue( is_wpjm_taxonomy() );
 		$this->assertTrue( is_wpjm() );
@@ -839,7 +839,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::wpjm_get_categories_by_slug
 	 */
 	public function test_get_categories_by_slug() {
-		$taxonomy_name = 'job_listing_category';
+		$taxonomy_name = \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY;
 		$default_args  = [
 			'orderby' => 'slug',
 			'order'   => 'ASC',
@@ -867,7 +867,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::wpjm_get_categories_by_slug
 	 */
 	public function test_get_categories_by_slug_excluding_categories() {
-		$taxonomy_name = 'job_listing_category';
+		$taxonomy_name = \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY;
 		$default_args  = [
 			'orderby' => 'slug',
 			'order'   => 'ASC',
@@ -891,7 +891,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	protected function set_up_request_page() {
-		$this->go_to( get_post_type_archive_link( 'job_listing' ) );
+		$this->go_to( get_post_type_archive_link( \WP_Job_Manager_Post_Types::PT_LISTING ) );
 	}
 
 	protected function set_up_request_shortcode( $tag = 'jobs' ) {
@@ -922,7 +922,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	protected function set_up_request_taxonomy() {
-		$term = wp_create_term( 'jazz', 'job_listing_category' );
+		$term = wp_create_term( 'jazz', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 		$this->go_to( get_term_link( $term['term_id'] ) );
 	}
 
@@ -979,5 +979,239 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$this->assertTrue( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
 		WP_Job_Manager_Helper_Renewals::renew_job_listing( get_post( $job_listing_id ) );
 		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_single_id() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 3, [ 'post_author' => $user_b ] );
+
+		$result = get_job_listings( [ 'author' => (string) $user_a ] );
+
+		$this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_multiple_ids() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+		$user_c = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+		$jobs_c = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_c ] );
+
+		$result = get_job_listings( [ 'author' => $user_a . ',' . $user_b ] );
+
+		$this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_empty_string_shows_no_filter() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '' ] );
+
+		// Empty string means no filter — all listings are returned.
+		$this->assertGreaterThanOrEqual( 2, $result->found_posts );
+	}
+
+	/**
+	 * Non-numeric input should return zero results (fails-closed).
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_non_numeric_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => 'abc' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * Negative IDs should not be converted to positive via absint and must return zero results.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_negative_id_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '-5' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_zero_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '0' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * Mixed valid and invalid IDs: only valid IDs should be used.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_mixed_valid_and_invalid() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+
+		// 'abc' fails ctype_digit and is dropped; only $user_a's listings are returned.
+		$result = get_job_listings( [ 'author' => $user_a . ',abc' ] );
+
+		$this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * Array input with valid user IDs should work.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_array_input() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+		$user_c = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_c ] );
+
+		$result = get_job_listings( [ 'author' => [ $user_a, $user_b ] ] );
+
+		$this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_null_returns_null() {
+		$this->assertNull( _wpjm_parse_author_ids( null ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_empty_string_returns_null() {
+		$this->assertNull( _wpjm_parse_author_ids( '' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_single_numeric_string() {
+		$this->assertSame( [ 5 ], _wpjm_parse_author_ids( '5' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_comma_separated() {
+		$this->assertSame( [ 1, 2, 3 ], _wpjm_parse_author_ids( '1,2,3' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_whitespace_tolerated() {
+		$this->assertSame( [ 1, 2, 3 ], _wpjm_parse_author_ids( '1, 2 , 3' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_non_numeric_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( 'abc' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_zero_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( '0' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_negative_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( '-5' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_mixed_drops_invalid_tokens() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( '1,abc,2' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_array_of_ints() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( [ 1, 2 ] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_array_mixed_drops_invalid() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( [ 1, 'abc', 2, '-5', 0 ] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_empty_array_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( [] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_integer_input() {
+		$this->assertSame( [ 7 ], _wpjm_parse_author_ids( 7 ) );
 	}
 }

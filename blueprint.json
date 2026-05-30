@@ -1,0 +1,13 @@
+{
+	"landingPage": "/wp-admin/edit.php?post_type=job_listing",
+	"login": true,
+	"steps": [
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "wp-job-manager"
+			}
+		}
+	]
+}

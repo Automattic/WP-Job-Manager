@@ -8,7 +8,7 @@
 /**
  * Handles functionality related to the Promoted Jobs REST API.
  *
- * @since $$next-version$$
+ * @since 1.42.0
  */
 class WP_Job_Manager_Promoted_Jobs_API {
 
@@ -69,27 +69,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 				],
 			]
 		);
-		register_rest_route(
-			self::NAMESPACE,
-			self::REST_BASE . '/(?P<id>[\d]+)',
-			[
-				[
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => [ $this, 'update_job_status' ],
-					'permission_callback' => '__return_true',
-					'args'                => [
-						'id'     => [
-							'type'     => 'integer',
-							'required' => true,
-						],
-						'status' => [
-							'type'     => 'boolean',
-							'required' => true,
-						],
-					],
-				],
-			]
-		);
+
 		register_rest_route(
 			self::NAMESPACE,
 			self::REST_BASE . '/(?P<job_id>[\d]+)',
@@ -182,12 +162,12 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		global $wpdb;
 
 		$args = [
-			'post_type'           => 'job_listing',
-			'post_status'         => array_merge( array_keys( get_job_listing_post_statuses() ), [ 'trash' ] ),
+			'post_type'           => \WP_Job_Manager_Post_Types::PT_LISTING,
+			'post_status'         => 'publish',
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
 			'posts_per_page'      => -1,
-			'meta_query'          => [
+			'meta_query'          => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Returns promoted jobs only which should be a small number.
 				[
 					'key'     => WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY,
 					'compare' => 'EXISTS',
@@ -252,11 +232,15 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	/**
 	 * Update the promoted job status.
 	 *
+	 * @deprecated 2.1.0
+	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
 	 * @return WP_Error|WP_REST_Response The response, or WP_Error on failure.
 	 */
 	public function update_job_status( $request ) {
+		_deprecated_function( __METHOD__, '2.1.0', 'WP_Job_Manager_Promoted_Jobs_API::refresh_status' );
+
 		$post_id = $request->get_param( 'id' );
 		$status  = $request->get_param( 'status' );
 		$post    = get_post( $post_id );
@@ -286,13 +270,16 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	public function get_job_data( $request ) {
 		$job_id = $request->get_param( 'job_id' );
 		$post   = get_post( $job_id );
-		if ( 'job_listing' !== get_post_type( $post ) ) {
+
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== get_post_type( $post ) ) {
 			return new WP_Error( 'not_found', __( 'The promoted job was not found', 'wp-job-manager' ), [ 'status' => 404 ] );
 		}
-		$controller = get_post_type_object( 'job_listing' )->get_rest_controller();
-		if ( ! ( $controller instanceof WP_REST_Posts_Controller ) || ! $controller->check_read_permission( $post ) ) {
+
+		$controller = get_post_type_object( \WP_Job_Manager_Post_Types::PT_LISTING )->get_rest_controller();
+		if ( ! ( $controller instanceof WP_REST_Posts_Controller ) || ! $controller->check_read_permission( $post ) || 'publish' !== $post->post_status ) {
 			return new WP_Error( 'rest_forbidden', __( 'Sorry, you are not allowed to view this job.', 'wp-job-manager' ), [ 'status' => rest_authorization_required_code() ] );
 		}
+
 		$job_data = $this->prepare_item_for_response( get_post( $job_id ) );
 		if ( is_wp_error( $job_data ) ) {
 			return $job_data;
@@ -319,8 +306,8 @@ class WP_Job_Manager_Promoted_Jobs_API {
 
 		$verified = false;
 		// We only verify the token if the job_id exists and user has access to it.
-		if ( 'job_listing' === get_post_type( $job_id ) ) {
-			if ( user_can( $user_id, 'manage_job_listings', $job_id ) ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type( $job_id ) ) {
+			if ( user_can( $user_id, \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $job_id ) ) {
 				$verified = WP_Job_Manager_Site_Trust_Token::instance()->validate( 'user', $user_id, $token );
 			}
 		}

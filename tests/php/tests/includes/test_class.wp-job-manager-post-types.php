@@ -85,7 +85,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$jobs = $wp_query = new WP_Query(
 			[
 				'p'         => $job_id,
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
@@ -99,9 +99,9 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		while ( $jobs->have_posts() ) {
 			$jobs->the_post();
 			$post = get_post();
-			$this->assertTrue( is_singular( 'job_listing' ), 'Is singular === true' );
+			$this->assertTrue( is_singular( \WP_Job_Manager_Post_Types::PT_LISTING ), 'Is singular === true' );
 			$this->assertTrue( in_the_loop(), 'In the loop' );
-			$this->assertEquals( 'job_listing', $post->post_type, 'Result is a job listing' );
+			$this->assertEquals( \WP_Job_Manager_Post_Types::PT_LISTING, $post->post_type, 'Result is a job listing' );
 
 			$post_content_filtered = $instance->job_content( $post->post_content );
 			$this->assertNotEquals( $post->post_content, $post_content_filtered );
@@ -234,7 +234,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$instance->add_feed_query_args( $wp );
 		$this->assertCount( 2, $wp->query_vars );
 		$this->assertArrayHasKey( 'post_type', $wp->query_vars );
-		$this->assertEquals( 'job_listing', $wp->query_vars['post_type'] );
+		$this->assertEquals( \WP_Job_Manager_Post_Types::PT_LISTING, $wp->query_vars['post_type'] );
 	}
 
 	/**
@@ -281,15 +281,17 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	public function test_job_feed_item() {
 		$instance       = WP_Job_Manager_Post_Types::instance();
 		$new_jobs       = [];
-		$type_a         = wp_create_term( 'Job Type A', 'job_listing_type' );
-		$type_b         = wp_create_term( 'Job Type B', 'job_listing_type' );
+		$type_a         = wp_create_term( 'Job Type A', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$type_b         = wp_create_term( 'Job Type B', \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$category_a     = wp_create_term( 'Job Category A', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 		$new_job_args   = [];
 		$new_job_args[] = [
 			'meta_input' => [
 				'_company_name' => 'Custom Company A',
 			],
 			'tax_input'  => [
-				'job_listing_type' => $type_a['term_id'],
+				\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $type_a['term_id'],
+				\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => $category_a['term_id'],
 			],
 		];
 		$new_job_args[] = [
@@ -298,7 +300,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'_company_name' => '',
 			],
 			'tax_input'  => [
-				'job_listing_type' => $type_b['term_id'],
+				\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => $type_b['term_id'],
 			],
 		];
 		$new_job_args[] = [
@@ -313,7 +315,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$new_jobs[]     = $this->factory->job_listing->create( $new_job_args[2] );
 		$jobs           = $wp_query = new WP_Query(
 			[
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'orderby'   => 'ID',
 				'order'     => 'ASC',
 			]
@@ -324,7 +326,8 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		while ( $jobs->have_posts() ) {
 			$has_location = ! empty( $new_job_args[ $index ]['meta_input']['_job_location'] );
 			$has_company  = ! empty( $new_job_args[ $index ]['meta_input']['_company_name'] );
-			$has_job_type = ! empty( $new_job_args[ $index ]['tax_input']['job_listing_type'] );
+			$has_job_type = ! empty( $new_job_args[ $index ]['tax_input'][\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE] );
+			$has_job_category = ! empty( $new_job_args[ $index ]['tax_input'][\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY] );
 			$index++;
 
 			$jobs->the_post();
@@ -337,7 +340,8 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			$result_arr = xml_to_array( $result );
 			$this->assertNotEmpty( $result_arr );
 			$this->assertTrue( isset( $result_arr[0]['child'] ) );
-			$this->assertCount( 2, $result_arr[0]['child'] );
+			$expected_count = (int) $has_location + (int) $has_job_type + (int) $has_job_category + (int) $has_company;
+			$this->assertCount( $expected_count, $result_arr[0]['child'] );
 
 			if ( $has_location ) {
 				$job_location = get_the_job_location( $post );
@@ -353,6 +357,14 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				$this->assertStringContainsString( $job_type->name, $result );
 			} else {
 				$this->assertStringNotContainsString( 'job_listing:job_type', $result );
+			}
+
+			if ( $has_job_category ) {
+				$job_category = current( wpjm_get_the_job_categories( $post ) );
+				$this->assertStringContainsString( 'job_listing:job_category', $result );
+				$this->assertStringContainsString( $job_category->name, $result );
+			} else {
+				$this->assertStringNotContainsString( 'job_listing:job_category', $result );
 			}
 
 			if ( $has_company ) {
@@ -689,7 +701,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$instance = WP_Job_Manager_Post_Types::instance();
 		// Legit.
 		$data                 = [
-			'post_type'   => 'job_listing',
+			'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status' => 'pending',
 			'post_name'   => 'Bad ABC',
 		];
@@ -711,7 +723,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 
 		// Bad Post Status.
 		$data                 = [
-			'post_type'   => 'job_listing',
+			'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status' => 'publish',
 			'post_name'   => 'Bad ABC',
 		];
@@ -840,7 +852,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$instance = WP_Job_Manager_Post_Types::instance();
 		$post     = wp_insert_post(
 			[
-				'post_type'  => 'job_listing',
+				'post_type'  => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_title' => 'Hello A',
 			]
 		);
@@ -887,7 +899,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$jobs = $wp_query = new WP_Query(
 			[
 				'p'         => $job_id,
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
@@ -916,7 +928,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$jobs = $wp_query = new WP_Query(
 			[
 				'p'         => $job_id,
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
@@ -954,7 +966,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$jobs = $wp_query = new WP_Query(
 			[
 				'p'         => $job_id,
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
@@ -985,7 +997,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		$jobs = $wp_query = new WP_Query(
 			[
 				'p'         => $job_id,
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 			]
 		);
 		$this->assertEquals( 1, $jobs->post_count );
@@ -998,6 +1010,23 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			$result = ob_get_clean();
 			$this->assertEmpty( $result );
 		}
+	}
+
+	/**
+	 * Test that structured data is turned off for password-protected job listings.
+	 *
+	 * @since 1.28.0
+	 * @covers ::wpjm_output_job_listing_structured_data
+	 */
+	public function test_password_protected_no_structured_data() {
+		$job_id = $this->factory->job_listing->create(
+			[
+				'post_password' => 'test123',
+				'post_status'   => 'publish',
+			]
+		);
+
+		$this->assertFalse( wpjm_output_job_listing_structured_data( $job_id ) );
 	}
 
 	protected function get_wp_no_robots() {

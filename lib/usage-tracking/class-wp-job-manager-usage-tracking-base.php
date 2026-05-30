@@ -2,6 +2,8 @@
 /**
  * Reusable Usage Tracking library. For sending plugin usage data and events to
  * Tracks.
+ *
+ * @package wp-job-manager
  **/
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class WP_Job_Manager_Usage_Tracking_Base {
 	const PLUGIN_PREFIX = 'plugin_';
+
+	const DISPLAY_ONCE_OPTION = 'job_manager_display_usage_tracking_once';
 
 	/*
 	 * Instance variables.
@@ -50,7 +54,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *
 	 * @var array
 	 **/
-	private static $instances = array();
+	private static $instances = [];
 
 	/**
 	 * Gets the singleton instance of this class. Subclasses should implement
@@ -64,9 +68,11 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *
 	 * This function cannot be abstract (because it is static) but it *must* be
 	 * implemented by subclasses.
+	 *
+	 * @throws Exception When get_instance is not implemented.
 	 */
 	public static function get_instance() {
-		throw new Exception( 'Usage Tracking subclasses must implement get_instance. See class-usage-tracking-base.php' );
+		throw new Exception( 'Usage Tracking subclasses must implement get_instance. See class-wp-job-manager-usage-tracking-base.php' );
 	}
 
 
@@ -81,14 +87,6 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return string The prefix string.
 	 **/
 	abstract protected function get_prefix();
-
-	/**
-	 * Get the text domain used by this plugin. This class will add some
-	 * strings to be translated.
-	 *
-	 * @return string The text domain string.
-	 **/
-	abstract protected function get_text_domain();
 
 	/**
 	 * Determine whether usage tracking is enabled.
@@ -128,7 +126,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return array
 	 */
 	protected function get_base_system_data() {
-		return array();
+		return [];
 	}
 
 	/*
@@ -150,14 +148,13 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$this->job_name                         = $this->get_prefix() . '_usage_tracking_send_usage_data';
 
 		// Set up the opt-in dialog.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_script_deps' ) );
-		add_action( 'admin_footer', array( $this, 'output_opt_in_js' ) );
-		add_action( 'admin_notices', array( $this, 'maybe_display_tracking_opt_in' ) );
-		add_action( 'wp_ajax_' . $this->get_prefix() . '_handle_tracking_opt_in', array( $this, 'handle_tracking_opt_in' ) );
+		add_action( 'wpjm_admin_notices', [ $this, 'maybe_display_tracking_opt_in' ] );
+		add_action( 'admin_action_' . $this->get_prefix() . '_tracking_opt_in', [ $this, 'handle_tracking_opt_in' ] );
+		add_action( 'wp_job_manager_notice_dismissed', [ $this, 'handle_tracking_opt_out' ], 10, 2 );
 
 		// Set up schedule and action needed for cron job.
-		add_filter( 'cron_schedules', array( $this, 'add_usage_tracking_two_week_schedule' ) );
-		add_action( $this->job_name, array( $this, 'send_usage_data' ) );
+		add_filter( 'cron_schedules', [ $this, 'add_usage_tracking_two_week_schedule' ] );
+		add_action( $this->job_name, [ $this, 'send_usage_data' ] );
 	}
 
 	/**
@@ -165,12 +162,14 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * subclass.
 	 *
 	 * @param string $subclass the name of the subclass.
+	 *
 	 * @return object Instance of $subclass.
 	 */
 	protected static function get_instance_for_subclass( $subclass ) {
 		if ( ! isset( self::$instances[ $subclass ] ) ) {
 			self::$instances[ $subclass ] = new $subclass();
 		}
+
 		return self::$instances[ $subclass ];
 	}
 
@@ -200,7 +199,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 *
 	 * @return null|WP_Error
 	 **/
-	public function send_event( $event, $properties = array(), $event_timestamp = null ) {
+	public function send_event( $event, $properties = [], $event_timestamp = null ) {
 
 		// Only continue if tracking is enabled.
 		if ( ! $this->is_tracking_enabled() ) {
@@ -225,7 +224,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$properties['_en'] = $event_name;
 		$properties['_ts'] = $event_timestamp . '000';
 		$properties['_rt'] = round( microtime( true ) * 1000 );  // log time.
-		$p                 = array();
+		$p                 = [];
 
 		foreach ( $properties as $key => $value ) {
 			$p[] = rawurlencode( $key ) . '=' . rawurlencode( $value );
@@ -234,13 +233,13 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		$pixel   .= '?' . implode( '&', $p ) . '&_=_'; // EOF marker.
 		$response = wp_remote_get(
 			$pixel,
-			array(
+			[
 				'blocking'    => true,
 				'timeout'     => 1,
 				'redirection' => 2,
 				'httpversion' => '1.1',
 				'user-agent'  => $this->get_event_prefix() . '_usage_tracking',
-			)
+			]
 		);
 
 		if ( is_wp_error( $response ) ) {
@@ -325,14 +324,14 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * externally.
 	 *
 	 * @param array $schedules the existing cron schedules.
+	 *
 	 * @return array of $schedules.
 	 **/
 	public function add_usage_tracking_two_week_schedule( $schedules ) {
-		$day_in_seconds = 86400;
-		$schedules[ $this->get_prefix() . '_usage_tracking_two_weeks' ] = array(
-			'interval' => 15 * $day_in_seconds,
-			'display'  => esc_html__( 'Every Two Weeks', $this->get_text_domain() ),
-		);
+		$schedules[ $this->get_prefix() . '_usage_tracking_two_weeks' ] = [
+			'interval' => 15 * DAY_IN_SECONDS,
+			'display'  => esc_html__( 'Every Two Weeks', 'wp-job-manager' ),
+		];
 
 		return $schedules;
 	}
@@ -376,11 +375,12 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return array List of plugins. Index is friendly name, value is version.
 	 */
 	protected function get_plugin_data() {
-		$plugins = array();
+		$plugins = [];
 		foreach ( $this->get_plugins() as $plugin_basename => $plugin ) {
 			$plugin_name             = $this->get_plugin_name( $plugin_basename );
 			$plugins[ $plugin_name ] = $plugin['Version'];
 		}
+
 		return $plugins;
 	}
 
@@ -399,6 +399,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 				unset( $plugins[ $plugin_basename ] );
 			}
 		}
+
 		return $plugins;
 	}
 
@@ -414,6 +415,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 		if ( false === strpos( $basename, '/' ) ) {
 			return basename( $basename, '.php' );
 		}
+
 		return dirname( $basename );
 	}
 
@@ -430,7 +432,23 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return bool true if the opt-in is hidden, false otherwise.
 	 **/
 	protected function is_opt_in_hidden() {
-		return (bool) get_option( $this->hide_tracking_opt_in_option_name );
+		$delayed_notice_timestamp = (int) get_option( self::DISPLAY_ONCE_OPTION );
+
+		// The delay has passed, hide the notice if the user refused.
+		if ( 0 === $delayed_notice_timestamp ) {
+			return (bool) get_option( $this->hide_tracking_opt_in_option_name );
+		}
+
+		// When the delay passes, display the tracking notice regardless if the user refused to enable usage tracking in the past.
+		if ( $delayed_notice_timestamp < time() ) {
+			update_option( self::DISPLAY_ONCE_OPTION, 0 );
+			update_option( $this->hide_tracking_opt_in_option_name, false );
+
+			return false;
+		}
+
+		// The delay hasn't passed, hide the notice.
+		return true;
 	}
 
 	/**
@@ -440,138 +458,126 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @return array the html tags.
 	 **/
 	protected function opt_in_dialog_text_allowed_html() {
-		return array(
-			'a'      => array(
-				'href'   => array(),
-				'title'  => array(),
-				'target' => array(),
-			),
-			'em'     => array(),
-			'strong' => array(),
-		);
+		return [
+			'a'      => [
+				'href'   => [],
+				'title'  => [],
+				'target' => [],
+			],
+			'p'      => [],
+			'br'     => [],
+			'em'     => [],
+			'strong' => [],
+		];
 	}
 
 	/**
 	 * If needed, display opt-in dialog to enable tracking. Should not be
 	 * called externally.
+	 *
+	 * @param array $notices Current notices.
+	 *
+	 * @access private
 	 **/
-	public function maybe_display_tracking_opt_in() {
+	public function maybe_display_tracking_opt_in( $notices ) {
 		$opt_in_hidden         = $this->is_opt_in_hidden();
 		$user_tracking_enabled = $this->is_tracking_enabled();
 		$can_manage_tracking   = $this->current_user_can_manage_tracking();
 
-		if ( ! $user_tracking_enabled && ! $opt_in_hidden && $can_manage_tracking ) { ?>
-			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-notice" class="notice notice-info"
-				data-nonce="<?php echo esc_attr( wp_create_nonce( 'tracking-opt-in' ) ); ?>">
-				<p>
-					<?php echo wp_kses( $this->opt_in_dialog_text(), $this->opt_in_dialog_text_allowed_html() ); ?>
-				</p>
-				<p>
-					<button class="button button-primary" data-enable-tracking="yes">
-						<?php esc_html_e( 'Enable Usage Tracking', $this->get_text_domain() ); ?>
-					</button>
-					<button class="button" data-enable-tracking="no">
-						<?php esc_html_e( 'Disable Usage Tracking', $this->get_text_domain() ); ?>
-					</button>
-					<span id="progress" class="spinner alignleft"></span>
-				</p>
-			</div>
-			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-enable-success" class="notice notice-success hidden">
-				<p><?php esc_html_e( 'Usage data enabled. Thank you!', $this->get_text_domain() ); ?></p>
-			</div>
-			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-disable-success" class="notice notice-success hidden">
-				<p><?php esc_html_e( 'Disabled usage tracking.', $this->get_text_domain() ); ?></p>
-			</div>
-			<div id="<?php echo esc_attr( $this->get_prefix() ); ?>-usage-tracking-failure" class="notice notice-error hidden">
-				<p><?php esc_html_e( 'Something went wrong. Please try again later.', $this->get_text_domain() ); ?></p>
-			</div>
-		<?php
+		if ( ! $user_tracking_enabled && ! $opt_in_hidden && $can_manage_tracking ) {
+
+			$action = $this->get_prefix() . '_tracking_opt_in';
+
+			$notices['usage_tracking_opt_in'] = [
+				'level'       => 'info',
+				'dismissible' => true,
+				'heading'     => __( 'Improve your experience', 'wp-job-manager' ),
+				'message'     => wp_kses( $this->opt_in_dialog_text(), $this->opt_in_dialog_text_allowed_html() ),
+				'actions'     => [
+					[
+						'label' => __( 'Enable Usage Tracking', 'wp-job-manager' ),
+						'url'   => add_query_arg(
+							[
+								'action'   => $action,
+								'_wpnonce' => wp_create_nonce( $action ),
+							],
+							admin_url( 'admin.php' )
+						),
+					],
+				],
+			];
+
 		}
+
+		return $notices;
 	}
 
 	/**
 	 * Handle ajax request from the opt-in dialog. Should not be called
 	 * externally.
+	 *
+	 * @access private
 	 **/
 	public function handle_tracking_opt_in() {
-		check_ajax_referer( 'tracking-opt-in', 'nonce' );
+		check_admin_referer( $this->get_prefix() . '_tracking_opt_in' );
 
 		if ( ! $this->current_user_can_manage_tracking() ) {
 			wp_die( '', '', 403 );
 		}
 
-		$enable_tracking = isset( $_POST['enable_tracking'] ) && '1' === $_POST['enable_tracking'];
-		$this->set_tracking_enabled( $enable_tracking );
+		$this->set_tracking_enabled( true );
 		$this->hide_tracking_opt_in();
 		$this->send_usage_data();
-		wp_die();
+
+		wp_safe_redirect(
+			add_query_arg(
+				[
+					'action'   => false,
+					'_wpnonce' => false,
+				],
+				admin_url( 'edit.php?post_type=job_listing' )
+			)
+		);
+
+	}
+
+	/**
+	 * Disable usage tracking when the notice is dismissed.
+	 *
+	 * @param array  $notice    Notice data.
+	 * @param string $notice_id Notice ID.
+	 *
+	 * @access private
+	 */
+	public function handle_tracking_opt_out( $notice, $notice_id ) {
+
+		if ( 'usage_tracking_opt_in' !== $notice_id ) {
+			return;
+		}
+
+		$this->set_tracking_enabled( false );
+		$this->hide_tracking_opt_in();
 	}
 
 	/**
 	 * Ensure that jQuery has been enqueued since the opt-in dialog JS depends
 	 * on it. Should not be called externally.
+	 *
+	 * @deprecated since 2.0.0
 	 **/
 	public function enqueue_script_deps() {
-		// Ensure jQuery is loaded.
-		wp_enqueue_script(
-			$this->get_prefix() . '_usage-tracking-notice', '',
-			array( 'jquery' ), null, true
-		);
+		_deprecated_function( __METHOD__, '$$next-version' );
 	}
 
 	/**
 	 * Output the JS code to handle the opt-in dialog. Should not be called
 	 * externally.
+	 *
+	 * @deprecated since 2.0.0
 	 **/
 	public function output_opt_in_js() {
-?>
-<script type="text/javascript">
-	(function( prefix ) {
-		jQuery( document ).ready( function() {
-			function displayProgressIndicator() {
-				jQuery( '#' + prefix + '-usage-tracking-notice #progress' ).addClass( 'is-active' );
-			}
-
-			function displaySuccess( enabledTracking ) {
-				if ( enabledTracking ) {
-					jQuery( '#' + prefix + '-usage-tracking-enable-success' ).show();
-				} else {
-					jQuery( '#' + prefix + '-usage-tracking-disable-success' ).show();
-				}
-				jQuery( '#' + prefix + '-usage-tracking-notice' ).hide();
-			}
-
-			function displayError() {
-				jQuery( '#' + prefix + '-usage-tracking-failure' ).show();
-				jQuery( '#' + prefix + '-usage-tracking-notice' ).hide();
-			}
-
-			// Handle button clicks.
-			jQuery( '#' + prefix + '-usage-tracking-notice button' ).click( function( event ) {
-				event.preventDefault();
-
-				var enableTracking = jQuery( this ).data( 'enable-tracking' ) == 'yes';
-				var nonce          = jQuery( '#' + prefix + '-usage-tracking-notice' ).data( 'nonce' );
-
-				displayProgressIndicator();
-
-				jQuery.ajax( {
-					type: 'POST',
-					url: ajaxurl,
-					data: {
-						action: prefix + '_handle_tracking_opt_in',
-						enable_tracking: enableTracking ? 1 : 0,
-						nonce: nonce,
-					},
-					success: function() {
-						displaySuccess( enableTracking );
-					},
-					error: displayError,
-				} );
-			});
-		});
-	})( "<?php echo esc_js( $this->get_prefix() ); ?>" );
-</script>
-<?php
+		_deprecated_function( __METHOD__, '$$next-version' );
+		?>
+		<?php
 	}
 }

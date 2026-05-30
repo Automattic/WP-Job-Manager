@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require dirname( __FILE__ ) . '/../lib/usage-tracking/class-usage-tracking-base.php';
+require_once __DIR__ . '/../lib/usage-tracking/class-wp-job-manager-usage-tracking-base.php';
 
 /**
  * WPJM Usage Tracking subclass.
@@ -160,7 +160,7 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	 * @return self
 	 */
 	public static function get_instance() {
-		return self::get_instance_for_subclass( get_class() );
+		return self::get_instance_for_subclass( static::class );
 	}
 
 	/**
@@ -182,7 +182,9 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 	}
 
 	/**
-	 * Get the text domain used in the plugin.
+	 * Get the text domain used in the plugin. Deprecated - use 'wp-job-manager' directly.
+	 *
+	 * @deprecated 1.42.0
 	 *
 	 * @return string
 	 */
@@ -226,9 +228,9 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		return sprintf(
 			// translators: Placeholder %s is a URL to the document on wpjobmanager.com with info on usage tracking.
 			__(
-				'We\'d love if you helped us make WP Job Manager better by allowing us to collect
-				<a href="%s">usage tracking data</a>. No sensitive information is
-				collected, and you can opt out at any time.',
+				'<p>We\'d love if you helped us make WP Job Manager better by allowing us to collect
+				<a target="_blank" href="%s">usage tracking data</a>.</p><p>No sensitive information is
+				collected, and you can opt out at any time.</p>',
 				'wp-job-manager'
 			),
 			self::WPJM_TRACKING_INFO_URL
@@ -265,8 +267,8 @@ class WP_Job_Manager_Usage_Tracking extends WP_Job_Manager_Usage_Tracking_Base {
 		return sprintf(
 			// translators: the href tag contains the URL for the page telling users what data WPJM tracks.
 			__(
-				'Help us make WP Job Manager better by allowing us to collect
-				<a href="%s">usage tracking data</a>.
+				'Help us make Job Manager better by allowing us to collect
+				<a target="_blank" href="%s">usage tracking data</a>.
 				No sensitive information is collected.',
 				'wp-job-manager'
 			),

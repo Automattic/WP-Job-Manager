@@ -26,15 +26,15 @@ class WP_Job_Manager_Dependency_Checker {
 	 */
 	public static function check_dependencies() {
 		if ( ! self::check_php() ) {
-			add_action( 'admin_notices', array( 'WP_Job_Manager_Dependency_Checker', 'add_php_notice' ) );
-			add_action( 'admin_init', array( __CLASS__, 'deactivate_self' ) );
+			add_action( 'admin_notices', [ 'WP_Job_Manager_Dependency_Checker', 'add_php_notice' ] );
+			add_action( 'admin_init', [ __CLASS__, 'deactivate_self' ] );
 
 			return false;
 		}
 
 		if ( ! self::check_wp() ) {
-			add_action( 'admin_notices', array( 'WP_Job_Manager_Dependency_Checker', 'add_wp_notice' ) );
-			add_filter( 'plugin_action_links_' . JOB_MANAGER_PLUGIN_BASENAME, array( 'WP_Job_Manager_Dependency_Checker', 'wp_version_plugin_action_notice' ) );
+			add_action( 'admin_notices', [ 'WP_Job_Manager_Dependency_Checker', 'add_wp_notice' ] );
+			add_filter( 'plugin_action_links_' . JOB_MANAGER_PLUGIN_BASENAME, [ 'WP_Job_Manager_Dependency_Checker', 'wp_version_plugin_action_notice' ] );
 		}
 
 		return true;
@@ -66,7 +66,7 @@ class WP_Job_Manager_Dependency_Checker {
 		$message = sprintf( __( '<strong>WP Job Manager</strong> requires a minimum PHP version of %1$s, but you are running %2$s.', 'wp-job-manager' ), self::MINIMUM_PHP_VERSION, phpversion() );
 
 		echo '<div class="error"><p>';
-		echo wp_kses( $message, array( 'strong' => array() ) );
+		echo wp_kses( $message, [ 'strong' => [] ] );
 		$php_update_url = 'https://wordpress.org/support/update-php/';
 		if ( function_exists( 'wp_get_update_php_url' ) ) {
 			$php_update_url = wp_get_update_php_url();
@@ -146,6 +146,6 @@ class WP_Job_Manager_Dependency_Checker {
 	 * @return array
 	 */
 	private static function get_critical_screen_ids() {
-		return array( 'dashboard', 'plugins', 'plugins-network', 'edit-job_listing', 'job_listing_page_job-manager-settings' );
+		return [ 'dashboard', 'plugins', 'plugins-network', 'edit-job_listing', 'job_listing_page_job-manager-settings' ];
 	}
 }

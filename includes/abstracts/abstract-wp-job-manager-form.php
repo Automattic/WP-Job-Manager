@@ -100,8 +100,18 @@ abstract class WP_Job_Manager_Form {
 			get_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
 		) {
 			delete_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key' );
-			setcookie( 'wp-job-manager-submitting-job-id', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
-			setcookie( 'wp-job-manager-submitting-job-key', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, false );
+
+			$cookie_options = [
+				'expires'  => time() - 3600,
+				'path'     => COOKIEPATH,
+				'domain'   => COOKIE_DOMAIN,
+				'secure'   => is_ssl(),
+				'httponly' => true,
+				'samesite' => 'Lax',
+			];
+
+			setcookie( 'wp-job-manager-submitting-job-id', '', $cookie_options );
+			setcookie( 'wp-job-manager-submitting-job-key', '', $cookie_options );
 			wp_safe_redirect( remove_query_arg( [ 'new', 'key', 'job_manager_form' ] ) );
 			exit;
 		}
@@ -136,7 +146,6 @@ abstract class WP_Job_Manager_Form {
 	 * @param array $atts Attributes to use in the view handler.
 	 */
 	public function output( $atts = [] ) {
-		$this->enqueue_scripts();
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
 		$this->show_messages();
@@ -296,10 +305,12 @@ abstract class WP_Job_Manager_Form {
 	 * @return int
 	 */
 	protected function sort_by_priority( $a, $b ) {
-		if ( floatval( $a['priority'] ) === floatval( $b['priority'] ) ) {
+		$a_priority = isset( $a['priority'] ) ? $a['priority'] : 100000;
+		$b_priority = isset( $b['priority'] ) ? $b['priority'] : 100000;
+		if ( floatval( $a_priority ) === floatval( $b_priority ) ) {
 			return 0;
 		}
-		return ( floatval( $a['priority'] ) < floatval( $b['priority'] ) ) ? -1 : 1;
+		return ( floatval( $a_priority ) < floatval( $b_priority ) ) ? -1 : 1;
 	}
 
 	/**
@@ -320,56 +331,19 @@ abstract class WP_Job_Manager_Form {
 	 * Enqueue the scripts for the form.
 	 */
 	public function enqueue_scripts() {
-		if ( $this->use_recaptcha_field() ) {
-			// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NoExplicitVersion
-			wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js', [], false, false );
-		}
+		_deprecated_function( __METHOD__, '2.3.0', 'WP_Job_Manager\WP_Job_Manager_Form::enqueue_scripts' );
+		WP_Job_Manager\WP_Job_Manager_Recaptcha::instance()->enqueue_scripts();
 	}
 
-	/**
-	 * Checks whether reCAPTCHA has been set up and is available.
-	 *
-	 * @return bool
-	 */
-	public function is_recaptcha_available() {
-		$site_key               = get_option( 'job_manager_recaptcha_site_key' );
-		$secret_key             = get_option( 'job_manager_recaptcha_secret_key' );
-		$is_recaptcha_available = ! empty( $site_key ) && ! empty( $secret_key );
-
-		/**
-		 * Filter whether reCAPTCHA should be available for this form.
-		 *
-		 * @since 1.30.0
-		 *
-		 * @param bool $is_recaptcha_available
-		 */
-		return apply_filters( 'job_manager_is_recaptcha_available', $is_recaptcha_available );
-	}
-
-	/**
-	 * Show reCAPTCHA field on the form.
-	 *
-	 * @return bool
-	 */
-	public function use_recaptcha_field() {
-		return false;
-	}
 
 	/**
 	 * Output the reCAPTCHA field.
+	 *
+	 * @deprecated
 	 */
 	public function display_recaptcha_field() {
-		$field             = [];
-		$field['label']    = get_option( 'job_manager_recaptcha_label' );
-		$field['required'] = true;
-		$field['site_key'] = get_option( 'job_manager_recaptcha_site_key' );
-		get_job_manager_template(
-			'form-fields/recaptcha-field.php',
-			[
-				'key'   => 'recaptcha',
-				'field' => $field,
-			]
-		);
+		_deprecated_function( __METHOD__, '2.3.0', 'WP_Job_Manager\WP_Job_Manager_Form::display_recaptcha_field' );
+		WP_Job_Manager\WP_Job_Manager_Recaptcha::instance()->display_recaptcha_field();
 	}
 
 	/**
@@ -377,43 +351,25 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * @param bool $success
 	 *
-	 * @return bool|WP_Error
+	 * @deprecated
+	 *
+	 * @return bool|\WP_Error
 	 */
 	public function validate_recaptcha_field( $success ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier (when possible).
-		$input_recaptcha_response = isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '';
+		_deprecated_function( __METHOD__, '2.3.0', 'WP_Job_Manager\WP_Job_Manager_Form::validate_recaptcha_field' );
+		return WP_Job_Manager\WP_Job_Manager_Recaptcha::instance()->validate_recaptcha_field( $success );
+	}
 
-		$recaptcha_field_label = get_option( 'job_manager_recaptcha_label' );
-		if ( empty( $input_recaptcha_response ) ) {
-			// translators: Placeholder is for the label of the reCAPTCHA field.
-			return new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
-		}
-
-		$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-		$response            = wp_remote_get(
-			add_query_arg(
-				[
-					'secret'   => get_option( 'job_manager_recaptcha_secret_key' ),
-					'response' => $input_recaptcha_response,
-					'remoteip' => isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) : $default_remote_addr,
-				],
-				'https://www.google.com/recaptcha/api/siteverify'
-			)
-		);
-
-		// translators: %s is the name of the form validation that failed.
-		$validation_error = new WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
-
-		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
-			return $validation_error;
-		}
-
-		$json = json_decode( $response['body'] );
-		if ( ! $json || ! $json->success ) {
-			return $validation_error;
-		}
-
-		return $success;
+	/**
+	 * Checks whether reCAPTCHA has been set up and is available.
+	 *
+	 * @deprecated
+	 *
+	 * @return bool
+	 */
+	public function is_recaptcha_available() {
+		_deprecated_function( __METHOD__, '2.3.0', 'WP_Job_Manager\WP_Job_Manager_Form::is_recaptcha_available' );
+		return WP_Job_Manager\WP_Job_Manager_Recaptcha::instance()->is_recaptcha_available();
 	}
 
 	/**

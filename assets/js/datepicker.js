@@ -1,7 +1,12 @@
 /* global job_manager_datepicker */
 jQuery(document).ready( function() {
+	if ( jQuery.datepicker._defaults.dateFormat == '' ) {
+		jQuery.datepicker._defaults.dateFormat = 'MM d, yy';
+	}
+	var $date_today = new Date();
 	var datePickerOptions = {
 		altFormat  : 'yy-mm-dd',
+		minDate    : $date_today,
 	};
 
 	if ( typeof job_manager_datepicker !== 'undefined' ) {

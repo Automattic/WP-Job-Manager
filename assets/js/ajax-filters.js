@@ -217,8 +217,8 @@ jQuery( document ).ready( function( $ ) {
 			append = false;
 		}
 
-		if ( typeof result.showing === 'string' && result.showing ) {
-			var $showing_el = jQuery( '<span>' ).html( result.showing );
+		if ( typeof result.showing === 'string' && result.showing || result.showing_links ) {
+			var $showing_el = jQuery( '<span>' ).html( result.showing || '&nbsp;' );
 			$showing
 				.show()
 				.html( '' )
@@ -309,12 +309,14 @@ jQuery( document ).ready( function( $ ) {
 			var $results = $target.find( '.job_listings' );
 			var per_page = $target.data( 'per_page' );
 			var orderby = $target.data( 'orderby' );
+			var featured_first = $target.data( 'featured_first' );
 			var order = $target.data( 'order' );
 			var featured = $target.data( 'featured' );
 			var filled = $target.data( 'filled' );
 			var remote_position = $target.data( 'remote_position' );
 			var job_types = $target.data( 'job_types' );
 			var post_status = $target.data( 'post_status' );
+			var author = $target.data( 'author' );
 			var index = $( 'div.job_listings' ).index( this );
 			var categories, keywords, location;
 
@@ -380,11 +382,13 @@ jQuery( document ).ready( function( $ ) {
 					filter_post_status: post_status,
 					per_page: per_page,
 					orderby: orderby,
+					featured_first: featured_first,
 					order: order,
 					page: page,
 					featured: featured,
 					filled: filled,
 					remote_position: remote_position,
+					author: author,
 					show_pagination: $target.data( 'show_pagination' ),
 					form_data: $form.serialize(),
 				};
@@ -414,6 +418,7 @@ jQuery( document ).ready( function( $ ) {
 					featured: featured,
 					filled: filled,
 					remote_position: remote_position,
+					author: author,
 					show_pagination: $target.data( 'show_pagination' ),
 				};
 			}

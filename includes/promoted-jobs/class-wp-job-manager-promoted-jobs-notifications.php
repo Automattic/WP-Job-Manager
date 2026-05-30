@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Notifies wpjobmanager.com when a Job Listing changes.
  *
- * @since $$next-version$$
+ * @since 1.42.0
  */
 class WP_Job_Manager_Promoted_Jobs_Notifications {
 
@@ -62,14 +62,14 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	 * The single instance of the class.
 	 *
 	 * @var self
-	 * @since  $$next-version$$
+	 * @since  1.42.0
 	 */
 	private static $instance = null;
 
 	/**
 	 * Allows for accessing single instance of class.
 	 *
-	 * @since  $$next-version$$
+	 * @since  1.42.0
 	 * @return self Main instance.
 	 */
 	public static function instance() {
@@ -134,7 +134,7 @@ class WP_Job_Manager_Promoted_Jobs_Notifications {
 	public function deleted_meta( $meta_ids, $post_id, $meta_key ) {
 		if (
 			WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY === $meta_key
-			&& 'job_listing' === get_post_type( $post_id )
+			&& \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type( $post_id )
 		) {
 			$this->watched_fields_changed = true;
 		}

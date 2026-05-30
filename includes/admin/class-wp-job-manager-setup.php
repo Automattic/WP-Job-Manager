@@ -119,7 +119,7 @@ class WP_Job_Manager_Setup {
 			}
 
 			// Handle step 2 -> step 3 (setting up pages).
-			if ( 3 === $step && ! empty( $_POST ) ) {
+			if ( 3 === $step && ! empty( $_POST ) && empty( $_POST['skip-setup'] ) ) {
 				if (
 					! isset( $_REQUEST['setup_wizard'] )
 					|| false === wp_verify_nonce( wp_unslash( $_REQUEST['setup_wizard'] ), 'step_3' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.

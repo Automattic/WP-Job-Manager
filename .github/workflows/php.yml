@@ -13,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Get cached composer directories
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
@@ -39,21 +39,24 @@ jobs:
 
       - name: Run PHP Linter
         run: npm run lint:php
+
   test:
     name: PHP Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       max-parallel: 10
       matrix:
-        wp: [ 'latest' ]
-        wpmu: [ 0 ]
-        php: [ '7.4', '8.0', '8.1' ]
+        # Targeted matrix rather than full WP × PHP cartesian product. Covers
+        # the declared compatibility floor and the WP-recommended PHP version.
+        # PHP 7.4 (EOL Nov 2022) is kept only as a smoke test against the
+        # plugin's declared floor; 8.0–8.2 are dropped as they're either EOL
+        # or security-only and a break on those would also surface against
+        # 7.4 or 8.3. PHP 8.4 coverage is pending bootstrap modernisation —
+        # see https://github.com/Automattic/WP-Job-Manager/issues/2950.
         include:
-          - php: '7.4'
-            wp: '6.0'
-          - php: '7.4'
-            wp: '6.1'
+          - { wp: '6.4', php: '7.4', wpmu: 0 }
+          - { wp: '6.9', php: '8.3', wpmu: 0 }
     env:
       WP_VERSION: ${{ matrix.wp }}
       PHP_VERSION: ${{ matrix.php }}
@@ -67,14 +70,14 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get cached composer directories
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
@@ -95,3 +98,38 @@ jobs:
 
       - name: Run tests
         run: npm run test-php
+
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        php: [ '7.4', '8.3' ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get cached composer directories
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+      - uses: actions/cache@v4
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer
+          coverage: none
+
+      - name: Install
+        run: composer self-update && composer install --no-ansi --no-interaction --prefer-dist --no-progress
+
+      - name: Run Psalm
+        run: ./vendor/bin/psalm

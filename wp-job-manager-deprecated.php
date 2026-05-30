@@ -60,11 +60,11 @@ if ( ! function_exists( 'get_the_job_type' ) ) :
 		_deprecated_function( __FUNCTION__, '1.27.0', 'wpjm_get_the_job_types' );
 
 		$post = get_post( $post );
-		if ( 'job_listing' !== $post->post_type ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 			return;
 		}
 
-		$types = wp_get_post_terms( $post->ID, 'job_listing_type' );
+		$types = wp_get_post_terms( $post->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 
 		if ( $types ) {
 			$type = current( $types );

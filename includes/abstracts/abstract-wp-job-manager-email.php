@@ -188,7 +188,7 @@ abstract class WP_Job_Manager_Email {
 	 * @return string
 	 */
 	public function get_plain_content() {
-		return wp_strip_all_tags( $this->get_rich_content() );
+		return normalize_whitespace( wp_strip_all_tags( $this->get_rich_content() ) );
 	}
 
 	/**

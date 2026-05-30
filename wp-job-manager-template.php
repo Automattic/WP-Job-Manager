@@ -229,7 +229,7 @@ function get_the_job_permalink( $post = null ) {
 function get_the_job_application_method( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 
@@ -304,7 +304,7 @@ function wpjm_get_job_employment_types( $post = null ) {
 function wpjm_allow_indexing_job_listing( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return true;
 	}
 
@@ -333,12 +333,17 @@ function wpjm_allow_indexing_job_listing( $post = null ) {
 function wpjm_output_job_listing_structured_data( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
-	// Only show structured data for un-filled and published job listings.
-	$output_structured_data = ! is_position_filled( $post ) && 'publish' === $post->post_status;
+	// Only show structured data for un-filled, published, non-password-protected listings the
+	// viewer is allowed to see; the JSON-LD emitter must honor the same view-capability check
+	// the visible template applies.
+	$output_structured_data = ! is_position_filled( $post )
+		&& 'publish' === $post->post_status
+		&& ! post_password_required( $post )
+		&& job_manager_user_can_view_job_listing( $post->ID );
 
 	/**
 	 * Filter if we should output structured data.
@@ -354,6 +359,10 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 /**
  * Gets the structured data for the job listing.
  *
+ * Note: This function does not check if the job listing is published, filled,
+ * password-protected, or otherwise hidden. Use wpjm_output_job_listing_structured_data()
+ * to check if structured data should be output for a given job listing.
+ *
  * @since 1.28.0
  * @see https://developers.google.com/search/docs/data-types/job-postings
  *
@@ -363,7 +372,7 @@ function wpjm_output_job_listing_structured_data( $post = null ) {
 function wpjm_get_job_listing_structured_data( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
@@ -418,6 +427,8 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		}
 	}
 
+	$data['directApply'] = ! empty( get_the_job_application_method( $post ) );
+
 	$salary   = get_the_job_salary( $post );
 	$currency = get_the_job_salary_currency( $post );
 	$unit     = get_the_job_salary_unit( $post );
@@ -452,7 +463,7 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 function wpjm_get_job_listing_location_structured_data( $post ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
@@ -521,7 +532,7 @@ function wpjm_the_job_title( $post = null ) {
  */
 function wpjm_get_the_job_title( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -559,7 +570,7 @@ function wpjm_the_job_description( $post = null ) {
  */
 function wpjm_get_the_job_description( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -608,11 +619,11 @@ function wpjm_the_job_types( $post = null, $separator = ', ' ) {
 function wpjm_get_the_job_types( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
-	$types = get_the_terms( $post->ID, 'job_listing_type' );
+	$types = get_the_terms( $post->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
 
 	if ( empty( $types ) || is_wp_error( $types ) ) {
 		$types = [];
@@ -667,11 +678,11 @@ function wpjm_the_job_categories( $post = null, $separator = ', ' ) {
 function wpjm_get_the_job_categories( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return false;
 	}
 
-	$categories = get_the_terms( $post->ID, 'job_listing_category' );
+	$categories = get_the_terms( $post->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
 
 	if ( empty( $categories ) || is_wp_error( $categories ) ) {
 		$categories = [];
@@ -756,13 +767,21 @@ function wpjm_get_registration_fields() {
  * @param int|WP_Post $post (default: null).
  */
 function the_job_publish_date( $post = null ) {
-	$date_format = get_option( 'job_manager_date_format' );
+	$date_format    = get_option( 'job_manager_date_format' );
+	$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 
 	if ( 'default' === $date_format ) {
-		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . wp_date( get_option( 'date_format' ), get_post_timestamp( $post ) );
+		$display_date = esc_html__( 'Posted on ', 'wp-job-manager' ) . wp_date( $wp_date_format, get_post_timestamp( $post ) );
 	} else {
+		$post_timestamp = get_post_timestamp( $post );
+		$current_time   = time();
+
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
-		$display_date = sprintf( esc_html__( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp( $post ), time() ) );
+		$display_date = sprintf( esc_html__( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( $post_timestamp, $current_time ) );
+		if ( $post_timestamp > $current_time ) {
+			// translators: Placeholder %s is the relative, human readable time the job listing is scheduled to be published.
+			$display_date = sprintf( esc_html__( 'Scheduled to publish in %s', 'wp-job-manager' ), human_time_diff( $post_timestamp, $current_time ) );
+		}
 	}
 
 	echo '<time datetime="' . esc_attr( get_post_datetime( $post )->format( 'Y-m-d' ) ) . '">' . wp_kses_post( $display_date ) . '</time>';
@@ -777,10 +796,11 @@ function the_job_publish_date( $post = null ) {
  * @return string|int|false
  */
 function get_the_job_publish_date( $post = null ) {
-	$date_format = get_option( 'job_manager_date_format' );
+	$date_format    = get_option( 'job_manager_date_format' );
+	$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
 
 	if ( 'default' === $date_format ) {
-		return wp_date( get_option( 'date_format' ), get_post_datetime()->getTimestamp() );
+		return wp_date( $wp_date_format, get_post_datetime()->getTimestamp() );
 	} else {
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
 		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp(), time() ) );
@@ -835,7 +855,7 @@ function the_job_location( $map_link = true, $post = null ) {
  */
 function get_the_job_location( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -888,6 +908,11 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
  */
 function get_the_company_logo( $post = null, $size = 'thumbnail' ) {
 	$post = get_post( $post );
+
+	// Called with invalid post ID or without post ID outside the loop.
+	if ( ! $post ) {
+		return '';
+	}
 
 	if ( has_post_thumbnail( $post->ID ) ) {
 		$src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $size );
@@ -1004,7 +1029,7 @@ function the_company_video( $post = null ) {
  */
 function get_the_company_video( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 	return apply_filters( 'the_company_video', $post->_company_video, $post );
@@ -1047,7 +1072,7 @@ function the_company_name( $before = '', $after = '', $echo = true, $post = null
  */
 function get_the_company_name( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return '';
 	}
 
@@ -1064,7 +1089,7 @@ function get_the_company_name( $post = null ) {
 function get_the_company_website( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 
@@ -1114,7 +1139,7 @@ function the_company_tagline( $before = '', $after = '', $echo = true, $post = n
 function get_the_company_tagline( $post = null ) {
 	$post = get_post( $post );
 
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -1122,7 +1147,7 @@ function get_the_company_tagline( $post = null ) {
 }
 
 /**
- * Displays or retrieves the current company Twitter link with optional content.
+ * Displays or retrieves the current company X / Twitter link with optional content.
  *
  * @since 1.0.0
  * @param string           $before (default: '').
@@ -1138,7 +1163,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 		return null;
 	}
 
-	$company_twitter = $before . '<a href="' . esc_url( 'https://twitter.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
+	$company_twitter = $before . '<a href="' . esc_url( 'https://x.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_twitter );
@@ -1156,7 +1181,7 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
  */
 function get_the_company_twitter( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
 
@@ -1196,7 +1221,7 @@ function job_listing_class( $class = '', $post_id = null ) {
 function get_job_listing_class( $class = '', $post_id = null ) {
 	$post = get_post( $post_id );
 
-	if ( empty( $post ) || 'job_listing' !== $post->post_type ) {
+	if ( empty( $post ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return [];
 	}
 
@@ -1225,11 +1250,11 @@ function get_job_listing_class( $class = '', $post_id = null ) {
 function wpjm_add_post_class( $classes, $class, $post_id ) {
 	$post = get_post( $post_id );
 
-	if ( empty( $post ) || 'job_listing' !== $post->post_type ) {
+	if ( empty( $post ) || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return $classes;
 	}
 
-	$classes[] = 'job_listing';
+	$classes[] = \WP_Job_Manager_Post_Types::PT_LISTING;
 
 	if ( get_option( 'job_manager_enable_types' ) ) {
 		$job_types = wpjm_get_the_job_types( $post );
@@ -1281,7 +1306,7 @@ add_action( 'single_job_listing_start', 'job_listing_company_display', 30 );
  */
 function get_the_job_salary( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 
@@ -1354,7 +1379,7 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
  */
 function get_the_job_salary_currency( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 
@@ -1383,7 +1408,7 @@ function get_the_job_salary_currency( $post = null ) {
  */
 function get_the_job_salary_unit( $post = null ) {
 	$post = get_post( $post );
-	if ( ! $post || 'job_listing' !== $post->post_type ) {
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return;
 	}
 

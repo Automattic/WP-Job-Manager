@@ -18,7 +18,7 @@ add_filter( 'rp4wp_related_meta_fields_weight', 'wpjm_rp4wp_related_meta_fields_
  * @return string
  */
 function wpjm_rp4wp_template( $located, $template_name, $args ) {
-	if ( 'related-post-default.php' === $template_name && 'job_listing' === $args['related_post']->post_type ) {
+	if ( 'related-post-default.php' === $template_name && \WP_Job_Manager_Post_Types::PT_LISTING === $args['related_post']->post_type ) {
 		return JOB_MANAGER_PLUGIN_DIR . '/templates/content-job_listing.php';
 	}
 	return $located;
@@ -33,7 +33,7 @@ function wpjm_rp4wp_template( $located, $template_name, $args ) {
  * @return array
  */
 function wpjm_rp4wp_related_meta_fields( $meta_fields, $post_id, $post ) {
-	if ( 'job_listing' === $post->post_type ) {
+	if ( \WP_Job_Manager_Post_Types::PT_LISTING === $post->post_type ) {
 		$meta_fields[] = '_company_name';
 		$meta_fields[] = '_job_location';
 	}
@@ -49,7 +49,7 @@ function wpjm_rp4wp_related_meta_fields( $meta_fields, $post_id, $post ) {
  * @return int
  */
 function wpjm_rp4wp_related_meta_fields_weight( $weight, $post, $meta_field ) {
-	if ( 'job_listing' === $post->post_type ) {
+	if ( \WP_Job_Manager_Post_Types::PT_LISTING === $post->post_type ) {
 		$weight = 100;
 	}
 	return $weight;

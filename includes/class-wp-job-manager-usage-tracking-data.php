@@ -24,17 +24,17 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 **/
 	public static function get_usage_data() {
 		$categories  = 0;
-		$count_posts = wp_count_posts( 'job_listing' );
+		$count_posts = wp_count_posts( \WP_Job_Manager_Post_Types::PT_LISTING );
 
-		if ( taxonomy_exists( 'job_listing_category' ) ) {
-			$categories = wp_count_terms( 'job_listing_category', [ 'hide_empty' => false ] );
+		if ( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
+			$categories = wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY, [ 'hide_empty' => false ] );
 		}
 
 		$usage_data = [
 			'employers'                   => self::get_employer_count(),
 			'job_categories'              => $categories,
 			'job_categories_desc'         => self::get_job_category_has_description_count(),
-			'job_types'                   => wp_count_terms( 'job_listing_type', [ 'hide_empty' => false ] ),
+			'job_types'                   => wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, [ 'hide_empty' => false ] ),
 			'job_types_desc'              => self::get_job_type_has_description_count(),
 			'job_types_emp_type'          => self::get_job_type_has_employment_type_count(),
 			'jobs_type'                   => self::get_job_type_count(),
@@ -62,14 +62,23 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_by_guests'              => self::get_jobs_by_guests(),
 		];
 
-		$all_extenstions     = self::get_official_extensions( false );
+		$settings = self::get_settings_data();
+
+		foreach ( $settings as $name => $value ) {
+			$name                              = preg_replace( '/[^a-z0-9]/', '_', $name );
+			$usage_data[ 'settings_' . $name ] = preg_replace( '/[^a-z0-9]/', '_', $value );
+		}
+
+		$all_extensions      = self::get_official_extensions( false );
 		$licensed_extensions = self::get_official_extensions( true );
 
-		$usage_data['official_extensions'] = count( $all_extenstions );
+		$usage_data['official_extensions'] = count( $all_extensions );
 		$usage_data['licensed_extensions'] = count( $licensed_extensions );
 
-		foreach ( array_keys( $all_extenstions ) as $installed_plugin ) {
-			$usage_data[ $installed_plugin ] = isset( $licensed_extensions[ $installed_plugin ] ) ? 'licensed' : 'unlicensed';
+		foreach ( array_keys( $all_extensions ) as $installed_plugin ) {
+			$name                = preg_replace( '/[^a-z0-9]/', '_', $installed_plugin );
+			$name                = preg_replace( '/^wp-job-manager/', 'license_', $name );
+			$usage_data[ $name ] = isset( $licensed_extensions[ $installed_plugin ] ) ? 'licensed' : 'unlicensed';
 		}
 
 		return $usage_data;
@@ -99,14 +108,14 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 * @return int Number of job categories with a description.
 	 **/
 	private static function get_job_category_has_description_count() {
-		if ( ! taxonomy_exists( 'job_listing_category' ) ) {
+		if ( ! taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) {
 			return 0;
 		}
 
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_category',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'hide_empty' => false,
 			]
 		);
@@ -133,7 +142,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_type',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'hide_empty' => false,
 			]
 		);
@@ -160,7 +169,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 		$count = 0;
 		$terms = get_terms(
 			[
-				'taxonomy'   => 'job_listing_type',
+				'taxonomy'   => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 				'hide_empty' => false,
 			]
 		);
@@ -188,13 +197,13 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_by_type_count( $job_type ) {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'tax_query'   => [
+				'tax_query'   => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Used in production with no issues.
 					[
 						'field'    => 'slug',
-						'taxonomy' => 'job_listing_type',
+						'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 						'terms'    => $job_type,
 					],
 				],
@@ -214,10 +223,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_company_logo_count() {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'meta_query'  => [
+				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
 					[
 						'key'     => '_thumbnail_id',
 						'compare' => 'EXISTS',
@@ -239,12 +248,12 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_job_type_count() {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'expired', 'publish' ],
 				'fields'      => 'ids',
-				'tax_query'   => [
+				'tax_query'   => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Used in production with no issues.
 					[
-						'taxonomy' => 'job_listing_type',
+						'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
 						'operator' => 'EXISTS',
 					],
 				],
@@ -264,10 +273,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_count_with_meta( $meta_key ) {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
-				'meta_query'  => [
+				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
 					[
 						'key'     => $meta_key,
 						'value'   => '[^[:space:]]',
@@ -291,10 +300,10 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_count_with_checked_meta( $meta_key ) {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
-				'meta_query'  => [
+				'meta_query'  => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Used in production with no issues.
 					[
 						'key'   => $meta_key,
 						'value' => '1',
@@ -314,7 +323,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	private static function get_jobs_by_guests() {
 		$query = new WP_Query(
 			[
-				'post_type'   => 'job_listing',
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'post_status' => [ 'publish', 'expired' ],
 				'fields'      => 'ids',
 				'author__in'  => [ 0 ],
@@ -367,6 +376,62 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	}
 
 	/**
+	 * Get usage data for some settings.
+	 *
+	 * @return array
+	 */
+	public static function get_settings_data() {
+		$settings = WP_Job_Manager_Settings::instance()->get_settings();
+
+		$settings_data = [];
+
+		foreach ( $settings as $group ) {
+
+			foreach ( $group[1] as $option ) {
+
+				$name  = $option['name'];
+				$value = get_option( $name );
+
+				if ( empty( $option['track'] ) ) {
+					continue;
+				}
+
+				switch ( $option['track'] ) {
+					case 'bool':
+						$value = $value ? '1' : '0';
+						break;
+					case 'value':
+						if ( isset( $option['options'] ) && ! in_array( $value, array_keys( $option['options'] ), true ) ) {
+							unset( $value );
+						}
+						break;
+					case 'is-default':
+						$value = $value === $option['std'] ? '1' : '0';
+						break;
+					default:
+						unset( $value );
+						break;
+				}
+
+				if ( ! isset( $value ) || ! is_scalar( $value ) || strlen( $value ) > 50 ) {
+					continue;
+				}
+
+				$name = preg_replace( '/^job_manager_/', '', $name );
+
+				$settings_data[ $name ] = $value;
+			}
+		}
+
+		/**
+		 * Filter the settings fields that are sent for usage tracking.
+		 *
+		 * @param array $settings_data The default settings data.
+		 */
+		return apply_filters( 'job_manager_logged_settings', $settings_data );
+	}
+
+	/**
 	 * Get the base fields to be sent for event logging.
 	 *
 	 * @since 1.33.0
@@ -375,7 +440,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 	 */
 	public static function get_event_logging_base_fields() {
 		$base_fields = [
-			'job_listings' => wp_count_posts( 'job_listing' )->publish,
+			'job_listings' => wp_count_posts( \WP_Job_Manager_Post_Types::PT_LISTING )->publish,
 			'paid'         => self::has_paid_extensions() ? 1 : 0,
 		];
 

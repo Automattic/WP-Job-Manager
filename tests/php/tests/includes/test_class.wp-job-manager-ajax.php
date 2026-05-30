@@ -71,6 +71,13 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 				'meta_input'  => [],
 			]
 		);
+		$private   = $this->factory->job_listing->create_many(
+			2,
+			[
+				'post_status' => 'private',
+				'meta_input'  => [],
+			]
+		);
 		$instance  = WP_Job_Manager_Ajax::instance();
 
 		// Run the action.
@@ -95,6 +102,12 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 
 		// Make sure the HTML does NOT contain any of the draft post titles.
 		foreach ( $draft as $post_id ) {
+			$post = get_post( $post_id );
+			$this->assertStringNotContainsString( $post->post_title, $result['html'] );
+		}
+
+		// Make sure the HTML does NOT contain any of the private post titles.
+		foreach ( $private as $post_id ) {
 			$post = get_post( $post_id );
 			$this->assertStringNotContainsString( $post->post_title, $result['html'] );
 		}
@@ -277,6 +290,38 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	public function override_upload_action( $args ) {
 		$args['action'] = 'test-wpjm-upload';
 		return $args;
+	}
+
+	/**
+	 * Regression: array-shaped author input (?author[]=N) must fail closed and not bypass the author filter.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Ajax::get_listings
+	 */
+	public function test_get_listings_author_array_input_fails_closed() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 3, [ 'post_author' => $user_a ] );
+
+		$this->set_up_job_listing_search_request();
+		$_REQUEST['author'] = [ (string) $user_a ];
+
+		add_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
+		add_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10, 2 );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
+		ob_start();
+		WP_Job_Manager_Ajax::instance()->get_listings();
+		$result = json_decode( ob_get_clean(), true );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
+		remove_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10 );
+		remove_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
+
+		unset( $_REQUEST['author'] );
+		$this->tear_down_job_listing_search_request();
+
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['found_jobs'], 'Array-shaped author must fail closed, not silently disable the filter.' );
+		$this->assertArrayHasKey( '_jobs', $result );
+		$this->assertCount( 0, $result['_jobs'] );
 	}
 
 	private function set_up_job_listing_search_request() {

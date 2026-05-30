@@ -1,25 +1,21 @@
 <?php
 
-require_once dirname( __FILE__ ) . '/../../class-usage-tracking-base.php';
+require_once dirname( __FILE__ ) . '/../../class-wp-job-manager-usage-tracking-base.php';
 
 /**
  * Usage Tracking subclass for testing. Please update the superclass name to
- * match the one used by your plugin (usage-tracking/class-usage-tracking-base.php).
+ * match the one used by your plugin (usage-tracking/class-wp-job-manager-usage-tracking-base.php).
  */
 class Usage_Tracking_Test_Subclass extends WP_Job_Manager_Usage_Tracking_Base {
 
 	const TRACKING_ENABLED_OPTION_NAME = 'testing-usage-tracking-enabled';
 
 	public static function get_instance() {
-		return self::get_instance_for_subclass( get_class() );
+		return self::get_instance_for_subclass( static::class );
 	}
 
 	public function get_prefix() {
 		return 'testing';
-	}
-
-	public function get_text_domain() {
-		return 'text-domain';
 	}
 
 	public function get_tracking_enabled() {

@@ -3,6 +3,8 @@
 require 'includes/admin/class-wp-job-manager-cpt.php';
 
 class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
+	protected WP_Job_Manager_CPT $job_manager_cpt;
+
 	public function setUp(): void {
 		parent::setUp();
 
@@ -52,7 +54,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 		// When no filters are given.
 		$query = new WP_Query(
 			[
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'fields'    => 'ids',
 			]
 		);
@@ -65,7 +67,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 		$_GET['job_listing_filled'] = '1';
 		$query                      = new WP_Query(
 			[
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'fields'    => 'ids',
 			]
 		);
@@ -79,7 +81,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 		$_GET['job_listing_featured'] = '0';
 		$query                        = new WP_Query(
 			[
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'fields'    => 'ids',
 			]
 		);
@@ -101,7 +103,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 
 		// Create some listings.
 		$listing_id = $this->factory->post->create(
-			[ 'post_type' => 'job_listing' ]
+			[ 'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING ]
 		);
 
 		// Simulate viewing some other page.
@@ -112,7 +114,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 		$_GET['job_listing_featured'] = '1';
 		$query                        = new WP_Query(
 			[
-				'post_type' => 'job_listing',
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
 				'fields'    => 'ids',
 			]
 		);
@@ -123,7 +125,7 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 
 	private function create_listing_with_meta( $meta ) {
 		$id = $this->factory->post->create(
-			[ 'post_type' => 'job_listing' ]
+			[ 'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING ]
 		);
 
 		foreach ( $meta as $meta_key => $meta_value ) {

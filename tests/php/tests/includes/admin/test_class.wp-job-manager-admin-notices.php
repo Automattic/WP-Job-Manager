@@ -78,31 +78,6 @@ class WP_Test_WP_Job_Manager_Admin_Notices extends WPJM_BaseTest {
 		$this->assertEquals( 1, did_action( 'job_manager_admin_notice_test_action' ) );
 	}
 
-	public function test_is_admin_on_standard_job_manager_screen_non_admin() {
-		$this->login_as_admin();
-		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ '' ] ) );
-
-		$this->login_as_employer();
-		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ '' ] ) );
-	}
-
-	public function test_is_admin_on_standard_job_manager_screen_uncommon_screen_test() {
-		$this->login_as_admin();
-		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ 'dinosaur' ] ) );
-		set_current_screen( 'dinosaur' );
-
-		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ 'dinosaur' ] ) );
-		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [ 'dogs' ] ) );
-	}
-
-	public function test_is_admin_on_standard_job_manager_screen_common_screen_test() {
-		$this->login_as_admin();
-		$this->assertFalse( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [] ) );
-		set_current_screen( 'edit-job_listing' );
-
-		$this->assertTrue( WP_Job_Manager_Admin_Notices::is_admin_on_standard_job_manager_screen( [] ) );
-	}
-
 	private function get_raw_state() {
 		return json_decode( get_option( WP_Job_Manager_Admin_Notices::STATE_OPTION, '[]' ), true );
 	}

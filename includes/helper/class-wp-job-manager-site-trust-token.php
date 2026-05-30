@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Helper functions used for creating and validating tokens used for verification with WPJobManager.com.
  *
  * @package wp-job-manager
- * @since   $$next-version$$
+ * @since   1.42.0
  */
 class WP_Job_Manager_Site_Trust_Token {
 	/**
