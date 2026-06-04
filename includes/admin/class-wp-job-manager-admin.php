@@ -172,7 +172,7 @@ class WP_Job_Manager_Admin {
 
 				wp_add_inline_script(
 					'job_manager_job_editor_js',
-					sprintf( 'window.wpjm = window.wpjm || {}; window.wpjm.promoteUrl = "%s";', esc_js( esc_url( WP_Job_Manager_Promoted_Jobs_Admin::get_promote_url( $post->ID ) ) ) ),
+					sprintf( 'window.wpjm = window.wpjm || {}; window.wpjm.promoteUrl = %s;', wp_json_encode( esc_url_raw( WP_Job_Manager_Promoted_Jobs_Admin::get_promote_url( $post->ID ) ) ) ),
 					'before'
 				);
 			}
