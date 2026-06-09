@@ -52,11 +52,11 @@ jobs:
         # PHP 7.4 (EOL Nov 2022) is kept only as a smoke test against the
         # plugin's declared floor; 8.0–8.2 are dropped as they're either EOL
         # or security-only and a break on those would also surface against
-        # 7.4 or 8.3. PHP 8.4 coverage is pending bootstrap modernisation —
-        # see https://github.com/Automattic/WP-Job-Manager/issues/2950.
+        # 7.4 or 8.3.
         include:
           - { wp: '6.4', php: '7.4', wpmu: 0 }
           - { wp: '6.9', php: '8.3', wpmu: 0 }
+          - { wp: '6.9', php: '8.4', wpmu: 0 }
     env:
       WP_VERSION: ${{ matrix.wp }}
       PHP_VERSION: ${{ matrix.php }}
