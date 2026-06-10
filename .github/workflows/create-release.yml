@@ -41,7 +41,7 @@ jobs:
       - name: Install SVN
         run: sudo apt-get update && sudo apt-get install -y subversion
       - name: Deploy to WordPress.org
-        uses: 10up/action-wordpress-plugin-deploy@abb939a0d0bfd01063e8d1933833209201557381 # 2.2.2
+        uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # 2.3.0
         env:
           SVN_PASSWORD: ${{ secrets.WORDPRESSORG_SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.WORDPRESSORG_SVN_USERNAME }}
