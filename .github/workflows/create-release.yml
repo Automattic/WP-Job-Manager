@@ -18,7 +18,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: gh pr comment ${{ github.event.number }} --body "🚀 **[Release workflow started](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})**"
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # 2.37.1
         with:
           php-version: '7.4'
           tools: composer
@@ -41,7 +41,7 @@ jobs:
       - name: Install SVN
         run: sudo apt-get update && sudo apt-get install -y subversion
       - name: Deploy to WordPress.org
-        uses: 10up/action-wordpress-plugin-deploy@abb939a0d0bfd01063e8d1933833209201557381
+        uses: 10up/action-wordpress-plugin-deploy@abb939a0d0bfd01063e8d1933833209201557381 # 2.2.2
         env:
           SVN_PASSWORD: ${{ secrets.WORDPRESSORG_SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.WORDPRESSORG_SVN_USERNAME }}
