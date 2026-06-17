@@ -17,33 +17,13 @@ Adding a default "Featured" checkbox to the frontend submission form would:
 
 The same reasoning applies to other premium flags such as Promoted Jobs — surfacing them as a free toggle on submitter-facing forms would defeat their purpose.
 
-## The supported escape hatch
+## What we won't ship in core
 
-Sites that legitimately want to expose Featured (or any other field) on the frontend form for *their own* trusted users (e.g. an in-house editorial team submitting via the frontend instead of `/wp-admin/`) can already do this via the `submit_job_form_fields` filter:
+- A built-in Featured (or Promoted) checkbox on the frontend submission form.
+- A core settings toggle that exposes premium flags to submitters.
+- Documentation or examples that help end-users bypass the WC Paid Listings purchase flow.
 
-```php
-add_filter( 'submit_job_form_fields', function ( $fields ) {
-    $fields['job']['featured'] = [
-        'label'       => __( 'Featured', 'mytheme' ),
-        'type'        => 'checkbox',
-        'required'    => false,
-        'priority'    => 11,
-    ];
-    return $fields;
-} );
-
-// And save it on submission (capability-gated):
-add_action( 'job_manager_update_job_data', function ( $job_id, $values ) {
-    if ( ! current_user_can( 'edit_others_posts' ) ) {
-        return;
-    }
-    if ( ! empty( $values['job']['featured'] ) ) {
-        update_post_meta( $job_id, '_featured', 1 );
-    }
-}, 10, 2 );
-```
-
-Capability-gating the save (as above) is essential — it prevents the free-tier abuse path while supporting the internal-team use case the requesters typically have in mind.
+Sites with a *genuine* internal need (e.g. an in-house editorial team submitting jobs via the frontend instead of `/wp-admin/` because they don't have admin access) should add the field themselves with capability checks matched to their team's roles — they don't need it documented here, and we won't ship a recipe for it.
 
 ## Prior requests
 
