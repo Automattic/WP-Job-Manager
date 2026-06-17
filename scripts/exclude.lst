@@ -35,7 +35,6 @@ wp-job-manager/.claude/*
 wp-job-manager/.phpunit.result.cache
 wp-job-manager/.wp-env.json
 wp-job-manager/.wp-env.tests.json
-wp-job-manager/blueprint.json
 wp-job-manager/Makefile
 wp-job-manager/CLAUDE.md
 wp-job-manager/AGENTS.md
