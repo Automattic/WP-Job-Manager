@@ -390,6 +390,16 @@ class WP_Job_Manager_Settings {
 							'track'      => 'bool',
 						],
 						[
+							'name'       => 'job_manager_enable_expiry_date_field',
+							'std'        => '0',
+							'label'      => __( 'Expiry Date Field', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable expiry date field in frontend form', 'wp-job-manager' ),
+							'desc'       => __( 'Allow employers to set a custom expiry date for their job listings that overrides the default listing duration.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+							'track'      => 'bool',
+						],
+						[
 							'name'       => 'job_manager_generate_username_from_email',
 							'std'        => '1',
 							'label'      => __( 'Account Username', 'wp-job-manager' ),
