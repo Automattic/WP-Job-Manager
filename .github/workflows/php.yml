@@ -13,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
 
       - name: Get cached composer directories
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
@@ -70,14 +70,14 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
 
       - name: Get cached composer directories
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
@@ -109,15 +109,15 @@ jobs:
         php: [ '7.4', '8.3' ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
       - name: Get cached composer directories
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
