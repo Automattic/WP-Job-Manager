@@ -1163,6 +1163,17 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( $this->job_id );
 
 			if ( in_array( $job->post_status, [ 'preview', 'expired' ], true ) ) {
+				// Re-validate the submission limit before promoting a listing for the
+				// first time. A `preview` listing is not yet counted, so the page-load
+				// check in WP_Job_Manager_Shortcodes::handle_redirects() is not enough on
+				// its own. Renewals of already-counted listings (e.g. `expired`) are
+				// exempt because publishing them does not increase the user's count.
+				if ( 'preview' === $job->post_status && ! job_manager_user_can_submit_job_listing() ) {
+					$this->add_error( __( 'You have reached the listing limit for your account and cannot publish this listing.', 'wp-job-manager' ) );
+
+					return;
+				}
+
 				// Reset expiry.
 				delete_post_meta( $job->ID, '_job_expires' );
 

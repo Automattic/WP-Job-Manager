@@ -1917,7 +1917,7 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
 function job_manager_user_can_submit_job_listing() {
 	$submission_limit = get_option( 'job_manager_submission_limit', '' );
 	$job_count        = job_manager_count_user_job_listings();
-	$can_submit       = '' === $submission_limit || $submission_limit >= $job_count;
+	$can_submit       = '' === $submission_limit || $submission_limit > $job_count;
 	/**
 	 * Filter if the current user can or cannot submit job listings
 	 *
