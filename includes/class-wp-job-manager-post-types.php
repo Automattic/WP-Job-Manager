@@ -832,6 +832,21 @@ class WP_Job_Manager_Post_Types {
 			$query_args['author__in'] = $input_author;
 		}
 
+		// View-capability gate — when the configured View Job Capability denies the current
+		// viewer, limit the feed to their own listings, mirroring the per-listing gate
+		// enforced by the single listing view and REST API. This overrides any requested
+		// author filter: a denied viewer may only ever see their own listings.
+		if ( self::feed_viewer_denied_by_view_cap() ) {
+			$viewer_id = get_current_user_id();
+			if ( $viewer_id ) {
+				$query_args['author__in'] = [ $viewer_id ];
+			} else {
+				// Anonymous: no listings. Post IDs are never 0, so this is a safe empty
+				// sentinel — unlike author__in, since a listing can have post_author 0.
+				$query_args['post__in'] = [ 0 ];
+			}
+		}
+
 		if ( ! empty( $job_manager_keyword ) ) {
 			$query_args['s'] = $job_manager_keyword;
 			add_filter( 'posts_search', 'get_job_listings_keyword_search', 10, 2 );
@@ -877,6 +892,46 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$query->set( 'has_password', false );
+
+		// View-capability gate — see job_feed(): restrict a denied viewer to their own
+		// listings (none for anonymous) so the default RSS / Atom endpoints do not expose
+		// details the single listing view and REST API withhold.
+		if ( self::feed_viewer_denied_by_view_cap() ) {
+			$viewer_id = get_current_user_id();
+			if ( $viewer_id ) {
+				$query->set( 'author__in', [ $viewer_id ] );
+			} else {
+				// Anonymous: no listings. Post IDs are never 0 (safe sentinel); author 0 is not.
+				$query->set( 'post__in', [ 0 ] );
+			}
+		}
+	}
+
+	/**
+	 * Whether the configured View Job Capability denies the current viewer.
+	 *
+	 * Used to gate feed queries at the query level. Mirrors the capability check in
+	 * {@see job_manager_user_can_view_job_listing()}; the per-listing author-owns-it and
+	 * `preview` bypasses there are handled here by restricting the query to the viewer's
+	 * own listings rather than excluding them. When the option is empty (the default),
+	 * viewing is unrestricted and this returns false.
+	 *
+	 * @return bool True when the viewer cannot satisfy the configured view capability.
+	 */
+	private static function feed_viewer_denied_by_view_cap() {
+		$caps = get_option( 'job_manager_view_job_listing_capability' );
+
+		if ( empty( $caps ) ) {
+			return false;
+		}
+
+		foreach ( (array) $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
