@@ -200,8 +200,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 
 		if ( isset( $args['author'] ) ) {
 			$author_ids = _wpjm_parse_author_ids( $args['author'] );
-			if ( null !== $author_ids ) {
-				// [0] is the fail-closed sentinel: no real post_author equals 0.
+			if ( [ 0 ] === $author_ids ) {
+				// The author filter was supplied but yielded no valid IDs. Fail closed via
+				// post__in: a listing can legitimately have post_author 0, so author__in => [0]
+				// would match orphaned listings instead of excluding them.
+				$query_args['post__in'] = [ 0 ];
+			} elseif ( null !== $author_ids ) {
 				$query_args['author__in'] = $author_ids;
 			}
 		}
@@ -293,7 +297,9 @@ if ( ! function_exists( '_wpjm_parse_author_ids' ) ) :
 	 *
 	 * Returns `null` when the input represents "no filter" (the input was unset or an empty string).
 	 * Returns `[0]` as a fail-closed sentinel when the input was supplied but yielded no valid positive IDs
-	 * (e.g. `'0'`, `'abc'`, `[]`, `'-5'`). `[0]` is safe in `author__in` because no real `post_author` equals 0.
+	 * (e.g. `'0'`, `'abc'`, `[]`, `'-5'`). Callers must treat the `[0]` sentinel as "match nothing" and fail
+	 * closed via `post__in => [0]`, NOT `author__in => [0]`: a listing can legitimately have `post_author` 0,
+	 * which `author__in => [0]` would match.
 	 *
 	 * @since $$next-version$$
 	 * @access private

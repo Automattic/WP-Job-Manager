@@ -827,8 +827,12 @@ class WP_Job_Manager_Post_Types {
 			];
 		}
 
-		if ( null !== $input_author ) {
-			// [0] is the fail-closed sentinel: no real post_author equals 0.
+		if ( [ 0 ] === $input_author ) {
+			// The author filter was supplied but yielded no valid IDs. Fail closed via
+			// post__in: a listing can legitimately have post_author 0, so author__in => [0]
+			// would match orphaned listings instead of excluding them.
+			$query_args['post__in'] = [ 0 ];
+		} elseif ( null !== $input_author ) {
 			$query_args['author__in'] = $input_author;
 		}
 
