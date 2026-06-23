@@ -212,6 +212,8 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
 		add_action( 'pre_get_posts', [ $this, 'gate_feed_query_for_listings' ] );
+		add_action( 'pre_get_posts', [ $this, 'gate_search_query_for_listings' ] );
+		add_filter( 'oembed_response_data', [ $this, 'gate_oembed_response_for_listings' ], 10, 2 );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -710,7 +712,7 @@ class WP_Job_Manager_Post_Types {
 	public function job_feed() {
 		global $job_manager_keyword;
 
-		// Browse-capability gate — emit an empty feed (matching the [jobs] shortcode denial)
+		// Browse-capability gate: emit an empty feed (matching the [jobs] shortcode denial)
 		// rather than 404 / 403, so feed readers don't error on a configured-private site.
 		if ( ! job_manager_user_can_browse_job_listings() ) {
 			// phpcs:ignore WordPress.WP.DiscouragedFunctions
@@ -836,7 +838,7 @@ class WP_Job_Manager_Post_Types {
 			$query_args['author__in'] = $input_author;
 		}
 
-		// View-capability gate — when the configured View Job Capability denies the current
+		// View-capability gate: when the configured View Job Capability denies the current
 		// viewer, limit the feed to their own listings, mirroring the per-listing gate
 		// enforced by the single listing view and REST API. This overrides any requested
 		// author filter: a denied viewer may only ever see their own listings.
@@ -846,7 +848,7 @@ class WP_Job_Manager_Post_Types {
 				$query_args['author__in'] = [ $viewer_id ];
 			} else {
 				// Anonymous: no listings. Post IDs are never 0, so this is a safe empty
-				// sentinel — unlike author__in, since a listing can have post_author 0.
+				// sentinel, unlike author__in, since a listing can have post_author 0.
 				$query_args['post__in'] = [ 0 ];
 			}
 		}
@@ -875,7 +877,7 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Gates core feed queries for the job_listing post type so the default RSS / Atom
 	 * endpoints (?feed=rss2&post_type=job_listing, etc.) honor the browse capability and
-	 * exclude password-protected listings — matching the hardening applied to the custom
+	 * exclude password-protected listings, matching the hardening applied to the custom
 	 * job_feed and AJAX / REST paths.
 	 *
 	 * @param WP_Query $query The query.
@@ -897,7 +899,7 @@ class WP_Job_Manager_Post_Types {
 
 		$query->set( 'has_password', false );
 
-		// View-capability gate — see job_feed(): restrict a denied viewer to their own
+		// View-capability gate: see job_feed(): restrict a denied viewer to their own
 		// listings (none for anonymous) so the default RSS / Atom endpoints do not expose
 		// details the single listing view and REST API withhold.
 		if ( self::viewer_denied_by_view_cap() ) {
@@ -909,6 +911,93 @@ class WP_Job_Manager_Post_Types {
 				$query->set( 'post__in', [ 0 ] );
 			}
 		}
+	}
+
+	/**
+	 * Gates the core front-end search query - and search feeds - so that restricted
+	 * job_listing posts are not disclosed through ordinary WordPress search.
+	 *
+	 * The job_listing post type is registered with `exclude_from_search => false`, so the
+	 * default search query (`/?s=...`, and its `&feed=rss2` variant) spans every searchable
+	 * post type and renders listing titles and full bodies. That query never reaches the
+	 * [jobs] shortcode, AJAX, REST, or single-listing gates, so without this a denied
+	 * viewer can read restricted listing bodies through site search and search feeds.
+	 *
+	 * When the viewer cannot browse listings, or the configured View Job Capability denies
+	 * them, job_listing is dropped from the set of searched post types so other types
+	 * (posts, pages) are unaffected; if it was the only searched type the query is forced to
+	 * return nothing. Mirrors the REST search gate
+	 * ({@see WP_Job_Manager_REST_API::gate_search_query_for_listings()}).
+	 *
+	 * Note: this is intentionally stricter than the single-listing view and the feed gate,
+	 * which let a denied *author* still reach their own listings. The search query runs
+	 * across every searchable post type, so an `author__in` constraint would also restrict
+	 * the viewer's posts and pages. A denied author therefore does not see their own listings
+	 * through site search; they remain reachable via the job dashboard and single listing view.
+	 *
+	 * Password-protected listings are already withheld from search by WP core, so only the
+	 * capability boundary is handled here.
+	 *
+	 * @param WP_Query $query The query.
+	 */
+	public function gate_search_query_for_listings( $query ) {
+		if ( is_admin() || ! $query->is_main_query() || ! $query->is_search() ) {
+			return;
+		}
+
+		if ( job_manager_user_can_browse_job_listings() && ! self::viewer_denied_by_view_cap() ) {
+			return;
+		}
+
+		$requested = $query->get( 'post_type' );
+		if ( empty( $requested ) || 'any' === $requested ) {
+			// No explicit post type: WordPress searches every type with exclude_from_search => false.
+			$searched = array_values( get_post_types( [ 'exclude_from_search' => false ] ) );
+		} else {
+			$searched = array_values( (array) $requested );
+		}
+
+		if ( ! in_array( self::PT_LISTING, $searched, true ) ) {
+			return;
+		}
+
+		$remaining = array_values( array_diff( $searched, [ self::PT_LISTING ] ) );
+		if ( $remaining ) {
+			// Other types were searched too; keep those, just not listings.
+			$query->set( 'post_type', $remaining );
+		} else {
+			// Listings were the only searched type. Force no results rather than letting
+			// WP_Query fall back to the default 'post' type. Post IDs are never 0.
+			$query->set( 'post_type', self::PT_LISTING );
+			$query->set( 'post__in', [ 0 ] );
+		}
+	}
+
+	/**
+	 * Gates the oEmbed response (`/wp-json/oembed/1.0/embed?url=...`) for a single listing.
+	 *
+	 * The oEmbed endpoint exposes a published listing's title and author identity as
+	 * machine-readable data without reaching the single-listing view or the single-item
+	 * REST route, so a denied viewer could read restricted listing metadata through it.
+	 * Returning empty data makes the endpoint fail closed (a 404), matching the single-item
+	 * REST route ({@see WP_Job_Manager_REST_API::gate_view_capability_for_single()}).
+	 *
+	 * oEmbed is a single-item endpoint, so the per-listing {@see job_manager_user_can_view_job_listing()}
+	 * check, which lets an author reach their own listing and honours the `preview` bypass,
+	 * is the correct boundary here, unlike the query-level search and feed gates.
+	 *
+	 * @param array   $data The response data.
+	 * @param WP_Post $post The post object.
+	 * @return array
+	 */
+	public function gate_oembed_response_for_listings( $data, $post ) {
+		if ( $post instanceof WP_Post
+			&& self::PT_LISTING === $post->post_type
+			&& ! job_manager_user_can_view_job_listing( $post->ID ) ) {
+			return [];
+		}
+
+		return $data;
 	}
 
 	/**
@@ -2156,7 +2245,7 @@ class WP_Job_Manager_Post_Types {
 	 * the site's view-capability gate denies the viewer. Used as the default `auth_view_callback`
 	 * for job listing meta fields, consumed by `WP_Job_Manager_REST_API::prepare_job_listing()`.
 	 *
-	 * @param bool   $allowed   Ignored — `prepare_job_listing()` always passes false.
+	 * @param bool   $allowed   Ignored; `prepare_job_listing()` always passes false.
 	 * @param string $meta_key  The meta key.
 	 * @param int    $post_id   Job listing's post ID.
 	 * @param int    $user_id   User ID.
@@ -2173,9 +2262,9 @@ class WP_Job_Manager_Post_Types {
 
 		// Mirror the bypass in WP_Job_Manager_REST_API::prepare_job_listing(): a user with
 		// edit_post on a *password-only* protected listing legitimately needs meta access
-		// to drive Gutenberg — without this, saving the post in the editor overwrites
+		// to drive Gutenberg; without this, saving the post in the editor overwrites
 		// `_company_name`, `_job_location`, `_application`, etc. with empty values.
-		// View-capability denials do NOT get this bypass — they remain the harder gate.
+		// View-capability denials do NOT get this bypass; they remain the harder gate.
 		if ( $is_password_blocked && ! $is_viewcap_blocked && user_can( $user_id, 'edit_post', $post_id ) ) {
 			return true;
 		}
