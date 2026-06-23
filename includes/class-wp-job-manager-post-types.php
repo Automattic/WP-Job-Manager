@@ -833,11 +833,18 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		// View-capability gate — when the configured View Job Capability denies the current
-		// viewer, limit the feed to their own listings ([0] / none for anonymous), mirroring
-		// the per-listing gate enforced by the single listing view and REST API. This overrides
-		// any requested author filter: a denied viewer may only ever see their own listings.
+		// viewer, limit the feed to their own listings, mirroring the per-listing gate
+		// enforced by the single listing view and REST API. This overrides any requested
+		// author filter: a denied viewer may only ever see their own listings.
 		if ( self::feed_viewer_denied_by_view_cap() ) {
-			$query_args['author__in'] = [ get_current_user_id() ];
+			$viewer_id = get_current_user_id();
+			if ( $viewer_id ) {
+				$query_args['author__in'] = [ $viewer_id ];
+			} else {
+				// Anonymous: no listings. Post IDs are never 0, so this is a safe empty
+				// sentinel — unlike author__in, since a listing can have post_author 0.
+				$query_args['post__in'] = [ 0 ];
+			}
 		}
 
 		if ( ! empty( $job_manager_keyword ) ) {
@@ -887,10 +894,16 @@ class WP_Job_Manager_Post_Types {
 		$query->set( 'has_password', false );
 
 		// View-capability gate — see job_feed(): restrict a denied viewer to their own
-		// listings ([0] / none for anonymous) so the default RSS / Atom endpoints do not
-		// expose details the single listing view and REST API withhold.
+		// listings (none for anonymous) so the default RSS / Atom endpoints do not expose
+		// details the single listing view and REST API withhold.
 		if ( self::feed_viewer_denied_by_view_cap() ) {
-			$query->set( 'author__in', [ get_current_user_id() ] );
+			$viewer_id = get_current_user_id();
+			if ( $viewer_id ) {
+				$query->set( 'author__in', [ $viewer_id ] );
+			} else {
+				// Anonymous: no listings. Post IDs are never 0 (safe sentinel); author 0 is not.
+				$query->set( 'post__in', [ 0 ] );
+			}
 		}
 	}
 

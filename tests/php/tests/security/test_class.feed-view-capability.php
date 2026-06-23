@@ -135,7 +135,32 @@ class Tests_Feed_View_Capability extends WPJM_BaseTest {
 			$GLOBALS['wp_the_query'] = $previous_main_query;
 		}
 
-		// Anonymous viewer (user id 0) is fail-closed to no author.
-		$this->assertSame( [ 0 ], $query->get( 'author__in' ) );
+		// Anonymous viewer is fail-closed via post__in (post IDs are never 0), not via
+		// author__in — a listing can have post_author 0, which author__in => [0] would match.
+		$this->assertSame( [ 0 ], $query->get( 'post__in' ) );
+	}
+
+	/**
+	 * A listing with no author (post_author 0) must still be excluded for a denied
+	 * anonymous viewer. Regression for the author__in => [0] sentinel matching author-0
+	 * listings instead of excluding them.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 */
+	public function test_job_feed_omits_author_zero_listing_for_anonymous() {
+		$post_id = $this->factory->job_listing->create(
+			[
+				'post_author'  => 0,
+				'post_content' => self::SENTINEL,
+				'post_title'   => self::SENTINEL . ' orphan',
+			]
+		);
+		$this->logout();
+
+		$this->assertNotContains(
+			$post_id,
+			$this->job_feed_post_ids(),
+			'An author-0 listing must be excluded from the feed for a denied viewer.'
+		);
 	}
 }
