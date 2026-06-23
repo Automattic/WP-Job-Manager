@@ -712,7 +712,7 @@ class WP_Job_Manager_Post_Types {
 	public function job_feed() {
 		global $job_manager_keyword;
 
-		// Browse-capability gate: emit an empty feed (matching the [jobs] shortcode denial)
+		// Browse-capability gate — emit an empty feed (matching the [jobs] shortcode denial)
 		// rather than 404 / 403, so feed readers don't error on a configured-private site.
 		if ( ! job_manager_user_can_browse_job_listings() ) {
 			// phpcs:ignore WordPress.WP.DiscouragedFunctions
@@ -838,7 +838,7 @@ class WP_Job_Manager_Post_Types {
 			$query_args['author__in'] = $input_author;
 		}
 
-		// View-capability gate: when the configured View Job Capability denies the current
+		// View-capability gate — when the configured View Job Capability denies the current
 		// viewer, limit the feed to their own listings, mirroring the per-listing gate
 		// enforced by the single listing view and REST API. This overrides any requested
 		// author filter: a denied viewer may only ever see their own listings.
@@ -848,7 +848,7 @@ class WP_Job_Manager_Post_Types {
 				$query_args['author__in'] = [ $viewer_id ];
 			} else {
 				// Anonymous: no listings. Post IDs are never 0, so this is a safe empty
-				// sentinel, unlike author__in, since a listing can have post_author 0.
+				// sentinel — unlike author__in, since a listing can have post_author 0.
 				$query_args['post__in'] = [ 0 ];
 			}
 		}
@@ -877,7 +877,7 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Gates core feed queries for the job_listing post type so the default RSS / Atom
 	 * endpoints (?feed=rss2&post_type=job_listing, etc.) honor the browse capability and
-	 * exclude password-protected listings, matching the hardening applied to the custom
+	 * exclude password-protected listings — matching the hardening applied to the custom
 	 * job_feed and AJAX / REST paths.
 	 *
 	 * @param WP_Query $query The query.
@@ -899,7 +899,7 @@ class WP_Job_Manager_Post_Types {
 
 		$query->set( 'has_password', false );
 
-		// View-capability gate: see job_feed(): restrict a denied viewer to their own
+		// View-capability gate — see job_feed(): restrict a denied viewer to their own
 		// listings (none for anonymous) so the default RSS / Atom endpoints do not expose
 		// details the single listing view and REST API withhold.
 		if ( self::viewer_denied_by_view_cap() ) {
@@ -979,13 +979,18 @@ class WP_Job_Manager_Post_Types {
 	 * The oEmbed endpoint exposes a published listing's title and author identity as
 	 * machine-readable data without reaching the browse gate, single-listing view, or
 	 * single-item REST route, so a denied viewer could read restricted listing metadata
-	 * through it. Returning empty data makes the endpoint fail closed (a 404), matching
-	 * the single-item REST route ({@see WP_Job_Manager_REST_API::gate_view_capability_for_single()}).
+	 * through it. Returning empty data makes the endpoint fail closed with a 404, the same
+	 * response shape as the single-item REST route
+	 * ({@see WP_Job_Manager_REST_API::gate_view_capability_for_single()}).
 	 *
-	 * oEmbed is a single-item endpoint, so the per-listing {@see job_manager_user_can_view_job_listing()}
-	 * check, which lets an author reach their own listing and honours the `preview` bypass,
-	 * is part of the boundary here. The browse capability is also enforced because oEmbed
-	 * is a public discovery/reference surface.
+	 * The per-listing {@see job_manager_user_can_view_job_listing()} check — which lets an
+	 * author reach their own listing and honours the `preview` bypass — is part of the
+	 * boundary. This gate is intentionally *stricter* than the single-item REST route and the
+	 * single-listing view, which enforce the view capability only: oEmbed is a public
+	 * discovery/reference surface, fetched unsolicited by embedding clients, so the browse
+	 * capability is enforced too. A consequence is that a browse-denied author cannot reach
+	 * even their own listing's oEmbed, unlike the single-item route; their own listings remain
+	 * reachable via the job dashboard and the single listing view.
 	 *
 	 * @param array   $data The response data.
 	 * @param WP_Post $post The post object.
@@ -2246,7 +2251,7 @@ class WP_Job_Manager_Post_Types {
 	 * the site's view-capability gate denies the viewer. Used as the default `auth_view_callback`
 	 * for job listing meta fields, consumed by `WP_Job_Manager_REST_API::prepare_job_listing()`.
 	 *
-	 * @param bool   $allowed   Ignored; `prepare_job_listing()` always passes false.
+	 * @param bool   $allowed   Ignored — `prepare_job_listing()` always passes false.
 	 * @param string $meta_key  The meta key.
 	 * @param int    $post_id   Job listing's post ID.
 	 * @param int    $user_id   User ID.
@@ -2263,9 +2268,9 @@ class WP_Job_Manager_Post_Types {
 
 		// Mirror the bypass in WP_Job_Manager_REST_API::prepare_job_listing(): a user with
 		// edit_post on a *password-only* protected listing legitimately needs meta access
-		// to drive Gutenberg; without this, saving the post in the editor overwrites
+		// to drive Gutenberg — without this, saving the post in the editor overwrites
 		// `_company_name`, `_job_location`, `_application`, etc. with empty values.
-		// View-capability denials do NOT get this bypass; they remain the harder gate.
+		// View-capability denials do NOT get this bypass — they remain the harder gate.
 		if ( $is_password_blocked && ! $is_viewcap_blocked && user_can( $user_id, 'edit_post', $post_id ) ) {
 			return true;
 		}
