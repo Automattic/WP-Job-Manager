@@ -1073,6 +1073,24 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * An invalid author filter must not leak orphaned listings (post_author 0).
+	 *
+	 * The parser returns the `[0]` fail-closed sentinel for supplied-but-invalid
+	 * author input. Applied as `author__in => [0]` this would match orphaned
+	 * listings, since a listing can legitimately have post_author 0.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_invalid_author_excludes_orphan_listing() {
+		$this->factory->job_listing->create( [ 'post_author' => 0 ] );
+
+		$result = get_job_listings( [ 'author' => 'abc' ] );
+
+		$this->assertSame( 0, $result->found_posts, 'An orphaned listing must not leak when the author filter yields no valid IDs.' );
+	}
+
+	/**
 	 * Mixed valid and invalid IDs: only valid IDs should be used.
 	 *
 	 * @since $$next-version$$
