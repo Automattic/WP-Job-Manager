@@ -84,6 +84,35 @@ class WP_Test_Submit_Job_Submission_Limit extends WPJM_BaseTest {
 	}
 
 	/**
+	 * The limit is inclusive: a user who already has exactly the maximum number
+	 * of listings cannot publish another previewed listing.
+	 */
+	public function test_preview_listing_not_promoted_at_exactly_limit() {
+		$this->login_as_employer();
+		$user_id = get_current_user_id();
+
+		update_option( 'job_manager_submission_limit', 1 );
+
+		// Exactly at the limit of 1.
+		$this->factory->job_listing->create( [ 'post_author' => $user_id ] );
+
+		$preview_id = $this->factory->job_listing->create(
+			[
+				'post_author' => $user_id,
+				'post_status' => 'preview',
+			]
+		);
+
+		$this->continue_from_preview( $preview_id );
+
+		$this->assertEquals(
+			'preview',
+			get_post_status( $preview_id ),
+			'A user at exactly the limit must not be able to publish another listing.'
+		);
+	}
+
+	/**
 	 * The limit re-check does not interfere with the normal submission flow:
 	 * a user under the limit can publish their previewed listing.
 	 */
