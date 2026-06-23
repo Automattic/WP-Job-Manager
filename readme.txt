@@ -151,6 +151,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Fix enforcement of the listing submission limit.
 * Apply the listing submission limit as an inclusive maximum.
 * Apply the View Job Capability to RSS and Atom feeds.
+* Apply the View Job Capability to the REST search endpoint.
 * Fix author filtering on job listing queries and feeds.
 
 ### 2.4.1 - 2026-02-24
