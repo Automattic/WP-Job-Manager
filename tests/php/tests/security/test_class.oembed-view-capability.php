@@ -4,16 +4,16 @@
  * (`/wp-json/oembed/1.0/embed?url=...`).
  *
  * The oEmbed endpoint returns a published listing's title and author identity as
- * machine-readable data without reaching the single-listing view or the single-item
- * REST route. For a viewer the View Job Capability denies, it must fail closed,
- * matching the single-item REST route, which returns 404.
+ * machine-readable data without reaching the browse gate, single-listing view, or
+ * single-item REST route. For a viewer denied by browse or View Job Capability, it
+ * must fail closed, matching the single-item REST route, which returns 404.
  *
  * Unlike core search, oEmbed is a single-item endpoint, so the per-listing check
- * (which lets an author reach their own listing) is the correct boundary here.
+ * (which lets an author reach their own listing) remains part of the boundary.
  *
  * @package wp-job-manager/tests
  */
-class Tests_oEmbed_View_Capability extends WPJM_BaseTest {
+class Tests_oEmbed_View_Capability extends WPJM_REST_TestCase {
 
 	public function setUp(): void {
 		parent::setUp();
@@ -23,7 +23,15 @@ class Tests_oEmbed_View_Capability extends WPJM_BaseTest {
 
 	public function tearDown(): void {
 		delete_option( 'job_manager_view_job_listing_capability' );
+		delete_option( 'job_manager_browse_job_listings_capability' );
 		parent::tearDown();
+	}
+
+	private function get_oembed_endpoint_response( $post_id ) {
+		return $this->get(
+			'/oembed/1.0/embed',
+			[ 'url' => home_url( '/?post_type=job_listing&p=' . $post_id ) ]
+		);
 	}
 
 	/**
@@ -42,6 +50,44 @@ class Tests_oEmbed_View_Capability extends WPJM_BaseTest {
 	}
 
 	/**
+	 * A browse-restricted listing must produce no oEmbed data even when viewing is
+	 * otherwise unrestricted.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::gate_oembed_response_for_listings
+	 */
+	public function test_oembed_excludes_listing_when_browse_denied() {
+		delete_option( 'job_manager_view_job_listing_capability' );
+		update_option( 'job_manager_browse_job_listings_capability', [ 'read' ] );
+		$post_id = $this->factory->job_listing->create();
+		$this->logout();
+
+		$this->assertEmpty(
+			get_oembed_response_data( get_post( $post_id ), 600 ),
+			'A browse-restricted listing must not expose oEmbed data to a denied viewer.'
+		);
+	}
+
+	/**
+	 * The public oEmbed REST endpoint must fail closed for a restricted listing.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::gate_oembed_response_for_listings
+	 */
+	public function test_oembed_endpoint_returns_not_found_for_restricted_listing() {
+		$post_id = $this->factory->job_listing->create(
+			[ 'post_title' => 'OEMBED_RESTRICTED_LISTING_TITLE' ]
+		);
+		$this->logout();
+
+		$response = $this->get_oembed_endpoint_response( $post_id );
+		$this->assertResponseStatus( $response, 404 );
+		$this->assertStringNotContainsString(
+			'OEMBED_RESTRICTED_LISTING_TITLE',
+			wp_json_encode( $response->get_data() ),
+			'The oEmbed REST endpoint must not serialize restricted listing metadata.'
+		);
+	}
+
+	/**
 	 * Positive control: a capable viewer still gets oEmbed data, so the gate does not over-block.
 	 *
 	 * @covers WP_Job_Manager_Post_Types::gate_oembed_response_for_listings
@@ -52,6 +98,26 @@ class Tests_oEmbed_View_Capability extends WPJM_BaseTest {
 
 		$data = get_oembed_response_data( get_post( $post_id ), 600 );
 		$this->assertNotEmpty( $data, 'A capable viewer must still receive oEmbed data.' );
+	}
+
+	/**
+	 * Positive control for the public oEmbed REST endpoint.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::gate_oembed_response_for_listings
+	 */
+	public function test_oembed_endpoint_includes_listing_for_capable_viewer() {
+		$post_id = $this->factory->job_listing->create(
+			[ 'post_title' => 'OEMBED_VISIBLE_LISTING_TITLE' ]
+		);
+		$this->login_as_admin();
+
+		$response = $this->get_oembed_endpoint_response( $post_id );
+		$this->assertResponseStatus( $response, 200 );
+		$this->assertStringContainsString(
+			'OEMBED_VISIBLE_LISTING_TITLE',
+			wp_json_encode( $response->get_data() ),
+			'A capable viewer must still receive listing metadata from the oEmbed REST endpoint.'
+		);
 	}
 
 	/**

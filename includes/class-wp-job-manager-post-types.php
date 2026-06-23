@@ -977,14 +977,15 @@ class WP_Job_Manager_Post_Types {
 	 * Gates the oEmbed response (`/wp-json/oembed/1.0/embed?url=...`) for a single listing.
 	 *
 	 * The oEmbed endpoint exposes a published listing's title and author identity as
-	 * machine-readable data without reaching the single-listing view or the single-item
-	 * REST route, so a denied viewer could read restricted listing metadata through it.
-	 * Returning empty data makes the endpoint fail closed (a 404), matching the single-item
-	 * REST route ({@see WP_Job_Manager_REST_API::gate_view_capability_for_single()}).
+	 * machine-readable data without reaching the browse gate, single-listing view, or
+	 * single-item REST route, so a denied viewer could read restricted listing metadata
+	 * through it. Returning empty data makes the endpoint fail closed (a 404), matching
+	 * the single-item REST route ({@see WP_Job_Manager_REST_API::gate_view_capability_for_single()}).
 	 *
 	 * oEmbed is a single-item endpoint, so the per-listing {@see job_manager_user_can_view_job_listing()}
 	 * check, which lets an author reach their own listing and honours the `preview` bypass,
-	 * is the correct boundary here, unlike the query-level search and feed gates.
+	 * is part of the boundary here. The browse capability is also enforced because oEmbed
+	 * is a public discovery/reference surface.
 	 *
 	 * @param array   $data The response data.
 	 * @param WP_Post $post The post object.
@@ -993,7 +994,7 @@ class WP_Job_Manager_Post_Types {
 	public function gate_oembed_response_for_listings( $data, $post ) {
 		if ( $post instanceof WP_Post
 			&& self::PT_LISTING === $post->post_type
-			&& ! job_manager_user_can_view_job_listing( $post->ID ) ) {
+			&& ( ! job_manager_user_can_browse_job_listings() || ! job_manager_user_can_view_job_listing( $post->ID ) ) ) {
 			return [];
 		}
 
