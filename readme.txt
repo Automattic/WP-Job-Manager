@@ -147,6 +147,9 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
+### 2.4.3
+* Fix enforcement of the listing submission limit.
+
 ### 2.4.1 - 2026-02-24
 * Add permission check to listing query parameters (#2914)
 * Fix structured data output for password-protected listings (#2913)
