@@ -96,6 +96,40 @@ class Tests_REST_Search_View_Capability extends WPJM_REST_TestCase {
 	}
 
 	/**
+	 * A signed-in author denied by the view capability does NOT get their own listing
+	 * back from generic search. This is intentionally stricter than the single-item route
+	 * and the feed gate (see gate_search_query_for_listings()): the search handler runs one
+	 * query across every requested subtype, so honouring author ownership would either leak
+	 * other contributors' content or desync the handler's pagination counts. Their own
+	 * listings stay reachable via the job dashboard and the single-item route.
+	 *
+	 * @covers WP_Job_Manager_REST_API::gate_search_query_for_listings
+	 */
+	public function test_search_excludes_own_listing_for_denied_signed_in_author() {
+		// Require a capability the author does not hold, so they are denied by the view cap
+		// yet still own the listing (the `read` cap from setUp is held by every logged-in user).
+		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
+
+		$author_id = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$post_id   = $this->factory->job_listing->create(
+			[ 'post_author' => $author_id, 'post_title' => 'SEARCHTOKEN own listing' ]
+		);
+		// Sanity check: the author can still view their own listing via the per-listing gate,
+		// so the exclusion below is specific to generic search, not a loss of access overall.
+		wp_set_current_user( $author_id );
+		$this->assertTrue(
+			job_manager_user_can_view_job_listing( $post_id ),
+			'The author should still be permitted to view their own listing individually.'
+		);
+
+		$this->assertNotContains(
+			$post_id,
+			$this->search_ids( [ 'subtype' => 'job_listing', 'search' => 'SEARCHTOKEN' ] ),
+			'Generic search intentionally fails closed: a denied author does not get own listings here.'
+		);
+	}
+
+	/**
 	 * When browsing itself is gated, a denied viewer gets no listings from search.
 	 *
 	 * @covers WP_Job_Manager_REST_API::gate_search_query_for_listings

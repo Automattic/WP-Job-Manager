@@ -42,6 +42,15 @@ class WP_Job_Manager_REST_API {
 	 * already excluded from search by WP core, so only the view-capability boundary is
 	 * handled here.
 	 *
+	 * Note: this is intentionally stricter than the single-item route and the feed gate. Both
+	 * of those let a denied *author* still reach their own listings — the single route via
+	 * {@see job_manager_user_can_view_job_listing()}, the feed via `author__in => [ user_id ]`.
+	 * That cannot be mirrored here: the search handler runs one WP_Query across every requested
+	 * subtype, so an `author__in` constraint would also restrict the viewer's posts and pages,
+	 * and per-listing filtering of the results would desync the handler's `found_posts` pagination
+	 * (itself an oracle). A denied author therefore does not see their own listings through generic
+	 * search; their own listings remain reachable via the job dashboard and the single-item route.
+	 *
 	 * @param array           $query_args WP_Query args the search handler will run.
 	 * @param WP_REST_Request $request    The REST search request.
 	 * @return array
