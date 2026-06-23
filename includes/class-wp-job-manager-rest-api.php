@@ -24,6 +24,51 @@ class WP_Job_Manager_REST_API {
 		add_filter( 'rest_prepare_job_listing', [ __CLASS__, 'prepare_job_listing' ], 10, 2 );
 		add_filter( 'rest_job_listing_query', [ __CLASS__, 'exclude_filled_from_query' ], 10, 2 );
 		add_filter( 'rest_request_before_callbacks', [ __CLASS__, 'gate_view_capability_for_single' ], 10, 3 );
+		add_filter( 'rest_post_search_query', [ __CLASS__, 'gate_search_query_for_listings' ], 10, 2 );
+	}
+
+	/**
+	 * Withholds `job_listing` results from the generic WordPress REST Search endpoint
+	 * (`/wp/v2/search`) for a viewer denied by the browse or View Job Capability options.
+	 *
+	 * The search controller runs its own query and never reaches the single-item route
+	 * gate ({@see gate_view_capability_for_single()}) or the job_listing collection gate
+	 * ({@see exclude_filled_from_query()}), so without this a denied viewer can enumerate
+	 * restricted listings — id, title, url — and use the search term as a content oracle.
+	 *
+	 * When the viewer is denied, the `job_listing` post type is dropped from the searched
+	 * types so other requested subtypes (posts, pages) are unaffected; if it was the only
+	 * requested type the query is forced to return nothing. Password-protected listings are
+	 * already excluded from search by WP core, so only the view-capability boundary is
+	 * handled here.
+	 *
+	 * @param array           $query_args WP_Query args the search handler will run.
+	 * @param WP_REST_Request $request    The REST search request.
+	 * @return array
+	 */
+	public static function gate_search_query_for_listings( $query_args, $request ) {
+		$post_types = isset( $query_args['post_type'] ) ? (array) $query_args['post_type'] : [];
+		if ( ! in_array( WP_Job_Manager_Post_Types::PT_LISTING, $post_types, true ) ) {
+			return $query_args;
+		}
+
+		$denied = ! job_manager_user_can_browse_job_listings()
+			|| WP_Job_Manager_Post_Types::viewer_denied_by_view_cap();
+		if ( ! $denied ) {
+			return $query_args;
+		}
+
+		$remaining = array_values( array_diff( $post_types, [ WP_Job_Manager_Post_Types::PT_LISTING ] ) );
+		if ( $remaining ) {
+			// Other subtypes were requested too — keep searching those, just not listings.
+			$query_args['post_type'] = $remaining;
+		} else {
+			// Listings were the only requested type. Post IDs are never 0, so this is a safe
+			// empty sentinel.
+			$query_args['post__in'] = [ 0 ];
+		}
+
+		return $query_args;
 	}
 
 	/**
