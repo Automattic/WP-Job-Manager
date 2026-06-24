@@ -212,6 +212,8 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
 		add_action( 'pre_get_posts', [ $this, 'gate_feed_query_for_listings' ] );
+		add_action( 'pre_get_posts', [ $this, 'gate_search_query_for_listings' ] );
+		add_filter( 'oembed_response_data', [ $this, 'gate_oembed_response_for_listings' ], 10, 2 );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -909,6 +911,99 @@ class WP_Job_Manager_Post_Types {
 				$query->set( 'post__in', [ 0 ] );
 			}
 		}
+	}
+
+	/**
+	 * Gates the core front-end search query - and search feeds - so that restricted
+	 * job_listing posts are not disclosed through ordinary WordPress search.
+	 *
+	 * The job_listing post type is registered with `exclude_from_search => false`, so the
+	 * default search query (`/?s=...`, and its `&feed=rss2` variant) spans every searchable
+	 * post type and renders listing titles and full bodies. That query never reaches the
+	 * [jobs] shortcode, AJAX, REST, or single-listing gates, so without this a denied
+	 * viewer can read restricted listing bodies through site search and search feeds.
+	 *
+	 * When the viewer cannot browse listings, or the configured View Job Capability denies
+	 * them, job_listing is dropped from the set of searched post types so other types
+	 * (posts, pages) are unaffected; if it was the only searched type the query is forced to
+	 * return nothing. Mirrors the REST search gate
+	 * ({@see WP_Job_Manager_REST_API::gate_search_query_for_listings()}).
+	 *
+	 * Note: this is intentionally stricter than the single-listing view and the feed gate,
+	 * which let a denied *author* still reach their own listings. The search query runs
+	 * across every searchable post type, so an `author__in` constraint would also restrict
+	 * the viewer's posts and pages. A denied author therefore does not see their own listings
+	 * through site search; they remain reachable via the job dashboard and single listing view.
+	 *
+	 * Password-protected listings are already withheld from search by WP core, so only the
+	 * capability boundary is handled here.
+	 *
+	 * @param WP_Query $query The query.
+	 */
+	public function gate_search_query_for_listings( $query ) {
+		if ( is_admin() || ! $query->is_main_query() || ! $query->is_search() ) {
+			return;
+		}
+
+		if ( job_manager_user_can_browse_job_listings() && ! self::viewer_denied_by_view_cap() ) {
+			return;
+		}
+
+		$requested = $query->get( 'post_type' );
+		if ( empty( $requested ) || 'any' === $requested ) {
+			// No explicit post type: WordPress searches every type with exclude_from_search => false.
+			$searched = array_values( get_post_types( [ 'exclude_from_search' => false ] ) );
+		} else {
+			$searched = array_values( (array) $requested );
+		}
+
+		if ( ! in_array( self::PT_LISTING, $searched, true ) ) {
+			return;
+		}
+
+		$remaining = array_values( array_diff( $searched, [ self::PT_LISTING ] ) );
+		if ( $remaining ) {
+			// Other types were searched too; keep those, just not listings.
+			$query->set( 'post_type', $remaining );
+		} else {
+			// Listings were the only searched type. Force no results rather than letting
+			// WP_Query fall back to the default 'post' type. Post IDs are never 0.
+			$query->set( 'post_type', self::PT_LISTING );
+			$query->set( 'post__in', [ 0 ] );
+		}
+	}
+
+	/**
+	 * Gates the oEmbed response (`/wp-json/oembed/1.0/embed?url=...`) for a single listing.
+	 *
+	 * The oEmbed endpoint exposes a published listing's title and author identity as
+	 * machine-readable data without reaching the browse gate, single-listing view, or
+	 * single-item REST route, so a denied viewer could read restricted listing metadata
+	 * through it. Returning empty data makes the endpoint fail closed with a 404, the same
+	 * response shape as the single-item REST route
+	 * ({@see WP_Job_Manager_REST_API::gate_view_capability_for_single()}).
+	 *
+	 * The per-listing {@see job_manager_user_can_view_job_listing()} check — which lets an
+	 * author reach their own listing and honours the `preview` bypass — is part of the
+	 * boundary. This gate is intentionally *stricter* than the single-item REST route and the
+	 * single-listing view, which enforce the view capability only: oEmbed is a public
+	 * discovery/reference surface, fetched unsolicited by embedding clients, so the browse
+	 * capability is enforced too. A consequence is that a browse-denied author cannot reach
+	 * even their own listing's oEmbed, unlike the single-item route; their own listings remain
+	 * reachable via the job dashboard and the single listing view.
+	 *
+	 * @param array   $data The response data.
+	 * @param WP_Post $post The post object.
+	 * @return array
+	 */
+	public function gate_oembed_response_for_listings( $data, $post ) {
+		if ( $post instanceof WP_Post
+			&& self::PT_LISTING === $post->post_type
+			&& ( ! job_manager_user_can_browse_job_listings() || ! job_manager_user_can_view_job_listing( $post->ID ) ) ) {
+			return [];
+		}
+
+		return $data;
 	}
 
 	/**
