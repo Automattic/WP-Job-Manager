@@ -212,6 +212,8 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
 		add_action( 'pre_get_posts', [ $this, 'gate_feed_query_for_listings' ] );
+		add_action( 'pre_get_posts', [ $this, 'gate_search_query_for_listings' ] );
+		add_filter( 'oembed_response_data', [ $this, 'gate_oembed_response_for_listings' ], 10, 2 );
 
 		// Single job content.
 		$this->job_content_filter( true );
@@ -744,6 +746,17 @@ class WP_Job_Manager_Post_Types {
 			$input_job_categories = false;
 		}
 
+		if ( isset( $_GET['author'] ) ) {
+			if ( is_array( $_GET['author'] ) ) {
+				// Array-shaped query string (?author[]=1) is not a supported format - fails closed.
+				$input_author = [ 0 ];
+			} else {
+				$input_author = _wpjm_parse_author_ids( sanitize_text_field( wp_unslash( $_GET['author'] ) ) );
+			}
+		} else {
+			$input_author = null;
+		}
+
 		$job_manager_keyword = isset( $_GET['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_GET['search_keywords'] ) ) : '';
 		$input_featured      = isset( $_GET['featured'] ) ? sanitize_text_field( wp_unslash( $_GET['featured'] ) ) : null;
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
@@ -816,6 +829,30 @@ class WP_Job_Manager_Post_Types {
 			];
 		}
 
+		if ( [ 0 ] === $input_author ) {
+			// The author filter was supplied but yielded no valid IDs. Fail closed via
+			// post__in: a listing can legitimately have post_author 0, so author__in => [0]
+			// would match orphaned listings instead of excluding them.
+			$query_args['post__in'] = [ 0 ];
+		} elseif ( null !== $input_author ) {
+			$query_args['author__in'] = $input_author;
+		}
+
+		// View-capability gate — when the configured View Job Capability denies the current
+		// viewer, limit the feed to their own listings, mirroring the per-listing gate
+		// enforced by the single listing view and REST API. This overrides any requested
+		// author filter: a denied viewer may only ever see their own listings.
+		if ( self::viewer_denied_by_view_cap() ) {
+			$viewer_id = get_current_user_id();
+			if ( $viewer_id ) {
+				$query_args['author__in'] = [ $viewer_id ];
+			} else {
+				// Anonymous: no listings. Post IDs are never 0, so this is a safe empty
+				// sentinel — unlike author__in, since a listing can have post_author 0.
+				$query_args['post__in'] = [ 0 ];
+			}
+		}
+
 		if ( ! empty( $job_manager_keyword ) ) {
 			$query_args['s'] = $job_manager_keyword;
 			add_filter( 'posts_search', 'get_job_listings_keyword_search', 10, 2 );
@@ -861,6 +898,139 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$query->set( 'has_password', false );
+
+		// View-capability gate — see job_feed(): restrict a denied viewer to their own
+		// listings (none for anonymous) so the default RSS / Atom endpoints do not expose
+		// details the single listing view and REST API withhold.
+		if ( self::viewer_denied_by_view_cap() ) {
+			$viewer_id = get_current_user_id();
+			if ( $viewer_id ) {
+				$query->set( 'author__in', [ $viewer_id ] );
+			} else {
+				// Anonymous: no listings. Post IDs are never 0 (safe sentinel); author 0 is not.
+				$query->set( 'post__in', [ 0 ] );
+			}
+		}
+	}
+
+	/**
+	 * Gates the core front-end search query - and search feeds - so that restricted
+	 * job_listing posts are not disclosed through ordinary WordPress search.
+	 *
+	 * The job_listing post type is registered with `exclude_from_search => false`, so the
+	 * default search query (`/?s=...`, and its `&feed=rss2` variant) spans every searchable
+	 * post type and renders listing titles and full bodies. That query never reaches the
+	 * [jobs] shortcode, AJAX, REST, or single-listing gates, so without this a denied
+	 * viewer can read restricted listing bodies through site search and search feeds.
+	 *
+	 * When the viewer cannot browse listings, or the configured View Job Capability denies
+	 * them, job_listing is dropped from the set of searched post types so other types
+	 * (posts, pages) are unaffected; if it was the only searched type the query is forced to
+	 * return nothing. Mirrors the REST search gate
+	 * ({@see WP_Job_Manager_REST_API::gate_search_query_for_listings()}).
+	 *
+	 * Note: this is intentionally stricter than the single-listing view and the feed gate,
+	 * which let a denied *author* still reach their own listings. The search query runs
+	 * across every searchable post type, so an `author__in` constraint would also restrict
+	 * the viewer's posts and pages. A denied author therefore does not see their own listings
+	 * through site search; they remain reachable via the job dashboard and single listing view.
+	 *
+	 * Password-protected listings are already withheld from search by WP core, so only the
+	 * capability boundary is handled here.
+	 *
+	 * @param WP_Query $query The query.
+	 */
+	public function gate_search_query_for_listings( $query ) {
+		if ( is_admin() || ! $query->is_main_query() || ! $query->is_search() ) {
+			return;
+		}
+
+		if ( job_manager_user_can_browse_job_listings() && ! self::viewer_denied_by_view_cap() ) {
+			return;
+		}
+
+		$requested = $query->get( 'post_type' );
+		if ( empty( $requested ) || 'any' === $requested ) {
+			// No explicit post type: WordPress searches every type with exclude_from_search => false.
+			$searched = array_values( get_post_types( [ 'exclude_from_search' => false ] ) );
+		} else {
+			$searched = array_values( (array) $requested );
+		}
+
+		if ( ! in_array( self::PT_LISTING, $searched, true ) ) {
+			return;
+		}
+
+		$remaining = array_values( array_diff( $searched, [ self::PT_LISTING ] ) );
+		if ( $remaining ) {
+			// Other types were searched too; keep those, just not listings.
+			$query->set( 'post_type', $remaining );
+		} else {
+			// Listings were the only searched type. Force no results rather than letting
+			// WP_Query fall back to the default 'post' type. Post IDs are never 0.
+			$query->set( 'post_type', self::PT_LISTING );
+			$query->set( 'post__in', [ 0 ] );
+		}
+	}
+
+	/**
+	 * Gates the oEmbed response (`/wp-json/oembed/1.0/embed?url=...`) for a single listing.
+	 *
+	 * The oEmbed endpoint exposes a published listing's title and author identity as
+	 * machine-readable data without reaching the browse gate, single-listing view, or
+	 * single-item REST route, so a denied viewer could read restricted listing metadata
+	 * through it. Returning empty data makes the endpoint fail closed with a 404, the same
+	 * response shape as the single-item REST route
+	 * ({@see WP_Job_Manager_REST_API::gate_view_capability_for_single()}).
+	 *
+	 * The per-listing {@see job_manager_user_can_view_job_listing()} check — which lets an
+	 * author reach their own listing and honours the `preview` bypass — is part of the
+	 * boundary. This gate is intentionally *stricter* than the single-item REST route and the
+	 * single-listing view, which enforce the view capability only: oEmbed is a public
+	 * discovery/reference surface, fetched unsolicited by embedding clients, so the browse
+	 * capability is enforced too. A consequence is that a browse-denied author cannot reach
+	 * even their own listing's oEmbed, unlike the single-item route; their own listings remain
+	 * reachable via the job dashboard and the single listing view.
+	 *
+	 * @param array   $data The response data.
+	 * @param WP_Post $post The post object.
+	 * @return array
+	 */
+	public function gate_oembed_response_for_listings( $data, $post ) {
+		if ( $post instanceof WP_Post
+			&& self::PT_LISTING === $post->post_type
+			&& ( ! job_manager_user_can_browse_job_listings() || ! job_manager_user_can_view_job_listing( $post->ID ) ) ) {
+			return [];
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Whether the configured View Job Capability denies the current viewer.
+	 *
+	 * Used to gate listing queries at the query level (feeds, REST search). Mirrors the
+	 * capability check in {@see job_manager_user_can_view_job_listing()}; the per-listing
+	 * author-owns-it and `preview` bypasses there are handled by callers, by restricting
+	 * the query to the viewer's own listings rather than excluding them. When the option is
+	 * empty (the default), viewing is unrestricted and this returns false.
+	 *
+	 * @return bool True when the viewer cannot satisfy the configured view capability.
+	 */
+	public static function viewer_denied_by_view_cap() {
+		$caps = get_option( 'job_manager_view_job_listing_capability' );
+
+		if ( empty( $caps ) ) {
+			return false;
+		}
+
+		foreach ( (array) $caps as $cap ) {
+			if ( current_user_can( $cap ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**

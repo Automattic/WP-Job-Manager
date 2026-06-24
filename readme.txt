@@ -1,5 +1,5 @@
 === WP Job Manager ===
-Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
+Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryanc413, richardmtl, scarstocea
 Tags: jobs, careers, company, hiring, job board
 Requires at least: 6.4
 Tested up to: 6.9
@@ -149,6 +149,12 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 ### 2.4.3
 * Add a square format hint and a configurable maximum upload size for company logos.
+* Fix enforcement of the listing submission limit.
+* Apply the listing submission limit as an inclusive maximum.
+* Apply the View Job Capability to RSS and Atom feeds.
+* Apply the View Job Capability to the REST search endpoint.
+* Apply the View Job Capability to WordPress search and oEmbed output.
+* Fix author filtering on job listing queries and feeds.
 
 ### 2.4.1 - 2026-02-24
 * Add permission check to listing query parameters (#2914)

@@ -268,7 +268,7 @@ class WP_Job_Manager_Promoted_Jobs_Admin {
 			</div>
 			';
 		} elseif ( 'publish' === $post->post_status ) {
-			echo '<button class="promote_job button button-primary" data-href=' . esc_url( $promote_url ) . '>' . esc_html__( 'Promote', 'wp-job-manager' ) . '</button>';
+			echo '<button class="promote_job button button-primary" data-href="' . esc_url( $promote_url ) . '">' . esc_html__( 'Promote', 'wp-job-manager' ) . '</button>';
 		} else {
 			$title = __( 'The job needs to be published in order to be promoted.', 'wp-job-manager' );
 			echo '<button type="button" class="button button-primary tips disabled" aria-disabled="true" title="' . esc_attr( $title ) . '" data-tip="' . esc_attr( $title ) . '">' . esc_html__( 'Promote', 'wp-job-manager' ) . '</button>';
