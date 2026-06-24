@@ -1033,7 +1033,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_single_id() {
@@ -1049,7 +1049,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_multiple_ids() {
@@ -1067,7 +1067,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_empty_string_shows_no_filter() {
@@ -1083,7 +1083,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Non-numeric input should return zero results (fails-closed).
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_non_numeric_returns_no_results() {
@@ -1098,7 +1098,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Negative IDs should not be converted to positive via absint and must return zero results.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_negative_id_returns_no_results() {
@@ -1111,7 +1111,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_zero_returns_no_results() {
@@ -1130,7 +1130,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * author input. Applied as `author__in => [0]` this would match orphaned
 	 * listings, since a listing can legitimately have post_author 0.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_invalid_author_excludes_orphan_listing() {
@@ -1144,7 +1144,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Mixed valid and invalid IDs: only valid IDs should be used.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_mixed_valid_and_invalid() {
@@ -1163,7 +1163,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Array input with valid user IDs should work.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_author_array_input() {
@@ -1181,7 +1181,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_null_returns_null() {
@@ -1189,7 +1189,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_empty_string_returns_null() {
@@ -1197,7 +1197,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_single_numeric_string() {
@@ -1205,7 +1205,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_comma_separated() {
@@ -1213,7 +1213,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_whitespace_tolerated() {
@@ -1221,7 +1221,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_non_numeric_fails_closed() {
@@ -1229,7 +1229,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_zero_fails_closed() {
@@ -1237,7 +1237,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_negative_fails_closed() {
@@ -1245,7 +1245,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_mixed_drops_invalid_tokens() {
@@ -1253,7 +1253,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_array_of_ints() {
@@ -1261,7 +1261,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_array_mixed_drops_invalid() {
@@ -1269,7 +1269,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_empty_array_fails_closed() {
@@ -1277,7 +1277,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers ::_wpjm_parse_author_ids
 	 */
 	public function test_parse_author_ids_integer_input() {
