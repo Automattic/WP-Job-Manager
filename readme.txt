@@ -148,6 +148,7 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 == Changelog ==
 
 ### 2.4.3
+* Add a square format hint and a configurable maximum upload size for company logos.
 * Fix enforcement of the listing submission limit.
 * Apply the listing submission limit as an inclusive maximum.
 * Apply the View Job Capability to RSS and Atom feeds.
