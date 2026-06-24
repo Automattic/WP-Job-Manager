@@ -1,5 +1,8 @@
 # WP Job Manager
 
+## 2.4.4 - 2026-06-24
+* Fix: Restore the frontend styles and scripts that were missing from the 2.4.3 package. The 2.4.3 release was built without its compiled CSS and JavaScript, leaving the employer job dashboard unstyled and breaking frontend features such as the job application form. (#2990)
+
 ## 2.4.3 - 2026-06-24
 * Apply the View Job Capability to WordPress search and oEmbed output.
 * Apply the View Job Capability to the REST search endpoint (#2984)

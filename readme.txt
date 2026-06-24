@@ -148,27 +148,49 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 == Changelog ==
 
 ### 2.4.4 - 2026-06-24
-* Fix css and JS files that were missing from 2.4.3
+* Fix: Restore the frontend styles and scripts that were missing from the 2.4.3 package. The 2.4.3 release was built without its compiled CSS and JavaScript, leaving the employer job dashboard unstyled and breaking frontend features such as the job application form. (#2990)
 
 ### 2.4.3 - 2026-06-24
-* Add a square format hint and a configurable maximum upload size for company logos.
-* Fix enforcement of the listing submission limit.
-* Apply the listing submission limit as an inclusive maximum.
-* Apply the View Job Capability to RSS and Atom feeds.
-* Apply the View Job Capability to the REST search endpoint.
 * Apply the View Job Capability to WordPress search and oEmbed output.
-* Fix author filtering on job listing queries and feeds.
+* Apply the View Job Capability to the REST search endpoint (#2984)
+* Fail closed correctly when an author filter resolves to no valid IDs (#2983)
+* Apply the View Job Capability to job listing feeds (#2982)
+* Enforce listing submission limit when publishing a previewed listing (#2981)
+* Restore PHP 8.4 test coverage — modernise bootstrap error handler (#2970)
+* Fix: Promote button `data-href` attribute now correctly quoted in job listings table.
+* Fix: Promote URL in inline script now escaped with `esc_js()`.
+* Author filter follow-up: centralize parsing, close AJAX array bypass (#2958)
+* Add square-format hint and configurable max size for company logo uploads (#2957)
+* "Remove "See what's new in 2.3" from Job Statistics Banner"
+* New: The `[jobs]` shortcode now supports an `author` attribute to filter listings by user ID (e.g. `[jobs author="42"]` or `[jobs author="1,2,3"]`)
+
+### 2.4.2 - 2026-05-12
+* Fix Job Dashboard actions menu on Safari (#2947)
+* Harden submit-form session cookies (#2945)
+* Fixes a REST API information disclosure where the body, excerpt, and existence of listings restricted by view-capability were exposed to denied viewers. Restricted listings now return 404 indistinguishable from a missing post, including HEAD probes and listings that are also password-protected.
+* Fixes a data-loss bug where editors opening a password-protected listing in the block editor would save empty meta values (location, company name, application target).
+* Fixes a series of information disclosure issues affecting password-protected and capability-restricted job listings.
+* Harden stats AJAX endpoint input validation and rate limiting (#2938)
+* Company logo uploads now accept WebP images by default
+* New filter `job_manager_company_logo_allowed_mime_types` allows customizing allowed file types for the company logo field
+* The salary currency field on the job submission form now correctly reflects the configured default currency in its placeholder and helper text.
+* Filled job listings are no longer exposed via the REST API.
+* Job categories are now included in the job RSS feed XML output.
+* Added `featured=true` query parameter support to the job RSS feed to allow filtering by featured listings only.
+* Fixed PHP 8+ undefined array key warning in the widget caching methods.
+* Updated Twitter profile links to use the new `x.com` domain and updated related labels to "X / Twitter" to reflect the platform rebrand.
+* Added a Settings link to the plugin action links on the Plugins screen for quicker access to plugin settings.
 
 ### 2.4.1 - 2026-02-24
 * Add permission check to listing query parameters (#2914)
 * Fix structured data output for password-protected listings (#2913)
+
 * Update actions/cache to use v4 (#2896)
 * reCaptcha script not being loaded (#2893)
 * add a additional action to the do_feed_rss2
 * fix hardcoded dashboard expiration date format
 * Dev: Fix deprecated  methods
 * Fix file input field for forms not marked as required
-* Fix broken access control issue reported on Patchstack.
 
 ### 2.4.0 - 2024-08-08
 * Fix job dashboard actions menu in Safari
