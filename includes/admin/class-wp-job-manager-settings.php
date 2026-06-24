@@ -499,17 +499,18 @@ class WP_Job_Manager_Settings {
 							'track'   => 'value',
 						],
 						[
-							'name'        => 'job_manager_company_logo_max_size',
-							'std'         => '',
-							'placeholder' => '',
-							'label'       => __( 'Company Logo Max Size', 'wp-job-manager' ),
-							'desc'        => __( 'Maximum file size for company logo uploads, in kilobytes. Leave blank to use the server default.', 'wp-job-manager' ),
-							'type'        => 'text',
-							'attributes'  => [
-								'type' => 'number',
+							'name'              => 'job_manager_company_logo_max_size',
+							'std'               => '',
+							'placeholder'       => __( 'No limit', 'wp-job-manager' ),
+							'label'             => __( 'Company Logo Max Size', 'wp-job-manager' ),
+							'desc'              => __( 'Maximum file size for company logo uploads, in kilobytes. Leave blank to use the server default.', 'wp-job-manager' ),
+							'type'              => 'number',
+							'attributes'        => [
 								'min'  => '0',
 								'step' => '1',
 							],
+							'sanitize_callback' => [ $this, 'sanitize_company_logo_max_size' ],
+							'track'             => 'value',
 						],
 						[
 							'name'       => 'job_manager_show_agreement_job_submission',
@@ -1389,6 +1390,18 @@ class WP_Job_Manager_Settings {
 	 * @return string|int
 	 */
 	public function sanitize_submission_limit( $value ) {
+		return $this->sanitize_numeric_boundaries( $value, 0, self::MAX_ALLOWED_SUBMISSION_LIMIT );
+	}
+
+	/**
+	 * Sanitize the company logo max size (in KB) between 0 and MAX_ALLOWED_SUBMISSION_LIMIT.
+	 *
+	 * A blank (non-numeric) value is preserved so uploads fall back to the server default.
+	 *
+	 * @param string|int $value
+	 * @return string|int
+	 */
+	public function sanitize_company_logo_max_size( $value ) {
 		return $this->sanitize_numeric_boundaries( $value, 0, self::MAX_ALLOWED_SUBMISSION_LIMIT );
 	}
 

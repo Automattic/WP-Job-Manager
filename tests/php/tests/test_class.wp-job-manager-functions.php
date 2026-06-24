@@ -890,6 +890,57 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		);
 	}
 
+	/**
+	 * A configured logo max size (in KB) is returned in bytes.
+	 *
+	 * @covers ::job_manager_get_company_logo_max_size
+	 */
+	public function test_company_logo_max_size_uses_configured_value() {
+		update_option( 'job_manager_company_logo_max_size', 50 );
+
+		$this->assertSame(
+			50 * KB_IN_BYTES,
+			job_manager_get_company_logo_max_size(),
+			'A configured size in KB should be returned converted to bytes.'
+		);
+	}
+
+	/**
+	 * A blank value falls back to the server upload limit.
+	 *
+	 * @covers ::job_manager_get_company_logo_max_size
+	 */
+	public function test_company_logo_max_size_falls_back_when_blank() {
+		update_option( 'job_manager_company_logo_max_size', '' );
+
+		$this->assertSame(
+			wp_max_upload_size(),
+			job_manager_get_company_logo_max_size(),
+			'A blank value should fall back to the server upload limit.'
+		);
+	}
+
+	/**
+	 * Zero and negative values fall back to the server upload limit rather than blocking all uploads.
+	 *
+	 * @covers ::job_manager_get_company_logo_max_size
+	 */
+	public function test_company_logo_max_size_falls_back_for_zero_and_negative() {
+		update_option( 'job_manager_company_logo_max_size', 0 );
+		$this->assertSame(
+			wp_max_upload_size(),
+			job_manager_get_company_logo_max_size(),
+			'A zero value should fall back to the server upload limit.'
+		);
+
+		update_option( 'job_manager_company_logo_max_size', -5 );
+		$this->assertSame(
+			wp_max_upload_size(),
+			job_manager_get_company_logo_max_size(),
+			'A negative value should fall back to the server upload limit.'
+		);
+	}
+
 	protected function set_up_request_page() {
 		$this->go_to( get_post_type_archive_link( \WP_Job_Manager_Post_Types::PT_LISTING ) );
 	}

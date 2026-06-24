@@ -1475,7 +1475,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
  * Returns the value configured in settings (converted from KB), or falls back
  * to the server's upload limit when no custom value is set.
  *
- * @since n.e.x.t
+ * @since $$next-version$$
  * @return int Maximum file size in bytes.
  */
 function job_manager_get_company_logo_max_size(): int {
