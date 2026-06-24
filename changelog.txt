@@ -1,5 +1,19 @@
 # WP Job Manager
 
+## 2.4.3 - 2026-06-24
+* Apply the View Job Capability to WordPress search and oEmbed output.
+* Apply the View Job Capability to the REST search endpoint (#2984)
+* Fail closed correctly when an author filter resolves to no valid IDs (#2983)
+* Apply the View Job Capability to job listing feeds (#2982)
+* Enforce listing submission limit when publishing a previewed listing (#2981)
+* Restore PHP 8.4 test coverage — modernise bootstrap error handler (#2970)
+* Fix: Promote button `data-href` attribute now correctly quoted in job listings table.
+* Fix: Promote URL in inline script now escaped with `esc_js()`.
+* Author filter follow-up: centralize parsing, close AJAX array bypass (#2958)
+* Add square-format hint and configurable max size for company logo uploads (#2957)
+* "Remove "See what's new in 2.3" from Job Statistics Banner"
+* New: The `[jobs]` shortcode now supports an `author` attribute to filter listings by user ID (e.g. `[jobs author="42"]` or `[jobs author="1,2,3"]`)
+
 ## 2.4.2 - 2026-05-12
 * Fix Job Dashboard actions menu on Safari (#2947)
 * Harden submit-form session cookies (#2945)
