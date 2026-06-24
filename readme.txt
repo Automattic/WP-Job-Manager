@@ -4,7 +4,7 @@ Tags: jobs, careers, company, hiring, job board
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.4.3
+Stable tag: 2.4.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -147,7 +147,10 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 
 == Changelog ==
 
-### 2.4.3
+### 2.4.4 - 2026-06-24
+* Fix css and JS files that were missing from 2.4.3
+
+### 2.4.3 - 2026-06-24
 * Add a square format hint and a configurable maximum upload size for company logos.
 * Fix enforcement of the listing submission limit.
 * Apply the listing submission limit as an inclusive maximum.
@@ -159,24 +162,18 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 ### 2.4.1 - 2026-02-24
 * Add permission check to listing query parameters (#2914)
 * Fix structured data output for password-protected listings (#2913)
-
 * Update actions/cache to use v4 (#2896)
 * reCaptcha script not being loaded (#2893)
 * add a additional action to the do_feed_rss2
 * fix hardcoded dashboard expiration date format
 * Dev: Fix deprecated  methods
 * Fix file input field for forms not marked as required
-
 * Fix broken access control issue reported on Patchstack.
 
 ### 2.4.0 - 2024-08-08
 * Fix job dashboard actions menu in Safari
-
 * Fix PHP 8.3 support
-
 * Remove support for Internet Explorer 11
-
 * Fix Wordpress 6.6 compatibility
-
 * Fix classic editor support for job listings
 
