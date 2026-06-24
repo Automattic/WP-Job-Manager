@@ -139,6 +139,25 @@ class Tests_oEmbed_View_Capability extends WPJM_REST_TestCase {
 	}
 
 	/**
+	 * The oEmbed gate is intentionally stricter than the single-item route: it also enforces the
+	 * browse capability, so a browse-denied author cannot reach even their own listing's oEmbed.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::gate_oembed_response_for_listings
+	 */
+	public function test_oembed_excludes_own_listing_for_browse_denied_author() {
+		delete_option( 'job_manager_view_job_listing_capability' );
+		update_option( 'job_manager_browse_job_listings_capability', [ 'manage_options' ] );
+		$author_id = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$post_id   = $this->factory->job_listing->create( [ 'post_author' => $author_id ] );
+		wp_set_current_user( $author_id );
+
+		$this->assertEmpty(
+			get_oembed_response_data( get_post( $post_id ), 600 ),
+			'A browse-denied author must not reach their own listing oEmbed; the gate enforces the browse capability.'
+		);
+	}
+
+	/**
 	 * When listings are unrestricted (the default), oEmbed is left untouched.
 	 *
 	 * @covers WP_Job_Manager_Post_Types::gate_oembed_response_for_listings
