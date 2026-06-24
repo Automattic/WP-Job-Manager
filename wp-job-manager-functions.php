@@ -16,7 +16,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 	 *     Arguments used to retrieve job listings.
 	 *
 	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Omit or pass an empty string for no filter. A supplied value that yields no valid positive integer IDs (e.g. `'0'`, `'abc'`, `[]`) fails closed and returns zero results.
-	 *                                    @since $$next-version$$
+	 *                                    @since 2.4.3
 	 * }
 	 * @return WP_Query
 	 */
@@ -301,7 +301,7 @@ if ( ! function_exists( '_wpjm_parse_author_ids' ) ) :
 	 * closed via `post__in => [0]`, NOT `author__in => [0]`: a listing can legitimately have `post_author` 0,
 	 * which `author__in => [0]` would match.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @access private
 	 *
 	 * @param mixed $raw Raw author input.
@@ -1541,7 +1541,7 @@ function job_manager_prepare_uploaded_files( $file_data ) {
  * Returns the value configured in settings (converted from KB), or falls back
  * to the server's upload limit when no custom value is set.
  *
- * @since $$next-version$$
+ * @since 2.4.3
  * @return int Maximum file size in bytes.
  */
 function job_manager_get_company_logo_max_size(): int {

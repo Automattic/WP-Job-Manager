@@ -295,7 +295,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	/**
 	 * Regression: array-shaped author input (?author[]=N) must fail closed and not bypass the author filter.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.3
 	 * @covers WP_Job_Manager_Ajax::get_listings
 	 */
 	public function test_get_listings_author_array_input_fails_closed() {
