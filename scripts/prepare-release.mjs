@@ -145,7 +145,11 @@ async function askForConfirmation(
 	console.log( `ℹ️️  Make sure a ` + chalk.bold( `milestone ${ newVersion }` ) + ` exists GitHub, and all PRs are assigned to the milestone.` );
 	console.log( `-----------------------------` );
 	console.log( `ℹ️️  Make sure you are logged in to GH CLI with \`gh auth login\`.` );
-	execSync( 'gh auth status' );
+	// Scope the auth check to github.com (where the plugin repo lives). An unrelated
+	// host in `gh` config (e.g. an internal GitHub Enterprise instance that is
+	// unreachable off-VPN) would otherwise make `gh auth status` exit non-zero and
+	// abort the release.
+	execSync( 'gh auth status --hostname github.com' );
 	console.log( `-----------------------------` );
 	console.log( `Pull requests to include (milestone ${ newVersion }):` );
 
