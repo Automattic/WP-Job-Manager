@@ -506,6 +506,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 							// Check if attachment is valid.
 							if ( is_numeric( $file_url ) ) {
+								$attachment_id = absint( $file_url );
+								if ( $attachment_id && ! $this->is_attachment_authorized_for_current_user( $attachment_id ) ) {
+									throw new Exception( __( 'Invalid attachment provided.', 'wp-job-manager' ) );
+								}
 								continue;
 							}
 							$file_url = esc_url( $file_url, [ 'http', 'https' ] );
@@ -932,6 +936,35 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				update_post_meta( $this->job_id, '_submitting_key', $submitting_key );
 			}
 		}
+	}
+
+	/**
+	 * Checks whether the current user is allowed to reuse an existing attachment
+	 * by referencing its numeric ID in a file field (e.g. the company logo).
+	 *
+	 * Without this check a submitter could bind another user's attachment to their
+	 * own listing — and expose it through the public listing output — by supplying
+	 * a foreign attachment ID in the hidden `current_<field>` value.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int $attachment_id Attachment post ID.
+	 * @return bool True if the current user may use the attachment.
+	 */
+	protected function is_attachment_authorized_for_current_user( $attachment_id ) {
+		$attachment = get_post( $attachment_id );
+
+		if ( ! $attachment || 'attachment' !== $attachment->post_type ) {
+			return false;
+		}
+
+		// The user owns the attachment (the normal case: they uploaded it).
+		if ( get_current_user_id() === (int) $attachment->post_author ) {
+			return true;
+		}
+
+		// Or has the capability to edit it (e.g. an admin editing another user's listing).
+		return current_user_can( 'edit_post', $attachment_id );
 	}
 
 	/**
