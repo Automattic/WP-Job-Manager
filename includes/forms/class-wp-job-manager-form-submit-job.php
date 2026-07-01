@@ -946,7 +946,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * own listing — and expose it through the public listing output — by supplying
 	 * a foreign attachment ID in the hidden `current_<field>` value.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.5
 	 *
 	 * @param int $attachment_id Attachment post ID.
 	 * @return bool True if the current user may use the attachment.

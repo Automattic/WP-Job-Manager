@@ -159,7 +159,7 @@ class WP_Job_Manager_Ajax {
 			/**
 			 * Post statuses a visitor without listing-editing capabilities is allowed to filter by.
 			 *
-			 * @since $$next-version$$
+			 * @since 2.4.5
 			 *
 			 * @param string[] $allowed_post_status Allowed post statuses. Defaults to `[ 'publish' ]`.
 			 */
