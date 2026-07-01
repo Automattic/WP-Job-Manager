@@ -105,7 +105,7 @@ function wpml_wpjm_hide_page_selection( $settings ) {
 		$url_to_edit_page = admin_url( 'edit.php?post_type=job_listing&page=job-manager-settings&lang=' . $default_lang . '#settings-job_pages' );
 
 		// translators: Placeholder (%s) is the URL to edit the primary language in WPML.
-		$setting['desc']                  = sprintf( __( '<a href="%s">Switch to primary language</a> to edit this setting.', 'wp-job-manager' ), $url_to_edit_page );
+		$setting['desc']                  = sprintf( __( '<a href="%s">Switch to primary language</a> to edit this setting.', 'wp-job-manager' ), esc_url( $url_to_edit_page ) );
 		$settings['job_pages'][1][ $key ] = $setting;
 	}
 

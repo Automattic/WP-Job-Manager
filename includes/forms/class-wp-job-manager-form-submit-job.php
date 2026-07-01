@@ -836,7 +836,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$job_dashboard_page_id = get_option( 'job_manager_job_dashboard_page_id', false );
 
 				// translators: placeholder is the URL to the job dashboard page.
-				$this->add_message( sprintf( __( 'Draft was saved. Job listing drafts can be resumed from the <a href="%s">job dashboard</a>.', 'wp-job-manager' ), get_permalink( $job_dashboard_page_id ) ) );
+				$this->add_message( sprintf( __( 'Draft was saved. Job listing drafts can be resumed from the <a href="%s">job dashboard</a>.', 'wp-job-manager' ), esc_url( get_permalink( $job_dashboard_page_id ) ) ) );
 			} else {
 				// Successful, show next step.
 				$this->step++;
