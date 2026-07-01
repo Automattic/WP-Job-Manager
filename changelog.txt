@@ -1,5 +1,10 @@
 # WP Job Manager
 
+## 2.4.5 - 2026-07-01
+* Escape URLs in two sprintf href templates with esc_url() (#2996)
+* Validate attachment ownership when reusing a company logo by ID (#2995)
+* Honor restrictive filter_post_status=publish for logged-out visitors (#2994)
+
 ## 2.4.4 - 2026-06-24
 * Fix: Restore the frontend styles and scripts that were missing from the 2.4.3 package. The 2.4.3 release was built without its compiled CSS and JavaScript, leaving the employer job dashboard unstyled and breaking frontend features such as the job application form. (#2990)
 
