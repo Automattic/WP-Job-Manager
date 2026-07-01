@@ -136,6 +136,14 @@ class WP_Job_Manager_Ajax {
 		$remote_position    = isset( $_REQUEST['remote_position'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['remote_position'] ) ) : null;
 		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
 		$featured_first     = isset( $_REQUEST['featured_first'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured_first'] ) ) : null;
+		if ( ! isset( $_REQUEST['author'] ) ) {
+			$author = '';
+		} elseif ( is_array( $_REQUEST['author'] ) ) {
+			// Array-shaped input is not supported via AJAX - fails closed (passes '0' so get_job_listings returns zero results).
+			$author = '0';
+		} else {
+			$author = sanitize_text_field( wp_unslash( $_REQUEST['author'] ) );
+		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( is_array( $search_categories ) ) {
@@ -144,9 +152,23 @@ class WP_Job_Manager_Ajax {
 			$search_categories = array_filter( [ sanitize_text_field( wp_unslash( $search_categories ) ) ] );
 		}
 
-		// Ensure the current user can filter by post_status.
+		// Ensure the current user can filter by post_status. Users without the capability may only
+		// narrow the query to publicly visible listings (e.g. the `[jobs post_status="publish"]`
+		// shortcode), never request unpublished statuses such as draft, pending, preview or private.
 		if ( is_array( $filter_post_status ) && ! current_user_can( \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ) ) {
-			$filter_post_status = null;
+			/**
+			 * Post statuses a visitor without listing-editing capabilities is allowed to filter by.
+			 *
+			 * @since $$next-version$$
+			 *
+			 * @param string[] $allowed_post_status Allowed post statuses. Defaults to `[ 'publish' ]`.
+			 */
+			$allowed_post_status = apply_filters( 'job_manager_get_listings_public_post_status', [ 'publish' ] );
+			$filter_post_status  = array_values( array_intersect( $filter_post_status, $allowed_post_status ) );
+
+			if ( empty( $filter_post_status ) ) {
+				$filter_post_status = null;
+			}
 		}
 
 		// Browse-capability gate — match the [jobs] shortcode denial without surfacing partial results.
@@ -176,6 +198,7 @@ class WP_Job_Manager_Ajax {
 			'orderby'           => $orderby,
 			'order'             => $order,
 			'featured_first'    => $featured_first,
+			'author'            => $author,
 			'offset'            => ( $page - 1 ) * $per_page,
 			'posts_per_page'    => max( 1, $per_page ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 		];
@@ -245,6 +268,7 @@ class WP_Job_Manager_Ajax {
 				'search_location'   => $search_location,
 				'search_categories' => $search_categories,
 				'search_keywords'   => $search_keywords,
+				'author'            => $author,
 			]
 		);
 

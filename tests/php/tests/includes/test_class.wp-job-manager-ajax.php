@@ -282,6 +282,108 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		$this->assertArrayHasKey( 'error', $result['files'][0] );
 	}
 
+	/**
+	 * Regression: a logged-out visitor's restrictive `filter_post_status=publish` (emitted by the
+	 * `[jobs post_status="publish"]` shortcode) must be honored, not discarded back to the more
+	 * permissive default which can include expired listings when "Hide expired listings" is off.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Ajax::get_listings
+	 */
+	public function test_get_listings_publish_filter_preserved_for_logged_out() {
+		// Show expired by default, so the fallback would otherwise leak expired listings.
+		update_option( 'job_manager_hide_expired', 0 );
+		wp_set_current_user( 0 );
+
+		$published = $this->factory->job_listing->create_many( 2 );
+		$expired   = $this->factory->job_listing->create_many(
+			2,
+			[
+				'post_status' => 'expired',
+				'meta_input'  => [],
+			]
+		);
+
+		$this->set_up_job_listing_search_request();
+		$_REQUEST['filter_post_status'] = [ 'publish' ];
+
+		add_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
+		add_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10, 2 );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
+		ob_start();
+		WP_Job_Manager_Ajax::instance()->get_listings();
+		$result = json_decode( ob_get_clean(), true );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
+		remove_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10 );
+		remove_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
+
+		unset( $_REQUEST['filter_post_status'] );
+		$this->tear_down_job_listing_search_request();
+		delete_option( 'job_manager_hide_expired' );
+
+		$job_ids = wp_list_pluck( $result['_jobs'], 'ID' );
+		sort( $job_ids );
+		sort( $published );
+
+		$this->assertSame( $published, $job_ids, 'Logged-out filter_post_status=publish must return only published listings, not the expired fallback.' );
+		foreach ( $expired as $post_id ) {
+			$this->assertNotContains( $post_id, $job_ids, 'Expired listings must not leak when the publish filter is requested.' );
+		}
+	}
+
+	/**
+	 * Regression: a logged-out visitor must not be able to surface unpublished listings by injecting
+	 * disallowed `filter_post_status` values (the original disclosure vector). Disallowed values are
+	 * stripped and the query falls back to the public default.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Ajax::get_listings
+	 */
+	public function test_get_listings_disallowed_status_filter_stripped_for_logged_out() {
+		wp_set_current_user( 0 );
+
+		$published = $this->factory->job_listing->create_many( 2 );
+		$draft     = $this->factory->job_listing->create_many(
+			2,
+			[
+				'post_status' => 'draft',
+				'meta_input'  => [],
+			]
+		);
+		$private   = $this->factory->job_listing->create_many(
+			2,
+			[
+				'post_status' => 'private',
+				'meta_input'  => [],
+			]
+		);
+
+		$this->set_up_job_listing_search_request();
+		$_REQUEST['filter_post_status'] = [ 'draft', 'private' ];
+
+		add_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
+		add_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10, 2 );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
+		ob_start();
+		WP_Job_Manager_Ajax::instance()->get_listings();
+		$result = json_decode( ob_get_clean(), true );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
+		remove_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10 );
+		remove_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
+
+		unset( $_REQUEST['filter_post_status'] );
+		$this->tear_down_job_listing_search_request();
+
+		$job_ids = wp_list_pluck( $result['_jobs'], 'ID' );
+		sort( $job_ids );
+		sort( $published );
+
+		$this->assertSame( $published, $job_ids, 'Disallowed statuses must be stripped, returning only published listings.' );
+		foreach ( array_merge( $draft, $private ) as $post_id ) {
+			$this->assertNotContains( $post_id, $job_ids, 'Unpublished listings must never be exposed to logged-out visitors.' );
+		}
+	}
+
 	public function load_last_jobs_result( $result, $jobs ) {
 		$result['_jobs'] = $jobs->get_posts();
 		return $result;
@@ -290,6 +392,38 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	public function override_upload_action( $args ) {
 		$args['action'] = 'test-wpjm-upload';
 		return $args;
+	}
+
+	/**
+	 * Regression: array-shaped author input (?author[]=N) must fail closed and not bypass the author filter.
+	 *
+	 * @since 2.4.3
+	 * @covers WP_Job_Manager_Ajax::get_listings
+	 */
+	public function test_get_listings_author_array_input_fails_closed() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 3, [ 'post_author' => $user_a ] );
+
+		$this->set_up_job_listing_search_request();
+		$_REQUEST['author'] = [ (string) $user_a ];
+
+		add_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
+		add_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10, 2 );
+		add_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
+		ob_start();
+		WP_Job_Manager_Ajax::instance()->get_listings();
+		$result = json_decode( ob_get_clean(), true );
+		remove_filter( 'wp_die_ajax_handler', [ $this, 'return_do_not_die' ] );
+		remove_filter( 'job_manager_get_listings_result', [ $this, 'load_last_jobs_result' ], 10 );
+		remove_filter( 'job_manager_ajax_get_jobs_html_results', '__return_false' );
+
+		unset( $_REQUEST['author'] );
+		$this->tear_down_job_listing_search_request();
+
+		$this->assertIsArray( $result );
+		$this->assertFalse( $result['found_jobs'], 'Array-shaped author must fail closed, not silently disable the filter.' );
+		$this->assertArrayHasKey( '_jobs', $result );
+		$this->assertCount( 0, $result['_jobs'] );
 	}
 
 	private function set_up_job_listing_search_request() {

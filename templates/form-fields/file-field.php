@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.33.0
+ * @version     2.4.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -56,8 +56,10 @@ if ( ! empty( $field['ajax'] ) && job_manager_user_can_upload_file_via_ajax() ) 
 />
 <small class="description">
 	<?php if ( ! empty( $field['description'] ) ) : ?>
-		<?php echo wp_kses_post( $field['description'] ); ?>
-	<?php else : ?>
-		<?php printf( esc_html__( 'Maximum file size: %s.', 'wp-job-manager' ), size_format( wp_max_upload_size() ) ); ?>
+		<?php echo wp_kses_post( $field['description'] ); ?><br>
 	<?php endif; ?>
+	<?php
+	$max_size = ! empty( $field['max_size'] ) ? (int) $field['max_size'] : wp_max_upload_size();
+	printf( esc_html__( 'Maximum file size: %s.', 'wp-job-manager' ), size_format( $max_size ) );
+	?>
 </small>

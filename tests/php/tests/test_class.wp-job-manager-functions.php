@@ -890,6 +890,57 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		);
 	}
 
+	/**
+	 * A configured logo max size (in KB) is returned in bytes.
+	 *
+	 * @covers ::job_manager_get_company_logo_max_size
+	 */
+	public function test_company_logo_max_size_uses_configured_value() {
+		update_option( 'job_manager_company_logo_max_size', 50 );
+
+		$this->assertSame(
+			50 * KB_IN_BYTES,
+			job_manager_get_company_logo_max_size(),
+			'A configured size in KB should be returned converted to bytes.'
+		);
+	}
+
+	/**
+	 * A blank value falls back to the server upload limit.
+	 *
+	 * @covers ::job_manager_get_company_logo_max_size
+	 */
+	public function test_company_logo_max_size_falls_back_when_blank() {
+		update_option( 'job_manager_company_logo_max_size', '' );
+
+		$this->assertSame(
+			wp_max_upload_size(),
+			job_manager_get_company_logo_max_size(),
+			'A blank value should fall back to the server upload limit.'
+		);
+	}
+
+	/**
+	 * Zero and negative values fall back to the server upload limit rather than blocking all uploads.
+	 *
+	 * @covers ::job_manager_get_company_logo_max_size
+	 */
+	public function test_company_logo_max_size_falls_back_for_zero_and_negative() {
+		update_option( 'job_manager_company_logo_max_size', 0 );
+		$this->assertSame(
+			wp_max_upload_size(),
+			job_manager_get_company_logo_max_size(),
+			'A zero value should fall back to the server upload limit.'
+		);
+
+		update_option( 'job_manager_company_logo_max_size', -5 );
+		$this->assertSame(
+			wp_max_upload_size(),
+			job_manager_get_company_logo_max_size(),
+			'A negative value should fall back to the server upload limit.'
+		);
+	}
+
 	protected function set_up_request_page() {
 		$this->go_to( get_post_type_archive_link( \WP_Job_Manager_Post_Types::PT_LISTING ) );
 	}
@@ -979,5 +1030,257 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$this->assertTrue( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
 		WP_Job_Manager_Helper_Renewals::renew_job_listing( get_post( $job_listing_id ) );
 		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job_listing ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_single_id() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 3, [ 'post_author' => $user_b ] );
+
+		$result = get_job_listings( [ 'author' => (string) $user_a ] );
+
+		$this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_multiple_ids() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+		$user_c = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+		$jobs_c = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_c ] );
+
+		$result = get_job_listings( [ 'author' => $user_a . ',' . $user_b ] );
+
+		$this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_empty_string_shows_no_filter() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '' ] );
+
+		// Empty string means no filter — all listings are returned.
+		$this->assertGreaterThanOrEqual( 2, $result->found_posts );
+	}
+
+	/**
+	 * Non-numeric input should return zero results (fails-closed).
+	 *
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_non_numeric_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => 'abc' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * Negative IDs should not be converted to positive via absint and must return zero results.
+	 *
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_negative_id_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '-5' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_zero_returns_no_results() {
+		$user_a = $this->factory->user->create();
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+
+		$result = get_job_listings( [ 'author' => '0' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * An invalid author filter must not leak orphaned listings (post_author 0).
+	 *
+	 * The parser returns the `[0]` fail-closed sentinel for supplied-but-invalid
+	 * author input. Applied as `author__in => [0]` this would match orphaned
+	 * listings, since a listing can legitimately have post_author 0.
+	 *
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_invalid_author_excludes_orphan_listing() {
+		$this->factory->job_listing->create( [ 'post_author' => 0 ] );
+
+		$result = get_job_listings( [ 'author' => 'abc' ] );
+
+		$this->assertSame( 0, $result->found_posts, 'An orphaned listing must not leak when the author filter yields no valid IDs.' );
+	}
+
+	/**
+	 * Mixed valid and invalid IDs: only valid IDs should be used.
+	 *
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_mixed_valid_and_invalid() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+
+		// 'abc' fails ctype_digit and is dropped; only $user_a's listings are returned.
+		$result = get_job_listings( [ 'author' => $user_a . ',abc' ] );
+
+		$this->assertEqualSets( $jobs_a, wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * Array input with valid user IDs should work.
+	 *
+	 * @since 2.4.3
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_author_array_input() {
+		$user_a = $this->factory->user->create();
+		$user_b = $this->factory->user->create();
+		$user_c = $this->factory->user->create();
+
+		$jobs_a = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_a ] );
+		$jobs_b = $this->factory->job_listing->create_many( 2, [ 'post_author' => $user_b ] );
+		$this->factory->job_listing->create_many( 2, [ 'post_author' => $user_c ] );
+
+		$result = get_job_listings( [ 'author' => [ $user_a, $user_b ] ] );
+
+		$this->assertEqualSets( array_merge( $jobs_a, $jobs_b ), wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_null_returns_null() {
+		$this->assertNull( _wpjm_parse_author_ids( null ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_empty_string_returns_null() {
+		$this->assertNull( _wpjm_parse_author_ids( '' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_single_numeric_string() {
+		$this->assertSame( [ 5 ], _wpjm_parse_author_ids( '5' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_comma_separated() {
+		$this->assertSame( [ 1, 2, 3 ], _wpjm_parse_author_ids( '1,2,3' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_whitespace_tolerated() {
+		$this->assertSame( [ 1, 2, 3 ], _wpjm_parse_author_ids( '1, 2 , 3' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_non_numeric_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( 'abc' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_zero_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( '0' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_negative_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( '-5' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_mixed_drops_invalid_tokens() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( '1,abc,2' ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_array_of_ints() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( [ 1, 2 ] ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_array_mixed_drops_invalid() {
+		$this->assertSame( [ 1, 2 ], _wpjm_parse_author_ids( [ 1, 'abc', 2, '-5', 0 ] ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_empty_array_fails_closed() {
+		$this->assertSame( [ 0 ], _wpjm_parse_author_ids( [] ) );
+	}
+
+	/**
+	 * @since 2.4.3
+	 * @covers ::_wpjm_parse_author_ids
+	 */
+	public function test_parse_author_ids_integer_input() {
+		$this->assertSame( [ 7 ], _wpjm_parse_author_ids( 7 ) );
 	}
 }

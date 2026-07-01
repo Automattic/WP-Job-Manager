@@ -12,7 +12,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 	 * Queries job listings with certain criteria and returns them.
 	 *
 	 * @since 1.0.5
-	 * @param string|array|object $args Arguments used to retrieve job listings.
+	 * @param string|array|object $args {
+	 *     Arguments used to retrieve job listings.
+	 *
+	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Omit or pass an empty string for no filter. A supplied value that yields no valid positive integer IDs (e.g. `'0'`, `'abc'`, `[]`) fails closed and returns zero results.
+	 *                                    @since 2.4.3
+	 * }
 	 * @return WP_Query
 	 */
 	function get_job_listings( $args = [] ) {
@@ -193,6 +198,18 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			];
 		}
 
+		if ( isset( $args['author'] ) ) {
+			$author_ids = _wpjm_parse_author_ids( $args['author'] );
+			if ( [ 0 ] === $author_ids ) {
+				// The author filter was supplied but yielded no valid IDs. Fail closed via
+				// post__in: a listing can legitimately have post_author 0, so author__in => [0]
+				// would match orphaned listings instead of excluding them.
+				$query_args['post__in'] = [ 0 ];
+			} elseif ( null !== $author_ids ) {
+				$query_args['author__in'] = $author_ids;
+			}
+		}
+
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
 
 		if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
@@ -271,6 +288,54 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		remove_filter( 'posts_search', 'get_job_listings_keyword_search', 10 );
 
 		return $result;
+	}
+endif;
+
+if ( ! function_exists( '_wpjm_parse_author_ids' ) ) :
+	/**
+	 * Parse a raw author input (string, comma-separated string, integer, or array) into a list of positive user IDs.
+	 *
+	 * Returns `null` when the input represents "no filter" (the input was unset or an empty string).
+	 * Returns `[0]` as a fail-closed sentinel when the input was supplied but yielded no valid positive IDs
+	 * (e.g. `'0'`, `'abc'`, `[]`, `'-5'`). Callers must treat the `[0]` sentinel as "match nothing" and fail
+	 * closed via `post__in => [0]`, NOT `author__in => [0]`: a listing can legitimately have `post_author` 0,
+	 * which `author__in => [0]` would match.
+	 *
+	 * @since 2.4.3
+	 * @access private
+	 *
+	 * @param mixed $raw Raw author input.
+	 * @return array|null Array of positive integer user IDs, `[0]` sentinel, or null for "no filter".
+	 */
+	function _wpjm_parse_author_ids( $raw ) {
+		if ( null === $raw ) {
+			return null;
+		}
+
+		if ( is_array( $raw ) ) {
+			$tokens = $raw;
+		} else {
+			$raw = (string) $raw;
+			if ( '' === $raw ) {
+				return null;
+			}
+			$tokens = explode( ',', $raw );
+		}
+
+		$author_ids = array_values(
+			array_filter(
+				array_map(
+					static function ( $v ) {
+						$s = trim( (string) $v );
+						return ctype_digit( $s ) && (int) $s > 0 ? (int) $s : 0;
+					},
+					$tokens
+				),
+				static fn( $v ) => $v > 0
+			)
+		);
+
+		return ! empty( $author_ids ) ? $author_ids : [ 0 ];
 	}
 endif;
 
@@ -629,6 +694,7 @@ if ( ! function_exists( 'job_manager_get_filtered_links' ) ) :
 								'search_location' => $args['search_location'],
 								'job_categories'  => implode( ',', $job_categories ),
 								'search_keywords' => $args['search_keywords'],
+								'author'          => ! empty( $args['author'] ) ? $args['author'] : '',
 							]
 						)
 					),
@@ -1470,6 +1536,20 @@ function job_manager_prepare_uploaded_files( $file_data ) {
 }
 
 /**
+ * Returns the maximum allowed file size for company logo uploads, in bytes.
+ *
+ * Returns the value configured in settings (converted from KB), or falls back
+ * to the server's upload limit when no custom value is set.
+ *
+ * @since 2.4.3
+ * @return int Maximum file size in bytes.
+ */
+function job_manager_get_company_logo_max_size(): int {
+	$max_size_kb = (int) get_option( 'job_manager_company_logo_max_size', 0 );
+	return $max_size_kb > 0 ? $max_size_kb * KB_IN_BYTES : wp_max_upload_size();
+}
+
+/**
  * Uploads a file using WordPress file API.
  *
  * @since 1.21.0
@@ -1517,6 +1597,20 @@ function job_manager_upload_file( $file, $args = [] ) {
 
 	if ( is_wp_error( $file ) ) {
 		return $file;
+	}
+
+	if ( 'company_logo' === $args['file_key'] ) {
+		$max_size = job_manager_get_company_logo_max_size();
+		if ( $file['size'] > $max_size ) {
+			return new WP_Error(
+				'upload',
+				sprintf(
+					// translators: %s is the maximum allowed file size.
+					__( 'The company logo exceeds the maximum allowed file size of %s.', 'wp-job-manager' ),
+					size_format( $max_size )
+				)
+			);
+		}
 	}
 
 	if ( ! in_array( $file['type'], $allowed_mime_types, true ) ) {
@@ -1857,7 +1951,7 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
 function job_manager_user_can_submit_job_listing() {
 	$submission_limit = get_option( 'job_manager_submission_limit', '' );
 	$job_count        = job_manager_count_user_job_listings();
-	$can_submit       = '' === $submission_limit || $submission_limit >= $job_count;
+	$can_submit       = '' === $submission_limit || $submission_limit > $job_count;
 	/**
 	 * Filter if the current user can or cannot submit job listings
 	 *

@@ -13,22 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
 
       - name: Get cached composer directories
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: '7.4'
           tools:       composer
@@ -52,11 +52,11 @@ jobs:
         # PHP 7.4 (EOL Nov 2022) is kept only as a smoke test against the
         # plugin's declared floor; 8.0–8.2 are dropped as they're either EOL
         # or security-only and a break on those would also surface against
-        # 7.4 or 8.3. PHP 8.4 coverage is pending bootstrap modernisation —
-        # see https://github.com/Automattic/WP-Job-Manager/issues/2950.
+        # 7.4 or 8.3.
         include:
           - { wp: '6.4', php: '7.4', wpmu: 0 }
           - { wp: '6.9', php: '8.3', wpmu: 0 }
+          - { wp: '6.9', php: '8.4', wpmu: 0 }
     env:
       WP_VERSION: ${{ matrix.wp }}
       PHP_VERSION: ${{ matrix.php }}
@@ -70,20 +70,20 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
 
       - name: Get cached composer directories
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ matrix.php }}
           extensions: mysql
@@ -109,20 +109,20 @@ jobs:
         php: [ '7.4', '8.3' ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
       - name: Get cached composer directories
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/composer/
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: vendor/
           key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ matrix.php }}
           tools: composer

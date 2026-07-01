@@ -32,6 +32,7 @@ wp-job-manager/renovate.json
 wp-job-manager/webpack.config.js
 wp-job-manager/.husky/*
 wp-job-manager/.claude/*
+wp-job-manager/.out-of-scope/*
 wp-job-manager/.phpunit.result.cache
 wp-job-manager/.wp-env.json
 wp-job-manager/.wp-env.tests.json

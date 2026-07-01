@@ -130,12 +130,20 @@ class WPJM_Unit_Tests_Bootstrap {
 			define( 'E_DEPRECATED', 8192 );
 		}
 
+		// Vendor packages (e.g. PHPUnit itself) emit deprecation notices against
+		// newer PHP versions. Those are not actionable in this repo and would
+		// otherwise abort the test run under PHP 8.4.
+		if ( in_array( $errno, [ E_DEPRECATED, E_USER_DEPRECATED ], true )
+			&& false !== strpos( $errfile, '/vendor/' ) ) {
+			return;
+		}
+
 		$error_descriptions = [
 			E_WARNING    => 'Warning',
 			E_ERROR      => 'Error',
 			E_PARSE      => 'Parse Error',
 			E_NOTICE     => 'Notice',
-			E_STRICT     => 'Strict Notice',
+			// E_STRICT is a no-op since PHP 8.0 and deprecated in PHP 8.4.
 			E_DEPRECATED => 'PHP Deprecated',
 		];
 		if ( in_array( $errno, [ E_RECOVERABLE_ERROR ] ) ) {

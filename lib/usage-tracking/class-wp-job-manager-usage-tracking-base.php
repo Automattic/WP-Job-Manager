@@ -566,7 +566,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @deprecated since 2.0.0
 	 **/
 	public function enqueue_script_deps() {
-		_deprecated_function( __METHOD__, '$$next-version' );
+		_deprecated_function( __METHOD__, '2.0.0' );
 	}
 
 	/**
@@ -576,7 +576,7 @@ abstract class WP_Job_Manager_Usage_Tracking_Base {
 	 * @deprecated since 2.0.0
 	 **/
 	public function output_opt_in_js() {
-		_deprecated_function( __METHOD__, '$$next-version' );
+		_deprecated_function( __METHOD__, '2.0.0' );
 		?>
 		<?php
 	}
