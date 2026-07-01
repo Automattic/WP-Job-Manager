@@ -152,9 +152,23 @@ class WP_Job_Manager_Ajax {
 			$search_categories = array_filter( [ sanitize_text_field( wp_unslash( $search_categories ) ) ] );
 		}
 
-		// Ensure the current user can filter by post_status.
+		// Ensure the current user can filter by post_status. Users without the capability may only
+		// narrow the query to publicly visible listings (e.g. the `[jobs post_status="publish"]`
+		// shortcode), never request unpublished statuses such as draft, pending, preview or private.
 		if ( is_array( $filter_post_status ) && ! current_user_can( \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ) ) {
-			$filter_post_status = null;
+			/**
+			 * Post statuses a visitor without listing-editing capabilities is allowed to filter by.
+			 *
+			 * @since $$next-version$$
+			 *
+			 * @param string[] $allowed_post_status Allowed post statuses. Defaults to `[ 'publish' ]`.
+			 */
+			$allowed_post_status = apply_filters( 'job_manager_get_listings_public_post_status', [ 'publish' ] );
+			$filter_post_status  = array_values( array_intersect( $filter_post_status, $allowed_post_status ) );
+
+			if ( empty( $filter_post_status ) ) {
+				$filter_post_status = null;
+			}
 		}
 
 		// Browse-capability gate — match the [jobs] shortcode denial without surfacing partial results.
