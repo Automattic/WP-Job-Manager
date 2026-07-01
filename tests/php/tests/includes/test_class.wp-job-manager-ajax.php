@@ -287,7 +287,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	 * `[jobs post_status="publish"]` shortcode) must be honored, not discarded back to the more
 	 * permissive default which can include expired listings when "Hide expired listings" is off.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.5
 	 * @covers WP_Job_Manager_Ajax::get_listings
 	 */
 	public function test_get_listings_publish_filter_preserved_for_logged_out() {
@@ -336,7 +336,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	 * disallowed `filter_post_status` values (the original disclosure vector). Disallowed values are
 	 * stripped and the query falls back to the public default.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.5
 	 * @covers WP_Job_Manager_Ajax::get_listings
 	 */
 	public function test_get_listings_disallowed_status_filter_stripped_for_logged_out() {
