@@ -51,4 +51,4 @@ jobs:
       - name: Comment on PR
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh pr comment ${{ github.event.number }} --body "✅ Release **${{ steps.create_release.outputs.version }}** [deployed to WordPress.org](https://wordpress.org/plugins/wp-job-manager/)."
+        run: gh pr comment ${{ github.event.number }} --body "🚀 Release **${{ steps.create_release.outputs.version }}** pushed to WordPress.org — [confirm the release email](https://wordpress.org/plugins/wp-job-manager/advanced/) to publish it to users."
