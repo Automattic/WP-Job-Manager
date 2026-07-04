@@ -53,25 +53,29 @@ function getReleaseNotes() {
 
 function updateChangelog() {
 
-	let changelog = fs.readFileSync( 'changelog.txt', 'utf8' );
-
-	const release = `## ${ pluginVersion } - ${ new Date().toISOString().slice( 0, 10 ) }
-${ releaseNotes }`;
-
-	changelog = changelog.replace( /^(# .*\n)/, '$1\n' + release + "\n" );
-
-	const releases = [ ...changelog.matchAll( /(^##[\S\s]*?(?=##))/mg ) ].map( ( match ) => match[ 1 ] );
-
-	console.log( chalk.bold( 'Adding new release to changelog: ' ) );
-	console.log( releases[ 0 ] )
-
-	const readmeReleases = releases.slice( 0, 5 ).map( release => release.replace( /^## /, '### ' ));
+	// readme.txt's `== Changelog ==` is the single source of truth. It is the last
+	// section in the file; entries are `### <version> - <date>` blocks, newest first,
+	// trimmed to the most recent few. Older history lives in git and GitHub releases.
+	const newEntry = `### ${ pluginVersion } - ${ new Date().toISOString().slice( 0, 10 ) }\n${ releaseNotes }`;
 
 	let readme = fs.readFileSync( 'readme.txt', 'utf8' );
-	readme     = readme.replace( /(== Changelog ==\n)([\s\S]+)/gm, `$1\n${ readmeReleases.join( '' ) }` );
 
-	fs.writeFileSync( 'changelog.txt', changelog );
-	console.log( chalk.green( '✓' ), 'changelog.txt' );
+	const section = readme.match( /(== Changelog ==\n+)([\s\S]*)$/ );
+	if ( ! section ) {
+		throw new Error( 'Could not find the == Changelog == section in readme.txt.' );
+	}
+
+	// Split the existing section body into individual `### version` entries.
+	const body     = section[ 2 ].trim();
+	const existing = body ? body.split( /\n(?=### )/ ).map( ( entry ) => entry.trim() ) : [];
+
+	// Prepend the new release and keep only the most recent 5 entries.
+	const entries = [ newEntry.trim(), ...existing ].slice( 0, 5 );
+
+	readme = readme.replace( /(== Changelog ==\n)[\s\S]*$/, `$1\n${ entries.join( '\n\n' ) }\n` );
+
+	console.log( chalk.bold( 'Adding new release to changelog: ' ) );
+	console.log( entries[ 0 ] );
 
 	fs.writeFileSync( 'readme.txt', readme );
 	console.log( chalk.green( '✓' ), 'readme.txt' );
@@ -79,7 +83,7 @@ ${ releaseNotes }`;
 }
 
 function commitChangelog() {
-	execSync( 'git add changelog.txt readme.txt' );
+	execSync( 'git add readme.txt' );
 	execSync( `git commit -m "Update changelog for ${ pluginVersion }"` );
 	execSync( `git push ${ REMOTE } HEAD` );
 }
