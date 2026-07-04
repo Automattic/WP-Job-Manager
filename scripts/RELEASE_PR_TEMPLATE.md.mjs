@@ -1,10 +1,10 @@
-export default ( { changelog, version }) => `
+export default ( { changelog, version, pluginName } ) => `
 
 > [!IMPORTANT]
 > Merging this PR will build and publish the new version automatically as a GitHub release, then deploy the new version on the WordPress.org plugin repository.
 >
 
-## WP Job Manager ${version}
+## ${ pluginName } ${ version }
 
 > [!NOTE]
 > These release notes between the two \`---\` lines will be the final changelog entry for the release. Edit them freely here before merging.

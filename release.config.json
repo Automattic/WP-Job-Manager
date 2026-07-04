@@ -1,0 +1,9 @@
+{
+	"repo": "Automattic/wp-job-manager",
+	"slug": "wp-job-manager",
+	"mainFile": "wp-job-manager.php",
+	"versionConstant": "JOB_MANAGER_VERSION",
+	"readme": "readme.txt",
+	"bumpPackageJson": true,
+	"nextVersionPlaceholder": true
+}

@@ -36,7 +36,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          node scripts/create-release.mjs wp-job-manager ${{ github.event.number }}
+          node scripts/create-release.mjs ${{ github.event.number }}
           cd build && unzip -q wp-job-manager.zip
       - name: Install SVN
         run: sudo apt-get update && sudo apt-get install -y subversion
