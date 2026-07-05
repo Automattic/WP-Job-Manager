@@ -12,6 +12,13 @@ jobs:
     if: github.event.pull_request.merged == true && startsWith( github.head_ref, 'release/' )
     runs-on: ubuntu-latest
     name: WPJM Release
+    # The default GITHUB_TOKEN is read-only on repos that don't opt into
+    # read-write workflow permissions. This job pushes commits and tags, creates
+    # a GitHub release, and comments on the PR, so grant those writes explicitly.
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
       - uses: actions/checkout@v6.0.3
         with:
