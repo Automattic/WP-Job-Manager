@@ -39,7 +39,7 @@ if ( ! version ) {
 	process.exit( 1 );
 }
 
-const ghPrs = `gh pr list -R ${ cfg.repo } --state merged --base ${ BASE_BRANCH } --search "milestone:${ version }"`;
+const ghPrs = `gh pr list -R ${ cfg.repo } --state merged --base ${ BASE_BRANCH } --limit 500 --search "milestone:${ version }"`;
 
 // Confirm release through CLI.
 if ( ! ( await askForConfirmation( version, pluginFileContents ) ) ) {
@@ -238,7 +238,7 @@ function buildReleaseNotes() {
 	const prs = JSON.parse( execSync( `${ ghPrs } --json number,title,body,labels` ) );
 
 	let changelog = prs.map( ( pr ) => {
-		const changelogSections = pr.body.match( /### Release Notes([\S\s]*?)(?:\n#{1,6} |\n<!--|$)/ );
+		const changelogSections = ( pr.body || '' ).match( /### Release Notes([\S\s]*?)(?:\n#{1,6} |\n<!--|$)/ );
 
 		if ( ! changelogSections ) {
 			return `* ${ pr.title } (#${ pr.number })`;

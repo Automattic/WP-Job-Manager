@@ -66,7 +66,12 @@ await success();
  */
 function getReleaseNotes() {
 	const prDescription = JSON.parse( execSync( `gh pr view ${ prNumber } -R ${ cfg.repo } --json body` ).toString() ).body;
-	const match         = prDescription.match( /### Release Notes\s*\n---([\S\s]*?)---/ );
+	// Both fences must sit on their own lines, and the capture is GREEDY so it
+	// runs to the LAST `---` line — the real closing fence. A non-greedy match
+	// would stop at the first interior `---` (e.g. a Markdown horizontal rule in
+	// the notes) and silently truncate the changelog. Greedy preserves that
+	// content instead of dropping everything after it.
+	const match         = prDescription.match( /### Release Notes\s*\n---\n([\S\s]*)\n---(?:\n|$)/ );
 	if ( ! match ) {
 		throw new Error(
 			'Could not parse release notes from the PR body. Expected a "### Release Notes" ' +
