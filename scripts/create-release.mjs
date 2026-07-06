@@ -42,7 +42,9 @@ await success();
 
 function getReleaseNotes() {
 
-	const prDescription = JSON.parse( execSync( `gh pr view ${ prNumber } -R ${ plugin.repo } --json body` ).toString() ).body;
+	// Normalize CRLF to LF: GitHub stores PR bodies edited in the web UI with
+	// CRLF line endings, which would break the `\n`-based fence regex below.
+	const prDescription = JSON.parse( execSync( `gh pr view ${ prNumber } -R ${ plugin.repo } --json body` ).toString() ).body.replace( /\r\n/g, '\n' );
 	const releaseNotes  = prDescription
 		.match( /### Release Notes\s*\n---([\S\s]*?)---/ )[ 1 ]
 		.replace( /^- /gm, '* ' )
