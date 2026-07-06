@@ -43,6 +43,7 @@ class WP_Job_Manager_Blocks {
 		}
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enable_legacy_widget_block' ] );
 	}
 
 	/**
@@ -50,6 +51,36 @@ class WP_Job_Manager_Blocks {
 	 */
 	public function register_blocks() {
 		// Add script includes for gutenblocks.
+	}
+
+	/**
+	 * Enable the core Legacy Widget block in the Site Editor.
+	 *
+	 * On a block theme there is no classic Widgets screen, and the Site Editor
+	 * does not expose the Legacy Widget block by default, so there is no UI to
+	 * insert the plugin's classic widgets (Recent Jobs, Featured Jobs). Opting
+	 * the block in here restores that path. Scoped to the Site Editor screen so
+	 * the post/page editor is left untouched.
+	 *
+	 * @see https://developer.wordpress.org/block-editor/how-to-guides/widgets/legacy-widget-block/
+	 */
+	public function enable_legacy_widget_block() {
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		if ( ! $screen || 'site-editor' !== $screen->id ) {
+			return;
+		}
+
+		if ( ! wp_script_is( 'wp-widgets', 'registered' ) ) {
+			return;
+		}
+
+		wp_enqueue_script( 'wp-widgets' );
+		wp_add_inline_script( 'wp-widgets', 'wp.widgets.registerLegacyWidgetBlock();' );
 	}
 }
 
