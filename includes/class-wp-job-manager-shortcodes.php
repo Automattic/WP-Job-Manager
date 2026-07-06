@@ -600,6 +600,11 @@ class WP_Job_Manager_Shortcodes {
 		if ( $jobs->have_posts() ) {
 			while ( $jobs->have_posts() ) {
 				$jobs->the_post();
+				// Don't expose application details for a password-protected listing (same guard as
+				// WP_Job_Manager_Post_Types::job_content()); the [job_apply] shortcode bypasses that filter.
+				if ( post_password_required() && ! is_super_admin() ) {
+					continue;
+				}
 				$apply = get_the_job_application_method();
 				do_action( 'job_manager_before_job_apply_' . absint( $id ) );
 				if ( apply_filters( 'job_manager_show_job_apply_' . absint( $id ), true ) ) {
