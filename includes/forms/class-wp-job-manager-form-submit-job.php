@@ -997,6 +997,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return 0;
 		}
 
+		// Only attach files that resolve to a local path for this site. A value
+		// that still points at a remote host after the mapping above is not one
+		// of our own uploads, so we do not turn it into an attachment.
+		if ( preg_match( '#^https?://#i', $attachment_url ) ) {
+			return 0;
+		}
+
 		$attachment = [
 			'post_title'   => wpjm_get_the_job_title( $this->job_id ),
 			'post_content' => '',
