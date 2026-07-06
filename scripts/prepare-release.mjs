@@ -249,10 +249,17 @@ function replaceNextVersionPlaceholder() {
 function updatePackageJsonFiles() {
 	console.log( 'Updating package.json version...' );
 	try {
-		execSync( `npm version ${ version } --no-git-tag-version` );
-		execSync(
-			`git add package.json package-lock.json`,
-		);
+		execSync( `npm version ${ version } --no-git-tag-version --allow-same-version` );
+		execSync( `git add package.json` );
+		// Stage whichever lockfile the repo actually uses. `git add` on a missing
+		// pathspec aborts and stages nothing, so only add lockfiles that exist —
+		// this keeps the script working for npm (package-lock.json) and pnpm
+		// (pnpm-lock.yaml) repos alike.
+		for ( const lockfile of [ 'package-lock.json', 'pnpm-lock.yaml', 'npm-shrinkwrap.json' ] ) {
+			if ( fs.existsSync( lockfile ) ) {
+				execSync( `git add ${ lockfile }` );
+			}
+		}
 	} catch {
 		console.log( 'Version could not be updated in package.json file.' );
 	}
