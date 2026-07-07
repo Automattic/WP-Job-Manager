@@ -76,8 +76,10 @@ class Tests_Frontend_Expiry_Authorization extends WPJM_BaseTest {
 	 * set the expiry date manually.
 	 */
 	public function test_admin_edit_honors_posted_job_expires() {
-		$admin = $this->factory->user->create( [ 'role' => 'administrator' ] );
-		wp_set_current_user( $admin );
+		// login_as_admin() installs the job-listing capabilities on the administrator role
+		// (WP_Job_Manager_Install::install()), which a bare factory admin would not have.
+		$admin = $this->get_user_by_role( 'administrator' );
+		$this->login_as( $admin );
 
 		$job_id = $this->create_listing( $admin, 'pending' );
 
@@ -98,8 +100,9 @@ class Tests_Frontend_Expiry_Authorization extends WPJM_BaseTest {
 	 * value must be ignored, so a logged-in author cannot self-serve an unlimited expiry.
 	 */
 	public function test_edit_capability_without_nonce_ignores_posted_job_expires() {
-		$admin = $this->factory->user->create( [ 'role' => 'administrator' ] );
-		wp_set_current_user( $admin );
+		// A genuinely capable admin (job-listing caps installed), but no admin nonce.
+		$admin = $this->get_user_by_role( 'administrator' );
+		$this->login_as( $admin );
 
 		$job_id = $this->create_listing( $admin, 'preview' );
 

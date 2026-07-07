@@ -525,9 +525,9 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 */
 	public function test_set_expiry_post() {
 		// A manual expiry is only honored from the gated admin edit (save_meta_data nonce +
-		// edit capability); set both up so this path exercises the authorized case.
-		$admin = $this->factory->user->create( [ 'role' => 'administrator' ] );
-		wp_set_current_user( $admin );
+		// edit capability); log in as a capable admin (login_as_admin installs the
+		// job-listing caps) and provide the nonce so this path exercises the authorized case.
+		$this->login_as_admin();
 
 		$post                       = get_post( $this->factory->job_listing->create() );
 		$instance                   = WP_Job_Manager_Post_Types::instance();
