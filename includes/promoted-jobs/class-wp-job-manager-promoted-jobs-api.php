@@ -164,6 +164,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		$args = [
 			'post_type'           => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status'         => 'publish',
+			'has_password'        => false,
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
 			'posts_per_page'      => -1,
