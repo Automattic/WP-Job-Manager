@@ -441,6 +441,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @throws Exception Uploaded file is not a valid mime-type or other validation error.
 	 */
 	protected function validate_fields( $values ) {
+		$attachment_validation = $this->validate_attachment_ownership( $values );
+		if ( is_wp_error( $attachment_validation ) ) {
+			throw new Exception( $attachment_validation->get_error_message() );
+		}
+
 		foreach ( $this->fields as $group_key => $group_fields ) {
 			foreach ( $group_fields as $key => $field ) {
 				if (
@@ -504,12 +509,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 								}
 							}
 
-							// Check if attachment is valid.
+							// Attachment IDs are validated for ownership in validate_attachment_ownership().
 							if ( is_numeric( $file_url ) ) {
-								$attachment_id = absint( $file_url );
-								if ( $attachment_id && ! $this->is_attachment_authorized_for_current_user( $attachment_id ) ) {
-									throw new Exception( __( 'Invalid attachment provided.', 'wp-job-manager' ) );
-								}
 								continue;
 							}
 							$file_url = esc_url( $file_url, [ 'http', 'https' ] );
@@ -731,16 +732,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 			// Validate fields.
 			if ( $is_saving_draft ) {
-				/**
-				 * Perform additional validation on the job submission fields when saving drafts.
-				 *
-				 * @since 1.33.1
-				 *
-				 * @param bool  $is_valid Whether the fields are valid.
-				 * @param array $fields   Array of all fields being validated.
-				 * @param array $values   Submitted input values.
-				 */
-				$validation_status = apply_filters( 'submit_draft_job_form_validate_fields', true, $this->fields, $values );
+				// Drafts skip validate_fields() (incomplete forms are allowed), but attachment
+				// ownership must still be enforced so a draft can't bind another user's attachment.
+				$validation_status = $this->validate_attachment_ownership( $values );
+
+				if ( ! is_wp_error( $validation_status ) ) {
+					/**
+					 * Perform additional validation on the job submission fields when saving drafts.
+					 *
+					 * @since 1.33.1
+					 *
+					 * @param bool  $is_valid Whether the fields are valid.
+					 * @param array $fields   Array of all fields being validated.
+					 * @param array $values   Submitted input values.
+					 */
+					$validation_status = apply_filters( 'submit_draft_job_form_validate_fields', true, $this->fields, $values );
+				}
 			} else {
 				$validation_status = $this->validate_fields( $values );
 			}
@@ -936,6 +943,42 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				update_post_meta( $this->job_id, '_submitting_key', $submitting_key );
 			}
 		}
+	}
+
+	/**
+	 * Validates that every attachment referenced by ID in the posted file fields is owned by
+	 * (or editable by) the current user.
+	 *
+	 * Shared by the normal ({@see validate_fields()}) and the draft-save submission paths so a
+	 * draft save cannot bind another user's attachment (e.g. as a company logo / featured image)
+	 * — the draft path skips validate_fields() and would otherwise reach the sink unchecked.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param array $values Submitted input values.
+	 * @return bool|WP_Error True when all referenced attachments are authorized, WP_Error otherwise.
+	 */
+	protected function validate_attachment_ownership( $values ) {
+		foreach ( $this->fields as $group_key => $group_fields ) {
+			foreach ( $group_fields as $key => $field ) {
+				if ( 'file' !== $field['type'] || ! isset( $values[ $group_key ][ $key ] ) ) {
+					continue;
+				}
+
+				$file_urls = is_array( $values[ $group_key ][ $key ] ) ? $values[ $group_key ][ $key ] : [ $values[ $group_key ][ $key ] ];
+
+				foreach ( array_filter( $file_urls ) as $file_url ) {
+					if ( is_numeric( $file_url ) ) {
+						$attachment_id = absint( $file_url );
+						if ( $attachment_id && ! $this->is_attachment_authorized_for_current_user( $attachment_id ) ) {
+							return new WP_Error( 'validation-error', __( 'Invalid attachment provided.', 'wp-job-manager' ) );
+						}
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
