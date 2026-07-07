@@ -3,100 +3,196 @@
 import 'zx/globals'
 
 /**
+ * Create the release once the release PR is merged.
+ *
+ * Config-driven, shared across the plugin family (WP Job Manager, WP Super
+ * Cache, Crowdsignal Forms, Crowdsignal/Polldaddy). Per-repo specifics live in
+ * `release.config.json`; this script is meant to stay identical everywhere.
+ *
+ * Runs in GitHub Actions after a `release/*` PR is merged: writes the changelog
+ * from the (edited) PR body into the readme, tags, builds the zip, and creates
+ * the GitHub release. WordPress.org SVN deployment is handled by the workflow
+ * after this script runs.
+ *
+ * The workflow is unattended and can be re-run (re-merge, manual re-trigger),
+ * so every mutating step is idempotent: it checks-then-acts and is safe to
+ * repeat. If the tag and GitHub release already exist, it short-circuits so the
+ * SVN step (which self-skips an existing tag) can still run.
+ *
+ * Usage: `node scripts/create-release.mjs <pr-number>`.
+ *
  * External dependencies
  */
 import fs from 'node:fs';
 import process from 'node:process';
 import { execSync } from 'node:child_process';
 
-const PLUGINS = {
-	'wp-job-manager': {
-		file: 'wp-job-manager.php',
-		constant: 'JOB_MANAGER_VERSION',
-		repo: 'Automattic/wp-job-manager',
-	},
-};
+const REMOTE   = 'origin';
+const cfg      = JSON.parse( fs.readFileSync( 'release.config.json', 'utf8' ) );
+const buildDir = cfg.buildDir || 'build';
 
-const REMOTE = `origin`;
+const pluginFileContents = fs.readFileSync( cfg.mainFile, 'utf8' );
+const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ].trim();
+const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ].trim();
 
-/* eslint-disable no-console */
+const prNumber = process.argv[ 2 ];
 
-// Get plugin information.
-const pluginSlug         = process.argv[ 2 ];
-const plugin             = PLUGINS[ pluginSlug ];
-const pluginFileName     = plugin.file;
-const pluginFileContents = fs.readFileSync( pluginFileName, 'utf8' );
-const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ];
-const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
-
-const prNumber = process.argv[ 3 ];
-
+// Parse (and validate) the release notes before any git write, so a malformed
+// changelog fence aborts the run before it tags or ships anything.
 const releaseNotes = getReleaseNotes();
-updateChangelog();
-commitChangelog();
-tagRelease();
+
+// If the release already completed on a prior run, skip the changelog/tag/GitHub
+// steps. Don't exit early, though: the SVN deploy step runs regardless and reads
+// from BUILD_DIR, which is absent on a fresh rerun runner — so we still rebuild
+// below so a rerun can recover a failed WordPress.org deploy. On a rerun the
+// changelog is already committed to the checked-out branch, so the rebuilt
+// package includes it.
+const alreadyReleased = remoteTagExists() && githubReleaseExists();
+
+if ( alreadyReleased ) {
+	console.log( chalk.yellow( `Release ${ pluginVersion } is already tagged and published on GitHub — rebuilding for the deploy step.` ) );
+} else {
+	updateChangelog();
+	commitChangelog();
+	tagRelease();
+}
+
 buildPluginZip();
-await createGithubRelease();
+
+if ( ! alreadyReleased ) {
+	await createGithubRelease();
+}
+
 setWorkflowStepOutput();
-await success();
 
+if ( ! alreadyReleased ) {
+	await success();
+}
+
+/**
+ * Extract the release notes from the release PR body. Throws an explicit error
+ * (rather than a cryptic null dereference) if the `### Release Notes` / `---`
+ * fences are missing or broken.
+ *
+ * @return {string} The release notes.
+ */
 function getReleaseNotes() {
-
 	// Normalize CRLF to LF: GitHub stores PR bodies edited in the web UI with
 	// CRLF line endings, which would break the `\n`-based fence regex below.
-	const prDescription = JSON.parse( execSync( `gh pr view ${ prNumber } -R ${ plugin.repo } --json body` ).toString() ).body.replace( /\r\n/g, '\n' );
-	const releaseNotes  = prDescription
-		.match( /### Release Notes\s*\n---([\S\s]*?)---/ )[ 1 ]
-		.replace( /^- /gm, '* ' )
-		.trim();
+	// `|| ''` guards an empty/null PR body so the "missing fences" error below
+	// fires instead of a null TypeError.
+	const prDescription = ( JSON.parse( execSync( `gh pr view ${ prNumber } -R ${ cfg.repo } --json body` ).toString() ).body || '' ).replace( /\r\n/g, '\n' );
+	// Both fences must sit on their own lines, and the capture is GREEDY so it
+	// runs to the LAST `---` line — the real closing fence. A non-greedy match
+	// would stop at the first interior `---` (e.g. a Markdown horizontal rule in
+	// the notes) and silently truncate the changelog. Greedy preserves that
+	// content instead of dropping everything after it.
+	const match         = prDescription.match( /### Release Notes\s*\n---\n([\S\s]*)\n---(?:\n|$)/ );
+	if ( ! match ) {
+		throw new Error(
+			'Could not parse release notes from the PR body. Expected a "### Release Notes" ' +
+			'heading followed by the changelog between two "---" fences. Check that both ' +
+			'fences are intact in the release PR description.',
+		);
+	}
+	return match[ 1 ].replace( /^- /gm, '* ' ).trim();
+}
 
-	return releaseNotes;
+/**
+ * @return {boolean} Whether the version tag already exists on the remote.
+ */
+function remoteTagExists() {
+	return execSync( `git ls-remote --tags ${ REMOTE } refs/tags/${ pluginVersion }` ).toString().trim() !== '';
+}
+
+/**
+ * @return {boolean} Whether a GitHub release for the version already exists.
+ */
+function githubReleaseExists() {
+	try {
+		execSync( `gh release view ${ pluginVersion } -R ${ cfg.repo }`, { stdio: 'ignore' } );
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * @return {boolean} Whether the readme already contains a `### <version>` entry.
+ */
+function changelogHasVersion() {
+	const readme  = fs.readFileSync( cfg.readme, 'utf8' );
+	const escaped = pluginVersion.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+	return new RegExp( `^### ${ escaped }\\b`, 'm' ).test( readme );
 }
 
 function updateChangelog() {
-
-	// readme.txt's `== Changelog ==` is the single source of truth. It is the last
-	// section in the file; entries are `### <version> - <date>` blocks, newest first,
-	// trimmed to the most recent few. Older history lives in git and GitHub releases.
-	const newEntry = `### ${ pluginVersion } - ${ new Date().toISOString().slice( 0, 10 ) }\n${ releaseNotes }`;
-
-	let readme = fs.readFileSync( 'readme.txt', 'utf8' );
-
-	const section = readme.match( /(== Changelog ==\n+)([\s\S]*)$/ );
-	if ( ! section ) {
-		throw new Error( 'Could not find the == Changelog == section in readme.txt.' );
+	// Idempotent: if the readme already has this version's entry (e.g. a prior
+	// run committed it), don't prepend a duplicate.
+	if ( changelogHasVersion() ) {
+		console.log( chalk.yellow( `Changelog already contains ### ${ pluginVersion } — skipping.` ) );
+		return;
 	}
 
-	// Split the existing section body into individual `### version` entries.
-	const body     = section[ 2 ].trim();
-	const existing = body ? body.split( /\n(?=### )/ ).map( ( entry ) => entry.trim() ) : [];
+	// The readme's `== Changelog ==` section is the single source of truth.
+	// Entries are `### <version> - <date>` blocks, newest first, trimmed to the
+	// most recent few. The section is bounded by the next `== ... ==` heading or
+	// end of file, so anything after it (e.g. Upgrade Notice) is preserved.
+	const newEntry = `### ${ pluginVersion } - ${ new Date().toISOString().slice( 0, 10 ) }\n${ releaseNotes }`;
 
-	// Prepend the new release and keep only the most recent 5 entries.
-	const entries = [ newEntry.trim(), ...existing ].slice( 0, 5 );
+	let readme = fs.readFileSync( cfg.readme, 'utf8' );
 
-	readme = readme.replace( /(== Changelog ==\n)[\s\S]*$/, `$1\n${ entries.join( '\n\n' ) }\n` );
+	const replaced = readme.replace(
+		/(== Changelog ==\n+)([\s\S]*?)(\n== |$)/,
+		( _full, header, bodyBlock, boundary ) => {
+			const body     = bodyBlock.trim();
+			const existing = body ? body.split( /\n(?=### )/ ).map( ( entry ) => entry.trim() ) : [];
+			const entries  = [ newEntry.trim(), ...existing ].slice( 0, 5 );
+			const tail     = boundary === '\n== ' ? '\n\n== ' : '\n';
+			return `${ header }${ entries.join( '\n\n' ) }${ tail }`;
+		},
+	);
 
+	if ( replaced === readme ) {
+		throw new Error( `Could not find the == Changelog == section in ${ cfg.readme }.` );
+	}
+
+	fs.writeFileSync( cfg.readme, replaced );
 	console.log( chalk.bold( 'Adding new release to changelog: ' ) );
-	console.log( entries[ 0 ] );
-
-	fs.writeFileSync( 'readme.txt', readme );
-	console.log( chalk.green( '✓' ), 'readme.txt' );
-
+	console.log( newEntry );
+	console.log( chalk.green( '✓' ), cfg.readme );
 }
 
 function commitChangelog() {
-	execSync( 'git add readme.txt' );
+	execSync( `git add ${ cfg.readme }` );
+	// Idempotent: only commit if the readme actually changed. `git diff --cached
+	// --quiet` exits 0 when nothing is staged.
+	try {
+		execSync( 'git diff --cached --quiet' );
+		console.log( chalk.yellow( 'No changelog changes to commit — skipping.' ) );
+		return;
+	} catch {
+		// Non-zero exit means there are staged changes; fall through and commit.
+	}
 	execSync( `git commit -m "Update changelog for ${ pluginVersion }"` );
 	execSync( `git push ${ REMOTE } HEAD` );
 }
 
 function tagRelease() {
-	execSync( `git tag -a ${ pluginVersion } -m "Release ${ pluginVersion }"` );
+	// Idempotent: skip if the tag is already on the remote.
+	if ( remoteTagExists() ) {
+		console.log( chalk.yellow( `Tag ${ pluginVersion } already on ${ REMOTE } — skipping tag.` ) );
+		return;
+	}
+	const localTagExists = execSync( `git tag -l ${ pluginVersion }` ).toString().trim() !== '';
+	if ( ! localTagExists ) {
+		execSync( `git tag -a ${ pluginVersion } -m "Release ${ pluginVersion }"` );
+	}
 	execSync( `git push ${ REMOTE } ${ pluginVersion }` );
 }
 
 function buildPluginZip() {
-	execSync( `npm run build 1> /dev/null` );
+	execSync( `make build 1> /dev/null` );
 }
 
 function setWorkflowStepOutput() {
@@ -104,13 +200,17 @@ function setWorkflowStepOutput() {
 }
 
 async function createGithubRelease() {
-	const pluginZip = `build/${ pluginSlug }.zip`
-	await $`gh release create ${ pluginVersion } -R ${ plugin.repo } --title ${ `Version ${ pluginVersion }` } --notes ${ releaseNotes } ${ pluginZip }`
+	// Idempotent: skip if a release for this version already exists.
+	if ( githubReleaseExists() ) {
+		console.log( chalk.yellow( `GitHub release ${ pluginVersion } already exists — skipping.` ) );
+		return;
+	}
+	const pluginZip = `${ buildDir }/${ cfg.slug }.zip`;
+	await $`gh release create ${ pluginVersion } -R ${ cfg.repo } --title ${ `Version ${ pluginVersion }` } --notes ${ releaseNotes } ${ pluginZip }`;
 }
 
 async function success() {
 	console.log( chalk.bold.green( `✓ ${ pluginName } ${ pluginVersion } release created!` ) );
-	const comment = `✅ **[${ pluginName } ${ pluginVersion } release](https://github.com/${ plugin.repo }/releases/tag/${ pluginVersion })** created!`;
-	await $`gh pr comment ${ prNumber } -R ${ plugin.repo } --edit-last --body ${ comment }`
-
+	const comment = `✅ **[${ pluginName } ${ pluginVersion } release](https://github.com/${ cfg.repo }/releases/tag/${ pluginVersion })** created!`;
+	await $`gh pr comment ${ prNumber } -R ${ cfg.repo } --edit-last --body ${ comment }`;
 }

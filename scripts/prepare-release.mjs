@@ -1,7 +1,15 @@
 /**
+ * Prepare a release PR.
+ *
+ * Config-driven port of the WP Job Manager release tooling. Reads
+ * `release.config.json` at the repo root; per-repo specifics live there, this
+ * script is intended to stay identical across plugins.
+ *
+ * Usage: `make release VERSION=x.y.z` (which runs `node scripts/prepare-release.mjs x.y.z`).
+ *
  * External dependencies
  */
-import { config } from 'dotenv';
+import { config as loadDotenv } from 'dotenv';
 import fs from 'fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -11,30 +19,27 @@ import chalk from 'chalk';
 import { execSync } from 'node:child_process';
 import prTemplate from './RELEASE_PR_TEMPLATE.md.mjs';
 
-const PLUGINS = {
-	'wp-job-manager': {
-		file: 'wp-job-manager.php',
-		constant: 'JOB_MANAGER_VERSION',
-		repo: 'Automattic/wp-job-manager',
-	},
-};
-
-const REMOTE = `origin`;
+const REMOTE = 'origin';
+const BASE_BRANCH = 'trunk';
 
 /* eslint-disable no-console */
 
 // Processes the .env variables.
-config();
+loadDotenv();
 
-// Get plugin information.
-const pluginSlug         = getPluginSlug();
-const plugin             = PLUGINS[ pluginSlug ];
-const pluginFileName     = plugin.file;
-const pluginFileContents = readFileContents( pluginFileName );
-const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ];
-const version            = process.argv[ 3 ];
+// Load per-repo configuration.
+const cfg = JSON.parse( readFileContents( 'release.config.json' ) );
 
-const ghPrs = `gh pr list -R ${ plugin.repo } --state merged --base trunk --search "milestone:${ version }"`;
+const pluginFileContents = readFileContents( cfg.mainFile );
+const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ].trim();
+const version            = process.argv[ 2 ];
+
+if ( ! version ) {
+	console.log( chalk.bold.red( 'Error: VERSION is required. Usage: make release VERSION=x.y.z' ) );
+	process.exit( 1 );
+}
+
+const ghPrs = `gh pr list -R ${ cfg.repo } --state merged --base ${ BASE_BRANCH } --limit 500 --search "milestone:${ version }"`;
 
 // Confirm release through CLI.
 if ( ! ( await askForConfirmation( version, pluginFileContents ) ) ) {
@@ -42,14 +47,11 @@ if ( ! ( await askForConfirmation( version, pluginFileContents ) ) ) {
 }
 
 // Create release branch.
-const { originalBranchName, releaseBranch } = createReleaseBranch(
-	pluginSlug,
-	version,
-);
+const { originalBranchName, releaseBranch } = createReleaseBranch( cfg.slug, version );
 
 try {
-	updateVersionInFile( pluginFileName );
-	updateVersionInFile( 'readme.txt' );
+	updateVersionInFile( cfg.mainFile );
+	updateVersionInFile( cfg.readme );
 	replaceNextVersionPlaceholder();
 	updatePackageJsonFiles();
 	generatePotFiles();
@@ -60,11 +62,8 @@ try {
 	// Create PR
 	pushBranch();
 	createPR( changelog );
-
 } catch ( error ) {
-
 	console.log( chalk.bold.red( error.message ) );
-	console.log( error.message );
 	console.log( error.stack );
 
 	const { confirmation } = await inquirer.prompt( {
@@ -80,90 +79,55 @@ try {
 }
 
 /**
- * Get plugin slug from command arguments.
- * Throws an error if invalid.
- *
- * @return {string} The plugin slug.
- */
-function getPluginSlug() {
-	const slug = process.argv[ 2 ];
-	if ( ! ( slug in PLUGINS ) ) {
-		throw new Error(
-			'Please provide a valid plugin slug as the first parameter: ' +
-			Object.keys( PLUGINS ).join( ', ' ),
-		);
-	}
-	return slug;
-}
-
-/**
- * Return file contents given the filepath.
- * This method will throw an error if the file does not exist.
+ * Return file contents given the filepath. Throws if the file does not exist.
  *
  * @param {string} filepath The file path to be read.
  * @return {string} The file contents.
  */
 function readFileContents( filepath ) {
-	let contents = false;
 	try {
-		contents = fs.readFileSync( filepath, 'utf8' );
+		return fs.readFileSync( filepath, 'utf8' );
 	} catch ( err ) {
 		throw new Error( `File (${ filepath }) could not be read.` );
 	}
-
-	return contents;
 }
 
 /**
- * Ask for confirmation on new version and dependency versions through the CLI.
+ * Ask for confirmation on the new version through the CLI.
  *
  * @param {string} newVersion   The new version.
  * @param {string} fileContents The current contents of the main plugin file.
  * @return {Promise<boolean>} Whether the confirmation was accepted or not.
  */
-async function askForConfirmation(
-	newVersion,
-	fileContents,
-) {
-	// WP Versions
-	const currentWPRequiresAtLeast = fileContents.match(
-		/Requires at least: (.*)/,
-	)[ 1 ];
-	const currentWPTestedUpTo      = fileContents.match( /Tested up to: (.*)/ )[ 1 ];
-	// PHP
-	const currentRequiresPhp       = fileContents.match( /Requires PHP: (.*)/ )[ 1 ];
+async function askForConfirmation( newVersion, fileContents ) {
+	const wpRequiresAtLeast = ( fileContents.match( /Requires at least: (.*)/ ) || [] )[ 1 ];
+	const wpTestedUpTo      = ( fileContents.match( /Tested up to: (.*)/ ) || [] )[ 1 ];
+	const requiresPhp       = ( fileContents.match( /Requires PHP: (.*)/ ) || [] )[ 1 ];
 
-	// Display all versioning information and ask for confirmation.
-	console.log( `🚀 Preparing new release:`, chalk.bold( `${ pluginSlug } ${ newVersion }` ) );
+	console.log( `🚀 Preparing new release:`, chalk.bold( `${ cfg.slug } ${ newVersion }` ) );
 	console.log( `-----------------------------` );
 	console.log( chalk.bold( '📦 Plugin header:' ) );
 	console.log( `   Version:`, chalk.bold.green( newVersion ) );
-	console.log( `   (WP)  Requires at least:`, chalk.bold( currentWPRequiresAtLeast ) );
-	console.log( `   (WP)  Tested up to:`, chalk.bold( currentWPTestedUpTo ) );
-	console.log( `   (PHP) Requires PHP:`, chalk.bold( currentRequiresPhp ) );
+	if ( wpRequiresAtLeast ) console.log( `   (WP)  Requires at least:`, chalk.bold( wpRequiresAtLeast ) );
+	if ( wpTestedUpTo ) console.log( `   (WP)  Tested up to:`, chalk.bold( wpTestedUpTo ) );
+	if ( requiresPhp ) console.log( `   (PHP) Requires PHP:`, chalk.bold( requiresPhp ) );
 	console.log( `-----------------------------` );
-	console.log( `ℹ️️  Make sure a ` + chalk.bold( `milestone ${ newVersion }` ) + ` exists GitHub, and all PRs are assigned to the milestone.` );
+	console.log( `ℹ️️  Make sure a ` + chalk.bold( `milestone ${ newVersion }` ) + ` exists on GitHub, and all PRs are assigned to it.` );
 	console.log( `-----------------------------` );
 	console.log( `ℹ️️  Make sure you are logged in to GH CLI with \`gh auth login\`.` );
-	// Scope the auth check to github.com (where the plugin repo lives). An unrelated
-	// host in `gh` config (e.g. an internal GitHub Enterprise instance that is
-	// unreachable off-VPN) would otherwise make `gh auth status` exit non-zero and
-	// abort the release.
+	// Scope the auth check to github.com; an unrelated host in `gh` config would
+	// otherwise make `gh auth status` exit non-zero and abort the release.
 	execSync( 'gh auth status --hostname github.com' );
 	console.log( `-----------------------------` );
 	console.log( `Pull requests to include (milestone ${ newVersion }):` );
 
 	execSync( ghPrs, { stdio: 'inherit' } );
 
-	const branch = execSync( 'git branch --show-current' ).toString().trim();
-
-	const defaultBranch = 'trunk';
-	const warning       = ( branch !== defaultBranch ) ? chalk.bgRed( ` ‼️  Not ${ defaultBranch }! ‼️ ` ) : '';
+	const branch  = execSync( 'git branch --show-current' ).toString().trim();
+	const warning = ( branch !== BASE_BRANCH ) ? chalk.bgRed( ` ‼️  Not ${ BASE_BRANCH }! ‼️ ` ) : '';
 
 	console.log( `-----------------------------` );
-
-	console.log( 'Branch:', chalk.bold[ branch !== defaultBranch ? 'red' : 'green' ]( branch ), warning );
-
+	console.log( 'Branch:', chalk.bold[ branch !== BASE_BRANCH ? 'red' : 'green' ]( branch ), warning );
 	console.log( `-----------------------------` );
 
 	const { confirmation } = await inquirer.prompt( {
@@ -178,75 +142,65 @@ async function askForConfirmation(
 /**
  * Create release branch given the slug and version.
  *
- * @param {string} slug    Plugin slug name.
- * @param {string} version New version.
+ * @param {string} slug       Plugin slug name.
+ * @param {string} newVersion New version.
  * @return {Object} The name of the original and the new release branches.
  */
-function createReleaseBranch( slug, version ) {
-	const currentBranchName = execSync( 'git branch --show-current' )
-		.toString()
-		.trim();
-	const branchName        = `release/${ slug }-${ version }`;
+function createReleaseBranch( slug, newVersion ) {
+	const currentBranchName = execSync( 'git branch --show-current' ).toString().trim();
+	const branchName        = `release/${ slug }-${ newVersion }`;
 	console.log( `Creating branch '${ branchName }' ...` );
 	try {
 		execSync( `git checkout -b ${ branchName }` );
 	} catch {
-		throw new Error(
-			'Error creating branch. Check branch does not exist.',
-		);
+		throw new Error( 'Error creating branch. Check branch does not exist.' );
 	}
-	return {
-		originalBranchName: currentBranchName,
-		releaseBranch: branchName,
-	};
+	return { originalBranchName: currentBranchName, releaseBranch: branchName };
 }
 
 /**
- * Set new version in the main plugin file.
- * This method also creates a commit in the current branch.
+ * Set the new version in a file (`Version:`/`Stable tag:` header and, if
+ * configured, a version constant). Stages the file.
  *
- * @param {string} filename     The path to the main plugin file.
+ * @param {string} filename The path to the file.
  */
 function updateVersionInFile( filename ) {
-	console.log( 'Updating plugin file versions ...' );
-	let newPluginFileContents = readFileContents( filename ).replace(
+	console.log( `Updating version in ${ filename } ...` );
+	let contents = readFileContents( filename ).replace(
 		/(Version|Stable tag): (.*)/,
 		`$1: ${ version }`,
 	);
 
-	// Update version constant.
-	const { constant }    = PLUGINS[ pluginSlug ];
-	newPluginFileContents = newPluginFileContents.replace(
-		new RegExp( `define\\( '${constant}', '.*' \\);` ),
-		`define( '${ constant }', '${ version }' );`,
-	);
+	if ( cfg.versionConstant ) {
+		contents = contents.replace(
+			new RegExp( `define\\( '${ cfg.versionConstant }', '.*' \\);` ),
+			`define( '${ cfg.versionConstant }', '${ version }' );`,
+		);
+	}
 
-	fs.writeFileSync( filename, newPluginFileContents, 'utf-8' );
-	execSync(
-		`git add ${ filename }`,
-	);
+	fs.writeFileSync( filename, contents, 'utf-8' );
+	execSync( `git add ${ filename }` );
 }
 
 /**
- * Replaces the next-version placeholder with the new version to be released.
- * This method also creates a commit in the current branch.
+ * Replace the next-version placeholder with the new version, if the repo uses it.
  */
 function replaceNextVersionPlaceholder() {
+	if ( ! cfg.nextVersionPlaceholder ) {
+		return;
+	}
 	console.log( `Replacing next version placeholder with ${ version } ...` );
 	execSync( `bash scripts/replace-next-version-tag.sh ${ version }` );
-	// Stage only modifications to tracked files. The replacer rewrites existing source
-	// files in place, so `git add -u` is sufficient and avoids sweeping in unrelated
-	// untracked files that may be in the working tree.
-	execSync(
-		`git add -u`,
-	);
+	execSync( `git add -u` );
 }
 
 /**
- * Update package.json and package-lock.json files with the new version to be released.
- * This method also creates a commit in the current branch.
+ * Update package.json/package-lock.json, if the repo tracks the plugin version there.
  */
 function updatePackageJsonFiles() {
+	if ( ! cfg.bumpPackageJson ) {
+		return;
+	}
 	console.log( 'Updating package.json version...' );
 	try {
 		execSync( `npm version ${ version } --no-git-tag-version --allow-same-version` );
@@ -263,21 +217,21 @@ function updatePackageJsonFiles() {
 	} catch {
 		console.log( 'Version could not be updated in package.json file.' );
 	}
-
 }
 
 /**
- * Generate POT files (translations).
- * This method also creates a commit in the current branch.
+ * Regenerate translation files via `make i18n` (a no-op where unused) and stage them.
  */
 function generatePotFiles() {
-	console.log( 'Updating POT files...' );
+	console.log( 'Updating translations (make i18n)...' );
 	try {
-		execSync( `npm run i18n:build 2> /dev/null` );
+		execSync( `make i18n 2> /dev/null` );
 	} catch {
 		throw new Error( 'POT file generation failed.' );
 	}
-	execSync( `git add languages/` );
+	if ( fs.existsSync( 'languages' ) ) {
+		execSync( `git add languages/` );
+	}
 }
 
 function commitFiles() {
@@ -285,28 +239,25 @@ function commitFiles() {
 }
 
 /**
- * Generates the changelog based on the PRs.
- * This method also creates a commit in the current branch.
+ * Generate the changelog from the milestone's merged PRs.
+ *
+ * @return {string} The assembled changelog.
  */
 function buildReleaseNotes() {
-	let prs = execSync( `${ ghPrs }  --json number,title,body,labels` );
-	prs     = JSON.parse( prs );
+	const prs = JSON.parse( execSync( `${ ghPrs } --json number,title,body,labels` ) );
 
 	let changelog = prs.map( ( pr ) => {
-		const body              = pr.body;
-		const changelogSections = body.match( /### Release Notes([\S\s]*?)(?:\n#{1,6} |\n<!--|$)/ );
+		const changelogSections = ( pr.body || '' ).match( /### Release Notes([\S\s]*?)(?:\n#{1,6} |\n<!--|$)/ );
 
 		if ( ! changelogSections ) {
 			return `* ${ pr.title } (#${ pr.number })`;
 		}
 		const prChangelog = changelogSections[ 1 ].trim();
-
 		if ( ! prChangelog.match( /\w/ ) ) {
 			return '';
 		}
-
 		return prChangelog;
-	} ).join( "\n" );
+	} ).join( '\n' );
 
 	if ( changelog.trim().length === 0 ) {
 		changelog = '* Updated plugin headers';
@@ -319,23 +270,21 @@ function buildReleaseNotes() {
 }
 
 /**
- * Create release PR.
+ * Create the release PR.
  *
- * @param changelog
+ * @param {string} changelog The assembled changelog.
  */
 function createPR( changelog ) {
-
 	const title = `Release ${ pluginName } ${ version }`;
+	const body  = prTemplate( { changelog, version, pluginName } );
 
-	const body = prTemplate( { changelog, version } );
-
-	// Pass the body via a temp file so backticks, quotes and other shell metacharacters
-	// inside changelog entries can't be interpreted by the shell when invoking gh.
-	const bodyFile = path.join( os.tmpdir(), `release-pr-body-${ pluginSlug }-${ version }.md` );
+	// Pass the body via a temp file so backticks, quotes and other shell
+	// metacharacters inside changelog entries can't be interpreted by the shell.
+	const bodyFile = path.join( os.tmpdir(), `release-pr-body-${ cfg.slug }-${ version }.md` );
 	fs.writeFileSync( bodyFile, body, 'utf-8' );
 
 	try {
-		const prLink = execSync( `gh pr create -R ${ plugin.repo } -B trunk -H ${ releaseBranch } --assignee @me --base trunk --title "${ title }" --body-file "${ bodyFile }"` );
+		const prLink = execSync( `gh pr create -R ${ cfg.repo } -B ${ BASE_BRANCH } -H ${ releaseBranch } --assignee @me --title "${ title }" --body-file "${ bodyFile }"` );
 		execSync( `open ${ prLink }` );
 		console.log( `PR: ${ prLink }` );
 	} finally {
@@ -344,9 +293,7 @@ function createPR( changelog ) {
 }
 
 /**
- * Pushes release branch.
- *
- * @param {string} branch The release branch name.
+ * Push the release branch.
  */
 function pushBranch() {
 	console.log( 'Pushing branch ...' );
@@ -358,14 +305,14 @@ function pushBranch() {
 }
 
 /**
- * Revert workspace to original status.
+ * Revert the workspace to its original state.
  *
  * @param {string} originalBranch The original branch name.
- * @param {string} releaseBranch  The new release branch name.
+ * @param {string} branchToDelete The release branch to delete.
  */
-function revertOnError( originalBranch, releaseBranch ) {
+function revertOnError( originalBranch, branchToDelete ) {
 	console.log( 'Trying to move back to previous branch...' );
 	execSync( `git checkout . && git checkout ${ originalBranch }` );
-	console.log( `Deleting '${ releaseBranch }'....` );
-	execSync( `git branch -D ${ releaseBranch }` );
+	console.log( `Deleting '${ branchToDelete }'....` );
+	execSync( `git branch -D ${ branchToDelete }` );
 }
