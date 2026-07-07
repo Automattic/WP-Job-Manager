@@ -524,11 +524,18 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * @covers WP_Job_Manager_Post_Types::set_expiry
 	 */
 	public function test_set_expiry_post() {
-		$post                  = get_post( $this->factory->job_listing->create() );
-		$instance              = WP_Job_Manager_Post_Types::instance();
-		$_POST['_job_expires'] = $expire_date = wp_date( 'Y-m-d', strtotime( '+10 days', current_datetime()->getTimestamp() ) );
+		// A manual expiry is only honored from the gated admin edit (save_meta_data nonce +
+		// edit capability); log in as a capable admin (login_as_admin installs the
+		// job-listing caps) and provide the nonce so this path exercises the authorized case.
+		$this->login_as_admin();
+
+		$post                       = get_post( $this->factory->job_listing->create() );
+		$instance                   = WP_Job_Manager_Post_Types::instance();
+		$_POST['job_manager_nonce'] = wp_create_nonce( 'save_meta_data' );
+		$_POST['_job_expires']      = $expire_date = wp_date( 'Y-m-d', strtotime( '+10 days', current_datetime()->getTimestamp() ) );
 		$instance->set_expiry( $post );
-		unset( $_POST['_job_expires'] );
+		unset( $_POST['_job_expires'], $_POST['job_manager_nonce'] );
+		wp_set_current_user( 0 );
 		$this->assertEquals( $expire_date, get_post_meta( $post->ID, '_job_expires', true ) );
 	}
 
