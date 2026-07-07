@@ -81,7 +81,7 @@ class Tests_Frontend_Expiry_Authorization extends WPJM_BaseTest {
 	 * set the expiry date manually.
 	 */
 	public function test_admin_edit_honors_posted_job_expires() {
-		// login_as_admin() installs the job-listing capabilities on the administrator role
+		// get_user_by_role() installs the job-listing capabilities on the administrator role
 		// (WP_Job_Manager_Install::install()), which a bare factory admin would not have.
 		$admin = $this->get_user_by_role( 'administrator' );
 		$this->login_as( $admin );
