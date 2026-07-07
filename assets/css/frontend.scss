@@ -12,7 +12,6 @@ $highlight: 		adjust-hue($primary, 150); 						/* Prices, In stock labels, sales
 $highlightext:		desaturate(lighten($highlight, 50%), 18%);	/* Text on highlight colour bg */
 
 $contentbg: 		#fff; 										/* Content BG - Tabs (active state) */
-$subtext: 			#777; 										/* small, breadcrumbs etc */
 
 @mixin display-icon() {
 	display: inline-block;
@@ -349,7 +348,7 @@ div.job_listings {
 			padding: 0 0 0 1em;
 			line-height: 1.5em;
 			font-style: italic;
-			color: #999;
+			color: $subtext;
 		}
 
 		.website::before {
@@ -405,7 +404,7 @@ div.job_listings {
 			padding: 0.5em;
 			float: left;
 			line-height: 1em;
-			color: #999;
+			color: $subtext;
 		}
 
 		.job-type {
@@ -809,7 +808,7 @@ div.job_listings {
 
 	.meta {
 		font-style: italic;
-		color: #777;
+		color: $subtext;
 	}
 
 	.job-type {
@@ -914,7 +913,7 @@ div.job_listings {
 		}
 
 		.job_title small {
-			color: #999;
+			color: $subtext;
 		}
 
 		.featured-job-icon {
