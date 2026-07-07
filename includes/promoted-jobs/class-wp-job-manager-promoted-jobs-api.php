@@ -277,7 +277,9 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		}
 
 		$controller = get_post_type_object( \WP_Job_Manager_Post_Types::PT_LISTING )->get_rest_controller();
-		if ( ! ( $controller instanceof WP_REST_Posts_Controller ) || ! $controller->check_read_permission( $post ) || 'publish' !== $post->post_status ) {
+		// check_read_permission() allows any published post regardless of password, so the
+		// password gate must be re-asserted here; the collection query excludes these listings.
+		if ( ! ( $controller instanceof WP_REST_Posts_Controller ) || ! $controller->check_read_permission( $post ) || 'publish' !== $post->post_status || post_password_required( $post ) ) {
 			return new WP_Error( 'rest_forbidden', __( 'Sorry, you are not allowed to view this job.', 'wp-job-manager' ), [ 'status' => rest_authorization_required_code() ] );
 		}
 
