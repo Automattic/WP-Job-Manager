@@ -1262,22 +1262,51 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( $this->job_id );
 
 			if ( in_array( $job->post_status, [ 'preview', 'expired' ], true ) ) {
-				// Serialize concurrent first-time publishes by the same user. A `preview`
-				// listing is not counted towards the submission limit, so without a lock
-				// two racing "continue" requests could each read a stale count and both
-				// pass the check below before either publishes.
-				$submission_lock = 'preview' === $job->post_status ? $this->acquire_submission_lock() : null;
+				// Renewals of already-counted listings (e.g. `expired`) publish directly:
+				// they do not increase the user's count, so they need neither the
+				// submission-limit re-check nor the lock that guards it. Only a first-time
+				// `preview` publish takes the serialized, limit-checked path below.
+				$submission_lock = null;
 
-				// Re-validate the submission limit before promoting a listing for the
-				// first time. A `preview` listing is not yet counted, so the page-load
-				// check in WP_Job_Manager_Shortcodes::handle_redirects() is not enough on
-				// its own. Renewals of already-counted listings (e.g. `expired`) are
-				// exempt because publishing them does not increase the user's count.
-				if ( 'preview' === $job->post_status && ! job_manager_user_can_submit_job_listing() ) {
-					$this->release_submission_lock( $submission_lock );
-					$this->add_error( __( 'You have reached the listing limit for your account and cannot publish this listing.', 'wp-job-manager' ) );
+				if ( 'preview' === $job->post_status ) {
+					// Serialize concurrent first-time publishes by the same user. A
+					// `preview` listing is not counted towards the submission limit, so
+					// without a lock two racing "continue" requests could each read a stale
+					// count and both pass the check below before either publishes.
+					$submission_lock = $this->acquire_submission_lock();
 
-					return;
+					// Fail closed: if the critical section cannot be serialized, refuse to
+					// publish rather than fall back to the racy path this lock exists to
+					// close.
+					if ( null === $submission_lock ) {
+						$this->add_error( __( 'The listing could not be published because the site is temporarily busy. Please try again.', 'wp-job-manager' ) );
+
+						return;
+					}
+
+					// Re-read the listing now that the lock is held. A concurrent "continue"
+					// request may have published it while we were waiting, in which case
+					// there is nothing left to do and the limit check below would wrongly
+					// count that already-published listing against the user.
+					$job = get_post( $this->job_id );
+
+					if ( ! $job instanceof WP_Post || 'preview' !== $job->post_status ) {
+						$this->release_submission_lock( $submission_lock );
+						$this->step ++;
+
+						return;
+					}
+
+					// Re-validate the submission limit before promoting a listing for the
+					// first time. A `preview` listing is not yet counted, so the page-load
+					// check in WP_Job_Manager_Shortcodes::handle_redirects() is not enough
+					// on its own.
+					if ( ! job_manager_user_can_submit_job_listing() ) {
+						$this->release_submission_lock( $submission_lock );
+						$this->add_error( __( 'You have reached the listing limit for your account and cannot publish this listing.', 'wp-job-manager' ) );
+
+						return;
+					}
 				}
 
 				// Reset expiry.
@@ -1302,20 +1331,35 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * The per-user advisory lock name guarding the submission-limit critical section.
+	 *
+	 * The single definition of the lock name, so no caller hard-codes the scheme
+	 * independently.
+	 *
+	 * @param int|null $user_id User ID to scope the lock to. Defaults to the current user.
+	 *
+	 * @return string
+	 */
+	private function submission_lock_name( $user_id = null ) {
+		$user_id = null === $user_id ? get_current_user_id() : (int) $user_id;
+
+		return 'wpjm_submit_' . $user_id;
+	}
+
+	/**
 	 * Acquires a short-lived per-user advisory lock around the submission-limit check.
 	 *
 	 * A `preview` listing is not counted towards the limit, so concurrent "continue"
 	 * requests could otherwise each pass job_manager_user_can_submit_job_listing() with a
 	 * stale count and all publish. Serializing the critical section per user closes that
-	 * race. Best-effort: if the lock cannot be obtained the caller proceeds unserialized,
-	 * matching the previous behavior.
+	 * race. The caller fails closed when this returns null.
 	 *
-	 * @return string|null The held lock name, or null if no lock was obtained.
+	 * @return string|null The held lock name, or null if the lock could not be obtained.
 	 */
-	private function acquire_submission_lock() {
+	protected function acquire_submission_lock() {
 		global $wpdb;
 
-		$lock_name = 'wpjm_submit_' . get_current_user_id();
+		$lock_name = $this->submission_lock_name();
 
 		// GET_LOCK returns 1 on success, 0 on timeout and NULL on error.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock, cannot be cached.
