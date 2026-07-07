@@ -114,6 +114,36 @@ class WP_Test_Submit_Job_Attachment_Local extends WPJM_BaseTest {
 	}
 
 	/**
+	 * A scheme-relative //host/... value points at a remote origin (its scheme is
+	 * empty, so a plain http(s):// prefix check does not catch it) and must not be
+	 * attached.
+	 */
+	public function test_protocol_relative_remote_url_is_not_attached() {
+		$before = count( get_posts( [ 'post_type' => 'attachment', 'fields' => 'ids', 'numberposts' => -1 ] ) );
+
+		$this->assertSame(
+			0,
+			$this->create_attachment( '//example.com/remote/logo.jpg' ),
+			'A scheme-relative remote URL must not be turned into an attachment.'
+		);
+
+		$after = count( get_posts( [ 'post_type' => 'attachment', 'fields' => 'ids', 'numberposts' => -1 ] ) );
+		$this->assertSame( $before, $after, 'No attachment post should be created for a scheme-relative remote URL.' );
+	}
+
+	/**
+	 * A bare absolute path that does not resolve under one of this site's own
+	 * directories must not be attached.
+	 */
+	public function test_arbitrary_local_path_is_not_attached() {
+		$this->assertSame(
+			0,
+			$this->create_attachment( '/etc/passwd' ),
+			'An arbitrary filesystem path outside the site directories must not be attached.'
+		);
+	}
+
+	/**
 	 * A URL under this site's uploads directory is still attached — the normal
 	 * flow where the form round-trips an already-uploaded file must keep working.
 	 */

@@ -985,22 +985,36 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		$attachment_url_parts = wp_parse_url( $attachment_url );
 
+		$scheme = $attachment_url_parts['scheme'] ?? '';
+		$host   = $attachment_url_parts['host'] ?? '';
+		$path   = $attachment_url_parts['path'] ?? '';
+
 		// Relative paths aren't allowed.
-		if ( false !== strpos( $attachment_url_parts['path'], '../' ) ) {
+		if ( false !== strpos( $path, '../' ) ) {
 			return 0;
 		}
 
-		$attachment_url = sprintf( '%s://%s%s', $attachment_url_parts['scheme'], $attachment_url_parts['host'], $attachment_url_parts['path'] );
+		$attachment_url = sprintf( '%s://%s%s', $scheme, $host, $path );
 
-		$attachment_url = str_replace( [ $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ], [ $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ], $attachment_url );
+		$local_dirs     = [ $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ];
+		$attachment_url = str_replace( [ $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ], $local_dirs, $attachment_url );
 		if ( empty( $attachment_url ) || ! is_string( $attachment_url ) ) {
 			return 0;
 		}
 
-		// Only attach files that resolve to a local path for this site. A value
-		// that still points at a remote host after the mapping above is not one
-		// of our own uploads, so we do not turn it into an attachment.
-		if ( preg_match( '#^https?://#i', $attachment_url ) ) {
+		// Only attach files that resolve to a path under one of this site's own
+		// directories. After the mapping above a genuine upload becomes a local
+		// filesystem path; anything still pointing at a remote origin (including
+		// scheme-relative //host/... URLs) or at an arbitrary path elsewhere on
+		// disk is not one of our uploads, so we do not turn it into an attachment.
+		$is_local = false;
+		foreach ( array_filter( $local_dirs ) as $base ) {
+			if ( 0 === strpos( $attachment_url, trailingslashit( $base ) ) ) {
+				$is_local = true;
+				break;
+			}
+		}
+		if ( ! $is_local ) {
 			return 0;
 		}
 
