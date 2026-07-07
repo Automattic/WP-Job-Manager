@@ -4,6 +4,8 @@ $internship: #6033cc;
 $freelance: #39c;
 $temporary: #d93674;
 
+$subtext: #767676; /* small, breadcrumbs etc — WCAG AA-compliant muted text */
+
 @mixin clearfix() {
 	zoom: 1; /* For IE 6/7 (trigger hasLayout) */
 

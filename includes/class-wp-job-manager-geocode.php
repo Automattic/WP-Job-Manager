@@ -216,7 +216,7 @@ class WP_Job_Manager_Geocode {
 
 		try {
 			if ( false === $geocoded_address || empty( $geocoded_address->results[0] ) ) {
-				$result           = wp_remote_get(
+				$result           = wp_safe_remote_get(
 					$geocode_api_url,
 					[
 						'timeout'     => 5,

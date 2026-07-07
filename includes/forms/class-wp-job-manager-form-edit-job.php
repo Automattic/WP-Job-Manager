@@ -168,6 +168,16 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			return;
 		}
 
+		// The edit form only ever updates an existing, editable listing. A zero job_id means no
+		// listing was supplied or the current user is not authorized to edit the requested one
+		// (the constructor resets it to 0 via job_manager_user_can_edit_job()). Bail here rather
+		// than falling through to save_job(), which would insert a brand-new listing — that path
+		// would let an unauthorized (including logged-out) request create a listing, bypassing the
+		// account-required submission gate enforced by the submit-job form.
+		if ( empty( $this->job_id ) ) {
+			return;
+		}
+
 		$this->check_submit_form_nonce_field();
 
 		try {
