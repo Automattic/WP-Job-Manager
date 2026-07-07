@@ -79,7 +79,7 @@ ul.job_listings {
 				}
 
 				.company {
-					color: #767676;
+					color: $subtext-accessible;
 
 					.tagline {
 						margin-left: 0.5em;
@@ -92,7 +92,7 @@ ul.job_listings {
 				text-align: left;
 				width: 25%;
 				padding: 0 0 0 1em;
-				color: #767676;
+				color: $subtext-accessible;
 				line-height: 1.5em;
 			}
 
@@ -103,7 +103,7 @@ ul.job_listings {
 				padding: 0 0 0 1em;
 				margin: 0;
 				line-height: 1.5em;
-				color: #767676;
+				color: $subtext-accessible;
 				list-style: none outside;
 
 				li {

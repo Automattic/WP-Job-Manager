@@ -349,7 +349,7 @@ div.job_listings {
 			padding: 0 0 0 1em;
 			line-height: 1.5em;
 			font-style: italic;
-			color: #767676;
+			color: $subtext-accessible;
 		}
 
 		.website::before {
@@ -405,7 +405,7 @@ div.job_listings {
 			padding: 0.5em;
 			float: left;
 			line-height: 1em;
-			color: #767676;
+			color: $subtext-accessible;
 		}
 
 		.job-type {
@@ -914,7 +914,7 @@ div.job_listings {
 		}
 
 		.job_title small {
-			color: #767676;
+			color: $subtext-accessible;
 		}
 
 		.featured-job-icon {
