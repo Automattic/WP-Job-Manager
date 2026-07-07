@@ -1262,12 +1262,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$job = get_post( $this->job_id );
 
 			if ( in_array( $job->post_status, [ 'preview', 'expired' ], true ) ) {
+				// Serialize concurrent first-time publishes by the same user. A `preview`
+				// listing is not counted towards the submission limit, so without a lock
+				// two racing "continue" requests could each read a stale count and both
+				// pass the check below before either publishes.
+				$submission_lock = 'preview' === $job->post_status ? $this->acquire_submission_lock() : null;
+
 				// Re-validate the submission limit before promoting a listing for the
 				// first time. A `preview` listing is not yet counted, so the page-load
 				// check in WP_Job_Manager_Shortcodes::handle_redirects() is not enough on
 				// its own. Renewals of already-counted listings (e.g. `expired`) are
 				// exempt because publishing them does not increase the user's count.
 				if ( 'preview' === $job->post_status && ! job_manager_user_can_submit_job_listing() ) {
+					$this->release_submission_lock( $submission_lock );
 					$this->add_error( __( 'You have reached the listing limit for your account and cannot publish this listing.', 'wp-job-manager' ) );
 
 					return;
@@ -1286,10 +1293,51 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$this->apply_scheduled_date( $update_job, $job_schedule_listing_date );
 
 				wp_update_post( $update_job );
+
+				$this->release_submission_lock( $submission_lock );
 			}
 
 			$this->step ++;
 		}
+	}
+
+	/**
+	 * Acquires a short-lived per-user advisory lock around the submission-limit check.
+	 *
+	 * A `preview` listing is not counted towards the limit, so concurrent "continue"
+	 * requests could otherwise each pass job_manager_user_can_submit_job_listing() with a
+	 * stale count and all publish. Serializing the critical section per user closes that
+	 * race. Best-effort: if the lock cannot be obtained the caller proceeds unserialized,
+	 * matching the previous behavior.
+	 *
+	 * @return string|null The held lock name, or null if no lock was obtained.
+	 */
+	private function acquire_submission_lock() {
+		global $wpdb;
+
+		$lock_name = 'wpjm_submit_' . get_current_user_id();
+
+		// GET_LOCK returns 1 on success, 0 on timeout and NULL on error.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock, cannot be cached.
+		$acquired = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $lock_name, 5 ) );
+
+		return '1' === (string) $acquired ? $lock_name : null;
+	}
+
+	/**
+	 * Releases a lock obtained via acquire_submission_lock().
+	 *
+	 * @param string|null $lock_name The lock name, or null when no lock was held.
+	 */
+	private function release_submission_lock( $lock_name ) {
+		if ( empty( $lock_name ) ) {
+			return;
+		}
+
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock, cannot be cached.
+		$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock_name ) );
 	}
 
 	/**
