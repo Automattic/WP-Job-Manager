@@ -1304,8 +1304,8 @@ class WP_Job_Manager_Post_Types {
 		// manually. Front-end submissions must have the expiry derived server-side from the
 		// configured submission duration, so an attacker-supplied value is ignored here.
 		$input_job_expires = null;
-		if ( $this->current_user_can_set_expiry( $post ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in current_user_can_set_expiry().
+		if ( $this->is_authorized_expiry_edit_request( $post ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in is_authorized_expiry_edit_request().
 			$input_job_expires = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
 		}
 		$input_job_expires_datetime = ! empty( $input_job_expires ) ? DateTimeImmutable::createFromFormat( 'Y-m-d', $input_job_expires, wp_timezone() ) : null;
@@ -1335,11 +1335,13 @@ class WP_Job_Manager_Post_Types {
 	 * front-end submission's preview -> publish transition — must fall back to the
 	 * server-side calculated expiry.
 	 *
+	 * @since $$next-version$$
+	 *
 	 * @param WP_Post $post The job listing being saved.
 	 *
 	 * @return bool
 	 */
-	private function current_user_can_set_expiry( $post ) {
+	private function is_authorized_expiry_edit_request( $post ) {
 		if (
 			empty( $_POST['job_manager_nonce'] )
 			|| ! wp_verify_nonce( wp_unslash( $_POST['job_manager_nonce'] ), 'save_meta_data' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.

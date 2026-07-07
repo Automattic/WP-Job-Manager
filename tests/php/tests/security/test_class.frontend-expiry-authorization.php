@@ -14,6 +14,11 @@
  */
 class Tests_Frontend_Expiry_Authorization extends WPJM_BaseTest {
 
+	/**
+	 * An implausibly distant expiry an attacker would try to smuggle in.
+	 */
+	private const ATTACKER_EXPIRY = '2999-12-31';
+
 	public function tearDown(): void {
 		$_POST    = [];
 		$_REQUEST = [];
@@ -46,7 +51,7 @@ class Tests_Frontend_Expiry_Authorization extends WPJM_BaseTest {
 	 *
 	 * @param int $job_id Job listing ID.
 	 */
-	private function publish( $job_id ) {
+	private function run_publish_expiry_handler( $job_id ) {
 		\WP_Job_Manager_Post_Types::instance()->set_expiry( get_post( $job_id ) );
 	}
 
@@ -60,12 +65,12 @@ class Tests_Frontend_Expiry_Authorization extends WPJM_BaseTest {
 		$job_id = $this->create_listing( $submitter, 'preview' );
 
 		// Attacker appends the field to their own preview -> publish POST; no admin nonce.
-		$_POST['_job_expires'] = '2999-12-31';
+		$_POST['_job_expires'] = self::ATTACKER_EXPIRY;
 
-		$this->publish( $job_id );
+		$this->run_publish_expiry_handler( $job_id );
 
-		$this->assertNotEquals(
-			'2999-12-31',
+		$this->assertNotSame(
+			self::ATTACKER_EXPIRY,
 			get_post_meta( $job_id, '_job_expires', true ),
 			'A front-end publish must not honor an attacker-supplied _job_expires value.'
 		);
@@ -84,12 +89,12 @@ class Tests_Frontend_Expiry_Authorization extends WPJM_BaseTest {
 		$job_id = $this->create_listing( $admin, 'pending' );
 
 		$_POST['job_manager_nonce'] = wp_create_nonce( 'save_meta_data' );
-		$_POST['_job_expires']      = '2999-12-31';
+		$_POST['_job_expires']      = self::ATTACKER_EXPIRY;
 
-		$this->publish( $job_id );
+		$this->run_publish_expiry_handler( $job_id );
 
-		$this->assertEquals(
-			'2999-12-31',
+		$this->assertSame(
+			self::ATTACKER_EXPIRY,
 			get_post_meta( $job_id, '_job_expires', true ),
 			'A gated admin edit must still be able to set the expiry date manually.'
 		);
@@ -107,14 +112,42 @@ class Tests_Frontend_Expiry_Authorization extends WPJM_BaseTest {
 		$job_id = $this->create_listing( $admin, 'preview' );
 
 		// Capability is present, but the save_meta_data nonce is not.
-		$_POST['_job_expires'] = '2999-12-31';
+		$_POST['_job_expires'] = self::ATTACKER_EXPIRY;
 
-		$this->publish( $job_id );
+		$this->run_publish_expiry_handler( $job_id );
 
-		$this->assertNotEquals(
-			'2999-12-31',
+		$this->assertNotSame(
+			self::ATTACKER_EXPIRY,
 			get_post_meta( $job_id, '_job_expires', true ),
 			'Without the admin nonce, a posted _job_expires must be ignored even for a capable user.'
+		);
+	}
+
+	/**
+	 * A valid save_meta_data nonce without the edit capability is not sufficient: the manual
+	 * expiry value must be ignored. Nonces are not capability- or post-bound, so any logged-in
+	 * user can mint a valid save_meta_data nonce for themselves; the edit_post capability check
+	 * exists precisely to stop that self-minted nonce from unlocking a manual expiry. This is
+	 * the exact attack shape the capability check defends against.
+	 */
+	public function test_minted_nonce_without_capability_ignores_posted_job_expires() {
+		// A low-privilege author has no job_listing capabilities, so current_user_can(
+		// 'edit_post', $job_id ) is false for a job_listing even one they authored.
+		$submitter = $this->factory->user->create( [ 'role' => 'author' ] );
+		wp_set_current_user( $submitter );
+
+		$job_id = $this->create_listing( $submitter, 'preview' );
+
+		// Any logged-in user can mint this nonce; the capability check is the real gate.
+		$_POST['job_manager_nonce'] = wp_create_nonce( 'save_meta_data' );
+		$_POST['_job_expires']      = self::ATTACKER_EXPIRY;
+
+		$this->run_publish_expiry_handler( $job_id );
+
+		$this->assertNotSame(
+			self::ATTACKER_EXPIRY,
+			get_post_meta( $job_id, '_job_expires', true ),
+			'A self-minted nonce without the edit capability must not honor a posted _job_expires value.'
 		);
 	}
 }
