@@ -75,6 +75,31 @@ class Tests_Password_Protected_Listing_Shortcode extends WPJM_BaseTest {
 	}
 
 	/**
+	 * The listing title is emitted by output_job() as an <h1> before the gated template, so it
+	 * must also be withheld for a password-protected listing (WordPress otherwise renders it as
+	 * "Protected: <title>", leaking title content that may carry confidential role/company info).
+	 *
+	 * @covers WP_Job_Manager_Shortcodes::output_job
+	 */
+	public function test_job_shortcode_hides_protected_title_from_anonymous() {
+		$protected = $this->factory->job_listing->create(
+			[
+				'post_password' => 'secret',
+				'post_title'    => 'sentinel-TITANIUM protected title',
+			]
+		);
+		$this->logout();
+
+		$output = do_shortcode( '[job id="' . $protected . '"]' );
+
+		$this->assertStringNotContainsString(
+			'sentinel-TITANIUM',
+			$output,
+			'[job] must not render a password-protected listing title to anonymous visitors.'
+		);
+	}
+
+	/**
 	 * Parity with job_content(): a super admin keeps access to protected content via [job].
 	 *
 	 * @covers WP_Job_Manager_Shortcodes::output_job
@@ -83,6 +108,7 @@ class Tests_Password_Protected_Listing_Shortcode extends WPJM_BaseTest {
 		$protected = $this->factory->job_listing->create(
 			[
 				'post_password' => 'secret',
+				'post_title'    => 'sentinel-TUNGSTEN protected title',
 				'post_content'  => 'sentinel-MERIDIAN protected description',
 			]
 		);
@@ -94,6 +120,11 @@ class Tests_Password_Protected_Listing_Shortcode extends WPJM_BaseTest {
 			'sentinel-MERIDIAN',
 			$output,
 			'A super admin must retain access to protected listings via [job], matching job_content().'
+		);
+		$this->assertStringContainsString(
+			'sentinel-TUNGSTEN',
+			$output,
+			'A super admin must still see the listing title via [job].'
 		);
 	}
 }

@@ -498,7 +498,12 @@ class WP_Job_Manager_Shortcodes {
 		if ( $jobs->have_posts() ) {
 			while ( $jobs->have_posts() ) {
 				$jobs->the_post();
-				echo '<h1>' . wp_kses_post( wpjm_get_the_job_title() ) . '</h1>';
+				// Only emit the title when the listing is actually viewable. This mirrors the gate in
+				// content-single-job_listing.php so a password-protected (or capability-restricted)
+				// listing doesn't leak its title via the H1 before the template's access-denied notice.
+				if ( ( ! post_password_required() || is_super_admin() ) && job_manager_user_can_view_job_listing( get_the_ID() ) ) {
+					echo '<h1>' . wp_kses_post( wpjm_get_the_job_title() ) . '</h1>';
+				}
 				get_job_manager_template_part( 'content-single', \WP_Job_Manager_Post_Types::PT_LISTING );
 			}
 		}
