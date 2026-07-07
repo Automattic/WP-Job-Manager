@@ -18,7 +18,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $post;
 
-if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
+// Defense in depth: the normal single-listing render is gated in WP_Job_Manager_Post_Types::job_content(),
+// but this template is also loaded directly by the [job] shortcode, which bypasses that guard. Re-assert the
+// post-password check here (with the same super-admin exception) so a shortcode-embedded protected listing
+// cannot leak its content. See templates/content-job_listing.php for the sibling pattern.
+if ( ( ! post_password_required( $post ) || is_super_admin() ) && job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
 	<div class="single_job_listing">
 		<?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
 			<div class="job-manager-info"><?php _e( 'This listing has expired.', 'wp-job-manager' ); ?></div>
