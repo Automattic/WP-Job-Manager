@@ -499,6 +499,16 @@ class WP_Job_Manager_Settings {
 							'track'   => 'value',
 						],
 						[
+							'name'       => 'job_manager_direct_apply_url',
+							'std'        => '0',
+							'label'      => __( 'Direct Apply for URLs', 'wp-job-manager' ),
+							'cb_label'   => __( 'Link directly to the application URL', 'wp-job-manager' ),
+							'desc'       => __( 'When enabled, the Apply button for URL applications will link directly to the application page instead of showing an intermediate panel. Only applies when the application method is a URL.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+							'track'      => 'bool',
+						],
+						[
 							'name'              => 'job_manager_company_logo_max_size',
 							'std'               => '',
 							'placeholder'       => __( 'No limit', 'wp-job-manager' ),

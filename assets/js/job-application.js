@@ -5,6 +5,9 @@ jQuery(document).ready(function($) {
 	}
 
 	$( document.body ).on( 'click', '.job_application .application_button', function() {
+		if ( 'a' === this.tagName.toLowerCase() ) {
+			return;
+		}
 		var $details = $(this).parents('.job_application').find('.application_details').first();
 		var $button = $(this);
 		$details.slideToggle( 400, function() {
