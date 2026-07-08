@@ -447,6 +447,109 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Regression for issue #2939. When featured_first is enabled with a custom
+	 * orderby, featured listings must lead and the secondary sort must respect the
+	 * passed orderby (not silently fall back to date-descending).
+	 *
+	 * @since 2.4.4
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_featured_first_custom_orderby() {
+		// Distinct titles so the secondary sort is observable per group.
+		$featured = [
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Beta',
+					'meta_input' => [ '_featured' => 1 ],
+				]
+			),
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Alpha',
+					'meta_input' => [ '_featured' => 1 ],
+				]
+			),
+		];
+		$not_featured = [
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Delta',
+					'meta_input' => [ '_featured' => 0 ],
+				]
+			),
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Charlie',
+					'meta_input' => [ '_featured' => 0 ],
+				]
+			),
+		];
+
+		// Titles are intentionally out of alphabetical order, so a date-based
+		// fallback would surface the newest post first instead of 'Alpha'.
+		$results = get_job_listings(
+			[
+				'search_keywords' => '',
+				'orderby'         => 'title',
+				'order'           => 'ASC',
+				'featured_first'  => true,
+			]
+		);
+
+		$titles = wp_list_pluck( $results->posts, 'post_title' );
+		$this->assertSame( [ 'Alpha', 'Beta', 'Charlie', 'Delta' ], $titles );
+	}
+
+	/**
+	 * Regression for issue #2939. The custom orderby/order must be honoured
+	 * across both directions and orderby values while featured still lead.
+	 *
+	 * @since 2.4.4
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_featured_first_orderby_variants() {
+		$featured = $this->factory->job_listing->create_many(
+			2,
+			[
+				'meta_input' => [ '_featured' => 1 ],
+			]
+		);
+		$not_featured = $this->factory->job_listing->create_many(
+			2,
+			[
+				'meta_input' => [ '_featured' => 0 ],
+			]
+		);
+
+		$cases = [
+			[ 'title', 'ASC' ],
+			[ 'title', 'DESC' ],
+			[ 'date', 'ASC' ],
+			[ 'date', 'DESC' ],
+		];
+
+		foreach ( $cases as $case ) {
+			list( $orderby, $order ) = $case;
+			$results   = get_job_listings(
+				[
+					'search_keywords' => '',
+					'orderby'         => $orderby,
+					'order'           => $order,
+					'featured_first'  => true,
+				]
+			);
+			$ids       = wp_list_pluck( $results->posts, 'ID' );
+			$result_set = array_flip( $ids );
+
+			// Featured listings must come first.
+			$this->assertSame( [], array_diff( $featured, array_slice( $ids, 0, count( $featured ) ) ), "featured not first for {$orderby} {$order}" );
+			// No non-featured listing should precede a featured one.
+			$this->assertSame( [], array_intersect( $not_featured, array_slice( $ids, 0, count( $featured ) ) ), "non-featured before featured for {$orderby} {$order}" );
+			$this->assertCount( count( $featured ) + count( $not_featured ), $result_set, "unexpected result count for {$orderby} {$order}" );
+		}
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */
