@@ -1331,6 +1331,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Returned by acquire_submission_lock() when the database backend has no GET_LOCK.
+	 *
+	 * Distinct from null (fail closed) and from any real lock name: it tells the caller to
+	 * proceed with the unserialized check rather than block, and release_submission_lock()
+	 * to skip the RELEASE_LOCK query.
+	 */
+	const SUBMISSION_LOCK_UNSUPPORTED = 'wpjm-submission-lock-unsupported';
+
+	/**
 	 * The per-user advisory lock name guarding the submission-limit critical section.
 	 *
 	 * The single definition of the lock name, so no caller hard-codes the scheme
@@ -1341,9 +1350,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return string
 	 */
 	private function submission_lock_name( $user_id = null ) {
+		global $wpdb;
+
 		$user_id = null === $user_id ? get_current_user_id() : (int) $user_id;
 
-		return 'wpjm_submit_' . $user_id;
+		// GET_LOCK names are scoped to the whole database server, not the schema. Two
+		// unrelated installs sharing a MySQL server (common on shared hosting) or sites
+		// in a multisite network would otherwise collide on a shared low user ID and
+		// serialize — or, because this fix fails closed, spuriously block — each other's
+		// publishes. Namespace by database name + table prefix. md5 keeps the result
+		// within MySQL's 64-character lock-name limit regardless of prefix length.
+		$scope = md5( $wpdb->dbname . '|' . $wpdb->prefix );
+
+		return 'wpjm_submit_' . $scope . '_' . $user_id;
 	}
 
 	/**
@@ -1354,7 +1373,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * stale count and all publish. Serializing the critical section per user closes that
 	 * race. The caller fails closed when this returns null.
 	 *
-	 * @return string|null The held lock name, or null if the lock could not be obtained.
+	 * GET_LOCK is session-scoped, so this assumes acquire, publish and release all run on
+	 * the same database connection within the request — true for a standard single-server
+	 * $wpdb. Under connection-splitting drivers (HyperDB/LudicrousDB) the read may land on
+	 * a replica; the lock then degrades to best-effort (it can fail to serialize and the
+	 * release may no-op) but the publish still proceeds, so availability is preserved.
+	 *
+	 * @return string|null The held lock name, self::SUBMISSION_LOCK_UNSUPPORTED when the
+	 *                      backend has no GET_LOCK (publish proceeds unserialized), or null
+	 *                      when a supporting backend could not grant the lock (fail closed).
 	 */
 	protected function acquire_submission_lock() {
 		global $wpdb;
@@ -1365,7 +1392,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock, cannot be cached.
 		$acquired = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $lock_name, 5 ) );
 
-		return '1' === (string) $acquired ? $lock_name : null;
+		if ( '1' === (string) $acquired ) {
+			return $lock_name;
+		}
+
+		// A backend without GET_LOCK (e.g. the SQLite integration) errors rather than
+		// timing out. Fall back to the unserialized check on such backends instead of
+		// making every preview publish impossible — the race this guards is only
+		// reachable on the concurrent MySQL setups that do support the lock. A genuine
+		// timeout on a supporting backend sets no error and falls through to null.
+		if ( '' !== $wpdb->last_error ) {
+			return self::SUBMISSION_LOCK_UNSUPPORTED;
+		}
+
+		return null;
 	}
 
 	/**
@@ -1374,7 +1414,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @param string|null $lock_name The lock name, or null when no lock was held.
 	 */
 	private function release_submission_lock( $lock_name ) {
-		if ( empty( $lock_name ) ) {
+		if ( empty( $lock_name ) || self::SUBMISSION_LOCK_UNSUPPORTED === $lock_name ) {
 			return;
 		}
 

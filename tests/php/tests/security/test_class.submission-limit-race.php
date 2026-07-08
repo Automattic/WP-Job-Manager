@@ -230,6 +230,38 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	}
 
 	/**
+	 * On a database backend without GET_LOCK (e.g. the SQLite integration), acquiring the
+	 * lock reports it as unsupported rather than failing. The publish must then proceed on
+	 * the unserialized path instead of failing closed, so such installs can still publish.
+	 */
+	public function test_publish_proceeds_unlocked_when_backend_lacks_get_lock() {
+		$user = $this->factory->user->create( [ 'role' => 'author' ] );
+		wp_set_current_user( $user );
+		$job_id = $this->create_preview_listing( $user );
+
+		$form = $this->continue_publish(
+			$job_id,
+			function () {
+				return new class() extends WP_Job_Manager_Form_Submit_Job {
+					protected function acquire_submission_lock() {
+						return self::SUBMISSION_LOCK_UNSUPPORTED;
+					}
+				};
+			}
+		);
+
+		$this->assertNotEquals(
+			'preview',
+			get_post_status( $job_id ),
+			'A backend without advisory locks must still publish rather than fail closed.'
+		);
+		$this->assertEmpty(
+			$this->rendered_errors( $form ),
+			'The unserialized fallback must not surface a lock error.'
+		);
+	}
+
+	/**
 	 * If a concurrent "continue" request publishes the listing while this request waits on
 	 * the lock, re-reading under the lock must skip the publish/limit check instead of
 	 * counting the just-published listing against the user and raising a spurious limit
