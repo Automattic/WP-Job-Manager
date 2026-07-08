@@ -62,7 +62,14 @@ class WP_Job_Manager_Blocks {
 	 * the block in here restores that path. Scoped to the Site Editor screen so
 	 * the post/page editor is left untouched.
 	 *
+	 * The Site Editor registers `core/legacy-widget` itself with
+	 * `supports.inserter: false`, so calling `registerLegacyWidgetBlock()` here
+	 * would be a duplicate registration and log "Block core/legacy-widget is
+	 * already registered". Instead, flip the inserter support flag on core's own
+	 * registration via the `blocks.registerBlockType` filter.
+	 *
 	 * @see https://developer.wordpress.org/block-editor/how-to-guides/widgets/legacy-widget-block/
+	 * @see https://developer.wordpress.org/block-editor/reference-guides/filters/block-filters/
 	 */
 	public function enable_legacy_widget_block() {
 		if ( ! function_exists( 'get_current_screen' ) ) {
@@ -79,8 +86,24 @@ class WP_Job_Manager_Blocks {
 			return;
 		}
 
+		// `wp-widgets` loads before `wp-edit-site`, so the filter is in place
+		// before the Site Editor registers the block.
 		wp_enqueue_script( 'wp-widgets' );
-		wp_add_inline_script( 'wp-widgets', 'wp.widgets.registerLegacyWidgetBlock();' );
+		wp_add_inline_script(
+			'wp-widgets',
+			'wp.hooks.addFilter(
+				"blocks.registerBlockType",
+				"wp-job-manager/enable-legacy-widget-inserter",
+				function ( settings, name ) {
+					if ( "core/legacy-widget" !== name ) {
+						return settings;
+					}
+					return Object.assign( {}, settings, {
+						supports: Object.assign( {}, settings.supports, { inserter: true } ),
+					} );
+				}
+			);'
+		);
 	}
 }
 
