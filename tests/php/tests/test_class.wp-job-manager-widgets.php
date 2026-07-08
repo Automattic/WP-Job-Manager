@@ -37,13 +37,14 @@ class WP_Test_WP_Job_Manager_Widgets extends WPJM_BaseTest {
 	}
 
 	/**
-	 * Rendering the Recent Jobs widget with a minimal instance should not fatal,
-	 * whether or not matching listings exist.
+	 * Rendering the Recent Jobs widget with a minimal instance should render the
+	 * matching listing (and not fatal on the missing remote_position key, which
+	 * is the #2851 regression the block-editor REST render path exposed).
 	 *
-	 * Smoke test for #2851 (the block editor invokes widget() via REST render).
+	 * Regression test for #2851 (the block editor invokes widget() via REST render).
 	 */
-	public function test_recent_jobs_widget_renders_without_error() {
-		$this->factory->job_listing->create();
+	public function test_recent_jobs_widget_renders_matching_listing() {
+		$this->factory->job_listing->create( [ 'post_title' => 'Senior Widget Engineer' ] );
 
 		$widget   = new WP_Job_Manager_Widget_Recent_Jobs();
 		$instance = [ 'title' => 'Recent Jobs', 'number' => 5 ];
@@ -52,15 +53,49 @@ class WP_Test_WP_Job_Manager_Widgets extends WPJM_BaseTest {
 		$widget->widget( $this->get_widget_args(), $instance );
 		$output = ob_get_clean();
 
-		$this->assertIsString( $output );
+		$this->assertStringContainsString( 'job_listings', $output );
+		$this->assertStringContainsString( 'Senior Widget Engineer', $output );
 	}
 
 	/**
-	 * Rendering the Featured Jobs widget with a minimal instance should not fatal.
+	 * Recent Jobs should also render when remote positions are enabled, so the
+	 * instance carries a remote_position value and takes the in_array() branch.
 	 *
-	 * Smoke test for #2851.
+	 * Regression test for #2851.
 	 */
-	public function test_featured_jobs_widget_renders_without_error() {
+	public function test_recent_jobs_widget_renders_with_remote_position() {
+		update_option( 'job_manager_enable_remote_position', 1 );
+		$this->factory->job_listing->create(
+			[
+				'post_title' => 'Remote Widget Engineer',
+				'meta_input' => [ '_remote_position' => 1 ],
+			]
+		);
+
+		$widget   = new WP_Job_Manager_Widget_Recent_Jobs();
+		$instance = [ 'title' => 'Recent Jobs', 'number' => 5, 'remote_position' => 'true' ];
+
+		ob_start();
+		$widget->widget( $this->get_widget_args(), $instance );
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString( 'job_listings', $output );
+	}
+
+	/**
+	 * Rendering the Featured Jobs widget should render a matching featured
+	 * listing (exercising the render loop, not just the no-jobs-found branch).
+	 *
+	 * Regression test for #2851.
+	 */
+	public function test_featured_jobs_widget_renders_matching_listing() {
+		$this->factory->job_listing->create(
+			[
+				'post_title' => 'Featured Widget Engineer',
+				'meta_input' => [ '_featured' => 1 ],
+			]
+		);
+
 		$widget   = new WP_Job_Manager_Widget_Featured_Jobs();
 		$instance = [ 'title' => 'Featured Jobs', 'number' => 5 ];
 
@@ -68,7 +103,8 @@ class WP_Test_WP_Job_Manager_Widgets extends WPJM_BaseTest {
 		$widget->widget( $this->get_widget_args(), $instance );
 		$output = ob_get_clean();
 
-		$this->assertIsString( $output );
+		$this->assertStringContainsString( 'job_listings', $output );
+		$this->assertStringContainsString( 'Featured Widget Engineer', $output );
 	}
 
 	/**

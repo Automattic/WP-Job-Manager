@@ -107,7 +107,7 @@ class WP_Job_Manager_Widget_Recent_Jobs extends WP_Job_Manager_Widget {
 
 		$title           = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 		$number          = absint( $instance['number'] );
-		$remote_position = isset( $instance['remote_position'] ) ? $instance['remote_position'] : '';
+		$remote_position = $instance['remote_position'] ?? '';
 		$jobs            = get_job_listings(
 			[
 				'search_location' => $instance['location'],
