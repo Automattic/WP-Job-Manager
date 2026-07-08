@@ -223,7 +223,6 @@ class WP_Job_Manager_Geocode {
 						'redirection' => 1,
 						'httpversion' => '1.1',
 						'user-agent'  => 'WordPress/WP-Job-Manager-' . JOB_MANAGER_VERSION . '; ' . get_bloginfo( 'url' ),
-						'sslverify'   => false,
 					]
 				);
 				$result           = wp_remote_retrieve_body( $result );
