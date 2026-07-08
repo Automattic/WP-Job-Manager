@@ -87,6 +87,19 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-settings.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-com-api.php';
 
+		// Sync Promoted Jobs admin setting to the filter. Code override wins over option.
+		add_filter(
+			'job_manager_enable_promoted_jobs',
+			function( $enabled ) {
+				if ( ! $enabled ) {
+					return false;
+				}
+				$option = get_option( 'job_manager_enable_promoted_jobs', '1' );
+				return ! empty( $option ) && '0' !== (string) $option;
+			},
+			5
+		);
+
 		/**
 		 * Controls whether promoted jobs are enabled.
 		 *
