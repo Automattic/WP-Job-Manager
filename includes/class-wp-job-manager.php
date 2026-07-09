@@ -551,10 +551,11 @@ class WP_Job_Manager {
 				'wp-job-manager-ajax-file-upload',
 				'job_manager_ajax_file_upload',
 				[
-					'ajax_url'               => $ajax_url,
-					'js_field_html_img'      => esc_js( str_replace( "\n", '', $js_field_html_img ) ),
-					'js_field_html'          => esc_js( str_replace( "\n", '', $js_field_html ) ),
-					'i18n_invalid_file_type' => esc_html__( 'Invalid file type. Accepted types:', 'wp-job-manager' ),
+					'ajax_url'                     => $ajax_url,
+					'js_field_html_img'            => esc_js( str_replace( "\n", '', $js_field_html_img ) ),
+					'js_field_html'                => esc_js( str_replace( "\n", '', $js_field_html ) ),
+					'i18n_invalid_file_type'       => esc_html__( 'Invalid file type. Accepted types:', 'wp-job-manager' ),
+					'i18n_file_exceeds_size_limit' => esc_html__( 'Selected file exceeds the maximum allowed upload size.', 'wp-job-manager' ),
 				]
 			);
 		}

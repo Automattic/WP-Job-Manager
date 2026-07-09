@@ -19,6 +19,7 @@ $classes            = [ 'input-text' ];
 $allowed_mime_types = ! empty( $field['allowed_mime_types'] ) ? $field['allowed_mime_types'] : job_manager_get_allowed_mime_types( $key );
 $allowed_extensions = array_keys( $allowed_mime_types );
 $accept_file_types  = job_manager_get_accept_file_types( $allowed_mime_types );
+$max_size           = ! empty( $field['max_size'] ) ? (int) $field['max_size'] : wp_max_upload_size();
 $field_name         = isset( $field['name'] ) ? $field['name'] : $key;
 $field_name         .= ! empty( $field['multiple'] ) ? '[]' : '';
 $file_limit         = false;
@@ -53,6 +54,7 @@ if ( ! empty( $field['ajax'] ) && job_manager_user_can_upload_file_via_ajax() ) 
 	<?php if ( ! empty( $field['multiple'] ) ) echo ' multiple'; ?>
 	<?php if ( $file_limit ) echo ' data-file_limit="' . absint( $file_limit ) . '"';?>
 	<?php if ( ! empty( $field['file_limit_message'] ) ) echo ' data-file_limit_message="' . esc_attr( $field['file_limit_message'] ) . '"';?>
+	<?php if ( ! empty( $max_size ) ) echo ' data-max_size="' . absint( $max_size ) . '"'; ?>
 	name="<?php echo esc_attr( isset( $field['name'] ) ? $field['name'] : $key ); ?><?php if ( ! empty( $field['multiple'] ) ) echo '[]'; ?>"
 	id="<?php echo esc_attr( $key ); ?>"
 	placeholder="<?php echo empty( $field['placeholder'] ) ? '' : esc_attr( $field['placeholder'] ); ?>"
@@ -61,8 +63,5 @@ if ( ! empty( $field['ajax'] ) && job_manager_user_can_upload_file_via_ajax() ) 
 	<?php if ( ! empty( $field['description'] ) ) : ?>
 		<?php echo wp_kses_post( $field['description'] ); ?><br>
 	<?php endif; ?>
-	<?php
-	$max_size = ! empty( $field['max_size'] ) ? (int) $field['max_size'] : wp_max_upload_size();
-	printf( esc_html__( 'Maximum file size: %s.', 'wp-job-manager' ), size_format( $max_size ) );
-	?>
+	<?php printf( esc_html__( 'Maximum file size: %s.', 'wp-job-manager' ), size_format( $max_size ) ); ?>
 </small>
