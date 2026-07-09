@@ -95,6 +95,35 @@ async function showOverlay( eventOrId ) {
 	setupEvents( contentElement );
 }
 
+function setupSearchClear() {
+	const dashboard = document.getElementById( 'job-manager-job-dashboard' );
+	const input = dashboard?.querySelector( 'input[type="search"][name="search"]' );
+	const form = input?.closest( 'form' );
+
+	if ( ! form ) {
+		return;
+	}
+
+	const submitWhenCleared = () => {
+		if ( input.value !== '' ) {
+			return;
+		}
+
+		// Only reload when a search filter is actually active, so clearing an
+		// already-empty field never triggers a needless submit.
+		if ( ! new URLSearchParams( window.location.search ).has( 'search' ) ) {
+			return;
+		}
+
+		form.submit();
+	};
+
+	// WebKit/Blink fire 'search' when the native clear (×) control is used.
+	input.addEventListener( 'search', submitWhenCleared );
+	// Covers select-all + delete (and clearing the field in any browser).
+	input.addEventListener( 'input', submitWhenCleared );
+}
+
 function setupStatsOverlay() {
 	document
 		.querySelectorAll( '.jm-dashboard-job .job-title, tr.job_listing td.column-stats' )
@@ -110,6 +139,7 @@ function setupStatsOverlay() {
 domReady( () => {
 	setupEvents( document );
 	setupActionsMenu();
+	setupSearchClear();
 
 	if ( statsEnabled ) {
 		setupStatsOverlay();
