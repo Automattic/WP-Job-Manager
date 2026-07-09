@@ -105,22 +105,15 @@ function setupSearchClear() {
 	}
 
 	const submitWhenCleared = () => {
-		if ( input.value !== '' ) {
-			return;
-		}
-
-		// Only reload when a search filter is actually active, so clearing an
-		// already-empty field never triggers a needless submit.
-		if ( ! new URLSearchParams( window.location.search ).has( 'search' ) ) {
+		if ( input.value !== '' || ! new URLSearchParams( window.location.search ).has( 'search' ) ) {
 			return;
 		}
 
 		form.submit();
 	};
 
-	// WebKit/Blink fire 'search' when the native clear (×) control is used.
+	// 'search' fires on the native clear (×) in WebKit/Blink; 'input' covers select-all + delete.
 	input.addEventListener( 'search', submitWhenCleared );
-	// Covers select-all + delete (and clearing the field in any browser).
 	input.addEventListener( 'input', submitWhenCleared );
 }
 
