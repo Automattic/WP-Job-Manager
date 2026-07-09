@@ -707,6 +707,77 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Builds a meta query matching job listings by location, tolerating common Latin
+	 * accent differences between the search term and the stored value (e.g. a search
+	 * for "Asnieres" also matches a listing stored as "Asnières").
+	 *
+	 * @param string $search_location Location search term(s), separated by `;` for OR matching.
+	 * @return array Meta query clause.
+	 */
+	public static function get_location_meta_query( $search_location ) {
+		$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+		$location_search    = [ 'relation' => 'OR' ];
+
+		foreach ( explode( ';', $search_location ) as $location ) {
+			$location = trim( $location );
+			if ( '' === $location ) {
+				continue;
+			}
+
+			$location_subquery = [ 'relation' => 'OR' ];
+			foreach ( $location_meta_keys as $meta_key ) {
+				$location_subquery[] = [
+					'key'     => $meta_key,
+					'value'   => self::get_accent_insensitive_regex( $location ),
+					'compare' => 'REGEXP',
+				];
+			}
+			$location_search[] = $location_subquery;
+		}
+
+		return $location_search;
+	}
+
+	/**
+	 * Turns a search term into a REGEXP pattern that also matches common Latin accented
+	 * variants of its letters, so plain and accented spellings match each other.
+	 *
+	 * @param string $term Raw search term.
+	 * @return string REGEXP pattern.
+	 */
+	private static function get_accent_insensitive_regex( $term ) {
+		static $char_to_variants = null;
+
+		if ( null === $char_to_variants ) {
+			$accent_groups    = [
+				'aàáâãäåAÀÁÂÃÄÅ',
+				'eèéêëEÈÉÊË',
+				'iìíîïIÌÍÎÏ',
+				'oòóôõöOÒÓÔÕÖ',
+				'uùúûüUÙÚÛÜ',
+				'cçCÇ',
+				'nñNÑ',
+				'yýÿYÝŸ',
+			];
+			$char_to_variants = [];
+			foreach ( $accent_groups as $variants ) {
+				foreach ( preg_split( '//u', $variants, -1, PREG_SPLIT_NO_EMPTY ) as $character ) {
+					$char_to_variants[ $character ] = $variants;
+				}
+			}
+		}
+
+		$pattern = '';
+		foreach ( preg_split( '//u', $term, -1, PREG_SPLIT_NO_EMPTY ) as $character ) {
+			$pattern .= isset( $char_to_variants[ $character ] )
+				? '[' . $char_to_variants[ $character ] . ']'
+				: preg_quote( $character, '/' );
+		}
+
+		return $pattern;
+	}
+
+	/**
 	 * Generates the RSS feed for Job Listings.
 	 */
 	public function job_feed() {
@@ -773,24 +844,7 @@ class WP_Job_Manager_Post_Types {
 		];
 
 		if ( ! empty( $input_search_location ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			$location_search    = [ 'relation' => 'OR' ];
-			$locations          = explode( ';', $input_search_location );
-			foreach ( $locations as $location ) {
-				$location = trim( $location );
-				if ( ! empty( $location ) ) {
-					$location_subquery = [ 'relation' => 'OR' ];
-					foreach ( $location_meta_keys as $meta_key ) {
-						$location_subquery[] = [
-							'key'     => $meta_key,
-							'value'   => $location,
-							'compare' => 'like',
-						];
-					}
-					$location_search[] = $location_subquery;
-				}
-			}
-			$query_args['meta_query'][] = $location_search;
+			$query_args['meta_query'][] = self::get_location_meta_query( $input_search_location );
 		}
 
 		if ( null !== $input_featured ) {

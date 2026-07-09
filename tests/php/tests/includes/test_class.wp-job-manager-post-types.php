@@ -191,6 +191,40 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 * @covers WP_Job_Manager_Post_Types::get_location_meta_query
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_job_feed_location_search_with_accents() {
+		$accented_job_id = $this->factory->job_listing->create(
+			[
+				'meta_input' => [
+					'_job_location' => 'Asnières-sur-Seine, France',
+				],
+			]
+		);
+		$chicago_job_id  = $this->factory->job_listing->create(
+			[
+				'meta_input' => [
+					'_job_location' => 'Chicago, IL, USA',
+				],
+			]
+		);
+
+		$_GET['search_location'] = 'Asnieres';
+		$feed                    = $this->do_job_feed();
+		unset( $_GET['search_location'] );
+		$xml = xml_to_array( $feed );
+		$this->assertNotEmpty( $xml );
+		// Get all the <item> child elements of the <channel> element.
+		$items = xml_find( $xml, 'rss', 'channel', 'item' );
+		$this->assertEquals( 1, count( $items ) );
+		$this->assertHasRssItem( $items, $accented_job_id );
+		$this->assertNotHasRssItem( $items, $chicago_job_id );
+	}
+
+	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
