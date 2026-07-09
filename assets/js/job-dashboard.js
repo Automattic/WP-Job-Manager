@@ -98,23 +98,29 @@ async function showOverlay( eventOrId ) {
 function setupSearchClear() {
 	const dashboard = document.getElementById( 'job-manager-job-dashboard' );
 	const input = dashboard?.querySelector( 'input[type="search"][name="search"]' );
-	const form = input?.closest( 'form' );
 
-	if ( ! form ) {
+	if ( ! input ) {
 		return;
 	}
 
-	const submitWhenCleared = () => {
-		if ( input.value !== '' || ! new URLSearchParams( window.location.search ).has( 'search' ) ) {
+	const reloadWhenCleared = () => {
+		if ( input.value !== '' ) {
 			return;
 		}
 
-		form.submit();
+		const url = new URL( window.location.href );
+
+		if ( ! url.searchParams.has( 'search' ) ) {
+			return;
+		}
+
+		url.searchParams.delete( 'search' );
+		window.location.assign( url );
 	};
 
 	// 'search' fires on the native clear (×) in WebKit/Blink; 'input' covers select-all + delete.
-	input.addEventListener( 'search', submitWhenCleared );
-	input.addEventListener( 'input', submitWhenCleared );
+	input.addEventListener( 'search', reloadWhenCleared );
+	input.addEventListener( 'input', reloadWhenCleared );
 }
 
 function setupStatsOverlay() {
