@@ -191,7 +191,7 @@ function is_position_featured( $post = null ) {
  */
 function candidates_can_apply( $post = null ) {
 	$post = get_post( $post );
-	return apply_filters( 'job_manager_candidates_can_apply', ( ! is_position_filled() && ! in_array( $post->post_status, [ 'preview', 'expired' ], true ) ), $post );
+	return apply_filters( 'job_manager_candidates_can_apply', ( ! is_position_filled( $post ) && ! in_array( $post->post_status, [ 'preview', 'expired' ], true ) ), $post );
 }
 
 /**
@@ -805,6 +805,57 @@ function get_the_job_publish_date( $post = null ) {
 		// translators: Placeholder %s is the relative, human readable time since the job listing was posted.
 		return sprintf( __( 'Posted %s ago', 'wp-job-manager' ), human_time_diff( get_post_timestamp(), time() ) );
 	}
+}
+
+/**
+ * Gets the application deadline for the job listing, if one is set and the listing is
+ * still accepting applications.
+ *
+ * @since 2.5.0
+ * @param int|WP_Post $post (default: null).
+ * @return DateTimeImmutable|false
+ */
+function get_the_job_application_deadline( $post = null ) {
+	$post = get_post( $post );
+
+	if ( ! $post || ! candidates_can_apply( $post ) ) {
+		return false;
+	}
+
+	return WP_Job_Manager_Post_Types::instance()->get_job_expiration( $post );
+}
+
+/**
+ * Displays the application deadline for the job listing, in the site's timezone. Also
+ * outputs a machine-readable `<time>` element so the deadline can be progressively
+ * enhanced with the visitor's local time in the browser.
+ *
+ * @since 2.5.0
+ * @param int|WP_Post $post (default: null).
+ */
+function the_job_application_deadline( $post = null ) {
+	$deadline = get_the_job_application_deadline( $post );
+
+	if ( ! $deadline ) {
+		return;
+	}
+
+	$wp_date_format = get_option( 'date_format' ) ?: JOB_MANAGER_DATE_FORMAT_FALLBACK;
+	$wp_time_format = get_option( 'time_format' );
+
+	// translators: Placeholder %s is the application deadline date and time, in the site's timezone.
+	$display_date = sprintf( esc_html__( 'Apply by %s', 'wp-job-manager' ), wp_date( trim( $wp_date_format . ' ' . $wp_time_format ), $deadline->getTimestamp() ) );
+
+	wp_enqueue_script( 'wp-job-manager-time-localize' );
+
+	printf(
+		'<time class="wpjm-local-time" datetime="%1$s" data-site-timezone="%2$s" data-local-label="%3$s">%4$s</time>',
+		esc_attr( $deadline->format( DateTimeInterface::ATOM ) ),
+		esc_attr( wp_timezone_string() ),
+		// translators: Placeholder %s is the application deadline, converted to the visitor's local time by their browser.
+		esc_attr__( '(%s your local time)', 'wp-job-manager' ),
+		wp_kses_post( $display_date )
+	);
 }
 
 /**
