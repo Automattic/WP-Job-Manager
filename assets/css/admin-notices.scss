@@ -31,10 +31,14 @@ $notice-success: #43af99;
 
 	.wpjm-button {
 		font-size: 13px;
+	}
 
+	// Reassert the brand colors on link buttons. Scoped to `a` so it only
+	// counters WP core's `div.notice a` styling and leaves the dismiss
+	// <button>'s `color: inherit` intact.
+	a.wpjm-button {
 		text-decoration: underline;
 
-		// Keep the brand button colors over WP core's `div.notice a` styling.
 		&,
 		&:hover,
 		&:focus,
