@@ -386,7 +386,8 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['validThrough'] = $job_expires->format( 'c' );
 	}
 
-	$data['title']       = wp_strip_all_tags( wpjm_get_the_job_title( $post ) );
+	// Structured data carries plain text, but `the_title` leaves HTML entities behind (`&` becomes `&#038;`).
+	$data['title']       = wp_specialchars_decode( wp_strip_all_tags( wpjm_get_the_job_title( $post ) ), ENT_QUOTES );
 	$data['description'] = wpjm_get_the_job_description( $post );
 
 	$employment_types = wpjm_get_job_employment_types();
