@@ -406,6 +406,7 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 					'_company_tagline',
 					'_company_website',
 					'_company_twitter',
+					'_company_linkedin',
 					'_job_location',
 				];
 

@@ -1965,6 +1965,15 @@ class WP_Job_Manager_Post_Types {
 				'show_in_admin' => true,
 				'show_in_rest'  => true,
 			],
+			'_company_linkedin'    => [
+				'label'             => __( 'Company LinkedIn', 'wp-job-manager' ),
+				'placeholder'       => 'https://www.linkedin.com/company/yourcompany',
+				'priority'          => 7,
+				'data_type'         => 'string',
+				'show_in_admin'     => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_url' ],
+			],
 			'_company_video'       => [
 				'label'             => __( 'Company Video', 'wp-job-manager' ),
 				'placeholder'       => __( 'URL to the company video', 'wp-job-manager' ),

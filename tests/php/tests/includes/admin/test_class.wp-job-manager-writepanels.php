@@ -219,6 +219,7 @@ class WP_Test_WP_Job_Manager_Writepanels extends WPJM_BaseTest {
 		$_POST['_company_website'] = $job->_company_website;
 		$_POST['_company_tagline'] = $job->_company_tagline;
 		$_POST['_company_twitter'] = $job->_company_twitter;
+		$_POST['_company_linkedin'] = $job->_company_linkedin;
 		$_POST['_company_video']   = $job->_company_video;
 		$_POST['_filled']          = $job->_filled;
 		$_POST['_featured']        = $job->_featured;

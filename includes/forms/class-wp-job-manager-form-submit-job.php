@@ -309,14 +309,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					],
 				],
 				'company' => [
-					'company_name'    => [
+					'company_name'     => [
 						'label'       => __( 'Company name', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => true,
 						'placeholder' => __( 'Enter the name of the company', 'wp-job-manager' ),
 						'priority'    => 1,
 					],
-					'company_website' => [
+					'company_website'  => [
 						'label'       => __( 'Website', 'wp-job-manager' ),
 						'type'        => 'text',
 						'sanitizer'   => 'url',
@@ -324,7 +324,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'http://', 'wp-job-manager' ),
 						'priority'    => 2,
 					],
-					'company_tagline' => [
+					'company_tagline'  => [
 						'label'       => __( 'Tagline', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
@@ -332,7 +332,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'maxlength'   => 64,
 						'priority'    => 3,
 					],
-					'company_video'   => [
+					'company_video'    => [
 						'label'       => __( 'Video', 'wp-job-manager' ),
 						'type'        => 'text',
 						'sanitizer'   => 'url',
@@ -340,19 +340,27 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'A link to a video about your company', 'wp-job-manager' ),
 						'priority'    => 4,
 					],
-					'company_twitter' => [
+					'company_twitter'  => [
 						'label'       => __( 'X / Twitter username', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( '@yourcompany', 'wp-job-manager' ),
 						'priority'    => 5,
 					],
-					'company_logo'    => [
+					'company_linkedin' => [
+						'label'       => __( 'LinkedIn', 'wp-job-manager' ),
+						'type'        => 'text',
+						'sanitizer'   => 'url',
+						'required'    => false,
+						'placeholder' => __( 'https://www.linkedin.com/company/yourcompany', 'wp-job-manager' ),
+						'priority'    => 6,
+					],
+					'company_logo'     => [
 						'label'              => __( 'Logo', 'wp-job-manager' ),
 						'type'               => 'file',
 						'required'           => false,
 						'placeholder'        => '',
-						'priority'           => 6,
+						'priority'           => 7,
 						'ajax'               => true,
 						'multiple'           => false,
 						'description'        => __( 'Square format recommended (1:1 ratio).', 'wp-job-manager' ),
@@ -1161,6 +1169,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			update_user_meta( get_current_user_id(), '_company_website', isset( $values['company']['company_website'] ) ? $values['company']['company_website'] : '' );
 			update_user_meta( get_current_user_id(), '_company_tagline', isset( $values['company']['company_tagline'] ) ? $values['company']['company_tagline'] : '' );
 			update_user_meta( get_current_user_id(), '_company_twitter', isset( $values['company']['company_twitter'] ) ? $values['company']['company_twitter'] : '' );
+			update_user_meta( get_current_user_id(), '_company_linkedin', isset( $values['company']['company_linkedin'] ) ? $values['company']['company_linkedin'] : '' );
 			update_user_meta( get_current_user_id(), '_company_video', isset( $values['company']['company_video'] ) ? $values['company']['company_video'] : '' );
 		}
 

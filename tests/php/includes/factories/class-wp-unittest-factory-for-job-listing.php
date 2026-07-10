@@ -14,6 +14,7 @@ class WP_UnitTest_Factory_For_Job_Listing extends WP_UnitTest_Factory_For_Post {
 			'_company_tagline' => new WP_UnitTest_Generator_Sequence( 'Job Listing company tagline %s' ),
 			'_company_video'   => '',
 			'_company_twitter' => '',
+			'_company_linkedin' => '',
 			'_company_logo'    => '',
 			'_filled'          => '0',
 			'_featured'        => '0',
