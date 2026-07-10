@@ -109,7 +109,8 @@ $notice-success: #43af99;
 
 		// Override WordPress core's `.notice-dismiss { width: 24px; height: 24px; }`,
 		// which would otherwise squeeze the 24px icon into the padded box (see #3034).
-		width: 36px;
+		box-sizing: border-box;
+		width: 36px; // 24px icon + 6px padding each side.
 		height: 36px;
 
 		&::before {
