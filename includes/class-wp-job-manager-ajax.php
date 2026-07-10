@@ -189,6 +189,29 @@ class WP_Job_Manager_Ajax {
 		$types              = get_job_listing_types();
 		$job_types_filtered = ! is_null( $filter_job_types ) && count( $types ) !== count( $filter_job_types );
 
+		$search_filters = [
+			'keyword'  => $search_keywords,
+			'location' => $search_location,
+			'category' => $search_categories,
+			'job_type' => $job_types_filtered ? $filter_job_types : [],
+		];
+
+		// Only log on the first page of results so paging through the same
+		// search doesn't inflate its counts on every page request.
+		if ( 1 === $page ) {
+			/**
+			 * Fires when search filters are about to be logged, allowing add-ons
+			 * (e.g. the Tags add-on) to log their own filter value.
+			 *
+			 * @since 2.4.0
+			 *
+			 * @param array $search_filters Filter name to value (or array of values) used in the search.
+			 */
+			do_action( 'wpjm_search_stats_log', $search_filters );
+
+			\WP_Job_Manager\Search_Stats::instance()->log_search( $search_filters );
+		}
+
 		$args = [
 			'search_location'   => $search_location,
 			'search_keywords'   => $search_keywords,
