@@ -37,7 +37,7 @@ $notice-success: #43af99;
 	// counters WP core's `div.notice a` styling and leaves the dismiss
 	// <button>'s `color: inherit` intact.
 	a.wpjm-button {
-		text-decoration: underline;
+		text-decoration: none;
 
 		&,
 		&:hover,
