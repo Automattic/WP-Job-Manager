@@ -19,9 +19,14 @@ echo "\n\n";
 
 if ( ! empty( $fields ) ) {
 	foreach ( $fields as $field ) {
-		echo esc_html( wp_strip_all_tags( $field[ 'label' ] )  .': '. wp_strip_all_tags( $field[ 'value' ] ) );
+		// This body is text/plain. HTML escaping here would reach the recipient literally, as `&amp;`.
+		$label = wp_strip_all_tags( wp_specialchars_decode( $field['label'], ENT_QUOTES ) );
+		$value = wp_strip_all_tags( wp_specialchars_decode( $field['value'], ENT_QUOTES ) );
+
+		echo $label . ': ' . $value;
 		if ( ! empty( $field['url'] ) ) {
-			echo ' (' . esc_url( $field['url'] ) . ')';
+			// esc_url() would encode `&` as `&#038;`, breaking the link.
+			echo ' (' . esc_url_raw( $field['url'] ) . ')';
 		}
 		echo "\n";
 	}

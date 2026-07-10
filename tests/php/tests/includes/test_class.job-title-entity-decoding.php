@@ -159,4 +159,89 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 
 		$this->assertStringContainsString( $title, $email->get_subject() );
 	}
+
+	/**
+	 * The promoted jobs feed is a JSON data context consumed by an external service.
+	 */
+	public function test_promoted_jobs_rest_title_decodes_entities() {
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-status-handler.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php';
+
+		$job = $this->create_listing_as_unprivileged_user();
+		update_post_meta( $job->ID, WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY, '1' );
+
+		$api      = new WP_Job_Manager_Promoted_Jobs_API( new WP_Job_Manager_Promoted_Jobs_Status_Handler() );
+		$response = $api->get_items();
+		$jobs     = $response->get_data()['jobs'];
+
+		$titles = wp_list_pluck( $jobs, 'title' );
+		$this->assertContains( self::RAW_TITLE, $titles );
+	}
+
+	/**
+	 * Renders the plain-text job details email segment and returns its output.
+	 *
+	 * @param WP_Post $job Job listing.
+	 * @return string
+	 */
+	private function render_plain_text_job_details( $job ) {
+		$email = new WP_Job_Manager_Email_Admin_New_Job( [ 'job' => $job ], [] );
+
+		ob_start();
+		WP_Job_Manager_Email_Notifications::output_job_details( $job, $email, true, true );
+		return ob_get_clean();
+	}
+
+	public function test_plain_text_email_body_decodes_entities_in_title() {
+		$job = $this->create_listing_as_unprivileged_user();
+
+		$this->assertStringContainsString( self::RAW_TITLE, $this->render_plain_text_job_details( $job ) );
+	}
+
+	/**
+	 * `esc_html()` in a plain-text template encodes a bare `&` itself, so this path is
+	 * broken for administrators too — not just for users caught by the kses capability split.
+	 */
+	public function test_plain_text_email_body_does_not_encode_an_admin_raw_title() {
+		$admin_id = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $admin_id );
+		kses_remove_filters();
+
+		$job_id = wp_insert_post(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_title'  => self::RAW_TITLE,
+				'post_status' => 'publish',
+				'post_author' => $admin_id,
+			]
+		);
+		$job = get_post( $job_id );
+
+		$this->assertSame( self::RAW_TITLE, $job->post_title, 'Fixture precondition: admin titles store raw.' );
+
+		$output = $this->render_plain_text_job_details( $job );
+		$this->assertStringContainsString( self::RAW_TITLE, $output );
+		$this->assertStringNotContainsString( '&amp;', $output );
+	}
+
+	/**
+	 * `esc_url()` encodes `&` to `&#038;`, which breaks a link in a plain-text body.
+	 */
+	public function test_plain_text_email_body_does_not_html_escape_the_url() {
+		$job = $this->create_listing_as_unprivileged_user();
+
+		add_filter(
+			'job_manager_emails_job_detail_fields',
+			function ( $fields ) {
+				$fields['job_title']['url'] = 'http://example.org/?job=1&preview=true';
+				return $fields;
+			}
+		);
+
+		$output = $this->render_plain_text_job_details( $job );
+
+		$this->assertStringContainsString( 'http://example.org/?job=1&preview=true', $output );
+		$this->assertStringNotContainsString( '&#038;', $output );
+	}
 }
