@@ -38,7 +38,41 @@ class WP_Job_Manager_Shortcodes {
 		add_shortcode( 'job_summary', [ $this, 'output_job_summary' ] );
 		add_shortcode( 'job_apply', [ $this, 'output_job_apply' ] );
 
+		// Block themes expand shortcodes before do_blocks(), so the core/shortcode block's
+		// wpautop() would run on our already-rendered HTML and inject stray p/br tags.
+		add_filter( 'pre_render_block', [ $this, 'protect_jobs_shortcode_from_wpautop' ], 10, 2 );
+
 		Job_Dashboard_Shortcode::instance();
+	}
+
+	/**
+	 * Skip core/shortcode wpautop when the block already holds expanded [jobs] markup.
+	 *
+	 * In block templates, get_the_block_template_html() runs do_shortcode() before
+	 * do_blocks(). By the time the shortcode block renders, [jobs] is already HTML.
+	 * Returning that HTML here bypasses render_block_core_shortcode()'s wpautop() call.
+	 *
+	 * @param string|null $pre_render   Existing pre-render value.
+	 * @param array       $parsed_block Parsed block.
+	 * @return string|null
+	 */
+	public function protect_jobs_shortcode_from_wpautop( $pre_render, $parsed_block ) {
+		if ( null !== $pre_render ) {
+			return $pre_render;
+		}
+
+		if ( empty( $parsed_block['blockName'] ) || 'core/shortcode' !== $parsed_block['blockName'] ) {
+			return $pre_render;
+		}
+
+		$html = isset( $parsed_block['innerHTML'] ) ? $parsed_block['innerHTML'] : '';
+
+		// Marker is hard-coded on the [jobs] wrapper, outside the filterable data attributes.
+		if ( false !== strpos( $html, 'data-wp-job-manager-jobs-shortcode="1"' ) ) {
+			return $html;
+		}
+
+		return $pre_render;
 	}
 
 	/**
@@ -421,7 +455,8 @@ class WP_Job_Manager_Shortcodes {
 
 		$job_listings_output = apply_filters( 'job_manager_job_listings_output', ob_get_clean() );
 
-		return '<div class="job_listings" ' . $data_attributes_string . '>' . $job_listings_output . '</div>';
+		// Marker lets pre_render_block recognize expanded [jobs] markup without relying on filterable attributes.
+		return '<div class="job_listings" data-wp-job-manager-jobs-shortcode="1" ' . $data_attributes_string . '>' . $job_listings_output . '</div>';
 	}
 
 	/**
