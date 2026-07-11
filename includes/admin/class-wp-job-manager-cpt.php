@@ -48,6 +48,9 @@ class WP_Job_Manager_CPT {
 		add_filter( 'post_row_actions', [ $this, 'row_actions' ], 10, 2 );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'custom_columns' ], 2 );
 		add_filter( 'manage_edit-job_listing_sortable_columns', [ $this, 'sortable_columns' ] );
+		add_action( 'quick_edit_custom_box', [ $this, 'quick_edit_custom_box' ], 10, 2 );
+		add_action( 'add_inline_data', [ $this, 'add_inline_data' ] );
+		add_action( 'save_post_job_listing', [ $this, 'quick_edit_save' ], 10, 2 );
 		add_filter( 'request', [ $this, 'sort_columns' ] );
 		add_action( 'parse_query', [ $this, 'search_meta' ] );
 		add_action( 'parse_query', [ $this, 'filter_meta' ] );
@@ -542,7 +545,6 @@ class WP_Job_Manager_CPT {
 
 		if ( \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type() ) {
 
-			unset( $actions['inline hide-if-no-js'] );
 			unset( $actions['trash'] );
 
 			$admin_actions = $this->get_admin_actions( $post );
@@ -687,6 +689,68 @@ class WP_Job_Manager_CPT {
 				echo '<span data-tip="' . esc_attr( get_the_job_status( $post ) ) . '" class="tips status-' . esc_attr( $post->post_status ) . '">' . esc_html( get_the_job_status( $post ) ) . '</span>';
 				break;
 		}
+	}
+
+	/**
+	 * Outputs the Featured/Filled fields in the Quick Edit box for Job Listings.
+	 *
+	 * @param string $column_name Column being edited.
+	 * @param string $post_type   Post type being edited.
+	 */
+	public function quick_edit_custom_box( $column_name, $post_type ) {
+		if ( 'featured_job' !== $column_name || \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
+			return;
+		}
+		?>
+		<fieldset class="inline-edit-col-right">
+			<div class="inline-edit-col">
+				<div class="inline-edit-group wp-clearfix">
+					<label class="alignleft">
+						<input type="checkbox" name="_featured" value="1" />
+						<span class="checkbox-title"><?php esc_html_e( 'Featured Listing', 'wp-job-manager' ); ?></span>
+					</label>
+					<label class="alignleft">
+						<input type="checkbox" name="_filled" value="1" />
+						<span class="checkbox-title"><?php esc_html_e( 'Position Filled', 'wp-job-manager' ); ?></span>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<?php
+	}
+
+	/**
+	 * Adds Featured/Filled values to the hidden inline data used to populate Quick Edit.
+	 *
+	 * @param \WP_Post $post
+	 */
+	public function add_inline_data( $post ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
+			return;
+		}
+		echo '<div class="featured">' . ( is_position_featured( $post ) ? '1' : '0' ) . '</div>';
+		echo '<div class="filled">' . ( is_position_filled( $post ) ? '1' : '0' ) . '</div>';
+	}
+
+	/**
+	 * Saves the Featured/Filled fields submitted from Quick Edit.
+	 *
+	 * @param int      $post_id Post ID being saved.
+	 * @param \WP_Post $post    Post object being saved.
+	 */
+	public function quick_edit_save( $post_id, $post ) {
+		if (
+			empty( $_POST['_inline_edit'] )
+			|| ! wp_verify_nonce( wp_unslash( $_POST['_inline_edit'] ), 'inlineeditnonce' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		) {
+			return;
+		}
+		if ( ! current_user_can( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS, $post_id ) ) {
+			return;
+		}
+
+		update_post_meta( $post_id, '_featured', ! empty( $_POST['_featured'] ) ? 1 : 0 );
+		update_post_meta( $post_id, '_filled', ! empty( $_POST['_filled'] ) ? 1 : 0 );
 	}
 
 	/**
