@@ -185,6 +185,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'wp_footer', [ $this, 'output_structured_data' ] );
 		add_filter( 'wp_sitemaps_posts_query_args', [ $this, 'sitemaps_maybe_hide_filled' ], 10, 2 );
 
+		add_filter( 'the_job_description', 'do_blocks', 9 );
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
 		add_filter( 'the_job_description', 'convert_chars' );
@@ -450,6 +451,17 @@ class WP_Job_Manager_Post_Types {
 			'pages'      => false,
 		];
 
+		/**
+		 * Whether the job listing editor should be locked to a single Classic block.
+		 *
+		 * Defaults to false, allowing full use of the block editor for job listings,
+		 * the same as posts and pages.
+		 *
+		 * @since 2.4.6
+		 * @param bool $template_lock Whether to lock the editor to a single Classic block.
+		 */
+		$lock_to_classic_block = apply_filters( 'job_manager_job_listing_template_lock', false );
+
 		register_post_type(
 			self::PT_LISTING,
 			apply_filters(
@@ -504,8 +516,8 @@ class WP_Job_Manager_Post_Types {
 					'show_in_rest'          => true,
 					'rest_base'             => 'job-listings',
 					'rest_controller_class' => 'WP_REST_Posts_Controller',
-					'template'              => [ [ 'core/freeform' ] ],
-					'template_lock'         => 'all',
+					'template'              => $lock_to_classic_block ? [ [ 'core/freeform' ] ] : [],
+					'template_lock'         => $lock_to_classic_block ? 'all' : false,
 					'menu_position'         => 30,
 				]
 			)
