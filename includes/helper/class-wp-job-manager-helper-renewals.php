@@ -39,8 +39,14 @@ class WP_Job_Manager_Helper_Renewals {
 		$this->form = $form;
 
 		if ( self::is_renew_action() ) {
-			add_filter( 'submit_job_steps', [ $this, 'remove_edit_steps_for_renewal' ] );
 			add_filter( 'submit_job_step_preview_submit_text', [ $this, 'submit_button_text_renewal' ], 15 );
+
+			if ( wpjm_renewal_allows_edits() ) {
+				add_filter( 'submit_job_steps', [ $this, 'use_renewal_preview_handler' ] );
+				add_filter( 'submit_job_form_can_continue_later', '__return_false' );
+			} else {
+				add_filter( 'submit_job_steps', [ $this, 'remove_edit_steps_for_renewal' ] );
+			}
 		}
 	}
 
@@ -100,6 +106,22 @@ class WP_Job_Manager_Helper_Renewals {
 	}
 
 	/**
+	 * Handle steps for renewing a listing before expiry when edits are allowed, keeps the
+	 * edit step and only overrides the preview step's handler to renew on continue.
+	 *
+	 * @access private
+	 * @param array $steps Form submit steps.
+	 * @return array
+	 */
+	public function use_renewal_preview_handler( $steps ) {
+		$steps['preview']['name']    = 'Renew Preview';
+		$steps['preview']['handler'] = [ $this, 'renew_preview_handler' ];
+
+		/** This filter is documented in includes/helper/class-wp-job-manager-helper-renewals.php */
+		return apply_filters( 'renew_job_steps', $steps, $this->form );
+	}
+
+	/**
 	 * Handles the renew-listing form submission.
 	 *
 	 * @throws Exception On validation error.
@@ -111,6 +133,12 @@ class WP_Job_Manager_Helper_Renewals {
 		}
 
 		$this->form->check_preview_form_nonce_field();
+
+		// Edit = show submit form again. Only reachable when the edit step is still part of the renewal flow.
+		if ( ! empty( $_POST['edit_job'] ) && isset( $this->form->get_steps()['submit'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
+			$this->form->previous_step();
+			return;
+		}
 
 		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
 			if ( $this->should_renew_job_listing() ) {

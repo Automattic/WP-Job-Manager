@@ -1282,6 +1282,31 @@ function wpjm_published_submission_edits_require_moderation() {
 }
 
 /**
+ * Checks if the listing edit form should be shown as part of the renewal flow.
+ *
+ * Always false when published listings can't be edited, or edits require
+ * moderation, since a renewal must not take a listing offline while its
+ * edits await admin approval.
+ *
+ * @since 2.4.6
+ * @return bool
+ */
+function wpjm_renewal_allows_edits() {
+	$allow_edits = 1 === intval( get_option( 'job_manager_renewal_allow_edits' ) )
+		&& wpjm_user_can_edit_published_submissions()
+		&& ! wpjm_published_submission_edits_require_moderation();
+
+	/**
+	 * Override whether the listing edit form is shown as part of the renewal flow.
+	 *
+	 * @since 2.4.6
+	 *
+	 * @param bool $allow_edits
+	 */
+	return apply_filters( 'job_manager_renewal_allows_edits', $allow_edits );
+}
+
+/**
  * Get the category slugs from the search query string.
  * The query string is made with the category slugs separate by commas.
  *
