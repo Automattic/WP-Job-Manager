@@ -160,6 +160,45 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_location_meta_keys_filter() {
+		$boise_job = $this->factory->job_listing->create(
+			[
+				'post_title' => 'Dinosaur Test Boise',
+				'meta_input' => [
+					'_address_region' => 'Boise, Idaho',
+				],
+			]
+		);
+
+		$no_filter_results = get_job_listings(
+			[
+				'search_keywords' => 'Dinosaur',
+				'search_location' => 'Boise',
+			]
+		);
+		$this->assertEqualSets( [], wp_list_pluck( $no_filter_results->posts, 'ID' ) );
+
+		add_filter(
+			'job_manager_get_listings_location_meta_keys',
+			function ( $location_meta_keys ) {
+				$location_meta_keys[] = '_address_region';
+				return $location_meta_keys;
+			}
+		);
+
+		$filtered_results = get_job_listings(
+			[
+				'search_keywords' => 'Dinosaur',
+				'search_location' => 'Boise',
+			]
+		);
+		$this->assertEqualSets( [ $boise_job ], wp_list_pluck( $filtered_results->posts, 'ID' ) );
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */

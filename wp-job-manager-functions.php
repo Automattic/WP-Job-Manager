@@ -103,7 +103,13 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_location'] ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+			/**
+			 * Filters the meta keys that are checked against the location search term.
+			 *
+			 * @since $$next-version$$
+			 * @param array $location_meta_keys The meta keys.
+			 */
+			$location_meta_keys = apply_filters( 'job_manager_get_listings_location_meta_keys', [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ] );
 			$location_search    = [ 'relation' => 'OR' ];
 			$locations          = explode( ';', $args['search_location'] );
 
