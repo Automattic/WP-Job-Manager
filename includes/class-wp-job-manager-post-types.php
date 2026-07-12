@@ -1641,6 +1641,21 @@ class WP_Job_Manager_Post_Types {
 			case '_featured':
 				$this->maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value );
 				break;
+			case '_filled':
+				$was_filled = (bool) get_post_meta( $object_id, '_filled', true );
+				$is_filled  = (bool) $meta_value;
+
+				if ( $was_filled !== $is_filled ) {
+					/**
+					 * Fires when a job listing's filled status changes.
+					 *
+					 * @param int  $object_id  Job listing ID.
+					 * @param bool $is_filled  New filled state.
+					 * @param bool $was_filled Previous filled state.
+					 */
+					do_action( 'job_manager_job_listing_filled_status_changed', $object_id, $is_filled, $was_filled );
+				}
+				break;
 		}
 	}
 
