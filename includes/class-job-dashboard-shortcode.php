@@ -93,13 +93,15 @@ class Job_Dashboard_Shortcode {
 			return ob_get_clean();
 		}
 
-		$attrs          = shortcode_atts(
+		$attrs           = shortcode_atts(
 			[
-				'posts_per_page' => '25',
+				'posts_per_page'  => '25',
+				'group_by_status' => 'no',
 			],
 			$attrs
 		);
-		$posts_per_page = $attrs['posts_per_page'];
+		$posts_per_page  = $attrs['posts_per_page'];
+		$group_by_status = in_array( strtolower( (string) $attrs['group_by_status'] ), [ 'yes', 'true', '1' ], true );
 
 		Job_Overlay::instance()->init_dashboard_overlay();
 
@@ -121,14 +123,20 @@ class Job_Dashboard_Shortcode {
 		$search = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
 
 		// ....If not show the job dashboard.
+		$query_args = [
+			'posts_per_page' => $group_by_status ? -1 : $posts_per_page,
+			's'              => $search,
+		];
+
 		$jobs = new \WP_Query(
-			$this->get_job_dashboard_query_args(
-				[
-					'posts_per_page' => $posts_per_page,
-					's'              => $search,
-				]
-			),
+			$this->get_job_dashboard_query_args( $query_args ),
 		);
+
+		// When grouping, ensure pagination offset is removed after the filter runs.
+		if ( $group_by_status ) {
+			$jobs->query_vars['posts_per_page'] = -1;
+			$jobs->query_vars['offset']         = 0;
+		}
 
 		// Cache IDs for access check later on.
 		$this->job_dashboard_job_ids = wp_list_pluck( $jobs->posts, 'ID' );
@@ -160,15 +168,29 @@ class Job_Dashboard_Shortcode {
 		 */
 		do_action( 'job_manager_job_dashboard_before', $jobs );
 
+		$group_data = $group_by_status
+			? [
+				'group_by_status' => true,
+				'job_groups'      => $this->group_jobs_by_status( $jobs->posts ),
+				'max_num_pages'   => 1,
+			]
+			: [
+				'group_by_status' => false,
+				'job_groups'      => [],
+				'max_num_pages'   => $jobs->max_num_pages,
+			];
+
 		get_job_manager_template(
 			'job-dashboard.php',
-			[
-				'jobs'                  => $jobs->posts,
-				'job_actions'           => $job_actions,
-				'max_num_pages'         => $jobs->max_num_pages,
-				'job_dashboard_columns' => $job_dashboard_columns,
-				'search_input'          => $search,
-			]
+			array_merge(
+				$group_data,
+				[
+					'jobs'                  => $jobs->posts,
+					'job_actions'           => $job_actions,
+					'job_dashboard_columns' => $job_dashboard_columns,
+					'search_input'          => $search,
+				]
+			)
 		);
 
 		Job_Overlay::instance()->output_modal_element();
@@ -684,6 +706,34 @@ class Job_Dashboard_Shortcode {
 		} else {
 			return home_url( '/' );
 		}
+	}
+
+	/**
+	 * Group jobs by status bucket for the dashboard.
+	 *
+	 * @since 2.5.0
+	 * @param array $jobs Array of WP_Post objects.
+	 * @return array{active: array, pending: array, inactive: array}
+	 */
+	private function group_jobs_by_status( array $jobs ): array {
+		$groups = [
+			'active'   => [],
+			'pending'  => [],
+			'inactive' => [],
+		];
+
+		foreach ( $jobs as $job ) {
+			$group = 'inactive';
+
+			if ( in_array( $job->post_status, [ 'publish', 'future' ], true ) ) {
+				$group = 'active';
+			} elseif ( in_array( $job->post_status, [ 'pending', 'pending_payment', 'draft', 'preview' ], true ) ) {
+				$group = 'pending';
+			}
+			$groups[ $group ][] = $job;
+		}
+
+		return $groups;
 	}
 
 	/**
