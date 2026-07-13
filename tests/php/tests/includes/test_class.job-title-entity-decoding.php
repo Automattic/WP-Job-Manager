@@ -226,6 +226,51 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Decoding must happen after tags are stripped, not before.
+	 *
+	 * A decoded `<` that is not followed by a space reads as an unterminated tag, so
+	 * decode-then-strip hands `strip_tags()` a `Sales <10k` it will silently swallow
+	 * along with the rest of the value.
+	 */
+	public function test_plain_text_email_body_does_not_truncate_a_value_at_a_bare_less_than() {
+		$job = $this->create_listing_as_unprivileged_user();
+
+		add_filter(
+			'job_manager_emails_job_detail_fields',
+			function ( $fields ) {
+				$fields['job_title']['value'] = 'Sales &lt;10k &amp; more';
+				return $fields;
+			}
+		);
+
+		$this->assertStringContainsString( 'Sales <10k & more', $this->render_plain_text_job_details( $job ) );
+	}
+
+	/**
+	 * The structured data title runs through `the_title`, so `wptexturize()` has already
+	 * turned an apostrophe into `&#8217;` and a double hyphen into `&#8212;`. Neither is in
+	 * `wp_specialchars_decode()`'s translation table.
+	 */
+	public function test_structured_data_title_decodes_texturized_entities() {
+		$user_id = $this->factory()->user->create( [ 'role' => 'subscriber' ] );
+		wp_set_current_user( $user_id );
+		kses_init_filters();
+
+		$job_id = $this->factory()->post->create(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_title'  => "Nurse's aide -- Sales & more",
+				'post_status' => 'publish',
+				'post_author' => $user_id,
+			]
+		);
+
+		$data = wpjm_get_job_listing_structured_data( get_post( $job_id ) );
+
+		$this->assertSame( 'Nurse’s aide — Sales & more', $data['title'] );
+	}
+
+	/**
 	 * `esc_url()` encodes `&` to `&#038;`, which breaks a link in a plain-text body.
 	 */
 	public function test_plain_text_email_body_does_not_html_escape_the_url() {

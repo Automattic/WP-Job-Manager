@@ -20,8 +20,10 @@ echo "\n\n";
 if ( ! empty( $fields ) ) {
 	foreach ( $fields as $field ) {
 		// This body is text/plain. HTML escaping here would reach the recipient literally, as `&amp;`.
-		$label = wp_strip_all_tags( wp_specialchars_decode( $field['label'], ENT_QUOTES ) );
-		$value = wp_strip_all_tags( wp_specialchars_decode( $field['value'], ENT_QUOTES ) );
+		// Strip before decoding: a decoded `<` in `Sales <10k` reads as an unterminated tag and
+		// strip_tags() would discard the rest of the value.
+		$label = wp_specialchars_decode( wp_strip_all_tags( $field['label'] ), ENT_QUOTES );
+		$value = wp_specialchars_decode( wp_strip_all_tags( $field['value'] ), ENT_QUOTES );
 
 		echo $label . ': ' . $value;
 		if ( ! empty( $field['url'] ) ) {
