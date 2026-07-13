@@ -1,8 +1,7 @@
 <?php
 /**
  * Tests that a job listing title is HTML-entity decoded before it is placed
- * into a plain-text context (email subjects, the plain-text email body, the
- * promoted jobs feed).
+ * into a plain-text context (email subjects, the plain-text email body).
  *
  * The JSON-LD structured data has the same defect but is not fixed here: the
  * emitted `<script type="application/ld+json">` block is re-escaped by
@@ -139,25 +138,6 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 		$email = new WP_Job_Manager_Email_Admin_New_Job( [ 'job' => get_post( $job_id ) ], [] );
 
 		$this->assertStringContainsString( $title, $email->get_subject() );
-	}
-
-	/**
-	 * The promoted jobs feed is a JSON data context consumed by an external service.
-	 */
-	public function test_promoted_jobs_rest_title_decodes_entities() {
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php';
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-status-handler.php';
-		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs-api.php';
-
-		$job = $this->create_listing_as_unprivileged_user();
-		update_post_meta( $job->ID, WP_Job_Manager_Promoted_Jobs::PROMOTED_META_KEY, '1' );
-
-		$api      = new WP_Job_Manager_Promoted_Jobs_API( new WP_Job_Manager_Promoted_Jobs_Status_Handler() );
-		$response = $api->get_items();
-		$jobs     = $response->get_data()['jobs'];
-
-		$titles = wp_list_pluck( $jobs, 'title' );
-		$this->assertContains( self::RAW_TITLE, $titles );
 	}
 
 	/**

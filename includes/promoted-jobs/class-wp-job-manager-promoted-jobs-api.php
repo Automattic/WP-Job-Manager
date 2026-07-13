@@ -215,8 +215,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			'id'           => (string) $item->ID,
 			'status'       => $item->post_status,
 			'promoted'     => WP_Job_Manager_Promoted_Jobs::is_promoted( $item->ID ),
-			// `title` is plain text; `post_title` holds HTML entities when the submitter lacks `unfiltered_html`.
-			'title'        => wp_specialchars_decode( $item->post_title, ENT_QUOTES ),
+			'title'        => $item->post_title,
 			'description'  => $item->post_content,
 			'permalink'    => get_permalink( $item ),
 			'location'     => get_post_meta( $item->ID, '_job_location', true ),
