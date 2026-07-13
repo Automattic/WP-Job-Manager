@@ -1,7 +1,13 @@
 <?php
 /**
  * Tests that a job listing title is HTML-entity decoded before it is placed
- * into a plain-text context (email subjects, JSON-LD structured data).
+ * into a plain-text context (email subjects, the plain-text email body, the
+ * promoted jobs feed).
+ *
+ * The JSON-LD structured data has the same defect but is not fixed here: the
+ * emitted `<script type="application/ld+json">` block is re-escaped by
+ * `wpjm_esc_json()` with `$double_encode = true`, so decoding the title alone
+ * does not change what the consumer reads. See #3027.
  *
  * WordPress core hooks `wp_filter_kses()` onto `title_save_pre` for any user
  * without the `unfiltered_html` capability, so a listing submitted by a guest,
@@ -85,28 +91,6 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 		$this->assertStringNotContainsString( '&amp;', $email->get_subject() );
 	}
 
-	public function test_structured_data_title_decodes_entities() {
-		$job  = $this->create_listing_as_unprivileged_user();
-		$data = wpjm_get_job_listing_structured_data( $job );
-
-		$this->assertSame( self::RAW_TITLE, $data['title'] );
-	}
-
-	/**
-	 * The decoded title must survive JSON encoding of the structured data payload.
-	 *
-	 * Note this asserts on the payload, not on the rendered `<script type="application/ld+json">`
-	 * block: `wpjm_esc_json()` re-escapes that output with `$double_encode = true`, so the emitted
-	 * markup still contains `&amp;`. That is a separate, pre-existing concern.
-	 */
-	public function test_structured_data_json_payload_contains_no_entity() {
-		$job  = $this->create_listing_as_unprivileged_user();
-		$json = wp_json_encode( wpjm_get_job_listing_structured_data( $job ) );
-
-		$this->assertStringNotContainsString( '&amp;', $json );
-		$this->assertStringNotContainsString( '&#038;', $json );
-	}
-
 	/**
 	 * Decoding must be a no-op for a title stored raw, which is what an
 	 * administrator's submission produces.
@@ -130,9 +114,6 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 
 		$email = new WP_Job_Manager_Email_Admin_New_Job( [ 'job' => $job ], [] );
 		$this->assertStringContainsString( self::RAW_TITLE, $email->get_subject() );
-
-		$data = wpjm_get_job_listing_structured_data( $job );
-		$this->assertSame( self::RAW_TITLE, $data['title'] );
 	}
 
 	/**
@@ -244,30 +225,6 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 		);
 
 		$this->assertStringContainsString( 'Sales <10k & more', $this->render_plain_text_job_details( $job ) );
-	}
-
-	/**
-	 * The structured data title runs through `the_title`, so `wptexturize()` has already
-	 * turned an apostrophe into `&#8217;` and a double hyphen into `&#8212;`. Neither is in
-	 * `wp_specialchars_decode()`'s translation table.
-	 */
-	public function test_structured_data_title_decodes_texturized_entities() {
-		$user_id = $this->factory()->user->create( [ 'role' => 'subscriber' ] );
-		wp_set_current_user( $user_id );
-		kses_init_filters();
-
-		$job_id = $this->factory()->post->create(
-			[
-				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
-				'post_title'  => "Nurse's aide -- Sales & more",
-				'post_status' => 'publish',
-				'post_author' => $user_id,
-			]
-		);
-
-		$data = wpjm_get_job_listing_structured_data( get_post( $job_id ) );
-
-		$this->assertSame( 'Nurse’s aide — Sales & more', $data['title'] );
 	}
 
 	/**

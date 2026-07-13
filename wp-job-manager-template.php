@@ -386,15 +386,7 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['validThrough'] = $job_expires->format( 'c' );
 	}
 
-	// Structured data carries plain text, but `the_title` leaves HTML entities behind (`&` becomes `&#038;`).
-	// html_entity_decode() rather than wp_specialchars_decode(): wptexturize() also emits `&#8217;` and
-	// `&#8212;`, which are not in the latter's translation table.
-	//
-	// Strip before decoding, not after: a decoded `<` that is not followed by a space reads as an
-	// unterminated tag, and strip_tags() would swallow the rest of a title such as `Sales <10k`. The
-	// value may therefore still contain a literal `<`, so it must be escaped where it is output --
-	// WP_Job_Manager_Post_Types::output_structured_data() does that via wpjm_esc_json().
-	$data['title']       = html_entity_decode( wp_strip_all_tags( wpjm_get_the_job_title( $post ) ), ENT_QUOTES, 'UTF-8' );
+	$data['title']       = wp_strip_all_tags( wpjm_get_the_job_title( $post ) );
 	$data['description'] = wpjm_get_the_job_description( $post );
 
 	$employment_types = wpjm_get_job_employment_types();
