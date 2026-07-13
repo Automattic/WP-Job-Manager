@@ -2187,8 +2187,17 @@ class WP_Job_Manager_Post_Types {
 	 * @return string
 	 */
 	public static function sanitize_meta_field_application( $meta_value ) {
-		if ( is_email( $meta_value ) ) {
-			return sanitize_email( $meta_value );
+		$tokens       = preg_split( '/[,;]\s?/', (string) $meta_value );
+		$valid_emails = [];
+		foreach ( $tokens as $token ) {
+			$token = trim( $token );
+			if ( is_email( $token ) ) {
+				$valid_emails[] = sanitize_email( $token );
+			}
+		}
+
+		if ( ! empty( $valid_emails ) ) {
+			return implode( ', ', $valid_emails );
 		}
 
 		return self::sanitize_meta_field_url( $meta_value );

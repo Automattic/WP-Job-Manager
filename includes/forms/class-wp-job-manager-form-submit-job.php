@@ -434,6 +434,25 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Checks if a value is one or more comma/semicolon-separated valid email addresses.
+	 *
+	 * @param string $value
+	 * @return bool
+	 */
+	protected function is_valid_email_list( $value ) {
+		$tokens = preg_split( '/[,;]\s?/', (string) $value );
+		if ( empty( $tokens ) ) {
+			return false;
+		}
+		foreach ( $tokens as $token ) {
+			if ( ! is_email( trim( $token ) ) ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Validates the posted fields.
 	 *
 	 * @param array $values
@@ -560,7 +579,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( $application_required || ! empty( $values['job']['application'] ) ) {
 				switch ( $allowed_application_method ) {
 					case 'email':
-						if ( ! $is_valid || ! is_email( $values['job']['application'] ) ) {
+						if ( ! $is_valid || ! $this->is_valid_email_list( $values['job']['application'] ) ) {
 							throw new Exception( __( 'Please enter a valid application email address', 'wp-job-manager' ) );
 						}
 						break;
@@ -570,7 +589,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						}
 						break;
 					default:
-						if ( ! is_email( $values['job']['application'] ) ) {
+						if ( ! $this->is_valid_email_list( $values['job']['application'] ) ) {
 							if ( ! $is_valid || ! filter_var( $values['job']['application'], FILTER_VALIDATE_URL ) ) {
 								throw new Exception( __( 'Please enter a valid application email address or URL', 'wp-job-manager' ) );
 							}

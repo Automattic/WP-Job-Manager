@@ -1238,6 +1238,22 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'expected' => 'example@example.com',
 				'test'     => 'example@example.com',
 			],
+			[
+				'expected' => 'a@example.com, b@example.com',
+				'test'     => 'a@example.com, b@example.com',
+			],
+			[
+				'expected' => 'a@example.com, b@example.com',
+				'test'     => 'a@example.com; b@example.com',
+			],
+			[
+				'expected' => 'a@example.com',
+				'test'     => 'a@example.com, not-an-email',
+			],
+			[
+				'expected' => 'a@example.com, b@example.com',
+				'test'     => 'a@example.com, , b@example.com',
+			],
 		];
 
 		$this->set_up_custom_job_listing_data_feilds();

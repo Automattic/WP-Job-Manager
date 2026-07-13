@@ -240,10 +240,25 @@ function get_the_job_application_method( $post = null ) {
 		return apply_filters( 'the_job_application_method', false, $post );
 	}
 
-	if ( strstr( $apply, '@' ) && is_email( $apply ) ) {
+	$email_tokens     = preg_split( '/[,;]\s?/', $apply );
+	$non_empty_tokens = [];
+	foreach ( $email_tokens as $token ) {
+		if ( '' !== trim( $token ) ) {
+			$non_empty_tokens[] = $token;
+		}
+	}
+	$valid_emails = [];
+	foreach ( $non_empty_tokens as $token ) {
+		if ( is_email( trim( $token ) ) ) {
+			$valid_emails[] = trim( $token );
+		}
+	}
+
+	if ( ! empty( $valid_emails ) && count( $valid_emails ) === count( $non_empty_tokens ) ) {
+		$joined            = implode( ', ', $valid_emails );
 		$method->type      = 'email';
-		$method->raw_email = $apply;
-		$method->email     = antispambot( $apply );
+		$method->raw_email = $joined;
+		$method->email     = antispambot( $joined );
 
 		// translators: %1$s is the job listing title; %2$s is the URL for the current WordPress instance.
 		$method->subject = apply_filters( 'job_manager_application_email_subject', sprintf( esc_html__( 'Application via %1$s listing on %2$s', 'wp-job-manager' ), esc_html( $post->post_title ), esc_url( home_url() ) ), $post );
