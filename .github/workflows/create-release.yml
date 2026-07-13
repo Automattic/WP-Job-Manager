@@ -20,7 +20,7 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
         with:
           # Check out the PR's base branch (trunk) as a real local branch, not the
           # detached-HEAD merge ref, so create-release.mjs can `git push origin HEAD`.
