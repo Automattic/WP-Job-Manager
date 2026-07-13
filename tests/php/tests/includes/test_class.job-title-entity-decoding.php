@@ -20,8 +20,26 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 
 	const RAW_TITLE = 'Events & Marketing coordinator';
 
+	/**
+	 * Filters this test added, so tearDown() can remove them by reference —
+	 * anonymous closures cannot be removed by name, and this suite leaves
+	 * filters in place between cases (see tests/README.md).
+	 *
+	 * @var array<int, array{0:string,1:callable}>
+	 */
+	private $added_filters = [];
+
+	/**
+	 * Whether core's kses title filter was active before this test ran, so
+	 * tearDown() can restore that exact state rather than force it off.
+	 *
+	 * @var bool
+	 */
+	private $kses_was_active;
+
 	public function setUp(): void {
 		parent::setUp();
+		$this->kses_was_active = false !== has_filter( 'title_save_pre', 'wp_filter_kses' );
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email-template.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-new-job.php';
@@ -30,9 +48,30 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 	}
 
 	public function tearDown(): void {
-		kses_remove_filters();
+		foreach ( $this->added_filters as $filter ) {
+			remove_filter( $filter[0], $filter[1] );
+		}
+		$this->added_filters = [];
+
+		if ( $this->kses_was_active ) {
+			kses_init_filters();
+		} else {
+			kses_remove_filters();
+		}
+
 		wp_set_current_user( 0 );
 		parent::tearDown();
+	}
+
+	/**
+	 * Adds a filter and records it so tearDown() can remove it by reference.
+	 *
+	 * @param string   $hook     Filter name.
+	 * @param callable $callback Filter callback.
+	 */
+	private function add_temporary_filter( $hook, $callback ) {
+		add_filter( $hook, $callback );
+		$this->added_filters[] = [ $hook, $callback ];
 	}
 
 	/**
@@ -196,7 +235,7 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 	public function test_plain_text_email_body_does_not_truncate_a_value_at_a_bare_less_than() {
 		$job = $this->create_listing_as_unprivileged_user();
 
-		add_filter(
+		$this->add_temporary_filter(
 			'job_manager_emails_job_detail_fields',
 			function ( $fields ) {
 				$fields['job_title']['value'] = 'Sales &lt;10k &amp; more';
@@ -213,7 +252,7 @@ class WP_Test_Job_Title_Entity_Decoding extends WPJM_BaseTest {
 	public function test_plain_text_email_body_does_not_html_escape_the_url() {
 		$job = $this->create_listing_as_unprivileged_user();
 
-		add_filter(
+		$this->add_temporary_filter(
 			'job_manager_emails_job_detail_fields',
 			function ( $fields ) {
 				$fields['job_title']['url'] = 'http://example.org/?job=1&preview=true';
