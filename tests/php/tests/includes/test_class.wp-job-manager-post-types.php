@@ -759,6 +759,44 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since 2.4.6
+	 * @covers WP_Job_Manager_Post_Types::get_permalink_structure
+	 */
+	public function test_get_permalink_structure_filter_no_callbacks() {
+		$permalinks = WP_Job_Manager_Post_Types::get_permalink_structure();
+
+		$this->assertSame( $permalinks, WP_Job_Manager_Post_Types::get_permalink_structure() );
+		$this->assertArrayHasKey( 'job_rewrite_slug', $permalinks );
+		$this->assertArrayHasKey( 'category_rewrite_slug', $permalinks );
+		$this->assertArrayHasKey( 'type_rewrite_slug', $permalinks );
+		$this->assertArrayHasKey( 'jobs_archive_rewrite_slug', $permalinks );
+	}
+
+	/**
+	 * @since 2.4.6
+	 * @covers WP_Job_Manager_Post_Types::get_permalink_structure
+	 */
+	public function test_get_permalink_structure_filter_overrides_slugs() {
+		$callback = function ( $permalinks ) {
+			$permalinks['job_rewrite_slug']          = 'careers';
+			$permalinks['category_rewrite_slug']     = 'career-categories';
+			$permalinks['type_rewrite_slug']         = 'career-types';
+			$permalinks['jobs_archive_rewrite_slug'] = 'careers-archive';
+			return $permalinks;
+		};
+		add_filter( 'job_manager_permalink_structure', $callback );
+
+		$permalinks = WP_Job_Manager_Post_Types::get_permalink_structure();
+
+		remove_filter( 'job_manager_permalink_structure', $callback );
+
+		$this->assertEquals( 'careers', $permalinks['job_rewrite_slug'] );
+		$this->assertEquals( 'career-categories', $permalinks['category_rewrite_slug'] );
+		$this->assertEquals( 'career-types', $permalinks['type_rewrite_slug'] );
+		$this->assertEquals( 'careers-archive', $permalinks['jobs_archive_rewrite_slug'] );
+	}
+
+	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::update_post_meta
 	 */

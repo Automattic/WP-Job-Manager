@@ -14,6 +14,7 @@ function wpml_wpjm_init() {
 	add_action( 'get_job_listings_init', 'wpml_wpjm_set_language' );
 	add_filter( 'wpjm_lang', 'wpml_wpjm_get_job_listings_lang' );
 	add_filter( 'wpjm_page_id', 'wpml_wpjm_page_id' );
+	add_filter( 'job_manager_permalink_structure', 'wpml_wpjm_force_static_slugs' );
 
 	$default_lang = apply_filters( 'wpml_default_language', null );
 	$current_lang = apply_filters( 'wpml_current_language', null );
@@ -74,6 +75,38 @@ function wpml_wpjm_get_job_listings_lang( $lang ) {
  */
 function wpml_wpjm_page_id( $page_id ) {
 	return apply_filters( 'wpml_object_id', $page_id, 'page', true );
+}
+
+/**
+ * Forces stable rewrite slugs so WPML can register the post type and taxonomies as translatable.
+ *
+ * WPML captures the source rewrite slug at `register_post_type()` / `register_taxonomy()` time. When
+ * the slug is dynamic (per-site permalink option), WPML cannot find a stable source to translate
+ * against, which breaks translated URLs and the AJAX request used by the [jobs] shortcode.
+ *
+ * See https://wpml.org/errata/wp-job-manager-job-incorrect-slug-translation-for-job-listings/ (compsupp-7570).
+ *
+ * @since 2.4.6
+ *
+ * @param array $permalinks The resolved permalink structure.
+ *
+ * @return array
+ */
+function wpml_wpjm_force_static_slugs( $permalinks ) {
+	if ( empty( $permalinks['job_base'] ) ) {
+		$permalinks['job_rewrite_slug'] = 'job';
+	}
+	if ( empty( $permalinks['category_base'] ) ) {
+		$permalinks['category_rewrite_slug'] = 'job-category';
+	}
+	if ( empty( $permalinks['type_base'] ) ) {
+		$permalinks['type_rewrite_slug'] = 'job-type';
+	}
+	if ( empty( $permalinks['jobs_archive'] ) ) {
+		$permalinks['jobs_archive_rewrite_slug'] = 'job-listings';
+	}
+
+	return $permalinks;
 }
 
 /**

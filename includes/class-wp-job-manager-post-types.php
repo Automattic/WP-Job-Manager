@@ -1604,7 +1604,18 @@ class WP_Job_Manager_Post_Types {
 		if ( function_exists( 'restore_current_locale' ) && did_action( 'admin_init' ) ) {
 			restore_current_locale();
 		}
-		return $permalinks;
+
+		/**
+		 * Filters the resolved permalink structure used to register the job_listing post type and its taxonomies.
+		 *
+		 * Third-party multilingual plugins (e.g. WPML) can use this to force stable rewrite slugs so they
+		 * can register the post type and taxonomies as translatable.
+		 *
+		 * @since 2.4.6
+		 *
+		 * @param array $permalinks The resolved permalink structure.
+		 */
+		return apply_filters( 'job_manager_permalink_structure', $permalinks );
 	}
 
 	/**
