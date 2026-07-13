@@ -288,15 +288,15 @@ class WP_Job_Manager_Post_Types {
 			$plural   = __( 'Job categories', 'wp-job-manager' );
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
-				$rewrite = [
+				$rewrite            = [
 					'slug'         => $permalink_structure['category_rewrite_slug'],
 					'with_front'   => false,
 					'hierarchical' => false,
 				];
-				$public  = true;
+				$publicly_queryable = true;
 			} else {
-				$rewrite = false;
-				$public  = false;
+				$rewrite            = false;
+				$publicly_queryable = false;
 			}
 
 			register_taxonomy(
@@ -331,7 +331,9 @@ class WP_Job_Manager_Post_Types {
 						],
 						'show_ui'               => true,
 						'show_tagcloud'         => false,
-						'public'                => $public,
+						'show_in_nav_menus'     => false,
+						'public'                => true,
+						'publicly_queryable'    => $publicly_queryable,
 						'capabilities'          => [
 							'manage_terms' => $admin_capability,
 							'edit_terms'   => $admin_capability,
@@ -352,15 +354,15 @@ class WP_Job_Manager_Post_Types {
 			$plural   = __( 'Job types', 'wp-job-manager' );
 
 			if ( current_theme_supports( 'job-manager-templates' ) ) {
-				$rewrite = [
+				$rewrite            = [
 					'slug'         => $permalink_structure['type_rewrite_slug'],
 					'with_front'   => false,
 					'hierarchical' => false,
 				];
-				$public  = true;
+				$publicly_queryable = true;
 			} else {
-				$rewrite = false;
-				$public  = false;
+				$rewrite            = false;
+				$publicly_queryable = false;
 			}
 
 			register_taxonomy(
@@ -394,7 +396,9 @@ class WP_Job_Manager_Post_Types {
 						],
 						'show_ui'              => true,
 						'show_tagcloud'        => false,
-						'public'               => $public,
+						'show_in_nav_menus'    => false,
+						'public'               => true,
+						'publicly_queryable'   => $publicly_queryable,
 						'capabilities'         => [
 							'manage_terms' => $admin_capability,
 							'edit_terms'   => $admin_capability,
