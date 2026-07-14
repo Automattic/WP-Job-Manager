@@ -119,6 +119,21 @@ jQuery(document).ready(function($) {
 	var file_frame;
 	var file_target_input;
 	var file_target_wrapper;
+	var file_frame_mimes = null;
+
+	function get_field_mime_types( $button ) {
+		// data-allowed_mime_types may live on the upload button or, for "Add file" rows, on the "Add" button that was clicked to inject the row. Walk up to the field group to find it.
+		var raw = $button.data( 'allowed_mime_types' );
+		if ( ! raw ) {
+			var $field = $button.closest( '.form-field' );
+			raw = $field.length ? $field.data( 'allowed_mime_types' ) : null;
+		}
+		if ( ! raw ) {
+			return null;
+		}
+		// wp.media library.type accepts a comma-separated extensions string. Server-side save still enforces the type whitelist; this is a UX hint.
+		return String( raw );
+	}
 
 	$( document.body ).on('click', '.wp_job_manager_add_another_file_button', function( event ){
 		event.preventDefault();
@@ -128,8 +143,10 @@ jQuery(document).ready(function($) {
 		var button_text       = $( this ).data( 'uploader_button_text' );
 		var button            = $( this ).data( 'uploader_button' );
 		var view_button       = $( this ).data( 'view_button' );
+		var allowed_mimes     = $( this ).data( 'allowed_mime_types' );
+		var mime_attr         = allowed_mimes ? ' data-allowed_mime_types="' + allowed_mimes + '"' : '';
 
-		$( this ).before( '<span class="file_url"><input type="text" name="' + field_name + '[]" placeholder="' + field_placeholder + '" /><button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="' + button_text + '">' + button + '</button><button class="button button-small wp_job_manager_view_file_button">' + view_button + '</button></span>' );
+		$( this ).before( '<span class="file_url"><input type="text" name="' + field_name + '[]" placeholder="' + field_placeholder + '" /><button class="button button-small wp_job_manager_upload_file_button"' + mime_attr + ' data-uploader_button_text="' + button_text + '">' + button + '</button><button class="button button-small wp_job_manager_view_file_button">' + view_button + '</button></span>' );
 	} );
 
 	$( document.body ).on('click', '.wp_job_manager_view_file_button', function ( event ) {
@@ -161,20 +178,34 @@ jQuery(document).ready(function($) {
 		file_target_wrapper = $( this ).closest('.file_url');
 		file_target_input   = file_target_wrapper.find('input');
 
-		// If the media frame already exists, reopen it.
-		if ( file_frame ) {
+		var mimes = get_field_mime_types( $( this ) );
+
+		// If the media frame already exists and matches the current field's mime filter, just reopen it. Otherwise rebuild so a previous field's filter does not leak in.
+		if ( file_frame && file_frame_mimes === mimes ) {
 			file_frame.open();
 			return;
 		}
 
-		// Create the media frame.
-		file_frame = wp.media.frames.file_frame = wp.media({
+		if ( file_frame ) {
+			file_frame.remove();
+			file_frame = null;
+		}
+
+		var frame_options = {
 			title: $( this ).data( 'uploader_title' ),
 			button: {
 				text: $( this ).data( 'uploader_button_text' )
 			},
 			multiple: false  // Set to true to allow multiple files to be selected
-		});
+		};
+
+		if ( mimes ) {
+			frame_options.library = { type: mimes };
+		}
+
+		// Create the media frame.
+		file_frame = wp.media.frames.file_frame = wp.media( frame_options );
+		file_frame_mimes = mimes;
 
 		// When an image is selected, run a callback.
 		file_frame.on( 'select', function() {
