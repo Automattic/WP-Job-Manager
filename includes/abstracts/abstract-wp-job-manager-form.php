@@ -74,6 +74,16 @@ abstract class WP_Job_Manager_Form {
 	public $form_name = '';
 
 	/**
+	 * Active form id (set from shortcode `[submit_job_form form_id="..."]`).
+	 *
+	 * Round-tripped via a hidden field so POST processing rebuilds the same field set.
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $current_form_id = '';
+
+	/**
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
@@ -149,6 +159,10 @@ abstract class WP_Job_Manager_Form {
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
 		$this->show_messages();
+
+		if ( isset( $atts['form_id'] ) ) {
+			$this->current_form_id = sanitize_text_field( $atts['form_id'] );
+		}
 
 		if ( $step_key && is_callable( $this->steps[ $step_key ]['view'] ) ) {
 			call_user_func( $this->steps[ $step_key ]['view'], $atts );

@@ -226,7 +226,20 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			? sprintf( __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency (%s).', 'wp-job-manager' ), $default_salary_currency )
 			: __( 'Add a salary currency, this field is optional. Leave it empty to use the default salary currency.', 'wp-job-manager' );
 
-		$this->fields = apply_filters(
+		/**
+		 * Filters the fields shown in the job submission form.
+		 *
+		 * The 2nd argument is the active form id (from `[submit_job_form form_id="..."]`),
+		 * or an empty string when the default form is used. Callbacks written for the
+		 * single-arg signature keep working.
+		 *
+		 * @since 1.0.0
+		 * @since 2.4.6 Added the `$form_id` argument.
+		 *
+		 * @param array  $fields  Field groups, keyed by group, then field key.
+		 * @param string $form_id Form id passed to the shortcode (or empty string).
+		 */
+		$default_fields = apply_filters(
 			'submit_job_form_fields',
 			[
 				'job'     => [
@@ -369,8 +382,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						),
 					],
 				],
-			]
+			],
+			$this->current_form_id
 		);
+
+		$this->fields = $default_fields;
 
 		if ( ! get_option( 'job_manager_enable_categories' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) ) {
 			unset( $this->fields['job']['job_category'] );
@@ -628,8 +644,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 	/**
 	 * Displays the form.
+	 *
+	 * @param array $atts Shortcode attributes forwarded from the shortcode handler.
 	 */
-	public function submit() {
+	public function submit( $atts = [] ) {
+		if ( isset( $atts['form_id'] ) ) {
+			$this->current_form_id = sanitize_text_field( $atts['form_id'] );
+		}
 		$this->init_fields();
 
 		// Load data if necessary.
@@ -691,6 +712,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			'job-submit.php',
 			[
 				'form'               => $this->form_name,
+				'form_id'            => $this->current_form_id,
 				'job_id'             => $this->get_job_id(),
 				'resume_edit'        => $this->resume_edit,
 				'action'             => $this->get_action(),
@@ -710,6 +732,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function submit_handler() {
 		try {
+			// Round-trip the active form id (set by the shortcode, echoed in the submit template).
+			// Only accept a short slug; anything else is discarded to keep the value out of
+			// the `submit_job_form_fields` filter.
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce checked below; value is used only to switch field sets.
+			if ( ! empty( $_POST['form_id'] ) ) {
+				$candidate             = sanitize_text_field( wp_unslash( $_POST['form_id'] ) );
+				$this->current_form_id = ( strlen( $candidate ) <= 32 && preg_match( '/\A[A-Za-z0-9_-]+\z/', $candidate ) ) ? $candidate : '';
+			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
+
 			// Init fields.
 			$this->init_fields();
 

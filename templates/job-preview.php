@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.41.0
+ * @version     2.4.6
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -39,6 +39,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<input type="hidden" name="job_id" value="<?php echo esc_attr( $form->get_job_id() ); ?>" />
 		<input type="hidden" name="step" value="<?php echo esc_attr( $form->get_step() ); ?>" />
 		<input type="hidden" name="job_manager_form" value="<?php echo esc_attr( $form->get_form_name() ); ?>" />
+		<?php if ( ! empty( $form->current_form_id ) ) : ?>
+			<input type="hidden" name="form_id" value="<?php echo esc_attr( $form->current_form_id ); ?>" />
+		<?php endif; ?>
 	</div>
 	<?php
 	/**

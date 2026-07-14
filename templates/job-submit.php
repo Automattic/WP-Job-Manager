@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.34.3
+ * @version     2.4.6
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -72,6 +72,9 @@ $captcha_version = WP_Job_Manager\WP_Job_Manager_Recaptcha::instance()->get_reca
 
 		<p>
 			<input type="hidden" name="job_manager_form" value="<?php echo esc_attr( $form ); ?>" />
+			<?php if ( ! empty( $form_id ) ) : ?>
+				<input type="hidden" name="form_id" value="<?php echo esc_attr( $form_id ); ?>" />
+			<?php endif; ?>
 			<input type="hidden" name="job_id" value="<?php echo esc_attr( $job_id ); ?>" />
 			<input type="hidden" name="step" value="<?php echo esc_attr( $step ); ?>" />
 			<input type="submit" name="submit_job" class="button"

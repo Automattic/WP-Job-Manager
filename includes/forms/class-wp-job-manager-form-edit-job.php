@@ -91,13 +91,22 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		if ( ! empty( $this->save_error ) ) {
 			echo '<div class="job-manager-error">' . wp_kses_post( $this->save_error ) . '</div>';
 		}
+		if ( isset( $atts['form_id'] ) ) {
+			$this->current_form_id = sanitize_text_field( $atts['form_id'] );
+		}
 		$this->submit();
 	}
 
 	/**
 	 * Submit Step
+	 *
+	 * @param array $atts Shortcode attributes forwarded from the shortcode handler.
 	 */
-	public function submit() {
+	public function submit( $atts = [] ) {
+		if ( isset( $atts['form_id'] ) ) {
+			$this->current_form_id = sanitize_text_field( $atts['form_id'] );
+		}
+
 		$job = get_post( $this->job_id );
 
 		if ( empty( $this->job_id ) ) {
@@ -147,6 +156,7 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			'job-submit.php',
 			[
 				'form'               => $this->form_name,
+				'form_id'            => $this->current_form_id,
 				'job_id'             => $this->get_job_id(),
 				'action'             => $this->get_action(),
 				'job_fields'         => $this->get_fields( 'job' ),
@@ -167,6 +177,16 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 		if ( empty( $_POST['submit_job'] ) ) {
 			return;
 		}
+
+		// Round-trip the active form id so the field set used to validate matches
+		// the one the edit form was rendered with. Only accept a short slug; anything
+		// else is discarded to keep the value out of the `submit_job_form_fields` filter.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce checked below; value is used only to switch field sets.
+		if ( ! empty( $_POST['form_id'] ) ) {
+			$candidate             = sanitize_text_field( wp_unslash( $_POST['form_id'] ) );
+			$this->current_form_id = ( strlen( $candidate ) <= 32 && preg_match( '/\A[A-Za-z0-9_-]+\z/', $candidate ) ) ? $candidate : '';
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		// The edit form only ever updates an existing, editable listing. A zero job_id means no
 		// listing was supplied or the current user is not authorized to edit the requested one
