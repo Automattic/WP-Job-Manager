@@ -314,6 +314,7 @@ jQuery( document ).ready( function( $ ) {
 			var featured = $target.data( 'featured' );
 			var filled = $target.data( 'filled' );
 			var remote_position = $target.data( 'remote_position' );
+			var workplace_types = $target.data( 'workplace_types' );
 			var job_types = $target.data( 'job_types' );
 			var post_status = $target.data( 'post_status' );
 			var author = $target.data( 'author' );
@@ -354,11 +355,17 @@ jQuery( document ).ready( function( $ ) {
 					} )
 					.get();
 
+				var workplace_type = $form
+					.find( ':input[name^="workplace_type"]' )
+					.map( function() {
+						return $( this ).val();
+					} )
+					.get();
+
 				keywords = '';
 				location = '';
 				var $keywords = $form.find( ':input[name="search_keywords"]' );
 				var $location = $form.find( ':input[name="search_location"]' );
-				var $remote_position = $form.find( ':input[name="remote_position"]' );
 
 				// Workaround placeholder scripts
 				if ( $keywords.val() !== $keywords.attr( 'placeholder' ) ) {
@@ -367,10 +374,6 @@ jQuery( document ).ready( function( $ ) {
 
 				if ( $location.val() !== $location.attr( 'placeholder' ) ) {
 					location = $location.val();
-				}
-
-				if( $remote_position.length ) {
-					remote_position = $remote_position.is( ':checked' ) ? 'true' : null;
 				}
 
 				data = {
@@ -387,7 +390,7 @@ jQuery( document ).ready( function( $ ) {
 					page: page,
 					featured: featured,
 					filled: filled,
-					remote_position: remote_position,
+					workplace_type: workplace_type,
 					author: author,
 					show_pagination: $target.data( 'show_pagination' ),
 					form_data: $form.serialize(),
@@ -418,6 +421,7 @@ jQuery( document ).ready( function( $ ) {
 					featured: featured,
 					filled: filled,
 					remote_position: remote_position,
+					workplace_type: workplace_types,
 					author: author,
 					show_pagination: $target.data( 'show_pagination' ),
 				};
@@ -469,7 +473,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	$(
-		'#search_keywords, #search_location, #remote_position, .job_types :input, #search_categories, .job-manager-filter'
+		'#search_keywords, #search_location, #workplace_type, .job_types :input, #search_categories, .job-manager-filter'
 	)
 		.change( triggerSearch )
 		.on( 'keyup', function( e ) {
@@ -500,9 +504,10 @@ jQuery( document ).ready( function( $ ) {
 				.not( ':input[type="hidden"]' )
 				.prop( 'checked', true );
 			$form
-				.find( ':input[name="remote_position"]' )
+				.find( ':input[name^="workplace_type"]' )
 				.not( ':input[type="hidden"]' )
-				.prop( 'checked', false );
+				.val( '' )
+				.trigger( 'change.select2' );
 
 			$target.triggerHandler( 'reset' );
 			$target.triggerHandler( 'update_results', [ 1, false ] );
@@ -538,7 +543,9 @@ jQuery( document ).ready( function( $ ) {
 	} );
 
 	if ( $.isFunction( $.fn.select2 ) && typeof job_manager_select2_filters_args !== 'undefined' ) {
-		$( 'select[name^="search_categories"]:visible' ).select2( job_manager_select2_filters_args );
+		$(
+			'select[name^="search_categories"]:visible, select[name^="workplace_type"]:visible'
+		).select2( job_manager_select2_filters_args );
 	}
 
 	$( window ).on( 'unload', function() {
@@ -575,9 +582,9 @@ jQuery( document ).ready( function( $ ) {
 				$form.find('input[type=checkbox]').prop('checked', false);
 				$form.deserialize(state.form);
 				$form
-					.find(':input[name^="search_categories"]')
-					.not(':input[type="hidden"]')
-					.trigger('change.select2');
+					.find( ':input[name^="search_categories"], :input[name^="workplace_type"]' )
+					.not( ':input[type="hidden"]' )
+					.trigger( 'change.select2' );
 			}
 		}
 

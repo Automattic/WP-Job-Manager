@@ -65,12 +65,8 @@ class WP_Test_WP_Job_Manager_Widgets extends WPJM_BaseTest {
 	 */
 	public function test_recent_jobs_widget_renders_with_remote_position() {
 		update_option( 'job_manager_enable_remote_position', 1 );
-		$this->factory->job_listing->create(
-			[
-				'post_title' => 'Remote Widget Engineer',
-				'meta_input' => [ '_remote_position' => 1 ],
-			]
-		);
+		$post_id = $this->factory->job_listing->create( [ 'post_title' => 'Remote Widget Engineer' ] );
+		wp_set_object_terms( $post_id, 'remote', \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
 
 		$widget   = new WP_Job_Manager_Widget_Recent_Jobs();
 		$instance = [ 'title' => 'Recent Jobs', 'number' => 5, 'remote_position' => 'true' ];

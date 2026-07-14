@@ -276,9 +276,9 @@ class WP_Job_Manager_Settings {
 						[
 							'name'       => 'job_manager_enable_remote_position',
 							'std'        => '1',
-							'label'      => __( 'Remote Position', 'wp-job-manager' ),
-							'cb_label'   => __( 'Enable Remote Position', 'wp-job-manager' ),
-							'desc'       => __( 'This lets users select if the listing is a remote position when submitting a job.', 'wp-job-manager' ),
+							'label'      => __( 'Workplace Type', 'wp-job-manager' ),
+							'cb_label'   => __( 'Enable Workplace Type', 'wp-job-manager' ),
+							'desc'       => __( 'This lets users select whether the listing is on-site, remote, or hybrid when submitting a job.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
 							'track'      => 'bool',

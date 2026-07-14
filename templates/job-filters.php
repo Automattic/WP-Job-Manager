@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.38.0
+ * @version     2.5.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,10 +36,23 @@ do_action( 'job_manager_job_filters_before', $atts );
 			<input type="text" name="search_location" id="search_location" placeholder="<?php esc_attr_e( 'Location', 'wp-job-manager' ); ?>" value="<?php echo esc_attr( $location ); ?>" />
 		</div>
 
-		<?php if( apply_filters( 'job_manager_job_filters_show_remote_position', get_option('job_manager_enable_remote_position', true ), $atts ) ) : ?>
-			<div class="search_remote_position">
-				<input type="checkbox" class="input-checkbox" name="remote_position" id="remote_position" placeholder="<?php esc_attr_e( 'Location', 'wp-job-manager' ); ?>" value="1" <?php checked(! empty( $remote_position ) ); ?> />
-				<label for="remote_position" id="remote_position_label"><?php esc_html_e( 'Remote positions only', 'wp-job-manager' ); ?></label>
+		<?php if ( apply_filters( 'job_manager_job_filters_show_remote_position', get_option( 'job_manager_enable_remote_position', true ), $atts ) && get_terms( [ 'taxonomy' => \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE, 'hide_empty' => true ] ) ) : ?>
+			<div class="search_workplace_type">
+				<label for="workplace_type"><?php esc_html_e( 'Workplace type', 'wp-job-manager' ); ?></label>
+				<?php
+				job_manager_dropdown_categories(
+					[
+						'taxonomy'        => \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE,
+						'name'            => 'workplace_type',
+						'orderby'         => 'name',
+						'value'           => 'slug',
+						'multiple'        => false,
+						'show_option_all' => __( 'Any workplace type', 'wp-job-manager' ),
+						'selected'        => ! empty( $workplace_types ) ? reset( $workplace_types ) : '',
+						'hide_empty'      => true,
+					]
+				);
+				?>
 			</div>
 		<?php endif; ?>
 

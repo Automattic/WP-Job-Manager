@@ -57,6 +57,11 @@ class WP_Job_Manager_Install {
 			self::add_employment_types();
 		}
 
+		// Convert the _remote_position checkbox into the workplace type taxonomy.
+		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '2.5.0', '<' ) ) {
+			self::schedule_workplace_type_migration();
+		}
+
 		// Update legacy options.
 		if ( false === get_option( 'job_manager_submit_job_form_page_id', false ) && get_option( 'job_manager_submit_page_slug' ) ) {
 			$page_id = get_page_by_path( get_option( 'job_manager_submit_page_slug' ) )->ID;
@@ -178,7 +183,7 @@ class WP_Job_Manager_Install {
 	 */
 	private static function get_default_taxonomy_terms() {
 		return [
-			\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE => [
+			\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE   => [
 				'Full Time'  => [
 					'employment_type' => 'FULL_TIME',
 				],
@@ -194,6 +199,11 @@ class WP_Job_Manager_Install {
 				'Internship' => [
 					'employment_type' => 'INTERN',
 				],
+			],
+			\WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE => [
+				'On-Site' => [],
+				'Remote'  => [],
+				'Hybrid'  => [],
 			],
 		];
 	}
@@ -214,6 +224,95 @@ class WP_Job_Manager_Install {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Schedules the background migration of the legacy `_remote_position` checkbox meta onto
+	 * the workplace type taxonomy, unless it has already completed.
+	 *
+	 * Runs as a self-rescheduling background job (see `run_workplace_type_migration_batch()`)
+	 * rather than inline, since a large site's job listings could exceed the request's time
+	 * budget if migrated synchronously during `install()`.
+	 */
+	private static function schedule_workplace_type_migration() {
+		if ( 1 === intval( get_option( 'job_manager_workplace_type_migrated' ) ) ) {
+			return;
+		}
+		if ( ! wp_next_scheduled( 'job_manager_migrate_workplace_type' ) ) {
+			wp_schedule_single_event( time(), 'job_manager_migrate_workplace_type' );
+		}
+	}
+
+	/**
+	 * Processes one batch of the `_remote_position` -> workplace type taxonomy migration, then
+	 * reschedules itself until every listing has been backfilled.
+	 *
+	 * Idempotent and safe to re-run: already-tagged listings are skipped. If the workplace type
+	 * feature is disabled (so the taxonomy isn't registered) or a term fails to save, the batch
+	 * retries later instead of advancing or marking the migration complete.
+	 */
+	public static function run_workplace_type_migration_batch() {
+		$taxonomy = \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE;
+
+		if ( ! get_option( 'job_manager_enable_remote_position' ) || ! taxonomy_exists( $taxonomy ) ) {
+			wp_schedule_single_event( time() + HOUR_IN_SECONDS, 'job_manager_migrate_workplace_type' );
+			return;
+		}
+
+		$terms = self::get_default_taxonomy_terms()[ $taxonomy ];
+		foreach ( array_keys( $terms ) as $term ) {
+			if ( ! get_term_by( 'slug', sanitize_title( $term ), $taxonomy ) ) {
+				wp_insert_term( $term, $taxonomy );
+			}
+		}
+
+		/**
+		 * Filters the number of job listings processed per background migration batch.
+		 *
+		 * @param int $per_batch Batch size. Default 200.
+		 */
+		$per_batch = apply_filters( 'job_manager_workplace_type_migration_batch_size', 200 );
+		$paged     = max( 1, intval( get_option( 'job_manager_workplace_type_migration_cursor', 1 ) ) );
+
+		$query = new WP_Query(
+			[
+				'post_type'              => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_status'            => 'any',
+				'posts_per_page'         => $per_batch,
+				'paged'                  => $paged,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
+				'update_post_term_cache' => false,
+				'orderby'                => 'ID',
+				'order'                  => 'ASC',
+			]
+		);
+
+		$had_error = false;
+		foreach ( $query->posts as $post_id ) {
+			if ( has_term( '', $taxonomy, $post_id ) ) {
+				continue;
+			}
+			$is_remote = (bool) get_post_meta( $post_id, '_remote_position', true );
+			$result    = wp_set_object_terms( $post_id, $is_remote ? 'remote' : 'on-site', $taxonomy, false );
+			if ( is_wp_error( $result ) ) {
+				$had_error = true;
+			}
+		}
+
+		if ( $had_error ) {
+			// Retry the same page rather than advancing past a failed batch.
+			wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'job_manager_migrate_workplace_type' );
+			return;
+		}
+
+		if ( count( $query->posts ) === $per_batch ) {
+			update_option( 'job_manager_workplace_type_migration_cursor', $paged + 1 );
+			wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'job_manager_migrate_workplace_type' );
+		} else {
+			delete_option( 'job_manager_workplace_type_migration_cursor' );
+			update_option( 'job_manager_workplace_type_migrated', 1 );
 		}
 	}
 }

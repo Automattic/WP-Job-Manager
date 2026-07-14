@@ -245,12 +245,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'e.g. "London"', 'wp-job-manager' ),
 						'priority'    => 2,
 					],
-					'remote_position'     => [
-						'label'       => __( 'Remote Position', 'wp-job-manager' ),
-						'description' => __( 'Select if this is a remote position.', 'wp-job-manager' ),
-						'type'        => 'checkbox',
+					'workplace_type'      => [
+						'label'       => __( 'Workplace type', 'wp-job-manager' ),
+						'description' => __( 'Select whether this is an on-site, remote, or hybrid position.', 'wp-job-manager' ),
+						'type'        => 'term-select',
 						'required'    => false,
 						'priority'    => 3,
+						'default'     => 'on-site',
+						'taxonomy'    => \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE,
 					],
 					'job_type'            => [
 						'label'       => __( 'Job type', 'wp-job-manager' ),
@@ -388,8 +390,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		} else {
 			unset( $this->fields['job']['job_salary'], $this->fields['job']['job_salary_currency'], $this->fields['job']['job_salary_unit'] );
 		}
-		if ( ! get_option( 'job_manager_enable_remote_position' ) ) {
-			unset( $this->fields['job']['remote_position'] );
+		if ( ! get_option( 'job_manager_enable_remote_position' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE ) ) ) {
+			unset( $this->fields['job']['workplace_type'] );
 		}
 
 		if ( get_option( 'job_manager_enable_scheduled_listings' ) ) {
@@ -656,6 +658,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							break;
 						case 'job_category':
 							$this->fields[ $group_key ][ $key ]['value'] = wp_get_object_terms( $job->ID, \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY, [ 'fields' => 'ids' ] );
+							break;
+						case 'workplace_type':
+							$workplace_type_ids                          = wp_get_object_terms( $job->ID, \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE, [ 'fields' => 'ids' ] );
+							$this->fields[ $group_key ][ $key ]['value'] = ! empty( $workplace_type_ids ) ? current( $workplace_type_ids ) : '';
 							break;
 						case 'company_logo':
 							$this->fields[ $group_key ][ $key ]['value'] = has_post_thumbnail( $job->ID ) ? get_post_thumbnail_id( $job->ID ) : get_post_meta( $job->ID, '_' . $key, true );

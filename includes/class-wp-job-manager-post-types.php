@@ -140,6 +140,11 @@ class WP_Job_Manager_Post_Types {
 	public const TAX_LISTING_TYPE = 'job_listing_type';
 
 	/**
+	 * Constant for the job listing workplace type taxonomy name.
+	 */
+	public const TAX_WORKPLACE_TYPE = 'job_listing_workplace_type';
+
+	/**
 	 * The single instance of the class.
 	 *
 	 * @var self
@@ -223,7 +228,7 @@ class WP_Job_Manager_Post_Types {
 	 * Prepare CPTs for special block editor situations.
 	 */
 	public function prepare_block_editor() {
-		if ( false === job_manager_multi_job_type() ) {
+		if ( false === job_manager_multi_job_type() || get_option( 'job_manager_enable_remote_position' ) ) {
 			add_filter( 'rest_prepare_taxonomy', [ $this, 'hide_job_type_block_editor_selector' ], 10, 3 );
 		}
 	}
@@ -260,7 +265,7 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function hide_job_type_block_editor_selector( $response, $taxonomy, $request ) {
 		if (
-			self::TAX_LISTING_TYPE === $taxonomy->name
+			in_array( $taxonomy->name, [ self::TAX_LISTING_TYPE, self::TAX_WORKPLACE_TYPE ], true )
 			&& 'edit' === $request->get_param( 'context' )
 		) {
 			$response->data['visibility']['show_ui'] = false;
@@ -422,6 +427,53 @@ class WP_Job_Manager_Post_Types {
 					]
 				);
 			}
+		}
+
+		if ( get_option( 'job_manager_enable_remote_position' ) ) {
+			$singular = __( 'Workplace type', 'wp-job-manager' );
+			$plural   = __( 'Workplace types', 'wp-job-manager' );
+
+			register_taxonomy(
+				self::TAX_WORKPLACE_TYPE,
+				apply_filters( 'register_taxonomy_job_listing_workplace_type_object_type', [ self::PT_LISTING ] ),
+				apply_filters(
+					'register_taxonomy_job_listing_workplace_type_args',
+					[
+						'hierarchical'         => true,
+						'label'                => $plural,
+						'labels'               => [
+							'name'          => $plural,
+							'singular_name' => $singular,
+							'menu_name'     => __( 'Workplace Types', 'wp-job-manager' ),
+							// translators: Placeholder %s is the plural label of the job listing workplace type taxonomy.
+							'search_items'  => sprintf( __( 'Search %s', 'wp-job-manager' ), $plural ),
+							// translators: Placeholder %s is the plural label of the job listing workplace type taxonomy.
+							'all_items'     => sprintf( __( 'All %s', 'wp-job-manager' ), $plural ),
+							// translators: Placeholder %s is the singular label of the job listing workplace type taxonomy.
+							'edit_item'     => sprintf( __( 'Edit %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing workplace type taxonomy.
+							'update_item'   => sprintf( __( 'Update %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing workplace type taxonomy.
+							'add_new_item'  => sprintf( __( 'Add New %s', 'wp-job-manager' ), $singular ),
+							// translators: Placeholder %s is the singular label of the job listing workplace type taxonomy.
+							'new_item_name' => sprintf( __( 'New %s Name', 'wp-job-manager' ), $singular ),
+						],
+						'show_ui'              => true,
+						'show_tagcloud'        => false,
+						'public'               => false,
+						'rewrite'              => false,
+						'capabilities'         => [
+							'manage_terms' => $admin_capability,
+							'edit_terms'   => $admin_capability,
+							'delete_terms' => $admin_capability,
+							'assign_terms' => $admin_capability,
+						],
+						'show_in_rest'         => true,
+						'rest_base'            => 'job-workplace-types',
+						'meta_box_sanitize_cb' => [ $this, 'sanitize_job_type_meta_box_input' ],
+					]
+				)
+			);
 		}
 
 		/**
@@ -2005,15 +2057,6 @@ class WP_Job_Manager_Post_Types {
 				'auth_edit_callback' => [ __CLASS__, 'auth_check_can_manage_job_listings' ],
 				'auth_view_callback' => [ __CLASS__, 'auth_check_can_edit_job_listings' ],
 				'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_date' ],
-			],
-			'_remote_position'     => [
-				'label'         => __( 'Remote Position', 'wp-job-manager' ),
-				'description'   => __( 'Select if this is a remote position.', 'wp-job-manager' ),
-				'type'          => 'checkbox',
-				'priority'      => 12,
-				'data_type'     => 'integer',
-				'show_in_admin' => (bool) get_option( 'job_manager_enable_remote_position' ),
-				'show_in_rest'  => true,
 			],
 			'_job_salary'          => [
 				'label'         => __( 'Salary', 'wp-job-manager' ),

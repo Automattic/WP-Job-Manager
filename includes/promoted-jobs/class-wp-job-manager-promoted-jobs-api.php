@@ -209,7 +209,8 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		if ( false === $terms ) {
 			$terms = [];
 		}
-		$terms_array = wp_list_pluck( $terms, 'slug' );
+		$terms_array    = wp_list_pluck( $terms, 'slug' );
+		$workplace_type = wpjm_get_the_job_workplace_type( $item );
 
 		return [
 			'id'           => (string) $item->ID,
@@ -220,7 +221,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			'permalink'    => get_permalink( $item ),
 			'location'     => get_post_meta( $item->ID, '_job_location', true ),
 			'company_name' => get_post_meta( $item->ID, '_company_name', true ),
-			'is_remote'    => (bool) get_post_meta( $item->ID, '_remote_position', true ),
+			'is_remote'    => $workplace_type && in_array( $workplace_type->slug, [ 'remote', 'hybrid' ], true ),
 			'job_type'     => $terms_array,
 			'salary'       => [
 				'amount'   => get_post_meta( $item->ID, '_job_salary', true ),

@@ -134,6 +134,7 @@ class WP_Job_Manager_Ajax {
 		$filled             = isset( $_REQUEST['filled'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['filled'] ) ) : null;
 		$featured           = isset( $_REQUEST['featured'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured'] ) ) : null;
 		$remote_position    = isset( $_REQUEST['remote_position'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['remote_position'] ) ) : null;
+		$workplace_type     = isset( $_REQUEST['workplace_type'] ) ? wp_unslash( $_REQUEST['workplace_type'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Input is sanitized below.
 		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
 		$featured_first     = isset( $_REQUEST['featured_first'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured_first'] ) ) : null;
 		if ( ! isset( $_REQUEST['author'] ) ) {
@@ -151,6 +152,8 @@ class WP_Job_Manager_Ajax {
 		} else {
 			$search_categories = array_filter( [ sanitize_text_field( wp_unslash( $search_categories ) ) ] );
 		}
+
+		$workplace_type = array_filter( array_map( 'sanitize_title', (array) $workplace_type ) );
 
 		// Ensure the current user can filter by post_status. Users without the capability may only
 		// narrow the query to publicly visible listings (e.g. the `[jobs post_status="publish"]`
@@ -211,6 +214,10 @@ class WP_Job_Manager_Ajax {
 			$args['remote_position'] = 'true' === $remote_position;
 		}
 
+		if ( ! empty( $workplace_type ) ) {
+			$args['workplace_types'] = $workplace_type;
+		}
+
 		if ( 'true' === $featured || 'false' === $featured ) {
 			$args['featured'] = 'true' === $featured;
 			$args['orderby']  = 'featured' === $orderby ? 'date' : $orderby;
@@ -231,7 +238,7 @@ class WP_Job_Manager_Ajax {
 			'max_num_pages' => $jobs->max_num_pages,
 		];
 
-		if ( ( $search_location || $search_keywords || $search_categories || $job_types_filtered ) ) {
+		if ( ( $search_location || $search_keywords || $search_categories || $job_types_filtered || $workplace_type ) ) {
 			// translators: Placeholder %d is the number of found search results.
 			$message               = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
 			$result['showing_all'] = true;

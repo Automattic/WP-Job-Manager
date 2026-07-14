@@ -210,6 +210,7 @@ class WP_Job_Manager_Shortcodes {
 					// Limit what jobs are shown based on category, post status, and type.
 					'categories'                => '',
 					'job_types'                 => '',
+					'workplace_types'           => '',
 					'post_status'               => '',
 					'featured'                  => null, // True to show only featured, false to hide featured, leave null to show both.
 					'filled'                    => null, // True to show only filled, false to hide filled, leave null to show both/use the settings.
@@ -279,6 +280,7 @@ class WP_Job_Manager_Shortcodes {
 		$atts['categories']         = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
 		$atts['selected_category']  = is_array( $atts['selected_category'] ) ? $atts['selected_category'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_category'] ) ) );
 		$atts['job_types']          = is_array( $atts['job_types'] ) ? $atts['job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
+		$atts['workplace_types']    = is_array( $atts['workplace_types'] ) ? $atts['workplace_types'] : array_filter( array_map( 'trim', explode( ',', $atts['workplace_types'] ) ) );
 		$atts['post_status']        = is_array( $atts['post_status'] ) ? $atts['post_status'] : array_filter( array_map( 'trim', explode( ',', $atts['post_status'] ) ) );
 		$atts['selected_job_types'] = is_array( $atts['selected_job_types'] ) ? $atts['selected_job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_job_types'] ) ) );
 
@@ -319,6 +321,7 @@ class WP_Job_Manager_Shortcodes {
 					'categories'                => $atts['categories'],
 					'selected_category'         => $atts['selected_category'],
 					'job_types'                 => $atts['job_types'],
+					'workplace_types'           => $atts['workplace_types'],
 					'atts'                      => $atts,
 					'location'                  => $atts['location'],
 					'remote_position'           => $atts['remote_position'],
@@ -344,6 +347,7 @@ class WP_Job_Manager_Shortcodes {
 						'post_status'       => $atts['post_status'],
 						'search_categories' => $atts['categories'],
 						'job_types'         => $atts['job_types'],
+						'workplace_types'   => $atts['workplace_types'],
 						'orderby'           => $atts['orderby'],
 						'order'             => $atts['order'],
 						'posts_per_page'    => $atts['per_page'],
@@ -358,6 +362,10 @@ class WP_Job_Manager_Shortcodes {
 
 			if ( ! empty( $atts['job_types'] ) ) {
 				$data_attributes['job_types'] = implode( ',', $atts['job_types'] );
+			}
+
+			if ( ! empty( $atts['workplace_types'] ) ) {
+				$data_attributes['workplace_types'] = implode( ',', $atts['workplace_types'] );
 			}
 
 			if ( $jobs->have_posts() ) {
