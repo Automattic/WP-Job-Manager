@@ -1690,6 +1690,45 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
 }
 
 /**
+ * Builds the value for a file input's `accept` attribute from a map of allowed mime types.
+ *
+ * The map is keyed by pipe-separated file extensions (see `job_manager_get_allowed_mime_types()`), which are
+ * turned into the dot-prefixed extension tokens the `accept` attribute expects. Fields may instead supply a plain
+ * list of mime types, or a map keyed by mime type; those are emitted as mime type tokens, which `accept` also
+ * accepts.
+ *
+ * @since $$next-version$$
+ *
+ * @param array $allowed_mime_types Array of allowed file extensions and mime types.
+ * @return string Comma-separated list of `accept` tokens, empty when nothing is allowed.
+ */
+function job_manager_get_accept_file_types( $allowed_mime_types ) {
+	$accept_tokens = [];
+
+	foreach ( (array) $allowed_mime_types as $extensions => $mime_type ) {
+		if ( is_int( $extensions ) || false !== strpos( (string) $extensions, '/' ) ) {
+			$token = is_int( $extensions ) ? $mime_type : $extensions;
+
+			if ( is_string( $token ) && '' !== $token ) {
+				$accept_tokens[] = $token;
+			}
+
+			continue;
+		}
+
+		foreach ( explode( '|', $extensions ) as $extension ) {
+			$extension = ltrim( trim( $extension ), '.' );
+
+			if ( '' !== $extension ) {
+				$accept_tokens[] = '.' . $extension;
+			}
+		}
+	}
+
+	return implode( ',', array_unique( $accept_tokens ) );
+}
+
+/**
  * Calculates and returns the job expiry date.
  *
  * @since 1.22.0

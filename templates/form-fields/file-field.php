@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     2.4.6
+ * @version     $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,22 +16,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $classes            = [ 'input-text' ];
-$allowed_mime_types = array_keys( ! empty( $field['allowed_mime_types'] ) ? $field['allowed_mime_types'] : job_manager_get_allowed_mime_types( $key ) );
+$allowed_mime_types = ! empty( $field['allowed_mime_types'] ) ? $field['allowed_mime_types'] : job_manager_get_allowed_mime_types( $key );
+$allowed_extensions = array_keys( $allowed_mime_types );
+$accept_file_types  = job_manager_get_accept_file_types( $allowed_mime_types );
 $field_name         = isset( $field['name'] ) ? $field['name'] : $key;
 $field_name         .= ! empty( $field['multiple'] ) ? '[]' : '';
 $file_limit         = false;
-
-// Native `accept` hint so the OS file picker can pre-filter, from the same types as `data-file_types`.
-$accept_file_types = [];
-foreach ( $allowed_mime_types as $allowed_type ) {
-	foreach ( explode( '|', $allowed_type ) as $extension ) {
-		$extension = ltrim( trim( $extension ), '.' );
-		if ( '' !== $extension ) {
-			$accept_file_types[] = '.' . $extension;
-		}
-	}
-}
-$accept_file_types = implode( ',', array_unique( $accept_file_types ) );
 
 if ( ! empty( $field['multiple'] ) && ! empty( $field['file_limit'] ) ) {
 	$file_limit = $field['file_limit'];
@@ -57,7 +47,7 @@ if ( ! empty( $field['ajax'] ) && job_manager_user_can_upload_file_via_ajax() ) 
 <input
 	type="file"
 	class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"
-	data-file_types="<?php echo esc_attr( implode( '|', $allowed_mime_types ) ); ?>"
+	data-file_types="<?php echo esc_attr( implode( '|', $allowed_extensions ) ); ?>"
 	<?php if ( '' !== $accept_file_types ) echo ' accept="' . esc_attr( $accept_file_types ) . '"'; ?>
 	<?php if ( ! empty( $field['required'] ) ) echo ' required'; ?>
 	<?php if ( ! empty( $field['multiple'] ) ) echo ' multiple'; ?>
