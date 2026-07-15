@@ -50,10 +50,13 @@ $notice-success: #43af99;
 		&.is-link {
 			&,
 			&:hover,
-			&:focus,
-			&:active {
+			&:focus {
 				color: var(--wpjm-brand-color-primary);
 			}
+		}
+
+		&.is-link:active {
+			color: var(--wpjm-brand-color-primary);
 		}
 
 		&.is-outline:active {
