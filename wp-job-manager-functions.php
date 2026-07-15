@@ -165,12 +165,8 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$operator = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
 
 			/**
-			 * Filters whether the job listings category tax query includes child terms.
-			 *
-			 * By default child terms are included for every operator except `AND`, which
-			 * preserves the historical behavior. Return `false` to restrict results to the
-			 * exact terms selected, for example to get strict matching when a single parent
-			 * category is chosen while the category filter type is set to "all".
+			 * Filters whether the category tax query includes child terms. Return `false`
+			 * for strict matching, e.g. a single parent category in "all" filter mode.
 			 *
 			 * @since $$next-version$$
 			 *
