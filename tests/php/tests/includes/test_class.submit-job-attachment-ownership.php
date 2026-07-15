@@ -76,6 +76,51 @@ class WP_Test_Submit_Job_Attachment_Ownership extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Runs the form's field validation against a company_logo value while editing
+	 * an existing listing (form job_id set), mirroring the edit / re-save flow.
+	 *
+	 * @param mixed $logo_value Value to validate for the company_logo field.
+	 * @param int   $job_id     Listing being edited.
+	 * @throws Exception When validation rejects the value.
+	 * @return bool|WP_Error validate_fields() result.
+	 */
+	private function validate_company_logo_editing_job( $logo_value, $job_id ) {
+		$form  = WP_Job_Manager_Form_Submit_Job::instance();
+		$class = new ReflectionClass( $form );
+
+		$fields_prop = $class->getProperty( 'fields' );
+		$fields_prop->setAccessible( true );
+		$fields_prop->setValue(
+			$form,
+			[
+				'company' => [
+					'company_logo' => [
+						'label'              => 'Logo',
+						'type'               => 'file',
+						'required'           => false,
+						'file_limit'         => 1,
+						'allowed_mime_types' => [ 'png' => 'image/png' ],
+					],
+				],
+			]
+		);
+
+		$job_id_prop = $class->getProperty( 'job_id' );
+		$job_id_prop->setAccessible( true );
+		$job_id_prop->setValue( $form, $job_id );
+
+		$validate = $class->getMethod( 'validate_fields' );
+		$validate->setAccessible( true );
+
+		try {
+			return $validate->invoke( $form, [ 'company' => [ 'company_logo' => $logo_value ] ] );
+		} finally {
+			// Reset singleton edit state so it does not leak into other tests.
+			$job_id_prop->setValue( $form, 0 );
+		}
+	}
+
+	/**
 	 * A submitter cannot validate a company_logo pointing at an attachment owned
 	 * by another user.
 	 */
@@ -130,6 +175,63 @@ class WP_Test_Submit_Job_Attachment_Ownership extends WPJM_BaseTest {
 			$this->validate_company_logo( (string) $employer_attachment ),
 			'A user who can edit the attachment must be authorized to reuse it.'
 		);
+	}
+
+	/**
+	 * Regression (#2995 follow-up): when editing an existing listing, a
+	 * company_logo that is already the listing's featured image must be accepted
+	 * even if the current user neither authored the attachment nor can edit_post
+	 * it — e.g. a site admin uploaded/replaced the logo on the user's behalf.
+	 * Carrying an existing logo forward on re-save is not binding an arbitrary
+	 * foreign attachment.
+	 */
+	public function test_existing_listing_logo_is_accepted_on_edit() {
+		// Admin uploads/replaces the logo, so the attachment is authored by the admin.
+		$this->login_as_admin();
+		$admin_attachment = $this->create_attachment_owned_by( get_current_user_id() );
+
+		// The listing belongs to the employer and already uses that logo.
+		$this->login_as_employer();
+		$job_id = $this->factory->post->create(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_author' => get_current_user_id(),
+			]
+		);
+		set_post_thumbnail( $job_id, $admin_attachment );
+
+		// Sanity: the employer is neither the author nor able to edit the
+		// attachment, so without the existing-listing allowance this is rejected.
+		$this->assertNotEquals( get_current_user_id(), (int) get_post_field( 'post_author', $admin_attachment ) );
+		$this->assertFalse( current_user_can( 'edit_post', $admin_attachment ) );
+
+		$this->assertTrue(
+			$this->validate_company_logo_editing_job( (string) $admin_attachment, $job_id ),
+			"A listing's existing logo must remain valid on edit even when authored by another user."
+		);
+	}
+
+	/**
+	 * The existing-listing allowance is scoped to the listing's actual saved logo:
+	 * while editing, a foreign attachment that is NOT the listing's current logo
+	 * is still rejected, so setting job_id does not become a blanket bypass.
+	 */
+	public function test_foreign_attachment_still_rejected_on_edit() {
+		$this->login_as_admin();
+		$listing_logo     = $this->create_attachment_owned_by( get_current_user_id() );
+		$other_attachment = $this->create_attachment_owned_by( get_current_user_id() );
+
+		$this->login_as_employer();
+		$job_id = $this->factory->post->create(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_author' => get_current_user_id(),
+			]
+		);
+		set_post_thumbnail( $job_id, $listing_logo );
+
+		$this->expectException( Exception::class );
+		$this->validate_company_logo_editing_job( (string) $other_attachment, $job_id );
 	}
 
 	/**
