@@ -235,6 +235,80 @@ class WP_Test_Submit_Job_Attachment_Ownership extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Regression (#2995 follow-up): the existing-listing allowance also covers logos
+	 * stored in `_company_logo` meta rather than as the featured image (older listings,
+	 * or when no post thumbnail is set). This exercises the meta branch of
+	 * is_existing_listing_attachment(), which the featured-image tests above do not.
+	 */
+	public function test_existing_listing_logo_in_meta_is_accepted_on_edit() {
+		$this->login_as_admin();
+		$admin_attachment = $this->create_attachment_owned_by( get_current_user_id() );
+
+		$this->login_as_employer();
+		$job_id = $this->factory->post->create(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_author' => get_current_user_id(),
+			]
+		);
+		// Stored in meta, with no featured image — forces the else branch.
+		update_post_meta( $job_id, '_company_logo', $admin_attachment );
+		$this->assertFalse( has_post_thumbnail( $job_id ) );
+
+		$this->assertTrue(
+			$this->validate_company_logo_editing_job( (string) $admin_attachment, $job_id ),
+			"A listing's existing meta-stored logo must remain valid on edit even when authored by another user."
+		);
+	}
+
+	/**
+	 * The meta branch is still scoped to the saved value: with the logo in
+	 * `_company_logo` meta, a different foreign attachment is rejected on edit.
+	 */
+	public function test_foreign_attachment_rejected_when_logo_in_meta_on_edit() {
+		$this->login_as_admin();
+		$listing_logo     = $this->create_attachment_owned_by( get_current_user_id() );
+		$other_attachment = $this->create_attachment_owned_by( get_current_user_id() );
+
+		$this->login_as_employer();
+		$job_id = $this->factory->post->create(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_author' => get_current_user_id(),
+			]
+		);
+		update_post_meta( $job_id, '_company_logo', $listing_logo );
+
+		$this->expectException( Exception::class );
+		$this->validate_company_logo_editing_job( (string) $other_attachment, $job_id );
+	}
+
+	/**
+	 * Guard against the empty-stored-value edge: with job_id set but no featured
+	 * image and no `_company_logo` meta, the existing value resolves to [0], so a
+	 * submitted foreign attachment ID (always >= 1) must still be rejected — setting
+	 * job_id on a listing with no saved logo is not a bypass.
+	 */
+	public function test_empty_stored_logo_does_not_authorize_foreign_attachment_on_edit() {
+		$this->login_as_admin();
+		$foreign_attachment = $this->create_attachment_owned_by( get_current_user_id() );
+
+		$this->login_as_employer();
+		$job_id = $this->factory->post->create(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_author' => get_current_user_id(),
+			]
+		);
+		// No thumbnail, no _company_logo meta: existing value is empty.
+		$this->assertFalse( has_post_thumbnail( $job_id ) );
+		$this->assertSame( '', get_post_meta( $job_id, '_company_logo', true ) );
+
+		$this->expectException( Exception::class );
+		$this->validate_company_logo_editing_job( (string) $foreign_attachment, $job_id );
+	}
+
+	/**
 	 * Drives WP_Job_Manager_Form_Submit_Job::submit_handler() for a "Save draft"
 	 * POST binding the given company_logo value, the way the draft-save POST does.
 	 *

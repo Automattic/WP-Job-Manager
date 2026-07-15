@@ -970,6 +970,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				foreach ( array_filter( $file_urls ) as $file_url ) {
 					if ( is_numeric( $file_url ) ) {
 						$attachment_id = absint( $file_url );
+						// The third condition is only safe because $this->job_id is pre-gated: it
+						// is set only for a listing the current user may edit (or is mid-submitting).
+						// It permits reusing the listing's own saved attachment, NOT any attachment
+						// already on the post — do not loosen it to accept arbitrary foreign IDs.
 						if (
 								$attachment_id
 								&& ! $this->is_attachment_authorized_for_current_user( $attachment_id )
