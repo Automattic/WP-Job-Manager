@@ -1283,4 +1283,75 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	public function test_parse_author_ids_integer_input() {
 		$this->assertSame( [ 7 ], _wpjm_parse_author_ids( 7 ) );
 	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::job_manager_get_accept_file_types
+	 */
+	public function test_get_accept_file_types_prefixes_extensions_with_a_dot() {
+		$this->assertSame(
+			'.jpg,.jpeg,.png',
+			job_manager_get_accept_file_types(
+				[
+					'jpg'  => 'image/jpeg',
+					'jpeg' => 'image/jpeg',
+					'png'  => 'image/png',
+				]
+			)
+		);
+	}
+
+	/**
+	 * Pipe-separated extension groups, as used by job_manager_get_allowed_mime_types(), are split into one token each.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_get_accept_file_types
+	 */
+	public function test_get_accept_file_types_splits_pipe_separated_groups() {
+		$this->assertSame(
+			'.jpg,.jpeg,.jpe,.gif',
+			job_manager_get_accept_file_types(
+				[
+					'jpg|jpeg|jpe' => 'image/jpeg',
+					'gif'          => 'image/gif',
+				]
+			)
+		);
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::job_manager_get_accept_file_types
+	 */
+	public function test_get_accept_file_types_deduplicates_and_normalizes_leading_dots() {
+		$this->assertSame(
+			'.jpg,.png',
+			job_manager_get_accept_file_types(
+				[
+					'.jpg'    => 'image/jpeg',
+					'jpg|png' => 'image/png',
+				]
+			)
+		);
+	}
+
+	/**
+	 * Fields may pass a plain list of mime types, or a mime-type-keyed map, instead of an extension-keyed map. The
+	 * `accept` attribute takes mime types too, so pass them through rather than emitting nonsense like `.0`.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_get_accept_file_types
+	 */
+	public function test_get_accept_file_types_passes_through_mime_types() {
+		$this->assertSame( 'image/jpeg,image/png', job_manager_get_accept_file_types( [ 'image/jpeg', 'image/png' ] ) );
+		$this->assertSame( 'application/pdf', job_manager_get_accept_file_types( [ 'application/pdf' => 'application/pdf' ] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::job_manager_get_accept_file_types
+	 */
+	public function test_get_accept_file_types_empty_when_nothing_is_allowed() {
+		$this->assertSame( '', job_manager_get_accept_file_types( [] ) );
+	}
 }
