@@ -45,7 +45,7 @@ jQuery(function($) {
 				if ( allowed_types ) {
 					var acceptFileTypes = new RegExp( '(\.|\/)(' + allowed_types + ')$', 'i' );
 
-					if ( data.originalFiles[0].name.length && ! acceptFileTypes.test( data.originalFiles[0].name ) ) {
+					if ( data.files[0].name.length && ! acceptFileTypes.test( data.files[0].name ) ) {
 						uploadErrors.push( job_manager_ajax_file_upload.i18n_invalid_file_type + ' ' + allowed_types );
 					}
 				}
@@ -53,13 +53,12 @@ jQuery(function($) {
 				// Validate size
 				var maxSize = parseInt( $file_field.data( 'max_size' ), 10 );
 
-				if ( ! isNaN( maxSize ) && data.originalFiles[0].size > maxSize ) {
+				if ( ! isNaN( maxSize ) && data.files[0].size > maxSize ) {
 					uploadErrors.push( job_manager_ajax_file_upload.i18n_file_exceeds_size_limit );
 				}
 
 				if ( uploadErrors.length > 0 ) {
-					this.validation_errors = this.validation_errors.concat( uploadErrors );
-					window.alert( this.validation_errors.join( '\n' ) );
+					window.alert( uploadErrors.join( '\n' ) );
 					return;
 				}
 
