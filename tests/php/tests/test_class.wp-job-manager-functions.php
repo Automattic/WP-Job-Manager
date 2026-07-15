@@ -356,24 +356,31 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_include_category_children_filter() {
-		$parent = wp_insert_term( 'engineering', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
-		$child  = wp_insert_term(
-			'frontend',
-			\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
-			[ 'parent' => $parent['term_id'] ]
+		$parent_term = $this->factory->term->create(
+			[
+				'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+				'name'     => 'engineering',
+			]
+		);
+		$child_term  = $this->factory->term->create(
+			[
+				'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+				'name'     => 'frontend',
+				'parent'   => $parent_term,
+			]
 		);
 
 		$parent_job = $this->factory->job_listing->create(
 			[
 				'tax_input' => [
-					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => [ $parent['term_id'] ],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => [ $parent_term ],
 				],
 			]
 		);
 		$child_job  = $this->factory->job_listing->create(
 			[
 				'tax_input' => [
-					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => [ $child['term_id'] ],
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => [ $child_term ],
 				],
 			]
 		);
@@ -382,7 +389,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$default = get_job_listings(
 			[
 				'search_keywords'   => '',
-				'search_categories' => [ $parent['term_id'] ],
+				'search_categories' => [ $parent_term ],
 			]
 		);
 		$this->assertEqualSets(
@@ -396,7 +403,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$strict = get_job_listings(
 			[
 				'search_keywords'   => '',
-				'search_categories' => [ $parent['term_id'] ],
+				'search_categories' => [ $parent_term ],
 			]
 		);
 		remove_filter( 'job_manager_get_listings_include_category_children', '__return_false' );
