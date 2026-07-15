@@ -348,6 +348,67 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * The job_manager_get_listings_include_category_children filter must default to
+	 * the historical behavior (children included) and let a callback override it so
+	 * that a single parent category selection can match its exact term only.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_include_category_children_filter() {
+		$parent = wp_insert_term( 'engineering', \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$child  = wp_insert_term(
+			'frontend',
+			\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+			[ 'parent' => $parent['term_id'] ]
+		);
+
+		$parent_job = $this->factory->job_listing->create(
+			[
+				'tax_input' => [
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => [ $parent['term_id'] ],
+				],
+			]
+		);
+		$child_job  = $this->factory->job_listing->create(
+			[
+				'tax_input' => [
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => [ $child['term_id'] ],
+				],
+			]
+		);
+
+		// Default: selecting only the parent term also surfaces the child term's listing.
+		$default = get_job_listings(
+			[
+				'search_keywords'   => '',
+				'search_categories' => [ $parent['term_id'] ],
+			]
+		);
+		$this->assertEqualSets(
+			[ $parent_job, $child_job ],
+			wp_list_pluck( $default->posts, 'ID' ),
+			'Default behavior should include child term listings.'
+		);
+
+		// With the filter returning false, only the exact parent term matches.
+		add_filter( 'job_manager_get_listings_include_category_children', '__return_false' );
+		$strict = get_job_listings(
+			[
+				'search_keywords'   => '',
+				'search_categories' => [ $parent['term_id'] ],
+			]
+		);
+		remove_filter( 'job_manager_get_listings_include_category_children', '__return_false' );
+
+		$this->assertEqualSets(
+			[ $parent_job ],
+			wp_list_pluck( $strict->posts, 'ID' ),
+			'Filter returning false should exclude child term listings.'
+		);
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */

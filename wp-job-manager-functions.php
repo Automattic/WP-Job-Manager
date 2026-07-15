@@ -161,13 +161,38 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_categories'] ) ) {
-			$field                     = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
-			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
+			$field    = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
+			$operator = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
+
+			/**
+			 * Filters whether the job listings category tax query includes child terms.
+			 *
+			 * By default child terms are included for every operator except `AND`, which
+			 * preserves the historical behavior. Return `false` to restrict results to the
+			 * exact terms selected, for example to get strict matching when a single parent
+			 * category is chosen while the category filter type is set to "all".
+			 *
+			 * @since $$next-version$$
+			 *
+			 * @param bool   $include_children  Whether to include child terms of the selected categories.
+			 * @param string $operator          The tax query operator in use (`IN` or `AND`).
+			 * @param array  $search_categories The category terms being queried (term IDs or slugs).
+			 * @param array  $args              The full arguments passed to get_job_listings().
+			 * @return bool
+			 */
+			$include_children = apply_filters(
+				'job_manager_get_listings_include_category_children',
+				'AND' !== $operator,
+				$operator,
+				$args['search_categories'],
+				$args
+			);
+
 			$query_args['tax_query'][] = [
 				'taxonomy'         => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'field'            => $field,
 				'terms'            => array_values( $args['search_categories'] ),
-				'include_children' => 'AND' !== $operator,
+				'include_children' => $include_children,
 				'operator'         => $operator,
 			];
 		}
