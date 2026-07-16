@@ -63,6 +63,11 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	 * A DateTimeInterface built end-of-day in site time (as core listing expiry is)
 	 * must render its own calendar date, not the next day, on any offset.
 	 *
+	 * This is the case that pins the reported bug: the negative-offset (UTC-5)
+	 * row is the one that renders "2026-08-14" under the old date_i18n() code and
+	 * "2026-08-13" after the fix. The positive/zero-offset rows are unaffected by
+	 * the bug and guard against a fix that would break them.
+	 *
 	 * @dataProvider data_timezones
 	 *
 	 * @param string $timezone Timezone string.
@@ -109,6 +114,15 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	public function test_rel_time_empty_string_renders_nothing() {
 		$this->assertSame( '', UI_Elements::rel_time( '' ) );
 		$this->assertSame( '', UI_Elements::rel_time( '   ' ) );
+	}
+
+	/**
+	 * A non-empty but unparseable string yields no output: date_create() returns
+	 * false, so the helper renders nothing rather than falling back to the current
+	 * time or emitting a malformed element.
+	 */
+	public function test_rel_time_unparseable_string_renders_nothing() {
+		$this->assertSame( '', UI_Elements::rel_time( 'not a date' ) );
 	}
 
 	/**

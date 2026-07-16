@@ -180,19 +180,16 @@ HTML;
 	 */
 	public static function rel_time( $time, $format_string = '%s' ) {
 
-		if ( is_string( $time ) && ! is_numeric( $time ) && '' !== trim( $time ) ) {
+		// The three input kinds are mutually exclusive; resolve each to a true Unix timestamp.
+		if ( $time instanceof \DateTimeInterface ) {
+			$timestamp = $time->getTimestamp();
+		} elseif ( is_numeric( $time ) ) {
+			$timestamp = (int) $time;
+		} elseif ( is_string( $time ) && '' !== trim( $time ) ) {
 			// Interpret a bare date string as a floating calendar date in the site timezone,
 			// so wp_date() renders the same calendar date regardless of the site's UTC offset.
 			$datetime  = date_create( $time, wp_timezone() );
 			$timestamp = $datetime ? $datetime->getTimestamp() : false;
-		}
-
-		if ( $time instanceof \DateTimeInterface ) {
-			$timestamp = $time->getTimestamp();
-		}
-
-		if ( is_numeric( $time ) ) {
-			$timestamp = $time;
 		}
 
 		if ( empty( $timestamp ) ) {
