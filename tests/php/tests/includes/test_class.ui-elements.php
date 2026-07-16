@@ -1,0 +1,131 @@
+<?php
+
+namespace WP_Job_Manager;
+
+use WP_Job_Manager\UI\UI_Elements;
+
+/**
+ * @group ui
+ */
+class WP_Test_UI_Elements extends \WPJM_BaseTest {
+
+	/**
+	 * @var string Original date_format option, restored in tearDown.
+	 */
+	private $original_date_format;
+
+	/**
+	 * @var string Original timezone_string option, restored in tearDown.
+	 */
+	private $original_timezone;
+
+	public function setUp(): void {
+		parent::setUp();
+		$this->original_date_format = get_option( 'date_format' );
+		$this->original_timezone    = get_option( 'timezone_string' );
+		// Use an unambiguous calendar-date format so assertions compare the date directly.
+		update_option( 'date_format', 'Y-m-d' );
+	}
+
+	public function tearDown(): void {
+		update_option( 'date_format', $this->original_date_format );
+		update_option( 'timezone_string', $this->original_timezone );
+		parent::tearDown();
+	}
+
+	/**
+	 * Extract the value of the datetime attribute from rel_time() output.
+	 *
+	 * @param string $html rel_time() output.
+	 *
+	 * @return string
+	 */
+	private function get_datetime_attr( $html ) {
+		$this->assertMatchesRegularExpression( '/datetime="([^"]+)"/', $html );
+		preg_match( '/datetime="([^"]+)"/', $html, $matches );
+		return $matches[1];
+	}
+
+	/**
+	 * Timezones spanning negative, positive, and zero UTC offsets.
+	 *
+	 * @return array
+	 */
+	public function data_timezones() {
+		return [
+			'negative offset (UTC-5)' => [ 'America/Panama' ],
+			'positive offset (UTC+9)' => [ 'Asia/Tokyo' ],
+			'zero offset (UTC)'       => [ 'UTC' ],
+		];
+	}
+
+	/**
+	 * A DateTimeInterface built end-of-day in site time (as core listing expiry is)
+	 * must render its own calendar date, not the next day, on any offset.
+	 *
+	 * @dataProvider data_timezones
+	 *
+	 * @param string $timezone Timezone string.
+	 */
+	public function test_rel_time_datetime_interface_renders_calendar_date( $timezone ) {
+		update_option( 'timezone_string', $timezone );
+
+		$expiration = new \DateTimeImmutable( '2026-08-13 23:59:59', wp_timezone() );
+
+		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( $expiration ) ) );
+	}
+
+	/**
+	 * A bare Y-m-d string (as the Application Deadline add-on passes its closing date)
+	 * is a floating calendar date and must render as-is, not shifted one day earlier.
+	 *
+	 * @dataProvider data_timezones
+	 *
+	 * @param string $timezone Timezone string.
+	 */
+	public function test_rel_time_date_string_renders_calendar_date( $timezone ) {
+		update_option( 'timezone_string', $timezone );
+
+		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( '2026-08-13' ) ) );
+	}
+
+	/**
+	 * The human-readable relative text (wrapped by the format string) is preserved.
+	 */
+	public function test_rel_time_preserves_relative_text_format() {
+		update_option( 'timezone_string', 'America/Panama' );
+
+		$expiration = new \DateTimeImmutable( '2026-08-13 23:59:59', wp_timezone() );
+		$html       = UI_Elements::rel_time( $expiration, 'Expires in %s' );
+
+		$this->assertStringContainsString( 'Expires in ', $html );
+		$this->assertStringContainsString( human_time_diff( $expiration->getTimestamp() ), $html );
+	}
+
+	/**
+	 * An empty or whitespace-only string yields no output, rather than rendering
+	 * the current time (which date_create() would otherwise return).
+	 */
+	public function test_rel_time_empty_string_renders_nothing() {
+		$this->assertSame( '', UI_Elements::rel_time( '' ) );
+		$this->assertSame( '', UI_Elements::rel_time( '   ' ) );
+	}
+
+	/**
+	 * A numeric timestamp is honored whether passed as an int or a numeric string:
+	 * both resolve via the is_numeric branch and render the same calendar date.
+	 *
+	 * @dataProvider data_timezones
+	 *
+	 * @param string $timezone Timezone string.
+	 */
+	public function test_rel_time_numeric_timestamp_renders_calendar_date( $timezone ) {
+		update_option( 'timezone_string', $timezone );
+
+		$timestamp = ( new \DateTimeImmutable( '2026-08-13 12:00:00', wp_timezone() ) )->getTimestamp();
+		$expected  = wp_date( 'Y-m-d', $timestamp );
+
+		$this->assertSame( $expected, $this->get_datetime_attr( UI_Elements::rel_time( $timestamp ) ) );
+		$this->assertSame( $expected, $this->get_datetime_attr( UI_Elements::rel_time( (string) $timestamp ) ) );
+	}
+}

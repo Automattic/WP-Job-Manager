@@ -180,8 +180,11 @@ HTML;
 	 */
 	public static function rel_time( $time, $format_string = '%s' ) {
 
-		if ( is_string( $time ) ) {
-			$timestamp = strtotime( $time );
+		if ( is_string( $time ) && ! is_numeric( $time ) && '' !== trim( $time ) ) {
+			// Interpret a bare date string as a floating calendar date in the site timezone,
+			// so wp_date() renders the same calendar date regardless of the site's UTC offset.
+			$datetime  = date_create( $time, wp_timezone() );
+			$timestamp = $datetime ? $datetime->getTimestamp() : false;
 		}
 
 		if ( $time instanceof \DateTimeInterface ) {
@@ -196,7 +199,7 @@ HTML;
 			return '';
 		}
 
-		$abs_time = date_i18n( get_option( 'date_format' ), $timestamp );
+		$abs_time = wp_date( get_option( 'date_format' ), $timestamp );
 		$rel_time = human_time_diff( $timestamp );
 
 		return '<time datetime="' . esc_attr( $abs_time ) . '" title="' . esc_attr( $abs_time ) . '">' . esc_html( sprintf( $format_string, $rel_time ) ) . '</time>';
