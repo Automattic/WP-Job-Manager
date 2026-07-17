@@ -100,6 +100,7 @@ class WP_Job_Manager {
 
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';
+			WP_Job_Manager\Logo_Cleanup_Admin::init();
 		}
 
 		\WP_Job_Manager\UI\UI::instance();

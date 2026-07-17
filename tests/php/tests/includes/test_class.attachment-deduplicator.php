@@ -925,4 +925,32 @@ class WP_Test_Attachment_Deduplicator extends WPJM_BaseTest {
 		$this->assertEquals( $canonical, (int) get_user_meta( $author, '_company_logo', true ), 'The user default must be re-pointed onto the canonical.' );
 		$this->assertNull( get_post( $duplicate ), 'The duplicate is deleted once its reference has moved.' );
 	}
+
+	/**
+	 * get_logo_owner_ids() lists the owners that have at least one referenced logo,
+	 * sorted, so the admin page can process de-duplication one owner-batch at a time.
+	 * Owners with no logo are excluded.
+	 */
+	public function test_get_logo_owner_ids_lists_owners_with_logos_sorted() {
+		$user_a   = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$user_b   = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$user_none = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes    = $this->png_bytes();
+
+		$this->create_listing_with_logo( $user_a, $this->create_logo_attachment( $user_a, $bytes, 'a.png' ) );
+		$this->create_listing_with_logo( $user_b, $this->create_logo_attachment( $user_b, $bytes, 'b.png' ) );
+		// user_none owns a listing but no logo.
+		$this->factory->post->create(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_author' => $user_none,
+			]
+		);
+
+		$owner_ids = ( new Attachment_Deduplicator() )->get_logo_owner_ids();
+
+		$expected = [ $user_a, $user_b ];
+		sort( $expected );
+		$this->assertSame( $expected, $owner_ids, 'Only owners with a referenced logo are listed, sorted.' );
+	}
 }

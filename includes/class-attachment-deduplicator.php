@@ -576,6 +576,33 @@ class Attachment_Deduplicator {
 	}
 
 	/**
+	 * Lists the owner IDs that have at least one referenced logo, sorted, so a
+	 * batched caller (e.g. the admin tools page) can de-duplicate one owner at a
+	 * time via run( [ 'user_id' => ... ] ).
+	 *
+	 * @return int[] Sorted owner user IDs.
+	 */
+	public function get_logo_owner_ids() {
+		$owner_ids = [];
+
+		$this->each_referenced_logo_page(
+			function ( array $page ) use ( &$owner_ids ) {
+				foreach ( $page as $attachment_id ) {
+					$author = (int) get_post_field( 'post_author', $attachment_id );
+					if ( $author ) {
+						$owner_ids[ $author ] = true;
+					}
+				}
+			}
+		);
+
+		$owner_ids = array_keys( $owner_ids );
+		sort( $owner_ids );
+
+		return $owner_ids;
+	}
+
+	/**
 	 * Groups logo attachments by owner and content, returning one entry per set
 	 * of duplicates with the oldest (lowest ID) chosen as the canonical.
 	 *
