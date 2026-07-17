@@ -1145,7 +1145,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			]
 		);
 
-		return $existing ? (int) $existing[0] : 0;
+		return empty( $existing ) ? 0 : absint( reset( $existing ) );
 	}
 
 	/**
