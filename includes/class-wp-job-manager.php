@@ -114,6 +114,7 @@ class WP_Job_Manager {
 		$this->stats      = WP_Job_Manager\Stats::instance();
 
 		WP_Job_Manager\Dev_Tools::init();
+		WP_Job_Manager\Attachment_Deduplicator::init();
 
 		// Schedule cron jobs.
 		add_action( 'init', [ __CLASS__, 'maybe_schedule_cron_jobs' ] );
