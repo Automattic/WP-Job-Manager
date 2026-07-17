@@ -280,16 +280,19 @@ class Attachment_Deduplicator {
 			return [];
 		}
 
-		return get_posts(
-			[
-				'post_type'      => 'attachment',
-				'post_status'    => 'inherit',
-				'post_mime_type' => 'image',
-				'author__in'     => array_map( 'intval', $owner_ids ),
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-			]
+		return array_map(
+			'intval',
+			get_posts(
+				[
+					'post_type'      => 'attachment',
+					'post_status'    => 'inherit',
+					'post_mime_type' => 'image',
+					'author__in'     => array_map( 'intval', $owner_ids ),
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+				]
+			)
 		);
 	}
 
@@ -311,7 +314,7 @@ class Attachment_Deduplicator {
 				'fields'         => 'ids',
 				'no_found_rows'  => true,
 				'meta_key'       => '_thumbnail_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				'meta_value'     => $duplicate, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_value'     => (string) $duplicate, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			]
 		);
 		foreach ( $jobs as $job_id ) {
@@ -323,7 +326,7 @@ class Attachment_Deduplicator {
 			[
 				'fields'     => 'ID',
 				'meta_key'   => '_company_logo', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				'meta_value' => $duplicate, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_value' => (string) $duplicate, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			]
 		);
 		foreach ( $users as $owner_id ) {
