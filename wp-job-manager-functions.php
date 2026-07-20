@@ -167,8 +167,9 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			/**
 			 * Filters whether category queries include child terms. Return `false` to
 			 * match only listings assigned to the exact terms selected, excluding their
-			 * children. Applies to every category query regardless of the "Category
-			 * Filter Type" setting; the default keeps the existing behavior.
+			 * children. Applies to category queries built by get_job_listings(),
+			 * regardless of the "Category Filter Type" setting; other queries such as
+			 * the job feed are unaffected. The default keeps the existing behavior.
 			 *
 			 * @since $$next-version$$
 			 *
