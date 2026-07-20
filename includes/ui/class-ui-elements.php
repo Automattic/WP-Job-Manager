@@ -201,8 +201,10 @@ HTML;
 			return '';
 		}
 
-		// `datetime` must be machine-readable (a valid HTML date string); `title` is the localized display date.
-		$machine_time = wp_date( 'Y-m-d', $timestamp );
+		// `datetime` must be machine-readable (a valid HTML datetime string); `title` is the localized display date.
+		// Emit a full ISO 8601 value with the site's UTC offset rather than a date-only one: the relative text is
+		// accurate to the hour, and a floating date would be resolved to midnight in the consumer's own timezone.
+		$machine_time = wp_date( 'c', $timestamp );
 		$abs_time     = wp_date( get_option( 'date_format' ), $timestamp );
 		$rel_time     = human_time_diff( $timestamp );
 
