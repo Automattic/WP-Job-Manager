@@ -171,6 +171,12 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			 * regardless of the "Category Filter Type" setting; other queries such as
 			 * the job feed are unaffected. The default keeps the existing behavior.
 			 *
+			 * Check `$operator` before forcing `true`. Under `AND`, WordPress expands
+			 * each selected term to its descendants and then requires a listing to
+			 * match all of them, so children narrow the result set rather than widening
+			 * it; if one selected term is an ancestor of another, the clause is
+			 * discarded entirely and the query returns nothing.
+			 *
 			 * @since $$next-version$$
 			 *
 			 * @param bool   $include_children  Whether to include child terms of the selected categories.

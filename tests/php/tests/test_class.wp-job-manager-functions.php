@@ -356,6 +356,9 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_include_category_children_filter() {
+		// tax_input is silently dropped by wp_insert_post() without this cap.
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY )->cap->assign_terms ) );
+
 		$parent_term = $this->factory->term->create(
 			[
 				'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
