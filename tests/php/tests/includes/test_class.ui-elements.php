@@ -69,6 +69,19 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	}
 
 	/**
+	 * Extract the value of the title attribute from rel_time() output.
+	 *
+	 * @param string $html rel_time() output.
+	 *
+	 * @return string
+	 */
+	private function get_title_attr( $html ) {
+		$this->assertMatchesRegularExpression( '/title="([^"]+)"/', $html );
+		preg_match( '/title="([^"]+)"/', $html, $matches );
+		return $matches[1];
+	}
+
+	/**
 	 * Timezones spanning negative, positive, and zero UTC offsets, configured both
 	 * ways WP Settings > General allows: as an Olson timezone_string, and as a manual
 	 * gmt_offset with an empty timezone_string (including a half-hour offset, where
@@ -152,6 +165,22 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	 */
 	public function test_rel_time_unparseable_string_renders_nothing() {
 		$this->assertSame( '', UI_Elements::rel_time( 'not a date' ) );
+	}
+
+	/**
+	 * The datetime attribute must be a machine-readable HTML date string (Y-m-d)
+	 * regardless of the site's display date_format, while the title attribute keeps
+	 * the localized display date. A non-ISO date_format is used so the two diverge.
+	 */
+	public function test_rel_time_datetime_attribute_is_machine_readable() {
+		update_option( 'date_format', 'F j, Y' );
+		$this->set_site_timezone( 'America/Panama', -5 );
+
+		$expiration = new \DateTimeImmutable( '2026-08-13 23:59:59', wp_timezone() );
+		$html       = UI_Elements::rel_time( $expiration );
+
+		$this->assertSame( '2026-08-13', $this->get_datetime_attr( $html ), 'datetime must be machine-readable Y-m-d.' );
+		$this->assertSame( 'August 13, 2026', $this->get_title_attr( $html ), 'title must be the localized display date.' );
 	}
 
 	/**
