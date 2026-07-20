@@ -173,7 +173,7 @@ HTML;
 	/**
 	 * Generate HTML for a relative time string.
 	 *
-	 * @param string|\DateTimeInterface|int $time Time string, DateTime object, or timestamp.
+	 * @param string|\DateTimeInterface|int $time DateTime object, Unix timestamp, or a date string. Strings without an explicit UTC offset are interpreted in the site timezone.
 	 * @param string                        $format_string Sprintf-compatible format string. Should contain a %s placeholder for the time.
 	 *
 	 * @return string
@@ -181,6 +181,8 @@ HTML;
 	public static function rel_time( $time, $format_string = '%s' ) {
 
 		// The three input kinds are mutually exclusive; resolve each to a true Unix timestamp.
+		$timestamp = false;
+
 		if ( $time instanceof \DateTimeInterface ) {
 			$timestamp = $time->getTimestamp();
 		} elseif ( is_numeric( $time ) ) {
@@ -188,8 +190,11 @@ HTML;
 		} elseif ( is_string( $time ) && '' !== trim( $time ) ) {
 			// Interpret a bare date string as a floating calendar date in the site timezone,
 			// so wp_date() renders the same calendar date regardless of the site's UTC offset.
-			$datetime  = date_create( $time, wp_timezone() );
-			$timestamp = $datetime ? $datetime->getTimestamp() : false;
+			$datetime = date_create( $time, wp_timezone() );
+
+			if ( $datetime ) {
+				$timestamp = $datetime->getTimestamp();
+			}
 		}
 
 		if ( empty( $timestamp ) ) {

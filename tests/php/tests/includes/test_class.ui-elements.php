@@ -19,10 +19,16 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	 */
 	private $original_timezone;
 
+	/**
+	 * @var string Original gmt_offset option, restored in tearDown.
+	 */
+	private $original_gmt_offset;
+
 	public function setUp(): void {
 		parent::setUp();
 		$this->original_date_format = get_option( 'date_format' );
 		$this->original_timezone    = get_option( 'timezone_string' );
+		$this->original_gmt_offset  = get_option( 'gmt_offset' );
 		// Use an unambiguous calendar-date format so assertions compare the date directly.
 		update_option( 'date_format', 'Y-m-d' );
 	}
@@ -30,7 +36,23 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	public function tearDown(): void {
 		update_option( 'date_format', $this->original_date_format );
 		update_option( 'timezone_string', $this->original_timezone );
+		update_option( 'gmt_offset', $this->original_gmt_offset );
 		parent::tearDown();
+	}
+
+	/**
+	 * Set the site timezone the way WP Settings > General does.
+	 *
+	 * Both options must be written together: wp_timezone() prefers timezone_string
+	 * and only falls back to gmt_offset when it is empty, so a stale value in either
+	 * one would silently decide the timezone for the test.
+	 *
+	 * @param string $timezone_string Olson timezone identifier, or '' for a manual offset.
+	 * @param float  $gmt_offset      Offset in hours, used only when $timezone_string is ''.
+	 */
+	private function set_site_timezone( $timezone_string, $gmt_offset ) {
+		update_option( 'timezone_string', $timezone_string );
+		update_option( 'gmt_offset', $gmt_offset );
 	}
 
 	/**
@@ -47,15 +69,20 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	}
 
 	/**
-	 * Timezones spanning negative, positive, and zero UTC offsets.
+	 * Timezones spanning negative, positive, and zero UTC offsets, configured both
+	 * ways WP Settings > General allows: as an Olson timezone_string, and as a manual
+	 * gmt_offset with an empty timezone_string (including a half-hour offset, where
+	 * wp_timezone() returns a fixed offset zone rather than a named one).
 	 *
 	 * @return array
 	 */
 	public function data_timezones() {
 		return [
-			'negative offset (UTC-5)' => [ 'America/Panama' ],
-			'positive offset (UTC+9)' => [ 'Asia/Tokyo' ],
-			'zero offset (UTC)'       => [ 'UTC' ],
+			'negative offset (UTC-5)'            => [ 'America/Panama', 0 ],
+			'positive offset (UTC+9)'            => [ 'Asia/Tokyo', 0 ],
+			'zero offset (UTC)'                  => [ 'UTC', 0 ],
+			'manual negative offset (UTC-5)'     => [ '', -5 ],
+			'manual half-hour offset (UTC+5:30)' => [ '', 5.5 ],
 		];
 	}
 
@@ -70,10 +97,11 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	 *
 	 * @dataProvider data_timezones
 	 *
-	 * @param string $timezone Timezone string.
+	 * @param string $timezone_string Timezone string, or '' for a manual offset.
+	 * @param float  $gmt_offset      Manual offset in hours.
 	 */
-	public function test_rel_time_datetime_interface_renders_calendar_date( $timezone ) {
-		update_option( 'timezone_string', $timezone );
+	public function test_rel_time_datetime_interface_renders_calendar_date( $timezone_string, $gmt_offset ) {
+		$this->set_site_timezone( $timezone_string, $gmt_offset );
 
 		$expiration = new \DateTimeImmutable( '2026-08-13 23:59:59', wp_timezone() );
 
@@ -86,10 +114,11 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	 *
 	 * @dataProvider data_timezones
 	 *
-	 * @param string $timezone Timezone string.
+	 * @param string $timezone_string Timezone string, or '' for a manual offset.
+	 * @param float  $gmt_offset      Manual offset in hours.
 	 */
-	public function test_rel_time_date_string_renders_calendar_date( $timezone ) {
-		update_option( 'timezone_string', $timezone );
+	public function test_rel_time_date_string_renders_calendar_date( $timezone_string, $gmt_offset ) {
+		$this->set_site_timezone( $timezone_string, $gmt_offset );
 
 		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( '2026-08-13' ) ) );
 	}
@@ -98,7 +127,7 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	 * The human-readable relative text (wrapped by the format string) is preserved.
 	 */
 	public function test_rel_time_preserves_relative_text_format() {
-		update_option( 'timezone_string', 'America/Panama' );
+		$this->set_site_timezone( 'America/Panama', 0 );
 
 		$expiration = new \DateTimeImmutable( '2026-08-13 23:59:59', wp_timezone() );
 		$html       = UI_Elements::rel_time( $expiration, 'Expires in %s' );
@@ -129,17 +158,21 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	 * A numeric timestamp is honored whether passed as an int or a numeric string:
 	 * both resolve via the is_numeric branch and render the same calendar date.
 	 *
+	 * The instant is built at midday site time so it sits well inside the local
+	 * calendar day on every offset, letting the expected date be asserted literally
+	 * rather than recomputed with the same wp_date() call the code under test makes.
+	 *
 	 * @dataProvider data_timezones
 	 *
-	 * @param string $timezone Timezone string.
+	 * @param string $timezone_string Timezone string, or '' for a manual offset.
+	 * @param float  $gmt_offset      Manual offset in hours.
 	 */
-	public function test_rel_time_numeric_timestamp_renders_calendar_date( $timezone ) {
-		update_option( 'timezone_string', $timezone );
+	public function test_rel_time_numeric_timestamp_renders_calendar_date( $timezone_string, $gmt_offset ) {
+		$this->set_site_timezone( $timezone_string, $gmt_offset );
 
 		$timestamp = ( new \DateTimeImmutable( '2026-08-13 12:00:00', wp_timezone() ) )->getTimestamp();
-		$expected  = wp_date( 'Y-m-d', $timestamp );
 
-		$this->assertSame( $expected, $this->get_datetime_attr( UI_Elements::rel_time( $timestamp ) ) );
-		$this->assertSame( $expected, $this->get_datetime_attr( UI_Elements::rel_time( (string) $timestamp ) ) );
+		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( $timestamp ) ) );
+		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( (string) $timestamp ) ) );
 	}
 }
