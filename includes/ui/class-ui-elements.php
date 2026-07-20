@@ -201,10 +201,12 @@ HTML;
 			return '';
 		}
 
-		$abs_time = wp_date( get_option( 'date_format' ), $timestamp );
-		$rel_time = human_time_diff( $timestamp );
+		// `datetime` must be machine-readable (a valid HTML date string); `title` is the localized display date.
+		$machine_time = wp_date( 'Y-m-d', $timestamp );
+		$abs_time     = wp_date( get_option( 'date_format' ), $timestamp );
+		$rel_time     = human_time_diff( $timestamp );
 
-		return '<time datetime="' . esc_attr( $abs_time ) . '" title="' . esc_attr( $abs_time ) . '">' . esc_html( sprintf( $format_string, $rel_time ) ) . '</time>';
+		return '<time datetime="' . esc_attr( $machine_time ) . '" title="' . esc_attr( $abs_time ) . '">' . esc_html( sprintf( $format_string, $rel_time ) ) . '</time>';
 
 	}
 
