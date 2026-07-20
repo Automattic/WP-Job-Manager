@@ -447,6 +447,48 @@ class WP_Test_Attachment_Deduplicator extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Batching exists so a library with tens of thousands of attachments does not
+	 * have to be held in memory at once. The result must not depend on where the
+	 * batch boundaries happen to fall, including protections and re-points for
+	 * candidates that land in different batches from each other.
+	 */
+	public function test_results_are_identical_across_batch_boundaries() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$canonical = $this->create_logo_attachment( $author, $bytes, 'batch.png' );
+		$this->create_listing_with_logo( $author, $canonical );
+
+		$duplicates = [];
+		for ( $i = 1; $i <= 7; $i++ ) {
+			$duplicates[] = $this->create_logo_attachment( $author, $bytes, "batch-{$i}.png" );
+		}
+		foreach ( $duplicates as $duplicate ) {
+			$this->create_listing_with_logo( $author, $duplicate );
+		}
+
+		// One protected candidate, deliberately mid-run rather than first or last.
+		$protected = $duplicates[4];
+		$blog_post = $this->factory->post->create( [ 'post_type' => 'post', 'post_author' => $author ] );
+		set_post_thumbnail( $blog_post, $protected );
+
+		// A batch size well below the number of candidates forces several batches.
+		$report = ( new Attachment_Deduplicator( 2 ) )->run( [ 'dry_run' => false ] );
+
+		$this->assertSame( 6, $report['attachments_deleted'], 'Every unprotected duplicate is deleted regardless of batching.' );
+		$this->assertSame( 1, $report['skipped_referenced'], 'The protected candidate is kept even though it sits mid-batch.' );
+		$this->assertInstanceOf( WP_Post::class, get_post( $protected ), 'The protected attachment survives.' );
+		$this->assertEquals( $protected, get_post_thumbnail_id( $blog_post ), "The blog post's featured image is untouched." );
+
+		foreach ( $duplicates as $duplicate ) {
+			if ( $duplicate === $protected ) {
+				continue;
+			}
+			$this->assertNull( get_post( $duplicate ), "Duplicate {$duplicate} is deleted." );
+		}
+	}
+
+	/**
 	 * The `_company_logo` user default is a logo reference in its own right and must
 	 * be re-pointed before its attachment is deleted.
 	 */

@@ -80,12 +80,63 @@ class Attachment_Deduplicator {
 	const CONTENT_SCAN_BATCH = 200;
 
 	/**
+	 * Attachments handled per batch: how many are hashed, looked up, or deleted
+	 * before the object cache is released.
+	 *
+	 * This command exists for libraries with tens of thousands of attachments, so
+	 * nothing may hold all of them in memory at once — priming 20,000 posts and
+	 * their meta alone runs to hundreds of megabytes. It also bounds the size of
+	 * the `IN ( ... )` lists sent to MySQL.
+	 */
+	const DEFAULT_CHUNK_SIZE = 500;
+
+	/**
+	 * Attachments handled per batch.
+	 *
+	 * @var int
+	 */
+	private $chunk_size;
+
+	/**
 	 * Memoised content signatures, keyed by attachment ID. Hashing is the
 	 * expensive part of a run and the same attachment is examined more than once.
 	 *
 	 * @var array<int, string>
 	 */
 	private $signature_cache = [];
+
+	/**
+	 * Constructor.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int $chunk_size Attachments handled per batch. Lower values trade
+	 *                        queries for peak memory; mainly a test seam.
+	 */
+	public function __construct( $chunk_size = self::DEFAULT_CHUNK_SIZE ) {
+		$this->chunk_size = max( 1, (int) $chunk_size );
+	}
+
+	/**
+	 * Releases the object cache built up while processing a batch.
+	 *
+	 * Without this the cache grows monotonically for the whole run, which is the
+	 * usual way a long WP-CLI job runs out of memory.
+	 */
+	private function free_memory() {
+		global $wpdb, $wp_object_cache;
+
+		$wpdb->queries = [];
+
+		if ( is_object( $wp_object_cache ) ) {
+			if ( property_exists( $wp_object_cache, 'cache' ) ) {
+				$wp_object_cache->cache = [];
+			}
+			if ( method_exists( $wp_object_cache, '__remoteset' ) ) {
+				$wp_object_cache->__remoteset();
+			}
+		}
+	}
 
 	/**
 	 * Registers the WP-CLI command.
@@ -313,6 +364,7 @@ class Attachment_Deduplicator {
 		// un-deleted duplicate rather than a listing pointing at a deleted post.
 		$report['references_repointed'] = $this->repoint_all( $repoint_map );
 
+		$processed = 0;
 		foreach ( $repoint_map as $duplicate => $canonical ) {
 			$this->carry_over_metadata( $duplicate, $canonical );
 
@@ -326,6 +378,12 @@ class Attachment_Deduplicator {
 
 			if ( is_callable( $args['on_tick'] ) ) {
 				call_user_func( $args['on_tick'] );
+			}
+
+			// wp_delete_attachment() populates the cache for every post it touches.
+			++$processed;
+			if ( 0 === $processed % $this->chunk_size ) {
+				$this->free_memory();
 			}
 		}
 
@@ -349,36 +407,41 @@ class Attachment_Deduplicator {
 		$logo_signatures = [];
 		$owner_ids       = [];
 
-		$referenced_ids = $this->collect_referenced_logo_ids();
-
-		// The lookups above return bare IDs, which leaves the post cache cold — so
-		// without this every signature would cost a get_post() round trip.
-		_prime_post_caches( $referenced_ids, false, true );
-
-		foreach ( $referenced_ids as $attachment_id ) {
-			$signature = $this->attachment_signature( $attachment_id, $user_id );
-			if ( $signature ) {
-				$logo_signatures[ $signature ]                                      = true;
-				$owner_ids[ (int) get_post_field( 'post_author', $attachment_id ) ] = true;
+		// Both passes stream a page at a time. Materialising every attachment ID first
+		// is what puts a large library over the memory limit, so the full set is never
+		// held: each page is primed, reduced to signatures, then released.
+		$this->each_referenced_logo_page(
+			function ( array $page ) use ( &$logo_signatures, &$owner_ids, $user_id ) {
+				foreach ( $page as $attachment_id ) {
+					$signature = $this->attachment_signature( $attachment_id, $user_id );
+					if ( $signature ) {
+						$logo_signatures[ $signature ]                                      = true;
+						$owner_ids[ (int) get_post_field( 'post_author', $attachment_id ) ] = true;
+					}
+				}
 			}
-		}
+		);
 
 		if ( ! $logo_signatures ) {
 			return [];
 		}
 
-		// Group every image attachment those owners hold by signature, keeping
-		// only signatures that match a referenced logo (folds in orphaned copies).
+		// Group every image attachment those owners hold by signature, keeping only
+		// signatures that match a referenced logo (folds in orphaned copies). Only
+		// matching IDs are retained, so this holds the duplicates rather than the
+		// whole media library.
 		$by_signature = [];
-		$owner_images = $this->collect_owner_image_ids( array_keys( $owner_ids ) );
-		_prime_post_caches( $owner_images, false, true );
-
-		foreach ( $owner_images as $attachment_id ) {
-			$signature = $this->attachment_signature( $attachment_id, $user_id );
-			if ( $signature && isset( $logo_signatures[ $signature ] ) ) {
-				$by_signature[ $signature ][] = (int) $attachment_id;
+		$this->each_owner_image_page(
+			array_keys( $owner_ids ),
+			function ( array $page ) use ( &$by_signature, $logo_signatures, $user_id ) {
+				foreach ( $page as $attachment_id ) {
+					$signature = $this->attachment_signature( $attachment_id, $user_id );
+					if ( $signature && isset( $logo_signatures[ $signature ] ) ) {
+						$by_signature[ $signature ][] = (int) $attachment_id;
+					}
+				}
 			}
-		}
+		);
 
 		$groups = [];
 		foreach ( $by_signature as $ids ) {
@@ -394,6 +457,121 @@ class Attachment_Deduplicator {
 		}
 
 		return $groups;
+	}
+
+	/**
+	 * Streams attachment IDs currently used as a logo, a page at a time: listing
+	 * featured images and the `_company_logo` user meta default.
+	 *
+	 * Each page is primed and then released, so the caller never holds more than
+	 * one page of posts in the object cache.
+	 *
+	 * @param callable $handle Receives each page as an array of attachment IDs.
+	 */
+	private function each_referenced_logo_page( callable $handle ) {
+		global $wpdb;
+
+		$sources = [
+			// Deliberately unfiltered by author: a listing authored by one user can
+			// carry a logo owned by another, so ownership is applied to the attachment
+			// in attachment_signature() rather than to whatever references it.
+			$wpdb->prepare(
+				"SELECT pm.meta_value
+				 FROM {$wpdb->postmeta} pm
+				 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				 WHERE pm.meta_key = %s AND p.post_type = %s
+				 ORDER BY pm.meta_id",
+				self::HANDLED_POST_META_KEY,
+				\WP_Job_Manager_Post_Types::PT_LISTING
+			),
+			$wpdb->prepare(
+				"SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = %s ORDER BY umeta_id",
+				self::HANDLED_USER_META_KEY
+			),
+		];
+
+		foreach ( $sources as $sql ) {
+			$offset = 0;
+
+			do {
+				// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Paged bulk read; no API equivalent that avoids loading everything.
+				// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
+				// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $sql is already prepared; the limit clause is bound here.
+				$values = $wpdb->get_col(
+					$wpdb->prepare( $sql . ' LIMIT %d OFFSET %d', $this->chunk_size, $offset )
+				);
+				// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+				// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+				$page = [];
+				foreach ( $values as $value ) {
+					if ( (int) $value ) {
+						$page[] = (int) $value;
+					}
+				}
+
+				if ( $page ) {
+					_prime_post_caches( $page, false, true );
+					$handle( $page );
+					$this->free_memory();
+				}
+
+				$fetched = count( $values );
+				$offset += $this->chunk_size;
+			} while ( $this->chunk_size === $fetched );
+		}
+	}
+
+	/**
+	 * Streams every image attachment owned by the given users, a page at a time, so
+	 * orphaned duplicate copies (referenced by nothing) are considered for merging.
+	 *
+	 * @param int[]    $owner_ids Owner user IDs.
+	 * @param callable $handle    Receives each page as an array of attachment IDs.
+	 */
+	private function each_owner_image_page( array $owner_ids, callable $handle ) {
+		global $wpdb;
+
+		if ( ! $owner_ids ) {
+			return;
+		}
+
+		$author_list = implode( ',', array_map( 'intval', $owner_ids ) );
+		$offset      = 0;
+
+		do {
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Paged bulk read; get_posts() would load the whole library.
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $author_list is ints.
+			$ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT ID FROM {$wpdb->posts}
+					 WHERE post_type = 'attachment'
+					   AND post_status = 'inherit'
+					   AND post_mime_type LIKE %s
+					   AND post_author IN ( {$author_list} )
+					 ORDER BY ID LIMIT %d OFFSET %d",
+					$wpdb->esc_like( 'image/' ) . '%',
+					$this->chunk_size,
+					$offset
+				)
+			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+			$page = array_map( 'intval', $ids );
+
+			if ( $page ) {
+				_prime_post_caches( $page, false, true );
+				$handle( $page );
+				$this->free_memory();
+			}
+
+			$fetched = count( $ids );
+			$offset += $this->chunk_size;
+		} while ( $this->chunk_size === $fetched );
 	}
 
 	/**
@@ -454,95 +632,6 @@ class Attachment_Deduplicator {
 	}
 
 	/**
-	 * Collects attachment IDs currently used as a logo: listing featured images
-	 * and the `_company_logo` user meta default.
-	 *
-	 * @return int[] Unique attachment IDs.
-	 */
-	private function collect_referenced_logo_ids() {
-		global $wpdb;
-
-		$ids = [];
-
-		// Deliberately unfiltered by author: a listing authored by one user can carry
-		// a logo owned by another, so ownership is applied to the attachment in
-		// attachment_signature() rather than to whatever references it.
-		//
-		// Read as one join rather than a get_posts( fields => ids ) loop calling
-		// get_post_meta() per listing, which costs a query per listing on a site with
-		// tens of thousands of them.
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Bulk read replacing one query per listing.
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
-		$thumbnail_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT pm.meta_value
-				 FROM {$wpdb->postmeta} pm
-				 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-				 WHERE pm.meta_key = %s AND p.post_type = %s",
-				self::HANDLED_POST_META_KEY,
-				\WP_Job_Manager_Post_Types::PT_LISTING
-			)
-		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		foreach ( $thumbnail_ids as $thumbnail_id ) {
-			if ( (int) $thumbnail_id ) {
-				$ids[] = (int) $thumbnail_id;
-			}
-		}
-
-		// Likewise one read rather than get_users() followed by a get_user_meta() per
-		// user, which is a query for every user who has ever set a company logo.
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Bulk read replacing one query per user.
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
-		$logo_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = %s",
-				self::HANDLED_USER_META_KEY
-			)
-		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		foreach ( $logo_ids as $logo_id ) {
-			if ( (int) $logo_id ) {
-				$ids[] = (int) $logo_id;
-			}
-		}
-
-		return array_values( array_unique( $ids ) );
-	}
-
-	/**
-	 * Collects every image attachment owned by the given users, so orphaned
-	 * duplicate copies (referenced by nothing) are considered for merging.
-	 *
-	 * @param int[] $owner_ids Owner user IDs.
-	 * @return int[] Attachment IDs.
-	 */
-	private function collect_owner_image_ids( $owner_ids ) {
-		if ( ! $owner_ids ) {
-			return [];
-		}
-
-		return array_map(
-			'intval',
-			get_posts(
-				[
-					'post_type'      => 'attachment',
-					'post_status'    => 'inherit',
-					'post_mime_type' => 'image',
-					'author__in'     => array_map( 'intval', $owner_ids ),
-					'posts_per_page' => -1,
-					'fields'         => 'ids',
-					'no_found_rows'  => true,
-				]
-			)
-		);
-	}
-
-	/**
 	 * Re-points every known logo reference according to a duplicate => canonical map.
 	 *
 	 * Two reads for the whole run, then one write per reference actually affected.
@@ -563,8 +652,28 @@ class Attachment_Deduplicator {
 			return 0;
 		}
 
+		$count = 0;
+
+		foreach ( array_chunk( array_map( 'intval', array_keys( $map ) ), $this->chunk_size ) as $chunk ) {
+			$count += $this->repoint_chunk( $map, $chunk );
+			$this->free_memory();
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Re-points one batch of duplicates.
+	 *
+	 * @param array<int, int> $map   Duplicate attachment ID => canonical attachment ID.
+	 * @param int[]           $chunk Duplicate IDs in this batch.
+	 * @return int Number of references updated.
+	 */
+	private function repoint_chunk( array $map, array $chunk ) {
+		global $wpdb;
+
 		$count   = 0;
-		$id_list = implode( ',', array_map( 'intval', array_keys( $map ) ) );
+		$id_list = implode( ',', $chunk );
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Bulk read replacing one query per affected row.
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
@@ -627,12 +736,29 @@ class Attachment_Deduplicator {
 	 * @return array<int, true> Protected IDs.
 	 */
 	private function find_protected_ids( array $candidate_ids ) {
-		global $wpdb;
-
 		$candidate_ids = array_values( array_unique( array_map( 'intval', $candidate_ids ) ) );
 		if ( ! $candidate_ids ) {
 			return [];
 		}
+
+		$protected = [];
+
+		// Chunked so the IN ( ... ) lists stay a sane size on a large library.
+		foreach ( array_chunk( $candidate_ids, $this->chunk_size ) as $chunk ) {
+			$protected += $this->find_protected_ids_in_meta( $chunk );
+		}
+
+		return $protected + $this->find_inline_content_references( $candidate_ids );
+	}
+
+	/**
+	 * The meta/option half of the reference sweep, for one batch of candidates.
+	 *
+	 * @param int[] $candidate_ids Attachment IDs being considered for deletion.
+	 * @return array<int, true> Protected IDs.
+	 */
+	private function find_protected_ids_in_meta( array $candidate_ids ) {
+		global $wpdb;
 
 		$protected = [];
 		$id_list   = implode( ',', $candidate_ids );
@@ -695,7 +821,7 @@ class Attachment_Deduplicator {
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 
-		return $protected + $this->find_inline_content_references( $candidate_ids );
+		return $protected;
 	}
 
 	/**
@@ -714,8 +840,15 @@ class Attachment_Deduplicator {
 
 		$protected = [];
 		$by_id     = array_fill_keys( $candidate_ids, true );
-		$basenames = $this->attachment_basenames( $candidate_ids );
 		$offset    = 0;
+
+		// Keyed by filename so a post is matched against the names it actually
+		// contains. Looping every candidate for every post instead would be
+		// candidates x posts string searches — hundreds of millions on a large site.
+		$by_basename = [];
+		foreach ( $this->attachment_basenames( $candidate_ids ) as $attachment_id => $basename ) {
+			$by_basename[ strtolower( $basename ) ][] = $attachment_id;
+		}
 
 		do {
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Content scan has no API equivalent.
@@ -747,9 +880,17 @@ class Attachment_Deduplicator {
 					}
 				}
 
-				foreach ( $basenames as $attachment_id => $basename ) {
-					if ( (int) $row->ID !== $attachment_id && false !== strpos( $content, $basename ) ) {
-						$protected[ $attachment_id ] = true;
+				if ( $by_basename && preg_match_all( '/[^\/"\'\s>]+\.(?:png|jpe?g|gif|webp|avif|bmp|tiff?|svg)/i', $content, $files ) ) {
+					foreach ( $files[0] as $filename ) {
+						$filename = strtolower( $filename );
+						if ( ! isset( $by_basename[ $filename ] ) ) {
+							continue;
+						}
+						foreach ( $by_basename[ $filename ] as $attachment_id ) {
+							if ( (int) $row->ID !== $attachment_id ) {
+								$protected[ $attachment_id ] = true;
+							}
+						}
 					}
 				}
 			}
@@ -774,23 +915,26 @@ class Attachment_Deduplicator {
 			return [];
 		}
 
-		$id_list = implode( ',', array_map( 'intval', $attachment_ids ) );
-
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Bulk read replacing one get_post_meta() per attachment.
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $id_list is ints.
-		$rows = $wpdb->get_results(
-			"SELECT post_id, meta_value FROM {$wpdb->postmeta}
-			 WHERE meta_key = '_wp_attached_file' AND post_id IN ( {$id_list} )"
-		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
-
 		$basenames = [];
-		foreach ( $rows as $row ) {
-			if ( $row->meta_value ) {
-				$basenames[ (int) $row->post_id ] = wp_basename( $row->meta_value );
+
+		foreach ( array_chunk( array_map( 'intval', $attachment_ids ), $this->chunk_size ) as $chunk ) {
+			$id_list = implode( ',', $chunk );
+
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Bulk read replacing one get_post_meta() per attachment.
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $id_list is ints.
+			$rows = $wpdb->get_results(
+				"SELECT post_id, meta_value FROM {$wpdb->postmeta}
+				 WHERE meta_key = '_wp_attached_file' AND post_id IN ( {$id_list} )"
+			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+			foreach ( $rows as $row ) {
+				if ( $row->meta_value ) {
+					$basenames[ (int) $row->post_id ] = wp_basename( $row->meta_value );
+				}
 			}
 		}
 
