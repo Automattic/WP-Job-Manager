@@ -29,8 +29,6 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 		$this->original_date_format = get_option( 'date_format' );
 		$this->original_timezone    = get_option( 'timezone_string' );
 		$this->original_gmt_offset  = get_option( 'gmt_offset' );
-		// Use an unambiguous calendar-date format so assertions compare the date directly.
-		update_option( 'date_format', 'Y-m-d' );
 	}
 
 	public function tearDown(): void {
@@ -56,29 +54,30 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	}
 
 	/**
-	 * Extract the value of the datetime attribute from rel_time() output.
+	 * Extract the value of an attribute from rel_time() output.
 	 *
 	 * @param string $html rel_time() output.
+	 * @param string $name Attribute name.
 	 *
 	 * @return string
 	 */
-	private function get_datetime_attr( $html ) {
-		$this->assertMatchesRegularExpression( '/datetime="([^"]+)"/', $html );
-		preg_match( '/datetime="([^"]+)"/', $html, $matches );
+	private function get_attr( $html, $name ) {
+		$pattern = '/' . preg_quote( $name, '/' ) . '="([^"]+)"/';
+		$this->assertMatchesRegularExpression( $pattern, $html );
+		preg_match( $pattern, $html, $matches );
 		return $matches[1];
 	}
 
 	/**
-	 * Extract the value of the title attribute from rel_time() output.
+	 * Extract the calendar date from the ISO 8601 datetime attribute, for the tests
+	 * that are about which calendar day is rendered rather than the full instant.
 	 *
 	 * @param string $html rel_time() output.
 	 *
 	 * @return string
 	 */
-	private function get_title_attr( $html ) {
-		$this->assertMatchesRegularExpression( '/title="([^"]+)"/', $html );
-		preg_match( '/title="([^"]+)"/', $html, $matches );
-		return $matches[1];
+	private function get_datetime_date_part( $html ) {
+		return explode( 'T', $this->get_attr( $html, 'datetime' ) )[0];
 	}
 
 	/**
@@ -118,7 +117,7 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 
 		$expiration = new \DateTimeImmutable( '2026-08-13 23:59:59', wp_timezone() );
 
-		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( $expiration ) ) );
+		$this->assertSame( '2026-08-13', $this->get_datetime_date_part( UI_Elements::rel_time( $expiration ) ) );
 	}
 
 	/**
@@ -133,7 +132,7 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	public function test_rel_time_date_string_renders_calendar_date( $timezone_string, $gmt_offset ) {
 		$this->set_site_timezone( $timezone_string, $gmt_offset );
 
-		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( '2026-08-13' ) ) );
+		$this->assertSame( '2026-08-13', $this->get_datetime_date_part( UI_Elements::rel_time( '2026-08-13' ) ) );
 	}
 
 	/**
@@ -168,19 +167,23 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 	}
 
 	/**
-	 * The datetime attribute must be a machine-readable HTML date string (Y-m-d)
+	 * The datetime attribute must be a machine-readable HTML datetime string
 	 * regardless of the site's display date_format, while the title attribute keeps
 	 * the localized display date. A non-ISO date_format is used so the two diverge.
+	 *
+	 * The full ISO 8601 instant is asserted, not just the date: the relative text is
+	 * accurate to the hour, so a date-only value would be resolved to midnight in the
+	 * consumer's own timezone and could disagree with what the element displays.
 	 */
 	public function test_rel_time_datetime_attribute_is_machine_readable() {
 		update_option( 'date_format', 'F j, Y' );
-		$this->set_site_timezone( 'America/Panama', -5 );
+		$this->set_site_timezone( 'America/Panama', 0 );
 
 		$expiration = new \DateTimeImmutable( '2026-08-13 23:59:59', wp_timezone() );
 		$html       = UI_Elements::rel_time( $expiration );
 
-		$this->assertSame( '2026-08-13', $this->get_datetime_attr( $html ), 'datetime must be machine-readable Y-m-d.' );
-		$this->assertSame( 'August 13, 2026', $this->get_title_attr( $html ), 'title must be the localized display date.' );
+		$this->assertSame( '2026-08-13T23:59:59-05:00', $this->get_attr( $html, 'datetime' ), 'datetime must be a machine-readable ISO 8601 instant with the site UTC offset.' );
+		$this->assertSame( 'August 13, 2026', $this->get_attr( $html, 'title' ), 'title must be the localized display date.' );
 	}
 
 	/**
@@ -201,7 +204,7 @@ class WP_Test_UI_Elements extends \WPJM_BaseTest {
 
 		$timestamp = ( new \DateTimeImmutable( '2026-08-13 12:00:00', wp_timezone() ) )->getTimestamp();
 
-		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( $timestamp ) ) );
-		$this->assertSame( '2026-08-13', $this->get_datetime_attr( UI_Elements::rel_time( (string) $timestamp ) ) );
+		$this->assertSame( '2026-08-13', $this->get_datetime_date_part( UI_Elements::rel_time( $timestamp ) ) );
+		$this->assertSame( '2026-08-13', $this->get_datetime_date_part( UI_Elements::rel_time( (string) $timestamp ) ) );
 	}
 }
