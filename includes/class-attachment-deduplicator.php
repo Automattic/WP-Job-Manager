@@ -216,11 +216,18 @@ class Attachment_Deduplicator {
 	 *
 	 * @since $$next-version$$
 	 *
-	 * @param array $args Optional arguments: 'dry_run' (bool, default true) only
-	 *                    reports what would change; 'user_id' (int, default 0)
-	 *                    limits de-duplication to a single owner.
-	 * @return array Report counts: groups, duplicates, references_repointed,
-	 *               attachments_deleted.
+	 * @param array $args Optional arguments:
+	 *                    'dry_run' (bool, default true) only reports what would change;
+	 *                    'user_id' (int, default 0) limits to one attachment owner;
+	 *                    'on_plan' (callable|null) called once with the number of
+	 *                    attachments about to be merged, before any mutation;
+	 *                    'on_tick' (callable|null) called after each attachment.
+	 * @return array Report: 'groups' and 'duplicates' (counts of what will be or was
+	 *               merged), 'skipped_referenced' (candidates kept because something
+	 *               unrecognised still references them), 'plan' (the canonical =>
+	 *               duplicates mapping), and, for a live run, 'references_repointed',
+	 *               'attachments_deleted' and 'delete_failures' (IDs that could not
+	 *               be deleted).
 	 */
 	public function run( array $args = [] ) {
 		$args = wp_parse_args(
@@ -344,8 +351,8 @@ class Attachment_Deduplicator {
 
 		$referenced_ids = $this->collect_referenced_logo_ids();
 
-		// Queries above ask for IDs only, which does not prime the post cache — so
-		// without this every signature costs a get_post() round trip.
+		// The lookups above return bare IDs, which leaves the post cache cold — so
+		// without this every signature would cost a get_post() round trip.
 		_prime_post_caches( $referenced_ids, false, true );
 
 		foreach ( $referenced_ids as $attachment_id ) {
@@ -447,18 +454,6 @@ class Attachment_Deduplicator {
 	}
 
 	/**
-	 * Every registered post status, so listings in statuses WP_Query's 'any'
-	 * shorthand hides are still seen. 'any' excludes any status registered with
-	 * exclude_from_search, which covers WPJM's own `expired` and `preview` — an
-	 * expired listing is a normal end state and still references its logo.
-	 *
-	 * @return string[]
-	 */
-	private function all_post_statuses() {
-		return array_values( get_post_stati() );
-	}
-
-	/**
 	 * Collects attachment IDs currently used as a logo: listing featured images
 	 * and the `_company_logo` user meta default.
 	 *
@@ -497,14 +492,22 @@ class Attachment_Deduplicator {
 			}
 		}
 
-		$user_args = [
-			'fields'   => 'ID',
-			'meta_key' => self::HANDLED_USER_META_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-		];
-		foreach ( get_users( $user_args ) as $owner_id ) {
-			$logo_id = (int) get_user_meta( $owner_id, self::HANDLED_USER_META_KEY, true );
-			if ( $logo_id ) {
-				$ids[] = $logo_id;
+		// Likewise one read rather than get_users() followed by a get_user_meta() per
+		// user, which is a query for every user who has ever set a company logo.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Bulk read replacing one query per user.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
+		$logo_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = %s",
+				self::HANDLED_USER_META_KEY
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		foreach ( $logo_ids as $logo_id ) {
+			if ( (int) $logo_id ) {
+				$ids[] = (int) $logo_id;
 			}
 		}
 
@@ -542,61 +545,64 @@ class Attachment_Deduplicator {
 	/**
 	 * Re-points every known logo reference according to a duplicate => canonical map.
 	 *
-	 * Batched: two reads for the whole run rather than two per duplicate. Writes are
-	 * still per affected row, which is proportional to real references rather than to
-	 * the size of the media library.
+	 * Two reads for the whole run, then one write per reference actually affected.
+	 * Reads go straight to the meta tables: a get_posts( fields => ids ) plus a
+	 * get_post_meta() per row would cost a query for every affected listing, and
+	 * reading the rows directly also sidesteps WP_Query's `post_status` shorthand,
+	 * which hides statuses registered with exclude_from_search — WPJM's own
+	 * `expired` and `preview` among them. An expired listing is a normal end state
+	 * and still references its logo, so it must be re-pointed like any other.
 	 *
 	 * @param array<int, int> $map Duplicate attachment ID => canonical attachment ID.
 	 * @return int Number of references updated.
 	 */
 	private function repoint_all( array $map ) {
+		global $wpdb;
+
 		if ( ! $map ) {
 			return 0;
 		}
 
-		$count      = 0;
-		$duplicates = array_keys( $map );
+		$count   = 0;
+		$id_list = implode( ',', array_map( 'intval', array_keys( $map ) ) );
 
-		$jobs = get_posts(
-			[
-				'post_type'      => \WP_Job_Manager_Post_Types::PT_LISTING,
-				'post_status'    => $this->all_post_statuses(),
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-					[
-						'key'     => self::HANDLED_POST_META_KEY,
-						'value'   => $duplicates,
-						'compare' => 'IN',
-					],
-				],
-			]
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Bulk read replacing one query per affected row.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $id_list is ints.
+		$jobs = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT pm.post_id, pm.meta_value
+				 FROM {$wpdb->postmeta} pm
+				 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				 WHERE pm.meta_key = %s AND p.post_type = %s AND pm.meta_value IN ( {$id_list} )",
+				self::HANDLED_POST_META_KEY,
+				\WP_Job_Manager_Post_Types::PT_LISTING
+			)
 		);
-		foreach ( $jobs as $job_id ) {
-			$current = (int) get_post_meta( $job_id, self::HANDLED_POST_META_KEY, true );
+
+		$owners = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT user_id, meta_value FROM {$wpdb->usermeta}
+				 WHERE meta_key = %s AND meta_value IN ( {$id_list} )",
+				self::HANDLED_USER_META_KEY
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		foreach ( $jobs as $job ) {
+			$current = (int) $job->meta_value;
 			if ( isset( $map[ $current ] ) ) {
-				update_post_meta( $job_id, self::HANDLED_POST_META_KEY, $map[ $current ] );
+				update_post_meta( (int) $job->post_id, self::HANDLED_POST_META_KEY, $map[ $current ] );
 				++$count;
 			}
 		}
 
-		$users = get_users(
-			[
-				'fields'     => 'ID',
-				'meta_query' => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-					[
-						'key'     => self::HANDLED_USER_META_KEY,
-						'value'   => $duplicates,
-						'compare' => 'IN',
-					],
-				],
-			]
-		);
-		foreach ( $users as $owner_id ) {
-			$current = (int) get_user_meta( $owner_id, self::HANDLED_USER_META_KEY, true );
+		foreach ( $owners as $owner ) {
+			$current = (int) $owner->meta_value;
 			if ( isset( $map[ $current ] ) ) {
-				update_user_meta( $owner_id, self::HANDLED_USER_META_KEY, $map[ $current ] );
+				update_user_meta( (int) $owner->user_id, self::HANDLED_USER_META_KEY, $map[ $current ] );
 				++$count;
 			}
 		}

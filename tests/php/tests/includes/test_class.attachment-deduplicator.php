@@ -392,22 +392,31 @@ class WP_Test_Attachment_Deduplicator extends WPJM_BaseTest {
 	public function test_query_count_does_not_scale_with_the_number_of_duplicates() {
 		global $wpdb;
 
-		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
-		$bytes  = $this->png_bytes();
+		$bytes = $this->png_bytes();
 
-		$canonical = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
-		$this->create_listing_with_logo( $author, $canonical );
-		for ( $i = 1; $i <= 10; $i++ ) {
-			$duplicate = $this->create_logo_attachment( $author, $bytes, "logo-{$i}.png" );
-			$this->create_listing_with_logo( $author, $duplicate );
+		// Several owners, each with their own duplicate pile and a `_company_logo`
+		// default: the cost must not scale with owners either, which a single-owner
+		// fixture would not catch.
+		for ( $owner = 0; $owner < 3; $owner++ ) {
+			$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+			$bytes  = $this->png_bytes() . str_repeat( "\0", $owner + 1 );
+
+			$canonical = $this->create_logo_attachment( $author, $bytes, "o{$owner}-logo.png" );
+			$this->create_listing_with_logo( $author, $canonical );
+			update_user_meta( $author, '_company_logo', $canonical );
+
+			for ( $i = 1; $i <= 10; $i++ ) {
+				$duplicate = $this->create_logo_attachment( $author, $bytes, "o{$owner}-logo-{$i}.png" );
+				$this->create_listing_with_logo( $author, $duplicate );
+			}
 		}
 
 		$before = $wpdb->num_queries;
 		$report = ( new Attachment_Deduplicator() )->run( [ 'dry_run' => true ] );
 		$used   = $wpdb->num_queries - $before;
 
-		$this->assertSame( 10, $report['duplicates'], 'All ten duplicates are found. Report: ' . wp_json_encode( $report ) );
-		$this->assertLessThan( 15, $used, sprintf( 'A dry run over 10 duplicates used %d queries; reference scanning should be batched, not per-duplicate.', $used ) );
+		$this->assertSame( 30, $report['duplicates'], 'All duplicates across all owners are found. Report: ' . wp_json_encode( $report ) );
+		$this->assertLessThan( 15, $used, sprintf( 'A dry run over 30 duplicates across 3 owners used %d queries; scanning should be batched, not per-duplicate or per-owner.', $used ) );
 	}
 
 	/**
