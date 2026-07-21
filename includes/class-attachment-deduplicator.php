@@ -75,13 +75,9 @@ class Attachment_Deduplicator {
 	];
 
 	/**
-	 * Rows per batch when streaming post content looking for inline references.
-	 */
-	const CONTENT_SCAN_BATCH = 200;
-
-	/**
-	 * Attachments handled per batch: how many are hashed, looked up, or deleted
-	 * before the object cache is released.
+	 * Rows handled per batch: how many attachments are hashed, looked up, or
+	 * deleted — and how many posts are scanned for inline references — before the
+	 * object cache is released.
 	 *
 	 * This command exists for libraries with tens of thousands of attachments, so
 	 * nothing may hold all of them in memory at once — priming 20,000 posts and
@@ -861,7 +857,7 @@ class Attachment_Deduplicator {
 					'%' . $wpdb->esc_like( 'wp-image-' ) . '%',
 					'%' . $wpdb->esc_like( '"id":' ) . '%',
 					'%' . $wpdb->esc_like( '/uploads/' ) . '%',
-					self::CONTENT_SCAN_BATCH,
+					$this->chunk_size,
 					$offset
 				)
 			);
@@ -896,8 +892,8 @@ class Attachment_Deduplicator {
 			}
 
 			$fetched = count( $rows );
-			$offset += self::CONTENT_SCAN_BATCH;
-		} while ( self::CONTENT_SCAN_BATCH === $fetched );
+			$offset += $this->chunk_size;
+		} while ( $this->chunk_size === $fetched );
 
 		return $protected;
 	}

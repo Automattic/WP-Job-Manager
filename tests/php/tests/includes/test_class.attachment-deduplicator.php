@@ -467,18 +467,34 @@ class WP_Test_Attachment_Deduplicator extends WPJM_BaseTest {
 			$this->create_listing_with_logo( $author, $duplicate );
 		}
 
-		// One protected candidate, deliberately mid-run rather than first or last.
+		// One protected candidate, deliberately mid-run rather than first or last, and
+		// protected via inline content — the same batch size drives the content scan,
+		// so the protecting post must be found even when it lands on a later page.
 		$protected = $duplicates[4];
-		$blog_post = $this->factory->post->create( [ 'post_type' => 'post', 'post_author' => $author ] );
-		set_post_thumbnail( $blog_post, $protected );
+
+		// Filler posts carrying an image marker so they are scanned, pushing the real
+		// reference past the first content-scan page.
+		for ( $i = 0; $i < 5; $i++ ) {
+			$this->factory->post->create(
+				[
+					'post_type'    => 'post',
+					'post_content' => '<img src="https://example.test/wp-content/uploads/filler-' . $i . '.png" />',
+				]
+			);
+		}
+		$this->factory->post->create(
+			[
+				'post_type'    => 'post',
+				'post_content' => '<img src="' . wp_get_attachment_url( $protected ) . '" class="wp-image-' . $protected . '" />',
+			]
+		);
 
 		// A batch size well below the number of candidates forces several batches.
 		$report = ( new Attachment_Deduplicator( 2 ) )->run( [ 'dry_run' => false ] );
 
 		$this->assertSame( 6, $report['attachments_deleted'], 'Every unprotected duplicate is deleted regardless of batching.' );
 		$this->assertSame( 1, $report['skipped_referenced'], 'The protected candidate is kept even though it sits mid-batch.' );
-		$this->assertInstanceOf( WP_Post::class, get_post( $protected ), 'The protected attachment survives.' );
-		$this->assertEquals( $protected, get_post_thumbnail_id( $blog_post ), "The blog post's featured image is untouched." );
+		$this->assertInstanceOf( WP_Post::class, get_post( $protected ), 'The protected attachment survives, found by a content scan on a later page.' );
 
 		foreach ( $duplicates as $duplicate ) {
 			if ( $duplicate === $protected ) {
