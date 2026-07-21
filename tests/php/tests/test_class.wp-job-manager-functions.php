@@ -348,6 +348,164 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * The job_manager_get_listings_include_category_children filter must default to
+	 * the historical behavior (children included) and let a callback override it so
+	 * that a single parent category selection can match its exact term only.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_include_category_children_filter() {
+		// tax_input is silently dropped by wp_insert_post() without this cap.
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY )->cap->assign_terms ) );
+
+		$parent_term = $this->factory->term->create(
+			[
+				'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+				'name'     => 'engineering',
+			]
+		);
+		$child_term  = $this->factory->term->create(
+			[
+				'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+				'name'     => 'frontend',
+				'parent'   => $parent_term,
+			]
+		);
+
+		$parent_job = $this->factory->job_listing->create(
+			[
+				'tax_input' => [
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => [ $parent_term ],
+				],
+			]
+		);
+		$child_job  = $this->factory->job_listing->create(
+			[
+				'tax_input' => [
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => [ $child_term ],
+				],
+			]
+		);
+
+		// Default: selecting only the parent term also surfaces the child term's listing.
+		$default = get_job_listings(
+			[
+				'search_keywords'   => '',
+				'search_categories' => [ $parent_term ],
+			]
+		);
+		$this->assertEqualSets(
+			[ $parent_job, $child_job ],
+			wp_list_pluck( $default->posts, 'ID' ),
+			'Default behavior should include child term listings.'
+		);
+
+		// With the filter returning false, only the exact parent term matches.
+		add_filter( 'job_manager_get_listings_include_category_children', '__return_false' );
+		$strict = get_job_listings(
+			[
+				'search_keywords'   => '',
+				'search_categories' => [ $parent_term ],
+			]
+		);
+		remove_filter( 'job_manager_get_listings_include_category_children', '__return_false' );
+
+		$this->assertEqualSets(
+			[ $parent_job ],
+			wp_list_pluck( $strict->posts, 'ID' ),
+			'Filter returning false should exclude child term listings.'
+		);
+	}
+
+	/**
+	 * Forcing the filter to true under the AND operator adds each selected term's
+	 * descendants to the set a listing must match in full, so it narrows results
+	 * rather than widening them. When one selected term is an ancestor of another
+	 * the expanded set contains duplicates, WP_Tax_Query rejects the clause as
+	 * "inexistent_terms", and the query matches nothing at all.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_include_category_children_filter_in_and_mode() {
+		// tax_input is silently dropped by wp_insert_post() without this cap.
+		$this->assertTrue( current_user_can( get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY )->cap->assign_terms ) );
+
+		$parents  = [];
+		$children = [];
+		foreach ( [ 'engineering', 'design' ] as $name ) {
+			$parents[ $name ]  = $this->factory->term->create(
+				[
+					'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+					'name'     => $name,
+				]
+			);
+			$children[ $name ] = $this->factory->term->create(
+				[
+					'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+					'name'     => $name . '-junior',
+					'parent'   => $parents[ $name ],
+				]
+			);
+		}
+
+		$parents_only = $this->factory->job_listing->create(
+			[
+				'tax_input' => [
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => array_values( $parents ),
+				],
+			]
+		);
+		$every_term   = $this->factory->job_listing->create(
+			[
+				'tax_input' => [
+					\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY => array_merge( array_values( $parents ), array_values( $children ) ),
+				],
+			]
+		);
+
+		// Two categories plus the "all" setting is what selects the AND operator.
+		update_option( 'job_manager_category_filter_type', 'all' );
+		$search_parents = [
+			'search_keywords'   => '',
+			'search_categories' => array_values( $parents ),
+		];
+
+		// Default under AND: children are excluded, so matching both parents is enough.
+		$default = get_job_listings( $search_parents );
+		$this->assertEqualSets(
+			[ $parents_only, $every_term ],
+			wp_list_pluck( $default->posts, 'ID' ),
+			'AND mode should default to excluding child terms.'
+		);
+
+		// Forcing children in adds them to the set that must match in full.
+		add_filter( 'job_manager_get_listings_include_category_children', '__return_true' );
+		$widened = get_job_listings( $search_parents );
+
+		// Selecting a term and its own child leaves a duplicate in the expanded set.
+		$overlapping = get_job_listings(
+			[
+				'search_keywords'   => '',
+				'search_categories' => [ $parents['engineering'], $children['engineering'] ],
+			]
+		);
+		remove_filter( 'job_manager_get_listings_include_category_children', '__return_true' );
+
+		$this->assertEqualSets(
+			[ $every_term ],
+			wp_list_pluck( $widened->posts, 'ID' ),
+			'Filter returning true under AND should require every descendant to match too.'
+		);
+		$this->assertSame(
+			[],
+			wp_list_pluck( $overlapping->posts, 'ID' ),
+			'Selecting a term and its descendant under AND should match nothing.'
+		);
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */
