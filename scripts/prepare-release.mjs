@@ -39,6 +39,14 @@ if ( ! version ) {
 	process.exit( 1 );
 }
 
+// Validate the version format up front, before any branch is created or file is
+// mutated, so a typo fails fast rather than after a half-done release branch.
+// Pattern kept in parity with scripts/replace-next-version-tag.sh.
+if ( ! /^\d+(\.\d+)+(-(a|alpha|beta)([-.]?\d+)?)?$/.test( version ) ) {
+	console.log( chalk.bold.red( `Error: "${ version }" is not a valid version string. Expected x.y[.z] with an optional -alpha/-beta suffix.` ) );
+	process.exit( 1 );
+}
+
 const ghPrs = `gh pr list -R ${ cfg.repo } --state merged --base ${ BASE_BRANCH } --limit 500 --search "milestone:${ version }"`;
 
 // Confirm release through CLI.
@@ -284,9 +292,16 @@ function createPR( changelog ) {
 	fs.writeFileSync( bodyFile, body, 'utf-8' );
 
 	try {
-		const prLink = execSync( `gh pr create -R ${ cfg.repo } -B ${ BASE_BRANCH } -H ${ releaseBranch } --assignee @me --title "${ title }" --body-file "${ bodyFile }"` );
-		execSync( `open ${ prLink }` );
+		const prLink = execSync( `gh pr create -R ${ cfg.repo } -B ${ BASE_BRANCH } -H ${ releaseBranch } --assignee @me --title "${ title }" --body-file "${ bodyFile }"` ).toString().trim();
 		console.log( `PR: ${ prLink }` );
+		// Best-effort convenience only. `open` is macOS-only, so swallow any
+		// failure: on Linux/CI it must not throw into the caller's rollback path,
+		// which would delete the branch and PR that were just created.
+		try {
+			execSync( `open ${ prLink }`, { stdio: 'ignore' } );
+		} catch {
+			// Non-macOS or no browser available; the PR link is printed above.
+		}
 	} finally {
 		fs.unlinkSync( bodyFile );
 	}
