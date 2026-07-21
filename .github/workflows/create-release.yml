@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true && startsWith( github.head_ref, 'release/' )
+    if: github.event.pull_request.merged == true && startsWith( github.head_ref, 'release/' ) && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     name: WPJM Release
     # The default GITHUB_TOKEN is read-only on repos that don't opt into
@@ -20,7 +20,7 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           # Check out the PR's base branch (trunk) as a real local branch, not the
           # detached-HEAD merge ref, so create-release.mjs can `git push origin HEAD`.
