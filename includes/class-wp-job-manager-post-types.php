@@ -1901,7 +1901,7 @@ class WP_Job_Manager_Post_Types {
 
 		if ( 'email' === $allowed_application_method ) {
 			$application_method_label       = __( 'Application email', 'wp-job-manager' );
-			$application_method_placeholder = __( 'you@example.com', 'wp-job-manager' );
+			$application_method_placeholder = __( 'email1@example.com, email2@example.com', 'wp-job-manager' );
 		} elseif ( 'url' === $allowed_application_method ) {
 			$application_method_label       = __( 'Application URL', 'wp-job-manager' );
 			$application_method_placeholder = __( 'https://', 'wp-job-manager' );
@@ -2183,24 +2183,46 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Sanitize `_application` meta field.
 	 *
+	 * @since $$next-version$$ Accepts comma/semicolon-separated email lists when every
+	 *                    non-empty token is a valid email address.
+	 *
 	 * @param string $meta_value Value of meta field that needs sanitization.
 	 * @return string
 	 */
 	public static function sanitize_meta_field_application( $meta_value ) {
-		$tokens       = preg_split( '/[,;]\s?/', (string) $meta_value );
-		$valid_emails = [];
-		foreach ( $tokens as $token ) {
-			$token = trim( $token );
-			if ( is_email( $token ) ) {
+		$value = (string) $meta_value;
+
+		if ( false !== strpbrk( $value, ',;' ) ) {
+			$max_addresses   = (int) apply_filters( 'job_manager_application_max_addresses', 10 );
+			$tokens          = preg_split( '/[,;]\s?/', $value );
+			$valid_emails    = [];
+			$non_empty_count = 0;
+			foreach ( $tokens as $token ) {
+				$token = trim( $token );
+				if ( '' === $token ) {
+					continue;
+				}
+				$non_empty_count++;
+				if ( ! is_email( $token ) ) {
+					// Partial list — fall through to URL sanitizer (all-or-nothing policy).
+					return self::sanitize_meta_field_url( $value );
+				}
 				$valid_emails[] = sanitize_email( $token );
 			}
+
+			if ( ! empty( $valid_emails ) && $non_empty_count <= $max_addresses ) {
+				return implode( ', ', $valid_emails );
+			}
+
+			// At cap or empty — fall through to URL sanitizer.
+			return self::sanitize_meta_field_url( $value );
 		}
 
-		if ( ! empty( $valid_emails ) ) {
-			return implode( ', ', $valid_emails );
+		if ( is_email( $value ) ) {
+			return sanitize_email( $value );
 		}
 
-		return self::sanitize_meta_field_url( $meta_value );
+		return self::sanitize_meta_field_url( $value );
 	}
 
 	/**

@@ -254,11 +254,26 @@ function get_the_job_application_method( $post = null ) {
 		}
 	}
 
+	/**
+	 * Maximum number of email addresses accepted in a single
+	 * application field value at the resolver layer.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int $max_addresses Address cap.
+	 */
+	$max_addresses = (int) apply_filters( 'job_manager_application_max_addresses', 10 );
+	if ( count( $valid_emails ) > $max_addresses ) {
+		$valid_emails = [];
+	}
+
 	if ( ! empty( $valid_emails ) && count( $valid_emails ) === count( $non_empty_tokens ) ) {
-		$joined            = implode( ', ', $valid_emails );
-		$method->type      = 'email';
-		$method->raw_email = $joined;
-		$method->email     = antispambot( $joined );
+		$joined               = implode( ', ', $valid_emails );
+		$mailto_emails        = implode( ',', $valid_emails );
+		$method->type         = 'email';
+		$method->raw_email    = $joined;
+		$method->email        = antispambot( $joined );
+		$method->mailto_email = $mailto_emails;
 
 		// translators: %1$s is the job listing title; %2$s is the URL for the current WordPress instance.
 		$method->subject = apply_filters( 'job_manager_application_email_subject', sprintf( esc_html__( 'Application via %1$s listing on %2$s', 'wp-job-manager' ), esc_html( $post->post_title ), esc_url( home_url() ) ), $post );

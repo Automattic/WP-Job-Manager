@@ -52,6 +52,8 @@ class WP_Test_Get_The_Job_Application_Method extends WPJM_BaseTest {
 		$this->assertIsObject( $method );
 		$this->assertSame( 'email', $method->type );
 		$this->assertSame( 'hr@example.com, jobs@example.com', $method->raw_email );
+		// RFC 6068 mailto uses bare commas without whitespace.
+		$this->assertSame( 'hr@example.com,jobs@example.com', $method->mailto_email );
 	}
 
 	public function test_two_emails_semicolon_separated_returns_email_type() {
@@ -62,6 +64,7 @@ class WP_Test_Get_The_Job_Application_Method extends WPJM_BaseTest {
 		$this->assertIsObject( $method );
 		$this->assertSame( 'email', $method->type );
 		$this->assertSame( 'hr@example.com, jobs@example.com', $method->raw_email );
+		$this->assertSame( 'hr@example.com,jobs@example.com', $method->mailto_email );
 	}
 
 	public function test_three_emails_returns_email_type() {
@@ -72,6 +75,20 @@ class WP_Test_Get_The_Job_Application_Method extends WPJM_BaseTest {
 		$this->assertIsObject( $method );
 		$this->assertSame( 'email', $method->type );
 		$this->assertSame( 'a@example.com, b@example.com, c@example.com', $method->raw_email );
+		$this->assertSame( 'a@example.com,b@example.com,c@example.com', $method->mailto_email );
+	}
+
+	public function test_more_than_cap_addresses_falls_back_to_url() {
+		// Cap is 10; build 11 valid emails to exceed it.
+		$emails = array_map( fn( $i ) => "u{$i}@example.com", range( 1, 11 ) );
+		$list   = implode( ',', $emails );
+
+		$this->create_listing( $list );
+
+		$method = get_the_job_application_method( $this->listing_id );
+
+		$this->assertIsObject( $method );
+		$this->assertSame( 'url', $method->type );
 	}
 
 	public function test_url_returns_url_type() {

@@ -198,7 +198,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		switch ( $allowed_application_method ) {
 			case 'email':
 				$application_method_label       = __( 'Application email', 'wp-job-manager' );
-				$application_method_placeholder = __( 'you@example.com', 'wp-job-manager' );
+				$application_method_placeholder = __( 'email1@example.com, email2@example.com', 'wp-job-manager' );
 				$application_method_sanitizer   = 'email';
 				break;
 			case 'url':
@@ -436,20 +436,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	/**
 	 * Checks if a value is one or more comma/semicolon-separated valid email addresses.
 	 *
+	 * @since $$next-version$$
+	 *
 	 * @param string $value
 	 * @return bool
 	 */
 	protected function is_valid_email_list( $value ) {
-		$tokens = preg_split( '/[,;]\s?/', (string) $value );
-		if ( empty( $tokens ) ) {
-			return false;
-		}
-		foreach ( $tokens as $token ) {
-			if ( ! is_email( trim( $token ) ) ) {
-				return false;
-			}
-		}
-		return true;
+		$emails = $this->parse_email_list( (string) $value );
+
+		return null !== $emails && ! empty( $emails );
 	}
 
 	/**

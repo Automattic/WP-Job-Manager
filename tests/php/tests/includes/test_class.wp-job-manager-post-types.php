@@ -1247,20 +1247,30 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 				'test'     => 'a@example.com; b@example.com',
 			],
 			[
-				'expected' => 'a@example.com',
+				// All-or-nothing: any invalid token falls back to URL sanitizer.
+				'expected' => 'url_fallback',
 				'test'     => 'a@example.com, not-an-email',
 			],
 			[
+				// Whitespace only tokens are dropped; remaining valid list passes.
 				'expected' => 'a@example.com, b@example.com',
 				'test'     => 'a@example.com, , b@example.com',
+			],
+			[
+				// Cap exceeded (more than 10 addresses) falls back to URL sanitizer.
+				'expected' => 'url_fallback',
+				'test'     => 'a@example.com, b@example.com, c@example.com, d@example.com, e@example.com, f@example.com, g@example.com, h@example.com, i@example.com, j@example.com, k@example.com',
 			],
 		];
 
 		$this->set_up_custom_job_listing_data_feilds();
 		$results = [];
 		foreach ( $strings as $str ) {
+			$expected = 'url_fallback' === $str['expected']
+				? WP_Job_Manager_Post_Types::sanitize_meta_field_url( 'http://' . $str['test'] )
+				: $str['expected'];
 			$results[] = [
-				'expected' => $str['expected'],
+				'expected' => $expected,
 				'result'   =>  WP_Job_Manager_Post_Types::sanitize_meta_field_application( $str['test'], '_application' ),
 			];
 		}
