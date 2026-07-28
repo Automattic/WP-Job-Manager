@@ -8,12 +8,12 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     2.5.0
+ * @version     $$next-version$$
  *
  * @since 2.3.0 Switched to a responsive layout. job_manager_job_dashboard_column_{$key} action is called for all columns.
  * @since 1.34.4 Available job actions are passed in an array (`$job_actions`, keyed by job ID) and not generated in the template.
  * @since 1.35.0 Switched to new date functions.
- * @since 2.5.0 Jobs can be grouped by status using group_by_status shortcode attribute.
+ * @since $$next-version$$ Jobs can be grouped by status using group_by_status shortcode attribute.
  *
  * @var array     $job_dashboard_columns Array of the columns to show on the job dashboard page.
  * @var int       $max_num_pages Maximum number of pages.
@@ -94,7 +94,7 @@ $render_row = function ( $job ) use ( $job_dashboard_columns, $job_actions ) {
 	</div>
 	<?php $table_class = count( $job_dashboard_columns ) > 4 ? 'jm-dashboard-table--large' : ''; ?>
 	<div class="job-manager-jobs jm-dashboard-table <?php echo esc_attr( $table_class ); ?>">
-		<?php if ( $group_by_status && ! empty( $job_groups ) ) : ?>
+		<?php if ( $group_by_status && $jobs && ! empty( $job_groups ) ) : ?>
 			<?php $group_order = [ 'active', 'pending', 'inactive' ]; ?>
 			<?php foreach ( $group_order as $group_key ) : ?>
 				<?php

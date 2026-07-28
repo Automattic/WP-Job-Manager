@@ -156,6 +156,17 @@ class WP_Test_Job_Dashboard_Shortcode extends \WPJM_BaseTest {
 	}
 
 	/**
+	 * Test zero listings shows empty state CTA when grouping is on.
+	 */
+	public function test_zero_listings_shows_empty_state_when_grouping() {
+		$output = $this->shortcode->output_job_dashboard( [ 'group_by_status' => 'yes' ] );
+
+		// Empty state should show CTA, not grouped view.
+		$this->assertStringContainsString( 'jm-dashboard-empty', $output );
+		$this->assertStringNotContainsString( 'jm-dashboard-group', $output );
+	}
+
+	/**
 	 * Test that the flat (non-grouped) path still works for backward compatibility.
 	 */
 	public function test_flat_non_grouped_default_is_backward_compatible() {

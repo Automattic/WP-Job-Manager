@@ -132,12 +132,6 @@ class Job_Dashboard_Shortcode {
 			$this->get_job_dashboard_query_args( $query_args ),
 		);
 
-		// When grouping, ensure pagination offset is removed after the filter runs.
-		if ( $group_by_status ) {
-			$jobs->query_vars['posts_per_page'] = -1;
-			$jobs->query_vars['offset']         = 0;
-		}
-
 		// Cache IDs for access check later on.
 		$this->job_dashboard_job_ids = wp_list_pluck( $jobs->posts, 'ID' );
 
@@ -179,6 +173,22 @@ class Job_Dashboard_Shortcode {
 				'job_groups'      => [],
 				'max_num_pages'   => $jobs->max_num_pages,
 			];
+
+		/**
+		 * Limit the number of jobs shown in each group on the grouped dashboard.
+		 *
+		 * When set to a positive integer, each group (active/pending/inactive) is
+		 * truncated to that many entries. Default 0 means no limit.
+		 *
+		 * @since $$next-version$$
+		 * @param int $limit Maximum entries per group. 0 for unlimited.
+		 */
+		$group_limit = apply_filters( 'job_manager_job_dashboard_group_limit', 0 );
+		if ( $group_limit > 0 && ! empty( $group_data['job_groups'] ) ) {
+			foreach ( $group_data['job_groups'] as $key => $jobs_in_group ) {
+				$group_data['job_groups'][ $key ] = array_slice( $jobs_in_group, 0, $group_limit );
+			}
+		}
 
 		get_job_manager_template(
 			'job-dashboard.php',
@@ -711,7 +721,18 @@ class Job_Dashboard_Shortcode {
 	/**
 	 * Group jobs by status bucket for the dashboard.
 	 *
-	 * @since 2.5.0
+	 * Buckets:
+	 * - active: publish, future
+	 * - pending: pending, pending_payment, draft, preview
+	 * - inactive: expired
+	 *
+	 * Filled listings (post_status = publish, meta _filled = 1) intentionally
+	 * stay in the active bucket. They are still publicly visible until expired;
+	 * the "Filled" chip on the row signals the closed-for-applications state.
+	 * This matches the flat (non-grouped) view, which has always shown filled
+	 * publish listings inline.
+	 *
+	 * @since $$next-version$$
 	 * @param array $jobs Array of WP_Post objects.
 	 * @return array{active: array, pending: array, inactive: array}
 	 */
