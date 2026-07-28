@@ -77,6 +77,21 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 				$this->job_id = 0;
 			}
 		}
+
+		// Reuse the originating `form_id` saved at submission so the edit form
+		// keeps the same field set even when the dashboard shortcode doesn't
+		// forward one. POST round-trip in `submit_handler()` still wins over
+		// this when present, so the user's chosen form id isn't downgraded.
+		if ( ! empty( $this->job_id ) ) {
+			$stored_form_id = get_post_meta( $this->job_id, '_form_id', true );
+			if (
+				is_string( $stored_form_id )
+				&& strlen( $stored_form_id ) <= 32
+				&& preg_match( '/\A[A-Za-z0-9_-]+\z/', $stored_form_id )
+			) {
+				$this->current_form_id = $stored_form_id;
+			}
+		}
 	}
 
 	/**
@@ -226,6 +241,15 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			$post_status  = get_post_status( $this->job_id );
 
 			update_post_meta( $this->job_id, '_job_edited', time() );
+
+			// Mirror the same update/delete handling used in the submit handler so
+			// an edit on the default `[submit_job_form]` page clears a stale
+			// `_form_id` from an earlier `[submit_job_form form_id="..."]` save.
+			if ( $this->current_form_id ) {
+				update_post_meta( $this->job_id, '_form_id', $this->current_form_id );
+			} else {
+				delete_post_meta( $this->job_id, '_form_id' );
+			}
 
 			if ( in_array( $post_status, [ 'future', 'publish' ], true ) ) {
 				$save_message = $save_message . ' <a href="' . get_permalink( $this->job_id ) . '">' . __( 'View &rarr;', 'wp-job-manager' ) . '</a>';

@@ -190,7 +190,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * Initializes the fields used in the form.
 	 */
 	public function init_fields() {
-		if ( $this->fields ) {
+		// ponytail: cache keyed on the active form id so two `[submit_job_form form_id="…"]`
+		// blocks on one page each rebuild (filtered for their own form id) instead of both
+		// returning the first set. Same form id within a request stays cached — cheap path.
+		$cache_key = $this->current_form_id;
+		if ( $this->fields && $this->fields_cache_key === $cache_key ) {
 			return;
 		}
 
@@ -234,7 +238,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		 * single-arg signature keep working.
 		 *
 		 * @since 1.0.0
-		 * @since 2.4.6 Added the `$form_id` argument.
+		 * @since $$next-version$$ Added the `$form_id` argument.
 		 *
 		 * @param array  $fields  Field groups, keyed by group, then field key.
 		 * @param string $form_id Form id passed to the shortcode (or empty string).
@@ -386,7 +390,8 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			$this->current_form_id
 		);
 
-		$this->fields = $default_fields;
+		$this->fields           = $default_fields;
+		$this->fields_cache_key = $cache_key;
 
 		if ( ! get_option( 'job_manager_enable_categories' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY ) ) ) {
 			unset( $this->fields['job']['job_category'] );
@@ -866,6 +871,16 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			// Mark this job as a public submission so the submission hook is fired.
 			update_post_meta( $this->job_id, '_public_submission', true );
 
+			// Store the originating `form_id` so the edit form rebuilds the same field set
+			// even when the dashboard edit page can't thread it through via shortcode `$atts`.
+			// Delete the meta when no form id is active so a stale value from an earlier
+			// submission doesn't bleed into a later edit on the default `[submit_job_form]`.
+			if ( $this->current_form_id ) {
+				update_post_meta( $this->job_id, '_form_id', $this->current_form_id );
+			} else {
+				delete_post_meta( $this->job_id, '_form_id' );
+			}
+
 			if ( $this->job_id ) {
 				// Reset the `_filled` flag.
 				update_post_meta( $this->job_id, '_filled', 0 );
@@ -1331,7 +1346,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
-		wp_nonce_field( 'submit-job-' . $this->job_id, '_wpjm_nonce' );
+		wp_nonce_field( $this->submit_nonce_action(), '_wpjm_nonce' );
 	}
 
 	/**
@@ -1341,13 +1356,34 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
+		$action = $this->submit_nonce_action();
 		if (
 			empty( $_REQUEST['_wpjm_nonce'] )
-			|| ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpjm_nonce'] ), 'submit-job-' . $this->job_id ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+			|| ! wp_verify_nonce( wp_unslash( $_REQUEST['_wpjm_nonce'] ), $action ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 		) {
-			wp_nonce_ays( 'submit-job-' . $this->job_id );
+			wp_nonce_ays( $action );
 			die();
 		}
+	}
+
+	/**
+	 * Build the nonce action string for the submit form.
+	 *
+	 * Binds the active `form_id` (from `[submit_job_form form_id="..."]`) into the
+	 * action so a submitter can't reuse a nonce minted for one form id against a
+	 * different posted form id — the field set rendered has to match the field set
+	 * validated.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @return string
+	 */
+	private function submit_nonce_action() {
+		$action = 'submit-job-' . $this->job_id;
+		if ( $this->current_form_id ) {
+			$action .= '-form-' . $this->current_form_id;
+		}
+		return $action;
 	}
 
 	/**

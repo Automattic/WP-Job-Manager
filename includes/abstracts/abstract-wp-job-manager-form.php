@@ -26,6 +26,16 @@ abstract class WP_Job_Manager_Form {
 	protected $fields = [];
 
 	/**
+	 * Cache key for `$fields`. Tracks the `current_form_id` value the
+	 * fields were built under so a 2nd `submit_job_form form_id="..."`
+	 * on the same page rebuilds instead of returning the 1st set.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $fields_cache_key = '';
+
+	/**
 	 * Form action.
 	 *
 	 * @access protected
