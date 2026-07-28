@@ -26,7 +26,7 @@ function wpml_wpjm_init() {
 }
 
 add_action( 'wpml_loaded', 'wpml_wpjm_init' );
-add_action( 'wpml_loaded', 'wpml_wpjm_set_language' );
+add_action( 'wpml_loaded', 'wpml_wpjm_set_language' ); // Intentional: see docblock above (WPML 3.7.1 ordering).
 
 /**
  * Sets WPJM's language if it is sent in the Ajax request.
@@ -86,7 +86,7 @@ function wpml_wpjm_page_id( $page_id ) {
  *
  * See https://wpml.org/errata/wp-job-manager-job-incorrect-slug-translation-for-job-listings/ (compsupp-7570).
  *
- * @since 2.4.6
+ * @since $$next-version$$
  *
  * @param array $permalinks The resolved permalink structure.
  *

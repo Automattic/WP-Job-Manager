@@ -1606,12 +1606,13 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		/**
-		 * Filters the resolved permalink structure used to register the job_listing post type and its taxonomies.
+		 * Filters the resolved rewrite-slug map returned by `get_permalink_structure()`.
 		 *
-		 * Third-party multilingual plugins (e.g. WPML) can use this to force stable rewrite slugs so they
-		 * can register the post type and taxonomies as translatable.
+		 * The filtered array replaces the `rewrite` input to `register_post_type()` and
+		 * `register_taxonomy()` calls downstream, so third-party multilingual plugins
+		 * (e.g. WPML) can pin a stable source slug for translation.
 		 *
-		 * @since 2.4.6
+		 * @since $$next-version$$
 		 *
 		 * @param array $permalinks The resolved permalink structure.
 		 */

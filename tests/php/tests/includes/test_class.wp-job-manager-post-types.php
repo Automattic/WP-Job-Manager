@@ -759,7 +759,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 2.4.6
+	 * @since $$next-version$$
 	 * @covers WP_Job_Manager_Post_Types::get_permalink_structure
 	 */
 	public function test_get_permalink_structure_filter_no_callbacks() {
@@ -773,7 +773,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 2.4.6
+	 * @since $$next-version$$
 	 * @covers WP_Job_Manager_Post_Types::get_permalink_structure
 	 */
 	public function test_get_permalink_structure_filter_overrides_slugs() {
