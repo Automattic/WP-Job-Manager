@@ -48,7 +48,7 @@ do_action( 'job_manager_job_filters_before', $atts );
 						'value'           => 'slug',
 						'multiple'        => false,
 						'show_option_all' => __( 'Any workplace type', 'wp-job-manager' ),
-						'selected'        => ! empty( $workplace_types ) ? reset( $workplace_types ) : '',
+						'selected'        => ! empty( $workplace_types ) ? sanitize_title( reset( $workplace_types ) ) : '',
 						'hide_empty'      => true,
 					]
 				);

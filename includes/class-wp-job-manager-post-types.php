@@ -228,7 +228,7 @@ class WP_Job_Manager_Post_Types {
 	 * Prepare CPTs for special block editor situations.
 	 */
 	public function prepare_block_editor() {
-		if ( false === job_manager_multi_job_type() || get_option( 'job_manager_enable_remote_position' ) ) {
+		if ( false === job_manager_multi_job_type() ) {
 			add_filter( 'rest_prepare_taxonomy', [ $this, 'hide_job_type_block_editor_selector' ], 10, 3 );
 		}
 	}
@@ -264,12 +264,18 @@ class WP_Job_Manager_Post_Types {
 	 * @return WP_REST_Response
 	 */
 	public function hide_job_type_block_editor_selector( $response, $taxonomy, $request ) {
-		if (
-			in_array( $taxonomy->name, [ self::TAX_LISTING_TYPE, self::TAX_WORKPLACE_TYPE ], true )
-			&& 'edit' === $request->get_param( 'context' )
-		) {
-			$response->data['visibility']['show_ui'] = false;
+		if ( 'edit' !== $request->get_param( 'context' ) ) {
+			return $response;
 		}
+
+		if ( self::TAX_LISTING_TYPE === $taxonomy->name ) {
+			$response->data['visibility']['show_ui'] = false;
+		} elseif ( self::TAX_WORKPLACE_TYPE === $taxonomy->name ) {
+			if ( ! get_option( 'job_manager_enable_remote_position', true ) ) {
+				$response->data['visibility']['show_ui'] = false;
+			}
+		}
+
 		return $response;
 	}
 

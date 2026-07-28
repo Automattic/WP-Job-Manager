@@ -58,7 +58,7 @@ class WP_Job_Manager_Install {
 		}
 
 		// Convert the _remote_position checkbox into the workplace type taxonomy.
-		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '2.5.0', '<' ) ) {
+		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '$$next-version$$', '<' ) ) {
 			self::schedule_workplace_type_migration();
 		}
 
