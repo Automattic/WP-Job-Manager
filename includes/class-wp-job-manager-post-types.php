@@ -331,7 +331,7 @@ class WP_Job_Manager_Post_Types {
 						],
 						'show_ui'               => true,
 						'show_tagcloud'         => false,
-						'show_in_nav_menus'     => false,
+						'show_in_nav_menus'     => $publicly_queryable,
 						'public'                => true,
 						'publicly_queryable'    => $publicly_queryable,
 						'capabilities'          => [
@@ -396,7 +396,7 @@ class WP_Job_Manager_Post_Types {
 						],
 						'show_ui'              => true,
 						'show_tagcloud'        => false,
-						'show_in_nav_menus'    => false,
+						'show_in_nav_menus'    => $publicly_queryable,
 						'public'               => true,
 						'publicly_queryable'   => $publicly_queryable,
 						'capabilities'         => [
