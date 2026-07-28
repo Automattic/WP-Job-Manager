@@ -796,7 +796,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since 2.5.0
+	 * @since $$next-version$$
 	 * @covers WP_Job_Manager_Post_Types::update_post_meta
 	 */
 	public function test_update_post_meta_fired_on_filled_transition() {
@@ -824,6 +824,33 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		// Same value -> no action.
 		unset( $wp_actions['job_manager_job_listing_filled_status_changed'] );
 		update_post_meta( $post->ID, '_filled', '0' );
+		$this->assertEquals( 0, did_action( 'job_manager_job_listing_filled_status_changed' ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::add_post_meta
+	 */
+	public function test_update_post_meta_fired_on_filled_add_transition() {
+		global $wp_actions;
+		WP_Job_Manager_Post_Types::instance();
+		$post = get_post(
+			$this->factory->job_listing->create()
+		);
+
+		// Default seed populates _filled = 0; remove it so add_post_meta path triggers.
+		delete_post_meta( $post->ID, '_filled' );
+
+		// add_post_meta with truthy _filled fires action with was_filled = false.
+		unset( $wp_actions['job_manager_job_listing_filled_status_changed'] );
+		$this->assertEquals( 0, did_action( 'job_manager_job_listing_filled_status_changed' ) );
+		add_post_meta( $post->ID, '_filled', '1', true );
+		$this->assertEquals( 1, did_action( 'job_manager_job_listing_filled_status_changed' ) );
+
+		// add_post_meta with falsy _filled does NOT fire (seed paths should be silent).
+		delete_post_meta( $post->ID, '_filled' );
+		unset( $wp_actions['job_manager_job_listing_filled_status_changed'] );
+		add_post_meta( $post->ID, '_filled', '0', true );
 		$this->assertEquals( 0, did_action( 'job_manager_job_listing_filled_status_changed' ) );
 	}
 
