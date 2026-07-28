@@ -222,7 +222,7 @@ class WP_Job_Manager_Writepanels {
 
 		$mime_attr = '';
 		if ( ! empty( $allowed_mime_types ) ) {
-			$mime_attr = ' data-allowed_mime_types="' . esc_attr( implode( ',', array_keys( $allowed_mime_types ) ) ) . '"';
+			$mime_attr = ' data-allowed_mime_types="' . esc_attr( implode( ',', array_values( $allowed_mime_types ) ) ) . '"';
 		}
 		?>
 		<span class="file_url">
@@ -297,7 +297,7 @@ class WP_Job_Manager_Writepanels {
 				self::file_url_field( $key, $name, $field['placeholder'], $field['value'], false, $download, $field['allowed_mime_types'] ?? [] );
 			}
 			if ( ! empty( $field['multiple'] ) ) {
-				$add_mime_attr = ! empty( $field['allowed_mime_types'] ) ? ' data-allowed_mime_types="' . esc_attr( implode( ',', array_keys( $field['allowed_mime_types'] ) ) ) . '"' : '';
+				$add_mime_attr = ! empty( $field['allowed_mime_types'] ) ? ' data-allowed_mime_types="' . esc_attr( implode( ',', array_values( $field['allowed_mime_types'] ) ) ) . '"' : '';
 				?>
 				<button class="button button-small wp_job_manager_add_another_file_button"<?php echo $add_mime_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped via esc_attr above. ?> data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php esc_attr_e( 'Upload', 'wp-job-manager' ); ?>" data-view_button="<?php esc_attr_e( 'View', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Add file', 'wp-job-manager' ); ?></button>
 				<?php
@@ -733,7 +733,7 @@ class WP_Job_Manager_Writepanels {
 				$posted_value = wp_unslash( $_POST[ $key ] );
 
 				if ( 'file' === $field['type'] && ! empty( $field['allowed_mime_types'] ) ) {
-					$allowed_mimes = array_values( $field['allowed_mime_types'] );
+					$allowed_mimes = array_values( (array) $field['allowed_mime_types'] );
 
 					if ( ! empty( $field['multiple'] ) ) {
 						$posted_value = is_array( $posted_value ) ? $posted_value : [];
@@ -750,14 +750,8 @@ class WP_Job_Manager_Writepanels {
 							continue;
 						}
 
-						// Attachment IDs are valid by definition; ownership is enforced elsewhere.
-						if ( is_numeric( $file_url ) ) {
-							$valid_values[] = $file_url;
-							continue;
-						}
-
 						$file_url  = current( explode( '?', (string) $file_url ) );
-						$file_info = wp_check_filetype( $file_url, $field['allowed_mime_types'] );
+						$file_info = wp_check_filetype( $file_url, (array) $field['allowed_mime_types'] );
 
 						if ( $file_info && in_array( $file_info['type'], $allowed_mimes, true ) ) {
 							$valid_values[] = $file_url;
@@ -775,9 +769,12 @@ class WP_Job_Manager_Writepanels {
 							'rejected' => array_unique( $rejected_files ),
 							'allowed'  => self::flatten_allowed_extensions( $field['allowed_mime_types'] ),
 						];
-					}
 
-					$stored = ! empty( $field['multiple'] ) ? $valid_values : ( $valid_values[0] ?? '' );
+						// Preserve any previously-stored meta; do not overwrite with the rejected value.
+						$stored = get_post_meta( $post_id, $key, true );
+					} else {
+						$stored = ! empty( $field['multiple'] ) ? $valid_values : ( $valid_values[0] ?? '' );
+					}
 					update_post_meta( $post_id, $key, $stored );
 				} else {
 					update_post_meta( $post_id, $key, $posted_value );
@@ -829,13 +826,11 @@ class WP_Job_Manager_Writepanels {
 	}
 
 	/**
-	 * Display admin notice for any file fields rejected on save.
-	 */
-
-	/**
 	 * Flatten the extension keys of an allowed_mime_types map into a list of
 	 * individual file extensions. Pipe-separated keys (e.g. `jpg|jpeg|jpe`) are
 	 * split so the notice lists every extension the field accepts.
+	 *
+	 * @since $$next-version$$
 	 *
 	 * @param array $allowed_mime_types Map of extensions to mime types.
 	 * @return array
@@ -855,6 +850,8 @@ class WP_Job_Manager_Writepanels {
 
 	/**
 	 * Display admin notice for any file fields rejected on save.
+	 *
+	 * @since $$next-version$$
 	 */
 	public function maybe_show_file_type_errors() {
 		if ( ! function_exists( 'get_current_screen' ) ) {

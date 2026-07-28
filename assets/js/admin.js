@@ -131,7 +131,7 @@ jQuery(document).ready(function($) {
 		if ( ! raw ) {
 			return null;
 		}
-		// wp.media library.type accepts a comma-separated extensions string. Server-side save still enforces the type whitelist; this is a UX hint.
+		// wp.media library.type maps to its ajax_query_attachments post_mime_type filter — pass mime strings (e.g. "application/pdf"), not extensions. Server-side save still enforces the type whitelist; this is a UX hint.
 		return String( raw );
 	}
 

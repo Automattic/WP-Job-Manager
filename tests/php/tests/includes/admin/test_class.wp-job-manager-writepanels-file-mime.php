@@ -116,10 +116,11 @@ class WP_Test_WP_Job_Manager_Writepanels_File_Mime extends WPJM_BaseTest {
 		$this->save_with( 'https://example.com/evil.exe', $existing );
 
 		$stored = get_post_meta( $this->last_job_id, self::FIELD_KEY, true );
-		$this->assertSame( '', $stored, 'Previous value should be wiped (not overwritten with rejected URL).' );
+		$this->assertSame( $existing, $stored, 'Previously-stored meta must be preserved when a rejection happens.' );
+		$this->assertNotEmpty( get_transient( self::TRANSIENT_KEY . $this->last_job_id ), 'Rejection transient should still be set so the notice renders.' );
 	}
 
-	public function test_attachment_id_is_always_allowed() {
+	public function test_attachment_id_is_rejected_as_non_url() {
 		$admin_id   = $this->factory->user->create( [ 'role' => 'administrator' ] );
 		$attachment = wp_insert_attachment(
 			[
@@ -134,7 +135,8 @@ class WP_Test_WP_Job_Manager_Writepanels_File_Mime extends WPJM_BaseTest {
 		$this->save_with( (string) $attachment );
 
 		$stored = get_post_meta( $this->last_job_id, self::FIELD_KEY, true );
-		$this->assertSame( (string) $attachment, $stored, 'Numeric attachment IDs bypass mime check.' );
+		$this->assertSame( '', $stored, 'Numeric attachment IDs must not bypass the mime check.' );
+		$this->assertNotEmpty( get_transient( self::TRANSIENT_KEY . $this->last_job_id ), 'Numeric IDs with no extension must register a rejection notice.' );
 	}
 
 	public function test_query_string_is_stripped_before_check() {
