@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.31.1
+ * @version     $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,6 +26,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<?php if ( $is_direct_url ) : ?>
 			<a class="application_button button" href="<?php echo esc_url( $apply->url ); ?>" rel="nofollow"><?php esc_html_e( 'Apply for job', 'wp-job-manager' ); ?></a>
+			<?php
+			/**
+			 * Fires for the application method type, regardless of whether the intermediate
+			 * details panel is rendered. Addons listing on `job_manager_application_details_url`
+			 * (click tracking, redirect wrappers, etc.) still receive the event in direct-apply mode.
+			 *
+			 * @since $$next-version$$
+			 *
+			 * @param object $apply Application method object.
+			 */
+			do_action( 'job_manager_application_details_' . $apply->type, $apply );
+			?>
 		<?php else : ?>
 			<input type="button" class="application_button button" value="<?php esc_attr_e( 'Apply for job', 'wp-job-manager' ); ?>" />
 
