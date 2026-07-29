@@ -110,4 +110,29 @@ class WP_Test_WP_Job_Manager_Shortcodes extends WPJM_BaseTest {
 
 		$this->assertNull( $result );
 	}
+
+	/**
+	 * Marker appearing in body text (after the first '>') must not short-circuit.
+	 *
+	 * Employer-supplied listing titles or company names land in the block HTML,
+	 * so the marker must be anchored to the opening tag of our own wrapper.
+	 *
+	 * @covers WP_Job_Manager_Shortcodes::protect_jobs_shortcode_from_wpautop
+	 */
+	public function test_marker_in_body_text_does_not_short_circuit() {
+		$shortcodes = WP_Job_Manager_Shortcodes::instance();
+
+		// Marker sits in the visible body text, not in any opening attribute.
+		$html = '<div class="job_listings"><p>data-wp-job-manager-jobs-shortcode="1"</p></div>';
+
+		$result = $shortcodes->protect_jobs_shortcode_from_wpautop(
+			null,
+			[
+				'blockName' => 'core/shortcode',
+				'innerHTML' => $html,
+			]
+		);
+
+		$this->assertNull( $result );
+	}
 }

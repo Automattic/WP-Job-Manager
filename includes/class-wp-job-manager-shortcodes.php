@@ -68,7 +68,13 @@ class WP_Job_Manager_Shortcodes {
 		$html = isset( $parsed_block['innerHTML'] ) ? $parsed_block['innerHTML'] : '';
 
 		// Marker is hard-coded on the [jobs] wrapper, outside the filterable data attributes.
-		if ( false !== strpos( $html, 'data-wp-job-manager-jobs-shortcode="1"' ) ) {
+		// Anchor to the first '>' so listing titles or employer-supplied text that happens to
+		// contain the literal marker string cannot trigger the short-circuit on unrelated blocks.
+		$marker   = 'data-wp-job-manager-jobs-shortcode="1"';
+		$tag_end  = strpos( $html, '>' );
+		$has_open = false !== strpos( $html, '<div' );
+
+		if ( $has_open && false !== $tag_end && false !== strpos( $html, $marker ) && strpos( $html, $marker ) < $tag_end ) {
 			return $html;
 		}
 
