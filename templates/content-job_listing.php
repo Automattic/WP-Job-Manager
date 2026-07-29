@@ -9,7 +9,7 @@
  * @package     wp-job-manager
  * @category    Template
  * @since       1.0.0
- * @version     1.34.0
+ * @version     $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -49,14 +49,14 @@ if ( post_password_required( $post ) || ! job_manager_user_can_view_job_listing(
 				<?php endforeach; endif; ?>
 			<?php } ?>
 
+			<li class="date"><?php the_job_publish_date(); ?></li>
+
 			<?php if ( get_option( 'job_manager_show_salary_in_listings' ) ) : ?>
 				<?php $job_salary = the_job_salary( '', '', false ); ?>
 				<?php if ( ! empty( $job_salary ) ) : ?>
 					<li class="salary"><?php echo esc_html( $job_salary ); ?></li>
 				<?php endif; ?>
 			<?php endif; ?>
-
-			<li class="date"><?php the_job_publish_date(); ?></li>
 
 			<?php do_action( 'job_listing_meta_end' ); ?>
 		</ul>
