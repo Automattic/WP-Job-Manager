@@ -811,7 +811,7 @@ function get_the_job_publish_date( $post = null ) {
  * Gets the application deadline for the job listing, if one is set and the listing is
  * still accepting applications.
  *
- * @since 2.5.0
+ * @since $$next-version$$
  * @param int|WP_Post $post (default: null).
  * @return DateTimeImmutable|false
  */
@@ -830,7 +830,7 @@ function get_the_job_application_deadline( $post = null ) {
  * outputs a machine-readable `<time>` element so the deadline can be progressively
  * enhanced with the visitor's local time in the browser.
  *
- * @since 2.5.0
+ * @since $$next-version$$
  * @param int|WP_Post $post (default: null).
  */
 function the_job_application_deadline( $post = null ) {
@@ -846,14 +846,24 @@ function the_job_application_deadline( $post = null ) {
 	// translators: Placeholder %s is the application deadline date and time, in the site's timezone.
 	$display_date = sprintf( esc_html__( 'Apply by %s', 'wp-job-manager' ), wp_date( trim( $wp_date_format . ' ' . $wp_time_format ), $deadline->getTimestamp() ) );
 
-	wp_enqueue_script( 'wp-job-manager-time-localize' );
+	$site_timezone      = wp_timezone_string();
+	$has_named_timezone = ! in_array( $site_timezone[0] ?? '', [ '+', '-' ], true );
+
+	if ( $has_named_timezone ) {
+		wp_enqueue_script( 'wp-job-manager-time-localize' );
+	}
 
 	printf(
-		'<time class="wpjm-local-time" datetime="%1$s" data-site-timezone="%2$s" data-local-label="%3$s">%4$s</time>',
+		'<time class="wpjm-local-time" datetime="%1$s"%2$s>%3$s</time>',
 		esc_attr( $deadline->format( DateTimeInterface::ATOM ) ),
-		esc_attr( wp_timezone_string() ),
-		// translators: Placeholder %s is the application deadline, converted to the visitor's local time by their browser.
-		esc_attr__( '(%s your local time)', 'wp-job-manager' ),
+		$has_named_timezone
+			? sprintf(
+				' data-site-timezone="%1$s" data-local-label="%2$s"',
+				esc_attr( $site_timezone ),
+				// translators: Placeholder %s is the application deadline, converted to the visitor's local time by their browser.
+				esc_attr__( '(%s your local time)', 'wp-job-manager' )
+			)
+			: '',
 		wp_kses_post( $display_date )
 	);
 }
