@@ -1201,7 +1201,7 @@ function get_the_company_twitter( $post = null ) {
 /**
  * Displays or retrieves the current company LinkedIn link with optional content.
  *
- * @since 2.4.6
+ * @since $$next-version$$
  * @param string           $before (default: '').
  * @param string           $after (default: '').
  * @param bool             $echo (default: true).
@@ -1215,7 +1215,7 @@ function the_company_linkedin( $before = '', $after = '', $echo = true, $post = 
 		return null;
 	}
 
-	$company_linkedin = $before . '<a href="' . esc_url( $company_linkedin ) . '" class="company_linkedin">' . esc_html__( 'LinkedIn', 'wp-job-manager' ) . '</a>' . $after;
+	$company_linkedin = $before . '<a href="' . esc_url( $company_linkedin ) . '" class="company_linkedin" rel="nofollow">' . esc_html__( 'LinkedIn', 'wp-job-manager' ) . '</a>' . $after;
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_linkedin );
@@ -1227,7 +1227,7 @@ function the_company_linkedin( $before = '', $after = '', $echo = true, $post = 
 /**
  * Gets the company LinkedIn link.
  *
- * @since 2.4.6
+ * @since $$next-version$$
  * @param int|WP_Post|null $post (default: null).
  * @return string|null
  */

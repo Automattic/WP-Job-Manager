@@ -589,7 +589,7 @@ class WP_Test_WP_Job_Manager_Usage_Tracking_Data extends WPJM_BaseTest {
 	 * Tests that get_usage_data() returns the correct number of job listings
 	 * with a company LinkedIn link.
 	 *
-	 * @since 2.4.6
+	 * @since $$next-version$$
 	 * @covers WP_Job_Manager_Usage_Tracking_Data::get_usage_data
 	 */
 	public function test_jobs_company_linkedin() {
