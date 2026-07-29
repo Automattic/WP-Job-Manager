@@ -160,4 +160,123 @@ class WP_Test_Renewal_Edits extends WPJM_BaseTest {
 		$this->assertEquals( 'publish', get_post_status( $job_id ) );
 		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( get_post( $job_id ) ) );
 	}
+
+	/**
+	 * Field values edited on the renewal submit step persist on the listing
+	 * and the job still completes the renewal (status publish, expiry extended).
+	 */
+	public function test_edited_fields_persist_through_renewal() {
+		update_option( 'job_manager_renewal_allow_edits', 1 );
+
+		$this->login_as_employer();
+		$user_id = get_current_user_id();
+		$job_id  = $this->create_renewable_job( $user_id );
+		update_post_meta( $job_id, '_job_expires', wp_date( 'Y-m-d', strtotime( '+1 day' ) ) );
+
+		$this->set_renew_action_query( $job_id );
+		$this->reset_form_instance();
+
+		$form  = WP_Job_Manager_Form_Submit_Job::instance();
+		$class = new ReflectionClass( $form );
+
+		$job_id_prop = $class->getProperty( 'job_id' );
+		$job_id_prop->setAccessible( true );
+		$job_id_prop->setValue( $form, $job_id );
+
+		$step_prop = $class->getProperty( 'step' );
+		$step_prop->setAccessible( true );
+
+		$steps     = array_keys( $form->get_steps() );
+		$submit_ix = array_search( 'submit', $steps, true );
+		$step_prop->setValue( $form, $submit_ix );
+
+		// Submit the edit step with changed field values.
+		$nonce                                      = wp_create_nonce( 'submit-job-' . $job_id );
+		$_POST['job']                               = [
+			'job_title'       => 'Renewed Engineer',
+			'job_location'    => 'Remote (HQ)',
+			'job_type'        => 'full-time',
+			'job_description' => 'Updated description.',
+			'application'     => 'apply@example.com',
+		];
+		$_POST['company']                           = [
+			'company_name' => 'Acme Co',
+		];
+		$_POST                                       = array_merge(
+			$_POST,
+			[
+				'submit_job'  => '1',
+				'job_id'      => $job_id,
+				'_wpjm_nonce' => $nonce,
+			]
+		);
+		$_REQUEST['_wpjm_nonce']                    = $nonce;
+		$_REQUEST['job']                            = $_POST['job'];
+		$_REQUEST['company']                        = $_POST['company'];
+
+		$form->submit_handler();
+
+		$this->assertSame( $submit_ix + 1, $form->get_step() );
+
+		// Continue the renewal preview step.
+		$preview_ix       = array_search( 'preview', $steps, true );
+		$step_prop->setValue( $form, $preview_ix );
+
+		$nonce                   = wp_create_nonce( 'preview-job-' . $job_id );
+		$_POST                   = [
+			'continue'    => '1',
+			'job_id'      => $job_id,
+			'_wpjm_nonce' => $nonce,
+		];
+		$_REQUEST['_wpjm_nonce'] = $nonce;
+
+		$form->process();
+
+		$this->assertSame( 'Renewed Engineer', get_post( $job_id )->post_title );
+		$this->assertSame( 'Remote (HQ)', get_post_meta( $job_id, '_job_location', true ) );
+		$this->assertSame( 'apply@example.com', get_post_meta( $job_id, '_application', true ) );
+		$this->assertSame( 'publish', get_post_status( $job_id ) );
+		$this->assertFalse( WP_Job_Manager_Helper_Renewals::job_can_be_renewed( get_post( $job_id ) ) );
+	}
+
+	/**
+	 * The "Edit listing" button on the renewal preview step navigates back to
+	 * the submit (edit) step.
+	 */
+	public function test_edit_job_navigates_back_from_preview() {
+		update_option( 'job_manager_renewal_allow_edits', 1 );
+
+		$this->login_as_employer();
+		$job_id = $this->create_renewable_job( get_current_user_id() );
+		update_post_meta( $job_id, '_job_expires', wp_date( 'Y-m-d', strtotime( '+1 day' ) ) );
+
+		$this->set_renew_action_query( $job_id );
+		$this->reset_form_instance();
+
+		$form  = WP_Job_Manager_Form_Submit_Job::instance();
+		$class = new ReflectionClass( $form );
+
+		$job_id_prop = $class->getProperty( 'job_id' );
+		$job_id_prop->setAccessible( true );
+		$job_id_prop->setValue( $form, $job_id );
+
+		$steps       = array_keys( $form->get_steps() );
+		$submit_ix   = array_search( 'submit', $steps, true );
+		$preview_ix  = array_search( 'preview', $steps, true );
+		$step_prop   = $class->getProperty( 'step' );
+		$step_prop->setAccessible( true );
+		$step_prop->setValue( $form, $preview_ix );
+
+		$nonce                   = wp_create_nonce( 'preview-job-' . $job_id );
+		$_POST                   = [
+			'edit_job'    => '1',
+			'job_id'      => $job_id,
+			'_wpjm_nonce' => $nonce,
+		];
+		$_REQUEST['_wpjm_nonce'] = $nonce;
+
+		$form->process();
+
+		$this->assertSame( $submit_ix, $form->get_step() );
+	}
 }

@@ -1288,7 +1288,7 @@ function wpjm_published_submission_edits_require_moderation() {
  * moderation, since a renewal must not take a listing offline while its
  * edits await admin approval.
  *
- * @since 2.4.6
+ * @since $$next-version$$
  * @return bool
  */
 function wpjm_renewal_allows_edits() {
@@ -1299,7 +1299,7 @@ function wpjm_renewal_allows_edits() {
 	/**
 	 * Override whether the listing edit form is shown as part of the renewal flow.
 	 *
-	 * @since 2.4.6
+	 * @since $$next-version$$
 	 *
 	 * @param bool $allow_edits
 	 */
