@@ -280,6 +280,9 @@ class WP_Job_Manager {
 		if ( class_exists( 'WP_Job_Manager_Promoted_Jobs_Status_Handler' ) && ! wp_next_scheduled( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK ) ) {
 			wp_schedule_event( time(), 'hourly', WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK );
 		}
+		if ( ! wp_next_scheduled( \WP_Job_Manager\Search_Stats::CRON_HOOK ) ) {
+			wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', \WP_Job_Manager\Search_Stats::CRON_HOOK );
+		}
 	}
 
 	/**
@@ -291,6 +294,7 @@ class WP_Job_Manager {
 		wp_clear_scheduled_hook( 'job_manager_email_daily_notices' );
 		wp_clear_scheduled_hook( 'job_manager_promoted_jobs_notification' );
 		wp_clear_scheduled_hook( WP_Job_Manager_Promoted_Jobs_Status_Handler::CRON_HOOK );
+		wp_clear_scheduled_hook( \WP_Job_Manager\Search_Stats::CRON_HOOK );
 	}
 
 	/**

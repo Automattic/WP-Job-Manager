@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Log the search filters used on the `[jobs]` shortcode.
  *
- * @since 2.4.0
+ * @since $$next-version$$
  */
 class Search_Stats {
 	use Singleton;
@@ -39,13 +39,38 @@ class Search_Stats {
 	 */
 	const FILTER_JOB_TYPE = 'job_type';
 
+	/**
+	 * Cron hook for daily pruning of old search stats rows.
+	 */
+	const CRON_HOOK = 'job_manager_prune_search_stats';
+
 	private const TABLE = 'wpjm_search_stats';
+
+	/**
+	 * Number of days to retain search stats rows.
+	 */
+	const RETENTION_DAYS = 90;
+
+	/**
+	 * Per-IP rate-limit window (seconds) for log_search().
+	 */
+	private const RATE_LIMIT_SECONDS = 2;
 
 	/**
 	 * Constructor.
 	 */
 	private function __construct() {
 		$this->init_wpdb_alias();
+		$this->init_cron();
+	}
+
+	/**
+	 * Register the pruning cron hook.
+	 *
+	 * @return void
+	 */
+	private function init_cron() {
+		add_action( self::CRON_HOOK, [ $this, 'prune' ] );
 	}
 
 	/**
@@ -94,7 +119,7 @@ class Search_Stats {
 	 * row per selected value rather than a joined string, since a comma-joined list
 	 * of every combination would be far less useful for aggregation.
 	 *
-	 * @since 2.4.0
+	 * @since $$next-version$$
 	 *
 	 * @param array $filters {
 	 * Filter name to value (or array of values) used in the search.
@@ -110,6 +135,10 @@ class Search_Stats {
 	public function log_search( array $filters ) {
 
 		if ( ! Stats::is_enabled() ) {
+			return false;
+		}
+
+		if ( $this->is_rate_limited() ) {
 			return false;
 		}
 
@@ -203,6 +232,10 @@ class Search_Stats {
 	/**
 	 * Get logged search stats.
 	 *
+	 * The returned rows include the raw `value` field, which is visitor-supplied
+	 * search text. Callers displaying these rows in the dashboard MUST escape with
+	 * `esc_html()` (and `esc_attr()` when used in attributes).
+	 *
 	 * @param string $filter Optional filter name to limit results to.
 	 * @param string $date   Optional date (YYYY-MM-DD) to limit results to.
 	 * @param int    $limit  Maximum number of rows to return.
@@ -233,5 +266,53 @@ class Search_Stats {
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Prepared above; admin-only aggregate read, matches Stats::get_stats().
 		return $wpdb->get_results( $query );
+	}
+
+	/**
+	 * Per-IP cooldown for log_search().
+	 *
+	 * Returns true once a given IP has logged in the last RATE_LIMIT_SECONDS.
+	 * Skipped in admin context so dashboard runs aren't blocked.
+	 *
+	 * @return bool
+	 */
+	private function is_rate_limited() {
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return false;
+		}
+
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		if ( '' === $ip ) {
+			return false;
+		}
+
+		$key   = 'wpjm_search_stats_rl_' . md5( $ip );
+		$stamp = get_transient( $key );
+		if ( false !== $stamp ) {
+			return true;
+		}
+
+		set_transient( $key, time(), self::RATE_LIMIT_SECONDS );
+		return false;
+	}
+
+	/**
+	 * Delete rows older than the retention window. Runs on the CRON_HOOK schedule.
+	 *
+	 * @return int Number of rows deleted.
+	 */
+	public function prune() {
+		global $wpdb;
+
+		$cutoff = gmdate( 'Y-m-d', time() - ( self::RETENTION_DAYS * DAY_IN_SECONDS ) );
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $wpdb->wpjm_search_stats is the table alias.
+		$deleted = $wpdb->query(
+			$wpdb->prepare( "DELETE FROM {$wpdb->wpjm_search_stats} WHERE date < %s", $cutoff )
+		);
+		// phpcs:enable
+
+		return is_numeric( $deleted ) ? (int) $deleted : 0;
 	}
 }

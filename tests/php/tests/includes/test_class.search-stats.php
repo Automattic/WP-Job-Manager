@@ -187,4 +187,56 @@ class WP_Test_Search_Stats extends \WPJM_BaseTest {
 		$this->assertEmpty( Search_Stats::instance()->get_stats() );
 	}
 
+	public function test_log_search_skips_when_rate_limited_by_ip() {
+		$_SERVER['REMOTE_ADDR'] = '10.0.0.1';
+
+		// Prime the transient by calling once.
+		Search_Stats::instance()->log_search( [ 'keyword' => 'first' ] );
+
+		// Second call within RATE_LIMIT_SECONDS should be dropped.
+		Search_Stats::instance()->log_search( [ 'keyword' => 'second' ] );
+
+		$stats = Search_Stats::instance()->get_stats( 'keyword' );
+		$this->assertCount( 1, $stats );
+		$this->assertEquals( 'first', $stats[0]->value );
+
+		unset( $_SERVER['REMOTE_ADDR'] );
+	}
+
+	public function test_prune_deletes_rows_older_than_retention_window() {
+		$old_date = gmdate( 'Y-m-d', time() - ( Search_Stats::RETENTION_DAYS + 1 ) * DAY_IN_SECONDS );
+		$recent   = gmdate( 'Y-m-d', time() - 5 * DAY_IN_SECONDS );
+
+		global $wpdb;
+		$wpdb->insert(
+			$wpdb->wpjm_search_stats,
+			[
+				'date'      => $old_date,
+				'filter'    => 'keyword',
+				'value'     => 'old-term',
+				'value_hash' => md5( 'keyword|old-term' ),
+				'count'     => 1,
+			],
+			[ '%s', '%s', '%s', '%s', '%d' ]
+		);
+		$wpdb->insert(
+			$wpdb->wpjm_search_stats,
+			[
+				'date'      => $recent,
+				'filter'    => 'keyword',
+				'value'     => 'recent-term',
+				'value_hash' => md5( 'keyword|recent-term' ),
+				'count'     => 1,
+			],
+			[ '%s', '%s', '%s', '%s', '%d' ]
+		);
+
+		$deleted = Search_Stats::instance()->prune();
+
+		$this->assertEquals( 1, $deleted );
+		$remaining = Search_Stats::instance()->get_stats();
+		$this->assertCount( 1, $remaining );
+		$this->assertEquals( 'recent-term', $remaining[0]->value );
+	}
+
 }

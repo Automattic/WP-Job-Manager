@@ -203,7 +203,7 @@ class WP_Job_Manager_Ajax {
 			 * Fires when search filters are about to be logged, allowing add-ons
 			 * (e.g. the Tags add-on) to log their own filter value.
 			 *
-			 * @since 2.4.0
+			 * @since $$next-version$$
 			 *
 			 * @param array $search_filters Filter name to value (or array of values) used in the search.
 			 */
