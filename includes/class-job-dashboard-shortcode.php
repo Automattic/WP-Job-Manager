@@ -501,6 +501,15 @@ class Job_Dashboard_Shortcode {
 
 					break;
 				case 'reactivate':
+					// Reset the expiry date before transitioning back to published.
+					// set_expiry() snapshots the existing _job_expires before clearing
+					// it, so the regeneration branch never fires for a stale past date.
+					$expires = calculate_job_expiry( $job_id, true );
+
+					if ( $expires ) {
+						WP_Job_Manager_Post_Types::instance()->set_job_expiration( $job_id, $expires );
+					}
+
 					$updated = wp_update_post(
 						[
 							'ID'          => $job_id,
