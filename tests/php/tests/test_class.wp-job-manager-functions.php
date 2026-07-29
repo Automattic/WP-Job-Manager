@@ -451,7 +451,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * orderby, featured listings must lead and the secondary sort must respect the
 	 * passed orderby (not silently fall back to date-descending).
 	 *
-	 * @since 2.4.4
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_featured_first_custom_orderby() {
@@ -504,33 +504,62 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * Regression for issue #2939. The custom orderby/order must be honoured
 	 * across both directions and orderby values while featured still lead.
 	 *
-	 * @since 2.4.4
+	 * @since $$next-version$$
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_featured_first_orderby_variants() {
-		$featured = $this->factory->job_listing->create_many(
-			2,
-			[
-				'meta_input' => [ '_featured' => 1 ],
-			]
-		);
-		$not_featured = $this->factory->job_listing->create_many(
-			2,
-			[
-				'meta_input' => [ '_featured' => 0 ],
-			]
-		);
+		// Distinct titles and dates per fixture so the secondary sort is
+		// observable in every case, including date/{ASC,DESC}. Non-featured
+		// timestamps sit BEFORE featured so a date-desc fallback regression
+		// (e.g. surfacing newest post first) would reorder featured and
+		// non-featured — exposing the bug instead of hiding it.
+		$featured = [
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Charlie',
+					'post_date'  => '2026-01-03 00:00:00',
+					'meta_input' => [ '_featured' => 1 ],
+				]
+			),
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Delta',
+					'post_date'  => '2026-01-04 00:00:00',
+					'meta_input' => [ '_featured' => 1 ],
+				]
+			),
+		];
+		$not_featured = [
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Alpha',
+					'post_date'  => '2026-01-01 00:00:00',
+					'meta_input' => [ '_featured' => 0 ],
+				]
+			),
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Beta',
+					'post_date'  => '2026-01-02 00:00:00',
+					'meta_input' => [ '_featured' => 0 ],
+				]
+			),
+		];
 
+		// Each case: expected order across [featured_1, featured_2, not_featured_1, not_featured_2].
+		// Featured listings always lead (positions 0, 1) thanks to
+		// featured_first; the secondary sort applies within each block.
 		$cases = [
-			[ 'title', 'ASC' ],
-			[ 'title', 'DESC' ],
-			[ 'date', 'ASC' ],
-			[ 'date', 'DESC' ],
+			[ 'title', 'ASC', [ 0, 1, 0, 1 ] ],  // C, D, A, B (within each block: featureds C<D, non-featureds A<B).
+			[ 'title', 'DESC', [ 1, 0, 1, 0 ] ], // D, C, B, A (within each block: featureds D>C, non-featureds B>A).
+			[ 'date', 'ASC', [ 0, 1, 0, 1 ] ],   // Jan3, Jan4, Jan1, Jan2.
+			[ 'date', 'DESC', [ 1, 0, 1, 0 ] ],  // Jan4, Jan3, Jan2, Jan1.
 		];
 
 		foreach ( $cases as $case ) {
-			list( $orderby, $order ) = $case;
-			$results   = get_job_listings(
+			list( $orderby, $order, $expected_order ) = $case;
+
+			$results = get_job_listings(
 				[
 					'search_keywords' => '',
 					'orderby'         => $orderby,
@@ -538,14 +567,25 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 					'featured_first'  => true,
 				]
 			);
-			$ids       = wp_list_pluck( $results->posts, 'ID' );
-			$result_set = array_flip( $ids );
 
-			// Featured listings must come first.
-			$this->assertSame( [], array_diff( $featured, array_slice( $ids, 0, count( $featured ) ) ), "featured not first for {$orderby} {$order}" );
-			// No non-featured listing should precede a featured one.
-			$this->assertSame( [], array_intersect( $not_featured, array_slice( $ids, 0, count( $featured ) ) ), "non-featured before featured for {$orderby} {$order}" );
-			$this->assertCount( count( $featured ) + count( $not_featured ), $result_set, "unexpected result count for {$orderby} {$order}" );
+			$ids = wp_list_pluck( $results->posts, 'ID' );
+
+			// Assert exact full order across all four fixtures. A regression to
+			// a date-desc fallback would still pass the featured-first check
+			// alone; this catches it for every variant.
+			$source = array_merge( $featured, $not_featured );
+			$expected = array_map(
+				static function ( $idx ) use ( $source ) {
+					return $source[ $idx ];
+				},
+				$expected_order
+			);
+
+			$this->assertSame(
+				$expected,
+				[ $ids[0], $ids[1], $ids[2], $ids[3] ],
+				"Wrong order for {$orderby} {$order}"
+			);
 		}
 	}
 
