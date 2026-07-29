@@ -199,6 +199,34 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * If the filter returns an empty array the shortcode query must fall back to
+	 * the defaults rather than build a meta_query of only `relation => OR`.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_location_meta_keys_filter_empty_falls_back_to_defaults() {
+		$job = $this->factory->job_listing->create(
+			[
+				'post_title' => 'Dinosaur Test Seattle',
+				'meta_input' => [
+					'_job_location' => 'Seattle',
+				],
+			]
+		);
+
+		add_filter( 'job_manager_get_listings_location_meta_keys', '__return_empty_array' );
+
+		$results = get_job_listings(
+			[
+				'search_keywords' => 'Dinosaur',
+				'search_location' => 'Seattle',
+			]
+		);
+		$this->assertEqualSets( [ $job ], wp_list_pluck( $results->posts, 'ID' ) );
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */
