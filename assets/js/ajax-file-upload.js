@@ -54,7 +54,14 @@ jQuery(function($) {
 				var maxSize = parseInt( $file_field.data( 'max_size' ), 10 );
 
 				if ( ! isNaN( maxSize ) && data.files[0].size > maxSize ) {
-					uploadErrors.push( job_manager_ajax_file_upload.i18n_file_exceeds_size_limit );
+					var sizeMessage       = job_manager_ajax_file_upload.i18n_file_exceeds_size_limit;
+					var formattedSize     = $file_field.data( 'max_size_formatted' );
+
+					if ( formattedSize ) {
+						sizeMessage += ' ' + job_manager_ajax_file_upload.i18n_max_file_size + ' ' + formattedSize + '.';
+					}
+
+					uploadErrors.push( sizeMessage );
 				}
 
 				if ( uploadErrors.length > 0 ) {

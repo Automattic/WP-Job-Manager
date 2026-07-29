@@ -556,6 +556,7 @@ class WP_Job_Manager {
 					'js_field_html'                => esc_js( str_replace( "\n", '', $js_field_html ) ),
 					'i18n_invalid_file_type'       => esc_html__( 'Invalid file type. Accepted types:', 'wp-job-manager' ),
 					'i18n_file_exceeds_size_limit' => esc_html__( 'Selected file exceeds the maximum allowed upload size.', 'wp-job-manager' ),
+					'i18n_max_file_size'           => esc_html__( 'Maximum file size:', 'wp-job-manager' ),
 				]
 			);
 		}
