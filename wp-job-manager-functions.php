@@ -1372,11 +1372,14 @@ function job_manager_dropdown_categories( $args = '' ) {
 		$r['search_category_slugs'] = wpjm_get_category_slugs_from_search_query_string();
 	}
 
+	// Normalize slug order/dups so permutations share one cache entry; bounds cache entries under bot-driven $_GET churn.
+	$r['search_category_slugs'] = array_values( array_unique( $r['search_category_slugs'] ) );
+
 	/** This filter is documented in wp-job-manager.php */
 	$r['lang'] = apply_filters( 'wpjm_lang', null );
 
-	// Store in a transient to help sites with many cats.
 	// Only include query-affecting params in cache key; output params (selected, name, class, etc.) don't change results.
+	// `lang` is included because WPML/Polylang scope term queries by language via filter, even though it isn't passed directly to get_terms().
 	$cache_args      = wp_array_slice_assoc( $r, [ 'taxonomy', 'orderby', 'order', 'hide_empty', 'parent', 'child_of', 'exclude', 'hierarchical', 'search_category_slugs', 'lang' ] );
 	$categories_hash = 'jm_cats_' . md5( wp_json_encode( $cache_args ) . WP_Job_Manager_Cache_Helper::get_transient_version( 'jm_get_' . $r['taxonomy'] ) );
 	$categories      = get_transient( $categories_hash );
