@@ -136,6 +136,9 @@ If you wish to be notified of new postings on your site you can use a plugin suc
 = What language files are available? =
 You can view (and contribute) translations via the [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager).
 
+= How do I add the Recent Jobs or Featured Jobs widgets on a block theme? =
+Block themes have no classic Widgets screen, but you can still add the Recent Jobs and Featured Jobs widgets through the Site Editor. Go to **Appearance → Editor**, open a template or template part, add the **Legacy Widget** block from the inserter, and choose **Recent Jobs** or **Featured Jobs**. The widget's settings and preview appear right in the editor, just as they do on a classic theme.
+
 == Screenshots ==
 
 1. The submit job form.

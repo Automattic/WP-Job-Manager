@@ -173,33 +173,42 @@ HTML;
 	/**
 	 * Generate HTML for a relative time string.
 	 *
-	 * @param string|\DateTimeInterface|int $time Time string, DateTime object, or timestamp.
+	 * @param string|\DateTimeInterface|int $time DateTime object, Unix timestamp, or a date string. Strings without an explicit UTC offset are interpreted in the site timezone.
 	 * @param string                        $format_string Sprintf-compatible format string. Should contain a %s placeholder for the time.
 	 *
 	 * @return string
 	 */
 	public static function rel_time( $time, $format_string = '%s' ) {
 
-		if ( is_string( $time ) ) {
-			$timestamp = strtotime( $time );
-		}
+		// The three input kinds are mutually exclusive; resolve each to a true Unix timestamp.
+		$timestamp = false;
 
 		if ( $time instanceof \DateTimeInterface ) {
 			$timestamp = $time->getTimestamp();
-		}
+		} elseif ( is_numeric( $time ) ) {
+			$timestamp = (int) $time;
+		} elseif ( is_string( $time ) && '' !== trim( $time ) ) {
+			// Interpret a bare date string as a floating calendar date in the site timezone,
+			// so wp_date() renders the same calendar date regardless of the site's UTC offset.
+			$datetime = date_create( $time, wp_timezone() );
 
-		if ( is_numeric( $time ) ) {
-			$timestamp = $time;
+			if ( $datetime ) {
+				$timestamp = $datetime->getTimestamp();
+			}
 		}
 
 		if ( empty( $timestamp ) ) {
 			return '';
 		}
 
-		$abs_time = date_i18n( get_option( 'date_format' ), $timestamp );
-		$rel_time = human_time_diff( $timestamp );
+		// `datetime` must be machine-readable (a valid HTML datetime string); `title` is the localized display date.
+		// Emit a full ISO 8601 value with the site's UTC offset rather than a date-only one: the relative text is
+		// accurate to the hour, and a floating date would be resolved to midnight in the consumer's own timezone.
+		$machine_time = wp_date( 'c', $timestamp );
+		$abs_time     = wp_date( get_option( 'date_format' ), $timestamp );
+		$rel_time     = human_time_diff( $timestamp );
 
-		return '<time datetime="' . esc_attr( $abs_time ) . '" title="' . esc_attr( $abs_time ) . '">' . esc_html( sprintf( $format_string, $rel_time ) ) . '</time>';
+		return '<time datetime="' . esc_attr( $machine_time ) . '" title="' . esc_attr( $abs_time ) . '">' . esc_html( sprintf( $format_string, $rel_time ) ) . '</time>';
 
 	}
 

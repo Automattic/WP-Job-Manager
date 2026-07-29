@@ -18,6 +18,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 	/**
+	 * Meta key storing the content hash of an attachment created from a frontend
+	 * upload, used to reuse the uploader's existing identical attachment instead
+	 * of creating a duplicate on every submission.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @var string
+	 */
+	const ATTACHMENT_HASH_META_KEY = '_wpjm_attachment_hash';
+
+	/**
 	 * Form name.
 	 *
 	 * @var string
@@ -970,7 +981,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				foreach ( array_filter( $file_urls ) as $file_url ) {
 					if ( is_numeric( $file_url ) ) {
 						$attachment_id = absint( $file_url );
-						if ( $attachment_id && ! $this->is_attachment_authorized_for_current_user( $attachment_id ) ) {
+						// The third condition is only safe because $this->job_id is pre-gated: it
+						// is set only for a listing the current user may edit (or is mid-submitting).
+						// It permits reusing the listing's own saved attachment, NOT any attachment
+						// already on the post — do not loosen it to accept arbitrary foreign IDs.
+						if (
+								$attachment_id
+								&& ! $this->is_attachment_authorized_for_current_user( $attachment_id )
+								&& ! $this->is_existing_listing_attachment( $attachment_id, $key )
+							) {
 							return new WP_Error( 'validation-error', __( 'Invalid attachment provided.', 'wp-job-manager' ) );
 						}
 					}
@@ -1008,6 +1027,40 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		// Or has the capability to edit it (e.g. an admin editing another user's listing).
 		return current_user_can( 'edit_post', $attachment_id );
+	}
+
+	/**
+	 * Determines whether an attachment is already the persisted value of a file
+	 * field on the listing currently being edited.
+	 *
+	 * A user who passed the edit-permission gate for a listing ($this->job_id is
+	 * only set for listings the current user may edit or is mid-submitting) is
+	 * allowed to carry that listing's existing attachment forward on save, even
+	 * when they are not the attachment's author — e.g. when a site admin uploaded
+	 * or replaced the logo on their behalf. This is not an arbitrary foreign ID:
+	 * it is the value already bound to a listing the user is authorized to edit.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int    $attachment_id Attachment post ID.
+	 * @param string $key           Field key (e.g. 'company_logo').
+	 * @return bool True when the attachment is the listing's existing value for the field.
+	 */
+	protected function is_existing_listing_attachment( $attachment_id, $key ) {
+		if ( ! $this->job_id ) {
+			return false;
+		}
+
+		// Mirrors how the edit form pre-populates the field value in get_fields().
+		if ( 'company_logo' === $key && has_post_thumbnail( $this->job_id ) ) {
+			$existing = get_post_thumbnail_id( $this->job_id );
+		} else {
+			$existing = get_post_meta( $this->job_id, '_' . $key, true );
+		}
+
+		$existing_ids = array_map( 'absint', is_array( $existing ) ? $existing : [ $existing ] );
+
+		return in_array( absint( $attachment_id ), $existing_ids, true );
 	}
 
 	/**
@@ -1061,6 +1114,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return 0;
 		}
 
+		// Reuse an identical attachment the current user already owns rather than
+		// inserting a duplicate. Prevents unbounded Media Library growth from the
+		// same logo being uploaded on every submission.
+		$reusable_id = $this->find_reusable_attachment( $attachment_url );
+		if ( $reusable_id ) {
+			return $reusable_id;
+		}
+
 		$attachment = [
 			'post_title'   => wpjm_get_the_job_title( $this->job_id ),
 			'post_content' => '',
@@ -1077,11 +1138,56 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$attachment_id = wp_insert_attachment( $attachment, $attachment_url, $this->job_id );
 
 		if ( ! is_wp_error( $attachment_id ) ) {
+			$hash = md5_file( $attachment_url );
+			if ( $hash ) {
+				update_post_meta( $attachment_id, self::ATTACHMENT_HASH_META_KEY, $hash );
+			}
 			wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $attachment_url ) );
 			return $attachment_id;
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Finds an existing attachment owned by the current user whose file content
+	 * matches the given local file, so an identical re-upload reuses it instead
+	 * of creating a duplicate.
+	 *
+	 * Reuse is scoped to the current user's own attachments: a guest (no user ID)
+	 * always gets a fresh attachment, and one user's upload can never be bound to
+	 * another user's attachment, preserving the attachment-ownership boundary.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $file_path Absolute path to the uploaded file.
+	 * @return int Attachment ID to reuse, or 0 when none matches.
+	 */
+	protected function find_reusable_attachment( $file_path ) {
+		$user_id = get_current_user_id();
+		if ( ! $user_id || ! is_file( $file_path ) ) {
+			return 0;
+		}
+
+		$hash = md5_file( $file_path );
+		if ( ! $hash ) {
+			return 0;
+		}
+
+		$existing = get_posts(
+			[
+				'post_type'      => 'attachment',
+				'post_status'    => 'inherit',
+				'author'         => $user_id,
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'meta_key'       => self::ATTACHMENT_HASH_META_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value'     => $hash, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			]
+		);
+
+		return empty( $existing ) ? 0 : absint( reset( $existing ) );
 	}
 
 	/**
