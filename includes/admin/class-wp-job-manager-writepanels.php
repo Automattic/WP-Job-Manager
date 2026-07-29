@@ -773,12 +773,12 @@ class WP_Job_Manager_Writepanels {
 	 * @return string[]
 	 */
 	private function get_bulk_edit_excluded_field_types() {
-		$excluded = [ 'file', 'info', 'hidden', 'author' ];
+		$excluded = [ 'file', 'info', 'hidden', 'author', 'textarea', 'wp_editor' ];
 
 		/**
 		 * Filters the field types excluded from the Job Data bulk edit form.
 		 *
-		 * @since 2.4.6
+		 * @since $$next-version$$
 		 *
 		 * @param string[] $excluded Field type strings that should not appear in bulk edit.
 		 */
@@ -1009,12 +1009,15 @@ class WP_Job_Manager_Writepanels {
 		// A past (or cleared-without-duration) expiry moves the listing to expired, mirroring single edit.
 		if ( $expiry_changed && 'trash' !== $post->post_status && $post_types->has_job_expired( $post_id ) ) {
 			if ( 'expired' !== get_post_status( $post_id ) ) {
+				// Unhook before wp_update_post to avoid re-entering save_post (and every other save_post listener) with this same id.
+				remove_action( 'save_post', [ $this, 'bulk_edit_save' ], 10 );
 				wp_update_post(
 					[
 						'ID'          => $post_id,
 						'post_status' => 'expired',
 					]
 				);
+				add_action( 'save_post', [ $this, 'bulk_edit_save' ], 10, 2 );
 			}
 		}
 	}
