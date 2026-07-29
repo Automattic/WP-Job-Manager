@@ -2,20 +2,18 @@
 /**
  * Tests for the Promoted Jobs enable/disable admin setting.
  *
- * Covers the 4 state combinations of option + code filter,
- * the setting registration, and the data cleaner entry.
- *
  * @package wp-job-manager
  */
 class Tests_Promoted_Jobs_Setting extends WPJM_BaseTest {
 
 	/**
-	 * Clean up option after each test.
+	 * Clean up option and filters after each test.
 	 */
 	public function tearDown(): void {
 		delete_option( 'job_manager_enable_promoted_jobs' );
 		remove_filter( 'job_manager_enable_promoted_jobs', '__return_false', 10 );
 		remove_filter( 'job_manager_enable_promoted_jobs', '__return_true', 10 );
+		remove_filter( 'job_manager_enable_promoted_jobs', '__return_true', 1 );
 		parent::tearDown();
 	}
 
@@ -25,8 +23,7 @@ class Tests_Promoted_Jobs_Setting extends WPJM_BaseTest {
 	public function test_option_on_no_filter_returns_true() {
 		update_option( 'job_manager_enable_promoted_jobs', '1' );
 
-		$result = apply_filters( 'job_manager_enable_promoted_jobs', true );
-		$this->assertTrue( $result );
+		$this->assertTrue( WP_Job_Manager_Promoted_Jobs_Helper::is_enabled() );
 	}
 
 	/**
@@ -36,8 +33,7 @@ class Tests_Promoted_Jobs_Setting extends WPJM_BaseTest {
 		update_option( 'job_manager_enable_promoted_jobs', '1' );
 		add_filter( 'job_manager_enable_promoted_jobs', '__return_false' );
 
-		$result = apply_filters( 'job_manager_enable_promoted_jobs', true );
-		$this->assertFalse( $result );
+		$this->assertFalse( WP_Job_Manager_Promoted_Jobs_Helper::is_enabled() );
 	}
 
 	/**
@@ -46,8 +42,7 @@ class Tests_Promoted_Jobs_Setting extends WPJM_BaseTest {
 	public function test_option_off_no_filter_returns_false() {
 		update_option( 'job_manager_enable_promoted_jobs', '0' );
 
-		$result = apply_filters( 'job_manager_enable_promoted_jobs', true );
-		$this->assertFalse( $result );
+		$this->assertFalse( WP_Job_Manager_Promoted_Jobs_Helper::is_enabled() );
 	}
 
 	/**
@@ -57,8 +52,17 @@ class Tests_Promoted_Jobs_Setting extends WPJM_BaseTest {
 		update_option( 'job_manager_enable_promoted_jobs', '0' );
 		add_filter( 'job_manager_enable_promoted_jobs', '__return_true', 10 );
 
-		$result = apply_filters( 'job_manager_enable_promoted_jobs', true );
-		$this->assertTrue( $result );
+		$this->assertTrue( WP_Job_Manager_Promoted_Jobs_Helper::is_enabled() );
+	}
+
+	/**
+	 * Test: Option OFF + low-priority code filter true = enabled (code wins at any priority).
+	 */
+	public function test_option_off_with_low_priority_filter_returns_true() {
+		update_option( 'job_manager_enable_promoted_jobs', '0' );
+		add_filter( 'job_manager_enable_promoted_jobs', '__return_true', 1 );
+
+		$this->assertTrue( WP_Job_Manager_Promoted_Jobs_Helper::is_enabled() );
 	}
 
 	/**
@@ -67,8 +71,7 @@ class Tests_Promoted_Jobs_Setting extends WPJM_BaseTest {
 	public function test_option_not_set_defaults_to_true() {
 		delete_option( 'job_manager_enable_promoted_jobs' );
 
-		$result = apply_filters( 'job_manager_enable_promoted_jobs', true );
-		$this->assertTrue( $result );
+		$this->assertTrue( WP_Job_Manager_Promoted_Jobs_Helper::is_enabled() );
 	}
 
 	/**
