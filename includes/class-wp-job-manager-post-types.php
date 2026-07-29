@@ -713,6 +713,7 @@ class WP_Job_Manager_Post_Types {
 	 *
 	 * @param string $search_location Location search term(s), separated by `;` for OR matching.
 	 * @return array Meta query clause.
+	 * @since $$next-version$$
 	 */
 	public static function get_location_meta_query( $search_location ) {
 		$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
@@ -742,8 +743,19 @@ class WP_Job_Manager_Post_Types {
 	 * Turns a search term into a REGEXP pattern that also matches common Latin accented
 	 * variants of its letters, so plain and accented spellings match each other.
 	 *
+	 * Note: `meta_query` REGEXP runs per row without index support for these patterns
+	 * and is materially more CPU-costly than `LIKE`; operators on `utf8mb4_unicode_*_ci`
+	 * collations already fold accents via the collation and may not need this path. This
+	 * code is kept for `utf8mb4_bin` installs and other cases where the collation alone
+	 * does not produce the desired match.
+	 *
+	 * The accent table covers French/Iberian/Italian Latin variants only, against NFC
+	 * input — NFD-decomposed input (e.g. `é` as `e` + combining U+0301) will not fold.
+	 * This is not a general Unicode case-fold.
+	 *
 	 * @param string $term Raw search term.
 	 * @return string REGEXP pattern.
+	 * @since $$next-version$$
 	 */
 	private static function get_accent_insensitive_regex( $term ) {
 		static $char_to_variants = null;
@@ -767,8 +779,16 @@ class WP_Job_Manager_Post_Types {
 			}
 		}
 
+		// `preg_split( '//u', … )` returns false on malformed UTF-8 input.
+		// An empty pattern (`REGEXP ''`) matches every row and silently disables
+		// location filtering, so fall back to an escaped literal match.
+		$chars = preg_split( '//u', $term, -1, PREG_SPLIT_NO_EMPTY );
+		if ( false === $chars ) {
+			return preg_quote( $term, '/' );
+		}
+
 		$pattern = '';
-		foreach ( preg_split( '//u', $term, -1, PREG_SPLIT_NO_EMPTY ) as $character ) {
+		foreach ( $chars as $character ) {
 			$pattern .= isset( $char_to_variants[ $character ] )
 				? '[' . $char_to_variants[ $character ] . ']'
 				: preg_quote( $character, '/' );
