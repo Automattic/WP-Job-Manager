@@ -49,7 +49,12 @@ jQuery( document ).ready( function( $ ) {
 	 * Instances after the first get a suffix so several [jobs] shortcodes on one page don't clash.
 	 */
 	function get_page_query_arg( $target ) {
-		var index = $( 'div.job_listings' ).index( $target );
+		var post_id = $target.data( 'post_id' );
+		var index   = $( 'div.job_listings' ).index( $target );
+
+		if ( post_id ) {
+			return index > 0 ? 'job-page-' + post_id + '-' + ( index + 1 ) : 'job-page-' + post_id;
+		}
 
 		return index > 0 ? 'job-page-' + ( index + 1 ) : 'job-page';
 	}
@@ -478,6 +483,10 @@ jQuery( document ).ready( function( $ ) {
 
 							handle_result( $target, result, append );
 
+							if ( true === $target.data( 'show_pagination' ) ) {
+								current_pages[ get_page_query_arg( $target ) ] = page;
+							}
+
 							$results.removeClass( 'loading' );
 							$target.triggerHandler( 'updated_results', result );
 
@@ -596,17 +605,22 @@ jQuery( document ).ready( function( $ ) {
 		return true;
 	} );
 
+	// Tracks the current page per [jobs] instance so popstate can skip instances whose page didn't change.
+	var current_pages = {};
+
 	// Restore the page shown for numbered pagination when navigating with the browser's back/forward buttons.
 	$( window ).on( 'popstate', function() {
 		$( 'div.job_listings' ).each( function() {
-			var $target = $( this );
+			var $target           = $( this );
+			var page_query_arg    = get_page_query_arg( $target );
+			var url_page          = get_page_from_url( $target );
 
-			if ( true !== $target.data( 'show_pagination' ) ) {
+			if ( true !== $target.data( 'show_pagination' ) || current_pages[ page_query_arg ] === url_page ) {
 				return;
 			}
 
 			suppress_url_push = true;
-			$target.triggerHandler( 'update_results', [ get_page_from_url( $target ), false ] );
+			$target.triggerHandler( 'update_results', [ url_page, false ] );
 		} );
 	} );
 
@@ -619,7 +633,7 @@ jQuery( document ).ready( function( $ ) {
 
 		if ( state ) {
 			// Restore the results from cache.
-			if ( state.results ) {
+			if ( state.results && ( ! state.data || state.data.page === get_page_from_url( $target ) ) ) {
 				results_loaded = handle_result( $target, state.results );
 
 				// We don't want this to continue to persist unless we click on another link.
@@ -639,11 +653,12 @@ jQuery( document ).ready( function( $ ) {
 			}
 		}
 
-		if ( ! results_loaded && $form.length > 0 ) {
+		if ( ! results_loaded ) {
 			// If we didn't load results from cache, load the page from the URL (defaults to 1).
 			var starting_page = true === $target.data( 'show_pagination' ) ? get_page_from_url( $target ) : 1;
 
 			suppress_url_push = true;
+			current_pages[ get_page_query_arg( $target ) ] = starting_page;
 			$target.triggerHandler( 'update_results', [ starting_page, false ] );
 		}
 	} );
