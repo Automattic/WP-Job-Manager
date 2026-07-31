@@ -121,6 +121,44 @@ class WP_Test_Submit_Job_Attachment_Ownership extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Runs the form's field validation against an arbitrary file field, so the
+	 * group-scoping of the saved-value allowance can be exercised outside the
+	 * `company` group.
+	 *
+	 * @param string $group_key Field group (e.g. 'job').
+	 * @param string $key       Field key (e.g. 'job_attachment').
+	 * @param mixed  $value     Value to validate for the field.
+	 * @throws Exception When validation rejects the value.
+	 * @return bool|WP_Error validate_fields() result.
+	 */
+	private function validate_file_field( $group_key, $key, $value ) {
+		$form  = WP_Job_Manager_Form_Submit_Job::instance();
+		$class = new ReflectionClass( $form );
+
+		$fields_prop = $class->getProperty( 'fields' );
+		$fields_prop->setAccessible( true );
+		$fields_prop->setValue(
+			$form,
+			[
+				$group_key => [
+					$key => [
+						'label'              => 'Attachment',
+						'type'               => 'file',
+						'required'           => false,
+						'file_limit'         => 1,
+						'allowed_mime_types' => [ 'png' => 'image/png' ],
+					],
+				],
+			]
+		);
+
+		$validate = $class->getMethod( 'validate_fields' );
+		$validate->setAccessible( true );
+
+		return $validate->invoke( $form, [ $group_key => [ $key => $value ] ] );
+	}
+
+	/**
 	 * A submitter cannot validate a company_logo pointing at an attachment owned
 	 * by another user.
 	 */
@@ -399,6 +437,70 @@ class WP_Test_Submit_Job_Attachment_Ownership extends WPJM_BaseTest {
 
 		$this->expectException( Exception::class );
 		$this->validate_company_logo( (string) $foreign_attachment );
+	}
+
+	/**
+	 * The saved-value allowance is scoped to the `company` group, because that is
+	 * the only group submit() pre-populates from user meta. A file field in any
+	 * other group must not consult `_<key>` user meta for an allowance, even when
+	 * such a meta value happens to exist.
+	 */
+	public function test_saved_user_meta_outside_company_group_does_not_authorize_attachment() {
+		$this->login_as_admin();
+		$foreign_attachment = $this->create_attachment_owned_by( get_current_user_id() );
+
+		$this->login_as_employer();
+		update_user_meta( get_current_user_id(), '_job_attachment', $foreign_attachment );
+
+		$this->expectException( Exception::class );
+		$this->validate_file_field( 'job', 'job_attachment', (string) $foreign_attachment );
+	}
+
+	/**
+	 * A saved logo whose attachment has since been deleted must be rejected rather
+	 * than allowed through. The stale ID would silently fail at set_post_thumbnail()
+	 * — publishing a listing with no logo and no explanation — and then be written
+	 * straight back into user meta, so it would never self-heal. Rejecting it
+	 * surfaces the "upload it again" message that this condition actually describes.
+	 */
+	public function test_deleted_saved_user_logo_is_rejected() {
+		$this->login_as_admin();
+		$admin_attachment = $this->create_attachment_owned_by( get_current_user_id() );
+
+		$this->login_as_employer();
+		update_user_meta( get_current_user_id(), '_company_logo', $admin_attachment );
+
+		// The admin removes the media item; the stale ID stays in the user meta.
+		wp_delete_post( $admin_attachment, true );
+
+		$this->expectException( Exception::class );
+		$this->validate_company_logo( (string) $admin_attachment );
+	}
+
+	/**
+	 * The saved-value allowance covers the new-submission path only. While editing a
+	 * listing, submit() pre-populates from the listing itself and never from user
+	 * meta, so the saved value must not authorize an attachment there — that case
+	 * belongs to is_existing_listing_attachment(). Keeping the allowance no broader
+	 * than the pre-population it mirrors is what stops it becoming a blanket bypass.
+	 */
+	public function test_saved_user_logo_does_not_authorize_attachment_while_editing() {
+		$this->login_as_admin();
+		$saved_logo = $this->create_attachment_owned_by( get_current_user_id() );
+
+		$this->login_as_employer();
+		update_user_meta( get_current_user_id(), '_company_logo', $saved_logo );
+
+		// A listing that does not use that logo.
+		$job_id = $this->factory->post->create(
+			[
+				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_author' => get_current_user_id(),
+			]
+		);
+
+		$this->expectException( Exception::class );
+		$this->validate_company_logo_editing_job( (string) $saved_logo, $job_id );
 	}
 
 	/**

@@ -981,18 +981,31 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				foreach ( array_filter( $file_urls ) as $file_url ) {
 					if ( is_numeric( $file_url ) ) {
 						$attachment_id = absint( $file_url );
-						// The last two conditions are only safe because both consult server-side
+
+						if ( ! $attachment_id ) {
+							continue;
+						}
+
+						// The last two allowances are only safe because both consult server-side
 						// state, never the request: $this->job_id is set only for a listing the
 						// current user may edit (or is mid-submitting), and the user meta is
 						// written by this class only after this same check passed. They permit
 						// reusing a value already offered back to the submitter, NOT an arbitrary
 						// foreign ID — do not loosen either to accept request-supplied values.
-						if (
-								$attachment_id
-								&& ! $this->is_attachment_authorized_for_current_user( $attachment_id )
-								&& ! $this->is_existing_listing_attachment( $attachment_id, $key )
-								&& ! $this->is_saved_user_attachment( $attachment_id, $group_key, $key )
-							) {
+						//
+						// The existence check gates all three: a numeric ID that no longer resolves
+						// to an attachment (the media item was deleted) would otherwise pass on a
+						// stale saved value, fail silently at the sink — set_post_thumbnail()
+						// ignores a dead ID — and then be written straight back to the saved value,
+						// so the listing would publish with no logo and never self-heal.
+						$is_usable = 'attachment' === get_post_type( $attachment_id )
+							&& (
+								$this->is_attachment_authorized_for_current_user( $attachment_id )
+								|| $this->is_existing_listing_attachment( $attachment_id, $key )
+								|| $this->is_saved_user_attachment( $attachment_id, $group_key, $key )
+							);
+
+						if ( ! $is_usable ) {
 							// Tell the submitter how to recover. The rejected value is one the form
 							// offered them (a saved logo), so "invalid" alone leaves them stuck.
 							return new WP_Error(
@@ -1097,9 +1110,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	protected function is_saved_user_attachment( $attachment_id, $group_key, $key ) {
 		$user_id = get_current_user_id();
 
-		// Mirrors the scope of the user-meta pre-population in submit(): logged-in
-		// submitters, company group only. Guests have no saved value to reuse.
-		if ( ! $user_id || 'company' !== $group_key ) {
+		// Mirrors the scope of the user-meta pre-population in submit(): a new listing
+		// (no job_id), a logged-in submitter, the company group only. Editing reads from
+		// the listing instead — is_existing_listing_attachment() covers that path — and
+		// guests have no saved value to reuse. Keeping this no broader than the
+		// pre-population it mirrors is what stops it becoming a general-purpose bypass.
+		if ( $this->job_id || ! $user_id || 'company' !== $group_key ) {
 			return false;
 		}
 
