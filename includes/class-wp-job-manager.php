@@ -305,12 +305,19 @@ class WP_Job_Manager {
 			'httponly' => true,
 			'samesite' => 'Lax',
 		];
+		$headers_sent   = headers_sent();
 
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) {
-			setcookie( 'wp-job-manager-submitting-job-id', '', $cookie_options );
+			if ( ! $headers_sent ) {
+				setcookie( 'wp-job-manager-submitting-job-id', '', $cookie_options );
+			}
+			unset( $_COOKIE['wp-job-manager-submitting-job-id'] );
 		}
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
-			setcookie( 'wp-job-manager-submitting-job-key', '', $cookie_options );
+			if ( ! $headers_sent ) {
+				setcookie( 'wp-job-manager-submitting-job-key', '', $cookie_options );
+			}
+			unset( $_COOKIE['wp-job-manager-submitting-job-key'] );
 		}
 	}
 

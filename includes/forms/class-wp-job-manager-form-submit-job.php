@@ -158,18 +158,23 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] )
 			&& empty( $this->job_id )
 		) {
-			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
-			$job_status = get_post_status( $job_id );
+			$job_id         = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
+			$job            = get_post( $job_id );
+			$job_status     = $job instanceof WP_Post ? get_post_status( $job ) : false;
+			$submitting_key = get_post_meta( $job_id, '_submitting_key', true );
 
 			if (
 				(
 					'preview' === $job_status
 					|| 'pending_payment' === $job_status
 				)
-				&& get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
+				&& $submitting_key === $_COOKIE['wp-job-manager-submitting-job-key']
+				&& $this->visitor_can_resume_job( $job )
 			) {
 				$this->job_id      = $job_id;
-				$this->resume_edit = get_post_meta( $job_id, '_submitting_key', true );
+				$this->resume_edit = $submitting_key;
+			} else {
+				WPJM()->cleanup_job_posting_cookies();
 			}
 		}
 
@@ -186,6 +191,24 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$this->step   = 0;
 			}
 		}
+	}
+
+	/**
+	 * Checks whether the current visitor can resume a job listing.
+	 *
+	 * @param WP_Post|null $job Job listing post.
+	 * @return bool
+	 */
+	private function visitor_can_resume_job( $job ) {
+		if ( ! $job instanceof WP_Post || WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type ) {
+			return false;
+		}
+
+		if ( is_user_logged_in() ) {
+			return job_manager_user_can_edit_job( $job->ID );
+		}
+
+		return 0 === (int) $job->post_author;
 	}
 
 	/**
