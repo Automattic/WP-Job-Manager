@@ -749,26 +749,45 @@ class WP_Job_Manager_CPT {
 			return;
 		}
 
+		$search_term = $wp->query_vars['s'];
+		$needles     = [ $search_term ];
+		// Encode bare ampersands without double-encoding existing entities, matching KSES storage.
+		$normalized = wp_kses_normalize_entities( $search_term );
+		if ( $normalized !== $search_term ) {
+			$needles[] = $normalized;
+		}
+
+		$like_patterns      = array_map(
+			static function ( $needle ) use ( $wpdb ) {
+				return '%' . $wpdb->esc_like( $needle ) . '%';
+			},
+			$needles
+		);
+		$meta_conditions    = implode( ' OR ', array_fill( 0, count( $like_patterns ), 'meta_value LIKE %s' ) );
+		$title_conditions   = implode( ' OR ', array_fill( 0, count( $like_patterns ), 'posts.post_title LIKE %s' ) );
+		$content_conditions = implode( ' OR ', array_fill( 0, count( $like_patterns ), 'posts.post_content LIKE %s' ) );
+		$query_arguments    = array_merge( $like_patterns, $like_patterns, $like_patterns );
+
 		$post_ids = array_unique(
 			array_merge(
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- WP_Query doesn't allow for meta query to be an optional match.
 				$wpdb->get_col(
 					$wpdb->prepare(
+						// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Conditions contain only generated placeholders.
 						"SELECT posts.ID
 						FROM {$wpdb->posts} posts
 						WHERE (
 							posts.ID IN (
 								SELECT post_id
 								FROM {$wpdb->postmeta}
-								WHERE meta_value LIKE %s
+								WHERE {$meta_conditions}
 							)
-							OR posts.post_title LIKE %s
-							OR posts.post_content LIKE %s
+							OR {$title_conditions}
+							OR {$content_conditions}
 						)
 						AND posts.post_type = 'job_listing'",
-						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
-						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
-						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%'
+						// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+						...$query_arguments
 					)
 				),
 				[ 0 ]

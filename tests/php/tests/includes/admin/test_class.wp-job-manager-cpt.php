@@ -92,10 +92,66 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 	}
 
 	/**
-	 * Ensure that filter_meta adds the correct filters to the query only on
-	 * edit.php page.
+	 * Admin search matches raw and KSES entity-encoded title storage.
 	 *
-	 * @since 1.31.0
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_CPT::search_meta
+	 */
+	public function test_search_meta_matches_entity_encoded_titles() {
+		global $pagenow;
+
+		$raw_title = 'R&D Engineer';
+		$raw_id    = $this->factory->post->create(
+			[
+				'post_type'    => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_title'   => $raw_title,
+				'post_content' => 'Raw content',
+			]
+		);
+		$encoded_id = $this->factory->post->create(
+			[
+				'post_type'    => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_title'   => 'R&amp;D Engineer',
+				'post_content' => 'Encoded content',
+			]
+		);
+		$pagenow = 'edit.php';
+
+		$query = new WP_Query(
+			[
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
+				's'         => $raw_title,
+				'fields'    => 'ids',
+			]
+		);
+		$this->assertContains( $raw_id, $query->posts );
+		$this->assertContains( $encoded_id, $query->posts );
+	}
+
+	/**
+	 * Admin search continues matching literal raw ampersands in post meta.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_CPT::search_meta
+	 */
+	public function test_search_meta_matches_raw_ampersand_meta() {
+		global $pagenow;
+
+		$id = $this->create_listing_with_meta( [ '_company_name' => 'Research & Development' ] );
+		$pagenow = 'edit.php';
+
+		$query = new WP_Query(
+			[
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
+				's'         => 'Research & Development',
+				'fields'    => 'ids',
+			]
+		);
+		$this->assertContains( $id, $query->posts );
+	}
+
+	/**
+	 * @since 1.27.0
 	 * @covers WP_Job_Manager_CPT::filter_meta
 	 */
 	public function test_filter_meta_only_on_edit() {

@@ -1,8 +1,11 @@
 <?php
 
 class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
+	private $kses_was_active;
+
 	public function setUp(): void {
 		parent::setUp();
+		$this->kses_was_active = false !== has_filter( 'title_save_pre', 'wp_filter_kses' );
 		$this->enable_manage_job_listings_cap();
 		update_option( 'job_manager_enable_categories', 1 );
 		update_option( 'job_manager_enable_types', 1 );
@@ -13,6 +16,12 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	public function tearDown(): void {
+		if ( $this->kses_was_active ) {
+			kses_init_filters();
+		} else {
+			kses_remove_filters();
+		}
+		wp_set_current_user( 0 );
 		parent::tearDown();
 		add_filter( 'job_manager_geolocation_enabled', '__return_true' );
 		$this->enable_job_listing_cache();
@@ -52,6 +61,78 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$this->assertEqualSets( $keywords['dinosaur'], wp_list_pluck( $dinosaur_job_listings->posts, 'ID' ) );
 		$this->assertEqualSets( $keywords['saur'], wp_list_pluck( $saur_job_listings->posts, 'ID' ) );
 		$this->assertEqualSets( $keywords['boom'], wp_list_pluck( $boom_job_listings->posts, 'ID' ) );
+	}
+
+	/**
+	 * Search post titles in both raw and KSES entity-encoded storage forms.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_keywords_match_entity_encoded_titles() {
+		$raw_title = 'R&D Engineer';
+		$admin_id  = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $admin_id );
+		kses_remove_filters();
+		$raw_id = $this->factory->job_listing->create( [ 'post_title' => $raw_title ] );
+
+		$subscriber_id = $this->factory()->user->create( [ 'role' => 'subscriber' ] );
+		wp_set_current_user( $subscriber_id );
+		kses_init_filters();
+		$encoded_id = $this->factory->job_listing->create( [ 'post_title' => $raw_title ] );
+		$this->assertSame( 'R&amp;D Engineer', get_post( $encoded_id )->post_title );
+
+		$raw_results = get_job_listings( [ 'search_keywords' => $raw_title ] );
+		$this->assertContains( $raw_id, wp_list_pluck( $raw_results->posts, 'ID' ) );
+		$this->assertContains( $encoded_id, wp_list_pluck( $raw_results->posts, 'ID' ) );
+
+		$encoded_results = get_job_listings( [ 'search_keywords' => 'R&amp;D Engineer' ] );
+		$this->assertContains( $encoded_id, wp_list_pluck( $encoded_results->posts, 'ID' ) );
+	}
+
+	/**
+	 * Exclusion searches must exclude both raw and entity-encoded post titles.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_keywords_exclude_entity_encoded_titles() {
+		$raw_title = 'R&D Engineer';
+		$admin_id  = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $admin_id );
+		kses_remove_filters();
+		$raw_id = $this->factory->job_listing->create( [ 'post_title' => $raw_title ] );
+
+		$subscriber_id = $this->factory()->user->create( [ 'role' => 'subscriber' ] );
+		wp_set_current_user( $subscriber_id );
+		kses_init_filters();
+		$encoded_id = $this->factory->job_listing->create( [ 'post_title' => $raw_title ] );
+
+		$results = get_job_listings( [ 'search_keywords' => '-R&D' ] );
+		$this->assertNotContains( $raw_id, wp_list_pluck( $results->posts, 'ID' ) );
+		$this->assertNotContains( $encoded_id, wp_list_pluck( $results->posts, 'ID' ) );
+
+		$encoded_results = get_job_listings( [ 'search_keywords' => '-R&amp;D' ] );
+		$this->assertNotContains( $raw_id, wp_list_pluck( $encoded_results->posts, 'ID' ) );
+		$this->assertNotContains( $encoded_id, wp_list_pluck( $encoded_results->posts, 'ID' ) );
+	}
+
+	/**
+	 * Secondary post meta search continues to use raw values.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_keyword_meta_ampersand_remains_searchable() {
+		$id = $this->factory->job_listing->create(
+			[
+				'post_title' => 'Unique listing title',
+				'meta_input' => [ '_company_name' => 'Research & Development' ],
+			]
+		);
+
+		$results = get_job_listings( [ 'search_keywords' => 'Research & Development' ] );
+		$this->assertContains( $id, wp_list_pluck( $results->posts, 'ID' ) );
 	}
 
 	/**
