@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.41.0
+ * @version     $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $wp_post_types;
+
+$job_dashboard_link = job_manager_get_permalink( 'job_dashboard' );
 
 /**
  * Triggers before the job-submitted template is displayed.
@@ -37,7 +39,19 @@ switch ( $job->post_status ) :
 				esc_html( $wp_post_types[\WP_Job_Manager_Post_Types::PT_LISTING]->labels->singular_name ),
 				get_permalink( $job->ID )
 			)
-		) . '</div>';
+		);
+
+		if ( $job_dashboard_link ) {
+			$job_submitted_content .= ' ' . wp_kses_post(
+				sprintf(
+					// translators: %s is the job dashboard URL.
+					__( 'To manage your listings <a href="%s">click here</a>.', 'wp-job-manager' ),
+					esc_url( $job_dashboard_link )
+				)
+			);
+		}
+
+		$job_submitted_content .= '</div>';
 
 		break;
 	case 'pending' :
