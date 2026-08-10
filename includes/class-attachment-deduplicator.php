@@ -975,14 +975,19 @@ class Attachment_Deduplicator {
 			return;
 		}
 
-		$update = [];
-		foreach ( [ 'post_excerpt', 'post_content' ] as $field ) {
-			if ( '' !== trim( (string) $duplicate_post->$field ) && '' === trim( (string) $canonical_post->$field ) ) {
-				$update[ $field ] = $duplicate_post->$field;
-			}
+		// Spelled out per field rather than looped over a list of field names, so the
+		// array keys stay literal and match the shape wp_update_post() declares.
+		$update = [ 'ID' => $canonical ];
+
+		if ( '' !== trim( (string) $duplicate_post->post_excerpt ) && '' === trim( (string) $canonical_post->post_excerpt ) ) {
+			$update['post_excerpt'] = (string) $duplicate_post->post_excerpt;
 		}
-		if ( $update ) {
-			$update['ID'] = $canonical;
+
+		if ( '' !== trim( (string) $duplicate_post->post_content ) && '' === trim( (string) $canonical_post->post_content ) ) {
+			$update['post_content'] = (string) $duplicate_post->post_content;
+		}
+
+		if ( count( $update ) > 1 ) {
 			wp_update_post( $update );
 		}
 	}
