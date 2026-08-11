@@ -19,11 +19,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Two attachments are candidates for merging when they have identical file
  * contents and the same owner. Identical content is *not* on its own proof that
  * an attachment is a logo, though: an owner may have uploaded the same image
- * again for something this class knows nothing about. So no attachment is ever
+ * again for something this class knows nothing about. So an attachment is not
  * deleted while anything outside the two reference types handled here (listing
  * featured images and the `_company_logo` user default) still points at it —
  * see `find_protected_ids()`. Unrecognised reference means "keep", so the
  * failure mode is a duplicate left behind rather than a broken image.
+ *
+ * What that sweep can see has limits worth knowing before running it live:
+ *
+ * - It reads meta rows whose *key* looks like it could hold an attachment
+ *   reference, so a reference stored under a name with no media-ish word in it
+ *   is missed. `job_manager_dedupe_reference_meta_key_patterns` and
+ *   `job_manager_dedupe_protected_attachment_ids` exist for that.
+ * - It runs once, before any deletion. A reference created while the run is in
+ *   progress is not protected by it, other than the two handled keys, which are
+ *   re-checked immediately before deleting. Run `--live` in maintenance mode.
+ * - Nothing here is multisite-aware; run it per site with `wp --url=`.
  *
  * Attachments belonging to different users are never merged, mirroring the
  * runtime dedup boundary. Guest uploads (`post_author` 0) are skipped outright:
@@ -189,6 +200,21 @@ class Attachment_Deduplicator {
 	 * one, re-pointing every reference before deleting the redundant copies.
 	 * Dry-run by default; pass --live to apply.
 	 *
+	 * ## RUN THIS WITH THE SITE IN MAINTENANCE MODE
+	 *
+	 * Which attachments are safe to delete is worked out once, up front, and on the
+	 * libraries this exists for that scan takes a while — every image the logo owners
+	 * hold is hashed and every post's content is read. A reference created after that
+	 * scan and before the matching delete is not protected by it.
+	 *
+	 * Re-points are verified immediately before deleting, so a listing or user default
+	 * that changed in the meantime is left alone. Anything else — a new gallery entry,
+	 * a page edited to embed the image, a logo set in the Customizer — is not covered,
+	 * and deletion is not reversible unless the site defines MEDIA_TRASH.
+	 *
+	 * So: take a backup, put the site in maintenance mode, run it. On a live site the
+	 * dry run is safe at any time; --live is not.
+	 *
 	 * ## OPTIONS
 	 *
 	 * [--live]
@@ -248,8 +274,9 @@ class Attachment_Deduplicator {
 		$report_path = \WP_CLI\Utils\get_flag_value( $assoc_args, 'report', '' );
 
 		if ( ! $dry_run ) {
-			// Deletion is not reversible on sites without MEDIA_TRASH.
-			\WP_CLI::confirm( 'This will delete redundant logo attachments. Run without --live first to preview. Continue?', $assoc_args );
+			// Deletion is not reversible on sites without MEDIA_TRASH, and references
+			// created while the run is in progress are not protected by its scan.
+			\WP_CLI::confirm( 'This will delete redundant logo attachments, and is not reversible unless MEDIA_TRASH is on. Run without --live first to preview, and run this one with the site in maintenance mode. Continue?', $assoc_args );
 		}
 
 		// Discovery hashes every image the logo owners hold and scans post content, so
