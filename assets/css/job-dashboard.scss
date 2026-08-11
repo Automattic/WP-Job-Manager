@@ -136,6 +136,14 @@
 .jm-dashboard-action--primary {
 	flex-basis: fit-content;
 	white-space: nowrap;
+	min-width: 0; /* allow the button to shrink below its text width */
+	overflow: hidden;
+
+	span {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
 
 .jm-dashboard-action:where(:not(:hover):not(:focus)) {
