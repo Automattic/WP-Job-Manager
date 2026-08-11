@@ -505,6 +505,341 @@ class WP_Test_Attachment_Deduplicator extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Plenty of plugins store attachment IDs inside a serialized array rather than as
+	 * a bare value — an ACF gallery or repeater field, for one. A sweep that compares
+	 * `meta_value` to the candidate ID never matches those, so the reference is
+	 * invisible and the image is deleted out from under it.
+	 */
+	public function test_attachment_referenced_from_a_serialized_meta_value_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo    = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$gallery = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		$page = $this->factory->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $page, '_gallery_images', [ 4242, $gallery ] );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $gallery ), 'An attachment referenced from inside a serialized meta value must survive.' );
+	}
+
+	/**
+	 * The other common shape is a comma-separated list of IDs (WooCommerce's
+	 * `_product_image_gallery`). MySQL coerces `"4242,53"` to 4242, so every ID after
+	 * the first looks unreferenced — protection that is silently partial is worse
+	 * than none, because the key looks covered.
+	 */
+	public function test_attachment_referenced_from_a_comma_separated_meta_value_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo    = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$gallery = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		$page = $this->factory->post->create( [ 'post_type' => 'page' ] );
+		update_post_meta( $page, '_product_image_gallery', '4242,' . $gallery );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $gallery ), 'An attachment listed in a comma-separated meta value must survive.' );
+	}
+
+	/**
+	 * Listings created before 1.24.0 store `_company_logo` on the post as a URL rather
+	 * than an attachment ID, and still render from it. A URL never equals an ID, so
+	 * the sweep has to recognise the file it points at.
+	 */
+	public function test_attachment_referenced_by_url_in_legacy_company_logo_meta_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo   = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$legacy = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		$listing = $this->factory->post->create( [ 'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING ] );
+		update_post_meta( $listing, '_company_logo', wp_get_attachment_url( $legacy ) );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $legacy ), 'A legacy listing renders its logo from a URL; that attachment must survive.' );
+	}
+
+	/**
+	 * Core's Site Identity logo lives in `theme_mods_<theme>` as a serialized array,
+	 * not in an option named after it. An admin who is also an employer can easily own
+	 * both the site logo and a content-identical company logo.
+	 */
+	public function test_attachment_used_as_the_customizer_site_logo_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'administrator' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo      = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$site_logo = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		set_theme_mod( 'custom_logo', $site_logo );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		remove_theme_mod( 'custom_logo' );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $site_logo ), "The Customizer's site logo must survive." );
+	}
+
+	/**
+	 * Content that prints a bare `<img>` from a custom field carries no `wp-image-N`
+	 * class and no block `{"id":N}` — only a URL, and often a resized one. Matching
+	 * the original filename alone misses it, and deleting the attachment takes the
+	 * resized file with it.
+	 */
+	public function test_attachment_referenced_by_a_resized_filename_in_content_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo   = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$inline = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		$thumbnail_url = str_replace( 'logo-1.png', 'logo-1-150x150.png', wp_get_attachment_url( $inline ) );
+		$this->factory->post->create(
+			[
+				'post_type'    => 'post',
+				'post_content' => '<img src="' . $thumbnail_url . '" alt="" />',
+			]
+		);
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $inline ), 'An attachment referenced by a resized filename must survive.' );
+	}
+
+	/**
+	 * Block attributes nested inside another block are stored JSON-escaped, so the
+	 * `"id":N` marker appears as `\"id\":N`.
+	 */
+	public function test_attachment_referenced_by_an_escaped_block_id_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo   = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$inline = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		// Doubled: wp_insert_post() unslashes, so a single backslash would not survive
+		// into the stored content the way the block editor's own escaping does.
+		$this->factory->post->create(
+			[
+				'post_type'    => 'post',
+				'post_content' => '<!-- wp:group {"inner":"{\\\\"id\\\\":' . $inline . '}"} --><!-- /wp:group -->',
+			]
+		);
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $inline ), 'An attachment referenced by an escaped block id must survive.' );
+	}
+
+	/**
+	 * Moving references before deleting only protects the site if the move actually
+	 * landed. `update_post_meta()` returns false on a failed write, and core's
+	 * `wp_delete_attachment()` then deletes every `_thumbnail_id` row pointing at the
+	 * attachment — so an unchecked write turns a failed re-point into a listing that
+	 * silently loses its logo, reported as a success.
+	 */
+	public function test_a_duplicate_is_not_deleted_when_its_reference_could_not_be_repointed() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$canonical = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$duplicate = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+
+		$this->create_listing_with_logo( $author, $canonical );
+		$job = $this->create_listing_with_logo( $author, $duplicate );
+
+		// A write that reports failure without touching the row, as a DB error would.
+		$block = static function ( $check, $object_id, $meta_key ) {
+			return '_thumbnail_id' === $meta_key ? false : $check;
+		};
+		add_filter( 'update_post_metadata', $block, 10, 3 );
+		$report = ( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+		remove_filter( 'update_post_metadata', $block, 10 );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $duplicate ), 'A duplicate whose reference could not be moved must not be deleted.' );
+		$this->assertEquals( $duplicate, get_post_thumbnail_id( $job ), 'The listing must still point at an attachment that exists.' );
+		$this->assertSame( 0, $report['attachments_deleted'] );
+	}
+
+	/**
+	 * The runtime dedup hashes the file as uploaded, before core replaces it with a
+	 * `-scaled` copy for images over the big-image threshold. Backfilling the hash of
+	 * whatever `get_attached_file()` returns therefore stores a value the runtime
+	 * lookup can never match — permanently, since the backfill skips attachments that
+	 * already have a hash.
+	 */
+	public function test_backfilled_hash_is_of_the_original_upload_not_the_scaled_copy() {
+		$author   = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$original = $this->png_bytes();
+		$scaled   = $this->png_bytes() . "\0scaled";
+
+		$canonical = $this->create_logo_attachment( $author, $scaled, 'big-scaled.png' );
+		$this->create_logo_attachment( $author, $scaled, 'big-scaled-1.png' );
+		$this->create_listing_with_logo( $author, $canonical );
+
+		// The pre-scale upload core keeps alongside the scaled file it now serves.
+		$upload_dir    = wp_upload_dir();
+		$original_path = trailingslashit( $upload_dir['path'] ) . 'big.png';
+		file_put_contents( $original_path, $original );
+		$this->created_files[] = $original_path;
+		wp_update_attachment_metadata( $canonical, [ 'original_image' => 'big.png' ] );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$this->assertSame( md5( $original ), get_post_meta( $canonical, Attachment_Deduplicator::HASH_META_KEY, true ), 'The backfilled hash must match what the runtime dedup computes for the original upload.' );
+	}
+
+	/**
+	 * One candidate's meta referencing another candidate is an unrecognised reference
+	 * like any other. Suppressing it by excluding the current batch makes the outcome
+	 * depend on which batch each ID landed in.
+	 */
+	public function test_a_candidate_referenced_from_another_candidates_meta_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo       = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$referrer   = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$referenced = $this->create_logo_attachment( $author, $bytes, 'logo-2.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		update_post_meta( $referrer, '_linked_image', $referenced );
+
+		// A batch size that puts both candidates in the same batch; the outcome must
+		// not differ from one that separates them.
+		( new Attachment_Deduplicator( 50 ) )->run( [ 'dry_run' => false ] );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $referenced ), "An attachment referenced from another attachment's meta must survive regardless of batching." );
+	}
+
+	/**
+	 * A media-ish meta key on a post this class does not re-point is the mechanism the
+	 * whole veto rests on, and the case add-ons actually produce (`_candidate_photo`).
+	 */
+	public function test_attachment_referenced_by_a_media_shaped_meta_key_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo  = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$photo = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		$resume = $this->factory->post->create( [ 'post_type' => 'post' ] );
+		update_post_meta( $resume, '_candidate_photo', $photo );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $photo ), 'An attachment referenced through a media-shaped meta key must survive.' );
+	}
+
+	/**
+	 * Term meta is one of the surfaces the sweep claims to cover.
+	 */
+	public function test_attachment_referenced_from_term_meta_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo  = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$badge = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		$term = $this->factory->term->create( [ 'taxonomy' => 'category' ] );
+		update_term_meta( $term, 'category_image', $badge );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $badge ), 'An attachment referenced from term meta must survive.' );
+	}
+
+	/**
+	 * `site_logo` holds a bare attachment ID and nothing re-points it.
+	 */
+	public function test_attachment_used_as_the_site_logo_is_never_deleted() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$logo      = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$site_logo = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $logo );
+
+		update_option( 'site_logo', $site_logo );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		delete_option( 'site_logo' );
+
+		$this->assertInstanceOf( WP_Post::class, get_post( $site_logo ), 'The site logo must survive.' );
+	}
+
+	/**
+	 * The dry run's plan is the only record of what --live will collapse into what, so
+	 * it has to be the actual mapping rather than a count.
+	 */
+	public function test_dry_run_reports_the_canonical_to_duplicates_mapping() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$canonical = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$first     = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$second    = $this->create_logo_attachment( $author, $bytes, 'logo-2.png' );
+		$this->create_listing_with_logo( $author, $canonical );
+
+		$report = ( new Attachment_Deduplicator() )->run();
+
+		$this->assertSame(
+			[
+				[
+					'canonical'  => $canonical,
+					'duplicates' => [ $first, $second ],
+				],
+			],
+			$report['plan'],
+			'The dry run must report which attachments collapse into which canonical.'
+		);
+	}
+
+	/**
+	 * A caption and description an editor wrote on a later copy are lost with it
+	 * unless they are carried over, exactly like alt text.
+	 */
+	public function test_curated_caption_and_description_are_carried_over_to_the_canonical() {
+		$author = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$canonical = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$curated   = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		wp_update_post(
+			[
+				'ID'           => $curated,
+				'post_excerpt' => 'Acme Corporation, est. 1984',
+				'post_content' => 'The full-colour logo used on job listings.',
+			]
+		);
+
+		$this->create_listing_with_logo( $author, $canonical );
+		$this->create_listing_with_logo( $author, $curated );
+
+		( new Attachment_Deduplicator() )->run( [ 'dry_run' => false ] );
+
+		$survivor = get_post( $canonical );
+		$this->assertSame( 'Acme Corporation, est. 1984', $survivor->post_excerpt, 'A curated caption must be carried onto the canonical.' );
+		$this->assertSame( 'The full-colour logo used on job listings.', $survivor->post_content, 'A curated description must be carried onto the canonical.' );
+	}
+
+	/**
 	 * The `_company_logo` user default is a logo reference in its own right and must
 	 * be re-pointed before its attachment is deleted.
 	 */

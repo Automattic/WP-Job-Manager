@@ -57,6 +57,10 @@ class Attachment_Deduplicator {
 	 * protected forever and the command would quietly stop de-duplicating. Matching
 	 * on key shape keeps the check meaningful. Add-ons follow these conventions too
 	 * (`_candidate_photo`, `_company_logo`).
+	 *
+	 * Filterable, because a site storing references under a key with no media-ish
+	 * word in its name (`company_brand`) would otherwise have to patch the plugin to
+	 * protect itself.
 	 */
 	const REFERENCE_KEY_PATTERNS = [
 		'%thumb%',
@@ -72,7 +76,39 @@ class Attachment_Deduplicator {
 		'%banner%',
 		'%cover%',
 		'%file%',
+		'%img%',
+		'%pic%',
+		'%upload%',
+		'%featured%',
 	];
+
+	/**
+	 * Core's own attachment plumbing, excluded from the reference sweep.
+	 *
+	 * These match the key patterns above but describe the attachment itself rather
+	 * than a reference to it — and their values are file paths, so leaving them in
+	 * would make every attachment sharing a filename stem protect its own siblings.
+	 */
+	const SELF_DESCRIBING_META_KEYS = [
+		'_wp_attached_file',
+		'_wp_attachment_metadata',
+		'_wp_attachment_backup_sizes',
+		'_wp_attachment_image_alt',
+		'_wp_attachment_is_custom_background',
+		'_wp_attachment_is_custom_header',
+		'_wp_attachment_context',
+	];
+
+	/**
+	 * How deep to walk a serialized value looking for attachment references.
+	 */
+	const MAX_VALUE_DEPTH = 8;
+
+	/**
+	 * How many plan lines to print before deferring to `--report`. Twenty thousand
+	 * lines of scrollback is not a record of anything.
+	 */
+	const MAX_PLAN_LINES = 50;
 
 	/**
 	 * Rows handled per batch: how many attachments are hashed, looked up, or
@@ -166,10 +202,18 @@ class Attachment_Deduplicator {
 	 *   Named --owner rather than --user because --user is a reserved WP-CLI
 	 *   global parameter: it sets the acting user and never reaches this command.
 	 *
+	 * [--report=<path>]
+	 * : Write the canonical <- duplicates mapping to a CSV file before anything is
+	 *   deleted. On a library with tens of thousands of attachments the terminal is
+	 *   not a usable record of an irreversible operation.
+	 *
 	 * ## EXAMPLES
 	 *
 	 *     # Preview what would be de-duplicated across the whole site.
 	 *     wp jm dedupe-logos
+	 *
+	 *     # Preview it, keeping the plan for review.
+	 *     wp jm dedupe-logos --report=dedupe-plan.csv
 	 *
 	 *     # Apply it.
 	 *     wp jm dedupe-logos --live
@@ -189,6 +233,11 @@ class Attachment_Deduplicator {
 		$user_id = 0;
 
 		if ( isset( $assoc_args['owner'] ) ) {
+			// A bare --owner arrives as true, and absint( true ) is 1: a destructive
+			// command must not quietly pick a user out of a malformed flag.
+			if ( ! is_numeric( $assoc_args['owner'] ) ) {
+				\WP_CLI::error( 'The --owner flag needs a user ID, e.g. --owner=42.' );
+			}
 			$user_id = absint( $assoc_args['owner'] );
 			// Without this, a typo silently becomes 0 — i.e. the whole site.
 			if ( ! $user_id || ! get_userdata( $user_id ) ) {
@@ -196,24 +245,36 @@ class Attachment_Deduplicator {
 			}
 		}
 
+		$report_path = \WP_CLI\Utils\get_flag_value( $assoc_args, 'report', '' );
+
 		if ( ! $dry_run ) {
 			// Deletion is not reversible on sites without MEDIA_TRASH.
 			\WP_CLI::confirm( 'This will delete redundant logo attachments. Run without --live first to preview. Continue?', $assoc_args );
 		}
 
+		// Discovery hashes every image the logo owners hold and scans post content, so
+		// on the libraries this exists for it is minutes of silence otherwise.
+		\WP_CLI::log( 'Scanning for duplicate logos…' );
+
 		$progress = null;
 		$report   = ( new self() )->run(
 			[
-				'dry_run' => $dry_run,
-				'user_id' => $user_id,
-				'on_plan' => function ( $total ) use ( &$progress ) {
+				'dry_run'  => $dry_run,
+				'user_id'  => $user_id,
+				'on_plan'  => function ( $total ) use ( &$progress ) {
 					if ( $total ) {
 						$progress = \WP_CLI\Utils\make_progress_bar( 'Merging duplicates', $total );
 					}
 				},
-				'on_tick' => function () use ( &$progress ) {
+				'on_tick'  => function () use ( &$progress ) {
 					if ( $progress ) {
 						$progress->tick();
+					}
+				},
+				'on_ready' => function ( $plan ) use ( $report_path ) {
+					if ( $report_path ) {
+						self::write_plan_csv( $report_path, $plan );
+						\WP_CLI::log( sprintf( 'Wrote plan for %d group(s) to %s', count( $plan ), $report_path ) );
 					}
 				},
 			]
@@ -232,14 +293,29 @@ class Attachment_Deduplicator {
 		}
 
 		// Print the mapping so a dry run can be audited, and a live run leaves a
-		// record of what was collapsed into what.
-		foreach ( $report['plan'] as $group ) {
-			\WP_CLI::log( sprintf( '  %d <- %s', $group['canonical'], implode( ', ', $group['duplicates'] ) ) );
+		// record of what was collapsed into what. Past a few screenfuls the CSV is
+		// the usable record, so don't bury the summary under thousands of lines.
+		if ( count( $report['plan'] ) <= self::MAX_PLAN_LINES ) {
+			foreach ( $report['plan'] as $group ) {
+				\WP_CLI::log( sprintf( '  %d <- %s', $group['canonical'], implode( ', ', $group['duplicates'] ) ) );
+			}
+		} elseif ( ! $report_path ) {
+			\WP_CLI::log( sprintf( '  (%d groups — re-run with --report=<path> for the full mapping)', count( $report['plan'] ) ) );
 		}
 
 		if ( $dry_run ) {
 			\WP_CLI::success( sprintf( 'Would re-point references and delete %d attachment(s). Re-run with --live to apply.', $report['duplicates'] ) );
 			return;
+		}
+
+		if ( $report['repoint_failures'] ) {
+			\WP_CLI::warning(
+				sprintf(
+					'%d attachment(s) were kept because their references could not be moved: %s. Nothing was deleted for those — re-run to retry.',
+					count( $report['repoint_failures'] ),
+					implode( ', ', $report['repoint_failures'] )
+				)
+			);
 		}
 
 		if ( $report['delete_failures'] ) {
@@ -258,6 +334,31 @@ class Attachment_Deduplicator {
 	}
 
 	/**
+	 * Writes the plan to a CSV file, so an irreversible run leaves a record that
+	 * outlives the terminal buffer.
+	 *
+	 * @param string  $path Destination path.
+	 * @param array[] $plan Plan entries.
+	 */
+	private static function write_plan_csv( $path, array $plan ) {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen -- Writing an operator-specified CLI report file; WP_Filesystem is not loaded under WP-CLI.
+		$handle = fopen( $path, 'w' );
+		if ( ! $handle ) {
+			\WP_CLI::error( sprintf( 'Could not write the report to %s', $path ) );
+		}
+
+		fputcsv( $handle, [ 'canonical', 'duplicate' ] );
+		foreach ( $plan as $group ) {
+			foreach ( $group['duplicates'] as $duplicate ) {
+				fputcsv( $handle, [ $group['canonical'], $duplicate ] );
+			}
+		}
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose -- Matches the fopen above.
+		fclose( $handle );
+	}
+
+	/**
 	 * Finds groups of identical logo attachments and, unless this is a dry run,
 	 * merges each group into its oldest attachment.
 	 *
@@ -266,6 +367,8 @@ class Attachment_Deduplicator {
 	 * @param array $args Optional arguments:
 	 *                    'dry_run' (bool, default true) only reports what would change;
 	 *                    'user_id' (int, default 0) limits to one attachment owner;
+	 *                    'on_ready' (callable|null) called once with the finished plan,
+	 *                    before anything is mutated;
 	 *                    'on_plan' (callable|null) called once with the number of
 	 *                    attachments about to be merged, before any mutation;
 	 *                    'on_tick' (callable|null) called after each attachment.
@@ -273,17 +376,19 @@ class Attachment_Deduplicator {
 	 *               merged), 'skipped_referenced' (candidates kept because something
 	 *               unrecognised still references them), 'plan' (the canonical =>
 	 *               duplicates mapping), and, for a live run, 'references_repointed',
-	 *               'attachments_deleted' and 'delete_failures' (IDs that could not
-	 *               be deleted).
+	 *               'attachments_deleted', 'repoint_failures' (IDs kept because their
+	 *               references could not be moved) and 'delete_failures' (IDs that
+	 *               could not be deleted).
 	 */
 	public function run( array $args = [] ) {
 		$args = wp_parse_args(
 			$args,
 			[
-				'dry_run' => true,
-				'user_id' => 0,
-				'on_plan' => null,
-				'on_tick' => null,
+				'dry_run'  => true,
+				'user_id'  => 0,
+				'on_ready' => null,
+				'on_plan'  => null,
+				'on_tick'  => null,
 			]
 		);
 
@@ -294,6 +399,7 @@ class Attachment_Deduplicator {
 			'attachments_deleted'  => 0,
 			'skipped_referenced'   => 0,
 			'delete_failures'      => [],
+			'repoint_failures'     => [],
 			'plan'                 => [],
 		];
 
@@ -337,15 +443,15 @@ class Attachment_Deduplicator {
 				'duplicates' => $deletable,
 			];
 
-			if ( $args['dry_run'] ) {
-				continue;
-			}
-
-			$this->backfill_hash( $canonical );
-
 			foreach ( $deletable as $duplicate ) {
 				$repoint_map[ $duplicate ] = $canonical;
 			}
+		}
+
+		// The plan is complete and nothing has been touched yet, which is the only
+		// point at which it can be recorded as what the run is about to do.
+		if ( is_callable( $args['on_ready'] ) ) {
+			call_user_func( $args['on_ready'], $report['plan'] );
 		}
 
 		if ( $args['dry_run'] || ! $repoint_map ) {
@@ -356,9 +462,23 @@ class Attachment_Deduplicator {
 			call_user_func( $args['on_plan'], count( $repoint_map ) );
 		}
 
+		foreach ( $report['plan'] as $group ) {
+			$this->backfill_hash( $group['canonical'] );
+		}
+
 		// Move every reference first, then delete: a run that dies partway leaves an
 		// un-deleted duplicate rather than a listing pointing at a deleted post.
 		$report['references_repointed'] = $this->repoint_all( $repoint_map );
+
+		// Then prove it landed. `update_post_meta()` reports failure by return value,
+		// and core's wp_delete_attachment() deletes every `_thumbnail_id` row pointing
+		// at the attachment — so a re-point that silently failed would turn into a
+		// listing that lost its logo, counted as a success. Anything still referenced
+		// is dropped from this run rather than deleted; re-running retries it.
+		foreach ( $this->surviving_reference_ids( array_keys( $repoint_map ) ) as $unmoved ) {
+			unset( $repoint_map[ $unmoved ] );
+			$report['repoint_failures'][] = $unmoved;
+		}
 
 		$processed = 0;
 		foreach ( $repoint_map as $duplicate => $canonical ) {
@@ -472,38 +592,39 @@ class Attachment_Deduplicator {
 			// carry a logo owned by another, so ownership is applied to the attachment
 			// in attachment_signature() rather than to whatever references it.
 			$wpdb->prepare(
-				"SELECT pm.meta_value
+				"SELECT pm.meta_id AS cursor_id, pm.meta_value AS value
 				 FROM {$wpdb->postmeta} pm
 				 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-				 WHERE pm.meta_key = %s AND p.post_type = %s
-				 ORDER BY pm.meta_id",
+				 WHERE pm.meta_key = %s AND p.post_type = %s AND pm.meta_id > ",
 				self::HANDLED_POST_META_KEY,
 				\WP_Job_Manager_Post_Types::PT_LISTING
 			),
 			$wpdb->prepare(
-				"SELECT meta_value FROM {$wpdb->usermeta} WHERE meta_key = %s ORDER BY umeta_id",
+				"SELECT umeta_id AS cursor_id, meta_value AS value FROM {$wpdb->usermeta} WHERE meta_key = %s AND umeta_id > ",
 				self::HANDLED_USER_META_KEY
 			),
 		];
 
 		foreach ( $sources as $sql ) {
-			$offset = 0;
+			$last = 0;
 
 			do {
 				// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Paged bulk read; no API equivalent that avoids loading everything.
 				// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
-				// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $sql is already prepared; the limit clause is bound here.
-				$values = $wpdb->get_col(
-					$wpdb->prepare( $sql . ' LIMIT %d OFFSET %d', $this->chunk_size, $offset )
+				// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $sql is already prepared; the cursor and limit are bound here.
+				// Keyset rather than OFFSET, which re-reads every earlier row per page.
+				$rows = $wpdb->get_results(
+					$wpdb->prepare( $sql . '%d ORDER BY cursor_id LIMIT %d', $last, $this->chunk_size )
 				);
 				// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 				// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
 				// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 
 				$page = [];
-				foreach ( $values as $value ) {
-					if ( (int) $value ) {
-						$page[] = (int) $value;
+				foreach ( $rows as $row ) {
+					$last = (int) $row->cursor_id;
+					if ( (int) $row->value ) {
+						$page[] = (int) $row->value;
 					}
 				}
 
@@ -513,8 +634,7 @@ class Attachment_Deduplicator {
 					$this->free_memory();
 				}
 
-				$fetched = count( $values );
-				$offset += $this->chunk_size;
+				$fetched = count( $rows );
 			} while ( $this->chunk_size === $fetched );
 		}
 	}
@@ -533,41 +653,47 @@ class Attachment_Deduplicator {
 			return;
 		}
 
-		$author_list = implode( ',', array_map( 'intval', $owner_ids ) );
-		$offset      = 0;
+		// Chunked: this command exists for sites with thousands of employers, and one
+		// owner per logo means the whole set would otherwise become a single
+		// IN ( ... ) list re-sent on every page.
+		foreach ( array_chunk( array_map( 'intval', $owner_ids ), $this->chunk_size ) as $owner_chunk ) {
+			$author_list = implode( ',', $owner_chunk );
+			$last        = 0;
 
-		do {
-			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Paged bulk read; get_posts() would load the whole library.
-			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
-			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $author_list is ints.
-			$ids = $wpdb->get_col(
-				$wpdb->prepare(
-					"SELECT ID FROM {$wpdb->posts}
-					 WHERE post_type = 'attachment'
-					   AND post_status = 'inherit'
-					   AND post_mime_type LIKE %s
-					   AND post_author IN ( {$author_list} )
-					 ORDER BY ID LIMIT %d OFFSET %d",
-					$wpdb->esc_like( 'image/' ) . '%',
-					$this->chunk_size,
-					$offset
-				)
-			);
-			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
-			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+			do {
+				// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Paged bulk read; get_posts() would load the whole library.
+				// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
+				// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $author_list is ints.
+				$ids = $wpdb->get_col(
+					$wpdb->prepare(
+						"SELECT ID FROM {$wpdb->posts}
+						 WHERE post_type = 'attachment'
+						   AND post_status = 'inherit'
+						   AND post_mime_type LIKE %s
+						   AND post_author IN ( {$author_list} )
+						   AND ID > %d
+						 ORDER BY ID LIMIT %d",
+						$wpdb->esc_like( 'image/' ) . '%',
+						$last,
+						$this->chunk_size
+					)
+				);
+				// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+				// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 
-			$page = array_map( 'intval', $ids );
+				$page = array_map( 'intval', $ids );
 
-			if ( $page ) {
-				_prime_post_caches( $page, false, true );
-				$handle( $page );
-				$this->free_memory();
-			}
+				if ( $page ) {
+					$last = end( $page );
+					_prime_post_caches( $page, false, true );
+					$handle( $page );
+					$this->free_memory();
+				}
 
-			$fetched = count( $ids );
-			$offset += $this->chunk_size;
-		} while ( $this->chunk_size === $fetched );
+				$fetched = count( $ids );
+			} while ( $this->chunk_size === $fetched );
+		}
 	}
 
 	/**
@@ -716,6 +842,59 @@ class Attachment_Deduplicator {
 	}
 
 	/**
+	 * Of the given attachments, those something still references through one of the
+	 * two keys this class re-points.
+	 *
+	 * Run after re-pointing, as the precondition for deleting: an ID coming back here
+	 * means its re-point did not land, and deleting it would strip the reference
+	 * rather than move it. Two queries per batch, so the check does not scale with
+	 * the number of duplicates.
+	 *
+	 * @param int[] $ids Attachment IDs about to be deleted.
+	 * @return int[] IDs that are still referenced.
+	 */
+	private function surviving_reference_ids( array $ids ) {
+		global $wpdb;
+
+		$surviving = [];
+
+		foreach ( array_chunk( array_map( 'intval', $ids ), $this->chunk_size ) as $chunk ) {
+			$id_list = implode( ',', $chunk );
+
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Bulk verification replacing one query per attachment.
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration; a cached answer would defeat the check.
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $id_list is ints.
+			$still_used = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT DISTINCT pm.meta_value
+					 FROM {$wpdb->postmeta} pm
+					 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+					 WHERE pm.meta_key = %s AND p.post_type = %s AND pm.meta_value IN ( {$id_list} )",
+					self::HANDLED_POST_META_KEY,
+					\WP_Job_Manager_Post_Types::PT_LISTING
+				)
+			);
+
+			$still_default = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT DISTINCT meta_value FROM {$wpdb->usermeta}
+					 WHERE meta_key = %s AND meta_value IN ( {$id_list} )",
+					self::HANDLED_USER_META_KEY
+				)
+			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+			foreach ( array_merge( $still_used, $still_default ) as $id ) {
+				$surviving[ (int) $id ] = true;
+			}
+		}
+
+		return array_keys( $surviving );
+	}
+
+	/**
 	 * Returns the subset of the given attachments that something this class cannot
 	 * re-point still references, as an [ id => true ] lookup.
 	 *
@@ -737,87 +916,280 @@ class Attachment_Deduplicator {
 			return [];
 		}
 
-		$protected = [];
+		$by_id = array_fill_keys( $candidate_ids, true );
 
-		// Chunked so the IN ( ... ) lists stay a sane size on a large library.
-		foreach ( array_chunk( $candidate_ids, $this->chunk_size ) as $chunk ) {
-			$protected += $this->find_protected_ids_in_meta( $chunk );
+		// Filenames are how a reference that stores a URL rather than an ID — legacy
+		// `_company_logo` post meta, a hand-written <img>, a page builder printing a
+		// custom field — is recognised at all.
+		$by_stem = [];
+		foreach ( $this->attachment_stems( $candidate_ids ) as $attachment_id => $stem ) {
+			$by_stem[ $stem ][] = $attachment_id;
 		}
 
-		return $protected + $this->find_inline_content_references( $candidate_ids );
+		$protected = $this->find_protected_ids_in_meta( $by_id, $by_stem )
+			+ $this->find_protected_ids_in_options( $by_id, $by_stem )
+			+ $this->find_inline_content_references( $by_id, $by_stem );
+
+		/**
+		 * Filters the attachments the logo de-duplicator refuses to delete.
+		 *
+		 * The sweep recognises the storage shapes core and the common plugins use;
+		 * a site storing references some other way can add its own here. Adding an
+		 * ID keeps that attachment, it never causes a deletion.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param array<int, true> $protected     Protected attachment IDs, as an [ id => true ] lookup.
+		 * @param int[]            $candidate_ids Attachment IDs being considered for deletion.
+		 */
+		$protected = apply_filters( 'job_manager_dedupe_protected_attachment_ids', $protected, $candidate_ids );
+
+		// A filter returning junk must not be able to widen the deletion set.
+		$result = [];
+		foreach ( array_keys( (array) $protected ) as $id ) {
+			if ( isset( $by_id[ (int) $id ] ) ) {
+				$result[ (int) $id ] = true;
+			}
+		}
+
+		return $result;
 	}
 
 	/**
-	 * The meta/option half of the reference sweep, for one batch of candidates.
+	 * The meta half of the reference sweep: one streamed pass over the meta rows whose
+	 * key looks like it could hold an attachment reference, matched in PHP.
 	 *
-	 * @param int[] $candidate_ids Attachment IDs being considered for deletion.
+	 * Reading the values rather than comparing them to the candidate IDs in SQL is what
+	 * makes serialized arrays (ACF galleries and repeaters), comma-separated lists
+	 * (`_product_image_gallery`) and stored URLs (legacy `_company_logo`) visible at
+	 * all: `meta_value IN ( 12,34 )` is an exact match against a LONGTEXT column, so
+	 * MySQL coerces `a:1:{i:0;i:34;}` to 0 and `"12,34"` to 12 — matching nothing, or
+	 * only the first ID, while looking like the key was covered.
+	 *
+	 * It is also one pass instead of one per batch of candidates. `meta_value` has no
+	 * index and the key patterns have a leading wildcard, so each of these is a full
+	 * table scan; doing it per batch is what stops the command finishing.
+	 *
+	 * @param array<int, true>     $by_id   Candidate IDs, as a lookup.
+	 * @param array<string, int[]> $by_stem Candidate IDs keyed by file stem.
 	 * @return array<int, true> Protected IDs.
 	 */
-	private function find_protected_ids_in_meta( array $candidate_ids ) {
+	private function find_protected_ids_in_meta( array $by_id, array $by_stem ) {
 		global $wpdb;
 
 		$protected = [];
-		$id_list   = implode( ',', $candidate_ids );
-		$key_sql   = $this->reference_key_sql();
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Reference sweep across core tables has no API equivalent.
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration; a cached answer would be worse than none.
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $id_list is ints; $key_sql is built from a class constant.
-		// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Raw SQL, not a WP_Query meta arg; the scan is the point of the command.
+		$sources = [
+			// `_thumbnail_id` on a listing is the one post-meta case repoint_all()
+			// handles; the same key on any other post type is not. The post_id is
+			// selected so an attachment's own meta cannot protect it.
+			[
+				'sql'      => "SELECT pm.meta_id AS cursor_id, pm.post_id AS owner_id, pm.meta_key, pm.meta_value, p.post_type
+					 FROM {$wpdb->postmeta} pm
+					 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id",
+				'table'    => 'pm',
+				'cursor'   => 'pm.meta_id',
+				'key_col'  => 'pm.meta_key',
+				'is_owner' => true,
+			],
+			[
+				'sql'      => "SELECT umeta_id AS cursor_id, 0 AS owner_id, meta_key, meta_value, '' AS post_type FROM {$wpdb->usermeta}",
+				'cursor'   => 'umeta_id',
+				'key_col'  => 'meta_key',
+				'is_owner' => false,
+			],
+			[
+				'sql'      => "SELECT meta_id AS cursor_id, 0 AS owner_id, meta_key, meta_value, '' AS post_type FROM {$wpdb->termmeta}",
+				'cursor'   => 'meta_id',
+				'key_col'  => 'meta_key',
+				'is_owner' => false,
+			],
+		];
 
-		// Post meta. `_thumbnail_id` on a listing is the one case repoint_references()
-		// handles; the same key on any other post type is not.
-		$rows = $wpdb->get_results(
-			"SELECT pm.meta_value, pm.meta_key, p.post_type
-			 FROM {$wpdb->postmeta} pm
-			 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-			 WHERE pm.meta_value IN ( {$id_list} )
-			   AND pm.post_id NOT IN ( {$id_list} )
-			   AND ( {$key_sql} )"
-		);
-		foreach ( $rows as $row ) {
-			$handled = self::HANDLED_POST_META_KEY === $row->meta_key
+		foreach ( $sources as $source ) {
+			$last = 0;
+
+			do {
+				// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Reference sweep across core tables has no API equivalent.
+				// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration; a cached answer would be worse than none.
+				// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Key clauses are built with prepare(); the cursor is bound below.
+				// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $source is a literal from the array above; the key clauses are prepared.
+				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Raw SQL, not a WP_Query meta arg; the scan is the point of the command.
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						$source['sql']
+						. ' WHERE ( ' . $this->reference_key_sql( $source['key_col'] ) . ' )'
+						. ' AND ' . $this->excluded_key_sql( $source['key_col'] )
+						// Keyset rather than OFFSET: paging an unindexed scan by offset
+						// re-reads and discards every earlier row on every page.
+						. ' AND ' . $source['cursor'] . ' > %d'
+						. ' ORDER BY ' . $source['cursor'] . ' LIMIT %d',
+						$last,
+						$this->chunk_size
+					)
+				);
+				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+				// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+				foreach ( $rows as $row ) {
+					$last = (int) $row->cursor_id;
+
+					if ( $this->is_handled_reference( $row, $source['is_owner'] ) ) {
+						continue;
+					}
+
+					foreach ( $this->referenced_ids_in_value( $row->meta_value, $by_id, $by_stem ) as $id ) {
+						// An attachment's own meta describes it rather than referencing
+						// it; another candidate's meta is a reference like any other.
+						if ( $source['is_owner'] && (int) $row->owner_id === $id ) {
+							continue;
+						}
+						$protected[ $id ] = true;
+					}
+				}
+
+				$fetched = count( $rows );
+			} while ( $this->chunk_size === $fetched );
+
+			$this->free_memory();
+		}
+
+		return $protected;
+	}
+
+	/**
+	 * Whether a meta row is one of the two reference types this class re-points, and
+	 * so does not block deletion.
+	 *
+	 * @param object $row      Row with meta_key and post_type.
+	 * @param bool   $is_owner Whether the row came from post meta.
+	 * @return bool
+	 */
+	private function is_handled_reference( $row, $is_owner ) {
+		if ( $is_owner ) {
+			return self::HANDLED_POST_META_KEY === $row->meta_key
 				&& \WP_Job_Manager_Post_Types::PT_LISTING === $row->post_type;
-			if ( ! $handled ) {
-				$protected[ (int) $row->meta_value ] = true;
-			}
 		}
 
-		// User meta, other than the `_company_logo` default that is handled.
+		// User meta only: the same key on a *post* is the pre-1.24.0 listing logo,
+		// which holds a URL and is re-pointed by nothing.
+		return self::HANDLED_USER_META_KEY === $row->meta_key;
+	}
+
+	/**
+	 * The options half of the sweep.
+	 *
+	 * Deliberately a short, named list rather than the meta key patterns: option names
+	 * like `medium_size_w` would match `%media%`-ish patterns and hold a bare number
+	 * (300, 150, 1024), so every attachment whose ID collided with an image dimension
+	 * would be protected forever.
+	 *
+	 * @param array<int, true>     $by_id   Candidate IDs, as a lookup.
+	 * @param array<string, int[]> $by_stem Candidate IDs keyed by file stem.
+	 * @return array<int, true> Protected IDs.
+	 */
+	private function find_protected_ids_in_options( array $by_id, array $by_stem ) {
+		global $wpdb;
+
+		$protected = [];
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- No API for scanning options by name pattern.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
 		$rows = $wpdb->get_results(
-			"SELECT meta_value, meta_key FROM {$wpdb->usermeta}
-			 WHERE meta_value IN ( {$id_list} ) AND ( {$key_sql} )"
+			"SELECT option_name, option_value FROM {$wpdb->options}
+			 WHERE option_name IN ( 'site_logo', 'site_icon' )
+			    OR option_name LIKE 'theme_mods\_%'
+			    OR option_name LIKE 'widget\_%'"
 		);
-		foreach ( $rows as $row ) {
-			if ( self::HANDLED_USER_META_KEY !== $row->meta_key ) {
-				$protected[ (int) $row->meta_value ] = true;
-			}
-		}
-
-		// Term meta.
-		$term_values = $wpdb->get_col(
-			"SELECT meta_value FROM {$wpdb->termmeta}
-			 WHERE meta_value IN ( {$id_list} ) AND ( {$key_sql} )"
-		);
-		foreach ( $term_values as $value ) {
-			$protected[ (int) $value ] = true;
-		}
-
-		// Options storing a bare attachment ID.
-		$option_values = $wpdb->get_col(
-			"SELECT option_value FROM {$wpdb->options}
-			 WHERE option_name IN ( 'site_logo', 'site_icon' ) AND option_value IN ( {$id_list} )"
-		);
-		foreach ( $option_values as $value ) {
-			$protected[ (int) $value ] = true;
-		}
-
-		// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 
+		foreach ( $rows as $row ) {
+			foreach ( $this->referenced_ids_in_value( $row->option_value, $by_id, $by_stem ) as $id ) {
+				$protected[ $id ] = true;
+			}
+		}
+
 		return $protected;
+	}
+
+	/**
+	 * Extracts the candidate attachment IDs a stored value refers to.
+	 *
+	 * Handles the shapes references are actually stored in: a bare ID, a
+	 * comma-separated list of them, an ID nested anywhere inside a serialized array
+	 * (`theme_mods_*`'s `custom_logo`, an ACF gallery), and a URL or path, matched by
+	 * filename. Anything else is ignored — pulling every integer out of arbitrary text
+	 * would protect an attachment because a post happened to mention its ID.
+	 *
+	 * @param mixed                $value   Stored value.
+	 * @param array<int, true>     $by_id   Candidate IDs, as a lookup.
+	 * @param array<string, int[]> $by_stem Candidate IDs keyed by file stem.
+	 * @return int[] Referenced candidate IDs.
+	 */
+	private function referenced_ids_in_value( $value, array $by_id, array $by_stem ) {
+		$found = [];
+		$this->collect_referenced_ids( maybe_unserialize( $value ), $by_id, $by_stem, $found, 0 );
+
+		return array_keys( $found );
+	}
+
+	/**
+	 * Walks one value (recursing into serialized structures) collecting candidate IDs.
+	 *
+	 * @param mixed                $value   Value to inspect.
+	 * @param array<int, true>     $by_id   Candidate IDs, as a lookup.
+	 * @param array<string, int[]> $by_stem Candidate IDs keyed by file stem.
+	 * @param array<int, true>     $found   Accumulator, by reference.
+	 * @param int                  $depth   Current recursion depth.
+	 */
+	private function collect_referenced_ids( $value, array $by_id, array $by_stem, array &$found, $depth ) {
+		if ( $depth > self::MAX_VALUE_DEPTH ) {
+			return;
+		}
+
+		if ( is_array( $value ) || is_object( $value ) ) {
+			foreach ( (array) $value as $item ) {
+				$this->collect_referenced_ids( $item, $by_id, $by_stem, $found, $depth + 1 );
+			}
+			return;
+		}
+
+		if ( is_bool( $value ) || null === $value ) {
+			return;
+		}
+
+		$string = trim( (string) $value );
+		if ( '' === $string ) {
+			return;
+		}
+
+		// A bare ID, or a comma-separated list of them.
+		if ( preg_match( '/^\d+(\s*,\s*\d+)*$/', $string ) ) {
+			foreach ( explode( ',', $string ) as $part ) {
+				$id = (int) trim( $part );
+				if ( isset( $by_id[ $id ] ) ) {
+					$found[ $id ] = true;
+				}
+			}
+			return;
+		}
+
+		if ( ! $by_stem ) {
+			return;
+		}
+
+		foreach ( $this->file_stems_in( $string ) as $stem ) {
+			if ( ! isset( $by_stem[ $stem ] ) ) {
+				continue;
+			}
+			foreach ( $by_stem[ $stem ] as $id ) {
+				$found[ $id ] = true;
+			}
+		}
 	}
 
 	/**
@@ -828,23 +1200,15 @@ class Attachment_Deduplicator {
 	 * that contain any image marker at all, matched in PHP — rather than one LIKE
 	 * scan per candidate.
 	 *
-	 * @param int[] $candidate_ids Attachment IDs being considered for deletion.
+	 * @param array<int, true>     $by_id   Candidate IDs, as a lookup.
+	 * @param array<string, int[]> $by_stem Candidate IDs keyed by file stem.
 	 * @return array<int, true> Protected IDs.
 	 */
-	private function find_inline_content_references( array $candidate_ids ) {
+	private function find_inline_content_references( array $by_id, array $by_stem ) {
 		global $wpdb;
 
 		$protected = [];
-		$by_id     = array_fill_keys( $candidate_ids, true );
-		$offset    = 0;
-
-		// Keyed by filename so a post is matched against the names it actually
-		// contains. Looping every candidate for every post instead would be
-		// candidates x posts string searches — hundreds of millions on a large site.
-		$by_basename = [];
-		foreach ( $this->attachment_basenames( $candidate_ids ) as $attachment_id => $basename ) {
-			$by_basename[ strtolower( $basename ) ][] = $attachment_id;
-		}
+		$last      = 0;
 
 		do {
 			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Content scan has no API equivalent.
@@ -852,66 +1216,76 @@ class Attachment_Deduplicator {
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT ID, post_content FROM {$wpdb->posts}
-					 WHERE post_content LIKE %s OR post_content LIKE %s OR post_content LIKE %s
-					 ORDER BY ID LIMIT %d OFFSET %d",
+					 WHERE ( post_content LIKE %s OR post_content LIKE %s OR post_content LIKE %s OR post_content LIKE %s )
+					   AND ID > %d
+					 ORDER BY ID LIMIT %d",
 					'%' . $wpdb->esc_like( 'wp-image-' ) . '%',
-					'%' . $wpdb->esc_like( '"id":' ) . '%',
+					// Not just `"id":` — a block attribute nested inside another block
+					// is stored JSON-escaped, and kses rewrites the escaped quotes to
+					// ", so the same marker has three shapes on disk.
+					'%' . $wpdb->esc_like( '"id' ) . '%',
+					'%' . $wpdb->esc_like( 'u0022id' ) . '%',
 					'%' . $wpdb->esc_like( '/uploads/' ) . '%',
-					$this->chunk_size,
-					$offset
+					$last,
+					$this->chunk_size
 				)
 			);
 			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
 			// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
 
 			foreach ( $rows as $row ) {
+				$last    = (int) $row->ID;
 				$content = (string) $row->post_content;
 
-				if ( preg_match_all( '/(?:wp-image-|"id":\s*)(\d+)/', $content, $matches ) ) {
+				// A block attribute nested inside another block is stored JSON-escaped
+				// (\"id\"), and kses rewrites those quotes again ("id"), so
+				// the same marker has to be recognised in all three shapes.
+				$quote = '(?:"|\\\\"|\\\\u0022)';
+				if ( preg_match_all( '/(?:wp-image-|' . $quote . 'id' . $quote . '\s*:\s*' . $quote . '?)(\d+)/', $content, $matches ) ) {
 					foreach ( $matches[1] as $found ) {
 						$found = (int) $found;
-						if ( isset( $by_id[ $found ] ) && (int) $row->ID !== $found ) {
+						if ( isset( $by_id[ $found ] ) && $last !== $found ) {
 							$protected[ $found ] = true;
 						}
 					}
 				}
 
-				if ( $by_basename && preg_match_all( '/[^\/"\'\s>]+\.(?:png|jpe?g|gif|webp|avif|bmp|tiff?|svg)/i', $content, $files ) ) {
-					foreach ( $files[0] as $filename ) {
-						$filename = strtolower( $filename );
-						if ( ! isset( $by_basename[ $filename ] ) ) {
-							continue;
-						}
-						foreach ( $by_basename[ $filename ] as $attachment_id ) {
-							if ( (int) $row->ID !== $attachment_id ) {
-								$protected[ $attachment_id ] = true;
-							}
+				if ( ! $by_stem ) {
+					continue;
+				}
+
+				foreach ( $this->file_stems_in( $content ) as $stem ) {
+					if ( ! isset( $by_stem[ $stem ] ) ) {
+						continue;
+					}
+					foreach ( $by_stem[ $stem ] as $attachment_id ) {
+						if ( $last !== $attachment_id ) {
+							$protected[ $attachment_id ] = true;
 						}
 					}
 				}
 			}
 
 			$fetched = count( $rows );
-			$offset += $this->chunk_size;
 		} while ( $this->chunk_size === $fetched );
 
 		return $protected;
 	}
 
 	/**
-	 * Maps attachment IDs to their file basename in one query.
+	 * Maps attachment IDs to the stem of their file, in one query per batch.
 	 *
 	 * @param int[] $attachment_ids Attachment IDs.
 	 * @return array<int, string>
 	 */
-	private function attachment_basenames( array $attachment_ids ) {
+	private function attachment_stems( array $attachment_ids ) {
 		global $wpdb;
 
 		if ( ! $attachment_ids ) {
 			return [];
 		}
 
-		$basenames = [];
+		$stems = [];
 
 		foreach ( array_chunk( array_map( 'intval', $attachment_ids ), $this->chunk_size ) as $chunk ) {
 			$id_list = implode( ',', $chunk );
@@ -929,28 +1303,114 @@ class Attachment_Deduplicator {
 
 			foreach ( $rows as $row ) {
 				if ( $row->meta_value ) {
-					$basenames[ (int) $row->post_id ] = wp_basename( $row->meta_value );
+					$stems[ (int) $row->post_id ] = $this->file_stem( $row->meta_value );
 				}
 			}
 		}
 
-		return $basenames;
+		return $stems;
+	}
+
+	/**
+	 * Every image filename mentioned in a string, reduced to its stem.
+	 *
+	 * @param string $string Text to scan.
+	 * @return string[] Stems, in order of appearance.
+	 */
+	private function file_stems_in( $string ) {
+		if ( ! preg_match_all( '/[^\/"\'\s>\\\\]+\.(?:png|jpe?g|gif|webp|avif|bmp|tiff?|svg)/i', $string, $matches ) ) {
+			return [];
+		}
+
+		$stems = [];
+		foreach ( $matches[0] as $filename ) {
+			$stems[] = $this->file_stem( $filename );
+		}
+
+		return $stems;
+	}
+
+	/**
+	 * Reduces a filename to the stem shared by every file core generates from one
+	 * upload, so a reference to a thumbnail protects the attachment it belongs to.
+	 *
+	 * Content that prints an image from a custom field carries neither `wp-image-N`
+	 * nor a block id — only a URL, and usually a resized one. Matching the original
+	 * filename alone misses those, and deleting the attachment takes the resized files
+	 * with it. The extension is kept: a resized variant shares it, while `logo.png` and
+	 * `logo.jpg` are unrelated files that must not protect each other.
+	 *
+	 * @param string $filename File name, path or URL.
+	 * @return string Lowercased stem.
+	 */
+	private function file_stem( $filename ) {
+		$name = strtolower( wp_basename( (string) $filename ) );
+
+		if ( ! preg_match( '/^(.+)(\.[a-z0-9]+)$/', $name, $matches ) ) {
+			return $name;
+		}
+
+		// -150x150 (intermediate size), -scaled (big-image threshold), -e1699999999
+		// (edited in the media editor).
+		$base = preg_replace( '/-\d+x\d+$/', '', $matches[1] );
+		$base = preg_replace( '/-scaled$/', '', $base );
+		$base = preg_replace( '/-e\d{10,}$/', '', $base );
+
+		return $base . $matches[2];
 	}
 
 	/**
 	 * SQL fragment matching meta keys that may hold an attachment reference.
 	 *
+	 * @param string $column Column to match against.
 	 * @return string
 	 */
-	private function reference_key_sql() {
+	private function reference_key_sql( $column ) {
 		global $wpdb;
 
+		/**
+		 * Filters the meta-key patterns treated as possibly holding a reference to an
+		 * attachment, and so blocking its deletion.
+		 *
+		 * Patterns are SQL LIKE expressions matched against the meta key. Adding one
+		 * only ever protects more attachments; it cannot cause a deletion.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param string[] $patterns LIKE patterns.
+		 */
+		$patterns = apply_filters( 'job_manager_dedupe_reference_meta_key_patterns', self::REFERENCE_KEY_PATTERNS );
+
 		$clauses = [];
-		foreach ( self::REFERENCE_KEY_PATTERNS as $pattern ) {
-			$clauses[] = $wpdb->prepare( 'meta_key LIKE %s', $pattern );
+		foreach ( (array) $patterns as $pattern ) {
+			if ( is_string( $pattern ) && '' !== $pattern ) {
+				// The column name is a class-controlled literal and stays outside
+				// prepare(); only the pattern, which is filterable, is bound.
+				$clauses[] = $column . ' LIKE ' . $wpdb->prepare( '%s', $pattern );
+			}
+		}
+
+		if ( ! $clauses ) {
+			return '1=0';
 		}
 
 		return implode( ' OR ', $clauses );
+	}
+
+	/**
+	 * SQL fragment excluding core's own attachment plumbing from the sweep.
+	 *
+	 * @param string $column Column to match against.
+	 * @return string
+	 */
+	private function excluded_key_sql( $column ) {
+		global $wpdb;
+
+		$placeholders = implode( ', ', array_fill( 0, count( self::SELF_DESCRIBING_META_KEYS ), '%s' ) );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $column is a class-controlled column name and $placeholders is generated from a class constant; the key values are bound.
+		return $wpdb->prepare( $column . " NOT IN ( {$placeholders} )", self::SELF_DESCRIBING_META_KEYS );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 	}
 
 	/**
@@ -964,6 +1424,8 @@ class Attachment_Deduplicator {
 	 * @param int $canonical Attachment being kept.
 	 */
 	private function carry_over_metadata( $duplicate, $canonical ) {
+		global $wpdb;
+
 		$alt = get_post_meta( $duplicate, '_wp_attachment_image_alt', true );
 		if ( $alt && ! get_post_meta( $canonical, '_wp_attachment_image_alt', true ) ) {
 			update_post_meta( $canonical, '_wp_attachment_image_alt', $alt );
@@ -976,8 +1438,8 @@ class Attachment_Deduplicator {
 		}
 
 		// Spelled out per field rather than looped over a list of field names, so the
-		// array keys stay literal and match the shape wp_update_post() declares.
-		$update = [ 'ID' => $canonical ];
+		// array keys stay literal.
+		$update = [];
 
 		if ( '' !== trim( (string) $duplicate_post->post_excerpt ) && '' === trim( (string) $canonical_post->post_excerpt ) ) {
 			$update['post_excerpt'] = (string) $duplicate_post->post_excerpt;
@@ -987,9 +1449,18 @@ class Attachment_Deduplicator {
 			$update['post_content'] = (string) $duplicate_post->post_content;
 		}
 
-		if ( count( $update ) > 1 ) {
-			wp_update_post( $update );
+		if ( ! $update ) {
+			return;
 		}
+
+		// Written directly rather than through wp_update_post(): under CLI there is no
+		// current user, so every save would run the caption and description through
+		// wp_filter_post_kses and strip markup out of text this command is only moving
+		// from one row to another.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Copying two columns verbatim; a filtered save would alter them. The cache is cleared below.
+		$wpdb->update( $wpdb->posts, $update, [ 'ID' => $canonical ] );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		clean_post_cache( $canonical );
 	}
 
 	/**
@@ -1009,10 +1480,19 @@ class Attachment_Deduplicator {
 			return (bool) wp_delete_attachment( $attachment_id );
 		}
 
-		$veto = '__return_empty_string';
+		// A closure rather than a shared callback so removing it cannot take another
+		// consumer's identical filter with it, and try/finally so a fatal inside the
+		// delete cannot leave file deletion vetoed for the rest of the process.
+		$veto = static function () {
+			return '';
+		};
+
 		add_filter( 'wp_delete_file', $veto );
-		$deleted = wp_delete_attachment( $attachment_id );
-		remove_filter( 'wp_delete_file', $veto );
+		try {
+			$deleted = wp_delete_attachment( $attachment_id );
+		} finally {
+			remove_filter( 'wp_delete_file', $veto );
+		}
 
 		return (bool) $deleted;
 	}
@@ -1050,13 +1530,23 @@ class Attachment_Deduplicator {
 	 * Stores the canonical attachment's content hash so the runtime dedup reuses
 	 * it for future identical uploads.
 	 *
+	 * Hashes the file as uploaded, not whatever `get_attached_file()` currently
+	 * returns: for images over `big_image_size_threshold` core replaces the attached
+	 * file with a `-scaled` copy, while the runtime dedup hashes the upload before
+	 * that happens. Hashing the scaled file would store a value its lookup can never
+	 * match — permanently, since this backfill skips attachments that already have
+	 * a hash.
+	 *
 	 * @param int $canonical Canonical attachment ID.
 	 */
 	private function backfill_hash( $canonical ) {
 		if ( get_post_meta( $canonical, self::HASH_META_KEY, true ) ) {
 			return;
 		}
-		$file = get_attached_file( $canonical );
+		$file = wp_get_original_image_path( $canonical );
+		if ( ! $file ) {
+			$file = get_attached_file( $canonical );
+		}
 		if ( $file && is_file( $file ) ) {
 			$hash = md5_file( $file );
 			if ( $hash ) {
