@@ -484,7 +484,8 @@ class Job_Dashboard_Shortcode {
 						exit;
 					}
 
-					break;
+					// translators: Placeholder %s is the job listing title.
+					throw new \Exception( sprintf( __( 'Could not duplicate %s', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
 				case 'relist':
 				case 'renew':
 				case 'continue':

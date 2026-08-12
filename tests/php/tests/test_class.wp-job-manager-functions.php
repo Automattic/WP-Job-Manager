@@ -1512,4 +1512,58 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	public function test_get_accept_file_types_empty_when_nothing_is_allowed() {
 		$this->assertSame( '', job_manager_get_accept_file_types( [] ) );
 	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_from_publish_creates_preview_copy() {
+		$job_id    = $this->factory->job_listing->create( [
+			'post_title'  => 'Senior Developer',
+			'post_content' => 'Great job.',
+			'post_status' => 'publish',
+		] );
+		wp_set_object_terms( $job_id, [ 'remote' ], 'job_listing_type' );
+		update_post_meta( $job_id, '_filled', 1 );
+		update_post_meta( $job_id, '_featured', 1 );
+		update_post_meta( $job_id, '_application', 'jobs@example.com' );
+
+		$new_id = job_manager_duplicate_listing( $job_id );
+
+		$this->assertNotEquals( 0, $new_id, 'Duplicate should return a nonzero post ID.' );
+		$this->assertEquals( 'preview', get_post_status( $new_id ) );
+		$this->assertEquals( 'Senior Developer', get_the_title( $new_id ) );
+		$this->assertEquals( 'Great job.', get_post_field( 'post_content', $new_id ) );
+		$this->assertEquals( 'jobs@example.com', get_post_meta( $new_id, '_application', true ) );
+		$this->assertSame( '0', get_post_meta( $new_id, '_filled', true ) );
+		$this->assertSame( '0', get_post_meta( $new_id, '_featured', true ) );
+		$this->assertEquals( [ 'remote' ], wp_get_post_terms( $new_id, 'job_listing_type', [ 'fields' => 'slugs' ] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_from_expired_creates_preview_copy() {
+		$job_id = $this->factory->job_listing->create( [
+			'post_title'   => 'Expired Role',
+			'post_content' => 'Still useful.',
+			'post_status'  => 'expired',
+		] );
+		wp_set_object_terms( $job_id, [ 'onsite' ], 'job_listing_type' );
+		update_post_meta( $job_id, '_filled', 1 );
+		update_post_meta( $job_id, '_featured', 1 );
+		update_post_meta( $job_id, '_application', 'apply@example.com' );
+
+		$new_id = job_manager_duplicate_listing( $job_id );
+
+		$this->assertNotEquals( 0, $new_id, 'Duplicate should return a nonzero post ID.' );
+		$this->assertEquals( 'preview', get_post_status( $new_id ) );
+		$this->assertEquals( 'Expired Role', get_the_title( $new_id ) );
+		$this->assertEquals( 'Still useful.', get_post_field( 'post_content', $new_id ) );
+		$this->assertEquals( 'apply@example.com', get_post_meta( $new_id, '_application', true ) );
+		$this->assertSame( '0', get_post_meta( $new_id, '_filled', true ) );
+		$this->assertSame( '0', get_post_meta( $new_id, '_featured', true ) );
+		$this->assertEquals( [ 'onsite' ], wp_get_post_terms( $new_id, 'job_listing_type', [ 'fields' => 'slugs' ] ) );
+	}
 }
