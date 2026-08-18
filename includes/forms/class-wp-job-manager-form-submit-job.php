@@ -981,16 +981,41 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				foreach ( array_filter( $file_urls ) as $file_url ) {
 					if ( is_numeric( $file_url ) ) {
 						$attachment_id = absint( $file_url );
-						// The third condition is only safe because $this->job_id is pre-gated: it
-						// is set only for a listing the current user may edit (or is mid-submitting).
-						// It permits reusing the listing's own saved attachment, NOT any attachment
-						// already on the post — do not loosen it to accept arbitrary foreign IDs.
-						if (
-								$attachment_id
-								&& ! $this->is_attachment_authorized_for_current_user( $attachment_id )
-								&& ! $this->is_existing_listing_attachment( $attachment_id, $key )
-							) {
-							return new WP_Error( 'validation-error', __( 'Invalid attachment provided.', 'wp-job-manager' ) );
+
+						if ( ! $attachment_id ) {
+							continue;
+						}
+
+						// The last two allowances are only safe because both consult server-side
+						// state, never the request: $this->job_id is set only for a listing the
+						// current user may edit (or is mid-submitting), and the user meta is
+						// written by this class only after this same check passed. They permit
+						// reusing a value already offered back to the submitter, NOT an arbitrary
+						// foreign ID — do not loosen either to accept request-supplied values.
+						//
+						// The existence check gates all three: a numeric ID that no longer resolves
+						// to an attachment (the media item was deleted) would otherwise pass on a
+						// stale saved value, fail silently at the sink — set_post_thumbnail()
+						// ignores a dead ID — and then be written straight back to the saved value,
+						// so the listing would publish with no logo and never self-heal.
+						$is_usable = 'attachment' === get_post_type( $attachment_id )
+							&& (
+								$this->is_attachment_authorized_for_current_user( $attachment_id )
+								|| $this->is_existing_listing_attachment( $attachment_id, $key )
+								|| $this->is_saved_user_attachment( $attachment_id, $group_key, $key )
+							);
+
+						if ( ! $is_usable ) {
+							// Tell the submitter how to recover. The rejected value is one the form
+							// offered them (a saved logo), so "invalid" alone leaves them stuck.
+							return new WP_Error(
+								'validation-error',
+								sprintf(
+									// translators: Placeholder %s is the label of the file field, e.g. "Company Logo".
+									__( 'The saved file for "%s" is no longer available to use. Please upload it again, or remove it, and resubmit.', 'wp-job-manager' ),
+									$field['label']
+								)
+							);
 						}
 					}
 				}
@@ -1061,6 +1086,44 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		$existing_ids = array_map( 'absint', is_array( $existing ) ? $existing : [ $existing ] );
 
 		return in_array( absint( $attachment_id ), $existing_ids, true );
+	}
+
+	/**
+	 * Determines whether an attachment is the current user's own saved value for a
+	 * company field, as persisted by one of their previous submissions.
+	 *
+	 * A new submission has no listing to read from, so it pre-populates the company
+	 * fields from the submitter's user meta ({@see submit()}) — their saved company
+	 * logo is offered back to them on the next listing. That meta is written by this
+	 * class alone ({@see update_job_data()}) and only after this same ownership check
+	 * has passed, so it records an attachment the user was already authorized to use,
+	 * even when they did not author it — e.g. a site admin uploaded or replaced the
+	 * logo on their listing. It is server-side state, not a request-supplied ID.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int    $attachment_id Attachment post ID.
+	 * @param string $group_key     Field group. Only 'company' is pre-populated from user meta.
+	 * @param string $key           Field key (e.g. 'company_logo').
+	 * @return bool True when the attachment is the current user's saved value for the field.
+	 */
+	protected function is_saved_user_attachment( $attachment_id, $group_key, $key ) {
+		$user_id = get_current_user_id();
+
+		// Mirrors the scope of the user-meta pre-population in submit(): a new listing
+		// (no job_id), a logged-in submitter, the company group only. Editing reads from
+		// the listing instead — is_existing_listing_attachment() covers that path — and
+		// guests have no saved value to reuse. Keeping this no broader than the
+		// pre-population it mirrors is what stops it becoming a general-purpose bypass.
+		if ( $this->job_id || ! $user_id || 'company' !== $group_key ) {
+			return false;
+		}
+
+		$saved = get_user_meta( $user_id, '_' . $key, true );
+
+		$saved_ids = array_map( 'absint', is_array( $saved ) ? $saved : [ $saved ] );
+
+		return in_array( absint( $attachment_id ), $saved_ids, true );
 	}
 
 	/**
