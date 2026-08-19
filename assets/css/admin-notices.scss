@@ -33,6 +33,37 @@ $notice-success: #43af99;
 		font-size: 13px;
 	}
 
+	// Reassert the brand colors on link buttons. Scoped to `a` so it only
+	// counters WP core's `div.notice a` styling and leaves the dismiss
+	// <button>'s `color: inherit` intact.
+	a.wpjm-button {
+		text-decoration: none;
+
+		&,
+		&:hover,
+		&:focus,
+		&:active {
+			color: #ffffff;
+		}
+
+		&.is-outline,
+		&.is-link {
+			&,
+			&:hover,
+			&:focus {
+				color: var(--wpjm-brand-color-primary);
+			}
+		}
+
+		&.is-link:active {
+			color: var(--wpjm-brand-color-primary);
+		}
+
+		&.is-outline:active {
+			color: #1e1e1e;
+		}
+	}
+
 	.wp-core-ui &.is-dismissible {
 		padding-right: 24px;
 	}
