@@ -1335,7 +1335,7 @@ class WP_Job_Manager_Post_Types {
 	 * front-end submission's preview -> publish transition — must fall back to the
 	 * server-side calculated expiry.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 *
 	 * @param WP_Post $post The job listing being saved.
 	 *
