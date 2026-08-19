@@ -150,6 +150,22 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 
 == Changelog ==
 
+### 2.4.6 - 2026-08-19
+* Allow reusing a submitter's saved company logo on a new listing (#3082)
+* Allow reusing a listing's existing logo on edit when authored by another user (#3060)
+* Fix notice dismiss button colliding with core styles (#3036)
+* Fix unreadable notice-banner button text on Settings (#3029)
+* Decode HTML entities in plain-text job title contexts (#3026)
+* Indicate WordPress 7.0 compatibility (#3015)
+* Verify the TLS certificate on the geocoding request (#3014)
+* Exclude password-protected listings from the promoted jobs feed (#3012)
+* Only accept a manual listing expiry from the gated admin edit (#3011)
+* Prevent the edit-job form from creating a new listing for an unauthorized or logged-out request.
+
+* Enforce company-logo attachment ownership when saving a job listing as a draft.
+
+* Apply the post-password check to the `[job]` and `[job_apply]` shortcodes.
+
 ### 2.4.5 - 2026-07-01
 * Escape URLs in two sprintf href templates with esc_url() (#2996)
 * Validate attachment ownership when reusing a company logo by ID (#2995)
@@ -188,15 +204,3 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 * Fixed PHP 8+ undefined array key warning in the widget caching methods.
 * Updated Twitter profile links to use the new `x.com` domain and updated related labels to "X / Twitter" to reflect the platform rebrand.
 * Added a Settings link to the plugin action links on the Plugins screen for quicker access to plugin settings.
-
-### 2.4.1 - 2026-02-24
-* Add permission check to listing query parameters (#2914)
-* Fix structured data output for password-protected listings (#2913)
-
-* Update actions/cache to use v4 (#2896)
-* reCaptcha script not being loaded (#2893)
-* add a additional action to the do_feed_rss2
-* fix hardcoded dashboard expiration date format
-* Dev: Fix deprecated  methods
-* Fix file input field for forms not marked as required
-
