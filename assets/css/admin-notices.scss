@@ -138,12 +138,18 @@ $notice-success: #43af99;
 		color: inherit;
 		position: static;
 
+		// Override core's `.notice-dismiss` fixed size so the 24px icon isn't squeezed (#3034).
+		box-sizing: border-box;
+		width: 36px; // 24px icon + 6px padding each side.
+		height: 36px;
+
 		&::before {
 			color: inherit;
 			content: '';
 			background-color: currentColor;
 			mask-image: url('data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' fill=\'none\' viewBox=\'0 0 24 24\'%3e%3cpath fill=\'%23FFFFFF\' fill-rule=\'evenodd\' d=\'m12 13.06 3.71 3.71 1.06-1.06-3.7-3.71 3.7-3.71-1.06-1.06-3.71 3.7-3.71-3.7-1.06 1.06 3.7 3.71-3.7 3.71 1.06 1.06 3.71-3.7Z\' clip-rule=\'evenodd\'/%3e%3c/svg%3e');
 
+			flex-shrink: 0;
 			width: 24px;
 			height: 24px;
 		}
