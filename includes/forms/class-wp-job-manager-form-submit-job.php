@@ -22,7 +22,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * upload, used to reuse the uploader's existing identical attachment instead
 	 * of creating a duplicate on every submission.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 *
 	 * @var string
 	 */
@@ -964,7 +964,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * draft save cannot bind another user's attachment (e.g. as a company logo / featured image)
 	 * — the draft path skips validate_fields() and would otherwise reach the sink unchecked.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 *
 	 * @param array $values Submitted input values.
 	 * @return bool|WP_Error True when all referenced attachments are authorized, WP_Error otherwise.
@@ -1065,7 +1065,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * or replaced the logo on their behalf. This is not an arbitrary foreign ID:
 	 * it is the value already bound to a listing the user is authorized to edit.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 *
 	 * @param int    $attachment_id Attachment post ID.
 	 * @param string $key           Field key (e.g. 'company_logo').
@@ -1100,7 +1100,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * even when they did not author it — e.g. a site admin uploaded or replaced the
 	 * logo on their listing. It is server-side state, not a request-supplied ID.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 *
 	 * @param int    $attachment_id Attachment post ID.
 	 * @param string $group_key     Field group. Only 'company' is pre-populated from user meta.
@@ -1221,7 +1221,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * always gets a fresh attachment, and one user's upload can never be bound to
 	 * another user's attachment, preserving the attachment-ownership boundary.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 *
 	 * @param string $file_path Absolute path to the uploaded file.
 	 * @return int Attachment ID to reuse, or 0 when none matches.

@@ -352,7 +352,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * the historical behavior (children included) and let a callback override it so
 	 * that a single parent category selection can match its exact term only.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_include_category_children_filter() {
@@ -425,7 +425,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * the expanded set contains duplicates, WP_Tax_Query rejects the clause as
 	 * "inexistent_terms", and the query matches nothing at all.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_include_category_children_filter_in_and_mode() {
@@ -1443,7 +1443,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_prefixes_extensions_with_a_dot() {
@@ -1462,7 +1462,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Pipe-separated extension groups, as used by job_manager_get_allowed_mime_types(), are split into one token each.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_splits_pipe_separated_groups() {
@@ -1478,7 +1478,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_deduplicates_and_normalizes_leading_dots() {
@@ -1497,7 +1497,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * Fields may pass a plain list of mime types, or a mime-type-keyed map, instead of an extension-keyed map. The
 	 * `accept` attribute takes mime types too, so pass them through rather than emitting nonsense like `.0`.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_passes_through_mime_types() {
@@ -1506,7 +1506,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_empty_when_nothing_is_allowed() {

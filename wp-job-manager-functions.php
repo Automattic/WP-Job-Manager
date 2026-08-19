@@ -177,7 +177,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			 * it; if one selected term is an ancestor of another, the clause is
 			 * discarded entirely and the query returns nothing.
 			 *
-			 * @since $$next-version$$
+			 * @since 2.4.6
 			 *
 			 * @param bool   $include_children  Whether to include child terms of the selected categories.
 			 * @param string $operator          The tax query operator in use (`IN` or `AND`).
@@ -1727,7 +1727,7 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  * list of mime types, or a map keyed by mime type; those are emitted as mime type tokens, which `accept` also
  * accepts.
  *
- * @since $$next-version$$
+ * @since 2.4.6
  *
  * @param array $allowed_mime_types Array of allowed file extensions and mime types.
  * @return string Comma-separated list of `accept` tokens, empty when nothing is allowed.
