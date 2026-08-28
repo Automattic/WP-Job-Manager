@@ -294,6 +294,7 @@ class Attachment_Deduplicator {
 		// on the libraries this exists for it is minutes of silence otherwise.
 		\WP_CLI::log( 'Scanning for duplicate logos…' );
 
+		$started  = microtime( true );
 		$progress = null;
 		$report   = ( new self() )->run(
 			[
@@ -333,6 +334,17 @@ class Attachment_Deduplicator {
 		// What the run does not cover, counted: whether the site's remaining bloat
 		// is inside or outside this command's reach should be a number, not a guess.
 		\WP_CLI::log( sprintf( 'Not examined:            %d guest-owned image(s), %d image(s) matching no currently-referenced logo', $report['skipped_guest'], $report['skipped_unmatched'] ) );
+
+		// Elapsed time and peak memory are the two numbers a synthetic benchmark
+		// cannot supply; printing them makes every real-site run a data point.
+		$elapsed = microtime( true ) - $started;
+		\WP_CLI::log(
+			sprintf(
+				'Took %s; peak memory %s.',
+				$elapsed >= 60 ? sprintf( '%dm %ds', (int) ( $elapsed / 60 ), (int) $elapsed % 60 ) : sprintf( '%.1fs', $elapsed ),
+				size_format( memory_get_peak_usage( true ) )
+			)
+		);
 
 		// Print the mapping so a dry run can be audited, and a live run leaves a
 		// record of what was collapsed into what. Past a few screenfuls the CSV is
