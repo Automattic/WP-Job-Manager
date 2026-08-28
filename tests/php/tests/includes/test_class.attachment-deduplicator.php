@@ -286,6 +286,71 @@ class WP_Test_Attachment_Deduplicator extends WPJM_BaseTest {
 		$this->assertInstanceOf( WP_Post::class, get_post( $guest_a ), "One guest's logo must survive." );
 		$this->assertInstanceOf( WP_Post::class, get_post( $guest_b ), "Another guest's identical logo must survive — guests are not a shared owner." );
 		$this->assertSame( 0, $report['attachments_deleted'] );
+		$this->assertSame( 2, $report['skipped_guest'], 'Both guest uploads are counted as unexamined, so the residue outside the run is measured, not silent.' );
+		$this->assertSame( 0, $report['skipped_unmatched'], 'Guest uploads are counted once, as guest-owned — not again as unmatched.' );
+	}
+
+	/**
+	 * The report counts the image attachments the run never examined — guest
+	 * uploads, and images matching no currently-referenced logo — separately from
+	 * the duplicates it found. Those counts are what tells an operator whether the
+	 * library's remaining bloat is inside or outside this command's reach.
+	 */
+	public function test_report_counts_unexamined_images_by_reason() {
+		$author   = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$stranger = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes    = $this->png_bytes();
+
+		// A referenced logo with one duplicate: both match, one is redundant.
+		$canonical = $this->create_logo_attachment( $author, $bytes, 'logo.png' );
+		$duplicate = $this->create_logo_attachment( $author, $bytes, 'logo-1.png' );
+		$this->create_listing_with_logo( $author, $canonical );
+		$this->create_listing_with_logo( $author, $duplicate );
+
+		// Unanchored: different bytes from any referenced logo, so nothing marks
+		// them as logo duplicates — one owned by the logo owner, one by a user
+		// with no listings at all.
+		$unrelated = $this->create_logo_attachment( $author, $bytes . "\0", 'photo.png' );
+		$abandoned = $this->create_logo_attachment( $stranger, $bytes . "\0\0", 'old-logo.png' );
+
+		// Guest-owned: counted under its own reason, not as unmatched.
+		$guest = $this->create_logo_attachment( 0, $bytes, 'guest.png' );
+
+		$report = ( new Attachment_Deduplicator() )->run();
+
+		$this->assertSame( 1, $report['duplicates'], 'The matched duplicate is planned for collapse, not counted as skipped. Report: ' . wp_json_encode( $report ) );
+		$this->assertSame( 1, $report['skipped_guest'] );
+		$this->assertSame( 2, $report['skipped_unmatched'], 'Both unanchored images are counted, whether their owner has listings or not.' );
+		$this->assertInstanceOf( WP_Post::class, get_post( $unrelated ), 'Counting an image as unexamined must not touch it.' );
+		$this->assertInstanceOf( WP_Post::class, get_post( $abandoned ) );
+		$this->assertInstanceOf( WP_Post::class, get_post( $guest ) );
+	}
+
+	/**
+	 * With user_id set, the unexamined counts describe that owner's library, not
+	 * the whole site — a per-owner run reports a per-owner residue.
+	 */
+	public function test_unexamined_counts_are_scoped_to_the_requested_owner() {
+		$user_a = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$user_b = $this->factory->user->create( [ 'role' => 'employer' ] );
+		$bytes  = $this->png_bytes();
+
+		$a1 = $this->create_logo_attachment( $user_a, $bytes, 'a1.png' );
+		$a2 = $this->create_logo_attachment( $user_a, $bytes, 'a2.png' );
+		$this->create_listing_with_logo( $user_a, $a1 );
+		$this->create_listing_with_logo( $user_a, $a2 );
+		$this->create_logo_attachment( $user_a, $bytes . "\0", 'a-photo.png' );
+
+		// Outside the requested scope entirely: another owner's unanchored image
+		// and a guest upload.
+		$this->create_logo_attachment( $user_b, $bytes . "\0\0", 'b-photo.png' );
+		$this->create_logo_attachment( 0, $bytes, 'guest.png' );
+
+		$report = ( new Attachment_Deduplicator() )->run( [ 'user_id' => $user_a ] );
+
+		$this->assertSame( 1, $report['duplicates'] );
+		$this->assertSame( 1, $report['skipped_unmatched'], "Only owner A's unanchored image is counted. Report: " . wp_json_encode( $report ) );
+		$this->assertSame( 0, $report['skipped_guest'], 'Guest uploads are outside a per-owner scope, not part of its residue.' );
 	}
 
 	/**
@@ -416,7 +481,9 @@ class WP_Test_Attachment_Deduplicator extends WPJM_BaseTest {
 		$used   = $wpdb->num_queries - $before;
 
 		$this->assertSame( 30, $report['duplicates'], 'All duplicates across all owners are found. Report: ' . wp_json_encode( $report ) );
-		$this->assertLessThan( 15, $used, sprintf( 'A dry run over 30 duplicates across 3 owners used %d queries; scanning should be batched, not per-duplicate or per-owner.', $used ) );
+		// 18 covers the batched scans plus fixed overhead (the two unexamined-image
+		// COUNTs among it); per-duplicate scanning would use several times this.
+		$this->assertLessThan( 18, $used, sprintf( 'A dry run over 30 duplicates across 3 owners used %d queries; scanning should be batched, not per-duplicate or per-owner.', $used ) );
 	}
 
 	/**

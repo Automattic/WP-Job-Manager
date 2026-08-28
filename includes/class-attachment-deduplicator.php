@@ -40,6 +40,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * runtime dedup boundary. Guest uploads (`post_author` 0) are skipped outright:
  * 0 is not an owner, so unrelated submitters would otherwise collapse together.
  *
+ * What is skipped is still counted: the report says how many image attachments
+ * were left unexamined (guest-owned, or matching no currently-referenced logo),
+ * so the size of the residue outside this command's reach is measured rather
+ * than guessed at.
+ *
  * @since $$next-version$$
  *
  * @internal
@@ -200,6 +205,12 @@ class Attachment_Deduplicator {
 	 * one, re-pointing every reference before deleting the redundant copies.
 	 * Dry-run by default; pass --live to apply.
 	 *
+	 * The summary also counts the image attachments the command does not examine:
+	 * guest uploads (post_author 0, so no owner to merge within) and images whose
+	 * content matches no currently-referenced logo. Those are outside this
+	 * command's safety envelope and are never touched — the counts exist so the
+	 * size of that residue is known, not guessed at.
+	 *
 	 * ## RUN THIS WITH THE SITE IN MAINTENANCE MODE
 	 *
 	 * Which attachments are safe to delete is worked out once, up front, and on the
@@ -319,6 +330,10 @@ class Attachment_Deduplicator {
 			\WP_CLI::log( sprintf( 'Kept (referenced elsewhere): %d', $report['skipped_referenced'] ) );
 		}
 
+		// What the run does not cover, counted: whether the site's remaining bloat
+		// is inside or outside this command's reach should be a number, not a guess.
+		\WP_CLI::log( sprintf( 'Not examined:            %d guest-owned image(s), %d image(s) matching no currently-referenced logo', $report['skipped_guest'], $report['skipped_unmatched'] ) );
+
 		// Print the mapping so a dry run can be audited, and a live run leaves a
 		// record of what was collapsed into what. Past a few screenfuls the CSV is
 		// the usable record, so don't bury the summary under thousands of lines.
@@ -401,11 +416,15 @@ class Attachment_Deduplicator {
 	 *                    'on_tick' (callable|null) called after each attachment.
 	 * @return array Report: 'groups' and 'duplicates' (counts of what will be or was
 	 *               merged), 'skipped_referenced' (candidates kept because something
-	 *               unrecognised still references them), 'plan' (the canonical =>
-	 *               duplicates mapping), and, for a live run, 'references_repointed',
-	 *               'attachments_deleted', 'repoint_failures' (IDs kept because their
-	 *               references could not be moved) and 'delete_failures' (IDs that
-	 *               could not be deleted).
+	 *               unrecognised still references them), 'skipped_guest' (image
+	 *               attachments never examined because they are guest-owned —
+	 *               post_author 0 — and so have no owner to merge within),
+	 *               'skipped_unmatched' (image attachments whose content matches no
+	 *               currently-referenced logo, so nothing anchors them as logo
+	 *               duplicates), 'plan' (the canonical => duplicates mapping), and,
+	 *               for a live run, 'references_repointed', 'attachments_deleted',
+	 *               'repoint_failures' (IDs kept because their references could not
+	 *               be moved) and 'delete_failures' (IDs that could not be deleted).
 	 */
 	public function run( array $args = [] ) {
 		$args = wp_parse_args(
@@ -425,12 +444,23 @@ class Attachment_Deduplicator {
 			'references_repointed' => 0,
 			'attachments_deleted'  => 0,
 			'skipped_referenced'   => 0,
+			'skipped_guest'        => 0,
+			'skipped_unmatched'    => 0,
 			'delete_failures'      => [],
 			'repoint_failures'     => [],
 			'plan'                 => [],
 		];
 
-		$groups = $this->find_duplicate_logo_groups( (int) $args['user_id'] );
+		$discovery = $this->find_duplicate_logo_groups( (int) $args['user_id'] );
+		$groups    = $discovery['groups'];
+
+		// Count what discovery did not examine. Everything not matched to a
+		// referenced logo is either guest-owned or unanchored; two COUNT queries
+		// give both, so the residue outside the run's reach is reported as a
+		// number. max() because an upload landing mid-run can skew the totals.
+		$totals                      = $this->count_image_attachments( (int) $args['user_id'] );
+		$report['skipped_guest']     = $totals['guest'];
+		$report['skipped_unmatched'] = max( 0, $totals['total'] - $totals['guest'] - $discovery['matched'] );
 
 		// Resolve which candidates are off-limits in one batched pass over the whole
 		// run, rather than re-querying the same tables for every duplicate.
@@ -543,12 +573,16 @@ class Attachment_Deduplicator {
 	 * longer reference anything) are collapsed alongside the in-use ones.
 	 *
 	 * @param int $user_id Limit to one owner (0 = all).
-	 * @return array[] Each: [ 'canonical' => int, 'duplicates' => int[] ].
+	 * @return array 'groups' (each: [ 'canonical' => int, 'duplicates' => int[] ])
+	 *               and 'matched' (how many image attachments shared a
+	 *               referenced logo's signature — i.e. were examined as
+	 *               potential duplicates, whether or not they had any).
 	 */
 	private function find_duplicate_logo_groups( $user_id = 0 ) {
 		// Content signatures ("author:hash") of currently-referenced logos.
 		$logo_signatures = [];
 		$owner_ids       = [];
+		$matched         = 0;
 
 		// Both passes stream a page at a time. Materialising every attachment ID first
 		// is what puts a large library over the memory limit, so the full set is never
@@ -566,7 +600,10 @@ class Attachment_Deduplicator {
 		);
 
 		if ( ! $logo_signatures ) {
-			return [];
+			return [
+				'groups'  => [],
+				'matched' => 0,
+			];
 		}
 
 		// Group every image attachment those owners hold by signature, keeping only
@@ -576,11 +613,12 @@ class Attachment_Deduplicator {
 		$by_signature = [];
 		$this->each_owner_image_page(
 			array_keys( $owner_ids ),
-			function ( array $page ) use ( &$by_signature, $logo_signatures, $user_id ) {
+			function ( array $page ) use ( &$by_signature, &$matched, $logo_signatures, $user_id ) {
 				foreach ( $page as $attachment_id ) {
 					$signature = $this->attachment_signature( $attachment_id, $user_id );
 					if ( $signature && isset( $logo_signatures[ $signature ] ) ) {
 						$by_signature[ $signature ][] = (int) $attachment_id;
+						++$matched;
 					}
 				}
 			}
@@ -599,7 +637,72 @@ class Attachment_Deduplicator {
 			];
 		}
 
-		return $groups;
+		return [
+			'groups'  => $groups,
+			'matched' => $matched,
+		];
+	}
+
+	/**
+	 * Counts image attachments, in total and guest-owned, so the report can say
+	 * how much of the library the run never examined.
+	 *
+	 * Everything the discovery pass visits is bounded by these totals: matched
+	 * attachments are examined, guest-owned ones are skipped by policy, and the
+	 * remainder matched no currently-referenced logo.
+	 *
+	 * @param int $user_id Limit to one owner (0 = all).
+	 * @return array 'total' and 'guest' counts. Scoped to $user_id when given, in
+	 *               which case 'guest' is 0 by construction.
+	 */
+	private function count_image_attachments( $user_id = 0 ) {
+		global $wpdb;
+
+		$mime = $wpdb->esc_like( 'image/' ) . '%';
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery -- Two COUNT queries; wp_count_attachments() cannot filter by author.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching -- One-shot CLI migration.
+		if ( $user_id ) {
+			$total = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$wpdb->posts}
+					 WHERE post_type = 'attachment' AND post_status = 'inherit'
+					   AND post_mime_type LIKE %s AND post_author = %d",
+					$mime,
+					$user_id
+				)
+			);
+
+			return [
+				'total' => $total,
+				'guest' => 0,
+			];
+		}
+
+		$total = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->posts}
+				 WHERE post_type = 'attachment' AND post_status = 'inherit'
+				   AND post_mime_type LIKE %s",
+				$mime
+			)
+		);
+
+		$guest = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->posts}
+				 WHERE post_type = 'attachment' AND post_status = 'inherit'
+				   AND post_mime_type LIKE %s AND post_author = 0",
+				$mime
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		return [
+			'total' => $total,
+			'guest' => $guest,
+		];
 	}
 
 	/**
