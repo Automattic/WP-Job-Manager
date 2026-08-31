@@ -1831,7 +1831,11 @@ class WP_Job_Manager_Post_Types {
 		$structured_data = wpjm_get_job_listing_structured_data();
 		if ( ! empty( $structured_data ) ) {
 			echo '<!-- WP Job Manager Structured Data -->' . "\r\n";
-			echo '<script type="application/ld+json">' . wpjm_esc_json( wp_json_encode( $structured_data ), true ) . '</script>';
+			// Script-element content is raw text: HTML entities are never decoded there, so
+			// the payload must use JSON escapes (< etc.), not HTML entities. The HEX
+			// flags escape <, >, &, ' and " so the JSON cannot close the script element.
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The JSON_HEX_* flags escape the payload for the script element.
+			echo '<script type="application/ld+json">' . wp_json_encode( $structured_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . '</script>';
 		}
 	}
 
