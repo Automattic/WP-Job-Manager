@@ -22,13 +22,16 @@ wp_enqueue_style( 'jquery-ui' );
 <?php
 $field_date_value = isset( $field['value'] ) ? $field['value'] : '';
 $field_time_value = '';
-if ( strpos( $field_date_value, ' ' ) ) {
-	$field_time_value = substr( strrchr( $field_date_value, ' ' ), 1, 5 );
-	$field_date_value = substr( $field_date_value, 0, 10 );
+
+// Split the stored value only for fields that opted into a time input, and only on a
+// real trailing time. Other date fields keep whatever value they were given.
+if ( ! empty( $field['enable_time'] ) && preg_match( '/^(.*\S)[ T](\d{1,2}):(\d{2})(?::\d{2})?$/', $field_date_value, $field_value_parts ) ) {
+	$field_date_value = $field_value_parts[1];
+	$field_time_value = sprintf( '%02d:%02d', (int) $field_value_parts[2], (int) $field_value_parts[3] );
 }
 ?>
 <input type="text" class="input-date job-manager-datepicker" name="<?php echo esc_attr( isset( $field['name'] ) ? $field['name'] : $key ); ?>"<?php if ( isset( $field['autocomplete'] ) && false === $field['autocomplete'] ) { echo ' autocomplete="off"'; } ?> id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo empty( $field['placeholder'] ) ? '' : esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field_date_value ); ?>" <?php if ( ! empty( $field['required'] ) ) echo 'required'; ?> />
 <?php if ( ! empty( $field['enable_time'] ) ) : ?>
-<input type="time" class="input-time" name="<?php echo esc_attr( ( isset( $field['name'] ) ? $field['name'] : $key ) . '-time' ); ?>" value="<?php echo esc_attr( $field_time_value ); ?>" <?php if ( ! empty( $field['required'] ) ) echo 'required'; ?> />
+<input type="time" class="input-time" name="<?php echo esc_attr( ( isset( $field['name'] ) ? $field['name'] : $key ) . '-time' ); ?>" value="<?php echo esc_attr( $field_time_value ); ?>" />
 <?php endif; ?>
 <?php if ( ! empty( $field['description'] ) ) : ?><small class="description"><?php echo wp_kses_post( $field['description'] ); ?></small><?php endif; ?>
