@@ -2033,3 +2033,18 @@ function job_manager_user_can_submit_job_listing() {
 	 */
 	return apply_filters( 'job_manager_user_can_submit_job_listing', $can_submit );
 }
+
+/**
+ * Whether the submission-limit check can ever refuse a listing.
+ *
+ * Must answer: can job_manager_user_can_submit_job_listing() ever return false?
+ * Callers use this to skip work (e.g. the submit form's publish lock) that only
+ * exists to protect that check — keep it in sync with the check's inputs.
+ *
+ * @since $$next-version$$
+ *
+ * @return bool
+ */
+function job_manager_user_submission_limit_active() {
+	return '' !== get_option( 'job_manager_submission_limit', '' ) || has_filter( 'job_manager_user_can_submit_job_listing' );
+}

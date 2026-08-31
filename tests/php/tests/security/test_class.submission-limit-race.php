@@ -23,6 +23,20 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 */
 	private $lock_state_during_publish = 'unchecked';
 
+	/**
+	 * The employer running each test's submission.
+	 *
+	 * @var int
+	 */
+	private $user;
+
+	/**
+	 * A preview listing owned by that employer.
+	 *
+	 * @var int
+	 */
+	private $job_id;
+
 	public function setUp(): void {
 		parent::setUp();
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-form.php';
@@ -31,14 +45,20 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 		// The lock only guards a submission-limit check that can fail, so these tests
 		// configure a limit; individual tests override the value where it matters.
 		update_option( 'job_manager_submission_limit', 5 );
+
+		$this->login_as_employer();
+		$this->user   = get_current_user_id();
+		$this->job_id = $this->factory->job_listing->create(
+			[
+				'post_status' => 'preview',
+				'post_author' => $this->user,
+			]
+		);
 	}
 
 	public function tearDown(): void {
 		remove_filter( 'submit_job_post_status', [ $this, 'capture_lock_state' ] );
-		delete_option( 'job_manager_submission_limit' );
-		$_POST    = [];
 		$_REQUEST = [];
-		$_GET     = [];
 		parent::tearDown();
 	}
 
@@ -53,69 +73,24 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 */
 	public function capture_lock_state( $status ) {
 		global $wpdb;
-		$lock_name                       = $this->submission_lock_name( get_current_user_id() );
+		$lock_name                       = $this->submission_lock_name();
 		$this->lock_state_during_publish = $wpdb->get_var( $wpdb->prepare( 'SELECT IS_USED_LOCK(%s)', $lock_name ) );
 		return $status;
 	}
 
 	/**
-	 * Creates a preview listing owned by the given user.
-	 *
-	 * @param int $author Author user ID.
-	 *
-	 * @return int Job listing ID.
-	 */
-	private function create_preview_listing( $author ) {
-		return $this->factory->job_listing->create(
-			[
-				'post_status' => 'preview',
-				'post_author' => $author,
-			]
-		);
-	}
-
-	/**
-	 * Drives preview_handler() the way a "Continue" front-end POST does.
-	 *
-	 * The form is built *after* the request superglobals are populated because the
-	 * constructor resolves $this->job_id from them. An optional factory lets a test
-	 * supply a subclass that instruments the locking; it is invoked at that same point.
-	 *
-	 * @param int           $job_id  Job listing ID.
-	 * @param callable|null $factory Optional () => WP_Job_Manager_Form_Submit_Job.
-	 *
-	 * @return WP_Job_Manager_Form_Submit_Job The form that handled the request.
-	 */
-	private function continue_publish( $job_id, $factory = null ) {
-		$_POST = [
-			'job_id'      => $job_id,
-			'continue'    => '1',
-			'_wpjm_nonce' => wp_create_nonce( 'preview-job-' . $job_id ),
-		];
-		foreach ( $_POST as $key => $value ) {
-			$_REQUEST[ $key ] = $value;
-		}
-
-		$form = null === $factory ? new WP_Job_Manager_Form_Submit_Job() : $factory();
-		$form->preview_handler();
-
-		return $form;
-	}
-
-	/**
-	 * The production lock-name definition, read via reflection so the tests never
-	 * hard-code the scheme independently (which would silently pass against a stale name).
-	 *
-	 * @param int $user_id User ID to scope the lock to.
+	 * The production lock-name definition (scoped to the current user), read via
+	 * reflection so the tests never hard-code the scheme independently (which would
+	 * silently pass against a stale name).
 	 *
 	 * @return string
 	 */
-	private function submission_lock_name( $user_id ) {
+	private function submission_lock_name() {
 		$form   = ( new ReflectionClass( WP_Job_Manager_Form_Submit_Job::class ) )->newInstanceWithoutConstructor();
 		$method = new ReflectionMethod( $form, 'submission_lock_name' );
 		$method->setAccessible( true );
 
-		return $method->invoke( $form, $user_id );
+		return $method->invoke( $form );
 	}
 
 	/**
@@ -136,12 +111,8 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 * The per-user submission lock must be held while the listing is being published.
 	 */
 	public function test_submission_lock_held_during_publish() {
-		$user = $this->factory->user->create( [ 'role' => 'author' ] );
-		wp_set_current_user( $user );
-		$job_id = $this->create_preview_listing( $user );
-
 		add_filter( 'submit_job_post_status', [ $this, 'capture_lock_state' ] );
-		$this->continue_publish( $job_id );
+		$this->continue_from_preview( $this->job_id );
 
 		$this->assertNotNull(
 			$this->lock_state_during_publish,
@@ -149,7 +120,7 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 		);
 		$this->assertNotSame(
 			'preview',
-			get_post_status( $job_id ),
+			get_post_status( $this->job_id ),
 			'The listing should have been promoted out of preview.'
 		);
 	}
@@ -158,14 +129,10 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 * The lock must be released once publishing completes, not leaked.
 	 */
 	public function test_submission_lock_released_after_publish() {
-		$user = $this->factory->user->create( [ 'role' => 'author' ] );
-		wp_set_current_user( $user );
-		$job_id = $this->create_preview_listing( $user );
-
-		$this->continue_publish( $job_id );
+		$this->continue_from_preview( $this->job_id );
 
 		global $wpdb;
-		$lock_name = $this->submission_lock_name( $user );
+		$lock_name = $this->submission_lock_name();
 		// IS_FREE_LOCK returns 1 when the lock is not held by any session.
 		$is_free = $wpdb->get_var( $wpdb->prepare( 'SELECT IS_FREE_LOCK(%s)', $lock_name ) );
 		$this->assertSame(
@@ -182,12 +149,9 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 */
 	public function test_lock_skipped_when_no_limit_configured() {
 		delete_option( 'job_manager_submission_limit' );
-		$user = $this->factory->user->create( [ 'role' => 'author' ] );
-		wp_set_current_user( $user );
-		$job_id = $this->create_preview_listing( $user );
 
 		add_filter( 'submit_job_post_status', [ $this, 'capture_lock_state' ] );
-		$this->continue_publish( $job_id );
+		$this->continue_from_preview( $this->job_id );
 
 		$this->assertNull(
 			$this->lock_state_during_publish,
@@ -195,7 +159,7 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 		);
 		$this->assertNotSame(
 			'preview',
-			get_post_status( $job_id ),
+			get_post_status( $this->job_id ),
 			'The listing should still publish without the lock.'
 		);
 	}
@@ -205,23 +169,20 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 */
 	public function test_submission_limit_still_enforced() {
 		update_option( 'job_manager_submission_limit', 1 );
-		$user = $this->factory->user->create( [ 'role' => 'author' ] );
-		wp_set_current_user( $user );
 
 		// One already-published listing consumes the quota of 1.
 		$this->factory->job_listing->create(
 			[
 				'post_status' => 'publish',
-				'post_author' => $user,
+				'post_author' => $this->user,
 			]
 		);
 
-		$job_id = $this->create_preview_listing( $user );
-		$form   = $this->continue_publish( $job_id );
+		$form = $this->continue_from_preview( $this->job_id );
 
 		$this->assertSame(
 			'preview',
-			get_post_status( $job_id ),
+			get_post_status( $this->job_id ),
 			'A listing over the submission limit must not be published.'
 		);
 		$this->assertNotEmpty(
@@ -237,24 +198,21 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 */
 	public function test_scheduled_listings_count_towards_limit() {
 		update_option( 'job_manager_submission_limit', 1 );
-		$user = $this->factory->user->create( [ 'role' => 'author' ] );
-		wp_set_current_user( $user );
 
 		// One scheduled listing consumes the quota of 1.
 		$this->factory->job_listing->create(
 			[
 				'post_status' => 'future',
-				'post_author' => $user,
+				'post_author' => $this->user,
 				'post_date'   => gmdate( 'Y-m-d H:i:s', strtotime( '+1 month' ) ),
 			]
 		);
 
-		$job_id = $this->create_preview_listing( $user );
-		$this->continue_publish( $job_id );
+		$this->continue_from_preview( $this->job_id );
 
 		$this->assertSame(
 			'preview',
-			get_post_status( $job_id ),
+			get_post_status( $this->job_id ),
 			'A scheduled listing must count against the limit like any committed submission.'
 		);
 	}
@@ -265,12 +223,8 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 * on the unserialized path — protected by the status re-read — instead of failing.
 	 */
 	public function test_publish_proceeds_when_lock_unavailable() {
-		$user = $this->factory->user->create( [ 'role' => 'author' ] );
-		wp_set_current_user( $user );
-		$job_id = $this->create_preview_listing( $user );
-
-		$form = $this->continue_publish(
-			$job_id,
+		$form = $this->continue_from_preview(
+			$this->job_id,
 			function () {
 				return new class() extends WP_Job_Manager_Form_Submit_Job {
 					protected function acquire_submission_lock() {
@@ -282,7 +236,7 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 
 		$this->assertNotSame(
 			'preview',
-			get_post_status( $job_id ),
+			get_post_status( $this->job_id ),
 			'The publish must proceed when the submission lock cannot be acquired.'
 		);
 		$this->assertEmpty(
@@ -299,14 +253,12 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	 */
 	public function test_stale_preview_published_by_race_is_not_counted() {
 		update_option( 'job_manager_submission_limit', 1 );
-		$user = $this->factory->user->create( [ 'role' => 'author' ] );
-		wp_set_current_user( $user );
-		$job_id = $this->create_preview_listing( $user );
+		$job_id = $this->job_id;
 
 		// The subclass publishes the listing at lock-acquire time — i.e. after the handler
 		// first read it as `preview` but before it re-reads under the lock — standing in
 		// for a racing request that won the lock first.
-		$form = $this->continue_publish(
+		$form = $this->continue_from_preview(
 			$job_id,
 			function () use ( $job_id ) {
 				$form                 = new class() extends WP_Job_Manager_Form_Submit_Job {
@@ -353,33 +305,30 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 		global $wpdb;
 
 		update_option( 'job_manager_submission_limit', 1 );
-		$user = $this->factory->user->create( [ 'role' => 'author' ] );
-		wp_set_current_user( $user );
-		$job_id = $this->create_preview_listing( $user );
 
 		// Prime this request's object cache with the `preview` row, then publish via a
 		// direct UPDATE — bypassing wp_update_post and clean_post_cache — the way a
 		// concurrent request's commit appears to this process: visible to SQL, invisible
 		// to the object cache.
-		get_post( $job_id );
-		$wpdb->update( $wpdb->posts, [ 'post_status' => 'publish' ], [ 'ID' => $job_id ] );
+		get_post( $this->job_id );
+		$wpdb->update( $wpdb->posts, [ 'post_status' => 'publish' ], [ 'ID' => $this->job_id ] );
 
 		$this->assertSame(
 			'preview',
-			get_post( $job_id )->post_status,
+			get_post( $this->job_id )->post_status,
 			'Fixture precondition: the object cache still holds the stale preview row.'
 		);
 
-		$form = $this->continue_publish( $job_id );
+		$form = $this->continue_from_preview( $this->job_id );
 
 		$this->assertEmpty(
 			$this->rendered_errors( $form ),
 			'A racing publish this process has not seen must not raise a spurious limit error.'
 		);
-		clean_post_cache( $job_id );
+		clean_post_cache( $this->job_id );
 		$this->assertSame(
 			'publish',
-			get_post_status( $job_id ),
+			get_post_status( $this->job_id ),
 			'The listing published by the racing request must remain published.'
 		);
 	}

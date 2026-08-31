@@ -1438,18 +1438,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$submission_lock = null;
 
 				try {
-					if ( 'preview' === $job->post_status ) {
+					if ( 'preview' === $job->post_status && job_manager_user_submission_limit_active() ) {
 						// Serialize concurrent first-time publishes by the same user. A
 						// `preview` listing is not counted towards the submission limit, so
 						// without a lock two racing "continue" requests could each read a
 						// stale count and both pass the check below before either publishes.
 						// Best-effort: when the lock cannot be held the publish proceeds
-						// anyway, protected by the re-read below. Skipped entirely when no
-						// limit is configured and nothing filters the check — there is
-						// nothing for the lock to protect then.
-						if ( '' !== get_option( 'job_manager_submission_limit', '' ) || has_filter( 'job_manager_user_can_submit_job_listing' ) ) {
-							$submission_lock = $this->acquire_submission_lock();
-						}
+						// anyway, protected by the re-read below. When no limit is active
+						// there is nothing to protect, and this whole block is skipped.
+						$submission_lock = $this->acquire_submission_lock();
 
 						// Re-read the listing. A concurrent "continue" request may have
 						// published it while we waited on the lock; its clean_post_cache()
@@ -1510,14 +1507,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 *
 	 * @since $$next-version$$
 	 *
-	 * @param int|null $user_id User ID to scope the lock to. Defaults to the current user.
-	 *
 	 * @return string
 	 */
-	private function submission_lock_name( $user_id = null ) {
+	private function submission_lock_name() {
 		global $wpdb;
 
-		$user_id = null === $user_id ? get_current_user_id() : (int) $user_id;
+		$user_id = get_current_user_id();
 
 		// GET_LOCK names are scoped to the whole database server, not the schema. Two
 		// unrelated installs sharing a MySQL server (common on shared hosting) or sites
@@ -1566,7 +1561,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock, cannot be cached.
 		$acquired = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $lock_name, 2 ) );
 
-		return '1' === (string) $acquired ? $lock_name : null;
+		return '1' === $acquired ? $lock_name : null;
 	}
 
 	/**
