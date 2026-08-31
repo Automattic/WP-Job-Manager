@@ -1430,69 +1430,72 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( ! empty( $_POST['continue'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Input is used safely.
 			$job = get_post( $this->job_id );
 
-			if ( in_array( $job->post_status, [ 'preview', 'expired' ], true ) ) {
+			if ( $job instanceof WP_Post && in_array( $job->post_status, [ 'preview', 'expired' ], true ) ) {
 				// Renewals of already-counted listings (e.g. `expired`) publish directly:
 				// they do not increase the user's count, so they need neither the
 				// submission-limit re-check nor the lock that guards it. Only a first-time
 				// `preview` publish takes the serialized, limit-checked path below.
 				$submission_lock = null;
 
-				if ( 'preview' === $job->post_status ) {
-					// Serialize concurrent first-time publishes by the same user. A
-					// `preview` listing is not counted towards the submission limit, so
-					// without a lock two racing "continue" requests could each read a stale
-					// count and both pass the check below before either publishes.
-					$submission_lock = $this->acquire_submission_lock();
+				try {
+					if ( 'preview' === $job->post_status ) {
+						// Serialize concurrent first-time publishes by the same user. A
+						// `preview` listing is not counted towards the submission limit, so
+						// without a lock two racing "continue" requests could each read a
+						// stale count and both pass the check below before either publishes.
+						// Best-effort: when the lock cannot be held the publish proceeds
+						// anyway, protected by the re-read below. Skipped entirely when no
+						// limit is configured and nothing filters the check — there is
+						// nothing for the lock to protect then.
+						if ( '' !== get_option( 'job_manager_submission_limit', '' ) || has_filter( 'job_manager_user_can_submit_job_listing' ) ) {
+							$submission_lock = $this->acquire_submission_lock();
+						}
 
-					// Fail closed: if the critical section cannot be serialized, refuse to
-					// publish rather than fall back to the racy path this lock exists to
-					// close.
-					if ( null === $submission_lock ) {
-						$this->add_error( __( 'The listing could not be published because the site is temporarily busy. Please try again.', 'wp-job-manager' ) );
+						// Re-read the listing. A concurrent "continue" request may have
+						// published it while we waited on the lock; its clean_post_cache()
+						// ran in that other process, which cannot invalidate this request's
+						// in-process object cache — so drop the cached copy first, or the
+						// re-read returns the stale `preview` row and the limit check below
+						// wrongly counts the already-published listing against the user.
+						clean_post_cache( $this->job_id );
+						$job = get_post( $this->job_id );
 
-						return;
+						if ( ! $job instanceof WP_Post || 'preview' !== $job->post_status ) {
+							$this->step ++;
+
+							return;
+						}
+
+						// Re-validate the submission limit before promoting a listing for the
+						// first time. A `preview` listing is not yet counted, so the page-load
+						// check in WP_Job_Manager_Shortcodes::handle_redirects() is not enough
+						// on its own.
+						if ( ! job_manager_user_can_submit_job_listing() ) {
+							$this->add_error( __( 'You have reached the listing limit for your account and cannot publish this listing.', 'wp-job-manager' ) );
+
+							return;
+						}
 					}
 
-					// Re-read the listing now that the lock is held. A concurrent "continue"
-					// request may have published it while we were waiting, in which case
-					// there is nothing left to do and the limit check below would wrongly
-					// count that already-published listing against the user.
-					$job = get_post( $this->job_id );
+					// Reset expiry.
+					delete_post_meta( $job->ID, '_job_expires' );
 
-					if ( ! $job instanceof WP_Post || 'preview' !== $job->post_status ) {
-						$this->release_submission_lock( $submission_lock );
-						$this->step ++;
+					// Update job listing.
+					$update_job                = [];
+					$update_job['ID']          = $job->ID;
+					$update_job['post_status'] = apply_filters( 'submit_job_post_status', get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish', $job );
+					$update_job['post_author'] = get_current_user_id();
 
-						return;
-					}
+					$job_schedule_listing_date = get_post_meta( $job->ID, '_job_schedule_listing', true );
+					$this->apply_scheduled_date( $update_job, $job_schedule_listing_date );
 
-					// Re-validate the submission limit before promoting a listing for the
-					// first time. A `preview` listing is not yet counted, so the page-load
-					// check in WP_Job_Manager_Shortcodes::handle_redirects() is not enough
-					// on its own.
-					if ( ! job_manager_user_can_submit_job_listing() ) {
-						$this->release_submission_lock( $submission_lock );
-						$this->add_error( __( 'You have reached the listing limit for your account and cannot publish this listing.', 'wp-job-manager' ) );
-
-						return;
-					}
+					wp_update_post( $update_job );
+				} finally {
+					// The lock spans wp_update_post()'s hooks, any of which may throw or
+					// exit; without the finally a leaked lock on a persistent connection
+					// would block this user's next publish attempt.
+					$this->release_submission_lock( $submission_lock );
 				}
-
-				// Reset expiry.
-				delete_post_meta( $job->ID, '_job_expires' );
-
-				// Update job listing.
-				$update_job                = [];
-				$update_job['ID']          = $job->ID;
-				$update_job['post_status'] = apply_filters( 'submit_job_post_status', get_option( 'job_manager_submission_requires_approval' ) ? 'pending' : 'publish', $job );
-				$update_job['post_author'] = get_current_user_id();
-
-				$job_schedule_listing_date = get_post_meta( $job->ID, '_job_schedule_listing', true );
-				$this->apply_scheduled_date( $update_job, $job_schedule_listing_date );
-
-				wp_update_post( $update_job );
-
-				$this->release_submission_lock( $submission_lock );
 			}
 
 			$this->step ++;
@@ -1500,19 +1503,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Returned by acquire_submission_lock() when the database backend has no GET_LOCK.
-	 *
-	 * Distinct from null (fail closed) and from any real lock name: it tells the caller to
-	 * proceed with the unserialized check rather than block, and release_submission_lock()
-	 * to skip the RELEASE_LOCK query.
-	 */
-	const SUBMISSION_LOCK_UNSUPPORTED = 'wpjm-submission-lock-unsupported';
-
-	/**
 	 * The per-user advisory lock name guarding the submission-limit critical section.
 	 *
 	 * The single definition of the lock name, so no caller hard-codes the scheme
 	 * independently.
+	 *
+	 * @since $$next-version$$
 	 *
 	 * @param int|null $user_id User ID to scope the lock to. Defaults to the current user.
 	 *
@@ -1540,50 +1536,48 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * A `preview` listing is not counted towards the limit, so concurrent "continue"
 	 * requests could otherwise each pass job_manager_user_can_submit_job_listing() with a
 	 * stale count and all publish. Serializing the critical section per user closes that
-	 * race. The caller fails closed when this returns null.
+	 * race.
+	 *
+	 * Best-effort: on any failure — a backend without GET_LOCK (e.g. the SQLite
+	 * integration), a timeout behind a slow concurrent publish, or a transient database
+	 * error — this returns null and the caller proceeds without the lock, protected by
+	 * its re-read of the listing's status. Refusing to publish here would trade a narrow,
+	 * self-limiting race (a user briefly exceeding their own listing quota) for a
+	 * user-facing availability failure, which is the worse of the two.
 	 *
 	 * GET_LOCK is session-scoped, so this assumes acquire, publish and release all run on
 	 * the same database connection within the request — true for a standard single-server
 	 * $wpdb. Under connection-splitting drivers (HyperDB/LudicrousDB) the read may land on
-	 * a replica; the lock then degrades to best-effort (it can fail to serialize and the
-	 * release may no-op) but the publish still proceeds, so availability is preserved.
+	 * a replica; the lock then degrades to best-effort and the publish still proceeds.
 	 *
-	 * @return string|null The held lock name, self::SUBMISSION_LOCK_UNSUPPORTED when the
-	 *                      backend has no GET_LOCK (publish proceeds unserialized), or null
-	 *                      when a supporting backend could not grant the lock (fail closed).
+	 * @since $$next-version$$
+	 *
+	 * @return string|null The held lock name, or null when no lock is held.
 	 */
 	protected function acquire_submission_lock() {
 		global $wpdb;
 
 		$lock_name = $this->submission_lock_name();
 
-		// GET_LOCK returns 1 on success, 0 on timeout and NULL on error.
+		// GET_LOCK returns 1 on success, 0 on timeout and NULL on error. The short
+		// timeout bounds how long a racing request can pin a PHP worker behind a
+		// publish whose hooks run slowly; a loser that times out is caught by the
+		// caller's status re-read.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock, cannot be cached.
-		$acquired = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $lock_name, 5 ) );
+		$acquired = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $lock_name, 2 ) );
 
-		if ( '1' === (string) $acquired ) {
-			return $lock_name;
-		}
-
-		// A backend without GET_LOCK (e.g. the SQLite integration) errors rather than
-		// timing out. Fall back to the unserialized check on such backends instead of
-		// making every preview publish impossible — the race this guards is only
-		// reachable on the concurrent MySQL setups that do support the lock. A genuine
-		// timeout on a supporting backend sets no error and falls through to null.
-		if ( '' !== $wpdb->last_error ) {
-			return self::SUBMISSION_LOCK_UNSUPPORTED;
-		}
-
-		return null;
+		return '1' === (string) $acquired ? $lock_name : null;
 	}
 
 	/**
 	 * Releases a lock obtained via acquire_submission_lock().
 	 *
+	 * @since $$next-version$$
+	 *
 	 * @param string|null $lock_name The lock name, or null when no lock was held.
 	 */
 	private function release_submission_lock( $lock_name ) {
-		if ( empty( $lock_name ) || self::SUBMISSION_LOCK_UNSUPPORTED === $lock_name ) {
+		if ( empty( $lock_name ) ) {
 			return;
 		}
 
