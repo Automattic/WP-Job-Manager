@@ -33,7 +33,7 @@
     "husky": "7.0.4",
     "inquirer": "^9.2.10",
     "lint-staged": "12.3.4",
-    "zx": "^7.2.3"
+    "zx": "^8.8.5"
   },
   "scripts": {
     "build": "./scripts/build-plugin.sh",
