@@ -1300,8 +1300,14 @@ class WP_Job_Manager_Post_Types {
 			$this->set_job_expiration( $post, null );
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
-		$input_job_expires          = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+		// Only a gated admin edit (metabox nonce + edit capability) may set the expiry date
+		// manually. Front-end submissions must have the expiry derived server-side from the
+		// configured submission duration, so an attacker-supplied value is ignored here.
+		$input_job_expires = null;
+		if ( $this->is_authorized_expiry_edit_request( $post ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in is_authorized_expiry_edit_request().
+			$input_job_expires = isset( $_POST['_job_expires'] ) ? sanitize_text_field( wp_unslash( $_POST['_job_expires'] ) ) : null;
+		}
 		$input_job_expires_datetime = ! empty( $input_job_expires ) ? DateTimeImmutable::createFromFormat( 'Y-m-d', $input_job_expires, wp_timezone() ) : null;
 
 		// See if the user has set the expiry manually.
@@ -1318,6 +1324,32 @@ class WP_Job_Manager_Post_Types {
 				$_POST['_job_expires'] = $expires ? $expires->format( 'Y-m-d' ) : '';
 			}
 		}
+	}
+
+	/**
+	 * Whether the current request is authorized to set a job listing's expiry date manually.
+	 *
+	 * The expiry date may only be supplied directly from the gated admin edit screen, which
+	 * carries the `save_meta_data` nonce and requires the edit capability for the listing
+	 * (see WP_Job_Manager_Writepanels::save_post()). All other paths — in particular a
+	 * front-end submission's preview -> publish transition — must fall back to the
+	 * server-side calculated expiry.
+	 *
+	 * @since 2.4.6
+	 *
+	 * @param WP_Post $post The job listing being saved.
+	 *
+	 * @return bool
+	 */
+	private function is_authorized_expiry_edit_request( $post ) {
+		if (
+			empty( $_POST['job_manager_nonce'] )
+			|| ! wp_verify_nonce( wp_unslash( $_POST['job_manager_nonce'] ), 'save_meta_data' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		) {
+			return false;
+		}
+
+		return current_user_can( 'edit_post', $post->ID );
 	}
 
 	/**

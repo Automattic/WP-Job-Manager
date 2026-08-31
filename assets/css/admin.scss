@@ -530,7 +530,14 @@ a.wpjm-activate-license-link:active {
 		width: 20%;
 	}
 
-	td.column-job_position {
+	// `job_position` is registered as the primary column via the
+	// `list_table_primary_column` filter, and core renders the primary column as a
+	// `th` row header rather than a `td` (see WP_List_Table::single_row_columns()).
+	// Match both: `td` for older core, `th` for current. The `th` branch is scoped
+	// to `tbody` so it does not also hit the `thead`/`tfoot` column header, which
+	// keeps its own `th.column-job_position` rule above.
+	td.column-job_position,
+	tbody th.column-job_position {
 		width: 20%;
 		height: 34px;
 

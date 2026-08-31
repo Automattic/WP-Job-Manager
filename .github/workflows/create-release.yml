@@ -9,11 +9,22 @@ on:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true && startsWith( github.head_ref, 'release/' )
+    if: github.event.pull_request.merged == true && startsWith( github.head_ref, 'release/' ) && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     name: WPJM Release
+    # The default GITHUB_TOKEN is read-only on repos that don't opt into
+    # read-write workflow permissions. This job pushes commits and tags, creates
+    # a GitHub release, and comments on the PR, so grant those writes explicitly.
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          # Check out the PR's base branch (trunk) as a real local branch, not the
+          # detached-HEAD merge ref, so create-release.mjs can `git push origin HEAD`.
+          ref: ${{ github.base_ref }}
       - name: Comment on PR
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -36,7 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          node scripts/create-release.mjs wp-job-manager ${{ github.event.number }}
+          node scripts/create-release.mjs ${{ github.event.number }}
           cd build && unzip -q wp-job-manager.zip
       - name: Install SVN
         run: sudo apt-get update && sudo apt-get install -y subversion

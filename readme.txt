@@ -2,9 +2,9 @@
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryanc413, richardmtl, scarstocea
 Tags: jobs, careers, company, hiring, job board
 Requires at least: 6.4
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.4.5
+Stable tag: 2.4.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -128,13 +128,16 @@ There are three ways to customize the fields in WP Job Manager;
 2. For field changes, or adding new fields, using functions/filters inside your theme's functions.php file: [https://wpjobmanager.com/document/editing-job-submission-fields/](https://wpjobmanager.com/document/editing-job-submission-fields/)
 3. Use a 3rd party plugin such as [https://plugins.smyl.es/wp-job-manager-field-editor/](https://plugins.smyl.es/wp-job-manager-field-editor/?in=1) which has a UI for field editing.
 
-If you'd like to learn about WordPress filters, here is a great place to start: [https://pippinsplugins.com/a-quick-introduction-to-using-filters/](https://pippinsplugins.com/a-quick-introduction-to-using-filters/)
+If you'd like to learn about WordPress filters, here is a great place to start: [https://developer.wordpress.org/plugins/hooks/filters/](https://developer.wordpress.org/plugins/hooks/filters/)
 
 = How can I be notified of new jobs via email? =
 If you wish to be notified of new postings on your site you can use a plugin such as [Post Status Notifier](http://wordpress.org/plugins/post-status-notifier-lite/).
 
 = What language files are available? =
 You can view (and contribute) translations via the [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/wp-job-manager).
+
+= How do I add the Recent Jobs or Featured Jobs widgets on a block theme? =
+Block themes have no classic Widgets screen, but you can still add the Recent Jobs and Featured Jobs widgets through the Site Editor. Go to **Appearance → Editor**, open a template or template part, add the **Legacy Widget** block from the inserter, and choose **Recent Jobs** or **Featured Jobs**. The widget's settings and preview appear right in the editor, just as they do on a classic theme.
 
 == Screenshots ==
 
@@ -146,6 +149,22 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 6. Job listings in admin.
 
 == Changelog ==
+
+### 2.4.6 - 2026-08-19
+* Allow reusing a submitter's saved company logo on a new listing (#3082)
+* Allow reusing a listing's existing logo on edit when authored by another user (#3060)
+* Fix notice dismiss button colliding with core styles (#3036)
+* Fix unreadable notice-banner button text on Settings (#3029)
+* Decode HTML entities in plain-text job title contexts (#3026)
+* Indicate WordPress 7.0 compatibility (#3015)
+* Verify the TLS certificate on the geocoding request (#3014)
+* Exclude password-protected listings from the promoted jobs feed (#3012)
+* Only accept a manual listing expiry from the gated admin edit (#3011)
+* Prevent the edit-job form from creating a new listing for an unauthorized or logged-out request.
+
+* Enforce company-logo attachment ownership when saving a job listing as a draft.
+
+* Apply the post-password check to the `[job]` and `[job_apply]` shortcodes.
 
 ### 2.4.5 - 2026-07-01
 * Escape URLs in two sprintf href templates with esc_url() (#2996)
@@ -185,15 +204,3 @@ You can view (and contribute) translations via the [translate.wordpress.org](htt
 * Fixed PHP 8+ undefined array key warning in the widget caching methods.
 * Updated Twitter profile links to use the new `x.com` domain and updated related labels to "X / Twitter" to reflect the platform rebrand.
 * Added a Settings link to the plugin action links on the Plugins screen for quicker access to plugin settings.
-
-### 2.4.1 - 2026-02-24
-* Add permission check to listing query parameters (#2914)
-* Fix structured data output for password-protected listings (#2913)
-
-* Update actions/cache to use v4 (#2896)
-* reCaptcha script not being loaded (#2893)
-* add a additional action to the do_feed_rss2
-* fix hardcoded dashboard expiration date format
-* Dev: Fix deprecated  methods
-* Fix file input field for forms not marked as required
-

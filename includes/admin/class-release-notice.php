@@ -75,7 +75,7 @@ class Release_Notice {
 			],
 			'icon'          => false,
 			'level'         => 'landing',
-			'image'         => 'https://wpjobmanager.com/wp-content/uploads/2024/03/jm-230-release.png',
+			'image'         => false,
 			'dismissible'   => false,
 			'extra_details' => '',
 			'conditions'    => [

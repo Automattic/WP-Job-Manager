@@ -161,13 +161,43 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_categories'] ) ) {
-			$field                     = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
-			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
+			$field    = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
+			$operator = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
+
+			/**
+			 * Filters whether category queries include child terms. Return `false` to
+			 * match only listings assigned to the exact terms selected, excluding their
+			 * children. Applies to category queries built by get_job_listings(),
+			 * regardless of the "Category Filter Type" setting; other queries such as
+			 * the job feed are unaffected. The default keeps the existing behavior.
+			 *
+			 * Check `$operator` before forcing `true`. Under `AND`, WordPress expands
+			 * each selected term to its descendants and then requires a listing to
+			 * match all of them, so children narrow the result set rather than widening
+			 * it; if one selected term is an ancestor of another, the clause is
+			 * discarded entirely and the query returns nothing.
+			 *
+			 * @since 2.4.6
+			 *
+			 * @param bool   $include_children  Whether to include child terms of the selected categories.
+			 * @param string $operator          The tax query operator in use (`IN` or `AND`).
+			 * @param array  $search_categories The category terms being queried (term IDs or slugs).
+			 * @param array  $args              The full arguments passed to get_job_listings().
+			 * @return bool
+			 */
+			$include_children = (bool) apply_filters(
+				'job_manager_get_listings_include_category_children',
+				'AND' !== $operator,
+				$operator,
+				$args['search_categories'],
+				$args
+			);
+
 			$query_args['tax_query'][] = [
 				'taxonomy'         => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'field'            => $field,
 				'terms'            => array_values( $args['search_categories'] ),
-				'include_children' => 'AND' !== $operator,
+				'include_children' => $include_children,
 				'operator'         => $operator,
 			];
 		}
@@ -1687,6 +1717,45 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
 	 * @param string $field The field key for the upload.
 	 */
 	return apply_filters( 'job_manager_mime_types', $allowed_mime_types, $field );
+}
+
+/**
+ * Builds the value for a file input's `accept` attribute from a map of allowed mime types.
+ *
+ * The map is keyed by pipe-separated file extensions (see `job_manager_get_allowed_mime_types()`), which are
+ * turned into the dot-prefixed extension tokens the `accept` attribute expects. Fields may instead supply a plain
+ * list of mime types, or a map keyed by mime type; those are emitted as mime type tokens, which `accept` also
+ * accepts.
+ *
+ * @since 2.4.6
+ *
+ * @param array $allowed_mime_types Array of allowed file extensions and mime types.
+ * @return string Comma-separated list of `accept` tokens, empty when nothing is allowed.
+ */
+function job_manager_get_accept_file_types( $allowed_mime_types ) {
+	$accept_tokens = [];
+
+	foreach ( (array) $allowed_mime_types as $extensions => $mime_type ) {
+		if ( is_int( $extensions ) || false !== strpos( (string) $extensions, '/' ) ) {
+			$token = is_int( $extensions ) ? $mime_type : $extensions;
+
+			if ( is_string( $token ) && '' !== $token ) {
+				$accept_tokens[] = $token;
+			}
+
+			continue;
+		}
+
+		foreach ( explode( '|', $extensions ) as $extension ) {
+			$extension = ltrim( trim( $extension ), '.' );
+
+			if ( '' !== $extension ) {
+				$accept_tokens[] = '.' . $extension;
+			}
+		}
+	}
+
+	return implode( ',', array_unique( $accept_tokens ) );
 }
 
 /**

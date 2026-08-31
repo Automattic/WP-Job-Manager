@@ -25,6 +25,10 @@ install: ## Install dependencies (requires Node 20+, PHP/Composer)
 	composer install
 	npm install
 
+install-hooks: ## Install git hooks (fail-fast guard against direct pushes to the default branch)
+	git config core.hooksPath .githooks
+	@echo "Git hooks installed (core.hooksPath = .githooks)."
+
 up: ## Start WordPress development and test environments
 	$(check_node)
 	$(WP_ENV) start
@@ -68,10 +72,13 @@ release: ## Prepare release PR (usage: make release VERSION=2.4.2)
 		echo "Error: VERSION is required. Usage: make release VERSION=2.4.2"; \
 		exit 1; \
 	fi
-	npm run release $(VERSION)
+	node scripts/prepare-release.mjs $(VERSION)
+
+i18n: ## Regenerate translation POT file
+	npm run i18n:build
 
 ## Help
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: install up down destroy logs test-up test-down test lint lint-fix build release help
+.PHONY: install install-hooks up down destroy logs test-up test-down test lint lint-fix build release i18n help
