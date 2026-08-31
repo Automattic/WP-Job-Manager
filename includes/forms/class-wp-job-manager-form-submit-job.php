@@ -173,8 +173,6 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			) {
 				$this->job_id      = $job_id;
 				$this->resume_edit = $submitting_key;
-			} else {
-				WPJM()->cleanup_job_posting_cookies();
 			}
 		}
 
@@ -204,11 +202,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return false;
 		}
 
-		if ( is_user_logged_in() ) {
-			return job_manager_user_can_edit_job( $job->ID );
+		if ( 0 === (int) $job->post_author ) {
+			return true;
 		}
 
-		return 0 === (int) $job->post_author;
+		return is_user_logged_in() && job_manager_user_can_edit_job( $job->ID );
 	}
 
 	/**

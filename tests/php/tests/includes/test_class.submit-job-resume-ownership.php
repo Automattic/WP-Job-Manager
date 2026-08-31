@@ -62,6 +62,33 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Sets the resume cookies for a job listing.
+	 *
+	 * @param int    $job_id Job listing ID.
+	 * @param string $key    Submitting key.
+	 */
+	private function set_resume_cookies( $job_id, $key ) {
+		$_COOKIE[ self::JOB_ID_COOKIE ]  = (string) $job_id;
+		$_COOKIE[ self::JOB_KEY_COOKIE ] = $key;
+	}
+
+	/**
+	 * Instantiates the submit form.
+	 *
+	 * @param string $flow Paid-listings flow option.
+	 * @return WP_Job_Manager_Form_Submit_Job
+	 */
+	private function load_form( $flow = '' ) {
+		if ( '' === $flow ) {
+			delete_option( 'job_manager_paid_listings_flow' );
+		} else {
+			update_option( 'job_manager_paid_listings_flow', $flow );
+		}
+
+		return new WP_Job_Manager_Form_Submit_Job();
+	}
+
+	/**
 	 * Instantiates the submit form with resume cookies set.
 	 *
 	 * @param int    $job_id Job listing ID.
@@ -70,20 +97,24 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 	 * @return WP_Job_Manager_Form_Submit_Job
 	 */
 	private function load_form_from_cookie( $job_id, $key, $flow = '' ) {
-		if ( '' === $flow ) {
-			delete_option( 'job_manager_paid_listings_flow' );
-		} else {
-			update_option( 'job_manager_paid_listings_flow', $flow );
-		}
+		$this->set_resume_cookies( $job_id, $key );
 
-		$_COOKIE[ self::JOB_ID_COOKIE ]  = (string) $job_id;
-		$_COOKIE[ self::JOB_KEY_COOKIE ] = $key;
-
-		return new WP_Job_Manager_Form_Submit_Job();
+		return $this->load_form( $flow );
 	}
 
 	/**
-	 * Asserts that rejected resume cookies were removed from the current request.
+	 * Asserts that the expected resume cookies remain available to the request.
+	 *
+	 * @param int    $job_id Job listing ID.
+	 * @param string $key    Submitting key.
+	 */
+	private function assert_resume_cookies_preserved( $job_id, $key ) {
+		$this->assertSame( (string) $job_id, $_COOKIE[ self::JOB_ID_COOKIE ] );
+		$this->assertSame( $key, $_COOKIE[ self::JOB_KEY_COOKIE ] );
+	}
+
+	/**
+	 * Asserts that stale resume cookies were removed from the current request.
 	 */
 	private function assert_resume_cookies_cleared() {
 		$this->assertArrayNotHasKey( self::JOB_ID_COOKIE, $_COOKIE );
@@ -103,8 +134,7 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 		$form = $this->load_form_from_cookie( $job_id, $key, $flow );
 
 		$this->assertSame( $job_id, $form->get_job_id() );
-		$this->assertArrayHasKey( self::JOB_ID_COOKIE, $_COOKIE );
-		$this->assertArrayHasKey( self::JOB_KEY_COOKIE, $_COOKIE );
+		$this->assert_resume_cookies_preserved( $job_id, $key );
 	}
 
 	/**
@@ -118,10 +148,17 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 		[ $job_id, $key ] = $this->create_resumable_job( get_current_user_id() );
 
 		$this->login_as_employer_b();
-		$form = $this->load_form_from_cookie( $job_id, $key, $flow );
+		$this->set_resume_cookies( $job_id, $key );
+		WPJM()->validate_job_posting_cookies();
+		$form = $this->load_form( $flow );
 
 		$this->assertSame( 0, $form->get_job_id() );
-		$this->assert_resume_cookies_cleared();
+		$this->assert_resume_cookies_preserved( $job_id, $key );
+
+		$this->login_as_employer();
+		$form = $this->load_form( $flow );
+
+		$this->assertSame( $job_id, $form->get_job_id() );
 	}
 
 	/**
@@ -139,8 +176,50 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 		$form = $this->load_form_from_cookie( $job_id, $key, $flow );
 
 		$this->assertSame( $job_id, $form->get_job_id() );
-		$this->assertArrayHasKey( self::JOB_ID_COOKIE, $_COOKIE );
-		$this->assertArrayHasKey( self::JOB_KEY_COOKIE, $_COOKIE );
+		$this->assert_resume_cookies_preserved( $job_id, $key );
+	}
+
+	/**
+	 * A guest-authored listing can be resumed after the guest logs in.
+	 *
+	 * @dataProvider paid_listings_flows
+	 * @param string $flow Paid-listings flow option.
+	 */
+	public function test_guest_can_log_in_and_resume_guest_listing( $flow ) {
+		$this->logout();
+		[ $job_id, $key ] = $this->create_resumable_job( 0 );
+		$this->set_resume_cookies( $job_id, $key );
+
+		$this->login_as_employer();
+		WPJM()->validate_job_posting_cookies();
+		$form = $this->load_form( $flow );
+
+		$this->assertSame( $job_id, $form->get_job_id() );
+		$this->assert_resume_cookies_preserved( $job_id, $key );
+	}
+
+	/**
+	 * A registered user's listing remains resumable after their session expires.
+	 *
+	 * @dataProvider paid_listings_flows
+	 * @param string $flow Paid-listings flow option.
+	 */
+	public function test_user_can_resume_listing_after_session_expires_and_is_restored( $flow ) {
+		$this->login_as_employer();
+		[ $job_id, $key ] = $this->create_resumable_job( get_current_user_id() );
+		$this->set_resume_cookies( $job_id, $key );
+
+		$this->login_as( 0 );
+		WPJM()->validate_job_posting_cookies();
+		$form = $this->load_form( $flow );
+
+		$this->assertSame( 0, $form->get_job_id() );
+		$this->assert_resume_cookies_preserved( $job_id, $key );
+
+		$this->login_as_employer();
+		$form = $this->load_form( $flow );
+
+		$this->assertSame( $job_id, $form->get_job_id() );
 	}
 
 	/**
@@ -154,10 +233,12 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 		[ $job_id, $key ] = $this->create_resumable_job( get_current_user_id() );
 
 		$this->logout();
-		$form = $this->load_form_from_cookie( $job_id, $key, $flow );
+		$this->set_resume_cookies( $job_id, $key );
+		WPJM()->validate_job_posting_cookies();
+		$form = $this->load_form( $flow );
 
 		$this->assertSame( 0, $form->get_job_id() );
-		$this->assert_resume_cookies_cleared();
+		$this->assert_resume_cookies_preserved( $job_id, $key );
 	}
 
 	/**
@@ -182,28 +263,50 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 	}
 
 	/**
-	 * An incorrect submitting key is rejected and removed.
+	 * Cookie validation runs after post types and before submitted forms are loaded.
+	 */
+	public function test_cookie_validation_runs_on_early_init() {
+		$this->assertSame( 0, has_action( 'init', [ WPJM()->post_types, 'register_post_types' ] ) );
+		$this->assertSame( 1, has_action( 'init', [ WPJM(), 'validate_job_posting_cookies' ] ) );
+		$this->assertSame( 10, has_action( 'init', [ WPJM()->forms, 'load_posted_form' ] ) );
+	}
+
+	/**
+	 * An incorrect submitting key is rejected and removed during early validation.
 	 */
 	public function test_incorrect_submitting_key_is_rejected_and_cookies_are_cleared() {
+		$this->logout();
+		[ $job_id ] = $this->create_resumable_job( 0 );
+		$this->set_resume_cookies( $job_id, 'incorrect-key' );
+
+		WPJM()->validate_job_posting_cookies();
+
+		$this->assert_resume_cookies_cleared();
+	}
+
+	/**
+	 * The form still rejects an invalid key if early validation did not run.
+	 */
+	public function test_form_rejects_incorrect_submitting_key_without_clearing_cookies() {
 		$this->logout();
 		[ $job_id ] = $this->create_resumable_job( 0 );
 
 		$form = $this->load_form_from_cookie( $job_id, 'incorrect-key' );
 
 		$this->assertSame( 0, $form->get_job_id() );
-		$this->assert_resume_cookies_cleared();
+		$this->assert_resume_cookies_preserved( $job_id, 'incorrect-key' );
 	}
 
 	/**
-	 * A non-resumable job status is rejected and removed.
+	 * A non-resumable job status is rejected and removed during early validation.
 	 */
 	public function test_non_resumable_status_is_rejected_and_cookies_are_cleared() {
 		$this->logout();
 		[ $job_id, $key ] = $this->create_resumable_job( 0, 'draft' );
+		$this->set_resume_cookies( $job_id, $key );
 
-		$form = $this->load_form_from_cookie( $job_id, $key );
+		WPJM()->validate_job_posting_cookies();
 
-		$this->assertSame( 0, $form->get_job_id() );
 		$this->assert_resume_cookies_cleared();
 	}
 
@@ -212,9 +315,10 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 	 */
 	public function test_missing_job_is_rejected_and_cookies_are_cleared() {
 		$this->logout();
-		$form = $this->load_form_from_cookie( 99999999, 'missing-key' );
+		$this->set_resume_cookies( 99999999, 'missing-key' );
 
-		$this->assertSame( 0, $form->get_job_id() );
+		WPJM()->validate_job_posting_cookies();
+
 		$this->assert_resume_cookies_cleared();
 	}
 
@@ -231,10 +335,34 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 		);
 		$key     = 'resume-key-' . $post_id;
 		update_post_meta( $post_id, '_submitting_key', $key );
+		$this->set_resume_cookies( $post_id, $key );
 
-		$form = $this->load_form_from_cookie( $post_id, $key );
+		WPJM()->validate_job_posting_cookies();
 
-		$this->assertSame( 0, $form->get_job_id() );
+		$this->assert_resume_cookies_cleared();
+	}
+
+	/**
+	 * @return array[] Incomplete cookie pairs.
+	 */
+	public function incomplete_resume_cookie_pairs() {
+		return [
+			'missing job ID' => [ [ self::JOB_KEY_COOKIE => 'resume-key' ] ],
+			'missing key'    => [ [ self::JOB_ID_COOKIE => '123' ] ],
+		];
+	}
+
+	/**
+	 * An incomplete resume cookie pair is removed during early validation.
+	 *
+	 * @dataProvider incomplete_resume_cookie_pairs
+	 * @param array $cookies Resume cookies for the request.
+	 */
+	public function test_incomplete_resume_cookie_pair_is_cleared( $cookies ) {
+		$_COOKIE = array_merge( $_COOKIE, $cookies );
+
+		WPJM()->validate_job_posting_cookies();
+
 		$this->assert_resume_cookies_cleared();
 	}
 }
