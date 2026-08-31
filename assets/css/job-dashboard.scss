@@ -138,8 +138,10 @@
 	white-space: nowrap;
 	min-width: 0; /* allow the button to shrink below its text width */
 	overflow: hidden;
+	text-overflow: ellipsis;
 
 	span {
+		display: block; /* text-overflow does not apply to inline boxes */
 		min-width: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
