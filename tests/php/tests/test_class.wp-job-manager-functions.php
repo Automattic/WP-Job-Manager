@@ -87,6 +87,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$this->assertContains( $encoded_id, wp_list_pluck( $raw_results->posts, 'ID' ) );
 
 		$encoded_results = get_job_listings( [ 'search_keywords' => 'R&amp;D Engineer' ] );
+		$this->assertContains( $raw_id, wp_list_pluck( $encoded_results->posts, 'ID' ) );
 		$this->assertContains( $encoded_id, wp_list_pluck( $encoded_results->posts, 'ID' ) );
 	}
 

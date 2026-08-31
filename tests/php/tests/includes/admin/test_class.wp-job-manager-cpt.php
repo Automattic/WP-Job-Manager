@@ -129,6 +129,45 @@ class WP_Test_WP_Job_Manager_CPT extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Admin search matches both storage forms when the entity-encoded term is typed.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_CPT::search_meta
+	 */
+	public function test_search_meta_matches_both_titles_for_encoded_term() {
+		global $pagenow;
+
+		$raw_id = $this->factory->post->create(
+			[
+				'post_type'    => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_title'   => 'R&D Engineer',
+				'post_content' => 'Raw content',
+			]
+		);
+
+		$encoded_id = $this->factory->post->create(
+			[
+				'post_type'    => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_title'   => 'R&amp;D Engineer',
+				'post_content' => 'Encoded content',
+			]
+		);
+
+		$pagenow = 'edit.php';
+
+		$query = new WP_Query(
+			[
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
+				's'         => 'R&amp;D Engineer',
+				'fields'    => 'ids',
+			]
+		);
+
+		$this->assertContains( $raw_id, $query->posts );
+		$this->assertContains( $encoded_id, $query->posts );
+	}
+
+	/**
 	 * Admin search continues matching literal raw ampersands in post meta.
 	 *
 	 * @since $$next-version$$

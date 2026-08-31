@@ -750,23 +750,22 @@ class WP_Job_Manager_CPT {
 		}
 
 		$search_term = $wp->query_vars['s'];
-		$needles     = [ $search_term ];
-		// Encode bare ampersands without double-encoding existing entities, matching KSES storage.
-		$normalized = wp_kses_normalize_entities( $search_term );
-		if ( $normalized !== $search_term ) {
-			$needles[] = $normalized;
-		}
 
-		$like_patterns      = array_map(
+		/*
+		 * Post columns can hold the term as typed or its kses-encoded form, so match both. Post meta is
+		 * not kses-normalized on save, so the meta condition keeps using the term as typed. See #3030.
+		 */
+		$raw_like      = '%' . $wpdb->esc_like( $search_term ) . '%';
+		$like_patterns = array_map(
 			static function ( $needle ) use ( $wpdb ) {
 				return '%' . $wpdb->esc_like( $needle ) . '%';
 			},
-			$needles
+			job_manager_get_search_term_variations( $search_term )
 		);
-		$meta_conditions    = implode( ' OR ', array_fill( 0, count( $like_patterns ), 'meta_value LIKE %s' ) );
+
 		$title_conditions   = implode( ' OR ', array_fill( 0, count( $like_patterns ), 'posts.post_title LIKE %s' ) );
 		$content_conditions = implode( ' OR ', array_fill( 0, count( $like_patterns ), 'posts.post_content LIKE %s' ) );
-		$query_arguments    = array_merge( $like_patterns, $like_patterns, $like_patterns );
+		$query_arguments    = array_merge( [ $raw_like ], $like_patterns, $like_patterns );
 
 		$post_ids = array_unique(
 			array_merge(
@@ -780,7 +779,7 @@ class WP_Job_Manager_CPT {
 							posts.ID IN (
 								SELECT post_id
 								FROM {$wpdb->postmeta}
-								WHERE {$meta_conditions}
+								WHERE meta_value LIKE %s
 							)
 							OR {$title_conditions}
 							OR {$content_conditions}
