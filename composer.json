@@ -17,6 +17,11 @@
     "vimeo/psalm": "^5.13",
     "php-stubs/wordpress-stubs": "^6.4"
   },
+  "autoload": {
+    "classmap": [
+      "includes/"
+    ]
+  },
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
