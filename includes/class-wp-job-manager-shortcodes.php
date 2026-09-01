@@ -335,6 +335,18 @@ class WP_Job_Manager_Shortcodes {
 				echo '<a class="load_more_jobs" href="#" style="display:none;"><strong>' . esc_html__( 'Load more listings', 'wp-job-manager' ) . '</strong></a>';
 			}
 		} else {
+			$search_filters = [
+				'keyword'  => $atts['keywords'],
+				'location' => $atts['location'],
+				'category' => $atts['categories'],
+				'job_type' => $atts['job_types'],
+			];
+
+			/** This action is documented in includes/class-wp-job-manager-ajax.php */
+			do_action( 'wpjm_search_stats_log', $search_filters );
+
+			\WP_Job_Manager\Search_Stats::instance()->log_search( $search_filters );
+
 			$jobs = get_job_listings(
 				apply_filters(
 					'job_manager_output_jobs_args',
