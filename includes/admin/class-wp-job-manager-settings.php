@@ -336,6 +336,16 @@ class WP_Job_Manager_Settings {
 							'track'      => 'value',
 						],
 						[
+							'name'       => 'job_manager_show_salary_in_listings',
+							'std'        => '0',
+							'label'      => __( 'Salary on Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Show Job Salary on Listings Page', 'wp-job-manager' ),
+							'desc'       => __( 'This displays the job salary on the job listings page, in addition to the single job page.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+							'track'      => 'bool',
+						],
+						[
 							'name'     => 'job_manager_display_location_address',
 							'std'      => '0',
 							'label'    => __( 'Location Display', 'wp-job-manager' ),
@@ -809,6 +819,7 @@ class WP_Job_Manager_Settings {
 			var $job_manager_enable_salary_unit = jQuery('#setting-job_manager_enable_salary_unit');
 			var $job_manager_default_salary_currency = jQuery('#setting-job_manager_default_salary_currency');
 			var $job_manager_default_salary_unit = jQuery('#setting-job_manager_default_salary_unit');
+			var $job_manager_show_salary_in_listings = jQuery('#setting-job_manager_show_salary_in_listings');
 
 			jQuery('#setting-job_manager_enable_registration').change(function(){
 				var $job_manager_enable_registration_is_checked = jQuery( this ).is(':checked');
@@ -823,6 +834,7 @@ class WP_Job_Manager_Settings {
 				$job_manager_enable_salary_unit.closest('tr').toggle($job_manager_enable_salary_is_checked);
 				$job_manager_default_salary_currency.closest('tr').toggle($job_manager_enable_salary_is_checked);
 				$job_manager_default_salary_unit.closest('tr').toggle($job_manager_enable_salary_is_checked);
+				$job_manager_show_salary_in_listings.closest('tr').toggle($job_manager_enable_salary_is_checked);
 			}).change();
 
 			jQuery( '.sub-settings-expander' ).on( 'change', function() {
