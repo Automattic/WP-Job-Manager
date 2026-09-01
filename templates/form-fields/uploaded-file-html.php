@@ -24,8 +24,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		$image_src = $value;
 	}
 	$extension = ! empty( $extension ) ? $extension : substr( strrchr( $image_src, '.' ), 1 );
-	if ( 'image' === wp_ext2type( $extension ) ) : ?>
-		<span class="job-manager-uploaded-file-preview"><img src="<?php echo esc_url( $image_src ); ?>" /> <a class="job-manager-remove-uploaded-file" href="#">[<?php _e( 'remove', 'wp-job-manager' ); ?>]</a></span>
+	if ( 'image' === wp_ext2type( $extension ) ) :
+		$preview_alt = is_numeric( $value ) ? get_post_meta( absint( $value ), '_wp_attachment_image_alt', true ) : ''; ?>
+		<span class="job-manager-uploaded-file-preview"><img src="<?php echo esc_url( $image_src ); ?>" alt="<?php echo esc_attr( $preview_alt ); ?>" /> <a class="job-manager-remove-uploaded-file" href="#">[<?php _e( 'remove', 'wp-job-manager' ); ?>]</a></span>
 	<?php else : ?>
 		<span class="job-manager-uploaded-file-name"><code><?php echo esc_html( basename( $image_src ) ); ?></code> <a class="job-manager-remove-uploaded-file" href="#">[<?php _e( 'remove', 'wp-job-manager' ); ?>]</a></span>
 	<?php endif; ?>

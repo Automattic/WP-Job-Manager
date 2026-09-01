@@ -320,14 +320,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					],
 				],
 				'company' => [
-					'company_name'    => [
+					'company_name'     => [
 						'label'       => __( 'Company name', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => true,
 						'placeholder' => __( 'Enter the name of the company', 'wp-job-manager' ),
 						'priority'    => 1,
 					],
-					'company_website' => [
+					'company_website'  => [
 						'label'       => __( 'Website', 'wp-job-manager' ),
 						'type'        => 'text',
 						'sanitizer'   => 'url',
@@ -335,7 +335,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'http://', 'wp-job-manager' ),
 						'priority'    => 2,
 					],
-					'company_tagline' => [
+					'company_tagline'  => [
 						'label'       => __( 'Tagline', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
@@ -343,7 +343,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'maxlength'   => 64,
 						'priority'    => 3,
 					],
-					'company_video'   => [
+					'company_video'    => [
 						'label'       => __( 'Video', 'wp-job-manager' ),
 						'type'        => 'text',
 						'sanitizer'   => 'url',
@@ -351,14 +351,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						'placeholder' => __( 'A link to a video about your company', 'wp-job-manager' ),
 						'priority'    => 4,
 					],
-					'company_twitter' => [
+					'company_twitter'  => [
 						'label'       => __( 'X / Twitter username', 'wp-job-manager' ),
 						'type'        => 'text',
 						'required'    => false,
 						'placeholder' => __( '@yourcompany', 'wp-job-manager' ),
 						'priority'    => 5,
 					],
-					'company_logo'    => [
+					'company_logo'     => [
 						'label'              => __( 'Logo', 'wp-job-manager' ),
 						'type'               => 'file',
 						'required'           => false,
@@ -378,6 +378,14 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 								'webp' => 'image/webp',
 							]
 						),
+					],
+					'company_logo_alt' => [
+						'label'       => __( 'Logo alt text', 'wp-job-manager' ),
+						'type'        => 'text',
+						'required'    => false,
+						'placeholder' => __( 'Describe the logo for screen readers and search engines', 'wp-job-manager' ),
+						'priority'    => 7,
+						'description' => __( 'Optional. Used when the logo is shown on the site.', 'wp-job-manager' ),
 					],
 				],
 			]
@@ -670,6 +678,9 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 							break;
 						case 'company_logo':
 							$this->fields[ $group_key ][ $key ]['value'] = has_post_thumbnail( $job->ID ) ? get_post_thumbnail_id( $job->ID ) : get_post_meta( $job->ID, '_' . $key, true );
+							break;
+						case 'company_logo_alt':
+							$this->fields[ $group_key ][ $key ]['value'] = has_post_thumbnail( $job->ID ) ? get_post_meta( get_post_thumbnail_id( $job->ID ), '_wp_attachment_image_alt', true ) : '';
 							break;
 						default:
 							$this->fields[ $group_key ][ $key ]['value'] = get_post_meta( $job->ID, '_' . $key, true );
@@ -1129,10 +1140,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	/**
 	 * Creates a file attachment.
 	 *
-	 * @param  string $attachment_url
+	 * @param string $attachment_url
+	 * @param string $alt_text       Optional alt text to store on the attachment.
 	 * @return int attachment id.
 	 */
-	protected function create_attachment( $attachment_url ) {
+	protected function create_attachment( $attachment_url, $alt_text = '' ) {
 		include_once ABSPATH . 'wp-admin/includes/image.php';
 		include_once ABSPATH . 'wp-admin/includes/media.php';
 
@@ -1182,6 +1194,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// same logo being uploaded on every submission.
 		$reusable_id = $this->find_reusable_attachment( $attachment_url );
 		if ( $reusable_id ) {
+			$this->set_attachment_alt_text( $reusable_id, $alt_text );
 			return $reusable_id;
 		}
 
@@ -1205,11 +1218,36 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			if ( $hash ) {
 				update_post_meta( $attachment_id, self::ATTACHMENT_HASH_META_KEY, $hash );
 			}
+			$this->set_attachment_alt_text( $attachment_id, $alt_text );
 			wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $attachment_url ) );
 			return $attachment_id;
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Stores alt text on an image attachment using WordPress's standard field.
+	 *
+	 * Only writes when alt text is provided. An existing value is never
+	 * overwritten, so a re-upload of the same logo cannot clobber alt text a
+	 * previous submission set.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int    $attachment_id Attachment ID.
+	 * @param string $alt_text      Alt text to store.
+	 */
+	protected function set_attachment_alt_text( $attachment_id, $alt_text ) {
+		$alt_text = sanitize_text_field( $alt_text );
+		if ( '' === $alt_text ) {
+			return;
+		}
+
+		$existing = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+		if ( '' === trim( (string) $existing ) ) {
+			update_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt_text );
+		}
 	}
 
 	/**
@@ -1278,11 +1316,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 					// Company logo is a featured image.
 				} elseif ( 'company_logo' === $key ) {
-					$attachment_id = is_numeric( $values[ $group_key ][ $key ] ) ? absint( $values[ $group_key ][ $key ] ) : $this->create_attachment( $values[ $group_key ][ $key ] );
+					$alt_text      = isset( $values[ $group_key ]['company_logo_alt'] ) ? $values[ $group_key ]['company_logo_alt'] : '';
+					$attachment_id = is_numeric( $values[ $group_key ][ $key ] ) ? absint( $values[ $group_key ][ $key ] ) : $this->create_attachment( $values[ $group_key ][ $key ], $alt_text );
 					if ( empty( $attachment_id ) ) {
 						delete_post_thumbnail( $this->job_id );
 					} else {
 						set_post_thumbnail( $this->job_id, $attachment_id );
+						$this->set_attachment_alt_text( $attachment_id, $alt_text );
 					}
 					update_user_meta( get_current_user_id(), '_company_logo', $attachment_id );
 
