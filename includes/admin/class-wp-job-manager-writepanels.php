@@ -45,6 +45,8 @@ class WP_Job_Manager_Writepanels {
 		add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
 		add_action( 'save_post', [ $this, 'save_post' ], 1, 2 );
 		add_action( 'job_manager_save_job_listing', [ $this, 'save_job_listing_data' ], 20, 2 );
+		add_action( 'bulk_edit_custom_box', [ $this, 'bulk_edit_fields' ], 10, 2 );
+		add_action( 'save_post', [ $this, 'bulk_edit_save' ], 10, 2 );
 	}
 
 	/**
@@ -763,6 +765,261 @@ class WP_Job_Manager_Writepanels {
 				)
 				&& $to_status === $_POST['post_status'];
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
+	}
+
+	/**
+	 * Job data field types that are excluded from bulk edit.
+	 *
+	 * @return string[]
+	 */
+	private function get_bulk_edit_excluded_field_types() {
+		$excluded = [ 'file', 'info', 'hidden', 'author', 'textarea', 'wp_editor' ];
+
+		/**
+		 * Filters the field types excluded from the Job Data bulk edit form.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param string[] $excluded Field type strings that should not appear in bulk edit.
+		 */
+		return apply_filters( 'job_manager_bulk_edit_excluded_field_types', $excluded );
+	}
+
+	/**
+	 * Returns the job data fields available for bulk edit, filtered for the current user.
+	 *
+	 * @return array
+	 */
+	private function get_bulk_edit_fields() {
+		$user_id     = get_current_user_id();
+		$fields      = WP_Job_Manager_Post_Types::get_job_listing_fields();
+		$excluded    = $this->get_bulk_edit_excluded_field_types();
+		$bulk_fields = [];
+
+		foreach ( $fields as $meta_key => $field ) {
+			$type = isset( $field['type'] ) ? $field['type'] : 'text';
+			if ( in_array( $type, $excluded, true ) ) {
+				continue;
+			}
+
+			$show_in_admin = isset( $field['show_in_admin'] ) ? $field['show_in_admin'] : true;
+			if ( is_callable( $show_in_admin ) ) {
+				$show_in_admin = (bool) call_user_func( $show_in_admin, true, $meta_key, 0, $user_id );
+			}
+			if ( ! $show_in_admin ) {
+				continue;
+			}
+
+			$auth_edit_callback = isset( $field['auth_edit_callback'] ) ? $field['auth_edit_callback'] : null;
+			if ( ! is_callable( $auth_edit_callback ) || ! call_user_func( $auth_edit_callback, false, $meta_key, 0, $user_id ) ) {
+				continue;
+			}
+
+			$bulk_fields[ $meta_key ] = $field;
+		}
+
+		uasort( $bulk_fields, [ __CLASS__, 'sort_by_priority' ] );
+
+		return $bulk_fields;
+	}
+
+	/**
+	 * Renders the Job Data fields inside the bulk edit row.
+	 *
+	 * Fires once per column during bulk edit rendering; we render only on the primary
+	 * `job_position` column so the fieldset appears a single time.
+	 *
+	 * @param string $column_name Name of the current column being rendered.
+	 * @param string $post_type   Post type of the list table.
+	 */
+	public function bulk_edit_fields( $column_name, $post_type ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type || 'job_position' !== $column_name ) {
+			return;
+		}
+
+		$fields = $this->get_bulk_edit_fields();
+		if ( empty( $fields ) ) {
+			return;
+		}
+
+		$no_change = __( '— No Change —', 'wp-job-manager' );
+		?>
+		<fieldset class="inline-edit-col-right inline-edit-job-manager">
+			<div class="inline-edit-col">
+				<h4><?php esc_html_e( 'Job Data', 'wp-job-manager' ); ?></h4>
+				<?php wp_nonce_field( 'job_manager_bulk_edit', 'job_manager_bulk_edit_nonce' ); ?>
+				<input type="hidden" name="job_manager_bulk_edit" value="1" />
+				<?php
+				foreach ( $fields as $key => $field ) {
+					$label = isset( $field['label'] ) ? $field['label'] : $key;
+					$type  = isset( $field['type'] ) ? $field['type'] : 'text';
+					$name  = 'job_manager_bulk[' . $key . ']';
+					?>
+					<div class="inline-edit-group">
+						<label class="inline-edit-group-label">
+							<span class="title"><?php echo esc_html( wp_strip_all_tags( $label ) ); ?></span>
+							<span class="input-text-wrap">
+								<?php
+								if ( 'checkbox' === $type ) {
+									?>
+									<select name="<?php echo esc_attr( $name ); ?>">
+										<option value=""><?php echo esc_html( $no_change ); ?></option>
+										<option value="1"><?php esc_html_e( 'Yes', 'wp-job-manager' ); ?></option>
+										<option value="0"><?php esc_html_e( 'No', 'wp-job-manager' ); ?></option>
+									</select>
+									<?php
+								} elseif ( 'select' === $type ) {
+									$options = isset( $field['options'] ) ? (array) $field['options'] : [];
+									?>
+									<select name="<?php echo esc_attr( $name ); ?>">
+										<option value=""><?php echo esc_html( $no_change ); ?></option>
+										<?php
+										foreach ( $options as $option_value => $option_label ) {
+											printf(
+												'<option value="%s">%s</option>',
+												esc_attr( $option_value ),
+												esc_html( $option_label )
+											);
+										}
+										?>
+									</select>
+									<?php
+								} elseif ( '_job_expires' === $key ) {
+									$classes = isset( $field['classes'] ) && is_array( $field['classes'] ) ? implode( ' ', $field['classes'] ) : '';
+									?>
+									<input type="text" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" value="" autocomplete="off" />
+									<label class="inline-edit-job-manager-clear">
+										<span class="checkbox-title"><?php esc_html_e( 'Clear expiry', 'wp-job-manager' ); ?></span>
+										<input type="checkbox" name="job_manager_bulk[_job_expires_clear]" value="1" />
+									</label>
+									<?php
+								} else {
+									?>
+									<input type="text" name="<?php echo esc_attr( $name ); ?>" value="" autocomplete="off" />
+									<?php
+								}
+								?>
+							</span>
+						</label>
+					</div>
+					<?php
+				}
+				?>
+			</div>
+		</fieldset>
+		<?php
+	}
+
+	/**
+	 * Saves Job Data fields submitted from the bulk edit form.
+	 *
+	 * WordPress fires `save_post` once per post during a bulk edit update. This handler
+	 * only acts when our bulk edit flag and nonce are present, and only writes fields the
+	 * user actually filled in (empty values mean no change).
+	 *
+	 * @param int     $post_id Post ID.
+	 * @param WP_Post $post    Post object.
+	 */
+	public function bulk_edit_save( $post_id, $post ) {
+		if ( empty( $_REQUEST['job_manager_bulk_edit'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+			return;
+		}
+		if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
+			return;
+		}
+		if (
+			empty( $_REQUEST['job_manager_bulk_edit_nonce'] )
+			|| ! wp_verify_nonce( wp_unslash( $_REQUEST['job_manager_bulk_edit_nonce'] ), 'job_manager_bulk_edit' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$bulk = isset( $_REQUEST['job_manager_bulk'] ) ? wp_unslash( $_REQUEST['job_manager_bulk'] ) : []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Recommended
+		if ( ! is_array( $bulk ) ) {
+			return;
+		}
+
+		$user_id        = get_current_user_id();
+		$fields         = $this->get_bulk_edit_fields();
+		$post_types     = WP_Job_Manager_Post_Types::instance();
+		$clear_expiry   = ! empty( $bulk['_job_expires_clear'] );
+		$expiry_changed = false;
+
+		// Explicit clear takes priority over a date value. Re-check auth for the real post.
+		if ( $clear_expiry && isset( $fields['_job_expires']['auth_edit_callback'] ) && call_user_func( $fields['_job_expires']['auth_edit_callback'], false, '_job_expires', $post_id, $user_id ) ) {
+			$post_types->set_job_expiration( $post_id, null );
+			$expiry_changed = true;
+		}
+
+		foreach ( $fields as $key => $field ) {
+			if ( ! array_key_exists( $key, $bulk ) ) {
+				continue;
+			}
+
+			$value = $bulk[ $key ];
+			// Bulk edit fields are scalar form inputs; skip crafted array values before sanitizing.
+			if ( ! is_string( $value ) ) {
+				continue;
+			}
+			$value = trim( $value );
+
+			// Empty means no change for every field type.
+			if ( '' === $value ) {
+				continue;
+			}
+
+			// Re-check auth for the real post, in case the listing list filter was broader.
+			$auth_edit_callback = isset( $field['auth_edit_callback'] ) ? $field['auth_edit_callback'] : null;
+			if ( ! is_callable( $auth_edit_callback ) || ! call_user_func( $auth_edit_callback, false, $key, $post_id, $user_id ) ) {
+				continue;
+			}
+
+			if ( '_job_expires' === $key ) {
+				if ( $clear_expiry ) {
+					// Already cleared above; skip setting a date.
+					continue;
+				}
+				$date = DateTimeImmutable::createFromFormat( 'Y-m-d', sanitize_text_field( $value ), wp_timezone() );
+				if ( $date ) {
+					$post_types->set_job_expiration( $post_id, $date );
+					$expiry_changed = true;
+				}
+				continue;
+			}
+
+			$sanitize_callback = isset( $field['sanitize_callback'] ) ? $field['sanitize_callback'] : null;
+			if ( is_callable( $sanitize_callback ) ) {
+				$value = call_user_func( $sanitize_callback, $value, $key );
+			} else {
+				$value = sanitize_text_field( $value );
+			}
+
+			update_post_meta( $post_id, $key, $value );
+		}
+
+		// A past (or cleared-without-duration) expiry moves the listing to expired, mirroring single edit.
+		if ( $expiry_changed && 'trash' !== $post->post_status && $post_types->has_job_expired( $post_id ) ) {
+			if ( 'expired' !== get_post_status( $post_id ) ) {
+				// Unhook before wp_update_post to avoid re-entering save_post (and every other save_post listener) with this same id.
+				remove_action( 'save_post', [ $this, 'bulk_edit_save' ], 10 );
+				wp_update_post(
+					[
+						'ID'          => $post_id,
+						'post_status' => 'expired',
+					]
+				);
+				add_action( 'save_post', [ $this, 'bulk_edit_save' ], 10, 2 );
+			}
+		}
 	}
 }
 
