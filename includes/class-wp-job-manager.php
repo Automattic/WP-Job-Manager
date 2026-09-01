@@ -308,8 +308,8 @@ class WP_Job_Manager {
 		}
 
 		$job_id         = $has_job_id ? absint( $_COOKIE[ $job_id_cookie ] ) : 0;
-		$submitting_key = $has_job_key ? wp_unslash( $_COOKIE[ $job_key_cookie ] ) : '';
-		$job = $job_id ? get_post( $job_id ) : null;
+		$submitting_key = $has_job_key ? sanitize_text_field( wp_unslash( $_COOKIE[ $job_key_cookie ] ) ) : '';
+		$job            = $job_id ? get_post( $job_id ) : null;
 
 		if (
 			! $job instanceof WP_Post
