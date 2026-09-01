@@ -773,9 +773,14 @@ class WP_Job_Manager_Post_Types {
 		];
 
 		if ( ! empty( $input_search_location ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			$location_search    = [ 'relation' => 'OR' ];
-			$locations          = explode( ';', $input_search_location );
+			/** This filter is documented in wp-job-manager-functions.php */
+			$location_meta_keys = apply_filters( 'job_manager_get_listings_location_meta_keys', job_manager_get_default_location_meta_keys() );
+
+			if ( empty( $location_meta_keys ) ) {
+				$location_meta_keys = job_manager_get_default_location_meta_keys();
+			}
+			$location_search = [ 'relation' => 'OR' ];
+			$locations       = explode( ';', $input_search_location );
 			foreach ( $locations as $location ) {
 				$location = trim( $location );
 				if ( ! empty( $location ) ) {
