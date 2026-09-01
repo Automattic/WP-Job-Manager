@@ -204,6 +204,7 @@ class WP_Job_Manager_Post_Types {
 
 		add_filter( 'wp_insert_post_data', [ $this, 'fix_post_name' ], 10, 2 );
 		add_action( 'add_post_meta', [ $this, 'maybe_add_geolocation_data' ], 10, 3 );
+		add_action( 'add_post_meta', [ $this, 'add_post_meta' ], 10, 3 );
 		add_action( 'update_post_meta', [ $this, 'update_post_meta' ], 10, 4 );
 		add_action( 'wp_insert_post', [ $this, 'maybe_add_default_meta_data' ], 10, 2 );
 		add_filter( 'post_types_to_delete_with_user', [ $this, 'delete_user_add_job_listings_post_type' ] );
@@ -1622,6 +1623,32 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Triggered when adding meta to a job listing.
+	 *
+	 * @param int    $object_id
+	 * @param string $meta_key
+	 * @param mixed  $meta_value
+	 */
+	public function add_post_meta( $object_id, $meta_key, $meta_value ) {
+		if ( self::PT_LISTING !== get_post_type( $object_id ) ) {
+			return;
+		}
+
+		if ( '_filled' === $meta_key && (bool) $meta_value ) {
+			/**
+			 * Fires when a job listing's filled status changes.
+			 *
+			 * @since $$next-version$$
+			 *
+			 * @param int  $object_id  Job listing ID.
+			 * @param bool $is_filled  New filled state.
+			 * @param bool $was_filled Previous filled state.
+			 */
+			do_action( 'job_manager_job_listing_filled_status_changed', $object_id, true, false );
+		}
+	}
+
+	/**
 	 * Triggered when updating meta on a job listing.
 	 *
 	 * @param int    $meta_id
@@ -1640,6 +1667,23 @@ class WP_Job_Manager_Post_Types {
 				break;
 			case '_featured':
 				$this->maybe_update_menu_order( $meta_id, $object_id, $meta_key, $meta_value );
+				break;
+			case '_filled':
+				$was_filled = (bool) get_post_meta( $object_id, '_filled', true );
+				$is_filled  = (bool) $meta_value;
+
+				if ( $was_filled !== $is_filled ) {
+					/**
+					 * Fires when a job listing's filled status changes.
+					 *
+					 * @since $$next-version$$
+					 *
+					 * @param int  $object_id  Job listing ID.
+					 * @param bool $is_filled  New filled state.
+					 * @param bool $was_filled Previous filled state.
+					 */
+					do_action( 'job_manager_job_listing_filled_status_changed', $object_id, $is_filled, $was_filled );
+				}
 				break;
 		}
 	}
