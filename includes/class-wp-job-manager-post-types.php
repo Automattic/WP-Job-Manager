@@ -707,6 +707,97 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Builds a meta query matching job listings by location, tolerating common Latin
+	 * accent differences between the search term and the stored value (e.g. a search
+	 * for "Asnieres" also matches a listing stored as "Asnières").
+	 *
+	 * @param string $search_location Location search term(s), separated by `;` for OR matching.
+	 * @return array Meta query clause.
+	 * @since $$next-version$$
+	 */
+	public static function get_location_meta_query( $search_location ) {
+		$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+		$location_search    = [ 'relation' => 'OR' ];
+
+		foreach ( explode( ';', $search_location ) as $location ) {
+			$location = trim( $location );
+			if ( '' === $location ) {
+				continue;
+			}
+
+			$location_subquery = [ 'relation' => 'OR' ];
+			foreach ( $location_meta_keys as $meta_key ) {
+				$location_subquery[] = [
+					'key'     => $meta_key,
+					'value'   => self::get_accent_insensitive_regex( $location ),
+					'compare' => 'REGEXP',
+				];
+			}
+			$location_search[] = $location_subquery;
+		}
+
+		return $location_search;
+	}
+
+	/**
+	 * Turns a search term into a REGEXP pattern that also matches common Latin accented
+	 * variants of its letters, so plain and accented spellings match each other.
+	 *
+	 * Note: `meta_query` REGEXP runs per row without index support for these patterns
+	 * and is materially more CPU-costly than `LIKE`; operators on `utf8mb4_unicode_*_ci`
+	 * collations already fold accents via the collation and may not need this path. This
+	 * code is kept for `utf8mb4_bin` installs and other cases where the collation alone
+	 * does not produce the desired match.
+	 *
+	 * The accent table covers French/Iberian/Italian Latin variants only, against NFC
+	 * input — NFD-decomposed input (e.g. `é` as `e` + combining U+0301) will not fold.
+	 * This is not a general Unicode case-fold.
+	 *
+	 * @param string $term Raw search term.
+	 * @return string REGEXP pattern.
+	 * @since $$next-version$$
+	 */
+	private static function get_accent_insensitive_regex( $term ) {
+		static $char_to_variants = null;
+
+		if ( null === $char_to_variants ) {
+			$accent_groups    = [
+				'aàáâãäåAÀÁÂÃÄÅ',
+				'eèéêëEÈÉÊË',
+				'iìíîïIÌÍÎÏ',
+				'oòóôõöOÒÓÔÕÖ',
+				'uùúûüUÙÚÛÜ',
+				'cçCÇ',
+				'nñNÑ',
+				'yýÿYÝŸ',
+			];
+			$char_to_variants = [];
+			foreach ( $accent_groups as $variants ) {
+				foreach ( preg_split( '//u', $variants, -1, PREG_SPLIT_NO_EMPTY ) as $character ) {
+					$char_to_variants[ $character ] = $variants;
+				}
+			}
+		}
+
+		// `preg_split( '//u', … )` returns false on malformed UTF-8 input.
+		// An empty pattern (`REGEXP ''`) matches every row and silently disables
+		// location filtering, so fall back to an escaped literal match.
+		$chars = preg_split( '//u', $term, -1, PREG_SPLIT_NO_EMPTY );
+		if ( false === $chars ) {
+			return preg_quote( $term, '/' );
+		}
+
+		$pattern = '';
+		foreach ( $chars as $character ) {
+			$pattern .= isset( $char_to_variants[ $character ] )
+				? '[' . $char_to_variants[ $character ] . ']'
+				: preg_quote( $character, '/' );
+		}
+
+		return $pattern;
+	}
+
+	/**
 	 * Generates the RSS feed for Job Listings.
 	 */
 	public function job_feed() {
@@ -773,24 +864,7 @@ class WP_Job_Manager_Post_Types {
 		];
 
 		if ( ! empty( $input_search_location ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			$location_search    = [ 'relation' => 'OR' ];
-			$locations          = explode( ';', $input_search_location );
-			foreach ( $locations as $location ) {
-				$location = trim( $location );
-				if ( ! empty( $location ) ) {
-					$location_subquery = [ 'relation' => 'OR' ];
-					foreach ( $location_meta_keys as $meta_key ) {
-						$location_subquery[] = [
-							'key'     => $meta_key,
-							'value'   => $location,
-							'compare' => 'like',
-						];
-					}
-					$location_search[] = $location_subquery;
-				}
-			}
-			$query_args['meta_query'][] = $location_search;
+			$query_args['meta_query'][] = self::get_location_meta_query( $input_search_location );
 		}
 
 		if ( null !== $input_featured ) {
