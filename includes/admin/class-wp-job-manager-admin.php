@@ -68,7 +68,7 @@ class WP_Job_Manager_Admin {
 		/**
 		 * Documented in class-wp-job-manager.php
 		 */
-		$this->are_promoted_jobs_enabled = apply_filters( 'job_manager_enable_promoted_jobs', true );
+		$this->are_promoted_jobs_enabled = WP_Job_Manager_Promoted_Jobs_Helper::is_enabled();
 		if ( $this->are_promoted_jobs_enabled ) {
 			include_once dirname( __FILE__ ) . '/class-wp-job-manager-promoted-jobs-admin.php';
 		}

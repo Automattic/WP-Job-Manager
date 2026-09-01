@@ -86,15 +86,9 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-data-exporter.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-settings.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-com-api.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-promoted-jobs-helper.php';
 
-		/**
-		 * Controls whether promoted jobs are enabled.
-		 *
-		 * @since 2.3.0
-		 *
-		 * @param bool $enable_promoted_jobs Whether promoted jobs are enabled.
-		 */
-		if ( apply_filters( 'job_manager_enable_promoted_jobs', true ) ) {
+		if ( WP_Job_Manager_Promoted_Jobs_Helper::is_enabled() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/promoted-jobs/class-wp-job-manager-promoted-jobs.php';
 		}
 
