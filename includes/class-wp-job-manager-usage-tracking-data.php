@@ -50,6 +50,7 @@ class WP_Job_Manager_Usage_Tracking_Data {
 			'jobs_company_site'           => self::get_jobs_count_with_meta( '_company_website' ),
 			'jobs_company_tagline'        => self::get_jobs_count_with_meta( '_company_tagline' ),
 			'jobs_company_twitter'        => self::get_jobs_count_with_meta( '_company_twitter' ),
+			'jobs_company_linkedin'       => self::get_jobs_count_with_meta( '_company_linkedin' ),
 			'jobs_company_video'          => self::get_jobs_count_with_meta( '_company_video' ),
 			'jobs_expiry'                 => self::get_jobs_count_with_meta( '_job_expires' ),
 			'jobs_featured'               => self::get_jobs_count_with_checked_meta( '_featured' ),
