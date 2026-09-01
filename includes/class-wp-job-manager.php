@@ -117,6 +117,7 @@ class WP_Job_Manager {
 
 		// Schedule cron jobs.
 		add_action( 'init', [ __CLASS__, 'maybe_schedule_cron_jobs' ] );
+		add_action( 'job_manager_migrate_workplace_type', [ 'WP_Job_Manager_Install', 'run_workplace_type_migration_batch' ] );
 
 		// Switch theme.
 		add_action( 'after_switch_theme', [ 'WP_Job_Manager_Ajax', 'add_endpoint' ], 10 );
@@ -165,8 +166,10 @@ class WP_Job_Manager {
 		WP_Job_Manager_Ajax::add_endpoint();
 		unregister_post_type( \WP_Job_Manager_Post_Types::PT_LISTING );
 		add_filter( 'pre_option_job_manager_enable_types', '__return_true' );
+		add_filter( 'pre_option_job_manager_enable_remote_position', '__return_true' );
 		$this->post_types->register_post_types();
 		remove_filter( 'pre_option_job_manager_enable_types', '__return_true' );
+		remove_filter( 'pre_option_job_manager_enable_remote_position', '__return_true' );
 		WP_Job_Manager_Install::install();
 		flush_rewrite_rules();
 	}

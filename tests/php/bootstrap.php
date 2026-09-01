@@ -70,6 +70,7 @@ class WPJM_Unit_Tests_Bootstrap {
 		error_reporting( E_ALL );
 		update_option( 'job_manager_enable_types', true );
 		update_option( 'job_manager_enable_categories', true );
+		update_option( 'job_manager_enable_remote_position', true );
 
 		require_once $this->plugin_dir . '/wp-job-manager.php';
 	}

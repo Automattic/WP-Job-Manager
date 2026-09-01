@@ -157,18 +157,38 @@ class WP_Job_Manager_Writepanels {
 		} elseif ( false === job_manager_multi_job_type() ) {
 			remove_meta_box( 'job_listing_typediv', \WP_Job_Manager_Post_Types::PT_LISTING, 'side' );
 			$job_listing_type = get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
-			add_meta_box( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, $job_listing_type->labels->menu_name, [ $this, 'job_type_single_meta_box' ], \WP_Job_Manager_Post_Types::PT_LISTING, 'side', 'core' );
+			add_meta_box( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE, $job_listing_type->labels->menu_name, [ $this, 'job_type_single_meta_box' ], \WP_Job_Manager_Post_Types::PT_LISTING, 'side', 'core', [ 'taxonomy' => \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE ] );
+		}
+
+		if ( ! get_option( 'job_manager_enable_remote_position' ) || 0 === intval( wp_count_terms( \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE ) ) ) {
+			remove_meta_box( 'job_listing_workplace_typediv', \WP_Job_Manager_Post_Types::PT_LISTING, 'side' );
+		} else {
+			remove_meta_box( 'job_listing_workplace_typediv', \WP_Job_Manager_Post_Types::PT_LISTING, 'side' );
+			$job_listing_workplace_type = get_taxonomy( \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+			add_meta_box(
+				\WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE,
+				$job_listing_workplace_type->labels->menu_name,
+				[ $this, 'job_type_single_meta_box' ],
+				\WP_Job_Manager_Post_Types::PT_LISTING,
+				'side',
+				'core',
+				[
+					'taxonomy'  => \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE,
+					'show_none' => true,
+				]
+			);
 		}
 	}
 
 	/**
-	 * Displays job listing metabox.
+	 * Displays job listing metabox for a single-select taxonomy.
 	 *
 	 * @param int|WP_Post $post
+	 * @param array       $box  Meta box args; `$box['args']['taxonomy']` picks the taxonomy, defaults to job type.
 	 */
-	public function job_type_single_meta_box( $post ) {
+	public function job_type_single_meta_box( $post, $box = [] ) {
 		// Set up the taxonomy object and get terms.
-		$taxonomy_name = \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE;
+		$taxonomy_name = $box['args']['taxonomy'] ?? \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE;
 
 		// Get all the terms for this taxonomy.
 		$terms     = get_terms(
@@ -182,11 +202,18 @@ class WP_Job_Manager_Writepanels {
 		$current   = $current ? $current->term_id : 0;
 
 		$field_name = 'tax_input[' . $taxonomy_name . ']';
+		$show_none  = ! empty( $box['args']['show_none'] );
 		?>
 		<div id="taxonomy-<?php echo esc_attr( $taxonomy_name ); ?>" class="categorydiv">
 			<!-- Display taxonomy terms -->
 			<div id="<?php echo esc_attr( $taxonomy_name ); ?>-all" class="editor-post-taxonomies__hierarchical-terms-list">
 				<ul id="<?php echo esc_attr( $taxonomy_name ); ?>checklist" class="list:<?php echo esc_attr( $taxonomy_name ); ?> categorychecklist form-no-clear">
+					<?php if ( $show_none ) : ?>
+						<li id="<?php echo esc_attr( $taxonomy_name ); ?>-0"><label class="selectit">
+							<input type="radio" id="in-<?php echo esc_attr( $taxonomy_name ); ?>-0" name="<?php echo esc_attr( $field_name ); ?>" <?php checked( $current, 0 ); ?> value="0" />
+							<?php esc_html_e( 'None', 'wp-job-manager' ); ?><br />
+						</label></li>
+					<?php endif; ?>
 					<?php
 					foreach ( $terms as $term ) {
 						$id = $taxonomy_name . '-' . $term->term_id;

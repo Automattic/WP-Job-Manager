@@ -992,6 +992,63 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Google's JobPosting schema defines TELECOMMUTE as 100% remote only, so `jobLocationType`
+	 * must be set for a Remote listing, but never for Hybrid or On-Site.
+	 *
+	 * @covers ::wpjm_get_job_listing_structured_data
+	 */
+	public function test_structured_data_job_location_type_by_workplace_type() {
+		$expectations = [
+			'on-site' => null,
+			'remote'  => 'TELECOMMUTE',
+			'hybrid'  => null,
+		];
+
+		foreach ( $expectations as $workplace_type => $expected_job_location_type ) {
+			$job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'London' ] ] );
+			wp_set_object_terms( $job_id, $workplace_type, \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+
+			$structured_data = wpjm_get_job_listing_structured_data( $job_id );
+
+			$this->assertSame( $expected_job_location_type, $structured_data['jobLocationType'] ?? null, "workplace type: {$workplace_type}" );
+		}
+	}
+
+	/**
+	 * The admin edit screen's workplace type metabox posts the term ID (like the job type
+	 * metabox does), via `tax_input[job_listing_workplace_type]`. Core only resolves that as
+	 * an ID for hierarchical taxonomies -- for non-hierarchical ones it's treated as a term
+	 * name/slug, so a numeric ID string would silently create a bogus term instead of
+	 * assigning the existing one. TAX_WORKPLACE_TYPE must stay hierarchical to save correctly.
+	 *
+	 * @covers ::register_post_types
+	 */
+	public function test_workplace_type_taxonomy_is_hierarchical_for_id_based_metabox_save() {
+		$this->assertTrue( is_taxonomy_hierarchical( \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE ) );
+
+		$term = get_term_by( 'slug', 'remote', \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+		if ( ! $term ) {
+			$inserted = wp_insert_term( 'Remote', \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE, [ 'slug' => 'remote' ] );
+			$term     = get_term( $inserted['term_id'], \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+		}
+		$job_id = $this->factory->job_listing->create();
+
+		// Mirrors what the admin metabox posts and what sanitize_job_type_meta_box_input() returns.
+		wp_update_post(
+			[
+				'ID'        => $job_id,
+				'tax_input' => [ \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE => $term->term_id ],
+			]
+		);
+
+		$assigned = wpjm_get_the_job_workplace_type( $job_id );
+		$this->assertSame( 'remote', $assigned ? $assigned->slug : null );
+
+		$bogus = get_term_by( 'slug', (string) $term->term_id, \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+		$this->assertFalse( $bogus, 'Saving must not create a new term named after the posted term ID.' );
+	}
+
+	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::output_structured_data
 	 */

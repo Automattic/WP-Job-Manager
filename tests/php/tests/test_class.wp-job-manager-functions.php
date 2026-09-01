@@ -605,6 +605,62 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_workplace_types() {
+		$this->assertTrue( taxonomy_exists( \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE ) );
+
+		$on_site_id = $this->factory->job_listing->create();
+		$remote_id  = $this->factory->job_listing->create();
+		$hybrid_id  = $this->factory->job_listing->create();
+
+		// wp_set_object_terms() (unlike posting through tax_input) resolves slugs
+		// regardless of the taxonomy's hierarchical setting, so assign directly.
+		wp_set_object_terms( $on_site_id, 'on-site', \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+		wp_set_object_terms( $remote_id, 'remote', \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+		wp_set_object_terms( $hybrid_id, 'hybrid', \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+
+		$remote_only = get_job_listings( [ 'workplace_types' => [ 'remote' ] ] );
+		$this->assertEqualSets( [ $remote_id ], wp_list_pluck( $remote_only->posts, 'ID' ) );
+
+		$remote_and_hybrid = get_job_listings( [ 'workplace_types' => [ 'remote', 'hybrid' ] ] );
+		$this->assertEqualSets( [ $remote_id, $hybrid_id ], wp_list_pluck( $remote_and_hybrid->posts, 'ID' ) );
+
+		$all = get_job_listings( [ 'workplace_types' => [] ] );
+		$this->assertEqualSets( [ $on_site_id, $remote_id, $hybrid_id ], wp_list_pluck( $all->posts, 'ID' ) );
+	}
+
+	/**
+	 * Legacy boolean `remote_position` arg is bridged onto the workplace type taxonomy.
+	 *
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_remote_position_legacy_arg() {
+		$on_site_id  = $this->factory->job_listing->create();
+		$remote_id   = $this->factory->job_listing->create();
+		$untagged_id = $this->factory->job_listing->create();
+
+		wp_set_object_terms( $on_site_id, 'on-site', \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+		wp_set_object_terms( $remote_id, 'remote', \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+
+		$remote_only = get_job_listings( [ 'remote_position' => true ] );
+		$this->assertEqualSets( [ $remote_id ], wp_list_pluck( $remote_only->posts, 'ID' ) );
+
+		// False includes untagged posts by default (matches the legacy NOT-EXISTS fallback).
+		$non_remote = get_job_listings( [ 'remote_position' => false ] );
+		$this->assertEqualSets( [ $on_site_id, $untagged_id ], wp_list_pluck( $non_remote->posts, 'ID' ) );
+
+		// The `job_manager_get_job_listings_remote_position_check_not_exists` filter can exclude untagged posts.
+		add_filter( 'job_manager_get_job_listings_remote_position_check_not_exists', '__return_false' );
+		$non_remote_strict = get_job_listings( [ 'remote_position' => false ] );
+		$this->assertEqualSets( [ $on_site_id ], wp_list_pluck( $non_remote_strict->posts, 'ID' ) );
+		remove_filter( 'job_manager_get_job_listings_remote_position_check_not_exists', '__return_false' );
+
+		$all = get_job_listings( [ 'remote_position' => null ] );
+		$this->assertEqualSets( [ $on_site_id, $remote_id, $untagged_id ], wp_list_pluck( $all->posts, 'ID' ) );
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */

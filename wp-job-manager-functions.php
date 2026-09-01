@@ -38,6 +38,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				'featured'          => null,
 				'filled'            => null,
 				'remote_position'   => null,
+				'workplace_types'   => [],
 				'fields'            => 'all',
 				'featured_first'    => 0,
 			]
@@ -81,24 +82,35 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			$query_args['no_found_rows'] = true;
 		}
 
-		$remote_position_search = false;
-
-		if ( ! is_null( $args['remote_position'] ) ) {
-			$remote_position_search = [
-				'key'     => '_remote_position',
-				'value'   => '1',
-				'compare' => $args['remote_position'] ? '=' : '!=',
+		if ( ! empty( $args['workplace_types'] ) ) {
+			$query_args['tax_query'][] = [
+				'taxonomy' => \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE,
+				'field'    => 'slug',
+				'terms'    => $args['workplace_types'],
 			];
-
-			if ( '!=' === $remote_position_search['compare'] && apply_filters( 'job_manager_get_job_listings_remote_position_check_not_exists', true, $args ) ) {
-				$remote_position_search = [
-					'relation' => 'OR',
-					$remote_position_search,
-					[
-						'key'     => '_remote_position',
-						'compare' => 'NOT EXISTS',
-					],
+		} elseif ( ! is_null( $args['remote_position'] ) ) {
+			// Legacy boolean arg, bridged onto the workplace type taxonomy for backward compatibility.
+			if ( $args['remote_position'] ) {
+				$query_args['tax_query'][] = [
+					'taxonomy' => \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE,
+					'field'    => 'slug',
+					'terms'    => [ 'remote' ],
 				];
+			} else {
+				// 'NOT IN' naturally includes untagged posts too, matching the legacy NOT-EXISTS fallback.
+				$include_untagged          = apply_filters( 'job_manager_get_job_listings_remote_position_check_not_exists', true, $args );
+				$query_args['tax_query'][] = $include_untagged
+					? [
+						'taxonomy' => \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE,
+						'field'    => 'slug',
+						'terms'    => [ 'remote' ],
+						'operator' => 'NOT IN',
+					]
+					: [
+						'taxonomy' => \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE,
+						'field'    => 'slug',
+						'terms'    => [ 'on-site', 'hybrid' ],
+					];
 			}
 		}
 
@@ -122,18 +134,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				}
 			}
 
-			if ( $remote_position_search ) {
-				$location_search = [
-					'relation' => 'AND',
-					$remote_position_search,
-					$location_search,
-				];
-			}
-
 			$query_args['meta_query'][] = $location_search;
-
-		} elseif ( $remote_position_search ) {
-			$query_args['meta_query'][] = $remote_position_search;
 		}
 
 		if ( ! is_null( $args['featured'] ) ) {

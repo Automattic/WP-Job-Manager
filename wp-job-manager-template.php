@@ -419,7 +419,9 @@ function wpjm_get_job_listing_structured_data( $post = null ) {
 		$data['jobLocation']            = [];
 		$data['jobLocation']['@type']   = 'Place';
 		$data['jobLocation']['address'] = wpjm_get_job_listing_location_structured_data( $post );
-		if ( $post->_remote_position ) {
+		$workplace_type                 = wpjm_get_the_job_workplace_type( $post );
+		// Google's JobPosting schema defines TELECOMMUTE as 100% remote only - never set it for hybrid.
+		if ( $workplace_type && 'remote' === $workplace_type->slug ) {
 			$data['jobLocationType'] = 'TELECOMMUTE';
 		}
 		if ( empty( $data['jobLocation']['address'] ) ) {
@@ -646,6 +648,28 @@ function wpjm_get_the_job_types( $post = null ) {
 }
 
 /**
+ * Gets the workplace type term (On-Site, Remote, Hybrid) for the listing.
+ *
+ * @param int|WP_Post $post (default: null).
+ * @return WP_Term|false
+ */
+function wpjm_get_the_job_workplace_type( $post = null ) {
+	$post = get_post( $post );
+
+	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
+		return false;
+	}
+
+	$terms = get_the_terms( $post->ID, \WP_Job_Manager_Post_Types::TAX_WORKPLACE_TYPE );
+
+	if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		return false;
+	}
+
+	return current( $terms );
+}
+
+/**
  * Displays job categories for the listing.
  *
  * @since 1.31.0
@@ -815,14 +839,24 @@ function get_the_job_publish_date( $post = null ) {
  * @param int|WP_Post $post
  */
 function the_job_location( $map_link = true, $post = null ) {
-	$location = get_the_job_location( $post );
-	$post     = get_post( $post );
-	if ( $post->_remote_position ) {
+	$location       = get_the_job_location( $post );
+	$post           = get_post( $post );
+	$workplace_type = wpjm_get_the_job_workplace_type( $post );
+	$workplace_slug = $workplace_type ? $workplace_type->slug : '';
+	if ( 'remote' === $workplace_slug ) {
 		$remote_label = apply_filters( 'the_job_location_anywhere_text', __( 'Remote', 'wp-job-manager' ) );
 		if ( $location ) {
 			$location = "$location <small>($remote_label)</small>";
 		} else {
 			$location = $remote_label;
+			$map_link = false;
+		}
+	} elseif ( 'hybrid' === $workplace_slug ) {
+		$hybrid_label = apply_filters( 'the_job_location_hybrid_text', __( 'Hybrid', 'wp-job-manager' ) );
+		if ( $location ) {
+			$location = "$location <small>($hybrid_label)</small>";
+		} else {
+			$location = $hybrid_label;
 			$map_link = false;
 		}
 	}
