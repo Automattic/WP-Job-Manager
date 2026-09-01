@@ -1466,9 +1466,17 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Displays the application content when the application method is a url.
 	 *
+	 * Skipped when `job_manager_direct_apply_url` is enabled, because the template renders
+	 * an anchor link to the application URL directly and adding the "please visit host"
+	 * paragraph below it is redundant. Addon listeners on `job_manager_application_details_url`
+	 * continue to fire via the direct-apply branch in `templates/job-application.php`.
+	 *
 	 * @param stdClass $apply
 	 */
 	public function application_details_url( $apply ) {
+		if ( 'url' === $apply->type && get_option( 'job_manager_direct_apply_url' ) ) {
+			return;
+		}
 		get_job_manager_template( 'job-application-url.php', [ 'apply' => $apply ] );
 	}
 
