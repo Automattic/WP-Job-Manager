@@ -93,13 +93,15 @@ class Job_Dashboard_Shortcode {
 			return ob_get_clean();
 		}
 
-		$attrs          = shortcode_atts(
+		$attrs           = shortcode_atts(
 			[
-				'posts_per_page' => '25',
+				'posts_per_page'  => '25',
+				'group_by_status' => 'no',
 			],
 			$attrs
 		);
-		$posts_per_page = $attrs['posts_per_page'];
+		$posts_per_page  = $attrs['posts_per_page'];
+		$group_by_status = in_array( strtolower( (string) $attrs['group_by_status'] ), [ 'yes', 'true', '1' ], true );
 
 		Job_Overlay::instance()->init_dashboard_overlay();
 
@@ -121,13 +123,13 @@ class Job_Dashboard_Shortcode {
 		$search = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
 
 		// ....If not show the job dashboard.
+		$query_args = [
+			'posts_per_page' => $group_by_status ? -1 : $posts_per_page,
+			's'              => $search,
+		];
+
 		$jobs = new \WP_Query(
-			$this->get_job_dashboard_query_args(
-				[
-					'posts_per_page' => $posts_per_page,
-					's'              => $search,
-				]
-			),
+			$this->get_job_dashboard_query_args( $query_args ),
 		);
 
 		// Cache IDs for access check later on.
@@ -160,15 +162,45 @@ class Job_Dashboard_Shortcode {
 		 */
 		do_action( 'job_manager_job_dashboard_before', $jobs );
 
+		$group_data = $group_by_status
+			? [
+				'group_by_status' => true,
+				'job_groups'      => $this->group_jobs_by_status( $jobs->posts ),
+				'max_num_pages'   => 1,
+			]
+			: [
+				'group_by_status' => false,
+				'job_groups'      => [],
+				'max_num_pages'   => $jobs->max_num_pages,
+			];
+
+		/**
+		 * Limit the number of jobs shown in each group on the grouped dashboard.
+		 *
+		 * When set to a positive integer, each group (active/pending/inactive) is
+		 * truncated to that many entries. Default 0 means no limit.
+		 *
+		 * @since $$next-version$$
+		 * @param int $limit Maximum entries per group. 0 for unlimited.
+		 */
+		$group_limit = apply_filters( 'job_manager_job_dashboard_group_limit', 0 );
+		if ( $group_limit > 0 && ! empty( $group_data['job_groups'] ) ) {
+			foreach ( $group_data['job_groups'] as $key => $jobs_in_group ) {
+				$group_data['job_groups'][ $key ] = array_slice( $jobs_in_group, 0, $group_limit );
+			}
+		}
+
 		get_job_manager_template(
 			'job-dashboard.php',
-			[
-				'jobs'                  => $jobs->posts,
-				'job_actions'           => $job_actions,
-				'max_num_pages'         => $jobs->max_num_pages,
-				'job_dashboard_columns' => $job_dashboard_columns,
-				'search_input'          => $search,
-			]
+			array_merge(
+				$group_data,
+				[
+					'jobs'                  => $jobs->posts,
+					'job_actions'           => $job_actions,
+					'job_dashboard_columns' => $job_dashboard_columns,
+					'search_input'          => $search,
+				]
+			)
 		);
 
 		Job_Overlay::instance()->output_modal_element();
@@ -684,6 +716,45 @@ class Job_Dashboard_Shortcode {
 		} else {
 			return home_url( '/' );
 		}
+	}
+
+	/**
+	 * Group jobs by status bucket for the dashboard.
+	 *
+	 * Buckets:
+	 * - active: publish, future
+	 * - pending: pending, pending_payment, draft, preview
+	 * - inactive: expired
+	 *
+	 * Filled listings (post_status = publish, meta _filled = 1) intentionally
+	 * stay in the active bucket. They are still publicly visible until expired;
+	 * the "Filled" chip on the row signals the closed-for-applications state.
+	 * This matches the flat (non-grouped) view, which has always shown filled
+	 * publish listings inline.
+	 *
+	 * @since $$next-version$$
+	 * @param array $jobs Array of WP_Post objects.
+	 * @return array{active: array, pending: array, inactive: array}
+	 */
+	private function group_jobs_by_status( array $jobs ): array {
+		$groups = [
+			'active'   => [],
+			'pending'  => [],
+			'inactive' => [],
+		];
+
+		foreach ( $jobs as $job ) {
+			$group = 'inactive';
+
+			if ( in_array( $job->post_status, [ 'publish', 'future' ], true ) ) {
+				$group = 'active';
+			} elseif ( in_array( $job->post_status, [ 'pending', 'pending_payment', 'draft', 'preview' ], true ) ) {
+				$group = 'pending';
+			}
+			$groups[ $group ][] = $job;
+		}
+
+		return $groups;
 	}
 
 	/**
