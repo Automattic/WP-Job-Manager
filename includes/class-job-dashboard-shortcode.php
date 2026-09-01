@@ -231,6 +231,16 @@ class Job_Dashboard_Shortcode {
 						'nonce' => $base_nonce_action_name,
 					];
 				}
+				$actions['deactivate'] = [
+					'label' => __( 'Deactivate', 'wp-job-manager' ),
+					'nonce' => $base_nonce_action_name,
+				];
+				break;
+			case 'wpjm_deactivated':
+				$actions['reactivate'] = [
+					'label' => __( 'Reactivate', 'wp-job-manager' ),
+					'nonce' => $base_nonce_action_name,
+				];
 				break;
 			case 'expired':
 				if ( job_manager_get_permalink( 'submit_job_form' ) ) {
@@ -318,6 +328,7 @@ class Job_Dashboard_Shortcode {
 			'renew',
 			'relist',
 			'continue',
+			'reactivate',
 			'edit',
 			'delete',
 			'duplicate',
@@ -470,6 +481,49 @@ class Job_Dashboard_Shortcode {
 					// Message.
 					// translators: Placeholder %s is the job listing title.
 					$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been deleted', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
+
+					break;
+				case 'deactivate':
+					$updated = wp_update_post(
+						[
+							'ID'          => $job_id,
+							'post_status' => 'wpjm_deactivated',
+						]
+					);
+
+					if ( ! $updated ) {
+						throw new \Exception( __( 'Unable to deactivate this job listing', 'wp-job-manager' ) );
+					}
+
+					// Message.
+					// translators: Placeholder %s is the job listing title.
+					$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been deactivated', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
+
+					break;
+				case 'reactivate':
+					// Reset the expiry date before transitioning back to published.
+					// set_expiry() snapshots the existing _job_expires before clearing
+					// it, so the regeneration branch never fires for a stale past date.
+					$expires = calculate_job_expiry( $job_id, true );
+
+					if ( $expires ) {
+						WP_Job_Manager_Post_Types::instance()->set_job_expiration( $job_id, $expires );
+					}
+
+					$updated = wp_update_post(
+						[
+							'ID'          => $job_id,
+							'post_status' => 'publish',
+						]
+					);
+
+					if ( ! $updated ) {
+						throw new \Exception( __( 'Unable to reactivate this job listing', 'wp-job-manager' ) );
+					}
+
+					// Message.
+					// translators: Placeholder %s is the job listing title.
+					$this->job_dashboard_message = Notice::success( sprintf( __( '%s has been reactivated', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ) );
 
 					break;
 				case 'duplicate':
@@ -656,10 +710,11 @@ class Job_Dashboard_Shortcode {
 		}
 
 		$status_icon = [
-			'pending'         => 'alert',
-			'pending_payment' => 'alert',
-			'draft'           => 'edit',
-			'expired'         => 'alert',
+			'pending'          => 'alert',
+			'pending_payment'  => 'alert',
+			'draft'            => 'edit',
+			'expired'          => 'alert',
+			'wpjm_deactivated' => 'info',
 		][ $job->post_status ] ?? null;
 
 		$status[] = '<span class="job-status-' . esc_attr( $job->post_status ) . ' jm-ui-row">'
@@ -741,7 +796,7 @@ class Job_Dashboard_Shortcode {
 			$args,
 			[
 				'post_type'           => \WP_Job_Manager_Post_Types::PT_LISTING,
-				'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview' ],
+				'post_status'         => [ 'publish', 'expired', 'pending', 'draft', 'preview', 'wpjm_deactivated' ],
 				'ignore_sticky_posts' => 1,
 				'orderby'             => 'date',
 				'order'               => 'desc',

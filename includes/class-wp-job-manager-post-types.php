@@ -544,6 +544,19 @@ class WP_Job_Manager_Post_Types {
 				'label_count'               => _n_noop( 'Preview <span class="count">(%s)</span>', 'Preview <span class="count">(%s)</span>', 'wp-job-manager' ),
 			]
 		);
+		register_post_status(
+			'wpjm_deactivated',
+			[
+				'label'                     => _x( 'Deactivated', 'post status', 'wp-job-manager' ),
+				'public'                    => false,
+				'protected'                 => true,
+				'exclude_from_search'       => true,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				// translators: Placeholder %s is the number of deactivated posts of this type.
+				'label_count'               => _n_noop( 'Deactivated <span class="count">(%s)</span>', 'Deactivated <span class="count">(%s)</span>', 'wp-job-manager' ),
+			]
+		);
 
 		/**
 		 * Custom post type used to store guest user data.
