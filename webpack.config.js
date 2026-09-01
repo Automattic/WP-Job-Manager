@@ -9,6 +9,7 @@ const files = {
 	'js/job-application': 'js/job-application.js',
 	'js/job-dashboard': 'js/job-dashboard.js',
 	'js/job-submission': 'js/job-submission.js',
+	'js/time-localize': 'js/time-localize.js',
 	'js/ui-theme-support': 'js/ui-theme-support.js',
 	'js/multiselect': 'js/multiselect.js',
 	'js/term-multiselect': 'js/term-multiselect.js',

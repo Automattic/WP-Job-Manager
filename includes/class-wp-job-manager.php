@@ -326,6 +326,9 @@ class WP_Job_Manager {
 
 		// Register datepicker JS. It will be enqueued if needed when a date field is used.
 		self::register_script( 'wp-job-manager-datepicker', 'js/datepicker.js', [ 'jquery', 'jquery-ui-datepicker' ], true );
+
+		// Register time localize JS. It will be enqueued if needed when a local time is displayed.
+		self::register_script( 'wp-job-manager-time-localize', 'js/time-localize.js', [], true );
 	}
 
 	/**
