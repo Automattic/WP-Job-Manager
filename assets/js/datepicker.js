@@ -4,9 +4,12 @@ jQuery(document).ready( function() {
 		jQuery.datepicker._defaults.dateFormat = 'MM d, yy';
 	}
 	var $date_today = new Date();
+	$date_today.setHours( 0, 0, 0, 0 );
 	var datePickerOptions = {
 		altFormat  : 'yy-mm-dd',
-		minDate    : $date_today,
+		beforeShowDay : function( date ) {
+			return [ date >= $date_today, '' ];
+		},
 	};
 
 	if ( typeof job_manager_datepicker !== 'undefined' ) {
