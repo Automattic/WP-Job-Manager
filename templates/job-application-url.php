@@ -14,5 +14,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+$apply_rel = apply_filters( 'job_manager_application_url_rel', 'nofollow', $apply );
 ?>
-<p><?php esc_html_e( 'To apply for this job please visit', 'wp-job-manager' ); ?> <a href="<?php echo esc_url( $apply->url ); ?>" rel="nofollow"><?php echo esc_html( wp_parse_url( $apply->url, PHP_URL_HOST ) ); ?></a>.</p>
+<p><?php esc_html_e( 'To apply for this job please visit', 'wp-job-manager' ); ?> <a href="<?php echo esc_url( $apply->url ); ?>"<?php echo $apply_rel ? ' rel="' . esc_attr( $apply_rel ) . '"' : ''; ?>><?php echo esc_html( wp_parse_url( $apply->url, PHP_URL_HOST ) ); ?></a>.</p>

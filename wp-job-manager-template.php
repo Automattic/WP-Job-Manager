@@ -1163,7 +1163,9 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 		return null;
 	}
 
-	$company_twitter = $before . '<a href="' . esc_url( 'https://x.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
+	$_rel            = apply_filters( 'job_manager_company_link_rel', 'nofollow', 'twitter', get_post() );
+	$_rel_attr       = $_rel ? ' rel="' . esc_attr( $_rel ) . '"' : '';
+	$company_twitter = $before . '<a href="' . esc_url( 'https://x.com/' . $company_twitter ) . '" class="company_twitter"' . $_rel_attr . '>' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_twitter );
