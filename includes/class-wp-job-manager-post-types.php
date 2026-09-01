@@ -1604,7 +1604,19 @@ class WP_Job_Manager_Post_Types {
 		if ( function_exists( 'restore_current_locale' ) && did_action( 'admin_init' ) ) {
 			restore_current_locale();
 		}
-		return $permalinks;
+
+		/**
+		 * Filters the resolved rewrite-slug map returned by `get_permalink_structure()`.
+		 *
+		 * The filtered array replaces the `rewrite` input to `register_post_type()` and
+		 * `register_taxonomy()` calls downstream, so third-party multilingual plugins
+		 * (e.g. WPML) can pin a stable source slug for translation.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param array $permalinks The resolved permalink structure.
+		 */
+		return apply_filters( 'job_manager_permalink_structure', $permalinks );
 	}
 
 	/**
