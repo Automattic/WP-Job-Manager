@@ -1354,6 +1354,88 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 		add_filter( 'job_manager_job_listing_data_fields', [ $this, 'custom_job_listing_data_fields' ] );
 	}
 
+	/**
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::register_post_types
+	 */
+	public function test_job_listing_category_taxonomy_is_public_with_theme_support() {
+		add_theme_support( 'job-manager-templates' );
+		$this->reregister_post_type();
+
+		$tax = get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$this->assertTrue( (bool) $tax->public, 'public must be true so plugins can discover it.' );
+		$this->assertTrue( (bool) $tax->publicly_queryable, 'publicly_queryable follows theme support.' );
+		$this->assertTrue( (bool) $tax->show_in_nav_menus, 'show_in_nav_menus follows publicly_queryable (and theme support).' );
+
+		remove_theme_support( 'job-manager-templates' );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::register_post_types
+	 */
+	public function test_job_listing_category_taxonomy_is_public_without_theme_support() {
+		remove_theme_support( 'job-manager-templates' );
+		$this->reregister_post_type();
+
+		$tax = get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY );
+		$this->assertTrue( (bool) $tax->public, 'public must be true so plugins can discover it.' );
+		$this->assertFalse( (bool) $tax->publicly_queryable, 'publicly_queryable hidden without theme support.' );
+		$this->assertFalse( (bool) $tax->show_in_nav_menus, 'show_in_nav_menus hidden without theme support since publicly_queryable is false.' );
+
+		add_theme_support( 'job-manager-templates' );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::register_post_types
+	 */
+	public function test_job_listing_type_taxonomy_is_public_with_theme_support() {
+		add_theme_support( 'job-manager-templates' );
+		$this->reregister_post_type();
+
+		$tax = get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$this->assertTrue( (bool) $tax->public, 'public must be true so plugins can discover it.' );
+		$this->assertTrue( (bool) $tax->publicly_queryable, 'publicly_queryable follows theme support.' );
+		$this->assertTrue( (bool) $tax->show_in_nav_menus, 'show_in_nav_menus follows publicly_queryable (and theme support).' );
+
+		remove_theme_support( 'job-manager-templates' );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::register_post_types
+	 */
+	public function test_job_listing_type_taxonomy_is_public_without_theme_support() {
+		remove_theme_support( 'job-manager-templates' );
+		$this->reregister_post_type();
+
+		$tax = get_taxonomy( \WP_Job_Manager_Post_Types::TAX_LISTING_TYPE );
+		$this->assertTrue( (bool) $tax->public, 'public must be true so plugins can discover it.' );
+		$this->assertFalse( (bool) $tax->publicly_queryable, 'publicly_queryable hidden without theme support.' );
+		$this->assertFalse( (bool) $tax->show_in_nav_menus, 'show_in_nav_menus hidden without theme support since publicly_queryable is false.' );
+
+		add_theme_support( 'job-manager-templates' );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::register_post_types
+	 */
+	public function test_job_listing_taxonomies_are_listed_in_get_taxonomies_public() {
+		$public_taxonomies = get_taxonomies( [ 'public' => true ] );
+		$this->assertContains(
+			\WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
+			$public_taxonomies,
+			'job_listing_category must be returned by get_taxonomies(public=true).'
+		);
+		$this->assertContains(
+			\WP_Job_Manager_Post_Types::TAX_LISTING_TYPE,
+			$public_taxonomies,
+			'job_listing_type must be returned by get_taxonomies(public=true).'
+		);
+	}
+
 	private function remove_custom_job_listing_data_feilds() {
 		remove_filter( 'job_manager_job_listing_data_fields', [ $this, 'custom_job_listing_data_fields' ] );
 	}
