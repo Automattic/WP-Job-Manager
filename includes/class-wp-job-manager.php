@@ -133,6 +133,7 @@ class WP_Job_Manager {
 		add_action( 'admin_init', [ $this, 'updater' ] );
 		add_action( 'admin_init', [ $this, 'add_privacy_policy_content' ] );
 		add_action( 'wp_logout', [ $this, 'cleanup_job_posting_cookies' ] );
+		add_action( 'init', [ $this, 'validate_job_posting_cookies' ], 1 );
 		add_action( 'init', [ 'WP_Job_Manager_Email_Notifications', 'init' ] );
 		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
 		add_action( 'plugins_loaded', [ $this, 'include_admin_files' ] );
@@ -294,6 +295,34 @@ class WP_Job_Manager {
 	}
 
 	/**
+	 * Validates job posting cookies before headers are sent.
+	 */
+	public function validate_job_posting_cookies() {
+		$job_id_cookie  = 'wp-job-manager-submitting-job-id';
+		$job_key_cookie = 'wp-job-manager-submitting-job-key';
+		$has_job_id     = isset( $_COOKIE[ $job_id_cookie ] );
+		$has_job_key    = isset( $_COOKIE[ $job_key_cookie ] );
+
+		if ( ! $has_job_id && ! $has_job_key ) {
+			return;
+		}
+
+		$job_id = $has_job_id ? absint( $_COOKIE[ $job_id_cookie ] ) : 0;
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The submitting key is a bearer credential and must be compared verbatim.
+		$submitting_key = $has_job_key ? wp_unslash( $_COOKIE[ $job_key_cookie ] ) : '';
+		$job            = $job_id ? get_post( $job_id ) : null;
+
+		if (
+			! $job instanceof WP_Post
+			|| WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type
+			|| ! in_array( get_post_status( $job ), [ 'preview', 'pending_payment' ], true )
+			|| get_post_meta( $job_id, '_submitting_key', true ) !== $submitting_key
+		) {
+			$this->cleanup_job_posting_cookies();
+		}
+	}
+
+	/**
 	 * Cleanup job posting cookies.
 	 */
 	public function cleanup_job_posting_cookies() {
@@ -305,12 +334,13 @@ class WP_Job_Manager {
 			'httponly' => true,
 			'samesite' => 'Lax',
 		];
-
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) {
 			setcookie( 'wp-job-manager-submitting-job-id', '', $cookie_options );
+			unset( $_COOKIE['wp-job-manager-submitting-job-id'] );
 		}
 		if ( isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
 			setcookie( 'wp-job-manager-submitting-job-key', '', $cookie_options );
+			unset( $_COOKIE['wp-job-manager-submitting-job-key'] );
 		}
 	}
 
