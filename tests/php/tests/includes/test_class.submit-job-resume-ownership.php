@@ -365,4 +365,15 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 
 		$this->assert_resume_cookies_cleared();
 	}
+
+	/**
+	 * An empty resume cookie pair is removed during early validation.
+	 */
+	public function test_empty_resume_cookie_pair_is_cleared() {
+		$this->set_resume_cookies( 0, '' );
+
+		WPJM()->validate_job_posting_cookies();
+
+		$this->assert_resume_cookies_cleared();
+	}
 }

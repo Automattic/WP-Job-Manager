@@ -300,8 +300,8 @@ class WP_Job_Manager {
 	public function validate_job_posting_cookies() {
 		$job_id_cookie  = 'wp-job-manager-submitting-job-id';
 		$job_key_cookie = 'wp-job-manager-submitting-job-key';
-		$has_job_id     = ! empty( $_COOKIE[ $job_id_cookie ] );
-		$has_job_key    = ! empty( $_COOKIE[ $job_key_cookie ] );
+		$has_job_id     = isset( $_COOKIE[ $job_id_cookie ] );
+		$has_job_key    = isset( $_COOKIE[ $job_key_cookie ] );
 
 		if ( ! $has_job_id && ! $has_job_key ) {
 			return;
