@@ -26,35 +26,6 @@ class WP_Test_Submit_Job_Submission_Limit extends WPJM_BaseTest {
 	}
 
 	/**
-	 * Drives WP_Job_Manager_Form_Submit_Job::preview_handler() for the "continue"
-	 * action against a specific job, the way the preview step POST does.
-	 *
-	 * @param int $job_id Job listing to promote.
-	 */
-	private function continue_from_preview( $job_id ) {
-		$form  = WP_Job_Manager_Form_Submit_Job::instance();
-		$class = new ReflectionClass( $form );
-
-		$job_id_prop = $class->getProperty( 'job_id' );
-		$job_id_prop->setAccessible( true );
-		$job_id_prop->setValue( $form, $job_id );
-
-		$step_prop = $class->getProperty( 'step' );
-		$step_prop->setAccessible( true );
-		$step_prop->setValue( $form, 1 );
-
-		$nonce                   = wp_create_nonce( 'preview-job-' . $job_id );
-		$_POST                   = [
-			'continue'    => '1',
-			'job_id'      => $job_id,
-			'_wpjm_nonce' => $nonce,
-		];
-		$_REQUEST['_wpjm_nonce'] = $nonce;
-
-		$form->preview_handler();
-	}
-
-	/**
 	 * A user over the submission limit cannot publish a stockpiled `preview`
 	 * listing by completing the preview step.
 	 */

@@ -1913,8 +1913,11 @@ function job_manager_count_user_job_listings( $user_id = 0 ) {
 		$user_id = get_current_user_id();
 	}
 
+	// `future` counts: a scheduled listing is a committed submission (WP publishes it
+	// via cron with no further check), so excluding it would let a user bypass the
+	// submission limit entirely by giving each listing a scheduled date.
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-	return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'job_listing' AND post_status IN ( 'publish', 'pending', 'expired', 'hidden' );", $user_id ) );
+	return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'job_listing' AND post_status IN ( 'publish', 'pending', 'expired', 'hidden', 'future' );", $user_id ) );
 }
 
 /**
@@ -2036,4 +2039,19 @@ function job_manager_user_can_submit_job_listing() {
 	 * @param boolean $can_submit
 	 */
 	return apply_filters( 'job_manager_user_can_submit_job_listing', $can_submit );
+}
+
+/**
+ * Whether the submission-limit check can ever refuse a listing.
+ *
+ * Must answer: can job_manager_user_can_submit_job_listing() ever return false?
+ * Callers use this to skip work (e.g. the submit form's publish lock) that only
+ * exists to protect that check — keep it in sync with the check's inputs.
+ *
+ * @since $$next-version$$
+ *
+ * @return bool
+ */
+function job_manager_user_submission_limit_active() {
+	return '' !== get_option( 'job_manager_submission_limit', '' ) || has_filter( 'job_manager_user_can_submit_job_listing' );
 }

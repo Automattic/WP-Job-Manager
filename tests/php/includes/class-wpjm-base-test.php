@@ -217,4 +217,32 @@ class WPJM_BaseTest extends WP_UnitTestCase {
 		wp_logout();
 		return $this;
 	}
+
+	/**
+	 * Drives WP_Job_Manager_Form_Submit_Job::preview_handler() for the "continue"
+	 * action against a specific job, the way the preview step POST does.
+	 *
+	 * The form is built *after* the request superglobals are populated because the
+	 * constructor resolves the job ID from them. An optional factory lets a test
+	 * supply a subclass that instruments the handler; it is invoked at that same
+	 * point.
+	 *
+	 * @param int           $job_id  Job listing to promote.
+	 * @param callable|null $factory Optional () => WP_Job_Manager_Form_Submit_Job.
+	 *
+	 * @return WP_Job_Manager_Form_Submit_Job The form that handled the request.
+	 */
+	protected function continue_from_preview( $job_id, $factory = null ) {
+		$_POST    = [
+			'job_id'      => $job_id,
+			'continue'    => '1',
+			'_wpjm_nonce' => wp_create_nonce( 'preview-job-' . $job_id ),
+		];
+		$_REQUEST = array_merge( $_REQUEST, $_POST );
+
+		$form = null === $factory ? new WP_Job_Manager_Form_Submit_Job() : $factory();
+		$form->preview_handler();
+
+		return $form;
+	}
 }
