@@ -1028,7 +1028,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * it back to them (an existing listing attachment or a saved company value). Gated on
 	 * the attachment still existing.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 *
 	 * @param int    $attachment_id Attachment post ID.
 	 * @param string $group_key     Field group key.
@@ -1057,7 +1057,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * the unusable value from the rendered field state closes that path while leaving the
 	 * validation message intact (it reads the untouched $values).
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 */
 	protected function scrub_unusable_attachment_field_values() {
 		foreach ( $this->fields as $group_key => $group_fields ) {
@@ -1558,7 +1558,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * The single definition of the lock name, so no caller hard-codes the scheme
 	 * independently.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 *
 	 * @return string
 	 */
@@ -1598,7 +1598,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * $wpdb. Under connection-splitting drivers (HyperDB/LudicrousDB) the read may land on
 	 * a replica; the lock then degrades to best-effort and the publish still proceeds.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 *
 	 * @return string|null The held lock name, or null when no lock is held.
 	 */
@@ -1621,7 +1621,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * backends whose GET_LOCK result differs from MySQL's (e.g. the SQLite integration's
 	 * '1=1').
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 *
 	 * @param string $lock_name Lock name.
 	 * @return string|null Raw GET_LOCK result.
@@ -1639,7 +1639,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	/**
 	 * Releases a lock obtained via acquire_submission_lock().
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 *
 	 * @param string|null $lock_name The lock name, or null when no lock was held.
 	 */

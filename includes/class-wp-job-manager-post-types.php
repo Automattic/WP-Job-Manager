@@ -1804,7 +1804,7 @@ class WP_Job_Manager_Post_Types {
 	 * gates the search and REST-search surfaces.
 	 *
 	 * @access private
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 *
 	 * @param array $post_types Post type objects keyed by name.
 	 *

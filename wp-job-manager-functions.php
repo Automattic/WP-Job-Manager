@@ -1883,14 +1883,14 @@ function job_manager_duplicate_listing( $post_id ) {
  * `wp_json_encode()` with the `JSON_HEX_*` flags instead.
  *
  * @since 1.32.2
- * @deprecated $$next-version$$
+ * @deprecated 2.4.7
  *
  * @param string $json JSON to escape.
  * @param bool   $html True if escaping for HTML text node, false for attributes. Determines how quotes are handled.
  * @return string Escaped JSON.
  */
 function wpjm_esc_json( $json, $html = false ) {
-	_deprecated_function( __FUNCTION__, '$$next-version$$', 'wp_json_encode' );
+	_deprecated_function( __FUNCTION__, '2.4.7', 'wp_json_encode' );
 
 	return _wp_specialchars(
 		$json,
@@ -2048,7 +2048,7 @@ function job_manager_user_can_submit_job_listing() {
  * Callers use this to skip work (e.g. the submit form's publish lock) that only
  * exists to protect that check — keep it in sync with the check's inputs.
  *
- * @since $$next-version$$
+ * @since 2.4.7
  *
  * @return bool
  */

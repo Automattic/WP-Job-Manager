@@ -206,7 +206,7 @@ class WP_Job_Manager_Promoted_Jobs_API {
 	 * Checks whether the current requester can view a job listing, per the
 	 * administrator-configured View Job Capability.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 *
 	 * @param WP_Post $item Job listing post.
 	 *
