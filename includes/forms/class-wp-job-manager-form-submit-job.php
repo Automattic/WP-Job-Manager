@@ -727,6 +727,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			// Get posted values.
 			$values = $this->get_posted_fields();
 
+			// Keep an attachment the submitter may not use out of the re-rendered form, so a
+			// validation failure cannot echo a foreign attachment's file URL back to them.
+			$this->scrub_unusable_attachment_field_values();
+
 			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Input is used safely. Nonce checked below when possible.
 			$input_create_account_username        = isset( $_POST['create_account_username'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_username'] ) ) : false;
 			$input_create_account_password        = isset( $_POST['create_account_password'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_password'] ) ) : false;
@@ -998,14 +1002,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 						// stale saved value, fail silently at the sink — set_post_thumbnail()
 						// ignores a dead ID — and then be written straight back to the saved value,
 						// so the listing would publish with no logo and never self-heal.
-						$is_usable = 'attachment' === get_post_type( $attachment_id )
-							&& (
-								$this->is_attachment_authorized_for_current_user( $attachment_id )
-								|| $this->is_existing_listing_attachment( $attachment_id, $key )
-								|| $this->is_saved_user_attachment( $attachment_id, $group_key, $key )
-							);
-
-						if ( ! $is_usable ) {
+						if ( ! $this->is_usable_attachment( $attachment_id, $group_key, $key ) ) {
 							// Tell the submitter how to recover. The rejected value is one the form
 							// offered them (a saved logo), so "invalid" alone leaves them stuck.
 							return new WP_Error(
@@ -1023,6 +1020,64 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Whether the current user may reference the given attachment ID in a file field,
+	 * either because they own it / can edit it or because the form legitimately offered
+	 * it back to them (an existing listing attachment or a saved company value). Gated on
+	 * the attachment still existing.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int    $attachment_id Attachment post ID.
+	 * @param string $group_key     Field group key.
+	 * @param string $key           Field key.
+	 * @return bool
+	 */
+	protected function is_usable_attachment( $attachment_id, $group_key, $key ) {
+		return 'attachment' === get_post_type( $attachment_id )
+			&& (
+				$this->is_attachment_authorized_for_current_user( $attachment_id )
+				|| $this->is_existing_listing_attachment( $attachment_id, $key )
+				|| $this->is_saved_user_attachment( $attachment_id, $group_key, $key )
+			);
+	}
+
+	/**
+	 * Blanks file-field values the current user may not use before the form is
+	 * re-rendered.
+	 *
+	 * A validation failure re-renders the submit form with the posted values, and
+	 * templates/form-fields/uploaded-file-html.php resolves a numeric file value to its
+	 * attachment URL with no authorization check. A submitter could therefore post a
+	 * foreign attachment ID as `current_<field>`, have validation refuse it, and read the
+	 * refused attachment's file URL back from the re-rendered form — reaching media that
+	 * WordPress itself withholds (e.g. an attachment parented to a private post). Dropping
+	 * the unusable value from the rendered field state closes that path while leaving the
+	 * validation message intact (it reads the untouched $values).
+	 *
+	 * @since $$next-version$$
+	 */
+	protected function scrub_unusable_attachment_field_values() {
+		foreach ( $this->fields as $group_key => $group_fields ) {
+			foreach ( $group_fields as $key => $field ) {
+				if ( 'file' !== $field['type'] || ! isset( $field['value'] ) ) {
+					continue;
+				}
+
+				$is_array = is_array( $field['value'] );
+				$values   = $is_array ? $field['value'] : [ $field['value'] ];
+
+				foreach ( $values as $index => $value ) {
+					if ( is_numeric( $value ) && absint( $value ) && ! $this->is_usable_attachment( absint( $value ), $group_key, $key ) ) {
+						unset( $values[ $index ] );
+					}
+				}
+
+				$this->fields[ $group_key ][ $key ]['value'] = $is_array ? array_values( $values ) : ( reset( $values ) ?: '' );
+			}
+		}
 	}
 
 	/**
