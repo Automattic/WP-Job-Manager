@@ -982,12 +982,64 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			$jobs->the_post();
 			$post            = get_post();
 			$structured_data = wpjm_get_job_listing_structured_data( $post );
-			$json_data       = wpjm_esc_json( wp_json_encode( $structured_data ), true );
+			$json_data       = wp_json_encode( $structured_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
 			ob_start();
 			$instance->output_structured_data();
 			$result = ob_get_clean();
 			$this->assertStringContainsString( '<script type="application/ld+json">', $result );
 			$this->assertStringContainsString( $json_data, $result );
+		}
+	}
+
+	/**
+	 * The JSON-LD payload must round-trip: a consumer parsing the script content
+	 * gets exactly the structured data back. HTML-escaping the JSON corrupts it,
+	 * because script content is raw text and entities are never decoded there.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::output_structured_data
+	 */
+	public function test_output_structured_data_round_trips_without_html_entities() {
+		global $wp_query;
+		$instance = WP_Job_Manager_Post_Types::instance();
+
+		$this->login_as_admin();
+		kses_remove_filters();
+		$job_id = $this->factory->job_listing->create(
+			[
+				'post_title'   => 'Events & Marketing coordinator',
+				'post_content' => '<p>Sales & partnerships role.</p>',
+				'meta_input'   => [ '_company_name' => 'Acme & Co' ],
+			]
+		);
+		kses_init_filters();
+
+		$wp_query = new WP_Query(
+			[
+				'p'         => $job_id,
+				'post_type' => \WP_Job_Manager_Post_Types::PT_LISTING,
+			]
+		);
+		$this->assertEquals( 1, $wp_query->post_count );
+
+		while ( $wp_query->have_posts() ) {
+			$wp_query->the_post();
+			$structured_data = wpjm_get_job_listing_structured_data( get_post() );
+
+			ob_start();
+			$instance->output_structured_data();
+			$result = ob_get_clean();
+
+			$this->assertSame( 1, preg_match( '#<script type="application/ld\+json">(.*)</script>#s', $result, $matches ) );
+			$payload = $matches[1];
+
+			$this->assertStringNotContainsString( '<', $payload, 'JSON_HEX_TAG keeps the payload unable to close the script element.' );
+			$this->assertStringNotContainsString( '&', $payload, 'No HTML entities are baked into the payload.' );
+
+			$decoded = json_decode( $payload, true );
+			$this->assertSame( $structured_data, $decoded, 'A JSON-LD consumer reads back exactly the structured data.' );
+			$this->assertSame( 'Acme & Co', $decoded['hiringOrganization']['name'], 'An ampersand survives emission as a plain ampersand.' );
+			$this->assertStringContainsString( '<p>', $decoded['description'], 'Description HTML survives as HTML, not entities.' );
 		}
 	}
 

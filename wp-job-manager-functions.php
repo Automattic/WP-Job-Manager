@@ -1878,13 +1878,20 @@ function job_manager_duplicate_listing( $post_id ) {
 /**
  * Escape JSON for use on HTML or attribute text nodes.
  *
+ * Do not use for `<script>` element content: script content is raw text, so HTML
+ * entities are never decoded there and end up baked into the payload. Use
+ * `wp_json_encode()` with the `JSON_HEX_*` flags instead.
+ *
  * @since 1.32.2
+ * @deprecated $$next-version$$
  *
  * @param string $json JSON to escape.
  * @param bool   $html True if escaping for HTML text node, false for attributes. Determines how quotes are handled.
  * @return string Escaped JSON.
  */
 function wpjm_esc_json( $json, $html = false ) {
+	_deprecated_function( __FUNCTION__, '$$next-version$$', 'wp_json_encode' );
+
 	return _wp_specialchars(
 		$json,
 		$html ? ENT_NOQUOTES : ENT_QUOTES, // Escape quotes in attribute nodes only.
