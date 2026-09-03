@@ -24,6 +24,12 @@ function wpjm_yoast_skip_filled_job_listings( $url, $type, $post ) {
 		return false;
 	}
 
+	// Keep listings restricted by the View Job Capability out of the Yoast sitemap: it is
+	// crawled anonymously, and an anonymous requester cannot satisfy a configured capability.
+	if ( ! job_manager_user_can_view_job_listing( $post->ID ) ) {
+		return false;
+	}
+
 	return $url;
 }
 add_action( 'wpseo_sitemap_entry', 'wpjm_yoast_skip_filled_job_listings', 10, 3 );
