@@ -186,6 +186,11 @@ class WP_Job_Manager_Promoted_Jobs_API {
 			);
 		}
 
+		// The View Job Capability gate is per-render-path in this codebase, so it must be
+		// re-asserted here; listings the current requester cannot view are excluded from
+		// the feed, like password-protected ones are via the query above.
+		$items = array_values( array_filter( $items, [ $this, 'current_user_can_view_item' ] ) );
+
 		$data = array_map( [ $this, 'prepare_item_for_response' ], $items );
 
 		foreach ( $data as $job ) {
@@ -195,6 +200,20 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		}
 
 		return new WP_REST_Response( [ 'jobs' => $data ], 200 );
+	}
+
+	/**
+	 * Checks whether the current requester can view a job listing, per the
+	 * administrator-configured View Job Capability.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param WP_Post $item Job listing post.
+	 *
+	 * @return bool
+	 */
+	private function current_user_can_view_item( WP_Post $item ) {
+		return job_manager_user_can_view_job_listing( $item->ID );
 	}
 
 	/**
@@ -277,9 +296,10 @@ class WP_Job_Manager_Promoted_Jobs_API {
 		}
 
 		$controller = get_post_type_object( \WP_Job_Manager_Post_Types::PT_LISTING )->get_rest_controller();
-		// check_read_permission() allows any published post regardless of password, so the
-		// password gate must be re-asserted here; the collection query excludes these listings.
-		if ( ! ( $controller instanceof WP_REST_Posts_Controller ) || ! $controller->check_read_permission( $post ) || 'publish' !== $post->post_status || post_password_required( $post ) ) {
+		// check_read_permission() allows any published post regardless of password or the
+		// View Job Capability, so both gates must be re-asserted here; the collection
+		// excludes these listings too.
+		if ( ! ( $controller instanceof WP_REST_Posts_Controller ) || ! $controller->check_read_permission( $post ) || 'publish' !== $post->post_status || post_password_required( $post ) || ! job_manager_user_can_view_job_listing( $post->ID ) ) {
 			return new WP_Error( 'rest_forbidden', __( 'Sorry, you are not allowed to view this job.', 'wp-job-manager' ), [ 'status' => rest_authorization_required_code() ] );
 		}
 
