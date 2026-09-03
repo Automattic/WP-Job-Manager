@@ -436,6 +436,8 @@ class Job_Dashboard_Shortcode {
 				throw new \Exception( __( 'Invalid ID', 'wp-job-manager' ) );
 			}
 
+			$action_failed = false;
+
 			switch ( $action ) {
 				case 'mark_filled':
 					// Check status.
@@ -477,12 +479,22 @@ class Job_Dashboard_Shortcode {
 						throw new \Exception( __( 'Missing submission page.', 'wp-job-manager' ) );
 					}
 
-					$new_job_id = job_manager_duplicate_listing( $job_id );
+					$new_job_id = job_manager_duplicate_listing( $job_id, true );
 
-					if ( $new_job_id ) {
+					if ( ! is_wp_error( $new_job_id ) && $new_job_id ) {
 						wp_safe_redirect( add_query_arg( [ 'job_id' => absint( $new_job_id ) ], job_manager_get_permalink( 'submit_job_form' ) ) );
 						exit;
 					}
+
+					// Message.
+					$action_failed               = true;
+					$this->job_dashboard_message = Notice::error(
+						[
+							// translators: Placeholder %s is the job listing title.
+							'title'   => sprintf( __( 'Could not duplicate %s', 'wp-job-manager' ), wpjm_get_the_job_title( $job ) ),
+							'message' => __( 'The copy could not be saved. Please try again. If this keeps happening, contact the site administrator.', 'wp-job-manager' ),
+						]
+					);
 
 					break;
 				case 'relist':
@@ -521,7 +533,7 @@ class Job_Dashboard_Shortcode {
 			 * @param int    $job_id The ID for the job that's been altered.
 			 */
 			$success_message = apply_filters( 'job_manager_job_dashboard_success_message', '', $action, $job_id );
-			if ( $success_message ) {
+			if ( $success_message && ! $action_failed ) {
 				$this->job_dashboard_message = Notice::success( $success_message );
 			}
 		} catch ( \Exception $e ) {

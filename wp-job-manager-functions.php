@@ -1795,19 +1795,26 @@ function calculate_job_expiry( $job_id, $return_datetime = false, $from_timestam
  * Duplicates a listing.
  *
  * @since 1.25.0
- * @param  int $post_id
- * @return int 0 on fail or the post ID.
+ * @since $$next-version$$ Added the $wp_error parameter.
+ *
+ * @param  int  $post_id  ID of the listing to duplicate.
+ * @param  bool $wp_error Optional. Return a WP_Error on failure instead of 0. Default false.
+ * @return int|WP_Error The new post ID, or 0 on fail. A WP_Error on fail when $wp_error is true.
  */
-function job_manager_duplicate_listing( $post_id ) {
+function job_manager_duplicate_listing( $post_id, $wp_error = false ) {
 	global $wpdb;
 
 	if ( empty( $post_id ) ) {
-		return 0;
+		return $wp_error
+			? new WP_Error( 'job_manager_duplicate_listing_missing_id', __( 'No job listing was selected to duplicate.', 'wp-job-manager' ) )
+			: 0;
 	}
 
 	$post = get_post( $post_id );
 	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
-		return 0;
+		return $wp_error
+			? new WP_Error( 'job_manager_duplicate_listing_invalid_listing', __( 'The job listing to duplicate could not be found.', 'wp-job-manager' ) )
+			: 0;
 	}
 
 	/**
@@ -1828,8 +1835,13 @@ function job_manager_duplicate_listing( $post_id ) {
 			'post_type'      => $post->post_type,
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order,
-		]
+		],
+		true
 	);
+
+	if ( is_wp_error( $new_post_id ) ) {
+		return $wp_error ? $new_post_id : 0;
+	}
 
 	/**
 	 * Copy taxonomies.
