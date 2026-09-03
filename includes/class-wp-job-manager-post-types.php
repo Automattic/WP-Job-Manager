@@ -184,6 +184,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ], 0 );
 		add_action( 'wp_footer', [ $this, 'output_structured_data' ] );
 		add_filter( 'wp_sitemaps_posts_query_args', [ $this, 'sitemaps_maybe_hide_filled' ], 10, 2 );
+		add_filter( 'wp_sitemaps_post_types', [ $this, 'sitemaps_maybe_hide_restricted_post_type' ] );
 
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
@@ -1790,6 +1791,31 @@ class WP_Job_Manager_Post_Types {
 		];
 
 		return $query_args;
+	}
+
+	/**
+	 * Excludes job listings from the core sitemap when the View Job Capability restricts
+	 * who may view listings.
+	 *
+	 * The sitemap is generated for anonymous crawlers, which can never satisfy a configured
+	 * view capability, so an enumerated listing there discloses the existence — and, once
+	 * followed, the metadata — of listings the operator made non-public. Drop the whole post
+	 * type from the sitemap index in that case, the way {@see self::viewer_denied_by_view_cap()}
+	 * gates the search and REST-search surfaces.
+	 *
+	 * @access private
+	 * @since $$next-version$$
+	 *
+	 * @param array $post_types Post type objects keyed by name.
+	 *
+	 * @return array
+	 */
+	public function sitemaps_maybe_hide_restricted_post_type( $post_types ) {
+		if ( isset( $post_types[ self::PT_LISTING ] ) && self::viewer_denied_by_view_cap() ) {
+			unset( $post_types[ self::PT_LISTING ] );
+		}
+
+		return $post_types;
 	}
 
 	/**

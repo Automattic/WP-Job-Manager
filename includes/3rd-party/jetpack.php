@@ -21,6 +21,12 @@ function wpjm_jetpack_skip_filled_job_listings( $skip_post, $post ) {
 		return true;
 	}
 
+	// Keep listings restricted by the View Job Capability out of the Jetpack sitemap: it is
+	// crawled anonymously, and an anonymous requester cannot satisfy a configured capability.
+	if ( ! job_manager_user_can_view_job_listing( $post->ID ) ) {
+		return true;
+	}
+
 	return $skip_post;
 }
 add_action( 'jetpack_sitemap_skip_post', 'wpjm_jetpack_skip_filled_job_listings', 10, 2 );
