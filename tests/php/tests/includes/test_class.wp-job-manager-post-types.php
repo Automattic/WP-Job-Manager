@@ -996,7 +996,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	 * gets exactly the structured data back. HTML-escaping the JSON corrupts it,
 	 * because script content is raw text and entities are never decoded there.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.7
 	 * @covers WP_Job_Manager_Post_Types::output_structured_data
 	 */
 	public function test_output_structured_data_round_trips_without_html_entities() {
