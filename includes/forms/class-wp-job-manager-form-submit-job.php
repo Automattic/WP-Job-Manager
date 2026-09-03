@@ -1554,14 +1554,33 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		$lock_name = $this->submission_lock_name();
 
-		// GET_LOCK returns 1 on success, 0 on timeout and NULL on error. The short
-		// timeout bounds how long a racing request can pin a PHP worker behind a
-		// publish whose hooks run slowly; a loser that times out is caught by the
-		// caller's status re-read.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock, cannot be cached.
-		$acquired = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $lock_name, 2 ) );
+		// GET_LOCK returns 1 on success, 0 on timeout and NULL on error. Only an exact '1'
+		// counts as held: the SQLite integration, which has no GET_LOCK, translates the
+		// statement to a truthy expression and returns '1=1' with no error, so a loose
+		// truthy check would treat an unheld lock as held. Any other result — timeout,
+		// error, or that SQLite sentinel — yields null and the caller proceeds without the
+		// lock (best-effort), rather than refusing to publish.
+		return '1' === $this->run_get_lock( $lock_name ) ? $lock_name : null;
+	}
 
-		return '1' === $acquired ? $lock_name : null;
+	/**
+	 * Runs the GET_LOCK query and returns its raw result. Isolated so tests can simulate
+	 * backends whose GET_LOCK result differs from MySQL's (e.g. the SQLite integration's
+	 * '1=1').
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $lock_name Lock name.
+	 * @return string|null Raw GET_LOCK result.
+	 */
+	protected function run_get_lock( $lock_name ) {
+		global $wpdb;
+
+		// The short timeout bounds how long a racing request can pin a PHP worker behind a
+		// publish whose hooks run slowly; a loser that times out is caught by the caller's
+		// status re-read.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Advisory lock, cannot be cached.
+		return $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, %d)', $lock_name, 2 ) );
 	}
 
 	/**

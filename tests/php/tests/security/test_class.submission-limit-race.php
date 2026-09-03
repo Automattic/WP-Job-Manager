@@ -246,6 +246,38 @@ class Tests_Submission_Limit_Race extends WPJM_BaseTest {
 	}
 
 	/**
+	 * On the SQLite integration, GET_LOCK has no implementation: the statement is
+	 * translated to a truthy expression that returns the string '1=1' with no error,
+	 * rather than MySQL's '1'. That must be treated as "lock not held" and the publish
+	 * must still proceed (best-effort) — a fail-closed reading refused every first-time
+	 * preview publish on SQLite, which is why this fix was previously held back.
+	 */
+	public function test_publish_proceeds_when_get_lock_returns_sqlite_sentinel() {
+		update_option( 'job_manager_submission_limit', 5 );
+
+		$form = $this->continue_from_preview(
+			$this->job_id,
+			function () {
+				return new class() extends WP_Job_Manager_Form_Submit_Job {
+					protected function run_get_lock( $lock_name ) {
+						return '1=1';
+					}
+				};
+			}
+		);
+
+		$this->assertNotSame(
+			'preview',
+			get_post_status( $this->job_id ),
+			"SQLite's '1=1' GET_LOCK result must not fail closed; the listing must still publish."
+		);
+		$this->assertEmpty(
+			$this->rendered_errors( $form ),
+			'No lock error must be surfaced on a backend without GET_LOCK.'
+		);
+	}
+
+	/**
 	 * If a concurrent "continue" request publishes the listing while this request waits on
 	 * the lock, re-reading under the lock must skip the publish/limit check instead of
 	 * counting the just-published listing against the user and raising a spurious limit
