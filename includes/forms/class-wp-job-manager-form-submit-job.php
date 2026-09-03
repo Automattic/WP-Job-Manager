@@ -1155,25 +1155,23 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 
 		$attachment_url = sprintf( '%s://%s%s', $scheme, $host, $path );
 
-		$local_dirs     = [ $upload_dir['basedir'], WP_CONTENT_DIR, ABSPATH ];
-		$attachment_url = str_replace( [ $upload_dir['baseurl'], WP_CONTENT_URL, site_url( '/' ) ], $local_dirs, $attachment_url );
+		// A frontend upload always resolves to a file inside the uploads directory, so map
+		// only the uploads URL to its path and require the result to sit under it. Mapping
+		// WP_CONTENT_URL or site_url() as well would let a crafted URL such as
+		// site_url( '/wp-config.php' ) resolve to a path at the WordPress root that still
+		// passes a containment check against ABSPATH; that path is then stored verbatim in
+		// `_wp_attached_file`, relocating core's attachment-deletion fence out of
+		// wp-content/uploads and letting an arbitrary in-tree file be deleted with the
+		// attachment. Anything that does not map into the uploads directory — a remote
+		// origin, a scheme-relative //host/... URL, or an in-tree path elsewhere on disk —
+		// is not one of our uploads and is refused.
+		$uploads_basedir = trailingslashit( $upload_dir['basedir'] );
+		$attachment_url  = str_replace( trailingslashit( $upload_dir['baseurl'] ), $uploads_basedir, $attachment_url );
 		if ( empty( $attachment_url ) || ! is_string( $attachment_url ) ) {
 			return 0;
 		}
 
-		// Only attach files that resolve to a path under one of this site's own
-		// directories. After the mapping above a genuine upload becomes a local
-		// filesystem path; anything still pointing at a remote origin (including
-		// scheme-relative //host/... URLs) or at an arbitrary path elsewhere on
-		// disk is not one of our uploads, so we do not turn it into an attachment.
-		$is_local = false;
-		foreach ( array_filter( $local_dirs ) as $base ) {
-			if ( 0 === strpos( $attachment_url, trailingslashit( $base ) ) ) {
-				$is_local = true;
-				break;
-			}
-		}
-		if ( ! $is_local ) {
+		if ( 0 !== strpos( $attachment_url, $uploads_basedir ) ) {
 			return 0;
 		}
 

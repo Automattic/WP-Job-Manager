@@ -328,8 +328,6 @@
     <UndefinedConstant>
       <code>COOKIEPATH</code>
       <code>COOKIE_DOMAIN</code>
-      <code>WP_CONTENT_DIR</code>
-      <code>WP_CONTENT_URL</code>
     </UndefinedConstant>
     <UndefinedPropertyFetch>
       <code><![CDATA[$term->slug]]></code>
