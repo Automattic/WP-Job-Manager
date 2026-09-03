@@ -406,9 +406,10 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		if ( get_option( 'job_manager_enable_scheduled_listings' ) ) {
 			$this->fields['job']['job_schedule_listing'] = [
 				'label'       => __( 'Scheduled Date', 'wp-job-manager' ),
-				'description' => __( 'Optionally set the date when this listing will be published.', 'wp-job-manager' ),
+				'description' => __( 'Optionally set the date and time when this listing will be published.', 'wp-job-manager' ),
 				'type'        => 'date',
 				'required'    => false,
+				'enable_time' => true,
 				'placeholder' => '',
 				'priority'    => '6.5',
 			];
@@ -1423,44 +1424,88 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 * @return bool True when the scheduled date is a valid future date, false otherwise.
 	 */
 	public static function apply_scheduled_date( array &$job_data, string $scheduled_date ): bool {
-		$maybe_formatted_date = self::maybe_format_future_datetime( $scheduled_date );
+		$scheduled_datetime = self::format_scheduled_datetime( $scheduled_date );
 
-		if ( false === $maybe_formatted_date ) {
+		if ( false === $scheduled_datetime ) {
 			$job_data['post_date']     = current_time( 'mysql' );
 			$job_data['post_date_gmt'] = current_time( 'mysql', 1 );
 
 			return false;
 		}
 
-		$job_data['post_date']     = $maybe_formatted_date;
-		$job_data['post_date_gmt'] = $maybe_formatted_date;
+		$job_data['post_date']     = $scheduled_datetime['local'];
+		$job_data['post_date_gmt'] = $scheduled_datetime['gmt'];
 
 		return true;
 	}
 
 	/**
-	 * Checks that a string is a valid future datetime. Formats datetime for post date.
+	 * Parses a scheduled date in the site timezone and returns the local and GMT datetime strings.
 	 *
-	 * @param string $maybe_date_string The date to format.
+	 * The input is treated as a wall-clock time in the site's timezone. The local value is stored
+	 * in post_date and the GMT value is the matching UTC instant. Both are required so scheduled
+	 * listings publish at the expected local time regardless of the site timezone.
 	 *
-	 * @return false|mixed
+	 * @since 2.4.7
+	 *
+	 * @param string $scheduled_date The scheduled date.
+	 *
+	 * @return array{local: string, gmt: string}|false The local and GMT datetime, or false when invalid.
 	 */
-	private static function maybe_format_future_datetime( string $maybe_date_string ) {
-		if ( empty( $maybe_date_string ) ) {
+	private static function format_scheduled_datetime( string $scheduled_date ) {
+		$scheduled_date = trim( $scheduled_date );
+
+		// An empty string parses as the current time, so reject it before parsing.
+		if ( '' === $scheduled_date ) {
 			return false;
 		}
 
-		$time = strtotime( $maybe_date_string );
-		if ( false === $time ) {
+		try {
+			// Any strtotime-parseable value is accepted. Without JavaScript the datepicker
+			// input posts its display text ("August 31, 2028"), not the ISO value the
+			// JS-created hidden field would carry. A date with no time part starts at midnight.
+			$local_datetime = new DateTimeImmutable( $scheduled_date, wp_timezone() );
+		} catch ( Exception $e ) {
 			return false;
 		}
 
-		if ( $time < time() ) {
+		if ( $local_datetime->getTimestamp() < time() ) {
 			return false;
 		}
 
-		$fmt = 'Y-m-d H:i:s';
-		return wp_date( $fmt, $time );
+		return [
+			'local' => $local_datetime->format( 'Y-m-d H:i:s' ),
+			'gmt'   => $local_datetime->setTimezone( new DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' ),
+		];
+	}
+
+	/**
+	 * Gets the value for a date field, appending an optional time component when enabled.
+	 *
+	 * @param string $key   The field key.
+	 * @param array  $field The field configuration.
+	 *
+	 * @return string The posted date, optionally including the time.
+	 */
+	protected function get_posted_date_field( $key, $field ) {
+		// Read the date through the shared handler so the before_sanitize callback still
+		// runs. That callback sets the field's `empty` flag, which required-field validation
+		// depends on.
+		$posted_value = $this->get_posted_field( $key, $field );
+		$posted_date  = is_string( $posted_value ) ? $posted_value : '';
+
+		if ( '' === $posted_date || empty( $field['enable_time'] ) ) {
+			return $posted_date;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in submit handler.
+		$posted_time = isset( $_POST[ $key . '-time' ] ) ? sanitize_text_field( wp_unslash( $_POST[ $key . '-time' ] ) ) : '';
+
+		if ( '' === $posted_time ) {
+			return $posted_date;
+		}
+
+		return $posted_date . ' ' . $posted_time;
 	}
 
 	/**
