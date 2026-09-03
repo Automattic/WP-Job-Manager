@@ -150,6 +150,17 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 
 == Changelog ==
 
+### 2.4.7 - 2026-09-03
+* Fix company logo rendering at full size in the Job Listings admin table on WordPress 7.1. (#3099)
+* Indicate WordPress 7.1 compatibility. (#3097)
+* Fix JobPosting structured data (JSON-LD) being HTML-escaped, so job titles and descriptions are read correctly by search engines. (#3101)
+* Fix a race condition that could allow the job submission limit to be exceeded. (#3013)
+* Apply the View Job Capability to the promoted-jobs REST endpoints.
+* Apply the View Job Capability to sitemaps.
+* Restrict frontend logo attachments to the uploads directory.
+* Clear unusable attachment values before re-rendering the job submission form.
+* Update developer dependencies.
+
 ### 2.4.6 - 2026-08-19
 * Allow reusing a submitter's saved company logo on a new listing (#3082)
 * Allow reusing a listing's existing logo on edit when authored by another user (#3060)
@@ -187,20 +198,3 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 * Add square-format hint and configurable max size for company logo uploads (#2957)
 * "Remove "See what's new in 2.3" from Job Statistics Banner"
 * New: The `[jobs]` shortcode now supports an `author` attribute to filter listings by user ID (e.g. `[jobs author="42"]` or `[jobs author="1,2,3"]`)
-
-### 2.4.2 - 2026-05-12
-* Fix Job Dashboard actions menu on Safari (#2947)
-* Harden submit-form session cookies (#2945)
-* Fixes a REST API information disclosure where the body, excerpt, and existence of listings restricted by view-capability were exposed to denied viewers. Restricted listings now return 404 indistinguishable from a missing post, including HEAD probes and listings that are also password-protected.
-* Fixes a data-loss bug where editors opening a password-protected listing in the block editor would save empty meta values (location, company name, application target).
-* Fixes a series of information disclosure issues affecting password-protected and capability-restricted job listings.
-* Harden stats AJAX endpoint input validation and rate limiting (#2938)
-* Company logo uploads now accept WebP images by default
-* New filter `job_manager_company_logo_allowed_mime_types` allows customizing allowed file types for the company logo field
-* The salary currency field on the job submission form now correctly reflects the configured default currency in its placeholder and helper text.
-* Filled job listings are no longer exposed via the REST API.
-* Job categories are now included in the job RSS feed XML output.
-* Added `featured=true` query parameter support to the job RSS feed to allow filtering by featured listings only.
-* Fixed PHP 8+ undefined array key warning in the widget caching methods.
-* Updated Twitter profile links to use the new `x.com` domain and updated related labels to "X / Twitter" to reflect the platform rebrand.
-* Added a Settings link to the plugin action links on the Plugins screen for quicker access to plugin settings.
