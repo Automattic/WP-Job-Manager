@@ -29,6 +29,15 @@
 				<referencedClass name="WP_CLI" />
 			</errorLevel>
 		</UndefinedClass>
+		<!-- WP-CLI is not a dependency, so its namespaced helpers are undefined here
+		     the same way the WP_CLI class above is. Both are only ever called behind
+		     a `defined( 'WP_CLI' )` guard. -->
+		<UndefinedFunction>
+			<errorLevel type="suppress">
+				<referencedFunction name="WP_CLI\Utils\get_flag_value" />
+				<referencedFunction name="WP_CLI\Utils\make_progress_bar" />
+			</errorLevel>
+		</UndefinedFunction>
 		<InvalidArgument>
 			<errorLevel type="suppress">
 				<referencedFunction name="esc_attr" />
