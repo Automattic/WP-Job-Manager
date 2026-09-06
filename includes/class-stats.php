@@ -51,6 +51,7 @@ class Stats {
 
 		Stats_Dashboard::instance();
 		Stats_Script::instance();
+		Stats_Export::instance();
 	}
 
 	/**

@@ -6,11 +6,12 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     2.3.0
+ * @version     $$next-version$$
  *
  * @var WP_Post $job Array of job post results.
  * @var array   $stats Total stats grouped by section.
  * @var array   $chart Total stats grouped by section.
+ * @var string  $export_url URL to download the job stats as CSV.
  */
 
 use WP_Job_Manager\UI\UI_Elements;
@@ -24,7 +25,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="jm-job-stats">
 	<div class="jm-job-stats-chart">
 		<div class="jm-section-header">
-			<?php esc_html_e( 'Daily Views', 'wp-job-manager' ); ?>
+			<span><?php esc_html_e( 'Daily Views', 'wp-job-manager' ); ?></span>
+			<?php if ( ! empty( $export_url ) ) : ?>
+				<?php
+				echo UI_Elements::button(
+					[
+						'url'   => $export_url,
+						'label' => __( 'Export', 'wp-job-manager' ),
+					],
+					'jm-ui-button--link jm-job-stats__export'
+				);
+				?>
+			<?php endif; ?>
 		</div>
 		<div class="jm-chart">
 			<?php $values = $chart['values']; ?>
