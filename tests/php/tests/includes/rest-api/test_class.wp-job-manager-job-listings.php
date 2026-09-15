@@ -305,6 +305,95 @@ class WP_Test_WP_Job_Manager_Job_Listings_Test extends WPJM_REST_TestCase {
 		$this->assertFalse( metadata_exists( 'post', $post_id, '_company_name' ) );
 	}
 
+	/**
+	 * Duplicate `_filled` and `_featured` rows must not break REST API saves.
+	 *
+	 * Post duplication plugins copy meta after the listing is created, which leaves
+	 * a second row for these single-value keys. `update_metadata()` then reports the
+	 * no-op update as a failure, and the request is rejected with a 500. Saving the
+	 * listing again must succeed and collapse the rows back to one.
+	 *
+	 * @since $$next-version$$
+	 */
+	public function test_update_job_listing_with_duplicate_default_meta() {
+		$this->login_as_admin();
+		$post_id = $this->get_job_listing();
+
+		$this->add_duplicate_meta_row( $post_id, '_filled', '0' );
+		$this->add_duplicate_meta_row( $post_id, '_featured', '0' );
+
+		$this->assertCount( 2, get_post_meta( $post_id, '_filled', false ) );
+		$this->assertCount( 2, get_post_meta( $post_id, '_featured', false ) );
+
+		$response = $this->put(
+			'/wp/v2/job-listings/' . $post_id,
+			[
+				'post_title' => 'Software Engineer 2',
+				'meta'       => [
+					'_filled'   => 0,
+					'_featured' => 0,
+				],
+			]
+		);
+
+		$this->assertResponseStatus( $response, 200 );
+		$this->assertCount( 1, get_post_meta( $post_id, '_filled', false ) );
+		$this->assertCount( 1, get_post_meta( $post_id, '_featured', false ) );
+	}
+
+	/**
+	 * The oldest row must survive normalization so the stored value does not change.
+	 *
+	 * @since $$next-version$$
+	 */
+	public function test_update_job_listing_with_duplicate_meta_keeps_oldest_value() {
+		$this->login_as_admin();
+		$post_id = $this->get_job_listing( [ 'meta_input' => [ '_filled' => '1' ] ] );
+
+		$this->add_duplicate_meta_row( $post_id, '_filled', '0' );
+
+		$this->assertCount( 2, get_post_meta( $post_id, '_filled', false ) );
+
+		$response = $this->put(
+			sprintf( '/wp/v2/job-listings/%d', $post_id ),
+			[
+				'post_title' => 'Software Engineer 2',
+				'meta'       => [
+					'_filled' => 1,
+				],
+			]
+		);
+
+		$this->assertResponseStatus( $response, 200 );
+		$this->assertSame( [ '1' ], get_post_meta( $post_id, '_filled', false ) );
+	}
+
+	/**
+	 * Inserts a second row for a meta key, the way a duplication plugin does.
+	 *
+	 * `add_post_meta()` is unique by default, so a direct insert is the only way to
+	 * reproduce the duplicate state.
+	 *
+	 * @param int    $post_id  Post ID.
+	 * @param string $meta_key Meta key.
+	 * @param string $value    Meta value.
+	 */
+	private function add_duplicate_meta_row( $post_id, $meta_key, $value ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Test helper for duplicating meta rows.
+		$wpdb->insert(
+			$wpdb->postmeta,
+			[
+				'post_id'    => $post_id,
+				'meta_key'   => $meta_key,
+				'meta_value' => $value,
+			]
+		);
+
+		clean_post_cache( $post_id );
+	}
+
 	public function test_meta_input_sterilized() {
 		$this->login_as_admin();
 		$test_meta = [
