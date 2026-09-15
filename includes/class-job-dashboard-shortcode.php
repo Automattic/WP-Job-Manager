@@ -117,6 +117,39 @@ class Job_Dashboard_Shortcode {
 			}
 		}
 
+		$nav_items    = $this->get_nav_items();
+		$current_view = $this->get_current_view( $nav_items );
+
+		// Show an alternative dashboard view if a plugin has registered one.
+		if ( $this->get_default_view() !== $current_view ) {
+			// The default view enqueues the style when it outputs the overlay, so load it here for custom views.
+			wp_enqueue_style( 'wp-job-manager-job-dashboard' );
+
+			echo '<div id="job-manager-job-dashboard" class="alignwide jm-dashboard jm-ui">';
+			get_job_manager_template(
+				'job-dashboard-nav.php',
+				[
+					'nav_items'    => $nav_items,
+					'current_view' => $current_view,
+				]
+			);
+
+			/**
+			 * Output the contents of a custom job dashboard view.
+			 *
+			 * The view name is the key of a navigation item added through the
+			 * `job_manager_job_dashboard_nav_items` filter.
+			 *
+			 * @since $$next-version$$
+			 *
+			 * @param array $attrs Shortcode attributes.
+			 */
+			do_action( 'job_manager_job_dashboard_view_' . $current_view, $attrs );
+			echo '</div>';
+
+			return ob_get_clean();
+		}
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$search = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
 
@@ -168,6 +201,8 @@ class Job_Dashboard_Shortcode {
 				'max_num_pages'         => $jobs->max_num_pages,
 				'job_dashboard_columns' => $job_dashboard_columns,
 				'search_input'          => $search,
+				'nav_items'             => $nav_items,
+				'current_view'          => $current_view,
 			]
 		);
 
@@ -684,6 +719,135 @@ class Job_Dashboard_Shortcode {
 		} else {
 			return home_url( '/' );
 		}
+	}
+
+	/**
+	 * Get the default job dashboard view.
+	 *
+	 * @return string
+	 */
+	public function get_default_view() {
+		return 'listings';
+	}
+
+	/**
+	 * Get the navigation items for the job dashboard.
+	 *
+	 * Each item is an array with the following keys:
+	 * - `label`      (string) Required. Text shown in the navigation.
+	 * - `view`       (string) Optional. View name used in the `view` query var. Defaults to the item key.
+	 * - `capability` (string) Optional. Capability the current user must have to see the item.
+	 *
+	 * @return array Navigation items keyed by view name.
+	 */
+	public function get_nav_items() {
+
+		$nav_items = [
+			$this->get_default_view() => [
+				'label' => __( 'My Job Listings', 'wp-job-manager' ),
+				'view'  => $this->get_default_view(),
+			],
+		];
+
+		/**
+		 * Filter the navigation items shown on the job dashboard.
+		 *
+		 * Add an entry to show a custom dashboard view. The item key is used as
+		 * the view name, and `job_manager_job_dashboard_view_{view}` is fired
+		 * when that view is requested.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param array $nav_items Navigation items keyed by view name.
+		 */
+		$nav_items = apply_filters( 'job_manager_job_dashboard_nav_items', $nav_items );
+
+		$valid_items = [];
+
+		foreach ( $nav_items as $item_key => $nav_item ) {
+			// Fall back to the array key so items can be registered without repeating the view name.
+			$view = isset( $nav_item['view'] ) ? $nav_item['view'] : $item_key;
+			$view = is_string( $view ) ? sanitize_key( $view ) : '';
+
+			// Drop items that are missing a label or a usable view name.
+			if ( empty( $nav_item['label'] ) || empty( $view ) ) {
+				continue;
+			}
+
+			// Drop items the current user is not allowed to see.
+			if ( ! empty( $nav_item['capability'] ) && ! current_user_can( $nav_item['capability'] ) ) {
+				continue;
+			}
+
+			// Drop items with no handler, so the navigation never links to an empty view.
+			if ( $this->get_default_view() !== $view && ! has_action( 'job_manager_job_dashboard_view_' . $view ) ) {
+				continue;
+			}
+
+			$nav_item['view'] = $view;
+			$nav_item['url']  = $this->get_view_url( $view );
+
+			$valid_items[ $view ] = $nav_item;
+		}
+
+		// Make sure the default view is always available.
+		if ( ! isset( $valid_items[ $this->get_default_view() ] ) ) {
+			$default = $this->get_default_view();
+
+			$valid_items = array_merge(
+				[
+					$default => [
+						'label' => __( 'My Job Listings', 'wp-job-manager' ),
+						'view'  => $default,
+						'url'   => $this->get_view_url( $default ),
+					],
+				],
+				$valid_items
+			);
+		}
+
+		return $valid_items;
+	}
+
+	/**
+	 * Get the job dashboard view requested by the current user.
+	 *
+	 * Falls back to the default view when the request is missing, unknown or
+	 * does not pass the item capability check.
+	 *
+	 * @param array $nav_items Navigation items from get_nav_items().
+	 *
+	 * @return string
+	 */
+	public function get_current_view( $nav_items ) {
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used for navigation only.
+		$requested = isset( $_GET['view'] ) && is_string( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : '';
+
+		if ( $requested && isset( $nav_items[ $requested ] ) ) {
+			return $requested;
+		}
+
+		return $this->get_default_view();
+	}
+
+	/**
+	 * Get the URL for a job dashboard view.
+	 *
+	 * The default view has no query var so the base dashboard URL stays clean.
+	 *
+	 * @param string $view View name.
+	 *
+	 * @return string
+	 */
+	public function get_view_url( $view ) {
+		$url = (string) self::get_job_dashboard_page_url();
+
+		if ( $this->get_default_view() === $view ) {
+			return remove_query_arg( 'view', $url );
+		}
+
+		return add_query_arg( 'view', $view, $url );
 	}
 
 	/**

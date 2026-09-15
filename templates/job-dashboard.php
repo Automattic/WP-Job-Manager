@@ -8,8 +8,9 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     2.3.0
+ * @version     $$next-version$$
  *
+ * @since $$next-version$$ Added the job dashboard navigation.
  * @since 2.3.0 Switched to a responsive layout. job_manager_job_dashboard_column_{$key} action is called for all columns.
  * @since 1.34.4 Available job actions are passed in an array (`$job_actions`, keyed by job ID) and not generated in the template.
  * @since 1.35.0 Switched to new date functions.
@@ -19,6 +20,8 @@
  * @var WP_Post[] $jobs Array of job post results.
  * @var array     $job_actions Array of actions available for each job.
  * @var string    $search_input Search input.
+ * @var array     $nav_items Navigation items keyed by view name.
+ * @var string    $current_view The view currently being displayed.
  */
 
 use WP_Job_Manager\Job_Overlay;
@@ -33,7 +36,15 @@ $submit_job_form_page_id = get_option( 'job_manager_submit_job_form_page_id' );
 
 ?>
 
-<div id="job-manager-job-dashboard" class="alignwide jm-dashboard jm-ui">
+<div id="job-manager-job-dashboard" class="alignwide jm-dashboard jm-ui"><?php
+	get_job_manager_template(
+		'job-dashboard-nav.php',
+		[
+			'nav_items'    => $nav_items,
+			'current_view' => $current_view,
+		]
+	);
+?>
 	<div class="jm-dashboard__intro">
 		<div class="jm-dashboard__filters">
 			<form method="GET" action="" class="jm-form">
