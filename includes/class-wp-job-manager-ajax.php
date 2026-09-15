@@ -136,6 +136,23 @@ class WP_Job_Manager_Ajax {
 		$remote_position    = isset( $_REQUEST['remote_position'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['remote_position'] ) ) : null;
 		$show_pagination    = isset( $_REQUEST['show_pagination'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['show_pagination'] ) ) : null;
 		$featured_first     = isset( $_REQUEST['featured_first'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['featured_first'] ) ) : null;
+		$posted_after       = isset( $_REQUEST['posted_after'] ) ? wp_unslash( $_REQUEST['posted_after'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized below.
+		$posted_before      = isset( $_REQUEST['posted_before'] ) ? wp_unslash( $_REQUEST['posted_before'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized below.
+
+		// Array-shaped input is not supported for either date bound. Reject it as an invalid bound
+		// so get_job_listings fails closed, rather than letting sanitize_text_field() flatten it to
+		// an empty string, which would silently drop the requested range.
+		if ( is_array( $posted_after ) ) {
+			$posted_after = 'invalid';
+		} else {
+			$posted_after = sanitize_text_field( $posted_after );
+		}
+
+		if ( is_array( $posted_before ) ) {
+			$posted_before = 'invalid';
+		} else {
+			$posted_before = sanitize_text_field( $posted_before );
+		}
 		if ( ! isset( $_REQUEST['author'] ) ) {
 			$author = '';
 		} elseif ( is_array( $_REQUEST['author'] ) ) {
@@ -199,6 +216,8 @@ class WP_Job_Manager_Ajax {
 			'order'             => $order,
 			'featured_first'    => $featured_first,
 			'author'            => $author,
+			'posted_after'      => $posted_after,
+			'posted_before'     => $posted_before,
 			'offset'            => ( $page - 1 ) * $per_page,
 			'posts_per_page'    => max( 1, $per_page ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 		];
