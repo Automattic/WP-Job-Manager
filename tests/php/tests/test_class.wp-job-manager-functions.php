@@ -1512,4 +1512,273 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	public function test_get_accept_file_types_empty_when_nothing_is_allowed() {
 		$this->assertSame( '', job_manager_get_accept_file_types( [] ) );
 	}
+
+	/**
+	 * A listing posted on the lower bound day must be included.
+	 *
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_posted_after_includes_boundary_day() {
+		$in_range = $this->factory->job_listing->create( [ 'post_date' => '2022-08-01 09:00:00' ] );
+		$this->factory->job_listing->create( [ 'post_date' => '2022-07-31 09:00:00' ] );
+
+		$result = get_job_listings( [ 'posted_after' => '2022-08-01' ] );
+
+		$this->assertEqualSets( [ $in_range ], wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * A listing posted on the upper bound day must be included.
+	 *
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_posted_before_includes_boundary_day() {
+		$in_range = $this->factory->job_listing->create( [ 'post_date' => '2022-08-08 23:00:00' ] );
+		$this->factory->job_listing->create( [ 'post_date' => '2022-08-09 01:00:00' ] );
+
+		$result = get_job_listings( [ 'posted_before' => '2022-08-08' ] );
+
+		$this->assertEqualSets( [ $in_range ], wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_date_range_returns_all_listings_between_bounds() {
+		$before = $this->factory->job_listing->create( [ 'post_date' => '2022-07-31 23:59:59' ] );
+		$first  = $this->factory->job_listing->create( [ 'post_date' => '2022-08-01 00:00:00' ] );
+		$last   = $this->factory->job_listing->create( [ 'post_date' => '2022-08-08 23:59:59' ] );
+		$after  = $this->factory->job_listing->create( [ 'post_date' => '2022-08-09 00:00:00' ] );
+
+		$result = get_job_listings(
+			[
+				'posted_after'  => '2022-08-01',
+				'posted_before' => '2022-08-08',
+			]
+		);
+
+		$this->assertEqualSets( [ $first, $last ], wp_list_pluck( $result->posts, 'ID' ) );
+		$this->assertNotContains( $before, wp_list_pluck( $result->posts, 'ID' ) );
+		$this->assertNotContains( $after, wp_list_pluck( $result->posts, 'ID' ) );
+	}
+
+	/**
+	 * Neither bound supplied means no filter, matching today's behavior.
+	 *
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_no_date_range_is_not_filtered() {
+		$this->factory->job_listing->create_many( 3 );
+
+		$result = get_job_listings();
+
+		$this->assertGreaterThanOrEqual( 3, $result->found_posts );
+	}
+
+	/**
+	 * A malformed bound must fail closed instead of widening to the full listing set.
+	 *
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_invalid_posted_after_returns_no_results() {
+		$this->factory->job_listing->create_many( 3, [ 'post_date' => '2022-08-02 09:00:00' ] );
+
+		$result = get_job_listings( [ 'posted_after' => 'abc' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * A valid date in the wrong format is ambiguous and must fail closed.
+	 *
+	 * `08/01/2022` reads as August 1st or January 8th depending on locale, so the
+	 * parser rejects it rather than guessing.
+	 *
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_ambiguous_date_format_returns_no_results() {
+		$this->factory->job_listing->create_many( 3, [ 'post_date' => '2022-08-02 09:00:00' ] );
+
+		$result = get_job_listings( [ 'posted_before' => '08/01/2022' ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * An unparseable bound must not leak listings regardless of which bound is bad.
+	 *
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_valid_after_with_invalid_before_returns_no_results() {
+		$this->factory->job_listing->create_many( 3, [ 'post_date' => '2022-08-02 09:00:00' ] );
+
+		$result = get_job_listings(
+			[
+				'posted_after'  => '2022-08-01',
+				'posted_before' => 'not-a-date',
+			]
+		);
+
+		$this->assertSame( 0, $result->found_posts );
+	}
+
+	/**
+	 * Two different date ranges must not share a cached result.
+	 *
+	 * The date clause has to be part of the query args before the cache key is hashed,
+	 * otherwise the second range would be served the first range's transient.
+	 *
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_date_range_uses_distinct_cache_entries() {
+		$this->enable_job_listing_cache();
+
+		$july = $this->factory->job_listing->create( [ 'post_date' => '2022-07-15 09:00:00' ] );
+		$aug  = $this->factory->job_listing->create( [ 'post_date' => '2022-08-15 09:00:00' ] );
+
+		$july_result = get_job_listings(
+			[
+				'posted_after'  => '2022-07-01',
+				'posted_before' => '2022-07-31',
+			]
+		);
+		$aug_result  = get_job_listings(
+			[
+				'posted_after'  => '2022-08-01',
+				'posted_before' => '2022-08-31',
+			]
+		);
+
+		$this->assertEqualSets( [ $july ], wp_list_pluck( $july_result->posts, 'ID' ) );
+		$this->assertEqualSets( [ $aug ], wp_list_pluck( $aug_result->posts, 'ID' ), 'A second date range must not reuse the first range\'s cached result.' );
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_range
+	 */
+	public function test_parse_date_range_both_bounds() {
+		$this->assertSame(
+			[
+				'after'     => '2022-08-01',
+				'before'    => '2022-08-08',
+				'inclusive' => true,
+				'column'    => 'post_date',
+			],
+			_wpjm_parse_date_range( '2022-08-01', '2022-08-08' )
+		);
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_range
+	 */
+	public function test_parse_date_range_only_after() {
+		$this->assertSame(
+			[
+				'after'     => '2022-08-01',
+				'inclusive' => true,
+				'column'    => 'post_date',
+			],
+			_wpjm_parse_date_range( '2022-08-01', '' )
+		);
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_range
+	 */
+	public function test_parse_date_range_no_bounds_returns_null() {
+		$this->assertNull( _wpjm_parse_date_range( '', '' ) );
+		$this->assertNull( _wpjm_parse_date_range( null, null ) );
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_range
+	 */
+	public function test_parse_date_range_invalid_bound_returns_false() {
+		$this->assertFalse( _wpjm_parse_date_range( 'abc', '' ) );
+		$this->assertFalse( _wpjm_parse_date_range( '', 'abc' ) );
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_bound
+	 */
+	public function test_parse_date_bound_accepts_iso_date() {
+		$this->assertSame( '2022-08-01', _wpjm_parse_date_bound( '2022-08-01' ) );
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_bound
+	 */
+	public function test_parse_date_bound_trims_whitespace() {
+		$this->assertSame( '2022-08-01', _wpjm_parse_date_bound( '  2022-08-01  ' ) );
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_bound
+	 */
+	public function test_parse_date_bound_empty_returns_null() {
+		$this->assertNull( _wpjm_parse_date_bound( '' ) );
+		$this->assertNull( _wpjm_parse_date_bound( null ) );
+		$this->assertNull( _wpjm_parse_date_bound( '   ' ) );
+	}
+
+	/**
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_bound
+	 */
+	public function test_parse_date_bound_rejects_invalid_formats() {
+		$this->assertFalse( _wpjm_parse_date_bound( 'abc' ) );
+		$this->assertFalse( _wpjm_parse_date_bound( '08/01/2022' ) );
+		$this->assertFalse( _wpjm_parse_date_bound( '2022-8-1' ) );
+		$this->assertFalse( _wpjm_parse_date_bound( '2022-08-01 09:00:00' ) );
+	}
+
+	/**
+	 * Impossible dates must be rejected rather than rolled over by the date parser.
+	 *
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_bound
+	 */
+	public function test_parse_date_bound_rejects_impossible_dates() {
+		$this->assertFalse( _wpjm_parse_date_bound( '2022-02-30' ) );
+		$this->assertFalse( _wpjm_parse_date_bound( '2022-13-01' ) );
+	}
+
+	/**
+	 * Array input is not a valid bound and must fail closed.
+	 *
+	 * @since [version]
+	 * @covers ::_wpjm_parse_date_bound
+	 */
+	public function test_parse_date_bound_array_fails_closed() {
+		$this->assertFalse( _wpjm_parse_date_bound( [ '2022-08-01' ] ) );
+	}
+
+	/**
+	 * Array-shaped input must fail closed rather than showing the unfiltered listing set.
+	 *
+	 * @since [version]
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_array_date_input_returns_no_results() {
+		$this->factory->job_listing->create_many( 3, [ 'post_date' => '2022-08-02 09:00:00' ] );
+
+		$result = get_job_listings( [ 'posted_after' => [ '2022-08-01' ] ] );
+
+		$this->assertSame( 0, $result->found_posts );
+	}
 }

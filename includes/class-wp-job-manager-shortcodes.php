@@ -217,6 +217,10 @@ class WP_Job_Manager_Shortcodes {
 					'featured_first'            => false, // True to show featured first, false to show in default order.
 					'author'                    => '', // Limit listings to a specific author by user ID. Empty string shows all.
 
+					// Limit listings to a date range on the publication date. Y-m-d only.
+					'posted_after'              => '',
+					'posted_before'             => '',
+
 					// Default values for filters.
 					'location'                  => '',
 					'keywords'                  => '',
@@ -239,6 +243,8 @@ class WP_Job_Manager_Shortcodes {
 		$atts['show_pagination']           = $this->string_to_bool( $atts['show_pagination'] );
 		$atts['featured_first']            = $this->string_to_bool( $atts['featured_first'] );
 		$atts['author']                    = sanitize_text_field( $atts['author'] );
+		$atts['posted_after']              = sanitize_text_field( $atts['posted_after'] );
+		$atts['posted_before']             = sanitize_text_field( $atts['posted_before'] );
 
 		if ( ! is_null( $atts['featured'] ) ) {
 			$atts['featured'] = ( is_bool( $atts['featured'] ) && $atts['featured'] ) || in_array( $atts['featured'], [ 1, '1', 'true', 'yes' ], true );
@@ -272,6 +278,16 @@ class WP_Job_Manager_Shortcodes {
 		if ( ! empty( $_GET['search_job_type'] ) ) {
 			$atts['selected_job_types'] = sanitize_text_field( wp_unslash( $_GET['search_job_type'] ) );
 			$disable_client_state       = true;
+		}
+		// Array-shaped date input is rejected as an invalid bound so the query fails closed, rather
+		// than letting sanitize_text_field() flatten it to an empty string and silently drop the range.
+		if ( ! empty( $_GET['posted_after'] ) ) {
+			$atts['posted_after'] = is_array( $_GET['posted_after'] ) ? 'invalid' : sanitize_text_field( wp_unslash( $_GET['posted_after'] ) );
+			$disable_client_state = true;
+		}
+		if ( ! empty( $_GET['posted_before'] ) ) {
+			$atts['posted_before'] = is_array( $_GET['posted_before'] ) ? 'invalid' : sanitize_text_field( wp_unslash( $_GET['posted_before'] ) );
+			$disable_client_state  = true;
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
@@ -352,6 +368,8 @@ class WP_Job_Manager_Shortcodes {
 						'remote_position'   => $atts['remote_position'],
 						'featured_first'    => $atts['featured_first'],
 						'author'            => $atts['author'],
+						'posted_after'      => $atts['posted_after'],
+						'posted_before'     => $atts['posted_before'],
 					]
 				)
 			);
@@ -397,6 +415,14 @@ class WP_Job_Manager_Shortcodes {
 		}
 		if ( ! empty( $atts['author'] ) ) {
 			$data_attributes['author'] = $atts['author'];
+		}
+
+		if ( ! empty( $atts['posted_after'] ) ) {
+			$data_attributes['posted_after'] = $atts['posted_after'];
+		}
+
+		if ( ! empty( $atts['posted_before'] ) ) {
+			$data_attributes['posted_before'] = $atts['posted_before'];
 		}
 
 		$data_attributes['post_id'] = isset( $GLOBALS['post'] ) ? $GLOBALS['post']->ID : 0;
