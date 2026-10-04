@@ -439,7 +439,7 @@ class WP_Job_Manager_Admin_Notices {
 	 *
 	 * @param array $additional_screens Screen IDs to also show a notice on.
 	 *
-	 * @deprecated $$next_version$$ Removed. See WP_Job_Manager\Admin\Notices_Conditions_Checker::check instead.
+	 * @deprecated 2.0.0 Removed. See WP_Job_Manager\Admin\Notices_Conditions_Checker::check instead.
 	 *
 	 * @return bool
 	 */

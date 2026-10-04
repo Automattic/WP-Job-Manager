@@ -184,6 +184,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ], 0 );
 		add_action( 'wp_footer', [ $this, 'output_structured_data' ] );
 		add_filter( 'wp_sitemaps_posts_query_args', [ $this, 'sitemaps_maybe_hide_filled' ], 10, 2 );
+		add_filter( 'wp_sitemaps_post_types', [ $this, 'sitemaps_maybe_hide_restricted_post_type' ] );
 
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
@@ -1335,7 +1336,7 @@ class WP_Job_Manager_Post_Types {
 	 * front-end submission's preview -> publish transition — must fall back to the
 	 * server-side calculated expiry.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 *
 	 * @param WP_Post $post The job listing being saved.
 	 *
@@ -1793,6 +1794,31 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Excludes job listings from the core sitemap when the View Job Capability restricts
+	 * who may view listings.
+	 *
+	 * The sitemap is generated for anonymous crawlers, which can never satisfy a configured
+	 * view capability, so an enumerated listing there discloses the existence — and, once
+	 * followed, the metadata — of listings the operator made non-public. Drop the whole post
+	 * type from the sitemap index in that case, the way {@see self::viewer_denied_by_view_cap()}
+	 * gates the search and REST-search surfaces.
+	 *
+	 * @access private
+	 * @since 2.4.7
+	 *
+	 * @param array $post_types Post type objects keyed by name.
+	 *
+	 * @return array
+	 */
+	public function sitemaps_maybe_hide_restricted_post_type( $post_types ) {
+		if ( isset( $post_types[ self::PT_LISTING ] ) && self::viewer_denied_by_view_cap() ) {
+			unset( $post_types[ self::PT_LISTING ] );
+		}
+
+		return $post_types;
+	}
+
+	/**
 	 * Add noindex for expired and filled job listings.
 	 */
 	public function noindex_expired_filled_job_listings() {
@@ -1831,7 +1857,11 @@ class WP_Job_Manager_Post_Types {
 		$structured_data = wpjm_get_job_listing_structured_data();
 		if ( ! empty( $structured_data ) ) {
 			echo '<!-- WP Job Manager Structured Data -->' . "\r\n";
-			echo '<script type="application/ld+json">' . wpjm_esc_json( wp_json_encode( $structured_data ), true ) . '</script>';
+			// Script-element content is raw text: HTML entities are never decoded there, so
+			// the payload must use JSON escapes (< etc.), not HTML entities. The HEX
+			// flags escape <, >, &, ' and " so the JSON cannot close the script element.
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The JSON_HEX_* flags escape the payload for the script element.
+			echo '<script type="application/ld+json">' . wp_json_encode( $structured_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . '</script>';
 		}
 	}
 
