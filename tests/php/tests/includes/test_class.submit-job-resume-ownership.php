@@ -2,6 +2,9 @@
 /**
  * Tests that stale submission cookies cannot resume another user's job draft.
  *
+ * Cookie-clearing tests run in separate processes so bootstrap and PHPUnit
+ * output cannot send headers before the real setcookie() calls.
+ *
  * @package wp-job-manager
  */
 class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
@@ -273,6 +276,9 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 
 	/**
 	 * An incorrect submitting key is rejected and removed during early validation.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_incorrect_submitting_key_is_rejected_and_cookies_are_cleared() {
 		$this->logout();
@@ -299,6 +305,9 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 
 	/**
 	 * A non-resumable job status is rejected and removed during early validation.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_non_resumable_status_is_rejected_and_cookies_are_cleared() {
 		$this->logout();
@@ -312,6 +321,9 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 
 	/**
 	 * Missing jobs are rejected without leaving a stale-cookie loop.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_missing_job_is_rejected_and_cookies_are_cleared() {
 		$this->logout();
@@ -324,6 +336,9 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 
 	/**
 	 * A matching key on a different post type cannot be used as a resume target.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_non_job_post_is_rejected_and_cookies_are_cleared() {
 		$this->logout();
@@ -355,6 +370,8 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 	/**
 	 * An incomplete resume cookie pair is removed during early validation.
 	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 * @dataProvider incomplete_resume_cookie_pairs
 	 * @param array $cookies Resume cookies for the request.
 	 */
@@ -368,6 +385,9 @@ class WP_Test_Submit_Job_Resume_Ownership extends WPJM_BaseTest {
 
 	/**
 	 * An empty resume cookie pair is removed during early validation.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
 	 */
 	public function test_empty_resume_cookie_pair_is_cleared() {
 		$this->set_resume_cookies( 0, '' );
