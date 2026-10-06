@@ -18,6 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class WP_Job_Manager {
+
+	/**
+	 * Cookies holding the in-progress job submission a visitor may resume.
+	 */
+	const SUBMITTING_JOB_ID_COOKIE  = 'wp-job-manager-submitting-job-id';
+	const SUBMITTING_JOB_KEY_COOKIE = 'wp-job-manager-submitting-job-key';
+
 	/**
 	 * The single instance of the class.
 	 *
@@ -133,6 +140,7 @@ class WP_Job_Manager {
 		add_action( 'admin_init', [ $this, 'updater' ] );
 		add_action( 'admin_init', [ $this, 'add_privacy_policy_content' ] );
 		add_action( 'wp_logout', [ $this, 'cleanup_job_posting_cookies' ] );
+		add_action( 'init', [ $this, 'validate_job_posting_cookies' ], 1 );
 		add_action( 'init', [ 'WP_Job_Manager_Email_Notifications', 'init' ] );
 		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
 		add_action( 'plugins_loaded', [ $this, 'include_admin_files' ] );
@@ -294,6 +302,51 @@ class WP_Job_Manager {
 	}
 
 	/**
+	 * Returns the resumable job listing the current request's submission cookies
+	 * reference, or null when the cookie pair does not identify one.
+	 *
+	 * Ownership is not checked here; callers resuming a submission must do that.
+	 *
+	 * @return WP_Post|null
+	 */
+	public static function get_resumable_job_from_cookies() {
+		if ( ! isset( $_COOKIE[ self::SUBMITTING_JOB_ID_COOKIE ], $_COOKIE[ self::SUBMITTING_JOB_KEY_COOKIE ] ) ) {
+			return null;
+		}
+
+		$job_id = absint( $_COOKIE[ self::SUBMITTING_JOB_ID_COOKIE ] );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The submitting key is a bearer credential and must be compared verbatim.
+		$submitting_key = wp_unslash( $_COOKIE[ self::SUBMITTING_JOB_KEY_COOKIE ] );
+		$job            = $job_id ? get_post( $job_id ) : null;
+
+		if (
+			! $job instanceof WP_Post
+			|| WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type
+			|| ! in_array( get_post_status( $job ), [ 'preview', 'pending_payment' ], true )
+			|| get_post_meta( $job->ID, '_submitting_key', true ) !== $submitting_key
+		) {
+			return null;
+		}
+
+		return $job;
+	}
+
+	/**
+	 * Validates job posting cookies before headers are sent, clearing any pair
+	 * that no longer references a resumable draft. Ownership is deliberately not
+	 * checked here, so a signed-out owner's cookies survive until they log back in.
+	 */
+	public function validate_job_posting_cookies() {
+		if ( ! isset( $_COOKIE[ self::SUBMITTING_JOB_ID_COOKIE ] ) && ! isset( $_COOKIE[ self::SUBMITTING_JOB_KEY_COOKIE ] ) ) {
+			return;
+		}
+
+		if ( ! self::get_resumable_job_from_cookies() ) {
+			$this->cleanup_job_posting_cookies();
+		}
+	}
+
+	/**
 	 * Cleanup job posting cookies.
 	 */
 	public function cleanup_job_posting_cookies() {
@@ -306,11 +359,13 @@ class WP_Job_Manager {
 			'samesite' => 'Lax',
 		];
 
-		if ( isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) {
-			setcookie( 'wp-job-manager-submitting-job-id', '', $cookie_options );
+		if ( isset( $_COOKIE[ self::SUBMITTING_JOB_ID_COOKIE ] ) ) {
+			setcookie( self::SUBMITTING_JOB_ID_COOKIE, '', $cookie_options );
+			unset( $_COOKIE[ self::SUBMITTING_JOB_ID_COOKIE ] );
 		}
-		if ( isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) ) {
-			setcookie( 'wp-job-manager-submitting-job-key', '', $cookie_options );
+		if ( isset( $_COOKIE[ self::SUBMITTING_JOB_KEY_COOKIE ] ) ) {
+			setcookie( self::SUBMITTING_JOB_KEY_COOKIE, '', $cookie_options );
+			unset( $_COOKIE[ self::SUBMITTING_JOB_KEY_COOKIE ] );
 		}
 	}
 

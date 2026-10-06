@@ -154,22 +154,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'before' === get_option( 'job_manager_paid_listings_flow' )
 				|| ! $this->job_id
 			)
-			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] )
-			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] )
+			&& ! empty( $_COOKIE[ WP_Job_Manager::SUBMITTING_JOB_ID_COOKIE ] )
+			&& ! empty( $_COOKIE[ WP_Job_Manager::SUBMITTING_JOB_KEY_COOKIE ] )
 			&& empty( $this->job_id )
 		) {
-			$job_id     = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
-			$job_status = get_post_status( $job_id );
+			$job = WP_Job_Manager::get_resumable_job_from_cookies();
 
-			if (
-				(
-					'preview' === $job_status
-					|| 'pending_payment' === $job_status
-				)
-				&& get_post_meta( $job_id, '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
-			) {
-				$this->job_id      = $job_id;
-				$this->resume_edit = get_post_meta( $job_id, '_submitting_key', true );
+			if ( $job && $this->visitor_can_resume_job( $job ) ) {
+				$this->job_id      = $job->ID;
+				$this->resume_edit = get_post_meta( $job->ID, '_submitting_key', true );
 			}
 		}
 
@@ -186,6 +179,22 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				$this->step   = 0;
 			}
 		}
+	}
+
+	/**
+	 * Checks whether the current visitor can resume a job listing. A guest-authored
+	 * draft has no owner, so holding the submitting key is the only credential.
+	 *
+	 * @param WP_Post $job Job listing post, already validated by
+	 *                     WP_Job_Manager::get_resumable_job_from_cookies().
+	 * @return bool
+	 */
+	private function visitor_can_resume_job( $job ) {
+		if ( ! $job instanceof WP_Post ) {
+			return false;
+		}
+
+		return 0 === (int) $job->post_author || job_manager_user_can_edit_job( $job->ID );
 	}
 
 	/**
