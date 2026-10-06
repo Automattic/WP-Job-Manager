@@ -154,25 +154,15 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				'before' === get_option( 'job_manager_paid_listings_flow' )
 				|| ! $this->job_id
 			)
-			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-id'] )
-			&& ! empty( $_COOKIE['wp-job-manager-submitting-job-key'] )
+			&& ! empty( $_COOKIE[ WP_Job_Manager::SUBMITTING_JOB_ID_COOKIE ] )
+			&& ! empty( $_COOKIE[ WP_Job_Manager::SUBMITTING_JOB_KEY_COOKIE ] )
 			&& empty( $this->job_id )
 		) {
-			$job_id         = absint( $_COOKIE['wp-job-manager-submitting-job-id'] );
-			$job            = get_post( $job_id );
-			$job_status     = $job instanceof WP_Post ? get_post_status( $job ) : false;
-			$submitting_key = get_post_meta( $job_id, '_submitting_key', true );
+			$job = WP_Job_Manager::get_resumable_job_from_cookies();
 
-			if (
-				(
-					'preview' === $job_status
-					|| 'pending_payment' === $job_status
-				)
-				&& $submitting_key === $_COOKIE['wp-job-manager-submitting-job-key']
-				&& $this->visitor_can_resume_job( $job )
-			) {
-				$this->job_id      = $job_id;
-				$this->resume_edit = $submitting_key;
+			if ( $job && $this->visitor_can_resume_job( $job ) ) {
+				$this->job_id      = $job->ID;
+				$this->resume_edit = get_post_meta( $job->ID, '_submitting_key', true );
 			}
 		}
 
@@ -192,21 +182,19 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	}
 
 	/**
-	 * Checks whether the current visitor can resume a job listing.
+	 * Checks whether the current visitor can resume a job listing. A guest-authored
+	 * draft has no owner, so holding the submitting key is the only credential.
 	 *
-	 * @param WP_Post|null $job Job listing post.
+	 * @param WP_Post $job Job listing post, already validated by
+	 *                     WP_Job_Manager::get_resumable_job_from_cookies().
 	 * @return bool
 	 */
 	private function visitor_can_resume_job( $job ) {
-		if ( ! $job instanceof WP_Post || WP_Job_Manager_Post_Types::PT_LISTING !== $job->post_type ) {
+		if ( ! $job instanceof WP_Post ) {
 			return false;
 		}
 
-		if ( 0 === (int) $job->post_author ) {
-			return true;
-		}
-
-		return is_user_logged_in() && job_manager_user_can_edit_job( $job->ID );
+		return 0 === (int) $job->post_author || job_manager_user_can_edit_job( $job->ID );
 	}
 
 	/**
