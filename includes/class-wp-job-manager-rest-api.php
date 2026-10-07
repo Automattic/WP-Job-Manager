@@ -110,7 +110,9 @@ class WP_Job_Manager_REST_API {
 		}
 		// Match the item route and its children (revisions, autosaves) — all of them can
 		// surface listing body data and must be gated on the parent post's view capability.
-		if ( ! preg_match( '#^/wp/v2/job-listings/(?P<id>\d+)(?:/[^?]*)?$#', (string) $request->get_route(), $matches ) ) {
+		// Case-insensitively: WP_REST_Server matches routes with the `i` flag, so
+		// /wp/v2/Job-Listings/5 dispatches to the same handler and must hit the same gate.
+		if ( ! preg_match( '#^/wp/v2/job-listings/(?P<id>\d+)(?:/[^?]*)?$#i', (string) $request->get_route(), $matches ) ) {
 			return $response;
 		}
 		$post_id = absint( $matches['id'] );
@@ -241,6 +243,14 @@ class WP_Job_Manager_REST_API {
 			}
 			if ( array_key_exists( 'featured_media', $data ) ) {
 				$data['featured_media'] = 0;
+			}
+			// The guid carries the permalink with the title slug, so it identifies the
+			// listing just as the blanked link and slug would.
+			if ( isset( $data['guid']['rendered'] ) ) {
+				$data['guid']['rendered'] = '';
+			}
+			if ( isset( $data['guid']['raw'] ) ) {
+				$data['guid']['raw'] = '';
 			}
 			// Links live on WP_REST_Response's private $links property and are merged into the
 			// serialized `_links` block later by WP_REST_Server::response_to_data(); they are not
