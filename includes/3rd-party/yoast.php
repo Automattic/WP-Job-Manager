@@ -30,6 +30,12 @@ function wpjm_yoast_skip_filled_job_listings( $url, $type, $post ) {
 		return false;
 	}
 
+	// A browse-capability restriction makes listing indexes non-public, and a sitemap is
+	// such an index.
+	if ( ! job_manager_user_can_browse_job_listings() ) {
+		return false;
+	}
+
 	return $url;
 }
 add_action( 'wpseo_sitemap_entry', 'wpjm_yoast_skip_filled_job_listings', 10, 3 );
