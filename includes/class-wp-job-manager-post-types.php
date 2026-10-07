@@ -213,6 +213,7 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
 		add_action( 'pre_get_posts', [ $this, 'gate_feed_query_for_listings' ] );
+		add_action( 'pre_get_posts', [ $this, 'gate_archive_query_for_listings' ] );
 		add_action( 'pre_get_posts', [ $this, 'gate_search_query_for_listings' ] );
 		add_filter( 'oembed_response_data', [ $this, 'gate_oembed_response_for_listings' ], 10, 2 );
 
@@ -903,6 +904,53 @@ class WP_Job_Manager_Post_Types {
 		// View-capability gate — see job_feed(): restrict a denied viewer to their own
 		// listings (none for anonymous) so the default RSS / Atom endpoints do not expose
 		// details the single listing view and REST API withhold.
+		if ( self::viewer_denied_by_view_cap() ) {
+			$viewer_id = get_current_user_id();
+			if ( $viewer_id ) {
+				$query->set( 'author__in', [ $viewer_id ] );
+			} else {
+				// Anonymous: no listings. Post IDs are never 0 (safe sentinel); author 0 is not.
+				$query->set( 'post__in', [ 0 ] );
+			}
+		}
+	}
+
+	/**
+	 * Gates the plain front-end archive queries for job listings — ?post_type=job_listing,
+	 * the rewritten jobs archive, and term archives for listing taxonomies — so they honor
+	 * the browse capability and the View Job Capability the way the feed, REST and search
+	 * paths do. These queries render listing titles and excerpts through the theme with no
+	 * other WPJM gate on the way.
+	 *
+	 * The [jobs] shortcode and the single listing view are untouched: both run their own
+	 * queries (this gate acts on the main query only), and singular requests are gated
+	 * per-listing by the single view.
+	 *
+	 * @param WP_Query $query The query.
+	 */
+	public function gate_archive_query_for_listings( $query ) {
+		if ( is_admin() || ! $query->is_main_query() ) {
+			return;
+		}
+
+		// Feeds and search have their own gates with feed- and search-specific handling,
+		// and singular requests are gated per-listing by the single view.
+		if ( $query->is_feed() || $query->is_search() || $query->is_singular() ) {
+			return;
+		}
+
+		$post_types = (array) $query->get( 'post_type' );
+		if ( ! in_array( self::PT_LISTING, $post_types, true ) && ! self::is_listing_taxonomy_query( $query ) ) {
+			return;
+		}
+
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			$query->set( 'post__in', [ 0 ] );
+			return;
+		}
+
+		// View-capability gate — mirror the feed gate: restrict a denied viewer to their
+		// own listings, none for anonymous.
 		if ( self::viewer_denied_by_view_cap() ) {
 			$viewer_id = get_current_user_id();
 			if ( $viewer_id ) {
