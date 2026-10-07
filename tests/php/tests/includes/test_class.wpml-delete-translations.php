@@ -3,14 +3,15 @@
  * Tests that deleting a job listing from the frontend job dashboard also trashes
  * its WPML translations.
  *
- * WPML's frontend post actions hook `delete_post` only inside `rest_api_init`, so a
- * listing deleted from the dashboard (a normal frontend page load) leaves its
+ * WPML syncs trashing on `wp_trash_post`, but it only adds that hook on admin requests,
+ * so a listing deleted from the dashboard (a normal frontend page load) leaves its
  * translations published. The dashboard fires `job_manager_my_job_do_action`, which
  * the WPML compatibility file uses to trash them.
  *
- * WPML is not installed in the test environment, so its three filters are stubbed
- * here to behave the way the plugin documents: `wpml_element_type` prefixes the post
- * type, and the trid/translations filters read from the fixture map.
+ * WPML is not installed in the test environment, so its filters are stubbed here to
+ * behave the way the plugin documents: `wpml_element_type` prefixes the post type,
+ * `wpml_setting` returns the "delete translations" setting, and the trid/translations
+ * filters read from the fixture map.
  *
  * @package wp-job-manager
  */
@@ -39,24 +40,46 @@ class WP_Test_WPML_Delete_Translations extends WPJM_BaseTest {
 	 */
 	private $translations = [];
 
+	/**
+	 * WPML's "delete translations" (`sync_delete`) setting.
+	 *
+	 * @var bool
+	 */
+	private $sync_delete = true;
+
 	public function setUp(): void {
 		parent::setUp();
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/3rd-party/wpml.php';
 
+		// An employer has no delete capabilities, the same as on the frontend dashboard.
+		$this->login_as_employer();
+
+		add_filter( 'wpml_setting', [ $this, 'stub_setting' ], 10, 2 );
 		add_filter( 'wpml_element_type', [ $this, 'stub_element_type' ] );
 		add_filter( 'wpml_element_trid', [ $this, 'stub_element_trid' ], 10, 3 );
 		add_filter( 'wpml_get_element_translations', [ $this, 'stub_element_translations' ], 10, 5 );
 	}
 
 	public function tearDown(): void {
+		remove_filter( 'wpml_setting', [ $this, 'stub_setting' ], 10 );
 		remove_filter( 'wpml_element_type', [ $this, 'stub_element_type' ] );
 		remove_filter( 'wpml_element_trid', [ $this, 'stub_element_trid' ], 10 );
 		remove_filter( 'wpml_get_element_translations', [ $this, 'stub_element_translations' ], 10 );
 
 		$this->trids        = [];
 		$this->translations = [];
+		$this->sync_delete  = true;
 
 		parent::tearDown();
+	}
+
+	/**
+	 * @param mixed  $value Value passed to the filter.
+	 * @param string $key   Setting key.
+	 * @return mixed
+	 */
+	public function stub_setting( $value, $key ) {
+		return 'sync_delete' === $key ? $this->sync_delete : $value;
 	}
 
 	/**
@@ -121,17 +144,19 @@ class WP_Test_WPML_Delete_Translations extends WPJM_BaseTest {
 	}
 
 	/**
-	 * Creates a published job listing.
+	 * Creates a published post, by default a job listing owned by the current user.
 	 *
-	 * @return int Job listing ID.
+	 * @param int|null $author_id Author ID. Defaults to the current user.
+	 * @param string   $post_type Post type.
+	 * @return int Post ID.
 	 */
-	private function create_job() {
+	private function create_job( $author_id = null, $post_type = \WP_Job_Manager_Post_Types::PT_LISTING ) {
 		return wp_insert_post(
 			[
-				'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+				'post_type'   => $post_type,
 				'post_title'  => 'Test job',
 				'post_status' => 'publish',
-				'post_author' => $this->factory()->user->create( [ 'role' => 'employer' ] ),
+				'post_author' => $author_id ?? get_current_user_id(),
 			]
 		);
 	}
@@ -162,6 +187,53 @@ class WP_Test_WPML_Delete_Translations extends WPJM_BaseTest {
 		wpml_wpjm_delete_translations( 'delete', $job_id );
 
 		$this->assertTrashed( $translated_id );
+	}
+
+	/**
+	 * When WPML's "delete translations" setting is off, translations are left alone, the
+	 * same as when the listing is trashed in the admin.
+	 */
+	public function test_sync_delete_off_leaves_translations_alone() {
+		$this->sync_delete = false;
+
+		$job_id        = $this->create_job();
+		$translated_id = $this->create_job();
+		$this->register_translations( $job_id, [ $translated_id ] );
+
+		wp_trash_post( $job_id );
+		wpml_wpjm_delete_translations( 'delete', $job_id );
+
+		$this->assertNotTrashed( $translated_id );
+	}
+
+	/**
+	 * A translation owned by another user is not trashed, while one the employer owns is.
+	 */
+	public function test_translation_by_another_author_is_not_trashed() {
+		$job_id    = $this->create_job();
+		$own_id    = $this->create_job();
+		$others_id = $this->create_job( $this->get_user_by_role( 'employer', '_b' ) );
+		$this->register_translations( $job_id, [ $own_id, $others_id ] );
+
+		wp_trash_post( $job_id );
+		wpml_wpjm_delete_translations( 'delete', $job_id );
+
+		$this->assertTrashed( $own_id );
+		$this->assertNotTrashed( $others_id );
+	}
+
+	/**
+	 * Only job listings are trashed, even if WPML returns another post type in the group.
+	 */
+	public function test_translation_that_is_not_a_listing_is_not_trashed() {
+		$job_id  = $this->create_job();
+		$post_id = $this->create_job( null, 'post' );
+		$this->register_translations( $job_id, [ $post_id ] );
+
+		wp_trash_post( $job_id );
+		wpml_wpjm_delete_translations( 'delete', $job_id );
+
+		$this->assertNotTrashed( $post_id );
 	}
 
 	/**

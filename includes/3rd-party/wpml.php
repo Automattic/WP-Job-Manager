@@ -31,19 +31,19 @@ add_action( 'wpml_loaded', 'wpml_wpjm_set_language' );
 /**
  * Trashes the translations of a job listing that was deleted from the job dashboard.
  *
- * WPML only hooks its delete sync on REST requests, so a listing deleted from the
- * frontend dashboard leaves its translations published. The dashboard action is used
- * to trash them here. Translations are always trashed, whether or not WPML's own
- * "delete translations" setting is on, because the dashboard should not leave a
- * published copy of a listing the author removed.
+ * WPML syncs trashing on `wp_trash_post`, but it only adds that hook on admin requests.
+ * The dashboard trashes the listing on a frontend request, so the translations stay
+ * published. This does the same sync from the dashboard action. It follows WPML's
+ * "delete translations" setting, like the admin does, and only trashes translations
+ * the current user is allowed to manage.
  *
- * @since 2.4.8
+ * @since $$next-version$$
  *
  * @param string $action The dashboard action being handled.
  * @param int    $job_id The ID of the job listing the action was performed on. Default 0.
  */
 function wpml_wpjm_delete_translations( $action, $job_id = 0 ) {
-	if ( 'delete' !== $action ) {
+	if ( 'delete' !== $action || ! apply_filters( 'wpml_setting', false, 'sync_delete' ) ) {
 		return;
 	}
 
@@ -69,8 +69,12 @@ function wpml_wpjm_delete_translations( $action, $job_id = 0 ) {
 	foreach ( $translations as $translation ) {
 		$translation_id = isset( $translation->element_id ) ? absint( $translation->element_id ) : 0;
 
-		// The listing itself is already trashed by the dashboard handler.
-		if ( ! $translation_id || $translation_id === $job_id ) {
+		/*
+		 * The listing itself is already trashed by the dashboard handler. Each translation
+		 * gets the same check the dashboard runs before it trashes a listing, because a
+		 * translation can have a different author or not be a job listing at all.
+		 */
+		if ( ! $translation_id || $translation_id === $job_id || ! job_manager_user_can_edit_job( $translation_id ) ) {
 			continue;
 		}
 
