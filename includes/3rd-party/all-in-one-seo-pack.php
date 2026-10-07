@@ -53,13 +53,16 @@ function wpjm_aioseo_sitemap_exclude_restricted_listings( $ids, $type ) {
 		return $ids;
 	}
 
+	// suppress_filters stays at get_posts()' default (true): this builds an exclusion
+	// list, so a query filter that narrows the result (e.g. WPML language scoping)
+	// would narrow the exclusions and let the other listings back into the sitemap.
+	// Over-excluding fails closed; under-excluding fails open.
 	$listing_ids = get_posts(
 		[
-			'post_type'        => \WP_Job_Manager_Post_Types::PT_LISTING,
-			'post_status'      => 'publish',
-			'fields'           => 'ids',
-			'numberposts'      => -1,
-			'suppress_filters' => false,
+			'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
+			'post_status' => 'publish',
+			'fields'      => 'ids',
+			'numberposts' => -1,
 		]
 	);
 
