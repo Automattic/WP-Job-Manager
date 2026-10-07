@@ -475,6 +475,16 @@ class WP_Job_Manager_Settings {
 							'track'             => 'value',
 						],
 						[
+							'name'       => 'job_manager_renewal_allow_edits',
+							'std'        => '0',
+							'label'      => __( 'Renewal Edits', 'wp-job-manager' ),
+							'cb_label'   => __( 'Allow editing the listing when renewing it', 'wp-job-manager' ),
+							'desc'       => __( 'Shows the listing edit form as the first step of renewal, before the preview. Has no effect when "Allow Published Edits" requires admin approval, since a renewal must not take a listing offline while edits are pending.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+							'track'      => 'bool',
+						],
+						[
 							'name'              => 'job_manager_submission_limit',
 							'std'               => '',
 							'label'             => __( 'Listing Limit', 'wp-job-manager' ),
