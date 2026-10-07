@@ -150,6 +150,19 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 
 == Changelog ==
 
+### 2.4.8 - 2026-10-07
+* Fix job dashboard actions being silently ignored when the dashboard is rendered from a synced pattern, template or page builder; the configured Job Dashboard page is now honoured and declined actions show an error notice. (#3126)
+* Fix the geolocation filter not being honored when importing listings. (#3112)
+* Fix the reCAPTCHA deprecation notices naming a non-existent replacement method. (#3127)
+* Prevent resuming another user's job submission draft.
+* Scrub unusable attachment values on the edit-job form.
+* Apply the View Job Capability to taxonomy term feeds.
+* Apply the browse and view capabilities to listing archive queries.
+* Apply the listing capabilities to the Yoast, Jetpack and All in One SEO sitemaps.
+* Align REST single-listing route matching with WordPress core and withhold the guid in restricted responses.
+* Honour requested listing statuses by viewer capability in the [jobs] shortcode.
+* Update developer dependencies.
+
 ### 2.4.7 - 2026-09-03
 * Fix company logo rendering at full size in the Job Listings admin table on WordPress 7.1. (#3099)
 * Indicate WordPress 7.1 compatibility. (#3097)
@@ -184,17 +197,3 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 
 ### 2.4.4 - 2026-06-24
 * Fix: Restore the frontend styles and scripts that were missing from the 2.4.3 package. The 2.4.3 release was built without its compiled CSS and JavaScript, leaving the employer job dashboard unstyled and breaking frontend features such as the job application form. (#2990)
-
-### 2.4.3 - 2026-06-24
-* Apply the View Job Capability to WordPress search and oEmbed output.
-* Apply the View Job Capability to the REST search endpoint (#2984)
-* Fail closed correctly when an author filter resolves to no valid IDs (#2983)
-* Apply the View Job Capability to job listing feeds (#2982)
-* Enforce listing submission limit when publishing a previewed listing (#2981)
-* Restore PHP 8.4 test coverage — modernise bootstrap error handler (#2970)
-* Fix: Promote button `data-href` attribute now correctly quoted in job listings table.
-* Fix: Promote URL in inline script now escaped with `esc_js()`.
-* Author filter follow-up: centralize parsing, close AJAX array bypass (#2958)
-* Add square-format hint and configurable max size for company logo uploads (#2957)
-* "Remove "See what's new in 2.3" from Job Statistics Banner"
-* New: The `[jobs]` shortcode now supports an `author` attribute to filter listings by user ID (e.g. `[jobs author="42"]` or `[jobs author="1,2,3"]`)
