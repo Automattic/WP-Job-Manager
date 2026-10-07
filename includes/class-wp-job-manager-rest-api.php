@@ -110,9 +110,21 @@ class WP_Job_Manager_REST_API {
 		}
 		// Match the item route and its children (revisions, autosaves) — all of them can
 		// surface listing body data and must be gated on the parent post's view capability.
-		// Case-insensitively: WP_REST_Server matches routes with the `i` flag, so
-		// /wp/v2/Job-Listings/5 dispatches to the same handler and must hit the same gate.
-		if ( ! preg_match( '#^/wp/v2/job-listings/(?P<id>\d+)(?:/[^?]*)?$#i', (string) $request->get_route(), $matches ) ) {
+		// The pattern is derived from the post type's own REST registration rather than
+		// hard-coded, so a filtered rest_base or rest_namespace cannot strand the gate on
+		// a route core no longer serves. Case-insensitively: WP_REST_Server matches routes
+		// with the `i` flag, so /wp/v2/Job-Listings/5 dispatches to the same handler and
+		// must hit the same gate.
+		$post_type_object = get_post_type_object( WP_Job_Manager_Post_Types::PT_LISTING );
+		if ( ! $post_type_object || empty( $post_type_object->show_in_rest ) ) {
+			return $response;
+		}
+
+		$rest_namespace = ! empty( $post_type_object->rest_namespace ) ? $post_type_object->rest_namespace : 'wp/v2';
+		$rest_base      = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
+		$route_pattern  = '#^/' . preg_quote( trim( $rest_namespace, '/' ), '#' ) . '/' . preg_quote( $rest_base, '#' ) . '/(?P<id>\d+)(?:/[^?]*)?$#i';
+
+		if ( ! preg_match( $route_pattern, (string) $request->get_route(), $matches ) ) {
 			return $response;
 		}
 		$post_id = absint( $matches['id'] );
