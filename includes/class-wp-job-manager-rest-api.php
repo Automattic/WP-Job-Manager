@@ -120,8 +120,8 @@ class WP_Job_Manager_REST_API {
 			return $response;
 		}
 
-		$rest_namespace = ! empty( $post_type_object->rest_namespace ) ? $post_type_object->rest_namespace : 'wp/v2';
-		$rest_base      = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
+		$rest_namespace = is_string( $post_type_object->rest_namespace ) && '' !== $post_type_object->rest_namespace ? $post_type_object->rest_namespace : 'wp/v2';
+		$rest_base      = is_string( $post_type_object->rest_base ) && '' !== $post_type_object->rest_base ? $post_type_object->rest_base : $post_type_object->name;
 		$route_pattern  = '#^/' . preg_quote( trim( $rest_namespace, '/' ), '#' ) . '/' . preg_quote( $rest_base, '#' ) . '/(?P<id>\d+)(?:/[^?]*)?$#i';
 
 		if ( ! preg_match( $route_pattern, (string) $request->get_route(), $matches ) ) {
