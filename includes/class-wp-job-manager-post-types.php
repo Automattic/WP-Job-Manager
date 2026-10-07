@@ -889,7 +889,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$post_types = (array) $query->get( 'post_type' );
-		if ( ! in_array( self::PT_LISTING, $post_types, true ) ) {
+		if ( ! in_array( self::PT_LISTING, $post_types, true ) && ! self::is_listing_taxonomy_query( $query ) ) {
 			return;
 		}
 
@@ -912,6 +912,42 @@ class WP_Job_Manager_Post_Types {
 				$query->set( 'post__in', [ 0 ] );
 			}
 		}
+	}
+
+	/**
+	 * Whether the query is a term query for a taxonomy attached to job listings, such as
+	 * job_listing_category or job_listing_type. Term feeds carry no post_type query var —
+	 * the listing constraint comes from the term join — so a post_type check alone misses
+	 * them and the feed gate would serve restricted listing bodies through
+	 * /job-category/x/feed/ style URLs.
+	 *
+	 * Where such a taxonomy is also attached to other post types, the whole term feed is
+	 * treated as a listing feed and restricted the same way: failing closed for the
+	 * non-listing content in the feed is preferred over leaking restricted listings.
+	 *
+	 * @param WP_Query $query The query.
+	 * @return bool
+	 */
+	private static function is_listing_taxonomy_query( WP_Query $query ) {
+		if ( ! $query->is_tax() && ! $query->is_category() && ! $query->is_tag() ) {
+			return false;
+		}
+
+		if ( empty( $query->tax_query->queries ) ) {
+			return false;
+		}
+
+		$listing_taxonomies = get_object_taxonomies( self::PT_LISTING );
+
+		foreach ( $query->tax_query->queries as $tax_query ) {
+			if ( is_array( $tax_query )
+				&& ! empty( $tax_query['taxonomy'] )
+				&& in_array( $tax_query['taxonomy'], $listing_taxonomies, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
