@@ -129,7 +129,7 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.8
 	 * @covers WP_Job_Manager_Geocode::generate_location_data
 	 */
 	public function test_generate_location_data_disabled() {
