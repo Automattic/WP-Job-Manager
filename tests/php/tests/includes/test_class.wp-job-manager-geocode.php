@@ -129,6 +129,20 @@ class WP_Test_WP_Job_Manager_Geocode extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Geocode::generate_location_data
+	 */
+	public function test_generate_location_data_disabled() {
+		$test_data = $this->get_valid_location_data();
+		$this->set_expected_responses( $test_data );
+		$job_id = $this->factory->job_listing->create();
+		add_filter( 'job_manager_geolocation_enabled', '__return_false' );
+		WP_Job_Manager_Geocode::generate_location_data( $job_id, $test_data['location'] );
+		remove_filter( 'job_manager_geolocation_enabled', '__return_false' );
+		$this->check_test_data( $job_id, $this->get_invalid_location_data() );
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers WP_Job_Manager_Geocode::clear_location_data
 	 */
