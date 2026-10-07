@@ -1885,7 +1885,9 @@ class WP_Job_Manager_Post_Types {
 	 * view capability, so an enumerated listing there discloses the existence — and, once
 	 * followed, the metadata — of listings the operator made non-public. Drop the whole post
 	 * type from the sitemap index in that case, the way {@see self::viewer_denied_by_view_cap()}
-	 * gates the search and REST-search surfaces.
+	 * gates the search and REST-search surfaces. A browse-capability restriction is treated
+	 * the same way: a sitemap is a listing index, and the browse capability is exactly the
+	 * option that makes listing indexes non-public.
 	 *
 	 * @access private
 	 * @since 2.4.7
@@ -1895,7 +1897,8 @@ class WP_Job_Manager_Post_Types {
 	 * @return array
 	 */
 	public function sitemaps_maybe_hide_restricted_post_type( $post_types ) {
-		if ( isset( $post_types[ self::PT_LISTING ] ) && self::viewer_denied_by_view_cap() ) {
+		if ( isset( $post_types[ self::PT_LISTING ] )
+			&& ( self::viewer_denied_by_view_cap() || ! job_manager_user_can_browse_job_listings() ) ) {
 			unset( $post_types[ self::PT_LISTING ] );
 		}
 

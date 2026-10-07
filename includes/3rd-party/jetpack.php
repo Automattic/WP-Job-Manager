@@ -27,6 +27,12 @@ function wpjm_jetpack_skip_filled_job_listings( $skip_post, $post ) {
 		return true;
 	}
 
+	// A browse-capability restriction makes listing indexes non-public, and a sitemap is
+	// such an index.
+	if ( ! job_manager_user_can_browse_job_listings() ) {
+		return true;
+	}
+
 	return $skip_post;
 }
 add_action( 'jetpack_sitemap_skip_post', 'wpjm_jetpack_skip_filled_job_listings', 10, 2 );
