@@ -58,6 +58,51 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since 2.4.6
+	 * @covers WP_Job_Manager_Post_Types::register_post_types
+	 */
+	public function test_job_listing_block_editor_unlocked_by_default() {
+		$post_type_object = get_post_type_object( \WP_Job_Manager_Post_Types::PT_LISTING );
+
+		$this->assertSame( [], $post_type_object->template, 'Job listings should have no forced block template by default.' );
+		$this->assertFalse( $post_type_object->template_lock, 'Job listings should not be locked to a single block by default.' );
+	}
+
+	/**
+	 * @since 2.4.6
+	 * @covers WP_Job_Manager_Post_Types::register_post_types
+	 */
+	public function test_job_listing_block_editor_can_be_locked_to_classic_block() {
+		add_filter( 'job_manager_job_listing_template_lock', '__return_true' );
+		$this->reregister_post_type();
+
+		$post_type_object = get_post_type_object( \WP_Job_Manager_Post_Types::PT_LISTING );
+
+		$this->assertSame( [ [ 'core/freeform' ] ], $post_type_object->template, 'Job listings should be locked to the Classic block when the filter returns true.' );
+		$this->assertSame( 'all', $post_type_object->template_lock, 'Job listings should be fully locked when the filter returns true.' );
+
+		remove_filter( 'job_manager_job_listing_template_lock', '__return_true' );
+		$this->reregister_post_type();
+	}
+
+	/**
+	 * @since 2.4.6
+	 * @covers WP_Job_Manager_Post_Types::__construct
+	 */
+	public function test_job_description_renders_block_markup() {
+		$job_id = $this->factory->job_listing->create(
+			[
+				'post_content' => "<!-- wp:paragraph -->\n<p>Block content.</p>\n<!-- /wp:paragraph -->",
+			]
+		);
+
+		$description = wpjm_get_the_job_description( $job_id );
+
+		$this->assertStringContainsString( 'Block content.', $description );
+		$this->assertStringNotContainsString( '<!-- wp:paragraph -->', $description, 'Block comment delimiters should be rendered away by do_blocks().' );
+	}
+
+	/**
 	 * Tests the WP_Job_Manager_Post_Types::instance() always returns the same `WP_Job_Manager_API` instance.
 	 *
 	 * @since 1.28.0
