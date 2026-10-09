@@ -26,6 +26,16 @@ abstract class WP_Job_Manager_Form {
 	protected $fields = [];
 
 	/**
+	 * Cache key for `$fields`. Tracks the `current_form_id` value the
+	 * fields were built under so a 2nd `submit_job_form form_id="..."`
+	 * on the same page rebuilds instead of returning the 1st set.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $fields_cache_key = '';
+
+	/**
 	 * Form action.
 	 *
 	 * @access protected
@@ -72,6 +82,16 @@ abstract class WP_Job_Manager_Form {
 	 * @var string
 	 */
 	public $form_name = '';
+
+	/**
+	 * Active form id (set from shortcode `[submit_job_form form_id="..."]`).
+	 *
+	 * Round-tripped via a hidden field so POST processing rebuilds the same field set.
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $current_form_id = '';
 
 	/**
 	 * Cloning is forbidden.
@@ -149,6 +169,10 @@ abstract class WP_Job_Manager_Form {
 		$step_key = $this->get_step_key( $this->step );
 		$this->show_errors();
 		$this->show_messages();
+
+		if ( isset( $atts['form_id'] ) ) {
+			$this->current_form_id = sanitize_text_field( $atts['form_id'] );
+		}
 
 		if ( $step_key && is_callable( $this->steps[ $step_key ]['view'] ) ) {
 			call_user_func( $this->steps[ $step_key ]['view'], $atts );

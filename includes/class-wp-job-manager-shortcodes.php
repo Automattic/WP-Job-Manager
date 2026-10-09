@@ -99,6 +99,13 @@ class WP_Job_Manager_Shortcodes {
 	 * @return string|null
 	 */
 	public function submit_job_form( $atts = [] ) {
+		$atts = shortcode_atts(
+			[
+				'form_id' => '',
+			],
+			$atts,
+			'submit_job_form'
+		);
 		return $GLOBALS['job_manager']->forms->get_form( 'submit-job', $atts );
 	}
 
