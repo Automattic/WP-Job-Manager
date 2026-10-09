@@ -544,6 +544,11 @@ abstract class WP_Job_Manager_Form {
 		if ( 'url' === $sanitizer ) {
 			return esc_url_raw( $this->normalize_url( $value ) );
 		} elseif ( 'email' === $sanitizer ) {
+			$emails = $this->parse_email_list( $value );
+			if ( null !== $emails ) {
+				return implode( ', ', $emails );
+			}
+
 			$sanitized_value = sanitize_email( $value );
 			if ( $sanitized_value !== $value ) {
 				return '';
@@ -551,6 +556,11 @@ abstract class WP_Job_Manager_Form {
 
 			return $sanitized_value;
 		} elseif ( 'url_or_email' === $sanitizer ) {
+			$emails = $this->parse_email_list( $value );
+			if ( null !== $emails ) {
+				return implode( ', ', $emails );
+			}
+
 			if ( is_email( $value ) ) {
 				return sanitize_email( $value );
 			}
@@ -563,6 +573,55 @@ abstract class WP_Job_Manager_Form {
 
 		// Use standard text sanitizer.
 		return sanitize_text_field( wp_unslash( $value ) );
+	}
+
+	/**
+	 * Parse a value as a comma- or semicolon-separated email address list.
+	 *
+	 * Returns the list of trimmed, sanitized emails when every non-empty
+	 * token is a valid email address and the list is at most the configured
+	 * cap. Returns null when the value is a single email, a URL, or empty —
+	 * signalling callers to fall back to single-value sanitization.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $value Raw input.
+	 * @return array|null   List of sanitized emails, or null if value is not a list.
+	 */
+	protected function parse_email_list( $value ) {
+		if ( '' === $value || false === strpbrk( $value, ',;' ) ) {
+			return null;
+		}
+
+		/**
+		 * Maximum number of email addresses accepted in a single
+		 * application field value.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param int $max_addresses Address cap.
+		 */
+		$max_addresses = (int) apply_filters( 'job_manager_application_max_addresses', 10 );
+
+		$tokens = preg_split( '/[,;]\s?/', $value );
+		$emails = [];
+
+		foreach ( $tokens as $token ) {
+			$token = trim( $token );
+			if ( '' === $token ) {
+				continue;
+			}
+			if ( ! is_email( $token ) ) {
+				return null;
+			}
+			$emails[] = sanitize_email( $token );
+		}
+
+		if ( empty( $emails ) || count( $emails ) > $max_addresses ) {
+			return null;
+		}
+
+		return $emails;
 	}
 
 	/**
