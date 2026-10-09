@@ -48,6 +48,9 @@ class WP_Job_Manager_CPT {
 		add_filter( 'post_row_actions', [ $this, 'row_actions' ], 10, 2 );
 		add_action( 'manage_job_listing_posts_custom_column', [ $this, 'custom_columns' ], 2 );
 		add_filter( 'manage_edit-job_listing_sortable_columns', [ $this, 'sortable_columns' ] );
+		add_action( 'quick_edit_custom_box', [ $this, 'quick_edit_custom_box' ], 10, 2 );
+		add_action( 'add_inline_data', [ $this, 'add_inline_data' ] );
+		add_action( 'save_post_job_listing', [ $this, 'quick_edit_save' ], 10, 2 );
 		add_filter( 'request', [ $this, 'sort_columns' ] );
 		add_action( 'parse_query', [ $this, 'search_meta' ] );
 		add_action( 'parse_query', [ $this, 'filter_meta' ] );
@@ -542,8 +545,15 @@ class WP_Job_Manager_CPT {
 
 		if ( \WP_Job_Manager_Post_Types::PT_LISTING === get_post_type() ) {
 
-			unset( $actions['inline hide-if-no-js'] );
 			unset( $actions['trash'] );
+
+			// Quick Edit is intentionally hidden for WPJM-managed statuses
+			// (expired, preview, pending_payment). Core's inline-edit form
+			// only offers core statuses, so a save there would silently
+			// rewrite a non-core status. Pending is core and stays safe.
+			if ( in_array( $post->post_status, [ 'expired', 'pending_payment', 'preview' ], true ) ) {
+				unset( $actions['inline hide-if-no-js'] );
+			}
 
 			$admin_actions = $this->get_admin_actions( $post );
 
@@ -687,6 +697,91 @@ class WP_Job_Manager_CPT {
 				echo '<span data-tip="' . esc_attr( get_the_job_status( $post ) ) . '" class="tips status-' . esc_attr( $post->post_status ) . '">' . esc_html( get_the_job_status( $post ) ) . '</span>';
 				break;
 		}
+	}
+
+	/**
+	 * Outputs the Featured/Filled fields in the Quick Edit box for Job Listings.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $column_name Column being edited.
+	 * @param string $post_type   Post type being edited.
+	 */
+	public function quick_edit_custom_box( $column_name, $post_type ) {
+		if ( 'featured_job' !== $column_name || \WP_Job_Manager_Post_Types::PT_LISTING !== $post_type ) {
+			return;
+		}
+		?>
+		<fieldset class="inline-edit-col-right">
+			<div class="inline-edit-col">
+				<div class="inline-edit-group wp-clearfix">
+					<label class="alignleft">
+						<input type="checkbox" name="_featured" value="1" />
+						<span class="checkbox-title"><?php esc_html_e( 'Featured Listing', 'wp-job-manager' ); ?></span>
+					</label>
+					<label class="alignleft">
+						<input type="checkbox" name="_filled" value="1" />
+						<span class="checkbox-title"><?php esc_html_e( 'Position Filled', 'wp-job-manager' ); ?></span>
+					</label>
+				</div>
+			</div>
+		</fieldset>
+		<?php
+	}
+
+	/**
+	 * Adds Featured/Filled values to the hidden inline data used to populate Quick Edit.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param \WP_Post $post
+	 */
+	public function add_inline_data( $post ) {
+		if ( \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
+			return;
+		}
+		echo '<div class="featured">' . ( is_position_featured( $post ) ? '1' : '0' ) . '</div>';
+		echo '<div class="filled">' . ( is_position_filled( $post ) ? '1' : '0' ) . '</div>';
+	}
+
+	/**
+	 * Saves the Featured/Filled fields submitted from Quick Edit.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int      $post_id Post ID being saved.
+	 * @param \WP_Post $post    Post object being saved.
+	 */
+	public function quick_edit_save( $post_id, $post ) {
+		// Defensive post-type guard. `save_post_job_listing` already scopes
+		// to job_listing, but parity with #3045's bulk_edit_save handler and
+		// the WPJM-wide save_post convention keeps the check here so this
+		// handler is safe to reuse on a generic `save_post` hook later.
+		if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
+			return;
+		}
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+			return;
+		}
+		if (
+			empty( $_POST['_inline_edit'] )
+			|| ! wp_verify_nonce( wp_unslash( $_POST['_inline_edit'] ), 'inlineeditnonce' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
+		) {
+			return;
+		}
+		// Per-post capability check matches the WPJM convention used in
+		// the existing `save_post` handler (writepanels.php) and #3045's
+		// `bulk_edit_save`. `manage_job_listings` is a flat cap with no
+		// meta_cap mapping, so passing $post_id was previously a no-op.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		update_post_meta( $post_id, '_featured', ! empty( $_POST['_featured'] ) ? 1 : 0 );
+		update_post_meta( $post_id, '_filled', ! empty( $_POST['_filled'] ) ? 1 : 0 );
 	}
 
 	/**

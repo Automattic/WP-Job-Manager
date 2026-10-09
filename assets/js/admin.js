@@ -2,8 +2,11 @@
  * Internal dependencies.
  */
 import { initializePromoteModals } from './admin/promote-job-modals';
+import { initializeJobQuickEdit } from './admin/job-quick-edit';
 
 jQuery(document).ready(function($) {
+	initializeJobQuickEdit( $ );
+
 	// Tooltips
 	$( '.tips, .help_tip' ).each( function() {
 		var $self = $(this);
