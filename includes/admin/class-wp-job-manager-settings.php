@@ -222,6 +222,16 @@ class WP_Job_Manager_Settings {
 							'track'      => 'bool',
 						],
 						[
+							'name'       => 'job_manager_enable_filled_expired',
+							'std'        => '0',
+							'label'      => __( 'Filled Expired Listings', 'wp-job-manager' ),
+							'cb_label'   => __( 'Allow marking expired listings as filled', 'wp-job-manager' ),
+							'desc'       => __( 'If enabled, employers can mark an expired job listing as filled from their job dashboard.', 'wp-job-manager' ),
+							'type'       => 'checkbox',
+							'attributes' => [],
+							'track'      => 'bool',
+						],
+						[
 							'name'       => 'job_manager_enable_categories',
 							'std'        => '0',
 							'label'      => __( 'Categories', 'wp-job-manager' ),
