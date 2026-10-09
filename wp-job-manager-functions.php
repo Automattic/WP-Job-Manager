@@ -7,6 +7,23 @@
  * @package wp-job-manager
  */
 
+if ( ! function_exists( 'job_manager_get_default_location_meta_keys' ) ) :
+	/**
+	 * Returns the default list of meta keys checked against the location search term.
+	 *
+	 * Both `get_job_listings()` and the RSS feed use this list. Extracted to a shared
+	 * helper so that the two code paths cannot silently diverge. Defined outside the
+	 * `get_job_listings` override guard so it stays available even if a theme/plugin
+	 * supplies its own `get_job_listings`.
+	 *
+	 * @since $$next-version$$
+	 * @return array Default location meta keys.
+	 */
+	function job_manager_get_default_location_meta_keys() {
+		return [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+	}
+endif;
+
 if ( ! function_exists( 'get_job_listings' ) ) :
 	/**
 	 * Queries job listings with certain criteria and returns them.
@@ -103,9 +120,19 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_location'] ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			$location_search    = [ 'relation' => 'OR' ];
-			$locations          = explode( ';', $args['search_location'] );
+			/**
+			 * Filters the meta keys that are checked against the location search term.
+			 *
+			 * @since $$next-version$$
+			 * @param array $location_meta_keys The meta keys.
+			 */
+			$location_meta_keys = apply_filters( 'job_manager_get_listings_location_meta_keys', job_manager_get_default_location_meta_keys() );
+
+			if ( empty( $location_meta_keys ) ) {
+				$location_meta_keys = job_manager_get_default_location_meta_keys();
+			}
+			$location_search = [ 'relation' => 'OR' ];
+			$locations       = explode( ';', $args['search_location'] );
 
 			foreach ( $locations as $location ) {
 				$location = trim( $location );
