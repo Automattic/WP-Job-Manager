@@ -32,6 +32,26 @@ class WP_Test_File_Field_Template extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Render the file-field template and return the value of the input's `data-max_size` attribute, or null when
+	 * the attribute is absent.
+	 *
+	 * @param array  $field Field definition passed to the template.
+	 * @param string $key   Field key.
+	 * @return string|null
+	 */
+	private function render_data_max_size( $field, $key = 'company_logo' ) {
+		ob_start();
+		get_job_manager_template( 'form-fields/file-field.php', [ 'key' => $key, 'field' => $field ] );
+		$html = ob_get_clean();
+
+		if ( ! preg_match( '/\sdata-max_size="([^"]*)"/', $html, $matches ) ) {
+			return null;
+		}
+
+		return $matches[1];
+	}
+
+	/**
 	 * A field that restricts types gets a spec-valid, comma-separated `accept` value.
 	 */
 	public function test_restricted_field_outputs_accept() {
@@ -63,5 +83,23 @@ class WP_Test_File_Field_Template extends WPJM_BaseTest {
 		add_filter( 'job_manager_mime_types', '__return_empty_array' );
 
 		$this->assertNull( $this->render_accept_attribute( [], 'custom_file' ) );
+	}
+
+	/**
+	 * A field with an explicit `max_size` emits that value as `data-max_size` so the client-side check
+	 * can compare against it.
+	 */
+	public function test_field_with_max_size_outputs_data_max_size() {
+		$field = [ 'max_size' => 123456 ];
+
+		$this->assertSame( '123456', $this->render_data_max_size( $field ) );
+	}
+
+	/**
+	 * A field without `max_size` falls back to `wp_max_upload_size()` so the attribute is always present
+	 * for fields that opt into AJAX uploads.
+	 */
+	public function test_field_without_max_size_falls_back_to_wp_max_upload_size() {
+		$this->assertSame( (string) wp_max_upload_size(), $this->render_data_max_size( [] ) );
 	}
 }

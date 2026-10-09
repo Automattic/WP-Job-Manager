@@ -45,23 +45,36 @@ jQuery(function($) {
 				if ( allowed_types ) {
 					var acceptFileTypes = new RegExp( '(\.|\/)(' + allowed_types + ')$', 'i' );
 
-					if ( data.originalFiles[0].name.length && ! acceptFileTypes.test( data.originalFiles[0].name ) ) {
+					if ( data.files[0].name.length && ! acceptFileTypes.test( data.files[0].name ) ) {
 						uploadErrors.push( job_manager_ajax_file_upload.i18n_invalid_file_type + ' ' + allowed_types );
 					}
 				}
 
-				if ( uploadErrors.length > 0 ) {
-					this.validation_errors = this.validation_errors.concat( uploadErrors );
-					data.context = $('<progress value="" max="100"></progress>').appendTo( $uploaded_files );
-					data.submit();
-				} else {
-					if ( false !== fileLimitLeft ) {
-						$file_field.data( 'file_limit_left', fileLimitLeft - 1 );
+				// Validate size
+				var maxSize = parseInt( $file_field.data( 'max_size' ), 10 );
+
+				if ( ! isNaN( maxSize ) && data.files[0].size > maxSize ) {
+					var sizeMessage       = job_manager_ajax_file_upload.i18n_file_exceeds_size_limit;
+					var formattedSize     = $file_field.data( 'max_size_formatted' );
+
+					if ( formattedSize ) {
+						sizeMessage += ' ' + job_manager_ajax_file_upload.i18n_max_file_size + ' ' + formattedSize + '.';
 					}
-					$form.find(':input[type="submit"]').attr( 'disabled', 'disabled' );
-					data.context = $('<progress value="" max="100"></progress>').appendTo( $uploaded_files );
-					data.submit();
+
+					uploadErrors.push( sizeMessage );
 				}
+
+				if ( uploadErrors.length > 0 ) {
+					window.alert( uploadErrors.join( '\n' ) );
+					return;
+				}
+
+				if ( false !== fileLimitLeft ) {
+					$file_field.data( 'file_limit_left', fileLimitLeft - 1 );
+				}
+				$form.find(':input[type="submit"]').attr( 'disabled', 'disabled' );
+				data.context = $('<progress value="" max="100"></progress>').appendTo( $uploaded_files );
+				data.submit();
 			},
 			progress: function (e, data) {
 				var progress = parseInt( data.loaded / data.total * 100, 10 );
