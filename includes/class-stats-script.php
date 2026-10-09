@@ -422,7 +422,7 @@ class Stats_Script {
 				Job_Listing_Stats::APPLY_CLICK       => [
 					'type'   => 'domEvent',
 					'args'   => [
-						'element' => 'input.application_button',
+						'element' => '.application_button',
 						'event'   => 'click',
 					],
 					'unique' => true,
