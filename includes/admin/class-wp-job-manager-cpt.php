@@ -749,11 +749,30 @@ class WP_Job_Manager_CPT {
 			return;
 		}
 
+		$search_term = $wp->query_vars['s'];
+
+		/*
+		 * Post columns can hold the term as typed or its kses-encoded form, so match both. Post meta is
+		 * not kses-normalized on save, so the meta condition keeps using the term as typed. See #3030.
+		 */
+		$raw_like      = '%' . $wpdb->esc_like( $search_term ) . '%';
+		$like_patterns = array_map(
+			static function ( $needle ) use ( $wpdb ) {
+				return '%' . $wpdb->esc_like( $needle ) . '%';
+			},
+			job_manager_get_search_term_variations( $search_term )
+		);
+
+		$title_conditions   = implode( ' OR ', array_fill( 0, count( $like_patterns ), 'posts.post_title LIKE %s' ) );
+		$content_conditions = implode( ' OR ', array_fill( 0, count( $like_patterns ), 'posts.post_content LIKE %s' ) );
+		$query_arguments    = array_merge( [ $raw_like ], $like_patterns, $like_patterns );
+
 		$post_ids = array_unique(
 			array_merge(
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- WP_Query doesn't allow for meta query to be an optional match.
 				$wpdb->get_col(
 					$wpdb->prepare(
+						// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Conditions contain only generated placeholders.
 						"SELECT posts.ID
 						FROM {$wpdb->posts} posts
 						WHERE (
@@ -762,13 +781,12 @@ class WP_Job_Manager_CPT {
 								FROM {$wpdb->postmeta}
 								WHERE meta_value LIKE %s
 							)
-							OR posts.post_title LIKE %s
-							OR posts.post_content LIKE %s
+							OR {$title_conditions}
+							OR {$content_conditions}
 						)
 						AND posts.post_type = 'job_listing'",
-						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
-						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%',
-						'%' . $wpdb->esc_like( $wp->query_vars['s'] ) . '%'
+						// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+						...$query_arguments
 					)
 				),
 				[ 0 ]
