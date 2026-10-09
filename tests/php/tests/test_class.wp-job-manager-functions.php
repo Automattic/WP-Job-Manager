@@ -1512,4 +1512,130 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	public function test_get_accept_file_types_empty_when_nothing_is_allowed() {
 		$this->assertSame( '', job_manager_get_accept_file_types( [] ) );
 	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_from_publish_creates_preview_copy() {
+		$job_id    = $this->factory->job_listing->create( [
+			'post_title'  => 'Senior Developer',
+			'post_content' => 'Great job.',
+			'post_status' => 'publish',
+		] );
+		wp_set_object_terms( $job_id, [ 'remote' ], 'job_listing_type' );
+		update_post_meta( $job_id, '_filled', 1 );
+		update_post_meta( $job_id, '_featured', 1 );
+		update_post_meta( $job_id, '_application', 'jobs@example.com' );
+
+		$new_id = job_manager_duplicate_listing( $job_id );
+
+		$this->assertNotEquals( 0, $new_id, 'Duplicate should return a nonzero post ID.' );
+		$this->assertEquals( 'preview', get_post_status( $new_id ) );
+		$this->assertEquals( 'Senior Developer', get_the_title( $new_id ) );
+		$this->assertEquals( 'Great job.', get_post_field( 'post_content', $new_id ) );
+		$this->assertEquals( 'jobs@example.com', get_post_meta( $new_id, '_application', true ) );
+		$this->assertSame( '0', get_post_meta( $new_id, '_filled', true ) );
+		$this->assertSame( '0', get_post_meta( $new_id, '_featured', true ) );
+		$this->assertEquals( [ 'remote' ], wp_get_post_terms( $new_id, 'job_listing_type', [ 'fields' => 'slugs' ] ) );
+	}
+
+	/**
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_from_expired_creates_preview_copy() {
+		$job_id = $this->factory->job_listing->create( [
+			'post_title'   => 'Expired Role',
+			'post_content' => 'Still useful.',
+			'post_status'  => 'expired',
+		] );
+		wp_set_object_terms( $job_id, [ 'onsite' ], 'job_listing_type' );
+		update_post_meta( $job_id, '_filled', 1 );
+		update_post_meta( $job_id, '_featured', 1 );
+		update_post_meta( $job_id, '_application', 'apply@example.com' );
+
+		$new_id = job_manager_duplicate_listing( $job_id );
+
+		$this->assertNotEquals( 0, $new_id, 'Duplicate should return a nonzero post ID.' );
+		$this->assertEquals( 'preview', get_post_status( $new_id ) );
+		$this->assertEquals( 'Expired Role', get_the_title( $new_id ) );
+		$this->assertEquals( 'Still useful.', get_post_field( 'post_content', $new_id ) );
+		$this->assertEquals( 'apply@example.com', get_post_meta( $new_id, '_application', true ) );
+		$this->assertSame( '0', get_post_meta( $new_id, '_filled', true ) );
+		$this->assertSame( '0', get_post_meta( $new_id, '_featured', true ) );
+		$this->assertEquals( [ 'onsite' ], wp_get_post_terms( $new_id, 'job_listing_type', [ 'fields' => 'slugs' ] ) );
+	}
+
+	/**
+	 * An empty ID keeps returning 0 for callers that do not opt into WP_Error.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_returns_zero_for_empty_id() {
+		$this->assertSame( 0, job_manager_duplicate_listing( 0 ) );
+	}
+
+	/**
+	 * An empty ID returns a WP_Error when the caller asks for one.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_returns_wp_error_for_empty_id() {
+		$result = job_manager_duplicate_listing( 0, true );
+
+		$this->assertWPError( $result );
+		$this->assertEquals( 'job_manager_duplicate_listing_missing_id', $result->get_error_code() );
+	}
+
+	/**
+	 * A post that is not a job listing fails with a distinct error code.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_rejects_other_post_types() {
+		$post_id = $this->factory->post->create( [ 'post_type' => 'post' ] );
+
+		$this->assertSame( 0, job_manager_duplicate_listing( $post_id ) );
+
+		$result = job_manager_duplicate_listing( $post_id, true );
+
+		$this->assertWPError( $result );
+		$this->assertEquals( 'job_manager_duplicate_listing_invalid_listing', $result->get_error_code() );
+	}
+
+	/**
+	 * A failed insert stops the duplicate instead of assigning terms against object ID 0.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_returns_wp_error_when_the_insert_fails() {
+		global $wpdb;
+
+		$job_id = $this->factory->job_listing->create( [ 'post_status' => 'publish' ] );
+		wp_set_object_terms( $job_id, [ 'remote' ], 'job_listing_type' );
+
+		$listings_before = wp_count_posts( \WP_Job_Manager_Post_Types::PT_LISTING );
+
+		add_filter( 'wp_insert_post_empty_content', '__return_true' );
+		$result = job_manager_duplicate_listing( $job_id, true );
+		remove_filter( 'wp_insert_post_empty_content', '__return_true' );
+
+		$this->assertWPError( $result );
+		$this->assertEquals( 'empty_content', $result->get_error_code() );
+		$this->assertEquals(
+			$listings_before,
+			wp_count_posts( \WP_Job_Manager_Post_Types::PT_LISTING ),
+			'A failed duplicate should not create a job listing.'
+		);
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Checking for the orphan rows the old fall-through used to write.
+		$orphan_terms = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->term_relationships} WHERE object_id = 0" );
+
+		$this->assertSame( 0, $orphan_terms, 'A failed duplicate should not assign terms against object ID 0.' );
+	}
 }
