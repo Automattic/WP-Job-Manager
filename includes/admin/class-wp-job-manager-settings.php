@@ -132,7 +132,7 @@ class WP_Job_Manager_Settings {
 							'std'        => '0',
 							'label'      => __( 'Job Statistics', 'wp-job-manager' ),
 							'cb_label'   => __( 'Enable job statistics', 'wp-job-manager' ),
-							'desc'       => __( 'Collect anonymous visitor data about job listings (page views, search impressions), and show them in the job dashboard.', 'wp-job-manager' ),
+							'desc'       => __( 'Collect anonymous visitor data about job listings (page views, search impressions, and search terms/filters used on the [jobs] shortcode), and show them in the job dashboard. Search terms are normalized (lowercased, trimmed) before storage and pruned after 90 days.', 'wp-job-manager' ),
 							'type'       => 'checkbox',
 							'attributes' => [],
 							'track'      => 'bool',
