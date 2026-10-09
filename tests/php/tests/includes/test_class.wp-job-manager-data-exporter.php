@@ -105,6 +105,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 					'_company_website' => 'https://example.com/',
 					'_company_tagline' => 'Just another tagline',
 					'_company_twitter' => 'https://x.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
+					'_company_linkedin' => 'https://www.linkedin.com/company/example',
 					'_company_video'   => 'https://example.com/company/video',
 				],
 				[
@@ -133,6 +134,10 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 								[
 									'name'  => 'Company X / Twitter',
 									'value' => 'https://x.com/example?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor',
+								],
+								[
+									'name'  => 'Company LinkedIn',
+									'value' => 'https://www.linkedin.com/company/example',
 								],
 								[
 									'name'  => 'Company Video',
@@ -181,6 +186,7 @@ class WP_Job_Manager_Data_Exporter_Test extends WPJM_BaseTest {
 					'_company_website',
 					'_company_tagline',
 					'_company_twitter',
+					'_company_linkedin',
 					'_company_video',
 				],
 				[
