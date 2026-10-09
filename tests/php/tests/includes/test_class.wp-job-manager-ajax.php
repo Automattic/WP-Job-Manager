@@ -426,6 +426,72 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		$this->assertCount( 0, $result['_jobs'] );
 	}
 
+	/**
+	 * Regression: a guest (logged-out) visitor whose site restricts `upload_mimes` for non-logged-in
+	 * users must still be able to upload a file type that WPJM whitelists. WP core's
+	 * `wp_check_filetype_and_ext()` ignores the `mimes` override passed to `wp_handle_upload()` and
+	 * calls `get_allowed_mime_types()` for the current user instead, so WPJM's upload path
+	 * short-circuits this by merging its own allow-list into the per-user map only for the duration
+	 * of the upload.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_upload_file
+	 */
+	public function test_upload_file_guest_with_restricted_upload_mimes() {
+		wp_set_current_user( 0 );
+
+		$pdf_file = DIR_TESTDATA . '/images/test-alpha.pdf';
+
+		// Make a copy of this file as it gets moved during the file upload.
+		$tmp_name = wp_tempnam( $pdf_file );
+		copy( $pdf_file, $tmp_name );
+
+		// Build a $file array as `job_manager_upload_file()` expects it, with a valid type already set.
+		$file = [
+			'name'     => 'test-alpha.pdf',
+			'type'     => 'application/pdf',
+			'tmp_name' => $tmp_name,
+			'error'    => 0,
+			'size'     => filesize( $pdf_file ),
+		];
+		$this->assertFileExists( $tmp_name );
+
+		// Site-level hardening pattern: per-user `upload_mimes` restricts guests to images only.
+		// WPJM's own allow-list (which still includes PDF by default) is the source of truth.
+		$guest_mimes_filter = function ( $mimes, $user ) {
+			if ( ! $user || ! user_can( $user, 'unfiltered_html' ) ) {
+				return [
+					'jpg|jpeg|jpe' => 'image/jpeg',
+					'png'          => 'image/png',
+				];
+			}
+			return $mimes;
+		};
+		// Bypass the `is_uploaded_file()` test that `wp_handle_upload()` runs in non-HTTP contexts,
+		// while keeping any `mimes` override that the production code passes through.
+		$upload_overrides_filter = function ( $overrides ) {
+			$overrides['action'] = 'test-wpjm-upload';
+			return $overrides;
+		};
+
+		add_filter( 'upload_mimes', $guest_mimes_filter, 10, 2 );
+		add_filter( 'submit_job_wp_handle_upload_overrides', $upload_overrides_filter );
+
+		$result = job_manager_upload_file( $file, [ 'file_key' => 'application' ] );
+
+		remove_filter( 'submit_job_wp_handle_upload_overrides', $upload_overrides_filter );
+		remove_filter( 'upload_mimes', $guest_mimes_filter, 10 );
+
+		$this->assertNotWPError( $result, 'Guest PDF upload should succeed when WPJM whitelists PDF, even with a per-user restrictive upload_mimes filter.' );
+		$this->assertIsObject( $result );
+		$this->assertObjectHasProperty( 'url', $result );
+		$this->assertObjectHasProperty( 'file', $result );
+		$this->assertFileExists( $result->file );
+
+		// Cleanup.
+		@unlink( $result->file );
+	}
+
 	private function set_up_job_listing_search_request() {
 		$_REQUEST['search_location']   = null;
 		$_REQUEST['search_keywords']   = null;
