@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
 
 	$( document.body ).on( 'update_status', '.fieldset-type-file input[type=file][multiple][data-file_limit]', function(){
 		var fileLimit     = parseInt( $(this).data( 'file_limit' ), 10 );
-		var currentFiles  = parseInt( $(this).siblings( '.job-manager-uploaded-files' ).first().children( '.job-manager-uploaded-file' ).length, 10);
+		var currentFiles  = parseInt( $(this).siblings( '.job-manager-uploaded-files' ).first().children( '.job-manager-uploaded-file:not(.job-manager-uploaded-file-pending)' ).length, 10);
 		var fileLimitLeft = fileLimit - currentFiles;
 
 		if ( fileLimitLeft > 0 ) {
@@ -27,7 +27,7 @@ jQuery(document).ready(function($) {
 
 	$( document.body ).on( 'change', '.fieldset-type-file input[type=file][multiple][data-file_limit]', function(){
 		var fileLimit     = parseInt( $(this).data( 'file_limit' ), 10 );
-		var currentFiles  = parseInt( $(this).siblings( '.job-manager-uploaded-files' ).first().children( '.job-manager-uploaded-file' ).length, 10);
+		var currentFiles  = parseInt( $(this).siblings( '.job-manager-uploaded-files' ).first().children( '.job-manager-uploaded-file:not(.job-manager-uploaded-file-pending)' ).length, 10);
 		var fileLimitLeft = fileLimit - currentFiles;
 		var rawElement    = $(this).get(0);
 
@@ -49,6 +49,33 @@ jQuery(document).ready(function($) {
 		}
 
 		return true;
+	} );
+
+	// Ajax upload is only for logged in users, so show a local preview of the selected images for everyone else.
+	$( document.body ).on( 'change', '.fieldset-type-file input[type=file]:not(.wp-job-manager-file-upload)', function() {
+		var $uploadedFiles = $(this).siblings( '.job-manager-uploaded-files' ).first();
+		var files          = this.files;
+		var canPreview     = window.URL && typeof window.URL.createObjectURL === 'function';
+
+		$uploadedFiles.children( '.job-manager-uploaded-file-pending' ).each( function() {
+			if ( canPreview ) {
+				window.URL.revokeObjectURL( $(this).find( 'img' ).attr( 'src' ) );
+			}
+		} ).remove();
+
+		if ( ! files || ! canPreview ) {
+			return;
+		}
+
+		$.each( files, function( index, file ) {
+			if ( ! file.type || 0 !== file.type.indexOf( 'image/' ) ) {
+				return;
+			}
+
+			var $preview = $( '<div class="job-manager-uploaded-file job-manager-uploaded-file-pending"><span class="job-manager-uploaded-file-preview"><img /></span></div>' );
+			$preview.find( 'img' ).attr( { src: window.URL.createObjectURL( file ), alt: file.name } );
+			$uploadedFiles.append( $preview );
+		} );
 	} );
 
 	$( '.fieldset-type-file input[type=file][multiple][data-file_limit]' ).trigger( 'update_status' );
