@@ -40,6 +40,32 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Language plugins like WPML can add the language as a query arg to home URLs.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Ajax::get_endpoint
+	 */
+	public function test_get_endpoint_keeps_query_args_from_home_url_filter() {
+		$original_permalink = get_option( 'permalink_structure' );
+		$add_lang           = function ( $url ) {
+			return add_query_arg( 'lang', 'fr', $url );
+		};
+		add_filter( 'home_url', $add_lang );
+
+		update_option( 'permalink_structure', '/index.php/%postname%/' );
+		$this->assertEquals( '/index.php/jm-ajax/%%endpoint%%/?lang=fr', WP_Job_Manager_Ajax::get_endpoint() );
+
+		update_option( 'permalink_structure', '/%postname%/' );
+		$this->assertEquals( '/jm-ajax/%%endpoint%%/?lang=fr', WP_Job_Manager_Ajax::get_endpoint() );
+
+		update_option( 'permalink_structure', null );
+		$this->assertEquals( '/?lang=fr&jm-ajax=%%endpoint%%', WP_Job_Manager_Ajax::get_endpoint() );
+
+		remove_filter( 'home_url', $add_lang );
+		update_option( 'permalink_structure', $original_permalink );
+	}
+
+	/**
 	 * @since 1.26.0
 	 * @covers WP_Job_Manager_Ajax::do_jm_ajax
 	 */
