@@ -384,10 +384,9 @@ class Job_Dashboard_Shortcode {
 	 * templates, page builder elements), which is why the configured page ID is
 	 * honoured first.
 	 *
-	 * @access private
 	 * @return bool True if page is dashboard page, false otherwise.
 	 */
-	private function is_job_dashboard_page() {
+	public function is_job_dashboard_page() {
 		global $post;
 
 		if ( ! is_page() ) {
