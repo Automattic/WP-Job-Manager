@@ -95,6 +95,96 @@ async function showOverlay( eventOrId ) {
 	setupEvents( contentElement );
 }
 
+let editSaved = false;
+
+function showEditOverlay( event ) {
+	const link = event.target.closest?.( 'a.job-dashboard-action-edit' );
+	const overlayDialog = document.getElementById( 'jmDashboardOverlay' );
+
+	// Let modified clicks open the edit page in a new tab as usual.
+	if (
+		! link ||
+		! overlayDialog ||
+		event.button !== 0 ||
+		event.metaKey ||
+		event.ctrlKey ||
+		event.shiftKey ||
+		event.altKey
+	) {
+		return;
+	}
+
+	const url = new URL( link.href );
+
+	if ( url.origin !== window.location.origin ) {
+		return;
+	}
+
+	event.preventDefault();
+	link.closest( 'details.jm-ui-actions-menu' )?.removeAttribute( 'open' );
+
+	url.searchParams.set( 'jm_overlay', '1' );
+
+	const frame = document.createElement( 'iframe' );
+	frame.className = 'jm-job-edit-frame';
+	frame.title = link.textContent.trim();
+	frame.src = url.toString();
+	frame.addEventListener( 'load', () => setupEditFrame( frame, link.href ) );
+
+	overlayDialog.querySelector( '.jm-dialog-modal-content' ).replaceChildren( frame );
+
+	if ( ! overlayDialog.open ) {
+		overlayDialog.showModal();
+	}
+}
+
+function setupEditFrame( frame, editUrl ) {
+	const frameDocument = frame.contentDocument;
+
+	// The page could not be framed (for example blocked by X-Frame-Options), open it directly instead.
+	if ( ! frameDocument?.body ) {
+		window.location.assign( editUrl );
+		return;
+	}
+
+	if ( frameDocument.body.classList.contains( 'jm-job-edit-saved' ) ) {
+		editSaved = true;
+	}
+
+	// Links like "View" in the save message should leave the overlay.
+	frameDocument.addEventListener( 'click', event => {
+		const link = event.target.closest?.( 'a[href]' );
+
+		if ( link && ! link.target && ! link.getAttribute( 'href' ).startsWith( '#' ) ) {
+			link.target = '_top';
+		}
+	} );
+
+	// Key events inside the frame do not reach the dialog, so close it on Escape here.
+	frameDocument.addEventListener( 'keydown', event => {
+		if ( event.key === 'Escape' && ! event.defaultPrevented ) {
+			frame.closest( 'dialog' )?.close();
+		}
+	} );
+}
+
+function setupEditOverlay() {
+	const overlayDialog = document.getElementById( 'jmDashboardOverlay' );
+
+	if ( ! overlayDialog ) {
+		return;
+	}
+
+	document.addEventListener( 'click', showEditOverlay );
+
+	// Reload without the hash, so the dashboard shows the saved changes and the stats overlay does not reopen.
+	overlayDialog.addEventListener( 'close', () => {
+		if ( editSaved ) {
+			window.location.assign( window.location.pathname + window.location.search );
+		}
+	} );
+}
+
 function setupStatsOverlay() {
 	document
 		.querySelectorAll( '.jm-dashboard-job .job-title, tr.job_listing td.column-stats' )
@@ -110,6 +200,7 @@ function setupStatsOverlay() {
 domReady( () => {
 	setupEvents( document );
 	setupActionsMenu();
+	setupEditOverlay();
 
 	if ( statsEnabled ) {
 		setupStatsOverlay();

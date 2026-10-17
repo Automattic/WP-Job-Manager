@@ -33,7 +33,52 @@ class Job_Overlay {
 		add_action( 'wp_ajax_job_dashboard_overlay', [ $this, 'ajax_job_overlay' ] );
 		add_action( 'current_screen', [ $this, 'init_admin_dashboard_overlay' ], 10 );
 		add_action( 'job_manager_job_overlay_footer', [ $this, 'output_footer_actions' ], 10 );
+		add_action( 'wp', [ $this, 'init_edit_job_overlay' ] );
 
+	}
+
+	/**
+	 * Check if the edit job form is requested for the job dashboard overlay.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @return bool
+	 */
+	public static function is_edit_job_overlay_request() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Only picks the page template, the form does its own checks.
+		if ( empty( $_GET['jm_overlay'] ) || empty( $_GET['action'] ) || 'edit' !== sanitize_title( wp_unslash( $_GET['action'] ) ) ) {
+			return false;
+		}
+		// phpcs:enable
+
+		return Job_Dashboard_Shortcode::instance()->is_job_dashboard_page();
+	}
+
+	/**
+	 * Use a bare page template when the edit job form is loaded inside the dashboard overlay.
+	 *
+	 * Runs on `wp`, before the admin bar is set up, so it can be hidden in the frame.
+	 *
+	 * @since $$next-version$$
+	 */
+	public function init_edit_job_overlay() {
+		if ( ! self::is_edit_job_overlay_request() ) {
+			return;
+		}
+
+		show_admin_bar( false );
+		add_filter( 'template_include', [ $this, 'edit_job_overlay_template' ], 100 );
+	}
+
+	/**
+	 * Get the template for the edit job form inside the dashboard overlay.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @return string
+	 */
+	public function edit_job_overlay_template() {
+		return locate_job_manager_template( 'job-dashboard-edit-overlay.php' );
 	}
 
 	/**
