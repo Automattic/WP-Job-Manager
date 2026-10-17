@@ -300,6 +300,43 @@ $contentbg: 		#fff; 										/* Content BG - Tabs (active state) */
 	}
 }
 
+// Show salary fields on one row when currency or unit is enabled too.
+@media screen and (min-width: 783px) {
+
+	.job-manager-form:has(.fieldset-job_salary):has(.fieldset-job_salary_currency, .fieldset-job_salary_unit) {
+
+		fieldset.fieldset-job_salary,
+		fieldset.fieldset-job_salary_currency,
+		fieldset.fieldset-job_salary_unit {
+			display: inline-block;
+			vertical-align: top;
+			width: calc(33.333% - 1em);
+			min-width: 0;
+
+			label:not(.full-line-checkbox-field label),
+			div.field:not(.full-line-checkbox-field) {
+				width: 100%;
+				float: none;
+			}
+		}
+
+		fieldset.fieldset-job_salary_currency,
+		fieldset.fieldset-job_salary_unit {
+			margin-inline-start: 1em;
+		}
+
+		&:not(:has(.fieldset-job_salary_currency)),
+		&:not(:has(.fieldset-job_salary_unit)) {
+
+			fieldset.fieldset-job_salary,
+			fieldset.fieldset-job_salary_currency,
+			fieldset.fieldset-job_salary_unit {
+				width: calc(50% - 1em);
+			}
+		}
+	}
+}
+
 div.job_listings {
 	margin-bottom: 1em;
 
