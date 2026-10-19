@@ -17,6 +17,10 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 	 *
 	 *     @type int|string|int[] $author Optional. User ID, comma-separated user IDs, or array of user IDs to filter listings by author. Omit or pass an empty string for no filter. A supplied value that yields no valid positive integer IDs (e.g. `'0'`, `'abc'`, `[]`) fails closed and returns zero results.
 	 *                                    @since 2.4.3
+	 *     @type string $posted_after Optional. Lower bound, inclusive, for the listing publication date. Accepts `Y-m-d` only. Omit or pass an empty string for no lower bound. An unparseable value fails closed and returns zero results.
+	 *                                 @since [version]
+	 *     @type string $posted_before Optional. Upper bound, inclusive, for the listing publication date. Accepts `Y-m-d` only. Omit or pass an empty string for no upper bound. An unparseable value fails closed and returns zero results.
+	 *                                  @since [version]
 	 * }
 	 * @return WP_Query
 	 */
@@ -40,6 +44,8 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 				'remote_position'   => null,
 				'fields'            => 'all',
 				'featured_first'    => 0,
+				'posted_after'      => '',
+				'posted_before'     => '',
 			]
 		);
 
@@ -240,6 +246,16 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			}
 		}
 
+		$date_range = _wpjm_parse_date_range( $args['posted_after'], $args['posted_before'] );
+
+		if ( false === $date_range ) {
+			// A date bound was supplied but could not be parsed. Fail closed rather than
+			// silently widening the results to the full listing set.
+			$query_args['post__in'] = [ 0 ];
+		} elseif ( ! empty( $date_range ) ) {
+			$query_args['date_query'][] = $date_range;
+		}
+
 		$job_manager_keyword = sanitize_text_field( $args['search_keywords'] );
 
 		if ( ! empty( $job_manager_keyword ) && strlen( $job_manager_keyword ) >= apply_filters( 'job_manager_get_listings_keyword_length_threshold', 2 ) ) {
@@ -366,6 +382,98 @@ if ( ! function_exists( '_wpjm_parse_author_ids' ) ) :
 		);
 
 		return ! empty( $author_ids ) ? $author_ids : [ 0 ];
+	}
+endif;
+
+if ( ! function_exists( '_wpjm_parse_date_range' ) ) :
+	/**
+	 * Parse raw `posted_after` and `posted_before` inputs into a WP_Query date clause.
+	 *
+	 * Both bounds are inclusive and only `Y-m-d` is accepted, which keeps a range request
+	 * unambiguous regardless of the site's date display format.
+	 *
+	 * Returns `null` when neither bound was supplied, an array date clause when at least one
+	 * parsed cleanly, or `false` when a supplied bound is unparseable. Callers must treat
+	 * `false` as "match nothing" and fail closed via `post__in => [0]`.
+	 *
+	 * @since [version]
+	 * @access private
+	 *
+	 * @param mixed $posted_after  Raw lower bound. Empty string or null means no lower bound.
+	 * @param mixed $posted_before Raw upper bound. Empty string or null means no upper bound.
+	 * @return array|false|null Date clause for `WP_Query`, `false` to fail closed, or null for "no filter".
+	 */
+	function _wpjm_parse_date_range( $posted_after, $posted_before ) {
+		$after  = _wpjm_parse_date_bound( $posted_after );
+		$before = _wpjm_parse_date_bound( $posted_before );
+
+		if ( false === $after || false === $before ) {
+			return false;
+		}
+
+		$date_query = [];
+
+		if ( null !== $after ) {
+			$date_query['after'] = $after;
+		}
+
+		if ( null !== $before ) {
+			$date_query['before'] = $before;
+		}
+
+		if ( empty( $date_query ) ) {
+			return null;
+		}
+
+		$date_query['inclusive'] = true;
+		$date_query['column']    = 'post_date';
+
+		return $date_query;
+	}
+endif;
+
+if ( ! function_exists( '_wpjm_parse_date_bound' ) ) :
+	/**
+	 * Validate a single date bound.
+	 *
+	 * Only `Y-m-d` is accepted. Anything else, including a valid date in another format
+	 * such as `08/01/2022`, is rejected so the caller can fail closed instead of guessing
+	 * between two readings of the same string.
+	 *
+	 * @since [version]
+	 * @access private
+	 *
+	 * @param mixed $value Raw bound value.
+	 * @return string|false|null Normalised `Y-m-d` string, `false` when unparseable, or null for "no bound".
+	 */
+	function _wpjm_parse_date_bound( $value ) {
+		if ( null === $value || '' === $value ) {
+			return null;
+		}
+
+		// Array input is never a valid bound. Fail closed so the caller excludes all
+		// results, matching how the author filter treats an array-shaped value.
+		if ( is_array( $value ) ) {
+			return false;
+		}
+
+		$value = trim( (string) $value );
+
+		if ( '' === $value ) {
+			return null;
+		}
+
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $value ) ) {
+			return false;
+		}
+
+		$date = date_create( $value, wp_timezone() );
+
+		if ( false === $date || $date->format( 'Y-m-d' ) !== $value ) {
+			return false;
+		}
+
+		return $value;
 	}
 endif;
 
