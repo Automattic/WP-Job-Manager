@@ -110,7 +110,21 @@ class WP_Job_Manager_REST_API {
 		}
 		// Match the item route and its children (revisions, autosaves) — all of them can
 		// surface listing body data and must be gated on the parent post's view capability.
-		if ( ! preg_match( '#^/wp/v2/job-listings/(?P<id>\d+)(?:/[^?]*)?$#', (string) $request->get_route(), $matches ) ) {
+		// The pattern is derived from the post type's own REST registration rather than
+		// hard-coded, so a filtered rest_base or rest_namespace cannot strand the gate on
+		// a route core no longer serves. Case-insensitively: WP_REST_Server matches routes
+		// with the `i` flag, so /wp/v2/Job-Listings/5 dispatches to the same handler and
+		// must hit the same gate.
+		$post_type_object = get_post_type_object( WP_Job_Manager_Post_Types::PT_LISTING );
+		if ( ! $post_type_object || empty( $post_type_object->show_in_rest ) ) {
+			return $response;
+		}
+
+		$rest_namespace = is_string( $post_type_object->rest_namespace ) && '' !== $post_type_object->rest_namespace ? $post_type_object->rest_namespace : 'wp/v2';
+		$rest_base      = is_string( $post_type_object->rest_base ) && '' !== $post_type_object->rest_base ? $post_type_object->rest_base : $post_type_object->name;
+		$route_pattern  = '#^/' . preg_quote( trim( $rest_namespace, '/' ), '#' ) . '/' . preg_quote( $rest_base, '#' ) . '/(?P<id>\d+)(?:/[^?]*)?$#i';
+
+		if ( ! preg_match( $route_pattern, (string) $request->get_route(), $matches ) ) {
 			return $response;
 		}
 		$post_id = absint( $matches['id'] );
@@ -241,6 +255,14 @@ class WP_Job_Manager_REST_API {
 			}
 			if ( array_key_exists( 'featured_media', $data ) ) {
 				$data['featured_media'] = 0;
+			}
+			// The guid carries the permalink with the title slug, so it identifies the
+			// listing just as the blanked link and slug would.
+			if ( isset( $data['guid']['rendered'] ) ) {
+				$data['guid']['rendered'] = '';
+			}
+			if ( isset( $data['guid']['raw'] ) ) {
+				$data['guid']['raw'] = '';
 			}
 			// Links live on WP_REST_Response's private $links property and are merged into the
 			// serialized `_links` block later by WP_REST_Server::response_to_data(); they are not

@@ -352,7 +352,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * the historical behavior (children included) and let a callback override it so
 	 * that a single parent category selection can match its exact term only.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_include_category_children_filter() {
@@ -425,7 +425,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * the expanded set contains duplicates, WP_Tax_Query rejects the clause as
 	 * "inexistent_terms", and the query matches nothing at all.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_include_category_children_filter_in_and_mode() {
@@ -601,6 +601,150 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 
 		foreach ( $results as $key => $result ) {
 			$this->assertEqualSets( $result['expected'], wp_list_pluck( $result['results']->posts, 'ID' ), "{$key} doesn't match" );
+		}
+	}
+
+	/**
+	 * Regression for issue #2939. When featured_first is enabled with a custom
+	 * orderby, featured listings must lead and the secondary sort must respect the
+	 * passed orderby (not silently fall back to date-descending).
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_featured_first_custom_orderby() {
+		// Distinct titles so the secondary sort is observable per group.
+		$featured = [
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Beta',
+					'meta_input' => [ '_featured' => 1 ],
+				]
+			),
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Alpha',
+					'meta_input' => [ '_featured' => 1 ],
+				]
+			),
+		];
+		$not_featured = [
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Delta',
+					'meta_input' => [ '_featured' => 0 ],
+				]
+			),
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Charlie',
+					'meta_input' => [ '_featured' => 0 ],
+				]
+			),
+		];
+
+		// Titles are intentionally out of alphabetical order, so a date-based
+		// fallback would surface the newest post first instead of 'Alpha'.
+		$results = get_job_listings(
+			[
+				'search_keywords' => '',
+				'orderby'         => 'title',
+				'order'           => 'ASC',
+				'featured_first'  => true,
+			]
+		);
+
+		$titles = wp_list_pluck( $results->posts, 'post_title' );
+		$this->assertSame( [ 'Alpha', 'Beta', 'Charlie', 'Delta' ], $titles );
+	}
+
+	/**
+	 * Regression for issue #2939. The custom orderby/order must be honoured
+	 * across both directions and orderby values while featured still lead.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_featured_first_orderby_variants() {
+		// Distinct titles and dates per fixture so the secondary sort is
+		// observable in every case. Featured dates run against their titles
+		// while non-featured dates run with theirs, so a date-desc fallback
+		// regression gives a different order than expected for title/ASC,
+		// title/DESC and date/ASC.
+		$featured = [
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Charlie',
+					'post_date'  => '2026-01-04 00:00:00',
+					'meta_input' => [ '_featured' => 1 ],
+				]
+			),
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Delta',
+					'post_date'  => '2026-01-03 00:00:00',
+					'meta_input' => [ '_featured' => 1 ],
+				]
+			),
+		];
+		$not_featured = [
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Alpha',
+					'post_date'  => '2026-01-01 00:00:00',
+					'meta_input' => [ '_featured' => 0 ],
+				]
+			),
+			$this->factory->job_listing->create(
+				[
+					'post_title' => 'Beta',
+					'post_date'  => '2026-01-02 00:00:00',
+					'meta_input' => [ '_featured' => 0 ],
+				]
+			),
+		];
+
+		// Each case: expected order as indices into [featured_1, featured_2, not_featured_1, not_featured_2].
+		// Featured listings always lead (positions 0, 1) thanks to
+		// featured_first; the secondary sort applies within each block.
+		$cases = [
+			[ 'title', 'ASC', [ 0, 1, 2, 3 ] ],  // C, D, A, B (within each block: featureds C<D, non-featureds A<B).
+			[ 'title', 'DESC', [ 1, 0, 3, 2 ] ], // D, C, B, A (within each block: featureds D>C, non-featureds B>A).
+			[ 'date', 'ASC', [ 1, 0, 2, 3 ] ],   // Jan3 (D), Jan4 (C), Jan1 (A), Jan2 (B).
+			[ 'date', 'DESC', [ 0, 1, 3, 2 ] ],  // Jan4 (C), Jan3 (D), Jan2 (B), Jan1 (A).
+		];
+
+		foreach ( $cases as $case ) {
+			list( $orderby, $order, $expected_order ) = $case;
+
+			$results = get_job_listings(
+				[
+					'search_keywords' => '',
+					'orderby'         => $orderby,
+					'order'           => $order,
+					'featured_first'  => true,
+				]
+			);
+
+			$ids = wp_list_pluck( $results->posts, 'ID' );
+
+			// Assert exact full order across all four fixtures. A regression to
+			// a date-desc fallback would still pass the featured-first check
+			// alone; this catches it for every variant except date/DESC, where
+			// the fallback order is the expected order.
+			$source = array_merge( $featured, $not_featured );
+			$expected = array_map(
+				static function ( $idx ) use ( $source ) {
+					return $source[ $idx ];
+				},
+				$expected_order
+			);
+
+			$this->assertSame(
+				$expected,
+				[ $ids[0], $ids[1], $ids[2], $ids[3] ],
+				"Wrong order for {$orderby} {$order}"
+			);
 		}
 	}
 
@@ -1443,7 +1587,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_prefixes_extensions_with_a_dot() {
@@ -1462,7 +1606,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Pipe-separated extension groups, as used by job_manager_get_allowed_mime_types(), are split into one token each.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_splits_pipe_separated_groups() {
@@ -1478,7 +1622,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_deduplicates_and_normalizes_leading_dots() {
@@ -1497,7 +1641,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * Fields may pass a plain list of mime types, or a mime-type-keyed map, instead of an extension-keyed map. The
 	 * `accept` attribute takes mime types too, so pass them through rather than emitting nonsense like `.0`.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_passes_through_mime_types() {
@@ -1506,7 +1650,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 * @covers ::job_manager_get_accept_file_types
 	 */
 	public function test_get_accept_file_types_empty_when_nothing_is_allowed() {

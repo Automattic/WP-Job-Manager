@@ -3,10 +3,11 @@
  * Tests that a job listing title is HTML-entity decoded before it is placed
  * into a plain-text context (email subjects, the plain-text email body).
  *
- * The JSON-LD structured data has the same defect but is not fixed here: the
- * emitted `<script type="application/ld+json">` block is re-escaped by
- * `wpjm_esc_json()` with `$double_encode = true`, so decoding the title alone
- * does not change what the consumer reads. See #3027.
+ * The JSON-LD structured data had the same defect, fixed separately in #3027:
+ * the emitted `<script type="application/ld+json">` block is now JSON-escaped
+ * (`wp_json_encode()` with the `JSON_HEX_*` flags) instead of HTML-escaped, so
+ * the payload round-trips; what the title itself contains is still governed by
+ * the storage/filter pipeline covered here.
  *
  * WordPress core hooks `wp_filter_kses()` onto `title_save_pre` for any user
  * without the `unfiltered_html` capability, so a listing submitted by a guest,

@@ -323,7 +323,7 @@ class WP_Job_Manager_Writepanels {
 				<span class="tips" data-tip="<?php echo esc_attr( $field['description'] ); ?>">[?]</span>
 			<?php endif; ?>
 			</label>
-			<input type="text" autocomplete="off" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
+			<input type="text" autocomplete="off" name="<?php echo esc_attr( $name ); ?>" class="<?php echo esc_attr( $classes ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" <?php echo ! empty( $field['restrict_past_dates'] ) ? 'data-restrict-past-dates="1"' : ''; ?> />
 		</p>
 		<?php
 	}

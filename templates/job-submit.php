@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     1.34.3
+ * @version     $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -78,7 +78,7 @@ $captcha_version = WP_Job_Manager\WP_Job_Manager_Recaptcha::instance()->get_reca
     		<?php if ('v3' === $captcha_version) echo 'onclick="jm_job_submit_click(event)"'; ?> value="<?php echo esc_attr($submit_button_text); ?>" />
 			<?php
 			if ( isset( $can_continue_later ) && $can_continue_later ) {
-				echo '<input type="submit" name="save_draft" class="button secondary save_draft" value="' . esc_attr__( 'Save Draft', 'wp-job-manager' ) . '" formnovalidate />';
+				echo '<input type="submit" name="save_draft" class="button secondary save_draft" value="' . esc_attr__( 'Save Draft', 'wp-job-manager' ) . '"' . ( 'v3' === $captcha_version ? ' onclick="jm_job_submit_click(event)"' : '' ) . ' formnovalidate />';
 			}
 			?>
 			<span class="spinner" style="background-image: url(<?php echo esc_url( includes_url( 'images/spinner.gif' ) ); ?>);"></span>

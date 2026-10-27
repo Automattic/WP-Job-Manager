@@ -38,7 +38,47 @@ class WP_Job_Manager_Shortcodes {
 		add_shortcode( 'job_summary', [ $this, 'output_job_summary' ] );
 		add_shortcode( 'job_apply', [ $this, 'output_job_apply' ] );
 
+		// Block themes expand shortcodes before do_blocks(), so the core/shortcode block's
+		// wpautop() would run on our already-rendered HTML and inject stray p/br tags.
+		add_filter( 'pre_render_block', [ $this, 'protect_jobs_shortcode_from_wpautop' ], 10, 2 );
+
 		Job_Dashboard_Shortcode::instance();
+	}
+
+	/**
+	 * Skip core/shortcode wpautop when the block already holds expanded [jobs] markup.
+	 *
+	 * In block templates, get_the_block_template_html() runs do_shortcode() before
+	 * do_blocks(). By the time the shortcode block renders, [jobs] is already HTML.
+	 * Returning that HTML here bypasses render_block_core_shortcode()'s wpautop() call.
+	 *
+	 * @param string|null $pre_render   Existing pre-render value.
+	 * @param array       $parsed_block Parsed block.
+	 * @return string|null
+	 */
+	public function protect_jobs_shortcode_from_wpautop( $pre_render, $parsed_block ) {
+		if ( null !== $pre_render ) {
+			return $pre_render;
+		}
+
+		if ( empty( $parsed_block['blockName'] ) || 'core/shortcode' !== $parsed_block['blockName'] ) {
+			return $pre_render;
+		}
+
+		$html = isset( $parsed_block['innerHTML'] ) ? $parsed_block['innerHTML'] : '';
+
+		// Marker is hard-coded on the [jobs] wrapper, outside the filterable data attributes.
+		// Anchor to the first '>' so listing titles or employer-supplied text that happens to
+		// contain the literal marker string cannot trigger the short-circuit on unrelated blocks.
+		$marker   = 'data-wp-job-manager-jobs-shortcode="1"';
+		$tag_end  = strpos( $html, '>' );
+		$has_open = false !== strpos( $html, '<div' );
+
+		if ( $has_open && false !== $tag_end && false !== strpos( $html, $marker ) && strpos( $html, $marker ) < $tag_end ) {
+			return $html;
+		}
+
+		return $pre_render;
 	}
 
 	/**
@@ -276,10 +316,22 @@ class WP_Job_Manager_Shortcodes {
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		// Array handling.
-		$atts['categories']         = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
-		$atts['selected_category']  = is_array( $atts['selected_category'] ) ? $atts['selected_category'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_category'] ) ) );
-		$atts['job_types']          = is_array( $atts['job_types'] ) ? $atts['job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
-		$atts['post_status']        = is_array( $atts['post_status'] ) ? $atts['post_status'] : array_filter( array_map( 'trim', explode( ',', $atts['post_status'] ) ) );
+		$atts['categories']        = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
+		$atts['selected_category'] = is_array( $atts['selected_category'] ) ? $atts['selected_category'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_category'] ) ) );
+		$atts['job_types']         = is_array( $atts['job_types'] ) ? $atts['job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
+		$atts['post_status']       = is_array( $atts['post_status'] ) ? $atts['post_status'] : array_filter( array_map( 'trim', explode( ',', $atts['post_status'] ) ) );
+
+		// Ensure the current viewer may query the requested statuses. Mirrors the AJAX
+		// handler's gate: without the listing-editing capability, only publicly visible
+		// statuses are honoured, whatever the shortcode attribute asks for — the attribute
+		// is author-controlled content (e.g. a Contributor's own draft) while the listings
+		// it would expose belong to other users. An empty result falls back to
+		// get_job_listings()' publish default.
+		if ( ! empty( $atts['post_status'] ) && ! current_user_can( \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ) ) {
+			/** This filter is documented in includes/class-wp-job-manager-ajax.php */
+			$allowed_post_status = apply_filters( 'job_manager_get_listings_public_post_status', [ 'publish' ] );
+			$atts['post_status'] = array_values( array_intersect( $atts['post_status'], $allowed_post_status ) );
+		}
 		$atts['selected_job_types'] = is_array( $atts['selected_job_types'] ) ? $atts['selected_job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_job_types'] ) ) );
 
 		// Normalize field for categories.
@@ -421,7 +473,8 @@ class WP_Job_Manager_Shortcodes {
 
 		$job_listings_output = apply_filters( 'job_manager_job_listings_output', ob_get_clean() );
 
-		return '<div class="job_listings" ' . $data_attributes_string . '>' . $job_listings_output . '</div>';
+		// Marker lets pre_render_block recognize expanded [jobs] markup without relying on filterable attributes.
+		return '<div class="job_listings" data-wp-job-manager-jobs-shortcode="1" ' . $data_attributes_string . '>' . $job_listings_output . '</div>';
 	}
 
 	/**

@@ -163,4 +163,55 @@ class WP_Test_Submit_Job_Attachment_Local extends WPJM_BaseTest {
 			'The created post must be an attachment.'
 		);
 	}
+
+	/**
+	 * A site-root URL that maps onto ABSPATH (e.g. wp-config.php) must not be attached.
+	 * The stored `_wp_attached_file` would otherwise hold an absolute path outside the
+	 * uploads directory, relocating core's attachment-deletion fence to the WordPress root.
+	 */
+	public function test_site_root_url_is_not_attached() {
+		$before = count( get_posts( [ 'post_type' => 'attachment', 'fields' => 'ids', 'numberposts' => -1 ] ) );
+
+		$this->assertSame(
+			0,
+			$this->create_attachment( site_url( '/wp-config.php' ) ),
+			'A URL resolving to the WordPress root must not be turned into an attachment.'
+		);
+
+		$after = count( get_posts( [ 'post_type' => 'attachment', 'fields' => 'ids', 'numberposts' => -1 ] ) );
+		$this->assertSame( $before, $after, 'No attachment post should be created for a site-root URL.' );
+	}
+
+	/**
+	 * A wp-content URL outside the uploads directory (e.g. a theme file) must not be
+	 * attached: legitimate frontend uploads live only under the uploads directory.
+	 */
+	public function test_wp_content_url_outside_uploads_is_not_attached() {
+		$this->assertSame(
+			0,
+			$this->create_attachment( content_url( '/themes/twentytwentythree/style.css' ) ),
+			'A wp-content URL outside the uploads directory must not be attached.'
+		);
+	}
+
+	/**
+	 * The stored attachment path of an accepted upload stays inside the uploads directory,
+	 * so core's deletion fence remains pinned there.
+	 */
+	public function test_attached_file_path_is_confined_to_uploads() {
+		$local_url     = $this->write_local_image( 'confined-logo.png' );
+		$attachment_id = $this->create_attachment( $local_url );
+
+		$this->assertGreaterThan( 0, $attachment_id );
+
+		$stored_path = get_post_meta( $attachment_id, '_wp_attached_file', true );
+		$this->assertNotEmpty( $stored_path );
+
+		$absolute = path_is_absolute( $stored_path ) ? $stored_path : trailingslashit( $this->base_dir ) . $stored_path;
+		$this->assertStringStartsWith(
+			trailingslashit( $this->base_dir ),
+			$absolute,
+			'The stored attachment path must resolve inside the uploads directory.'
+		);
+	}
 }

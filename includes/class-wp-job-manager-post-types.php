@@ -184,6 +184,7 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ], 0 );
 		add_action( 'wp_footer', [ $this, 'output_structured_data' ] );
 		add_filter( 'wp_sitemaps_posts_query_args', [ $this, 'sitemaps_maybe_hide_filled' ], 10, 2 );
+		add_filter( 'wp_sitemaps_post_types', [ $this, 'sitemaps_maybe_hide_restricted_post_type' ] );
 
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
@@ -212,6 +213,7 @@ class WP_Job_Manager_Post_Types {
 
 		add_action( 'parse_query', [ $this, 'add_feed_query_args' ] );
 		add_action( 'pre_get_posts', [ $this, 'gate_feed_query_for_listings' ] );
+		add_action( 'pre_get_posts', [ $this, 'gate_archive_query_for_listings' ] );
 		add_action( 'pre_get_posts', [ $this, 'gate_search_query_for_listings' ] );
 		add_filter( 'oembed_response_data', [ $this, 'gate_oembed_response_for_listings' ], 10, 2 );
 
@@ -888,7 +890,7 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$post_types = (array) $query->get( 'post_type' );
-		if ( ! in_array( self::PT_LISTING, $post_types, true ) ) {
+		if ( ! in_array( self::PT_LISTING, $post_types, true ) && ! self::is_listing_taxonomy_query( $query ) ) {
 			return;
 		}
 
@@ -911,6 +913,89 @@ class WP_Job_Manager_Post_Types {
 				$query->set( 'post__in', [ 0 ] );
 			}
 		}
+	}
+
+	/**
+	 * Gates the plain front-end archive queries for job listings — ?post_type=job_listing,
+	 * the rewritten jobs archive, and term archives for listing taxonomies — so they honor
+	 * the browse capability and the View Job Capability the way the feed, REST and search
+	 * paths do. These queries render listing titles and excerpts through the theme with no
+	 * other WPJM gate on the way.
+	 *
+	 * The [jobs] shortcode and the single listing view are untouched: both run their own
+	 * queries (this gate acts on the main query only), and singular requests are gated
+	 * per-listing by the single view.
+	 *
+	 * @param WP_Query $query The query.
+	 */
+	public function gate_archive_query_for_listings( $query ) {
+		if ( is_admin() || ! $query->is_main_query() ) {
+			return;
+		}
+
+		// Feeds and search have their own gates with feed- and search-specific handling,
+		// and singular requests are gated per-listing by the single view.
+		if ( $query->is_feed() || $query->is_search() || $query->is_singular() ) {
+			return;
+		}
+
+		$post_types = (array) $query->get( 'post_type' );
+		if ( ! in_array( self::PT_LISTING, $post_types, true ) && ! self::is_listing_taxonomy_query( $query ) ) {
+			return;
+		}
+
+		if ( ! job_manager_user_can_browse_job_listings() ) {
+			$query->set( 'post__in', [ 0 ] );
+			return;
+		}
+
+		// View-capability gate — mirror the feed gate: restrict a denied viewer to their
+		// own listings, none for anonymous.
+		if ( self::viewer_denied_by_view_cap() ) {
+			$viewer_id = get_current_user_id();
+			if ( $viewer_id ) {
+				$query->set( 'author__in', [ $viewer_id ] );
+			} else {
+				// Anonymous: no listings. Post IDs are never 0 (safe sentinel); author 0 is not.
+				$query->set( 'post__in', [ 0 ] );
+			}
+		}
+	}
+
+	/**
+	 * Whether the query is a term query for a taxonomy attached to job listings, such as
+	 * job_listing_category or job_listing_type. Term feeds carry no post_type query var —
+	 * the listing constraint comes from the term join — so a post_type check alone misses
+	 * them and the feed gate would serve restricted listing bodies through
+	 * /job-category/x/feed/ style URLs.
+	 *
+	 * Where such a taxonomy is also attached to other post types, the whole term feed is
+	 * treated as a listing feed and restricted the same way: failing closed for the
+	 * non-listing content in the feed is preferred over leaking restricted listings.
+	 *
+	 * @param WP_Query $query The query.
+	 * @return bool
+	 */
+	private static function is_listing_taxonomy_query( WP_Query $query ) {
+		if ( ! $query->is_tax() && ! $query->is_category() && ! $query->is_tag() ) {
+			return false;
+		}
+
+		if ( empty( $query->tax_query->queries ) ) {
+			return false;
+		}
+
+		$listing_taxonomies = get_object_taxonomies( self::PT_LISTING );
+
+		foreach ( $query->tax_query->queries as $tax_query ) {
+			if ( is_array( $tax_query )
+				&& ! empty( $tax_query['taxonomy'] )
+				&& in_array( $tax_query['taxonomy'], $listing_taxonomies, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -1335,7 +1420,7 @@ class WP_Job_Manager_Post_Types {
 	 * front-end submission's preview -> publish transition — must fall back to the
 	 * server-side calculated expiry.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.6
 	 *
 	 * @param WP_Post $post The job listing being saved.
 	 *
@@ -1793,6 +1878,34 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Excludes job listings from the core sitemap when the View Job Capability restricts
+	 * who may view listings.
+	 *
+	 * The sitemap is generated for anonymous crawlers, which can never satisfy a configured
+	 * view capability, so an enumerated listing there discloses the existence — and, once
+	 * followed, the metadata — of listings the operator made non-public. Drop the whole post
+	 * type from the sitemap index in that case, the way {@see self::viewer_denied_by_view_cap()}
+	 * gates the search and REST-search surfaces. A browse-capability restriction is treated
+	 * the same way: a sitemap is a listing index, and the browse capability is exactly the
+	 * option that makes listing indexes non-public.
+	 *
+	 * @access private
+	 * @since 2.4.7
+	 *
+	 * @param array $post_types Post type objects keyed by name.
+	 *
+	 * @return array
+	 */
+	public function sitemaps_maybe_hide_restricted_post_type( $post_types ) {
+		if ( isset( $post_types[ self::PT_LISTING ] )
+			&& ( self::viewer_denied_by_view_cap() || ! job_manager_user_can_browse_job_listings() ) ) {
+			unset( $post_types[ self::PT_LISTING ] );
+		}
+
+		return $post_types;
+	}
+
+	/**
 	 * Add noindex for expired and filled job listings.
 	 */
 	public function noindex_expired_filled_job_listings() {
@@ -1831,7 +1944,11 @@ class WP_Job_Manager_Post_Types {
 		$structured_data = wpjm_get_job_listing_structured_data();
 		if ( ! empty( $structured_data ) ) {
 			echo '<!-- WP Job Manager Structured Data -->' . "\r\n";
-			echo '<script type="application/ld+json">' . wpjm_esc_json( wp_json_encode( $structured_data ), true ) . '</script>';
+			// Script-element content is raw text: HTML entities are never decoded there, so
+			// the payload must use JSON escapes (< etc.), not HTML entities. The HEX
+			// flags escape <, >, &, ' and " so the JSON cannot close the script element.
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The JSON_HEX_* flags escape the payload for the script element.
+			echo '<script type="application/ld+json">' . wp_json_encode( $structured_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . '</script>';
 		}
 	}
 
