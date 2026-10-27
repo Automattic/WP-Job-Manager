@@ -39,6 +39,22 @@ if ( ! version ) {
 	process.exit( 1 );
 }
 
+// Validate the version format up front, before any branch is created or file is
+// mutated, so a typo fails fast rather than after a half-done release branch.
+// Pattern kept in parity with scripts/replace-next-version-tag.sh.
+if ( ! /^\d+(\.\d+)+(-(a|alpha|beta)([-.]?\d+)?)?$/.test( version ) ) {
+	console.log( chalk.bold.red( `Error: "${ version }" is not a valid version string. Expected x.y[.z] with an optional -alpha/-beta suffix.` ) );
+	process.exit( 1 );
+}
+
+// A release must be cut from a clean tree. The branch is created from the
+// current HEAD and `replaceNextVersionPlaceholder()` stages with `git add -u`,
+// which would sweep any modified tracked files into the release commit. Scope
+// the check to tracked changes: untracked files are never staged by the release
+// steps, so blocking on them would be a false positive. Fail fast, before the
+// confirmation prompt or any branch creation.
+assertCleanWorkingTree();
+
 const ghPrs = `gh pr list -R ${ cfg.repo } --state merged --base ${ BASE_BRANCH } --limit 500 --search "milestone:${ version }"`;
 
 // Confirm release through CLI.
@@ -89,6 +105,23 @@ function readFileContents( filepath ) {
 		return fs.readFileSync( filepath, 'utf8' );
 	} catch ( err ) {
 		throw new Error( `File (${ filepath }) could not be read.` );
+	}
+}
+
+/**
+ * Abort unless the working tree has no uncommitted changes to tracked files.
+ *
+ * A dirty tree is unsafe for a release: the release branch is cut from the
+ * current HEAD and `replaceNextVersionPlaceholder()` runs `git add -u`, which
+ * stages every modified tracked file — so stray edits would land in the release
+ * PR. Untracked files are excluded because no release step stages them.
+ */
+function assertCleanWorkingTree() {
+	const status = execSync( 'git status --porcelain --untracked-files=no' ).toString().trim();
+	if ( status ) {
+		console.log( chalk.bold.red( 'Error: the working tree has uncommitted changes to tracked files. Commit, stash or discard them before preparing a release.' ) );
+		console.log( status );
+		process.exit( 1 );
 	}
 }
 
@@ -284,9 +317,16 @@ function createPR( changelog ) {
 	fs.writeFileSync( bodyFile, body, 'utf-8' );
 
 	try {
-		const prLink = execSync( `gh pr create -R ${ cfg.repo } -B ${ BASE_BRANCH } -H ${ releaseBranch } --assignee @me --title "${ title }" --body-file "${ bodyFile }"` );
-		execSync( `open ${ prLink }` );
+		const prLink = execSync( `gh pr create -R ${ cfg.repo } -B ${ BASE_BRANCH } -H ${ releaseBranch } --assignee @me --title "${ title }" --body-file "${ bodyFile }"` ).toString().trim();
 		console.log( `PR: ${ prLink }` );
+		// Best-effort convenience only. `open` is macOS-only, so swallow any
+		// failure: on Linux/CI it must not throw into the caller's rollback path,
+		// which would delete the branch and PR that were just created.
+		try {
+			execSync( `open ${ prLink }`, { stdio: 'ignore' } );
+		} catch {
+			// Non-macOS or no browser available; the PR link is printed above.
+		}
 	} finally {
 		fs.unlinkSync( bodyFile );
 	}
@@ -307,6 +347,10 @@ function pushBranch() {
 /**
  * Revert the workspace to its original state.
  *
+ * Also deletes the release branch on the remote if it was already pushed (e.g.
+ * `createPR()` failed after `pushBranch()` succeeded) — otherwise the orphaned
+ * remote branch would block a retry, which recreates the same branch name.
+ *
  * @param {string} originalBranch The original branch name.
  * @param {string} branchToDelete The release branch to delete.
  */
@@ -315,4 +359,20 @@ function revertOnError( originalBranch, branchToDelete ) {
 	execSync( `git checkout . && git checkout ${ originalBranch }` );
 	console.log( `Deleting '${ branchToDelete }'....` );
 	execSync( `git branch -D ${ branchToDelete }` );
+
+	// Delete the remote branch too, but only if it exists. `git ls-remote
+	// --exit-code` exits non-zero when the branch isn't on the remote, so a
+	// throw here means "nothing to clean up".
+	try {
+		execSync( `git ls-remote --exit-code --heads ${ REMOTE } ${ branchToDelete }`, { stdio: 'ignore' } );
+	} catch {
+		return;
+	}
+	console.log( `Deleting '${ branchToDelete }' on ${ REMOTE }....` );
+	try {
+		execSync( `git push ${ REMOTE } --delete ${ branchToDelete }` );
+	} catch {
+		// Best-effort: don't let a failed remote cleanup mask the original error.
+		console.log( chalk.yellow( `Could not delete '${ branchToDelete }' on ${ REMOTE }; delete it manually before retrying.` ) );
+	}
 }

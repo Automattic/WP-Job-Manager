@@ -94,8 +94,10 @@ class WP_Job_Manager_Geocode {
 	 * @param  string $location
 	 */
 	public static function generate_location_data( $job_id, $location ) {
-		$address_data = self::get_location_data( $location );
-		self::save_location_data( $job_id, $address_data );
+		if ( apply_filters( 'job_manager_geolocation_enabled', true ) ) {
+			$address_data = self::get_location_data( $location );
+			self::save_location_data( $job_id, $address_data );
+		}
 	}
 
 	/**

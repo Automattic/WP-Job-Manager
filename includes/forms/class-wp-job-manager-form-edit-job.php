@@ -185,6 +185,12 @@ class WP_Job_Manager_Form_Edit_Job extends WP_Job_Manager_Form_Submit_Job {
 			// Get posted values.
 			$values = $this->get_posted_fields();
 
+			// Keep an attachment the submitter may not use out of the re-rendered form, so a
+			// validation failure cannot echo a foreign attachment's file URL back to them.
+			// The parent submit form does this in its own submit_handler(), which this
+			// override replaces.
+			$this->scrub_unusable_attachment_field_values();
+
 			// Validate required.
 			$validation_result = $this->validate_fields( $values );
 			if ( is_wp_error( $validation_result ) ) {
