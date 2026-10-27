@@ -27,6 +27,10 @@ define( 'JOB_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plug
 define( 'JOB_MANAGER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'JOB_MANAGER_DATE_FORMAT_FALLBACK', 'F j, Y' );
 
+if ( file_exists( JOB_MANAGER_PLUGIN_DIR . '/vendor/autoload.php' ) ) {
+	require_once JOB_MANAGER_PLUGIN_DIR . '/vendor/autoload.php';
+}
+
 require_once dirname( __FILE__ ) . '/wp-job-manager-autoload.php';
 WP_Job_Manager_Autoload::init();
 WP_Job_Manager_Autoload::register( 'WP_Job_Manager', JOB_MANAGER_PLUGIN_DIR . '/includes' );
