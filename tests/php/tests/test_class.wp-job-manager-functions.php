@@ -546,14 +546,14 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 			),
 		];
 
-		// Each case: expected order across [featured_1, featured_2, not_featured_1, not_featured_2].
+		// Each case: expected order as indices into [featured_1, featured_2, not_featured_1, not_featured_2].
 		// Featured listings always lead (positions 0, 1) thanks to
 		// featured_first; the secondary sort applies within each block.
 		$cases = [
-			[ 'title', 'ASC', [ 0, 1, 0, 1 ] ],  // C, D, A, B (within each block: featureds C<D, non-featureds A<B).
-			[ 'title', 'DESC', [ 1, 0, 1, 0 ] ], // D, C, B, A (within each block: featureds D>C, non-featureds B>A).
-			[ 'date', 'ASC', [ 0, 1, 0, 1 ] ],   // Jan3, Jan4, Jan1, Jan2.
-			[ 'date', 'DESC', [ 1, 0, 1, 0 ] ],  // Jan4, Jan3, Jan2, Jan1.
+			[ 'title', 'ASC', [ 0, 1, 2, 3 ] ],  // C, D, A, B (within each block: featureds C<D, non-featureds A<B).
+			[ 'title', 'DESC', [ 1, 0, 3, 2 ] ], // D, C, B, A (within each block: featureds D>C, non-featureds B>A).
+			[ 'date', 'ASC', [ 0, 1, 2, 3 ] ],   // Jan3, Jan4, Jan1, Jan2.
+			[ 'date', 'DESC', [ 1, 0, 3, 2 ] ],  // Jan4, Jan3, Jan2, Jan1.
 		];
 
 		foreach ( $cases as $case ) {
