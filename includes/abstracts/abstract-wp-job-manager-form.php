@@ -755,10 +755,11 @@ abstract class WP_Job_Manager_Form {
 		$value = null;
 
 		if ( isset( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ] ) && ! empty( $_FILES[ $field_key ]['name'] ) ) {
+			$upload_args = [ 'file_key' => $field_key ];
+
+			// Without an explicit list, job_manager_upload_file() looks up the types allowed for this field.
 			if ( ! empty( $field['allowed_mime_types'] ) ) {
-				$allowed_mime_types = $field['allowed_mime_types'];
-			} else {
-				$allowed_mime_types = job_manager_get_allowed_mime_types();
+				$upload_args['allowed_mime_types'] = $field['allowed_mime_types'];
 			}
 
 			$file_urls       = [];
@@ -767,10 +768,7 @@ abstract class WP_Job_Manager_Form {
 			foreach ( $files_to_upload as $file_to_upload ) {
 				$uploaded_file = job_manager_upload_file(
 					$file_to_upload,
-					[
-						'file_key'           => $field_key,
-						'allowed_mime_types' => $allowed_mime_types,
-					]
+					$upload_args
 				);
 
 				if ( is_wp_error( $uploaded_file ) ) {
