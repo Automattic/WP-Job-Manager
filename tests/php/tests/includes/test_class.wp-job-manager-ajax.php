@@ -497,6 +497,40 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	}
 
 	/**
+	 * Regression: a guest is still refused a file type that WPJM does not allow, and the temporary
+	 * `upload_mimes` filter is removed after the upload.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_upload_file
+	 */
+	public function test_upload_file_guest_refused_type_not_in_wpjm_mime_types() {
+		$result = $this->upload_as_restricted_guest( 'test.txt', 'text/plain', 'Plain text.', [ 'file_key' => 'application' ] );
+
+		$this->assertWPError( $result );
+	}
+
+	/**
+	 * Regression: HTML added to WPJM's list must not let a guest upload HTML, because core withholds
+	 * it from users without `unfiltered_html`.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_upload_file
+	 */
+	public function test_upload_file_guest_cannot_upload_html_added_to_wpjm_mime_types() {
+		$add_html = function ( $types ) {
+			$types['html'] = 'text/html';
+			return $types;
+		};
+		add_filter( 'job_manager_mime_types', $add_html );
+
+		$result = $this->upload_as_restricted_guest( 'test.html', 'text/html', '<html><body><script>alert(1)</script></body></html>', [ 'file_key' => 'application' ] );
+
+		remove_filter( 'job_manager_mime_types', $add_html );
+
+		$this->assertWPError( $result );
+	}
+
+	/**
 	 * Uploads a PDF as a guest on a site whose `upload_mimes` filter restricts guests to images only,
 	 * and asserts that the upload succeeds.
 	 *
@@ -504,21 +538,43 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	 * @param int   $restrictive_priority Priority of the site's restrictive `upload_mimes` filter.
 	 */
 	private function assert_guest_pdf_upload_succeeds( $args, $restrictive_priority ) {
+		$result = $this->upload_as_restricted_guest( 'test-alpha.pdf', 'application/pdf', file_get_contents( DIR_TESTDATA . '/images/test-alpha.pdf' ), $args, $restrictive_priority );
+
+		$this->assertNotWPError( $result, 'Guest PDF upload should succeed when WPJM whitelists PDF, even with a per-user restrictive upload_mimes filter.' );
+		$this->assertIsObject( $result );
+		$this->assertObjectHasProperty( 'url', $result );
+		$this->assertObjectHasProperty( 'file', $result );
+		$this->assertFileExists( $result->file );
+
+		// Cleanup.
+		@unlink( $result->file );
+	}
+
+	/**
+	 * Uploads a file as a guest on a site whose `upload_mimes` filter restricts guests to images only.
+	 * Also asserts that WPJM's temporary `upload_mimes` filter is removed afterwards.
+	 *
+	 * @param string $name                 File name.
+	 * @param string $type                 Mime type sent with the file.
+	 * @param string $contents             File contents.
+	 * @param array  $args                 Arguments for `job_manager_upload_file()`.
+	 * @param int    $restrictive_priority Priority of the site's restrictive `upload_mimes` filter.
+	 * @return stdClass|WP_Error Result of `job_manager_upload_file()`.
+	 */
+	private function upload_as_restricted_guest( $name, $type, $contents, $args, $restrictive_priority = 10 ) {
 		wp_set_current_user( 0 );
 
-		$pdf_file = DIR_TESTDATA . '/images/test-alpha.pdf';
+		// Write the file to a temp path, as it gets moved during the file upload.
+		$tmp_name = wp_tempnam( $name );
+		file_put_contents( $tmp_name, $contents );
 
-		// Make a copy of this file as it gets moved during the file upload.
-		$tmp_name = wp_tempnam( $pdf_file );
-		copy( $pdf_file, $tmp_name );
-
-		// Build a $file array as `job_manager_upload_file()` expects it, with a valid type already set.
+		// Build a $file array as `job_manager_upload_file()` expects it, with the type already set.
 		$file = [
-			'name'     => 'test-alpha.pdf',
-			'type'     => 'application/pdf',
+			'name'     => $name,
+			'type'     => $type,
 			'tmp_name' => $tmp_name,
 			'error'    => 0,
-			'size'     => filesize( $pdf_file ),
+			'size'     => filesize( $tmp_name ),
 		];
 		$this->assertFileExists( $tmp_name );
 
@@ -548,14 +604,13 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 		remove_filter( 'submit_job_wp_handle_upload_overrides', $upload_overrides_filter );
 		remove_filter( 'upload_mimes', $guest_mimes_filter, $restrictive_priority );
 
-		$this->assertNotWPError( $result, 'Guest PDF upload should succeed when WPJM whitelists PDF, even with a per-user restrictive upload_mimes filter.' );
-		$this->assertIsObject( $result );
-		$this->assertObjectHasProperty( 'url', $result );
-		$this->assertObjectHasProperty( 'file', $result );
-		$this->assertFileExists( $result->file );
+		$this->assertFalse( has_filter( 'upload_mimes', '_job_manager_extend_upload_mimes' ), 'The temporary upload_mimes filter should be removed after the upload.' );
 
-		// Cleanup.
-		@unlink( $result->file );
+		if ( file_exists( $tmp_name ) ) {
+			@unlink( $tmp_name );
+		}
+
+		return $result;
 	}
 
 	private function set_up_job_listing_search_request() {

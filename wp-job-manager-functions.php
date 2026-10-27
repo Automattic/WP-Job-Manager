@@ -1618,7 +1618,7 @@ function job_manager_upload_file( $file, $args = [] ) {
 	// visitors will reject files WPJM itself accepted. Merging WPJM's list into the per-user list
 	// only for the duration of this call keeps the two checks consistent without relaxing the
 	// site's broader upload policy. Run last so a site filter on a later priority cannot undo it.
-	add_filter( 'upload_mimes', '_job_manager_extend_upload_mimes', PHP_INT_MAX );
+	add_filter( 'upload_mimes', '_job_manager_extend_upload_mimes', PHP_INT_MAX, 2 );
 
 	/**
 	 * Filter file configuration before upload
@@ -1750,19 +1750,38 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  * `job_manager_upload_file()` resolved for the current upload (field config or defaults), and is
  * scoped to the duration of that call so unrelated uploads keep their site-restricted list.
  *
+ * For users without `unfiltered_html`, HTML, JavaScript and SVG entries are not merged, so WPJM's
+ * list cannot add back types that core withholds from those users.
+ *
  * @since $$next-version$$
  *
- * @param array $mimes Per-user mime map, keyed by pipe-separated extensions.
+ * @param array            $mimes Per-user mime map, keyed by pipe-separated extensions.
+ * @param int|WP_User|null $user  User the map is for. Null means the current user.
  * @return array Possibly extended mime map.
  */
-function _job_manager_extend_upload_mimes( $mimes ) {
+function _job_manager_extend_upload_mimes( $mimes, $user = null ) {
 	global $job_manager_upload, $job_manager_upload_mime_types;
 
 	if ( empty( $job_manager_upload ) || ! is_array( $job_manager_upload_mime_types ) ) {
 		return $mimes;
 	}
 
-	return array_merge( $mimes, $job_manager_upload_mime_types );
+	$wpjm_mimes = $job_manager_upload_mime_types;
+
+	// Same capability check as core's `get_allowed_mime_types()`.
+	$unfiltered = $user ? user_can( $user, 'unfiltered_html' ) : current_user_can( 'unfiltered_html' );
+	if ( ! $unfiltered ) {
+		$unsafe_extensions = [ 'htm', 'html', 'js', 'svg', 'svgz' ];
+		$unsafe_types      = [ 'text/html', 'application/javascript', 'text/javascript', 'image/svg+xml' ];
+
+		foreach ( $wpjm_mimes as $extensions => $type ) {
+			if ( in_array( $type, $unsafe_types, true ) || array_intersect( explode( '|', $extensions ), $unsafe_extensions ) ) {
+				unset( $wpjm_mimes[ $extensions ] );
+			}
+		}
+	}
+
+	return array_merge( $mimes, $wpjm_mimes );
 }
 
 /**
