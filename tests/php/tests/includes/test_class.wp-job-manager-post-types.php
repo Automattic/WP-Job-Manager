@@ -894,6 +894,159 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
+	 * An empty post object must not seed meta onto a non-listing post.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::maybe_add_default_meta_data
+	 */
+	public function test_maybe_add_default_meta_data_does_not_seed_regular_posts() {
+		$instance = WP_Job_Manager_Post_Types::instance();
+		$post     = wp_insert_post(
+			[
+				'post_type'  => 'post',
+				'post_title' => 'Hello C',
+			]
+		);
+		delete_post_meta( $post, '_featured' );
+		delete_post_meta( $post, '_filled' );
+
+		$instance->maybe_add_default_meta_data( $post, null );
+
+		$this->assertFalse( metadata_exists( 'post', $post, '_filled' ) );
+		$this->assertFalse( metadata_exists( 'post', $post, '_featured' ) );
+	}
+
+	/**
+	 * Duplicate default meta rows are collapsed to a single row.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::normalize_default_meta_data
+	 */
+	public function test_normalize_default_meta_data_removes_duplicate_rows() {
+		$post_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_filled' => '1' ] ] );
+
+		$this->add_duplicate_meta_row( $post_id, '_filled', '0' );
+		$this->assertCount( 2, get_post_meta( $post_id, '_filled', false ) );
+
+		$this->invoke_normalize_default_meta_data( $post_id, '_filled' );
+
+		$this->assertSame( [ '1' ], get_post_meta( $post_id, '_filled', false ) );
+	}
+
+	/**
+	 * Normalizing keeps the oldest row in place rather than recreating it.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::normalize_default_meta_data
+	 */
+	public function test_normalize_default_meta_data_keeps_oldest_row_id() {
+		global $wpdb;
+
+		$post_id = $this->factory->job_listing->create();
+		delete_post_meta( $post_id, '_filled' );
+
+		$this->add_duplicate_meta_row( $post_id, '_filled', '1' );
+		$oldest_id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT MIN( meta_id ) FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = '_filled'", $post_id ) );
+
+		$this->add_duplicate_meta_row( $post_id, '_filled', '0' );
+
+		$this->invoke_normalize_default_meta_data( $post_id, '_filled' );
+
+		$remaining = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = '_filled'", $post_id ) );
+		$this->assertSame( [ (string) $oldest_id ], $remaining );
+		$this->assertSame( [ '1' ], get_post_meta( $post_id, '_filled', false ) );
+	}
+
+	/**
+	 * Normalizing a listing that is missing the meta key seeds the default value.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::normalize_default_meta_data
+	 */
+	public function test_normalize_default_meta_data_adds_missing_row() {
+		$post_id = $this->factory->job_listing->create();
+		delete_post_meta( $post_id, '_featured' );
+
+		$this->invoke_normalize_default_meta_data( $post_id, '_featured' );
+
+		$this->assertSame( [ '0' ], get_post_meta( $post_id, '_featured', false ) );
+	}
+
+	/**
+	 * The one time cleanup removes duplicate rows from existing listings only.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Install::remove_duplicate_default_meta
+	 */
+	public function test_remove_duplicate_default_meta() {
+		$affected = $this->factory->job_listing->create();
+		$clean    = $this->factory->job_listing->create();
+
+		$this->add_duplicate_meta_row( $affected, '_filled', '0' );
+		$this->add_duplicate_meta_row( $affected, '_featured', '0' );
+
+		// A non-listing post with the same keys must not be touched.
+		$regular_post = $this->factory->post->create();
+		$this->add_duplicate_meta_row( $regular_post, '_filled', '0' );
+		$this->add_duplicate_meta_row( $regular_post, '_filled', '0' );
+
+		$this->invoke_remove_duplicate_default_meta();
+
+		$this->assertCount( 1, get_post_meta( $affected, '_filled', false ) );
+		$this->assertCount( 1, get_post_meta( $affected, '_featured', false ) );
+		$this->assertCount( 1, get_post_meta( $clean, '_filled', false ) );
+		$this->assertCount( 2, get_post_meta( $regular_post, '_filled', false ) );
+	}
+
+	/**
+	 * Inserts a second row for a meta key, the way a duplication plugin does.
+	 *
+	 * @param int    $post_id  Post ID.
+	 * @param string $meta_key Meta key.
+	 * @param string $value    Meta value.
+	 */
+	private function add_duplicate_meta_row( $post_id, $meta_key, $value ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Test helper for duplicating meta rows.
+		$wpdb->insert(
+			$wpdb->postmeta,
+			[
+				'post_id'    => $post_id,
+				'meta_key'   => $meta_key,
+				'meta_value' => $value,
+			]
+		);
+
+		clean_post_cache( $post_id );
+	}
+
+	/**
+	 * Calls the private normalizer for a single meta key.
+	 *
+	 * @param int    $post_id  Post ID.
+	 * @param string $meta_key Meta key.
+	 */
+	private function invoke_normalize_default_meta_data( $post_id, $meta_key ) {
+		$method = new ReflectionMethod( 'WP_Job_Manager_Post_Types', 'normalize_default_meta_data' );
+		$method->setAccessible( true );
+		$method->invoke( null, $post_id, $meta_key );
+	}
+
+	/**
+	 * Calls the private cleanup method on the installer.
+	 */
+	private function invoke_remove_duplicate_default_meta() {
+		if ( ! class_exists( 'WP_Job_Manager_Install' ) ) {
+			require_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-install.php';
+		}
+
+		$method = new ReflectionMethod( 'WP_Job_Manager_Install', 'remove_duplicate_default_meta' );
+		$method->setAccessible( true );
+		$method->invoke( null );
+	}
+
+	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::noindex_expired_filled_job_listings
 	 */

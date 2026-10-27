@@ -1795,9 +1795,62 @@ class WP_Job_Manager_Post_Types {
 	 * @param WP_Post $post    Post object.
 	 */
 	public function maybe_add_default_meta_data( $post_id, $post ) {
-		if ( empty( $post ) || self::PT_LISTING === $post->post_type ) {
-			add_post_meta( $post_id, '_filled', 0, true );
-			add_post_meta( $post_id, '_featured', 0, true );
+		if ( ! $post ) {
+			$post = get_post( $post_id );
+		}
+
+		if ( ! $post || self::PT_LISTING !== $post->post_type ) {
+			return;
+		}
+
+		foreach ( [ '_filled', '_featured' ] as $meta_key ) {
+			self::normalize_default_meta_data( $post_id, $meta_key );
+		}
+	}
+
+	/**
+	 * Ensures a job listing has exactly one row for a default meta key.
+	 *
+	 * Duplicate plugins copy post meta after the listing is created. A second row
+	 * breaks REST API saves, because `_filled` and `_featured` are registered as
+	 * single values and `update_metadata()` reports no change as a database error.
+	 * The oldest row is kept, matching what `get_post_meta()` already returns, so
+	 * reads are unaffected and the stored value does not change.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param int    $post_id  Post ID.
+	 * @param string $meta_key Meta key to normalize.
+	 */
+	private static function normalize_default_meta_data( $post_id, $meta_key ) {
+		global $wpdb;
+
+		$values = get_post_meta( $post_id, $meta_key, false );
+
+		if ( count( $values ) === 1 ) {
+			return;
+		}
+
+		if ( empty( $values ) ) {
+			add_post_meta( $post_id, $meta_key, 0, true );
+
+			return;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Only runs when a listing already has duplicate rows to clean up.
+		$meta_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT meta_id FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s ORDER BY meta_id ASC",
+				$post_id,
+				$meta_key
+			)
+		);
+
+		// Keep the oldest row (the lowest meta_id) and drop the newer ones.
+		array_shift( $meta_ids );
+
+		foreach ( $meta_ids as $meta_id ) {
+			delete_metadata_by_mid( 'post', (int) $meta_id );
 		}
 	}
 

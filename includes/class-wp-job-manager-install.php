@@ -57,6 +57,11 @@ class WP_Job_Manager_Install {
 			self::add_employment_types();
 		}
 
+		// Remove duplicate default listing meta left behind by post duplication plugins.
+		if ( version_compare( get_option( 'wp_job_manager_version', JOB_MANAGER_VERSION ), '2.4.8', '<' ) ) {
+			self::remove_duplicate_default_meta();
+		}
+
 		// Update legacy options.
 		if ( false === get_option( 'job_manager_submit_job_form_page_id', false ) && get_option( 'job_manager_submit_page_slug' ) ) {
 			$page_id = get_page_by_path( get_option( 'job_manager_submit_page_slug' ) )->ID;
@@ -214,6 +219,57 @@ class WP_Job_Manager_Install {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Removes duplicate `_filled` and `_featured` meta rows from job listings.
+	 *
+	 * Post duplication plugins that copy meta with the metadata API leave a second
+	 * row behind, which makes REST API saves fail with "Could not update the meta
+	 * value of _filled in database". Only the oldest row is kept, matching what
+	 * `get_post_meta()` already returns, so stored values do not change.
+	 *
+	 * @since $$next-version$$
+	 */
+	private static function remove_duplicate_default_meta() {
+		global $wpdb;
+
+		$meta_keys = [ '_filled', '_featured' ];
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One time data update.
+		$post_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT pm.post_id FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE p.post_type = 'job_listing' AND pm.meta_key IN ( %s, %s )
+				GROUP BY pm.post_id, pm.meta_key
+				HAVING COUNT( * ) > 1",
+				$meta_keys[0],
+				$meta_keys[1]
+			)
+		);
+
+		if ( empty( $post_ids ) ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One time data update.
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE pm FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->postmeta} oldest
+					ON oldest.post_id = pm.post_id AND oldest.meta_key = pm.meta_key AND oldest.meta_id < pm.meta_id
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE p.post_type = 'job_listing' AND pm.meta_key IN ( %s, %s )",
+				$meta_keys[0],
+				$meta_keys[1]
+			)
+		);
+
+		// The rows were removed with direct SQL, so drop any cached copies.
+		foreach ( $post_ids as $post_id ) {
+			clean_post_cache( (int) $post_id );
 		}
 	}
 }
