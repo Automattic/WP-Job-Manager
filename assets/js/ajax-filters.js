@@ -374,8 +374,13 @@ jQuery( document ).ready( function( $ ) {
 				xhr[ index ].abort();
 			}
 
-			if ( true === $target.data( 'show_pagination' ) && ! suppress_url_push ) {
-				update_page_in_url( $target, page );
+			if ( true === $target.data( 'show_pagination' ) ) {
+				// Track the requested page, so going back while this request is pending aborts it and loads the URL page.
+				current_pages[ get_page_query_arg( $target ) ] = page;
+
+				if ( ! suppress_url_push ) {
+					update_page_in_url( $target, page );
+				}
 			}
 			suppress_url_push = false;
 
@@ -482,10 +487,6 @@ jQuery( document ).ready( function( $ ) {
 							result.data = data;
 
 							handle_result( $target, result, append );
-
-							if ( true === $target.data( 'show_pagination' ) ) {
-								current_pages[ get_page_query_arg( $target ) ] = page;
-							}
 
 							$results.removeClass( 'loading' );
 							$target.triggerHandler( 'updated_results', result );
@@ -605,7 +606,7 @@ jQuery( document ).ready( function( $ ) {
 		return true;
 	} );
 
-	// Tracks the current page per [jobs] instance so popstate can skip instances whose page didn't change.
+	// Tracks the last requested page per [jobs] instance so popstate can skip instances whose page didn't change.
 	var current_pages = {};
 
 	// Restore the page shown for numbered pagination when navigating with the browser's back/forward buttons.
