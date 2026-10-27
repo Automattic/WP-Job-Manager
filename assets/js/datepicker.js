@@ -7,9 +7,11 @@ jQuery(document).ready( function() {
 	$date_today.setHours( 0, 0, 0, 0 );
 	var datePickerOptions = {
 		altFormat  : 'yy-mm-dd',
-		beforeShowDay : function( date ) {
-			return [ date >= $date_today, '' ];
-		},
+	};
+
+	// Unlike minDate, this disables past days without clamping an existing past value to today.
+	var restrictPastDates = function( date ) {
+		return [ date >= $date_today, '' ];
 	};
 
 	if ( typeof job_manager_datepicker !== 'undefined' ) {
@@ -26,7 +28,11 @@ jQuery(document).ready( function() {
 				$hidden_input.val( '' );
 			}
 		} );
-		$target.datepicker( jQuery.extend( {}, datePickerOptions, { altField: $hidden_input } ) );
+		var fieldOptions = { altField: $hidden_input };
+		if ( $target.data( 'restrict-past-dates' ) || '_job_expires' === $target.attr( 'id' ) ) {
+			fieldOptions.beforeShowDay = restrictPastDates;
+		}
+		$target.datepicker( jQuery.extend( {}, datePickerOptions, fieldOptions ) );
 		if ( $target.val() ) {
 			var dateParts = $target.val().split('-');
 			if ( 3 === dateParts.length ) {
