@@ -883,19 +883,43 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
 	$logo = get_the_company_logo( $post, $size );
 
 	if ( has_post_thumbnail( $post ) ) {
-		echo '<img class="company_logo" src="' . esc_url( $logo ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
+		echo '<img class="company_logo" src="' . esc_url( $logo ) . '" alt="' . esc_attr( get_the_company_logo_alt( $post ) ) . '" />';
 
 		// Before 1.24.0, logo URLs were stored in post meta.
 	} elseif ( ! empty( $logo ) && ( strstr( $logo, 'http' ) || file_exists( $logo ) ) ) {
 		if ( 'full' !== $size ) {
 			$logo = job_manager_get_resized_image( $logo, $size );
 		}
-		echo '<img class="company_logo" src="' . esc_url( $logo ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
+		echo '<img class="company_logo" src="' . esc_url( $logo ) . '" alt="' . esc_attr( get_the_company_logo_alt( $post ) ) . '" />';
 	} elseif ( $default ) {
-		echo '<img class="company_logo" src="' . esc_url( $default ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
+		echo '<img class="company_logo" src="' . esc_url( $default ) . '" alt="' . esc_attr( get_the_company_logo_alt( $post ) ) . '" />';
 	} else {
-		echo '<img class="company_logo" src="' . esc_url( apply_filters( 'job_manager_default_company_logo', JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' ) ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
+		echo '<img class="company_logo" src="' . esc_url( apply_filters( 'job_manager_default_company_logo', JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' ) ) . '" alt="' . esc_attr( get_the_company_logo_alt( $post ) ) . '" />';
 	}
+}
+
+/**
+ * Gets the alt text for a job's company logo.
+ *
+ * Reads alt text stored on the logo attachment and falls back to the company
+ * name when none is set, so existing listings without alt text keep working.
+ *
+ * @since $$next-version$$
+ * @param int|WP_Post $post (default: null).
+ * @return string Alt text for the company logo.
+ */
+function get_the_company_logo_alt( $post = null ) {
+	$post = get_post( $post );
+	$alt  = get_the_company_name( $post );
+
+	if ( $post && has_post_thumbnail( $post->ID ) ) {
+		$attachment_alt = get_post_meta( get_post_thumbnail_id( $post->ID ), '_wp_attachment_image_alt', true );
+		if ( '' !== trim( (string) $attachment_alt ) ) {
+			$alt = $attachment_alt;
+		}
+	}
+
+	return apply_filters( 'job_manager_company_logo_alt', $alt, $post );
 }
 
 /**

@@ -34,7 +34,7 @@ if ( post_password_required( $post ) || ! job_manager_user_can_view_job_listing(
 	<?php } ?>
 
 	<?php if ( $logo = get_the_company_logo() ) : ?>
-		<img src="<?php echo esc_url( $logo ); ?>" alt="<?php the_company_name(); ?>" title="<?php the_company_name(); ?> - <?php the_company_tagline(); ?>" />
+		<img src="<?php echo esc_url( $logo ); ?>" alt="<?php echo esc_attr( get_the_company_logo_alt() ); ?>" title="<?php the_company_name(); ?> - <?php the_company_tagline(); ?>" />
 	<?php endif; ?>
 
 	<div class="job_summary_content">
