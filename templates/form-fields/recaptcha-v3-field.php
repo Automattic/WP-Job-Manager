@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager
  * @category    Template
- * @version     2.3.0
+ * @version     $$next-version$$
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -31,9 +31,23 @@ if ( doing_action( 'submit_resume_form_resume_fields_end' ) ) {
 
 	function jm_job_submit_click(e) {
 		e.preventDefault();
+		let button = e.currentTarget;
 		grecaptcha.ready(function() {
 			grecaptcha.execute( decodeURIComponent( '<?php echo rawurlencode( (string) $site_key ) ?>' ), { action: 'submit' } ).then( function( token ) {
 				document.getElementById( 'g-recaptcha-response' ).value = token;
+				// form.submit() does not send the clicked button, so pass it on to tell "Save Draft" apart.
+				let input = document.getElementById( 'jm-recaptcha-submitter' );
+				if ( input ) {
+					input.remove();
+				}
+				if ( button && button.name ) {
+					input = document.createElement( 'input' );
+					input.type = 'hidden';
+					input.id = 'jm-recaptcha-submitter';
+					input.name = button.name;
+					input.value = button.value;
+					form.appendChild( input );
+				}
 				form.submit();
 			});
 		});
