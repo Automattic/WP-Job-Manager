@@ -165,9 +165,6 @@ final class WP_Job_Manager_Email_Notifications {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-updated-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-employer-expiring-job.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/emails/class-wp-job-manager-email-admin-expiring-job.php';
-
-		// Load Vendor Autoload.
-		require_once JOB_MANAGER_PLUGIN_DIR . '/vendor/autoload.php';
 	}
 
 	/**
