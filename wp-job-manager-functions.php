@@ -1588,7 +1588,7 @@ function job_manager_get_company_logo_max_size(): int {
  * @return stdClass|WP_Error Object containing file information, or error.
  */
 function job_manager_upload_file( $file, $args = [] ) {
-	global $job_manager_upload, $job_manager_uploading_file;
+	global $job_manager_upload, $job_manager_uploading_file, $job_manager_upload_mime_types;
 
 	include_once ABSPATH . 'wp-admin/includes/file.php';
 	include_once ABSPATH . 'wp-admin/includes/media.php';
@@ -1610,14 +1610,15 @@ function job_manager_upload_file( $file, $args = [] ) {
 	} else {
 		$allowed_mime_types = $args['allowed_mime_types'];
 	}
+	$job_manager_upload_mime_types = $allowed_mime_types;
 
 	// While a WPJM upload is in progress, treat WPJM's allow-list as authoritative. WordPress core
 	// runs `get_allowed_mime_types()` (per current user) inside `wp_check_filetype_and_ext()` after
 	// `wp_handle_upload()` has been called, and a site that hardens `upload_mimes` for non-logged-in
 	// visitors will reject files WPJM itself accepted. Merging WPJM's list into the per-user list
 	// only for the duration of this call keeps the two checks consistent without relaxing the
-	// site's broader upload policy.
-	add_filter( 'upload_mimes', '_job_manager_extend_upload_mimes' );
+	// site's broader upload policy. Run last so a site filter on a later priority cannot undo it.
+	add_filter( 'upload_mimes', '_job_manager_extend_upload_mimes', PHP_INT_MAX );
 
 	/**
 	 * Filter file configuration before upload
@@ -1686,9 +1687,10 @@ function job_manager_upload_file( $file, $args = [] ) {
 		}
 	}
 
-	remove_filter( 'upload_mimes', '_job_manager_extend_upload_mimes' );
-	$job_manager_upload         = false;
-	$job_manager_uploading_file = '';
+	remove_filter( 'upload_mimes', '_job_manager_extend_upload_mimes', PHP_INT_MAX );
+	$job_manager_upload            = false;
+	$job_manager_uploading_file    = '';
+	$job_manager_upload_mime_types = null;
 
 	return $result;
 }
@@ -1744,9 +1746,9 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  * WP core's `wp_check_filetype_and_ext()` consults `get_allowed_mime_types()` for the current
  * user when deciding whether a real-MIME match is acceptable, and ignores the `mimes` override
  * passed via `wp_handle_upload()`. Without this filter, a site that hardens `upload_mimes` for
- * non-logged-in visitors would reject files WPJM itself accepted. Scoped to the duration of
- * `job_manager_upload_file()` via `$job_manager_uploading_file` so unrelated uploads keep their
- * site-restricted list.
+ * non-logged-in visitors would reject files WPJM itself accepted. Uses the allow-list that
+ * `job_manager_upload_file()` resolved for the current upload (field config or defaults), and is
+ * scoped to the duration of that call so unrelated uploads keep their site-restricted list.
  *
  * @since $$next-version$$
  *
@@ -1754,19 +1756,13 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  * @return array Possibly extended mime map.
  */
 function _job_manager_extend_upload_mimes( $mimes ) {
-	global $job_manager_upload, $job_manager_uploading_file;
+	global $job_manager_upload, $job_manager_upload_mime_types;
 
-	if ( empty( $job_manager_upload ) ) {
+	if ( empty( $job_manager_upload ) || ! is_array( $job_manager_upload_mime_types ) ) {
 		return $mimes;
 	}
 
-	$wpjm_mimes = job_manager_get_allowed_mime_types( $job_manager_uploading_file );
-
-	if ( ! is_array( $wpjm_mimes ) ) {
-		return $mimes;
-	}
-
-	return array_merge( $mimes, $wpjm_mimes );
+	return array_merge( $mimes, $job_manager_upload_mime_types );
 }
 
 /**
