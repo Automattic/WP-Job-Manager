@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#
+# Blocks direct pushes to the default branch. Land changes there via a pull
+# request instead. This fails faster and with a clearer message than a
+# server-side rejection.
+#
+# Install once per clone: `make install-hooks` (sets core.hooksPath to .githooks).
+# Override in a pinch:      `git push --no-verify`.
+#
+# NOTE: git hooks are local-only — they do not run on GitHub or in CI, so this
+# is a convenience guard, not enforcement.
+
+set -euo pipefail
+
+# Set to this repo's default branch (e.g. trunk or master).
+protected_branch="trunk"
+
+# stdin: <local ref> <local sha> <remote ref> <remote sha>, one line per ref.
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+	if [[ "${remote_ref}" == "refs/heads/${protected_branch}" ]]; then
+		echo "✋ Refusing to push directly to '${protected_branch}'. Open a pull request instead." >&2
+		echo "   (Override with 'git push --no-verify' if you really mean to.)" >&2
+		exit 1
+	fi
+done
+
+exit 0

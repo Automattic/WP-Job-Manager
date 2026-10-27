@@ -35,6 +35,14 @@ const pluginFileContents = fs.readFileSync( cfg.mainFile, 'utf8' );
 const pluginVersion      = pluginFileContents.match( /Version: (.*)/ )[ 1 ].trim();
 const pluginName         = pluginFileContents.match( /Plugin Name: (.*)/ )[ 1 ].trim();
 
+// Validate the parsed version before any git write or shell interpolation: it
+// flows into `git tag`/`git push`/`gh release` via execSync template strings, so
+// a malformed or hostile `Version:` header must abort here rather than reach a
+// shell. Pattern kept in parity with scripts/replace-next-version-tag.sh.
+if ( ! /^\d+(\.\d+)+(-(a|alpha|beta)([-.]?\d+)?)?$/.test( pluginVersion ) ) {
+	throw new Error( `Refusing to release: "${ pluginVersion }" is not a valid version string (parsed from the "Version:" header in ${ cfg.mainFile }).` );
+}
+
 const prNumber = process.argv[ 2 ];
 
 // Parse (and validate) the release notes before any git write, so a malformed
@@ -196,7 +204,9 @@ function buildPluginZip() {
 }
 
 function setWorkflowStepOutput() {
-	execSync( `echo "version=${ pluginVersion }" >> "$GITHUB_OUTPUT"` );
+	// Write straight to the file instead of shelling out `echo`, so the version
+	// never reaches a shell (no command-substitution or word-splitting surface).
+	fs.appendFileSync( process.env.GITHUB_OUTPUT, `version=${ pluginVersion }\n` );
 }
 
 async function createGithubRelease() {

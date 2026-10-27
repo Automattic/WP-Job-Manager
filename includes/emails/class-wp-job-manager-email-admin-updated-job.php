@@ -59,8 +59,11 @@ class WP_Job_Manager_Email_Admin_Updated_Job extends WP_Job_Manager_Email_Templa
 		 */
 		$job = $args['job'];
 
+		// `post_title` holds HTML entities when the submitter lacks `unfiltered_html`; the subject is plain text.
+		$job_title = wp_specialchars_decode( $job->post_title, ENT_QUOTES );
+
 		// translators: Placeholder %s is the job listing post title.
-		return sprintf( __( 'Job Listing Updated: %s', 'wp-job-manager' ), $job->post_title );
+		return sprintf( __( 'Job Listing Updated: %s', 'wp-job-manager' ), $job_title );
 	}
 
 	/**

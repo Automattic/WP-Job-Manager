@@ -161,13 +161,43 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_categories'] ) ) {
-			$field                     = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
-			$operator                  = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
+			$field    = is_numeric( $args['search_categories'][0] ) ? 'term_id' : 'slug';
+			$operator = 'all' === get_option( 'job_manager_category_filter_type', 'all' ) && count( $args['search_categories'] ) > 1 ? 'AND' : 'IN';
+
+			/**
+			 * Filters whether category queries include child terms. Return `false` to
+			 * match only listings assigned to the exact terms selected, excluding their
+			 * children. Applies to category queries built by get_job_listings(),
+			 * regardless of the "Category Filter Type" setting; other queries such as
+			 * the job feed are unaffected. The default keeps the existing behavior.
+			 *
+			 * Check `$operator` before forcing `true`. Under `AND`, WordPress expands
+			 * each selected term to its descendants and then requires a listing to
+			 * match all of them, so children narrow the result set rather than widening
+			 * it; if one selected term is an ancestor of another, the clause is
+			 * discarded entirely and the query returns nothing.
+			 *
+			 * @since 2.4.6
+			 *
+			 * @param bool   $include_children  Whether to include child terms of the selected categories.
+			 * @param string $operator          The tax query operator in use (`IN` or `AND`).
+			 * @param array  $search_categories The category terms being queried (term IDs or slugs).
+			 * @param array  $args              The full arguments passed to get_job_listings().
+			 * @return bool
+			 */
+			$include_children = (bool) apply_filters(
+				'job_manager_get_listings_include_category_children',
+				'AND' !== $operator,
+				$operator,
+				$args['search_categories'],
+				$args
+			);
+
 			$query_args['tax_query'][] = [
 				'taxonomy'         => \WP_Job_Manager_Post_Types::TAX_LISTING_CATEGORY,
 				'field'            => $field,
 				'terms'            => array_values( $args['search_categories'] ),
-				'include_children' => 'AND' !== $operator,
+				'include_children' => $include_children,
 				'operator'         => $operator,
 			];
 		}
@@ -1690,6 +1720,45 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
 }
 
 /**
+ * Builds the value for a file input's `accept` attribute from a map of allowed mime types.
+ *
+ * The map is keyed by pipe-separated file extensions (see `job_manager_get_allowed_mime_types()`), which are
+ * turned into the dot-prefixed extension tokens the `accept` attribute expects. Fields may instead supply a plain
+ * list of mime types, or a map keyed by mime type; those are emitted as mime type tokens, which `accept` also
+ * accepts.
+ *
+ * @since 2.4.6
+ *
+ * @param array $allowed_mime_types Array of allowed file extensions and mime types.
+ * @return string Comma-separated list of `accept` tokens, empty when nothing is allowed.
+ */
+function job_manager_get_accept_file_types( $allowed_mime_types ) {
+	$accept_tokens = [];
+
+	foreach ( (array) $allowed_mime_types as $extensions => $mime_type ) {
+		if ( is_int( $extensions ) || false !== strpos( (string) $extensions, '/' ) ) {
+			$token = is_int( $extensions ) ? $mime_type : $extensions;
+
+			if ( is_string( $token ) && '' !== $token ) {
+				$accept_tokens[] = $token;
+			}
+
+			continue;
+		}
+
+		foreach ( explode( '|', $extensions ) as $extension ) {
+			$extension = ltrim( trim( $extension ), '.' );
+
+			if ( '' !== $extension ) {
+				$accept_tokens[] = '.' . $extension;
+			}
+		}
+	}
+
+	return implode( ',', array_unique( $accept_tokens ) );
+}
+
+/**
  * Calculates and returns the job expiry date.
  *
  * @since 1.22.0
@@ -1809,13 +1878,20 @@ function job_manager_duplicate_listing( $post_id ) {
 /**
  * Escape JSON for use on HTML or attribute text nodes.
  *
+ * Do not use for `<script>` element content: script content is raw text, so HTML
+ * entities are never decoded there and end up baked into the payload. Use
+ * `wp_json_encode()` with the `JSON_HEX_*` flags instead.
+ *
  * @since 1.32.2
+ * @deprecated 2.4.7
  *
  * @param string $json JSON to escape.
  * @param bool   $html True if escaping for HTML text node, false for attributes. Determines how quotes are handled.
  * @return string Escaped JSON.
  */
 function wpjm_esc_json( $json, $html = false ) {
+	_deprecated_function( __FUNCTION__, '2.4.7', 'wp_json_encode' );
+
 	return _wp_specialchars(
 		$json,
 		$html ? ENT_NOQUOTES : ENT_QUOTES, // Escape quotes in attribute nodes only.
@@ -1837,8 +1913,11 @@ function job_manager_count_user_job_listings( $user_id = 0 ) {
 		$user_id = get_current_user_id();
 	}
 
+	// `future` counts: a scheduled listing is a committed submission (WP publishes it
+	// via cron with no further check), so excluding it would let a user bypass the
+	// submission limit entirely by giving each listing a scheduled date.
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-	return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'job_listing' AND post_status IN ( 'publish', 'pending', 'expired', 'hidden' );", $user_id ) );
+	return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_author = %d AND post_type = 'job_listing' AND post_status IN ( 'publish', 'pending', 'expired', 'hidden', 'future' );", $user_id ) );
 }
 
 /**
@@ -1960,4 +2039,19 @@ function job_manager_user_can_submit_job_listing() {
 	 * @param boolean $can_submit
 	 */
 	return apply_filters( 'job_manager_user_can_submit_job_listing', $can_submit );
+}
+
+/**
+ * Whether the submission-limit check can ever refuse a listing.
+ *
+ * Must answer: can job_manager_user_can_submit_job_listing() ever return false?
+ * Callers use this to skip work (e.g. the submit form's publish lock) that only
+ * exists to protect that check — keep it in sync with the check's inputs.
+ *
+ * @since 2.4.7
+ *
+ * @return bool
+ */
+function job_manager_user_submission_limit_active() {
+	return '' !== get_option( 'job_manager_submission_limit', '' ) || has_filter( 'job_manager_user_can_submit_job_listing' );
 }

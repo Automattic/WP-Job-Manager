@@ -441,4 +441,56 @@ class Tests_Password_Protected_Listing_REST extends WPJM_REST_TestCase {
 			delete_option( 'job_manager_view_job_listing_capability' );
 		}
 	}
+
+	/**
+	 * @covers WP_Job_Manager_REST_API::gate_view_capability_for_single
+	 *
+	 * Regression: WP_REST_Server matches routes case-insensitively, so
+	 * /wp/v2/Job-Listings/<id> dispatches to the job-listings handler. The view-capability
+	 * gate must match the route the same way, or the mixed-case spelling returns 200 for a
+	 * listing the lower-case route hides.
+	 */
+	public function test_rest_single_returns_404_for_view_cap_denied_mixed_case_route() {
+		update_option( 'job_manager_view_job_listing_capability', [ 'manage_options' ] );
+
+		try {
+			$post_id = $this->factory->job_listing->create(
+				[
+					'post_title' => 'View-cap-restricted listing for case probe',
+				]
+			);
+			$this->logout();
+
+			$response = $this->get( "/wp/v2/Job-Listings/{$post_id}" );
+			$this->assertResponseStatus( $response, 404 );
+			$data = $response->get_data();
+			$this->assertSame( 'rest_post_invalid_id', $data['code'] ?? null, 'The mixed-case route must 404 exactly like the lower-case one.' );
+		} finally {
+			delete_option( 'job_manager_view_job_listing_capability' );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_REST_API::prepare_job_listing
+	 *
+	 * The guid carries the permalink with the title slug, so it must be blanked along
+	 * with link and slug when the response is withheld.
+	 */
+	public function test_rest_single_blanks_guid_for_password_protected() {
+		$post_id = $this->factory->job_listing->create(
+			[
+				'post_password' => 'secret',
+				'post_title'    => 'Guid-leak-test confidential listing',
+			]
+		);
+		$this->logout();
+
+		$response = $this->get( "/wp/v2/job-listings/{$post_id}" );
+		$this->assertResponseStatus( $response, 200 );
+		$data = $response->get_data();
+
+		$this->assertSame( '', $data['guid']['rendered'] ?? '', 'The guid must be blanked for a withheld listing.' );
+		$body = (string) wp_json_encode( $data );
+		$this->assertStringNotContainsString( 'guid-leak-test', $body, 'No field may carry the title slug for a withheld listing.' );
+	}
 }
