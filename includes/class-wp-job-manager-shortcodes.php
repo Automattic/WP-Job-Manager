@@ -276,10 +276,22 @@ class WP_Job_Manager_Shortcodes {
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		// Array handling.
-		$atts['categories']         = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
-		$atts['selected_category']  = is_array( $atts['selected_category'] ) ? $atts['selected_category'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_category'] ) ) );
-		$atts['job_types']          = is_array( $atts['job_types'] ) ? $atts['job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
-		$atts['post_status']        = is_array( $atts['post_status'] ) ? $atts['post_status'] : array_filter( array_map( 'trim', explode( ',', $atts['post_status'] ) ) );
+		$atts['categories']        = is_array( $atts['categories'] ) ? $atts['categories'] : array_filter( array_map( 'trim', explode( ',', $atts['categories'] ) ) );
+		$atts['selected_category'] = is_array( $atts['selected_category'] ) ? $atts['selected_category'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_category'] ) ) );
+		$atts['job_types']         = is_array( $atts['job_types'] ) ? $atts['job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['job_types'] ) ) );
+		$atts['post_status']       = is_array( $atts['post_status'] ) ? $atts['post_status'] : array_filter( array_map( 'trim', explode( ',', $atts['post_status'] ) ) );
+
+		// Ensure the current viewer may query the requested statuses. Mirrors the AJAX
+		// handler's gate: without the listing-editing capability, only publicly visible
+		// statuses are honoured, whatever the shortcode attribute asks for — the attribute
+		// is author-controlled content (e.g. a Contributor's own draft) while the listings
+		// it would expose belong to other users. An empty result falls back to
+		// get_job_listings()' publish default.
+		if ( ! empty( $atts['post_status'] ) && ! current_user_can( \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ) ) {
+			/** This filter is documented in includes/class-wp-job-manager-ajax.php */
+			$allowed_post_status = apply_filters( 'job_manager_get_listings_public_post_status', [ 'publish' ] );
+			$atts['post_status'] = array_values( array_intersect( $atts['post_status'], $allowed_post_status ) );
+		}
 		$atts['selected_job_types'] = is_array( $atts['selected_job_types'] ) ? $atts['selected_job_types'] : array_filter( array_map( 'trim', explode( ',', $atts['selected_job_types'] ) ) );
 
 		// Normalize field for categories.

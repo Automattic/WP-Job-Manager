@@ -63,8 +63,9 @@ class WP_Job_Manager_Widget extends WP_Widget {
 	 */
 	public function register() {
 		$widget_ops = [
-			'classname'   => $this->widget_cssclass,
-			'description' => $this->widget_description,
+			'classname'             => $this->widget_cssclass,
+			'description'           => $this->widget_description,
+			'show_instance_in_rest' => true,
 		];
 
 		parent::__construct( $this->widget_id, $this->widget_name, $widget_ops );

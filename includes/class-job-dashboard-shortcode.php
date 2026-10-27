@@ -378,7 +378,11 @@ class Job_Dashboard_Shortcode {
 	/**
 	 * Helper function used to check if page is WPJM dashboard page.
 	 *
-	 * Checks if page has 'job_dashboard' shortcode.
+	 * Checks if the page is selected as the Job Dashboard page in settings, or
+	 * has the 'job_dashboard' shortcode in its stored content. The shortcode
+	 * check cannot see content composed at render time (synced patterns, block
+	 * templates, page builder elements), which is why the configured page ID is
+	 * honoured first.
 	 *
 	 * @access private
 	 * @return bool True if page is dashboard page, false otherwise.
@@ -386,11 +390,17 @@ class Job_Dashboard_Shortcode {
 	private function is_job_dashboard_page() {
 		global $post;
 
-		if ( is_page() && has_shortcode( $post->post_content, 'job_dashboard' ) ) {
+		if ( ! is_page() ) {
+			return false;
+		}
+
+		$dashboard_page_id = job_manager_get_page_id( 'job_dashboard' );
+
+		if ( $dashboard_page_id && is_page( $dashboard_page_id ) ) {
 			return true;
 		}
 
-		return false;
+		return $post instanceof \WP_Post && has_shortcode( $post->post_content, 'job_dashboard' );
 	}
 
 	/**
@@ -409,11 +419,15 @@ class Job_Dashboard_Shortcode {
 		 */
 		$should_run_handler = apply_filters( 'job_manager_should_run_shortcode_action_handler', $this->is_job_dashboard_page() );
 
-		if ( ! $should_run_handler
-			|| empty( $_REQUEST['action'] )
+		if ( empty( $_REQUEST['action'] )
 			|| empty( $_REQUEST['job_id'] )
 			|| empty( $_REQUEST['_wpnonce'] )
 		) {
+			return;
+		}
+
+		if ( ! $should_run_handler ) {
+			$this->report_declined_action();
 			return;
 		}
 
@@ -530,6 +544,33 @@ class Job_Dashboard_Shortcode {
 
 		Redirect_Message::redirect( remove_query_arg( [ 'action', 'job_id', '_wpnonce' ] ), $this->job_dashboard_message, 'updated' );
 
+	}
+
+	/**
+	 * Redirects with an error notice when a dashboard action request arrives on
+	 * a page that is not recognised as the job dashboard.
+	 *
+	 * Without this, a dashboard rendered from a synced pattern or template shows
+	 * working action links whose clicks are silently discarded, which is
+	 * indistinguishable from a successful reload. The notice is stored as a
+	 * single-use redirect message, so it only ever appears where the dashboard
+	 * actually renders and reads it.
+	 */
+	private function report_declined_action() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- The action is declined; input only decides whether to show an error notice.
+		$action = isset( $_REQUEST['action'] ) ? sanitize_title( wp_unslash( $_REQUEST['action'] ) ) : '';
+
+		$dashboard_actions = [ 'mark_filled', 'mark_not_filled', 'delete', 'duplicate', 'relist', 'renew', 'continue' ];
+
+		if ( ! in_array( $action, $dashboard_actions, true ) ) {
+			return;
+		}
+
+		Redirect_Message::redirect(
+			remove_query_arg( [ 'action', 'job_id', '_wpnonce' ] ),
+			Notice::error( __( 'The action could not be processed because this page is not set as the job dashboard. Select it as the Job Dashboard page under Job Listings > Settings > Pages, or place the [job_dashboard] shortcode directly in the page content.', 'wp-job-manager' ) ),
+			'updated'
+		);
 	}
 
 	/**
