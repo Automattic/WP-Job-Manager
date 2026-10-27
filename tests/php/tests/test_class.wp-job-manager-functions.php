@@ -667,22 +667,22 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 */
 	public function test_get_job_listings_featured_first_orderby_variants() {
 		// Distinct titles and dates per fixture so the secondary sort is
-		// observable in every case, including date/{ASC,DESC}. Non-featured
-		// timestamps sit BEFORE featured so a date-desc fallback regression
-		// (e.g. surfacing newest post first) would reorder featured and
-		// non-featured — exposing the bug instead of hiding it.
+		// observable in every case. Featured dates run against their titles
+		// while non-featured dates run with theirs, so a date-desc fallback
+		// regression gives a different order than expected for title/ASC,
+		// title/DESC and date/ASC.
 		$featured = [
 			$this->factory->job_listing->create(
 				[
 					'post_title' => 'Charlie',
-					'post_date'  => '2026-01-03 00:00:00',
+					'post_date'  => '2026-01-04 00:00:00',
 					'meta_input' => [ '_featured' => 1 ],
 				]
 			),
 			$this->factory->job_listing->create(
 				[
 					'post_title' => 'Delta',
-					'post_date'  => '2026-01-04 00:00:00',
+					'post_date'  => '2026-01-03 00:00:00',
 					'meta_input' => [ '_featured' => 1 ],
 				]
 			),
@@ -710,8 +710,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 		$cases = [
 			[ 'title', 'ASC', [ 0, 1, 2, 3 ] ],  // C, D, A, B (within each block: featureds C<D, non-featureds A<B).
 			[ 'title', 'DESC', [ 1, 0, 3, 2 ] ], // D, C, B, A (within each block: featureds D>C, non-featureds B>A).
-			[ 'date', 'ASC', [ 0, 1, 2, 3 ] ],   // Jan3, Jan4, Jan1, Jan2.
-			[ 'date', 'DESC', [ 1, 0, 3, 2 ] ],  // Jan4, Jan3, Jan2, Jan1.
+			[ 'date', 'ASC', [ 1, 0, 2, 3 ] ],   // Jan3 (D), Jan4 (C), Jan1 (A), Jan2 (B).
+			[ 'date', 'DESC', [ 0, 1, 3, 2 ] ],  // Jan4 (C), Jan3 (D), Jan2 (B), Jan1 (A).
 		];
 
 		foreach ( $cases as $case ) {
@@ -730,7 +730,8 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 
 			// Assert exact full order across all four fixtures. A regression to
 			// a date-desc fallback would still pass the featured-first check
-			// alone; this catches it for every variant.
+			// alone; this catches it for every variant except date/DESC, where
+			// the fallback order is the expected order.
 			$source = array_merge( $featured, $not_featured );
 			$expected = array_map(
 				static function ( $idx ) use ( $source ) {
