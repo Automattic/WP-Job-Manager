@@ -633,7 +633,9 @@ jQuery( document ).ready( function( $ ) {
 
 		if ( state ) {
 			// Restore the results from cache.
-			if ( state.results && ( ! state.data || state.data.page === get_page_from_url( $target ) ) ) {
+			// For numbered pagination, only restore cached results that match the page in the URL.
+			var cached_page = state.results && state.results.data ? state.results.data.page : null;
+			if ( state.results && ( true !== $target.data( 'show_pagination' ) || ! cached_page || cached_page === get_page_from_url( $target ) ) ) {
 				results_loaded = handle_result( $target, state.results );
 
 				// We don't want this to continue to persist unless we click on another link.
@@ -657,9 +659,13 @@ jQuery( document ).ready( function( $ ) {
 			// If we didn't load results from cache, load the page from the URL (defaults to 1).
 			var starting_page = true === $target.data( 'show_pagination' ) ? get_page_from_url( $target ) : 1;
 
-			suppress_url_push = true;
 			current_pages[ get_page_query_arg( $target ) ] = starting_page;
-			$target.triggerHandler( 'update_results', [ starting_page, false ] );
+
+			// Without filters the first page is rendered on the server, so only fetch when the URL asks for another page.
+			if ( $form.length > 0 || starting_page > 1 ) {
+				suppress_url_push = true;
+				$target.triggerHandler( 'update_results', [ starting_page, false ] );
+			}
 		}
 	} );
 } );
