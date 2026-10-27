@@ -171,11 +171,6 @@
       <code>$remote_data</code>
     </NullableReturnStatement>
   </file>
-  <file src="includes/class-wp-job-manager-data-cleaner.php">
-    <InvalidConstantAssignmentValue>
-      <code><![CDATA[ROLE = 'employer']]></code>
-    </InvalidConstantAssignmentValue>
-  </file>
   <file src="includes/class-wp-job-manager-email-notifications.php">
     <InvalidArgument>
       <code>$email_class</code>
