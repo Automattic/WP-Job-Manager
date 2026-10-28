@@ -150,6 +150,22 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 
 == Changelog ==
 
+### 2.4.9 - 2026-10-28
+* Fix the primary job dashboard action button overflowing its container. (#3092)
+* Fix the [jobs] shortcode adding extra paragraph and line break tags in block themes. (#3044)
+* Fix Save Draft not saving when reCAPTCHA v3 is enabled. (#3142)
+* Fix job listings not loading when WPML adds a language parameter to the site URL. (#3144)
+* Fix the job dashboard staying filtered after clearing the search field with the browser's clear button. (#3024)
+* Show an image preview for guest uploads in the job submission form. (#3145)
+* Keep the numbered pagination page in the URL, so reloading or going back returns to the same page. (#3038)
+* Allow past dates in date fields, and keep a listing's past expiry date when editing it. (#3033)
+* Only expand shortcodes, blocks and media embeds in job listing content whose author can edit job listings, wherever the listing is shown. Use the new `job_manager_job_description_allow_shortcodes` filter to restore the previous behavior.
+* Remove video and audio elements from job listing content by authors who can't edit job listings, and caption tracks from all job listing content. Media previews in the editor are also turned off for those listings.
+* Check submission permissions before processing uploaded files on the job submission form.
+* Require the submitting key to start a new submission from the job submission form.
+* Apply the browse capability to the random [job_summary] shortcode, and the view capability to the [job_apply] shortcode.
+* Don't copy a listing's promotion when duplicating it.
+
 ### 2.4.8 - 2026-10-07
 * Fix job dashboard actions being silently ignored when the dashboard is rendered from a synced pattern, template or page builder; the configured Job Dashboard page is now honoured and declined actions show an error notice. (#3126)
 * Fix the geolocation filter not being honored when importing listings. (#3112)
@@ -194,6 +210,3 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 * Escape URLs in two sprintf href templates with esc_url() (#2996)
 * Validate attachment ownership when reusing a company logo by ID (#2995)
 * Honor restrictive filter_post_status=publish for logged-out visitors (#2994)
-
-### 2.4.4 - 2026-06-24
-* Fix: Restore the frontend styles and scripts that were missing from the 2.4.3 package. The 2.4.3 release was built without its compiled CSS and JavaScript, leaving the employer job dashboard unstyled and breaking frontend features such as the job application form. (#2990)
