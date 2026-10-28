@@ -42,7 +42,7 @@ class WP_Test_WP_Job_Manager_Ajax extends WPJM_BaseTest {
 	/**
 	 * Language plugins like WPML can add the language as a query arg to home URLs.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 * @covers WP_Job_Manager_Ajax::get_endpoint
 	 */
 	public function test_get_endpoint_keeps_query_args_from_home_url_filter() {
