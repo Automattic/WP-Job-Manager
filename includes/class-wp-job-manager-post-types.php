@@ -186,6 +186,13 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'wp_sitemaps_posts_query_args', [ $this, 'sitemaps_maybe_hide_filled' ], 10, 2 );
 		add_filter( 'wp_sitemaps_post_types', [ $this, 'sitemaps_maybe_hide_restricted_post_type' ] );
 
+		add_filter( 'the_job_description', [ $this, 'filter_job_description' ], 1, 2 );
+		add_filter( 'the_content', [ $this, 'filter_listing_content' ], 7 );
+		// Run after autoembed (8), do_blocks (9) and do_shortcode (11) so media they produce is removed too.
+		add_filter( 'the_job_description', [ $this, 'strip_untrusted_listing_media' ], 20, 2 );
+		add_filter( 'the_content', [ $this, 'strip_untrusted_listing_media' ], 20 );
+		add_filter( 'tiny_mce_plugins', [ $this, 'disable_untrusted_editor_previews' ] );
+
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
 		add_filter( 'the_job_description', 'convert_chars' );
@@ -613,12 +620,190 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * Restricts listing content written by an author who can't post unfiltered HTML: the content
+	 * is limited to the listing's allowed tags, and its shortcodes are not expanded.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string  $content Listing content.
+	 * @param WP_Post $post    Job listing.
+	 * @return string
+	 */
+	public static function restrict_listing_content( $content, $post ) {
+		if ( self::is_trusted_listing( $post ) ) {
+			return $content;
+		}
+
+		$content = wp_kses( $content, self::restricted_allowed_html() );
+		$content = strip_shortcodes( $content );
+
+		// Drop block delimiters so dynamic blocks aren't rendered from the content later.
+		$content = preg_replace( '/<!--\s*\/?wp:.*?-->/s', '', $content );
+
+		// Keep any remaining brackets, such as an escaped [[shortcode]], from being expanded later.
+		return str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $content );
+	}
+
+	/**
+	 * Whether a listing's content is trusted to use shortcodes, blocks and media.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param WP_Post $post Job listing.
+	 * @return bool
+	 */
+	private static function is_trusted_listing( $post ) {
+		/**
+		 * Filter whether a listing's content may use shortcodes, blocks and media.
+		 *
+		 * Descriptions can be submitted from the frontend by guests and subscribers, so by default
+		 * only listings whose author can edit job listings have their shortcodes and blocks
+		 * expanded, keep media elements, and get media previews in the editor.
+		 *
+		 * @since $$next-version$$
+		 *
+		 * @param bool    $allow_shortcodes True when the listing author can edit job listings.
+		 * @param WP_Post $post             Job listing.
+		 */
+		return (bool) apply_filters( 'job_manager_job_description_allow_shortcodes', user_can( $post->post_author, self::CAP_EDIT_LISTINGS ), $post );
+	}
+
+	/**
+	 * Gets the job listing to restrict content for: the one given, or else the global post.
+	 *
+	 * @param WP_Post|null $post Job listing, if known.
+	 * @return WP_Post|null The job listing, or null when the content isn't a job listing's.
+	 */
+	private static function get_listing_for_content( $post = null ) {
+		$post = $post instanceof WP_Post ? $post : get_post();
+
+		return $post && self::PT_LISTING === $post->post_type ? $post : null;
+	}
+
+	/**
+	 * Removes media elements, keeping their fallback content such as a download link.
+	 *
+	 * @param string $content HTML content.
+	 * @return string
+	 */
+	private static function remove_media_elements( $content ) {
+		// The tag name must end at whitespace, a slash or `>`, so custom elements such as <video-player> are kept.
+		$content = preg_replace( '#</?(?:video|audio|source|track)(?=[\s/>])(?:[^<>"\']|"[^"]*"|\'[^\']*\')*>#i', '', $content );
+
+		// Encode what's left, such as malformed or joined-up tags, so it can't be parsed as a media element.
+		return preg_replace( '#<(\s*/?\s*(?:video|audio|source|track)(?=[\s/>]))#i', '&lt;$1', $content );
+	}
+
+	/**
+	 * The allowed tags for content from an author who can't post unfiltered HTML. Media elements
+	 * are excluded: media players build interactive menus from their markup, so they aren't safe
+	 * with values an untrusted submitter supplies.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @return array
+	 */
+	private static function restricted_allowed_html() {
+		$allowed_html = self::kses_allowed_html();
+
+		unset( $allowed_html['video'], $allowed_html['audio'], $allowed_html['source'], $allowed_html['track'] );
+
+		return $allowed_html;
+	}
+
+	/**
+	 * Removes media elements from untrusted listing content after other filters have run, so a
+	 * media player can't be built from a bare media URL that was auto-embedded or from markup a
+	 * later filter produced.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string       $content Content being filtered.
+	 * @param WP_Post|null $post    Job listing the content belongs to. Defaults to the global post.
+	 * @return string
+	 */
+	public function strip_untrusted_listing_media( $content, $post = null ) {
+		$post = self::get_listing_for_content( $post );
+		if ( ! $post || self::is_trusted_listing( $post ) ) {
+			return $content;
+		}
+
+		// Only media elements are removed: on the single listing page this runs over the whole
+		// listing template, which has buttons and forms that must be kept.
+		return self::remove_media_elements( $content );
+	}
+
+	/**
+	 * Restricts the job description passed through `the_job_description`, including by templates
+	 * that pass the raw post content.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string       $description Job description.
+	 * @param WP_Post|null $post        Job listing the description belongs to. Defaults to the global post.
+	 * @return string
+	 */
+	public function filter_job_description( $description, $post = null ) {
+		$post = self::get_listing_for_content( $post );
+		if ( ! $post ) {
+			return $description;
+		}
+
+		return self::restrict_listing_content( $description, $post );
+	}
+
+	/**
+	 * Turns off the editor's media previews (wpview) for listings by untrusted authors, so the
+	 * editor doesn't build media players from their content.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string[] $plugins TinyMCE plugins.
+	 * @return string[]
+	 */
+	public function disable_untrusted_editor_previews( $plugins ) {
+		if ( ! is_admin() ) {
+			return $plugins;
+		}
+
+		$post = self::get_listing_for_content();
+		if ( ! $post || self::is_trusted_listing( $post ) ) {
+			return $plugins;
+		}
+
+		return array_values( array_diff( $plugins, [ 'wpview' ] ) );
+	}
+
+	/**
+	 * Restricts job listing content shown through `the_content` outside the single listing
+	 * template, such as in search results, archives, query loops and the REST API.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $content Post content.
+	 * @return string
+	 */
+	public function filter_listing_content( $content ) {
+		$post = self::get_listing_for_content();
+		if ( ! $post ) {
+			return $content;
+		}
+
+		return self::restrict_listing_content( $content, $post );
+	}
+
+	/**
 	 * Returns the expanded set of tags allowed in job listing content.
 	 *
 	 * @since 1.33.0
 	 * @return string
 	 */
 	private static function kses_allowed_html() {
+		$allowed_html = wp_kses_allowed_html( 'post' );
+
+		// Listing content doesn't need <track> elements.
+		unset( $allowed_html['track'] );
+
 		/**
 		 * Change the allowed tags in job listing content.
 		 *
@@ -629,7 +814,7 @@ class WP_Job_Manager_Post_Types {
 		return apply_filters(
 			'job_manager_kses_allowed_html',
 			array_replace_recursive( // phpcs:ignore PHPCompatibility.FunctionUse.NewFunctions.array_replace_recursiveFound
-				wp_kses_allowed_html( 'post' ),
+				$allowed_html,
 				[
 					'iframe' => [
 						'src'             => true,
@@ -642,6 +827,10 @@ class WP_Job_Manager_Post_Types {
 						'title'           => true,
 						'allow'           => true,
 						'allowfullscreen' => true,
+						'sandbox'         => true,
+						'security'        => true,
+						'loading'         => true,
+						'referrerpolicy'  => true,
 					],
 				]
 			)
