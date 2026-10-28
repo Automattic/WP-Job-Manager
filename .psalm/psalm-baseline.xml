@@ -37,7 +37,6 @@
   <file src="includes/abstracts/abstract-wp-job-manager-form.php">
     <InvalidArgument>
       <code><![CDATA[sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) )]]></code>
-      <code><![CDATA[sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) )]]></code>
     </InvalidArgument>
     <InvalidReturnStatement>
       <code><![CDATA[$value && $value > 0 ? absint( $value ) : '']]></code>

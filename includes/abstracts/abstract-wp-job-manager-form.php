@@ -98,20 +98,21 @@ abstract class WP_Job_Manager_Form {
 	 */
 	protected function is_new_submission_request() {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- The submitting key is the proof of intent.
-		if (
-			! isset( $_GET['new'] )
-			|| ! isset( $_GET['key'] )
-			|| ! isset( $_COOKIE['wp-job-manager-submitting-job-key'] )
-			|| ! is_string( $_GET['key'] )
-			|| ! is_string( $_COOKIE['wp-job-manager-submitting-job-key'] )
-		) {
+		if ( ! isset( $_GET['new'], $_GET['key'], $_COOKIE['wp-job-manager-submitting-job-key'], $_COOKIE['wp-job-manager-submitting-job-id'] ) ) {
 			return false;
 		}
 
 		$submitting_key = wp_unslash( $_COOKIE['wp-job-manager-submitting-job-key'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Only compared, never stored or output.
 		$requested_key  = wp_unslash( $_GET['key'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Only compared, never stored or output.
-		$job_id         = isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) && is_string( $_COOKIE['wp-job-manager-submitting-job-id'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) : '';
+		$job_id         = wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cast to an integer below.
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		// Request values can be arrays, which can't be a key or an ID.
+		if ( ! is_string( $submitting_key ) || ! is_string( $requested_key ) || ! is_string( $job_id ) ) {
+			return false;
+		}
+
+		$job_id = absint( $job_id );
 
 		return $job_id && get_post_meta( $job_id, '_submitting_key', true ) === $submitting_key && hash_equals( $submitting_key, $requested_key );
 	}
