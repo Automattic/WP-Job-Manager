@@ -88,17 +88,41 @@ abstract class WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Whether the request starts a new submission in place of the one in the resume cookies.
+	 *
+	 * Only a request carrying the current submitting key does, like the "Create A New Job" link.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @return bool
+	 */
+	protected function is_new_submission_request() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- The submitting key is the proof of intent.
+		if (
+			! isset( $_GET['new'] )
+			|| ! isset( $_GET['key'] )
+			|| ! isset( $_COOKIE['wp-job-manager-submitting-job-key'] )
+			|| ! is_string( $_GET['key'] )
+			|| ! is_string( $_COOKIE['wp-job-manager-submitting-job-key'] )
+		) {
+			return false;
+		}
+
+		$submitting_key = wp_unslash( $_COOKIE['wp-job-manager-submitting-job-key'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Only compared, never stored or output.
+		$requested_key  = wp_unslash( $_GET['key'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Only compared, never stored or output.
+		$job_id         = isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) && is_string( $_COOKIE['wp-job-manager-submitting-job-id'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		return $job_id && get_post_meta( $job_id, '_submitting_key', true ) === $submitting_key && hash_equals( $submitting_key, $requested_key );
+	}
+
+	/**
 	 * Processes the form result and can also change view if step is complete.
 	 */
 	public function process() {
 
 		// reset cookie.
-		if (
-			isset( $_GET['new'] ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
-			isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) &&
-			isset( $_COOKIE['wp-job-manager-submitting-job-key'] ) &&
-			get_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key', true ) === $_COOKIE['wp-job-manager-submitting-job-key']
-		) {
+		if ( $this->is_new_submission_request() && isset( $_COOKIE['wp-job-manager-submitting-job-id'] ) ) {
 			delete_post_meta( sanitize_text_field( wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ) ), '_submitting_key' );
 
 			$cookie_options = [
