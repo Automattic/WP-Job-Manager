@@ -665,7 +665,7 @@ class WP_Job_Manager_Post_Types {
 		 * @param bool    $allow_shortcodes True when the listing author can edit job listings.
 		 * @param WP_Post $post             Job listing.
 		 */
-		return (bool) apply_filters( 'job_manager_job_description_allow_shortcodes', user_can( $post->post_author, self::CAP_EDIT_LISTINGS ), $post );
+		return (bool) apply_filters( 'job_manager_job_description_allow_shortcodes', user_can( (int) $post->post_author, self::CAP_EDIT_LISTINGS ), $post );
 	}
 
 	/**
@@ -796,7 +796,7 @@ class WP_Job_Manager_Post_Types {
 	 * Returns the expanded set of tags allowed in job listing content.
 	 *
 	 * @since 1.33.0
-	 * @return string
+	 * @return array
 	 */
 	private static function kses_allowed_html() {
 		$allowed_html = wp_kses_allowed_html( 'post' );
