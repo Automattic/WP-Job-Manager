@@ -149,7 +149,7 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Allow resuming from cookie.
 		$this->resume_edit = false;
 		if (
-			! isset( $_GET['new'] ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Input is used safely.
+			! $this->is_new_submission_request()
 			&& (
 				'before' === get_option( 'job_manager_paid_listings_flow' )
 				|| ! $this->job_id
