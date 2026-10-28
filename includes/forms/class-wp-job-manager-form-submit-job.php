@@ -731,6 +731,25 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 	 */
 	public function submit_handler() {
 		try {
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Input is used safely. Nonce checked below when possible.
+			$is_saving_draft = $this->can_continue_later() && ! empty( $_POST['save_draft'] );
+
+			if ( empty( $_POST['submit_job'] ) && ! $is_saving_draft ) {
+				return;
+			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+			// Check the request before reading the posted fields.
+			$this->check_submit_form_nonce_field();
+
+			if ( ! job_manager_user_can_post_job() && ! job_manager_user_can_edit_job( $this->job_id ) ) {
+				if ( is_user_logged_in() ) {
+					throw new Exception( __( 'You do not have permission to post a listing.', 'wp-job-manager' ) );
+				}
+
+				throw new Exception( __( 'You must be signed in to post a new listing.', 'wp-job-manager' ) );
+			}
+
 			// Init fields.
 			$this->init_fields();
 
@@ -741,19 +760,12 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			// validation failure cannot echo a foreign attachment's file URL back to them.
 			$this->scrub_unusable_attachment_field_values();
 
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Input is used safely. Nonce checked below when possible.
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Input is used safely. Nonce checked above when possible.
 			$input_create_account_username        = isset( $_POST['create_account_username'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_username'] ) ) : false;
 			$input_create_account_password        = isset( $_POST['create_account_password'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_password'] ) ) : false;
 			$input_create_account_password_verify = isset( $_POST['create_account_password_verify'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_password_verify'] ) ) : false;
 			$input_create_account_email           = isset( $_POST['create_account_email'] ) ? sanitize_text_field( wp_unslash( $_POST['create_account_email'] ) ) : false;
-			$is_saving_draft                      = $this->can_continue_later() && ! empty( $_POST['save_draft'] );
-
-			if ( empty( $_POST['submit_job'] ) && ! $is_saving_draft ) {
-				return;
-			}
 			// phpcs:enable WordPress.Security.NonceVerification.Missing
-
-			$this->check_submit_form_nonce_field();
 
 			// Validate fields.
 			if ( $is_saving_draft ) {
