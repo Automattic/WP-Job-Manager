@@ -584,6 +584,11 @@ class WP_Job_Manager_Shortcodes {
 			$atts
 		);
 
+		// A random summary lists listings; a summary by ID shows one listing, gated on view in the template.
+		if ( ! $atts['id'] && ! job_manager_user_can_browse_job_listings() ) {
+			return '';
+		}
+
 		ob_start();
 
 		$args = [
@@ -660,7 +665,7 @@ class WP_Job_Manager_Shortcodes {
 				$jobs->the_post();
 				// Don't expose application details for a password-protected listing (same guard as
 				// WP_Job_Manager_Post_Types::job_content()); the [job_apply] shortcode bypasses that filter.
-				if ( post_password_required() && ! is_super_admin() ) {
+				if ( ( post_password_required() && ! is_super_admin() ) || ! job_manager_user_can_view_job_listing( get_the_ID() ) ) {
 					continue;
 				}
 				$apply = get_the_job_application_method();
