@@ -92,7 +92,7 @@ abstract class WP_Job_Manager_Form {
 	 *
 	 * Only a request carrying the current submitting key does, like the "Create A New Job" link.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 *
 	 * @return bool
 	 */

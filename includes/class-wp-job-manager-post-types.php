@@ -623,7 +623,7 @@ class WP_Job_Manager_Post_Types {
 	 * Restricts listing content written by an author who can't post unfiltered HTML: the content
 	 * is limited to the listing's allowed tags, and its shortcodes are not expanded.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 *
 	 * @param string  $content Listing content.
 	 * @param WP_Post $post    Job listing.
@@ -647,7 +647,7 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Whether a listing's content is trusted to use shortcodes, blocks and media.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 *
 	 * @param WP_Post $post Job listing.
 	 * @return bool
@@ -660,7 +660,7 @@ class WP_Job_Manager_Post_Types {
 		 * only listings whose author can edit job listings have their shortcodes and blocks
 		 * expanded, keep media elements, and get media previews in the editor.
 		 *
-		 * @since $$next-version$$
+		 * @since 2.4.9
 		 *
 		 * @param bool    $allow_shortcodes True when the listing author can edit job listings.
 		 * @param WP_Post $post             Job listing.
@@ -699,7 +699,7 @@ class WP_Job_Manager_Post_Types {
 	 * are excluded: media players build interactive menus from their markup, so they aren't safe
 	 * with values an untrusted submitter supplies.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 *
 	 * @return array
 	 */
@@ -716,7 +716,7 @@ class WP_Job_Manager_Post_Types {
 	 * media player can't be built from a bare media URL that was auto-embedded or from markup a
 	 * later filter produced.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 *
 	 * @param string       $content Content being filtered.
 	 * @param WP_Post|null $post    Job listing the content belongs to. Defaults to the global post.
@@ -737,7 +737,7 @@ class WP_Job_Manager_Post_Types {
 	 * Restricts the job description passed through `the_job_description`, including by templates
 	 * that pass the raw post content.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 *
 	 * @param string       $description Job description.
 	 * @param WP_Post|null $post        Job listing the description belongs to. Defaults to the global post.
@@ -756,7 +756,7 @@ class WP_Job_Manager_Post_Types {
 	 * Turns off the editor's media previews (wpview) for listings by untrusted authors, so the
 	 * editor doesn't build media players from their content.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 *
 	 * @param string[] $plugins TinyMCE plugins.
 	 * @return string[]
@@ -778,7 +778,7 @@ class WP_Job_Manager_Post_Types {
 	 * Restricts job listing content shown through `the_content` outside the single listing
 	 * template, such as in search results, archives, query loops and the REST API.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 *
 	 * @param string $content Post content.
 	 * @return string

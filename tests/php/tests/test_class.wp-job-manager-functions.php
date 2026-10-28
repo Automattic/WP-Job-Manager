@@ -609,7 +609,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * orderby, featured listings must lead and the secondary sort must respect the
 	 * passed orderby (not silently fall back to date-descending).
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_featured_first_custom_orderby() {
@@ -662,7 +662,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * Regression for issue #2939. The custom orderby/order must be honoured
 	 * across both directions and orderby values while featured still lead.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 * @covers ::get_job_listings
 	 */
 	public function test_get_job_listings_featured_first_orderby_variants() {
@@ -1672,7 +1672,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * A duplicate starts unpromoted, like it starts unfeatured.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 * @covers ::job_manager_duplicate_listing
 	 * @dataProvider promotion_values
 	 *
@@ -1691,7 +1691,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * The promotion isn't copied even when a filter replaces the ignored keys.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 * @covers ::job_manager_duplicate_listing
 	 */
 	public function test_duplicate_listing_does_not_copy_promotion_with_filtered_ignore_keys() {
@@ -1708,7 +1708,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * A duplicate of a featured listing starts unfeatured, including its sort order.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 * @covers ::job_manager_duplicate_listing
 	 */
 	public function test_duplicate_of_featured_listing_does_not_sort_as_featured() {
@@ -1724,7 +1724,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	/**
 	 * Control: a duplicate keeps the listing's ordinary data.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.9
 	 * @covers ::job_manager_duplicate_listing
 	 */
 	public function test_duplicate_listing_copies_listing_data() {
