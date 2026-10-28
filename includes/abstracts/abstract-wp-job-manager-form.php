@@ -764,6 +764,11 @@ abstract class WP_Job_Manager_Form {
 			$file_urls       = [];
 			$files_to_upload = job_manager_prepare_uploaded_files( $_FILES[ $field_key ] ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1720.
 
+			// A single-file field only keeps the first file, so don't write the others.
+			if ( empty( $field['multiple'] ) ) {
+				$files_to_upload = array_slice( $files_to_upload, 0, 1 );
+			}
+
 			foreach ( $files_to_upload as $file_to_upload ) {
 				$uploaded_file = job_manager_upload_file(
 					$file_to_upload,
