@@ -1656,4 +1656,83 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	public function test_get_accept_file_types_empty_when_nothing_is_allowed() {
 		$this->assertSame( '', job_manager_get_accept_file_types( [] ) );
 	}
+
+	/**
+	 * Promotion values, including the '0' kept on listings that stay in the promoted feed.
+	 *
+	 * @return array[]
+	 */
+	public function promotion_values() {
+		return [
+			'promoted'      => [ '1' ],
+			'kept in feed'  => [ '0' ],
+		];
+	}
+
+	/**
+	 * A duplicate starts unpromoted, like it starts unfeatured.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 * @dataProvider promotion_values
+	 *
+	 * @param string $promotion Promotion meta value on the original listing.
+	 */
+	public function test_duplicate_listing_does_not_copy_promotion( $promotion ) {
+		$job_id = $this->factory->job_listing->create();
+		update_post_meta( $job_id, '_promoted', $promotion );
+
+		$duplicate_id = job_manager_duplicate_listing( $job_id );
+
+		$this->assertNotEmpty( $duplicate_id );
+		$this->assertFalse( metadata_exists( 'post', $duplicate_id, '_promoted' ) );
+	}
+
+	/**
+	 * The promotion isn't copied even when a filter replaces the ignored keys.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_does_not_copy_promotion_with_filtered_ignore_keys() {
+		$job_id = $this->factory->job_listing->create();
+		update_post_meta( $job_id, '_promoted', '1' );
+		add_filter( 'job_manager_duplicate_listing_ignore_keys', '__return_empty_array' );
+
+		$duplicate_id = job_manager_duplicate_listing( $job_id );
+
+		remove_filter( 'job_manager_duplicate_listing_ignore_keys', '__return_empty_array' );
+		$this->assertFalse( metadata_exists( 'post', $duplicate_id, '_promoted' ) );
+	}
+
+	/**
+	 * A duplicate of a featured listing starts unfeatured, including its sort order.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_of_featured_listing_does_not_sort_as_featured() {
+		$job_id = $this->factory->job_listing->create();
+		update_post_meta( $job_id, '_featured', 1 );
+		$this->assertSame( -1, get_post( $job_id )->menu_order, 'The original should sort as featured.' );
+
+		$duplicate_id = job_manager_duplicate_listing( $job_id );
+
+		$this->assertSame( 0, get_post( $duplicate_id )->menu_order );
+	}
+
+	/**
+	 * Control: a duplicate keeps the listing's ordinary data.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_copies_listing_data() {
+		$job_id = $this->factory->job_listing->create();
+		update_post_meta( $job_id, '_job_location', 'Montréal' );
+
+		$duplicate_id = job_manager_duplicate_listing( $job_id );
+
+		$this->assertSame( 'Montréal', get_post_meta( $duplicate_id, '_job_location', true ) );
+	}
 }
