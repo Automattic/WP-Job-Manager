@@ -574,7 +574,8 @@ function wpjm_get_the_job_description( $post = null ) {
 		return null;
 	}
 
-	$description = apply_filters( 'the_job_description', wp_kses_post( $post->post_content ) );
+	$description = \WP_Job_Manager_Post_Types::restrict_listing_content( wp_kses_post( $post->post_content ), $post );
+	$description = apply_filters( 'the_job_description', $description, $post );
 
 	/**
 	 * Filter for the job description.
