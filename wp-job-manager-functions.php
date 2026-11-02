@@ -1655,7 +1655,12 @@ function job_manager_upload_file( $file, $args = [] ) {
 			return new WP_Error( 'upload', sprintf( __( 'Uploaded files need to be one of the following file types: %s', 'wp-job-manager' ), $allowed_file_extensions ) );
 		}
 	} else {
-		$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', [ 'test_form' => false ] ) );
+		$overrides = [
+			'test_form' => false,
+			'mimes'     => $allowed_mime_types,
+		];
+
+		$upload = wp_handle_upload( $file, apply_filters( 'submit_job_wp_handle_upload_overrides', $overrides ) );
 		if ( ! empty( $upload['error'] ) ) {
 			return new WP_Error( 'upload', $upload['error'] );
 		} else {

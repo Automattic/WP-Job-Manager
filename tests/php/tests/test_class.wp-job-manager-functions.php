@@ -1735,4 +1735,96 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 
 		$this->assertSame( 'Montréal', get_post_meta( $duplicate_id, '_job_location', true ) );
 	}
+
+	/**
+	 * @covers ::job_manager_upload_file
+	 */
+	public function test_upload_file_passes_allowed_mime_types_to_wp_handle_upload() {
+		$allowed  = [ 'pdf' => 'application/pdf' ];
+		$received = null;
+		$capture  = function ( $overrides ) use ( &$received ) {
+			$received = $overrides;
+
+			// Stop before the upload itself; only the overrides are under test.
+			return array_merge( $overrides, [ 'action' => 'wp_handle_sideload' ] );
+		};
+		add_filter( 'submit_job_wp_handle_upload_overrides', $capture );
+
+		job_manager_upload_file( $this->make_upload( 'document.pdf', 'application/pdf', "%PDF-1.4\n%%EOF\n" ), [ 'allowed_mime_types' => $allowed ] );
+
+		remove_filter( 'submit_job_wp_handle_upload_overrides', $capture );
+
+		$this->assertIsArray( $received );
+		$this->assertFalse( $received['test_form'] );
+		$this->assertSame( $allowed, $received['mimes'] );
+	}
+
+	/**
+	 * @covers ::job_manager_upload_file
+	 */
+	public function test_upload_file_uses_allowed_mime_types_for_file_extension() {
+		add_filter( 'submit_job_wp_handle_upload_overrides', [ $this, 'use_sideload_action' ] );
+
+		$result = job_manager_upload_file(
+			$this->make_upload( 'archive.zip', 'application/pdf', "PK\x03\x04" . str_repeat( "\0", 26 ) ),
+			[ 'allowed_mime_types' => [ 'pdf' => 'application/pdf' ] ]
+		);
+
+		remove_filter( 'submit_job_wp_handle_upload_overrides', [ $this, 'use_sideload_action' ] );
+
+		$this->assertWPError( $result );
+	}
+
+	/**
+	 * @covers ::job_manager_upload_file
+	 */
+	public function test_upload_file_accepts_file_in_allowed_mime_types() {
+		add_filter( 'submit_job_wp_handle_upload_overrides', [ $this, 'use_sideload_action' ] );
+
+		$result = job_manager_upload_file(
+			$this->make_upload( 'document.pdf', 'application/pdf', "%PDF-1.4\n%%EOF\n" ),
+			[ 'allowed_mime_types' => [ 'pdf' => 'application/pdf' ] ]
+		);
+
+		remove_filter( 'submit_job_wp_handle_upload_overrides', [ $this, 'use_sideload_action' ] );
+
+		$this->assertNotWPError( $result );
+		$this->assertSame( 'pdf', $result->extension );
+		$this->assertFileExists( $result->file );
+
+		wp_delete_file( $result->file );
+	}
+
+	/**
+	 * Test uploads are not real HTTP uploads, so use the sideload action, which skips is_uploaded_file().
+	 *
+	 * @param array $overrides Upload overrides.
+	 * @return array
+	 */
+	public function use_sideload_action( $overrides ) {
+		$overrides['action'] = 'wp_handle_sideload';
+
+		return $overrides;
+	}
+
+	/**
+	 * Creates a temporary file and returns it in $_FILES format.
+	 *
+	 * @param string $name     File name.
+	 * @param string $type     Client-supplied MIME type.
+	 * @param string $contents File contents.
+	 * @return array
+	 */
+	private function make_upload( $name, $type, $contents ) {
+		$tmp = wp_tempnam( $name );
+		file_put_contents( $tmp, $contents ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+
+		return [
+			'name'     => $name,
+			'type'     => $type,
+			'tmp_name' => $tmp,
+			'error'    => 0,
+			'size'     => strlen( $contents ),
+		];
+	}
 }
