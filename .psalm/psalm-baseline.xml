@@ -451,6 +451,8 @@
       <code><![CDATA[$return_datetime ? null : '']]></code>
     </NullableReturnStatement>
     <UndefinedConstant>
+      <code>COOKIEPATH</code>
+      <code>COOKIE_DOMAIN</code>
       <code>LOGGED_IN_COOKIE</code>
     </UndefinedConstant>
   </file>
