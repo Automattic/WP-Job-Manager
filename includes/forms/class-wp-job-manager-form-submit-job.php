@@ -1195,8 +1195,13 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 			return false;
 		}
 
-		// The user owns the attachment (the normal case: they uploaded it).
-		if ( get_current_user_id() === (int) $attachment->post_author ) {
+		// The user owns the attachment (the normal case: they uploaded it). User 0 never owns
+		// anything: guest uploads are stored with post_author 0 and a logged-out visitor's ID
+		// is also 0, which must not make every guest the owner of every guest upload. A guest's
+		// own files are covered by the per-visitor upload record and by the listing they are
+		// mid-submitting ({@see is_existing_listing_attachment()}).
+		$user_id = get_current_user_id();
+		if ( $user_id && $user_id === (int) $attachment->post_author ) {
 			return true;
 		}
 
