@@ -1090,6 +1090,10 @@ class WP_Job_Manager_Post_Types {
 
 		$query->set( 'has_password', false );
 
+		// Match job_feed(): feeds serve published listings only. Without this, every
+		// post status registered 'public' — such as 'expired' — is included on feed queries.
+		$query->set( 'post_status', 'publish' );
+
 		// View-capability gate — see job_feed(): restrict a denied viewer to their own
 		// listings (none for anonymous) so the default RSS / Atom endpoints do not expose
 		// details the single listing view and REST API withhold.
