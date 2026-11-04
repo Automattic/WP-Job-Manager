@@ -107,8 +107,10 @@ abstract class WP_Job_Manager_Form {
 		$job_id         = wp_unslash( $_COOKIE['wp-job-manager-submitting-job-id'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cast to an integer below.
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-		// Request values can be arrays, which can't be a key or an ID.
-		if ( ! is_string( $submitting_key ) || ! is_string( $requested_key ) || ! is_string( $job_id ) ) {
+		// Request values can be arrays, which can't be a key or an ID. An empty key can't be
+		// one either: a listing that never had a submitting key stores no meta, and the ''
+		// the meta lookup returns must not match an empty cookie.
+		if ( ! is_string( $submitting_key ) || '' === $submitting_key || ! is_string( $requested_key ) || ! is_string( $job_id ) ) {
 			return false;
 		}
 
