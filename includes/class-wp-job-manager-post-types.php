@@ -635,7 +635,8 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		$content = wp_kses( $content, self::restricted_allowed_html() );
-		$content = strip_shortcodes( $content );
+		// Not strip_shortcodes(): that would remove the text inside enclosing shortcodes with them.
+		$content = job_manager_unwrap_shortcodes( $content );
 
 		// Drop block delimiters so dynamic blocks aren't rendered from the content later.
 		$content = preg_replace( '/<!--\s*\/?wp:.*?-->/s', '', $content );

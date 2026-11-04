@@ -12,6 +12,23 @@ class Tests_Job_Description_Shortcodes extends WPJM_BaseTest {
 
 	const TRACK_ELEMENT = '<track kind="captions" src="https://example.com/c.vtt" label="English">';
 
+	public function setUp(): void {
+		parent::setUp();
+		// Stand-ins for page-builder wrapper shortcodes ([vc_row], [et_pb_section], …).
+		add_shortcode( 'test_builder_row', [ $this, 'render_wrapper_shortcode' ] );
+		add_shortcode( 'test_builder_col', [ $this, 'render_wrapper_shortcode' ] );
+	}
+
+	public function tearDown(): void {
+		remove_shortcode( 'test_builder_row' );
+		remove_shortcode( 'test_builder_col' );
+		parent::tearDown();
+	}
+
+	public function render_wrapper_shortcode( $atts, $content = '' ) {
+		return '<div class="wrapper-shortcode-rendered">' . do_shortcode( $content ) . '</div>';
+	}
+
 	/**
 	 * @covers WP_Job_Manager_Post_Types::output_kses_post
 	 */
@@ -100,6 +117,104 @@ class Tests_Job_Description_Shortcodes extends WPJM_BaseTest {
 
 		remove_filter( 'job_manager_job_description_allow_shortcodes', '__return_true' );
 		$this->assertStringContainsString( 'wp-video-shortcode', $output );
+	}
+
+	/**
+	 * Text inside an enclosing shortcode survives when shortcodes are not expanded: page builders
+	 * wrap the whole description in shortcodes, so removing their inner content blanks the listing.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::restrict_listing_content
+	 */
+	public function test_text_inside_wrapper_shortcode_is_kept_for_subscriber_listing() {
+		$job_id = $this->create_listing_by_role( 'subscriber', '[test_builder_row]<p>Builder wrapped text</p>[/test_builder_row]' );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringContainsString( 'Builder wrapped text', $output, 'Text inside a wrapper shortcode must be kept.' );
+		$this->assertStringNotContainsString( 'wrapper-shortcode-rendered', $output, 'The wrapper shortcode must not be expanded.' );
+		$this->assertStringNotContainsString( '[test_builder_row', $output, 'The wrapper shortcode tags must be removed.' );
+	}
+
+	/**
+	 * Editors don't have `edit_job_listings` by default either; this mirrors the reported setup.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::restrict_listing_content
+	 */
+	public function test_text_inside_wrapper_shortcode_is_kept_for_editor_listing() {
+		$job_id = $this->create_listing_by_role( 'editor', '[test_builder_row]<p>Builder wrapped text</p>[/test_builder_row]' );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringContainsString( 'Builder wrapped text', $output );
+		$this->assertStringNotContainsString( 'wrapper-shortcode-rendered', $output );
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::restrict_listing_content
+	 */
+	public function test_text_inside_nested_wrapper_shortcodes_is_kept() {
+		$job_id = $this->create_listing_by_role( 'subscriber', '[test_builder_row][test_builder_col]<p>Nested builder text</p>[/test_builder_col][/test_builder_row]' );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringContainsString( 'Nested builder text', $output, 'Text inside nested wrapper shortcodes must be kept.' );
+		$this->assertStringNotContainsString( 'wrapper-shortcode-rendered', $output );
+		$this->assertStringNotContainsString( 'test_builder_col', $output );
+	}
+
+	/**
+	 * Self-closing media shortcodes are still removed, including inside a wrapper.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::restrict_listing_content
+	 */
+	public function test_media_shortcode_inside_wrapper_is_removed_but_text_is_kept() {
+		$job_id = $this->create_listing_by_role( 'subscriber', '[test_builder_row]Before [video src="https://example.com/a.mp4"] after[/test_builder_row]' );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringContainsString( 'Before', $output );
+		$this->assertStringContainsString( 'after', $output );
+		$this->assertStringNotContainsString( 'wp-video-shortcode', $output );
+		$this->assertStringNotContainsString( '[video', $output );
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::filter_listing_content
+	 */
+	public function test_text_inside_wrapper_shortcode_is_kept_in_list() {
+		$job_id = $this->create_listing_by_role( 'subscriber', '[test_builder_row]<p>Builder wrapped text</p>[/test_builder_row]' );
+
+		$output = $this->render_listing_in_list( $job_id );
+
+		$this->assertStringContainsString( 'Builder wrapped text', $output );
+		$this->assertStringNotContainsString( 'wrapper-shortcode-rendered', $output );
+	}
+
+	/**
+	 * Text inside a shortcode that isn't registered on this site is kept as well.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::restrict_listing_content
+	 */
+	public function test_text_inside_unregistered_wrapper_shortcode_is_kept() {
+		$job_id = $this->create_listing_by_role( 'subscriber', '[not_registered_builder]<p>Unknown wrapper text</p>[/not_registered_builder]' );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringContainsString( 'Unknown wrapper text', $output, 'Text inside an unregistered shortcode must be kept.' );
+	}
+
+	/**
+	 * Control: trusted authors keep working wrapper shortcodes.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::restrict_listing_content
+	 */
+	public function test_wrapper_shortcode_is_expanded_for_admin_listing() {
+		$job_id = $this->create_listing_by_role( 'administrator', '[test_builder_row]<p>Builder wrapped text</p>[/test_builder_row]' );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringContainsString( 'wrapper-shortcode-rendered', $output, 'Trusted authors must keep shortcode support.' );
+		$this->assertStringContainsString( 'Builder wrapped text', $output );
 	}
 
 	/**
