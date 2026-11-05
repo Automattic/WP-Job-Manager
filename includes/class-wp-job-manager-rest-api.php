@@ -166,6 +166,18 @@ class WP_Job_Manager_REST_API {
 		// Password-protected listings are excluded from REST collections regardless of post-type config.
 		$args['has_password'] = false;
 
+		// Match get_job_listings(): expired listings are left out of listing queries unless the
+		// site chose to show them. Without this, the publicly registered 'expired' status can be
+		// requested on the collection route by anyone. Requesters who may edit listings keep the
+		// statuses they asked for; core enforces per-status permission for non-public statuses.
+		$post_type_object = get_post_type_object( WP_Job_Manager_Post_Types::PT_LISTING );
+		if (
+			intval( get_option( 'job_manager_hide_expired', get_option( 'job_manager_hide_expired_content', 1 ) ) )
+			&& ( ! $post_type_object || ! current_user_can( $post_type_object->cap->edit_posts ) )
+		) {
+			$args['post_status'] = 'publish';
+		}
+
 		if ( 1 !== absint( get_option( 'job_manager_hide_filled_positions' ) ) ) {
 			return $args;
 		}
@@ -216,6 +228,16 @@ class WP_Job_Manager_REST_API {
 		$is_password_blocked = post_password_required( $post );
 		$is_viewcap_blocked  = ! job_manager_user_can_view_job_listing( $post->ID );
 		$is_blocked          = $is_password_blocked || $is_viewcap_blocked;
+
+		// The single listing view replaces an expired listing's whole body with an "expired"
+		// notice when hiding expired content is on (the default); only the title remains.
+		// The REST item withholds the same fields — the status is registered public, so
+		// nothing upstream blocks the read. Visitors who may edit the listing see it in
+		// full, as they do on the job dashboard.
+		$is_expired_blocked = ! $is_blocked
+			&& 'expired' === $post->post_status
+			&& get_option( 'job_manager_hide_expired_content', 1 )
+			&& ! job_manager_user_can_edit_job( $post->ID );
 
 		// An edit-capable user hitting a *password-only* protected listing legitimately needs
 		// the raw fields and editor metadata to operate Gutenberg (WP core's controller permits
@@ -269,6 +291,21 @@ class WP_Job_Manager_REST_API {
 			// present in $data at this point, so remove_link() is the only effective way to drop
 			// the featured-media link before serialization.
 			$response->remove_link( 'https://api.w.org/featuredmedia' );
+			$data['meta'] = [];
+			$response->set_data( $data );
+
+			return $response;
+		}
+
+		if ( $is_expired_blocked ) {
+			foreach ( [ 'content', 'excerpt' ] as $field ) {
+				if ( isset( $data[ $field ]['rendered'] ) ) {
+					$data[ $field ]['rendered'] = '';
+				}
+				if ( isset( $data[ $field ]['raw'] ) ) {
+					$data[ $field ]['raw'] = '';
+				}
+			}
 			$data['meta'] = [];
 			$response->set_data( $data );
 
