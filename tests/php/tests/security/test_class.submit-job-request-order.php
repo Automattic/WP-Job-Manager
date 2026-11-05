@@ -45,6 +45,8 @@ class Tests_Submit_Job_Request_Order extends WPJM_BaseTest {
 		$_POST    = [];
 		$_REQUEST = [];
 		$_FILES   = [];
+		// The options roll back with the test transaction; the singleton's cached keys don't.
+		$this->reset_recaptcha_instance();
 		parent::tearDown();
 	}
 
@@ -264,5 +266,146 @@ class Tests_Submit_Job_Request_Order extends WPJM_BaseTest {
 		$this->run_submit_handler( [ 'submit_job' => '1' ] );
 
 		$this->assertCount( 1, $this->written_files );
+	}
+
+	/**
+	 * A submission that fails the captcha writes no file.
+	 */
+	public function test_failed_captcha_writes_no_file() {
+		$this->enable_recaptcha();
+		update_option( 'job_manager_user_requires_account', 0 );
+		$this->logout();
+		$this->post_company_logo_files( 1 );
+
+		// No g-recaptcha-response posted: the captcha check fails.
+		$this->run_submit_handler( [ 'submit_job' => '1' ] );
+
+		$this->assertSame( [], $this->written_files, 'Files must not be written before the captcha has passed.' );
+	}
+
+	/**
+	 * Control: a submission that passes the captcha still uploads its file.
+	 */
+	public function test_passing_captcha_writes_file() {
+		$this->enable_recaptcha();
+		update_option( 'job_manager_user_requires_account', 0 );
+		$this->logout();
+		$this->post_company_logo_files( 1 );
+
+		$mock_verify = function () {
+			return [
+				'body'     => wp_json_encode( [ 'success' => true ] ),
+				'response' => [ 'code' => 200 ],
+			];
+		};
+		add_filter( 'pre_http_request', $mock_verify );
+
+		$this->run_submit_handler(
+			[
+				'submit_job'           => '1',
+				'g-recaptcha-response' => 'test-token',
+			]
+		);
+
+		remove_filter( 'pre_http_request', $mock_verify );
+
+		$this->assertCount( 1, $this->written_files );
+	}
+
+	/**
+	 * A draft save that fails the captcha writes no file either.
+	 */
+	public function test_draft_save_with_failed_captcha_writes_no_file() {
+		$this->enable_recaptcha();
+		$this->enable_draft_saving();
+		$this->login_as_employer();
+		$this->post_company_logo_files( 1 );
+
+		$this->run_submit_handler(
+			[
+				'save_draft'  => '1',
+				'_wpjm_nonce' => wp_create_nonce( 'submit-job-0' ),
+			]
+		);
+
+		$this->assertSame( [], $this->written_files, 'Draft saves must not write files before the captcha has passed.' );
+	}
+
+	/**
+	 * A submission without the required agreement checkbox writes no file.
+	 */
+	public function test_missing_agreement_writes_no_file() {
+		update_option( 'job_manager_show_agreement_job_submission', 1 );
+		update_option( 'job_manager_user_requires_account', 0 );
+		$this->logout();
+		$this->post_company_logo_files( 1 );
+
+		$this->run_submit_handler( [ 'submit_job' => '1' ] );
+
+		$this->assertSame( [], $this->written_files, 'Files must not be written before the agreement is accepted.' );
+	}
+
+	/**
+	 * Control: a submission with the agreement accepted still uploads its file.
+	 */
+	public function test_accepted_agreement_writes_file() {
+		update_option( 'job_manager_show_agreement_job_submission', 1 );
+		update_option( 'job_manager_user_requires_account', 0 );
+		$this->logout();
+		$this->post_company_logo_files( 1 );
+
+		$this->run_submit_handler(
+			[
+				'submit_job'         => '1',
+				'agreement-checkbox' => '1',
+			]
+		);
+
+		$this->assertCount( 1, $this->written_files );
+	}
+
+	/**
+	 * Draft saves skip the agreement checkbox, as they always have.
+	 */
+	public function test_draft_save_skips_agreement_checkbox() {
+		update_option( 'job_manager_show_agreement_job_submission', 1 );
+		$this->enable_draft_saving();
+		$this->login_as_employer();
+		$this->post_company_logo_files( 1 );
+
+		$this->run_submit_handler(
+			[
+				'save_draft'  => '1',
+				'_wpjm_nonce' => wp_create_nonce( 'submit-job-0' ),
+			]
+		);
+
+		$this->assertCount( 1, $this->written_files, 'Draft saves do not require the agreement checkbox.' );
+	}
+
+	/**
+	 * Enables the captcha on the job submission form and makes the singleton re-read its keys.
+	 */
+	private function enable_recaptcha() {
+		update_option( WP_Job_Manager\WP_Job_Manager_Recaptcha::RECAPTCHA_SITE_KEY, 'test-site-key' );
+		update_option( WP_Job_Manager\WP_Job_Manager_Recaptcha::RECAPTCHA_SECRET_KEY, 'test-secret-key' );
+		update_option( 'job_manager_enable_recaptcha_job_submission', 1 );
+		$this->reset_recaptcha_instance();
+	}
+
+	/**
+	 * Resets the recaptcha singleton so the next instance() reads the current options.
+	 */
+	private function reset_recaptcha_instance() {
+		$instance = ( new ReflectionClass( WP_Job_Manager\WP_Job_Manager_Recaptcha::class ) )->getProperty( 'instance' );
+		$instance->setAccessible( true );
+		$instance->setValue( null, null );
+	}
+
+	/**
+	 * Allows drafts to be saved from the submit form (needs a job dashboard page).
+	 */
+	private function enable_draft_saving() {
+		update_option( 'job_manager_job_dashboard_page_id', $this->factory->post->create( [ 'post_type' => 'page' ] ) );
 	}
 }

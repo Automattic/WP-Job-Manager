@@ -90,16 +90,18 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 		// Listing renewal support.
 		WP_Job_Manager_Helper_Renewals::instance( $this );
 
-		// Recaptcha support.
+		// Recaptcha support. Validated before the posted fields are read, since reading the
+		// fields writes any uploaded files; covers normal submissions and draft saves alike.
 		WP_Job_Manager\WP_Job_Manager_Recaptcha::instance()->maybe_enable_recaptcha(
 			'job_manager_enable_recaptcha_job_submission',
 			[ 'submit_job_form_end' ],
-			[ 'submit_job_form_validate_fields', 'submit_draft_job_form_validate_fields' ]
+			[ 'submit_job_form_validate_request' ]
 		);
 
 		if ( $this->use_agreement_checkbox() ) {
 			add_action( 'submit_job_form_end', [ $this, 'display_agreement_checkbox_field' ] );
-			add_filter( 'submit_job_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
+			// Also before the fields are read; draft saves skip it, as they always have.
+			add_filter( 'submit_job_form_validate_request', [ $this, 'validate_agreement_checkbox' ], 10, 2 );
 		}
 
 		$this->steps = (array) apply_filters(
@@ -748,6 +750,25 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 				}
 
 				throw new Exception( __( 'You must be signed in to post a new listing.', 'wp-job-manager' ) );
+			}
+
+			/**
+			 * Validate the job submission request before the posted fields are read.
+			 *
+			 * Reading the posted fields writes any uploaded files, so checks that gate the
+			 * submission as a whole — the captcha, the agreement checkbox — belong on this
+			 * filter, not on `submit_job_form_validate_fields`, which runs after the files
+			 * are already on disk.
+			 *
+			 * @since 2.4.10
+			 *
+			 * @param bool|WP_Error $is_valid        Whether the request is valid.
+			 * @param bool          $is_saving_draft Whether the submission is a draft save.
+			 */
+			$request_validation = apply_filters( 'submit_job_form_validate_request', true, $is_saving_draft );
+
+			if ( is_wp_error( $request_validation ) ) {
+				throw new Exception( $request_validation->get_error_message() );
 			}
 
 			// Init fields.
