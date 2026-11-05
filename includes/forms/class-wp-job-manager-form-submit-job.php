@@ -1437,7 +1437,11 @@ class WP_Job_Manager_Form_Submit_Job extends WP_Job_Manager_Form {
 					} else {
 						set_post_thumbnail( $this->job_id, $attachment_id );
 					}
-					update_user_meta( get_current_user_id(), '_company_logo', $attachment_id );
+
+					// Guests have no saved company values; user 0 must not accumulate shared meta.
+					if ( is_user_logged_in() ) {
+						update_user_meta( get_current_user_id(), '_company_logo', $attachment_id );
+					}
 
 					// Save meta data.
 				} else {

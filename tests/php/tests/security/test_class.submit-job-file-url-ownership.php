@@ -48,6 +48,18 @@ class Tests_Submit_Job_File_URL_Ownership extends WPJM_BaseTest {
 	}
 
 	/**
+	 * A fragment suffix on a foreign file URL changes nothing: ownership is checked on the
+	 * posted value, before any type check could be confused by the fragment.
+	 */
+	public function test_foreign_file_url_with_fragment_suffix_is_rejected() {
+		$this->login_as_employer();
+
+		$result = $this->validate_ownership( $this->uploads_url( 'woocommerce_uploads/.htaccess' ) . '#.png' );
+
+		$this->assertWPError( $result, 'A fragment suffix must not make a foreign file usable.' );
+	}
+
+	/**
 	 * Another user's media library attachment cannot be bound to a listing by posting its URL.
 	 */
 	public function test_other_users_attachment_url_is_rejected() {
