@@ -58,6 +58,14 @@ class WP_Job_Manager_Post_Types {
 	public const CAP_EDIT_LISTINGS = 'edit_job_listings';
 
 	/**
+	 * Plugin-generated media markup kept through the untrusted-media pass, keyed by its
+	 * single-use placeholder token. See protect_listing_media_output().
+	 *
+	 * @var string[]
+	 */
+	private static $protected_media = [];
+
+	/**
 	 * Constant for the capability name used for editing others job listings.
 	 */
 	public const CAP_EDIT_OTHERS_LISTINGS = 'edit_others_job_listings';
@@ -730,7 +738,69 @@ class WP_Job_Manager_Post_Types {
 
 		// Only media elements are removed: on the single listing page this runs over the whole
 		// listing template, which has buttons and forms that must be kept.
-		return self::remove_media_elements( $content );
+		$content = self::remove_media_elements( $content );
+
+		return self::restore_protected_media( $content );
+	}
+
+	/**
+	 * Keeps a piece of plugin-generated media markup through strip_untrusted_listing_media().
+	 *
+	 * The media pass can't tell the plugin's own markup, such as the company video player built
+	 * by WordPress from the listing's saved URL, from markup the author wrote. Plugin-generated
+	 * markup is swapped for a single-use random placeholder before the pass and swapped back
+	 * after it. The placeholder is generated server-side at render time, so content the author
+	 * wrote beforehand can never name one.
+	 *
+	 * Trusted listings, and output printed outside the filtered content (where no media pass
+	 * runs), are returned unchanged. Shortcodes are expanded before the swap: the restored
+	 * markup re-enters the content after `do_shortcode` has already run.
+	 *
+	 * @since 2.4.10
+	 *
+	 * @param string           $html Plugin-generated markup to keep.
+	 * @param int|WP_Post|null $post Job listing the markup belongs to. Defaults to the global post.
+	 * @return string The markup, or the placeholder that will be swapped back for it.
+	 */
+	public static function protect_listing_media_output( $html, $post = null ) {
+		$post = self::get_listing_for_content( get_post( $post ) );
+
+		if ( ! $post || self::is_trusted_listing( $post ) || ( ! doing_filter( 'the_content' ) && ! doing_filter( 'the_job_description' ) ) ) {
+			return $html;
+		}
+
+		$token = 'wpjm-protected-media-' . wp_generate_password( 24, false );
+
+		self::$protected_media[ $token ] = do_shortcode( $html );
+
+		return '<!-- ' . $token . ' -->';
+	}
+
+	/**
+	 * Swaps back the markup protected by protect_listing_media_output(). Placeholders are
+	 * single-use, and an unknown placeholder, such as one written into listing content by its
+	 * author, is left alone as the inert comment it is.
+	 *
+	 * @since 2.4.10
+	 *
+	 * @param string $content Content after the media pass.
+	 * @return string
+	 */
+	private static function restore_protected_media( $content ) {
+		if ( empty( self::$protected_media ) || false === strpos( $content, 'wpjm-protected-media-' ) ) {
+			return $content;
+		}
+
+		foreach ( self::$protected_media as $token => $html ) {
+			$placeholder = '<!-- ' . $token . ' -->';
+
+			if ( false !== strpos( $content, $placeholder ) ) {
+				$content = str_replace( $placeholder, $html, $content );
+				unset( self::$protected_media[ $token ] );
+			}
+		}
+
+		return $content;
 	}
 
 	/**
