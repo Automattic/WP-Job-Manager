@@ -761,6 +761,19 @@ class WP_Job_Manager_Post_Types {
 			return $content;
 		}
 
+		return self::restrict_content_html( $content );
+	}
+
+	/**
+	 * Restricts HTML content to the listing's allowed tags, with shortcodes and blocks kept
+	 * as the text that was written instead of being expanded.
+	 *
+	 * @since 2.4.10
+	 *
+	 * @param string $content HTML content.
+	 * @return string
+	 */
+	public static function restrict_content_html( $content ) {
 		$content = wp_kses( $content, self::restricted_allowed_html() );
 		// Not strip_shortcodes(): that would remove the text inside enclosing shortcodes with them.
 		$content = job_manager_unwrap_shortcodes( $content );
@@ -790,9 +803,10 @@ class WP_Job_Manager_Post_Types {
 		 * expanded, keep media elements, and get media previews in the editor.
 		 *
 		 * @since 2.4.9
+		 * @since 2.4.10 `$post` can be null, when a submission is checked before it is saved.
 		 *
-		 * @param bool    $allow_shortcodes True when the listing author can edit job listings.
-		 * @param WP_Post $post             Job listing.
+		 * @param bool         $allow_shortcodes True when the listing author can edit job listings.
+		 * @param WP_Post|null $post             Job listing, or null when the submission has no post yet.
 		 */
 		return (bool) apply_filters( 'job_manager_job_description_allow_shortcodes', user_can( (int) $post->post_author, self::CAP_EDIT_LISTINGS ), $post );
 	}
