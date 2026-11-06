@@ -150,6 +150,20 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 
 == Changelog ==
 
+### 2.4.10 - 2026-11-06
+* Fix: Keep uploaded files that another attachment still uses when a listing's attachment is deleted.
+* Fix: Don't copy a listing's edited and scheduled state when duplicating it.
+* Fix: Sanitize submitted descriptions the way listing content is displayed.
+* Fix: Display the company and location fields as the text that was entered.
+* Fix: Serve expired listings through the REST API the way the site displays them.
+* Fix: Show the company video player on listings whose media is restricted.
+* Fix: Check the captcha and terms agreement before processing the submitted fields.
+* Fix: Harden identity checks for logged-out visitors.
+* Fix: Remove iframes from restricted listing content.
+* Fix: Serve only published listings in the job listing feeds.
+* Fix: Apply the attachment usage rules to file URLs submitted through the frontend forms.
+* Fix: Keep the text written inside shortcodes when displaying restricted listing descriptions.
+
 ### 2.4.9 - 2026-10-28
 * Fix the primary job dashboard action button overflowing its container. (#3092)
 * Fix the [jobs] shortcode adding extra paragraph and line break tags in block themes. (#3044)
@@ -205,8 +219,3 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 * Enforce company-logo attachment ownership when saving a job listing as a draft.
 
 * Apply the post-password check to the `[job]` and `[job_apply]` shortcodes.
-
-### 2.4.5 - 2026-07-01
-* Escape URLs in two sprintf href templates with esc_url() (#2996)
-* Validate attachment ownership when reusing a company logo by ID (#2995)
-* Honor restrictive filter_post_status=publish for logged-out visitors (#2994)
