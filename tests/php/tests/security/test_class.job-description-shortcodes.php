@@ -486,18 +486,63 @@ class Tests_Job_Description_Shortcodes extends WPJM_BaseTest {
 	}
 
 	/**
-	 * The company video player is built from a submitted URL, so it's removed for untrusted listings.
+	 * The company video player is built by WordPress from the listing's saved URL, not from
+	 * author markup, so untrusted listings keep it while their own media is removed.
 	 *
-	 * @covers WP_Job_Manager_Post_Types::strip_untrusted_listing_media
+	 * @covers WP_Job_Manager_Post_Types::protect_listing_media_output
 	 */
-	public function test_company_video_player_is_removed_for_subscriber_listing() {
+	public function test_company_video_player_is_kept_for_subscriber_listing() {
 		$job_id = $this->create_listing_by_role( 'subscriber', 'Intro' );
 		update_post_meta( $job_id, '_company_video', 'https://example.com/company.mp4' );
 
 		$output = $this->render_single_listing( $job_id );
 
-		$this->assertStringNotContainsString( '<video', $output );
-		$this->assertStringContainsString( 'href="https://example.com/company.mp4"', $output, 'The video URL should be kept as a link.' );
+		$this->assertStringContainsString( 'class="company_video"', $output );
+		$this->assertStringContainsString( '<video', $output, 'The company video player must be kept.' );
+		$this->assertStringContainsString( 'company.mp4', $output );
+		$this->assertStringNotContainsString( 'wpjm-protected-media-', $output, 'No placeholder may remain in the output.' );
+	}
+
+	/**
+	 * Keeping the company video player must not keep the author's own media markup.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::protect_listing_media_output
+	 */
+	public function test_description_media_is_still_removed_when_company_video_is_kept() {
+		$job_id = $this->create_listing_by_role( 'subscriber', 'Intro <video class="wp-video-shortcode" src="https://example.com/author.mp4"></video>' );
+		update_post_meta( $job_id, '_company_video', 'https://example.com/company.mp4' );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringNotContainsString( 'author.mp4', $this->extract_video_markup( $output ), 'The author\'s video must still be removed.' );
+		$this->assertStringContainsString( 'company.mp4', $this->extract_video_markup( $output ), 'The company video player must be kept.' );
+	}
+
+	/**
+	 * A placeholder-looking comment written by the author restores nothing and keeps nothing.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::strip_untrusted_listing_media
+	 */
+	public function test_fake_placeholder_in_content_is_inert() {
+		$job_id  = $this->create_listing_by_role( 'subscriber', 'Intro' );
+		$content = 'Intro <!-- wpjm-protected-media-forgedtokenforgedtoken --> <video src="https://example.com/a.mp4"></video>';
+
+		$output = WP_Job_Manager_Post_Types::instance()->strip_untrusted_listing_media( $content, get_post( $job_id ) );
+
+		$this->assertStringNotContainsString( '<video', $output, 'Media next to a forged placeholder must still be removed.' );
+		$this->assertStringContainsString( '<!-- wpjm-protected-media-forgedtokenforgedtoken -->', $output, 'A forged placeholder restores nothing.' );
+	}
+
+	/**
+	 * Returns only the <video>…</video> portions of the output.
+	 *
+	 * @param string $output Rendered output.
+	 * @return string
+	 */
+	private function extract_video_markup( $output ) {
+		preg_match_all( '#<video\b[^>]*>.*?</video>#is', $output, $matches );
+
+		return implode( "\n", $matches[0] );
 	}
 
 	/**

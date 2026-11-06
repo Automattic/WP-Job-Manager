@@ -1016,8 +1016,10 @@ function the_company_video( $post = null ) {
 	$video_embed = apply_filters( 'the_company_video_embed', $video_embed, $post );
 
 	if ( $video_embed ) {
+		// The player is built by WordPress from the listing's saved URL, not from author
+		// markup, so it is kept when the listing's own media is removed from the content.
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo '<div class="company_video">' . $video_embed . '</div>';
+		echo WP_Job_Manager_Post_Types::protect_listing_media_output( '<div class="company_video">' . $video_embed . '</div>', $post );
 	}
 }
 
