@@ -1792,6 +1792,54 @@ function calculate_job_expiry( $job_id, $return_datetime = false, $from_timestam
 }
 
 /**
+ * Removes shortcodes from content, keeping the inner content of enclosing shortcodes.
+ *
+ * Unlike WordPress's `strip_shortcodes()`, which removes an enclosing shortcode together with
+ * everything between its opening and closing tags, this drops only the tags themselves:
+ * `[wrap]text[/wrap]` becomes `text`, recursively for shortcodes nested inside. Self-closing
+ * shortcodes, which have no inner content, are removed entirely, and escaped `[[shortcode]]`
+ * text keeps its literal form. As with `strip_shortcodes()`, only registered shortcodes match.
+ *
+ * @since 2.4.10
+ *
+ * @param string $content Content to remove shortcodes from.
+ * @return string Content with shortcode tags removed and their inner content kept.
+ */
+function job_manager_unwrap_shortcodes( $content ) {
+	global $shortcode_tags;
+
+	if ( ! is_string( $content ) || false === strpos( $content, '[' ) || empty( $shortcode_tags ) || ! is_array( $shortcode_tags ) ) {
+		return $content;
+	}
+
+	// Match only the registered shortcodes present in the content, as strip_shortcodes() does.
+	preg_match_all( '@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches );
+	$tagnames = array_intersect( array_keys( $shortcode_tags ), $matches[1] );
+
+	if ( empty( $tagnames ) ) {
+		return $content;
+	}
+
+	$content = do_shortcodes_in_html_tags( $content, true, $tagnames );
+	$pattern = get_shortcode_regex( $tagnames );
+
+	$content = preg_replace_callback(
+		"/$pattern/",
+		function ( $m ) {
+			// An escaped [[shortcode]] keeps its literal text, as in strip_shortcode_tag().
+			if ( '[' === $m[1] && ']' === $m[6] ) {
+				return (string) substr( $m[0], 1, -1 );
+			}
+
+			return $m[1] . job_manager_unwrap_shortcodes( isset( $m[5] ) ? $m[5] : '' ) . $m[6];
+		},
+		$content
+	);
+
+	return unescape_invalid_shortcodes( $content );
+}
+
+/**
  * Duplicates a listing.
  *
  * @since 1.25.0
