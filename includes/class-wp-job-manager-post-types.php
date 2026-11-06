@@ -648,11 +648,12 @@ class WP_Job_Manager_Post_Types {
 	 * Whether a listing's content is trusted to use shortcodes, blocks and media.
 	 *
 	 * @since 2.4.9
+	 * @since 2.4.10 Public.
 	 *
 	 * @param WP_Post $post Job listing.
 	 * @return bool
 	 */
-	private static function is_trusted_listing( $post ) {
+	public static function is_trusted_listing( $post ) {
 		/**
 		 * Filter whether a listing's content may use shortcodes, blocks and media.
 		 *
