@@ -1828,7 +1828,7 @@ function job_manager_unwrap_shortcodes( $content ) {
 		function ( $m ) {
 			// An escaped [[shortcode]] keeps its literal text, as in strip_shortcode_tag().
 			if ( '[' === $m[1] && ']' === $m[6] ) {
-				return substr( $m[0], 1, -1 );
+				return (string) substr( $m[0], 1, -1 );
 			}
 
 			return $m[1] . job_manager_unwrap_shortcodes( isset( $m[5] ) ? $m[5] : '' ) . $m[6];
