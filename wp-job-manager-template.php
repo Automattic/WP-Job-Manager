@@ -809,6 +809,33 @@ function get_the_job_publish_date( $post = null ) {
 }
 
 /**
+ * Prepares a listing text field for display: unless the listing is trusted, bracket
+ * characters are encoded so the field is shown as the text that was entered.
+ *
+ * Text fields can be submitted from the frontend, and templates print them inside
+ * content that may be processed further; see WP_Job_Manager_Post_Types::is_trusted_listing().
+ *
+ * @since 2.4.10
+ *
+ * @param string           $text Field text, already escaped for the output context.
+ * @param int|WP_Post|null $post Job listing (default: the current post).
+ * @return string
+ */
+function wpjm_esc_listing_text( $text, $post = null ) {
+	$post = get_post( $post );
+
+	if ( '' === (string) $text || ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
+		return $text;
+	}
+
+	if ( WP_Job_Manager_Post_Types::is_trusted_listing( $post ) ) {
+		return $text;
+	}
+
+	return str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $text );
+}
+
+/**
  * Displays the location for the job listing.
  *
  * @since 1.0.0
@@ -834,13 +861,13 @@ function the_job_location( $map_link = true, $post = null ) {
 			echo wp_kses_post(
 				apply_filters(
 					'the_job_location_map_link',
-					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . esc_html( wp_strip_all_tags( $location ) ) . '</a>',
+					'<a class="google_map_link" href="' . esc_url( 'https://maps.google.com/maps?q=' . rawurlencode( wp_strip_all_tags( $location ) ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false' ) . '" target="_blank">' . wpjm_esc_listing_text( esc_html( wp_strip_all_tags( $location ) ), $post ) . '</a>',
 					$location,
 					$post
 				)
 			);
 		} else {
-			echo wp_kses_post( $location );
+			echo wp_kses_post( wpjm_esc_listing_text( $location, $post ) );
 		}
 	} else {
 		echo wp_kses_post( apply_filters( 'the_job_location_anywhere_text', __( 'Anywhere', 'wp-job-manager' ) ) );
@@ -884,18 +911,18 @@ function the_company_logo( $size = 'thumbnail', $default = null, $post = null ) 
 	$logo = get_the_company_logo( $post, $size );
 
 	if ( has_post_thumbnail( $post ) ) {
-		echo '<img class="company_logo" src="' . esc_url( $logo ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
+		echo '<img class="company_logo" src="' . esc_url( $logo ) . '" alt="' . wpjm_esc_listing_text( esc_attr( get_the_company_name( $post ) ), $post ) . '" />';
 
 		// Before 1.24.0, logo URLs were stored in post meta.
 	} elseif ( ! empty( $logo ) && ( strstr( $logo, 'http' ) || file_exists( $logo ) ) ) {
 		if ( 'full' !== $size ) {
 			$logo = job_manager_get_resized_image( $logo, $size );
 		}
-		echo '<img class="company_logo" src="' . esc_url( $logo ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
+		echo '<img class="company_logo" src="' . esc_url( $logo ) . '" alt="' . wpjm_esc_listing_text( esc_attr( get_the_company_name( $post ) ), $post ) . '" />';
 	} elseif ( $default ) {
-		echo '<img class="company_logo" src="' . esc_url( $default ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
+		echo '<img class="company_logo" src="' . esc_url( $default ) . '" alt="' . wpjm_esc_listing_text( esc_attr( get_the_company_name( $post ) ), $post ) . '" />';
 	} else {
-		echo '<img class="company_logo" src="' . esc_url( apply_filters( 'job_manager_default_company_logo', JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' ) ) . '" alt="' . esc_attr( get_the_company_name( $post ) ) . '" />';
+		echo '<img class="company_logo" src="' . esc_url( apply_filters( 'job_manager_default_company_logo', JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png' ) ) . '" alt="' . wpjm_esc_listing_text( esc_attr( get_the_company_name( $post ) ), $post ) . '" />';
 	}
 }
 
@@ -1056,7 +1083,7 @@ function the_company_name( $before = '', $after = '', $echo = true, $post = null
 		return null;
 	}
 
-	$company_name = esc_attr( wp_strip_all_tags( $company_name ) );
+	$company_name = wpjm_esc_listing_text( esc_attr( wp_strip_all_tags( $company_name ) ), $post );
 	$company_name = $before . $company_name . $after;
 
 	if ( $echo ) {
@@ -1122,7 +1149,7 @@ function the_company_tagline( $before = '', $after = '', $echo = true, $post = n
 		return;
 	}
 
-	$company_tagline = esc_attr( wp_strip_all_tags( $company_tagline ) );
+	$company_tagline = wpjm_esc_listing_text( esc_attr( wp_strip_all_tags( $company_tagline ) ), $post );
 	$company_tagline = $before . $company_tagline . $after;
 
 	if ( $echo ) {
