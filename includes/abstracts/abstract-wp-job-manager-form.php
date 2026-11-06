@@ -695,7 +695,27 @@ abstract class WP_Job_Manager_Form {
 			call_user_func( $field['before_sanitize'], $value );
 		}
 
-		return false !== $value ? trim( wp_kses_post( $value ) ) : '';
+		$value = false !== $value ? trim( wp_kses_post( $value ) ) : '';
+
+		if ( '' === $value || $this->can_submit_unrestricted_html() ) {
+			return $value;
+		}
+
+		return WP_Job_Manager_Post_Types::restrict_content_html( $value );
+	}
+
+	/**
+	 * Whether the current user's submitted HTML is stored as it was posted. Mirrors the trust
+	 * check used when listing content is displayed; here the submission may not have a post
+	 * yet, so the check is on the user submitting the form.
+	 *
+	 * @since 2.4.10
+	 *
+	 * @return bool
+	 */
+	protected function can_submit_unrestricted_html() {
+		/** This filter is documented in includes/class-wp-job-manager-post-types.php */
+		return (bool) apply_filters( 'job_manager_job_description_allow_shortcodes', current_user_can( WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ), null );
 	}
 
 	/**
