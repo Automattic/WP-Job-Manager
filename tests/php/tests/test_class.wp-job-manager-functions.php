@@ -1740,7 +1740,7 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	 * A duplicate is a new, unedited listing: it doesn't inherit the original's edited
 	 * timestamp or its scheduled publish date.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.10
 	 * @covers ::job_manager_duplicate_listing
 	 */
 	public function test_duplicate_listing_does_not_copy_edit_and_schedule_state() {
