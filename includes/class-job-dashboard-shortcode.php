@@ -756,6 +756,13 @@ class Job_Dashboard_Shortcode {
 	 * @return bool
 	 */
 	public function is_job_available_on_dashboard( \WP_Post $job ) {
+		// A visitor without an account has no dashboard. Without this, the dashboard query
+		// below would run with 'author' => 0, which WP_Query treats as no author filter at
+		// all — making every user's listing "available" to a logged-out caller.
+		if ( ! get_current_user_id() ) {
+			return false;
+		}
+
 		// Check cache of currently displayed job dashboard IDs first to avoid lots of queries.
 		if ( ! empty( $this->job_dashboard_job_ids ) && in_array( (int) $job->ID, $this->job_dashboard_job_ids, true ) ) {
 			return true;
