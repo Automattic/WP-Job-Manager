@@ -698,16 +698,20 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * The allowed tags for content from an author who can't post unfiltered HTML. Media elements
 	 * are excluded: media players build interactive menus from their markup, so they aren't safe
-	 * with values an untrusted submitter supplies.
+	 * with values an untrusted submitter supplies. Iframes are excluded too: they would put a
+	 * page of the submitter's choosing inside the listing, and in front of a moderator opening
+	 * a pending listing. Embeds for trusted providers don't come from the author's markup, so
+	 * they are unaffected.
 	 *
 	 * @since 2.4.9
+	 * @since 2.4.10 `iframe` is no longer allowed.
 	 *
 	 * @return array
 	 */
 	private static function restricted_allowed_html() {
 		$allowed_html = self::kses_allowed_html();
 
-		unset( $allowed_html['video'], $allowed_html['audio'], $allowed_html['source'], $allowed_html['track'] );
+		unset( $allowed_html['video'], $allowed_html['audio'], $allowed_html['source'], $allowed_html['track'], $allowed_html['iframe'] );
 
 		return $allowed_html;
 	}
