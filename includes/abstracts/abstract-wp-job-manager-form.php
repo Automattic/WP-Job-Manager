@@ -449,12 +449,18 @@ abstract class WP_Job_Manager_Form {
 	 * Validate a agreement checkbox field.
 	 *
 	 * @since 1.35.2
+	 * @since 2.4.10 Accepts `$is_saving_draft` and skips the check for draft saves.
 	 *
 	 * @param bool $success
+	 * @param bool $is_saving_draft Whether the submission is a draft save, which skips the checkbox.
 	 *
 	 * @return bool|WP_Error
 	 */
-	public function validate_agreement_checkbox( $success ) {
+	public function validate_agreement_checkbox( $success, $is_saving_draft = false ) {
+		if ( $is_saving_draft ) {
+			return $success;
+		}
+
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Check only.
 		if ( empty( $_POST['agreement-checkbox'] ) ) {
 			return new WP_Error( 'validation-error', esc_html__( 'Terms and Conditions is a required field', 'wp-job-manager' ) );
