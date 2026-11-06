@@ -393,6 +393,36 @@ if ( ! function_exists( '_wpjm_shuffle_featured_post_results_helper' ) ) :
 	}
 endif;
 
+if ( ! function_exists( 'job_manager_get_search_term_variations' ) ) :
+	/**
+	 * Builds the search needles that cover both raw and kses-encoded post column storage.
+	 *
+	 * WordPress runs `post_title` and `post_content` through `wp_filter_kses` for users without the
+	 * `unfiltered_html` capability, so a bare `&` is stored as `&amp;`. A search term can arrive in
+	 * either form, so searches match against both. Post meta and taxonomy values are not
+	 * kses-normalized on save and keep using the term as typed.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $search_term The search term as typed.
+	 * @return array Unique list of needles, with the term as typed first.
+	 */
+	function job_manager_get_search_term_variations( $search_term ) {
+		// Encodes a bare `&` without double-encoding an existing entity.
+		$encoded = wp_kses_normalize_entities( $search_term );
+
+		/*
+		 * The inverse, so a term typed in the encoded form also matches raw storage. Only the ampersand
+		 * entities are decoded: they are the ones `wp_kses_normalize_entities()` creates. A broader
+		 * decoder would add needles like `<` or `"`, and because an excluding search requires every
+		 * needle to miss, such a needle would drop listings that should be returned.
+		 */
+		$decoded = str_replace( [ '&amp;', '&#038;', '&#x26;' ], '&', $search_term );
+
+		return array_values( array_unique( [ $search_term, $encoded, $decoded ] ) );
+	}
+endif;
+
 if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 	/**
 	 * Adds join and where query for keywords.
@@ -487,32 +517,53 @@ if ( ! function_exists( 'get_job_listings_keyword_search' ) ) :
 			 * @param string $wildcard_search The wildcard character or empty string for exact matches.
 			 * @param array  $search_columns   The columns to check.
 			 *
+			 * @since $$next-version$$ Clauses now match every form of the search term returned by
+			 *                           `job_manager_get_search_term_variations()`, so listings remain
+			 *                           searchable whether `post_title`/`post_content` is stored raw or
+			 *                           kses-encoded (e.g. `&` vs `&amp;`), and whether the visitor typed
+			 *                           the raw or the encoded form. See #3030.
 			 * @return array The SQL clauses.
 			 */
 			function job_manager_construct_post_conditions( $search_term, $is_excluding, $wildcard_search, $search_columns ) {
 				global $wpdb;
 
 				if ( $is_excluding ) {
-					$like_op = 'NOT LIKE';
+					$like_op  = 'NOT LIKE';
+					$inner_op = 'AND';
 				} else {
-					$like_op = 'LIKE';
+					$like_op  = 'LIKE';
+					$inner_op = 'OR';
 				}
 
-				$like = $wildcard_search . $wpdb->esc_like( $search_term ) . $wildcard_search;
+				/*
+				 * Post columns can hold the raw or the kses-encoded form of the term, so match both.
+				 * Meta and taxonomy values are stored raw and stay on the raw term in
+				 * `job_manager_construct_secondary_conditions()`. See #3030.
+				 */
+				$raw_like      = $wildcard_search . $wpdb->esc_like( $search_term ) . $wildcard_search;
+				$like_patterns = [];
+				foreach ( job_manager_get_search_term_variations( $search_term ) as $needle ) {
+					$like_patterns[] = $wildcard_search . $wpdb->esc_like( $needle ) . $wildcard_search;
+				}
 
 				$conditions = [];
 				foreach ( $search_columns as $search_column ) {
-					$search_column = esc_sql( $search_column );
-					//phpcs:disabled WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Variables are safe or escaped.
-					$conditions[] = $wpdb->prepare( "( {$wpdb->posts}.$search_column $like_op %s )", $like );
+					$search_column     = esc_sql( $search_column );
+					$column_conditions = [];
+					foreach ( $like_patterns as $like ) {
+						$column_conditions[] = "{$wpdb->posts}.$search_column $like_op %s";
+					}
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Only generated placeholders are interpolated; values are passed to prepare().
+					$conditions[] = $wpdb->prepare( '( ' . implode( " $inner_op ", $column_conditions ) . ' )', $like_patterns );
 				}
 
 				// Filter documented in WP_Query::get_posts.
 				$allow_query_attachment_by_filename = apply_filters( 'wp_allow_query_attachment_by_filename', false );
 				if ( ! empty( $allow_query_attachment_by_filename ) ) {
-					// sq1 is the wp_postmeta join for attachments in WP_Query::get_posts.
-					$conditions[] = $wpdb->prepare( "(sq1.meta_value $like_op %s)", $like );
-					//phpcs:enabled WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					// sq1 is the wp_postmeta join for attachments in WP_Query::get_posts. Meta is not
+					// kses-normalized on save, so it keeps using the term as typed.
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Only $like_op is interpolated and the value is passed to prepare().
+					$conditions[] = $wpdb->prepare( "(sq1.meta_value $like_op %s)", $raw_like );
 				}
 
 				return $conditions;
