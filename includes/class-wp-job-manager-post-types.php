@@ -179,6 +179,8 @@ class WP_Job_Manager_Post_Types {
 		add_action( 'job_manager_check_for_expired_jobs', [ $this, 'check_for_expired_jobs' ] );
 		add_action( 'job_manager_delete_old_previews', [ $this, 'delete_old_previews' ] );
 
+		add_action( 'delete_attachment', [ $this, 'keep_shared_attachment_files' ], 10, 2 );
+
 		add_action( 'transition_post_status', [ $this, 'transition_post_status' ], 10, 3 );
 
 		add_action( 'wp_head', [ $this, 'noindex_expired_filled_job_listings' ], 0 );
@@ -617,6 +619,123 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public static function output_kses_post( $post_content ) {
 		echo wp_kses( $post_content, self::kses_allowed_html() );
+	}
+
+	/**
+	 * Files that must not be removed while an attachment sharing them is deleted.
+	 *
+	 * @var string[]
+	 */
+	private static $shared_attachment_files = [];
+
+	/**
+	 * Keeps an attachment's files on disk when another attachment still references the same
+	 * file: deleting a job listing's attachment then removes only the attachment itself.
+	 *
+	 * @since 2.4.10
+	 * @access private
+	 *
+	 * @param int     $attachment_id Attachment being deleted.
+	 * @param WP_Post $attachment    Attachment post, when available.
+	 */
+	public function keep_shared_attachment_files( $attachment_id, $attachment = null ) {
+		$attachment = $attachment ? $attachment : get_post( $attachment_id );
+
+		if ( ! $attachment || ! $attachment->post_parent || self::PT_LISTING !== get_post_type( $attachment->post_parent ) ) {
+			return;
+		}
+
+		$relative_path = get_post_meta( $attachment_id, '_wp_attached_file', true );
+
+		if ( ! $relative_path ) {
+			return;
+		}
+
+		$other_attachments = get_posts(
+			[
+				'post_type'        => 'attachment',
+				'post_status'      => 'any',
+				'post__not_in'     => [ $attachment_id ],
+				'posts_per_page'   => 1,
+				'fields'           => 'ids',
+				'meta_key'         => '_wp_attached_file', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value'       => $relative_path, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'suppress_filters' => false,
+			]
+		);
+
+		if ( ! $other_attachments ) {
+			return;
+		}
+
+		self::$shared_attachment_files = array_merge( self::$shared_attachment_files, $this->attachment_file_paths( $attachment_id ) );
+
+		add_filter( 'wp_delete_file', [ $this, 'skip_shared_file_delete' ] );
+	}
+
+	/**
+	 * Keeps a file out of an attachment deletion when it was marked as still referenced.
+	 *
+	 * @since 2.4.10
+	 * @access private
+	 *
+	 * @param string $path File about to be deleted.
+	 * @return string Empty string to keep the file, or the path unchanged.
+	 */
+	public function skip_shared_file_delete( $path ) {
+		$key = array_search( wp_normalize_path( (string) $path ), self::$shared_attachment_files, true );
+
+		if ( false === $key ) {
+			return $path;
+		}
+
+		unset( self::$shared_attachment_files[ $key ] );
+
+		return '';
+	}
+
+	/**
+	 * Every file on disk that deleting the attachment would remove.
+	 *
+	 * @param int $attachment_id Attachment ID.
+	 * @return string[] Normalized absolute paths.
+	 */
+	private function attachment_file_paths( $attachment_id ) {
+		$paths = [];
+		$file  = get_attached_file( $attachment_id, true );
+
+		if ( ! $file ) {
+			return $paths;
+		}
+
+		$paths[] = $file;
+		$dir     = dirname( $file );
+		$meta    = wp_get_attachment_metadata( $attachment_id );
+
+		$original_image = wp_get_original_image_path( $attachment_id, true );
+		if ( $original_image ) {
+			$paths[] = $original_image;
+		}
+
+		if ( is_array( $meta ) && ! empty( $meta['sizes'] ) ) {
+			foreach ( $meta['sizes'] as $size ) {
+				if ( ! empty( $size['file'] ) ) {
+					$paths[] = path_join( $dir, $size['file'] );
+				}
+			}
+		}
+
+		$backup_sizes = get_post_meta( $attachment_id, '_wp_attachment_backup_sizes', true );
+
+		if ( is_array( $backup_sizes ) ) {
+			foreach ( $backup_sizes as $size ) {
+				if ( ! empty( $size['file'] ) ) {
+					$paths[] = path_join( $dir, $size['file'] );
+				}
+			}
+		}
+
+		return array_map( 'wp_normalize_path', $paths );
 	}
 
 	/**
