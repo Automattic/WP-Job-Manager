@@ -2052,7 +2052,7 @@ function job_manager_duplicate_listing( $post_id ) {
 	if ( ! empty( $post_meta ) ) {
 		$post_meta = wp_list_pluck( $post_meta, 'meta_value', 'meta_key' );
 
-		$default_duplicate_ignore_keys = [ '_filled', '_featured', '_promoted', '_job_expires', '_job_duration', '_package_id', '_user_package_id', '_edit_lock', '_submitting_key', '_tracked_submitted', '_tracked_approved' ];
+		$default_duplicate_ignore_keys = [ '_filled', '_featured', '_promoted', '_job_expires', '_job_duration', '_package_id', '_user_package_id', '_edit_lock', '_submitting_key', '_tracked_submitted', '_tracked_approved', '_job_edited', '_job_schedule_listing' ];
 		$duplicate_ignore_keys         = apply_filters( 'job_manager_duplicate_listing_ignore_keys', $default_duplicate_ignore_keys, true );
 
 		foreach ( $post_meta as $meta_key => $meta_value ) {

@@ -1735,4 +1735,22 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 
 		$this->assertSame( 'Montréal', get_post_meta( $duplicate_id, '_job_location', true ) );
 	}
+
+	/**
+	 * A duplicate is a new, unedited listing: it doesn't inherit the original's edited
+	 * timestamp or its scheduled publish date.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::job_manager_duplicate_listing
+	 */
+	public function test_duplicate_listing_does_not_copy_edit_and_schedule_state() {
+		$job_id = $this->factory->job_listing->create();
+		update_post_meta( $job_id, '_job_edited', time() );
+		update_post_meta( $job_id, '_job_schedule_listing', '2026-01-01' );
+
+		$duplicate_id = job_manager_duplicate_listing( $job_id );
+
+		$this->assertFalse( metadata_exists( 'post', $duplicate_id, '_job_edited' ) );
+		$this->assertFalse( metadata_exists( 'post', $duplicate_id, '_job_schedule_listing' ) );
+	}
 }
