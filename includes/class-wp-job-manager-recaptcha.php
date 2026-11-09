@@ -35,7 +35,7 @@ class WP_Job_Manager_Recaptcha {
 	private $secret_key;
 
 	/**
-	 * The reCAPTCHA version.
+	 * The CAPTCHA provider: 'v2' or 'v3' for reCAPTCHA, or 'turnstile' for Cloudflare Turnstile.
 	 *
 	 * @var string
 	 */
@@ -44,6 +44,11 @@ class WP_Job_Manager_Recaptcha {
 	const RECAPTCHA_SITE_KEY   = 'job_manager_recaptcha_site_key';
 	const RECAPTCHA_SECRET_KEY = 'job_manager_recaptcha_secret_key';
 	const RECAPTCHA_VERSION    = 'job_manager_recaptcha_version';
+	const TURNSTILE_SITE_KEY   = 'job_manager_turnstile_site_key';
+	const TURNSTILE_SECRET_KEY = 'job_manager_turnstile_secret_key';
+
+	const TURNSTILE_SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+	const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 	/**
 	 * Initialize class for landing pages.
@@ -51,10 +56,26 @@ class WP_Job_Manager_Recaptcha {
 	 * @since 2.0.0
 	 */
 	private function __construct() {
-		$this->site_key          = get_option( self::RECAPTCHA_SITE_KEY );
-		$this->secret_key        = get_option( self::RECAPTCHA_SECRET_KEY );
 		$this->recaptcha_version = get_option( self::RECAPTCHA_VERSION, 'v2' );
 
+		if ( $this->is_turnstile() ) {
+			$this->site_key   = get_option( self::TURNSTILE_SITE_KEY );
+			$this->secret_key = get_option( self::TURNSTILE_SECRET_KEY );
+		} else {
+			$this->site_key   = get_option( self::RECAPTCHA_SITE_KEY );
+			$this->secret_key = get_option( self::RECAPTCHA_SECRET_KEY );
+		}
+	}
+
+	/**
+	 * Whether Cloudflare Turnstile is the selected CAPTCHA provider.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @return bool
+	 */
+	public function is_turnstile() {
+		return 'turnstile' === $this->recaptcha_version;
 	}
 
 	/**
@@ -108,7 +129,9 @@ class WP_Job_Manager_Recaptcha {
 	public function enqueue_scripts() {
 		$instance = self::instance();
 
-		if ( in_array( $instance->recaptcha_version, [ 'v2', 'v3' ], true ) ) {
+		if ( $instance->is_turnstile() ) {
+			wp_enqueue_script( 'cf-turnstile', self::TURNSTILE_SCRIPT_URL, [], JOB_MANAGER_VERSION, [ 'strategy' => 'defer' ] );
+		} elseif ( in_array( $instance->recaptcha_version, [ 'v2', 'v3' ], true ) ) {
 			$recaptcha_version = $instance->recaptcha_version;
 			$recaptcha_url     = '';
 
@@ -154,7 +177,11 @@ class WP_Job_Manager_Recaptcha {
 		$field['required'] = true;
 		$field['site_key'] = $this->site_key;
 
-		$template = 'form-fields/recaptcha-' . ( 'v3' === $this->recaptcha_version ? 'v3-' : '' ) . 'field.php';
+		if ( $this->is_turnstile() ) {
+			$template = 'form-fields/turnstile-field.php';
+		} else {
+			$template = 'form-fields/recaptcha-' . ( 'v3' === $this->recaptcha_version ? 'v3-' : '' ) . 'field.php';
+		}
 
 		get_job_manager_template(
 			$template,
@@ -180,14 +207,36 @@ class WP_Job_Manager_Recaptcha {
 		// translators: %s is the name of the form validation that failed.
 		$validation_error = new \WP_Error( 'validation-error', sprintf( esc_html__( '"%s" check failed. Please try again.', 'wp-job-manager' ), $recaptcha_field_label ) );
 
+		$response_field = $this->is_turnstile() ? 'cf-turnstile-response' : 'g-recaptcha-response';
+
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check happens earlier (when possible).
-		$input_recaptcha_response = isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '';
+		$input_recaptcha_response = isset( $_POST[ $response_field ] ) ? sanitize_text_field( wp_unslash( $_POST[ $response_field ] ) ) : '';
 
 		if ( empty( $input_recaptcha_response ) ) {
 			return $validation_error;
 		}
 
-		if ( 'v2' === $this->recaptcha_version ) {
+		if ( $this->is_turnstile() ) {
+			$response = wp_remote_post(
+				self::TURNSTILE_VERIFY_URL,
+				[
+					'body' => [
+						'secret'   => $this->secret_key,
+						'response' => $input_recaptcha_response,
+						'remoteip' => isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '',
+					],
+				]
+			);
+
+			if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
+				return $validation_error;
+			}
+
+			$json = json_decode( wp_remote_retrieve_body( $response ) );
+			if ( ! is_object( $json ) || empty( $json->success ) ) {
+				return $validation_error;
+			}
+		} elseif ( 'v2' === $this->recaptcha_version ) {
 			$default_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 			$response            = wp_remote_get(
 				add_query_arg(
@@ -251,7 +300,7 @@ class WP_Job_Manager_Recaptcha {
 	}
 
 	/**
-	 * Get the reCAPTCHA version.
+	 * Get the CAPTCHA provider: 'v2' or 'v3' for reCAPTCHA, or 'turnstile' for Cloudflare Turnstile.
 	 *
 	 * @return string
 	 */
