@@ -18,6 +18,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { execSync } from 'node:child_process';
 import prTemplate from './RELEASE_PR_TEMPLATE.md.mjs';
+import { fetchLatestWordPress, readTestedUpTo, setTestedUpTo, testedUpToProblems } from './tested-up-to.mjs';
 
 const REMOTE = 'origin';
 const BASE_BRANCH = 'trunk';
@@ -56,6 +57,9 @@ if ( ! /^\d+(\.\d+)+(-(a|alpha|beta)([-.]?\d+)?)?$/.test( version ) ) {
 assertCleanWorkingTree();
 
 const ghPrs = `gh pr list -R ${ cfg.repo } --state merged --base ${ BASE_BRANCH } --limit 500 --search "milestone:${ version }"`;
+
+// Set when the release should also raise "Tested up to" in both headers.
+const newTestedUpTo = await checkTestedUpTo();
 
 // Confirm release through CLI.
 if ( ! ( await askForConfirmation( version, pluginFileContents ) ) ) {
@@ -126,6 +130,61 @@ function assertCleanWorkingTree() {
 }
 
 /**
+ * Compare the plugin's "Tested up to" headers with the current WordPress
+ * release. If they are behind it or disagree with each other, offer to raise
+ * them as part of this release, and stop unless the answer is a clear yes or a
+ * clear "release anyway".
+ *
+ * @return {Promise<string>} The version to write to both headers, or an empty string to leave them alone.
+ */
+async function checkTestedUpTo() {
+	const latest = await fetchLatestWordPress();
+
+	if ( ! latest ) {
+		console.log( chalk.yellow( `⚠️  Could not get the current WordPress version from wordpress.org, so "Tested up to" was not checked.` ) );
+		return '';
+	}
+
+	const problems = testedUpToProblems(
+		{
+			header: readTestedUpTo( pluginFileContents ),
+			readme: readTestedUpTo( readFileContents( cfg.readme ) ),
+		},
+		latest,
+	);
+
+	if ( ! problems.length ) {
+		return '';
+	}
+
+	problems.forEach( ( problem ) => console.log( chalk.yellow( `⚠️  ${ problem }` ) ) );
+
+	const { update } = await inquirer.prompt( {
+		type: 'confirm',
+		name: 'update',
+		message: `Has ${ pluginName } been tested on WordPress ${ latest }? Yes sets "Tested up to: ${ latest }" in this release.`,
+		default: false,
+	} );
+
+	if ( update ) {
+		return latest;
+	}
+
+	const { proceed } = await inquirer.prompt( {
+		type: 'confirm',
+		name: 'proceed',
+		message: 'Release without changing "Tested up to"?',
+		default: false,
+	} );
+
+	if ( ! proceed ) {
+		process.exit( 0 );
+	}
+
+	return '';
+}
+
+/**
  * Ask for confirmation on the new version through the CLI.
  *
  * @param {string} newVersion   The new version.
@@ -142,7 +201,11 @@ async function askForConfirmation( newVersion, fileContents ) {
 	console.log( chalk.bold( '📦 Plugin header:' ) );
 	console.log( `   Version:`, chalk.bold.green( newVersion ) );
 	if ( wpRequiresAtLeast ) console.log( `   (WP)  Requires at least:`, chalk.bold( wpRequiresAtLeast ) );
-	if ( wpTestedUpTo ) console.log( `   (WP)  Tested up to:`, chalk.bold( wpTestedUpTo ) );
+	if ( newTestedUpTo ) {
+		console.log( `   (WP)  Tested up to:`, chalk.bold.green( newTestedUpTo ), `(set in the plugin header and the readme by this release)` );
+	} else if ( wpTestedUpTo ) {
+		console.log( `   (WP)  Tested up to:`, chalk.bold( wpTestedUpTo ) );
+	}
 	if ( requiresPhp ) console.log( `   (PHP) Requires PHP:`, chalk.bold( requiresPhp ) );
 	console.log( `-----------------------------` );
 	console.log( `ℹ️️  Make sure a ` + chalk.bold( `milestone ${ newVersion }` ) + ` exists on GitHub, and all PRs are assigned to it.` );
@@ -193,7 +256,8 @@ function createReleaseBranch( slug, newVersion ) {
 
 /**
  * Set the new version in a file (`Version:`/`Stable tag:` header and, if
- * configured, a version constant). Stages the file.
+ * configured, a version constant), and "Tested up to" when this release raises
+ * it. Stages the file.
  *
  * @param {string} filename The path to the file.
  */
@@ -209,6 +273,10 @@ function updateVersionInFile( filename ) {
 			new RegExp( `define\\( '${ cfg.versionConstant }', '.*' \\);` ),
 			`define( '${ cfg.versionConstant }', '${ version }' );`,
 		);
+	}
+
+	if ( newTestedUpTo ) {
+		contents = setTestedUpTo( contents, newTestedUpTo );
 	}
 
 	fs.writeFileSync( filename, contents, 'utf-8' );
