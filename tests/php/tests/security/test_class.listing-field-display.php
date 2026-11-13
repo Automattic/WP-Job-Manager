@@ -53,6 +53,44 @@ class Tests_Listing_Field_Display extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @covers ::the_company_twitter
+	 */
+	public function test_company_twitter_is_shown_as_text_on_subscriber_listing() {
+		$job_id = $this->create_listing_by_role( 'subscriber', [ '_company_twitter' ] );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringNotContainsString( self::EXPANDED, $output, 'Text in the company X / Twitter username must be displayed, not processed.' );
+		$this->assertStringContainsString( '[' . self::SHORTCODE . ']', html_entity_decode( $output ), 'The username text must be kept.' );
+	}
+
+	/**
+	 * @covers ::the_job_salary
+	 */
+	public function test_salary_and_currency_are_shown_as_text_on_subscriber_listing() {
+		update_option( 'job_manager_enable_salary', '1' );
+		update_option( 'job_manager_enable_salary_currency', '1' );
+		$job_id = $this->create_listing_by_role( 'subscriber', [ '_job_salary', '_job_salary_currency' ] );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringNotContainsString( self::EXPANDED, $output, 'Text in the salary and its currency must be displayed, not processed.' );
+		$this->assertStringContainsString( '<li class="salary">Acme [' . self::SHORTCODE . '] Co Acme [' . self::SHORTCODE . '] Co', html_entity_decode( $output ), 'The salary text must be kept.' );
+		$this->assertStringNotContainsString( '&amp;#', $output, 'The text must not be encoded twice.' );
+	}
+
+	/**
+	 * @covers ::the_job_salary
+	 */
+	public function test_salary_keeps_processing_on_admin_listing() {
+		update_option( 'job_manager_enable_salary', '1' );
+		$job_id = $this->create_listing_by_role( 'administrator', [ '_job_salary' ] );
+
+		$this->assertSame( 'Acme [' . self::SHORTCODE . '] Co ', the_job_salary( '', '', false, $job_id ) );
+		$this->assertStringContainsString( self::EXPANDED, $this->render_single_listing( $job_id ) );
+	}
+
+	/**
 	 * @covers ::the_job_location
 	 */
 	public function test_location_is_shown_as_text_on_subscriber_listing() {

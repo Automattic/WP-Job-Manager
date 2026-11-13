@@ -76,7 +76,7 @@ class Tests_Submit_Form_Textarea_Input extends WPJM_BaseTest {
 		$stored = $this->post_description( 'Array [0] notation' );
 
 		$this->assertStringNotContainsString( '[', $stored );
-		$this->assertStringContainsString( '&#91;0&#93;', $stored, 'Bracket text must be kept, encoded.' );
+		$this->assertStringContainsString( '&#091;0&#093;', $stored, 'Bracket text must be kept, encoded.' );
 	}
 
 	/**

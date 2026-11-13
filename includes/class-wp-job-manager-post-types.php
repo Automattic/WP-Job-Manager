@@ -782,7 +782,33 @@ class WP_Job_Manager_Post_Types {
 		$content = preg_replace( '/<!--\s*\/?wp:.*?-->/s', '', $content );
 
 		// Keep any remaining brackets, such as an escaped [[shortcode]], from being expanded later.
-		return str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $content );
+		return self::encode_brackets( $content );
+	}
+
+	/**
+	 * Encodes bracket characters so the text is displayed and never read as a shortcode.
+	 *
+	 * The zero-padded form matters. WordPress uses `&#91;` and `&#93;` as its own placeholders
+	 * while it expands shortcodes and turns every one of them back into a bracket afterwards,
+	 * including any that were printed by a shortcode during that pass. Text encoded that way is
+	 * a live shortcode again for whatever processes the content next. The padded form is left
+	 * alone, so text that was encoded the other way before is re-encoded too.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $text Text or HTML.
+	 * @return string
+	 */
+	public static function encode_brackets( $text ) {
+		return strtr(
+			(string) $text,
+			[
+				'['     => '&#091;',
+				']'     => '&#093;',
+				'&#91;' => '&#091;',
+				'&#93;' => '&#093;',
+			]
+		);
 	}
 
 	/**
@@ -895,24 +921,146 @@ class WP_Job_Manager_Post_Types {
 	 * runs), are returned unchanged. Shortcodes are expanded before the swap: the restored
 	 * markup re-enters the content after `do_shortcode` has already run.
 	 *
+	 * Generated markup still carries listing data, such as the URL the player was built from.
+	 * Markup that doesn't pass is_inert_media_markup() is not kept or returned, for any listing.
+	 *
 	 * @since 2.4.10
+	 * @since $$next-version$$ Returns an empty string for markup that fails is_inert_media_markup().
 	 *
 	 * @param string           $html Plugin-generated markup to keep.
 	 * @param int|WP_Post|null $post Job listing the markup belongs to. Defaults to the global post.
 	 * @return string The markup, or the placeholder that will be swapped back for it.
 	 */
 	public static function protect_listing_media_output( $html, $post = null ) {
+		if ( ! self::is_inert_media_markup( $html ) ) {
+			return '';
+		}
+
 		$post = self::get_listing_for_content( get_post( $post ) );
 
 		if ( ! $post || self::is_trusted_listing( $post ) || ( ! doing_filter( 'the_content' ) && ! doing_filter( 'the_job_description' ) ) ) {
 			return $html;
 		}
 
+		// The expanded markup is what gets printed, so it is checked again.
+		$html = do_shortcode( $html );
+		if ( ! self::is_inert_media_markup( $html ) ) {
+			return '';
+		}
+
 		$token = 'wpjm-protected-media-' . wp_generate_password( 24, false );
 
-		self::$protected_media[ $token ] = do_shortcode( $html );
+		self::$protected_media[ $token ] = $html;
 
 		return '<!-- ' . $token . ' -->';
+	}
+
+	/**
+	 * Prepares a URL from a listing field for use as the source of a media player or embed.
+	 *
+	 * A media URL is listing data like any other field, whoever builds the markup around it:
+	 * players read it back from the page and build their own interface from it. So the URL has
+	 * to mean the same thing as text, as an attribute value and as a decoded attribute value.
+	 * A URL that carries character references, quotes or angle brackets doesn't, and is
+	 * rejected. Bracket characters are percent-encoded so the URL is never read as a shortcode.
+	 *
+	 * This applies to every listing, trusted or not: such a URL is never a working media URL.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param mixed $url URL from a listing field.
+	 * @return string The URL, or an empty string when it can't be used as a media source.
+	 */
+	public static function sanitize_media_url( $url ) {
+		if ( ! is_string( $url ) ) {
+			return '';
+		}
+
+		// An ampersand that was saved encoded is still just a separator.
+		do {
+			$before = $url;
+			$url    = str_ireplace( [ '&amp;', '&#038;', '&#38;' ], '&', $url );
+		} while ( $before !== $url );
+
+		$url = esc_url_raw( trim( $url ), [ 'http', 'https' ] );
+		$url = str_replace( [ '[', ']' ], [ '%5B', '%5D' ], $url );
+
+		// Cleaning removes characters, which can join the text around them into something new,
+		// so the result is what gets checked, and it must already be in its final form.
+		if ( '' === $url || esc_url_raw( $url, [ 'http', 'https' ] ) !== $url ) {
+			return '';
+		}
+
+		if ( preg_match( '/[<>"\'`\s]|&(?:[a-z][a-z0-9]*|#[0-9]+|#x[0-9a-f]+);/i', $url ) ) {
+			return '';
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Checks that media markup built from listing data has nothing in its attributes that could
+	 * be read as markup once a player or script copies an attribute value back into the page.
+	 *
+	 * Escaping keeps a value inside its attribute, but the browser decodes the attribute, and
+	 * media players write the decoded value into their own interface. This looks at the values
+	 * as the browser will. After decoding, a URL attribute of any element must be free of angle
+	 * brackets and quotes, and any other attribute of a media element must be free of angle
+	 * brackets. Quotes are allowed there: player settings are often JSON in an attribute.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $html Markup to check.
+	 * @return bool False when the markup must not be printed.
+	 */
+	public static function is_inert_media_markup( $html ) {
+		if ( ! is_string( $html ) ) {
+			return false;
+		}
+
+		$media_tags     = [ 'VIDEO', 'AUDIO', 'SOURCE', 'TRACK', 'EMBED', 'OBJECT' ];
+		$url_attributes = [ 'src', 'href', 'poster', 'data', 'srcset' ];
+		$tags           = new WP_HTML_Tag_Processor( $html );
+
+		while ( $tags->next_tag() ) {
+			$is_media_tag = in_array( $tags->get_tag(), $media_tags, true );
+
+			foreach ( (array) $tags->get_attribute_names_with_prefix( '' ) as $name ) {
+				$is_url_attribute = in_array( $name, $url_attributes, true );
+				if ( ! $is_media_tag && ! $is_url_attribute ) {
+					continue;
+				}
+
+				$value = $tags->get_attribute( $name );
+				if ( ! is_string( $value ) ) {
+					continue;
+				}
+
+				if ( preg_match( $is_url_attribute ? '/[<>"\'`]/' : '/[<>]/', $value ) ) {
+					return false;
+				}
+
+				// A character reference that is still encoded after one round of decoding.
+				// Browsers accept forms that older decoders leave alone.
+				if ( preg_match( '/&(?:#[0-9]|#x[0-9a-f]|(?:lt|gt|quot|apos)(?![a-z0-9=]))/i', $value ) ) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Sanitize media URL meta fields, such as the company video.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $meta_value Value of meta field that needs sanitization.
+	 * @return string
+	 */
+	public static function sanitize_meta_field_media_url( $meta_value ) {
+		return self::sanitize_media_url( $meta_value );
 	}
 
 	/**
@@ -2492,7 +2640,7 @@ class WP_Job_Manager_Post_Types {
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_url' ],
+				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_media_url' ],
 			],
 			'_filled'              => [
 				'label'         => __( 'Position Filled', 'wp-job-manager' ),
