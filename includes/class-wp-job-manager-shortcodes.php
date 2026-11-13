@@ -534,6 +534,9 @@ class WP_Job_Manager_Shortcodes {
 			$atts
 		);
 
+		// The ID must be a listing's ID: a query for ID 0 is a query for every listing.
+		$atts['id'] = absint( $atts['id'] );
+
 		if ( ! $atts['id'] ) {
 			return null;
 		}
@@ -583,6 +586,12 @@ class WP_Job_Manager_Shortcodes {
 			],
 			$atts
 		);
+
+		// An ID that isn't a listing's ID shows nothing. It must not fall through as "an ID was
+		// given": a query for ID 0 is a query for every listing.
+		if ( $atts['id'] && ! absint( $atts['id'] ) ) {
+			return '';
+		}
 
 		// A random summary lists listings; a summary by ID shows one listing, gated on view in the template.
 		if ( ! $atts['id'] && ! job_manager_user_can_browse_job_listings() ) {
@@ -643,20 +652,20 @@ class WP_Job_Manager_Shortcodes {
 			],
 			$atts
 		);
-		$id       = $new_atts['id'];
+		// The ID must be a listing's ID: a query for ID 0 is a query for every listing.
+		$id = absint( $new_atts['id'] );
+
+		if ( ! $id ) {
+			return '';
+		}
 
 		ob_start();
 
 		$args = [
 			'post_type'   => \WP_Job_Manager_Post_Types::PT_LISTING,
 			'post_status' => 'publish',
+			'p'           => $id,
 		];
-
-		if ( ! $id ) {
-			return '';
-		} else {
-			$args['p'] = absint( $id );
-		}
 
 		$jobs = new WP_Query( $args );
 
