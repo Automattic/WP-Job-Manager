@@ -150,6 +150,13 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 
 == Changelog ==
 
+### 2.4.11 - 2026-11-13
+* Fix: Check the company video URL before building the player.
+* Fix: Keep restricted listing descriptions as text through later processing.
+* Fix: Display the salary and X / Twitter fields as the text that was entered.
+* Fix: Look up embeds for restricted listings with known providers only.
+* Fix: Show nothing in the single-listing shortcodes when the ID isn't a listing's ID.
+
 ### 2.4.10 - 2026-11-06
 * Fix: Keep uploaded files that another attachment still uses when a listing's attachment is deleted.
 * Fix: Don't copy a listing's edited and scheduled state when duplicating it.
@@ -203,19 +210,3 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 * Restrict frontend logo attachments to the uploads directory.
 * Clear unusable attachment values before re-rendering the job submission form.
 * Update developer dependencies.
-
-### 2.4.6 - 2026-08-19
-* Allow reusing a submitter's saved company logo on a new listing (#3082)
-* Allow reusing a listing's existing logo on edit when authored by another user (#3060)
-* Fix notice dismiss button colliding with core styles (#3036)
-* Fix unreadable notice-banner button text on Settings (#3029)
-* Decode HTML entities in plain-text job title contexts (#3026)
-* Indicate WordPress 7.0 compatibility (#3015)
-* Verify the TLS certificate on the geocoding request (#3014)
-* Exclude password-protected listings from the promoted jobs feed (#3012)
-* Only accept a manual listing expiry from the gated admin edit (#3011)
-* Prevent the edit-job form from creating a new listing for an unauthorized or logged-out request.
-
-* Enforce company-logo attachment ownership when saving a job listing as a draft.
-
-* Apply the post-password check to the `[job]` and `[job_apply]` shortcodes.
