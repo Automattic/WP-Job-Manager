@@ -52,6 +52,19 @@ class Tests_Listing_Description_Processing extends WPJM_BaseTest {
 			'other named reference'      => [ '<a title="&lsqb;' . self::SHORTCODE . '&rsqb;" href="#">x</a>' ],
 			'reference with no semicolon' => [ '<a title="&#91' . self::SHORTCODE . '&#93" href="#">x</a>' ],
 			'single quoted'              => [ "<a title='" . $sc . "' href='#'>x</a>" ],
+			'unquoted'                   => [ '<a href=' . $sc . '>x</a>' ],
+			'bare in the tag'            => [ '<a ' . $sc . ' href="#">x</a>' ],
+			'as an attribute name'       => [ '<a ' . $sc . '="1" href="#">x</a>' ],
+			'upper case'                 => [ '<A TITLE="' . $sc . '" HREF="#">x</A>' ],
+			'two attributes'             => [ '<a title="' . $sc . '" href="https://example.com/' . $sc . '">x</a>' ],
+			'with an angle bracket'      => [ '<a title="a > b ' . $sc . '" href="#">x</a>' ],
+			'with an encoded bracket'    => [ '<a title="a &gt; b ' . $sc . '" href="#">x</a>' ],
+			'self-closing tag'           => [ '<img src="x.png" alt="' . $sc . '" />' ],
+			'in a comment'               => [ '<!-- ' . $sc . ' --><p>x</p>' ],
+			'tag left open'              => [ '<a title="' . $sc . '" href="#">x' ],
+			'attribute left open'        => [ '<a href="#" title="' . $sc ],
+			'encoded twice'              => [ '<a title="&amp;#91;' . self::SHORTCODE . '&amp;#93;" href="#">x</a>' ],
+			'next to text'               => [ $sc . '<a title="' . $sc . '" href="#">' . $sc . '</a>' . $sc ],
 			'enclosing shortcode'        => [ '<a title="[' . self::SHORTCODE . ']t[/' . self::SHORTCODE . ']" href="#">x</a>' ],
 		];
 	}
@@ -97,6 +110,151 @@ class Tests_Listing_Description_Processing extends WPJM_BaseTest {
 
 		$this->assertGreaterThan( 0, $this->ran );
 		$this->assertStringContainsString( 'title="DESCRIPTION_SC_RAN"', $single );
+	}
+
+	public function data_exact_output() {
+		return [
+			'link address and text'     => [ '<a href="https://example.com/?a[]=1">x [1]</a>', '<a href="https://example.com/?a%5B%5D=1">x &#091;1&#093;</a>' ],
+			'other characters are kept' => [ '<a title="Tom &amp; Jerry [1] &lt;b&gt;" href="#">x</a>', '<a title="Tom &amp; Jerry %5B1%5D &lt;b&gt;" href="#">x</a>' ],
+			'attributes without one'    => [ '<a title="plain" href="https://example.com/a?b=1&amp;c=2">x</a>', '<a title="plain" href="https://example.com/a?b=1&amp;c=2">x</a>' ],
+			'comment'                   => [ '<!-- [a] --><p>x</p>', '<!-- %5Ba%5D --><p>x</p>' ],
+			'nothing to do'             => [ '<p>Plain <strong>text</strong>.</p>', '<p>Plain <strong>text</strong>.</p>' ],
+			'text only'                 => [ 'Salary [a] to [b]', 'Salary &#091;a&#093; to &#091;b&#093;' ],
+			'non-ASCII'                 => [ '<a title="Ünïcode [é] 日本" href="#">日本 [語]</a>', '<a title="Ünïcode %5Bé%5D 日本" href="#">日本 &#091;語&#093;</a>' ],
+		];
+	}
+
+	/**
+	 * The restriction changes brackets and nothing else.
+	 *
+	 * @dataProvider data_exact_output
+	 * @covers WP_Job_Manager_Post_Types::restrict_content_html
+	 */
+	public function test_restricted_content_is_otherwise_unchanged( $content, $expected ) {
+		$this->assertSame( $expected, WP_Job_Manager_Post_Types::restrict_content_html( $content ) );
+	}
+
+	/**
+	 * The rule the restriction exists for, tried on a few thousand generated descriptions:
+	 * after the HTML filter has rewritten the result, no attribute holds a bracket, and
+	 * expanding shortcodes twice runs nothing. Generated from a fixed seed.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::restrict_content_html
+	 */
+	public function test_generated_descriptions_never_leave_a_live_shortcode() {
+		$name   = self::SHORTCODE;
+		$pieces = [ '[', ']', "[$name]", "[/$name]", "[[$name]]", "[$name /]", "[$name a=\"b\"]", '&#91;', '&#93;', '&#091;', '&#093;', '&#x5b;', '&#x5D;', '&lbrack;', '&rbrack;', '&lsqb;', '&rsqb;', '&#91', '&#93', '&amp;', '&amp;#91;', '&lt;', '&gt;', '&quot;', $name, '<a href="', '<a title="', "<a title='", '<a href=', '<img alt="', '<p class="', '<p ', '<div data-x="', '<span ', '">', "'>", '>', '" href="#">', '</a>', '</p>', '<!-- ', ' -->', '<br />', '<', '"', "'", '=', ' ', "\n", 'x', 'https://example.com/', '?a=1&b=2', '<video src="', '<iframe src="', '<script>', '</script>', '<![CDATA[', ']]>' ];
+
+		mt_srand( 20261113 );
+
+		for ( $i = 0; $i < 3000; $i++ ) {
+			$content = '';
+			for ( $j = mt_rand( 2, 14 ); $j > 0; $j-- ) {
+				$content .= $pieces[ mt_rand( 0, count( $pieces ) - 1 ) ];
+			}
+
+			$restricted = WP_Job_Manager_Post_Types::restrict_content_html( $content );
+			$filtered   = wp_kses_post( $restricted );
+
+			foreach ( wp_html_split( $restricted ) as $part ) {
+				if ( '' !== $part && '<' === $part[0] ) {
+					$this->assertDoesNotMatchRegularExpression( '/[\[\]]/', html_entity_decode( $part, ENT_QUOTES | ENT_HTML5 ), "Bracket left in a tag: $content" );
+				}
+			}
+			$this->assertSame( [], $this->find_brackets_in_attributes( $restricted ), "Bracket left in an attribute: $content" );
+			$this->assertSame( [], $this->find_brackets_in_attributes( $filtered ), "Bracket in an attribute after the HTML filter: $content" );
+
+			$this->ran = 0;
+			do_shortcode( do_shortcode( $restricted ) );
+			do_shortcode( do_shortcode( $filtered ) );
+			do_shortcode( do_shortcode( wp_kses_post( wpautop( wptexturize( $restricted ) ) ) ) );
+			$this->assertSame( 0, $this->ran, "A shortcode ran: $content" );
+		}
+
+		mt_srand();
+	}
+
+	/**
+	 * Every way PHP knows to write a bracket as a character reference is replaced inside a
+	 * tag. The named references are read from PHP's own table, so nothing here lists them.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::restrict_content_html
+	 */
+	public function test_every_reference_to_a_bracket_is_replaced_in_a_tag() {
+		$references = [];
+		foreach ( get_html_translation_table( HTML_ENTITIES, ENT_QUOTES | ENT_HTML5 ) as $character => $reference ) {
+			if ( '[' === $character || ']' === $character ) {
+				$references[] = $reference;
+			}
+		}
+		$this->assertGreaterThanOrEqual( 2, count( $references ), 'PHP should know named references for both brackets.' );
+
+		foreach ( [ 91, 93 ] as $code ) {
+			foreach ( [ '&#%d;', '&#0%d;', '&#000000%d;', '&#%d' ] as $format ) {
+				$references[] = sprintf( $format, $code );
+			}
+			foreach ( [ '&#x%x;', '&#X%X;', '&#x00%x;', '&#x%x' ] as $format ) {
+				$references[] = sprintf( $format, $code );
+			}
+		}
+
+		foreach ( $references as $reference ) {
+			foreach ( [ '<a title="%s" href="#">x</a>', "<a title='%s' href='#'>x</a>", '<a href="https://example.com/%s">x</a>', '<!-- " href="#"><a title="%s">x', '<p class="a %s b">x</p>' ] as $markup ) {
+				$content    = sprintf( $markup, $reference . 'x ' . $reference );
+				$restricted = WP_Job_Manager_Post_Types::restrict_content_html( $content );
+
+				foreach ( wp_html_split( $restricted ) as $part ) {
+					if ( '' === $part || '<' !== $part[0] ) {
+						continue;
+					}
+					$this->assertDoesNotMatchRegularExpression( '/[\[\]]/', html_entity_decode( $part, ENT_QUOTES | ENT_HTML5 ), "Reference left in a tag: $content" );
+				}
+			}
+		}
+	}
+
+	public function data_tags_without_the_html_filter() {
+		return [
+			'reference with no semicolon' => [ '<a title="&#91x&#93" href="#">', '<a title="%5Bx%5D" href="#">' ],
+			'hex with no semicolon'       => [ '<a title="&#x5bx&#x5D ">', '<a title="%5Bx%5D ">' ],
+			'comment left open'           => [ '<!-- " href="#"><a title="&#93;&lsqb;">[x]', '<!-- " href="#"><a title="%5D%5B">%5Bx%5D' ],
+			'outside an attribute'        => [ '<a [x] &#91;y&#93; href=[z]>[t]</a>', '<a %5Bx%5D %5By%5D href=%5Bz%5D>[t]</a>' ],
+			'other references are kept'   => [ '<a title="&amp; &lt; &#39; &#60; &copy; &#9731;" href="?a=1&b=2&lbrack=3">', '<a title="&amp; &lt; &#39; &#60; &copy; &#9731;" href="?a=1&b=2%5B=3">' ],
+			'text is not touched'         => [ 'a [b] &#91;c&#93; <i>[d]</i>', 'a [b] &#91;c&#93; <i>[d]</i>' ],
+		];
+	}
+
+	/**
+	 * The replacement inside tags, on its own. In use it runs after the HTML filter, which
+	 * has already normalised most of these; it must not depend on that.
+	 *
+	 * @dataProvider data_tags_without_the_html_filter
+	 * @covers WP_Job_Manager_Post_Types::encode_brackets_in_tags
+	 */
+	public function test_brackets_in_tags_are_replaced_without_the_html_filter( $content, $expected ) {
+		$method = new ReflectionMethod( WP_Job_Manager_Post_Types::class, 'encode_brackets_in_tags' );
+		if ( PHP_VERSION_ID < 80100 ) {
+			$method->setAccessible( true );
+		}
+
+		$this->assertSame( $expected, $method->invoke( null, $content ) );
+	}
+
+	/**
+	 * An attribute that is rewritten keeps its value. How WordPress writes an apostrophe back
+	 * depends on its version, so the value is compared as the browser reads it.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::restrict_content_html
+	 */
+	public function test_rewritten_attribute_keeps_its_value() {
+		$restricted = WP_Job_Manager_Post_Types::restrict_content_html( '<a title="Tom &amp; Jerry&#039;s &quot;best&quot; [1] &lt;b&gt;" href="#">x</a>' );
+
+		$tags = new WP_HTML_Tag_Processor( $restricted );
+		$this->assertTrue( $tags->next_tag() );
+		$this->assertSame( 'Tom & Jerry\'s "best" %5B1%5D <b>', html_entity_decode( $tags->get_attribute( 'title' ), ENT_QUOTES | ENT_HTML5 ) );
+		$this->assertSame( '#', $tags->get_attribute( 'href' ) );
+		$this->assertFalse( $tags->next_tag(), 'The value must stay inside its attribute.' );
+		$this->assertStringEndsWith( '>x</a>', $restricted );
 	}
 
 	/**

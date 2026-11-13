@@ -817,7 +817,12 @@ class WP_Job_Manager_Post_Types {
 	 * Encoding a bracket as a character reference only holds in text. Inside a tag, the HTML
 	 * filter decodes attribute values and writes them back, which turns the reference into a
 	 * bracket again, and WordPress expands shortcodes found in attribute values. So inside tags
-	 * the bracket itself is replaced, in whichever form it was written.
+	 * the bracket itself is replaced, however it was written.
+	 *
+	 * The content is split into tags the same way WordPress splits it to look for shortcodes,
+	 * so both agree on what a tag is, including in markup that isn't well formed. In each tag,
+	 * every bracket character is replaced, and so is every character reference that PHP
+	 * decodes to a bracket. No list of the ways to write a bracket is kept here.
 	 *
 	 * @since $$next-version$$
 	 *
@@ -825,6 +830,11 @@ class WP_Job_Manager_Post_Types {
 	 * @return string
 	 */
 	private static function encode_brackets_in_tags( $content ) {
+		$brackets = [
+			'[' => '%5B',
+			']' => '%5D',
+		];
+
 		$parts = wp_html_split( $content );
 
 		foreach ( $parts as $index => $part ) {
@@ -832,14 +842,18 @@ class WP_Job_Manager_Post_Types {
 				continue;
 			}
 
-			$parts[ $index ] = preg_replace(
-				[
-					'/\[|&#0*91(?![0-9]);?|&#x0*5b(?![0-9a-f]);?|&(?:lbrack|lsqb);/i',
-					'/\]|&#0*93(?![0-9]);?|&#x0*5d(?![0-9a-f]);?|&(?:rbrack|rsqb);/i',
-				],
-				[ '%5B', '%5D' ],
+			// A decimal, hexadecimal or named reference, with or without its semicolon.
+			$part = preg_replace_callback(
+				'/&(?:#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]*);?/i',
+				function ( $reference ) use ( $brackets ) {
+					$character = html_entity_decode( rtrim( $reference[0], ';' ) . ';', ENT_QUOTES | ENT_HTML5 );
+
+					return isset( $brackets[ $character ] ) ? $brackets[ $character ] : $reference[0];
+				},
 				$part
 			);
+
+			$parts[ $index ] = strtr( $part, $brackets );
 		}
 
 		return implode( '', $parts );
@@ -1092,11 +1106,15 @@ class WP_Job_Manager_Post_Types {
 	 *
 	 * A media URL is listing data like any other field, whoever builds the markup around it:
 	 * players read it back from the page and build their own interface from it. So the URL has
-	 * to mean the same thing as text, as an attribute value and as a decoded attribute value.
-	 * A URL that carries character references, quotes or angle brackets doesn't, and is
-	 * rejected. Bracket characters are percent-encoded so the URL is never read as a shortcode.
+	 * to be the same string as text, as an attribute value and as a decoded attribute value.
+	 * It is used only if all of these hold, and is otherwise treated as empty:
 	 *
-	 * This applies to every listing, trusted or not: such a URL is never a working media URL.
+	 * - cleaning it as a URL a second time doesn't change it;
+	 * - decoding it as HTML doesn't change it, so it carries no character references;
+	 * - it has no quote, angle bracket or space, which would end an attribute or start a tag.
+	 *
+	 * This applies to every listing, trusted or not: a URL that fails is never a working media
+	 * URL. Bracket characters are percent-encoded so the URL is never read as a shortcode.
 	 *
 	 * @since $$next-version$$
 	 *
@@ -1108,22 +1126,33 @@ class WP_Job_Manager_Post_Types {
 			return '';
 		}
 
-		// An ampersand that was saved encoded is still just a separator.
-		do {
-			$before = $url;
-			$url    = str_ireplace( [ '&amp;', '&#038;', '&#38;' ], '&', $url );
-		} while ( $before !== $url );
-
+		// An ampersand that was saved encoded is still just a separator. Whatever this leaves
+		// is checked below.
+		$url = str_replace( '&amp;', '&', $url );
 		$url = esc_url_raw( trim( $url ), [ 'http', 'https' ] );
-		$url = str_replace( [ '[', ']' ], [ '%5B', '%5D' ], $url );
+		$url = strtr(
+			$url,
+			[
+				'[' => '%5B',
+				']' => '%5D',
+			]
+		);
 
-		// Cleaning removes characters, which can join the text around them into something new,
-		// so the result is what gets checked, and it must already be in its final form.
-		if ( '' === $url || esc_url_raw( $url, [ 'http', 'https' ] ) !== $url ) {
+		if ( '' === $url ) {
 			return '';
 		}
 
-		if ( preg_match( '/[<>"\'`\s]|&(?:[a-z][a-z0-9]*|#[0-9]+|#x[0-9a-f]+);/i', $url ) ) {
+		// Cleaning removes characters, which can join the text around them into something
+		// new. The cleaned URL is what gets checked, and it must already be in its final form.
+		if ( esc_url_raw( $url, [ 'http', 'https' ] ) !== $url ) {
+			return '';
+		}
+
+		if ( html_entity_decode( $url, ENT_QUOTES | ENT_HTML5 ) !== $url ) {
+			return '';
+		}
+
+		if ( preg_match( '/[<>"\'`\s]/', $url ) ) {
 			return '';
 		}
 
@@ -1135,10 +1164,11 @@ class WP_Job_Manager_Post_Types {
 	 * be read as markup once a player or script copies an attribute value back into the page.
 	 *
 	 * Escaping keeps a value inside its attribute, but the browser decodes the attribute, and
-	 * media players write the decoded value into their own interface. This looks at the values
-	 * as the browser will. After decoding, a URL attribute of any element must be free of angle
-	 * brackets and quotes, and any other attribute of a media element must be free of angle
-	 * brackets. Quotes are allowed there: player settings are often JSON in an attribute.
+	 * media players write the decoded value into their own interface. This reads the values as
+	 * the browser will, using WordPress's HTML parser. After decoding, a URL attribute of any
+	 * element must be free of angle brackets and quotes, and any other attribute of a media
+	 * element must be free of angle brackets. Quotes are allowed there: player settings are
+	 * often JSON in an attribute.
 	 *
 	 * @since $$next-version$$
 	 *
@@ -1168,22 +1198,41 @@ class WP_Job_Manager_Post_Types {
 					continue;
 				}
 
-				// Older versions of WordPress leave an encoded apostrophe in the decoded value.
-				$value = str_ireplace( [ '&#039;', '&#39;', '&#x27;', '&apos;' ], "'", $value );
+				// Decoded once more, so a value that only becomes markup when something decodes
+				// it a second time is refused as well.
+				$value = html_entity_decode( $value, ENT_QUOTES | ENT_HTML5 );
 
 				if ( preg_match( $is_url_attribute ? '/[<>"\'`]/' : '/[<>]/', $value ) ) {
 					return false;
 				}
 
-				// A character reference that is still encoded after one round of decoding.
-				// Browsers accept forms that older decoders leave alone.
-				if ( preg_match( '/&(?:#[0-9]|#x[0-9a-f]|(?:lt|gt|quot|apos)(?![a-z0-9=]))/i', $value ) ) {
+				if ( ! class_exists( 'WP_HTML_Decoder' ) && self::has_reference_left_before_wp_66( $value ) ) {
 					return false;
 				}
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * Checks a decoded attribute value for a character reference that WordPress 6.4 and 6.5
+	 * leave encoded but browsers decode.
+	 *
+	 * From 6.6 the HTML parser decodes attribute values the way browsers do. Before that it
+	 * used PHP's decoder, which only accepts a reference that ends with a semicolon. Browsers
+	 * also accept numeric references, and the references for quotes and angle brackets,
+	 * without one. A value that still has one of those is treated as not decoded.
+	 *
+	 * Can be removed when the minimum WordPress version is 6.6.
+	 *
+	 * @param string $value Attribute value, decoded.
+	 * @return bool
+	 */
+	private static function has_reference_left_before_wp_66( $value ) {
+		// A browser doesn't decode a named reference without a semicolon when a letter, digit
+		// or equals sign follows it, as in the query string `?lt=1&gt=2`.
+		return 1 === preg_match( '/&#x?[0-9a-f]|&(?:lt|gt|quot|apos)(?![a-z0-9=])/i', $value );
 	}
 
 	/**
