@@ -824,7 +824,7 @@ class WP_Job_Manager_Post_Types {
 	 * every bracket character is replaced, and so is every character reference that PHP
 	 * decodes to a bracket. No list of the ways to write a bracket is kept here.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.11
 	 *
 	 * @param string $content HTML content.
 	 * @return string
@@ -864,7 +864,7 @@ class WP_Job_Manager_Post_Types {
 	 * an untrusted listing. The URL was chosen by the listing's author; embeds from the providers
 	 * WordPress already knows don't need discovery and still work.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.11
 	 * @access private
 	 *
 	 * @param bool $discover Whether discovery is enabled.
@@ -879,7 +879,7 @@ class WP_Job_Manager_Post_Types {
 	 * listing. WordPress turns such an address into a player shortcode, which is only removed
 	 * again where the media pass runs; a link needs nothing after it.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.11
 	 * @access private
 	 *
 	 * @param string $html Shortcode for the player.
@@ -900,7 +900,7 @@ class WP_Job_Manager_Post_Types {
 	 * WordPress already knows. This also covers embeds that were discovered and cached before
 	 * discovery was limited.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.11
 	 * @access private
 	 *
 	 * @param string|false $html    Embed markup.
@@ -937,7 +937,7 @@ class WP_Job_Manager_Post_Types {
 	 * a live shortcode again for whatever processes the content next. The padded form is left
 	 * alone, so text that was encoded the other way before is re-encoded too.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.11
 	 *
 	 * @param string $text Text or HTML.
 	 * @return string
@@ -1071,7 +1071,7 @@ class WP_Job_Manager_Post_Types {
 	 * Markup that doesn't pass is_inert_media_markup() is not kept or returned, for any listing.
 	 *
 	 * @since 2.4.10
-	 * @since $$next-version$$ Returns an empty string for markup that fails is_inert_media_markup().
+	 * @since 2.4.11 Returns an empty string for markup that fails is_inert_media_markup().
 	 *
 	 * @param string           $html Plugin-generated markup to keep.
 	 * @param int|WP_Post|null $post Job listing the markup belongs to. Defaults to the global post.
@@ -1116,7 +1116,7 @@ class WP_Job_Manager_Post_Types {
 	 * This applies to every listing, trusted or not: a URL that fails is never a working media
 	 * URL. Bracket characters are percent-encoded so the URL is never read as a shortcode.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.11
 	 *
 	 * @param mixed $url URL from a listing field.
 	 * @return string The URL, or an empty string when it can't be used as a media source.
@@ -1170,7 +1170,7 @@ class WP_Job_Manager_Post_Types {
 	 * element must be free of angle brackets. Quotes are allowed there: player settings are
 	 * often JSON in an attribute.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.11
 	 *
 	 * @param string $html Markup to check.
 	 * @return bool False when the markup must not be printed.
@@ -1238,7 +1238,7 @@ class WP_Job_Manager_Post_Types {
 	/**
 	 * Sanitize media URL meta fields, such as the company video.
 	 *
-	 * @since $$next-version$$
+	 * @since 2.4.11
 	 *
 	 * @param string $meta_value Value of meta field that needs sanitization.
 	 * @return string

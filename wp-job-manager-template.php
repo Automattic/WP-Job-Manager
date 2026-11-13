@@ -1059,7 +1059,7 @@ function the_company_video( $post = null ) {
  * Gets the company video URL.
  *
  * @since 1.14.0
- * @since $$next-version$$ Returns an empty string for a value that can't be used as a media URL.
+ * @since 2.4.11 Returns an empty string for a value that can't be used as a media URL.
  * @param int|WP_Post $post (default: null).
  * @return string|null
  */
