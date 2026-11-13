@@ -96,6 +96,7 @@ class Tests_Listing_Media_Url extends WPJM_BaseTest {
 			'title of a media element'        => [ false, '<video title="&lt;b&gt;" src="a.mp4"></video>' ],
 			'source decodes to markup'        => [ false, '<video><source src="http://&lt;b&gt;?x#.mp4" /></video>' ],
 			'source decodes to a quote'       => [ false, '<video><source src="http://example.com/&quot;onfocus=x#.mp4" /></video>' ],
+			'source decodes to an apostrophe' => [ false, '<video><source src="http://example.com/&#039;onfocus=x#.mp4" /></video>' ],
 			'numeric reference'               => [ false, '<video><source src="http://&#60;b&#62;#.mp4" /></video>' ],
 			'reference without a semicolon'   => [ false, '<video><source src="http://&#60b#.mp4" /></video>' ],
 			'reference left after decoding'   => [ false, '<video><source src="http://&amp;lt;b#.mp4" /></video>' ],

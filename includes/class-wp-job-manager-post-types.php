@@ -1036,6 +1036,9 @@ class WP_Job_Manager_Post_Types {
 					continue;
 				}
 
+				// Older versions of WordPress leave an encoded apostrophe in the decoded value.
+				$value = str_ireplace( [ '&#039;', '&#39;', '&#x27;', '&apos;' ], "'", $value );
+
 				if ( preg_match( $is_url_attribute ? '/[<>"\'`]/' : '/[<>]/', $value ) ) {
 					return false;
 				}
