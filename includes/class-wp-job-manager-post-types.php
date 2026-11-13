@@ -202,6 +202,10 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_job_description', [ $this, 'strip_untrusted_listing_media' ], 20, 2 );
 		add_filter( 'the_content', [ $this, 'strip_untrusted_listing_media' ], 20 );
 		add_filter( 'tiny_mce_plugins', [ $this, 'disable_untrusted_editor_previews' ] );
+		add_filter( 'embed_oembed_discover', [ $this, 'limit_embed_discovery' ] );
+		add_filter( 'embed_oembed_html', [ $this, 'limit_listing_embeds' ], 10, 4 );
+		add_filter( 'wp_embed_handler_video', [ $this, 'limit_listing_media_embeds' ], 10, 3 );
+		add_filter( 'wp_embed_handler_audio', [ $this, 'limit_listing_media_embeds' ], 10, 3 );
 
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
@@ -782,7 +786,172 @@ class WP_Job_Manager_Post_Types {
 		$content = preg_replace( '/<!--\s*\/?wp:.*?-->/s', '', $content );
 
 		// Keep any remaining brackets, such as an escaped [[shortcode]], from being expanded later.
-		return str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $content );
+		return self::encode_brackets( self::encode_brackets_in_tags( $content ) );
+	}
+
+	/**
+	 * The listing whose content is passing through the content filters. A description can be
+	 * requested for a listing other than the current post, and the embed filters aren't told
+	 * which post they are working on.
+	 *
+	 * @var WP_Post|null
+	 */
+	private static $listing_in_progress = null;
+
+	/**
+	 * Gets the untrusted listing whose content is being processed: the one the content filters
+	 * were started for, or else the current post.
+	 *
+	 * @return WP_Post|null The listing, or null when the content isn't an untrusted listing's.
+	 */
+	private static function get_untrusted_listing_in_progress() {
+		$post = self::$listing_in_progress ? self::$listing_in_progress : self::get_listing_for_content();
+
+		return $post && ! self::is_trusted_listing( $post ) ? $post : null;
+	}
+
+	/**
+	 * Percent-encodes bracket characters inside HTML tags, so nothing in an attribute is read as
+	 * a shortcode.
+	 *
+	 * Encoding a bracket as a character reference only holds in text. Inside a tag, the HTML
+	 * filter decodes attribute values and writes them back, which turns the reference into a
+	 * bracket again, and WordPress expands shortcodes found in attribute values. So inside tags
+	 * the bracket itself is replaced, however it was written.
+	 *
+	 * The content is split into tags the same way WordPress splits it to look for shortcodes,
+	 * so both agree on what a tag is, including in markup that isn't well formed. In each tag,
+	 * every bracket character is replaced, and so is every character reference that PHP
+	 * decodes to a bracket. No list of the ways to write a bracket is kept here.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $content HTML content.
+	 * @return string
+	 */
+	private static function encode_brackets_in_tags( $content ) {
+		$brackets = [
+			'[' => '%5B',
+			']' => '%5D',
+		];
+
+		$parts = wp_html_split( $content );
+
+		foreach ( $parts as $index => $part ) {
+			if ( '' === $part || '<' !== $part[0] ) {
+				continue;
+			}
+
+			// A decimal, hexadecimal or named reference, with or without its semicolon.
+			$part = preg_replace_callback(
+				'/&(?:#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]*);?/i',
+				function ( $reference ) use ( $brackets ) {
+					$character = html_entity_decode( rtrim( $reference[0], ';' ) . ';', ENT_QUOTES | ENT_HTML5 );
+
+					return isset( $brackets[ $character ] ) ? $brackets[ $character ] : $reference[0];
+				},
+				$part
+			);
+
+			$parts[ $index ] = strtr( $part, $brackets );
+		}
+
+		return implode( '', $parts );
+	}
+
+	/**
+	 * Stops WordPress from fetching a URL to discover an embed while it processes the content of
+	 * an untrusted listing. The URL was chosen by the listing's author; embeds from the providers
+	 * WordPress already knows don't need discovery and still work.
+	 *
+	 * @since $$next-version$$
+	 * @access private
+	 *
+	 * @param bool $discover Whether discovery is enabled.
+	 * @return bool
+	 */
+	public function limit_embed_discovery( $discover ) {
+		return self::get_untrusted_listing_in_progress() ? false : $discover;
+	}
+
+	/**
+	 * Shows a link instead of a media player for the address of a media file in an untrusted
+	 * listing. WordPress turns such an address into a player shortcode, which is only removed
+	 * again where the media pass runs; a link needs nothing after it.
+	 *
+	 * @since $$next-version$$
+	 * @access private
+	 *
+	 * @param string $html Shortcode for the player.
+	 * @param array  $attr Embed attributes.
+	 * @param string $url  URL of the media file.
+	 * @return string
+	 */
+	public function limit_listing_media_embeds( $html, $attr, $url ) {
+		if ( ! self::get_untrusted_listing_in_progress() ) {
+			return $html;
+		}
+
+		return '<a href="' . esc_url( $url ) . '">' . esc_html( $url ) . '</a>';
+	}
+
+	/**
+	 * Replaces an embed in an untrusted listing with a link unless it comes from a provider
+	 * WordPress already knows. This also covers embeds that were discovered and cached before
+	 * discovery was limited.
+	 *
+	 * @since $$next-version$$
+	 * @access private
+	 *
+	 * @param string|false $html    Embed markup.
+	 * @param string       $url     URL that was embedded.
+	 * @param array        $attr    Embed attributes.
+	 * @param int          $post_id Post the embed belongs to.
+	 * @return string|false
+	 */
+	public function limit_listing_embeds( $html, $url, $attr = [], $post_id = 0 ) {
+		// WordPress passes the current post, which isn't always the listing being processed.
+		if ( self::$listing_in_progress ) {
+			$post = self::$listing_in_progress;
+		} else {
+			$post = self::get_listing_for_content( $post_id ? get_post( $post_id ) : null );
+		}
+
+		if ( ! $html || ! $post || self::is_trusted_listing( $post ) ) {
+			return $html;
+		}
+
+		if ( _wp_oembed_get_object()->get_provider( $url, [ 'discover' => false ] ) ) {
+			return $html;
+		}
+
+		return $GLOBALS['wp_embed']->maybe_make_link( $url );
+	}
+
+	/**
+	 * Encodes bracket characters so the text is displayed and never read as a shortcode.
+	 *
+	 * The zero-padded form matters. WordPress uses `&#91;` and `&#93;` as its own placeholders
+	 * while it expands shortcodes and turns every one of them back into a bracket afterwards,
+	 * including any that were printed by a shortcode during that pass. Text encoded that way is
+	 * a live shortcode again for whatever processes the content next. The padded form is left
+	 * alone, so text that was encoded the other way before is re-encoded too.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $text Text or HTML.
+	 * @return string
+	 */
+	public static function encode_brackets( $text ) {
+		return strtr(
+			(string) $text,
+			[
+				'['     => '&#091;',
+				']'     => '&#093;',
+				'&#91;' => '&#091;',
+				'&#93;' => '&#093;',
+			]
+		);
 	}
 
 	/**
@@ -870,6 +1039,9 @@ class WP_Job_Manager_Post_Types {
 	 * @return string
 	 */
 	public function strip_untrusted_listing_media( $content, $post = null ) {
+		// The last of the filters that process a listing's content.
+		self::$listing_in_progress = null;
+
 		$post = self::get_listing_for_content( $post );
 		if ( ! $post || self::is_trusted_listing( $post ) ) {
 			return $content;
@@ -895,24 +1067,184 @@ class WP_Job_Manager_Post_Types {
 	 * runs), are returned unchanged. Shortcodes are expanded before the swap: the restored
 	 * markup re-enters the content after `do_shortcode` has already run.
 	 *
+	 * Generated markup still carries listing data, such as the URL the player was built from.
+	 * Markup that doesn't pass is_inert_media_markup() is not kept or returned, for any listing.
+	 *
 	 * @since 2.4.10
+	 * @since $$next-version$$ Returns an empty string for markup that fails is_inert_media_markup().
 	 *
 	 * @param string           $html Plugin-generated markup to keep.
 	 * @param int|WP_Post|null $post Job listing the markup belongs to. Defaults to the global post.
 	 * @return string The markup, or the placeholder that will be swapped back for it.
 	 */
 	public static function protect_listing_media_output( $html, $post = null ) {
+		if ( ! self::is_inert_media_markup( $html ) ) {
+			return '';
+		}
+
 		$post = self::get_listing_for_content( get_post( $post ) );
 
 		if ( ! $post || self::is_trusted_listing( $post ) || ( ! doing_filter( 'the_content' ) && ! doing_filter( 'the_job_description' ) ) ) {
 			return $html;
 		}
 
+		// The expanded markup is what gets printed, so it is checked again.
+		$html = do_shortcode( $html );
+		if ( ! self::is_inert_media_markup( $html ) ) {
+			return '';
+		}
+
 		$token = 'wpjm-protected-media-' . wp_generate_password( 24, false );
 
-		self::$protected_media[ $token ] = do_shortcode( $html );
+		self::$protected_media[ $token ] = $html;
 
 		return '<!-- ' . $token . ' -->';
+	}
+
+	/**
+	 * Prepares a URL from a listing field for use as the source of a media player or embed.
+	 *
+	 * A media URL is listing data like any other field, whoever builds the markup around it:
+	 * players read it back from the page and build their own interface from it. So the URL has
+	 * to be the same string as text, as an attribute value and as a decoded attribute value.
+	 * It is used only if all of these hold, and is otherwise treated as empty:
+	 *
+	 * - cleaning it as a URL a second time doesn't change it;
+	 * - decoding it as HTML doesn't change it, so it carries no character references;
+	 * - it has no quote, angle bracket or space, which would end an attribute or start a tag.
+	 *
+	 * This applies to every listing, trusted or not: a URL that fails is never a working media
+	 * URL. Bracket characters are percent-encoded so the URL is never read as a shortcode.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param mixed $url URL from a listing field.
+	 * @return string The URL, or an empty string when it can't be used as a media source.
+	 */
+	public static function sanitize_media_url( $url ) {
+		if ( ! is_string( $url ) ) {
+			return '';
+		}
+
+		// An ampersand that was saved encoded is still just a separator. Whatever this leaves
+		// is checked below.
+		$url = str_replace( '&amp;', '&', $url );
+		$url = esc_url_raw( trim( $url ), [ 'http', 'https' ] );
+		$url = strtr(
+			$url,
+			[
+				'[' => '%5B',
+				']' => '%5D',
+			]
+		);
+
+		if ( '' === $url ) {
+			return '';
+		}
+
+		// Cleaning removes characters, which can join the text around them into something
+		// new. The cleaned URL is what gets checked, and it must already be in its final form.
+		if ( esc_url_raw( $url, [ 'http', 'https' ] ) !== $url ) {
+			return '';
+		}
+
+		if ( html_entity_decode( $url, ENT_QUOTES | ENT_HTML5 ) !== $url ) {
+			return '';
+		}
+
+		if ( preg_match( '/[<>"\'`\s]/', $url ) ) {
+			return '';
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Checks that media markup built from listing data has nothing in its attributes that could
+	 * be read as markup once a player or script copies an attribute value back into the page.
+	 *
+	 * Escaping keeps a value inside its attribute, but the browser decodes the attribute, and
+	 * media players write the decoded value into their own interface. This reads the values as
+	 * the browser will, using WordPress's HTML parser. After decoding, a URL attribute of any
+	 * element must be free of angle brackets and quotes, and any other attribute of a media
+	 * element must be free of angle brackets. Quotes are allowed there: player settings are
+	 * often JSON in an attribute.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $html Markup to check.
+	 * @return bool False when the markup must not be printed.
+	 */
+	public static function is_inert_media_markup( $html ) {
+		if ( ! is_string( $html ) ) {
+			return false;
+		}
+
+		$media_tags     = [ 'VIDEO', 'AUDIO', 'SOURCE', 'TRACK', 'EMBED', 'OBJECT' ];
+		$url_attributes = [ 'src', 'href', 'poster', 'data', 'srcset' ];
+		$tags           = new WP_HTML_Tag_Processor( $html );
+
+		while ( $tags->next_tag() ) {
+			$is_media_tag = in_array( $tags->get_tag(), $media_tags, true );
+
+			foreach ( (array) $tags->get_attribute_names_with_prefix( '' ) as $name ) {
+				$is_url_attribute = in_array( $name, $url_attributes, true );
+				if ( ! $is_media_tag && ! $is_url_attribute ) {
+					continue;
+				}
+
+				$value = $tags->get_attribute( $name );
+				if ( ! is_string( $value ) ) {
+					continue;
+				}
+
+				// Decoded once more, so a value that only becomes markup when something decodes
+				// it a second time is refused as well.
+				$value = html_entity_decode( $value, ENT_QUOTES | ENT_HTML5 );
+
+				if ( preg_match( $is_url_attribute ? '/[<>"\'`]/' : '/[<>]/', $value ) ) {
+					return false;
+				}
+
+				if ( ! class_exists( 'WP_HTML_Decoder' ) && self::has_reference_left_before_wp_66( $value ) ) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks a decoded attribute value for a character reference that WordPress 6.4 and 6.5
+	 * leave encoded but browsers decode.
+	 *
+	 * From 6.6 the HTML parser decodes attribute values the way browsers do. Before that it
+	 * used PHP's decoder, which only accepts a reference that ends with a semicolon. Browsers
+	 * also accept numeric references, and the references for quotes and angle brackets,
+	 * without one. A value that still has one of those is treated as not decoded.
+	 *
+	 * Can be removed when the minimum WordPress version is 6.6.
+	 *
+	 * @param string $value Attribute value, decoded.
+	 * @return bool
+	 */
+	private static function has_reference_left_before_wp_66( $value ) {
+		// A browser doesn't decode a named reference without a semicolon when a letter, digit
+		// or equals sign follows it, as in the query string `?lt=1&gt=2`.
+		return 1 === preg_match( '/&#x?[0-9a-f]|&(?:lt|gt|quot|apos)(?![a-z0-9=])/i', $value );
+	}
+
+	/**
+	 * Sanitize media URL meta fields, such as the company video.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $meta_value Value of meta field that needs sanitization.
+	 * @return string
+	 */
+	public static function sanitize_meta_field_media_url( $meta_value ) {
+		return self::sanitize_media_url( $meta_value );
 	}
 
 	/**
@@ -954,6 +1286,9 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function filter_job_description( $description, $post = null ) {
 		$post = self::get_listing_for_content( $post );
+
+		self::$listing_in_progress = $post;
+
 		if ( ! $post ) {
 			return $description;
 		}
@@ -994,6 +1329,9 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function filter_listing_content( $content ) {
 		$post = self::get_listing_for_content();
+
+		self::$listing_in_progress = $post;
+
 		if ( ! $post ) {
 			return $content;
 		}
@@ -2492,7 +2830,7 @@ class WP_Job_Manager_Post_Types {
 				'data_type'         => 'string',
 				'show_in_admin'     => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_url' ],
+				'sanitize_callback' => [ __CLASS__, 'sanitize_meta_field_media_url' ],
 			],
 			'_filled'              => [
 				'label'         => __( 'Position Filled', 'wp-job-manager' ),

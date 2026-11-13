@@ -832,7 +832,7 @@ function wpjm_esc_listing_text( $text, $post = null ) {
 		return $text;
 	}
 
-	return str_replace( [ '[', ']' ], [ '&#91;', '&#93;' ], $text );
+	return WP_Job_Manager_Post_Types::encode_brackets( $text );
 }
 
 /**
@@ -1036,15 +1036,20 @@ function the_company_video( $post = null ) {
 		} elseif ( ! empty( $filetype['ext'] ) ) {
 			$video_embed = wp_video_shortcode( [ 'src' => $video ] );
 		} else {
-			$video_embed = wp_oembed_get( $video );
+			// Only a trusted listing's URL is fetched to look for an embed. Other listings get
+			// embeds from the providers WordPress already knows.
+			$listing     = get_post( $post );
+			$discover    = $listing && WP_Job_Manager_Post_Types::is_trusted_listing( $listing );
+			$video_embed = wp_oembed_get( $video, [ 'discover' => $discover ] );
 		}
 	}
 
 	$video_embed = apply_filters( 'the_company_video_embed', $video_embed, $post );
 
-	if ( $video_embed ) {
-		// The player is built by WordPress from the listing's saved URL, not from author
-		// markup, so it is kept when the listing's own media is removed from the content.
+	if ( $video_embed && is_string( $video_embed ) ) {
+		// The player is built by WordPress, not from author markup, so it is kept when the
+		// listing's own media is removed from the content. It is still built from the listing's
+		// saved URL: protect_listing_media_output() returns nothing if the markup isn't inert.
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo WP_Job_Manager_Post_Types::protect_listing_media_output( '<div class="company_video">' . $video_embed . '</div>', $post );
 	}
@@ -1054,6 +1059,7 @@ function the_company_video( $post = null ) {
  * Gets the company video URL.
  *
  * @since 1.14.0
+ * @since $$next-version$$ Returns an empty string for a value that can't be used as a media URL.
  * @param int|WP_Post $post (default: null).
  * @return string|null
  */
@@ -1062,7 +1068,9 @@ function get_the_company_video( $post = null ) {
 	if ( ! $post || \WP_Job_Manager_Post_Types::PT_LISTING !== $post->post_type ) {
 		return null;
 	}
-	return apply_filters( 'the_company_video', $post->_company_video, $post );
+
+	// Checked after the filter, so every caller gets a URL that is safe to build a player from.
+	return WP_Job_Manager_Post_Types::sanitize_media_url( apply_filters( 'the_company_video', $post->_company_video, $post ) );
 }
 
 /**
@@ -1193,7 +1201,9 @@ function the_company_twitter( $before = '', $after = '', $echo = true, $post = n
 		return null;
 	}
 
-	$company_twitter = $before . '<a href="' . esc_url( 'https://x.com/' . $company_twitter ) . '" class="company_twitter">' . esc_html( wp_strip_all_tags( $company_twitter ) ) . '</a>' . $after;
+	$twitter_url     = wpjm_esc_listing_text( esc_url( 'https://x.com/' . $company_twitter ), $post );
+	$twitter_text    = wpjm_esc_listing_text( esc_html( wp_strip_all_tags( $company_twitter ) ), $post );
+	$company_twitter = $before . '<a href="' . $twitter_url . '" class="company_twitter">' . $twitter_text . '</a>' . $after;
 
 	if ( $echo ) {
 		echo wp_kses_post( $company_twitter );
@@ -1394,9 +1404,11 @@ function the_job_salary( $before = '', $after = '', $echo = true, $post = null )
 	$job_salary = apply_filters( 'the_job_salary_message', $job_salary, $post, $before, $salary, $currency, $unit, $after );
 
 	if ( $echo ) {
-		echo esc_html( $job_salary );
+		echo wpjm_esc_listing_text( esc_html( $job_salary ), $post ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped, then prepared for display.
 	} else {
-		return $job_salary;
+		// The salary and currency are entered as text, and templates print the returned message
+		// inside content that is processed further.
+		return wpjm_esc_listing_text( $job_salary, $post );
 	}
 }
 
