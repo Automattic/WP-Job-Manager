@@ -49,6 +49,11 @@ shortcodes, blocks, and media.
   (`WP_Job_Manager_Post_Types::encode_brackets()`). WordPress uses the unpadded form as its
   own placeholder while it expands shortcodes and turns it back into a bracket afterwards,
   so text encoded that way does not stay encoded.
+- Inside HTML tags, brackets are percent-encoded instead
+  (`restrict_content_html()`). A character reference only holds in text: the HTML filter
+  decodes attribute values and writes them back, and WordPress expands shortcodes it finds
+  in attribute values. Restricted content keeps being processed after it is restricted, so
+  the restriction has to survive the HTML filter, embeds, and more than one shortcode pass.
 - **A URL that a media player or embed is built from is listing data, whoever builds the
   markup around it.** Players read the URL back from the page and build their own interface
   from it, so escaping it for the attribute is not enough: it must be a plain URL however
@@ -61,8 +66,10 @@ shortcodes, blocks, and media.
     (`WP_Job_Manager_Post_Types::is_inert_media_markup()`, enforced inside
     `protect_listing_media_output()`). Keeping generated markup through the media pass is an
     exemption from a safety check, so the exemption carries its own check.
-- For an untrusted listing, embeds come only from the providers WordPress already knows.
-  The site does not fetch a URL the listing's author chose in order to discover an embed.
+- For an untrusted listing, embeds come only from the providers WordPress already knows,
+  for the company video and for addresses in the description alike. The site does not fetch
+  a URL the listing's author chose in order to discover an embed, and an embed that was
+  discovered and cached earlier is shown as a link.
 
 ## Consequences
 
@@ -93,6 +100,9 @@ Both are the kind of mistake a reviewer cannot be relied on to catch, so a test 
   submission form, fills every one with text that would be processed if it were printed
   unprepared, and renders the listing through every template. A new field is covered
   without a new test. A new template that prints listing fields should be added to its list.
+- `tests/php/tests/security/test_class.listing-description-processing.php` checks the
+  restricted description after the steps that follow the restriction, not only the output
+  of the restriction itself.
 - Anything new that builds markup from a listing field and needs to survive the media pass
   goes through `protect_listing_media_output()`, and so through its check. Do not add a
   second way around the media pass.

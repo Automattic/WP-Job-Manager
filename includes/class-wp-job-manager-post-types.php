@@ -202,6 +202,8 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'the_job_description', [ $this, 'strip_untrusted_listing_media' ], 20, 2 );
 		add_filter( 'the_content', [ $this, 'strip_untrusted_listing_media' ], 20 );
 		add_filter( 'tiny_mce_plugins', [ $this, 'disable_untrusted_editor_previews' ] );
+		add_filter( 'embed_oembed_discover', [ $this, 'limit_embed_discovery' ] );
+		add_filter( 'embed_oembed_html', [ $this, 'limit_listing_embeds' ], 10, 4 );
 
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
@@ -782,7 +784,88 @@ class WP_Job_Manager_Post_Types {
 		$content = preg_replace( '/<!--\s*\/?wp:.*?-->/s', '', $content );
 
 		// Keep any remaining brackets, such as an escaped [[shortcode]], from being expanded later.
-		return self::encode_brackets( $content );
+		return self::encode_brackets( self::encode_brackets_in_tags( $content ) );
+	}
+
+	/**
+	 * Percent-encodes bracket characters inside HTML tags, so nothing in an attribute is read as
+	 * a shortcode.
+	 *
+	 * Encoding a bracket as a character reference only holds in text. Inside a tag, the HTML
+	 * filter decodes attribute values and writes them back, which turns the reference into a
+	 * bracket again, and WordPress expands shortcodes found in attribute values. So inside tags
+	 * the bracket itself is replaced, in whichever form it was written.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param string $content HTML content.
+	 * @return string
+	 */
+	private static function encode_brackets_in_tags( $content ) {
+		$parts = wp_html_split( $content );
+
+		foreach ( $parts as $index => $part ) {
+			if ( '' === $part || '<' !== $part[0] ) {
+				continue;
+			}
+
+			$parts[ $index ] = preg_replace(
+				[
+					'/\[|&#0*91(?![0-9]);?|&#x0*5b(?![0-9a-f]);?|&(?:lbrack|lsqb);/i',
+					'/\]|&#0*93(?![0-9]);?|&#x0*5d(?![0-9a-f]);?|&(?:rbrack|rsqb);/i',
+				],
+				[ '%5B', '%5D' ],
+				$part
+			);
+		}
+
+		return implode( '', $parts );
+	}
+
+	/**
+	 * Stops WordPress from fetching a URL to discover an embed while it processes the content of
+	 * an untrusted listing. The URL was chosen by the listing's author; embeds from the providers
+	 * WordPress already knows don't need discovery and still work.
+	 *
+	 * @since $$next-version$$
+	 * @access private
+	 *
+	 * @param bool $discover Whether discovery is enabled.
+	 * @return bool
+	 */
+	public function limit_embed_discovery( $discover ) {
+		$post = self::get_listing_for_content();
+
+		return $post && ! self::is_trusted_listing( $post ) ? false : $discover;
+	}
+
+	/**
+	 * Replaces an embed in an untrusted listing with a link unless it comes from a provider
+	 * WordPress already knows. This also covers embeds that were discovered and cached before
+	 * discovery was limited.
+	 *
+	 * @since $$next-version$$
+	 * @access private
+	 *
+	 * @param string|false $html    Embed markup.
+	 * @param string       $url     URL that was embedded.
+	 * @param array        $attr    Embed attributes.
+	 * @param int          $post_id Post the embed belongs to.
+	 * @return string|false
+	 */
+	public function limit_listing_embeds( $html, $url, $attr = [], $post_id = 0 ) {
+		$post = $post_id ? get_post( $post_id ) : null;
+		$post = self::get_listing_for_content( $post );
+
+		if ( ! $html || ! $post || self::is_trusted_listing( $post ) ) {
+			return $html;
+		}
+
+		if ( _wp_oembed_get_object()->get_provider( $url, [ 'discover' => false ] ) ) {
+			return $html;
+		}
+
+		return $GLOBALS['wp_embed']->maybe_make_link( $url );
 	}
 
 	/**

@@ -85,7 +85,7 @@ class Tests_Listing_Field_Sweep extends WPJM_BaseTest {
 		$job_id = $this->factory->job_listing->create(
 			[
 				'post_author'  => $role ? $this->factory->user->create( [ 'role' => $role ] ) : 0,
-				'post_content' => 'A description [' . $this->register_shortcode( 'job_description' ) . '] with brackets.',
+				'post_content' => 'A description [' . $this->register_shortcode( 'job_description' ) . '] with brackets and <a title="[' . $this->register_shortcode( 'job_description_attribute' ) . ']" href="#">a link</a>.',
 			]
 		);
 		foreach ( $meta as $meta_key => $value ) {
