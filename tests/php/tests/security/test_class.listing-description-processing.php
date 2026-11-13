@@ -144,6 +144,67 @@ class Tests_Listing_Description_Processing extends WPJM_BaseTest {
 		$this->assertContains( 'https://video.example.org/watch/123', $requests->getArrayCopy() );
 	}
 
+	public function data_media_addresses() {
+		return [
+			'video file' => [ "Line\nhttp://&lt;b/class=wpjm-probe&gt;?x#.mp4\nLine" ],
+			'audio file' => [ "Line\nhttps://example.com/a.mp3\nLine" ],
+		];
+	}
+
+	/**
+	 * WordPress turns the address of a media file into a player. For an untrusted listing it
+	 * must be a link on every path, including shortcode output that is processed again.
+	 *
+	 * @dataProvider data_media_addresses
+	 * @covers WP_Job_Manager_Post_Types::limit_listing_media_embeds
+	 */
+	public function test_no_player_is_built_from_a_media_address_in_untrusted_description( $content ) {
+		$job_id = $this->create_listing( 'subscriber', $content );
+
+		$single    = $this->render_single_listing( $job_id );
+		$shortcode = do_shortcode( '[job id="' . $job_id . '"]' );
+
+		foreach ( [ $single, do_shortcode( $single ), $shortcode, do_shortcode( $shortcode ) ] as $output ) {
+			$this->assertDoesNotMatchRegularExpression( '#<(video|audio|source)\b|\[(video|audio)\b#i', $output );
+		}
+	}
+
+	/**
+	 * @covers WP_Job_Manager_Post_Types::limit_listing_media_embeds
+	 */
+	public function test_player_is_built_from_a_media_address_in_trusted_description() {
+		$job_id = $this->create_listing( 'administrator', "Line\nhttps://example.com/a.mp4\nLine" );
+
+		$this->assertStringContainsString( '<video', $this->render_single_listing( $job_id ) );
+	}
+
+	/**
+	 * A description can be requested for a listing other than the current post. Trust follows
+	 * the listing the description belongs to, in both directions.
+	 *
+	 * @covers WP_Job_Manager_Post_Types::limit_embed_discovery
+	 * @covers WP_Job_Manager_Post_Types::limit_listing_media_embeds
+	 */
+	public function test_embeds_follow_the_listing_being_processed_not_the_current_post() {
+		$content    = "Line\nhttps://video.example.org/watch/123\nLine\nhttps://example.com/a.mp4\nLine";
+		$subscriber = $this->create_listing( 'subscriber', $content );
+		$admin      = $this->create_listing( 'administrator', $content );
+
+		$requests        = $this->record_http_requests();
+		$GLOBALS['post'] = get_post( $admin ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$untrusted       = wpjm_get_the_job_description( $subscriber );
+
+		$this->assertSame( [], $requests->getArrayCopy() );
+		$this->assertStringNotContainsString( '[video', $untrusted );
+
+		$GLOBALS['post'] = get_post( $subscriber ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$trusted         = wpjm_get_the_job_description( $admin );
+		unset( $GLOBALS['post'] );
+
+		$this->assertContains( 'https://video.example.org/watch/123', $requests->getArrayCopy() );
+		$this->assertStringContainsString( '[video', $trusted );
+	}
+
 	/**
 	 * Embeds are cached with the listing, so one that was discovered before must not be printed
 	 * from the cache either.

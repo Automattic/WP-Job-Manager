@@ -204,6 +204,8 @@ class WP_Job_Manager_Post_Types {
 		add_filter( 'tiny_mce_plugins', [ $this, 'disable_untrusted_editor_previews' ] );
 		add_filter( 'embed_oembed_discover', [ $this, 'limit_embed_discovery' ] );
 		add_filter( 'embed_oembed_html', [ $this, 'limit_listing_embeds' ], 10, 4 );
+		add_filter( 'wp_embed_handler_video', [ $this, 'limit_listing_media_embeds' ], 10, 3 );
+		add_filter( 'wp_embed_handler_audio', [ $this, 'limit_listing_media_embeds' ], 10, 3 );
 
 		add_filter( 'the_job_description', 'wptexturize' );
 		add_filter( 'the_job_description', 'convert_smilies' );
@@ -788,6 +790,27 @@ class WP_Job_Manager_Post_Types {
 	}
 
 	/**
+	 * The listing whose content is passing through the content filters. A description can be
+	 * requested for a listing other than the current post, and the embed filters aren't told
+	 * which post they are working on.
+	 *
+	 * @var WP_Post|null
+	 */
+	private static $listing_in_progress = null;
+
+	/**
+	 * Gets the untrusted listing whose content is being processed: the one the content filters
+	 * were started for, or else the current post.
+	 *
+	 * @return WP_Post|null The listing, or null when the content isn't an untrusted listing's.
+	 */
+	private static function get_untrusted_listing_in_progress() {
+		$post = self::$listing_in_progress ? self::$listing_in_progress : self::get_listing_for_content();
+
+		return $post && ! self::is_trusted_listing( $post ) ? $post : null;
+	}
+
+	/**
 	 * Percent-encodes bracket characters inside HTML tags, so nothing in an attribute is read as
 	 * a shortcode.
 	 *
@@ -834,9 +857,28 @@ class WP_Job_Manager_Post_Types {
 	 * @return bool
 	 */
 	public function limit_embed_discovery( $discover ) {
-		$post = self::get_listing_for_content();
+		return self::get_untrusted_listing_in_progress() ? false : $discover;
+	}
 
-		return $post && ! self::is_trusted_listing( $post ) ? false : $discover;
+	/**
+	 * Shows a link instead of a media player for the address of a media file in an untrusted
+	 * listing. WordPress turns such an address into a player shortcode, which is only removed
+	 * again where the media pass runs; a link needs nothing after it.
+	 *
+	 * @since $$next-version$$
+	 * @access private
+	 *
+	 * @param string $html Shortcode for the player.
+	 * @param array  $attr Embed attributes.
+	 * @param string $url  URL of the media file.
+	 * @return string
+	 */
+	public function limit_listing_media_embeds( $html, $attr, $url ) {
+		if ( ! self::get_untrusted_listing_in_progress() ) {
+			return $html;
+		}
+
+		return '<a href="' . esc_url( $url ) . '">' . esc_html( $url ) . '</a>';
 	}
 
 	/**
@@ -854,8 +896,12 @@ class WP_Job_Manager_Post_Types {
 	 * @return string|false
 	 */
 	public function limit_listing_embeds( $html, $url, $attr = [], $post_id = 0 ) {
-		$post = $post_id ? get_post( $post_id ) : null;
-		$post = self::get_listing_for_content( $post );
+		// WordPress passes the current post, which isn't always the listing being processed.
+		if ( self::$listing_in_progress ) {
+			$post = self::$listing_in_progress;
+		} else {
+			$post = self::get_listing_for_content( $post_id ? get_post( $post_id ) : null );
+		}
 
 		if ( ! $html || ! $post || self::is_trusted_listing( $post ) ) {
 			return $html;
@@ -979,6 +1025,9 @@ class WP_Job_Manager_Post_Types {
 	 * @return string
 	 */
 	public function strip_untrusted_listing_media( $content, $post = null ) {
+		// The last of the filters that process a listing's content.
+		self::$listing_in_progress = null;
+
 		$post = self::get_listing_for_content( $post );
 		if ( ! $post || self::is_trusted_listing( $post ) ) {
 			return $content;
@@ -1188,6 +1237,9 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function filter_job_description( $description, $post = null ) {
 		$post = self::get_listing_for_content( $post );
+
+		self::$listing_in_progress = $post;
+
 		if ( ! $post ) {
 			return $description;
 		}
@@ -1228,6 +1280,9 @@ class WP_Job_Manager_Post_Types {
 	 */
 	public function filter_listing_content( $content ) {
 		$post = self::get_listing_for_content();
+
+		self::$listing_in_progress = $post;
+
 		if ( ! $post ) {
 			return $content;
 		}
