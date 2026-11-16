@@ -22,6 +22,7 @@ class Tests_Listing_Field_Display extends WPJM_BaseTest {
 
 	public function tearDown(): void {
 		remove_shortcode( self::SHORTCODE );
+		remove_all_filters( 'job_manager_isolate_single_job_content' );
 		parent::tearDown();
 	}
 
@@ -83,11 +84,26 @@ class Tests_Listing_Field_Display extends WPJM_BaseTest {
 	 * @covers ::the_job_salary
 	 */
 	public function test_salary_keeps_processing_on_admin_listing() {
+		add_filter( 'job_manager_isolate_single_job_content', '__return_false' );
 		update_option( 'job_manager_enable_salary', '1' );
 		$job_id = $this->create_listing_by_role( 'administrator', [ '_job_salary' ] );
 
 		$this->assertSame( 'Acme [' . self::SHORTCODE . '] Co ', the_job_salary( '', '', false, $job_id ) );
 		$this->assertStringContainsString( self::EXPANDED, $this->render_single_listing( $job_id ) );
+	}
+
+	/**
+	 * Only the description of a trusted listing is searched for shortcodes. Its other fields are text.
+	 *
+	 * @covers ::the_company_name
+	 */
+	public function test_fields_are_shown_as_text_on_admin_listing() {
+		$job_id = $this->create_listing_by_role( 'administrator', [ '_company_name', '_company_tagline', '_job_location' ] );
+
+		$output = $this->render_single_listing( $job_id );
+
+		$this->assertStringNotContainsString( self::EXPANDED, $output );
+		$this->assertStringContainsString( '<strong>Acme [' . self::SHORTCODE . '] Co</strong>', $output );
 	}
 
 	/**
@@ -115,11 +131,13 @@ class Tests_Listing_Field_Display extends WPJM_BaseTest {
 	}
 
 	/**
-	 * Control: fields on listings by trusted authors are processed as before.
+	 * Control: with the template passed through the content filters, as before 2.4.12, fields on listings by
+	 * trusted authors are processed.
 	 *
 	 * @covers ::the_company_name
 	 */
 	public function test_fields_keep_processing_on_admin_listing() {
+		add_filter( 'job_manager_isolate_single_job_content', '__return_false' );
 		$job_id = $this->create_listing_by_role( 'administrator', [ '_company_name', '_company_tagline', '_job_location' ] );
 
 		$output = $this->render_single_listing( $job_id );

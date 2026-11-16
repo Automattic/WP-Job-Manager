@@ -201,6 +201,9 @@ class WP_Job_Manager_Post_Types {
 		// Run after autoembed (8), do_blocks (9) and do_shortcode (11) so media they produce is removed too.
 		add_filter( 'the_job_description', [ $this, 'strip_untrusted_listing_media' ], 20, 2 );
 		add_filter( 'the_content', [ $this, 'strip_untrusted_listing_media' ], 20 );
+		// After wpautop, shortcode_unautop and strip_shortcodes (10).
+		add_filter( 'the_job_description', [ $this, 'expand_filtered_description_shortcodes' ], 11, 2 );
+		add_filter( 'the_content', [ $this, 'restore_single_job_content' ], PHP_INT_MAX );
 		add_filter( 'tiny_mce_plugins', [ $this, 'disable_untrusted_editor_previews' ] );
 		add_filter( 'embed_oembed_discover', [ $this, 'limit_embed_discovery' ] );
 		add_filter( 'embed_oembed_html', [ $this, 'limit_listing_embeds' ], 10, 4 );
@@ -1487,9 +1490,30 @@ class WP_Job_Manager_Post_Types {
 			return $content;
 		}
 
+		/**
+		 * Filters whether the single listing template is kept apart from the other `the_content` filters.
+		 *
+		 * The template prints listing fields, forms and request data. Kept apart, none of that passes through
+		 * the filters WordPress and other plugins run on post content, such as shortcode expansion: the filters
+		 * see a placeholder, and the rendered template takes its place after the last of them. Shortcodes in the
+		 * description of a trusted listing are still expanded.
+		 *
+		 * Return false to pass the rendered template through the content filters, as before 2.4.12. Shortcodes
+		 * anywhere in the template's output are then expanded, including in text that visitors supply.
+		 *
+		 * @since 2.4.12
+		 *
+		 * @param bool    $isolate True to keep the template apart from the content filters.
+		 * @param WP_Post $post    Job listing.
+		 */
+		$isolate = (bool) apply_filters( 'job_manager_isolate_single_job_content', true, $post );
+
 		ob_start();
 
 		$this->job_content_filter( false );
+
+		$was_isolating   = self::$isolating;
+		self::$isolating = $isolate;
 
 		do_action( 'job_content_start' );
 
@@ -1497,9 +1521,141 @@ class WP_Job_Manager_Post_Types {
 
 		do_action( 'job_content_end' );
 
+		$job_content = ob_get_clean();
+
+		self::$isolating = $was_isolating;
+
 		$this->job_content_filter( true );
 
-		return apply_filters( 'job_manager_single_job_content', ob_get_clean(), $post );
+		$job_content = apply_filters( 'job_manager_single_job_content', $job_content, $post );
+
+		if ( ! $isolate ) {
+			return $job_content;
+		}
+
+		// What the later content filters would have done to the template that is still wanted.
+		$job_content = $this->strip_untrusted_listing_media( (string) $job_content );
+		$job_content = wp_filter_content_tags( $job_content );
+
+		$token = 'wpjm-single-job-' . wp_generate_password( 24, false );
+
+		self::$held_content[ $token ] = $job_content;
+
+		return '<div class="' . $token . '"></div>';
+	}
+
+	/**
+	 * Rendered single listing templates waiting to take the place of their placeholders, by placeholder token.
+	 *
+	 * @var string[]
+	 */
+	private static $held_content = [];
+
+	/**
+	 * Whether the single listing template is being rendered apart from the content filters.
+	 *
+	 * @var bool
+	 */
+	private static $isolating = false;
+
+	/**
+	 * Whether the description is being prepared by wpjm_get_the_job_description(), which leaves its shortcodes for
+	 * wpjm_the_job_description() to expand.
+	 *
+	 * @var bool
+	 */
+	private static $holding_description_shortcodes = false;
+
+	/**
+	 * Puts the rendered single listing template in the place of its placeholder, after every other content filter.
+	 *
+	 * The placeholder is named with a random token made for the one render, so nothing written beforehand can name it.
+	 *
+	 * @since 2.4.12
+	 * @access private
+	 *
+	 * @param string $content Content being filtered.
+	 * @return string
+	 */
+	public function restore_single_job_content( $content ) {
+		if ( empty( self::$held_content ) || ! is_string( $content ) || false === strpos( $content, 'wpjm-single-job-' ) ) {
+			return $content;
+		}
+
+		foreach ( self::$held_content as $token => $job_content ) {
+			if ( false === strpos( $content, $token ) ) {
+				continue;
+			}
+
+			unset( self::$held_content[ $token ] );
+
+			// A filter may have rewritten the placeholder element, so it is found by its token.
+			$content = preg_replace_callback(
+				'/<div\b[^<>]*' . preg_quote( $token, '/' ) . '[^<>]*>\s*<\/div>/',
+				function () use ( $job_content ) {
+					return $job_content;
+				},
+				$content,
+				1
+			);
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Expands the shortcodes in the description of a trusted listing while the single listing template is rendered
+	 * apart from the content filters. Only the description is searched for shortcodes: the rest of the template
+	 * never is. Anywhere else, the description is returned unchanged.
+	 *
+	 * @since 2.4.12
+	 *
+	 * @param string           $description Job description, ready to print.
+	 * @param int|WP_Post|null $post        Job listing the description belongs to. Defaults to the global post.
+	 * @return string
+	 */
+	public static function expand_description_shortcodes( $description, $post = null ) {
+		if ( ! self::$isolating || ! is_string( $description ) || false === strpos( $description, '[' ) ) {
+			return $description;
+		}
+
+		$post = self::get_listing_for_content( null === $post ? null : get_post( $post ) );
+		if ( ! $post || ! self::is_trusted_listing( $post ) ) {
+			return $description;
+		}
+
+		return do_shortcode( $description );
+	}
+
+	/**
+	 * Expands the shortcodes in a description that a template passes through `the_job_description` itself, as the
+	 * templates of older versions did. wpjm_the_job_description() expands them after it has filtered the HTML.
+	 *
+	 * @since 2.4.12
+	 * @access private
+	 *
+	 * @param string       $description Job description.
+	 * @param WP_Post|null $post        Job listing the description belongs to. Defaults to the global post.
+	 * @return string
+	 */
+	public function expand_filtered_description_shortcodes( $description, $post = null ) {
+		return self::$holding_description_shortcodes ? $description : self::expand_description_shortcodes( $description, $post );
+	}
+
+	/**
+	 * Sets whether shortcodes in a description passing through `the_job_description` are left for the caller to expand.
+	 *
+	 * @since 2.4.12
+	 * @access private
+	 *
+	 * @param bool $hold True to leave them.
+	 * @return bool The previous setting.
+	 */
+	public static function hold_description_shortcodes( $hold ) {
+		$previous                             = self::$holding_description_shortcodes;
+		self::$holding_description_shortcodes = (bool) $hold;
+
+		return $previous;
 	}
 
 	/**
