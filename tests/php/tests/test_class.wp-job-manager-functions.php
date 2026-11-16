@@ -160,6 +160,45 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @covers ::get_job_listings
+	 * @covers WP_Job_Manager_Post_Types::get_location_meta_query
+	 */
+	public function test_get_job_listings_location_with_accents() {
+		$accented_job = $this->factory->job_listing->create(
+			[
+				'post_title' => 'Dinosaur Test Asnieres',
+				'meta_input' => [
+					'_job_location' => 'Asnières-sur-Seine, Rue de la Station, Asnières-sur-Seine, France',
+				],
+			]
+		);
+		$plain_job    = $this->factory->job_listing->create(
+			[
+				'post_title' => 'Dinosaur Test Villeneuve',
+				'meta_input' => [
+					'_job_location' => 'Villeneuve-Loubet, France',
+				],
+			]
+		);
+
+		$unaccented_search = get_job_listings(
+			[
+				'search_keywords' => 'Dinosaur',
+				'search_location' => 'Asnieres',
+			]
+		);
+		$accented_search    = get_job_listings(
+			[
+				'search_keywords' => 'Dinosaur',
+				'search_location' => 'Villeneuve-Loubét',
+			]
+		);
+
+		$this->assertEqualSets( [ $accented_job ], wp_list_pluck( $unaccented_search->posts, 'ID' ) );
+		$this->assertEqualSets( [ $plain_job ], wp_list_pluck( $accented_search->posts, 'ID' ) );
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */
