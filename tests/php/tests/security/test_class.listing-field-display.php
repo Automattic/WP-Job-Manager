@@ -167,6 +167,77 @@ class Tests_Listing_Field_Display extends WPJM_BaseTest {
 		$this->assertSame( 'Acme [' . self::SHORTCODE . '] Co', the_company_name( '', '', false, $job_id ) );
 	}
 
+	public function data_urls_without_brackets() {
+		return [
+			'plain'              => [ 'https://example.com/jobs?a=1&b=2#apply' ],
+			'encoded ampersand'  => [ 'https://example.com/jobs?a=1&amp;b=2' ],
+			'percent encoded'    => [ 'https://example.com/a%5Bb%5D?c%5B%5D=1' ],
+			'other references'   => [ 'https://example.com/caf&eacute;?a=&quot;b&quot;' ],
+			'query names'        => [ 'https://example.com/?a=1&b=2&lang=en&copy=1&amp=2' ],
+			'international host' => [ 'https://bücher.example/straße' ],
+			'empty'              => [ '' ],
+		];
+	}
+
+	/**
+	 * @dataProvider data_urls_without_brackets
+	 * @covers WP_Job_Manager_Post_Types::encode_brackets_in_url
+	 */
+	public function test_url_without_brackets_is_unchanged( $url ) {
+		$this->assertSame( $url, WP_Job_Manager_Post_Types::encode_brackets_in_url( $url ) );
+	}
+
+	public function data_urls_with_brackets() {
+		return [
+			'host'                => [ 'http://[' . self::SHORTCODE . ']/', 'http://%5B' . self::SHORTCODE . '%5D/' ],
+			'query'               => [ 'https://example.com/?a[]=1&b=2', 'https://example.com/?a%5B%5D=1&b=2' ],
+			'reference'           => [ 'https://example.com/&#91;a&#93;?b=1&amp;c=2', 'https://example.com/%5Ba%5D?b=1&c=2' ],
+			'no semicolon'        => [ 'https://example.com/&#91a&#93?b=1&c=2', 'https://example.com/%5Ba%5D?b=1&c=2' ],
+			'encoded twice'       => [ 'https://example.com/&amp;lbrack;a&amp;#93;', 'https://example.com/%5Ba%5D' ],
+			'encoded too deeply'  => [ 'https://example.com/&amp;amp;amp;amp;amp;amp;#91;a]', '' ],
+		];
+	}
+
+	/**
+	 * @dataProvider data_urls_with_brackets
+	 * @covers WP_Job_Manager_Post_Types::encode_brackets_in_url
+	 */
+	public function test_brackets_in_url_are_percent_encoded( $url, $expected ) {
+		$this->assertSame( $expected, WP_Job_Manager_Post_Types::encode_brackets_in_url( $url ) );
+	}
+
+	/**
+	 * @covers ::get_the_company_website
+	 * @covers ::get_the_job_application_method
+	 */
+	public function test_listing_urls_have_no_brackets_on_subscriber_listing_and_are_unchanged_on_admin_listing() {
+		$url = 'http://[' . self::SHORTCODE . ']/';
+
+		foreach ( [ 'subscriber' => 'http://%5B' . self::SHORTCODE . '%5D/', 'administrator' => $url ] as $role => $expected ) {
+			$job_id = $this->create_listing_by_role( $role, [] );
+			update_post_meta( $job_id, '_company_website', $url );
+			update_post_meta( $job_id, '_application', $url );
+
+			$this->assertSame( $expected, get_the_company_website( $job_id ), $role );
+			$this->assertSame( $expected, get_the_job_application_method( $job_id )->url, $role );
+		}
+	}
+
+	/**
+	 * @covers ::the_company_twitter
+	 */
+	public function test_encoded_brackets_in_x_username_are_not_in_the_link_on_subscriber_listing() {
+		$job_id = $this->create_listing_by_role( 'subscriber', [] );
+		update_post_meta( $job_id, '_company_twitter', '&#91;' . self::SHORTCODE . '&#93;' );
+
+		ob_start();
+		the_company_twitter( '', '', true, $job_id );
+		$output = ob_get_clean();
+
+		$this->assertStringContainsString( 'href="https://x.com/%5B' . self::SHORTCODE . '%5D"', $output );
+		$this->assertStringNotContainsString( self::EXPANDED, do_shortcode( do_shortcode( $output ) ) );
+	}
+
 	private function create_listing_by_role( $role, $fields_with_text ) {
 		return $this->create_listing( $this->factory->user->create( [ 'role' => $role ] ), $fields_with_text );
 	}
