@@ -595,7 +595,8 @@ jQuery( document ).ready( function( $ ) {
 		$( 'select[name^="search_categories"]:visible' ).select2( job_manager_select2_filters_args );
 	}
 
-	$( window ).on( 'unload', function() {
+	// `pagehide` is fired wherever `unload` was, and also in browsers that no longer fire `unload`.
+	$( window ).on( 'pagehide', function() {
 		$( 'div.job_listings' ).each( function() {
 			var state = get_state( $( this ) );
 			if ( state && ! state.persist_results ) {
@@ -638,6 +639,11 @@ jQuery( document ).ready( function( $ ) {
 			var cached_page = state.results && state.results.data ? state.results.data.page : null;
 			if ( state.results && ( true !== $target.data( 'show_pagination' ) || ! cached_page || cached_page === get_page_from_url( $target ) ) ) {
 				results_loaded = handle_result( $target, state.results );
+
+				// Extensions fill in parts of the page from the results, whether they were requested or restored.
+				if ( results_loaded ) {
+					$target.triggerHandler( 'updated_results', state.results );
+				}
 
 				// We don't want this to continue to persist unless we click on another link.
 				persist_results( $target, false );
