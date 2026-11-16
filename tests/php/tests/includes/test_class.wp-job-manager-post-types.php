@@ -103,7 +103,7 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 			$this->assertTrue( in_the_loop(), 'In the loop' );
 			$this->assertEquals( \WP_Job_Manager_Post_Types::PT_LISTING, $post->post_type, 'Result is a job listing' );
 
-			$post_content_filtered = $instance->job_content( $post->post_content );
+			$post_content_filtered = $instance->restore_single_job_content( $instance->job_content( $post->post_content ) );
 			$this->assertNotEquals( $post->post_content, $post_content_filtered );
 			$this->assertStringContainsString( '<div class="single_job_listing"', $post_content_filtered );
 

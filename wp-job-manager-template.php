@@ -557,7 +557,11 @@ function wpjm_get_the_job_title( $post = null ) {
 function wpjm_the_job_description( $post = null ) {
 	$job_description = wpjm_get_the_job_description( $post );
 	if ( $job_description ) {
+		ob_start();
 		WP_Job_Manager_Post_Types::output_kses_post( $job_description );
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Filtered above. Shortcodes are expanded afterwards, as they were when the content filters expanded them.
+		echo WP_Job_Manager_Post_Types::expand_description_shortcodes( ob_get_clean(), $post );
 	}
 }
 
@@ -575,7 +579,9 @@ function wpjm_get_the_job_description( $post = null ) {
 	}
 
 	$description = \WP_Job_Manager_Post_Types::restrict_listing_content( wp_kses_post( $post->post_content ), $post );
+	$was_holding = \WP_Job_Manager_Post_Types::hold_description_shortcodes( true );
 	$description = apply_filters( 'the_job_description', $description, $post );
+	\WP_Job_Manager_Post_Types::hold_description_shortcodes( $was_holding );
 
 	/**
 	 * Filter for the job description.
