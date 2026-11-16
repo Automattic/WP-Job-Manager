@@ -103,24 +103,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		}
 
 		if ( ! empty( $args['search_location'] ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			$location_search    = [ 'relation' => 'OR' ];
-			$locations          = explode( ';', $args['search_location'] );
-
-			foreach ( $locations as $location ) {
-				$location = trim( $location );
-				if ( ! empty( $location ) ) {
-					$location_subquery = [ 'relation' => 'OR' ];
-					foreach ( $location_meta_keys as $meta_key ) {
-						$location_subquery[] = [
-							'key'     => $meta_key,
-							'value'   => $location,
-							'compare' => 'like',
-						];
-					}
-					$location_search[] = $location_subquery;
-				}
-			}
+			$location_search = job_manager_get_location_meta_query( $args['search_location'] );
 
 			if ( $remote_position_search ) {
 				$location_search = [
@@ -390,6 +373,43 @@ if ( ! function_exists( '_wpjm_shuffle_featured_post_results_helper' ) ) :
 			}
 		}
 		return wp_rand( -1, 1 );
+	}
+endif;
+
+if ( ! function_exists( 'job_manager_get_location_meta_query' ) ) :
+	/**
+	 * Builds the meta query that matches listings in any of the searched locations.
+	 *
+	 * All clauses are siblings in a single `OR` group, so WP_Meta_Query shares one
+	 * postmeta JOIN between them. A nested group per location would get a JOIN of
+	 * its own, and every extra JOIN multiplies the rows the database has to examine
+	 * by the number of meta rows on a listing.
+	 *
+	 * @since 2.4.13
+	 *
+	 * @param string $search_location One or more locations, separated by semicolons.
+	 * @return array Meta query group.
+	 */
+	function job_manager_get_location_meta_query( $search_location ) {
+		$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
+		$location_search    = [ 'relation' => 'OR' ];
+
+		foreach ( explode( ';', $search_location ) as $location ) {
+			$location = trim( $location );
+			if ( empty( $location ) ) {
+				continue;
+			}
+
+			foreach ( $location_meta_keys as $meta_key ) {
+				$location_search[] = [
+					'key'     => $meta_key,
+					'value'   => $location,
+					'compare' => 'like',
+				];
+			}
+		}
+
+		return $location_search;
 	}
 endif;
 
