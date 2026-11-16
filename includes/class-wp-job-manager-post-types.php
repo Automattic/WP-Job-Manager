@@ -825,11 +825,12 @@ class WP_Job_Manager_Post_Types {
 	 * decodes to a bracket. No list of the ways to write a bracket is kept here.
 	 *
 	 * @since 2.4.11
+	 * @since 2.4.12 Public.
 	 *
 	 * @param string $content HTML content.
 	 * @return string
 	 */
-	private static function encode_brackets_in_tags( $content ) {
+	public static function encode_brackets_in_tags( $content ) {
 		$brackets = [
 			'[' => '%5B',
 			']' => '%5D',
@@ -857,6 +858,63 @@ class WP_Job_Manager_Post_Types {
 		}
 
 		return implode( '', $parts );
+	}
+
+	/**
+	 * Percent-encodes bracket characters in a URL from a listing field, however they were written, so that no part
+	 * of the URL is read as a shortcode where it is printed.
+	 *
+	 * A URL can hold a bracket outside its path, where cleaning it as a URL keeps the bracket: the host part allows
+	 * them. It can also hold a character reference to one, which is a bracket again once the HTML filter has decoded
+	 * the attribute it was printed in. The URL is decoded until it stops changing to find out, and is returned as it
+	 * was given when it has no bracket in any form.
+	 *
+	 * @since 2.4.12
+	 *
+	 * @param string $url URL, not yet escaped for output.
+	 * @return string
+	 */
+	public static function encode_brackets_in_url( $url ) {
+		$url     = (string) $url;
+		$decoded = $url;
+
+		for ( $pass = 0; $pass < 5; $pass++ ) {
+			// A decimal, hexadecimal or named reference, with or without its semicolon.
+			$next = preg_replace_callback(
+				'/&(?:#[0-9]+|#x[0-9a-f]+|[a-z][a-z0-9]*);?/i',
+				function ( $reference ) {
+					$complete = rtrim( $reference[0], ';' ) . ';';
+					$decoded  = html_entity_decode( $complete, ENT_QUOTES | ENT_HTML5 );
+
+					// Not a reference to anything: leave it as it was written.
+					return $decoded === $complete ? $reference[0] : $decoded;
+				},
+				$decoded
+			);
+
+			if ( null === $next || $next === $decoded ) {
+				break;
+			}
+
+			$decoded = $next;
+		}
+
+		// Still changing: nothing meant as a URL is encoded this many times over.
+		if ( 5 === $pass ) {
+			return '';
+		}
+
+		if ( false === strpbrk( $decoded, '[]' ) ) {
+			return $url;
+		}
+
+		return strtr(
+			$decoded,
+			[
+				'[' => '%5B',
+				']' => '%5D',
+			]
+		);
 	}
 
 	/**
