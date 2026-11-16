@@ -160,6 +160,137 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since 2.4.13
+	 * @covers ::get_job_listings
+	 * @covers ::job_manager_get_location_meta_query
+	 */
+	public function test_get_job_listings_multiple_locations() {
+		$seattle  = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'Seattle, WA' ] ] );
+		$portland = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'Portland, OR' ] ] );
+		$london   = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'London, UK' ] ] );
+		$oregon   = $this->factory->job_listing->create(
+			[
+				'meta_input' => [
+					'_job_location'          => 'Salem',
+					'geolocation_state_long' => 'Oregon',
+				],
+			]
+		);
+		$address  = $this->factory->job_listing->create(
+			[
+				'meta_input' => [
+					'_job_location'                 => 'Downtown',
+					'geolocation_formatted_address' => 'Pike Place, Seattle, WA 98101, USA',
+				],
+			]
+		);
+		$this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'Chicago, IL' ] ] );
+
+		$two   = get_job_listings( [ 'search_location' => 'Seattle; London' ] );
+		$many  = get_job_listings( [ 'search_location' => ' Seattle ;; Oregon;London; Madrid ; ' ] );
+		$empty = get_job_listings( [ 'search_location' => ' ; ' ] );
+
+		$this->assertEqualSets( [ $seattle, $address, $london ], wp_list_pluck( $two->posts, 'ID' ) );
+		$this->assertSame( 3, $two->found_posts );
+		$this->assertEqualSets( [ $seattle, $address, $oregon, $london ], wp_list_pluck( $many->posts, 'ID' ) );
+		$this->assertSame( 4, $many->found_posts );
+		$this->assertSame( 6, $empty->found_posts, 'A search with only separators should not filter by location.' );
+	}
+
+	/**
+	 * @since 2.4.13
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_multiple_locations_with_remote_position() {
+		$remote = $this->factory->job_listing->create(
+			[
+				'meta_input' => [
+					'_job_location'    => 'Seattle, WA',
+					'_remote_position' => '1',
+				],
+			]
+		);
+		$onsite = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'London, UK' ] ] );
+		$this->factory->job_listing->create(
+			[
+				'meta_input' => [
+					'_job_location'    => 'Chicago, IL',
+					'_remote_position' => '1',
+				],
+			]
+		);
+
+		$remote_listings = get_job_listings(
+			[
+				'search_location' => 'Seattle; London',
+				'remote_position' => true,
+			]
+		);
+		$onsite_listings = get_job_listings(
+			[
+				'search_location' => 'Seattle; London',
+				'remote_position' => false,
+			]
+		);
+
+		$this->assertEqualSets( [ $remote ], wp_list_pluck( $remote_listings->posts, 'ID' ) );
+		$this->assertEqualSets( [ $onsite ], wp_list_pluck( $onsite_listings->posts, 'ID' ) );
+	}
+
+	/**
+	 * Each extra postmeta JOIN multiplies the rows the query examines, so the number
+	 * of JOINs must not depend on how many locations are searched.
+	 *
+	 * @since 2.4.13
+	 * @covers ::get_job_listings
+	 * @covers ::job_manager_get_location_meta_query
+	 */
+	public function test_get_job_listings_multiple_locations_share_one_join() {
+		$requests = [];
+		$capture  = function ( $request ) use ( &$requests ) {
+			$requests[] = $request;
+			return $request;
+		};
+		add_filter( 'posts_request', $capture );
+		get_job_listings( [ 'search_location' => 'Seattle' ] );
+		get_job_listings( [ 'search_location' => 'Seattle; Portland; London; Chicago; Boston' ] );
+		remove_filter( 'posts_request', $capture );
+
+		$this->assertCount( 2, $requests );
+		$this->assertSame( 1, substr_count( $requests[0], 'JOIN' ) );
+		$this->assertSame( 1, substr_count( $requests[1], 'JOIN' ) );
+		$this->assertSame( 5 * 3, substr_count( $requests[1], 'meta_value LIKE' ) );
+	}
+
+	/**
+	 * @since 2.4.13
+	 * @covers ::job_manager_get_location_meta_query
+	 */
+	public function test_job_manager_get_location_meta_query() {
+		$clause = function ( $key, $value ) {
+			return [
+				'key'     => $key,
+				'value'   => $value,
+				'compare' => 'like',
+			];
+		};
+
+		$this->assertSame(
+			[
+				'relation' => 'OR',
+				$clause( 'geolocation_formatted_address', 'Seattle' ),
+				$clause( '_job_location', 'Seattle' ),
+				$clause( 'geolocation_state_long', 'Seattle' ),
+				$clause( 'geolocation_formatted_address', 'New York' ),
+				$clause( '_job_location', 'New York' ),
+				$clause( 'geolocation_state_long', 'New York' ),
+			],
+			job_manager_get_location_meta_query( ' Seattle ;; New York ; 0' )
+		);
+		$this->assertSame( [ 'relation' => 'OR' ], job_manager_get_location_meta_query( ' ; ' ) );
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */

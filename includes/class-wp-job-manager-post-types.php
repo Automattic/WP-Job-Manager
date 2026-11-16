@@ -1725,24 +1725,7 @@ class WP_Job_Manager_Post_Types {
 		];
 
 		if ( ! empty( $input_search_location ) ) {
-			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
-			$location_search    = [ 'relation' => 'OR' ];
-			$locations          = explode( ';', $input_search_location );
-			foreach ( $locations as $location ) {
-				$location = trim( $location );
-				if ( ! empty( $location ) ) {
-					$location_subquery = [ 'relation' => 'OR' ];
-					foreach ( $location_meta_keys as $meta_key ) {
-						$location_subquery[] = [
-							'key'     => $meta_key,
-							'value'   => $location,
-							'compare' => 'like',
-						];
-					}
-					$location_search[] = $location_subquery;
-				}
-			}
-			$query_args['meta_query'][] = $location_search;
+			$query_args['meta_query'][] = job_manager_get_location_meta_query( $input_search_location );
 		}
 
 		if ( null !== $input_featured ) {

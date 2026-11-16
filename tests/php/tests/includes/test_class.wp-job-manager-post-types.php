@@ -191,6 +191,29 @@ class WP_Test_WP_Job_Manager_Post_Types extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since 2.4.13
+	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	public function test_job_feed_multiple_location_search() {
+		$seattle_job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'Seattle, WA, USA' ] ] );
+		$chicago_job_id = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'Chicago, IL, USA' ] ] );
+		$london_job_id  = $this->factory->job_listing->create( [ 'meta_input' => [ '_job_location' => 'London, UK' ] ] );
+
+		$_GET['search_location'] = 'Seattle; London; Boston';
+		$feed                    = $this->do_job_feed();
+		unset( $_GET['search_location'] );
+		$xml = xml_to_array( $feed );
+		$this->assertNotEmpty( $xml );
+		$items = xml_find( $xml, 'rss', 'channel', 'item' );
+		$this->assertCount( 2, $items );
+		$this->assertHasRssItem( $items, $seattle_job_id );
+		$this->assertHasRssItem( $items, $london_job_id );
+		$this->assertNotHasRssItem( $items, $chicago_job_id );
+	}
+
+	/**
 	 * @since 1.28.0
 	 * @covers WP_Job_Manager_Post_Types::job_feed
 	 * @runInSeparateProcess
