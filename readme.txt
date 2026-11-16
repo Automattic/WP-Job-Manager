@@ -150,6 +150,11 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 
 == Changelog ==
 
+### 2.4.12 - 2026-11-16
+* Fix: Update extensions' filters when job results are restored after using the browser's Back button, and clear cached results in browsers that no longer fire `unload`.
+* Fix: Hardening for the company website, X and application links of submitted listings.
+* Change: The single job listing template is now rendered separately from the post content filters. Shortcodes are expanded only in the description of listings written by users who can edit job listings; shortcodes in other listing fields, in theme template overrides or added through template hooks are shown as text. Use the `job_manager_isolate_single_job_content` filter to restore the previous behaviour.
+
 ### 2.4.11 - 2026-11-13
 * Fix: Check the company video URL before building the player.
 * Fix: Keep restricted listing descriptions as text through later processing.
@@ -198,15 +203,4 @@ Block themes have no classic Widgets screen, but you can still add the Recent Jo
 * Apply the listing capabilities to the Yoast, Jetpack and All in One SEO sitemaps.
 * Align REST single-listing route matching with WordPress core and withhold the guid in restricted responses.
 * Honour requested listing statuses by viewer capability in the [jobs] shortcode.
-* Update developer dependencies.
-
-### 2.4.7 - 2026-09-03
-* Fix company logo rendering at full size in the Job Listings admin table on WordPress 7.1. (#3099)
-* Indicate WordPress 7.1 compatibility. (#3097)
-* Fix JobPosting structured data (JSON-LD) being HTML-escaped, so job titles and descriptions are read correctly by search engines. (#3101)
-* Fix a race condition that could allow the job submission limit to be exceeded. (#3013)
-* Apply the View Job Capability to the promoted-jobs REST endpoints.
-* Apply the View Job Capability to sitemaps.
-* Restrict frontend logo attachments to the uploads directory.
-* Clear unusable attachment values before re-rendering the job submission form.
 * Update developer dependencies.
