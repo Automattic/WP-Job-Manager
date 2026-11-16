@@ -22,7 +22,7 @@ jobs:
          node-version: 16
 
      - name: Wait for prior instances of the workflow to finish
-       uses: softprops/turnstyle@afaccda0f3c0136fb7cb4a734b9b96be03599948 # v3.3.2
+       uses: softprops/turnstyle@ec9869921df7799d5afea364f4026770f3760342 # v3.3.5
        env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
