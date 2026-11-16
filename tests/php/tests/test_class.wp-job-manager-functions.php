@@ -160,6 +160,73 @@ class WP_Test_WP_Job_Manager_Functions extends WPJM_BaseTest {
 	}
 
 	/**
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_location_meta_keys_filter() {
+		$boise_job = $this->factory->job_listing->create(
+			[
+				'post_title' => 'Dinosaur Test Boise',
+				'meta_input' => [
+					'_address_region' => 'Boise, Idaho',
+				],
+			]
+		);
+
+		$no_filter_results = get_job_listings(
+			[
+				'search_keywords' => 'Dinosaur',
+				'search_location' => 'Boise',
+			]
+		);
+		$this->assertEqualSets( [], wp_list_pluck( $no_filter_results->posts, 'ID' ) );
+
+		add_filter(
+			'job_manager_get_listings_location_meta_keys',
+			function ( $location_meta_keys ) {
+				$location_meta_keys[] = '_address_region';
+				return $location_meta_keys;
+			}
+		);
+
+		$filtered_results = get_job_listings(
+			[
+				'search_keywords' => 'Dinosaur',
+				'search_location' => 'Boise',
+			]
+		);
+		$this->assertEqualSets( [ $boise_job ], wp_list_pluck( $filtered_results->posts, 'ID' ) );
+	}
+
+	/**
+	 * If the filter returns an empty array the shortcode query must fall back to
+	 * the defaults rather than build a meta_query of only `relation => OR`.
+	 *
+	 * @since $$next-version$$
+	 * @covers ::get_job_listings
+	 */
+	public function test_get_job_listings_location_meta_keys_filter_empty_falls_back_to_defaults() {
+		$job = $this->factory->job_listing->create(
+			[
+				'post_title' => 'Dinosaur Test Seattle',
+				'meta_input' => [
+					'_job_location' => 'Seattle',
+				],
+			]
+		);
+
+		add_filter( 'job_manager_get_listings_location_meta_keys', '__return_empty_array' );
+
+		$results = get_job_listings(
+			[
+				'search_keywords' => 'Dinosaur',
+				'search_location' => 'Seattle',
+			]
+		);
+		$this->assertEqualSets( [ $job ], wp_list_pluck( $results->posts, 'ID' ) );
+	}
+
+	/**
 	 * @since 1.27.0
 	 * @covers ::get_job_listings
 	 */

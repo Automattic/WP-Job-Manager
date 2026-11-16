@@ -13,8 +13,23 @@
  */
 class Tests_Feed_Author_Filter extends WPJM_BaseTest {
 
+	/**
+	 * Closures attached to job_manager_get_listings_location_meta_keys by this fixture,
+	 * remembered so tearDown can remove only the filters we installed without disturbing
+	 * callbacks owned by other tests in the suite.
+	 *
+	 * @var array
+	 */
+	private $location_filter_callbacks = [];
+
 	public function tearDown(): void {
 		unset( $_GET['author'] );
+		unset( $_GET['search_location'] );
+		remove_filter( 'job_manager_get_listings_location_meta_keys', '__return_empty_array' );
+		foreach ( $this->location_filter_callbacks as $callback ) {
+			remove_filter( 'job_manager_get_listings_location_meta_keys', $callback );
+		}
+		$this->location_filter_callbacks = [];
 		parent::tearDown();
 	}
 
@@ -87,6 +102,73 @@ class Tests_Feed_Author_Filter extends WPJM_BaseTest {
 			$listing_id,
 			$this->job_feed_post_ids(),
 			'A valid author filter must still return that author\'s listing.'
+		);
+	}
+
+	/**
+	 * Extending the location meta keys via the filter must let the feed return a listing
+	 * whose location only matches against the added meta key. Mirrors the shortcode test
+	 * so the filter is covered in both code paths.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 */
+	public function test_job_feed_location_meta_keys_filter_includes_extra_listing() {
+		$listing_id = $this->factory->job_listing->create();
+		update_post_meta( $listing_id, '_address_region', 'Boise, Idaho' );
+
+		$_GET['search_location'] = 'Boise';
+
+		// Sanity check: the listing is on a custom meta key the feed cannot see yet.
+		$this->assertNotContains(
+			$listing_id,
+			$this->job_feed_post_ids(),
+			'Sanity: without the filter, the listing is not in the feed for \"Boise\".'
+		);
+
+		$add_address_region = function ( $location_meta_keys ) {
+			$location_meta_keys[] = '_address_region';
+			return $location_meta_keys;
+		};
+
+		add_filter( 'job_manager_get_listings_location_meta_keys', $add_address_region );
+		$this->location_filter_callbacks[] = $add_address_region;
+
+		$this->assertContains(
+			$listing_id,
+			$this->job_feed_post_ids(),
+			'With the filter extended, the listing appears in the feed for \"Boise\".'
+		);
+	}
+
+	/**
+	 * If the filter returns an empty array the feed must fall back to the defaults
+	 * rather than build a meta_query of only `relation => OR`.
+	 *
+	 * @since $$next-version$$
+	 * @covers WP_Job_Manager_Post_Types::job_feed
+	 */
+	public function test_job_feed_location_meta_keys_filter_empty_falls_back_to_defaults() {
+		$seattle_listing_id = $this->factory->job_listing->create();
+		update_post_meta( $seattle_listing_id, '_job_location', 'Seattle' );
+
+		$nonmatching_listing_id = $this->factory->job_listing->create();
+		update_post_meta( $nonmatching_listing_id, '_job_location', 'Portland' );
+
+		$_GET['search_location'] = 'Seattle';
+
+		add_filter( 'job_manager_get_listings_location_meta_keys', '__return_empty_array' );
+
+		$post_ids = $this->job_feed_post_ids();
+		$this->assertContains(
+			$seattle_listing_id,
+			$post_ids,
+			'Empty filter result must fall back to defaults so _job_location still matches.'
+		);
+		$this->assertNotContains(
+			$nonmatching_listing_id,
+			$post_ids,
+			'Empty filter result must still apply location filtering rather than returning an unfiltered feed.'
 		);
 	}
 }
