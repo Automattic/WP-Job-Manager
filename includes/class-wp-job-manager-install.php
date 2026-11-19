@@ -82,6 +82,7 @@ class WP_Job_Manager_Install {
 		}
 
 		\WP_Job_Manager\Stats::instance()->migrate_db();
+		\WP_Job_Manager\Search_Stats::instance()->migrate_db();
 
 		delete_transient( 'wp_job_manager_addons_html' );
 		update_option( 'wp_job_manager_version', JOB_MANAGER_VERSION );

@@ -35,6 +35,7 @@ class WP_Job_Manager_Data_Cleaner {
 	 */
 	private const CUSTOM_TABLES = [
 		'wpjm_stats',
+		'wpjm_search_stats',
 	];
 
 	/**
@@ -56,6 +57,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_delete_old_previews',
 		'job_manager_email_daily_notices',
 		'job_manager_usage_tracking_send_usage_data',
+		\WP_Job_Manager\Search_Stats::CRON_HOOK,
 
 		// Old cron jobs.
 		'job_manager_clear_expired_transients',
