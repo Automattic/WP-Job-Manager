@@ -336,6 +336,15 @@ class WP_Job_Manager_Settings {
 							'track'      => 'value',
 						],
 						[
+							'name'     => 'job_manager_enable_promoted_jobs',
+							'std'      => '1',
+							'label'    => __( 'Promoted Jobs', 'wp-job-manager' ),
+							'cb_label' => __( 'Enable Promoted Jobs', 'wp-job-manager' ),
+							'desc'     => __( 'Allow job listings to be promoted through the Promoted Jobs feature.', 'wp-job-manager' ),
+							'type'     => 'checkbox',
+							'track'    => 'bool',
+						],
+						[
 							'name'     => 'job_manager_display_location_address',
 							'std'      => '0',
 							'label'    => __( 'Location Display', 'wp-job-manager' ),
