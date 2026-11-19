@@ -539,12 +539,13 @@ class WP_Job_Manager_Settings {
 							'name'        => 'job_manager_recaptcha_version',
 							'std'         => 'v2',
 							'placeholder' => '',
-							'label'       => __( 'reCAPTCHA Version', 'wp-job-manager' ),
-							'desc'        => __( 'Choose between reCAPTCHA v2 or v3. Note: you will need API keys for the specific version you choose.', 'wp-job-manager' ),
+							'label'       => __( 'CAPTCHA Provider', 'wp-job-manager' ),
+							'desc'        => __( 'Choose between reCAPTCHA v2, reCAPTCHA v3, or Cloudflare Turnstile. Note: you will need API keys for the specific provider you choose.', 'wp-job-manager' ),
 							'type'        => 'radio',
 							'options'     => [
-								'v2' => __( 'reCaptcha v2', 'wp-job-manager' ),
-								'v3' => __( 'reCaptcha v3', 'wp-job-manager' ),
+								'v2'        => __( 'reCaptcha v2', 'wp-job-manager' ),
+								'v3'        => __( 'reCaptcha v3', 'wp-job-manager' ),
+								'turnstile' => __( 'Cloudflare Turnstile', 'wp-job-manager' ),
 							],
 							'track'       => 'value',
 						],
@@ -552,7 +553,7 @@ class WP_Job_Manager_Settings {
 							'name'        => 'job_manager_recaptcha_site_key',
 							'std'         => '',
 							'placeholder' => '',
-							'label'       => __( 'Site Key', 'wp-job-manager' ),
+							'label'       => __( 'reCAPTCHA Site Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
 							'desc'        => sprintf( __( 'You can retrieve your reCAPTCHA site key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
 							'attributes'  => [],
@@ -561,9 +562,27 @@ class WP_Job_Manager_Settings {
 							'name'        => 'job_manager_recaptcha_secret_key',
 							'std'         => '',
 							'placeholder' => '',
-							'label'       => __( 'Secret Key', 'wp-job-manager' ),
+							'label'       => __( 'reCAPTCHA Secret Key', 'wp-job-manager' ),
 							// translators: Placeholder %s is URL to set up Google reCAPTCHA API key.
 							'desc'        => sprintf( __( 'You can retrieve your reCAPTCHA secret key from <a href="%s">Google\'s reCAPTCHA admin dashboard</a>.', 'wp-job-manager' ), 'https://www.google.com/recaptcha/admin#list' ),
+							'attributes'  => [],
+						],
+						[
+							'name'        => 'job_manager_turnstile_site_key',
+							'std'         => '',
+							'placeholder' => '',
+							'label'       => __( 'Turnstile Site Key', 'wp-job-manager' ),
+							// translators: Placeholder %s is URL to set up Cloudflare Turnstile API keys.
+							'desc'        => sprintf( __( 'You can retrieve your Turnstile site key from the <a href="%s">Cloudflare dashboard</a>.', 'wp-job-manager' ), 'https://dash.cloudflare.com/?to=/:account/turnstile' ),
+							'attributes'  => [],
+						],
+						[
+							'name'        => 'job_manager_turnstile_secret_key',
+							'std'         => '',
+							'placeholder' => '',
+							'label'       => __( 'Turnstile Secret Key', 'wp-job-manager' ),
+							// translators: Placeholder %s is URL to set up Cloudflare Turnstile API keys.
+							'desc'        => sprintf( __( 'You can retrieve your Turnstile secret key from the <a href="%s">Cloudflare dashboard</a>.', 'wp-job-manager' ), 'https://dash.cloudflare.com/?to=/:account/turnstile' ),
 							'attributes'  => [],
 						],
 						[
