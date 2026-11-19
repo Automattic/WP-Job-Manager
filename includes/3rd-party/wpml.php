@@ -12,6 +12,7 @@
  */
 function wpml_wpjm_init() {
 	add_action( 'get_job_listings_init', 'wpml_wpjm_set_language' );
+	add_action( 'job_manager_my_job_do_action', 'wpml_wpjm_delete_translations', 10, 2 );
 	add_filter( 'wpjm_lang', 'wpml_wpjm_get_job_listings_lang' );
 	add_filter( 'wpjm_page_id', 'wpml_wpjm_page_id' );
 
@@ -26,6 +27,60 @@ function wpml_wpjm_init() {
 
 add_action( 'wpml_loaded', 'wpml_wpjm_init' );
 add_action( 'wpml_loaded', 'wpml_wpjm_set_language' );
+
+/**
+ * Trashes the translations of a job listing that was deleted from the job dashboard.
+ *
+ * WPML syncs trashing on `wp_trash_post`, but it only adds that hook on admin requests.
+ * The dashboard trashes the listing on a frontend request, so the translations stay
+ * published. This does the same sync from the dashboard action. It follows WPML's
+ * "delete translations" setting, like the admin does, and only trashes translations
+ * the current user is allowed to manage.
+ *
+ * @since $$next-version$$
+ *
+ * @param string $action The dashboard action being handled.
+ * @param int    $job_id The ID of the job listing the action was performed on. Default 0.
+ */
+function wpml_wpjm_delete_translations( $action, $job_id = 0 ) {
+	if ( 'delete' !== $action || ! apply_filters( 'wpml_setting', false, 'sync_delete' ) ) {
+		return;
+	}
+
+	$job_id       = absint( $job_id );
+	$element_type = apply_filters( 'wpml_element_type', \WP_Job_Manager_Post_Types::PT_LISTING );
+	$trid         = apply_filters( 'wpml_element_trid', null, $job_id, $element_type );
+
+	if ( ! $trid ) {
+		return;
+	}
+
+	/*
+	 * The `all_statuses` argument is set because WPML hides non-public translations
+	 * from a user who cannot edit private posts. An employer on the frontend would
+	 * otherwise be left with translations in draft or pending.
+	 */
+	$translations = apply_filters( 'wpml_get_element_translations', null, $trid, $element_type, false, true );
+
+	if ( empty( $translations ) ) {
+		return;
+	}
+
+	foreach ( $translations as $translation ) {
+		$translation_id = isset( $translation->element_id ) ? absint( $translation->element_id ) : 0;
+
+		/*
+		 * The listing itself is already trashed by the dashboard handler. Each translation
+		 * gets the same check the dashboard runs before it trashes a listing, because a
+		 * translation can have a different author or not be a job listing at all.
+		 */
+		if ( ! $translation_id || $translation_id === $job_id || ! job_manager_user_can_edit_job( $translation_id ) ) {
+			continue;
+		}
+
+		wp_trash_post( $translation_id );
+	}
+}
 
 /**
  * Sets WPJM's language if it is sent in the Ajax request.
