@@ -71,6 +71,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'job_manager_installed_terms',
 		'wpjm_permalinks',
 		'job_manager_permalinks',
+		'job_manager_wpml_rewrite_slugs',
 		'job_manager_helper',
 		'job_manager_date_format',
 		'job_manager_google_maps_api_key',
