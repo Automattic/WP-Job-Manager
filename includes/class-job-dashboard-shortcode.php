@@ -209,17 +209,7 @@ class Job_Dashboard_Shortcode {
 						'nonce' => false,
 					];
 				}
-				if ( is_position_filled( $job ) ) {
-					$actions['mark_not_filled'] = [
-						'label' => __( 'Mark not filled', 'wp-job-manager' ),
-						'nonce' => $base_nonce_action_name,
-					];
-				} else {
-					$actions['mark_filled'] = [
-						'label' => __( 'Mark filled', 'wp-job-manager' ),
-						'nonce' => $base_nonce_action_name,
-					];
-				}
+				$this->add_filled_actions( $actions, $job, $base_nonce_action_name );
 				if (
 					get_option( 'job_manager_renewal_days' ) > 0
 					&& \WP_Job_Manager_Helper_Renewals::job_can_be_renewed( $job )
@@ -233,6 +223,9 @@ class Job_Dashboard_Shortcode {
 				}
 				break;
 			case 'expired':
+				if ( get_option( 'job_manager_enable_filled_expired' ) ) {
+					$this->add_filled_actions( $actions, $job, $base_nonce_action_name );
+				}
 				if ( job_manager_get_permalink( 'submit_job_form' ) ) {
 					$actions['relist'] = [
 						'label' => __( 'Relist', 'wp-job-manager' ),
@@ -301,6 +294,27 @@ class Job_Dashboard_Shortcode {
 		}
 
 		return $actions;
+	}
+
+	/**
+	 * Add the `mark_filled` or `mark_not_filled` action, depending on the job's current filled state.
+	 *
+	 * @param array    $actions                Actions to add to, by reference.
+	 * @param \WP_Post $job                    The job post object.
+	 * @param string   $base_nonce_action_name The nonce action name to use for the action.
+	 */
+	private function add_filled_actions( array &$actions, $job, $base_nonce_action_name ) {
+		if ( is_position_filled( $job ) ) {
+			$actions['mark_not_filled'] = [
+				'label' => __( 'Mark not filled', 'wp-job-manager' ),
+				'nonce' => $base_nonce_action_name,
+			];
+		} else {
+			$actions['mark_filled'] = [
+				'label' => __( 'Mark filled', 'wp-job-manager' ),
+				'nonce' => $base_nonce_action_name,
+			];
+		}
 	}
 
 	/**
