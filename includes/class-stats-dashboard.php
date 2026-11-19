@@ -101,8 +101,9 @@ class Stats_Dashboard {
 		get_job_manager_template(
 			'job-stats.php',
 			[
-				'stats' => $stat_summaries,
-				'chart' => $chart,
+				'stats'      => $stat_summaries,
+				'chart'      => $chart,
+				'export_url' => Stats_Export::get_export_url( $job->ID ),
 			]
 		);
 	}

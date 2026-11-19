@@ -231,6 +231,13 @@
 	display: flex;
 	align-items: center;
 	gap: var(--jm-ui-space-xs);
+
+	.jm-job-stats__export {
+		font-weight: 600;
+		text-transform: none;
+		letter-spacing: normal;
+		margin-left: auto;
+	}
 }
 
 .jm-section-header__help {
