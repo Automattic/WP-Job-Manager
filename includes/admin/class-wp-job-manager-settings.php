@@ -103,7 +103,7 @@ class WP_Job_Manager_Settings {
 		$account_roles = [];
 
 		foreach ( $roles as $key => $role ) {
-			if ( 'administrator' === $key ) {
+			if ( in_array( $key, [ 'administrator', 'job_manager' ], true ) ) {
 				continue;
 			}
 			$account_roles[ $key ] = $role['name'];

@@ -104,11 +104,22 @@ class WP_Job_Manager_Install {
 				]
 			);
 
+			// Can manage all job listings, but not the rest of the site.
+			add_role(
+				'job_manager',
+				__( 'Job Manager', 'wp-job-manager' ),
+				[
+					'read'         => true,
+					'upload_files' => true,
+				]
+			);
+
 			$capabilities = self::get_core_capabilities();
 
 			foreach ( $capabilities as $cap_group ) {
 				foreach ( $cap_group as $cap ) {
 					$roles->add_cap( 'administrator', $cap );
+					$roles->add_cap( 'job_manager', $cap );
 				}
 			}
 		}

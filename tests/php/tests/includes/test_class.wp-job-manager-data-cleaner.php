@@ -22,6 +22,7 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 	// Users.
 	private $regular_user_id;
 	private $employer_user_id;
+	private $job_manager_user_id;
 
 	/**
 	 * Add some posts to run tests against. Any that are associated with WPJM
@@ -217,6 +218,8 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 		$employer_user          = get_user_by( 'id', $this->employer_user_id );
 		$employer_user->add_cap( 'edit_others_posts' );
 		$employer_user->add_cap( \WP_Job_Manager_Post_Types::CAP_MANAGE_LISTINGS );
+
+		$this->job_manager_user_id = $this->factory->user->create( [ 'role' => 'job_manager' ] );
 
 		// Add a WPJM cap to an existing role.
 		$role = get_role( 'editor' );
@@ -489,6 +492,12 @@ class WP_Job_Manager_Data_Cleaner_Test extends WP_UnitTestCase {
 
 		$role = get_role( 'employer' );
 		$this->assertNull( $role, 'Employer role should be removed overall' );
+
+		$job_manager_user = get_user_by( 'id', $this->job_manager_user_id );
+		$this->assertFalse( in_array( 'job_manager', $job_manager_user->roles, true ), 'Job Manager role should be removed from user' );
+		$this->assertFalse( $job_manager_user->has_cap( \WP_Job_Manager_Post_Types::CAP_EDIT_LISTINGS ), 'WPJM cap should be removed from job manager' );
+
+		$this->assertNull( get_role( 'job_manager' ), 'Job Manager role should be removed overall' );
 	}
 
 	/**
