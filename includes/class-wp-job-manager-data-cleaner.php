@@ -194,6 +194,7 @@ class WP_Job_Manager_Data_Cleaner {
 		'_company_website',
 		'_company_tagline',
 		'_company_twitter',
+		'_company_linkedin',
 		'_company_video',
 	];
 
