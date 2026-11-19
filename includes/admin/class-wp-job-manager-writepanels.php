@@ -45,6 +45,7 @@ class WP_Job_Manager_Writepanels {
 		add_action( 'add_meta_boxes', [ $this, 'add_meta_boxes' ] );
 		add_action( 'save_post', [ $this, 'save_post' ], 1, 2 );
 		add_action( 'job_manager_save_job_listing', [ $this, 'save_job_listing_data' ], 20, 2 );
+		add_action( 'admin_notices', [ $this, 'maybe_show_file_type_errors' ] );
 	}
 
 	/**
@@ -205,17 +206,23 @@ class WP_Job_Manager_Writepanels {
 	/**
 	 * Displays file input field.
 	 *
-	 * @param string  $key         Field key.
-	 * @param string  $name        Input name.
-	 * @param string  $placeholder Input placeholder.
-	 * @param string  $value       File path.
-	 * @param boolean $multiple    Flag if the field is single or part of multiple.
-	 * @param string  $download    URL to download the file.
+	 * @param string  $key               Field key.
+	 * @param string  $name              Input name.
+	 * @param string  $placeholder       Input placeholder.
+	 * @param string  $value             File path.
+	 * @param boolean $multiple          Flag if the field is single or part of multiple.
+	 * @param string  $download          URL to download the file.
+	 * @param array   $allowed_mime_types Optional. Extensions to mime types whitelist for this field.
 	 */
-	private static function file_url_field( $key, $name, $placeholder, $value, $multiple, $download = null ) {
+	private static function file_url_field( $key, $name, $placeholder, $value, $multiple, $download = null, $allowed_mime_types = [] ) {
 		$name = esc_attr( $name );
 		if ( $multiple ) {
 			$name = $name . '[]';
+		}
+
+		$mime_attr = '';
+		if ( ! empty( $allowed_mime_types ) ) {
+			$mime_attr = ' data-allowed_mime_types="' . esc_attr( implode( ',', array_values( $allowed_mime_types ) ) ) . '"';
 		}
 		?>
 		<span class="file_url">
@@ -230,7 +237,7 @@ class WP_Job_Manager_Writepanels {
 				placeholder="<?php echo esc_attr( $placeholder ); ?>"
 				value="<?php echo esc_attr( $value ); ?>"
 			/>
-			<button class="button button-small wp_job_manager_upload_file_button" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>">
+			<button class="button button-small wp_job_manager_upload_file_button"<?php echo $mime_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped via esc_attr above. ?> data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>">
 				<?php esc_html_e( 'Upload', 'wp-job-manager' ); ?>
 			</button>
 			<button
@@ -279,7 +286,7 @@ class WP_Job_Manager_Writepanels {
 						$download = $field['download'][ $k ];
 					}
 
-					self::file_url_field( $key, $name, $field['placeholder'], $value, true, $download );
+					self::file_url_field( $key, $name, $field['placeholder'], $value, true, $download, $field['allowed_mime_types'] ?? [] );
 				}
 			} else {
 				$download = null;
@@ -287,11 +294,12 @@ class WP_Job_Manager_Writepanels {
 					$download = $field['download'];
 				}
 
-				self::file_url_field( $key, $name, $field['placeholder'], $field['value'], false, $download );
+				self::file_url_field( $key, $name, $field['placeholder'], $field['value'], false, $download, $field['allowed_mime_types'] ?? [] );
 			}
 			if ( ! empty( $field['multiple'] ) ) {
+				$add_mime_attr = ! empty( $field['allowed_mime_types'] ) ? ' data-allowed_mime_types="' . esc_attr( implode( ',', array_values( $field['allowed_mime_types'] ) ) ) . '"' : '';
 				?>
-				<button class="button button-small wp_job_manager_add_another_file_button" data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php esc_attr_e( 'Upload', 'wp-job-manager' ); ?>" data-view_button="<?php esc_attr_e( 'View', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Add file', 'wp-job-manager' ); ?></button>
+				<button class="button button-small wp_job_manager_add_another_file_button"<?php echo $add_mime_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Already escaped via esc_attr above. ?> data-field_name="<?php echo esc_attr( $key ); ?>" data-field_placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" data-uploader_button_text="<?php esc_attr_e( 'Use file', 'wp-job-manager' ); ?>" data-uploader_button="<?php esc_attr_e( 'Upload', 'wp-job-manager' ); ?>" data-view_button="<?php esc_attr_e( 'View', 'wp-job-manager' ); ?>"><?php esc_html_e( 'Add file', 'wp-job-manager' ); ?></button>
 				<?php
 			}
 			?>
@@ -722,8 +730,60 @@ class WP_Job_Manager_Writepanels {
 				$wpdb->update( $wpdb->posts, [ 'post_author' => $input_post_author ], [ 'ID' => $post_id ] );
 			} elseif ( isset( $_POST[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check handled by WP core.
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- Input sanitized in registered post meta config; see WP_Job_Manager_Post_Types::register_meta_fields() and WP_Job_Manager_Post_Types::get_job_listing_fields() methods.
-				update_post_meta( $post_id, $key, wp_unslash( $_POST[ $key ] ) );
+				$posted_value = wp_unslash( $_POST[ $key ] );
+
+				if ( 'file' === $field['type'] && ! empty( $field['allowed_mime_types'] ) ) {
+					$allowed_mimes = array_values( (array) $field['allowed_mime_types'] );
+
+					if ( ! empty( $field['multiple'] ) ) {
+						$posted_value = is_array( $posted_value ) ? $posted_value : [];
+					} else {
+						$posted_value = is_array( $posted_value ) ? reset( $posted_value ) : $posted_value;
+						$posted_value = [ $posted_value ];
+					}
+
+					$valid_values   = [];
+					$rejected_files = [];
+
+					foreach ( $posted_value as $file_url ) {
+						if ( '' === $file_url || null === $file_url ) {
+							continue;
+						}
+
+						$file_url  = current( explode( '?', (string) $file_url ) );
+						$file_info = wp_check_filetype( $file_url, (array) $field['allowed_mime_types'] );
+
+						if ( $file_info && in_array( $file_info['type'], $allowed_mimes, true ) ) {
+							$valid_values[] = $file_url;
+						} else {
+							$rejected_files[] = $file_info['ext'] ?: $file_url;
+						}
+					}
+
+					if ( ! empty( $rejected_files ) ) {
+						if ( ! isset( $file_type_errors ) ) {
+							$file_type_errors = [];
+						}
+						$file_type_errors[] = [
+							'field'    => $field['label'] ?? $key,
+							'rejected' => array_unique( $rejected_files ),
+							'allowed'  => self::flatten_allowed_extensions( $field['allowed_mime_types'] ),
+						];
+
+						// Preserve any previously-stored meta; do not overwrite with the rejected value.
+						$stored = get_post_meta( $post_id, $key, true );
+					} else {
+						$stored = ! empty( $field['multiple'] ) ? $valid_values : ( $valid_values[0] ?? '' );
+					}
+					update_post_meta( $post_id, $key, $stored );
+				} else {
+					update_post_meta( $post_id, $key, $posted_value );
+				}
 			}
+		}
+
+		if ( ! empty( $file_type_errors ) ) {
+			set_transient( 'wpjm_job_listing_file_type_errors_' . $post_id, $file_type_errors, 30 );
 		}
 
 		/* Set Post Status To Expired If Already Expired */
@@ -763,6 +823,70 @@ class WP_Job_Manager_Writepanels {
 				)
 				&& $to_status === $_POST['post_status'];
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
+	}
+
+	/**
+	 * Flatten the extension keys of an allowed_mime_types map into a list of
+	 * individual file extensions. Pipe-separated keys (e.g. `jpg|jpeg|jpe`) are
+	 * split so the notice lists every extension the field accepts.
+	 *
+	 * @since $$next-version$$
+	 *
+	 * @param array $allowed_mime_types Map of extensions to mime types.
+	 * @return array
+	 */
+	private static function flatten_allowed_extensions( $allowed_mime_types ) {
+		$extensions = [];
+		foreach ( array_keys( $allowed_mime_types ) as $extensions_key ) {
+			foreach ( explode( '|', (string) $extensions_key ) as $extension ) {
+				$extension = trim( $extension );
+				if ( '' !== $extension && ! in_array( $extension, $extensions, true ) ) {
+					$extensions[] = $extension;
+				}
+			}
+		}
+		return $extensions;
+	}
+
+	/**
+	 * Display admin notice for any file fields rejected on save.
+	 *
+	 * @since $$next-version$$
+	 */
+	public function maybe_show_file_type_errors() {
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+		if ( ! $screen || 'job_listing' !== $screen->post_type || 'post' !== $screen->base ) {
+			return;
+		}
+
+		$post_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! $post_id ) {
+			return;
+		}
+
+		$errors = get_transient( 'wpjm_job_listing_file_type_errors_' . $post_id );
+		if ( empty( $errors ) || ! is_array( $errors ) ) {
+			return;
+		}
+
+		delete_transient( 'wpjm_job_listing_file_type_errors_' . $post_id );
+
+		$lines = [];
+		foreach ( $errors as $error ) {
+			$lines[] = sprintf(
+				/* translators: 1: field label, 2: list of rejected file extensions, 3: list of allowed file extensions. */
+				__( '"%1$s" rejected files of type %2$s. Allowed types: %3$s.', 'wp-job-manager' ),
+				$error['field'],
+				implode( ', ', $error['rejected'] ),
+				implode( ', ', $error['allowed'] )
+			);
+		}
+
+		echo '<div class="notice notice-error"><p>' . esc_html( implode( ' ', $lines ) ) . '</p></div>';
 	}
 }
 
