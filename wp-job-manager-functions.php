@@ -584,13 +584,14 @@ if ( ! function_exists( 'get_job_listing_post_statuses' ) ) :
 		return apply_filters(
 			'job_listing_post_statuses',
 			[
-				'draft'           => _x( 'Draft', 'post status', 'wp-job-manager' ),
-				'expired'         => _x( 'Expired', 'post status', 'wp-job-manager' ),
-				'preview'         => _x( 'Preview', 'post status', 'wp-job-manager' ),
-				'pending'         => _x( 'Pending approval', 'post status', 'wp-job-manager' ),
-				'pending_payment' => _x( 'Pending payment', 'post status', 'wp-job-manager' ),
-				'publish'         => _x( 'Active', 'post status', 'wp-job-manager' ),
-				'future'          => _x( 'Scheduled', 'post status', 'wp-job-manager' ),
+				'draft'            => _x( 'Draft', 'post status', 'wp-job-manager' ),
+				'expired'          => _x( 'Expired', 'post status', 'wp-job-manager' ),
+				'preview'          => _x( 'Preview', 'post status', 'wp-job-manager' ),
+				'pending'          => _x( 'Pending approval', 'post status', 'wp-job-manager' ),
+				'pending_payment'  => _x( 'Pending payment', 'post status', 'wp-job-manager' ),
+				'publish'          => _x( 'Active', 'post status', 'wp-job-manager' ),
+				'future'           => _x( 'Scheduled', 'post status', 'wp-job-manager' ),
+				'wpjm_deactivated' => _x( 'Deactivated', 'post status', 'wp-job-manager' ),
 			]
 		);
 	}
