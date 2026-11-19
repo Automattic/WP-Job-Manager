@@ -5,6 +5,10 @@ jQuery(document).ready(function($) {
 	}
 
 	$( document.body ).on( 'click', '.job_application .application_button', function() {
+		// If the button is an anchor link, let the browser navigate to the URL; no toggle needed.
+		if ( 'a' === this.tagName.toLowerCase() ) {
+			return;
+		}
 		var $details = $(this).parents('.job_application').find('.application_details').first();
 		var $button = $(this);
 		$details.slideToggle( 400, function() {
