@@ -219,7 +219,7 @@ class Stats {
 			strlen( $args['name'] ) > 50 ||
 			strlen( $args['group'] ) > 50 ||
 			empty( $args['post_id'] ) ||
-			! is_integer( $args['count'] ) ) {
+			! is_int( $args['count'] ) ) {
 			return false;
 		}
 

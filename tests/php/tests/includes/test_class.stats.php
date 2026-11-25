@@ -120,6 +120,14 @@ class WP_Test_Stats extends \WPJM_BaseTest {
 
 	}
 
+	public function test_log_stat_rejects_non_integer_count() {
+		$job_id = $this->factory->job_listing->create();
+
+		$this->assertFalse( Stats::instance()->log_stat( 'test_stat', [ 'post_id' => $job_id, 'count' => '1' ] ) );
+		$this->assertFalse( Stats::instance()->log_stat( 'test_stat', [ 'post_id' => $job_id, 'count' => 1.5 ] ) );
+		$this->assertEmpty( Stats::instance()->get_stats( null, $job_id ) );
+	}
+
 	public function test_log_stat_exits_when_disabled() {
 		update_option( Stats::OPTION_ENABLE_STATS, false );
 		Stats::instance()->log_stat( 'test_stat', [ 'post_id' => 1, 'count' => 1 ] );
