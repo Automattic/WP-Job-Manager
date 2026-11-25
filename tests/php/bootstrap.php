@@ -130,11 +130,11 @@ class WPJM_Unit_Tests_Bootstrap {
 			define( 'E_DEPRECATED', 8192 );
 		}
 
-		// Vendor packages (e.g. PHPUnit itself) emit deprecation notices against
-		// newer PHP versions. Those are not actionable in this repo and would
-		// otherwise abort the test run under PHP 8.4.
+		// Vendor packages (e.g. PHPUnit itself) and the WordPress test library emit
+		// deprecation notices against newer PHP versions. Those are not actionable
+		// in this repo and would otherwise abort the test run under PHP 8.4+.
 		if ( in_array( $errno, [ E_DEPRECATED, E_USER_DEPRECATED ], true )
-			&& false !== strpos( $errfile, '/vendor/' ) ) {
+			&& ( false !== strpos( $errfile, '/vendor/' ) || 0 === strpos( realpath( $errfile ), realpath( $this->wp_tests_dir ) . DIRECTORY_SEPARATOR ) ) ) {
 			return;
 		}
 
