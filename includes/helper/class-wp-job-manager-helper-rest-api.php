@@ -26,7 +26,7 @@ class WP_Job_Manager_Helper_REST_API {
 	 *
 	 * @var string
 	 */
-	private const NAMESPACE = 'wpjm-internal/v1';
+	private const REST_NAMESPACE = 'wpjm-internal/v1';
 
 	/**
 	 * Rest base for the current object.
@@ -60,7 +60,7 @@ class WP_Job_Manager_Helper_REST_API {
 	 */
 	public function register_rest_routes() {
 		register_rest_route(
-			self::NAMESPACE,
+			self::REST_NAMESPACE,
 			self::REST_BASE . '/receive-wpcom-license-key',
 			[
 				[
